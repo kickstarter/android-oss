@@ -9,6 +9,8 @@ import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.MANAGE_PLEDGE
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.TWO_FACTOR_AUTH
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.UPDATE_PLEDGE
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
@@ -220,7 +222,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("recommended_popular", expectedProperties["discover_ref_tag"])
         assertEquals(null, expectedProperties["discover_search_term"])
         assertEquals(false, expectedProperties["discover_social"])
-        assertEquals("popularity", expectedProperties["discover_sort"])
+        assertEquals("popular", expectedProperties["discover_sort"])
         assertNull(expectedProperties["discover_subcategory_id"])
         assertNull(expectedProperties["discover_subcategory_name"])
         assertEquals(null, expectedProperties["discover_tag"])
@@ -289,6 +291,49 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["discover_watched"])
 
         this.segmentIdentify.assertValue(user.id())
+    }
+
+    @Test
+    fun testSearchCta_Properties() {
+        val user = user()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedId.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        val params = DiscoveryParams
+            .builder()
+            .category(CategoryFactory.ceramicsCategory())
+            .sort(DiscoveryParams.Sort.MAGIC)
+            .build()
+
+        segment.trackSearchCTAButtonClicked(params)
+
+        assertSessionProperties(user)
+        assertContextProperties()
+        assertUserProperties(false)
+
+        val expectedProperties = propertiesTest.value
+
+        assertEquals("1", expectedProperties["discover_category_id"])
+        assertEquals("Art", expectedProperties["discover_category_name"])
+        assertEquals(false, expectedProperties["discover_everything"])
+        assertEquals(false, expectedProperties["discover_pwl"])
+        assertEquals(false, expectedProperties["discover_recommended"])
+        assertEquals("category", expectedProperties["discover_ref_tag"])
+        assertEquals(null, expectedProperties["discover_search_term"])
+        assertEquals(false, expectedProperties["discover_social"])
+        assertEquals("magic", expectedProperties["discover_sort"])
+        assertEquals("287", expectedProperties["discover_subcategory_id"])
+        assertEquals("Ceramics", expectedProperties["discover_subcategory_name"])
+        assertEquals(null, expectedProperties["discover_tag"])
+        assertEquals(false, expectedProperties["discover_watched"])
+
+        assertEquals(EventContextValues.CtaContextName.SEARCH.contextName, expectedProperties[CONTEXT_CTA.contextName])
+        assertEquals(EventContextValues.LocationContextName.GLOBAL_NAV.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
+
+        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -640,6 +685,42 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testUpdatePledgePageViewed() {
+        val project = ProjectFactory.backedProject()
+            .toBuilder()
+            .id(4)
+            .category(CategoryFactory.ceramicsCategory())
+            .commentsCount(3)
+            .creator(creator())
+            .location(LocationFactory.unitedStates())
+            .updatesCount(5)
+            .build()
+        val user = user()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val segment = AnalyticEvents(listOf(client))
+
+        val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
+
+        segment.trackUpdatePledgePageViewed(
+            CheckoutDataFactory.checkoutData(20.0, 30.0),
+            PledgeData.with(PledgeFlowContext.MANAGE_REWARD, projectData, reward())
+        )
+
+        assertSessionProperties(user)
+        assertProjectProperties(project)
+        assertContextProperties()
+        assertCheckoutProperties()
+        assertUserProperties(false)
+
+        val expectedProperties = this.propertiesTest.value
+        assertEquals(UPDATE_PLEDGE.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
+
+    @Test
     fun testCheckoutProperties_whenFixingPledge() {
         val project = ProjectFactory.backedProject()
             .toBuilder()
@@ -742,7 +823,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         assertSessionProperties(null)
         assertContextProperties()
-        assertPageContextProperty(EventContextValues.ContextPageName.TWO_FACTOR_AUTH.contextName)
+        assertPageContextProperty(TWO_FACTOR_AUTH.contextName)
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
     }
@@ -821,6 +902,98 @@ class SegmentTest : KSRobolectricTestCase() {
         val properties = this.propertiesTest.value
         assertNull(properties["user_uid"])
         assertEquals(LOGIN.contextName, properties[CONTEXT_PAGE.contextName])
+
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
+
+    @Test
+    fun discoveryParamProperties_whenAllFieldsPopulated_shouldReturnExpectedProps() {
+        val user = user()
+        val client = client(user)
+
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackDiscoveryPageViewed(discoveryParams())
+
+        val properties = this.propertiesTest.value
+
+        assertEquals(false, properties["discover_everything"])
+        assertEquals(true, properties["discover_pwl"])
+        assertEquals(false, properties["discover_recommended"])
+        assertEquals("category_ending_soon", properties["discover_ref_tag"])
+        assertEquals("hello world", properties["discover_search_term"])
+        assertEquals(true, properties["discover_social"])
+        assertEquals("ending_soon", properties["discover_sort"])
+        assertEquals(123, properties["discover_tag"])
+        assertEquals(true, properties["discover_watched"])
+        assertEquals("Art", properties["discover_category_name"])
+        assertEquals("Ceramics", properties["discover_subcategory_name"])
+    }
+
+    @Test
+    fun testTrackDiscoverSortCTA() {
+        val user = user()
+        val client = client(user)
+
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackDiscoverSortCTA(DiscoveryParams.Sort.POPULAR, discoveryParams())
+
+        val properties = this.propertiesTest.value
+
+        assertContextProperties()
+        assertUserProperties(false)
+        assertSessionProperties(user)
+
+        assertEquals(EventContextValues.LocationContextName.DISCOVER_ADVANCED.contextName, properties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
+        assertEquals(EventContextValues.CtaContextName.DISCOVER.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(EventContextValues.CtaContextName.DISCOVER_SORT.contextName, properties[CONTEXT_CTA.contextName])
+        assertEquals("ending_soon", properties[ContextPropertyKeyName.CONTEXT_TYPE.contextName])
+        assertEquals("popular", properties["discover_sort"])
+    }
+
+    @Test
+    fun testSignUpInitiateCtaClicked_Properties() {
+        val client = client(null)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+
+        val segment = AnalyticEvents(listOf(client))
+        segment.trackSignUpInitiateCtaClicked()
+
+        assertSessionProperties(null)
+        assertContextProperties()
+
+        val properties = this.propertiesTest.value
+        assertNull(properties["user_uid"])
+        assertEquals(EventContextValues.ContextPageName.LOGIN_SIGN_UP.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(EventContextValues.CtaContextName.SIGN_UP_INITIATE.contextName, properties[CONTEXT_CTA.contextName])
+
+        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+    }
+
+    @Test
+    fun testSignUpPageViewed_Properties() {
+
+        val client = client(null)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+
+        val segment = AnalyticEvents(listOf(client))
+        segment.trackSignUpPageViewed()
+
+        assertSessionProperties(null)
+        assertContextProperties()
+
+        val properties = this.propertiesTest.value
+        assertNull(properties["user_uid"])
+        assertEquals(EventContextValues.ContextPageName.SIGN_UP.contextName, properties[CONTEXT_PAGE.contextName])
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
@@ -1057,5 +1230,19 @@ class SegmentTest : KSRobolectricTestCase() {
             .createdProjectsCount(6)
             .location(LocationFactory.nigeria())
             .starredProjectsCount(10)
+            .build()
+
+    private fun discoveryParams() =
+        DiscoveryParams
+            .builder()
+            .staffPicks(true)
+            .recommended(false)
+            .location(LocationFactory.germany())
+            .starred(1)
+            .term("hello world")
+            .social(2)
+            .sort(DiscoveryParams.Sort.ENDING_SOON)
+            .tagId(123)
+            .category(CategoryFactory.ceramicsCategory())
             .build()
 }

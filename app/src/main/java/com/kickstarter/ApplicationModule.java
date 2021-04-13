@@ -209,13 +209,7 @@ public class ApplicationModule {
   @Nonnull
   @Singleton
   static RemotePushClientType provideBrazeClient(final @NonNull Build build, final @ApplicationContext @NonNull Context context, final @NonNull CurrentConfigType currentConfig) {
-    final BrazeClient brazeClient = new BrazeClient(context, build, currentConfig);
-
-    if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
-      brazeClient.init();
-    }
-
-    return brazeClient;
+    return new BrazeClient(context, build, currentConfig);
   }
 
   @Provides

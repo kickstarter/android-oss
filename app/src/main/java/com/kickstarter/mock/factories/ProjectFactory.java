@@ -483,7 +483,7 @@ public final class ProjectFactory {
 
     return project()
       .toBuilder()
-      .prelaunchActivated(true)
+      .displayPrelaunch(true)
       .urls(Project.Urls.builder().web(web).build())
       .build();
   }

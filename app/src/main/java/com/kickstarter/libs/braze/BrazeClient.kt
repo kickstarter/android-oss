@@ -76,10 +76,10 @@ open class BrazeClient(
     override fun getIdSender(): String {
         var senderId = ""
         if (build.isRelease && Build.isExternal()) {
-             senderId = Secrets.FirebaseSenderID.PRODUCTION
+            senderId = Secrets.FirebaseSenderID.PRODUCTION
         }
         if (build.isDebug || Build.isInternal()) {
-             senderId = Secrets.FirebaseSenderID.STAGING
+            senderId = Secrets.FirebaseSenderID.STAGING
         }
 
         return senderId

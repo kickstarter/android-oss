@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
+
 import rx.Observable;
 import rx.Scheduler;
 import rx.subjects.BehaviorSubject;
@@ -151,7 +152,7 @@ public interface SearchViewModel {
                   && IntegerUtils.intValueOrZero(it.second) == 1)
           .distinct()
           .subscribe(it -> {
-            this.lake.trackSearchResultPageViewed(defaultParams, it.first.second.stats().count(), defaultSort);
+            this.lake.trackSearchResultPageViewed(it.first.first, it.first.second.stats().count(), defaultSort);
           });
 
       this.lake.trackSearchButtonClicked();

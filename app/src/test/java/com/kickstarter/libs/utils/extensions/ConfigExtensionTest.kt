@@ -1,6 +1,7 @@
 package com.kickstarter.libs.utils.extensions
 
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.utils.ConfigFeatureName.EMAIL_VERIFICATION_FLOW
 import com.kickstarter.mock.factories.ConfigFactory
 import org.json.JSONArray
 import org.junit.Test
@@ -10,20 +11,20 @@ class ConfigExtensionTest : KSRobolectricTestCase() {
 
     @Test
     fun isFeatureFlagEnabled_whenFeatureFlagTrue_returnTrue() {
-        val config = ConfigFactory.configWithFeaturesEnabled(mapOf(Pair(EMAIL_VERIFICATION_FLOW, true)))
-        assertTrue(config.isFeatureFlagEnabled(EMAIL_VERIFICATION_FLOW))
+        val config = ConfigFactory.configWithFeaturesEnabled(mapOf(Pair(EMAIL_VERIFICATION_FLOW.configFeatureName, true)))
+        assertTrue(config.isFeatureFlagEnabled(EMAIL_VERIFICATION_FLOW.configFeatureName))
     }
 
     @Test
     fun isFeatureFlagEnabled_whenFeatureFlagFalse_returnFalse() {
-        val config = ConfigFactory.configWithFeaturesEnabled(mapOf(Pair(EMAIL_VERIFICATION_FLOW, false)))
-        assertFalse(config.isFeatureFlagEnabled(EMAIL_VERIFICATION_FLOW))
+        val config = ConfigFactory.configWithFeaturesEnabled(mapOf(Pair(EMAIL_VERIFICATION_FLOW.configFeatureName, false)))
+        assertFalse(config.isFeatureFlagEnabled(EMAIL_VERIFICATION_FLOW.configFeatureName))
     }
 
     @Test
     fun isEnabledFeature_whenFeatureFlagEmpty_returnFalse() {
         val config = ConfigFactory.configWithFeaturesEnabled(mapOf(Pair("", true)))
-        assertFalse(config.isFeatureFlagEnabled(EMAIL_VERIFICATION_FLOW))
+        assertFalse(config.isFeatureFlagEnabled(EMAIL_VERIFICATION_FLOW.configFeatureName))
     }
 
     @Test

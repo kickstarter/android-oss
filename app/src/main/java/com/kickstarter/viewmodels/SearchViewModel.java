@@ -7,6 +7,7 @@ import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.EventContextValues;
+import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.extensions.StringExt;
@@ -21,11 +22,13 @@ import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 
+import kotlin.Triple;
 import rx.Observable;
 import rx.Scheduler;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 
 public interface SearchViewModel {
@@ -95,7 +98,6 @@ public interface SearchViewModel {
           .loadWithPaginationPath(apiClient::fetchProjects)
           .build();
 
-
       paginator.isFetching()
         .compose(bindToLifecycle())
         .subscribe(this.isFetchingProjects);
@@ -141,12 +143,17 @@ public interface SearchViewModel {
           return this.projectAndRefTag(searchTerm, currentProjects, projectClicked);
         });
 
-      this.search
+      params
           .compose(takePairWhen(this.discoverEnvelope))
+          .compose(combineLatestPair(pageCount))
           .compose(bindToLifecycle())
-          .filter(it -> ObjectUtils.isNotNull(it.first) && StringExt.isPresent(it.first))
+          .filter(it -> ObjectUtils.isNotNull(it.first.first.term())
+                  && StringExt.isPresent(it.first.first.term())
+                  && it.first.first.sort() != defaultSort
+                  && IntegerUtils.intValueOrZero(it.second) == 1)
+          .distinct()
           .subscribe(it -> {
-            this.lake.trackSearchResultPageViewed(defaultParams, it.second.stats().count(), defaultSort);
+            this.lake.trackSearchResultPageViewed(defaultParams, it.first.second.stats().count(), defaultSort);
           });
 
       this.lake.trackSearchButtonClicked();

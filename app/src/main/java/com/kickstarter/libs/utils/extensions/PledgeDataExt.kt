@@ -2,7 +2,6 @@
 package com.kickstarter.libs.utils.extensions
 
 import com.kickstarter.ui.data.PledgeData
-import java.math.BigDecimal
 
 /**
  * Total count of selected add-ons (including multiple quantities of a single add-on)

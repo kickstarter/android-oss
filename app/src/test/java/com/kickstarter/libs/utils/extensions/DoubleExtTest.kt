@@ -13,5 +13,4 @@ class DoubleExtTest : TestCase() {
 
         assertEquals(val1.multiplyRound2Decimal(val2), expected)
     }
-
 }

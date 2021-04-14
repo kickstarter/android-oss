@@ -23,25 +23,25 @@ fun CheckoutData.totalAmount() = this.amount() + this.shippingAmount()
  *
  * @return Double
  */
-fun CheckoutData.totalAmount(usdRate: Float) = this.totalAmount() * usdRate
+fun CheckoutData.totalAmount(usdRate: Float) = this.totalAmount().multiplyRound2Decimal(usdRate.toDouble())
 
 /**
  * Returns the bonus amount added to the pledge
  *
  * @return Double
  */
-fun CheckoutData.bonus() = this.bonusAmount()?.let { it } ?: 0.0
+fun CheckoutData.bonus() = this.bonusAmount() ?: 0.0
 
 /**
  * Returns the bonus amount added to the pledge in USD
  *
  * @return Double
  */
-fun CheckoutData.bonus(usdRate: Float) = this.bonus() * usdRate
+fun CheckoutData.bonus(usdRate: Float) = this.bonus().multiplyRound2Decimal(usdRate.toDouble())
 
 /**
  * Returns the shipping amount in USD
  *
  * @return Double
  */
-fun CheckoutData.shippingAmount(usdRate: Float) = this.shippingAmount() * usdRate
+fun CheckoutData.shippingAmount(usdRate: Float) = this.shippingAmount().multiplyRound2Decimal(usdRate.toDouble())

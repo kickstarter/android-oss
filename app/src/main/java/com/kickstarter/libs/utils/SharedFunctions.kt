@@ -1,5 +1,6 @@
 package com.kickstarter.libs.utils
 
+import com.kickstarter.libs.utils.extensions.multiplyRound2Decimal
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.CheckoutData
 import type.CreditCardPaymentType
@@ -35,7 +36,7 @@ fun addOnsCost(usdRate: Float, addOns: List<Reward>?): Double {
         addOn.minimum() * (addOn.quantity() ?: 0)
     }?.sum() ?: 0
 
-    return amount.toDouble() * usdRate
+    return amount.toDouble().multiplyRound2Decimal(usdRate.toDouble())
 }
 
 /**
@@ -43,7 +44,7 @@ fun addOnsCost(usdRate: Float, addOns: List<Reward>?): Double {
  *
  * @return Double: e.g. 25.00
  */
-fun rewardCost(usdRate: Float, reward: Reward): Double = reward.minimum() * usdRate
+fun rewardCost(usdRate: Float, reward: Reward): Double = reward.minimum().multiplyRound2Decimal(usdRate.toDouble())
 
 fun checkoutProperties(
     amount: Double,

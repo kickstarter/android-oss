@@ -939,6 +939,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
         props.putAll(AnalyticEventsUtils.checkoutProperties(checkoutData, projectData.project(), backing.addOns()))
         props.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
+
         client.track(PAGE_VIEWED.eventName, props)
     }
 

@@ -78,9 +78,9 @@ class BrazeClientTest : KSRobolectricTestCase() {
 
     private fun mockCurrentConfig(enabledFeatureFlag: Boolean) = MockCurrentConfig().apply {
         var config =
-                if (enabledFeatureFlag)
-                    ConfigFactory.configWithFeatureEnabled(ConfigFeatureName.BRAZE_ENABLED.configFeatureName)
-                else ConfigFactory.configWithFeatureDisabled(ConfigFeatureName.BRAZE_ENABLED.configFeatureName)
+            if (enabledFeatureFlag)
+                ConfigFactory.configWithFeatureEnabled(ConfigFeatureName.BRAZE_ENABLED.configFeatureName)
+            else ConfigFactory.configWithFeatureDisabled(ConfigFeatureName.BRAZE_ENABLED.configFeatureName)
         config(config)
     }
 

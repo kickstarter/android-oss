@@ -6,13 +6,7 @@ import com.kickstarter.libs.utils.EventContextValues.VideoContextName.POSITION
 import com.kickstarter.libs.utils.RewardUtils.isItemized
 import com.kickstarter.libs.utils.RewardUtils.isShippable
 import com.kickstarter.libs.utils.RewardUtils.isTimeLimitedEnd
-import com.kickstarter.libs.utils.extensions.addOnsCost
-import com.kickstarter.libs.utils.extensions.bonus
-import com.kickstarter.libs.utils.extensions.rewardCost
-import com.kickstarter.libs.utils.extensions.shippingAmount
-import com.kickstarter.libs.utils.extensions.totalAmount
-import com.kickstarter.libs.utils.extensions.totalCountUnique
-import com.kickstarter.libs.utils.extensions.totalQuantity
+import com.kickstarter.libs.utils.extensions.*
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Category
 import com.kickstarter.models.Location
@@ -39,12 +33,12 @@ object AnalyticEventsUtils {
             put("payment_type", checkoutData.paymentType().rawValue().toLowerCase(Locale.getDefault()))
             put("amount_total_usd", checkoutData.totalAmount(project.staticUsdRate()))
             put("shipping_amount", checkoutData.shippingAmount())
-            put("shipping_amount_usd", checkoutData.shippingAmount(project.staticUsdRate()))
+            put("shipping_amount_usd", checkoutData.shippingAmount(project.staticUsdRate()).round())
             put("bonus_amount", checkoutData.bonus())
-            put("bonus_amount_usd", checkoutData.bonus(project.staticUsdRate()))
+            put("bonus_amount_usd", checkoutData.bonus(project.staticUsdRate()).round())
             put("add_ons_count_total", pledgeData.totalQuantity())
             put("add_ons_count_unique", pledgeData.totalCountUnique())
-            put("add_ons_minimum_usd", pledgeData.addOnsCost(project.staticUsdRate()))
+            put("add_ons_minimum_usd", pledgeData.addOnsCost(project.staticUsdRate()).round())
         }
 
         return MapUtils.prefixKeys(properties, prefix)
@@ -59,12 +53,12 @@ object AnalyticEventsUtils {
             put("payment_type", checkoutData.paymentType().rawValue().toLowerCase(Locale.getDefault()))
             put("amount_total_usd", checkoutData.totalAmount(project.staticUsdRate()))
             put("shipping_amount", checkoutData.shippingAmount())
-            put("shipping_amount_usd", checkoutData.shippingAmount(project.staticUsdRate()))
+            put("shipping_amount_usd", checkoutData.shippingAmount(project.staticUsdRate()).round())
             put("bonus_amount", checkoutData.bonus())
-            put("bonus_amount_usd", checkoutData.bonus(project.staticUsdRate()))
+            put("bonus_amount_usd", checkoutData.bonus(project.staticUsdRate()).round())
             put("add_ons_count_total", totalQuantity(addOns))
             put("add_ons_count_unique", totalCountUnique(addOns))
-            put("add_ons_minimum_usd", addOnsCost(project.staticUsdRate(), addOns))
+            put("add_ons_minimum_usd", addOnsCost(project.staticUsdRate(), addOns).round())
         }
 
         return MapUtils.prefixKeys(properties, prefix)
@@ -186,7 +180,7 @@ object AnalyticEventsUtils {
             put("is_limited_quantity", reward.limit() != null)
             put("minimum", reward.minimum())
             put("shipping_enabled", isShippable(reward))
-            put("minimum_usd", pledgeData.rewardCost(project.staticUsdRate()))
+            put("minimum_usd", pledgeData.rewardCost(project.staticUsdRate()).round())
             reward.shippingPreference()?.let { put("shipping_preference", it) }
             reward.title()?.let { put("title", it) }
         }

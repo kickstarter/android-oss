@@ -2,6 +2,7 @@
 package com.kickstarter.libs.utils.extensions
 
 import com.kickstarter.ui.data.PledgeData
+import java.math.BigDecimal
 
 /**
  * Total count of selected add-ons (including multiple quantities of a single add-on)
@@ -34,7 +35,7 @@ fun PledgeData.addOnsCost(usdRate: Float): Double {
         addOn.minimum() * (addOn.quantity() ?: 0)
     }?.sum() ?: 0
 
-    return amount.toDouble().multiplyRound2Decimal(usdRate.toDouble())
+    return amount.toDouble() * usdRate
 }
 
 /**
@@ -42,4 +43,4 @@ fun PledgeData.addOnsCost(usdRate: Float): Double {
  *
  * @return Double: e.g. 25.00
  */
-fun PledgeData.rewardCost(usdRate: Float): Double = this.reward().minimum().multiplyRound2Decimal(usdRate.toDouble())
+fun PledgeData.rewardCost(usdRate: Float): Double = this.reward().minimum() * usdRate

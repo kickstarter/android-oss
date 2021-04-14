@@ -55,6 +55,7 @@ abstract class TrackingClientType {
         loggedInUser()?.let {
             hashMap.putAll(userProperties(it))
             hashMap["user_country"] = userCountry(it)
+            hashMap["notify_mobile_of_updates"] =  it.notifyOfUpdates() ?: false
         }
         hashMap.putAll(sessionProperties(loggedInUser() != null))
         hashMap.putAll(contextProperties())

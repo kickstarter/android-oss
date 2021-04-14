@@ -76,5 +76,6 @@ class SegmentTrackingClient(
     private fun getTraits(user: User) = Traits().apply {
         this.putName(user.name())
         this.putAvatar(user.avatar().toString())
+        this.put("notify_mobile_of_updates", user.notifyOfUpdates())
     }
 }

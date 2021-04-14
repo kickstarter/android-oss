@@ -18,6 +18,13 @@ public final class DiscoverEnvelopeFactory {
           .api(DiscoverEnvelope.UrlsEnvelope.ApiEnvelope.builder().moreProjects("").build())
           .build()
       )
+      .stats(
+        DiscoverEnvelope
+          .StatsEnvelope
+          .builder()
+          .count(10)
+          .build()
+      )
       .build();
   }
 }

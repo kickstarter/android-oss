@@ -1057,6 +1057,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      */
     fun trackAddOnsContinueCTA(pledgeData: PledgeData) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to ADD_ONS_CONTINUE.contextName)
+//        props.putAll(AnalyticEventsUtils.checkoutDataProperties(checkoutData, pledgeData, client.loggedInUser()))
         props[CONTEXT_PAGE.contextName] = ADD_ONS.contextName
         props.putAll(AnalyticEventsUtils.pledgeDataProperties(pledgeData, client.loggedInUser()))
         client.track(CTA_CLICKED.eventName, props)

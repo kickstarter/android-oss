@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import android.util.Log
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
@@ -11,16 +12,19 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardUtils.isDigital
 import com.kickstarter.libs.utils.RewardUtils.isShippable
+import com.kickstarter.libs.utils.checkoutProperties
 import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.ArgumentsKey
+import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.BackingAddOnsFragment
+import io.reactivex.Flowable.combineLatest
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -309,7 +313,7 @@ class BackingAddOnsFragmentViewModel {
                     this.isEnabledCTAButton.onNext(it)
                 }
 
-            val updatedPledgeDataAndReason = getUpdatedPledgeData(
+            val updatedPledgeDataAndReason = getUpdatedPledgeAndCheckoutData(
                 this.addOnsListFiltered,
                 pledgeData,
                 pledgeReason,
@@ -369,14 +373,14 @@ class BackingAddOnsFragmentViewModel {
          * @return updatedPledgeData depending on the selected shipping rule,
          * if any addOn has been selected
          */
-        private fun getUpdatedPledgeData(
+        private fun getUpdatedPledgeAndCheckoutData(
             filteredList: Observable<Triple<ProjectData, List<Reward>, ShippingRule>>,
             pledgeData: Observable<PledgeData>,
             pledgeReason: Observable<PledgeReason>,
             reward: Observable<Reward>,
             shippingRule: Observable<ShippingRule>,
             currentSelection: Observable<MutableMap<Long, Int>>,
-            continueButtonPressed: Observable<Void>
+            continueButtonPressed: Observable<Void>,
         ): Observable<Pair<PledgeData, PledgeReason>> {
             return Observable.combineLatest(filteredList, pledgeData, pledgeReason, reward, shippingRule, currentSelection, continueButtonPressed) {
                 listAddOns, pledgeData, pledgeReason, rw, shippingRule, currentSelection, _ ->

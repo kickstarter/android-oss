@@ -6,7 +6,14 @@ import com.kickstarter.libs.utils.EventContextValues.VideoContextName.POSITION
 import com.kickstarter.libs.utils.RewardUtils.isItemized
 import com.kickstarter.libs.utils.RewardUtils.isShippable
 import com.kickstarter.libs.utils.RewardUtils.isTimeLimitedEnd
-import com.kickstarter.libs.utils.extensions.*
+import com.kickstarter.libs.utils.extensions.addOnsCost
+import com.kickstarter.libs.utils.extensions.bonus
+import com.kickstarter.libs.utils.extensions.rewardCost
+import com.kickstarter.libs.utils.extensions.round
+import com.kickstarter.libs.utils.extensions.shippingAmount
+import com.kickstarter.libs.utils.extensions.totalAmount
+import com.kickstarter.libs.utils.extensions.totalCountUnique
+import com.kickstarter.libs.utils.extensions.totalQuantity
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Category
 import com.kickstarter.models.Location

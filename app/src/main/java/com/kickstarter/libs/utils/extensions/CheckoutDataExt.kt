@@ -30,7 +30,7 @@ fun CheckoutData.totalAmount(usdRate: Float) = this.totalAmount() * usdRate
  *
  * @return Double
  */
-fun CheckoutData.bonus() = this.bonusAmount()?.let { it } ?: 0.0
+fun CheckoutData.bonus() = this.bonusAmount() ?: 0.0
 
 /**
  * Returns the bonus amount added to the pledge in USD

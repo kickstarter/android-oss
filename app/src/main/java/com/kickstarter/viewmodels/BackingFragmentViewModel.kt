@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels
 
-import android.util.Log
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R
@@ -389,7 +388,6 @@ interface BackingFragmentViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.lake.trackManagePledgePageViewed(it.first, it.second)
-                    Log.e("HERE", "GOTCHA")
                 }
 
             val rewardIsReceivable = backing

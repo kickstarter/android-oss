@@ -197,7 +197,7 @@ object AnalyticEventsUtils {
         props.apply {
             put("add_ons_count_total", pledgeData.totalQuantity())
             put("add_ons_count_unique", pledgeData.totalCountUnique())
-            put("add_ons_minimum_usd",addOnsCost(project.staticUsdRate(), pledgeData.addOns()?.let { it as List<Reward>  } ?: emptyList()).round())
+            put("add_ons_minimum_usd", addOnsCost(project.staticUsdRate(), pledgeData.addOns()?.let { it as List<Reward> } ?: emptyList()).round())
         }
 
         return MapUtils.prefixKeys(props, prefix)

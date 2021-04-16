@@ -25,8 +25,11 @@ import com.kickstarter.models.extensions.getCreatedAndDraftProjectsCount
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.util.Locale
 import kotlin.math.ceil
+import kotlin.math.round
 import kotlin.math.roundToInt
 
 object AnalyticEventsUtils {
@@ -198,13 +201,12 @@ object AnalyticEventsUtils {
             put("add_ons_count_total", pledgeData.totalQuantity())
             put("add_ons_count_unique", pledgeData.totalCountUnique())
             put("add_ons_minimum_usd", pledgeData.addOnsCost(project.staticUsdRate()))
+            val decimalFormat = DecimalFormat("#.##")
+            decimalFormat.roundingMode = RoundingMode.FLOOR
+            put("add_ons_minimum_usd", decimalFormat.format(addOnsCost(project.staticUsdRate(), pledgeData.addOns()?.let { it as List<Reward>  } ?: emptyList())))
         }
 
         return MapUtils.prefixKeys(props, prefix)
-    }
-
-    fun addonsProperties() {
-
     }
 
     @JvmOverloads

@@ -1,32 +1,21 @@
 package com.kickstarter.libs
 
+import android.app.NotificationChannel
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.libs.utils.ContextPropertyKeyName
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.EventContextValues
-import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
-import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
-import com.kickstarter.libs.utils.EventContextValues.ContextPageName.MANAGE_PLEDGE
-import com.kickstarter.libs.utils.EventContextValues.ContextPageName.TWO_FACTOR_AUTH
-import com.kickstarter.libs.utils.EventContextValues.ContextPageName.UPDATE_PLEDGE
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.*
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
-import com.kickstarter.mock.factories.AvatarFactory
-import com.kickstarter.mock.factories.BackingFactory
-import com.kickstarter.mock.factories.CategoryFactory
-import com.kickstarter.mock.factories.CheckoutDataFactory
-import com.kickstarter.mock.factories.ConfigFactory
-import com.kickstarter.mock.factories.LocationFactory
-import com.kickstarter.mock.factories.ProjectDataFactory
-import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.mock.factories.RewardFactory
-import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.data.PledgeData
@@ -36,6 +25,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.Test
 import rx.subjects.BehaviorSubject
+import java.util.*
 
 class SegmentTest : KSRobolectricTestCase() {
 
@@ -619,7 +609,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
 
-        segment.trackSelectRewardButtonClicked(PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward()))
+        segment.trackSelectRewardButtonClicked(PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward(), listOfAddons()))
 
         assertSessionProperties(user)
         assertProjectProperties(project)
@@ -649,7 +639,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         segment.trackPledgeSubmitButtonClicked(
             CheckoutDataFactory.checkoutData(20.0, 30.0),
-            PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward())
+            PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward(), listOfAddons())
         )
 
         assertSessionProperties(user)
@@ -780,7 +770,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         segment.trackPledgeSubmitButtonClicked(
             CheckoutDataFactory.checkoutData(20.0, 30.0),
-            PledgeData.with(PledgeFlowContext.FIX_ERRORED_PLEDGE, projectData, reward())
+            PledgeData.with(PledgeFlowContext.FIX_ERRORED_PLEDGE, projectData, reward(), listOfAddons())
         )
 
         assertSessionProperties(user)
@@ -813,7 +803,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         segment.trackThanksPageViewed(
             CheckoutDataFactory.checkoutData(3L, 20.0, 30.0),
-            PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward())
+            PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward(), listOfAddons())
         )
 
         assertSessionProperties(user)
@@ -1137,7 +1127,9 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(10.0, expectedProperties["checkout_reward_minimum_usd"])
         assertEquals(true, expectedProperties["checkout_reward_shipping_enabled"])
         assertEquals("unrestricted", expectedProperties["checkout_reward_shipping_preference"])
-        assertEquals("Digital Bundle", expectedProperties["checkout_reward_title"])
+        assertEquals(5, expectedProperties["checkout_add_ons_count_total"])
+        assertEquals(2, expectedProperties["checkout_add_ons_count_unique"])
+        assertEquals(100.05, expectedProperties["checkout_add_ons_minimum_usd"])
     }
 
     private fun assertProjectProperties(project: Project) {
@@ -1284,4 +1276,7 @@ class SegmentTest : KSRobolectricTestCase() {
             .tagId(123)
             .category(CategoryFactory.ceramicsCategory())
             .build()
+
+    private fun listOfAddons(): java.util.List<Reward>? =
+        listOf(RewardFactory.addOn(), RewardFactory.addOnMultiple()) as java.util.List<Reward>?
 }

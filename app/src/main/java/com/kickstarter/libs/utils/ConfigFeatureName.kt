@@ -17,5 +17,11 @@ enum class ConfigFeatureName(val configFeatureName: String) {
      * Internal name for "android_segment"
      * @{link https://github.com/kickstarter/kickstarter/blob/e9c61ea9f1e4817bb64560db7c32f3b9704cdc60/config/features.yml#L219}
      */
-    SEGMENT_ENABLED("android_segment")
+    SEGMENT_ENABLED("android_segment"),
+
+    /**
+     * Internal name for "android_braze"
+     * @{link https://github.com/kickstarter/kickstarter/blob/c623c063c08e4264fbda750b243b0ef0c91fd637/config/features.yml#L224}
+     */
+    BRAZE_ENABLED("android_braze")
 }

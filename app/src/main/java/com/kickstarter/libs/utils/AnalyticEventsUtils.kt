@@ -25,11 +25,8 @@ import com.kickstarter.models.extensions.getCreatedAndDraftProjectsCount
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
-import java.math.RoundingMode
-import java.text.DecimalFormat
 import java.util.Locale
 import kotlin.math.ceil
-import kotlin.math.round
 import kotlin.math.roundToInt
 
 object AnalyticEventsUtils {

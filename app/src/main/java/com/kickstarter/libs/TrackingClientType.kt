@@ -62,7 +62,7 @@ abstract class TrackingClientType {
     }
 
     private fun contextProperties(): Map<String, Any> {
-        val properties =   hashMapOf<String, Any>()
+        val properties = hashMapOf<String, Any>()
         properties["timestamp"] = time()
         return MapUtils.prefixKeys(properties, "context_")
     }

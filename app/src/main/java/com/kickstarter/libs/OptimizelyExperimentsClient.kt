@@ -59,7 +59,7 @@ class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManag
 
         this.optimizelyClient().optimizelyConfig?.experimentsMap?.map { entry ->
             val variant: String = this.optimizelyClient().getVariation(entry.key, userId())?.let { it.key } ?: "unknown"
-            experimentsList.add("${entry.key}[${variant}]")
+            experimentsList.add("${entry.key}[$variant]")
         }
 
         properties["variants_optimizely"] = experimentsList.toTypedArray()

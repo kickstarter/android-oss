@@ -59,5 +59,5 @@ open class MockExperimentsClientType(private val variant: OptimizelyExperiment.V
 
     override fun variant(experiment: OptimizelyExperiment.Key, experimentData: ExperimentData): OptimizelyExperiment.Variant = this.variant
 
-    override fun getTrackingProperties(): Map<String, Array<Map<String, String>>> = emptyMap()
+    override fun getTrackingProperties(): Map<String, Array<String>> = emptyMap()
 }

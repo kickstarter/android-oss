@@ -1,4 +1,4 @@
-@file:JvmName("ApplicationExt")
+@file:JvmName("ContextExt")
 package com.kickstarter.libs.utils.extensions
 
 import android.app.Application

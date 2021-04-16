@@ -23,7 +23,7 @@ fun CheckoutData.totalAmount() = this.amount() + this.shippingAmount()
  *
  * @return Double
  */
-fun CheckoutData.totalAmount(usdRate: Float) = this.totalAmount() * usdRate
+fun CheckoutData.totalAmount(usdRate: Float) = this.amount() * usdRate
 
 /**
  * Returns the bonus amount added to the pledge

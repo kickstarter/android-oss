@@ -53,7 +53,7 @@ public final class RewardFactory {
       .id(IdFactory.id())
       .description(description)
       .estimatedDeliveryOn(ESTIMATED_DELIVERY)
-      .minimum(20.01f)
+      .minimum(20.0f)
       .shippingPreference("unrestricted")
       .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING)
       .title("Digital Bundle")

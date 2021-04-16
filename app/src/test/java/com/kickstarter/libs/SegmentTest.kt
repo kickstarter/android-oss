@@ -734,7 +734,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         segment.trackUpdatePledgePageViewed(
             CheckoutDataFactory.checkoutData(20.0, 30.0),
-            PledgeData.with(PledgeFlowContext.MANAGE_REWARD, projectData, reward())
+            PledgeData.with(PledgeFlowContext.MANAGE_REWARD, projectData, reward(), listOfAddons())
         )
 
         assertSessionProperties(user)
@@ -768,6 +768,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
 
+        val rewardTest = reward()
         segment.trackPledgeSubmitButtonClicked(
             CheckoutDataFactory.checkoutData(20.0, 30.0),
             PledgeData.with(PledgeFlowContext.FIX_ERRORED_PLEDGE, projectData, reward(), listOfAddons())
@@ -1076,9 +1077,9 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(50.0, expectedProperties["checkout_amount_total_usd"])
         assertEquals(20.0, expectedProperties["checkout_shipping_amount"])
         assertEquals(20.0, expectedProperties["checkout_shipping_amount_usd"])
-        assertEquals(0, expectedProperties["checkout_add_ons_count_total"])
-        assertEquals(0, expectedProperties["checkout_add_ons_count_unique"])
-        assertEquals(0.0, expectedProperties["checkout_add_ons_minimum_usd"])
+        assertEquals(5, expectedProperties["checkout_add_ons_count_total"])
+        assertEquals(2, expectedProperties["checkout_add_ons_count_unique"])
+        assertEquals(100.25, expectedProperties["checkout_add_ons_minimum_usd"])
         assertEquals(0.0, expectedProperties["checkout_bonus_amount_usd"])
     }
 
@@ -1129,7 +1130,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("unrestricted", expectedProperties["checkout_reward_shipping_preference"])
         assertEquals(5, expectedProperties["checkout_add_ons_count_total"])
         assertEquals(2, expectedProperties["checkout_add_ons_count_unique"])
-        assertEquals(100.05, expectedProperties["checkout_add_ons_minimum_usd"])
+        assertEquals(100.25, expectedProperties["checkout_add_ons_minimum_usd"])
     }
 
     private fun assertProjectProperties(project: Project) {
@@ -1278,5 +1279,5 @@ class SegmentTest : KSRobolectricTestCase() {
             .build()
 
     private fun listOfAddons(): java.util.List<Reward>? =
-        listOf(RewardFactory.addOn(), RewardFactory.addOnMultiple()) as java.util.List<Reward>?
+        listOf(RewardFactory.addOn().toBuilder().minimum(10.04).build(), RewardFactory.addOnMultiple().toBuilder().minimum(20.05).build()) as java.util.List<Reward>?
 }

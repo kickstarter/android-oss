@@ -70,7 +70,7 @@ public class KSApplication extends MultiDexApplication {
     registerComponentCallbacks(appUtil);
 
     // - Register lifecycle callback for Braze
-    registerActivityLifecycleCallbacks(this.remotePushClientType.getLifeCycleCallbacks());
+    this.remotePushClientType.registerActivityLifecycleCallbacks(this);
   }
 
   public ApplicationComponent component() {

@@ -200,6 +200,13 @@ public class ApplicationModule {
               .build();
 
       Analytics.setSingletonInstance(segmentClient);
+
+      Analytics.with(context).onIntegrationReady(AppboyIntegration.FACTORY.key(), new Analytics.Callback() {
+        @Override
+        public void onReady(Object instance) {
+          Log.v("Segment", AppboyIntegration.FACTORY.key() + " integration ready.");
+        }
+      });
     }
 
     return segmentClient;

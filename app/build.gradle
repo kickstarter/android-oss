@@ -239,8 +239,12 @@ dependencies {
     implementation "org.jsoup:jsoup:1.12.1"
 
     // Analytics Segment-Braze
-    implementation 'com.segment.analytics.android:analytics:4.9.0'
-    implementation 'com.appboy:appboy-segment-integration:7.0.0'
+    implementation ('com.segment.analytics.android:analytics:4.9.0') {
+        transitive(true)
+    }
+    implementation ('com.appboy:appboy-segment-integration:7.0.0') {
+        transitive(true)
+    }
 
     // Security
     implementation 'com.perimeterx.sdk:msdk:1.13.1'

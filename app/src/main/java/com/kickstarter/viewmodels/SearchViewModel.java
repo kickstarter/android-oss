@@ -118,7 +118,6 @@ public interface SearchViewModel {
           }
         });
 
-
       final Observable<Integer> pageCount = paginator.loadingPage();
       final Observable<String> query = params
         .map(DiscoveryParams::term);

@@ -54,10 +54,10 @@ interface ExperimentsClientType {
 
     /**
      * Map with all the experiments available to the app, with the corresponding variant:
-     * "session_variants_optimizely" : [ "Experiment1":"variant1",
-     *                                   "Experiment2":"varian2"]
+     * "session_variants_optimizely" : [ "Experiment1[variant1]",
+     *                                   "Experiment2[variant2]"]
      */
-    fun getTrackingProperties(): Map<String, Array<Map<String, String>>>
+    fun getTrackingProperties(): Map<String, Array<String>>
 }
 
 const val EXPERIMENTS_CLIENT_READY = "experiments_client_ready"

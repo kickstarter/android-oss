@@ -173,7 +173,7 @@ object AnalyticEventsUtils {
     }
 
     @JvmOverloads
-    fun pledgeProperties(pledgeData: PledgeData, prefix: String = "checkout_reward_"): Map<String, Any> {
+    fun pledgeProperties(pledgeData: PledgeData, prefix: String = "checkout_"): Map<String, Any> {
         val reward = pledgeData.reward()
         val project = pledgeData.projectData().project()
         val properties = HashMap<String, Any>().apply {
@@ -191,7 +191,15 @@ object AnalyticEventsUtils {
             reward.title()?.let { put("title", it) }
         }
 
-        return MapUtils.prefixKeys(properties, prefix)
+        val props = MapUtils.prefixKeys(properties, "reward_")
+
+        props.apply {
+            put("add_ons_count_total", pledgeData.totalQuantity())
+            put("add_ons_count_unique", pledgeData.totalCountUnique())
+            put("add_ons_minimum_usd", addOnsCost(project.staticUsdRate(), pledgeData.addOns()?.let { it as List<Reward> } ?: emptyList()).round())
+        }
+
+        return MapUtils.prefixKeys(props, prefix)
     }
 
     @JvmOverloads

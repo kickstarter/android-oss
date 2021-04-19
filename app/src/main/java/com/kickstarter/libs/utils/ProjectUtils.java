@@ -142,6 +142,13 @@ public final class ProjectUtils {
   }
 
   /**
+   * Returns time between project launch and deadline.
+   */
+  public static @NonNull Long timeInDaysOfDuration(final @NonNull Project project) {
+    return new Duration(project.launchedAt(), project.deadline()).getStandardDays();
+  }
+
+  /**
    * Returns time until project reaches deadline in seconds, or 0 if the
    * project has already finished.
    */

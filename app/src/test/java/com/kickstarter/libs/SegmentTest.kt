@@ -1069,15 +1069,14 @@ class SegmentTest : KSRobolectricTestCase() {
                 return listOf("optimizely_feature")
             }
 
-            override fun getTrackingProperties(): Map<String, Array<Map<String, String>>> {
+            override fun getTrackingProperties(): Map<String, Array<String>> {
                 return getOptimizelySession()
             }
         }
     )
 
-    private fun getOptimizelySession(): Map<String, Array<Map<String, String>>> {
-        val experiment1 = mapOf("suggested_no_reward_amount" to "variation_3")
-        val array = arrayOf(experiment1)
+    private fun getOptimizelySession(): Map<String, Array<String>> {
+        val array = arrayOf("suggested_no_reward_amount[variation_3]")
         return mapOf("variants_optimizely" to array)
     }
 

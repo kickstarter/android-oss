@@ -713,7 +713,7 @@ class SegmentTest : KSRobolectricTestCase() {
         // - we test asserting this properties all methods in SharedFunctions.kt
         assertEquals(10.0, expectedProperties["checkout_amount"])
         assertEquals("credit_card", expectedProperties["checkout_payment_type"])
-        assertEquals(30.0, expectedProperties["checkout_amount_total_usd"])
+        assertEquals(10.0, expectedProperties["checkout_amount_total_usd"])
         assertEquals(20.0, expectedProperties["checkout_shipping_amount_usd"])
         assertEquals(5, expectedProperties["checkout_add_ons_count_total"])
         assertEquals(2, expectedProperties["checkout_add_ons_count_unique"])
@@ -1085,7 +1085,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val expectedProperties = this.propertiesTest.value
         assertEquals(30.0, expectedProperties["checkout_amount"])
         assertEquals("credit_card", expectedProperties["checkout_payment_type"])
-        assertEquals(50.0, expectedProperties["checkout_amount_total_usd"])
+        assertEquals(30.0, expectedProperties["checkout_amount_total_usd"])
         assertEquals(20.0, expectedProperties["checkout_shipping_amount"])
         assertEquals(20.0, expectedProperties["checkout_shipping_amount_usd"])
         assertEquals(6, expectedProperties["checkout_add_ons_count_total"])

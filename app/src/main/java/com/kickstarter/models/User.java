@@ -23,6 +23,7 @@ public abstract class User implements Parcelable, Relay {
   public abstract Avatar avatar();
   public abstract @Nullable Integer backedProjectsCount();
   public abstract @Nullable Integer createdProjectsCount();
+  public abstract @Nullable Integer draftProjectsCount();
   public abstract @Nullable Integer erroredBackingsCount();
   public abstract @Nullable Boolean facebookConnected();
   public abstract @Nullable Boolean filmNewsletter();
@@ -70,6 +71,7 @@ public abstract class User implements Parcelable, Relay {
     public abstract Builder avatar(Avatar __);
     public abstract Builder backedProjectsCount(Integer __);
     public abstract Builder createdProjectsCount(Integer __);
+    public abstract Builder draftProjectsCount(Integer __);
     public abstract Builder erroredBackingsCount(Integer __);
     public abstract Builder facebookConnected(Boolean __);
     public abstract Builder filmNewsletter(Boolean __);
@@ -157,6 +159,7 @@ public abstract class User implements Parcelable, Relay {
       Objects.equals(this.artsCultureNewsletter(), otherUser.artsCultureNewsletter()) &&
       Objects.equals(this.backedProjectsCount(), otherUser.backedProjectsCount()) &&
       Objects.equals(this.createdProjectsCount(), otherUser.createdProjectsCount()) &&
+      Objects.equals(this.draftProjectsCount(), otherUser.draftProjectsCount()) &&
       Objects.equals(this.name(), otherUser.name()) &&
       Objects.equals(this.avatar(), otherUser.avatar()) &&
       Objects.equals(this.createdProjectsCount(), otherUser.createdProjectsCount()) &&

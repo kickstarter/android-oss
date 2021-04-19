@@ -9,6 +9,7 @@ import com.kickstarter.libs.utils.RewardUtils.isTimeLimitedEnd
 import com.kickstarter.libs.utils.extensions.addOnsCost
 import com.kickstarter.libs.utils.extensions.bonus
 import com.kickstarter.libs.utils.extensions.rewardCost
+import com.kickstarter.libs.utils.extensions.round
 import com.kickstarter.libs.utils.extensions.shippingAmount
 import com.kickstarter.libs.utils.extensions.totalAmount
 import com.kickstarter.libs.utils.extensions.totalCountUnique
@@ -20,6 +21,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.Update
 import com.kickstarter.models.User
+import com.kickstarter.models.extensions.getCreatedAndDraftProjectsCount
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
@@ -33,17 +35,17 @@ object AnalyticEventsUtils {
     fun checkoutProperties(checkoutData: CheckoutData, pledgeData: PledgeData, prefix: String = "checkout_"): Map<String, Any> {
         val project = pledgeData.projectData().project()
         val properties = HashMap<String, Any>().apply {
-            put("amount", checkoutData.amount())
+            put("amount", checkoutData.amount().round())
             checkoutData.id()?.let { put("id", it.toString()) }
             put("payment_type", checkoutData.paymentType().rawValue().toLowerCase(Locale.getDefault()))
-            put("amount_total_usd", checkoutData.totalAmount(project.staticUsdRate()))
+            put("amount_total_usd", checkoutData.totalAmount(project.staticUsdRate()).round())
             put("shipping_amount", checkoutData.shippingAmount())
-            put("shipping_amount_usd", checkoutData.shippingAmount(project.staticUsdRate()))
+            put("shipping_amount_usd", checkoutData.shippingAmount(project.staticUsdRate()).round())
             put("bonus_amount", checkoutData.bonus())
-            put("bonus_amount_usd", checkoutData.bonus(project.staticUsdRate()))
+            put("bonus_amount_usd", checkoutData.bonus(project.staticUsdRate()).round())
             put("add_ons_count_total", pledgeData.totalQuantity())
             put("add_ons_count_unique", pledgeData.totalCountUnique())
-            put("add_ons_minimum_usd", pledgeData.addOnsCost(project.staticUsdRate()))
+            put("add_ons_minimum_usd", pledgeData.addOnsCost(project.staticUsdRate()).round())
         }
 
         return MapUtils.prefixKeys(properties, prefix)
@@ -52,18 +54,17 @@ object AnalyticEventsUtils {
     @JvmOverloads
     fun checkoutProperties(checkoutData: CheckoutData, project: Project, addOns: List<Reward>?, prefix: String = "checkout_"): Map<String, Any> {
         val properties = HashMap<String, Any>().apply {
-            put("amount", checkoutData.amount())
-            put("checkout_amount", checkoutData.totalAmount(project.staticUsdRate()))
+            put("amount", checkoutData.amount().round())
             checkoutData.id()?.let { put("id", it.toString()) }
             put("payment_type", checkoutData.paymentType().rawValue().toLowerCase(Locale.getDefault()))
-            put("amount_total_usd", checkoutData.totalAmount(project.staticUsdRate()))
+            put("amount_total_usd", checkoutData.totalAmount(project.staticUsdRate()).round())
             put("shipping_amount", checkoutData.shippingAmount())
-            put("shipping_amount_usd", checkoutData.shippingAmount(project.staticUsdRate()))
+            put("shipping_amount_usd", checkoutData.shippingAmount(project.staticUsdRate()).round())
             put("bonus_amount", checkoutData.bonus())
-            put("bonus_amount_usd", checkoutData.bonus(project.staticUsdRate()))
+            put("bonus_amount_usd", checkoutData.bonus(project.staticUsdRate()).round())
             put("add_ons_count_total", totalQuantity(addOns))
             put("add_ons_count_unique", totalCountUnique(addOns))
-            put("add_ons_minimum_usd", addOnsCost(project.staticUsdRate(), addOns))
+            put("add_ons_minimum_usd", addOnsCost(project.staticUsdRate(), addOns).round())
         }
 
         return MapUtils.prefixKeys(properties, prefix)
@@ -142,8 +143,8 @@ object AnalyticEventsUtils {
     fun userProperties(user: User, prefix: String = "user_"): Map<String, Any> {
         val properties = HashMap<String, Any>()
         properties["backed_projects_count"] = user.backedProjectsCount() ?: 0
-        properties["launched_projects_count"] = user.memberProjectsCount() ?: 0
-        properties["created_projects_count"] = user.createdProjectsCount() ?: 0
+        properties["launched_projects_count"] = user.createdProjectsCount() ?: 0
+        properties["created_projects_count"] = user.getCreatedAndDraftProjectsCount()
         properties["facebook_connected"] = user.facebookConnected() ?: false
         properties["watched_projects_count"] = user.starredProjectsCount() ?: 0
         properties["uid"] = user.id().toString()
@@ -185,7 +186,7 @@ object AnalyticEventsUtils {
             put("is_limited_quantity", reward.limit() != null)
             put("minimum", reward.minimum())
             put("shipping_enabled", isShippable(reward))
-            put("minimum_usd", pledgeData.rewardCost(project.staticUsdRate()))
+            put("minimum_usd", pledgeData.rewardCost(project.staticUsdRate()).round())
             reward.shippingPreference()?.let { put("shipping_preference", it) }
             reward.title()?.let { put("title", it) }
         }

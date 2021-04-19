@@ -193,6 +193,45 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testSearchResultPageViewed_Properties() {
+        val user = user()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedId.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        val params = DiscoveryParams
+            .builder()
+            .term("test")
+            .sort(DiscoveryParams.Sort.POPULAR)
+            .staffPicks(true)
+            .build()
+
+        segment.trackSearchResultPageViewed(params, 200, DiscoveryParams.Sort.POPULAR)
+
+        assertSessionProperties(user)
+        assertContextProperties()
+        assertUserProperties(false)
+
+        val expectedProperties = propertiesTest.value
+        assertEquals("test", expectedProperties["discover_search_term"])
+        assertEquals(200, expectedProperties["discover_search_results_count"])
+        assertEquals(false, expectedProperties["discover_everything"])
+        assertEquals(true, expectedProperties["discover_pwl"])
+        assertEquals(false, expectedProperties["discover_recommended"])
+        assertEquals("recommended_popular", expectedProperties["discover_ref_tag"])
+        assertEquals(false, expectedProperties["discover_social"])
+        assertEquals("popular", expectedProperties["discover_sort"])
+        assertNull(expectedProperties["discover_subcategory_id"])
+        assertNull(expectedProperties["discover_subcategory_name"])
+        assertEquals(null, expectedProperties["discover_tag"])
+        assertEquals(false, expectedProperties["discover_watched"])
+
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
+
+    @Test
     fun testDiscoveryProperties_NoCategory() {
         val user = user()
         val client = client(user)
@@ -507,7 +546,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         assertEquals(17, expectedProperties["user_backed_projects_count"])
         assertEquals(false, expectedProperties["user_is_admin"])
-        assertEquals(10, expectedProperties["user_launched_projects_count"])
+        assertEquals(5, expectedProperties["user_launched_projects_count"])
         assertEquals("3", expectedProperties["user_uid"])
         assertEquals("US", expectedProperties["user_country"])
 
@@ -673,7 +712,7 @@ class SegmentTest : KSRobolectricTestCase() {
         // - we test asserting this properties all methods in SharedFunctions.kt
         assertEquals(10.0, expectedProperties["checkout_amount"])
         assertEquals("credit_card", expectedProperties["checkout_payment_type"])
-        assertEquals(30.0, expectedProperties["checkout_amount_total_usd"])
+        assertEquals(10.0, expectedProperties["checkout_amount_total_usd"])
         assertEquals(20.0, expectedProperties["checkout_shipping_amount_usd"])
         assertEquals(5, expectedProperties["checkout_add_ons_count_total"])
         assertEquals(2, expectedProperties["checkout_add_ons_count_unique"])
@@ -998,6 +1037,26 @@ class SegmentTest : KSRobolectricTestCase() {
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
+    @Test
+    fun testLoginOrSignUpPageViewed_Properties() {
+
+        val client = client(null)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+
+        val segment = AnalyticEvents(listOf(client))
+        segment.trackLoginOrSignUpPagedViewed()
+
+        assertSessionProperties(null)
+        assertContextProperties()
+
+        val properties = this.propertiesTest.value
+        assertNull(properties["user_uid"])
+        assertEquals(EventContextValues.ContextPageName.LOGIN_SIGN_UP.contextName, properties[CONTEXT_PAGE.contextName])
+
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
+
     private fun client(user: User?) = MockTrackingClient(
         user?.let { MockCurrentUser(it) }
             ?: MockCurrentUser(),
@@ -1024,7 +1083,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val expectedProperties = this.propertiesTest.value
         assertEquals(30.0, expectedProperties["checkout_amount"])
         assertEquals("credit_card", expectedProperties["checkout_payment_type"])
-        assertEquals(50.0, expectedProperties["checkout_amount_total_usd"])
+        assertEquals(30.0, expectedProperties["checkout_amount_total_usd"])
         assertEquals(20.0, expectedProperties["checkout_shipping_amount"])
         assertEquals(20.0, expectedProperties["checkout_shipping_amount_usd"])
         assertEquals(0, expectedProperties["checkout_add_ons_count_total"])
@@ -1143,8 +1202,8 @@ class SegmentTest : KSRobolectricTestCase() {
     private fun assertUserProperties(isAdmin: Boolean) {
         val expectedProperties = this.propertiesTest.value
         assertEquals(3, expectedProperties["user_backed_projects_count"])
-        assertEquals(5, expectedProperties["user_launched_projects_count"])
-        assertEquals(6, expectedProperties["user_created_projects_count"])
+        assertEquals(6, expectedProperties["user_launched_projects_count"])
+        assertEquals(9, expectedProperties["user_created_projects_count"])
         assertEquals(true, expectedProperties["user_facebook_connected"])
         assertEquals(10, expectedProperties["user_watched_projects_count"])
         assertEquals("15", expectedProperties["user_uid"])
@@ -1205,7 +1264,7 @@ class SegmentTest : KSRobolectricTestCase() {
             .id(15)
             .backedProjectsCount(3)
             .memberProjectsCount(5)
-            .createdProjectsCount(2)
+            .draftProjectsCount(3)
             .facebookConnected(true)
             .createdProjectsCount(6)
             .location(LocationFactory.nigeria())

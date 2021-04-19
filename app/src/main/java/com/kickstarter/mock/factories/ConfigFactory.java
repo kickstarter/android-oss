@@ -74,6 +74,12 @@ public final class ConfigFactory {
       .build();
   }
 
+  public static @NonNull Config configWithFeatureDisabled(final @NonNull String featureKey) {
+    return config().toBuilder()
+            .features(Collections.singletonMap(featureKey, false))
+            .build();
+  }
+
   public static @NonNull Config configWithFeaturesEnabled(final @NonNull Map<String, Boolean> features) {
     return config().toBuilder()
       .features(features)

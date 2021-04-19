@@ -21,12 +21,13 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
+
 import rx.Observable;
 import rx.Scheduler;
-import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 
 public interface SearchViewModel {
@@ -58,6 +59,8 @@ public interface SearchViewModel {
 
   final class ViewModel extends ActivityViewModel<SearchActivity> implements Inputs, Outputs {
 
+    private final PublishSubject<DiscoverEnvelope> discoverEnvelope = PublishSubject.create();
+
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
@@ -82,7 +85,11 @@ public interface SearchViewModel {
         ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
           .nextPage(this.nextPage)
           .startOverWith(params)
-          .envelopeToListOfData(DiscoverEnvelope::projects)
+          .envelopeToListOfData(envelope -> {
+              this.discoverEnvelope.onNext(envelope);
+              return envelope.projects();
+              }
+          )
           .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
           .clearWhenStartingOver(true)
           .concater(ListUtils::concatDistinct)
@@ -135,12 +142,17 @@ public interface SearchViewModel {
         });
 
       params
-        .compose(takePairWhen(pageCount))
-        .filter(paramsAndPageCount -> paramsAndPageCount.first.sort() != defaultSort && IntegerUtils.intValueOrZero(paramsAndPageCount.second) == 1)
-        .map(paramsAndPageCount -> paramsAndPageCount.first)
-        .observeOn(Schedulers.io())
-        .compose(bindToLifecycle())
-        .subscribe(this.lake::trackSearchResultsLoaded);
+          .compose(takePairWhen(this.discoverEnvelope))
+          .compose(combineLatestPair(pageCount))
+          .compose(bindToLifecycle())
+          .filter(it -> ObjectUtils.isNotNull(it.first.first.term())
+                  && StringExt.isPresent(it.first.first.term())
+                  && it.first.first.sort() != defaultSort
+                  && IntegerUtils.intValueOrZero(it.second) == 1)
+          .distinct()
+          .subscribe(it -> {
+            this.lake.trackSearchResultPageViewed(it.first.first, it.first.second.stats().count(), defaultSort);
+          });
 
       this.lake.trackSearchButtonClicked();
       this.lake.trackSearchCTAButtonClicked(defaultParams);

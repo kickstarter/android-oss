@@ -221,7 +221,7 @@ object AnalyticEventsUtils {
             project.deadline()?.let { deadline ->
                 put("deadline", deadline)
             }
-            put("duration", ProjectUtils.timeInSecondsOfDuration(project).toFloat().roundToInt())
+            put("duration", ProjectUtils.timeInDaysOfDuration(project).toFloat().roundToInt())
             put("goal", project.goal())
             put("goal_usd", project.goal() * project.staticUsdRate())
             put("has_video", project.video() != null)
@@ -234,7 +234,7 @@ object AnalyticEventsUtils {
                 put("location", location.name())
             }
             put("name", project.name())
-            put("percent_raised", project.percentageFunded() / 100.0f)
+            put("percent_raised", (project.percentageFunded()).toInt())
             put("pid", project.id().toString())
             put("prelaunch_activated", BooleanUtils.isTrue(project.prelaunchActivated()))
             project.rewards()?.let { rewards ->

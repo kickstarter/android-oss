@@ -289,7 +289,6 @@ class SegmentTest : KSRobolectricTestCase() {
         val expectedProperties = propertiesTest.value
         assertEquals(EventContextValues.CtaContextName.DISCOVER.contextName, expectedProperties[CONTEXT_CTA.contextName])
         assertEquals(ACTIVITY_FEED.contextName, expectedProperties[CONTEXT_PAGE.contextName])
-        assertEquals(EventContextValues.LocationContextName.GLOBAL_NAV.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
 
         this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }

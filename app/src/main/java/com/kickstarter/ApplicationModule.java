@@ -40,6 +40,8 @@ import com.kickstarter.libs.OptimizelyExperimentsClient;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.SegmentTrackingClient;
 import com.kickstarter.libs.TrackingClientType;
+import com.kickstarter.libs.braze.BrazeClient;
+import com.kickstarter.libs.braze.RemotePushClientType;
 import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.DateTimeAdapter;
 import com.kickstarter.libs.graphql.Iso8601DateTimeAdapter;
@@ -85,6 +87,7 @@ import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.ui.SharedPreferenceKey;
 import com.optimizely.ab.android.sdk.OptimizelyManager;
 import com.segment.analytics.Analytics;
+import com.segment.analytics.android.integrations.appboy.AppboyIntegration;
 import com.stripe.android.Stripe;
 
 import org.joda.time.DateTime;
@@ -93,6 +96,7 @@ import java.net.CookieManager;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.inject.Singleton;
 
 import androidx.annotation.NonNull;
@@ -179,6 +183,7 @@ public class ApplicationModule {
   @Singleton
   static Analytics provideSegment(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
     String apiKey = "";
+
     Analytics segmentClient = null;
 
     if (build.isRelease() && Build.isExternal()) {
@@ -190,6 +195,7 @@ public class ApplicationModule {
 
     if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
       segmentClient = new Analytics.Builder(context, apiKey)
+              .use(AppboyIntegration.FACTORY)
               .trackApplicationLifecycleEvents()
               .build();
 
@@ -197,6 +203,13 @@ public class ApplicationModule {
     }
 
     return segmentClient;
+  }
+
+  @Provides
+  @Nonnull
+  @Singleton
+  static RemotePushClientType provideBrazeClient(final @NonNull Build build, final @ApplicationContext @NonNull Context context, final @NonNull CurrentConfigType currentConfig) {
+    return new BrazeClient(context, build, currentConfig);
   }
 
   @Provides
@@ -402,6 +415,13 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
+  @NonNull
+  static  StringPreferenceType providesFeaturesFlagsPreference(final @NonNull SharedPreferences sharedPreferences) {
+    return new StringPreference(sharedPreferences, SharedPreferenceKey.FEATURE_FLAG);
+  }
+
+  @Provides
+  @Singleton
   @ActivitySamplePreference
   @NonNull
   static IntPreferenceType provideActivitySamplePreference(final @NonNull SharedPreferences sharedPreferences) {
@@ -504,8 +524,9 @@ public class ApplicationModule {
   @Singleton
   @NonNull
   static DeviceRegistrarType provideDeviceRegistrar(final @NonNull PlayServicesCapability playServicesCapability,
-                                                    final @ApplicationContext @NonNull Context context) {
-    return new DeviceRegistrar(playServicesCapability, context);
+                                                    final @ApplicationContext @NonNull Context context,
+                                                    final @NonNull RemotePushClientType brazeClient) {
+    return new DeviceRegistrar(playServicesCapability, context, brazeClient);
   }
 
   @Provides

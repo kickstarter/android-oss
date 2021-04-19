@@ -124,7 +124,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals("recommended_popular", expectedProperties["discover_ref_tag"])
         assertEquals(null, expectedProperties["discover_search_term"])
         assertEquals(false, expectedProperties["discover_social"])
-        assertEquals("popularity", expectedProperties["discover_sort"])
+        assertEquals("popular", expectedProperties["discover_sort"])
         assertNull(expectedProperties["discover_subcategory_id"])
         assertNull(expectedProperties["discover_subcategory_name"])
         assertEquals(null, expectedProperties["discover_tag"])
@@ -491,7 +491,7 @@ class LakeTest : KSRobolectricTestCase() {
         val expectedProperties = this.propertiesTest.value
         assertEquals(30.0, expectedProperties["checkout_amount"])
         assertEquals("credit_card", expectedProperties["checkout_payment_type"])
-        assertEquals(50.0, expectedProperties["checkout_amount_total_usd"])
+        assertEquals(30.0, expectedProperties["checkout_amount_total_usd"])
         assertEquals(20.0, expectedProperties["checkout_shipping_amount"])
     }
 

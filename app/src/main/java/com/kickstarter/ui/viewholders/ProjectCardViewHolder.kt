@@ -35,6 +35,7 @@ class ProjectCardViewHolder(
     interface Delegate {
         fun projectCardViewHolderClicked(project: Project?)
     }
+
     init {
         viewModel.outputs.backersCountTextViewText()
             .compose(bindToLifecycle())
@@ -45,142 +46,177 @@ class ProjectCardViewHolder(
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe(ViewUtils.setGone(binding.projectMetadataView.backingGroup))
+
         viewModel.outputs.deadlineCountdownText()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { binding.projectCardStats.deadlineCountdown.text = it }
+
         viewModel.outputs.featuredViewGroupIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe(ViewUtils.setGone(binding.projectMetadataView.featuredGroup))
+
         viewModel.outputs.friendAvatar2IsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { ViewUtils.setGone(binding.friendRowBackingGroup.friendBackingAvatar2, it) }
+
         viewModel.outputs.friendAvatar3IsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { ViewUtils.setGone(binding.friendRowBackingGroup.friendBackingAvatar3, it) }
+
         viewModel.outputs.friendAvatarUrl1()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { setFriendAvatarUrl(it, binding.friendRowBackingGroup.friendBackingAvatar2) }
+
         viewModel.outputs.friendAvatarUrl2()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { setFriendAvatarUrl(it, binding.friendRowBackingGroup.friendBackingAvatar2) }
+
         viewModel.outputs.friendAvatarUrl3()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { setFriendAvatarUrl(it, binding.friendRowBackingGroup.friendBackingAvatar3) }
+
         viewModel.outputs.friendBackingViewIsHidden()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe(ViewUtils.setGone(binding.friendRowBackingGroup.friendBackingGroup))
+
         viewModel.outputs.friendsForNamepile()
             .compose(bindToLifecycle())
             .compose<List<User?>>(Transformers.observeForUI())
             .subscribe { binding.friendRowBackingGroup.friendBackingMessage.text = SocialUtils.projectCardFriendNamepile(context(), it, ksString) }
+
         viewModel.outputs.fundingUnsuccessfulViewGroupIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe(ViewUtils.setGone(binding.projectStateViewGroup.fundingUnsuccessfulViewGroup))
+
         viewModel.outputs.imageIsInvisible()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe(ViewUtils.setInvisible(binding.projectCardPhoto.photo))
+
         viewModel.outputs.locationName()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { binding.projectCardTags.locationTextView.text = it }
+
         viewModel.outputs.locationContainerIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe(ViewUtils.setGone(binding.projectCardTags.locationContainer))
+
         viewModel.outputs.nameAndBlurbText()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { setStyledNameAndBlurb(it) }
+
         viewModel.outputs.notifyDelegateOfProjectClick()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { delegate.projectCardViewHolderClicked(it) }
+
         viewModel.outputs.percentageFundedTextViewText()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { binding.projectCardStats.percent.text = it }
+
         viewModel.outputs.percentageFundedForProgressBar()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { binding.percentageFunded.progress = it }
+
         viewModel.outputs.photoUrl()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { resizeProjectImage(it) }
+
         viewModel.outputs.projectCanceledAt()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { setCanceledTextView(it) }
+
         viewModel.outputs.projectCardStatsViewGroupIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe(ViewUtils.setGone(binding.projectCardStats.projectCardStatsViewGroup))
+
         viewModel.outputs.projectFailedAt()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { setFailedAtTextView(it) }
+
         viewModel.outputs.projectForDeadlineCountdownDetail()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { setDeadlineCountdownText(it) }
+
         viewModel.outputs.projectStateViewGroupIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe(ViewUtils.setGone(binding.projectStateViewGroup.projectStateViewGroup))
+
         viewModel.outputs.projectSubcategoryName()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { setSubcategoryTextView(it) }
+
         viewModel.outputs.projectSubcategoryIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe(ViewUtils.setGone(binding.projectCardTags.subcategoryContainer))
+
         viewModel.outputs.projectSuccessfulAt()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { setSuccessfullyFundedDateTextView(it) }
+
         viewModel.outputs.projectSuspendedAt()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { setSuspendedAtTextView(it) }
+
         viewModel.outputs.projectTagContainerIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe(ViewUtils.setGone(binding.projectCardTags.projectTags))
+
         viewModel.outputs.projectWeLoveIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe(ViewUtils.setGone(binding.projectCardTags.projectWeLoveContainer))
+
         viewModel.outputs.rootCategoryNameForFeatured()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { binding.projectMetadataView.featured.text = ksString.format(context().getString(R.string.discovery_baseball_card_metadata_featured_project), "category_name", it) }
+
         viewModel.outputs.metadataViewGroupBackgroundDrawable()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { binding.projectMetadataView.projectMetadataViewGroup.background = ContextCompat.getDrawable(context(), it) }
+
         viewModel.outputs.metadataViewGroupIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe(ViewUtils.setGone(binding.projectMetadataView.projectMetadataViewGroup))
+
         viewModel.outputs.savedViewGroupIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe(ViewUtils.setGone(binding.projectMetadataView.savedViewGroup))
+
         viewModel.outputs.fundingSuccessfulViewGroupIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe(ViewUtils.setGone(binding.projectStateViewGroup.fundingSuccessfulViewGroup))
+
         viewModel.outputs.setDefaultTopPadding()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())

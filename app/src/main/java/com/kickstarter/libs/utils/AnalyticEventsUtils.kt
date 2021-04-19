@@ -35,10 +35,10 @@ object AnalyticEventsUtils {
     fun checkoutProperties(checkoutData: CheckoutData, pledgeData: PledgeData, prefix: String = "checkout_"): Map<String, Any> {
         val project = pledgeData.projectData().project()
         val properties = HashMap<String, Any>().apply {
-            put("amount", checkoutData.amount())
+            put("amount", checkoutData.amount().round())
             checkoutData.id()?.let { put("id", it.toString()) }
             put("payment_type", checkoutData.paymentType().rawValue().toLowerCase(Locale.getDefault()))
-            put("amount_total_usd", checkoutData.totalAmount(project.staticUsdRate()))
+            put("amount_total_usd", checkoutData.totalAmount(project.staticUsdRate()).round())
             put("shipping_amount", checkoutData.shippingAmount())
             put("shipping_amount_usd", checkoutData.shippingAmount(project.staticUsdRate()).round())
             put("bonus_amount", checkoutData.bonus())
@@ -54,11 +54,10 @@ object AnalyticEventsUtils {
     @JvmOverloads
     fun checkoutProperties(checkoutData: CheckoutData, project: Project, addOns: List<Reward>?, prefix: String = "checkout_"): Map<String, Any> {
         val properties = HashMap<String, Any>().apply {
-            put("amount", checkoutData.amount())
-            put("checkout_amount", checkoutData.totalAmount(project.staticUsdRate()))
+            put("amount", checkoutData.amount().round())
             checkoutData.id()?.let { put("id", it.toString()) }
             put("payment_type", checkoutData.paymentType().rawValue().toLowerCase(Locale.getDefault()))
-            put("amount_total_usd", checkoutData.totalAmount(project.staticUsdRate()))
+            put("amount_total_usd", checkoutData.totalAmount(project.staticUsdRate()).round())
             put("shipping_amount", checkoutData.shippingAmount())
             put("shipping_amount_usd", checkoutData.shippingAmount(project.staticUsdRate()).round())
             put("bonus_amount", checkoutData.bonus())

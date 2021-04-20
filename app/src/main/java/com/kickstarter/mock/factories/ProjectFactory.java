@@ -58,6 +58,7 @@ public final class ProjectFactory {
       .staffPick(false)
       .state(Project.STATE_LIVE)
       .staticUsdRate(1.0f)
+      .usdExchangeRate(1.0f)
       .slug(slug)
       .updatedAt(DateTime.now())
       .urls(Project.Urls.builder().web(web).build())
@@ -378,6 +379,7 @@ public final class ProjectFactory {
       .currencySymbol("$")
       .currency("CAD")
       .staticUsdRate(0.75f)
+      .usdExchangeRate(0.75f)
       .fxRate(0.75f)
       .build();
   }
@@ -394,6 +396,7 @@ public final class ProjectFactory {
       .currencySymbol("$")
       .currency("CAD")
       .staticUsdRate(0.75f)
+      .usdExchangeRate(0.75f)
       .fxRate(.75f)
       .build();
   }
@@ -412,6 +415,7 @@ public final class ProjectFactory {
       .currency("MXN")
       .location(LocationFactory.mexico())
       .staticUsdRate(0.75f)
+      .usdExchangeRate(0.75f)
       .fxRate(0.75f)
       .build();
   }
@@ -428,6 +432,7 @@ public final class ProjectFactory {
       .currencySymbol("£")
       .currency("GBP")
       .staticUsdRate(1.5f)
+      .usdExchangeRate(0.75f)
       .fxRate(1.5f)
       .build();
   }

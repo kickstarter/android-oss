@@ -7,7 +7,9 @@ import com.kickstarter.libs.KoalaContext.Message
 import com.kickstarter.libs.KoalaContext.Share
 import com.kickstarter.libs.KoalaContext.Update
 import com.kickstarter.libs.KoalaEvent.ProjectAction
-import com.kickstarter.libs.utils.*
+import com.kickstarter.libs.utils.AnalyticEventsUtils
+import com.kickstarter.libs.utils.BooleanUtils
+import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
@@ -48,6 +50,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.WATCH_PROJEC
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.CATEGORY_NAME
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.PWL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RECOMMENDED
+import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RESULTS
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SOCIAL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SUBCATEGORY_NAME
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.WATCHED
@@ -60,6 +63,8 @@ import com.kickstarter.libs.utils.EventName.CTA_CLICKED
 import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
+import com.kickstarter.libs.utils.ExperimentData
+import com.kickstarter.libs.utils.checkoutProperties
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
@@ -782,7 +787,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
             BooleanUtils.isTrue(discoveryParams.category()?.isRoot) ||
                 discoveryParams.category() != null ||
                 BooleanUtils.isTrue(discoveryParams.staffPicks()) ||
-                BooleanUtils.isTrue(discoveryParams.isAllProjects) -> EventContextValues.ContextTypeName.RESULTS.contextName
+                BooleanUtils.isTrue(discoveryParams.isAllProjects) -> RESULTS.contextName
             BooleanUtils.isTrue(discoveryParams.recommended()) -> RECOMMENDED.contextName
             else -> ""
         }

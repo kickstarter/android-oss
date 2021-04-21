@@ -752,7 +752,11 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     /**
-     * Tracks a discover project clicks on the search result.
+     * Tracks a discover project clicks on the search result
+     * @param discoveryParams: The search discovery parameters.
+     * @param projectData: selected project from serach result
+     * @param count: search result count
+     * @param sort: DiscoveryParams.Sort type
      */
     fun trackDiscoverSearchResultProjectCATClicked(
         discoveryParams: DiscoveryParams,

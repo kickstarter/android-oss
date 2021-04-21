@@ -3,9 +3,9 @@ package com.kickstarter.libs
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.libs.utils.ContextPropertyKeyName
-import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
-import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
+import com.kickstarter.libs.utils.ContextPropertyKeyName.*
 import com.kickstarter.libs.utils.EventContextValues
+import com.kickstarter.libs.utils.EventContextValues.*
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.MANAGE_PLEDGE
@@ -188,8 +188,8 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val expectedProperties = propertiesTest.value
 
-        assertEquals("magic", expectedProperties[EventContextValues.CtaContextName.DISCOVER_SORT.contextName])
-        assertEquals(EventContextValues.CtaContextName.DISCOVER.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+        assertEquals("magic", expectedProperties[CtaContextName.DISCOVER_SORT.contextName])
+        assertEquals(CtaContextName.DISCOVER.contextName, expectedProperties[CONTEXT_PAGE.contextName])
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
@@ -231,6 +231,11 @@ class SegmentTest : KSRobolectricTestCase() {
         assertNull(expectedProperties["discover_subcategory_name"])
         assertEquals(null, expectedProperties["discover_tag"])
         assertEquals(false, expectedProperties["discover_watched"])
+
+        assertEquals(ContextPageName.PROJECT.contextName, expectedProperties[CONTEXT_CTA.contextName])
+        assertEquals(CtaContextName.SEARCH.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+        assertEquals(LocationContextName.SEARCH_RESULTS.contextName, expectedProperties[CONTEXT_LOCATION.contextName])
+        assertEquals(ContextTypeName.RESULTS.contextName, expectedProperties[CONTEXT_TYPE.contextName])
 
         this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
@@ -329,9 +334,9 @@ class SegmentTest : KSRobolectricTestCase() {
         assertUserProperties(false)
 
         val expectedProperties = propertiesTest.value
-        assertEquals(EventContextValues.CtaContextName.DISCOVER.contextName, expectedProperties[CONTEXT_CTA.contextName])
+        assertEquals(CtaContextName.DISCOVER.contextName, expectedProperties[CONTEXT_CTA.contextName])
         assertEquals(ACTIVITY_FEED.contextName, expectedProperties[CONTEXT_PAGE.contextName])
-        assertEquals(EventContextValues.LocationContextName.GLOBAL_NAV.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
+        assertEquals(LocationContextName.GLOBAL_NAV.contextName, expectedProperties[CONTEXT_LOCATION.contextName])
 
         this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
@@ -412,8 +417,8 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(null, expectedProperties["discover_tag"])
         assertEquals(false, expectedProperties["discover_watched"])
 
-        assertEquals(EventContextValues.CtaContextName.SEARCH.contextName, expectedProperties[CONTEXT_CTA.contextName])
-        assertEquals(EventContextValues.LocationContextName.GLOBAL_NAV.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
+        assertEquals(CtaContextName.SEARCH.contextName, expectedProperties[CONTEXT_CTA.contextName])
+        assertEquals(LocationContextName.GLOBAL_NAV.contextName, expectedProperties[CONTEXT_LOCATION.contextName])
 
         this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
@@ -1034,10 +1039,10 @@ class SegmentTest : KSRobolectricTestCase() {
         assertUserProperties(false)
         assertSessionProperties(user)
 
-        assertEquals(EventContextValues.LocationContextName.DISCOVER_ADVANCED.contextName, properties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
-        assertEquals(EventContextValues.CtaContextName.DISCOVER.contextName, properties[CONTEXT_PAGE.contextName])
-        assertEquals(EventContextValues.CtaContextName.DISCOVER_SORT.contextName, properties[CONTEXT_CTA.contextName])
-        assertEquals("ending_soon", properties[ContextPropertyKeyName.CONTEXT_TYPE.contextName])
+        assertEquals(LocationContextName.DISCOVER_ADVANCED.contextName, properties[CONTEXT_LOCATION.contextName])
+        assertEquals(CtaContextName.DISCOVER.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(CtaContextName.DISCOVER_SORT.contextName, properties[CONTEXT_CTA.contextName])
+        assertEquals("ending_soon", properties[CONTEXT_TYPE.contextName])
         assertEquals("popular", properties["discover_sort"])
     }
 
@@ -1055,8 +1060,8 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val properties = this.propertiesTest.value
         assertNull(properties["user_uid"])
-        assertEquals(EventContextValues.ContextPageName.LOGIN_SIGN_UP.contextName, properties[CONTEXT_PAGE.contextName])
-        assertEquals(EventContextValues.CtaContextName.SIGN_UP_INITIATE.contextName, properties[CONTEXT_CTA.contextName])
+        assertEquals(ContextPageName.LOGIN_SIGN_UP.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(CtaContextName.SIGN_UP_INITIATE.contextName, properties[CONTEXT_CTA.contextName])
 
         this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
@@ -1076,7 +1081,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val properties = this.propertiesTest.value
         assertNull(properties["user_uid"])
-        assertEquals(EventContextValues.ContextPageName.SIGN_UP.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(ContextPageName.SIGN_UP.contextName, properties[CONTEXT_PAGE.contextName])
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
@@ -1096,7 +1101,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val properties = this.propertiesTest.value
         assertNull(properties["user_uid"])
-        assertEquals(EventContextValues.ContextPageName.LOGIN_SIGN_UP.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(ContextPageName.LOGIN_SIGN_UP.contextName, properties[CONTEXT_PAGE.contextName])
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }

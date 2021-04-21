@@ -119,7 +119,8 @@ class EventContextValues {
         RECOMMENDED("recommended"),
         SOCIAL("social"),
         SUBCATEGORY_NAME("subcategory_name"),
-        WATCHED("watched")
+        WATCHED("watched"),
+        RESULTS("results")
     }
 
     /**

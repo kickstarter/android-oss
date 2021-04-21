@@ -49,6 +49,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.WATCH_PROJEC
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.CATEGORY_NAME
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.PWL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RECOMMENDED
+import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RESULTS
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SOCIAL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SUBCATEGORY_NAME
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.WATCHED
@@ -745,6 +746,33 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
             }
         } ?: ""
         props.putAll(AnalyticEventsUtils.discoveryParamsProperties(discoverParams, currentSort))
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client when a project in the discovery is clicked
+     * sending sort and filter properties.
+     *
+     * @param discoveryParams: The discovery parameters.
+     * @param projectData: The projectData parameters.
+     */
+    fun trackDiscoverProjectCtaClicked(discoveryParams: DiscoveryParams, projectData: ProjectData) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to PROJECT.contextName)
+        props[CONTEXT_LOCATION.contextName] = DISCOVER_ADVANCED.contextName
+        props[CONTEXT_PAGE.contextName] = DISCOVER.contextName
+        props[CONTEXT_TYPE.contextName] = when {
+            BooleanUtils.isTrue(discoveryParams.category()?.isRoot) ||
+                discoveryParams.category() != null ||
+                BooleanUtils.isTrue(discoveryParams.staffPicks()) ||
+                BooleanUtils.isTrue(discoveryParams.isAllProjects) -> RESULTS.contextName
+            BooleanUtils.isTrue(discoveryParams.recommended()) -> RECOMMENDED.contextName
+            else -> ""
+        }
+
+        props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
+        props.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
+        props.putAll(AnalyticEventsUtils.discoveryParamsProperties(discoveryParams))
+
         client.track(CTA_CLICKED.eventName, props)
     }
 

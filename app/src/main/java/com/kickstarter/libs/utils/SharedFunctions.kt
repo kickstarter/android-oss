@@ -1,7 +1,10 @@
 package com.kickstarter.libs.utils
 
+import com.kickstarter.libs.RefTag
+import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.CheckoutData
+import com.kickstarter.ui.data.ProjectData
 import type.CreditCardPaymentType
 
 /**
@@ -59,5 +62,14 @@ fun checkoutProperties(
         .paymentType(paymentType)
         .bonusAmount(bonus)
         .shippingAmount(shippingAmount)
+        .build()
+}
+
+fun projectData(refTagFromIntent: RefTag?, refTagFromCookie: RefTag?, project: Project): ProjectData {
+    return ProjectData
+        .builder()
+        .refTagFromIntent(refTagFromIntent)
+        .refTagFromCookie(refTagFromCookie)
+        .project(project)
         .build()
 }

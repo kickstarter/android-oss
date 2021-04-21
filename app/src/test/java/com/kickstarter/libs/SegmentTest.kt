@@ -194,6 +194,88 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testDiscoveryProjectCtaClickedProperties_AllProjects() {
+        val user = user()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedId.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        val project = project().toBuilder().build()
+
+        val params = DiscoveryParams
+            .builder()
+            .sort(DiscoveryParams.Sort.MAGIC)
+            .build()
+
+        segment.trackDiscoverProjectCtaClicked(params, ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()))
+
+        assertSessionProperties(user)
+        assertContextProperties()
+        assertDiscoverProperties()
+        assertUserProperties(false)
+        assertProjectProperties(project)
+
+        val expectedProperties = propertiesTest.value
+
+        assertEquals(EventContextValues.ContextPageName.PROJECT.contextName, expectedProperties[CONTEXT_CTA.contextName])
+        assertEquals(EventContextValues.LocationContextName.DISCOVER_ADVANCED.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
+        assertEquals(EventContextValues.DiscoveryContextType.RESULTS.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_TYPE.contextName])
+        assertEquals(EventContextValues.CtaContextName.DISCOVER.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+    }
+
+    @Test
+    fun testDiscoveryProjectCtaClickedProperties_Recommended() {
+        val user = user()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedId.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        val project = project().toBuilder().build()
+
+        val params = DiscoveryParams
+            .builder()
+            .recommended(true)
+            .sort(DiscoveryParams.Sort.MAGIC)
+            .build()
+
+        segment.trackDiscoverProjectCtaClicked(params, ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()))
+
+        assertSessionProperties(user)
+        assertContextProperties()
+
+        assertUserProperties(false)
+        assertProjectProperties(project)
+
+        val expectedProperties = propertiesTest.value
+
+        // test custom discover properties
+        assertNull(expectedProperties["discover_category_id"])
+        assertNull(expectedProperties["discover_category_name"])
+        assertEquals(false, expectedProperties["discover_everything"])
+        assertEquals(false, expectedProperties["discover_pwl"])
+        assertEquals(true, expectedProperties["discover_recommended"])
+        assertEquals("discovery", expectedProperties["discover_ref_tag"])
+        assertEquals(null, expectedProperties["discover_search_term"])
+        assertEquals(false, expectedProperties["discover_social"])
+        assertEquals("magic", expectedProperties["discover_sort"])
+        assertNull(expectedProperties["discover_subcategory_id"])
+        assertNull(expectedProperties["discover_subcategory_name"])
+        assertEquals(null, expectedProperties["discover_tag"])
+        assertEquals(false, expectedProperties["discover_watched"])
+
+        assertEquals(EventContextValues.ContextPageName.PROJECT.contextName, expectedProperties[CONTEXT_CTA.contextName])
+        assertEquals(EventContextValues.LocationContextName.DISCOVER_ADVANCED.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
+        assertEquals(EventContextValues.DiscoveryContextType.RECOMMENDED.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_TYPE.contextName])
+        assertEquals(EventContextValues.CtaContextName.DISCOVER.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+    }
+
+    @Test
     fun testSearchResultCTAClicked_Properties() {
         val project = project()
         val user = user()

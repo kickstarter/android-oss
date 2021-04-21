@@ -86,8 +86,6 @@ import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.ui.SharedPreferenceKey;
 import com.optimizely.ab.android.sdk.OptimizelyManager;
-import com.segment.analytics.Analytics;
-import com.segment.analytics.android.integrations.appboy.AppboyIntegration;
 import com.stripe.android.Stripe;
 
 import org.joda.time.DateTime;
@@ -100,7 +98,6 @@ import javax.annotation.Nonnull;
 import javax.inject.Singleton;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 import dagger.Module;
 import dagger.Provides;
@@ -176,33 +173,6 @@ public class ApplicationModule {
       .webClient(webClient)
       .webEndpoint(webEndpoint)
       .build();
-  }
-
-  @Provides
-  @Nullable
-  @Singleton
-  static Analytics provideSegment(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
-    String apiKey = "";
-
-    Analytics segmentClient = null;
-
-    if (build.isRelease() && Build.isExternal()) {
-      apiKey = Secrets.Segment.PRODUCTION;
-    }
-    if (build.isDebug() || Build.isInternal()) {
-      apiKey = Secrets.Segment.STAGING;
-    }
-
-    if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
-      segmentClient = new Analytics.Builder(context, apiKey)
-              .use(AppboyIntegration.FACTORY)
-              .trackApplicationLifecycleEvents()
-              .build();
-
-      Analytics.setSingletonInstance(segmentClient);
-    }
-
-    return segmentClient;
   }
 
   @Provides
@@ -458,10 +428,9 @@ public class ApplicationModule {
           final @NonNull CurrentUserType currentUser,
           final @NonNull Build build,
           final @NonNull CurrentConfigType currentConfig,
-          final @NonNull ExperimentsClientType experimentsClientType,
-          final @Nullable Analytics segment) {
+          final @NonNull ExperimentsClientType experimentsClientType) {
     final LakeTrackingClient lakeTrackingClient = new LakeTrackingClient(context, currentUser, build, currentConfig, experimentsClientType);
-    final SegmentTrackingClient segmentTrackingClient = new SegmentTrackingClient(build, context, currentConfig, currentUser,  experimentsClientType, segment);
+    final SegmentTrackingClient segmentTrackingClient = new SegmentTrackingClient(build, context, currentConfig, currentUser,  experimentsClientType);
     final List<TrackingClientType> clients = Arrays.asList(lakeTrackingClient, segmentTrackingClient);
     return new AnalyticEvents(clients);
   }

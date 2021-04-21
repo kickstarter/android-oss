@@ -757,7 +757,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * @param projectData: The projectData parameters.
      */
     fun trackDiscoverProjectCtaClicked(discoveryParams: DiscoveryParams, projectData: ProjectData) {
-        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to DISCOVER.contextName)
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to PROJECT.contextName)
         props[CONTEXT_LOCATION.contextName] = DISCOVER_ADVANCED.contextName
         props[CONTEXT_PAGE.contextName] = DISCOVER.contextName
         props[CONTEXT_TYPE.contextName] = when {

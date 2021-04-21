@@ -26,6 +26,7 @@ import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
 import java.util.Locale
+import java.util.stream.Collectors
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
@@ -258,6 +259,7 @@ object AnalyticEventsUtils {
                 it.hasAddons()
             }
             put("has_add_ons", hasAddOns?.hasAddons() ?: false)
+            put("tags", project.tags()?.let { it.joinToString(", ")} ?: "")
         }
 
         return MapUtils.prefixKeys(properties, prefix)

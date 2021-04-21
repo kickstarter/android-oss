@@ -5,12 +5,8 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
-import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ExperimentsClientType;
-import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.utils.EventContextValues;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -144,7 +140,7 @@ public interface SearchViewModel {
                 final Pair<Project, RefTag> refTag = RefTagUtils.projectAndRefTagFromParamsAndProject(projectDiscoveryParamsPair.first.first, projectDiscoveryParamsPair.first.second);
                 final RefTag cookieRefTag = RefTagUtils.storedCookieRefTagForProject(projectDiscoveryParamsPair.first.second, this.cookieManager, this.sharedPreferences);
                 final ProjectData projectData = SharedFunctionsKt.projectData(refTag.second, cookieRefTag, projectDiscoveryParamsPair.first.second);
-                lake.trackDiscoverSearchResultProjectCATClicked(projectDiscoveryParamsPair.first.first,projectData,projectDiscoveryParamsPair.second, defaultSort);
+                lake.trackDiscoverSearchResultProjectCATClicked(projectDiscoveryParamsPair.first.first, projectData, projectDiscoveryParamsPair.second, defaultSort);
               });
 
       this.startProjectActivity = Observable.combineLatest(this.search, projects, Pair::create)

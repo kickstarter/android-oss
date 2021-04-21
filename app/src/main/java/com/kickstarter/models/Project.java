@@ -60,6 +60,7 @@ public abstract class Project implements Parcelable, Relay {
   public abstract @State String state();
   public abstract @Nullable DateTime stateChangedAt();
   public abstract Float staticUsdRate();
+  public abstract Float usdExchangeRate();
   public abstract @Nullable Integer unreadMessagesCount();
   public abstract @Nullable Integer unseenActivityCount();
   public abstract @Nullable Integer updatesCount();
@@ -103,6 +104,7 @@ public abstract class Project implements Parcelable, Relay {
     public abstract Builder slug(String __);
     public abstract Builder staffPick(Boolean __);
     public abstract Builder staticUsdRate(Float __);
+    public abstract Builder usdExchangeRate(Float __);
     public abstract Builder state(@State String __);
     public abstract Builder stateChangedAt(DateTime __);
     public abstract Builder unreadMessagesCount(Integer __);

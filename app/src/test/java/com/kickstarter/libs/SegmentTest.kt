@@ -219,7 +219,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val expectedProperties = propertiesTest.value
 
-        assertEquals(EventContextValues.ContextPageName.PROJECT.contextName, expectedProperties[CONTEXT_CTA.contextName])
+        assertEquals(EventContextValues.CtaContextName.DISCOVER.contextName, expectedProperties[CONTEXT_CTA.contextName])
         assertEquals(EventContextValues.LocationContextName.DISCOVER_ADVANCED.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
         assertEquals(EventContextValues.DiscoveryContextType.RESULTS.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_TYPE.contextName])
         assertEquals(EventContextValues.CtaContextName.DISCOVER.contextName, expectedProperties[CONTEXT_PAGE.contextName])
@@ -268,7 +268,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(null, expectedProperties["discover_tag"])
         assertEquals(false, expectedProperties["discover_watched"])
 
-        assertEquals(EventContextValues.ContextPageName.PROJECT.contextName, expectedProperties[CONTEXT_CTA.contextName])
+        assertEquals(EventContextValues.CtaContextName.DISCOVER.contextName, expectedProperties[CONTEXT_CTA.contextName])
         assertEquals(EventContextValues.LocationContextName.DISCOVER_ADVANCED.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
         assertEquals(EventContextValues.DiscoveryContextType.RECOMMENDED.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_TYPE.contextName])
         assertEquals(EventContextValues.CtaContextName.DISCOVER.contextName, expectedProperties[CONTEXT_PAGE.contextName])

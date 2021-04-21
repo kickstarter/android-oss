@@ -399,7 +399,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val expectedProperties = propertiesTest.value
         assertEquals("1", expectedProperties["discover_category_id"])
-        assertEquals("Art", expectedProperties["discover_category_name"])
+        assertEquals("categoryName", expectedProperties["discover_category_name"])
         assertEquals(false, expectedProperties["discover_everything"])
         assertEquals(false, expectedProperties["discover_pwl"])
         assertEquals(false, expectedProperties["discover_recommended"])
@@ -408,7 +408,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["discover_social"])
         assertEquals("newest", expectedProperties["discover_sort"])
         assertEquals("287", expectedProperties["discover_subcategory_id"])
-        assertEquals("Ceramics", expectedProperties["discover_subcategory_name"])
+        assertEquals("subcategoryName", expectedProperties["discover_subcategory_name"])
         assertEquals(null, expectedProperties["discover_tag"])
         assertEquals(false, expectedProperties["discover_watched"])
 
@@ -439,7 +439,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val expectedProperties = propertiesTest.value
 
         assertEquals("1", expectedProperties["discover_category_id"])
-        assertEquals("Art", expectedProperties["discover_category_name"])
+        assertEquals("categoryName", expectedProperties["discover_category_name"])
         assertEquals(false, expectedProperties["discover_everything"])
         assertEquals(false, expectedProperties["discover_pwl"])
         assertEquals(false, expectedProperties["discover_recommended"])
@@ -448,7 +448,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["discover_social"])
         assertEquals("magic", expectedProperties["discover_sort"])
         assertEquals("287", expectedProperties["discover_subcategory_id"])
-        assertEquals("Ceramics", expectedProperties["discover_subcategory_name"])
+        assertEquals("subcategoryName", expectedProperties["discover_subcategory_name"])
         assertEquals(null, expectedProperties["discover_tag"])
         assertEquals(false, expectedProperties["discover_watched"])
 
@@ -1052,8 +1052,8 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("ending_soon", properties["discover_sort"])
         assertEquals(123, properties["discover_tag"])
         assertEquals(true, properties["discover_watched"])
-        assertEquals("Art", properties["discover_category_name"])
-        assertEquals("Ceramics", properties["discover_subcategory_name"])
+        assertEquals("categoryName", properties["discover_category_name"])
+        assertEquals("subcategoryName", properties["discover_subcategory_name"])
     }
 
     @Test

@@ -224,13 +224,13 @@ object AnalyticEventsUtils {
             put("creator_uid", project.creator().id().toString())
             put("currency", project.currency())
             put("current_pledge_amount", project.pledged())
-            put("current_amount_pledged_usd", project.pledged() * project.staticUsdRate())
+            put("current_amount_pledged_usd", (project.pledged() * project.usdExchangeRate()).round())
             project.deadline()?.let { deadline ->
                 put("deadline", deadline)
             }
             put("duration", ProjectUtils.timeInDaysOfDuration(project).toFloat().roundToInt())
             put("goal", project.goal())
-            put("goal_usd", project.goal() * project.staticUsdRate())
+            put("goal_usd", (project.goal() * project.usdExchangeRate()).round())
             put("has_video", project.video() != null)
             put("hours_remaining", ceil((ProjectUtils.timeInSecondsUntilDeadline(project) / 60.0f / 60.0f).toDouble()).toInt())
             put("is_repeat_creator", IntegerUtils.intValueOrZero(project.creator().createdProjectsCount()) >= 2)

@@ -754,7 +754,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * Tracks a discover project clicks on the search result.
      */
     fun trackDiscoverSearchResultProjectCATClicked(
-        discoveryParams: DiscoveryParams, 
+        discoveryParams: DiscoveryParams,
         projectData: ProjectData,
         count: Int,
         sort: DiscoveryParams.Sort

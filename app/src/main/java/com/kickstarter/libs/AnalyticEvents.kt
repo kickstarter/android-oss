@@ -49,10 +49,10 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.WATCH_PROJEC
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.CATEGORY_NAME
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.PWL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RECOMMENDED
+import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RESULTS
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SOCIAL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SUBCATEGORY_NAME
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.WATCHED
-import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RESULTS
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_OVERLAY
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.GLOBAL_NAV
@@ -762,9 +762,9 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         props[CONTEXT_PAGE.contextName] = DISCOVER.contextName
         props[CONTEXT_TYPE.contextName] = when {
             BooleanUtils.isTrue(discoveryParams.category()?.isRoot) ||
-                    discoveryParams.category() != null ||
-                    BooleanUtils.isTrue(discoveryParams.staffPicks()) ||
-                    BooleanUtils.isTrue(discoveryParams.isAllProjects) -> RESULTS.contextName
+                discoveryParams.category() != null ||
+                BooleanUtils.isTrue(discoveryParams.staffPicks()) ||
+                BooleanUtils.isTrue(discoveryParams.isAllProjects) -> RESULTS.contextName
             BooleanUtils.isTrue(discoveryParams.recommended()) -> RECOMMENDED.contextName
             else -> ""
         }

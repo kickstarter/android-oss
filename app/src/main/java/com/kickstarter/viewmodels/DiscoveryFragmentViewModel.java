@@ -178,15 +178,15 @@ public interface DiscoveryFragmentViewModel {
               .compose(bindToLifecycle())
               .subscribe(p -> lake.trackProjectCardClicked(p, EventContextValues.ContextPageName.DISCOVER.getContextName()));
 
-      paramsFromActivity
+      this.paramsFromActivity
               .compose(takePairWhen(this.projectCardClicked))
               .compose(bindToLifecycle())
               .subscribe(it -> {
-               Pair<Project, RefTag> refTag = RefTagUtils.projectAndRefTagFromParamsAndProject(it.first, it.second);
-               RefTag cookieRefTag = RefTagUtils.storedCookieRefTagForProject(it.second, this.cookieManager, this.sharedPreferences);
-               ProjectData projectData = SharedFunctionsKt.projectData(refTag.second, cookieRefTag, it.second);
+                final Pair<Project, RefTag> refTag = RefTagUtils.projectAndRefTagFromParamsAndProject(it.first, it.second);
+                final RefTag cookieRefTag = RefTagUtils.storedCookieRefTagForProject(it.second, this.cookieManager, this.sharedPreferences);
+                final ProjectData projectData = SharedFunctionsKt.projectData(refTag.second, cookieRefTag, it.second);
 
-               this.lake.trackDiscoverProjectCtaClicked(it.first, projectData);
+                this.lake.trackDiscoverProjectCtaClicked(it.first, projectData);
               });
 
       final Observable<Pair<Project, RefTag>> projectCardClick = this.paramsFromActivity

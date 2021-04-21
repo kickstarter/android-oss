@@ -205,9 +205,9 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = project().toBuilder().build()
 
         val params = DiscoveryParams
-                .builder()
-                .sort(DiscoveryParams.Sort.MAGIC)
-                .build()
+            .builder()
+            .sort(DiscoveryParams.Sort.MAGIC)
+            .build()
 
         segment.trackDiscoverProjectCtaClicked(params, ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()))
 
@@ -238,10 +238,10 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = project().toBuilder().build()
 
         val params = DiscoveryParams
-                .builder()
-                .recommended(true)
-                .sort(DiscoveryParams.Sort.MAGIC)
-                .build()
+            .builder()
+            .recommended(true)
+            .sort(DiscoveryParams.Sort.MAGIC)
+            .build()
 
         segment.trackDiscoverProjectCtaClicked(params, ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()))
 
@@ -253,7 +253,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val expectedProperties = propertiesTest.value
 
-        //test custom discover properties
+        // test custom discover properties
         assertNull(expectedProperties["discover_category_id"])
         assertNull(expectedProperties["discover_category_name"])
         assertEquals(false, expectedProperties["discover_everything"])

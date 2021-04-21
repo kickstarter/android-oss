@@ -67,9 +67,9 @@ fun checkoutProperties(
 
 fun projectData(refTagFromIntent: RefTag?, refTagFromCookie: RefTag?, project: Project): ProjectData {
     return ProjectData
-            .builder()
-            .refTagFromIntent(refTagFromIntent)
-            .refTagFromCookie(refTagFromCookie)
-            .project(project)
-            .build()
+        .builder()
+        .refTagFromIntent(refTagFromIntent)
+        .refTagFromCookie(refTagFromCookie)
+        .project(project)
+        .build()
 }

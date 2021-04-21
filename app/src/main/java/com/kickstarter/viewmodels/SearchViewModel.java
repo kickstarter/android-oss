@@ -1,22 +1,30 @@
 package com.kickstarter.viewmodels;
 
+import android.content.SharedPreferences;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.ExperimentsClientType;
+import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.EventContextValues;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.RefTagUtils;
+import com.kickstarter.libs.utils.SharedFunctionsKt;
 import com.kickstarter.libs.utils.extensions.StringExt;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.SearchActivity;
+import com.kickstarter.ui.data.ProjectData;
 
+import java.net.CookieManager;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -60,12 +68,17 @@ public interface SearchViewModel {
   final class ViewModel extends ActivityViewModel<SearchActivity> implements Inputs, Outputs {
 
     private final PublishSubject<DiscoverEnvelope> discoverEnvelope = PublishSubject.create();
+    private final SharedPreferences sharedPreferences;
+    private final CookieManager cookieManager;
+
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       final ApiClientType apiClient = environment.apiClient();
       final Scheduler scheduler = environment.scheduler();
+      this.sharedPreferences = environment.sharedPreferences();
+      this.cookieManager = environment.cookieManager();
 
       final Observable<DiscoveryParams> searchParams = this.search
         .filter(ObjectUtils::isNotNull)
@@ -124,12 +137,15 @@ public interface SearchViewModel {
 
       final Observable<List<Project>> projects = Observable.merge(this.popularProjects, this.searchProjects);
 
-      this.projectClicked
+      params.compose(takePairWhen(this.projectClicked))
+              .compose(combineLatestPair(pageCount))
               .compose(bindToLifecycle())
-              .subscribe(p ->
-                      this.lake.trackProjectCardClicked(
-                              p,
-                              EventContextValues.ContextPageName.SEARCH.getContextName()));
+              .subscribe(projectDiscoveryParamsPair -> {
+                final Pair<Project, RefTag> refTag = RefTagUtils.projectAndRefTagFromParamsAndProject(projectDiscoveryParamsPair.first.first, projectDiscoveryParamsPair.first.second);
+                final RefTag cookieRefTag = RefTagUtils.storedCookieRefTagForProject(projectDiscoveryParamsPair.first.second, this.cookieManager, this.sharedPreferences);
+                final ProjectData projectData = SharedFunctionsKt.projectData(refTag.second, cookieRefTag, projectDiscoveryParamsPair.first.second);
+                lake.trackDiscoverSearchResultProjectCATClicked(projectDiscoveryParamsPair.first.first,projectData,projectDiscoveryParamsPair.second, defaultSort);
+              });
 
       this.startProjectActivity = Observable.combineLatest(this.search, projects, Pair::create)
         .compose(takePairWhen(this.projectClicked))

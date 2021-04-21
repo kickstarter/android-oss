@@ -7,8 +7,7 @@ import com.kickstarter.libs.KoalaContext.Message
 import com.kickstarter.libs.KoalaContext.Share
 import com.kickstarter.libs.KoalaContext.Update
 import com.kickstarter.libs.KoalaEvent.ProjectAction
-import com.kickstarter.libs.utils.AnalyticEventsUtils
-import com.kickstarter.libs.utils.BooleanUtils
+import com.kickstarter.libs.utils.*
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
@@ -28,7 +27,6 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.TWO_FACTOR_AUTH
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.UPDATE_PLEDGE
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.CREDIT_CARD
-import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.RESULTS
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.UNWATCH
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.WATCH
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.ADD_ONS_CONTINUE
@@ -50,7 +48,6 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.WATCH_PROJEC
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.CATEGORY_NAME
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.PWL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RECOMMENDED
-import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RESULTS
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SOCIAL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SUBCATEGORY_NAME
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.WATCHED
@@ -63,8 +60,6 @@ import com.kickstarter.libs.utils.EventName.CTA_CLICKED
 import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
-import com.kickstarter.libs.utils.ExperimentData
-import com.kickstarter.libs.utils.checkoutProperties
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
@@ -763,7 +758,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to PROJECT.contextName)
         props[CONTEXT_PAGE.contextName] = SEARCH.contextName
         props[CONTEXT_LOCATION.contextName] = SEARCH_RESULTS.contextName
-        props[CONTEXT_TYPE.contextName] = RESULTS.contextName
+        props[CONTEXT_TYPE.contextName] = EventContextValues.ContextTypeName.RESULTS.contextName
         discoveryParams.term()?.let { props["discover_search_term"] = it }
         props["discover_search_results_count"] = count
         props.putAll(AnalyticEventsUtils.discoveryParamsProperties(discoveryParams, sort).toMutableMap())
@@ -787,7 +782,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
             BooleanUtils.isTrue(discoveryParams.category()?.isRoot) ||
                 discoveryParams.category() != null ||
                 BooleanUtils.isTrue(discoveryParams.staffPicks()) ||
-                BooleanUtils.isTrue(discoveryParams.isAllProjects) -> RESULTS.contextName
+                BooleanUtils.isTrue(discoveryParams.isAllProjects) -> EventContextValues.ContextTypeName.RESULTS.contextName
             BooleanUtils.isTrue(discoveryParams.recommended()) -> RECOMMENDED.contextName
             else -> ""
         }

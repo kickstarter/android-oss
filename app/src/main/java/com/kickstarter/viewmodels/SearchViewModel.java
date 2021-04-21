@@ -139,7 +139,11 @@ public interface SearchViewModel {
               .subscribe(projectDiscoveryParamsPair -> {
                 final Pair<Project, RefTag> refTag = RefTagUtils.projectAndRefTagFromParamsAndProject(projectDiscoveryParamsPair.first.first, projectDiscoveryParamsPair.first.second);
                 final RefTag cookieRefTag = RefTagUtils.storedCookieRefTagForProject(projectDiscoveryParamsPair.first.second, this.cookieManager, this.sharedPreferences);
-                final ProjectData projectData = SharedFunctionsKt.projectData(refTag.second, cookieRefTag, projectDiscoveryParamsPair.first.second);
+                final ProjectData projectData = ProjectData.Companion.builder()
+                        .refTagFromIntent(refTag.second)
+                        .refTagFromCookie(cookieRefTag)
+                        .project(projectDiscoveryParamsPair.first.second)
+                        .build();
                 lake.trackDiscoverSearchResultProjectCATClicked(projectDiscoveryParamsPair.first.first, projectData, projectDiscoveryParamsPair.second, defaultSort);
               });
 

@@ -184,7 +184,12 @@ public interface DiscoveryFragmentViewModel {
               .subscribe(it -> {
                 final Pair<Project, RefTag> refTag = RefTagUtils.projectAndRefTagFromParamsAndProject(it.first, it.second);
                 final RefTag cookieRefTag = RefTagUtils.storedCookieRefTagForProject(it.second, this.cookieManager, this.sharedPreferences);
-                final ProjectData projectData = SharedFunctionsKt.projectData(refTag.second, cookieRefTag, it.second);
+
+                final ProjectData projectData = ProjectData.Companion.builder()
+                        .refTagFromIntent(refTag.second)
+                        .refTagFromCookie(cookieRefTag)
+                        .project(it.second)
+                        .build();
 
                 this.lake.trackDiscoverProjectCtaClicked(it.first, projectData);
               });

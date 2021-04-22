@@ -97,6 +97,7 @@ class EventContextValues {
     enum class LocationContextName(val contextName: String) {
         DISCOVER_ADVANCED("discover_advanced"),
         DISCOVER_OVERLAY("discover_overlay"),
+        SEARCH_RESULTS("search_results"),
         GLOBAL_NAV("global_nav")
     }
 
@@ -119,7 +120,8 @@ class EventContextValues {
         RECOMMENDED("recommended"),
         SOCIAL("social"),
         SUBCATEGORY_NAME("subcategory_name"),
-        WATCHED("watched")
+        WATCHED("watched"),
+        RESULTS("results")
     }
 
     /**
@@ -135,7 +137,8 @@ class EventContextValues {
         CREDIT_CARD("credit_card"),
         WATCH("watch"),
         UNWATCH("unwatch"),
-        FACEBOOK("facebook")
+        FACEBOOK("facebook"),
+        RESULTS("results")
     }
 
     /**

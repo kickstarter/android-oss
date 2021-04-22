@@ -11,6 +11,7 @@ import auto.parcel.AutoParcel;
 @AutoParcel
 @AutoGson
 public abstract class Category implements Parcelable, Comparable<Category> {
+  public abstract String analyticsName();
   public abstract int color();
   public abstract long id();
   public abstract String name();
@@ -23,6 +24,7 @@ public abstract class Category implements Parcelable, Comparable<Category> {
 
   @AutoParcel.Builder
   public abstract static class Builder {
+    public abstract Builder analyticsName(String __);
     public abstract Builder color(int __);
     public abstract Builder id(long __);
     public abstract Builder name(String __);

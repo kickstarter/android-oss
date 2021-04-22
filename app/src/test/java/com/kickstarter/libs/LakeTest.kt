@@ -152,7 +152,7 @@ class LakeTest : KSRobolectricTestCase() {
 
         val expectedProperties = propertiesTest.value
         assertEquals("1", expectedProperties["discover_category_id"])
-        assertEquals("Art", expectedProperties["discover_category_name"])
+        assertEquals("categoryName", expectedProperties["discover_category_name"])
         assertEquals(false, expectedProperties["discover_everything"])
         assertEquals(false, expectedProperties["discover_pwl"])
         assertEquals(false, expectedProperties["discover_recommended"])
@@ -161,7 +161,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["discover_social"])
         assertEquals("newest", expectedProperties["discover_sort"])
         assertEquals("287", expectedProperties["discover_subcategory_id"])
-        assertEquals("Ceramics", expectedProperties["discover_subcategory_name"])
+        assertEquals("subcategoryName", expectedProperties["discover_subcategory_name"])
         assertEquals(null, expectedProperties["discover_tag"])
         assertEquals(false, expectedProperties["discover_watched"])
     }

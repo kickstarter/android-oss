@@ -119,7 +119,7 @@ object AnalyticEventsUtils {
     fun categoryProperties(category: Category, prefix: String = "category_"): Map<String, Any> {
         val properties = HashMap<String, Any>().apply {
             put("id", category.id().toString())
-            put("name", category.name().toString())
+            put("name", category.analyticsName().toString())
         }
         return MapUtils.prefixKeys(properties, prefix)
     }

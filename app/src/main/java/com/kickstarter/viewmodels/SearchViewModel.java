@@ -11,7 +11,6 @@ import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.RefTagUtils;
-import com.kickstarter.libs.utils.SharedFunctionsKt;
 import com.kickstarter.libs.utils.extensions.StringExt;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;

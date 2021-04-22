@@ -119,7 +119,7 @@ object AnalyticEventsUtils {
     fun categoryProperties(category: Category, prefix: String = "category_"): Map<String, Any> {
         val properties = HashMap<String, Any>().apply {
             put("id", category.id().toString())
-            put("name", category.name().toString())
+            put("name", category.analyticsName().toString())
         }
         return MapUtils.prefixKeys(properties, prefix)
     }
@@ -208,14 +208,14 @@ object AnalyticEventsUtils {
             put("backers_count", project.backersCount())
             project.category()?.let { category ->
                 if (category.isRoot) {
-                    put("category", category.name())
+                    put("category", category.analyticsName())
                 } else {
                     category.parent()?.let { parent ->
-                        put("category", parent.name())
+                        put("category", parent.analyticsName())
                     } ?: category.parentName()?.let {
-                        put("category", it)
+                        if (!this.containsKey("category")) this["category"] = it
                     }
-                    put("subcategory", category.name())
+                    put("subcategory", category.analyticsName())
                 }
             }
             project.commentsCount()?.let { put("comments_count", it) }
@@ -258,6 +258,7 @@ object AnalyticEventsUtils {
                 it.hasAddons()
             }
             put("has_add_ons", hasAddOns?.hasAddons() ?: false)
+            put("tags", project.tags()?.let { it.joinToString(", ") } ?: "")
         }
 
         return MapUtils.prefixKeys(properties, prefix)

@@ -152,7 +152,7 @@ class LakeTest : KSRobolectricTestCase() {
 
         val expectedProperties = propertiesTest.value
         assertEquals("1", expectedProperties["discover_category_id"])
-        assertEquals("Art", expectedProperties["discover_category_name"])
+        assertEquals("categoryName", expectedProperties["discover_category_name"])
         assertEquals(false, expectedProperties["discover_everything"])
         assertEquals(false, expectedProperties["discover_pwl"])
         assertEquals(false, expectedProperties["discover_recommended"])
@@ -161,7 +161,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["discover_social"])
         assertEquals("newest", expectedProperties["discover_sort"])
         assertEquals("287", expectedProperties["discover_subcategory_id"])
-        assertEquals("Ceramics", expectedProperties["discover_subcategory_name"])
+        assertEquals("subcategoryName", expectedProperties["discover_subcategory_name"])
         assertEquals(null, expectedProperties["discover_tag"])
         assertEquals(false, expectedProperties["discover_watched"])
     }
@@ -527,8 +527,8 @@ class LakeTest : KSRobolectricTestCase() {
     private fun assertProjectProperties(project: Project) {
         val expectedProperties = this.propertiesTest.value
         assertEquals(100, expectedProperties["project_backers_count"])
-        assertEquals("Ceramics", expectedProperties["project_subcategory"])
-        assertEquals("Art", expectedProperties["project_category"])
+        assertEquals("subcategoryName", expectedProperties["project_subcategory"])
+        assertEquals("categoryName", expectedProperties["project_category"])
         assertEquals(3, expectedProperties["project_comments_count"])
         assertEquals("US", expectedProperties["project_country"])
         assertEquals("3", expectedProperties["project_creator_uid"])

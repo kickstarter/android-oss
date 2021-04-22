@@ -267,7 +267,6 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         val props = hashMapOf<String, Any>()
         props[CONTEXT_CTA.contextName] = DISCOVER.contextName
         props[CONTEXT_PAGE.contextName] = ACTIVITY_FEED.contextName
-        props[CONTEXT_LOCATION.contextName] = GLOBAL_NAV.contextName
         client.track(CTA_CLICKED.eventName, props)
     }
 

@@ -1296,7 +1296,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(50, expectedProperties["project_percent_raised"])
         assertEquals("4", expectedProperties["project_pid"])
         assertEquals(50.0, expectedProperties["project_current_pledge_amount"])
-        assertEquals(2, expectedProperties["project_rewards_count"])
+        assertEquals(1, expectedProperties["project_rewards_count"])
         assertEquals("live", expectedProperties["project_state"])
         assertEquals(1.0f, expectedProperties["project_static_usd_rate"])
         assertEquals(5, expectedProperties["project_updates_count"])

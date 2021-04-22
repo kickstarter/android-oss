@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels;
 
+import android.content.SharedPreferences;
 import android.util.Pair;
 
 import com.kickstarter.libs.ApiPaginator;
@@ -29,12 +30,14 @@ import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.data.Editorial;
+import com.kickstarter.ui.data.ProjectData;
 import com.kickstarter.ui.fragments.DiscoveryFragment;
 import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder;
 import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder;
 import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder;
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
 
+import java.net.CookieManager;
 import java.util.Collections;
 import java.util.List;
 
@@ -116,6 +119,8 @@ public interface DiscoveryFragmentViewModel {
     private final CurrentUserType currentUser;
     private final IntPreferenceType activitySamplePreference;
     private final ExperimentsClientType optimizely;
+    private final SharedPreferences sharedPreferences;
+    private final CookieManager cookieManager;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
@@ -124,6 +129,8 @@ public interface DiscoveryFragmentViewModel {
       this.activitySamplePreference = environment.activitySamplePreference();
       this.currentUser = environment.currentUser();
       this.optimizely = environment.optimizely();
+      this.sharedPreferences = environment.sharedPreferences();
+      this.cookieManager = environment.cookieManager();
 
       final Observable<User> changedUser = this.currentUser.observable()
         .distinctUntilChanged();
@@ -169,6 +176,22 @@ public interface DiscoveryFragmentViewModel {
       this.projectCardClicked
               .compose(bindToLifecycle())
               .subscribe(p -> lake.trackProjectCardClicked(p, EventContextValues.ContextPageName.DISCOVER.getContextName()));
+
+      this.paramsFromActivity
+              .compose(takePairWhen(this.projectCardClicked))
+              .compose(bindToLifecycle())
+              .subscribe(it -> {
+                final Pair<Project, RefTag> refTag = RefTagUtils.projectAndRefTagFromParamsAndProject(it.first, it.second);
+                final RefTag cookieRefTag = RefTagUtils.storedCookieRefTagForProject(it.second, this.cookieManager, this.sharedPreferences);
+
+                final ProjectData projectData = ProjectData.Companion.builder()
+                        .refTagFromIntent(refTag.second)
+                        .refTagFromCookie(cookieRefTag)
+                        .project(it.second)
+                        .build();
+
+                this.lake.trackDiscoverProjectCtaClicked(it.first, projectData);
+              });
 
       final Observable<Pair<Project, RefTag>> projectCardClick = this.paramsFromActivity
         .compose(takePairWhen(this.projectCardClicked))

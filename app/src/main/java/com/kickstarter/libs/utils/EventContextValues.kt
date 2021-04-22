@@ -98,7 +98,8 @@ class EventContextValues {
         DISCOVER_ADVANCED("discover_advanced"),
         DISCOVER_OVERLAY("discover_overlay"),
         SEARCH_RESULTS("search_results"),
-        GLOBAL_NAV("global_nav")
+        GLOBAL_NAV("global_nav"),
+        CURATED("curated"),
     }
 
     /**

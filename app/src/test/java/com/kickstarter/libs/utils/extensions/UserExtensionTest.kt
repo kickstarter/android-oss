@@ -69,4 +69,36 @@ class UserExtensionTest : KSRobolectricTestCase() {
 
         assertTrue(userA == userB)
     }
+
+    @Test
+    fun isEqualsUsers_whenNotifyMobileOfBackings_Different() {
+        val userA = UserFactory.user().toBuilder().id(1).notifyMobileOfBackings(false).build()
+        val userB = UserFactory.user().toBuilder().id(1).notifyMobileOfBackings(true).build()
+
+        assertFalse(userA == userB)
+    }
+
+    @Test
+    fun isEqualsUsers_whenNotifyMobileOfBackings_Equals() {
+        val userA = UserFactory.user().toBuilder().id(1).notifyMobileOfBackings(true).build()
+        val userB = UserFactory.user().toBuilder().id(1).notifyMobileOfBackings(true).build()
+
+        assertTrue(userA == userB)
+    }
+
+    @Test
+    fun isEqualsUsers_whenNotifyMobileOfComments_Different() {
+        val userA = UserFactory.user().toBuilder().id(1).notifyMobileOfComments(false).build()
+        val userB = UserFactory.user().toBuilder().id(1).notifyMobileOfComments(true).build()
+
+        assertFalse(userA == userB)
+    }
+
+    @Test
+    fun isEqualsUsers_whenNotifyMobileOfComments_Equals() {
+        val userA = UserFactory.user().toBuilder().id(1).notifyMobileOfComments(true).build()
+        val userB = UserFactory.user().toBuilder().id(1).notifyMobileOfComments(true).build()
+
+        assertTrue(userA == userB)
+    }
 }

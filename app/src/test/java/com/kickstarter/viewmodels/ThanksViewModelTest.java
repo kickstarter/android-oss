@@ -312,7 +312,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
     this.startProjectTest.assertValues(Pair.create(project, RefTag.thanks()));
 
-    this.segmentTrack.assertValues("Thanks Page Viewed", EventName.PAGE_VIEWED.getEventName(),EventName.CTA_CLICKED.getEventName());
+    this.segmentTrack.assertValues("Thanks Page Viewed", EventName.PAGE_VIEWED.getEventName(), EventName.CTA_CLICKED.getEventName());
   }
 
   @Test

@@ -84,8 +84,8 @@ public interface ThanksViewModel {
     private final BooleanPreferenceType hasSeenGamesNewsletterPreference;
     private final CurrentUserType currentUser;
     private final ExperimentsClientType optimizely;
-      private final SharedPreferences sharedPreferences;
-      private final CookieManager cookieManager;
+    private final SharedPreferences sharedPreferences;
+    private final CookieManager cookieManager;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
@@ -95,8 +95,8 @@ public interface ThanksViewModel {
       this.hasSeenAppRatingPreference = environment.hasSeenAppRatingPreference();
       this.hasSeenGamesNewsletterPreference = environment.hasSeenGamesNewsletterPreference();
       this.optimizely = environment.optimizely();
-        this.sharedPreferences = environment.sharedPreferences();
-        this.cookieManager = environment.cookieManager();
+      this.sharedPreferences = environment.sharedPreferences();
+      this.cookieManager = environment.cookieManager();
 
       final Observable<Project> project = intent()
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
@@ -193,20 +193,20 @@ public interface ThanksViewModel {
           this.lake.trackThanksScreenViewed(checkoutDataPledgeData.first, checkoutDataPledgeData.second);
         });
 
-        checkoutAndPledgeData.compose(takePairWhen(this.projectCardViewHolderClicked))
-                .compose(bindToLifecycle())
-                .subscribe(dataCheckoutProjectPair -> {
-                    final RefTag cookieRefTag = RefTagUtils.storedCookieRefTagForProject(dataCheckoutProjectPair.second, this.cookieManager, this.sharedPreferences);
-
-                    final ProjectData projectData = ProjectData.Companion.builder()
-                            .refTagFromIntent(RefTag.thanks())
-                            .refTagFromCookie(cookieRefTag)
-                            .project(dataCheckoutProjectPair.second)
-                            .build();
-                    this.lake.trackThanksActivityProjectCardClicked(projectData,
+      checkoutAndPledgeData
+        .compose(takePairWhen(this.projectCardViewHolderClicked))
+        .compose(bindToLifecycle())
+        .subscribe(dataCheckoutProjectPair -> {
+          final RefTag cookieRefTag = RefTagUtils.storedCookieRefTagForProject(dataCheckoutProjectPair.second, this.cookieManager, this.sharedPreferences);
+          final ProjectData projectData = ProjectData.Companion.builder()
+                  .refTagFromIntent(RefTag.thanks())
+                  .refTagFromCookie(cookieRefTag)
+                  .project(dataCheckoutProjectPair.second)
+                  .build();
+          this.lake.trackThanksActivityProjectCardClicked(projectData,
                             dataCheckoutProjectPair.first.first,
                             dataCheckoutProjectPair.first.second);
-                });
+        });
     }
 
     /**

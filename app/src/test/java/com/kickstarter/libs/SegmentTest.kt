@@ -276,6 +276,53 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testSearchResultCTAClicked_Properties() {
+        val project = project()
+        val user = user()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedId.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        val params = DiscoveryParams
+            .builder()
+            .term("test")
+            .sort(DiscoveryParams.Sort.POPULAR)
+            .staffPicks(true)
+            .build()
+
+        val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
+        segment.trackDiscoverSearchResultProjectCATClicked(params, projectData, 200, DiscoveryParams.Sort.POPULAR)
+
+        assertSessionProperties(user)
+        assertProjectProperties(projectData.project())
+        assertContextProperties()
+        assertUserProperties(false)
+
+        val expectedProperties = propertiesTest.value
+        assertEquals("test", expectedProperties["discover_search_term"])
+        assertEquals(200, expectedProperties["discover_search_results_count"])
+        assertEquals(false, expectedProperties["discover_everything"])
+        assertEquals(true, expectedProperties["discover_pwl"])
+        assertEquals(false, expectedProperties["discover_recommended"])
+        assertEquals("recommended_popular", expectedProperties["discover_ref_tag"])
+        assertEquals(false, expectedProperties["discover_social"])
+        assertEquals("popular", expectedProperties["discover_sort"])
+        assertNull(expectedProperties["discover_subcategory_id"])
+        assertNull(expectedProperties["discover_subcategory_name"])
+        assertEquals(null, expectedProperties["discover_tag"])
+        assertEquals(false, expectedProperties["discover_watched"])
+
+        assertEquals(EventContextValues.ContextPageName.PROJECT.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_CTA.contextName])
+        assertEquals(EventContextValues.CtaContextName.SEARCH.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_PAGE.contextName])
+        assertEquals(EventContextValues.LocationContextName.SEARCH_RESULTS.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
+        assertEquals(EventContextValues.ContextTypeName.RESULTS.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_TYPE.contextName])
+
+        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+    }
+
+    @Test
     fun testSearchResultPageViewed_Properties() {
         val user = user()
         val client = client(user)
@@ -371,7 +418,6 @@ class SegmentTest : KSRobolectricTestCase() {
         val expectedProperties = propertiesTest.value
         assertEquals(EventContextValues.CtaContextName.DISCOVER.contextName, expectedProperties[CONTEXT_CTA.contextName])
         assertEquals(ACTIVITY_FEED.contextName, expectedProperties[CONTEXT_PAGE.contextName])
-        assertEquals(EventContextValues.LocationContextName.GLOBAL_NAV.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
 
         this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
@@ -580,6 +626,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = ProjectFactory.backedProject()
             .toBuilder()
             .id(4)
+            .tags(listOfTags())
             .category(CategoryFactory.ceramicsCategory())
             .commentsCount(3)
             .creator(creator())
@@ -757,6 +804,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = ProjectFactory.backedProject()
             .toBuilder()
             .id(4)
+            .tags(listOfTags())
             .category(CategoryFactory.ceramicsCategory())
             .commentsCount(3)
             .creator(creator())
@@ -815,6 +863,7 @@ class SegmentTest : KSRobolectricTestCase() {
             .commentsCount(3)
             .creator(creator())
             .location(LocationFactory.unitedStates())
+            .tags(listOfTags())
             .updatesCount(5)
             .build()
         val user = user()
@@ -847,6 +896,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = ProjectFactory.backedProject()
             .toBuilder()
             .id(4)
+            .tags(listOfTags())
             .category(CategoryFactory.ceramicsCategory())
             .commentsCount(3)
             .creator(creator())
@@ -1228,8 +1278,8 @@ class SegmentTest : KSRobolectricTestCase() {
     private fun assertProjectProperties(project: Project) {
         val expectedProperties = this.propertiesTest.value
         assertEquals(100, expectedProperties["project_backers_count"])
-        assertEquals("Ceramics", expectedProperties["project_subcategory"])
-        assertEquals("Art", expectedProperties["project_category"])
+        assertEquals("subcategoryName", expectedProperties["project_subcategory"])
+        assertEquals("categoryName", expectedProperties["project_category"])
         assertEquals(3, expectedProperties["project_comments_count"])
         assertEquals("US", expectedProperties["project_country"])
         assertEquals("3", expectedProperties["project_creator_uid"])
@@ -1254,6 +1304,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("live", expectedProperties["project_state"])
         assertEquals(1.0f, expectedProperties["project_static_usd_rate"])
         assertEquals(5, expectedProperties["project_updates_count"])
+        assertEquals("tag1, tag2, tag3", expectedProperties["project_tags"])
         assertEquals("discovery", expectedProperties["session_ref_tag"])
         assertEquals("recommended", expectedProperties["session_referrer_credit"])
         assertEquals(false, expectedProperties["project_has_add_ons"])
@@ -1333,6 +1384,7 @@ class SegmentTest : KSRobolectricTestCase() {
             .category(CategoryFactory.ceramicsCategory())
             .creator(creator())
             .commentsCount(3)
+            .tags(listOfTags())
             .location(LocationFactory.unitedStates())
             .updatesCount(5)
             .build()
@@ -1372,4 +1424,6 @@ class SegmentTest : KSRobolectricTestCase() {
 
     private fun listOfAddons(): java.util.List<Reward>? =
         listOf(RewardFactory.addOnSingle().toBuilder().minimum(10.06).build(), RewardFactory.addOnMultiple().toBuilder().minimum(20.13).build()) as java.util.List<Reward>?
+
+    private fun listOfTags(): List<String> = listOf("tag1", "tag2", "tag3")
 }

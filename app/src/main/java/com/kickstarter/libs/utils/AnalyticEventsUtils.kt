@@ -208,14 +208,14 @@ object AnalyticEventsUtils {
             put("backers_count", project.backersCount())
             project.category()?.let { category ->
                 if (category.isRoot) {
-                    put("category", category.name())
+                    put("category", category.analyticsName())
                 } else {
                     category.parent()?.let { parent ->
-                        put("category", parent.name())
+                        put("category", parent.analyticsName())
                     } ?: category.parentName()?.let {
-                        put("category", it)
+                        if (!this.containsKey("category")) this["category"] = it
                     }
-                    put("subcategory", category.name())
+                    put("subcategory", category.analyticsName())
                 }
             }
             project.commentsCount()?.let { put("comments_count", it) }
@@ -224,13 +224,13 @@ object AnalyticEventsUtils {
             put("creator_uid", project.creator().id().toString())
             put("currency", project.currency())
             put("current_pledge_amount", project.pledged())
-            put("current_amount_pledged_usd", project.pledged() * project.staticUsdRate())
+            put("current_amount_pledged_usd", (project.pledged() * project.usdExchangeRate()).round())
             project.deadline()?.let { deadline ->
                 put("deadline", deadline)
             }
             put("duration", ProjectUtils.timeInDaysOfDuration(project).toFloat().roundToInt())
             put("goal", project.goal())
-            put("goal_usd", project.goal() * project.staticUsdRate())
+            put("goal_usd", (project.goal() * project.usdExchangeRate()).round())
             put("has_video", project.video() != null)
             put("hours_remaining", ceil((ProjectUtils.timeInSecondsUntilDeadline(project) / 60.0f / 60.0f).toDouble()).toInt())
             put("is_repeat_creator", IntegerUtils.intValueOrZero(project.creator().createdProjectsCount()) >= 2)
@@ -258,6 +258,7 @@ object AnalyticEventsUtils {
                 it.hasAddons()
             }
             put("has_add_ons", hasAddOns?.hasAddons() ?: false)
+            put("tags", project.tags()?.let { it.joinToString(", ") } ?: "")
         }
 
         return MapUtils.prefixKeys(properties, prefix)

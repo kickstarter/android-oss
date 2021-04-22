@@ -20,7 +20,6 @@ import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.RefTagUtils;
-import com.kickstarter.libs.utils.SharedFunctionsKt;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
@@ -184,7 +183,12 @@ public interface DiscoveryFragmentViewModel {
               .subscribe(it -> {
                 final Pair<Project, RefTag> refTag = RefTagUtils.projectAndRefTagFromParamsAndProject(it.first, it.second);
                 final RefTag cookieRefTag = RefTagUtils.storedCookieRefTagForProject(it.second, this.cookieManager, this.sharedPreferences);
-                final ProjectData projectData = SharedFunctionsKt.projectData(refTag.second, cookieRefTag, it.second);
+
+                final ProjectData projectData = ProjectData.Companion.builder()
+                        .refTagFromIntent(refTag.second)
+                        .refTagFromCookie(cookieRefTag)
+                        .project(it.second)
+                        .build();
 
                 this.lake.trackDiscoverProjectCtaClicked(it.first, projectData);
               });

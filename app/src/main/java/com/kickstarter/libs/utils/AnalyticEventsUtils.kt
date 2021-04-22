@@ -244,7 +244,8 @@ object AnalyticEventsUtils {
             put("percent_raised", (project.percentageFunded()).toInt())
             put("pid", project.id().toString())
             put("prelaunch_activated", BooleanUtils.isTrue(project.prelaunchActivated()))
-            project.rewards()?.let { rewards ->
+            project.rewards()?.let { it ->
+                val rewards = it.filter { it.hasAddons() }
                 put("rewards_count", rewards.size)
             }
             put("state", project.state())

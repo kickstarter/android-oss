@@ -18,7 +18,6 @@ import com.kickstarter.libs.utils.extensions.currentVariants
 import com.kickstarter.libs.utils.extensions.enabledFeatureFlags
 import com.kickstarter.libs.utils.extensions.isFeatureFlagEnabled
 import com.kickstarter.models.User
-import com.kickstarter.models.extensions.getTraits
 import org.json.JSONArray
 import org.json.JSONException
 import timber.log.Timber
@@ -38,10 +37,7 @@ abstract class TrackingClient(
     init {
 
         this.currentUser.observable()
-            .distinctUntilChanged { prevUser, newUser ->
-                // - Do not call identify unless some trait has changed
-                prevUser.getTraits() == newUser.getTraits()
-            }
+            .distinctUntilChanged()
             .subscribe { u ->
                 this.loggedInUser = u
                 this.loggedInUser?.let { identify(it) }

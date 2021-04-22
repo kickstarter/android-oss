@@ -2,22 +2,8 @@ package com.kickstarter.libs
 
 import android.content.Context
 import com.kickstarter.models.User
-import com.kickstarter.ui.data.OptInSubscriptionTypes.Email.EMAIL_BACKINGS
-import com.kickstarter.ui.data.OptInSubscriptionTypes.Email.EMAIL_CREATOR_DIG
-import com.kickstarter.ui.data.OptInSubscriptionTypes.Email.EMAIL_CREATOR_EDU
-import com.kickstarter.ui.data.OptInSubscriptionTypes.Email.EMAIL_FOLLOWER
-import com.kickstarter.ui.data.OptInSubscriptionTypes.Email.EMAIL_FRIEND_ACTIVITY
-import com.kickstarter.ui.data.OptInSubscriptionTypes.Email.EMAIL_MESSAGE
-import com.kickstarter.ui.data.OptInSubscriptionTypes.Email.EMAIL_NOTIFY_COMMENT
-import com.kickstarter.ui.data.OptInSubscriptionTypes.Email.EMAIL_REPLAY
-import com.kickstarter.ui.data.OptInSubscriptionTypes.Email.EMAIL_UPDATES
-import com.kickstarter.ui.data.OptInSubscriptionTypes.PushNotification.PUSH_BACKINGS
-import com.kickstarter.ui.data.OptInSubscriptionTypes.PushNotification.PUSH_FOLLOWER
-import com.kickstarter.ui.data.OptInSubscriptionTypes.PushNotification.PUSH_FRIEND_ACTIVITY
-import com.kickstarter.ui.data.OptInSubscriptionTypes.PushNotification.PUSH_LIKE
-import com.kickstarter.ui.data.OptInSubscriptionTypes.PushNotification.PUSH_MESSAGE
-import com.kickstarter.ui.data.OptInSubscriptionTypes.PushNotification.PUSH_NOTIFY_COMMENT
-import com.kickstarter.ui.data.OptInSubscriptionTypes.PushNotification.PUSH_UPDATES
+import com.kickstarter.models.extensions.Email
+import com.kickstarter.models.extensions.PushNotification
 import com.segment.analytics.Analytics
 import com.segment.analytics.Properties
 import com.segment.analytics.Traits
@@ -64,7 +50,7 @@ class SegmentTrackingClient(
 
         if (this.build.isDebug && type() == Type.SEGMENT) {
             user.apply {
-                Timber.d("Queued ${type().tag} Identify userName: ${this.name()} userId: ${ this.id()}")
+                Timber.d("Queued ${type().tag} Identify userName: ${this.name()} userId: ${this.id()} traits: ${getTraits(user)}")
             }
         }
         segmentAnalytics?.let { segment ->
@@ -95,22 +81,22 @@ class SegmentTrackingClient(
     private fun getTraits(user: User) = Traits().apply {
         this.putName(user.name())
         // - Email related subscriptions
-        this[EMAIL_BACKINGS.name] = user.notifyOfBackings()
-        this[EMAIL_UPDATES.name] = user.notifyOfUpdates()
-        this[EMAIL_FOLLOWER.name] = user.notifyOfFollower()
-        this[EMAIL_FRIEND_ACTIVITY.name] = user.notifyOfFriendActivity()
-        this[EMAIL_NOTIFY_COMMENT.name] = user.notifyOfComments()
-        this[EMAIL_CREATOR_EDU.name] = user.notifyOfCreatorEdu()
-        this[EMAIL_CREATOR_DIG.name] = user.notifyOfCreatorDigest()
-        this[EMAIL_MESSAGE.name] = user.notifyOfMessages()
-        this[EMAIL_REPLAY.name] = user.notifyOfCommentReplies()
+        this[Email.EMAIL_BACKINGS.field] = user.notifyOfBackings()
+        this[Email.EMAIL_UPDATES.field] = user.notifyOfUpdates()
+        this[Email.EMAIL_FOLLOWER.field] = user.notifyOfFollower()
+        this[Email.EMAIL_FRIEND_ACTIVITY.field] = user.notifyOfFriendActivity()
+        this[Email.EMAIL_NOTIFY_COMMENT.field] = user.notifyOfComments()
+        this[Email.EMAIL_CREATOR_EDU.field] = user.notifyOfCreatorEdu()
+        this[Email.EMAIL_CREATOR_DIG.field] = user.notifyOfCreatorDigest()
+        this[Email.EMAIL_MESSAGE.field] = user.notifyOfMessages()
+        this[Email.EMAIL_REPLAY.field] = user.notifyOfCommentReplies()
         // - Push Notifications related subscriptions
-        this[PUSH_BACKINGS.name] = user.notifyMobileOfBackings()
-        this[PUSH_UPDATES.name] = user.notifyMobileOfUpdates()
-        this[PUSH_FOLLOWER.name] = user.notifyMobileOfFollower()
-        this[PUSH_FRIEND_ACTIVITY.name] = user.notifyMobileOfFriendActivity()
-        this[PUSH_NOTIFY_COMMENT.name] = user.notifyMobileOfComments()
-        this[PUSH_MESSAGE.name] = user.notifyMobileOfMessages()
-        this[PUSH_LIKE.name] = user.notifyMobileOfPostLikes()
+        this[PushNotification.PUSH_BACKINGS.field] = user.notifyMobileOfBackings()
+        this[PushNotification.PUSH_UPDATES.field] = user.notifyMobileOfUpdates()
+        this[PushNotification.PUSH_FOLLOWER.field] = user.notifyMobileOfFollower()
+        this[PushNotification.PUSH_FRIEND_ACTIVITY.field] = user.notifyMobileOfFriendActivity()
+        this[PushNotification.PUSH_NOTIFY_COMMENT.field] = user.notifyMobileOfComments()
+        this[PushNotification.PUSH_MESSAGE.field] = user.notifyMobileOfMessages()
+        this[PushNotification.PUSH_LIKE.field] = user.notifyMobileOfPostLikes()
     }
 }

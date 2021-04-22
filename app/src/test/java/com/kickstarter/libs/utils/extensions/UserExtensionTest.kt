@@ -37,4 +37,36 @@ class UserExtensionTest : KSRobolectricTestCase() {
         val mexicanUser = UserFactory.mexicanUser()
         assertFalse(mexicanUser.isLocationGermany())
     }
+
+    @Test
+    fun isEqualsUsers_whenNotifyMobileOfUpdates_Different() {
+        val userA = UserFactory.user().toBuilder().id(1).notifyMobileOfUpdates(false).build()
+        val userB = UserFactory.user().toBuilder().id(1).notifyMobileOfUpdates(true).build()
+
+        assertFalse(userA == userB)
+    }
+
+    @Test
+    fun isEqualsUsers_whenNotifyMobileOfUpdates_Equals() {
+        val userA = UserFactory.user().toBuilder().id(1).notifyMobileOfUpdates(true).build()
+        val userB = UserFactory.user().toBuilder().id(1).notifyMobileOfUpdates(true).build()
+
+        assertTrue(userA == userB)
+    }
+
+    @Test
+    fun isEqualsUsers_whenNotifyMobileOfFollower_Different() {
+        val userA = UserFactory.user().toBuilder().id(1).notifyMobileOfFollower(false).build()
+        val userB = UserFactory.user().toBuilder().id(1).notifyMobileOfFollower(true).build()
+
+        assertFalse(userA == userB)
+    }
+
+    @Test
+    fun isEqualsUsers_whenNotifyMobileOfFollower_Equals() {
+        val userA = UserFactory.user().toBuilder().id(1).notifyMobileOfFollower(true).build()
+        val userB = UserFactory.user().toBuilder().id(1).notifyMobileOfFollower(true).build()
+
+        assertTrue(userA == userB)
+    }
 }

@@ -2,8 +2,8 @@ package com.kickstarter.libs
 
 import android.content.Context
 import com.kickstarter.models.User
-import com.kickstarter.models.extensions.Email
-import com.kickstarter.models.extensions.PushNotification
+import com.kickstarter.models.extensions.NAME
+import com.kickstarter.models.extensions.getTraits
 import com.segment.analytics.Analytics
 import com.segment.analytics.Properties
 import com.segment.analytics.Traits
@@ -77,26 +77,14 @@ class SegmentTrackingClient(
      *
      * Added as trait the user name
      * Added as traits the user preferences for Email and Push Notifications Subscriptions
+     * see User.getTraits()
      */
     private fun getTraits(user: User) = Traits().apply {
-        this.putName(user.name())
-        // - Email related subscriptions
-        this[Email.EMAIL_BACKINGS.field] = user.notifyOfBackings()
-        this[Email.EMAIL_UPDATES.field] = user.notifyOfUpdates()
-        this[Email.EMAIL_FOLLOWER.field] = user.notifyOfFollower()
-        this[Email.EMAIL_FRIEND_ACTIVITY.field] = user.notifyOfFriendActivity()
-        this[Email.EMAIL_NOTIFY_COMMENT.field] = user.notifyOfComments()
-        this[Email.EMAIL_CREATOR_EDU.field] = user.notifyOfCreatorEdu()
-        this[Email.EMAIL_CREATOR_DIG.field] = user.notifyOfCreatorDigest()
-        this[Email.EMAIL_MESSAGE.field] = user.notifyOfMessages()
-        this[Email.EMAIL_REPLAY.field] = user.notifyOfCommentReplies()
-        // - Push Notifications related subscriptions
-        this[PushNotification.PUSH_BACKINGS.field] = user.notifyMobileOfBackings()
-        this[PushNotification.PUSH_UPDATES.field] = user.notifyMobileOfUpdates()
-        this[PushNotification.PUSH_FOLLOWER.field] = user.notifyMobileOfFollower()
-        this[PushNotification.PUSH_FRIEND_ACTIVITY.field] = user.notifyMobileOfFriendActivity()
-        this[PushNotification.PUSH_NOTIFY_COMMENT.field] = user.notifyMobileOfComments()
-        this[PushNotification.PUSH_MESSAGE.field] = user.notifyMobileOfMessages()
-        this[PushNotification.PUSH_LIKE.field] = user.notifyMobileOfPostLikes()
+        user.getTraits().map { entry ->
+            if (entry.key == NAME) this.putName(user.name())
+            else {
+                this[entry.key] = entry.value
+            }
+        }
     }
 }

@@ -29,7 +29,36 @@ fun User.getCreatedAndDraftProjectsCount(): Int {
 }
 
 /**
+ * Returns the traits we currently send with the Identify calls
+ */
+fun User.getTraits() = mapOf(
+    ID to this.id(),
+    NAME to this.name(),
+    Email.EMAIL_BACKINGS.field to this.notifyOfBackings(),
+    Email.EMAIL_UPDATES.field to this.notifyOfUpdates(),
+    Email.EMAIL_FOLLOWER.field to this.notifyOfFollower(),
+    Email.EMAIL_FRIEND_ACTIVITY.field to this.notifyOfFriendActivity(),
+    Email.EMAIL_NOTIFY_COMMENT.field to this.notifyMobileOfComments(),
+    Email.EMAIL_CREATOR_DIG.field to this.notifyOfCreatorDigest(),
+    Email.EMAIL_CREATOR_EDU.field to this.notifyOfCreatorEdu(),
+    Email.EMAIL_MESSAGE.field to this.notifyOfMessages(),
+    Email.EMAIL_REPLAY.field to this.notifyOfCommentReplies(),
+    PushNotification.PUSH_BACKINGS.field to this.notifyMobileOfBackings(),
+    PushNotification.PUSH_UPDATES.field to this.notifyMobileOfUpdates(),
+    PushNotification.PUSH_FOLLOWER.field to this.notifyMobileOfFollower(),
+    PushNotification.PUSH_FRIEND_ACTIVITY.field to this.notifyMobileOfFriendActivity(),
+    PushNotification.PUSH_NOTIFY_COMMENT.field to this.notifyMobileOfComments(),
+    PushNotification.PUSH_LIKE.field to this.notifyMobileOfPostLikes(),
+    PushNotification.PUSH_MESSAGE.field to this.notifyMobileOfMessages()
+)
+
+const val NAME = "name"
+const val ID = "id"
+
+/**
  * Defines the possible Email opt-in options
+ * @param field equivalent name on the User endpoint field,
+ * check @link /v1/users/self -> https://staging.kickstarter.com/admin/api-docs/index.html
  */
 enum class Email(val field: String) {
     EMAIL_BACKINGS("notify_of_backings"),
@@ -45,6 +74,8 @@ enum class Email(val field: String) {
 
 /**
  * Defines the possible Push Notification opt-in options
+ * @param field equivalent name on the User endpoint field
+ * check @link /v1/users/self -> https://staging.kickstarter.com/admin/api-docs/index.html
  */
 enum class PushNotification(val field: String) {
     PUSH_BACKINGS("notify_mobile_of_backings"),

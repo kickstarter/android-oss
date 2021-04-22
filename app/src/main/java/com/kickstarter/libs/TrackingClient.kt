@@ -18,6 +18,7 @@ import com.kickstarter.libs.utils.extensions.currentVariants
 import com.kickstarter.libs.utils.extensions.enabledFeatureFlags
 import com.kickstarter.libs.utils.extensions.isFeatureFlagEnabled
 import com.kickstarter.models.User
+import com.kickstarter.models.extensions.getTraits
 import org.json.JSONArray
 import org.json.JSONException
 import timber.log.Timber
@@ -38,7 +39,9 @@ abstract class TrackingClient(
 
         // Cache the most recent logged in user for default Lake properties.
         this.currentUser.observable()
-            .distinctUntilChanged()
+            .distinctUntilChanged { prevUser, newUser ->
+                prevUser.getTraits() == newUser.getTraits()
+            }
             .subscribe { u ->
                 this.loggedInUser = u
                 this.loggedInUser?.let { identify(it) }

@@ -335,11 +335,11 @@ class SegmentTest : KSRobolectricTestCase() {
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
 
         segment.trackThanksActivityProjectCardClicked(
-            projectData, 
+            projectData,
             CheckoutDataFactory.checkoutData(20.0, 30.0),
             PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward(), listOfAddons())
         )
-        
+
         assertSessionProperties(user)
         assertProjectProperties(project)
         assertContextProperties()

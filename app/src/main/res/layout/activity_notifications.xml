@@ -58,7 +58,33 @@
         <TextView
           style="@style/SettingsSectionTitle"
           android:layout_marginBottom="@dimen/grid_2"
-          android:text="@string/profile_settings_backer_title" />
+          android:text="@string/Announcements" />
+
+        <LinearLayout
+          android:id="@+id/marketing_updated_row"
+          style="@style/SettingsNotificationRow">
+
+          <TextView
+            style="@style/SettingsSectionLabel"
+            android:text="@string/profile_settings_backer_project_updates" />
+
+          <ImageButton
+            android:id="@+id/marketing_updates_mail_icon"
+            style="@style/KSSettingsMailIcon"
+            android:contentDescription="@null" />
+
+          <Space
+            android:layout_width="@dimen/grid_2"
+            android:layout_height="wrap_content" />
+
+          <ImageButton
+            android:id="@+id/marketing_updates_phone_icon"
+            style="@style/KSSettingsPhoneIcon"
+            android:contentDescription="@null" />
+
+        </LinearLayout>
+
+      </LinearLayout>
 
         <LinearLayout
           android:id="@+id/project_updates_row"

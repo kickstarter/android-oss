@@ -79,4 +79,5 @@
 
   <string name="estimated_delivery_data" formatted="false">%{title} %{estimated_delivery_data}</string>
     <string name="Big_announcements">Big Kickstarter new, plus occasionally projects and events chosen just for you</string>
+    <string name="News_and_projects">News and projects</string>
 </resources>

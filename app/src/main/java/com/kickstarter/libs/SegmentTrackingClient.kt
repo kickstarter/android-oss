@@ -4,6 +4,8 @@ import android.content.Context
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isKSApplication
 import com.kickstarter.models.User
+import com.kickstarter.models.extensions.NAME
+import com.kickstarter.models.extensions.getTraits
 import com.segment.analytics.Analytics
 import com.segment.analytics.Properties
 import com.segment.analytics.Traits
@@ -79,7 +81,7 @@ class SegmentTrackingClient(
 
         if (this.build.isDebug && type() == Type.SEGMENT) {
             user.apply {
-                Timber.d("Queued ${type().tag} Identify userName: ${this.name()} userId: ${this.id()}")
+                Timber.d("Queued ${type().tag} Identify userName: ${this.name()} userId: ${this.id()} traits: ${getTraits(user)}")
             }
         }
         this.segmentClient?.let { segment ->
@@ -103,9 +105,17 @@ class SegmentTrackingClient(
      * In order to send custom properties to segment for the Identify method we need to use
      * the method Traits() from the Segment SDK
      * see https://segment.com/docs/connections/sources/catalog/libraries/mobile/android/#identify
+     *
+     * Added as trait the user name
+     * Added as traits the user preferences for Email and Push Notifications Subscriptions
+     * see User.getTraits()
      */
     private fun getTraits(user: User) = Traits().apply {
-        this.putName(user.name())
-        this.putAvatar(user.avatar().toString())
+        user.getTraits().map { entry ->
+            if (entry.key == NAME) this.putName(user.name())
+            else {
+                this[entry.key] = entry.value
+            }
+        }
     }
 }

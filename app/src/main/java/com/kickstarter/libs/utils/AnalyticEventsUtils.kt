@@ -4,6 +4,7 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.EventContextValues.VideoContextName.LENGTH
 import com.kickstarter.libs.utils.EventContextValues.VideoContextName.POSITION
 import com.kickstarter.libs.utils.RewardUtils.isItemized
+import com.kickstarter.libs.utils.RewardUtils.isReward
 import com.kickstarter.libs.utils.RewardUtils.isShippable
 import com.kickstarter.libs.utils.RewardUtils.isTimeLimitedEnd
 import com.kickstarter.libs.utils.extensions.addOnsCost
@@ -244,7 +245,9 @@ object AnalyticEventsUtils {
             put("percent_raised", (project.percentageFunded()).toInt())
             put("pid", project.id().toString())
             put("prelaunch_activated", BooleanUtils.isTrue(project.prelaunchActivated()))
-            project.rewards()?.let { rewards ->
+
+            project.rewards()?.let { a ->
+                val rewards = a.filter { isReward(it) }
                 put("rewards_count", rewards.size)
             }
             put("state", project.state())

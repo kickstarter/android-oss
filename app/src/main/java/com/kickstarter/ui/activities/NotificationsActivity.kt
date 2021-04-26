@@ -43,6 +43,7 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
     private var notifyMobileOfMessages: Boolean = false
     private var notifyMobileOfPostLikes: Boolean = false
     private var notifyMobileOfUpdates: Boolean = false
+    private var notifyMobileOfMarketingUpdates: Boolean = false
     private var notifyOfBackings: Boolean = false
     private var notifyOfComments: Boolean = false
     private var notifyOfCreatorDigest: Boolean = false
@@ -87,6 +88,7 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
     private fun displayPreferences(user: User) {
         project_notifications_count.text = intValueOrZero(user.backedProjectsCount()).toString()
 
+        displayMarketingUpdates(user)
         displayBackingsNotificationSettings(user)
         displayCommentsNotificationSettings(user)
         displayCommentRepliesNotificationSettings(user)
@@ -96,6 +98,11 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
         displayMessagesNotificationSettings(user)
         displayPostLikesNotificationSettings(user)
         displayUpdatesNotificationSettings(user)
+    }
+
+    private fun displayMarketingUpdates(user: User) {
+        this.notifyMobileOfMarketingUpdates = isTrue(user.notifyMobileOfMarketingUpdate())
+        toggleImageButtonIconColor(marketing_updates_phone_icon, this.notifyMobileOfMarketingUpdates, true)
     }
 
     private fun displayBackingsNotificationSettings(user: User) {

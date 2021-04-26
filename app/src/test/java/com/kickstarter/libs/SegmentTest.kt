@@ -2,16 +2,34 @@ package com.kickstarter.libs
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.models.OptimizelyEnvironment
-import com.kickstarter.libs.utils.ContextPropertyKeyName
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
 import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN_SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.MANAGE_PLEDGE
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.TWO_FACTOR_AUTH
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.UPDATE_PLEDGE
-import com.kickstarter.libs.utils.EventName
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_FILTER
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_SORT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INITIATE
+import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.ALL
+import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.PWL
+import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RECOMMENDED
+import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RESULTS
+import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
+import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_OVERLAY
+import com.kickstarter.libs.utils.EventContextValues.LocationContextName.GLOBAL_NAV
+import com.kickstarter.libs.utils.EventContextValues.LocationContextName.SEARCH_RESULTS
+import com.kickstarter.libs.utils.EventName.CTA_CLICKED
+import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.mock.MockCurrentConfig
@@ -139,7 +157,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val expectedProperties = propertiesTest.value
         assertEquals("campaign_details", expectedProperties["context_cta"])
-        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
     }
 
     @Test
@@ -188,9 +206,9 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val expectedProperties = propertiesTest.value
 
-        assertEquals("magic", expectedProperties[EventContextValues.CtaContextName.DISCOVER_SORT.contextName])
-        assertEquals(EventContextValues.CtaContextName.DISCOVER.contextName, expectedProperties[CONTEXT_PAGE.contextName])
-        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        assertEquals("magic", expectedProperties[DISCOVER_SORT.contextName])
+        assertEquals(DISCOVER.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+        this.segmentTrack.assertValue(PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -219,11 +237,11 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val expectedProperties = propertiesTest.value
 
-        assertEquals(EventContextValues.ContextPageName.PROJECT.contextName, expectedProperties[CONTEXT_CTA.contextName])
-        assertEquals(EventContextValues.LocationContextName.DISCOVER_ADVANCED.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
-        assertEquals(EventContextValues.DiscoveryContextType.RESULTS.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_TYPE.contextName])
-        assertEquals(EventContextValues.CtaContextName.DISCOVER.contextName, expectedProperties[CONTEXT_PAGE.contextName])
-        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+        assertEquals(PROJECT.contextName, expectedProperties[CONTEXT_CTA.contextName])
+        assertEquals(DISCOVER_ADVANCED.contextName, expectedProperties[CONTEXT_LOCATION.contextName])
+        assertEquals(RESULTS.contextName, expectedProperties[CONTEXT_TYPE.contextName])
+        assertEquals(DISCOVER.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
     }
 
     @Test
@@ -268,11 +286,11 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(null, expectedProperties["discover_tag"])
         assertEquals(false, expectedProperties["discover_watched"])
 
-        assertEquals(EventContextValues.ContextPageName.PROJECT.contextName, expectedProperties[CONTEXT_CTA.contextName])
-        assertEquals(EventContextValues.LocationContextName.DISCOVER_ADVANCED.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
-        assertEquals(EventContextValues.DiscoveryContextType.RECOMMENDED.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_TYPE.contextName])
-        assertEquals(EventContextValues.CtaContextName.DISCOVER.contextName, expectedProperties[CONTEXT_PAGE.contextName])
-        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+        assertEquals(PROJECT.contextName, expectedProperties[CONTEXT_CTA.contextName])
+        assertEquals(DISCOVER_ADVANCED.contextName, expectedProperties[CONTEXT_LOCATION.contextName])
+        assertEquals(RECOMMENDED.contextName, expectedProperties[CONTEXT_TYPE.contextName])
+        assertEquals(DISCOVER.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
     }
 
     @Test
@@ -314,12 +332,12 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(null, expectedProperties["discover_tag"])
         assertEquals(false, expectedProperties["discover_watched"])
 
-        assertEquals(EventContextValues.ContextPageName.PROJECT.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_CTA.contextName])
-        assertEquals(EventContextValues.CtaContextName.SEARCH.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_PAGE.contextName])
-        assertEquals(EventContextValues.LocationContextName.SEARCH_RESULTS.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
-        assertEquals(EventContextValues.ContextTypeName.RESULTS.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_TYPE.contextName])
+        assertEquals(PROJECT.contextName, expectedProperties[CONTEXT_CTA.contextName])
+        assertEquals(SEARCH.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+        assertEquals(SEARCH_RESULTS.contextName, expectedProperties[CONTEXT_LOCATION.contextName])
+        assertEquals(RESULTS.contextName, expectedProperties[CONTEXT_TYPE.contextName])
 
-        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
     }
 
     @Test
@@ -358,7 +376,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(null, expectedProperties["discover_tag"])
         assertEquals(false, expectedProperties["discover_watched"])
 
-        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -416,10 +434,10 @@ class SegmentTest : KSRobolectricTestCase() {
         assertUserProperties(false)
 
         val expectedProperties = propertiesTest.value
-        assertEquals(EventContextValues.CtaContextName.DISCOVER.contextName, expectedProperties[CONTEXT_CTA.contextName])
+        assertEquals(DISCOVER.contextName, expectedProperties[CONTEXT_CTA.contextName])
         assertEquals(ACTIVITY_FEED.contextName, expectedProperties[CONTEXT_PAGE.contextName])
 
-        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
     }
 
     @Test
@@ -498,10 +516,10 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(null, expectedProperties["discover_tag"])
         assertEquals(false, expectedProperties["discover_watched"])
 
-        assertEquals(EventContextValues.CtaContextName.SEARCH.contextName, expectedProperties[CONTEXT_CTA.contextName])
-        assertEquals(EventContextValues.LocationContextName.GLOBAL_NAV.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
+        assertEquals(SEARCH.contextName, expectedProperties[CONTEXT_CTA.contextName])
+        assertEquals(GLOBAL_NAV.contextName, expectedProperties[CONTEXT_LOCATION.contextName])
 
-        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
     }
 
     @Test
@@ -851,7 +869,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(35.0, expectedProperties["checkout_bonus_amount_usd"])
         assertEquals(MANAGE_PLEDGE.contextName, expectedProperties[CONTEXT_PAGE.contextName])
 
-        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -888,7 +906,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val expectedProperties = this.propertiesTest.value
         assertEquals(UPDATE_PLEDGE.contextName, expectedProperties[CONTEXT_PAGE.contextName])
 
-        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -982,7 +1000,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertPageContextProperty(ACTIVITY_FEED.contextName)
         assertUserProperties(false)
 
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValues(PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -998,7 +1016,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertContextProperties()
         assertPageContextProperty(TWO_FACTOR_AUTH.contextName)
 
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValues(PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -1076,7 +1094,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertNull(properties["user_uid"])
         assertEquals(LOGIN.contextName, properties[CONTEXT_PAGE.contextName])
 
-        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -1124,10 +1142,10 @@ class SegmentTest : KSRobolectricTestCase() {
         assertUserProperties(false)
         assertSessionProperties(user)
 
-        assertEquals(EventContextValues.LocationContextName.DISCOVER_ADVANCED.contextName, properties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
-        assertEquals(EventContextValues.CtaContextName.DISCOVER.contextName, properties[CONTEXT_PAGE.contextName])
-        assertEquals(EventContextValues.CtaContextName.DISCOVER_SORT.contextName, properties[CONTEXT_CTA.contextName])
-        assertEquals("ending_soon", properties[ContextPropertyKeyName.CONTEXT_TYPE.contextName])
+        assertEquals(DISCOVER_ADVANCED.contextName, properties[CONTEXT_LOCATION.contextName])
+        assertEquals(DISCOVER.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(DISCOVER_SORT.contextName, properties[CONTEXT_CTA.contextName])
+        assertEquals("ending_soon", properties[CONTEXT_TYPE.contextName])
         assertEquals("popular", properties["discover_sort"])
     }
 
@@ -1145,10 +1163,10 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val properties = this.propertiesTest.value
         assertNull(properties["user_uid"])
-        assertEquals(EventContextValues.ContextPageName.LOGIN_SIGN_UP.contextName, properties[CONTEXT_PAGE.contextName])
-        assertEquals(EventContextValues.CtaContextName.SIGN_UP_INITIATE.contextName, properties[CONTEXT_CTA.contextName])
+        assertEquals(LOGIN_SIGN_UP.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(SIGN_UP_INITIATE.contextName, properties[CONTEXT_CTA.contextName])
 
-        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
     }
 
     @Test
@@ -1166,9 +1184,9 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val properties = this.propertiesTest.value
         assertNull(properties["user_uid"])
-        assertEquals(EventContextValues.ContextPageName.SIGN_UP.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(SIGN_UP.contextName, properties[CONTEXT_PAGE.contextName])
 
-        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -1186,9 +1204,87 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val properties = this.propertiesTest.value
         assertNull(properties["user_uid"])
-        assertEquals(EventContextValues.ContextPageName.LOGIN_SIGN_UP.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(LOGIN_SIGN_UP.contextName, properties[CONTEXT_PAGE.contextName])
 
-        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(PAGE_VIEWED.eventName)
+    }
+
+    @Test
+    fun trackDiscoverFilterCTA_whenFilterPresent_returnsCorrectFilter() {
+        val user = user()
+        val client = client(user)
+
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackDiscoverFilterCTA(discoveryParams())
+
+        val properties = this.propertiesTest.value
+
+        assertContextProperties()
+        assertUserProperties(false)
+        assertSessionProperties(user)
+
+        assertEquals(DISCOVER_FILTER.contextName, properties[CONTEXT_CTA.contextName])
+        assertEquals(DISCOVER_OVERLAY.contextName, properties[CONTEXT_LOCATION.contextName])
+        assertEquals(DISCOVER.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(PWL.contextName, properties[CONTEXT_TYPE.contextName])
+        assertEquals("Art", properties["discover_category_name"])
+        assertEquals(false, properties["discover_everything"])
+        assertEquals(true, properties["discover_pwl"])
+        assertEquals(false, properties["discover_recommended"])
+        assertEquals(true, properties["discover_social"])
+        assertEquals(true, properties["discover_watched"])
+        assertEquals("category_ending_soon", properties["discover_ref_tag"])
+        assertEquals("hello world", properties["discover_search_term"])
+        assertEquals("ending_soon", properties["discover_sort"])
+        assertEquals("287", properties["discover_subcategory_id"])
+        assertEquals("Ceramics", properties["discover_subcategory_name"])
+        assertEquals(123, properties["discover_tag"])
+    }
+
+    @Test
+    fun trackDiscoverFilterCTA_whenFilterNotPresent_returnsAllProjectsFilter() {
+        val user = user()
+        val client = client(user)
+        val discoveryParams =
+            discoveryParams()
+                .toBuilder()
+                .staffPicks(false)
+                .recommended(false)
+                .starred(0)
+                .social(0)
+                .category(null)
+                .build()
+
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackDiscoverFilterCTA(discoveryParams)
+
+        val properties = this.propertiesTest.value
+
+        assertContextProperties()
+        assertUserProperties(false)
+        assertSessionProperties(user)
+
+        assertEquals(DISCOVER_FILTER.contextName, properties[CONTEXT_CTA.contextName])
+        assertEquals(DISCOVER_OVERLAY.contextName, properties[CONTEXT_LOCATION.contextName])
+        assertEquals(DISCOVER.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(ALL.contextName, properties[CONTEXT_TYPE.contextName])
+        assertEquals(false, properties["discover_everything"])
+        assertEquals(false, properties["discover_pwl"])
+        assertEquals(false, properties["discover_recommended"])
+        assertEquals(false, properties["discover_social"])
+        assertEquals(false, properties["discover_watched"])
+        assertEquals("city", properties["discover_ref_tag"])
+        assertEquals("hello world", properties["discover_search_term"])
+        assertEquals("ending_soon", properties["discover_sort"])
+        assertEquals(123, properties["discover_tag"])
     }
 
     private fun client(user: User?) = MockTrackingClient(

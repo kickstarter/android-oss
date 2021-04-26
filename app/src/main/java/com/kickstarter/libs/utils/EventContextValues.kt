@@ -16,6 +16,13 @@ class EventContextValues {
      * SEARCH: The search CTA on the discover screen.
      * DISCOVER: The discover projects CTA on the activity feed screen.
      * WATCH_PROJECT: The watch project heart CTA on the project screen.
+     * LOGIN_INITIATE: The login CTA on the login/signup screen.
+     * CAMPAIGN_DETAILS: The campaign details CTA on the project screen.
+     * CREATOR_DETAILS:  The creator details CTA on the project screen.
+     * LOGIN_OR_SIGN_UP: The login or signup cta on the discover screen.
+     * LOGIN_SUBMIT: The login submit CTA on the login screen.
+     * SIGN_UP_SUBMIT: The signup submit CTA on the signup screen.
+     * SIGN_UP_INITIATE: The signup CTA on the login/signup screen.
      */
     enum class CtaContextName(val contextName: String) {
         ADD_ONS_CONTINUE("add_ons_continue"),
@@ -48,21 +55,28 @@ class EventContextValues {
      * PROJECT: The project screen.
      * REWARDS: The Rewards carousel.
      * THANKS: The Thanks page.
+     * UPDATE_PLEDGE: The update pledge screen.
+     * CHANGE_PAYMENT: The change payment screen.
+     * LOGIN_SIGN_UP: The login/signup screen.
+     * SIGN_UP: The signup screen.
+     * LOGIN: The login screen.
+     * MANAGE_PLEDGE: The manage pledge screen.
+     * TWO_FACTOR_AUTH: The two-factor authentication screen.
      */
     enum class ContextPageName(val contextName: String) {
         ACTIVITY_FEED("activity_feed"),
         ADD_ONS("add_ons"),
+        CHANGE_PAYMENT("change_payment"),
         CHECKOUT("checkout"),
         DISCOVER("discover"),
+        LOGIN_SIGN_UP("log_in_sign_up"),
         PROFILE("profile"),
         PROJECT("project"),
         REWARDS("rewards"),
         SEARCH("search"),
+        SIGN_UP("sign_up"),
         THANKS("thanks"),
         UPDATE_PLEDGE("update_pledge"),
-        CHANGE_PAYMENT("change_payment"),
-        LOGIN_SIGN_UP("log_in_sign_up"),
-        SIGN_UP("sign_up"),
         LOGIN("log_in"),
         MANAGE_PLEDGE("manage_pledge"),
         TWO_FACTOR_AUTH("two_factor_auth")
@@ -107,14 +121,17 @@ class EventContextValues {
      *
      * @param contextName: The name of the discovery context.
      *
+     * ALL: The name of the all projects filter.
      * CATEGORY_NAME: The name of the category filter.
      * PWL: The projects we love filter in the overflow menu.
      * RECOMMENDED: The recommended filter in the overflow menu.
      * SOCIAL: The social filter in the overflow menu.
      * SUBCATEGORY_NAME: The subcategory name under the category filter in the overflow menu.
      * WATCHED: The watched filter in the overflow menu.
+     * RESULTS: Represents when a project is tapped from the results on the discover screen.
      */
     enum class DiscoveryContextType(val contextName: String) {
+        ALL("all"),
         CATEGORY_NAME("category_name"),
         PWL("pwl"),
         RECOMMENDED("recommended"),
@@ -131,7 +148,8 @@ class EventContextValues {
      *
      * CREDIT_CARD: Represents if the user has used a credit card during checkout.
      * WATCH: Represents when a user watches a project.
-     * WATCH: Represents when a user unwatches a project.
+     * UNWATCH: Represents when a user unwatches a project.
+     * FACEBOOK: Represents when a user logs in with facebook.
      */
     enum class ContextTypeName(val contextName: String) {
         CREDIT_CARD("credit_card"),

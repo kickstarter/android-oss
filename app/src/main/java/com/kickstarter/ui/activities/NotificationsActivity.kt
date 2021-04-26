@@ -315,6 +315,10 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
             this.viewModel.inputs.notifyMobileOfUpdates(!this.notifyMobileOfUpdates)
         }
 
+        marketing_updates_phone_icon.setOnClickListener {
+            this.viewModel.inputs.notifyMobileOfMarketingUpdate(!this.notifyMobileOfMarketingUpdates)
+        }
+
         project_updates_row.setOnClickListener {
             AnimationUtils.notificationBounceAnimation(project_updates_phone_icon, project_updates_mail_icon)
         }

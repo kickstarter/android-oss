@@ -183,6 +183,7 @@ public abstract class User implements Parcelable, Relay {
       Objects.equals(this.notifyMobileOfMessages(), otherUser.notifyMobileOfMessages()) &&
       Objects.equals(this.notifyMobileOfPostLikes(), otherUser.notifyMobileOfPostLikes()) &&
       Objects.equals(this.notifyMobileOfUpdates(), otherUser.notifyMobileOfUpdates()) &&
+      Objects.equals(this.notifyMobileOfMarketingUpdate(), otherUser.notifyMobileOfMarketingUpdate()) &&
       Objects.equals(this.notifyOfBackings(), otherUser.notifyOfBackings()) &&
       Objects.equals(this.notifyOfComments(), otherUser.notifyOfComments()) &&
       Objects.equals(this.notifyOfCommentReplies(), otherUser.notifyOfCommentReplies()) &&

@@ -49,7 +49,8 @@ fun User.getTraits() = mapOf(
     PushNotification.PUSH_FRIEND_ACTIVITY.field to this.notifyMobileOfFriendActivity(),
     PushNotification.PUSH_NOTIFY_COMMENT.field to this.notifyMobileOfComments(),
     PushNotification.PUSH_LIKE.field to this.notifyMobileOfPostLikes(),
-    PushNotification.PUSH_MESSAGE.field to this.notifyMobileOfMessages()
+    PushNotification.PUSH_MESSAGE.field to this.notifyMobileOfMessages(),
+    PushNotification.PUSH_MARKETING.field to this.notifyMobileOfMarketingUpdate()
 )
 
 const val NAME = "name"
@@ -84,5 +85,6 @@ enum class PushNotification(val field: String) {
     PUSH_FRIEND_ACTIVITY("notify_mobile_of_friend_activity"),
     PUSH_NOTIFY_COMMENT("notify_mobile_of_comments"),
     PUSH_LIKE("notify_mobile_of_post_likes"),
-    PUSH_MESSAGE("notify_mobile_of_messages")
+    PUSH_MESSAGE("notify_mobile_of_messages"),
+    PUSH_MARKETING("notify_mobile_of_marketing_update")
 }

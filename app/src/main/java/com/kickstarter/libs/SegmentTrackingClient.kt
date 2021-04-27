@@ -32,17 +32,21 @@ class SegmentTrackingClient(
     private fun initialize() {
         if (this.context.isKSApplication()) {
             var apiKey = ""
+            var logLevel = Analytics.LogLevel.NONE
+
             if (build.isRelease && Build.isExternal()) {
                 apiKey = Secrets.Segment.PRODUCTION
             }
             if (build.isDebug || Build.isInternal()) {
                 apiKey = Secrets.Segment.STAGING
+                logLevel = Analytics.LogLevel.VERBOSE
             }
 
             this.segmentClient = Analytics.Builder(context, apiKey)
                 // - This flag will activate sending information to Braze
                 .use(AppboyIntegration.FACTORY)
                 .trackApplicationLifecycleEvents()
+                .logLevel(logLevel)
                 .build()
 
             Analytics.setSingletonInstance(segmentClient)

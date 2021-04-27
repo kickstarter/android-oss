@@ -309,7 +309,6 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     fun trackLoginRegisterTout(loginReason: LoginReason) {
         val properties = hashMapOf<String, Any>()
         properties["intent"] = loginReason.trackingString()
-
         client.track("Application Login or Signup", properties)
     }
 

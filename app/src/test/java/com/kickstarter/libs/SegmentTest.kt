@@ -1230,7 +1230,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(DISCOVER_OVERLAY.contextName, properties[CONTEXT_LOCATION.contextName])
         assertEquals(DISCOVER.contextName, properties[CONTEXT_PAGE.contextName])
         assertEquals(PWL.contextName, properties[CONTEXT_TYPE.contextName])
-        assertEquals("Art", properties["discover_category_name"])
+        assertEquals("categoryName", properties["discover_category_name"])
         assertEquals(false, properties["discover_everything"])
         assertEquals(true, properties["discover_pwl"])
         assertEquals(false, properties["discover_recommended"])
@@ -1240,7 +1240,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("hello world", properties["discover_search_term"])
         assertEquals("ending_soon", properties["discover_sort"])
         assertEquals("287", properties["discover_subcategory_id"])
-        assertEquals("Ceramics", properties["discover_subcategory_name"])
+        assertEquals("subcategoryName", properties["discover_subcategory_name"])
         assertEquals(123, properties["discover_tag"])
     }
 

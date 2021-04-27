@@ -71,9 +71,8 @@ android.applicationVariants.all { variant ->
                          '**/ui/views/*.*',
                          '**/databinding/*.*',
                          '**/mock/*.*',
+                         '**/services/*.*',
                          '**/firebase/*.*',
-                         '**/apirequests/*.*',
-                         '**/apiresponses/*.*',
                          '**/fragment/*.*']
 
     /**

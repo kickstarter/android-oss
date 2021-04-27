@@ -30,14 +30,14 @@ class LakeTrackingClient(
 
     init {
         this.currentUser.observable()
-                .subscribe {
-                    this.loggedInUser = it
-                }
+            .subscribe {
+                this.loggedInUser = it
+            }
 
         this.currentConfig.observable()
-                .subscribe { c ->
-                    this.config = c
-                }
+            .subscribe { c ->
+                this.config = c
+            }
     }
 
     @Throws(JSONException::class)

@@ -38,14 +38,14 @@ class SegmentTrackingClient(
             }
 
         this.currentUser.observable()
-                .distinctUntilChanged { prevUser, newUser ->
-                    updateUserAndCheckTraits(prevUser, newUser)
-                }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
-                .subscribe {
-                    identify(it)
-                }
+            .distinctUntilChanged { prevUser, newUser ->
+                updateUserAndCheckTraits(prevUser, newUser)
+            }
+            .filter { ObjectUtils.isNotNull(it) }
+            .map { requireNotNull(it) }
+            .subscribe {
+                identify(it)
+            }
     }
 
     /**
@@ -59,7 +59,7 @@ class SegmentTrackingClient(
      * @return true in case traits remain the same
      *         false in case traits changed
      */
-    private fun updateUserAndCheckTraits(prevUser: User?, newUser: User?) :Boolean {
+    private fun updateUserAndCheckTraits(prevUser: User?, newUser: User?): Boolean {
         this.loggedInUser = newUser
         return prevUser?.getTraits() == newUser?.getTraits()
     }

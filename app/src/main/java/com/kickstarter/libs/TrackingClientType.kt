@@ -12,8 +12,11 @@ abstract class TrackingClientType {
         SEGMENT("\uD83C\uDF81 Segment");
     }
 
+    protected abstract var config: Config?
     protected abstract val isGooglePlayServicesAvailable: Boolean
     protected abstract val isTalkBackOn: Boolean
+    protected abstract var isInitialized: Boolean
+    protected abstract var loggedInUser: User?
 
     abstract fun optimizely(): ExperimentsClientType?
     abstract fun loggedInUser(): User?

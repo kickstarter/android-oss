@@ -24,6 +24,7 @@ public final class MockTrackingClient extends TrackingClientType {
   private final ExperimentsClientType optimizely;
   @Nullable private User loggedInUser;
   private Config config = ConfigFactory.config();
+  private Boolean isInitialized = false;
 
   public MockTrackingClient(final @NonNull CurrentUserType currentUser, final @NonNull CurrentConfigType currentConfig, final Type type, final @NonNull ExperimentsClientType optimizely) {
     this.type = type;
@@ -41,18 +42,48 @@ public final class MockTrackingClient extends TrackingClientType {
 
   @Override
   public void identify(final @NotNull User user) {
-    this.identifiedId.onNext(user.id());
+    this.identifiedUser.onNext(user);
   }
 
   @Override
   public void reset() {
     this.loggedInUser = null;
-    this.identifiedId.onNext(null);
+    this.identifiedUser.onNext(null);
   }
 
   @Override
   public boolean isEnabled() {
     return true;
+  }
+
+  @Override
+  protected Config getConfig() {
+    return this.config;
+  }
+
+  @Override
+  protected void setConfig(Config config) {
+    this.config = config;
+  }
+
+  @Override
+  protected boolean isInitialized() {
+    return true;
+  }
+
+  @Override
+  protected User getLoggedInUser() {
+    return this.loggedInUser;
+  }
+
+  @Override
+  protected void setLoggedInUser(User loggedInUser) {
+    this.loggedInUser = loggedInUser;
+  }
+
+  @Override
+  protected void setInitialized(boolean isInitialized) {
+    this.isInitialized = isInitialized;
   }
 
   public static class Event {
@@ -67,7 +98,7 @@ public final class MockTrackingClient extends TrackingClientType {
   private final @NonNull PublishSubject<Event> events = PublishSubject.create();
   public final @NonNull Observable<String> eventNames = this.events.map(e -> e.name);
   public final @NonNull Observable<Map<String, Object>> eventProperties = this.events.map(e -> e.properties);
-  public final @NonNull BehaviorSubject<Long> identifiedId = BehaviorSubject.create();
+  public final @NonNull BehaviorSubject<User> identifiedUser = BehaviorSubject.create();
 
   @Override
   public void track(final @NotNull String eventName, final @NotNull Map<String, ?> additionalProperties) {

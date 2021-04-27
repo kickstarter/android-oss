@@ -63,13 +63,13 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
-        client.identifiedId.subscribe(this.segmentIdentify)
+        client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackAppOpen()
 
         this.segmentTrack.assertValue("App Open")
-        this.segmentIdentify.assertValue(user.id())
+        this.segmentIdentify.assertValue(user)
 
         assertSessionProperties(user)
         assertContextProperties()
@@ -82,7 +82,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
-        client.identifiedId.subscribe(this.segmentIdentify)
+        client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackAppOpen()
@@ -101,7 +101,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
-        client.identifiedId.subscribe(this.segmentIdentify)
+        client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackActivityFeedPageViewed()
@@ -124,13 +124,13 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
-        client.identifiedId.subscribe(this.segmentIdentify)
+        client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
 
         segment.trackCampaignDetailsCTAClicked(projectData)
-        this.segmentIdentify.assertValue(user.id())
+        this.segmentIdentify.assertValue(user)
 
         assertSessionProperties(user)
         assertContextProperties()
@@ -148,7 +148,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
-        client.identifiedId.subscribe(this.segmentIdentify)
+        client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
         val params = DiscoveryParams
@@ -157,7 +157,7 @@ class SegmentTest : KSRobolectricTestCase() {
             .build()
 
         segment.trackExplorePageViewed(params)
-        this.segmentIdentify.assertValue(user.id())
+        this.segmentIdentify.assertValue(user)
 
         assertSessionProperties(user)
         assertContextProperties()
@@ -170,7 +170,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
-        client.identifiedId.subscribe(this.segmentIdentify)
+        client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
         val params = DiscoveryParams
@@ -179,7 +179,7 @@ class SegmentTest : KSRobolectricTestCase() {
             .build()
 
         segment.trackDiscoveryPageViewed(params)
-        this.segmentIdentify.assertValue(user.id())
+        this.segmentIdentify.assertValue(user)
 
         assertSessionProperties(user)
         assertContextProperties()
@@ -199,7 +199,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
-        client.identifiedId.subscribe(this.segmentIdentify)
+        client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
         val project = project().toBuilder().build()
@@ -232,7 +232,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
-        client.identifiedId.subscribe(this.segmentIdentify)
+        client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
         val project = project().toBuilder().build()
@@ -282,7 +282,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
-        client.identifiedId.subscribe(this.segmentIdentify)
+        client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
         val params = DiscoveryParams
@@ -329,7 +329,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
-        client.identifiedId.subscribe(this.segmentIdentify)
+        client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
@@ -363,7 +363,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
-        client.identifiedId.subscribe(this.segmentIdentify)
+        client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
         val params = DiscoveryParams
@@ -402,7 +402,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
-        client.identifiedId.subscribe(this.segmentIdentify)
+        client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
         val params = DiscoveryParams
@@ -432,7 +432,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(null, expectedProperties["discover_tag"])
         assertEquals(false, expectedProperties["discover_watched"])
 
-        this.segmentIdentify.assertValue(user.id())
+        this.segmentIdentify.assertValue(user)
     }
 
     @Test
@@ -441,7 +441,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
-        client.identifiedId.subscribe(this.segmentIdentify)
+        client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackDiscoverProjectCTAClicked()
@@ -463,7 +463,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
-        client.identifiedId.subscribe(this.segmentIdentify)
+        client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
         val params = DiscoveryParams
@@ -493,7 +493,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(null, expectedProperties["discover_tag"])
         assertEquals(false, expectedProperties["discover_watched"])
 
-        this.segmentIdentify.assertValue(user.id())
+        this.segmentIdentify.assertValue(user)
     }
 
     @Test
@@ -502,7 +502,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
-        client.identifiedId.subscribe(this.segmentIdentify)
+        client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
         val params = DiscoveryParams
@@ -636,7 +636,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
-        client.identifiedId.subscribe(this.segmentIdentify)
+        client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
@@ -653,7 +653,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
         this.segmentTrack.assertValues("Project Page Viewed")
-        this.segmentIdentify.assertValue(user.id())
+        this.segmentIdentify.assertValue(user)
     }
 
     @Test

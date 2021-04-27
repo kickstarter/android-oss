@@ -1,6 +1,7 @@
 package com.kickstarter.libs
 
 import android.content.Context
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isKSApplication
 import com.kickstarter.models.User
@@ -21,17 +22,46 @@ class SegmentTrackingClient(
 ) : TrackingClient(context, currentUser, build, currentConfig, optimizely) {
 
     private var segmentClient: Analytics? = null
-    private var isInitialized = false
+    override var isInitialized = false
+    override var loggedInUser: User? = null
+    override var config: Config? = null
 
     init {
         this.currentConfig.observable()
-                .distinctUntilChanged()
-                .subscribe {
-                    // - Check the feature flag active, and initialize Segment client
-                    if (this.isEnabled() && !isInitialized) {
-                        initialize()
-                    }
+            .distinctUntilChanged()
+            .subscribe {
+                // - Check the feature flag active, and initialize Segment client
+                this.config = it
+                if (this.isEnabled() && !isInitialized) {
+                    initialize()
                 }
+            }
+
+        this.currentUser.observable()
+                .distinctUntilChanged { prevUser, newUser ->
+                    updateUserAndCheckTraits(prevUser, newUser)
+                }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .subscribe {
+                    identify(it)
+                }
+    }
+
+    /**
+     * Takes the new user and the previous user emitted to the observable.
+     * - updates the current logged in user with the new user
+     * - and compares just the traits we send with the identify call, not the entire user object
+     *
+     * @param prevUser
+     * @param newUser
+     *
+     * @return true in case traits remain the same
+     *         false in case traits changed
+     */
+    private fun updateUserAndCheckTraits(prevUser: User?, newUser: User?) :Boolean {
+        this.loggedInUser = newUser
+        return prevUser?.getTraits() == newUser?.getTraits()
     }
 
     private fun initialize() {
@@ -53,10 +83,9 @@ class SegmentTrackingClient(
                 .trackApplicationLifecycleEvents()
                 .logLevel(logLevel)
                 .build()
-
-            isInitialized = true
             Analytics.setSingletonInstance(segmentClient)
         }
+        isInitialized = true
     }
 
     /**
@@ -88,13 +117,13 @@ class SegmentTrackingClient(
      */
     override fun identify(user: User) {
         super.identify(user)
-
-        if (this.build.isDebug && type() == Type.SEGMENT) {
-            user.apply {
-                Timber.d("Queued ${type().tag} Identify userName: ${this.name()} userId: ${this.id()} traits: ${getTraits(user)}")
-            }
-        }
         this.segmentClient?.let { segment ->
+
+            if (this.build.isDebug && type() == Type.SEGMENT) {
+                user.apply {
+                    Timber.d("Queued ${type().tag} Identify userName: ${this.name()} userId: ${this.id()} traits: ${getTraits(user)}")
+                }
+            }
             segment.identify(user.id().toString(), getTraits(user), null)
         }
     }

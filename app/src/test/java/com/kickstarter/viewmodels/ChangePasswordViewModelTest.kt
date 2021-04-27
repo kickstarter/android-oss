@@ -25,7 +25,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
     private val progressBarIsVisible = TestSubscriber<Boolean>()
     private val saveButtonIsEnabled = TestSubscriber<Boolean>()
     private val success = TestSubscriber<String>()
-    private val userId = TestSubscriber<Long?>()
+    private val currentUser = TestSubscriber<User?>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = ChangePasswordViewModel.ViewModel(environment)
@@ -148,7 +148,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.changePasswordClicked()
         this.error.assertValue("Oops")
 
-        userId.assertValue(user.id())
+        currentUser.assertValue(user)
     }
 
     @Test
@@ -185,7 +185,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.changePasswordClicked()
         this.success.assertValue("test@email.com")
 
-        userId.assertValues(user.id(), null)
+        currentUser.assertValues(user, null)
     }
 
     private fun getMockClientWithUser(user: User) = MockTrackingClient(
@@ -194,6 +194,6 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
         TrackingClientType.Type.SEGMENT,
         MockExperimentsClientType()
     ).apply {
-        this.identifiedId.subscribe(userId)
+        this.identifiedUser.subscribe(currentUser)
     }
 }

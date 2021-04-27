@@ -21,12 +21,17 @@ class SegmentTrackingClient(
 ) : TrackingClient(context, currentUser, build, currentConfig, optimizely) {
 
     private var segmentClient: Analytics? = null
+    private var isInitialized = false
 
     init {
-        // - Check the feature flag active, and initialize Segment client
-        if (this.isEnabled()) {
-            initialize()
-        }
+        this.currentConfig.observable()
+                .distinctUntilChanged()
+                .subscribe {
+                    // - Check the feature flag active, and initialize Segment client
+                    if (this.isEnabled() && !isInitialized) {
+                        initialize()
+                    }
+                }
     }
 
     private fun initialize() {
@@ -49,6 +54,7 @@ class SegmentTrackingClient(
                 .logLevel(logLevel)
                 .build()
 
+            isInitialized = true
             Analytics.setSingletonInstance(segmentClient)
         }
     }

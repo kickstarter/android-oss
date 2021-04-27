@@ -90,6 +90,26 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testNotifyMobileOfMarketingUpdates_On() {
+        val user = UserFactory.user().toBuilder().notifyMobileOfMarketingUpdate(false).build()
+
+        setUpEnvironment(user)
+
+        this.vm.inputs.notifyMobileOfMarketingUpdate(true)
+        this.currentUserTest.assertValues(user, user.toBuilder().notifyMobileOfMarketingUpdate(true).build())
+    }
+
+    @Test
+    fun testNotifyMobileOfMarketingUpdates_Off() {
+        val user = UserFactory.user().toBuilder().notifyMobileOfMarketingUpdate(true).build()
+
+        setUpEnvironment(user)
+
+        this.vm.inputs.notifyMobileOfMarketingUpdate(false)
+        this.currentUserTest.assertValues(user, user.toBuilder().notifyMobileOfMarketingUpdate(false).build())
+    }
+
+    @Test
     fun testNotifyMobileOfComments() {
         val user = UserFactory.user().toBuilder().notifyMobileOfComments(false).build()
 

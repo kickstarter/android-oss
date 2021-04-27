@@ -512,6 +512,7 @@ public final class ApiClient implements ApiClientType {
           .notifyMobileOfMessages(isTrue(user.notifyMobileOfMessages()))
           .notifyMobileOfPostLikes(isTrue(user.notifyMobileOfPostLikes()))
           .notifyMobileOfUpdates(isTrue(user.notifyMobileOfUpdates()))
+          .notifyMobileOfMarketingUpdate(isTrue(user.notifyMobileOfMarketingUpdate()))
           .notifyOfBackings(isTrue(user.notifyOfBackings()))
           .notifyOfComments(isTrue(user.notifyOfComments()))
           .notifyOfCommentReplies(isTrue(user.notifyOfCommentReplies()))

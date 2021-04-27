@@ -36,7 +36,6 @@ abstract class TrackingClient(
 
     init {
 
-        // Cache the most recent logged in user for default Lake properties.
         this.currentUser.observable()
             .distinctUntilChanged()
             .subscribe { u ->
@@ -44,7 +43,6 @@ abstract class TrackingClient(
                 this.loggedInUser?.let { identify(it) }
             }
 
-        // Cache the most recent config for default Lake properties.
         this.currentConfig.observable()
             .subscribe { c ->
                 this.config = c

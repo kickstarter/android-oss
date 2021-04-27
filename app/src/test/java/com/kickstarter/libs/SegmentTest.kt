@@ -323,6 +323,41 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testThanksActivityRecommendedProjectCATClicked_Properties() {
+        val project = project()
+        val user = user()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedId.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
+
+        segment.trackThanksActivityProjectCardClicked(
+            projectData,
+            CheckoutDataFactory.checkoutData(20.0, 30.0),
+            PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward(), listOfAddons())
+        )
+
+        assertSessionProperties(user)
+        assertProjectProperties(project)
+        assertContextProperties()
+        assertPledgeProperties()
+        assertCheckoutProperties()
+        assertUserProperties(false)
+
+        val expectedProperties = propertiesTest.value
+
+        assertEquals(EventContextValues.ContextPageName.PROJECT.contextName, expectedProperties[CONTEXT_CTA.contextName])
+        assertEquals(EventContextValues.ContextPageName.THANKS.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+        assertEquals(EventContextValues.LocationContextName.CURATED.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
+        assertEquals(EventContextValues.DiscoveryContextType.RECOMMENDED.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_TYPE.contextName])
+
+        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+    }
+
+    @Test
     fun testSearchResultPageViewed_Properties() {
         val user = user()
         val client = client(user)
@@ -1300,7 +1335,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(50, expectedProperties["project_percent_raised"])
         assertEquals("4", expectedProperties["project_pid"])
         assertEquals(50.0, expectedProperties["project_current_pledge_amount"])
-        assertEquals(2, expectedProperties["project_rewards_count"])
+        assertEquals(1, expectedProperties["project_rewards_count"])
         assertEquals("live", expectedProperties["project_state"])
         assertEquals(1.0f, expectedProperties["project_static_usd_rate"])
         assertEquals(5, expectedProperties["project_updates_count"])

@@ -45,6 +45,7 @@ public abstract class User implements Parcelable, Relay {
   public abstract @Nullable Boolean notifyMobileOfMessages();
   public abstract @Nullable Boolean notifyMobileOfPostLikes();
   public abstract @Nullable Boolean notifyMobileOfUpdates();
+  public abstract @Nullable Boolean notifyMobileOfMarketingUpdate();
   public abstract @Nullable Boolean notifyOfBackings();
   public abstract @Nullable Boolean notifyOfComments();
   public abstract @Nullable Boolean notifyOfCommentReplies();
@@ -93,6 +94,7 @@ public abstract class User implements Parcelable, Relay {
     public abstract Builder notifyMobileOfMessages(Boolean __);
     public abstract Builder notifyMobileOfPostLikes(Boolean __);
     public abstract Builder notifyMobileOfUpdates(Boolean __);
+    public abstract Builder notifyMobileOfMarketingUpdate(Boolean __);
     public abstract Builder notifyOfBackings(Boolean __);
     public abstract Builder notifyOfComments(Boolean __);
     public abstract Builder notifyOfCommentReplies(Boolean __);
@@ -181,6 +183,7 @@ public abstract class User implements Parcelable, Relay {
       Objects.equals(this.notifyMobileOfMessages(), otherUser.notifyMobileOfMessages()) &&
       Objects.equals(this.notifyMobileOfPostLikes(), otherUser.notifyMobileOfPostLikes()) &&
       Objects.equals(this.notifyMobileOfUpdates(), otherUser.notifyMobileOfUpdates()) &&
+      Objects.equals(this.notifyMobileOfMarketingUpdate(), otherUser.notifyMobileOfMarketingUpdate()) &&
       Objects.equals(this.notifyOfBackings(), otherUser.notifyOfBackings()) &&
       Objects.equals(this.notifyOfComments(), otherUser.notifyOfComments()) &&
       Objects.equals(this.notifyOfCommentReplies(), otherUser.notifyOfCommentReplies()) &&

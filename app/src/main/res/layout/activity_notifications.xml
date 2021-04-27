@@ -50,8 +50,33 @@
       android:showDividers="middle|end">
 
       <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:id="@+id/marketing_row"
+          android:background="@color/kds_white"
+          android:orientation="vertical">
+        <TextView
+            style="@style/SettingsSectionTitle"
+            android:text="@string/News_and_projects" />
+        <LinearLayout
+            android:id="@+id/marketing_updates_row"
+            style="@style/SettingsNotificationRow">
+
+          <TextView
+              style="@style/SettingsSectionLabel"
+              android:text="@string/Recommended_For_You" />
+
+          <ImageButton
+              android:id="@+id/marketing_updates_phone_icon"
+              style="@style/KSSettingsPhoneIcon"
+              android:contentDescription="@null" />
+
+        </LinearLayout>
+      </LinearLayout>
+      <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:background="@color/kds_white"
         android:orientation="vertical">
 

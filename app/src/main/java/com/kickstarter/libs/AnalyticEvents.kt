@@ -54,6 +54,7 @@ import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RESULT
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SOCIAL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SUBCATEGORY_NAME
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.WATCHED
+import com.kickstarter.libs.utils.EventContextValues.LocationContextName.CURATED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_OVERLAY
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.GLOBAL_NAV
@@ -888,6 +889,24 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         props[CONTEXT_PAGE.contextName] = pageContext
         props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
         client.track(CARD_CLICKED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client when the projects card at thanks activity is clicked
+     *
+     * @param project: The selected project.
+     * @param checkoutData: The page/screen of the app where the project card was clicked.
+     * @param pledgeData: The selected pledge data.
+     */
+    fun trackThanksActivityProjectCardClicked(projectData: ProjectData, checkoutData: CheckoutData, pledgeData: PledgeData) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to PROJECT.contextName)
+        props[CONTEXT_PAGE.contextName] = THANKS.contextName
+        props[CONTEXT_LOCATION.contextName] = CURATED.contextName
+        props[CONTEXT_TYPE.contextName] = RECOMMENDED.contextName
+        props.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
+        props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
+        props.putAll(AnalyticEventsUtils.checkoutDataProperties(checkoutData, pledgeData, client.loggedInUser()))
+        client.track(CTA_CLICKED.eventName, props)
     }
 
     fun trackSearchButtonClicked() {

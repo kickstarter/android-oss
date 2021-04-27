@@ -323,6 +323,41 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testThanksActivityRecommendedProjectCATClicked_Properties() {
+        val project = project()
+        val user = user()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedId.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
+
+        segment.trackThanksActivityProjectCardClicked(
+            projectData,
+            CheckoutDataFactory.checkoutData(20.0, 30.0),
+            PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward(), listOfAddons())
+        )
+
+        assertSessionProperties(user)
+        assertProjectProperties(project)
+        assertContextProperties()
+        assertPledgeProperties()
+        assertCheckoutProperties()
+        assertUserProperties(false)
+
+        val expectedProperties = propertiesTest.value
+
+        assertEquals(EventContextValues.ContextPageName.PROJECT.contextName, expectedProperties[CONTEXT_CTA.contextName])
+        assertEquals(EventContextValues.ContextPageName.THANKS.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+        assertEquals(EventContextValues.LocationContextName.CURATED.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
+        assertEquals(EventContextValues.DiscoveryContextType.RECOMMENDED.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_TYPE.contextName])
+
+        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+    }
+
+    @Test
     fun testSearchResultPageViewed_Properties() {
         val user = user()
         val client = client(user)

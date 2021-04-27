@@ -62,7 +62,7 @@ public final class MockTrackingClient extends TrackingClientType {
   }
 
   @Override
-  protected void setConfig(Config config) {
+  protected void setConfig(final Config config) {
     this.config = config;
   }
 
@@ -77,12 +77,12 @@ public final class MockTrackingClient extends TrackingClientType {
   }
 
   @Override
-  protected void setLoggedInUser(User loggedInUser) {
+  protected void setLoggedInUser(final User loggedInUser) {
     this.loggedInUser = loggedInUser;
   }
 
   @Override
-  protected void setInitialized(boolean isInitialized) {
+  protected void setInitialized(final boolean isInitialized) {
     this.isInitialized = isInitialized;
   }
 

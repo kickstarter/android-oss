@@ -9,6 +9,8 @@ base_job: &base_job
     GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
 
 version: 2
+orbs:
+  codecov: codecov/codecov@1.1.5
 jobs:
   build:
     <<: *base_job
@@ -141,9 +143,7 @@ jobs:
          command: bundle exec fastlane external
 
 workflows:
-  version: 2.1
-  orbs:
-    codecov: codecov/codecov@1.1.5
+  version: 2
   build_and_test:
     jobs:
       - build

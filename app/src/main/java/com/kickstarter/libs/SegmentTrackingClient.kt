@@ -28,7 +28,6 @@ class SegmentTrackingClient(
 
     init {
         this.currentConfig.observable()
-            .distinctUntilChanged()
             .subscribe {
                 // - Check the feature flag active, and initialize Segment client
                 this.config = it

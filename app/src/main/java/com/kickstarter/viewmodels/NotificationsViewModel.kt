@@ -46,6 +46,9 @@ interface NotificationsViewModel {
         /** Call when the notify mobile of project updates toggle changes.  */
         fun notifyMobileOfUpdates(checked: Boolean)
 
+        /** Call when the notify mobile of marketing updates toggle changes.  */
+        fun notifyMobileOfMarketingUpdate(checked: Boolean)
+
         /** Call when the notify of pledge activity toggle changes.  */
         fun notifyOfBackings(checked: Boolean)
 
@@ -197,6 +200,10 @@ interface NotificationsViewModel {
                 userBuilder.notifyOfCreatorDigest(false)
             }
             this.userInput.onNext(userBuilder.build())
+        }
+
+        override fun notifyMobileOfMarketingUpdate(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfMarketingUpdate(checked).build())
         }
 
         override fun notifyOfComments(checked: Boolean) {

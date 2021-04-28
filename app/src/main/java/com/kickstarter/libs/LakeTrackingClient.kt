@@ -23,15 +23,22 @@ class LakeTrackingClient(
     currentConfig: CurrentConfigType,
     optimizely: ExperimentsClientType
 ) : TrackingClient(context, currentUser, build, currentConfig, optimizely) {
-    private var loggedInUser: User? = null
-    private var config: Config? = null
+    override fun type() = Type.LAKE
+    override var isInitialized: Boolean = true
+    override var config: Config? = null
+    override var loggedInUser: User? = null
 
     init {
-        // Cache the most recent config for default Lake properties.
-        this.currentConfig.observable().subscribe { c -> this.config = c }
-    }
+        this.currentUser.observable()
+            .subscribe {
+                this.loggedInUser = it
+            }
 
-    override fun type() = Type.LAKE
+        this.currentConfig.observable()
+            .subscribe { c ->
+                this.config = c
+            }
+    }
 
     @Throws(JSONException::class)
     override fun trackingData(eventName: String, newProperties: Map<String, Any?>) {

@@ -15,6 +15,7 @@ import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.mock.services.MockWebClient
+import com.kickstarter.models.User
 import com.stripe.android.Stripe
 import junit.framework.TestCase
 import org.joda.time.DateTimeUtils
@@ -34,7 +35,7 @@ abstract class KSRobolectricTestCase : TestCase() {
     lateinit var experimentsTest: TestSubscriber<String>
     lateinit var lakeTest: TestSubscriber<String>
     lateinit var segmentTrack: TestSubscriber<String>
-    lateinit var segmentIdentify: TestSubscriber<Long>
+    lateinit var segmentIdentify: TestSubscriber<User>
 
     @Before
     @Throws(Exception::class)
@@ -101,7 +102,7 @@ abstract class KSRobolectricTestCase : TestCase() {
             mockCurrentConfig, TrackingClientType.Type.SEGMENT, experimentsClientType
         )
         segmentTrackingClient.eventNames.subscribe(segmentTrack)
-        segmentTrackingClient.identifiedId.subscribe(segmentIdentify)
+        segmentTrackingClient.identifiedUser.subscribe(segmentIdentify)
         return segmentTrackingClient
     }
 }

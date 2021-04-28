@@ -19,7 +19,7 @@ class SettingsViewModelTest : KSRobolectricTestCase() {
     private val currentUserTest = TestSubscriber<User>()
     private val logout = TestSubscriber<Void>()
     private val showConfirmLogoutPrompt = TestSubscriber<Boolean>()
-    private val userId = TestSubscriber<Long?>()
+    private val currentUser = TestSubscriber<User?>()
 
     private fun setUpEnvironment(user: User) {
         val currentUser = MockCurrentUser(user)
@@ -82,7 +82,7 @@ class SettingsViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.confirmLogoutClicked()
         this.logout.assertValue(null)
 
-        this.userId.assertValues(user.id(), null)
+        this.currentUser.assertValues(user, null)
     }
 
     private fun getMockClientWithUser(user: User) = MockTrackingClient(
@@ -91,6 +91,6 @@ class SettingsViewModelTest : KSRobolectricTestCase() {
         TrackingClientType.Type.SEGMENT,
         MockExperimentsClientType()
     ).apply {
-        this.identifiedId.subscribe(userId)
+        this.identifiedUser.subscribe(currentUser)
     }
 }

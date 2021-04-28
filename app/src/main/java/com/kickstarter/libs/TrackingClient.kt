@@ -31,24 +31,6 @@ abstract class TrackingClient(
     @set:Inject var optimizely: ExperimentsClientType
 ) : TrackingClientType() {
 
-    private var loggedInUser: User? = null
-    private var config: Config? = null
-
-    init {
-
-        this.currentUser.observable()
-            .distinctUntilChanged()
-            .subscribe { u ->
-                this.loggedInUser = u
-                this.loggedInUser?.let { identify(it) }
-            }
-
-        this.currentConfig.observable()
-            .subscribe { c ->
-                this.config = c
-            }
-    }
-
     override val isGooglePlayServicesAvailable: Boolean
         get() = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this.context) == ConnectionResult.SUCCESS
 
@@ -78,7 +60,7 @@ abstract class TrackingClient(
 
     override fun isEnabled(): Boolean {
         return if (type() == Type.SEGMENT) {
-            config?.isFeatureFlagEnabled(SEGMENT_ENABLED.configFeatureName) ?: false
+            this.config?.isFeatureFlagEnabled(SEGMENT_ENABLED.configFeatureName) ?: false
         } else true
     }
 

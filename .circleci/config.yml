@@ -141,7 +141,7 @@ jobs:
          command: bundle exec fastlane external
 
 workflows:
-  version: 2
+  version: 2.1
   orbs:
     codecov: codecov/codecov@1.1.5
   build_and_test:

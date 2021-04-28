@@ -1,6 +1,7 @@
 <a href="https://www.kickstarter.com"><img src=".github/ksr-wordmark.svg" width="36%" alt="Kickstarter for Android™"></a>
 
 [![CircleCI](https://circleci.com/gh/kickstarter/android-oss.svg?style=svg)](https://circleci.com/gh/kickstarter/android-oss)
+[![codecov](https://codecov.io/gh/kickstarter/android-oss/branch/master/graph/badge.svg?token=uYNatHIB8b)](https://codecov.io/gh/kickstarter/android-oss)
 
 Welcome to Kickstarter's open source Android app! Come on in, take your shoes
 off, stay a while—_explore_ how Kickstarter's native squad has built and

@@ -26,7 +26,7 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
     private val progressBarIsVisible = TestSubscriber<Boolean>()
     private val saveButtonIsEnabled = TestSubscriber<Boolean>()
     private val success = TestSubscriber<String>()
-    private val userId = TestSubscriber<Long?>()
+    private val currentUser = TestSubscriber<User?>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = CreatePasswordViewModel.ViewModel(environment)
@@ -142,7 +142,7 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.createPasswordClicked()
         this.error.assertValue("Oops")
 
-        userId.assertValue(user.id())
+        currentUser.assertValue(user)
     }
 
     @Test
@@ -178,7 +178,7 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.createPasswordClicked()
         this.success.assertValue("test@emai")
 
-        userId.assertValues(user.id(), null)
+        currentUser.assertValues(user, null)
     }
 
     private fun getMockClientWithUser(user: User) = MockTrackingClient(
@@ -187,6 +187,6 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
         TrackingClientType.Type.SEGMENT,
         MockExperimentsClientType()
     ).apply {
-        this.identifiedId.subscribe(userId)
+        this.identifiedUser.subscribe(currentUser)
     }
 }

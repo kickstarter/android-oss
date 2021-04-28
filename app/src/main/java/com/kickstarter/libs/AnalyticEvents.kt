@@ -47,6 +47,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.WATCH_PROJECT
+import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.ALL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.CATEGORY_NAME
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.PWL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RECOMMENDED
@@ -253,7 +254,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     /**
-     * Sends data to the client when Activity Screen viewed.
+     * Sends data to the client when Activity Screen is viewed.
      */
     fun trackActivityFeedPageViewed() {
         val props = hashMapOf<String, Any>()
@@ -262,7 +263,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     /**
-     * Tracks a discover project clicks on the activity screen.
+     * Sends data to the client when the discover projects CTA is tapped on the activity screen.
      */
     fun trackDiscoverProjectCTAClicked() {
         val props = hashMapOf<String, Any>()
@@ -313,9 +314,10 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     /**
-     * Tracks a login or sign up button clicked.
-     * @param type
-     * @param page
+     * Sends data to the client when the signup or login CTAs are clicked.
+     *
+     * @param type: The type of sign-up the user is doing, if applicable.
+     * @param page: The page where the CTA was clicked.
      */
     fun trackLoginOrSignUpCtaClicked(type: String?, page: String) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to LOGIN_OR_SIGN_UP.contextName)
@@ -325,7 +327,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     /**
-     * Tracks a sign up page viewed.
+     * Sends data to the client when the signup page is viewed.
      */
     fun trackSignUpPageViewed() {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to SIGN_UP.contextName)
@@ -333,7 +335,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     /**
-     * Tracks a login or sign up page viewed.
+     * Sends data to the client when the login/sign-up page is viewed.
      */
     fun trackLoginOrSignUpPagedViewed() {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to LOGIN_SIGN_UP.contextName)
@@ -341,7 +343,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     /**
-     * Tracks a login page viewed.
+     * Sends data to the client when the login page is viewed.
      */
     fun trackLoginPagedViewed() {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to LOGIN.contextName)
@@ -706,7 +708,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      *Sends data to the client when the any of video started .
      *
      * @param videoLength: Length of video in seconds.
-     * @param videoPosition:Index position of the playhead,
+     * @param videoPosition: Index position of the playhead,
      */
     fun trackVideoStarted(project: Project, videoLength: Long, videoPosition: Long) {
         val props: HashMap<String, Any> = HashMap()
@@ -733,6 +735,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     /**
      * Sends data to the client when the any of the discover sort tabs are clicked.
      *
+     * @param currentSort: The sort the user was in before changing sorts.
      * @param discoveryParams: The discovery parameters.
      */
     fun trackDiscoverSortCTA(currentSort: DiscoveryParams.Sort, discoverParams: DiscoveryParams) {
@@ -835,7 +838,8 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
             BooleanUtils.isIntTrue(discoveryParams.social()) -> SOCIAL.contextName
             BooleanUtils.isTrue(discoveryParams.category()?.isRoot) -> CATEGORY_NAME.contextName
             discoveryParams.category() != null -> SUBCATEGORY_NAME.contextName
-            else -> ""
+            BooleanUtils.isTrue(discoveryParams.isAllProjects) -> ALL.contextName
+            else -> ALL.contextName
         }
         props.putAll(AnalyticEventsUtils.discoveryParamsProperties(discoveryParams))
 
@@ -1075,6 +1079,12 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(THANKS_PAGE_VIEWED, props)
     }
 
+    /**
+     * Sends data to the client when the thanks page after backing a project is viewed.
+     *
+     * @param checkoutData: The checkout data for the backed project.
+     * @param pledgeData: The pledge data for the backed project.
+     */
     fun trackThanksScreenViewed(checkoutData: CheckoutData, pledgeData: PledgeData) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to THANKS.contextName)
         props[CONTEXT_TYPE.contextName] = pledgeData.pledgeFlowContext().trackingString
@@ -1172,7 +1182,6 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
     /**
      * Sends data to the client when the login button is clicked.
-     *
      */
     fun trackLogInButtonCtaClicked() {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to LOGIN.contextName)
@@ -1180,12 +1189,18 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(CTA_CLICKED.eventName, props)
     }
 
+    /**
+     * Sends data to the client when the login CTA is clicked on the login/signup screen.
+     */
     fun trackLogInInitiateCtaClicked() {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to LOGIN_INITIATE.contextName)
         props[CONTEXT_PAGE.contextName] = LOGIN_SIGN_UP.contextName
         client.track(CTA_CLICKED.eventName, props)
     }
 
+    /**
+     * Sends data to the client when the signup CTA is clicked on the login/signup screen.
+     */
     fun trackSignUpInitiateCtaClicked() {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to SIGN_UP_INITIATE.contextName)
         props[CONTEXT_PAGE.contextName] = LOGIN_SIGN_UP.contextName
@@ -1210,7 +1225,6 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
     /**
      * Sends data to the client when the submit button is clicked.
-     *
      */
     fun trackSignUpSubmitCtaClicked() {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to SIGN_UP_SUBMIT.contextName)
@@ -1240,6 +1254,11 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(CAMPAIGN_DETAILS_BUTTON_CLICKED, experimentProperties(projectData))
     }
 
+    /**
+     * Sends data to the client when the campaign details CTA is clicked on the project screen.
+     *
+     * @param projectData: The data for the current project.
+     */
     fun trackCampaignDetailsCTAClicked(projectData: ProjectData) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to CAMPAIGN_DETAILS.contextName)
         props[CONTEXT_PAGE.contextName] = PROJECT.contextName
@@ -1256,6 +1275,11 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(CREATOR_DETAILS_CLICKED, experimentProperties(projectData))
     }
 
+    /**
+     * Sends data to the client when the creator details CTA is clicked on the project screen.
+     *
+     * @param projectData: The data for the current project.
+     */
     fun trackCreatorDetailsCTA(projectData: ProjectData) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to CREATOR_DETAILS.contextName)
         props[CONTEXT_PAGE.contextName] = PROJECT.contextName

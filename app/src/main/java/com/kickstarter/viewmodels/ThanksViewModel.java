@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels;
 
+import android.content.SharedPreferences;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
@@ -10,6 +11,7 @@ import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.RefTagUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
@@ -23,9 +25,11 @@ import com.kickstarter.ui.adapters.ThanksAdapter;
 import com.kickstarter.ui.adapters.data.ThanksData;
 import com.kickstarter.ui.data.CheckoutData;
 import com.kickstarter.ui.data.PledgeData;
+import com.kickstarter.ui.data.ProjectData;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.ui.viewholders.ThanksCategoryViewHolder;
 
+import java.net.CookieManager;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -36,6 +40,7 @@ import rx.subjects.PublishSubject;
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 
@@ -79,6 +84,8 @@ public interface ThanksViewModel {
     private final BooleanPreferenceType hasSeenGamesNewsletterPreference;
     private final CurrentUserType currentUser;
     private final ExperimentsClientType optimizely;
+    private final SharedPreferences sharedPreferences;
+    private final CookieManager cookieManager;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
@@ -88,6 +95,8 @@ public interface ThanksViewModel {
       this.hasSeenAppRatingPreference = environment.hasSeenAppRatingPreference();
       this.hasSeenGamesNewsletterPreference = environment.hasSeenGamesNewsletterPreference();
       this.optimizely = environment.optimizely();
+      this.sharedPreferences = environment.sharedPreferences();
+      this.cookieManager = environment.cookieManager();
 
       final Observable<Project> project = intent()
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
@@ -182,6 +191,21 @@ public interface ThanksViewModel {
         .subscribe(checkoutDataPledgeData -> {
           this.lake.trackThanksPageViewed(checkoutDataPledgeData.first, checkoutDataPledgeData.second);
           this.lake.trackThanksScreenViewed(checkoutDataPledgeData.first, checkoutDataPledgeData.second);
+        });
+
+      checkoutAndPledgeData
+        .compose(takePairWhen(this.projectCardViewHolderClicked))
+        .compose(bindToLifecycle())
+        .subscribe(dataCheckoutProjectPair -> {
+          final RefTag cookieRefTag = RefTagUtils.storedCookieRefTagForProject(dataCheckoutProjectPair.second, this.cookieManager, this.sharedPreferences);
+          final ProjectData projectData = ProjectData.Companion.builder()
+                  .refTagFromIntent(RefTag.thanks())
+                  .refTagFromCookie(cookieRefTag)
+                  .project(dataCheckoutProjectPair.second)
+                  .build();
+          this.lake.trackThanksActivityProjectCardClicked(projectData,
+                            dataCheckoutProjectPair.first.first,
+                            dataCheckoutProjectPair.first.second);
         });
     }
 

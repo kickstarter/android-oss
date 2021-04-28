@@ -12,6 +12,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN_SIGN_
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.MANAGE_PLEDGE
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.SIGN_UP
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.TWO_FACTOR_AUTH
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.UPDATE_PLEDGE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
@@ -23,6 +24,7 @@ import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.ALL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.PWL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RECOMMENDED
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RESULTS
+import com.kickstarter.libs.utils.EventContextValues.LocationContextName.CURATED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_OVERLAY
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.GLOBAL_NAV
@@ -366,12 +368,12 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val expectedProperties = propertiesTest.value
 
-        assertEquals(EventContextValues.ContextPageName.PROJECT.contextName, expectedProperties[CONTEXT_CTA.contextName])
-        assertEquals(EventContextValues.ContextPageName.THANKS.contextName, expectedProperties[CONTEXT_PAGE.contextName])
-        assertEquals(EventContextValues.LocationContextName.CURATED.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
-        assertEquals(EventContextValues.DiscoveryContextType.RECOMMENDED.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_TYPE.contextName])
+        assertEquals(PROJECT.contextName, expectedProperties[CONTEXT_CTA.contextName])
+        assertEquals(THANKS.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+        assertEquals(CURATED.contextName, expectedProperties[CONTEXT_LOCATION.contextName])
+        assertEquals(RECOMMENDED.contextName, expectedProperties[CONTEXT_TYPE.contextName])
 
-        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
     }
 
     @Test

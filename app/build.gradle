@@ -229,7 +229,7 @@ android {
 
     variantFilter { variant ->
         def names = variant.flavors*.name
-        if( names.contains("regression")||names.contains("release")) {
+        if( names.contains("regression")) {
             setIgnore(true)
         }
     }

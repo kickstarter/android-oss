@@ -8,7 +8,7 @@ base_job: &base_job
     ADB_INSTALL_TIMEOUT: 8
     GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
 
-version: 2
+version: 2.1
 orbs:
   codecov: codecov/codecov@1.1.5
 jobs:
@@ -143,7 +143,7 @@ jobs:
          command: bundle exec fastlane external
 
 workflows:
-  version: 2
+  version: 2.1
   build_and_test:
     jobs:
       - build

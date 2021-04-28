@@ -36,7 +36,7 @@ if (file('signing.gradle').exists()) {
 }
 
 jacoco {
-    toolVersion = '0.8.1' //Use latest version
+    toolVersion = "$jacoco_version"
 }
 tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true

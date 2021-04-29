@@ -421,6 +421,17 @@ public class ApplicationModule {
   }
 
   @Provides
+  @Singleton
+  SegmentTrackingClient provideSegmentTrackingClient(
+          final @ApplicationContext @NonNull Context context,
+          final @NonNull CurrentUserType currentUser,
+          final @NonNull Build build,
+          final @NonNull CurrentConfigType currentConfig,
+          final @NonNull ExperimentsClientType experimentsClientType) {
+    return new SegmentTrackingClient(build, context, currentConfig, currentUser,  experimentsClientType);
+  }
+
+  @Provides
   @LakeTracker
   @Singleton
   static AnalyticEvents provideAnalytics(
@@ -428,10 +439,10 @@ public class ApplicationModule {
           final @NonNull CurrentUserType currentUser,
           final @NonNull Build build,
           final @NonNull CurrentConfigType currentConfig,
-          final @NonNull ExperimentsClientType experimentsClientType) {
+          final @NonNull ExperimentsClientType experimentsClientType,
+          final @NonNull SegmentTrackingClient segmentClient) {
     final LakeTrackingClient lakeTrackingClient = new LakeTrackingClient(context, currentUser, build, currentConfig, experimentsClientType);
-    final SegmentTrackingClient segmentTrackingClient = new SegmentTrackingClient(build, context, currentConfig, currentUser,  experimentsClientType);
-    final List<TrackingClientType> clients = Arrays.asList(lakeTrackingClient, segmentTrackingClient);
+    final List<TrackingClientType> clients = Arrays.asList(lakeTrackingClient, segmentClient);
     return new AnalyticEvents(clients);
   }
 

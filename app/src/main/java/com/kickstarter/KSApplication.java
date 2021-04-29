@@ -8,6 +8,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.PushNotifications;
+import com.kickstarter.libs.SegmentTrackingClient;
 import com.kickstarter.libs.braze.RemotePushClientType;
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
 import com.kickstarter.libs.utils.Secrets;
@@ -32,6 +33,7 @@ public class KSApplication extends MultiDexApplication {
   @Inject protected CookieManager cookieManager;
   @Inject protected PushNotifications pushNotifications;
   @Inject protected RemotePushClientType remotePushClientType;
+  @Inject protected SegmentTrackingClient segmentTrackingClient;
 
   @Override
   @CallSuper
@@ -68,6 +70,11 @@ public class KSApplication extends MultiDexApplication {
     final ApplicationLifecycleUtil appUtil = new ApplicationLifecycleUtil(this);
     registerActivityLifecycleCallbacks(appUtil);
     registerComponentCallbacks(appUtil);
+
+    // - Initialize Segment SDK
+    if (this.segmentTrackingClient != null) {
+      this.segmentTrackingClient.initialize();
+    }
 
     // - Register lifecycle callback for Braze
     this.remotePushClientType.registerActivityLifecycleCallbacks(this);

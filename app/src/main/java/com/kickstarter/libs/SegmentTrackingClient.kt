@@ -1,6 +1,7 @@
 package com.kickstarter.libs
 
 import android.content.Context
+import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isKSApplication
@@ -11,6 +12,7 @@ import com.segment.analytics.Analytics
 import com.segment.analytics.Properties
 import com.segment.analytics.Traits
 import com.segment.analytics.android.integrations.appboy.AppboyIntegration
+import rx.subjects.BehaviorSubject
 import timber.log.Timber
 
 class SegmentTrackingClient(
@@ -21,19 +23,21 @@ class SegmentTrackingClient(
     optimizely: ExperimentsClientType,
 ) : TrackingClient(context, currentUser, build, currentConfig, optimizely) {
 
-    private var segmentClient: Analytics? = null
     override var isInitialized = false
     override var loggedInUser: User? = null
     override var config: Config? = null
 
+    private val calledFromOnCreate = BehaviorSubject.create<Boolean>()
+
     init {
+
+        // - We need to syncronize both has been called from OnCreate and the configuration is ready
         this.currentConfig.observable()
+            .take(1)
+            .compose(combineLatestPair(calledFromOnCreate))
             .subscribe {
-                // - Check the feature flag active, and initialize Segment client
-                this.config = it
-                if (this.isEnabled() && !isInitialized) {
-                    initialize()
-                }
+                this.config = it.first
+                privateInitialize()
             }
 
         this.currentUser.observable()
@@ -63,8 +67,12 @@ class SegmentTrackingClient(
         return prevUser?.getTraits() == newUser?.getTraits()
     }
 
-    private fun initialize() {
-        if (this.context.isKSApplication()) {
+    override fun initialize() {
+        calledFromOnCreate.onNext(true)
+    }
+
+    private fun privateInitialize() {
+        if (this.context.isKSApplication() && !this.isInitialized) {
             var apiKey = ""
             var logLevel = Analytics.LogLevel.NONE
 
@@ -76,15 +84,26 @@ class SegmentTrackingClient(
                 logLevel = Analytics.LogLevel.VERBOSE
             }
 
-            this.segmentClient = Analytics.Builder(context, apiKey)
-                // - This flag will activate sending information to Braze
-                .use(AppboyIntegration.FACTORY)
-                .trackApplicationLifecycleEvents()
-                .logLevel(logLevel)
-                .build()
+            Timber.d("${type().tag} isEnabled ${this.isEnabled()}")
+            val segmentClient = if (this.isEnabled()) {
+                Analytics.Builder(context, apiKey)
+                    // - This flag will activate sending information to Braze
+                    .use(AppboyIntegration.FACTORY)
+                    .trackApplicationLifecycleEvents()
+                    .logLevel(logLevel)
+                    .build()
+            } else {
+                Analytics.Builder(context, apiKey)
+                    // - This flag will activate sending information to Braze
+                    .use(AppboyIntegration.FACTORY)
+                    .logLevel(logLevel)
+                    .build()
+            }
             Analytics.setSingletonInstance(segmentClient)
+            this.isInitialized = true
+
+            Timber.d("${type().tag} client:$segmentClient isInitialized:$isInitialized")
         }
-        isInitialized = true
     }
 
     /**
@@ -92,9 +111,7 @@ class SegmentTrackingClient(
      * see https://segment.com/docs/connections/sources/catalog/libraries/mobile/android/#track
      */
     override fun trackingData(eventName: String, newProperties: Map<String, Any?>) {
-        this.segmentClient?.let { segment ->
-            segment.track(eventName, this.getProperties(newProperties))
-        }
+        if (isInitialized) Analytics.with(context).track(eventName, this.getProperties(newProperties))
     }
 
     /**
@@ -116,15 +133,13 @@ class SegmentTrackingClient(
      */
     override fun identify(user: User) {
         super.identify(user)
-        this.segmentClient?.let { segment ->
 
-            if (this.build.isDebug && type() == Type.SEGMENT) {
-                user.apply {
-                    Timber.d("Queued ${type().tag} Identify userName: ${this.name()} userId: ${this.id()} traits: ${getTraits(user)}")
-                }
+        if (this.build.isDebug && type() == Type.SEGMENT) {
+            user.apply {
+                Timber.d("Queued ${type().tag} Identify userName: ${this.name()} userId: ${this.id()} traits: ${getTraits(user)}")
             }
-            segment.identify(user.id().toString(), getTraits(user), null)
         }
+        if (isInitialized) Analytics.with(context).identify(user.id().toString(), getTraits(user), null)
     }
 
     /**
@@ -136,7 +151,7 @@ class SegmentTrackingClient(
         if (this.build.isDebug) {
             Timber.d("Queued ${type().tag} Reset user after logout")
         }
-        this.segmentClient?.reset()
+        if (isInitialized) Analytics.with(context).reset()
     }
 
     /**

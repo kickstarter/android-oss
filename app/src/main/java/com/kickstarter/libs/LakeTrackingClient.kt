@@ -28,6 +28,10 @@ class LakeTrackingClient(
     override var config: Config? = null
     override var loggedInUser: User? = null
 
+    override fun initialize() {
+        // DO nothing
+    }
+
     init {
         this.currentUser.observable()
             .subscribe {

@@ -76,13 +76,13 @@ class SegmentTrackingClient(
                 apiKey = Secrets.Segment.STAGING
                 logLevel = Analytics.LogLevel.VERBOSE
             }
-            
+
             val segmentClient = Analytics.Builder(context, apiKey)
-                        // - This flag will activate sending information to Braze
-                        .use(AppboyIntegration.FACTORY)
-                        .trackApplicationLifecycleEvents()
-                        .logLevel(logLevel)
-                        .build()
+                // - This flag will activate sending information to Braze
+                .use(AppboyIntegration.FACTORY)
+                .trackApplicationLifecycleEvents()
+                .logLevel(logLevel)
+                .build()
 
             Analytics.setSingletonInstance(segmentClient)
             this.isInitialized = true

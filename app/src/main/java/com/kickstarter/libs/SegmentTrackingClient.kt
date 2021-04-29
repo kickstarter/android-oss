@@ -31,13 +31,10 @@ class SegmentTrackingClient(
 
     init {
 
-        // - We need to syncronize both has been called from OnCreate and the configuration is ready
         this.currentConfig.observable()
-            .take(1)
             .compose(combineLatestPair(calledFromOnCreate))
             .subscribe {
                 this.config = it.first
-                privateInitialize()
             }
 
         this.currentUser.observable()
@@ -68,10 +65,6 @@ class SegmentTrackingClient(
     }
 
     override fun initialize() {
-        calledFromOnCreate.onNext(true)
-    }
-
-    private fun privateInitialize() {
         if (this.context.isKSApplication() && !this.isInitialized) {
             var apiKey = ""
             var logLevel = Analytics.LogLevel.NONE
@@ -84,21 +77,14 @@ class SegmentTrackingClient(
                 logLevel = Analytics.LogLevel.VERBOSE
             }
 
-            Timber.d("${type().tag} isEnabled ${this.isEnabled()}")
-            val segmentClient = if (this.isEnabled()) {
-                Analytics.Builder(context, apiKey)
-                    // - This flag will activate sending information to Braze
-                    .use(AppboyIntegration.FACTORY)
-                    .trackApplicationLifecycleEvents()
-                    .logLevel(logLevel)
-                    .build()
-            } else {
-                Analytics.Builder(context, apiKey)
-                    // - This flag will activate sending information to Braze
-                    .use(AppboyIntegration.FACTORY)
-                    .logLevel(logLevel)
-                    .build()
-            }
+            Timber.d("${type().tag} initializing isSDKEnabled:${this.isEnabled()}")
+            val segmentClient = Analytics.Builder(context, apiKey)
+                        // - This flag will activate sending information to Braze
+                        .use(AppboyIntegration.FACTORY)
+                        .trackApplicationLifecycleEvents()
+                        .logLevel(logLevel)
+                        .build()
+
             Analytics.setSingletonInstance(segmentClient)
             this.isInitialized = true
 
@@ -111,7 +97,10 @@ class SegmentTrackingClient(
      * see https://segment.com/docs/connections/sources/catalog/libraries/mobile/android/#track
      */
     override fun trackingData(eventName: String, newProperties: Map<String, Any?>) {
-        if (isInitialized) Analytics.with(context).track(eventName, this.getProperties(newProperties))
+        if (isInitialized) {
+            Timber.d("Queued ${type().tag} Track eventName: $eventName properties: $newProperties")
+            Analytics.with(context).track(eventName, this.getProperties(newProperties))
+        }
     }
 
     /**
@@ -133,13 +122,14 @@ class SegmentTrackingClient(
      */
     override fun identify(user: User) {
         super.identify(user)
-
-        if (this.build.isDebug && type() == Type.SEGMENT) {
-            user.apply {
-                Timber.d("Queued ${type().tag} Identify userName: ${this.name()} userId: ${this.id()} traits: ${getTraits(user)}")
+        if (isInitialized) {
+            if (this.build.isDebug && type() == Type.SEGMENT) {
+                user.apply {
+                    Timber.d("Queued ${type().tag} Identify userName: ${this.name()} userId: ${this.id()} traits: ${getTraits(user)}")
+                }
             }
+            Analytics.with(context).identify(user.id().toString(), getTraits(user), null)
         }
-        if (isInitialized) Analytics.with(context).identify(user.id().toString(), getTraits(user), null)
     }
 
     /**
@@ -148,10 +138,13 @@ class SegmentTrackingClient(
      */
     override fun reset() {
         super.reset()
-        if (this.build.isDebug) {
-            Timber.d("Queued ${type().tag} Reset user after logout")
+
+        if (isInitialized) {
+            if (this.build.isDebug) {
+                Timber.d("Queued ${type().tag} Reset user after logout")
+            }
+            Analytics.with(context).reset()
         }
-        if (isInitialized) Analytics.with(context).reset()
     }
 
     /**

@@ -76,8 +76,7 @@ class SegmentTrackingClient(
                 apiKey = Secrets.Segment.STAGING
                 logLevel = Analytics.LogLevel.VERBOSE
             }
-
-            Timber.d("${type().tag} initializing isSDKEnabled:${this.isEnabled()}")
+            
             val segmentClient = Analytics.Builder(context, apiKey)
                         // - This flag will activate sending information to Braze
                         .use(AppboyIntegration.FACTORY)

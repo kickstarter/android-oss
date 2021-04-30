@@ -1,7 +1,6 @@
 package com.kickstarter.libs
 
 import android.content.Context
-import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isKSApplication
@@ -12,7 +11,8 @@ import com.segment.analytics.Analytics
 import com.segment.analytics.Properties
 import com.segment.analytics.Traits
 import com.segment.analytics.android.integrations.appboy.AppboyIntegration
-import rx.subjects.BehaviorSubject
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import timber.log.Timber
 
 open class SegmentTrackingClient(
@@ -27,14 +27,23 @@ open class SegmentTrackingClient(
     override var loggedInUser: User? = null
     override var config: Config? = null
 
-    private val calledFromOnCreate = BehaviorSubject.create<Boolean>()
+    private var calledFromOnCreate = false
 
     init {
 
         this.currentConfig.observable()
-            .compose(combineLatestPair(calledFromOnCreate))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                this.config = it.first
+                this.config = it
+                if (calledFromOnCreate) {
+                    privateInitializer()
+
+                    if (build.isDebug) {
+                        Timber.d("${type().tag} isCalledFromOnCreate:${calledFromOnCreate} withConfig:${config}")
+                        Timber.d("${type().tag} currentThread: ${Thread.currentThread()}")
+                    }
+                }
             }
 
         this.currentUser.observable()
@@ -65,7 +74,19 @@ open class SegmentTrackingClient(
     }
 
     override fun initialize() {
-        if (this.context.isKSApplication() && !this.isInitialized) {
+        calledFromOnCreate = true
+        if (build.isDebug) {
+            Timber.d("${type().tag} initialize called from currentThread: ${Thread.currentThread()}")
+        }
+    }
+
+    private fun privateInitializer() {
+        if (build.isDebug) {
+            Timber.d("${type().tag} isEnabled: ${this.isEnabled()}")
+            Timber.d("${type().tag} currentThread: ${Thread.currentThread()}")
+        }
+
+        if (this.context.isKSApplication() && !this.isInitialized && this.isEnabled()) {
             var apiKey = ""
             var logLevel = Analytics.LogLevel.NONE
 
@@ -78,16 +99,20 @@ open class SegmentTrackingClient(
             }
 
             val segmentClient = Analytics.Builder(context, apiKey)
-                // - This flag will activate sending information to Braze
-                .use(AppboyIntegration.FACTORY)
-                .trackApplicationLifecycleEvents()
-                .logLevel(logLevel)
-                .build()
+                    // - This flag will activate sending information to Braze
+                    .use(AppboyIntegration.FACTORY)
+                    .trackApplicationLifecycleEvents()
+                    .logLevel(logLevel)
+                    .build()
+
 
             Analytics.setSingletonInstance(segmentClient)
             this.isInitialized = true
 
-            Timber.d("${type().tag} client:$segmentClient isInitialized:$isInitialized")
+            if (build.isDebug) {
+                Timber.d("${type().tag} client:$segmentClient isInitialized:$isInitialized")
+                Timber.d("${type().tag} currentThread: ${Thread.currentThread()}")
+            }
         }
     }
 

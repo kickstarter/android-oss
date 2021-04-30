@@ -9,7 +9,7 @@ import java.util.Locale
 abstract class TrackingClientType {
     enum class Type(val tag: String) {
         LAKE("💧 Lake"),
-        SEGMENT("\uD83C\uDF81 Segment");
+        SEGMENT("\uD83C\uDF81 Segment Analytics");
     }
 
     protected abstract var config: Config?
@@ -48,6 +48,15 @@ abstract class TrackingClientType {
      * is enabled to send data
      */
     abstract fun isEnabled(): Boolean
+
+    /**
+     * Will call initialize for the clients, method useful
+     * if the initialization needs to be tied to some concrete moment
+     * on the Application lifecycle and not by the Dagger injection
+     *
+     * for Segment should be called on Application.OnCreate
+     */
+    abstract fun initialize()
 
     fun track(eventName: String) {
         track(eventName, HashMap())

@@ -11,9 +11,11 @@ import com.segment.analytics.Analytics
 import com.segment.analytics.Properties
 import com.segment.analytics.Traits
 import com.segment.analytics.android.integrations.appboy.AppboyIntegration
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import timber.log.Timber
 
-class SegmentTrackingClient(
+open class SegmentTrackingClient(
     build: Build,
     private val context: Context,
     currentConfig: CurrentConfigType,
@@ -21,18 +23,26 @@ class SegmentTrackingClient(
     optimizely: ExperimentsClientType,
 ) : TrackingClient(context, currentUser, build, currentConfig, optimizely) {
 
-    private var segmentClient: Analytics? = null
     override var isInitialized = false
     override var loggedInUser: User? = null
     override var config: Config? = null
 
+    private var calledFromOnCreate = false
+
     init {
+
         this.currentConfig.observable()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                // - Check the feature flag active, and initialize Segment client
                 this.config = it
-                if (this.isEnabled() && !isInitialized) {
-                    initialize()
+                if (calledFromOnCreate) {
+                    privateInitializer()
+
+                    if (build.isDebug) {
+                        Timber.d("${type().tag} isCalledFromOnCreate:$calledFromOnCreate withConfig:$config")
+                        Timber.d("${type().tag} currentThread: ${Thread.currentThread()}")
+                    }
                 }
             }
 
@@ -63,8 +73,20 @@ class SegmentTrackingClient(
         return prevUser?.getTraits() == newUser?.getTraits()
     }
 
-    private fun initialize() {
-        if (this.context.isKSApplication()) {
+    override fun initialize() {
+        calledFromOnCreate = true
+        if (build.isDebug) {
+            Timber.d("${type().tag} initialize called from currentThread: ${Thread.currentThread()}")
+        }
+    }
+
+    private fun privateInitializer() {
+        if (build.isDebug) {
+            Timber.d("${type().tag} isEnabled: ${this.isEnabled()}")
+            Timber.d("${type().tag} currentThread: ${Thread.currentThread()}")
+        }
+
+        if (this.context.isKSApplication() && !this.isInitialized && this.isEnabled()) {
             var apiKey = ""
             var logLevel = Analytics.LogLevel.NONE
 
@@ -76,15 +98,21 @@ class SegmentTrackingClient(
                 logLevel = Analytics.LogLevel.VERBOSE
             }
 
-            this.segmentClient = Analytics.Builder(context, apiKey)
+            val segmentClient = Analytics.Builder(context, apiKey)
                 // - This flag will activate sending information to Braze
                 .use(AppboyIntegration.FACTORY)
                 .trackApplicationLifecycleEvents()
                 .logLevel(logLevel)
                 .build()
+
             Analytics.setSingletonInstance(segmentClient)
+            this.isInitialized = true
+
+            if (build.isDebug) {
+                Timber.d("${type().tag} client:$segmentClient isInitialized:$isInitialized")
+                Timber.d("${type().tag} currentThread: ${Thread.currentThread()}")
+            }
         }
-        isInitialized = true
     }
 
     /**
@@ -92,8 +120,9 @@ class SegmentTrackingClient(
      * see https://segment.com/docs/connections/sources/catalog/libraries/mobile/android/#track
      */
     override fun trackingData(eventName: String, newProperties: Map<String, Any?>) {
-        this.segmentClient?.let { segment ->
-            segment.track(eventName, this.getProperties(newProperties))
+        if (isInitialized) {
+            Timber.d("Queued ${type().tag} Track eventName: $eventName properties: $newProperties")
+            Analytics.with(context).track(eventName, this.getProperties(newProperties))
         }
     }
 
@@ -116,14 +145,13 @@ class SegmentTrackingClient(
      */
     override fun identify(user: User) {
         super.identify(user)
-        this.segmentClient?.let { segment ->
-
+        if (isInitialized) {
             if (this.build.isDebug && type() == Type.SEGMENT) {
                 user.apply {
                     Timber.d("Queued ${type().tag} Identify userName: ${this.name()} userId: ${this.id()} traits: ${getTraits(user)}")
                 }
             }
-            segment.identify(user.id().toString(), getTraits(user), null)
+            Analytics.with(context).identify(user.id().toString(), getTraits(user), null)
         }
     }
 
@@ -133,10 +161,13 @@ class SegmentTrackingClient(
      */
     override fun reset() {
         super.reset()
-        if (this.build.isDebug) {
-            Timber.d("Queued ${type().tag} Reset user after logout")
+
+        if (isInitialized) {
+            if (this.build.isDebug) {
+                Timber.d("Queued ${type().tag} Reset user after logout")
+            }
+            Analytics.with(context).reset()
         }
-        this.segmentClient?.reset()
     }
 
     /**

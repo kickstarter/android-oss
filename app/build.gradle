@@ -62,6 +62,8 @@ android.applicationVariants.all { variant ->
                          '**/Dagger*Subcomponent*.class',
                          '**/*Subcomponent$Builder.class',
                          '**/*Module_*Factory.class',
+                         '**/KSApplication.*',
+                         '**/ApplicationModule.*',
                          '**/*Activity*.*',
                          '**/*Fragment*.*',
                          '**/*ViewHolder*.*',

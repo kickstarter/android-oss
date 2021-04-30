@@ -71,7 +71,7 @@ patrocinadores</string>
   <string name="Backers_have_signed_up_to_help_kickstarter_creators_bring_their_ideas_to_life" formatted="false">Patrocinadores se han registrado para ayudar a los creadores de Kickstarter a hacer realidad sus ideas.</string>
   <string name="Become_a_backer_to_leave_a_comment" formatted="false">Conviértete en patrocinador y deja un comentario.</string>
   <string name="Big_Kickstarter_news_and_events_near_you" formatted="false">Unas cuantas veces al año: Noticias sobresalientes de Kickstarter y eventos cerca de ti.</string>
-  <string name="Big_Kickstarter_news_plus_occasional_projects_and_events_chosen_just_for_you" formatted="false">Big Kickstarter news, plus occasional projects and events chosen just for you.</string>
+  <string name="Big_Kickstarter_news_plus_occasional_projects_and_events_chosen_just_for_you" formatted="false">Importantes novedades de Kickstarter, además de proyectos y eventos ocasionales elegidos especialmente para ti.</string>
   <string name="Biography" formatted="false">Biografía</string>
   <string name="Bonus" formatted="false">Extra</string>
   <string name="Bonus_support" formatted="false">Apoyo extra</string>
@@ -366,7 +366,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="New_payment_method" formatted="false">Nuevo método de pago</string>
   <string name="New_pledge_activity" formatted="false">Nueva actividad de contribución</string>
   <string name="New_work_and_big_ideas_from_established_and" formatted="false">Nuevos trabajos y grandes ideas de artistas establecidos y emergentes.</string>
-  <string name="News_and_projects" formatted="false">News and projects</string>
+  <string name="News_and_projects" formatted="false">Novedades y proyectos</string>
   <string name="News_and_projects_for_you" formatted="false">News and projects for you</string>
   <string name="News_events" formatted="false">Unas cuantas veces al año: Noticias sobresalientes y eventos cerca de ti.</string>
   <string name="Newsletters" formatted="false">Boletines informativos</string>
@@ -468,7 +468,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Recommendations_More_Info" formatted="false">Más información sobre las recomendaciones</string>
   <string name="Recommended" formatted="false">Recomendados</string>
   <string name="Recommended_For_You" formatted="false">Recomendaciones para ti</string>
-  <string name="Recommended_for_you" formatted="false">Recommended for you</string>
+  <string name="Recommended_for_you" formatted="false">Recomendaciones para ti</string>
   <string name="Recorded_Live" formatted="false">Grabado en vivo</string>
   <string name="Recorded_live_with_creator_name" formatted="false">Grabado en vivo por &lt;b>%{creator_name}&lt;/b></string>
   <string name="Remember_that_delivery_dates_are_not_guaranteed" formatted="false">Recuerda que las fechas de entrega no están garantizadas.</string>

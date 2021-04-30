@@ -1,12 +1,15 @@
 package com.kickstarter.libs
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isKSApplication
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.NAME
 import com.kickstarter.models.extensions.getTraits
+import com.kickstarter.models.extensions.getUniqueTraits
+import com.kickstarter.models.extensions.persistTraits
 import com.segment.analytics.Analytics
 import com.segment.analytics.Properties
 import com.segment.analytics.Traits
@@ -21,6 +24,7 @@ open class SegmentTrackingClient(
     currentConfig: CurrentConfigType,
     currentUser: CurrentUserType,
     optimizely: ExperimentsClientType,
+    preference: SharedPreferences
 ) : TrackingClient(context, currentUser, build, currentConfig, optimizely) {
 
     override var isInitialized = false
@@ -28,6 +32,7 @@ open class SegmentTrackingClient(
     override var config: Config? = null
 
     private var calledFromOnCreate = false
+    private var prefStorage = preference
 
     init {
 
@@ -152,6 +157,7 @@ open class SegmentTrackingClient(
                 }
             }
             Analytics.with(context).identify(user.id().toString(), getTraits(user), null)
+            user.persistTraits(this.prefStorage)
         }
     }
 
@@ -180,7 +186,7 @@ open class SegmentTrackingClient(
      * see User.getTraits()
      */
     private fun getTraits(user: User) = Traits().apply {
-        user.getTraits().map { entry ->
+        user.getUniqueTraits(prefStorage).map { entry ->
             if (entry.key == NAME) this.putName(user.name())
             else {
                 this[entry.key] = entry.value

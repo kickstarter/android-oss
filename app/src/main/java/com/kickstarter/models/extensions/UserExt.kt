@@ -1,6 +1,7 @@
 @file:JvmName("UserExt")
 package com.kickstarter.models.extensions
 
+import android.content.SharedPreferences
 import com.kickstarter.libs.utils.I18nUtils
 import com.kickstarter.models.User
 
@@ -26,6 +27,40 @@ fun User.isLocationGermany(): Boolean {
  */
 fun User.getCreatedAndDraftProjectsCount(): Int {
     return (this.createdProjectsCount() ?: 0) + (this.draftProjectsCount() ?: 0)
+}
+
+/**
+ * Storage locally on Shared Preferences the user traits
+ */
+fun User.persistTraits(preferences: SharedPreferences) {
+    val editor = preferences.edit()
+    this.getTraits().forEach { entry ->
+        editor.putString(entry.key, entry.value.toString())
+    }
+    editor.apply()
+}
+
+/**
+ * Returns the traits that have changed compared with the storaged values on Shared Preferences
+ */
+fun User.getUniqueTraits(preferences: SharedPreferences): Map<String, Any?> {
+    val sessionTraits = this.getTraits()
+
+    val persistedTraits = mutableMapOf<String, Any>()
+    this.getTraits().forEach { entry ->
+        val value = preferences.getString(entry.key, "")
+        if (!value.isNullOrEmpty()) {
+            persistedTraits[entry.key] = value
+        }
+    }
+
+    return if (persistedTraits.isEmpty()) {
+        sessionTraits
+    } else {
+        sessionTraits.filter { entry ->
+            persistedTraits[entry.key] != entry.value.toString()
+        }
+    }
 }
 
 /**

@@ -15,7 +15,7 @@ import com.segment.analytics.android.integrations.appboy.AppboyIntegration
 import rx.subjects.BehaviorSubject
 import timber.log.Timber
 
-class SegmentTrackingClient(
+open class SegmentTrackingClient(
     build: Build,
     private val context: Context,
     currentConfig: CurrentConfigType,

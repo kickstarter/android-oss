@@ -64,7 +64,7 @@
 
           <TextView
               style="@style/SettingsSectionLabel"
-              android:text="@string/Recommended_For_You" />
+              android:text="@string/Recommended_for_you" />
 
           <ImageButton
               android:id="@+id/marketing_updates_phone_icon"

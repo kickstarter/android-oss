@@ -68,7 +68,7 @@ public final class MockTrackingClient extends TrackingClientType {
 
   @Override
   protected boolean isInitialized() {
-    return true;
+    return this.isInitialized;
   }
 
   @Override
@@ -84,6 +84,11 @@ public final class MockTrackingClient extends TrackingClientType {
   @Override
   protected void setInitialized(final boolean isInitialized) {
     this.isInitialized = isInitialized;
+  }
+
+  @Override
+  public void initialize() {
+    this.isInitialized = true;
   }
 
   public static class Event {

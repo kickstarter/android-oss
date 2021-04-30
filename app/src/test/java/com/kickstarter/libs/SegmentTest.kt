@@ -1,5 +1,6 @@
 package com.kickstarter.libs
 
+import android.content.Context
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
@@ -60,6 +61,48 @@ import rx.subjects.BehaviorSubject
 class SegmentTest : KSRobolectricTestCase() {
 
     private val propertiesTest = BehaviorSubject.create<Map<String, Any>>()
+
+    lateinit var build: Build
+    lateinit var context: Context
+
+    override fun setUp() {
+        super.setUp()
+        build = environment().build()
+        context = application()
+    }
+
+    class MockSegmentTrackingClient(
+        build: Build,
+        context: Context,
+        currentConfig: CurrentConfigType,
+        currentUser: CurrentUserType,
+        opt: ExperimentsClientType
+    ) : SegmentTrackingClient(build, context, currentConfig, currentUser, opt) {
+        override fun initialize() {
+            this.isInitialized = true
+        }
+
+        override fun isEnabled() = this.isInitialized
+    }
+
+    @Test
+    fun testSegmentClientTest() {
+        val user = UserFactory.user()
+        val mockOptimizely = object : MockExperimentsClientType() {
+            override fun enabledFeatures(user: User?): List<String> {
+                return listOf("optimizely_feature")
+            }
+
+            override fun getTrackingProperties(): Map<String, Array<String>> {
+                return getOptimizelySession()
+            }
+        }
+
+        val mockClient = MockSegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockOptimizely)
+        mockClient.initialize()
+        assertNotNull(mockClient)
+        assertTrue(mockClient.isEnabled())
+    }
 
     @Test
     fun testDefaultProperties() {

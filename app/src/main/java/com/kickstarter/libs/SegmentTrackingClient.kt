@@ -40,7 +40,7 @@ open class SegmentTrackingClient(
                     privateInitializer()
 
                     if (build.isDebug) {
-                        Timber.d("${type().tag} isCalledFromOnCreate:${calledFromOnCreate} withConfig:${config}")
+                        Timber.d("${type().tag} isCalledFromOnCreate:$calledFromOnCreate withConfig:$config")
                         Timber.d("${type().tag} currentThread: ${Thread.currentThread()}")
                     }
                 }
@@ -99,12 +99,11 @@ open class SegmentTrackingClient(
             }
 
             val segmentClient = Analytics.Builder(context, apiKey)
-                    // - This flag will activate sending information to Braze
-                    .use(AppboyIntegration.FACTORY)
-                    .trackApplicationLifecycleEvents()
-                    .logLevel(logLevel)
-                    .build()
-
+                // - This flag will activate sending information to Braze
+                .use(AppboyIntegration.FACTORY)
+                .trackApplicationLifecycleEvents()
+                .logLevel(logLevel)
+                .build()
 
             Analytics.setSingletonInstance(segmentClient)
             this.isInitialized = true

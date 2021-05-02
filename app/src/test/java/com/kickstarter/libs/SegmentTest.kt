@@ -121,7 +121,7 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testDefaultProperties_WithContextPage() {
+    fun testProperties_WithContextPage() {
         val client = client(null)
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
@@ -137,10 +137,10 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     /*
-    context_page should be set to other for page without context page set
+     context_page should be set to other for page without context page
      */
     @Test
-    fun testDefaultProperties_WithoutContextPage() {
+    fun testProperties_WithoutContextPage() {
         val client = client(null)
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)

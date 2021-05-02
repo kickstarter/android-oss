@@ -1323,7 +1323,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         fun track(eventName: String, additionalProperties: Map<String, Any>) {
             val properties = hashMapOf<String, Any>()
             properties.putAll(additionalProperties)
-            if(!properties.containsKey(CONTEXT_PAGE.contextName))
+            if (!properties.containsKey(CONTEXT_PAGE.contextName))
                 properties[CONTEXT_PAGE.contextName] = EventContextValues.ContextPageName.OTHER.contextName
 
             clients.forEach { client ->

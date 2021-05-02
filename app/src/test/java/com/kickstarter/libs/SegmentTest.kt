@@ -137,7 +137,7 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     /*
-     context_page should be set to other for page without context page
+     context_page should be set to other for properties without context page
      */
     @Test
     fun testProperties_WithoutContextPage() {

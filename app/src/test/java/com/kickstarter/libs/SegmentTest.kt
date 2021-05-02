@@ -7,6 +7,7 @@ import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
+import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN_SIGN_UP
@@ -114,6 +115,41 @@ class SegmentTest : KSRobolectricTestCase() {
         segment.trackAppOpen()
 
         this.segmentTrack.assertValue("App Open")
+
+        assertSessionProperties(null)
+        assertContextProperties()
+    }
+
+    @Test
+    fun testDefaultProperties_WithContextPage() {
+        val client = client(null)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackSignUpPageViewed()
+
+        val expectedProperties = propertiesTest.value
+        assertEquals(SIGN_UP.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+
+        assertSessionProperties(null)
+        assertContextProperties()
+    }
+
+    /*
+    context_page should be set to other for page without context page set
+     */
+    @Test
+    fun testDefaultProperties_WithoutContextPage() {
+        val client = client(null)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackSignUpPageViewedForTest()
+
+        val expectedProperties = propertiesTest.value
+        assertEquals(EventContextValues.ContextPageName.OTHER.contextName, expectedProperties[CONTEXT_PAGE.contextName])
 
         assertSessionProperties(null)
         assertContextProperties()

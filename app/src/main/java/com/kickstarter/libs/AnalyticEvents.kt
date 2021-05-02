@@ -335,6 +335,14 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     /**
+     * Sends data to the client when the signup page is viewed.
+     */
+    fun trackSignUpPageViewedForTest() {
+        val props: HashMap<String, Any> = HashMap()
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
+    /**
      * Sends data to the client when the login/sign-up page is viewed.
      */
     fun trackLoginOrSignUpPagedViewed() {
@@ -1313,8 +1321,13 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         }
 
         fun track(eventName: String, additionalProperties: Map<String, Any>) {
+            val properties = hashMapOf<String, Any>()
+            properties.putAll(additionalProperties)
+            if(!properties.containsKey(CONTEXT_PAGE.contextName))
+                properties[CONTEXT_PAGE.contextName] = EventContextValues.ContextPageName.OTHER.contextName
+
             clients.forEach { client ->
-                client?.track(eventName, additionalProperties)
+                client?.track(eventName, properties)
             }
         }
 

@@ -79,7 +79,8 @@ class EventContextValues {
         UPDATE_PLEDGE("update_pledge"),
         LOGIN("log_in"),
         MANAGE_PLEDGE("manage_pledge"),
-        TWO_FACTOR_AUTH("two_factor_auth")
+        TWO_FACTOR_AUTH("two_factor_auth"),
+        OTHER("other")
     }
 
     /**

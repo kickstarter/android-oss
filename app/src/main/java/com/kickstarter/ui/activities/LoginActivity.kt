@@ -96,7 +96,7 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
         this.viewModel.outputs.loginButtonIsEnabled()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe({ this.setLoginButtonEnabled(it) })
+            .subscribe { this.setLoginButtonEnabled(it) }
 
         forgot_your_password_text_view.setOnClickListener {
             val intent = Intent(this, ResetPasswordActivity::class.java)

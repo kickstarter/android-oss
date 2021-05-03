@@ -108,6 +108,7 @@ open class SegmentTrackingClient(
                 .use(AppboyIntegration.FACTORY)
                 .trackApplicationLifecycleEvents()
                 .logLevel(logLevel)
+                    
                 .build()
 
             Analytics.setSingletonInstance(segmentClient)
@@ -186,7 +187,7 @@ open class SegmentTrackingClient(
      * see User.getTraits()
      */
     private fun getTraits(user: User) = Traits().apply {
-        user.getUniqueTraits(prefStorage).map { entry ->
+        user.getTraits().map { entry ->
             if (entry.key == NAME) this.putName(user.name())
             else {
                 this[entry.key] = entry.value

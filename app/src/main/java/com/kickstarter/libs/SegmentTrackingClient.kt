@@ -11,9 +11,12 @@ import com.kickstarter.models.extensions.getTraits
 import com.kickstarter.models.extensions.getUniqueTraits
 import com.kickstarter.models.extensions.persistTraits
 import com.segment.analytics.Analytics
+import com.segment.analytics.Middleware
 import com.segment.analytics.Properties
 import com.segment.analytics.Traits
 import com.segment.analytics.android.integrations.appboy.AppboyIntegration
+import com.segment.analytics.integrations.BasePayload
+import com.segment.analytics.integrations.IdentifyPayload
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import timber.log.Timber
@@ -108,7 +111,25 @@ open class SegmentTrackingClient(
                 .use(AppboyIntegration.FACTORY)
                 .trackApplicationLifecycleEvents()
                 .logLevel(logLevel)
-                    
+                .useSourceMiddleware(
+                    Middleware { chain ->
+                        if (chain.payload().type() == BasePayload.Type.identify) {
+                            if (chain.payload() is IdentifyPayload) {
+                                this.loggedInUser?.getUniqueTraits(prefStorage)?.let {
+                                    val payload = (chain.payload() as IdentifyPayload).toBuilder()
+                                        .traits(it)
+                                        .build()
+                                    chain.proceed(payload)
+
+                                    if (build.isDebug)
+                                        Timber.d("${type().tag} Middleware Identify with payload: ${payload.toJsonObject()}")
+                                }
+                            }
+                            return@Middleware
+                        }
+                        chain.proceed(chain.payload())
+                    }
+                )
                 .build()
 
             Analytics.setSingletonInstance(segmentClient)

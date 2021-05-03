@@ -57,7 +57,6 @@ import org.joda.time.DateTime
 import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.Test
-import org.mockito.Mockito
 import rx.subjects.BehaviorSubject
 
 class SegmentTest : KSRobolectricTestCase() {
@@ -66,13 +65,12 @@ class SegmentTest : KSRobolectricTestCase() {
 
     lateinit var build: Build
     lateinit var context: Context
-    lateinit var mockShared: SharedPreferences
+    private val mockShared: SharedPreferences = MockSharedPreferences()
 
     override fun setUp() {
         super.setUp()
         build = environment().build()
         context = application()
-        mockShared = Mockito.mock(SharedPreferences::class.java)
     }
 
     class MockSegmentTrackingClient(

@@ -1,10 +1,14 @@
 package com.kickstarter.libs.utils.extensions
 
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.MockSharedPreferences
 import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.models.extensions.PushNotification
 import com.kickstarter.models.extensions.getTraits
+import com.kickstarter.models.extensions.getUniqueTraits
 import com.kickstarter.models.extensions.isLocationGermany
 import com.kickstarter.models.extensions.isUserEmailVerified
+import com.kickstarter.models.extensions.persistTraits
 import org.junit.Test
 
 class UserExtensionTest : KSRobolectricTestCase() {
@@ -407,5 +411,88 @@ class UserExtensionTest : KSRobolectricTestCase() {
             .build()
 
         assertTrue(userA.getTraits() == userB.getTraits())
+    }
+
+    @Test
+    fun test_persist_traits() {
+        val mockShared = MockSharedPreferences()
+        val user = UserFactory.allTraitsTrue()
+            .toBuilder()
+            .name("Pikachu pikachez")
+            .build()
+
+        user.persistTraits(mockShared)
+
+        val persisted = mockShared.all.toSortedMap()
+        val onMemory = user.getTraits().toSortedMap()
+
+        assert(persisted.size == 19)
+        assert(onMemory.size == 19)
+
+        persisted.forEach { entry ->
+            assert(onMemory.contains(entry.key))
+            assert(onMemory[entry.key].toString() == entry.value.toString())
+        }
+    }
+
+    @Test
+    fun test_uniqueTraits_Unique_Change() {
+        val mockShared = MockSharedPreferences()
+        val user = UserFactory.allTraitsTrue()
+            .toBuilder()
+            .name("Pikachu pikachez")
+            .build()
+
+        user.persistTraits(mockShared)
+
+        val updatedUser = user.toBuilder().notifyMobileOfBackings(false).build()
+
+        val uniqueTraits = updatedUser.getUniqueTraits(mockShared)
+
+        assertTrue(uniqueTraits.size == 1)
+        assertTrue(uniqueTraits.containsKey(PushNotification.PUSH_BACKINGS.field))
+        assert(uniqueTraits[PushNotification.PUSH_BACKINGS.field] == false)
+    }
+
+    @Test
+    fun test_uniqueTraits_Several_change() {
+        val mockShared = MockSharedPreferences()
+        val user = UserFactory.allTraitsTrue()
+            .toBuilder()
+            .name("Pikachu pikachez")
+            .build()
+
+        user.persistTraits(mockShared)
+
+        val updatedUser = user.toBuilder()
+            .notifyMobileOfBackings(false)
+            .notifyMobileOfMarketingUpdate(false)
+            .notifyMobileOfFollower(false)
+            .build()
+
+        val uniqueTraits = updatedUser.getUniqueTraits(mockShared)
+
+        assertTrue(uniqueTraits.size == 3)
+        assertTrue(uniqueTraits.containsKey(PushNotification.PUSH_BACKINGS.field))
+        assertTrue(uniqueTraits.containsKey(PushNotification.PUSH_MARKETING.field))
+        assertTrue(uniqueTraits.containsKey(PushNotification.PUSH_FOLLOWER.field))
+        assert(uniqueTraits[PushNotification.PUSH_BACKINGS.field] == false)
+        assert(uniqueTraits[PushNotification.PUSH_MARKETING.field] == false)
+        assert(uniqueTraits[PushNotification.PUSH_FOLLOWER.field] == false)
+    }
+
+    @Test
+    fun test_uniqueTraits_None_Change() {
+        val mockShared = MockSharedPreferences()
+        val user = UserFactory.allTraitsTrue()
+            .toBuilder()
+            .name("Pikachu pikachez")
+            .build()
+
+        user.persistTraits(mockShared)
+
+        val uniqueTraits = user.getUniqueTraits(mockShared)
+
+        assertTrue(uniqueTraits.isEmpty())
     }
 }

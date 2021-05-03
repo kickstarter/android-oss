@@ -111,25 +111,8 @@ open class SegmentTrackingClient(
                 .use(AppboyIntegration.FACTORY)
                 .trackApplicationLifecycleEvents()
                 .logLevel(logLevel)
-                .useSourceMiddleware(
-                    Middleware { chain ->
-                        if (chain.payload().type() == BasePayload.Type.identify) {
-                            if (chain.payload() is IdentifyPayload) {
-                                this.loggedInUser?.getUniqueTraits(prefStorage)?.let {
-                                    val payload = (chain.payload() as IdentifyPayload).toBuilder()
-                                        .traits(it)
-                                        .build()
-                                    chain.proceed(payload)
-
-                                    if (build.isDebug)
-                                        Timber.d("${type().tag} Middleware Identify with payload: ${payload.toJsonObject()}")
-                                }
-                            }
-                            return@Middleware
-                        }
-                        chain.proceed(chain.payload())
-                    }
-                )
+                // - Set middleware for Braze destination
+                .useDestinationMiddleware(AppboyIntegration.FACTORY.key(), getMiddleware())
                 .build()
 
             Analytics.setSingletonInstance(segmentClient)
@@ -140,6 +123,37 @@ open class SegmentTrackingClient(
                 Timber.d("${type().tag} currentThread: ${Thread.currentThread()}")
             }
         }
+    }
+
+    private fun getMiddleware(): Middleware {
+        return Middleware { chain ->
+            chain.proceed(getPayload(chain.payload()))
+            // - persist traits once the payload has been modified
+            this.loggedInUser?.persistTraits(prefStorage)
+        }
+    }
+
+    /**
+     * Returns a modified Payload if necessary
+     *  - get the UniqueTraits from the logged in user
+     *  - Update the payload for braze source with the unique traits (only the ones that changed)
+     *
+     * By doing so we send to the braze source only the traits that has changed.
+     */
+    private fun getPayload(payload: BasePayload): BasePayload {
+        if (payload.type() == BasePayload.Type.identify) {
+            if (payload is IdentifyPayload) {
+                this.loggedInUser?.getUniqueTraits(prefStorage)?.let { uniqueTraits ->
+                    val modifiedPayload = payload.toBuilder()
+                        .traits(uniqueTraits)
+                        .build()
+                    if (build.isDebug) Timber.d("${type().tag} Identify payload intercepted and modified: ${modifiedPayload.toJsonObject()}")
+                    return modifiedPayload
+                }
+            }
+        }
+
+        return payload
     }
 
     /**
@@ -179,7 +193,6 @@ open class SegmentTrackingClient(
                 }
             }
             Analytics.with(context).identify(user.id().toString(), getTraits(user), null)
-            user.persistTraits(this.prefStorage)
         }
     }
 

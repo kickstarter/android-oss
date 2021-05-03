@@ -1,6 +1,7 @@
 package com.kickstarter.libs
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
@@ -56,6 +57,7 @@ import org.joda.time.DateTime
 import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.Test
+import org.mockito.Mockito
 import rx.subjects.BehaviorSubject
 
 class SegmentTest : KSRobolectricTestCase() {
@@ -64,11 +66,13 @@ class SegmentTest : KSRobolectricTestCase() {
 
     lateinit var build: Build
     lateinit var context: Context
+    lateinit var mockShared: SharedPreferences
 
     override fun setUp() {
         super.setUp()
         build = environment().build()
         context = application()
+        mockShared = Mockito.mock(SharedPreferences::class.java)
     }
 
     class MockSegmentTrackingClient(
@@ -76,8 +80,9 @@ class SegmentTest : KSRobolectricTestCase() {
         context: Context,
         currentConfig: CurrentConfigType,
         currentUser: CurrentUserType,
-        opt: ExperimentsClientType
-    ) : SegmentTrackingClient(build, context, currentConfig, currentUser, opt) {
+        opt: ExperimentsClientType,
+        mockSharedPref: SharedPreferences
+    ) : SegmentTrackingClient(build, context, currentConfig, currentUser, opt, mockSharedPref) {
         override fun initialize() {
             this.isInitialized = true
         }
@@ -98,7 +103,7 @@ class SegmentTest : KSRobolectricTestCase() {
             }
         }
 
-        val mockClient = MockSegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockOptimizely)
+        val mockClient = MockSegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockOptimizely, mockShared)
         mockClient.initialize()
         assertNotNull(mockClient)
         assertTrue(mockClient.isEnabled())

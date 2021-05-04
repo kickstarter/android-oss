@@ -8,7 +8,6 @@ import java.util.Locale
 
 abstract class TrackingClientType {
     enum class Type(val tag: String) {
-        //LAKE("💧 Lake"),
         SEGMENT("\uD83C\uDF81 Segment Analytics");
     }
 

@@ -14,7 +14,6 @@ import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.KSCurrency
-import com.kickstarter.libs.KoalaEvent
 import com.kickstarter.libs.PROJECT_PAGE_PLEDGE_BUTTON_CLICKED
 import com.kickstarter.libs.PROJECT_PAGE_VIEWED
 import com.kickstarter.libs.RefTag

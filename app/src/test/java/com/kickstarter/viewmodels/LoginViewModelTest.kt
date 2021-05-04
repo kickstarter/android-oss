@@ -70,9 +70,9 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         mockConfig.config(config())
 
         val environment = environment().toBuilder()
-                .currentConfig(mockConfig)
-                .apiClient(apiClient)
-                .build()
+            .currentConfig(mockConfig)
+            .apiClient(apiClient)
+            .build()
 
         setUpEnvironment(environment)
 
@@ -82,7 +82,6 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.loginClick()
 
         this.logInButtonIsEnabled.assertValues(true, true, false)
-
     }
 
     @Test

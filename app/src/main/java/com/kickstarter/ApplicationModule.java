@@ -34,7 +34,6 @@ import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.AnalyticEvents;
-import com.kickstarter.libs.LakeTrackingClient;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.OptimizelyExperimentsClient;
 import com.kickstarter.libs.PushNotifications;
@@ -63,9 +62,6 @@ import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.qualifiers.ConfigPreference;
 import com.kickstarter.libs.qualifiers.FirstSessionPreference;
 import com.kickstarter.libs.qualifiers.GamesNewsletterPreference;
-import com.kickstarter.libs.qualifiers.LakeEndpoint;
-import com.kickstarter.libs.qualifiers.LakeRetrofit;
-import com.kickstarter.libs.qualifiers.LakeTracker;
 import com.kickstarter.libs.qualifiers.PackageNameString;
 import com.kickstarter.libs.qualifiers.UserPreference;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
@@ -76,7 +72,6 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiService;
 import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.services.KSWebViewClient;
-import com.kickstarter.services.LakeService;
 import com.kickstarter.services.WebClient;
 import com.kickstarter.services.WebClientType;
 import com.kickstarter.services.WebService;
@@ -137,7 +132,7 @@ public class ApplicationModule {
     final @NonNull InternalToolsType internalToolsType,
     final @NonNull KSCurrency ksCurrency,
     final @NonNull KSString ksString,
-    final @NonNull @LakeTracker AnalyticEvents analytics,
+    final @NonNull AnalyticEvents analytics,
     final @NonNull Logout logout,
     final @NonNull ExperimentsClientType optimizely,
     final @NonNull PlayServicesCapability playServicesCapability,
@@ -255,16 +250,6 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  @LakeRetrofit
-  @NonNull
-  static Retrofit provideLakeRetrofit(@NonNull @LakeEndpoint final String lakeEndpoint,
-    final @NonNull Gson gson,
-    final @NonNull OkHttpClient okHttpClient) {
-    return createRetrofit(lakeEndpoint, gson, okHttpClient);
-  }
-
-  @Provides
-  @Singleton
   @NonNull
   static ApiRequestInterceptor provideApiRequestInterceptor(
           final @NonNull String clientId, final @NonNull CurrentUserType currentUser,
@@ -286,13 +271,6 @@ public class ApplicationModule {
   @NonNull
   static ApiService provideApiService(final @ApiRetrofit @NonNull Retrofit retrofit) {
     return retrofit.create(ApiService.class);
-  }
-
-  @Provides
-  @Singleton
-  @NonNull
-  static LakeService provideLakeService(final @LakeRetrofit @NonNull Retrofit retrofit) {
-    return retrofit.create(LakeService.class);
   }
 
   @Provides
@@ -432,7 +410,6 @@ public class ApplicationModule {
   }
 
   @Provides
-  @LakeTracker
   @Singleton
   static AnalyticEvents provideAnalytics(
           final @ApplicationContext @NonNull Context context,
@@ -441,8 +418,7 @@ public class ApplicationModule {
           final @NonNull CurrentConfigType currentConfig,
           final @NonNull ExperimentsClientType experimentsClientType,
           final @NonNull SegmentTrackingClient segmentClient) {
-    final LakeTrackingClient lakeTrackingClient = new LakeTrackingClient(context, currentUser, build, currentConfig, experimentsClientType);
-    final List<TrackingClientType> clients = Arrays.asList(lakeTrackingClient, segmentClient);
+    final List<TrackingClientType> clients = Arrays.asList(segmentClient);
     return new AnalyticEvents(clients);
   }
 
@@ -525,16 +501,6 @@ public class ApplicationModule {
     return (apiEndpoint == ApiEndpoint.PRODUCTION) ?
       "https://www.kickstarter.com" :
       apiEndpoint.url().replaceAll("(?<=\\Ahttps?:\\/\\/)api.", "");
-  }
-
-  @Provides
-  @Singleton
-  @LakeEndpoint
-  @NonNull
-  static String provideLakeEndpoint(final @NonNull ApiEndpoint apiEndpoint) {
-    return (apiEndpoint == ApiEndpoint.PRODUCTION) ?
-      Secrets.LakeEndpoint.PRODUCTION :
-      Secrets.LakeEndpoint.STAGING;
   }
 
   @Provides

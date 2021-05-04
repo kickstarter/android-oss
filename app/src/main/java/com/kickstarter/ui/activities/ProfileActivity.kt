@@ -83,9 +83,9 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
         this.viewModel.outputs.projectList()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe({
+            .subscribe {
                 this.loadProjects(it)
-            })
+            }
 
         this.viewModel.outputs.resumeDiscoveryActivity()
             .compose(bindToLifecycle())

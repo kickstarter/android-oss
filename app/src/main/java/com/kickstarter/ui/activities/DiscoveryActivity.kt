@@ -288,7 +288,6 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
 
     private fun startMessageThreadsActivity() {
         val intent = Intent(this, MessageThreadsActivity::class.java)
-            .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Mailbox.DRAWER)
         startActivity(intent)
         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }

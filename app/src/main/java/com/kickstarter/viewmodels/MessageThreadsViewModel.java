@@ -212,8 +212,8 @@ public interface MessageThreadsViewModel {
       this.unreadMessagesCountIsGone = mailbox
       .map(m -> m.equals(Mailbox.SENT));
 
-      final Observable<RefTag> refTag = intent()
-        .flatMap(ProjectIntentMapper::refTag);
+//      final Observable<RefTag> refTag = intent()
+//        .flatMap(ProjectIntentMapper::refTag);
 
 //      final Observable<Pair<RefTag, KoalaContext.Mailbox>> refTagAndContext = refTag
 //        .compose(combineLatestPair(koalaContext));
@@ -257,7 +257,8 @@ public interface MessageThreadsViewModel {
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
-    @Override public void mailbox(final @NonNull Mailbox mailbox) {
+    @Override
+    public void mailbox(final @NonNull Mailbox mailbox) {
       this.mailbox.onNext(mailbox);
     }
     @Override public void nextPage() {

@@ -141,7 +141,6 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
 
     private fun startMessageThreadsActivity() {
         val intent = Intent(this, MessageThreadsActivity::class.java)
-            .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Mailbox.PROFILE)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 

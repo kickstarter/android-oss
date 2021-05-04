@@ -59,6 +59,33 @@ class LoginViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testLoginButtonDisabledOnClick() {
+        val apiClient = object : MockApiClient() {
+            override fun login(email: String, password: String): Observable<AccessTokenEnvelope> {
+                return Observable.error(ApiExceptionFactory.badRequestException())
+            }
+        }
+
+        val mockConfig = MockCurrentConfig()
+        mockConfig.config(config())
+
+        val environment = environment().toBuilder()
+                .currentConfig(mockConfig)
+                .apiClient(apiClient)
+                .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.inputs.email("hello@kickstarter.com")
+        this.vm.inputs.password("codeisawesome")
+
+        this.vm.inputs.loginClick()
+
+        this.logInButtonIsEnabled.assertValues(true, true, false)
+
+    }
+
+    @Test
     fun testLoginApiError() {
         val apiClient = object : MockApiClient() {
             override fun login(email: String, password: String): Observable<AccessTokenEnvelope> {

@@ -102,7 +102,6 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     this.startUpdateActivity.assertValueCount(1);
 
     this.lakeTest.assertValues(
-            "Activity Feed Viewed",
             EventName.PAGE_VIEWED.getEventName(),
             EventName.CTA_CLICKED.getEventName(),
             EventName.CARD_CLICKED.getEventName(),
@@ -110,7 +109,6 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
             EventName.CARD_CLICKED.getEventName(),
             EventName.CARD_CLICKED.getEventName());
     this.segmentTrack.assertValues(
-            "Activity Feed Viewed",
             EventName.PAGE_VIEWED.getEventName(),
             EventName.CTA_CLICKED.getEventName(),
             EventName.CARD_CLICKED.getEventName(),
@@ -155,8 +153,8 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
     this.erroredBackings.assertNoValues();
 
-    this.lakeTest.assertValues("Activity Feed Viewed", EventName.PAGE_VIEWED.getEventName());
-    this.segmentTrack.assertValues("Activity Feed Viewed", EventName.PAGE_VIEWED.getEventName());
+    this.lakeTest.assertValues(EventName.PAGE_VIEWED.getEventName());
+    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test

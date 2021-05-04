@@ -36,7 +36,7 @@ class CampaignDetailsViewModelTest : KSRobolectricTestCase() {
     fun init_whenCalled_shouldSendTrackingEvent() {
         setUpEnvironment(environment(), ProjectDataFactory.project(ProjectFactory.project()))
 
-        this.lakeTest.assertValue(EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -45,7 +45,7 @@ class CampaignDetailsViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.pledgeActionButtonClicked()
         this.goBackToProject.assertValueCount(1)
-        this.lakeTest.assertValues(EventName.PAGE_VIEWED.eventName, "Campaign Details Pledge Button Clicked")
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, "Campaign Details Pledge Button Clicked")
         this.experimentsTest.assertValue("Campaign Details Pledge Button Clicked")
     }
 

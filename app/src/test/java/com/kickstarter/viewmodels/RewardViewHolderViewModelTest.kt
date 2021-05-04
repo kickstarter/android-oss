@@ -644,7 +644,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         // When a reward from a live project is clicked, start checkout.
         this.vm.inputs.rewardClicked(2)
         this.showPledgeFragment.assertValue(Pair.create(liveProject, reward))
-        this.lakeTest.assertValues("Select Reward Button Clicked", EventName.CTA_CLICKED.eventName)
+
         this.segmentTrack.assertValues("Select Reward Button Clicked", EventName.CTA_CLICKED.eventName)
     }
 
@@ -660,7 +660,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         // When a reward from a live backed project is clicked, start checkout.
         this.vm.inputs.rewardClicked(2)
         this.showPledgeFragment.assertValue(Pair.create(backedProject, reward))
-        this.lakeTest.assertNoValues()
+        this.segmentTrack.assertNoValues()
     }
 
     @Test

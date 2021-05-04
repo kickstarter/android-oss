@@ -33,7 +33,6 @@ abstract class KSRobolectricTestCase : TestCase() {
     private lateinit var environment: Environment
 
     lateinit var experimentsTest: TestSubscriber<String>
-    lateinit var lakeTest: TestSubscriber<String>
     lateinit var segmentTrack: TestSubscriber<String>
     lateinit var segmentIdentify: TestSubscriber<User>
 
@@ -44,7 +43,6 @@ abstract class KSRobolectricTestCase : TestCase() {
 
         val mockCurrentConfig = MockCurrentConfig()
         val experimentsClientType = experimentsClient()
-        //val lakeTrackingClient = lakeTrackingClient(mockCurrentConfig, experimentsClientType)
         val segmentTestClient = segmentTrackingClient(mockCurrentConfig, experimentsClientType)
 
         val component = DaggerApplicationComponent.builder()

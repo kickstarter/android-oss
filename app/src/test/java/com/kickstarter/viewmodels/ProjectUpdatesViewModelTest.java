@@ -49,7 +49,7 @@ public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
     final Project project = ProjectFactory.project();
     setUpEnvironment(environment(), project, ProjectDataFactory.Companion.project(project));
 
-    this.lakeTest.assertValue(EventName.PAGE_VIEWED.getEventName());
+    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test

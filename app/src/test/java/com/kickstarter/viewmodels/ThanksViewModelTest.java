@@ -330,7 +330,6 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
             .putExtra(IntentKey.PROJECT, project);
     this.vm.intent(intent);
 
-    this.lakeTest.assertValues("Thanks Page Viewed", EventName.PAGE_VIEWED.getEventName());
     this.segmentTrack.assertValues("Thanks Page Viewed", EventName.PAGE_VIEWED.getEventName());
   }
 
@@ -342,6 +341,6 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
             .putExtra(IntentKey.PROJECT, ProjectFactory.project());
     this.vm.intent(intent);
 
-    this.lakeTest.assertNoValues();
+    this.segmentTrack.assertNoValues();
   }
 }

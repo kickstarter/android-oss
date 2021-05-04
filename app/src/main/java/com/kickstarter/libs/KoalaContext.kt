@@ -3,19 +3,6 @@ package com.kickstarter.libs
 class KoalaContext {
 
     /**
-     * Determines the place from which the comments dialog was presented.
-     *
-     * PROJECT_ACTIVITY: The creator's project activity screen.
-     * PROJECT_COMMENTS: The comments screen for a project.
-     * UPDATE_COMMENTS:  The comments screen for an update.
-     */
-    enum class CommentDialog(val trackingString: String) {
-        PROJECT_ACTIVITY("project_activity"),
-        PROJECT_COMMENTS("project_comments"),
-        UPDATE_COMMENTS("update_comments")
-    }
-
-    /**
      * Determines the place from which the comments were presented.
      *
      * PROJECT: The comments for a project.
@@ -24,17 +11,6 @@ class KoalaContext {
     enum class Comments(val trackingString: String) {
         PROJECT("project"),
         UPDATE("update")
-    }
-
-    /**
-     * Determines the place from which the external link was presented.
-     *
-     * PROJECT_UPDATE:  The project update page.
-     * PROJECT_UPDATES: The project updates page.
-     */
-    enum class ExternalLink(val trackingString: String) {
-        PROJECT_UPDATE("project_update"),
-        PROJECT_UPDATES("project_updates")
     }
 
     /**
@@ -87,18 +63,5 @@ class KoalaContext {
         PROJECT("project"),
         THANKS("thanks"),
         UPDATE("update"),
-    }
-
-    /**
-     * Determines the place from which the Update was presented.
-     *
-     * UPDATES:           The updates index.
-     * ACTIVITY:          The activity feed.
-     * ACTIVITY_SAMPLE:   The activity sample.
-     */
-    enum class Update(val trackingString: String) {
-        UPDATES("updates"),
-        ACTIVITY("activity"),
-        ACTIVITY_SAMPLE("activity_sample")
     }
 }

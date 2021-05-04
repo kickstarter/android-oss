@@ -144,7 +144,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.resume();
 
     this.erroredBackings.assertNoValues();
-    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName());
+    this.segmentTrack.assertValues("Activity Feed Viewed", EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test

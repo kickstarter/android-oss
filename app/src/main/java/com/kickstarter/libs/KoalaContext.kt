@@ -1,6 +1,7 @@
 package com.kickstarter.libs
 
 class KoalaContext {
+
     /**
      * Determines the place from which Messages were presented.
      *
@@ -20,4 +21,5 @@ class KoalaContext {
         PROJECT_PAGE("project_page"),
         PUSH("push")
     }
+
 }

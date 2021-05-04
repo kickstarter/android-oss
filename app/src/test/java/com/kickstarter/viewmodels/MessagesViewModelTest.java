@@ -670,25 +670,21 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private static @NonNull Intent backerModalContextIntent(final @NonNull Backing backing, final @NonNull Project project) {
     return new Intent()
       .putExtra(IntentKey.BACKING, backing)
-      .putExtra(IntentKey.PROJECT, project)
-      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.BACKER_MODAL);
+      .putExtra(IntentKey.PROJECT, project);
   }
 
   private static @NonNull Intent creatorBioModalContextIntent(final @NonNull Backing backing, final @NonNull Project project) {
     return new Intent()
       .putExtra(IntentKey.BACKING, backing)
-      .putExtra(IntentKey.PROJECT, project)
-      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.CREATOR_BIO_MODAL);
+      .putExtra(IntentKey.PROJECT, project);
   }
 
   private static @NonNull Intent messagesContextIntent(final @NonNull MessageThread messageThread) {
     return new Intent()
-      .putExtra(IntentKey.MESSAGE_THREAD, messageThread)
-      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.MESSAGES);
+      .putExtra(IntentKey.MESSAGE_THREAD, messageThread);
   }
 
   private static @NonNull Intent pushContextIntent() {
-    return messagesContextIntent(MessageThreadFactory.messageThread())
-      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.PUSH);
+    return messagesContextIntent(MessageThreadFactory.messageThread());
   }
 }

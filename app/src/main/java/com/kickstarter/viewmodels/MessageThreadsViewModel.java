@@ -2,14 +2,11 @@ package com.kickstarter.viewmodels;
 
 import android.graphics.Typeface;
 import android.util.Pair;
-
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.KoalaContext;
-import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.PairUtils;
@@ -21,7 +18,6 @@ import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.MessageThreadsActivity;
 import com.kickstarter.ui.data.Mailbox;
-import com.kickstarter.ui.intentmappers.ProjectIntentMapper;
 
 import java.util.List;
 
@@ -96,10 +92,6 @@ public interface MessageThreadsViewModel {
       // NB: project from intent can be null.
       final Observable<Project> initialProject = intent()
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT));
-
-      final Observable<KoalaContext.Mailbox> koalaContext = intent()
-        .map(i -> i.getSerializableExtra(IntentKey.KOALA_CONTEXT))
-        .ofType(KoalaContext.Mailbox.class);
 
       final Observable<Void> refreshUserOrProject = Observable.merge(this.onResume, this.swipeRefresh);
 
@@ -212,23 +204,6 @@ public interface MessageThreadsViewModel {
 
       this.unreadMessagesCountIsGone = mailbox
       .map(m -> m.equals(Mailbox.SENT));
-
-      final Observable<RefTag> refTag = intent()
-        .flatMap(ProjectIntentMapper::refTag);
-
-      final Observable<Pair<RefTag, KoalaContext.Mailbox>> refTagAndContext = refTag
-        .compose(combineLatestPair(koalaContext));
-
-      Observable.combineLatest(projectAndMailbox, refTagAndContext, Pair::create)
-        .compose(bindToLifecycle())
-        .subscribe(this::trackMailboxView);
-    }
-
-    private void trackMailboxView(final @NonNull Pair<Pair<Project, Mailbox>, Pair<RefTag, KoalaContext.Mailbox>> projectMailboxAndRedTag) {
-      final Mailbox mailbox = projectMailboxAndRedTag.first.second;
-      final Project project = projectMailboxAndRedTag.first.first;
-      final RefTag refTag = projectMailboxAndRedTag.second.first;
-      final KoalaContext.Mailbox context = projectMailboxAndRedTag.second.second;
     }
 
     private int getStringResForMailbox(final @NonNull Mailbox mailbox) {

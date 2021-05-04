@@ -242,16 +242,16 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(KoalaEvent.VIEWED_COMMENTS, props)
     }
 
-    // ACTIVITY
-    fun trackActivityView(pageCount: Int) {
-        if (pageCount == 0) {
-            client.track(KoalaEvent.ACTIVITY_VIEW)
-        } else {
-            val properties = hashMapOf<String, Any>()
-            properties["page_count"] = pageCount
-            client.track(KoalaEvent.ACTIVITY_LOAD_MORE, properties)
-        }
-    }
+//    // ACTIVITY
+//    fun trackActivityView(pageCount: Int) {
+//        if (pageCount == 0) {
+//            client.track(KoalaEvent.ACTIVITY_VIEW)
+//        } else {
+//            val properties = hashMapOf<String, Any>()
+//            properties["page_count"] = pageCount
+//            client.track(KoalaEvent.ACTIVITY_LOAD_MORE, properties)
+//        }
+//    }
 
     /**
      * Sends data to the client when Activity Screen is viewed.
@@ -302,9 +302,9 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(KoalaEvent.CLEARED_SEARCH_TERM)
     }
 
-    fun trackActivityTapped(activity: Activity) {
-        client.track(KoalaEvent.ACTIVITY_VIEW_ITEM, AnalyticEventsUtils.activityProperties(activity, client.loggedInUser()))
-    }
+//    fun trackActivityTapped(activity: Activity) {
+//        client.track(KoalaEvent.ACTIVITY_VIEW_ITEM, AnalyticEventsUtils.activityProperties(activity, client.loggedInUser()))
+//    }
 
     // SESSION EVENTS
     fun trackLoginRegisterTout(loginReason: LoginReason) {

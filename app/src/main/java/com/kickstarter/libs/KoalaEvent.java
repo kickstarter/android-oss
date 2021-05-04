@@ -8,9 +8,7 @@ import androidx.annotation.StringDef;
 public final class KoalaEvent {
   private KoalaEvent() {}
 
-  public static final String ACTIVITY_LOAD_MORE = "Activity Load More";
-  public static final String ACTIVITY_VIEW = "Activity View";
-  public static final String ACTIVITY_VIEW_ITEM = "Activity View Item";
+  //public static final String ACTIVITY_VIEW_ITEM = "Activity View Item";
   public static final String ADD_NEW_CARD_BUTTON_CLICKED = "Add New Card Button Clicked";
   public static final String BACK_THIS_PROJECT_BUTTON_CLICKED = "Back this Project Button Clicked";
   public static final String CANCEL_PLEDGE_BUTTON_CLICKED = "Cancel Pledge Button Clicked";

@@ -34,7 +34,7 @@ import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.AnalyticEvents;
-import com.kickstarter.libs.LakeTrackingClient;
+//import com.kickstarter.libs.LakeTrackingClient;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.OptimizelyExperimentsClient;
 import com.kickstarter.libs.PushNotifications;
@@ -441,8 +441,8 @@ public class ApplicationModule {
           final @NonNull CurrentConfigType currentConfig,
           final @NonNull ExperimentsClientType experimentsClientType,
           final @NonNull SegmentTrackingClient segmentClient) {
-    final LakeTrackingClient lakeTrackingClient = new LakeTrackingClient(context, currentUser, build, currentConfig, experimentsClientType);
-    final List<TrackingClientType> clients = Arrays.asList(lakeTrackingClient, segmentClient);
+    //final LakeTrackingClient lakeTrackingClient = new LakeTrackingClient(context, currentUser, build, currentConfig, experimentsClientType);
+    final List<TrackingClientType> clients = Arrays.asList(segmentClient);
     return new AnalyticEvents(clients);
   }
 

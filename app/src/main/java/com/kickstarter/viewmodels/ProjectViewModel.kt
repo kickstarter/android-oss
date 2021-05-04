@@ -843,16 +843,16 @@ interface ProjectViewModel {
                 .subscribe { this.lake.trackFixPledgeButtonClicked(it) }
         }
 
-        private fun eventName(projectActionButtonStringRes: Int): String {
-            return when (projectActionButtonStringRes) {
-                R.string.Back_this_project -> KoalaEvent.BACK_THIS_PROJECT_BUTTON_CLICKED
-                R.string.View_the_rewards -> KoalaEvent.BACK_THIS_PROJECT_BUTTON_CLICKED
-                R.string.See_the_rewards -> KoalaEvent.BACK_THIS_PROJECT_BUTTON_CLICKED
-                R.string.Manage -> KoalaEvent.MANAGE_PLEDGE_BUTTON_CLICKED
-                R.string.View_your_pledge -> KoalaEvent.VIEW_YOUR_PLEDGE_BUTTON_CLICKED
-                else -> KoalaEvent.VIEW_REWARDS_BUTTON_CLICKED
-            }
-        }
+//        private fun eventName(projectActionButtonStringRes: Int): String {
+//            return when (projectActionButtonStringRes) {
+//                R.string.Back_this_project -> KoalaEvent.BACK_THIS_PROJECT_BUTTON_CLICKED
+//                R.string.View_the_rewards -> KoalaEvent.BACK_THIS_PROJECT_BUTTON_CLICKED
+//                R.string.See_the_rewards -> KoalaEvent.BACK_THIS_PROJECT_BUTTON_CLICKED
+//                R.string.Manage -> KoalaEvent.MANAGE_PLEDGE_BUTTON_CLICKED
+//                R.string.View_your_pledge -> KoalaEvent.VIEW_YOUR_PLEDGE_BUTTON_CLICKED
+//                else -> KoalaEvent.VIEW_REWARDS_BUTTON_CLICKED
+//            }
+//        }
 
         private fun isPledgeCTA(projectActionButtonStringRes: Int): Boolean {
             return when (projectActionButtonStringRes) {

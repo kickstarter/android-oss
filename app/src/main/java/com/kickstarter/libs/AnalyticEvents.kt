@@ -6,7 +6,6 @@ import com.kickstarter.libs.KoalaContext.ExternalLink
 import com.kickstarter.libs.KoalaContext.Message
 import com.kickstarter.libs.KoalaContext.Share
 import com.kickstarter.libs.KoalaContext.Update
-import com.kickstarter.libs.KoalaEvent.ProjectAction
 import com.kickstarter.libs.utils.AnalyticEventsUtils
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
@@ -104,10 +103,10 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track("Opened App Banner")
     }
 
-    // BACKING
-    fun trackViewedPledgeInfo(project: Project) {
-        client.track(KoalaEvent.VIEWED_PLEDGE_INFO, AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
-    }
+//    // BACKING
+//    fun trackViewedPledgeInfo(project: Project) {
+//        client.track(KoalaEvent.VIEWED_PLEDGE_INFO, AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
+//    }
 
     // DISCOVERY
     fun trackDiscovery(params: DiscoveryParams, isOnboardingVisible: Boolean) {
@@ -126,11 +125,11 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track("Discover Modal Selected Filter", AnalyticEventsUtils.discoveryParamsProperties(params))
     }
 
-    fun trackDiscoveryRefreshTriggered() {
-        val properties = hashMapOf<String, Any>()
-        properties["type"] = "swipe"
-        client.track(KoalaEvent.TRIGGERED_REFRESH, properties)
-    }
+//    fun trackDiscoveryRefreshTriggered() {
+//        val properties = hashMapOf<String, Any>()
+//        properties["type"] = "swipe"
+//        client.track(KoalaEvent.TRIGGERED_REFRESH, properties)
+//    }
 
     /**
      * Tracks a project show event.
@@ -138,109 +137,109 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * @param projectData The Intent RefTag is the (nullable) RefTag present in the activity upon displaying the project.
      * The Cookie RefTag is the (nullable) RefTag extracted from the cookie store upon viewing the project.
      */
-    fun trackProjectShow(projectData: ProjectData) {
-        val properties = AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser())
-        properties.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
-        client.track(KoalaEvent.PROJECT_PAGE, properties)
-    }
+//    fun trackProjectShow(projectData: ProjectData) {
+//        val properties = AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser())
+//        properties.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
+//        client.track(KoalaEvent.PROJECT_PAGE, properties)
+//    }
 
-    fun trackProjectActionButtonClicked(@ProjectAction eventName: String, project: Project) {
-        val properties = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
-        client.track(eventName, properties)
-    }
+//    fun trackProjectActionButtonClicked(@ProjectAction eventName: String, project: Project) {
+//        val properties = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
+//        client.track(eventName, properties)
+//    }
 
-    fun trackSelectRewardButtonClicked(project: Project, rewardMinimum: Int, rewardPosition: Int) {
-        val properties = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
-        properties["backer_reward_minimum"] = rewardMinimum
-        properties["reward_position"] = rewardPosition
-        client.track(KoalaEvent.SELECT_REWARD_BUTTON_CLICKED, properties)
-    }
+//    fun trackSelectRewardButtonClicked(project: Project, rewardMinimum: Int, rewardPosition: Int) {
+//        val properties = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
+//        properties["backer_reward_minimum"] = rewardMinimum
+//        properties["reward_position"] = rewardPosition
+//        client.track(KoalaEvent.SELECT_REWARD_BUTTON_CLICKED, properties)
+//    }
 
-    fun trackCancelPledgeButtonClicked(project: Project) {
-        val properties = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
-        client.track(KoalaEvent.CANCEL_PLEDGE_BUTTON_CLICKED, properties)
-    }
+//    fun trackCancelPledgeButtonClicked(project: Project) {
+//        val properties = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
+//        client.track(KoalaEvent.CANCEL_PLEDGE_BUTTON_CLICKED, properties)
+//    }
 
-    // PROJECT STAR
-    fun trackProjectStar(project: Project) {
-        val props = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
+//    // PROJECT STAR
+//    fun trackProjectStar(project: Project) {
+//        val props = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
+//
+//        // Deprecated events
+//        client.track(if (project.isStarred) KoalaEvent.PROJECT_STAR else KoalaEvent.PROJECT_UNSTAR, props)
+//        client.track(if (project.isStarred) KoalaEvent.STARRED_PROJECT else KoalaEvent.UNSTARRED_PROJECT, props)
+//    }
 
-        // Deprecated events
-        client.track(if (project.isStarred) KoalaEvent.PROJECT_STAR else KoalaEvent.PROJECT_UNSTAR, props)
-        client.track(if (project.isStarred) KoalaEvent.STARRED_PROJECT else KoalaEvent.UNSTARRED_PROJECT, props)
-    }
+//    // PROJECT CREATOR BIO
+//    fun trackViewedCreatorBioModal(project: Project) {
+//        val loggedInUser = client.loggedInUser()
+//        val props = AnalyticEventsUtils.projectProperties(project, loggedInUser)
+//        props["modal_title"] = "creatorBioModal"
+//        client.track(KoalaEvent.MODAL_DIALOG_VIEW, props)
+//    }
 
-    // PROJECT CREATOR BIO
-    fun trackViewedCreatorBioModal(project: Project) {
-        val loggedInUser = client.loggedInUser()
-        val props = AnalyticEventsUtils.projectProperties(project, loggedInUser)
-        props["modal_title"] = "creatorBioModal"
-        client.track(KoalaEvent.MODAL_DIALOG_VIEW, props)
-    }
+//    fun trackViewedMessageCreatorModal(project: Project) {
+//        val loggedInUser = client.loggedInUser()
+//        val props = AnalyticEventsUtils.projectProperties(project, loggedInUser)
+//        props["modal_title"] = "messageCreatorModal"
+//        client.track(KoalaEvent.MODAL_DIALOG_VIEW, props)
+//    }
 
-    fun trackViewedMessageCreatorModal(project: Project) {
-        val loggedInUser = client.loggedInUser()
-        val props = AnalyticEventsUtils.projectProperties(project, loggedInUser)
-        props["modal_title"] = "messageCreatorModal"
-        client.track(KoalaEvent.MODAL_DIALOG_VIEW, props)
-    }
+//    // COMMENTS
+//    fun trackLoadedOlderComments(project: Project, update: com.kickstarter.models.Update?, context: Comments) {
+//        val loggedInUser = client.loggedInUser()
+//
+//        val props = update?.let {
+//            AnalyticEventsUtils.updateProperties(project, it, loggedInUser).toMutableMap()
+//        } ?: AnalyticEventsUtils.projectProperties(project, loggedInUser).toMutableMap()
+//
+//        props["context"] = context.trackingString
+//        client.track(KoalaEvent.LOADED_OLDER_COMMENTS, props)
+//    }
 
-    // COMMENTS
-    fun trackLoadedOlderComments(project: Project, update: com.kickstarter.models.Update?, context: Comments) {
-        val loggedInUser = client.loggedInUser()
+//    @Deprecated("Use {@link #trackLoadedOlderComments(Project, Update, KoalaContext.Comments)} instead.")
+//    fun trackLoadedOlderProjectComments(project: Project) {
+//        client.track(KoalaEvent.PROJECT_COMMENT_LOAD_OLDER, AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
+//    }
 
-        val props = update?.let {
-            AnalyticEventsUtils.updateProperties(project, it, loggedInUser).toMutableMap()
-        } ?: AnalyticEventsUtils.projectProperties(project, loggedInUser).toMutableMap()
+//    fun trackPostedComment(
+//        project: Project,
+//        update: com.kickstarter.models.Update?,
+//        context: CommentDialog
+//    ) {
+//        val loggedInUser = client.loggedInUser()
+//
+//        val props = update?.let {
+//            AnalyticEventsUtils.updateProperties(project, it, loggedInUser).toMutableMap()
+//        } ?: AnalyticEventsUtils.projectProperties(project, loggedInUser).toMutableMap()
+//
+//        props["context"] = context.trackingString
+//        client.track(KoalaEvent.POSTED_COMMENT, props)
+//    }
 
-        props["context"] = context.trackingString
-        client.track(KoalaEvent.LOADED_OLDER_COMMENTS, props)
-    }
+//    @Deprecated("Use {@link #trackPostedComment(Project, Update, KoalaContext.CommentDialog)} instead.")
+//    fun trackProjectCommentCreate(project: Project) {
+//        client.track(KoalaEvent.PROJECT_COMMENT_CREATE, AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
+//    }
 
-    @Deprecated("Use {@link #trackLoadedOlderComments(Project, Update, KoalaContext.Comments)} instead.")
-    fun trackLoadedOlderProjectComments(project: Project) {
-        client.track(KoalaEvent.PROJECT_COMMENT_LOAD_OLDER, AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
-    }
+//    @Deprecated("Use {@link #trackViewedComments(Project, Update, KoalaContext.Comments)} instead.")
+//    fun trackProjectCommentsView(project: Project) {
+//        client.track(KoalaEvent.PROJECT_COMMENT_VIEW, AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
+//    }
 
-    fun trackPostedComment(
-        project: Project,
-        update: com.kickstarter.models.Update?,
-        context: CommentDialog
-    ) {
-        val loggedInUser = client.loggedInUser()
-
-        val props = update?.let {
-            AnalyticEventsUtils.updateProperties(project, it, loggedInUser).toMutableMap()
-        } ?: AnalyticEventsUtils.projectProperties(project, loggedInUser).toMutableMap()
-
-        props["context"] = context.trackingString
-        client.track(KoalaEvent.POSTED_COMMENT, props)
-    }
-
-    @Deprecated("Use {@link #trackPostedComment(Project, Update, KoalaContext.CommentDialog)} instead.")
-    fun trackProjectCommentCreate(project: Project) {
-        client.track(KoalaEvent.PROJECT_COMMENT_CREATE, AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
-    }
-
-    @Deprecated("Use {@link #trackViewedComments(Project, Update, KoalaContext.Comments)} instead.")
-    fun trackProjectCommentsView(project: Project) {
-        client.track(KoalaEvent.PROJECT_COMMENT_VIEW, AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
-    }
-
-    fun trackViewedComments(
-        project: Project,
-        update: com.kickstarter.models.Update?,
-        context: Comments
-    ) {
-        val loggedInUser = client.loggedInUser()
-
-        val props = update?.let {
-            AnalyticEventsUtils.updateProperties(project, it, loggedInUser).toMutableMap()
-        } ?: AnalyticEventsUtils.projectProperties(project, loggedInUser).toMutableMap()
-
-        props["context"] = context.trackingString
-        client.track(KoalaEvent.VIEWED_COMMENTS, props)
-    }
+//    fun trackViewedComments(
+//        project: Project,
+//        update: com.kickstarter.models.Update?,
+//        context: Comments
+//    ) {
+//        val loggedInUser = client.loggedInUser()
+//
+//        val props = update?.let {
+//            AnalyticEventsUtils.updateProperties(project, it, loggedInUser).toMutableMap()
+//        } ?: AnalyticEventsUtils.projectProperties(project, loggedInUser).toMutableMap()
+//
+//        props["context"] = context.trackingString
+//        client.track(KoalaEvent.VIEWED_COMMENTS, props)
+//    }
 
 //    // ACTIVITY
 //    fun trackActivityView(pageCount: Int) {
@@ -272,35 +271,35 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(CTA_CLICKED.eventName, props)
     }
 
-    // SEARCH
-    fun trackSearchView() {
-        client.track(KoalaEvent.VIEWED_SEARCH)
-        // deprecated
-        client.track(KoalaEvent.DISCOVER_SEARCH_LEGACY)
-    }
+//    // SEARCH
+//    fun trackSearchView() {
+//        client.track(KoalaEvent.VIEWED_SEARCH)
+//        // deprecated
+//        client.track(KoalaEvent.DISCOVER_SEARCH_LEGACY)
+//    }
 
-    fun trackSearchResults(query: String, pageCount: Int) {
-        if (pageCount == 1) {
-            val params = hashMapOf<String, Any>()
-            params["search_term"] = query
+//    fun trackSearchResults(query: String, pageCount: Int) {
+//        if (pageCount == 1) {
+//            val params = hashMapOf<String, Any>()
+//            params["search_term"] = query
+//
+//            client.track(KoalaEvent.LOADED_SEARCH_RESULTS, params)
+//            // deprecated
+//            client.track(KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY, params)
+//        } else {
+//            val params = hashMapOf<String, Any>()
+//            params["search_term"] = query
+//            params["page_count"] = pageCount
+//
+//            client.track(KoalaEvent.LOADED_MORE_SEARCH_RESULTS, params)
+//            // deprecated
+//            client.track(KoalaEvent.DISCOVER_SEARCH_RESULTS_LOAD_MORE_LEGACY, params)
+//        }
+//    }
 
-            client.track(KoalaEvent.LOADED_SEARCH_RESULTS, params)
-            // deprecated
-            client.track(KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY, params)
-        } else {
-            val params = hashMapOf<String, Any>()
-            params["search_term"] = query
-            params["page_count"] = pageCount
-
-            client.track(KoalaEvent.LOADED_MORE_SEARCH_RESULTS, params)
-            // deprecated
-            client.track(KoalaEvent.DISCOVER_SEARCH_RESULTS_LOAD_MORE_LEGACY, params)
-        }
-    }
-
-    fun trackClearedSearchTerm() {
-        client.track(KoalaEvent.CLEARED_SEARCH_TERM)
-    }
+//    fun trackClearedSearchTerm() {
+//        client.track(KoalaEvent.CLEARED_SEARCH_TERM)
+//    }
 
 //    fun trackActivityTapped(activity: Activity) {
 //        client.track(KoalaEvent.ACTIVITY_VIEW_ITEM, AnalyticEventsUtils.activityProperties(activity, client.loggedInUser()))
@@ -350,33 +349,33 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(PAGE_VIEWED.eventName, props)
     }
 
-    fun trackLoginSuccess() {
-        client.track(KoalaEvent.LOGIN)
-    }
+//    fun trackLoginSuccess() {
+//        client.track(KoalaEvent.LOGIN)
+//    }
 
-    fun trackLoginError() {
-        client.track(KoalaEvent.ERRORED_USER_LOGIN)
-    }
+//    fun trackLoginError() {
+//        client.track(KoalaEvent.ERRORED_USER_LOGIN)
+//    }
 
-    fun trackTwoFactorAuthView() {
-        client.track(KoalaEvent.TWO_FACTOR_AUTH_CONFIRM_VIEW)
-    }
+//    fun trackTwoFactorAuthView() {
+//        client.track(KoalaEvent.TWO_FACTOR_AUTH_CONFIRM_VIEW)
+//    }
 
-    fun trackTwoFactorResendCode() {
-        client.track(KoalaEvent.TWO_FACTOR_AUTH_RESEND_CODE)
-    }
+//    fun trackTwoFactorResendCode() {
+//        client.track(KoalaEvent.TWO_FACTOR_AUTH_RESEND_CODE)
+//    }
 
-    fun trackRegisterFormView() {
-        client.track(KoalaEvent.USER_SIGNUP)
-    }
+//    fun trackRegisterFormView() {
+//        client.track(KoalaEvent.USER_SIGNUP)
+//    }
 
-    fun trackRegisterError() {
-        client.track(KoalaEvent.ERRORED_USER_SIGNUP)
-    }
-
-    fun trackRegisterSuccess() {
-        client.track(KoalaEvent.NEW_USER)
-    }
+//    fun trackRegisterError() {
+//        client.track(KoalaEvent.ERRORED_USER_SIGNUP)
+//    }
+//
+//    fun trackRegisterSuccess() {
+//        client.track(KoalaEvent.NEW_USER)
+//    }
 
     fun trackResetPasswordFormView() {
         client.track("Forgot Password View")
@@ -390,9 +389,9 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track("Forgot Password Errored")
     }
 
-    fun trackFacebookConfirmation() {
-        client.track(KoalaEvent.FACEBOOK_CONFIRM)
-    }
+//    fun trackFacebookConfirmation() {
+//        client.track(KoalaEvent.FACEBOOK_CONFIRM)
+//    }
 
     fun trackFacebookLoginError() {
         client.track("Errored Facebook Login")
@@ -402,40 +401,40 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track("Logout")
     }
 
-    fun trackSignupNewsletterToggle(sendNewsletters: Boolean) {
-        val properties = hashMapOf<String, Any>()
-        properties["send_newsletters"] = sendNewsletters
-        client.track(KoalaEvent.SIGNUP_NEWSLETTER_TOGGLE, properties)
-    }
+//    fun trackSignupNewsletterToggle(sendNewsletters: Boolean) {
+//        val properties = hashMapOf<String, Any>()
+//        properties["send_newsletters"] = sendNewsletters
+//        client.track(KoalaEvent.SIGNUP_NEWSLETTER_TOGGLE, properties)
+//    }
 
     // SETTINGS
-    fun trackChangedEmail() {
-        client.track(KoalaEvent.CHANGED_EMAIL)
-    }
+//    fun trackChangedEmail() {
+//        client.track(KoalaEvent.CHANGED_EMAIL)
+//    }
 
-    fun trackChangedPassword() {
-        client.track(KoalaEvent.CHANGED_PASSWORD)
-    }
+//    fun trackChangedPassword() {
+//        client.track(KoalaEvent.CHANGED_PASSWORD)
+//    }
 
     fun trackContactEmailClicked() {
         client.track("Contact Email Clicked")
     }
 
-    fun trackCreatedPassword() {
-        client.track(KoalaEvent.CREATED_PASSWORD)
-    }
+//    fun trackCreatedPassword() {
+//        client.track(KoalaEvent.CREATED_PASSWORD)
+//    }
 
-    fun trackDeletePaymentMethod() {
-        client.track(KoalaEvent.DELETED_PAYMENT_METHOD)
-    }
+//    fun trackDeletePaymentMethod() {
+//        client.track(KoalaEvent.DELETED_PAYMENT_METHOD)
+//    }
+//
+//    fun trackErroredDeletePaymentMethod() {
+//        client.track(KoalaEvent.ERRORED_DELETE_PAYMENT_METHOD)
+//    }
 
-    fun trackErroredDeletePaymentMethod() {
-        client.track(KoalaEvent.ERRORED_DELETE_PAYMENT_METHOD)
-    }
-
-    fun trackFailedPaymentMethodCreation() {
-        client.track(KoalaEvent.FAILED_PAYMENT_METHOD_CREATION)
-    }
+//    fun trackFailedPaymentMethodCreation() {
+//        client.track(KoalaEvent.FAILED_PAYMENT_METHOD_CREATION)
+//    }
 
     fun trackNewsletterToggle(sendNewsletter: Boolean) {
         if (sendNewsletter) {
@@ -445,59 +444,59 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         }
     }
 
-    fun trackResentVerificationEmail() {
-        client.track(KoalaEvent.RESENT_VERIFICATION_EMAIL)
-    }
+//    fun trackResentVerificationEmail() {
+//        client.track(KoalaEvent.RESENT_VERIFICATION_EMAIL)
+//    }
 
-    fun trackSavedPaymentMethod() {
-        client.track(KoalaEvent.SAVED_PAYMENT_METHOD)
-    }
+//    fun trackSavedPaymentMethod() {
+//        client.track(KoalaEvent.SAVED_PAYMENT_METHOD)
+//    }
 
-    fun trackSelectedChosenCurrency(selectedCurrency: String?) {
-        val properties = hashMapOf<String, Any>()
-        properties["user_chosen_currency"] = selectedCurrency ?: ""
-        client.track(KoalaEvent.SELECTED_CHOSEN_CURRENCY, properties)
-    }
+//    fun trackSelectedChosenCurrency(selectedCurrency: String?) {
+//        val properties = hashMapOf<String, Any>()
+//        properties["user_chosen_currency"] = selectedCurrency ?: ""
+//        client.track(KoalaEvent.SELECTED_CHOSEN_CURRENCY, properties)
+//    }
+//
+//    fun trackSettingsView() {
+//        client.track(KoalaEvent.VIEWED_SETTINGS)
+//    }
 
-    fun trackSettingsView() {
-        client.track(KoalaEvent.VIEWED_SETTINGS)
-    }
+//    fun trackViewedAccount() {
+//        client.track(KoalaEvent.VIEWED_ACCOUNT)
+//    }
 
-    fun trackViewedAccount() {
-        client.track(KoalaEvent.VIEWED_ACCOUNT)
-    }
+//    fun trackViewedAddNewCard() {
+//        client.track(KoalaEvent.VIEWED_ADD_NEW_CARD)
+//    }
 
-    fun trackViewedAddNewCard() {
-        client.track(KoalaEvent.VIEWED_ADD_NEW_CARD)
-    }
+//    fun trackViewedChangedEmail() {
+//        client.track(KoalaEvent.VIEWED_CHANGE_EMAIL)
+//    }
 
-    fun trackViewedChangedEmail() {
-        client.track(KoalaEvent.VIEWED_CHANGE_EMAIL)
-    }
+//    fun trackViewedChangedPassword() {
+//        client.track(KoalaEvent.VIEWED_CHANGE_PASSWORD)
+//    }
 
-    fun trackViewedChangedPassword() {
-        client.track(KoalaEvent.VIEWED_CHANGE_PASSWORD)
-    }
+//    fun trackViewedCreatedPassword() {
+//        client.track(KoalaEvent.VIEWED_CREATE_PASSWORD)
+//    }
 
-    fun trackViewedCreatedPassword() {
-        client.track(KoalaEvent.VIEWED_CREATE_PASSWORD)
-    }
-
-    fun trackViewedNotifications() {
-        client.track(KoalaEvent.VIEWED_NOTIFICATIONS)
-    }
-
-    fun trackViewedNewsletter() {
-        client.track(KoalaEvent.VIEWED_NEWSLETTER)
-    }
-
-    fun trackViewedPaymentMethods() {
-        client.track(KoalaEvent.VIEWED_PAYMENT_METHODS)
-    }
-
-    fun trackViewedPrivacy() {
-        client.track(KoalaEvent.VIEWED_PRIVACY)
-    }
+//    fun trackViewedNotifications() {
+//        client.track(KoalaEvent.VIEWED_NOTIFICATIONS)
+//    }
+//
+//    fun trackViewedNewsletter() {
+//        client.track(KoalaEvent.VIEWED_NEWSLETTER)
+//    }
+//
+//    fun trackViewedPaymentMethods() {
+//        client.track(KoalaEvent.VIEWED_PAYMENT_METHODS)
+//    }
+//
+//    fun trackViewedPrivacy() {
+//        client.track(KoalaEvent.VIEWED_PRIVACY)
+//    }
 
     // CHECKOUT
     fun trackCheckoutShowShareSheet() {
@@ -525,90 +524,90 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track("Checkout Finished Discover Open Project", props)
     }
 
-    fun trackManagePledgeOptionClicked(project: Project, cta: String) {
-        val properties = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
-        properties["cta"] = cta
-        client.track(KoalaEvent.MANAGE_PLEDGE_OPTION_CLICKED, properties)
-    }
+//    fun trackManagePledgeOptionClicked(project: Project, cta: String) {
+//        val properties = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
+//        properties["cta"] = cta
+//        client.track(KoalaEvent.MANAGE_PLEDGE_OPTION_CLICKED, properties)
+//    }
 
-    fun trackAddNewCardButtonClicked(project: Project, pledgeTotal: Double) {
-        val properties = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
+//    fun trackAddNewCardButtonClicked(project: Project, pledgeTotal: Double) {
+//        val properties = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
+//
+//        // Overwrite the pledge_total with the latest value
+//        properties["pledge_total"] = pledgeTotal
+//        client.track(KoalaEvent.ADD_NEW_CARD_BUTTON_CLICKED, properties)
+//    }
 
-        // Overwrite the pledge_total with the latest value
-        properties["pledge_total"] = pledgeTotal
-        client.track(KoalaEvent.ADD_NEW_CARD_BUTTON_CLICKED, properties)
-    }
+//    fun trackPledgeButtonClicked(project: Project, pledgeTotal: Double) {
+//        val properties = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
+//
+//        // Overwrite the pledge_total with the latest value
+//        properties["pledge_total"] = pledgeTotal
+//        client.track(KoalaEvent.PLEDGE_BUTTON_CLICKED, properties)
+//    }
+//
+//    fun trackUpdatePledgeButtonClicked(project: Project, pledgeTotal: Double) {
+//        val properties = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
+//
+//        // Overwrite the pledge_total with the latest value
+//        properties["pledge_total"] = pledgeTotal
+//        client.track(KoalaEvent.UPDATE_PLEDGE_BUTTON_CLICKED, properties)
+//    }
+//
+//    fun trackUpdatePaymentMethodButtonClicked(project: Project) {
+//        val properties = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
+//        client.track(KoalaEvent.UPDATE_PAYMENT_METHOD_BUTTON_CLICKED, properties)
+//    }
+//
+//    fun trackPledgeScreenViewed(project: Project) {
+//        val properties = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
+//        client.track(KoalaEvent.PLEDGE_SCREEN_VIEWED, properties)
+//    }
 
-    fun trackPledgeButtonClicked(project: Project, pledgeTotal: Double) {
-        val properties = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
+//    // SHARE
+//    fun trackShowProjectShareSheet(project: Project) {
+//        val props = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
+//        props["context"] = Share.PROJECT
+//
+//        // deprecated
+//        client.track(KoalaEvent.PROJECT_SHOW_SHARE_SHEET_LEGACY)
+//        client.track(KoalaEvent.SHOWED_SHARE_SHEET, props)
+//    }
+//
+//    // MESSAGES
+//    fun trackSentMessage(project: Project, context: Message) {
+//        val props = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
+//        props["context"] = context.trackingString
+//        client.track(KoalaEvent.SENT_MESSAGE, props)
+//    }
 
-        // Overwrite the pledge_total with the latest value
-        properties["pledge_total"] = pledgeTotal
-        client.track(KoalaEvent.PLEDGE_BUTTON_CLICKED, properties)
-    }
+//    fun trackViewedMailbox(
+//        mailbox: Mailbox,
+//        project: Project?,
+//        intentRefTag: RefTag?,
+//        context: KoalaContext.Mailbox
+//    ) {
+//        val props = if (project == null) HashMap() else AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
+//        props["context"] = context.trackingString
+//        if (intentRefTag != null) {
+//            props["ref_tag"] = intentRefTag.tag()
+//        }
+//        when (mailbox) {
+//            Mailbox.INBOX -> client.track(KoalaEvent.VIEWED_MESSAGE_INBOX, props)
+//            Mailbox.SENT -> client.track(KoalaEvent.VIEWED_SENT_MESSAGES, props)
+//        }
+//    }
 
-    fun trackUpdatePledgeButtonClicked(project: Project, pledgeTotal: Double) {
-        val properties = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
+//    fun trackViewedMessageThread(project: Project) {
+//        client.track(KoalaEvent.VIEWED_MESSAGE_THREAD, AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
+//    }
 
-        // Overwrite the pledge_total with the latest value
-        properties["pledge_total"] = pledgeTotal
-        client.track(KoalaEvent.UPDATE_PLEDGE_BUTTON_CLICKED, properties)
-    }
-
-    fun trackUpdatePaymentMethodButtonClicked(project: Project) {
-        val properties = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
-        client.track(KoalaEvent.UPDATE_PAYMENT_METHOD_BUTTON_CLICKED, properties)
-    }
-
-    fun trackPledgeScreenViewed(project: Project) {
-        val properties = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
-        client.track(KoalaEvent.PLEDGE_SCREEN_VIEWED, properties)
-    }
-
-    // SHARE
-    fun trackShowProjectShareSheet(project: Project) {
-        val props = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
-        props["context"] = Share.PROJECT
-
-        // deprecated
-        client.track(KoalaEvent.PROJECT_SHOW_SHARE_SHEET_LEGACY)
-        client.track(KoalaEvent.SHOWED_SHARE_SHEET, props)
-    }
-
-    // MESSAGES
-    fun trackSentMessage(project: Project, context: Message) {
-        val props = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
-        props["context"] = context.trackingString
-        client.track(KoalaEvent.SENT_MESSAGE, props)
-    }
-
-    fun trackViewedMailbox(
-        mailbox: Mailbox,
-        project: Project?,
-        intentRefTag: RefTag?,
-        context: KoalaContext.Mailbox
-    ) {
-        val props = if (project == null) HashMap() else AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
-        props["context"] = context.trackingString
-        if (intentRefTag != null) {
-            props["ref_tag"] = intentRefTag.tag()
-        }
-        when (mailbox) {
-            Mailbox.INBOX -> client.track(KoalaEvent.VIEWED_MESSAGE_INBOX, props)
-            Mailbox.SENT -> client.track(KoalaEvent.VIEWED_SENT_MESSAGES, props)
-        }
-    }
-
-    fun trackViewedMessageThread(project: Project) {
-        client.track(KoalaEvent.VIEWED_MESSAGE_THREAD, AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
-    }
-
-    // PROFILE
-    fun trackProfileView() {
-        // deprecated
-        client.track(KoalaEvent.PROFILE_VIEW_MY)
-        client.track(KoalaEvent.VIEWED_PROFILE)
-    }
+//    // PROFILE
+//    fun trackProfileView() {
+//        // deprecated
+//        client.track(KoalaEvent.PROFILE_VIEW_MY)
+//        client.track(KoalaEvent.VIEWED_PROFILE)
+//    }
 
     // RATING
     fun trackAppRatingNow() {
@@ -628,59 +627,59 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track("Project Video Start", AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
     }
 
-    // PROJECT UPDATES
-    fun trackViewedUpdate(project: Project, context: Update) {
-        val props = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
-        props["context"] = context.trackingString
-        client.track(KoalaEvent.VIEWED_UPDATE, props)
-    }
+//    // PROJECT UPDATES
+//    fun trackViewedUpdate(project: Project, context: Update) {
+//        val props = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
+//        props["context"] = context.trackingString
+//        client.track(KoalaEvent.VIEWED_UPDATE, props)
+//    }
 
-    fun trackViewedUpdates(project: Project) {
-        client.track(KoalaEvent.VIEWED_UPDATES, AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
-    }
+//    fun trackViewedUpdates(project: Project) {
+//        client.track(KoalaEvent.VIEWED_UPDATES, AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
+//    }
 
-    // PUSH NOTIFICATIONS
-    fun trackPushNotification(envelope: PushNotificationEnvelope) {
-        val properties = hashMapOf<String, Any>()
+//    // PUSH NOTIFICATIONS
+//    fun trackPushNotification(envelope: PushNotificationEnvelope) {
+//        val properties = hashMapOf<String, Any>()
+//
+//        properties["notification_type"] = "push"
+//        if (envelope.activity() != null) {
+//            properties["notification_subject"] = "activity"
+//            properties["notification_activity_category"] = envelope.activity()?.category() ?: ""
+//        }
+//
+//        // deprecated
+//        client.track(KoalaEvent.NOTIFICATION_OPENED_LEGACY, properties)
+//        client.track(KoalaEvent.OPENED_NOTIFICATION, properties)
+//    }
 
-        properties["notification_type"] = "push"
-        if (envelope.activity() != null) {
-            properties["notification_subject"] = "activity"
-            properties["notification_activity_category"] = envelope.activity()?.category() ?: ""
-        }
-
-        // deprecated
-        client.track(KoalaEvent.NOTIFICATION_OPENED_LEGACY, properties)
-        client.track(KoalaEvent.OPENED_NOTIFICATION, properties)
-    }
-
-    // WEBVIEWS
-    fun trackOpenedExternalLink(project: Project, context: ExternalLink) {
-        val props = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
-        props["context"] = context.trackingString
-        client.track(KoalaEvent.OPENED_EXTERNAL_LINK, props)
-    }
-
-    // DEEP LINK
-    fun trackContinueUserActivityAndOpenedDeepLink() {
-        client.track(KoalaEvent.CONTINUE_USER_ACTIVITY)
-        client.track(KoalaEvent.OPENED_DEEP_LINK)
-    }
-
-    // CREATOR DASHBOARD
-    fun trackOpenedProjectSwitcher() {
-        client.track(KoalaEvent.OPENED_PROJECT_SWITCHER)
-    }
-
-    fun trackSwitchedProjects(project: Project) {
-        val properties = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
-        client.track(KoalaEvent.SWITCHED_PROJECTS, properties)
-    }
-
-    fun trackViewedProjectDashboard(project: Project) {
-        val properties = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
-        client.track(KoalaEvent.VIEWED_PROJECT_DASHBOARD, properties)
-    }
+//    // WEBVIEWS
+//    fun trackOpenedExternalLink(project: Project, context: ExternalLink) {
+//        val props = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
+//        props["context"] = context.trackingString
+//        client.track(KoalaEvent.OPENED_EXTERNAL_LINK, props)
+//    }
+//
+//    // DEEP LINK
+//    fun trackContinueUserActivityAndOpenedDeepLink() {
+//        client.track(KoalaEvent.CONTINUE_USER_ACTIVITY)
+//        client.track(KoalaEvent.OPENED_DEEP_LINK)
+//    }
+//
+//    // CREATOR DASHBOARD
+//    fun trackOpenedProjectSwitcher() {
+//        client.track(KoalaEvent.OPENED_PROJECT_SWITCHER)
+//    }
+//
+//    fun trackSwitchedProjects(project: Project) {
+//        val properties = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
+//        client.track(KoalaEvent.SWITCHED_PROJECTS, properties)
+//    }
+//
+//    fun trackViewedProjectDashboard(project: Project) {
+//        val properties = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
+//        client.track(KoalaEvent.VIEWED_PROJECT_DASHBOARD, properties)
+//    }
 
     //region Discover a Project
     fun trackActivityFeedViewed() {

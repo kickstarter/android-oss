@@ -1,13 +1,13 @@
-//package com.kickstarter.libs;
-//
-//import java.lang.annotation.Retention;
-//import java.lang.annotation.RetentionPolicy;
-//
-//import androidx.annotation.StringDef;
-//
-//public final class KoalaEvent {
-//  private KoalaEvent() {}
-//
+package com.kickstarter.libs;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import androidx.annotation.StringDef;
+
+public final class KoalaEvent {
+  private KoalaEvent() {}
+
 //  public static final String ADD_NEW_CARD_BUTTON_CLICKED = "Add New Card Button Clicked";
 //  public static final String BACK_THIS_PROJECT_BUTTON_CLICKED = "Back this Project Button Clicked";
 //  public static final String CANCEL_PLEDGE_BUTTON_CLICKED = "Cancel Pledge Button Clicked";
@@ -87,8 +87,8 @@
 //  public static final String VIEWED_SETTINGS = "Viewed Settings";
 //  public static final String VIEWED_UPDATE = "Viewed Update";
 //  public static final String VIEWED_UPDATES = "Viewed Updates";
-//
+
 //  @Retention(RetentionPolicy.SOURCE)
 //  @StringDef({BACK_THIS_PROJECT_BUTTON_CLICKED, MANAGE_PLEDGE_BUTTON_CLICKED, VIEW_REWARDS_BUTTON_CLICKED, VIEW_YOUR_PLEDGE_BUTTON_CLICKED})
 //  @interface ProjectAction {}
-//}
+}

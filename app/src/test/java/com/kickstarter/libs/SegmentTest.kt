@@ -1051,7 +1051,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
 
-        segment.trackThanksPageViewed(
+        segment.trackThanksScreenViewed(
             CheckoutDataFactory.checkoutData(3L, 20.0, 30.0),
             PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward(), listOfAddons())
         )

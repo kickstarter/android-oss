@@ -21,16 +21,16 @@ class InAppCustomListener(
     //  url production: https://www.kickstarter.com/settings/notify_mobile_of_marketing_update/true
 
     init {
-        Timber.d("Init block custom listener")
+        Timber.d("${this.javaClass.canonicalName} Init block custom listener")
     }
 
     override fun beforeInAppMessageDisplayed(inAppMessage: IInAppMessage?): InAppMessageOperation {
-        Timber.d("Display Always")
+        Timber.d("${this.javaClass.canonicalName} beforeInAppMessageDisplayed: Display Always")
         return InAppMessageOperation.DISPLAY_NOW
     }
 
     override fun onInAppMessageButtonClicked(inAppMessage: IInAppMessage?, button: MessageButton?, inAppMessageCloser: InAppMessageCloser?): Boolean {
-        Timber.d("Button Clicked")
+        Timber.d("${this.javaClass.canonicalName} onInAppMessageButtonClicked: Button Clicked")
         return super.onInAppMessageButtonClicked(inAppMessage, button, inAppMessageCloser)
     }
 }

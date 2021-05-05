@@ -19,7 +19,7 @@ public final class IntentKey {
   public static final String FACEBOOK_USER = "com.kickstarter.kickstarter.intent_facebook_user";
   public static final String INTERNAL_BUILD_ENVELOPE = "com.kickstarter.kickstarter.intent_internal_build_envelope";
   public static final String IS_FROM_MESSAGES_ACTIVITY = "com.kickstarter.kickstarter.intent_is_from_messages_activity";
-  public static final String KOALA_CONTEXT = "com.kickstarter.kickstarter.intent_koala_context";
+  public static final String MESSAGE_SCREEN_SOURCE_CONTEXT = "com.kickstarter.kickstarter.intent_message_screen_source";
   public static final String EVENT_DATA = "com.kickstarter.kickstarter.intent_event_data";
   public static final String EVENT_NAME = "com.kickstarter.kickstarter.intent_event_name";
   public static final String LOGIN_REASON = "com.kickstarter.kickstarter.intent_login_reason";

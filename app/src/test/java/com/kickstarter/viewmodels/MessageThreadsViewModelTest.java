@@ -7,7 +7,6 @@ import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.mock.factories.MessageThreadFactory;
 import com.kickstarter.mock.factories.MessageThreadsEnvelopeFactory;

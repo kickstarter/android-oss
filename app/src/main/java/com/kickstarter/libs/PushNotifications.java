@@ -340,7 +340,7 @@ public final class PushNotifications {
 
     final Intent messageThreadIntent = new Intent(this.context, MessagesActivity.class)
       .putExtra(IntentKey.MESSAGE_THREAD, messageThread)
-      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.PUSH);
+      .putExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT, MessagePreviousScreenType.PUSH);
 
     final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this.context)
       .addNextIntentWithParentStack(messageThreadIntent);

@@ -6,7 +6,7 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Either;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.KoalaContext;
+import com.kickstarter.libs.MessagePreviousScreenType;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ListUtils;
@@ -158,9 +158,9 @@ public interface MessagesViewModel {
           );
         });
 
-      final Observable<KoalaContext.Message> koalaContext = intent()
-        .map(i -> i.getSerializableExtra(IntentKey.KOALA_CONTEXT))
-        .ofType(KoalaContext.Message.class);
+      final Observable<MessagePreviousScreenType> messageAccountTypeObservable = intent()
+        .map(i -> i.getSerializableExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT))
+        .ofType(MessagePreviousScreenType.class);
 
       final Observable<Backing> configBacking = configData
         .map(Either::right)
@@ -265,7 +265,7 @@ public interface MessagesViewModel {
         .distinctUntilChanged();
 
       final Observable<Boolean> messageHasBody = this.messageEditTextChanged
-        .map(it -> ObjectUtils.isNull(it) ? false : StringExt.isPresent(it));
+        .map(it -> !ObjectUtils.isNull(it) && StringExt.isPresent(it));
 
       messageThreadEnvelope
         .map(MessageThreadEnvelope::messageThread)
@@ -325,8 +325,8 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.backingInfoViewIsGone::onNext);
 
-      koalaContext
-        .map(c -> c.equals(KoalaContext.Message.BACKER_MODAL))
+      messageAccountTypeObservable
+        .map(c -> c.equals(MessagePreviousScreenType.BACKER_MODAL))
         .compose(bindToLifecycle())
         .subscribe(this.viewPledgeButtonIsGone::onNext);
 

@@ -91,6 +91,7 @@ open class BrazeClient(
 
     private var config: Config? = null
     private var initialized = false
+    private val manager = Control()
 
     override val isInitialized: Boolean
         get() = initialized
@@ -170,7 +171,7 @@ open class BrazeClient(
 
     override fun registerActivityLifecycleCallbacks(context: Context) {
         context.registerActivityLifecycleCallbacks(getLifeCycleCallbacks())
-        AppboyInAppMessageManager.getInstance().setCustomControlInAppMessageManagerListener(Control())
+        AppboyInAppMessageManager.getInstance().setCustomControlInAppMessageManagerListener(this.manager)
     }
 
     private class Control(): AppboyDefaultInAppMessageManagerListener() {

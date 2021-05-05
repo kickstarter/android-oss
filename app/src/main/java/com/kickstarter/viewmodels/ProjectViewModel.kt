@@ -447,7 +447,7 @@ interface ProjectViewModel {
 
             projectSavedStatus
                 .compose(bindToLifecycle())
-                .subscribe { this.lake.trackWatchProjectCTA(it) }
+                .subscribe { this.analyticEvents.trackWatchProjectCTA(it) }
 
             projectSavedStatus
                 .filter { p -> p.isStarred && p.isLive && !p.isApproachingDeadline }
@@ -647,7 +647,7 @@ interface ProjectViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.showUpdatePledge.onNext(it)
-                    this.lake.trackChangePaymentMethod(it.first)
+                    this.analyticEvents.trackChangePaymentMethod(it.first)
                 }
 
             projectDataAndBackedReward
@@ -763,7 +763,7 @@ interface ProjectViewModel {
                     }
 
                     val dataWithStoredCookieRefTag = storeCurrentCookieRefTag(data)
-                    this.lake.trackProjectScreenViewed(dataWithStoredCookieRefTag, OVERVIEW.contextName)
+                    this.analyticEvents.trackProjectScreenViewed(dataWithStoredCookieRefTag, OVERVIEW.contextName)
                 }
 
             fullProjectDataAndPledgeFlowContext
@@ -771,7 +771,7 @@ interface ProjectViewModel {
                 .filter { it.first.project().isLive && !it.first.project().isBacking }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackPledgeInitiateCTA(it.first)
+                    this.analyticEvents.trackPledgeInitiateCTA(it.first)
                 }
 
             fullProjectDataAndPledgeFlowContext
@@ -780,7 +780,7 @@ interface ProjectViewModel {
                 .filter { it.project().isLive && !it.project().isBacking }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackCampaignDetailsCTAClicked(it)
+                    this.analyticEvents.trackCampaignDetailsCTAClicked(it)
                 }
 
             val shouldTrackCTAClickedEvent = this.pledgeActionButtonText
@@ -793,7 +793,7 @@ interface ProjectViewModel {
                 .filter { it.project().isLive && !it.project().isBacking }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackCreatorDetailsCTA(it)
+                    this.analyticEvents.trackCreatorDetailsCTA(it)
                 }
         }
 

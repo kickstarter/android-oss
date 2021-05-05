@@ -103,7 +103,7 @@ public interface LoginToutViewModel {
         .compose(bindToLifecycle())
         .subscribe(it -> {
           this.loginReason.onNext(it);
-          this.lake.trackLoginOrSignUpPagedViewed();
+          this.analyticEvents.trackLoginOrSignUpPagedViewed();
         });
 
       activityResult()
@@ -147,20 +147,20 @@ public interface LoginToutViewModel {
         .compose(ignoreValues())
         .compose(bindToLifecycle())
         .subscribe(__ -> {
-          this.lake.trackLoginOrSignUpCtaClicked(ContextTypeName.FACEBOOK.getContextName(), ContextPageName.LOGIN_SIGN_UP.getContextName());
+          this.analyticEvents.trackLoginOrSignUpCtaClicked(ContextTypeName.FACEBOOK.getContextName(), ContextPageName.LOGIN_SIGN_UP.getContextName());
         });
 
       this.loginClick
         .compose(bindToLifecycle())
         .subscribe(__ -> {
-          this.lake.trackLogInInitiateCtaClicked();
+          this.analyticEvents.trackLogInInitiateCtaClicked();
         }
         );
 
       this.signupClick
         .compose(bindToLifecycle())
         .subscribe(__ -> {
-          this.lake.trackSignUpInitiateCtaClicked();
+          this.analyticEvents.trackSignUpInitiateCtaClicked();
         });
     }
 

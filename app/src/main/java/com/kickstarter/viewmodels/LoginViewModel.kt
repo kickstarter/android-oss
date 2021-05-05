@@ -131,7 +131,7 @@ interface LoginViewModel {
             logInButtonClicked
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackLogInButtonCtaClicked()
+                    this.analyticEvents.trackLogInButtonCtaClicked()
                 }
 
             emailAndReason
@@ -204,7 +204,7 @@ interface LoginViewModel {
                 .filter { it.isTfaRequiredError }
                 .map { null }
 
-            this.lake.trackLoginPagedViewed()
+            this.analyticEvents.trackLoginPagedViewed()
         }
 
         private fun unwrapNotificationEnvelopeError(notification: Notification<AccessTokenEnvelope>) =

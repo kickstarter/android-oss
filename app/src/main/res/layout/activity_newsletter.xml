@@ -112,7 +112,7 @@
 
           <TextView
             style="@style/NewsletterSingleRow"
-            android:text="@string/profile_settings_newsletter_news_event" />
+            android:text="@string/Announcements" />
 
           <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/news_events_switch"
@@ -123,7 +123,7 @@
 
       <TextView
         style="@style/NewsLetterTextView"
-        android:text="@string/Big_Kickstarter_news_and_events_near_you" />
+        android:text="@string/Big_Kickstarter_news_plus_occasional_projects_and_events_chosen_just_for_you" />
 
       <LinearLayout
         style="@style/SettingsLinearRow">
@@ -136,7 +136,7 @@
 
           <TextView
             style="@style/NewsletterSingleRow"
-            android:text="@string/profile_settings_newsletter_games" />
+            android:text="@string/Kickstarter_Games" />
 
           <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/games_we_love_switch"
@@ -160,7 +160,7 @@
 
           <TextView
             style="@style/NewsletterSingleRow"
-            android:text="@string/profile_settings_newsletter_invent" />
+            android:text="@string/Kickstarter_Invent" />
 
           <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/invent_switch"
@@ -184,7 +184,7 @@
 
           <TextView
             style="@style/NewsletterSingleRow"
-            android:text="@string/profile_settings_newsletter_arts_news" />
+            android:text="@string/Kickstarter_Arts" />
 
           <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/arts_news_switch"
@@ -209,7 +209,7 @@
 
           <TextView
             style="@style/NewsletterSingleRow"
-            android:text="@string/profile_settings_newsletter_film" />
+            android:text="@string/Kickstarter_on_Film" />
 
           <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/films_switch"
@@ -281,7 +281,7 @@
 
           <TextView
             style="@style/NewsletterSingleRow"
-            android:text="@string/profile_settings_newsletter_alumni" />
+            android:text="@string/Working_on_it" />
 
           <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/alumni_switch"
@@ -292,7 +292,7 @@
 
       <TextView
         style="@style/NewsLetterTextView"
-        android:text="@string/Keep_in_touch_after_your_campaign" />
+        android:text="@string/A_monthly_pep_talk_to_boost_your_creative_practice_for_creators_of_all_types" />
 
     </LinearLayout>
 

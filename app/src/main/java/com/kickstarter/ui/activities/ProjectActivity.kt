@@ -26,7 +26,7 @@ import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.KoalaContext
+import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
@@ -685,7 +685,7 @@ class ProjectActivity :
     private fun startMessagesActivity(project: Project) {
         startActivity(
             Intent(this, MessagesActivity::class.java)
-                .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.PROJECT_PAGE)
+                .putExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT, MessagePreviousScreenType.PROJECT_PAGE)
                 .putExtra(IntentKey.PROJECT, project)
                 .putExtra(IntentKey.BACKING, project.backing())
         )

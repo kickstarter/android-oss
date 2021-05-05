@@ -112,7 +112,7 @@ public interface ActivityFeedViewModel {
       this.goToProject
               .compose(bindToLifecycle())
               .subscribe(p ->
-                      this.lake.trackProjectCardClicked(
+                      this.analyticEvents.trackProjectCardClicked(
                               p,
                               EventContextValues.ContextPageName.ACTIVITY_FEED.getContextName()));
 
@@ -190,12 +190,12 @@ public interface ActivityFeedViewModel {
         .take(1)
         .compose(this.bindToLifecycle())
         .subscribe(__ -> {
-          this.lake.trackActivityFeedPageViewed();
+          this.analyticEvents.trackActivityFeedPageViewed();
         });
 
       this.discoverProjectsClick
         .compose(this.bindToLifecycle())
-        .subscribe(__ -> this.lake.trackDiscoverProjectCTAClicked());
+        .subscribe(__ -> this.analyticEvents.trackDiscoverProjectCTAClicked());
     }
 
     private final PublishSubject<Void> discoverProjectsClick = PublishSubject.create();

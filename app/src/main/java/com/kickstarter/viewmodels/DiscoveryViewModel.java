@@ -265,14 +265,14 @@ public interface DiscoveryViewModel {
               )
               .compose(bindToLifecycle())
               .subscribe(previousSortAndDiscoverParams -> {
-                this.lake.trackDiscoverSortCTA(previousSortAndDiscoverParams.first, previousSortAndDiscoverParams.second);
+                this.analyticEvents.trackDiscoverSortCTA(previousSortAndDiscoverParams.first, previousSortAndDiscoverParams.second);
               });
 
       paramsWithSort
         .compose(takeWhen(drawerParamsClicked))
         .compose(bindToLifecycle())
         .subscribe(discoveryParams -> {
-          this.lake.trackDiscoverFilterCTA(discoveryParams);
+          this.analyticEvents.trackDiscoverFilterCTA(discoveryParams);
         });
 
       final Observable<List<Category>> categories = this.apiClient.fetchCategories()
@@ -371,11 +371,7 @@ public interface DiscoveryViewModel {
 
       Observable.just(this.firstSessionPreference)
         .map(pref -> {
-          if (pref.isSet()) {
-            pref.set(false);
-          } else {
-            pref.set(true);
-          }
+          pref.set(!pref.isSet());
           return pref.get();
         })
         .compose(bindToLifecycle())

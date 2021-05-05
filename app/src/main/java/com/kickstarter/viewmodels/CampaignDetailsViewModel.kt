@@ -5,7 +5,6 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.extensions.storeCurrentCookieRefTag
@@ -59,7 +58,7 @@ interface CampaignDetailsViewModel {
                 .map { it.storeCurrentCookieRefTag(cookieManager, sharedPreferences) }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackProjectScreenViewed(it, ContextSectionName.CAMPAIGN.contextName)
+                    this.analyticEvents.trackProjectScreenViewed(it, ContextSectionName.CAMPAIGN.contextName)
                 }
 
             projectData
@@ -86,7 +85,6 @@ interface CampaignDetailsViewModel {
             this.pledgeButtonClicked
                 .compose(bindToLifecycle())
                 .subscribe(this.goBackToProject)
-
         }
 
         override fun pledgeActionButtonClicked() = this.pledgeButtonClicked.onNext(null)

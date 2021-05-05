@@ -60,7 +60,7 @@ interface VideoViewModel {
             }.distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackVideoStarted(
+                    this.analyticEvents.trackVideoStarted(
                         it.first,
                         TimeUnit.MILLISECONDS.toSeconds(it.second.first),
                         TimeUnit.MILLISECONDS.toSeconds(it.second.second)
@@ -72,7 +72,7 @@ interface VideoViewModel {
             }.distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackVideoCompleted(
+                    this.analyticEvents.trackVideoCompleted(
                         it.first,
                         TimeUnit.MILLISECONDS.toSeconds(it.second.first),
                         TimeUnit.MILLISECONDS.toSeconds(it.second.second)

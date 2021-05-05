@@ -115,7 +115,7 @@ class BackingAddOnsFragmentViewModel {
             pledgeData
                 .take(1)
                 .compose(bindToLifecycle())
-                .subscribe(this.lake::trackAddOnsScreenViewed)
+                .subscribe(this.analyticEvents::trackAddOnsScreenViewed)
 
             val pledgeReason = arguments()
                 .map { it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason }
@@ -320,7 +320,7 @@ class BackingAddOnsFragmentViewModel {
                 .compose<Pair<PledgeData, PledgeReason>>(takeWhen(this.continueButtonPressed))
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackAddOnsContinueCTA(it.first)
+                    this.analyticEvents.trackAddOnsContinueCTA(it.first)
                     this.showPledgeFragment.onNext(it)
                 }
         }

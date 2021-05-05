@@ -89,7 +89,6 @@ interface ResetPasswordViewModel {
                 .map { ErrorEnvelope.fromThrowable(it) }
                 .compose(bindToLifecycle())
                 .subscribe(this.resetError)
-
         }
 
         private fun success() {

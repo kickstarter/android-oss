@@ -619,7 +619,6 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val expectedProperties = propertiesTest.value
         assertNull(expectedProperties["user_uid"])
-//        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
@@ -638,8 +637,10 @@ class SegmentTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackProjectScreenViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
-                EventContextValues.ContextSectionName.OVERVIEW.contextName)
+        segment.trackProjectScreenViewed(
+            ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
+            EventContextValues.ContextSectionName.OVERVIEW.contextName
+        )
 
         val expectedProperties = this.propertiesTest.value
         assertNull(expectedProperties["user_uid"])
@@ -655,8 +656,10 @@ class SegmentTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackProjectScreenViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
-                EventContextValues.ContextSectionName.OVERVIEW.contextName)
+        segment.trackProjectScreenViewed(
+            ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
+            EventContextValues.ContextSectionName.OVERVIEW.contextName
+        )
 
         val expectedProperties = this.propertiesTest.value
         assertNotNull(expectedProperties["project_prelaunch_activated"])
@@ -672,8 +675,10 @@ class SegmentTest : KSRobolectricTestCase() {
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
         val segment = AnalyticEvents(listOf(client))
-        segment.trackProjectScreenViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
-                EventContextValues.ContextSectionName.OVERVIEW.contextName)
+        segment.trackProjectScreenViewed(
+            ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
+            EventContextValues.ContextSectionName.OVERVIEW.contextName
+        )
         val expectedProperties = this.propertiesTest.value
         assertNotNull(expectedProperties["project_prelaunch_activated"])
         assertEquals(true, expectedProperties["project_prelaunch_activated"])
@@ -689,8 +694,10 @@ class SegmentTest : KSRobolectricTestCase() {
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
         val segment = AnalyticEvents(listOf(client))
-        segment.trackProjectScreenViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
-                EventContextValues.ContextSectionName.OVERVIEW.contextName)
+        segment.trackProjectScreenViewed(
+            ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
+            EventContextValues.ContextSectionName.OVERVIEW.contextName
+        )
         val expectedProperties = this.propertiesTest.value
         assertNotNull(expectedProperties["project_prelaunch_activated"])
         assertEquals(false, expectedProperties["project_prelaunch_activated"])
@@ -706,8 +713,10 @@ class SegmentTest : KSRobolectricTestCase() {
         client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackProjectScreenViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
-                EventContextValues.ContextSectionName.OVERVIEW.contextName)
+        segment.trackProjectScreenViewed(
+            ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
+            EventContextValues.ContextSectionName.OVERVIEW.contextName
+        )
 
         assertSessionProperties(user)
         assertProjectProperties(project)
@@ -715,7 +724,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertUserProperties(false)
 
         val expectedProperties = propertiesTest.value
-       // assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
+        // assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
@@ -742,8 +751,10 @@ class SegmentTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackProjectScreenViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
-                EventContextValues.ContextSectionName.OVERVIEW.contextName)
+        segment.trackProjectScreenViewed(
+            ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
+            EventContextValues.ContextSectionName.OVERVIEW.contextName
+        )
 
         assertSessionProperties(user)
         assertProjectProperties(project)
@@ -768,8 +779,10 @@ class SegmentTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackProjectScreenViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
-                EventContextValues.ContextSectionName.OVERVIEW.contextName)
+        segment.trackProjectScreenViewed(
+            ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
+            EventContextValues.ContextSectionName.OVERVIEW.contextName
+        )
 
         assertSessionProperties(creator)
         assertProjectProperties(project)
@@ -801,8 +814,10 @@ class SegmentTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackProjectScreenViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
-                EventContextValues.ContextSectionName.OVERVIEW.contextName)
+        segment.trackProjectScreenViewed(
+            ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
+            EventContextValues.ContextSectionName.OVERVIEW.contextName
+        )
 
         assertSessionProperties(user)
         assertProjectProperties(project)
@@ -835,7 +850,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertUserProperties(false)
 
         val expectedProperties = propertiesTest.value
-        //assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
+        // assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
@@ -1146,8 +1161,10 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackProjectScreenViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
-                EventContextValues.ContextSectionName.OVERVIEW.contextName)
+        segment.trackProjectScreenViewed(
+            ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
+            EventContextValues.ContextSectionName.OVERVIEW.contextName
+        )
 
         assertSessionProperties(user)
         assertProjectProperties(project)

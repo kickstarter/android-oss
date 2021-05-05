@@ -25,10 +25,10 @@ public class ActivityViewModel<ViewType extends ActivityLifecycleType> {
   private final PublishSubject<ActivityResult> activityResult = PublishSubject.create();
 
   private final PublishSubject<Intent> intent = PublishSubject.create();
-  protected final AnalyticEvents lake;
+  protected final AnalyticEvents analyticEvents;
 
   public ActivityViewModel(final @NonNull Environment environment) {
-    this.lake = environment.analytics();
+    this.analyticEvents = environment.analytics();
   }
 
   /**

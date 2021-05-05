@@ -7,7 +7,6 @@ import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.mock.factories.MessageThreadFactory;
 import com.kickstarter.mock.factories.MessageThreadsEnvelopeFactory;
@@ -88,7 +87,6 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
     );
 
     final Intent intent = new Intent().putExtra(IntentKey.PROJECT, Empty.INSTANCE);
-//      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Mailbox.PROFILE);
     this.vm.intent(intent);
     this.messageThreadList.assertValueCount(2);
     this.messageThreadListCount.assertValues(0, 1);
@@ -135,7 +133,6 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
     );
 
     final Intent intent = new Intent().putExtra(IntentKey.PROJECT, project);
-      //.putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Mailbox.CREATOR_DASHBOARD);
     this.vm.intent(intent);
     this.messageThreadList.assertValueCount(2);
     this.messageThreadListCount.assertValues(0, 1);

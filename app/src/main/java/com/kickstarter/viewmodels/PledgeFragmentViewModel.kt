@@ -33,7 +33,6 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
-import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBackingData
@@ -1348,7 +1347,7 @@ interface PledgeFragmentViewModel {
                 .filter { it.second.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackCheckoutScreenViewed(it.first, it.second)
+                    this.analyticEvents.trackCheckoutScreenViewed(it.first, it.second)
                 }
 
             checkoutAndPledgeData
@@ -1356,7 +1355,7 @@ interface PledgeFragmentViewModel {
                 .filter { it.second.pledgeFlowContext() == PledgeFlowContext.MANAGE_REWARD }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackUpdatePledgePageViewed(it.first, it.second)
+                    this.analyticEvents.trackUpdatePledgePageViewed(it.first, it.second)
                 }
 
             checkoutAndPledgeData
@@ -1364,7 +1363,7 @@ interface PledgeFragmentViewModel {
                 .compose<Pair<CheckoutData, PledgeData>>(takeWhen(this.pledgeButtonClicked))
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackPledgeSubmitCTA(it.first, it.second)
+                    this.analyticEvents.trackPledgeSubmitCTA(it.first, it.second)
                 }
 
             // - Screen configuration Logic (Different configurations depending on: PledgeReason, Reward type, Shipping, AddOns)

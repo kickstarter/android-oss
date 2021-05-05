@@ -319,7 +319,7 @@ interface RewardViewHolderViewModel {
                 .map { PledgeData.with(PledgeFlowContext.NEW_PLEDGE, it.first, it.second) }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackSelectRewardCTA(it)
+                    this.analyticEvents.trackSelectRewardCTA(it)
                 }
 
             projectAndReward

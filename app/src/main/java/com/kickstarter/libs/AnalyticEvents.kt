@@ -60,16 +60,11 @@ import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.checkoutProperties
-import com.kickstarter.models.Activity
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
-import com.kickstarter.services.apiresponses.PushNotificationEnvelope
 import com.kickstarter.ui.data.CheckoutData
-import com.kickstarter.ui.data.Editorial
-import com.kickstarter.ui.data.LoginReason
-import com.kickstarter.ui.data.Mailbox
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.ProjectData
@@ -87,6 +82,25 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
     fun trackDiscoveryFilterSelected(params: DiscoveryParams) {
         client.track("Discover Modal Selected Filter", AnalyticEventsUtils.discoveryParamsProperties(params))
+    }
+
+    fun trackAppClose() {
+        client.track("App Close")
+    }
+
+    fun trackMemoryWarning() {
+        client.track("App Memory Warning")
+    }
+
+    fun trackOpenedAppBanner() {
+        client.track("Opened App Banner")
+    }
+
+    // DISCOVERY
+    fun trackDiscovery(params: DiscoveryParams, isOnboardingVisible: Boolean) {
+        val props = AnalyticEventsUtils.discoveryParamsProperties(params).toMutableMap()
+        props["discover_onboarding_is_visible"] = isOnboardingVisible
+        client.track("Discover List View", props)
     }
 
     /**
@@ -143,70 +157,6 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     fun trackLoginPagedViewed() {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to LOGIN.contextName)
         client.track(PAGE_VIEWED.eventName, props)
-    }
-
-    fun trackResetPasswordFormView() {
-        client.track("Forgot Password View")
-    }
-
-    fun trackResetPasswordSuccess() {
-        client.track("Forgot Password Requested")
-    }
-
-    fun trackResetPasswordError() {
-        client.track("Forgot Password Errored")
-    }
-
-    fun trackFacebookLoginError() {
-        client.track("Errored Facebook Login")
-    }
-
-    fun trackLogout() {
-        client.track("Logout")
-    }
-
-    // CHECKOUT
-    fun trackCheckoutShowShareSheet() {
-        client.track("Checkout Show Share Sheet")
-    }
-
-    fun trackCheckoutShowFacebookShareView() {
-        val properties = hashMapOf<String, Any>()
-        properties.put("share_type", "facebook")
-        client.track("Checkout Show Share", properties)
-    }
-
-    fun trackCheckoutShowTwitterShareView() {
-        val properties = hashMapOf<String, Any>()
-        properties["share_type"] = "twitter"
-        client.track("Checkout Show Share", properties)
-    }
-
-    fun trackCheckoutFinishJumpToDiscovery() {
-        client.track("Checkout Finished Discover More")
-    }
-
-    fun trackCheckoutFinishJumpToProject(project: Project) {
-        val props = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
-        client.track("Checkout Finished Discover Open Project", props)
-    }
-
-    // RATING
-    fun trackAppRatingNow() {
-        client.track("Checkout Finished Alert App Store Rating Rate Now")
-    }
-
-    fun trackAppRatingRemindLater() {
-        client.track("Checkout Finished Alert App Store Rating Remind Later")
-    }
-
-    fun trackAppRatingNoThanks() {
-        client.track("Checkout Finished Alert App Store Rating No Thanks")
-    }
-
-    // VIDEO
-    fun trackVideoStart(project: Project) {
-        client.track("Project Video Start", AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
     }
 
     // VIDEO
@@ -267,10 +217,10 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * @param sort: DiscoveryParams.Sort type
      */
     fun trackDiscoverSearchResultProjectCATClicked(
-            discoveryParams: DiscoveryParams,
-            projectData: ProjectData,
-            count: Int,
-            sort: DiscoveryParams.Sort
+        discoveryParams: DiscoveryParams,
+        projectData: ProjectData,
+        count: Int,
+        sort: DiscoveryParams.Sort
     ) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to PROJECT.contextName)
         props[CONTEXT_PAGE.contextName] = SEARCH.contextName
@@ -297,9 +247,9 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         props[CONTEXT_PAGE.contextName] = DISCOVER.contextName
         props[CONTEXT_TYPE.contextName] = when {
             BooleanUtils.isTrue(discoveryParams.category()?.isRoot) ||
-                    discoveryParams.category() != null ||
-                    BooleanUtils.isTrue(discoveryParams.staffPicks()) ||
-                    BooleanUtils.isTrue(discoveryParams.isAllProjects) -> RESULTS.contextName
+                discoveryParams.category() != null ||
+                BooleanUtils.isTrue(discoveryParams.staffPicks()) ||
+                BooleanUtils.isTrue(discoveryParams.isAllProjects) -> RESULTS.contextName
             BooleanUtils.isTrue(discoveryParams.recommended()) -> RECOMMENDED.contextName
             else -> ""
         }
@@ -346,15 +296,6 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
         client.track(CTA_CLICKED.eventName, props)
     }
-
-//    fun trackProjectPageViewed(projectData: ProjectData, pledgeFlowContext: PledgeFlowContext?) {
-//        val props = AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser())
-//        props.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
-//        if (pledgeFlowContext != null) {
-//            props["context_pledge_flow"] = pledgeFlowContext.trackingString
-//        }
-//        //client.track(PROJECT_PAGE_VIEWED, props)
-//    }
 
     /**
      * Sends data to the client when the projects screen is loaded.
@@ -481,10 +422,10 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      */
     fun trackManagePledgePageViewed(backing: Backing, projectData: ProjectData) {
         val checkoutData = checkoutProperties(
-                amount = backing.amount(),
-                checkoutId = null,
-                bonus = backing.bonusAmount(),
-                shippingAmount = backing.shippingAmount().toDouble()
+            amount = backing.amount(),
+            checkoutId = null,
+            bonus = backing.bonusAmount(),
+            shippingAmount = backing.shippingAmount().toDouble()
         )
 
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to MANAGE_PLEDGE.contextName)

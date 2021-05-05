@@ -883,7 +883,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
 
-        segment.trackPledgeSubmitButtonClicked(
+        segment.trackPledgeSubmitCTA(
             CheckoutDataFactory.checkoutData(20.0, 30.0),
             PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward(), listOfAddons())
         )
@@ -1018,7 +1018,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
 
         val rewardTest = reward()
-        segment.trackPledgeSubmitButtonClicked(
+        segment.trackPledgeSubmitCTA(
             CheckoutDataFactory.checkoutData(20.0, 30.0),
             PledgeData.with(PledgeFlowContext.FIX_ERRORED_PLEDGE, projectData, reward(), listOfAddons())
         )

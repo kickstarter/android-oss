@@ -1107,31 +1107,31 @@ class SegmentTest : KSRobolectricTestCase() {
         this.segmentTrack.assertValues(PAGE_VIEWED.eventName)
     }
 
-    @Test
-    fun testOptimizelyProperties() {
-        val project = project()
-        val user = user()
-        val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
-        val segment = AnalyticEvents(listOf(client))
-
-        segment.trackPledgeInitiateCTA(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()))
-
-        assertSessionProperties(user)
-        assertProjectProperties(project)
-        assertContextProperties()
-        assertOptimizelyProperties()
-        assertUserProperties(false)
-
-        val expectedProperties = propertiesTest.value
-        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
-        assertEquals(false, expectedProperties["project_user_has_watched"])
-        assertEquals(false, expectedProperties["project_user_is_backer"])
-        assertEquals(false, expectedProperties["project_user_is_project_creator"])
-
-        this.segmentTrack.assertValues("Project Page Pledge Button Clicked")
-    }
+//    @Test
+//    fun testOptimizelyProperties() {
+//        val project = project()
+//        val user = user()
+//        val client = client(user)
+//        client.eventNames.subscribe(this.segmentTrack)
+//        client.eventProperties.subscribe(this.propertiesTest)
+//        val segment = AnalyticEvents(listOf(client))
+//
+//        segment.trackPledgeInitiateCTA(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()))
+//
+//        assertSessionProperties(user)
+//        assertProjectProperties(project)
+//        assertContextProperties()
+//        assertOptimizelyProperties()
+//        assertUserProperties(false)
+//
+//        val expectedProperties = propertiesTest.value
+//        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
+//        assertEquals(false, expectedProperties["project_user_has_watched"])
+//        assertEquals(false, expectedProperties["project_user_is_backer"])
+//        assertEquals(false, expectedProperties["project_user_is_project_creator"])
+//
+//        this.segmentTrack.assertValues("Project Page Pledge Button Clicked")
+//    }
 
     @Test
     fun testVideoProperties() {

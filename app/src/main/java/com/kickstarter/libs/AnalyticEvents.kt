@@ -503,6 +503,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     fun trackPledgeInitiateCTA(projectData: ProjectData) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to PLEDGE_INITIATE.contextName)
         props[CONTEXT_PAGE.contextName] = PROJECT.contextName
+        props.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
         props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
         client.track(CTA_CLICKED.eventName, props)
     }

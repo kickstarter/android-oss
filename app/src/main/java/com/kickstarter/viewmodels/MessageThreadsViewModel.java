@@ -96,10 +96,6 @@ public interface MessageThreadsViewModel {
       final Observable<Project> initialProject = intent()
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT));
 
-      /*final Observable<KoalaContext.Mailbox> koalaContext = intent()
-        .map(i -> i.getSerializableExtra(IntentKey.KOALA_CONTEXT))
-        .ofType(KoalaContext.Mailbox.class);*/
-
       final Observable<Void> refreshUserOrProject = Observable.merge(this.onResume, this.swipeRefresh);
 
       final Observable<User> freshUser = intent()
@@ -211,24 +207,7 @@ public interface MessageThreadsViewModel {
 
       this.unreadMessagesCountIsGone = mailbox
       .map(m -> m.equals(Mailbox.SENT));
-
-//      final Observable<RefTag> refTag = intent()
-//        .flatMap(ProjectIntentMapper::refTag);
-
-//      final Observable<Pair<RefTag, KoalaContext.Mailbox>> refTagAndContext = refTag
-//        .compose(combineLatestPair(koalaContext));
-
-//      Observable.combineLatest(projectAndMailbox, refTagAndContext, Pair::create)
-//        .compose(bindToLifecycle())
-//        .subscribe(this::trackMailboxView);
     }
-
-//    private void trackMailboxView(final @NonNull Pair<Pair<Project, Mailbox>, Pair<RefTag, KoalaContext.Mailbox>> projectMailboxAndRedTag) {
-//      final Mailbox mailbox = projectMailboxAndRedTag.first.second;
-//      final Project project = projectMailboxAndRedTag.first.first;
-//      final RefTag refTag = projectMailboxAndRedTag.second.first;
-//      final KoalaContext.Mailbox context = projectMailboxAndRedTag.second.second;
-//    }
 
     private int getStringResForMailbox(final @NonNull Mailbox mailbox) {
       if (mailbox == Mailbox.INBOX) {

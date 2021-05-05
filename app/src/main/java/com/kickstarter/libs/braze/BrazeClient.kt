@@ -8,6 +8,7 @@ import com.appboy.AppboyFirebaseMessagingService
 import com.appboy.AppboyLifecycleCallbackListener
 import com.appboy.configuration.AppboyConfig
 import com.appboy.support.AppboyLogger
+import com.appboy.ui.inappmessage.AppboyInAppMessageManager
 import com.google.firebase.messaging.RemoteMessage
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.Config
@@ -17,6 +18,7 @@ import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isFeatureFlagEnabled
 import com.kickstarter.libs.utils.extensions.isKSApplication
 import com.kickstarter.libs.utils.extensions.registerActivityLifecycleCallbacks
+import com.kickstarter.models.User
 
 /**
  * Remote PushNotifications specification
@@ -164,6 +166,12 @@ open class BrazeClient(
     override fun registerActivityLifecycleCallbacks(context: Context) {
         if (isSDKEnabled() && context.isKSApplication()) {
             context.registerActivityLifecycleCallbacks(getLifeCycleCallbacks())
+        }
+    }
+
+    companion object {
+        fun setInAppCustomListener(loggedInUser: User?, config: Config?, build: Build) {
+            AppboyInAppMessageManager.getInstance().setCustomInAppMessageManagerListener(InAppCustomListener(loggedInUser, config, build))
         }
     }
 }

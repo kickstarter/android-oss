@@ -347,6 +347,20 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(CTA_CLICKED.eventName, props)
     }
 
+    fun trackHamburgerMenuClicked(discoveryParams: DiscoveryParams) {
+        val props = AnalyticEventsUtils.discoveryParamsProperties(discoveryParams)
+        //client.track(HAMBURGER_MENU_CLICKED, props)
+    }
+
+    fun trackProjectPageViewed(projectData: ProjectData, pledgeFlowContext: PledgeFlowContext?) {
+        val props = AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser())
+        props.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
+        if (pledgeFlowContext != null) {
+            props["context_pledge_flow"] = pledgeFlowContext.trackingString
+        }
+        //client.track(PROJECT_PAGE_VIEWED, props)
+    }
+
     /**
      * Sends data to the client when the projects screen is loaded.
      *

@@ -7,6 +7,7 @@ import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
+import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN_SIGN_UP
@@ -218,7 +219,7 @@ class SegmentTest : KSRobolectricTestCase() {
             .sort(DiscoveryParams.Sort.MAGIC)
             .build()
 
-        segment.trackExplorePageViewed(params)
+        segment.trackDiscoveryPageViewed(params)
         this.segmentIdentify.assertValue(user)
 
         assertSessionProperties(user)
@@ -473,7 +474,7 @@ class SegmentTest : KSRobolectricTestCase() {
             .staffPicks(true)
             .build()
 
-        segment.trackExplorePageViewed(params)
+        segment.trackDiscoveryPageViewed(params)
 
         assertSessionProperties(user)
         assertContextProperties()
@@ -534,7 +535,7 @@ class SegmentTest : KSRobolectricTestCase() {
             .sort(DiscoveryParams.Sort.NEWEST)
             .build()
 
-        segment.trackExplorePageViewed(params)
+        segment.trackDiscoveryPageViewed(params)
 
         assertSessionProperties(user)
         assertContextProperties()
@@ -610,7 +611,7 @@ class SegmentTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
+        segment.trackProjectScreenViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), EventContextValues.ContextSectionName.OVERVIEW.contextName)
 
         assertSessionProperties(null)
         assertContextProperties()

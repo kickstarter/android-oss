@@ -619,12 +619,12 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val expectedProperties = propertiesTest.value
         assertNull(expectedProperties["user_uid"])
-        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
+//        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.segmentTrack.assertValues("Project Page Viewed")
+        this.segmentTrack.assertValues(PAGE_VIEWED.eventName)
 
         this.segmentIdentify.assertNoValues()
     }
@@ -715,12 +715,12 @@ class SegmentTest : KSRobolectricTestCase() {
         assertUserProperties(false)
 
         val expectedProperties = propertiesTest.value
-        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
+       // assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.segmentTrack.assertValues("Project Page Viewed")
+        this.segmentTrack.assertValues(PAGE_VIEWED.eventName)
         this.segmentIdentify.assertValue(user)
     }
 
@@ -810,12 +810,11 @@ class SegmentTest : KSRobolectricTestCase() {
         assertUserProperties(false)
 
         val expectedProperties = this.propertiesTest.value
-        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(true, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.segmentTrack.assertValues("Project Page Viewed")
+        this.segmentTrack.assertValues(PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -836,12 +835,12 @@ class SegmentTest : KSRobolectricTestCase() {
         assertUserProperties(false)
 
         val expectedProperties = propertiesTest.value
-        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
+        //assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.segmentTrack.assertValues("Project Page Pledge Button Clicked")
+        this.segmentTrack.assertValues(CTA_CLICKED.eventName)
     }
 
     @Test
@@ -902,7 +901,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.segmentTrack.assertValues("Pledge Submit Button Clicked")
+        this.segmentTrack.assertValues(CTA_CLICKED.eventName)
     }
 
     @Test
@@ -1070,7 +1069,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.segmentTrack.assertValues("Thanks Page Viewed")
+        this.segmentTrack.assertValues(PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -1163,7 +1162,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         assertVideoProperties(videoLength, videoCompletedPosition)
 
-        this.segmentTrack.assertValues("Project Page Viewed", VIDEO_PLAYBACK_STARTED.eventName, VIDEO_PLAYBACK_COMPLETED.eventName)
+        this.segmentTrack.assertValues(PAGE_VIEWED.eventName, VIDEO_PLAYBACK_STARTED.eventName, VIDEO_PLAYBACK_COMPLETED.eventName)
     }
 
     @Test

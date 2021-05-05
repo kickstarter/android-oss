@@ -1,6 +1,7 @@
 package com.kickstarter.libs
 
 import android.content.Context
+import com.kickstarter.libs.braze.BrazeClient
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isKSApplication
@@ -112,6 +113,7 @@ open class SegmentTrackingClient(
                     AppboyIntegration.FACTORY.key(),
                     Analytics.Callback<Any?> {
                         Timber.d("AppBoy initialized by SEGMENT")
+                        BrazeClient.setInAppCustomListener()
                     })
 
 

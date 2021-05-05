@@ -91,7 +91,6 @@ open class BrazeClient(
 
     private var config: Config? = null
     private var initialized = false
-    private val manager = Control()
 
     override val isInitialized: Boolean
         get() = initialized
@@ -171,10 +170,14 @@ open class BrazeClient(
 
     override fun registerActivityLifecycleCallbacks(context: Context) {
         context.registerActivityLifecycleCallbacks(getLifeCycleCallbacks())
-        AppboyInAppMessageManager.getInstance().setCustomControlInAppMessageManagerListener(this.manager)
+
     }
 
-    private class Control(): AppboyDefaultInAppMessageManagerListener() {
+    private class InAppCustomListener(): AppboyDefaultInAppMessageManagerListener() {
+        init {
+            Timber.d("Init block custom listener")
+        }
+
         override fun beforeInAppMessageDisplayed(inAppMessage: IInAppMessage?): InAppMessageOperation {
             Timber.d("Display Always")
             return InAppMessageOperation.DISPLAY_NOW;
@@ -183,6 +186,12 @@ open class BrazeClient(
         override fun onInAppMessageButtonClicked(inAppMessage: IInAppMessage?, button: MessageButton?, inAppMessageCloser: InAppMessageCloser?): Boolean {
             Timber.d("Button Clicked")
             return super.onInAppMessageButtonClicked(inAppMessage, button, inAppMessageCloser)
+        }
+    }
+
+    companion object {
+        fun setInAppCustomListener(){
+            AppboyInAppMessageManager.getInstance().setCustomInAppMessageManagerListener(InAppCustomListener())
         }
     }
 }

@@ -67,4 +67,27 @@ public final class UserFactory {
       .optedOutOfRecommendations(true)
       .build();
   }
+
+  public static User allTraitsTrue() {
+    return UserFactory.user().toBuilder()
+            .id(1)
+            .name("")
+            .notifyOfBackings(true)
+            .notifyOfUpdates(true)
+            .notifyOfFollower(true)
+            .notifyOfFriendActivity(true)
+            .notifyOfComments(true)
+            .notifyOfCreatorEdu(true)
+            .notifyOfMessages(true)
+            .notifyOfCommentReplies(true)
+            .notifyMobileOfBackings(true)
+            .notifyMobileOfMarketingUpdate(true)
+            .notifyMobileOfUpdates(true)
+            .notifyMobileOfFollower(true)
+            .notifyMobileOfFriendActivity(true)
+            .notifyMobileOfComments(true)
+            .notifyMobileOfPostLikes(true)
+            .notifyMobileOfMessages(true)
+            .build();
+  }
 }

@@ -1,16 +1,22 @@
 package com.kickstarter.libs
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isKSApplication
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.NAME
 import com.kickstarter.models.extensions.getTraits
+import com.kickstarter.models.extensions.getUniqueTraits
+import com.kickstarter.models.extensions.persistTraits
 import com.segment.analytics.Analytics
+import com.segment.analytics.Middleware
 import com.segment.analytics.Properties
 import com.segment.analytics.Traits
 import com.segment.analytics.android.integrations.appboy.AppboyIntegration
+import com.segment.analytics.integrations.BasePayload
+import com.segment.analytics.integrations.IdentifyPayload
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import timber.log.Timber
@@ -21,6 +27,7 @@ open class SegmentTrackingClient(
     currentConfig: CurrentConfigType,
     currentUser: CurrentUserType,
     optimizely: ExperimentsClientType,
+    preference: SharedPreferences
 ) : TrackingClient(context, currentUser, build, currentConfig, optimizely) {
 
     override var isInitialized = false
@@ -28,6 +35,7 @@ open class SegmentTrackingClient(
     override var config: Config? = null
 
     private var calledFromOnCreate = false
+    private var prefStorage = preference
 
     init {
 
@@ -103,6 +111,8 @@ open class SegmentTrackingClient(
                 .use(AppboyIntegration.FACTORY)
                 .trackApplicationLifecycleEvents()
                 .logLevel(logLevel)
+                // - Set middleware for Braze destination
+                .useDestinationMiddleware(AppboyIntegration.FACTORY.key(), getMiddleware())
                 .build()
 
             Analytics.setSingletonInstance(segmentClient)
@@ -113,6 +123,37 @@ open class SegmentTrackingClient(
                 Timber.d("${type().tag} currentThread: ${Thread.currentThread()}")
             }
         }
+    }
+
+    private fun getMiddleware(): Middleware {
+        return Middleware { chain ->
+            chain.proceed(getPayload(chain.payload()))
+            // - persist traits once the payload has been modified
+            this.loggedInUser?.persistTraits(prefStorage)
+        }
+    }
+
+    /**
+     * Returns a modified Payload if necessary
+     *  - get the UniqueTraits from the logged in user
+     *  - Update the payload for braze source with the unique traits (only the ones that changed)
+     *
+     * By doing so we send to the braze source only the traits that has changed.
+     */
+    private fun getPayload(payload: BasePayload): BasePayload {
+        if (payload.type() == BasePayload.Type.identify) {
+            if (payload is IdentifyPayload) {
+                this.loggedInUser?.getUniqueTraits(prefStorage)?.let { uniqueTraits ->
+                    val modifiedPayload = payload.toBuilder()
+                        .traits(uniqueTraits)
+                        .build()
+                    if (build.isDebug) Timber.d("${type().tag} Identify payload intercepted and modified: ${modifiedPayload.toJsonObject()}")
+                    return modifiedPayload
+                }
+            }
+        }
+
+        return payload
     }
 
     /**

@@ -106,6 +106,15 @@ open class SegmentTrackingClient(
                 .build()
 
             Analytics.setSingletonInstance(segmentClient)
+
+
+            Analytics.with(context).onIntegrationReady(
+                    AppboyIntegration.FACTORY.key(),
+                    Analytics.Callback<Any?> {
+                        Timber.d("AppBoy initialized by SEGMENT")
+                    })
+
+
             this.isInitialized = true
 
             if (build.isDebug) {

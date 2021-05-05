@@ -7,7 +7,13 @@ import com.appboy.Appboy
 import com.appboy.AppboyFirebaseMessagingService
 import com.appboy.AppboyLifecycleCallbackListener
 import com.appboy.configuration.AppboyConfig
+import com.appboy.models.IInAppMessage
+import com.appboy.models.MessageButton
 import com.appboy.support.AppboyLogger
+import com.appboy.ui.inappmessage.AppboyInAppMessageManager
+import com.appboy.ui.inappmessage.InAppMessageCloser
+import com.appboy.ui.inappmessage.InAppMessageOperation
+import com.appboy.ui.inappmessage.listeners.AppboyDefaultInAppMessageManagerListener
 import com.google.firebase.messaging.RemoteMessage
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.Config
@@ -17,6 +23,7 @@ import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isFeatureFlagEnabled
 import com.kickstarter.libs.utils.extensions.isKSApplication
 import com.kickstarter.libs.utils.extensions.registerActivityLifecycleCallbacks
+import timber.log.Timber
 
 /**
  * Remote PushNotifications specification
@@ -118,6 +125,7 @@ open class BrazeClient(
                 .setHandlePushDeepLinksAutomatically(true)
                 .build()
             Appboy.configure(context, appBoyConfig)
+            Timber.d("AppBoy configured by me")
 
             if (this.build.isDebug || Build.isInternal()) {
                 AppboyLogger.setLogLevel(Log.VERBOSE)
@@ -146,8 +154,7 @@ open class BrazeClient(
     }
 
     override fun registerPushMessages(context: Context, token: String) {
-        if (isSDKEnabled())
-            Appboy.getInstance(context).registerAppboyPushMessages(token)
+        Appboy.getInstance(context).registerAppboyPushMessages(token)
     }
 
     override fun handleRemoteMessages(context: Context, message: RemoteMessage): Boolean {
@@ -159,11 +166,22 @@ open class BrazeClient(
     }
 
     override fun getLifeCycleCallbacks(): Application.ActivityLifecycleCallbacks =
-        AppboyLifecycleCallbackListener(true, false)
+        AppboyLifecycleCallbackListener(true, true)
 
     override fun registerActivityLifecycleCallbacks(context: Context) {
-        if (isSDKEnabled() && context.isKSApplication()) {
-            context.registerActivityLifecycleCallbacks(getLifeCycleCallbacks())
+        context.registerActivityLifecycleCallbacks(getLifeCycleCallbacks())
+        AppboyInAppMessageManager.getInstance().setCustomControlInAppMessageManagerListener(Control())
+    }
+
+    private class Control(): AppboyDefaultInAppMessageManagerListener() {
+        override fun beforeInAppMessageDisplayed(inAppMessage: IInAppMessage?): InAppMessageOperation {
+            Timber.d("Display Always")
+            return InAppMessageOperation.DISPLAY_NOW;
+        }
+
+        override fun onInAppMessageButtonClicked(inAppMessage: IInAppMessage?, button: MessageButton?, inAppMessageCloser: InAppMessageCloser?): Boolean {
+            Timber.d("Button Clicked")
+            return super.onInAppMessageButtonClicked(inAppMessage, button, inAppMessageCloser)
         }
     }
 }

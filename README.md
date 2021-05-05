@@ -2,6 +2,7 @@
 
 [![CircleCI](https://circleci.com/gh/kickstarter/android-oss.svg?style=svg)](https://circleci.com/gh/kickstarter/android-oss)
 [![codecov](https://codecov.io/gh/kickstarter/android-oss/branch/master/graph/badge.svg?token=uYNatHIB8b)](https://codecov.io/gh/kickstarter/android-oss)
+[![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
 
 Welcome to Kickstarter's open source Android app! Come on in, take your shoes
 off, stay a while—_explore_ how Kickstarter's native squad has built and

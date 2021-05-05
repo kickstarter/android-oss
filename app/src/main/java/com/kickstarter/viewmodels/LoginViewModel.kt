@@ -124,6 +124,7 @@ interface LoginViewModel {
                 .switchMap { ep -> this.client.login(ep.first, ep.second).materialize() }
                 .share()
                 .subscribe {
+                    this.logInButtonIsEnabled.onNext(true)
                     errors.onNext(unwrapNotificationEnvelopeError(it))
                     successResponseData.onNext(unwrapNotificationEnvelopeSuccess(it))
                 }
@@ -132,6 +133,7 @@ interface LoginViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.lake.trackLogInButtonCtaClicked()
+                    this.logInButtonIsEnabled.onNext(false)
                 }
 
             emailAndReason

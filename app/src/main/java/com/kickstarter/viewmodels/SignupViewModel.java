@@ -100,7 +100,6 @@ public interface SignupViewModel {
       this.signupClick
               .compose(bindToLifecycle())
               .subscribe(__ -> {
-                this.lake.trackSignUpSubmitButtonClicked();
                 this.lake.trackSignUpSubmitCtaClicked();
               });
 

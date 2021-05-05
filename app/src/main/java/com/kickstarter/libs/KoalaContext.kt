@@ -21,5 +21,4 @@ class KoalaContext {
         PROJECT_PAGE("project_page"),
         PUSH("push")
     }
-
 }

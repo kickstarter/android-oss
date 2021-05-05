@@ -204,11 +204,6 @@ interface LoginViewModel {
                 .filter { it.isTfaRequiredError }
                 .map { null }
 
-            this.logInButtonClicked
-                .compose(combineLatestPair(emailAndPassword))
-                .compose(bindToLifecycle())
-                .subscribe { this.lake.trackLogInSubmitButtonClicked() }
-
             this.lake.trackLoginPagedViewed()
         }
 

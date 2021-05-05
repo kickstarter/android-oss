@@ -90,7 +90,6 @@ interface ResetPasswordViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(this.resetError)
 
-            this.lake.trackForgotPasswordPageViewed()
         }
 
         private fun success() {

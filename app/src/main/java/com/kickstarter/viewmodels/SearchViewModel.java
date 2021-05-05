@@ -169,9 +169,7 @@ public interface SearchViewModel {
             this.lake.trackSearchResultPageViewed(it.first.first, it.first.second.stats().count(), defaultSort);
           });
 
-      this.lake.trackSearchButtonClicked();
       this.lake.trackSearchCTAButtonClicked(defaultParams);
-      this.lake.trackSearchPageViewed(defaultParams);
     }
 
     private static final DiscoveryParams.Sort defaultSort = DiscoveryParams.Sort.POPULAR;

@@ -105,7 +105,6 @@ public interface TwoFactorViewModel {
         .compose(bindToLifecycle())
         .subscribe();
 
-      this.lake.trackTwoFactorConfirmationViewed();
       this.lake.trackTwoFactorAuthPageViewed();
     }
 

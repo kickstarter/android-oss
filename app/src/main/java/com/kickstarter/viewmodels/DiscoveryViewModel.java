@@ -268,17 +268,10 @@ public interface DiscoveryViewModel {
                 this.lake.trackDiscoverSortCTA(previousSortAndDiscoverParams.first, previousSortAndDiscoverParams.second);
               });
 
-      params
-              .compose(takePairWhen(this.sortClicked.map(DiscoveryUtils::sortFromPosition)))
-              .map(paramsAndSort -> paramsAndSort.first.toBuilder().sort(paramsAndSort.second).build())
-              .compose(bindToLifecycle())
-              .subscribe(this.lake::trackExploreSortClicked);
-
       paramsWithSort
         .compose(takeWhen(drawerParamsClicked))
         .compose(bindToLifecycle())
         .subscribe(discoveryParams -> {
-          this.lake.trackFilterClicked(discoveryParams);
           this.lake.trackDiscoverFilterCTA(discoveryParams);
         });
 
@@ -369,11 +362,6 @@ public interface DiscoveryViewModel {
 
       final Observable<Boolean> drawerOpened = this.openDrawer
         .filter(BooleanUtils::isTrue);
-
-      paramsWithSort
-        .compose(takeWhen(drawerOpened))
-        .compose(bindToLifecycle())
-        .subscribe(this.lake::trackHamburgerMenuClicked);
 
       currentUser
         .map(this::currentDrawerMenuIcon)

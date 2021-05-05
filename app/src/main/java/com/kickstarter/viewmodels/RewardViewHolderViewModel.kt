@@ -319,7 +319,6 @@ interface RewardViewHolderViewModel {
                 .map { PledgeData.with(PledgeFlowContext.NEW_PLEDGE, it.first, it.second) }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackSelectRewardButtonClicked(it)
                     this.lake.trackSelectRewardCTA(it)
                 }
 

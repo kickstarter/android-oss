@@ -143,23 +143,16 @@ public interface LoginToutViewModel {
       this.startLoginActivity = this.loginClick;
       this.startSignupActivity = this.signupClick;
 
-      this.loginReason
-        .take(1)
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.lake.trackLogInSignUpPageViewed());
-
       this.facebookLoginClick
         .compose(ignoreValues())
         .compose(bindToLifecycle())
         .subscribe(__ -> {
-          this.lake.trackFacebookLogInSignUpButtonClicked();
           this.lake.trackLoginOrSignUpCtaClicked(ContextTypeName.FACEBOOK.getContextName(), ContextPageName.LOGIN_SIGN_UP.getContextName());
         });
 
       this.loginClick
         .compose(bindToLifecycle())
         .subscribe(__ -> {
-          this.lake.trackLogInButtonClicked();
           this.lake.trackLogInInitiateCtaClicked();
         }
         );
@@ -167,7 +160,6 @@ public interface LoginToutViewModel {
       this.signupClick
         .compose(bindToLifecycle())
         .subscribe(__ -> {
-          this.lake.trackSignUpButtonClicked();
           this.lake.trackSignUpInitiateCtaClicked();
         });
     }

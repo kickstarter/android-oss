@@ -18,7 +18,6 @@ import com.kickstarter.databinding.DiscoveryLayoutBinding
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.InternalToolsType
-import com.kickstarter.libs.KoalaContext
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils

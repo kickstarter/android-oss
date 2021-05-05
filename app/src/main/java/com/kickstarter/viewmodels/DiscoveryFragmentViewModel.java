@@ -8,7 +8,6 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.FragmentViewModel;
-import com.kickstarter.libs.LakeEvent;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.preferences.IntPreferenceType;
@@ -292,26 +291,14 @@ public interface DiscoveryFragmentViewModel {
         .compose(bindToLifecycle())
         .subscribe(paramsAndLoggedIn -> {
           this.lake.trackDiscoveryPageViewed(paramsAndLoggedIn.first);
-          this.lake.trackExplorePageViewed(paramsAndLoggedIn.first);
         });
 
       this.discoveryOnboardingLoginToutClick
         .compose(bindToLifecycle())
         .subscribe(v -> {
-          this.lake.trackLogInSignUpButtonClicked();
           this.lake.trackLoginOrSignUpCtaClicked(null, EventContextValues.ContextPageName.DISCOVER.getContextName());
         });
 
-      this.paramsFromActivity
-        .compose(takePairWhen(this.editorialClicked))
-        .compose(combineLatestPair(this.currentUser.observable()))
-        .compose(bindToLifecycle())
-        .subscribe(paramsAndEditorial -> {
-          this.lake.trackEditorialCardClicked(paramsAndEditorial.first.first, paramsAndEditorial.first.second);
-          final ExperimentData data = new ExperimentData(paramsAndEditorial.second,
-            RefTag.collection(paramsAndEditorial.first.second.getTagId()), null);
-          this.optimizely.track(LakeEvent.EDITORIAL_CARD_CLICKED, data);
-        });
     }
 
     private boolean activityHasNotBeenSeen(final @Nullable Activity activity) {

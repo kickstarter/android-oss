@@ -45,8 +45,7 @@ class CampaignDetailsViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.pledgeActionButtonClicked()
         this.goBackToProject.assertValueCount(1)
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, "Campaign Details Pledge Button Clicked")
-        this.experimentsTest.assertValue("Campaign Details Pledge Button Clicked")
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test

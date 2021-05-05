@@ -645,7 +645,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.rewardClicked(2)
         this.showPledgeFragment.assertValue(Pair.create(liveProject, reward))
 
-        this.segmentTrack.assertValues("Select Reward Button Clicked", EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
 
     @Test

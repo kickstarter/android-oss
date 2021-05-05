@@ -457,8 +457,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingSummaryIsGone.assertNoValues()
         this.totalDividerIsGone.assertValue(false)
 
-        this.segmentTrack.assertValues("Checkout Payment Page Viewed", EventName.PAGE_VIEWED.eventName)
-        this.experimentsTest.assertValue("Checkout Payment Page Viewed")
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -479,8 +478,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingSummaryIsGone.assertNoValues()
         this.totalDividerIsGone.assertValue(false)
 
-        this.segmentTrack.assertValues("Checkout Payment Page Viewed", EventName.PAGE_VIEWED.eventName)
-        this.experimentsTest.assertValues("Checkout Payment Page Viewed")
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -505,8 +503,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingSummaryIsGone.assertNoValues()
         this.totalDividerIsGone.assertValue(false)
 
-        this.segmentTrack.assertValues("Checkout Payment Page Viewed", EventName.PAGE_VIEWED.eventName)
-        this.experimentsTest.assertValue("Checkout Payment Page Viewed")
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -529,8 +526,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingSummaryIsGone.assertNoValues()
         this.totalDividerIsGone.assertValue(false)
 
-        this.segmentTrack.assertValues("Checkout Payment Page Viewed", EventName.PAGE_VIEWED.eventName)
-        this.experimentsTest.assertValue("Checkout Payment Page Viewed")
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -1103,9 +1099,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeButtonIsEnabled.assertValue(true)
         this.vm.inputs.pledgeButtonClicked()
 
-        this.segmentTrack.assertValues("Checkout Payment Page Viewed", EventName.PAGE_VIEWED.eventName, "Pledge Submit Button Clicked", EventName.CTA_CLICKED.eventName)
-        this.segmentTrack.assertValues("Checkout Payment Page Viewed", EventName.PAGE_VIEWED.eventName, "Pledge Submit Button Clicked", EventName.CTA_CLICKED.eventName)
-        this.experimentsTest.assertValues("Checkout Payment Page Viewed")
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -1307,8 +1301,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.newCardButtonClicked()
         this.showNewCardFragment.assertValue(project)
-        this.segmentTrack.assertValues("Checkout Payment Page Viewed", EventName.PAGE_VIEWED.eventName)
-        this.experimentsTest.assertValues("Checkout Payment Page Viewed")
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -1400,7 +1393,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeProgressIsGone.assertValues(false, true)
         this.showUpdatePaymentError.assertValueCount(1)
 
-        this.segmentTrack.assertValues("Pledge Submit Button Clicked", EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -1458,7 +1451,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeProgressIsGone.assertValues(false)
         this.showUpdatePaymentSuccess.assertValueCount(1)
 
-        this.segmentTrack.assertValues("Pledge Submit Button Clicked", EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -1983,8 +1976,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeSuccess.assertValueCount(1)
         this.showPledgeError.assertNoValues()
 
-        this.segmentTrack.assertValues("Checkout Payment Page Viewed", EventName.PAGE_VIEWED.eventName, "Pledge Submit Button Clicked", EventName.CTA_CLICKED.eventName)
-        this.experimentsTest.assertValues("Checkout Payment Page Viewed")
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -2004,8 +1996,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeSuccess.assertValueCount(1)
         this.showPledgeError.assertNoValues()
 
-        this.segmentTrack.assertValues("Checkout Payment Page Viewed", EventName.PAGE_VIEWED.eventName, "Pledge Submit Button Clicked", EventName.CTA_CLICKED.eventName)
-        this.experimentsTest.assertValues("Checkout Payment Page Viewed")
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -2029,8 +2020,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeSuccess.assertValueCount(1)
         this.showPledgeError.assertNoValues()
 
-        this.segmentTrack.assertValues("Checkout Payment Page Viewed", EventName.PAGE_VIEWED.eventName, "Pledge Submit Button Clicked", EventName.CTA_CLICKED.eventName)
-        this.experimentsTest.assertValues("Checkout Payment Page Viewed")
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -2057,8 +2047,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeError.assertValueCount(1)
         this.showSCAFlow.assertNoValues()
 
-        this.segmentTrack.assertValues("Checkout Payment Page Viewed", EventName.PAGE_VIEWED.eventName, "Pledge Submit Button Clicked", EventName.CTA_CLICKED.eventName)
-        this.experimentsTest.assertValues("Checkout Payment Page Viewed")
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -2085,8 +2074,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeError.assertNoValues()
         this.showSCAFlow.assertValueCount(1)
 
-        this.segmentTrack.assertValues("Checkout Payment Page Viewed", EventName.PAGE_VIEWED.eventName, "Pledge Submit Button Clicked", EventName.CTA_CLICKED.eventName)
-        this.experimentsTest.assertValues("Checkout Payment Page Viewed")
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
 
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.SUCCEEDED)
 
@@ -2127,8 +2115,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertValueCount(1)
 
-        this.segmentTrack.assertValues("Checkout Payment Page Viewed", EventName.PAGE_VIEWED.eventName, "Pledge Submit Button Clicked", EventName.CTA_CLICKED.eventName)
-        this.experimentsTest.assertValues("Checkout Payment Page Viewed")
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -2163,8 +2150,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertValueCount(1)
 
-        this.segmentTrack.assertValues("Checkout Payment Page Viewed", EventName.PAGE_VIEWED.eventName, "Pledge Submit Button Clicked", EventName.CTA_CLICKED.eventName)
-        this.experimentsTest.assertValues("Checkout Payment Page Viewed")
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test

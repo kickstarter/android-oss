@@ -83,7 +83,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         this.loginSuccess.assertNoValues()
         this.genericLoginError.assertValueCount(1)
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -111,7 +111,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         this.loginSuccess.assertNoValues()
         this.invalidLoginError.assertValueCount(1)
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -139,7 +139,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         this.loginSuccess.assertNoValues()
         this.tfaChallenge.assertValueCount(1)
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -243,6 +243,6 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.loginClick()
 
         this.loginSuccess.assertValues(null, null)
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 }

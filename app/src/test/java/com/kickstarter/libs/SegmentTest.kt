@@ -756,7 +756,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(true, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.segmentTrack.assertValues("Project Page Viewed")
+        this.segmentTrack.assertValues(PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -789,7 +789,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(true, expectedProperties["project_user_is_project_creator"])
 
-        this.segmentTrack.assertValues("Project Page Viewed")
+        this.segmentTrack.assertValues(PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -869,7 +869,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.segmentTrack.assertValues("Select Reward Button Clicked")
+        this.segmentTrack.assertValues(CTA_CLICKED.eventName)
     }
 
     @Test
@@ -1037,7 +1037,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(true, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.segmentTrack.assertValues("Pledge Submit Button Clicked")
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
     }
 
     @Test
@@ -1116,7 +1116,7 @@ class SegmentTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackProjectPagePledgeButtonClicked(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
+        segment.trackPledgeInitiateCTA(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()))
 
         assertSessionProperties(user)
         assertProjectProperties(project)
@@ -1147,7 +1147,8 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), null)
+        segment.trackProjectScreenViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
+                EventContextValues.ContextSectionName.OVERVIEW.contextName)
 
         assertSessionProperties(user)
         assertProjectProperties(project)

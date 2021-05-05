@@ -387,7 +387,7 @@ interface BackingFragmentViewModel {
                 .compose<Pair<Backing, ProjectData>>(combineLatestPair(projectDataInput))
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackManagePledgePageViewed(it.first, it.second)
+                    this.analyticEvents.trackManagePledgePageViewed(it.first, it.second)
                 }
 
             val rewardIsReceivable = backing

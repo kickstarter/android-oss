@@ -175,7 +175,7 @@ public interface DiscoveryFragmentViewModel {
 
       this.projectCardClicked
               .compose(bindToLifecycle())
-              .subscribe(p -> lake.trackProjectCardClicked(p, EventContextValues.ContextPageName.DISCOVER.getContextName()));
+              .subscribe(p -> analyticEvents.trackProjectCardClicked(p, EventContextValues.ContextPageName.DISCOVER.getContextName()));
 
       this.paramsFromActivity
               .compose(takePairWhen(this.projectCardClicked))
@@ -190,7 +190,7 @@ public interface DiscoveryFragmentViewModel {
                         .project(it.second)
                         .build();
 
-                this.lake.trackDiscoverProjectCtaClicked(it.first, projectData);
+                this.analyticEvents.trackDiscoverProjectCtaClicked(it.first, projectData);
               });
 
       final Observable<Pair<Project, RefTag>> projectCardClick = this.paramsFromActivity
@@ -291,15 +291,15 @@ public interface DiscoveryFragmentViewModel {
         .filter(paramsAndPage -> paramsAndPage.second == 1)
         .compose(bindToLifecycle())
         .subscribe(paramsAndLoggedIn -> {
-          this.lake.trackDiscoveryPageViewed(paramsAndLoggedIn.first);
-          this.lake.trackExplorePageViewed(paramsAndLoggedIn.first);
+          this.analyticEvents.trackDiscoveryPageViewed(paramsAndLoggedIn.first);
+          this.analyticEvents.trackExplorePageViewed(paramsAndLoggedIn.first);
         });
 
       this.discoveryOnboardingLoginToutClick
         .compose(bindToLifecycle())
         .subscribe(v -> {
-          this.lake.trackLogInSignUpButtonClicked();
-          this.lake.trackLoginOrSignUpCtaClicked(null, EventContextValues.ContextPageName.DISCOVER.getContextName());
+          this.analyticEvents.trackLogInSignUpButtonClicked();
+          this.analyticEvents.trackLoginOrSignUpCtaClicked(null, EventContextValues.ContextPageName.DISCOVER.getContextName());
         });
 
       this.paramsFromActivity
@@ -307,7 +307,7 @@ public interface DiscoveryFragmentViewModel {
         .compose(combineLatestPair(this.currentUser.observable()))
         .compose(bindToLifecycle())
         .subscribe(paramsAndEditorial -> {
-          this.lake.trackEditorialCardClicked(paramsAndEditorial.first.first, paramsAndEditorial.first.second);
+          this.analyticEvents.trackEditorialCardClicked(paramsAndEditorial.first.first, paramsAndEditorial.first.second);
           final ExperimentData data = new ExperimentData(paramsAndEditorial.second,
             RefTag.collection(paramsAndEditorial.first.second.getTagId()), null);
           this.optimizely.track(LakeEvent.EDITORIAL_CARD_CLICKED, data);

@@ -78,7 +78,7 @@ class RewardsFragmentViewModel {
                 .compose(combineLatestPair(this.projectDataInput))
                 .map { it.second }
                 .compose(bindToLifecycle())
-                .subscribe { this.lake.trackRewardsCarouselViewed(it) }
+                .subscribe { this.analyticEvents.trackRewardsCarouselViewed(it) }
 
             this.projectDataInput
                 .map { filterOutNotStartedRewards(it) }

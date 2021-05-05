@@ -113,11 +113,11 @@ class EmailVerificationInterstitialFragmentViewModel {
             this.skipLinkPressed
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackSkipVerificationButtonClicked()
+                    this.analyticEvents.trackSkipVerificationButtonClicked()
                     this.dismissInterstitial.onNext(null)
                 }
 
-            this.lake.trackVerificationScreenViewed()
+            this.analyticEvents.trackVerificationScreenViewed()
         }
 
         // - Inputs

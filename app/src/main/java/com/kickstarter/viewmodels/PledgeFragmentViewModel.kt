@@ -1349,8 +1349,8 @@ interface PledgeFragmentViewModel {
                 .filter { it.second.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackCheckoutPaymentPageViewed(it.second)
-                    this.lake.trackCheckoutScreenViewed(it.first, it.second)
+                    this.analyticEvents.trackCheckoutPaymentPageViewed(it.second)
+                    this.analyticEvents.trackCheckoutScreenViewed(it.first, it.second)
                 }
 
             checkoutAndPledgeData
@@ -1358,7 +1358,7 @@ interface PledgeFragmentViewModel {
                 .filter { it.second.pledgeFlowContext() == PledgeFlowContext.MANAGE_REWARD }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackUpdatePledgePageViewed(it.first, it.second)
+                    this.analyticEvents.trackUpdatePledgePageViewed(it.first, it.second)
                 }
 
             fullProjectDataAndPledgeData
@@ -1374,8 +1374,8 @@ interface PledgeFragmentViewModel {
                 .compose<Pair<CheckoutData, PledgeData>>(takeWhen(this.pledgeButtonClicked))
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackPledgeSubmitButtonClicked(it.first, it.second)
-                    this.lake.trackPledgeSubmitCTA(it.first, it.second)
+                    this.analyticEvents.trackPledgeSubmitButtonClicked(it.first, it.second)
+                    this.analyticEvents.trackPledgeSubmitCTA(it.first, it.second)
                 }
 
             // - Screen configuration Logic (Different configurations depending on: PledgeReason, Reward type, Shipping, AddOns)

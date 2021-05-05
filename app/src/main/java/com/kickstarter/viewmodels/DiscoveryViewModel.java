@@ -265,21 +265,21 @@ public interface DiscoveryViewModel {
               )
               .compose(bindToLifecycle())
               .subscribe(previousSortAndDiscoverParams -> {
-                this.lake.trackDiscoverSortCTA(previousSortAndDiscoverParams.first, previousSortAndDiscoverParams.second);
+                this.analyticEvents.trackDiscoverSortCTA(previousSortAndDiscoverParams.first, previousSortAndDiscoverParams.second);
               });
 
       params
               .compose(takePairWhen(this.sortClicked.map(DiscoveryUtils::sortFromPosition)))
               .map(paramsAndSort -> paramsAndSort.first.toBuilder().sort(paramsAndSort.second).build())
               .compose(bindToLifecycle())
-              .subscribe(this.lake::trackExploreSortClicked);
+              .subscribe(this.analyticEvents::trackExploreSortClicked);
 
       paramsWithSort
         .compose(takeWhen(drawerParamsClicked))
         .compose(bindToLifecycle())
         .subscribe(discoveryParams -> {
-          this.lake.trackFilterClicked(discoveryParams);
-          this.lake.trackDiscoverFilterCTA(discoveryParams);
+          this.analyticEvents.trackFilterClicked(discoveryParams);
+          this.analyticEvents.trackDiscoverFilterCTA(discoveryParams);
         });
 
       final Observable<List<Category>> categories = this.apiClient.fetchCategories()
@@ -373,7 +373,7 @@ public interface DiscoveryViewModel {
       paramsWithSort
         .compose(takeWhen(drawerOpened))
         .compose(bindToLifecycle())
-        .subscribe(this.lake::trackHamburgerMenuClicked);
+        .subscribe(this.analyticEvents::trackHamburgerMenuClicked);
 
       currentUser
         .map(this::currentDrawerMenuIcon)
@@ -383,11 +383,7 @@ public interface DiscoveryViewModel {
 
       Observable.just(this.firstSessionPreference)
         .map(pref -> {
-          if (pref.isSet()) {
-            pref.set(false);
-          } else {
-            pref.set(true);
-          }
+          pref.set(!pref.isSet());
           return pref.get();
         })
         .compose(bindToLifecycle())

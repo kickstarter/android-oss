@@ -451,7 +451,7 @@ interface ProjectViewModel {
 
             projectSavedStatus
                 .compose(bindToLifecycle())
-                .subscribe { this.lake.trackWatchProjectCTA(it) }
+                .subscribe { this.analyticEvents.trackWatchProjectCTA(it) }
 
             projectSavedStatus
                 .filter { p -> p.isStarred && p.isLive && !p.isApproachingDeadline }
@@ -651,7 +651,7 @@ interface ProjectViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.showUpdatePledge.onNext(it)
-                    this.lake.trackChangePaymentMethod(it.first)
+                    this.analyticEvents.trackChangePaymentMethod(it.first)
                 }
 
             projectDataAndBackedReward
@@ -768,8 +768,8 @@ interface ProjectViewModel {
 
                     val dataWithStoredCookieRefTag = storeCurrentCookieRefTag(data)
 
-                    this.lake.trackProjectPageViewed(dataWithStoredCookieRefTag, pledgeFlowContext)
-                    this.lake.trackProjectScreenViewed(dataWithStoredCookieRefTag, OVERVIEW.contextName)
+                    this.analyticEvents.trackProjectPageViewed(dataWithStoredCookieRefTag, pledgeFlowContext)
+                    this.analyticEvents.trackProjectScreenViewed(dataWithStoredCookieRefTag, OVERVIEW.contextName)
                 }
 
             fullProjectDataAndCurrentUser
@@ -782,8 +782,8 @@ interface ProjectViewModel {
                 .filter { it.first.project().isLive && !it.first.project().isBacking }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackProjectPagePledgeButtonClicked(storeCurrentCookieRefTag(it.first), it.second)
-                    this.lake.trackPledgeInitiateCTA(it.first)
+                    this.analyticEvents.trackProjectPagePledgeButtonClicked(storeCurrentCookieRefTag(it.first), it.second)
+                    this.analyticEvents.trackPledgeInitiateCTA(it.first)
                 }
 
             fullProjectDataAndPledgeFlowContext
@@ -792,8 +792,8 @@ interface ProjectViewModel {
                 .filter { it.project().isLive && !it.project().isBacking }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackCampaignDetailsCTAClicked(it)
-                    this.lake.trackCampaignDetailsButtonClicked(it)
+                    this.analyticEvents.trackCampaignDetailsCTAClicked(it)
+                    this.analyticEvents.trackCampaignDetailsButtonClicked(it)
                 }
 
             fullProjectDataAndCurrentUser
@@ -819,8 +819,8 @@ interface ProjectViewModel {
                 .filter { it.project().isLive && !it.project().isBacking }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackCreatorDetailsCTA(it)
-                    this.lake.trackCreatorDetailsClicked(it)
+                    this.analyticEvents.trackCreatorDetailsCTA(it)
+                    this.analyticEvents.trackCreatorDetailsClicked(it)
                 }
 
             fullProjectDataAndCurrentUser
@@ -834,12 +834,12 @@ interface ProjectViewModel {
                 .compose<Pair<ProjectData, PledgeFlowContext?>>(takeWhen(this.nativeProjectActionButtonClicked))
                 .filter { it.second == PledgeFlowContext.FIX_ERRORED_PLEDGE }
                 .compose(bindToLifecycle())
-                .subscribe { this.lake.trackManagePledgeButtonClicked(it.first, it.second) }
+                .subscribe { this.analyticEvents.trackManagePledgeButtonClicked(it.first, it.second) }
 
             projectData
                 .compose<ProjectData>(takeWhen(this.fixPaymentMethodButtonClicked))
                 .compose(bindToLifecycle())
-                .subscribe { this.lake.trackFixPledgeButtonClicked(it) }
+                .subscribe { this.analyticEvents.trackFixPledgeButtonClicked(it) }
         }
 
         private fun isPledgeCTA(projectActionButtonStringRes: Int): Boolean {

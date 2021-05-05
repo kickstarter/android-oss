@@ -131,7 +131,7 @@ interface LoginViewModel {
             logInButtonClicked
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackLogInButtonCtaClicked()
+                    this.analyticEvents.trackLogInButtonCtaClicked()
                 }
 
             emailAndReason
@@ -207,9 +207,9 @@ interface LoginViewModel {
             this.logInButtonClicked
                 .compose(combineLatestPair(emailAndPassword))
                 .compose(bindToLifecycle())
-                .subscribe { this.lake.trackLogInSubmitButtonClicked() }
+                .subscribe { this.analyticEvents.trackLogInSubmitButtonClicked() }
 
-            this.lake.trackLoginPagedViewed()
+            this.analyticEvents.trackLoginPagedViewed()
         }
 
         private fun unwrapNotificationEnvelopeError(notification: Notification<AccessTokenEnvelope>) =

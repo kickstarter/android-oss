@@ -189,8 +189,8 @@ public interface ThanksViewModel {
       checkoutAndPledgeData
         .compose(bindToLifecycle())
         .subscribe(checkoutDataPledgeData -> {
-          this.lake.trackThanksPageViewed(checkoutDataPledgeData.first, checkoutDataPledgeData.second);
-          this.lake.trackThanksScreenViewed(checkoutDataPledgeData.first, checkoutDataPledgeData.second);
+          this.analyticEvents.trackThanksPageViewed(checkoutDataPledgeData.first, checkoutDataPledgeData.second);
+          this.analyticEvents.trackThanksScreenViewed(checkoutDataPledgeData.first, checkoutDataPledgeData.second);
         });
 
       checkoutAndPledgeData
@@ -203,7 +203,7 @@ public interface ThanksViewModel {
                   .refTagFromCookie(cookieRefTag)
                   .project(dataCheckoutProjectPair.second)
                   .build();
-          this.lake.trackThanksActivityProjectCardClicked(projectData,
+          this.analyticEvents.trackThanksActivityProjectCardClicked(projectData,
                             dataCheckoutProjectPair.first.first,
                             dataCheckoutProjectPair.first.second);
         });

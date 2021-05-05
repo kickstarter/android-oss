@@ -103,7 +103,7 @@ public interface LoginToutViewModel {
         .compose(bindToLifecycle())
         .subscribe(it -> {
           this.loginReason.onNext(it);
-          this.lake.trackLoginOrSignUpPagedViewed();
+          this.analyticEvents.trackLoginOrSignUpPagedViewed();
         });
 
       activityResult()
@@ -146,29 +146,29 @@ public interface LoginToutViewModel {
       this.loginReason
         .take(1)
         .compose(bindToLifecycle())
-        .subscribe(__ -> this.lake.trackLogInSignUpPageViewed());
+        .subscribe(__ -> this.analyticEvents.trackLogInSignUpPageViewed());
 
       this.facebookLoginClick
         .compose(ignoreValues())
         .compose(bindToLifecycle())
         .subscribe(__ -> {
-          this.lake.trackFacebookLogInSignUpButtonClicked();
-          this.lake.trackLoginOrSignUpCtaClicked(ContextTypeName.FACEBOOK.getContextName(), ContextPageName.LOGIN_SIGN_UP.getContextName());
+          this.analyticEvents.trackFacebookLogInSignUpButtonClicked();
+          this.analyticEvents.trackLoginOrSignUpCtaClicked(ContextTypeName.FACEBOOK.getContextName(), ContextPageName.LOGIN_SIGN_UP.getContextName());
         });
 
       this.loginClick
         .compose(bindToLifecycle())
         .subscribe(__ -> {
-          this.lake.trackLogInButtonClicked();
-          this.lake.trackLogInInitiateCtaClicked();
+          this.analyticEvents.trackLogInButtonClicked();
+          this.analyticEvents.trackLogInInitiateCtaClicked();
         }
         );
 
       this.signupClick
         .compose(bindToLifecycle())
         .subscribe(__ -> {
-          this.lake.trackSignUpButtonClicked();
-          this.lake.trackSignUpInitiateCtaClicked();
+          this.analyticEvents.trackSignUpButtonClicked();
+          this.analyticEvents.trackSignUpInitiateCtaClicked();
         });
     }
 

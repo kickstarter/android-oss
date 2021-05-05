@@ -60,7 +60,7 @@ interface CampaignDetailsViewModel {
                 .map { it.storeCurrentCookieRefTag(cookieManager, sharedPreferences) }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackProjectScreenViewed(it, ContextSectionName.CAMPAIGN.contextName)
+                    this.analyticEvents.trackProjectScreenViewed(it, ContextSectionName.CAMPAIGN.contextName)
                 }
 
             projectData
@@ -91,7 +91,7 @@ interface CampaignDetailsViewModel {
             projectData
                 .compose<ProjectData>(takeWhen(this.pledgeButtonClicked))
                 .compose(bindToLifecycle())
-                .subscribe { this.lake.trackCampaignDetailsPledgeButtonClicked(it) }
+                .subscribe { this.analyticEvents.trackCampaignDetailsPledgeButtonClicked(it) }
 
             projectData
                 .compose<Pair<ProjectData, User?>>(combineLatestPair(this.currentUser.observable()))

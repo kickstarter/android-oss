@@ -100,11 +100,11 @@ public interface SignupViewModel {
       this.signupClick
               .compose(bindToLifecycle())
               .subscribe(__ -> {
-                this.lake.trackSignUpSubmitButtonClicked();
-                this.lake.trackSignUpSubmitCtaClicked();
+                this.analyticEvents.trackSignUpSubmitButtonClicked();
+                this.analyticEvents.trackSignUpSubmitCtaClicked();
               });
 
-      this.lake.trackSignUpPageViewed();
+      this.analyticEvents.trackSignUpPageViewed();
     }
 
     private Observable<AccessTokenEnvelope> submit(final @NonNull SignupData data) {

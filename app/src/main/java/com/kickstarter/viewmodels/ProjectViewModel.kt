@@ -763,7 +763,6 @@ interface ProjectViewModel {
                     }
 
                     val dataWithStoredCookieRefTag = storeCurrentCookieRefTag(data)
-
                     this.lake.trackProjectScreenViewed(dataWithStoredCookieRefTag, OVERVIEW.contextName)
                 }
 

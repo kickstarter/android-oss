@@ -11,26 +11,38 @@ import com.kickstarter.models.User
 import timber.log.Timber
 
 class InAppCustomListener(
-        private val loggedInUser: User?,
-        private val config: Config?,
-        private val build: Build
+    private val loggedInUser: User?,
+    private val config: Config?,
+    private val build: Build
 ) : AppboyDefaultInAppMessageManagerListener() {
 
     // TODO: deeplink with this on on button clicked
     //  url staging: https://staging.kickstarter.com/settings/notify_mobile_of_marketing_update/true
     //  url production: https://www.kickstarter.com/settings/notify_mobile_of_marketing_update/true
 
+    private val handler = InAppCustomListenerHandler(this.loggedInUser, this.config)
+
     init {
-        Timber.d("${this.javaClass.canonicalName} Init block custom listener")
+        if (build.isDebug) Timber.d("${this.javaClass.canonicalName} Init block custom listener")
     }
 
     override fun beforeInAppMessageDisplayed(inAppMessage: IInAppMessage?): InAppMessageOperation {
-        Timber.d("${this.javaClass.canonicalName} beforeInAppMessageDisplayed: Display Always")
-        return InAppMessageOperation.DISPLAY_NOW
+        if (build.isDebug) Timber.d("${this.javaClass.canonicalName} beforeInAppMessageDisplayed: ${inAppMessage?.toString()}")
+
+        val shouldShowMessage = if (handler.shouldShowMessage())
+            InAppMessageOperation.DISPLAY_NOW
+        else InAppMessageOperation.DISCARD
+
+        if (build.isDebug) Timber.d("${this.javaClass.canonicalName} beforeInAppMessageDisplayed: $shouldShowMessage")
+        return shouldShowMessage
     }
 
     override fun onInAppMessageButtonClicked(inAppMessage: IInAppMessage?, button: MessageButton?, inAppMessageCloser: InAppMessageCloser?): Boolean {
-        Timber.d("${this.javaClass.canonicalName} onInAppMessageButtonClicked: Button Clicked")
+        if (build.isDebug) Timber.d("${this.javaClass.canonicalName} onInAppMessageButtonClicked: Button Clicked")
+        button?.let {
+            // - Button ID plus the url when it's configured with deeplink on braze
+            handler.validateDataWith(it.id, it.uri)
+        }
         return super.onInAppMessageButtonClicked(inAppMessage, button, inAppMessageCloser)
     }
 }

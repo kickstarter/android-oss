@@ -9,13 +9,5 @@ public enum LoginReason {
   BACK_PROJECT,
   MESSAGE_CREATOR,
   RESET_PASSWORD,
-  STAR_PROJECT;
-
-  public boolean isDefaultFlow() {
-    return this == DEFAULT;
-  }
-
-  public boolean isContextualFlow() {
-    return !isDefaultFlow();
-  }
+  STAR_PROJECT
 }

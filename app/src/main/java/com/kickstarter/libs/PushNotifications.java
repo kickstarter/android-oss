@@ -13,6 +13,7 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.TaskStackBuilder;
 import androidx.core.content.ContextCompat;
@@ -335,7 +336,8 @@ public final class PushNotifications {
     return taskStackBuilder.getPendingIntent(envelope.signature(), PendingIntent.FLAG_UPDATE_CURRENT);
   }
 
-  private @NonNull PendingIntent messageThreadIntent(final @NonNull PushNotificationEnvelope envelope,
+  @VisibleForTesting
+  public  @NonNull PendingIntent messageThreadIntent(final @NonNull PushNotificationEnvelope envelope,
     final @NonNull MessageThread messageThread) {
 
     final Intent messageThreadIntent = new Intent(this.context, MessagesActivity.class)

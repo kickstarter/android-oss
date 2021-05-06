@@ -22,7 +22,7 @@ class PushNotificationsTest : KSRobolectricTestCase() {
         val envelope = PushNotificationEnvelopeFactory.envelope()
         val messageThread = MessageThreadEnvelopeFactory.messageThreadEnvelope().messageThread()
         val pushNotifications = PushNotifications(application, environment().apiClient())
-        
+
         messageThread?.let {
             val pendingIntent = pushNotifications.messageThreadIntent(envelope, messageThread)
             val mockedPendingIntent = getMockedPushedMessagePendingIntent(messageThread, envelope)
@@ -33,11 +33,11 @@ class PushNotificationsTest : KSRobolectricTestCase() {
 
     private fun getMockedPushedMessagePendingIntent(messageThread: MessageThread?, envelope: PushNotificationEnvelope): PendingIntent? {
         val messageThreadIntent = Intent(application, MessagesActivity::class.java)
-                .putExtra(IntentKey.MESSAGE_THREAD, messageThread)
-                .putExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT, MessagePreviousScreenType.PUSH)
+            .putExtra(IntentKey.MESSAGE_THREAD, messageThread)
+            .putExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT, MessagePreviousScreenType.PUSH)
 
         return TaskStackBuilder.create(application)
-                .addNextIntentWithParentStack(messageThreadIntent)
-                .getPendingIntent(envelope.signature(), PendingIntent.FLAG_UPDATE_CURRENT)
+            .addNextIntentWithParentStack(messageThreadIntent)
+            .getPendingIntent(envelope.signature(), PendingIntent.FLAG_UPDATE_CURRENT)
     }
 }

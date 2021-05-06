@@ -80,29 +80,6 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track("App Open")
     }
 
-    fun trackDiscoveryFilterSelected(params: DiscoveryParams) {
-        client.track("Discover Modal Selected Filter", AnalyticEventsUtils.discoveryParamsProperties(params))
-    }
-
-    fun trackAppClose() {
-        client.track("App Close")
-    }
-
-    fun trackMemoryWarning() {
-        client.track("App Memory Warning")
-    }
-
-    fun trackOpenedAppBanner() {
-        client.track("Opened App Banner")
-    }
-
-    // DISCOVERY
-    fun trackDiscovery(params: DiscoveryParams, isOnboardingVisible: Boolean) {
-        val props = AnalyticEventsUtils.discoveryParamsProperties(params).toMutableMap()
-        props["discover_onboarding_is_visible"] = isOnboardingVisible
-        client.track("Discover List View", props)
-    }
-
     /**
      * Sends data to the client when Activity Screen is viewed.
      */

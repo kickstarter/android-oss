@@ -1,7 +1,5 @@
 package com.kickstarter.ui.data;
 
-import androidx.annotation.NonNull;
-
 public enum LoginReason {
   DEFAULT,
   ACTIVITY_FEED,

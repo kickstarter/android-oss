@@ -406,7 +406,7 @@ public class ApplicationModule {
           final @NonNull Build build,
           final @NonNull CurrentConfigType currentConfig,
           final @NonNull ExperimentsClientType experimentsClientType) {
-    return new SegmentTrackingClient(build, context, currentConfig, currentUser,  experimentsClientType);
+    return new SegmentTrackingClient(build, context, currentConfig, currentUser,  experimentsClientType, PreferenceManager.getDefaultSharedPreferences(context));
   }
 
   @Provides

@@ -574,20 +574,6 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.reset()
     }
 
-    //endregion
-    private fun experimentProperties(projectData: ProjectData): Map<String, Any> {
-        val props = AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser())
-        props.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
-        props.putAll(optimizelyProperties(projectData))
-        props["context_pledge_flow"] = PledgeFlowContext.NEW_PLEDGE.trackingString
-        return props
-    }
-
-    private fun optimizelyProperties(projectData: ProjectData): Map<String, Any> {
-        val experimentData = ExperimentData(client.loggedInUser(), projectData.refTagFromIntent(), projectData.refTagFromCookie())
-        return client.optimizely()?.optimizelyProperties(experimentData) ?: emptyMap()
-    }
-
     private class ProxyClient(private val clients: List<TrackingClientType?>) {
         fun track(eventName: String) {
             clients.forEach { client ->
@@ -604,7 +590,5 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         fun reset() = clients.forEach { it?.reset() }
 
         fun loggedInUser(): User? = clients.firstOrNull()?.loggedInUser()
-
-        fun optimizely(): ExperimentsClientType? = clients.firstOrNull()?.optimizely()
     }
 }

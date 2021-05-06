@@ -1,5 +1,7 @@
 package com.kickstarter.ui.data;
 
+import androidx.annotation.NonNull;
+
 public enum LoginReason {
   DEFAULT,
   ACTIVITY_FEED,
@@ -9,5 +11,13 @@ public enum LoginReason {
   BACK_PROJECT,
   MESSAGE_CREATOR,
   RESET_PASSWORD,
-  STAR_PROJECT
+  STAR_PROJECT;
+
+  public boolean isDefaultFlow() {
+    return this == DEFAULT;
+  }
+
+  public boolean isContextualFlow() {
+    return !isDefaultFlow();
+  }
 }

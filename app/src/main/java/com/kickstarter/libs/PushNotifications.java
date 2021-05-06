@@ -75,6 +75,9 @@ public final class PushNotifications {
   private final PublishSubject<PushNotificationEnvelope> notifications = PublishSubject.create();
   private final CompositeSubscription subscriptions = new CompositeSubscription();
 
+  @VisibleForTesting
+  public  Intent messageThreadIntent ;
+
   public PushNotifications(final @ApplicationContext @NonNull Context context, final @NonNull ApiClientType client) {
     this.context = context;
     this.client = client;
@@ -340,7 +343,7 @@ public final class PushNotifications {
   public  @NonNull PendingIntent messageThreadIntent(final @NonNull PushNotificationEnvelope envelope,
     final @NonNull MessageThread messageThread) {
 
-    final Intent messageThreadIntent = new Intent(this.context, MessagesActivity.class)
+    messageThreadIntent = new Intent(this.context, MessagesActivity.class)
       .putExtra(IntentKey.MESSAGE_THREAD, messageThread)
       .putExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT, MessagePreviousScreenType.PUSH);
 

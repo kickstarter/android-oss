@@ -76,7 +76,7 @@ public final class PushNotifications {
   private final CompositeSubscription subscriptions = new CompositeSubscription();
 
   @VisibleForTesting
-  public  Intent messageThreadIntent ;
+  public  Intent messageThreadIntent;
 
   public PushNotifications(final @ApplicationContext @NonNull Context context, final @NonNull ApiClientType client) {
     this.context = context;
@@ -343,12 +343,12 @@ public final class PushNotifications {
   public  @NonNull PendingIntent messageThreadIntent(final @NonNull PushNotificationEnvelope envelope,
     final @NonNull MessageThread messageThread) {
 
-    messageThreadIntent = new Intent(this.context, MessagesActivity.class)
+    this.messageThreadIntent = new Intent(this.context, MessagesActivity.class)
       .putExtra(IntentKey.MESSAGE_THREAD, messageThread)
       .putExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT, MessagePreviousScreenType.PUSH);
 
     final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this.context)
-      .addNextIntentWithParentStack(messageThreadIntent);
+      .addNextIntentWithParentStack(this.messageThreadIntent);
 
     return taskStackBuilder.getPendingIntent(envelope.signature(), PendingIntent.FLAG_UPDATE_CURRENT);
   }

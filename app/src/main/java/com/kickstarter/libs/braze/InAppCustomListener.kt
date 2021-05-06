@@ -1,18 +1,22 @@
 package com.kickstarter.libs.braze
 
+import android.content.Context
 import com.appboy.models.IInAppMessage
 import com.appboy.models.MessageButton
 import com.appboy.ui.inappmessage.InAppMessageCloser
 import com.appboy.ui.inappmessage.InAppMessageOperation
 import com.appboy.ui.inappmessage.listeners.AppboyDefaultInAppMessageManagerListener
+import com.kickstarter.KSApplication
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.Config
+import com.kickstarter.libs.utils.extensions.isKSApplication
 import com.kickstarter.models.User
 import timber.log.Timber
 
 class InAppCustomListener(
     private val loggedInUser: User?,
     private val config: Config?,
+    private val context: Context,
     private val build: Build
 ) : AppboyDefaultInAppMessageManagerListener() {
 
@@ -20,10 +24,12 @@ class InAppCustomListener(
     //  url staging: https://staging.kickstarter.com/settings/notify_mobile_of_marketing_update/true
     //  url production: https://www.kickstarter.com/settings/notify_mobile_of_marketing_update/true
 
-    private val handler = InAppCustomListenerHandler(this.loggedInUser, this.config)
+    private var handler: InAppCustomListenerHandler
 
     init {
         if (build.isDebug) Timber.d("${this.javaClass.canonicalName} Init block custom listener")
+        val apiClient = (context as KSApplication).component().environment().apiClient()
+        handler = InAppCustomListenerHandler(loggedInUser, config, apiClient)
     }
 
     override fun beforeInAppMessageDisplayed(inAppMessage: IInAppMessage?): InAppMessageOperation {

@@ -5,10 +5,12 @@ import com.kickstarter.libs.Config
 import com.kickstarter.libs.utils.ConfigFeatureName
 import com.kickstarter.libs.utils.extensions.isFeatureFlagEnabled
 import com.kickstarter.models.User
+import com.kickstarter.services.ApiClientType
 
 class InAppCustomListenerHandler(
     private val loggedInUser: User?,
-    private val config: Config?
+    private val config: Config?,
+    private val apiClientType: ApiClientType
 ) {
 
     fun shouldShowMessage() =
@@ -17,6 +19,18 @@ class InAppCustomListenerHandler(
         } else false
 
     fun validateDataWith(id: Int, uri: Uri?) {
-        TODO("Not yet implemented")
+        // TODO: Check the id and url are the valid ones
+        this.loggedInUser?.let { user ->
+            if (user.notifyMobileOfMarketingUpdate() == false) {
+                val updatedUser = user.toBuilder().notifyMobileOfMarketingUpdate(true).build()
+                updateSettings(updatedUser)
+            }
+        }
+    }
+
+    private fun updateSettings(user: User) {
+        this.apiClientType.updateUserSettings(user)
+            .materialize()
+            .share()
     }
 }

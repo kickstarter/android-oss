@@ -18,7 +18,7 @@ class PushNotificationsTest : KSRobolectricTestCase() {
         val pushNotifications = PushNotifications(application, environment().apiClient())
 
         messageThread?.let {
-              pushNotifications.messageThreadIntent(envelope, messageThread)
+            pushNotifications.messageThreadIntent(envelope, messageThread)
 
             val messageThreadIntent = pushNotifications.messageThreadIntent
 

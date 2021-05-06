@@ -58,7 +58,6 @@ import com.kickstarter.libs.utils.EventName.CTA_CLICKED
 import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
-import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.checkoutProperties
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
@@ -66,7 +65,6 @@ import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.ProjectData
 import java.util.Locale
 import kotlin.collections.HashMap

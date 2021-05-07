@@ -33,7 +33,6 @@ abstract class KSRobolectricTestCase : TestCase() {
     private lateinit var environment: Environment
 
     lateinit var experimentsTest: TestSubscriber<String>
-    lateinit var lakeTest: TestSubscriber<String>
     lateinit var segmentTrack: TestSubscriber<String>
     lateinit var segmentIdentify: TestSubscriber<User>
 
@@ -44,7 +43,6 @@ abstract class KSRobolectricTestCase : TestCase() {
 
         val mockCurrentConfig = MockCurrentConfig()
         val experimentsClientType = experimentsClient()
-        val lakeTrackingClient = lakeTrackingClient(mockCurrentConfig, experimentsClientType)
         val segmentTestClient = segmentTrackingClient(mockCurrentConfig, experimentsClientType)
 
         val component = DaggerApplicationComponent.builder()
@@ -57,7 +55,7 @@ abstract class KSRobolectricTestCase : TestCase() {
             .currentConfig(mockCurrentConfig)
             .webClient(MockWebClient())
             .stripe(Stripe(context(), Secrets.StripePublishableKey.STAGING))
-            .analytics(AnalyticEvents(listOf(lakeTrackingClient, segmentTestClient)))
+            .analytics(AnalyticEvents(listOf(segmentTestClient)))
             .optimizely(experimentsClientType)
             .build()
     }
@@ -82,16 +80,6 @@ abstract class KSRobolectricTestCase : TestCase() {
         val experimentsClientType = MockExperimentsClientType()
         experimentsClientType.eventKeys.subscribe(experimentsTest)
         return experimentsClientType
-    }
-
-    private fun lakeTrackingClient(mockCurrentConfig: MockCurrentConfig, experimentsClientType: MockExperimentsClientType): MockTrackingClient {
-        lakeTest = TestSubscriber()
-        val lakeTrackingClient = MockTrackingClient(
-            MockCurrentUser(),
-            mockCurrentConfig, TrackingClientType.Type.LAKE, experimentsClientType
-        )
-        lakeTrackingClient.eventNames.subscribe(lakeTest)
-        return lakeTrackingClient
     }
 
     private fun segmentTrackingClient(mockCurrentConfig: MockCurrentConfig, experimentsClientType: MockExperimentsClientType): MockTrackingClient {

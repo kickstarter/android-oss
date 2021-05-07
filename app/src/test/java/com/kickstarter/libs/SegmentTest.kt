@@ -8,6 +8,7 @@ import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
+import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN_SIGN_UP
@@ -221,7 +222,7 @@ class SegmentTest : KSRobolectricTestCase() {
             .sort(DiscoveryParams.Sort.MAGIC)
             .build()
 
-        segment.trackExplorePageViewed(params)
+        segment.trackDiscoveryPageViewed(params)
         this.segmentIdentify.assertValue(user)
 
         assertSessionProperties(user)
@@ -476,7 +477,7 @@ class SegmentTest : KSRobolectricTestCase() {
             .staffPicks(true)
             .build()
 
-        segment.trackExplorePageViewed(params)
+        segment.trackDiscoveryPageViewed(params)
 
         assertSessionProperties(user)
         assertContextProperties()
@@ -537,7 +538,7 @@ class SegmentTest : KSRobolectricTestCase() {
             .sort(DiscoveryParams.Sort.NEWEST)
             .build()
 
-        segment.trackExplorePageViewed(params)
+        segment.trackDiscoveryPageViewed(params)
 
         assertSessionProperties(user)
         assertContextProperties()
@@ -613,7 +614,7 @@ class SegmentTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
+        segment.trackProjectScreenViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), EventContextValues.ContextSectionName.OVERVIEW.contextName)
 
         assertSessionProperties(null)
         assertContextProperties()
@@ -621,12 +622,11 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val expectedProperties = propertiesTest.value
         assertNull(expectedProperties["user_uid"])
-        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.segmentTrack.assertValues("Project Page Viewed")
+        this.segmentTrack.assertValues(PAGE_VIEWED.eventName)
 
         this.segmentIdentify.assertNoValues()
     }
@@ -640,7 +640,10 @@ class SegmentTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
+        segment.trackProjectScreenViewed(
+            ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
+            EventContextValues.ContextSectionName.OVERVIEW.contextName
+        )
 
         val expectedProperties = this.propertiesTest.value
         assertNull(expectedProperties["user_uid"])
@@ -656,7 +659,10 @@ class SegmentTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
+        segment.trackProjectScreenViewed(
+            ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
+            EventContextValues.ContextSectionName.OVERVIEW.contextName
+        )
 
         val expectedProperties = this.propertiesTest.value
         assertNotNull(expectedProperties["project_prelaunch_activated"])
@@ -672,7 +678,10 @@ class SegmentTest : KSRobolectricTestCase() {
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
         val segment = AnalyticEvents(listOf(client))
-        segment.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
+        segment.trackProjectScreenViewed(
+            ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
+            EventContextValues.ContextSectionName.OVERVIEW.contextName
+        )
         val expectedProperties = this.propertiesTest.value
         assertNotNull(expectedProperties["project_prelaunch_activated"])
         assertEquals(true, expectedProperties["project_prelaunch_activated"])
@@ -688,7 +697,10 @@ class SegmentTest : KSRobolectricTestCase() {
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
         val segment = AnalyticEvents(listOf(client))
-        segment.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
+        segment.trackProjectScreenViewed(
+            ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
+            EventContextValues.ContextSectionName.OVERVIEW.contextName
+        )
         val expectedProperties = this.propertiesTest.value
         assertNotNull(expectedProperties["project_prelaunch_activated"])
         assertEquals(false, expectedProperties["project_prelaunch_activated"])
@@ -704,7 +716,10 @@ class SegmentTest : KSRobolectricTestCase() {
         client.identifiedUser.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
+        segment.trackProjectScreenViewed(
+            ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
+            EventContextValues.ContextSectionName.OVERVIEW.contextName
+        )
 
         assertSessionProperties(user)
         assertProjectProperties(project)
@@ -712,12 +727,12 @@ class SegmentTest : KSRobolectricTestCase() {
         assertUserProperties(false)
 
         val expectedProperties = propertiesTest.value
-        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
+        // assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.segmentTrack.assertValues("Project Page Viewed")
+        this.segmentTrack.assertValues(PAGE_VIEWED.eventName)
         this.segmentIdentify.assertValue(user)
     }
 
@@ -739,7 +754,10 @@ class SegmentTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), null)
+        segment.trackProjectScreenViewed(
+            ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
+            EventContextValues.ContextSectionName.OVERVIEW.contextName
+        )
 
         assertSessionProperties(user)
         assertProjectProperties(project)
@@ -752,7 +770,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(true, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.segmentTrack.assertValues("Project Page Viewed")
+        this.segmentTrack.assertValues(PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -764,7 +782,10 @@ class SegmentTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), null)
+        segment.trackProjectScreenViewed(
+            ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
+            EventContextValues.ContextSectionName.OVERVIEW.contextName
+        )
 
         assertSessionProperties(creator)
         assertProjectProperties(project)
@@ -784,7 +805,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(true, expectedProperties["project_user_is_project_creator"])
 
-        this.segmentTrack.assertValues("Project Page Viewed")
+        this.segmentTrack.assertValues(PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -796,7 +817,10 @@ class SegmentTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
+        segment.trackProjectScreenViewed(
+            ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
+            EventContextValues.ContextSectionName.OVERVIEW.contextName
+        )
 
         assertSessionProperties(user)
         assertProjectProperties(project)
@@ -804,12 +828,11 @@ class SegmentTest : KSRobolectricTestCase() {
         assertUserProperties(false)
 
         val expectedProperties = this.propertiesTest.value
-        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(true, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.segmentTrack.assertValues("Project Page Viewed")
+        this.segmentTrack.assertValues(PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -822,7 +845,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val segment = AnalyticEvents(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
-        segment.trackProjectPagePledgeButtonClicked(projectData, PledgeFlowContext.NEW_PLEDGE)
+        segment.trackPledgeInitiateCTA(projectData)
 
         assertSessionProperties(user)
         assertProjectProperties(project)
@@ -830,12 +853,12 @@ class SegmentTest : KSRobolectricTestCase() {
         assertUserProperties(false)
 
         val expectedProperties = propertiesTest.value
-        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
+        // assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.segmentTrack.assertValues("Project Page Pledge Button Clicked")
+        this.segmentTrack.assertValues(CTA_CLICKED.eventName)
     }
 
     @Test
@@ -849,7 +872,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
 
-        segment.trackSelectRewardButtonClicked(PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward(), listOfAddons()))
+        segment.trackSelectRewardCTA(PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward(), listOfAddons()))
 
         assertSessionProperties(user)
         assertProjectProperties(project)
@@ -863,7 +886,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.segmentTrack.assertValues("Select Reward Button Clicked")
+        this.segmentTrack.assertValues(CTA_CLICKED.eventName)
     }
 
     @Test
@@ -877,7 +900,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
 
-        segment.trackPledgeSubmitButtonClicked(
+        segment.trackPledgeSubmitCTA(
             CheckoutDataFactory.checkoutData(20.0, 30.0),
             PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward(), listOfAddons())
         )
@@ -896,7 +919,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.segmentTrack.assertValues("Pledge Submit Button Clicked")
+        this.segmentTrack.assertValues(CTA_CLICKED.eventName)
     }
 
     @Test
@@ -1012,7 +1035,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
 
         val rewardTest = reward()
-        segment.trackPledgeSubmitButtonClicked(
+        segment.trackPledgeSubmitCTA(
             CheckoutDataFactory.checkoutData(20.0, 30.0),
             PledgeData.with(PledgeFlowContext.FIX_ERRORED_PLEDGE, projectData, reward(), listOfAddons())
         )
@@ -1031,7 +1054,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(true, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.segmentTrack.assertValues("Pledge Submit Button Clicked")
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
     }
 
     @Test
@@ -1045,7 +1068,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
 
-        segment.trackThanksPageViewed(
+        segment.trackThanksScreenViewed(
             CheckoutDataFactory.checkoutData(3L, 20.0, 30.0),
             PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward(), listOfAddons())
         )
@@ -1064,7 +1087,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.segmentTrack.assertValues("Thanks Page Viewed")
+        this.segmentTrack.assertValues(PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -1101,31 +1124,31 @@ class SegmentTest : KSRobolectricTestCase() {
         this.segmentTrack.assertValues(PAGE_VIEWED.eventName)
     }
 
-    @Test
-    fun testOptimizelyProperties() {
-        val project = project()
-        val user = user()
-        val client = client(user)
-        client.eventNames.subscribe(this.segmentTrack)
-        client.eventProperties.subscribe(this.propertiesTest)
-        val segment = AnalyticEvents(listOf(client))
-
-        segment.trackProjectPagePledgeButtonClicked(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
-
-        assertSessionProperties(user)
-        assertProjectProperties(project)
-        assertContextProperties()
-        assertOptimizelyProperties()
-        assertUserProperties(false)
-
-        val expectedProperties = propertiesTest.value
-        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
-        assertEquals(false, expectedProperties["project_user_has_watched"])
-        assertEquals(false, expectedProperties["project_user_is_backer"])
-        assertEquals(false, expectedProperties["project_user_is_project_creator"])
-
-        this.segmentTrack.assertValues("Project Page Pledge Button Clicked")
-    }
+//    @Test
+//    fun testOptimizelyProperties() {
+//        val project = project()
+//        val user = user()
+//        val client = client(user)
+//        client.eventNames.subscribe(this.segmentTrack)
+//        client.eventProperties.subscribe(this.propertiesTest)
+//        val segment = AnalyticEvents(listOf(client))
+//
+//        segment.trackPledgeInitiateCTA(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()))
+//
+//        assertSessionProperties(user)
+//        assertProjectProperties(project)
+//        assertContextProperties()
+//        assertOptimizelyProperties()
+//        assertUserProperties(false)
+//
+//        val expectedProperties = propertiesTest.value
+//        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
+//        assertEquals(false, expectedProperties["project_user_has_watched"])
+//        assertEquals(false, expectedProperties["project_user_is_backer"])
+//        assertEquals(false, expectedProperties["project_user_is_project_creator"])
+//
+//        this.segmentTrack.assertValues("Project Page Pledge Button Clicked")
+//    }
 
     @Test
     fun testVideoProperties() {
@@ -1141,7 +1164,10 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), null)
+        segment.trackProjectScreenViewed(
+            ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()),
+            EventContextValues.ContextSectionName.OVERVIEW.contextName
+        )
 
         assertSessionProperties(user)
         assertProjectProperties(project)
@@ -1156,7 +1182,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         assertVideoProperties(videoLength, videoCompletedPosition)
 
-        this.segmentTrack.assertValues("Project Page Viewed", VIDEO_PLAYBACK_STARTED.eventName, VIDEO_PLAYBACK_COMPLETED.eventName)
+        this.segmentTrack.assertValues(PAGE_VIEWED.eventName, VIDEO_PLAYBACK_STARTED.eventName, VIDEO_PLAYBACK_COMPLETED.eventName)
     }
 
     @Test

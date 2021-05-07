@@ -13,6 +13,7 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.TaskStackBuilder;
 import androidx.core.content.ContextCompat;
@@ -73,6 +74,9 @@ public final class PushNotifications {
 
   private final PublishSubject<PushNotificationEnvelope> notifications = PublishSubject.create();
   private final CompositeSubscription subscriptions = new CompositeSubscription();
+
+  @VisibleForTesting
+  public  Intent messageThreadIntent;
 
   public PushNotifications(final @ApplicationContext @NonNull Context context, final @NonNull ApiClientType client) {
     this.context = context;
@@ -335,15 +339,16 @@ public final class PushNotifications {
     return taskStackBuilder.getPendingIntent(envelope.signature(), PendingIntent.FLAG_UPDATE_CURRENT);
   }
 
-  private @NonNull PendingIntent messageThreadIntent(final @NonNull PushNotificationEnvelope envelope,
+  @VisibleForTesting
+  public  @NonNull PendingIntent messageThreadIntent(final @NonNull PushNotificationEnvelope envelope,
     final @NonNull MessageThread messageThread) {
 
-    final Intent messageThreadIntent = new Intent(this.context, MessagesActivity.class)
+    this.messageThreadIntent = new Intent(this.context, MessagesActivity.class)
       .putExtra(IntentKey.MESSAGE_THREAD, messageThread)
-      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.PUSH);
+      .putExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT, MessagePreviousScreenType.PUSH);
 
     final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this.context)
-      .addNextIntentWithParentStack(messageThreadIntent);
+      .addNextIntentWithParentStack(this.messageThreadIntent);
 
     return taskStackBuilder.getPendingIntent(envelope.signature(), PendingIntent.FLAG_UPDATE_CURRENT);
   }

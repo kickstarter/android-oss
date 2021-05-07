@@ -133,7 +133,7 @@ public interface CommentsViewModel {
         .map(it -> ProjectDataExtKt.storeCurrentCookieRefTag(it, this.cookieManager, this.sharedPreferences))
         .compose(bindToLifecycle())
         .subscribe(
-          projectAndData -> this.lake.trackProjectScreenViewed(projectAndData, EventContextValues.ContextSectionName.COMMENTS.getContextName())
+          projectAndData -> this.analyticEvents.trackProjectScreenViewed(projectAndData, EventContextValues.ContextSectionName.COMMENTS.getContextName())
         );
 
       final Observable<Project> initialProject = projectOrUpdate
@@ -154,7 +154,7 @@ public interface CommentsViewModel {
         .share();
 
       final Observable<Boolean> commentHasBody = this.commentBodyChanged
-        .map(it -> ObjectUtils.isNull(it) ? false : StringExt.isPresent(it));
+        .map(it -> !ObjectUtils.isNull(it) && StringExt.isPresent(it));
 
       final Observable<Notification<Comment>> commentNotification = projectOrUpdate
         .compose(combineLatestPair(this.commentBodyChanged))

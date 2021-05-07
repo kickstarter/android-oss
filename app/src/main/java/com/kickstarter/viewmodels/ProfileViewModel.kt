@@ -169,7 +169,7 @@ interface ProfileViewModel {
 
             projectCardClicked
                 .compose(bindToLifecycle())
-                .subscribe { lake.trackProjectCardClicked(it, EventContextValues.ContextPageName.PROFILE.contextName) }
+                .subscribe { analyticEvents.trackProjectCardClicked(it, EventContextValues.ContextPageName.PROFILE.contextName) }
         }
 
         override fun emptyProfileViewHolderExploreProjectsClicked(viewHolder: EmptyProfileViewHolder) = this.exploreProjectsButtonClicked()

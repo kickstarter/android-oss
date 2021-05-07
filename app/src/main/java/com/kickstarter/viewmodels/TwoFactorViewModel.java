@@ -105,8 +105,7 @@ public interface TwoFactorViewModel {
         .compose(bindToLifecycle())
         .subscribe();
 
-      this.lake.trackTwoFactorConfirmationViewed();
-      this.lake.trackTwoFactorAuthPageViewed();
+      this.analyticEvents.trackTwoFactorAuthPageViewed();
     }
 
     private void success(final @NonNull AccessTokenEnvelope envelope) {

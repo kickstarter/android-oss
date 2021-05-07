@@ -6,7 +6,7 @@ import android.widget.TextView
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.databinding.MessageThreadViewBinding
-import com.kickstarter.libs.KoalaContext
+import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.DateTimeUtils
@@ -42,7 +42,7 @@ class MessageThreadViewHolder(private val binding: MessageThreadViewBinding) : K
     private fun startMessagesActivity(messageThread: MessageThread) {
         val intent = Intent(context(), MessagesActivity::class.java)
             .putExtra(IntentKey.MESSAGE_THREAD, messageThread)
-            .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.MESSAGES)
+            .putExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT, MessagePreviousScreenType.MESSAGES)
         context().startActivity(intent)
     }
 

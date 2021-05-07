@@ -6,7 +6,7 @@ import android.util.Pair;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.KoalaContext;
+import com.kickstarter.libs.MessagePreviousScreenType;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.mock.factories.ApiExceptionFactory;
 import com.kickstarter.mock.factories.BackingFactory;
@@ -671,24 +671,24 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     return new Intent()
       .putExtra(IntentKey.BACKING, backing)
       .putExtra(IntentKey.PROJECT, project)
-      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.BACKER_MODAL);
+      .putExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT, MessagePreviousScreenType.BACKER_MODAL);
   }
 
   private static @NonNull Intent creatorBioModalContextIntent(final @NonNull Backing backing, final @NonNull Project project) {
     return new Intent()
       .putExtra(IntentKey.BACKING, backing)
       .putExtra(IntentKey.PROJECT, project)
-      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.CREATOR_BIO_MODAL);
+      .putExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT, MessagePreviousScreenType.CREATOR_BIO_MODAL);
   }
 
   private static @NonNull Intent messagesContextIntent(final @NonNull MessageThread messageThread) {
     return new Intent()
       .putExtra(IntentKey.MESSAGE_THREAD, messageThread)
-      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.MESSAGES);
+      .putExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT, MessagePreviousScreenType.MESSAGES);
   }
 
   private static @NonNull Intent pushContextIntent() {
     return messagesContextIntent(MessageThreadFactory.messageThread())
-      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.PUSH);
+      .putExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT, MessagePreviousScreenType.PUSH);
   }
 }

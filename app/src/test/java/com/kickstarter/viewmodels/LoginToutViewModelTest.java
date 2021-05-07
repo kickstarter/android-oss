@@ -49,8 +49,7 @@ public class LoginToutViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.loginClick();
     this.startLoginActivity.assertValueCount(1);
-    this.lakeTest.assertValues("Log In or Sign Up Page Viewed", EventName.PAGE_VIEWED.getEventName(), "Log In Button Clicked", EventName.CTA_CLICKED.getEventName());
-    this.segmentTrack.assertValues("Log In or Sign Up Page Viewed", EventName.PAGE_VIEWED.getEventName(), "Log In Button Clicked", EventName.CTA_CLICKED.getEventName());
+    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CTA_CLICKED.getEventName());
   }
 
   @Test
@@ -61,8 +60,7 @@ public class LoginToutViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.signupClick();
     this.startSignupActivity.assertValueCount(1);
-    this.lakeTest.assertValues("Log In or Sign Up Page Viewed", EventName.PAGE_VIEWED.getEventName(), "Sign Up Button Clicked", EventName.CTA_CLICKED.getEventName());
-    this.segmentTrack.assertValues("Log In or Sign Up Page Viewed", EventName.PAGE_VIEWED.getEventName(), "Sign Up Button Clicked", EventName.CTA_CLICKED.getEventName());
+    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CTA_CLICKED.getEventName());
   }
 
   @Test
@@ -79,8 +77,7 @@ public class LoginToutViewModelTest extends KSRobolectricTestCase {
     this.vm.facebookAccessToken.onNext("token");
     this.currentUser.assertValueCount(1);
     this.finishWithSuccessfulResult.assertValueCount(1);
-    this.lakeTest.assertValues("Log In or Sign Up Page Viewed", EventName.PAGE_VIEWED.getEventName(), "Facebook Log In or Signup Button Clicked", EventName.CTA_CLICKED.getEventName());
-    this.segmentTrack.assertValues("Log In or Sign Up Page Viewed", EventName.PAGE_VIEWED.getEventName(), "Facebook Log In or Signup Button Clicked", EventName.CTA_CLICKED.getEventName());
+    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CTA_CLICKED.getEventName());
   }
 
   @Test
@@ -104,7 +101,6 @@ public class LoginToutViewModelTest extends KSRobolectricTestCase {
     this.vm.facebookAccessToken.onNext("token");
     this.currentUser.assertNoValues();
     this.finishWithSuccessfulResult.assertNoValues();
-    this.lakeTest.assertValues("Log In or Sign Up Page Viewed", EventName.PAGE_VIEWED.getEventName(), "Facebook Log In or Signup Button Clicked", EventName.CTA_CLICKED.getEventName());
-    this.segmentTrack.assertValues("Log In or Sign Up Page Viewed", EventName.PAGE_VIEWED.getEventName(), "Facebook Log In or Signup Button Clicked", EventName.CTA_CLICKED.getEventName());
+    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CTA_CLICKED.getEventName());
   }
 }

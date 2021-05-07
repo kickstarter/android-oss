@@ -7,7 +7,7 @@ import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import com.kickstarter.R
 import com.kickstarter.libs.BaseActivity
-import com.kickstarter.libs.KoalaContext
+import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
 import com.kickstarter.libs.utils.ViewUtils
@@ -64,7 +64,7 @@ class CreatorBioActivity : BaseActivity<CreatorBioViewModel.ViewModel>() {
     private fun startMessagesActivity(project: Project) {
         startActivity(
             Intent(this, MessagesActivity::class.java)
-                .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.CREATOR_BIO_MODAL)
+                .putExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT, MessagePreviousScreenType.CREATOR_BIO_MODAL)
                 .putExtra(IntentKey.PROJECT, project)
                 .putExtra(IntentKey.BACKING, project.backing())
         )

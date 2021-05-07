@@ -116,7 +116,6 @@ open class SegmentTrackingClient(
                     // - Set middleware for Braze destination
                     .useDestinationMiddleware(AppboyIntegration.FACTORY.key(), getMiddleware())
                     .build()
-
             } else {
                 segmentClient = Analytics.Builder(context, apiKey)
                     // - This flag will activate sending information to Braze

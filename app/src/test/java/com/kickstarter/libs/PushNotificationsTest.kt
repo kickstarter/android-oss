@@ -1,7 +1,6 @@
 package com.kickstarter.libs
 
-import android.app.Application
-import androidx.test.core.app.ApplicationProvider
+import android.content.Context
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.mock.factories.MessageThreadEnvelopeFactory
 import com.kickstarter.mock.factories.PushNotificationEnvelopeFactory
@@ -9,13 +8,18 @@ import com.kickstarter.ui.IntentKey
 import org.junit.Test
 
 class PushNotificationsTest : KSRobolectricTestCase() {
-    private val application: Application = ApplicationProvider.getApplicationContext()
+    lateinit var context: Context
+
+    override fun setUp() {
+        super.setUp()
+        context = application()
+    }
 
     @Test
     fun messageThreadIntent() {
         val envelope = PushNotificationEnvelopeFactory.envelope()
         val messageThread = MessageThreadEnvelopeFactory.messageThreadEnvelope().messageThread()
-        val pushNotifications = PushNotifications(application, environment().apiClient())
+        val pushNotifications = PushNotifications(context, environment().apiClient())
 
         messageThread?.let {
             pushNotifications.messageThreadIntent(envelope, messageThread)

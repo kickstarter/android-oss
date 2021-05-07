@@ -82,16 +82,6 @@ abstract class KSRobolectricTestCase : TestCase() {
         return experimentsClientType
     }
 
-//    private fun lakeTrackingClient(mockCurrentConfig: MockCurrentConfig, experimentsClientType: MockExperimentsClientType): MockTrackingClient {
-//        lakeTest = TestSubscriber()
-//        val lakeTrackingClient = MockTrackingClient(
-//            MockCurrentUser(),
-//            mockCurrentConfig, TrackingClientType.Type.LAKE, experimentsClientType
-//        )
-//        lakeTrackingClient.eventNames.subscribe(lakeTest)
-//        return lakeTrackingClient
-//    }
-
     private fun segmentTrackingClient(mockCurrentConfig: MockCurrentConfig, experimentsClientType: MockExperimentsClientType): MockTrackingClient {
         segmentTrack = TestSubscriber()
         segmentIdentify = TestSubscriber()

@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.libs.BaseActivity
-import com.kickstarter.libs.KoalaContext
 import com.kickstarter.libs.RecyclerViewPaginator
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
@@ -83,9 +82,9 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
         this.viewModel.outputs.projectList()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe({
+            .subscribe {
                 this.loadProjects(it)
-            })
+            }
 
         this.viewModel.outputs.resumeDiscoveryActivity()
             .compose(bindToLifecycle())
@@ -141,7 +140,6 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
 
     private fun startMessageThreadsActivity() {
         val intent = Intent(this, MessageThreadsActivity::class.java)
-            .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Mailbox.PROFILE)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 

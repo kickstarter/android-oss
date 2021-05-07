@@ -5,7 +5,6 @@ import android.text.SpannableString
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R
-import com.kickstarter.libs.CHECKOUT_PAYMENT_PAGE_VIEWED
 import com.kickstarter.libs.Config
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
@@ -34,7 +33,6 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
-import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBackingData
@@ -1349,8 +1347,7 @@ interface PledgeFragmentViewModel {
                 .filter { it.second.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackCheckoutPaymentPageViewed(it.second)
-                    this.lake.trackCheckoutScreenViewed(it.first, it.second)
+                    this.analyticEvents.trackCheckoutScreenViewed(it.first, it.second)
                 }
 
             checkoutAndPledgeData
@@ -1358,24 +1355,15 @@ interface PledgeFragmentViewModel {
                 .filter { it.second.pledgeFlowContext() == PledgeFlowContext.MANAGE_REWARD }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackUpdatePledgePageViewed(it.first, it.second)
+                    this.analyticEvents.trackUpdatePledgePageViewed(it.first, it.second)
                 }
-
-            fullProjectDataAndPledgeData
-                .take(1)
-                .filter { it.second.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }
-                .compose<Pair<Pair<ProjectData, PledgeData>, User?>>(combineLatestPair(this.currentUser.observable()))
-                .map { ExperimentData(it.second, it.first.first.refTagFromIntent(), it.first.first.refTagFromCookie()) }
-                .compose(bindToLifecycle())
-                .subscribe { this.optimizely.track(CHECKOUT_PAYMENT_PAGE_VIEWED, it) }
 
             checkoutAndPledgeData
                 .filter { shouldTrackPledgeSubmitButtonClicked(it.second.pledgeFlowContext()) }
                 .compose<Pair<CheckoutData, PledgeData>>(takeWhen(this.pledgeButtonClicked))
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackPledgeSubmitButtonClicked(it.first, it.second)
-                    this.lake.trackPledgeSubmitCTA(it.first, it.second)
+                    this.analyticEvents.trackPledgeSubmitCTA(it.first, it.second)
                 }
 
             // - Screen configuration Logic (Different configurations depending on: PledgeReason, Reward type, Shipping, AddOns)

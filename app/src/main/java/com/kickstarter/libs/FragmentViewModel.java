@@ -25,11 +25,11 @@ public class FragmentViewModel<ViewType extends FragmentLifecycleType> {
   private final PublishSubject<ActivityResult> activityResult = PublishSubject.create();
   private final PublishSubject<Bundle> arguments = PublishSubject.create();
   protected final PublishSubject<Boolean> isExpanded = PublishSubject.create();
-  protected final AnalyticEvents lake;
+  protected final AnalyticEvents analyticEvents;
   protected final PublishSubject<Void> optimizelyReady = PublishSubject.create();
 
   public FragmentViewModel(final @NonNull Environment environment) {
-    this.lake = environment.analytics();
+    this.analyticEvents = environment.analytics();
   }
 
   @CallSuper

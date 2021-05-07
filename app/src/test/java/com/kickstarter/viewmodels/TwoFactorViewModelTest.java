@@ -48,7 +48,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.code("");
     this.formIsValid.assertValues(true, false);
 
-    this.lakeTest.assertValues("Two-Factor Confirmation Viewed", EventName.PAGE_VIEWED.getEventName());
+    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test
@@ -71,7 +71,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.formSubmitting.assertValues(true, false);
     this.tfaSuccess.assertValueCount(1);
 
-    this.lakeTest.assertValues("Two-Factor Confirmation Viewed", EventName.PAGE_VIEWED.getEventName());
+    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test
@@ -94,7 +94,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.formSubmitting.assertValues(true, false);
     this.tfaSuccess.assertValueCount(1);
 
-    this.lakeTest.assertValues("Two-Factor Confirmation Viewed", EventName.PAGE_VIEWED.getEventName());
+    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test
@@ -113,7 +113,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.resendClick();
 
     this.showResendCodeConfirmation.assertValueCount(1);
-    this.lakeTest.assertValues("Two-Factor Confirmation Viewed", EventName.PAGE_VIEWED.getEventName());
+    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test
@@ -132,7 +132,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.resendClick();
 
     this.showResendCodeConfirmation.assertValueCount(1);
-    this.lakeTest.assertValues("Two-Factor Confirmation Viewed", EventName.PAGE_VIEWED.getEventName());
+    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test
@@ -169,7 +169,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.formSubmitting.assertValues(true, false);
     this.tfaSuccess.assertNoValues();
     this.genericTfaError.assertValueCount(1);
-    this.lakeTest.assertValues("Two-Factor Confirmation Viewed", EventName.PAGE_VIEWED.getEventName());
+    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test
@@ -204,6 +204,6 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.formSubmitting.assertValues(true, false);
     this.tfaSuccess.assertNoValues();
     this.tfaCodeMismatchError.assertValueCount(1);
-    this.lakeTest.assertValues("Two-Factor Confirmation Viewed", EventName.PAGE_VIEWED.getEventName());
+    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
   }
 }

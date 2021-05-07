@@ -143,7 +143,7 @@ public interface SearchViewModel {
                         .refTagFromCookie(cookieRefTag)
                         .project(projectDiscoveryParamsPair.first.second)
                         .build();
-                lake.trackDiscoverSearchResultProjectCATClicked(projectDiscoveryParamsPair.first.first, projectData, projectDiscoveryParamsPair.second, defaultSort);
+                analyticEvents.trackDiscoverSearchResultProjectCATClicked(projectDiscoveryParamsPair.first.first, projectData, projectDiscoveryParamsPair.second, defaultSort);
               });
 
       this.startProjectActivity = Observable.combineLatest(this.search, projects, Pair::create)
@@ -166,12 +166,10 @@ public interface SearchViewModel {
                   && IntegerUtils.intValueOrZero(it.second) == 1)
           .distinct()
           .subscribe(it -> {
-            this.lake.trackSearchResultPageViewed(it.first.first, it.first.second.stats().count(), defaultSort);
+            this.analyticEvents.trackSearchResultPageViewed(it.first.first, it.first.second.stats().count(), defaultSort);
           });
 
-      this.lake.trackSearchButtonClicked();
-      this.lake.trackSearchCTAButtonClicked(defaultParams);
-      this.lake.trackSearchPageViewed(defaultParams);
+      this.analyticEvents.trackSearchCTAButtonClicked(defaultParams);
     }
 
     private static final DiscoveryParams.Sort defaultSort = DiscoveryParams.Sort.POPULAR;

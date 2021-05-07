@@ -5,7 +5,7 @@ import android.os.Bundle
 import com.kickstarter.R
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.KoalaContext
+import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ViewUtils
@@ -73,7 +73,7 @@ class MessageCreatorActivity : BaseActivity<MessageCreatorViewModel.ViewModel>()
         startActivity(
             Intent(this, MessagesActivity::class.java)
                 .putExtra(IntentKey.MESSAGE_THREAD, messageThread)
-                .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.CREATOR_BIO_MODAL)
+                .putExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT, MessagePreviousScreenType.CREATOR_BIO_MODAL)
         )
     }
 

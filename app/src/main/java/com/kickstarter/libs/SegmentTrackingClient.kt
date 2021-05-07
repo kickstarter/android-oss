@@ -97,23 +97,36 @@ open class SegmentTrackingClient(
         if (this.context.isKSApplication() && !this.isInitialized && this.isEnabled()) {
             var apiKey = ""
             var logLevel = Analytics.LogLevel.NONE
+            var segmentClient: Analytics
 
             if (build.isRelease && Build.isExternal()) {
                 apiKey = Secrets.Segment.PRODUCTION
             }
+
             if (build.isDebug || Build.isInternal()) {
                 apiKey = Secrets.Segment.STAGING
                 logLevel = Analytics.LogLevel.VERBOSE
-            }
 
-            val segmentClient = Analytics.Builder(context, apiKey)
-                // - This flag will activate sending information to Braze
-                .use(AppboyIntegration.FACTORY)
-                .trackApplicationLifecycleEvents()
-                .logLevel(logLevel)
-                // - Set middleware for Braze destination
-                .useDestinationMiddleware(AppboyIntegration.FACTORY.key(), getMiddleware())
-                .build()
+                segmentClient = Analytics.Builder(context, apiKey)
+                    // - This flag will activate sending information to Braze
+                    .use(AppboyIntegration.FACTORY)
+                    .trackApplicationLifecycleEvents()
+                    .flushQueueSize(1)
+                    .logLevel(logLevel)
+                    // - Set middleware for Braze destination
+                    .useDestinationMiddleware(AppboyIntegration.FACTORY.key(), getMiddleware())
+                    .build()
+
+            } else {
+                segmentClient = Analytics.Builder(context, apiKey)
+                    // - This flag will activate sending information to Braze
+                    .use(AppboyIntegration.FACTORY)
+                    .trackApplicationLifecycleEvents()
+                    .logLevel(logLevel)
+                    // - Set middleware for Braze destination
+                    .useDestinationMiddleware(AppboyIntegration.FACTORY.key(), getMiddleware())
+                    .build()
+            }
 
             Analytics.setSingletonInstance(segmentClient)
             this.isInitialized = true

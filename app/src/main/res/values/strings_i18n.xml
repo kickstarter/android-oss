@@ -102,6 +102,7 @@ backers</string>
   <string name="Check_your_payment_details" formatted="false">Check your payment details</string>
   <string name="Choose_another_reward" formatted="false">Choose another reward</string>
   <string name="Chooses_location_for_shipping" formatted="false">Chooses %{location} for shipping.</string>
+  <string name="Chosen_just_for_you" formatted="false">Chosen just for you</string>
   <string name="Close_live_stream" formatted="false">Close live stream</string>
   <string name="Close_project" formatted="false">Close project</string>
   <string name="Closes_filters" formatted="false">Closes filters.</string>
@@ -367,7 +368,6 @@ with friends.</string>
   <string name="New_pledge_activity" formatted="false">New pledge activity</string>
   <string name="New_work_and_big_ideas_from_established_and" formatted="false">New work and big ideas from established and emerging artists.</string>
   <string name="News_and_projects" formatted="false">News and projects</string>
-  <string name="News_and_projects_for_you" formatted="false">News and projects for you</string>
   <string name="News_events" formatted="false">Big news and events happening near you, delivered just a few times a year.</string>
   <string name="Newsletters" formatted="false">Newsletters</string>
   <string name="No_Results" formatted="false">No Results</string>
@@ -690,6 +690,7 @@ Please try again later.</string>
   <string name="Which_categories_interest_you" formatted="false">Which categories interest you?</string>
   <string name="Working_on_it" formatted="false">Working on it</string>
   <string name="Write_a_bio" formatted="false">Write a short bio. Just a sentence or two is great.</string>
+  <string name="Yes" formatted="false">Yes</string>
   <string name="Yes_cancel_it" formatted="false">Yes, cancel it</string>
   <string name="Yes_cancel_my_pledge" formatted="false">Yes, cancel my pledge</string>
   <string name="Yes_change_currency" formatted="false">Yes, Change currency</string>

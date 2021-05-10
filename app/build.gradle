@@ -40,6 +40,7 @@ jacoco {
 }
 tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true
+    jacoco.excludes = ['jdk.internal.*']
 }
 
 // Creates tasks based on the application build variant (productFlavor + buildType = variant)

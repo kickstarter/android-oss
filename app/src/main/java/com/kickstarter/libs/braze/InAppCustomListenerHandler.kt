@@ -21,10 +21,8 @@ class InAppCustomListenerHandler(
     fun validateDataWith(id: Int, uri: Uri?) {
         // TODO: Check the id and url are the valid ones
         this.loggedInUser?.let { user ->
-            if (user.notifyMobileOfMarketingUpdate() == false) {
-                val updatedUser = user.toBuilder().notifyMobileOfMarketingUpdate(true).build()
-                updateSettings(updatedUser)
-            }
+            val updatedUser = user.toBuilder().notifyMobileOfMarketingUpdate(true).build()
+            updateSettings(updatedUser)
         }
     }
 

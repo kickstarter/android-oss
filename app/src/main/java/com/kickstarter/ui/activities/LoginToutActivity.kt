@@ -2,6 +2,8 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import androidx.annotation.StringRes
 import com.facebook.AccessToken
 import com.kickstarter.R
 import com.kickstarter.databinding.LoginToutLayoutBinding
@@ -13,7 +15,9 @@ import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.services.apiresponses.ErrorEnvelope.FacebookUser
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.views.LoginPopupMenu
+import com.kickstarter.ui.activities.HelpActivity.Terms
+import com.kickstarter.ui.extensions.makeLinks
+import com.kickstarter.ui.extensions.parseHtmlTag
 import com.kickstarter.viewmodels.LoginToutViewModel
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
@@ -76,10 +80,6 @@ class LoginToutActivity : BaseActivity<LoginToutViewModel.ViewModel>() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { ViewUtils.showDialog(this, getString(R.string.login_tout_navbar_title), it) }
 
-        binding.disclaimerTextView.setOnClickListener {
-            disclaimerTextViewClick()
-        }
-
         binding.facebookLoginButton.setOnClickListener {
             facebookLoginClick()
         }
@@ -91,10 +91,47 @@ class LoginToutActivity : BaseActivity<LoginToutViewModel.ViewModel>() {
         binding.signUpButton.setOnClickListener {
             signupButtonClick()
         }
+
+        viewModel.outputs.showDisclaimerActivity()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                startActivity(it)
+            }
+
+        // create clickable disclaimer spannable
+        binding.disclaimerTextView.parseHtmlTag()
+
+        binding.disclaimerTextView.makeLinks(
+            Pair(
+                getString(DisclaimerItems.TERMS.itemName),
+                View.OnClickListener {
+                    viewModel.inputs.disclaimerItemClicked(DisclaimerItems.TERMS)
+                }
+            ),
+            Pair(
+                getString(DisclaimerItems.PRIVACY.itemName),
+                View.OnClickListener {
+                    viewModel.inputs.disclaimerItemClicked(DisclaimerItems.PRIVACY)
+                }
+            ),
+            Pair(
+                getString(DisclaimerItems.COOKIES.itemName),
+                View.OnClickListener {
+                    viewModel.inputs.disclaimerItemClicked(DisclaimerItems.COOKIES)
+                }
+            ),
+        )
     }
 
-    private fun disclaimerTextViewClick() =
-        LoginPopupMenu(this, binding.loginToolbar.helpButton).show()
+    private fun startActivity(disclaimerItem: DisclaimerItems) {
+        val intent = when (disclaimerItem) {
+            DisclaimerItems.TERMS -> Intent(this, Terms::class.java)
+            DisclaimerItems.PRIVACY -> Intent(this, HelpActivity.Privacy::class.java)
+            DisclaimerItems.COOKIES -> Intent(this, HelpActivity.CookiePolicy::class.java)
+        }
+        startActivity(intent)
+    }
 
     private fun facebookLoginClick() =
         viewModel.inputs.facebookLoginClick(
@@ -152,4 +189,10 @@ class LoginToutActivity : BaseActivity<LoginToutViewModel.ViewModel>() {
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
         TransitionUtils.transition(this, TransitionUtils.fadeIn())
     }
+}
+
+enum class DisclaimerItems(@StringRes val itemName: Int) {
+    TERMS(R.string.login_tout_help_sheet_terms),
+    COOKIES(R.string.login_tout_help_sheet_cookie),
+    PRIVACY(R.string.login_tout_help_sheet_privacy)
 }

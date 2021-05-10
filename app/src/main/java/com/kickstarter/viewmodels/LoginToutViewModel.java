@@ -19,6 +19,7 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.activities.DisclaimerItems;
 import com.kickstarter.ui.activities.LoginToutActivity;
 import com.kickstarter.ui.data.ActivityResult;
 import com.kickstarter.ui.data.LoginReason;
@@ -49,6 +50,9 @@ public interface LoginToutViewModel {
 
     /** Call when the signup button is clicked. */
     void signupClick();
+
+    /** Call when the disclaimer Item  is clicked. */
+    void disclaimerItemClicked(DisclaimerItems disclaimerItem);
   }
 
   interface Outputs {
@@ -78,6 +82,9 @@ public interface LoginToutViewModel {
 
     /** Emits when a user has successfully logged in using Facebook, but has require two-factor authentication enabled. */
     Observable<Void> startTwoFactorChallenge();
+
+    /** Emits when click one of disclaimer items */
+    Observable<DisclaimerItems> showDisclaimerActivity();
   }
 
   final class ViewModel extends ActivityViewModel<LoginToutActivity> implements Inputs, Outputs {
@@ -142,6 +149,7 @@ public interface LoginToutViewModel {
 
       this.startLoginActivity = this.loginClick;
       this.startSignupActivity = this.signupClick;
+      this.showDisclaimerActivity = this.disclaimerItemClicked;
 
       this.facebookLoginClick
         .compose(ignoreValues())
@@ -204,12 +212,14 @@ public interface LoginToutViewModel {
     final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
     private final PublishSubject<LoginReason> loginReason = PublishSubject.create();
     private final PublishSubject<Void> signupClick = PublishSubject.create();
+    private final PublishSubject<DisclaimerItems> disclaimerItemClicked = PublishSubject.create();
 
     private final BehaviorSubject<FacebookException> facebookAuthorizationError = BehaviorSubject.create();
     private final BehaviorSubject<Void> finishWithSuccessfulResult = BehaviorSubject.create();
     private final Observable<Pair<ErrorEnvelope.FacebookUser, String>> startFacebookConfirmationActivity;
     private final Observable<Void> startLoginActivity;
     private final Observable<Void> startSignupActivity;
+    private final Observable<DisclaimerItems> showDisclaimerActivity;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -225,6 +235,11 @@ public interface LoginToutViewModel {
     }
     @Override public void signupClick() {
       this.signupClick.onNext(null);
+    }
+
+    @Override
+    public void disclaimerItemClicked(DisclaimerItems disclaimerItem) {
+      this.disclaimerItemClicked.onNext(disclaimerItem);
     }
 
     @Override public @NonNull Observable<Void> finishWithSuccessfulResult() {
@@ -262,6 +277,11 @@ public interface LoginToutViewModel {
       return this.loginError
         .filter(ErrorEnvelope::isTfaRequiredError)
         .map(__ -> null);
+    }
+
+    @Override
+    public Observable<DisclaimerItems> showDisclaimerActivity() {
+      return this.showDisclaimerActivity;
     }
   }
 }

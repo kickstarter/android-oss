@@ -9,7 +9,6 @@ import com.appboy.ui.inappmessage.listeners.AppboyDefaultInAppMessageManagerList
 import com.kickstarter.KSApplication
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.Config
-import com.kickstarter.libs.utils.extensions.isKSApplication
 import com.kickstarter.models.User
 import timber.log.Timber
 

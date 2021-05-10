@@ -3,7 +3,13 @@ package com.kickstarter
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import com.kickstarter.libs.*
+import com.kickstarter.libs.AnalyticEvents
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.KSCurrency
+import com.kickstarter.libs.KSString
+import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockTrackingClient
+import com.kickstarter.libs.TrackingClientType
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
@@ -46,7 +52,7 @@ abstract class KSRobolectricTestCase : TestCase() {
             .build()
 
         val config = ConfigFactory.config().toBuilder()
-                .build()
+            .build()
 
         mockCurrentConfig.config(config)
 

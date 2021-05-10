@@ -58,9 +58,9 @@ interface CreatorBioViewModel {
                 .subscribe(this.url)
 
             val project = intent()
-                    .map { it.getParcelableExtra(IntentKey.PROJECT) as Project? }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .map { requireNotNull(it) }
+                .map { it.getParcelableExtra(IntentKey.PROJECT) as Project? }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
 
             this.currentUser.observable()
                 .compose(combineLatestPair<User, Project>(project))

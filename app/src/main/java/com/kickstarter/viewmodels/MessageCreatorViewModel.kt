@@ -68,9 +68,9 @@ interface MessageCreatorViewModel {
 
         init {
             val project = intent()
-                    .map { it.getParcelableExtra(IntentKey.PROJECT) as Project? }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .map { requireNotNull(it) }
+                .map { it.getParcelableExtra(IntentKey.PROJECT) as Project? }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
 
             project
                 .map { it.creator().name() }

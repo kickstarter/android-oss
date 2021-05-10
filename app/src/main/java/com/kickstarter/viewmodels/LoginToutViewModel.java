@@ -52,7 +52,7 @@ public interface LoginToutViewModel {
     void signupClick();
 
     /** Call when the disclaimer Item  is clicked. */
-    void disclaimerItemClicked(DisclaimerItems disclaimerItem);
+    void disclaimerItemClicked(final DisclaimerItems disclaimerItem);
   }
 
   interface Outputs {
@@ -238,7 +238,7 @@ public interface LoginToutViewModel {
     }
 
     @Override
-    public void disclaimerItemClicked(DisclaimerItems disclaimerItem) {
+    public void disclaimerItemClicked(final DisclaimerItems disclaimerItem) {
       this.disclaimerItemClicked.onNext(disclaimerItem);
     }
 

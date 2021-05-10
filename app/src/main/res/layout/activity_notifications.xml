@@ -57,14 +57,14 @@
           android:orientation="vertical">
         <TextView
             style="@style/SettingsSectionTitle"
-            android:text="@string/News_and_projects" />
+            android:text="@string/Announcements" />
         <LinearLayout
             android:id="@+id/marketing_updates_row"
             style="@style/SettingsNotificationRow">
 
           <TextView
               style="@style/SettingsSectionLabel"
-              android:text="@string/Recommended_for_you" />
+              android:text="@string/Chosen_just_for_you" />
 
           <ImageButton
               android:id="@+id/marketing_updates_phone_icon"

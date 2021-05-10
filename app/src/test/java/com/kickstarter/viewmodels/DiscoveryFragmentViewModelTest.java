@@ -84,12 +84,12 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     // Should emit current fragment's projects.
     this.hasProjects.assertValues(true);
-    this.lakeTest.assertValues(EventName.PAGE_VIEWED.getEventName(), "Explore Page Viewed");
+    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
 
     //Page is refreshed
     this.vm.inputs.refresh();
     this.hasProjects.assertValues(true, true);
-    this.lakeTest.assertValues(EventName.PAGE_VIEWED.getEventName(), "Explore Page Viewed");
+    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test
@@ -101,7 +101,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     // Should emit current fragment's projects.
     this.hasProjects.assertValues(true);
-    this.lakeTest.assertValues(EventName.PAGE_VIEWED.getEventName(), "Explore Page Viewed");
+    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
 
     // Select a new category.
     this.vm.inputs.paramsFromActivity(
@@ -113,7 +113,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     // New projects load with new params.
     this.hasProjects.assertValues(true, true, true);
-    this.lakeTest.assertValues(EventName.PAGE_VIEWED.getEventName(), "Explore Page Viewed", EventName.PAGE_VIEWED.getEventName(), "Explore Page Viewed");
+    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.PAGE_VIEWED.getEventName());
 
     this.vm.inputs.clearPage();
     this.hasProjects.assertValues(true, true, true, false);
@@ -127,12 +127,12 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     setUpInitialHomeAllProjectsParams();
 
     this.projects.assertValueCount(1);
-    this.lakeTest.assertValues(EventName.PAGE_VIEWED.getEventName(), "Explore Page Viewed");
+    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
 
     // Popular tab clicked.
     this.vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build());
     this.projects.assertValueCount(3);
-    this.lakeTest.assertValues(EventName.PAGE_VIEWED.getEventName(), "Explore Page Viewed", EventName.PAGE_VIEWED.getEventName(), "Explore Page Viewed");
+    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test
@@ -386,7 +386,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.discoveryOnboardingViewHolderLoginToutClick(null);
 
     this.showLoginTout.assertValue(true);
-    this.lakeTest.assertValues("Log In or Signup Button Clicked", EventName.CTA_CLICKED.getEventName());
+    this.segmentTrack.assertValue(EventName.CTA_CLICKED.getEventName());
   }
 
   @Test
@@ -401,7 +401,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.editorialViewHolderClicked(Editorial.LIGHTS_ON);
 
     this.startEditorialActivity.assertValues(Editorial.GO_REWARDLESS, Editorial.LIGHTS_ON);
-    this.lakeTest.assertValues(EventName.PAGE_VIEWED.getEventName(), "Explore Page Viewed", "Editorial Card Clicked", "Editorial Card Clicked");
+    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test
@@ -421,8 +421,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectCardViewHolderClicked(project);
 
     this.startProjectActivity.assertValue(Pair.create(project, RefTag.collection(518)));
-    this.lakeTest.assertValues(EventName.PAGE_VIEWED.getEventName(), "Explore Page Viewed", EventName.CARD_CLICKED.getEventName(), EventName.CTA_CLICKED.getEventName());
-    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), "Explore Page Viewed", EventName.CARD_CLICKED.getEventName(), EventName.CTA_CLICKED.getEventName());
+    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CARD_CLICKED.getEventName(), EventName.CTA_CLICKED.getEventName());
   }
 
   @Test
@@ -437,8 +436,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectCardViewHolderClicked(project);
 
     this.startProjectActivity.assertValue(Pair.create(project, RefTag.discovery()));
-    this.lakeTest.assertValues(EventName.PAGE_VIEWED.getEventName(), "Explore Page Viewed", EventName.CARD_CLICKED.getEventName(), EventName.CTA_CLICKED.getEventName());
-    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), "Explore Page Viewed", EventName.CARD_CLICKED.getEventName(), EventName.CTA_CLICKED.getEventName());
+    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CARD_CLICKED.getEventName(), EventName.CTA_CLICKED.getEventName());
   }
 
   @Test

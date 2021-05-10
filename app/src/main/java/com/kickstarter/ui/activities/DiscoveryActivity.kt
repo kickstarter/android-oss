@@ -18,7 +18,6 @@ import com.kickstarter.databinding.DiscoveryLayoutBinding
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.InternalToolsType
-import com.kickstarter.libs.KoalaContext
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
@@ -288,7 +287,6 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
 
     private fun startMessageThreadsActivity() {
         val intent = Intent(this, MessageThreadsActivity::class.java)
-            .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Mailbox.DRAWER)
         startActivity(intent)
         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }

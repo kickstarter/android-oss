@@ -83,8 +83,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         this.addOnsList.assertValue(Triple(projectData, emptyList(), ShippingRuleFactory.emptyShippingRule()))
         this.isEmptyState.assertValue(true)
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
-        this.segmentTrack.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -119,8 +118,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.arguments(bundle)
         this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRule.shippingRules().first()))
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
-        this.segmentTrack.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -155,8 +153,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.arguments(bundle)
         this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRule.shippingRules().first()))
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
-        this.segmentTrack.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -195,8 +192,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.addOnsList.assertValue(Triple(projectData, emptyList(), shippingRuleRw))
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
-        this.segmentTrack.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -233,8 +229,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRuleRw))
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
-        this.segmentTrack.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -280,8 +275,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
             TestCase.assertEquals(filteredAddOn, addOn2)
         }
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
-        this.segmentTrack.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -323,8 +317,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.addOnsList.assertValues(Triple(projectData, listAddons, shippingRuleRw), Triple(projectData, emptyList(), shippingRuleAddOn))
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
-        this.segmentTrack.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -361,8 +354,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.addOnsList.assertValue(Triple(projectData, listAddons, ShippingRuleFactory.emptyShippingRule()))
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
-        this.segmentTrack.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -398,8 +390,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.shippingSelectorIsGone.assertValues(true)
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
-        this.segmentTrack.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -433,8 +424,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.shippingSelectorIsGone.assertValues(true)
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
-        this.segmentTrack.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -473,8 +463,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
                 TestCase.assertEquals(it.second, pledgeReason)
             }
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName, "Add-Ons Continue Button Clicked", EventName.CTA_CLICKED.eventName)
-        this.segmentTrack.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName, "Add-Ons Continue Button Clicked", EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -543,8 +532,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
                 TestCase.assertEquals(selectedAddOnsList, listAddonsToCheck)
             }
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName, "Add-Ons Continue Button Clicked", EventName.CTA_CLICKED.eventName)
-        this.segmentTrack.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName, "Add-Ons Continue Button Clicked", EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -601,8 +589,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         this.isEnabledButton.assertValues(true, false)
         this.addOnsList.assertValue(Triple(projectData, combinedList, shippingRule.shippingRules().first()))
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
-        this.segmentTrack.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -671,8 +658,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
                 TestCase.assertEquals(it.first.addOns(), updateList)
             }
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName, "Add-Ons Continue Button Clicked", EventName.CTA_CLICKED.eventName)
-        this.segmentTrack.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName, "Add-Ons Continue Button Clicked", EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -742,8 +728,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         // - Always 0 first time, them summatory of all addOns quantity every time the list gets updated
         this.totalSelectedAddOns.assertValues(0)
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
-        this.segmentTrack.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -811,8 +796,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         // - Always 0 first time, them summatory of all addOns quantity every time the list gets updated
         this.totalSelectedAddOns.assertValues(0)
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
-        this.segmentTrack.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -888,8 +872,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
             TestCase.assertEquals(shippingRuleSendToPledge, ShippingRuleFactory.mexicoShippingRule())
         }
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName, "Add-Ons Continue Button Clicked", EventName.CTA_CLICKED.eventName)
-        this.segmentTrack.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName, "Add-Ons Continue Button Clicked", EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -928,8 +911,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         this.addOnsList.assertValue(Triple(projectData, emptyList(), shippingRuleRw))
         this.isEmptyState.assertValue(true)
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
-        this.segmentTrack.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -967,8 +949,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRuleRw))
         this.isEmptyState.assertValue(false)
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
-        this.segmentTrack.assertValues("Add-Ons Page Viewed", EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test

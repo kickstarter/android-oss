@@ -24,8 +24,6 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
 
         vm.inputs.email("hello@kickstarter.com")
         test.assertValues(false, true)
-
-        this.lakeTest.assertValue("Forgot Password Page Viewed")
     }
 
     @Test
@@ -43,8 +41,6 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
 
         vm.inputs.resetPasswordClick()
         test.assertValueCount(1)
-
-        this.lakeTest.assertValue("Forgot Password Page Viewed")
     }
 
     @Test
@@ -68,8 +64,6 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
         vm.inputs.resetPasswordClick()
 
         errorTest.assertValue("bad request")
-
-        this.lakeTest.assertValue("Forgot Password Page Viewed")
     }
 
     @Test

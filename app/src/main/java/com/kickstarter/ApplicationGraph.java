@@ -2,7 +2,6 @@ package com.kickstarter;
 
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
-import com.kickstarter.services.LakeWorker;
 import com.kickstarter.services.firebase.MessageService;
 import com.kickstarter.services.firebase.RegisterTokenWorker;
 import com.kickstarter.services.firebase.ResetDeviceIdWorker;
@@ -18,7 +17,6 @@ public interface ApplicationGraph {
   void inject(IconTextView __);
   void inject(KSWebView __);
   void inject(KSApplication __);
-  void inject(LakeWorker __);
   void inject(MessageService __);
   void inject(RegisterTokenWorker __);
   void inject(ResetDeviceIdWorker __);

@@ -7,16 +7,11 @@ import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CAMPAIGN_DETAILS_BUTTON_CLICKED
-import com.kickstarter.libs.CREATOR_DETAILS_CLICKED
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.KSCurrency
-import com.kickstarter.libs.KoalaEvent
-import com.kickstarter.libs.PROJECT_PAGE_PLEDGE_BUTTON_CLICKED
-import com.kickstarter.libs.PROJECT_PAGE_VIEWED
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
@@ -452,7 +447,7 @@ interface ProjectViewModel {
 
             projectSavedStatus
                 .compose(bindToLifecycle())
-                .subscribe { this.lake.trackWatchProjectCTA(it) }
+                .subscribe { this.analyticEvents.trackWatchProjectCTA(it) }
 
             projectSavedStatus
                 .filter { p -> p.isStarred && p.isLive && !p.isApproachingDeadline }
@@ -652,7 +647,7 @@ interface ProjectViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.showUpdatePledge.onNext(it)
-                    this.lake.trackChangePaymentMethod(it.first)
+                    this.analyticEvents.trackChangePaymentMethod(it.first)
                 }
 
             projectDataAndBackedReward
@@ -768,23 +763,15 @@ interface ProjectViewModel {
                     }
 
                     val dataWithStoredCookieRefTag = storeCurrentCookieRefTag(data)
-
-                    this.lake.trackProjectPageViewed(dataWithStoredCookieRefTag, pledgeFlowContext)
-                    this.lake.trackProjectScreenViewed(dataWithStoredCookieRefTag, OVERVIEW.contextName)
+                    this.analyticEvents.trackProjectScreenViewed(dataWithStoredCookieRefTag, OVERVIEW.contextName)
                 }
-
-            fullProjectDataAndCurrentUser
-                .map { Pair(ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()), it.first.project()) }
-                .compose(bindToLifecycle())
-                .subscribe { this.optimizely.track(PROJECT_PAGE_VIEWED, it.first) }
 
             fullProjectDataAndPledgeFlowContext
                 .compose<Pair<ProjectData, PledgeFlowContext?>>(takeWhen(this.nativeProjectActionButtonClicked))
                 .filter { it.first.project().isLive && !it.first.project().isBacking }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackProjectPagePledgeButtonClicked(storeCurrentCookieRefTag(it.first), it.second)
-                    this.lake.trackPledgeInitiateCTA(it.first)
+                    this.analyticEvents.trackPledgeInitiateCTA(it.first)
                 }
 
             fullProjectDataAndPledgeFlowContext
@@ -793,26 +780,12 @@ interface ProjectViewModel {
                 .filter { it.project().isLive && !it.project().isBacking }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackCampaignDetailsCTAClicked(it)
-                    this.lake.trackCampaignDetailsButtonClicked(it)
+                    this.analyticEvents.trackCampaignDetailsCTAClicked(it)
                 }
-
-            fullProjectDataAndCurrentUser
-                .map { Pair(ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()), it.first.project()) }
-                .compose<Pair<ExperimentData, Project>>(takeWhen(blurbClicked))
-                .filter { it.second.isLive && !it.second.isBacking }
-                .subscribe { this.optimizely.track(CAMPAIGN_DETAILS_BUTTON_CLICKED, it.first) }
 
             val shouldTrackCTAClickedEvent = this.pledgeActionButtonText
                 .map { isPledgeCTA(it) }
                 .compose<Boolean>(takeWhen(this.nativeProjectActionButtonClicked))
-
-            fullProjectDataAndCurrentUser
-                .map { ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()) }
-                .compose<Pair<ExperimentData, Boolean>>(combineLatestPair(shouldTrackCTAClickedEvent))
-                .filter { it.second }
-                .compose(bindToLifecycle())
-                .subscribe { this.optimizely.track(PROJECT_PAGE_PLEDGE_BUTTON_CLICKED, it.first) }
 
             fullProjectDataAndCurrentUser
                 .map { it.first }
@@ -820,38 +793,8 @@ interface ProjectViewModel {
                 .filter { it.project().isLive && !it.project().isBacking }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.lake.trackCreatorDetailsCTA(it)
-                    this.lake.trackCreatorDetailsClicked(it)
+                    this.analyticEvents.trackCreatorDetailsCTA(it)
                 }
-
-            fullProjectDataAndCurrentUser
-                .map { Pair(ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()), it.first.project()) }
-                .compose<Pair<ExperimentData, Project>>(takeWhen(creatorInfoClicked))
-                .filter { it.second.isLive && !it.second.isBacking }
-                .compose(bindToLifecycle())
-                .subscribe { this.optimizely.track(CREATOR_DETAILS_CLICKED, it.first) }
-
-            fullProjectDataAndPledgeFlowContext
-                .compose<Pair<ProjectData, PledgeFlowContext?>>(takeWhen(this.nativeProjectActionButtonClicked))
-                .filter { it.second == PledgeFlowContext.FIX_ERRORED_PLEDGE }
-                .compose(bindToLifecycle())
-                .subscribe { this.lake.trackManagePledgeButtonClicked(it.first, it.second) }
-
-            projectData
-                .compose<ProjectData>(takeWhen(this.fixPaymentMethodButtonClicked))
-                .compose(bindToLifecycle())
-                .subscribe { this.lake.trackFixPledgeButtonClicked(it) }
-        }
-
-        private fun eventName(projectActionButtonStringRes: Int): String {
-            return when (projectActionButtonStringRes) {
-                R.string.Back_this_project -> KoalaEvent.BACK_THIS_PROJECT_BUTTON_CLICKED
-                R.string.View_the_rewards -> KoalaEvent.BACK_THIS_PROJECT_BUTTON_CLICKED
-                R.string.See_the_rewards -> KoalaEvent.BACK_THIS_PROJECT_BUTTON_CLICKED
-                R.string.Manage -> KoalaEvent.MANAGE_PLEDGE_BUTTON_CLICKED
-                R.string.View_your_pledge -> KoalaEvent.VIEW_YOUR_PLEDGE_BUTTON_CLICKED
-                else -> KoalaEvent.VIEW_REWARDS_BUTTON_CLICKED
-            }
         }
 
         private fun isPledgeCTA(projectActionButtonStringRes: Int): Boolean {

@@ -53,7 +53,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
             .putExtra(IntentKey.PROJECT_DATA, projectData)
             .putExtra(IntentKey.PROJECT, project));
 
-    this.lakeTest.assertValue(EventName.PAGE_VIEWED.getEventName());
+    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test

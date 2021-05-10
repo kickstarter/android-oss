@@ -8,13 +8,13 @@ import com.appboy.ui.inappmessage.InAppMessageOperation
 import com.appboy.ui.inappmessage.listeners.AppboyDefaultInAppMessageManagerListener
 import com.kickstarter.KSApplication
 import com.kickstarter.libs.Build
-import com.kickstarter.libs.Config
-import com.kickstarter.models.User
+import com.kickstarter.libs.CurrentConfigType
+import com.kickstarter.libs.CurrentUserType
 import timber.log.Timber
 
 class InAppCustomListener(
-    private val loggedInUser: User?,
-    private val config: Config?,
+    private val loggedInUser: CurrentUserType,
+    private val config: CurrentConfigType,
     private val context: Context,
     private val build: Build
 ) : AppboyDefaultInAppMessageManagerListener() {

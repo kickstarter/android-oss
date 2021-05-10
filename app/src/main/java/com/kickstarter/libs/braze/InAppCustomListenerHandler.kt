@@ -2,20 +2,40 @@ package com.kickstarter.libs.braze
 
 import android.net.Uri
 import com.kickstarter.libs.Config
+import com.kickstarter.libs.CurrentConfigType
+import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.utils.ConfigFeatureName
 import com.kickstarter.libs.utils.extensions.isFeatureFlagEnabled
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
+import rx.schedulers.Schedulers
 
 class InAppCustomListenerHandler(
-    private val loggedInUser: User?,
-    private val config: Config?,
+    private val currentUser: CurrentUserType,
+    private val currentConfig: CurrentConfigType,
     private val apiClientType: ApiClientType
 ) {
 
+    private var config: Config? = null
+    private var loggedInUser: User? = null
+
+    init {
+        this.currentConfig.observable()
+            .subscribeOn(Schedulers.io())
+            .subscribe {
+                this.config = it
+            }
+
+        this.currentUser.observable()
+            .distinctUntilChanged()
+            .subscribe {
+                this.loggedInUser = it
+            }
+    }
+
     fun shouldShowMessage() =
-        if (config != null && loggedInUser != null) {
-            config.isFeatureFlagEnabled(ConfigFeatureName.BRAZE_ENABLED.configFeatureName)
+        if (this.config != null && this.loggedInUser != null) {
+            this.config?.isFeatureFlagEnabled(ConfigFeatureName.BRAZE_ENABLED.configFeatureName) ?: false
         } else false
 
     fun validateDataWith(id: Int, uri: Uri?) {
@@ -28,7 +48,5 @@ class InAppCustomListenerHandler(
 
     private fun updateSettings(user: User) {
         this.apiClientType.updateUserSettings(user)
-            .materialize()
-            .share()
     }
 }

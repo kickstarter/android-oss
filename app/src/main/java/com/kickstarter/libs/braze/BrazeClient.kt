@@ -13,12 +13,12 @@ import com.google.firebase.messaging.RemoteMessage
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.Config
 import com.kickstarter.libs.CurrentConfigType
+import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.utils.ConfigFeatureName
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isFeatureFlagEnabled
 import com.kickstarter.libs.utils.extensions.isKSApplication
 import com.kickstarter.libs.utils.extensions.registerActivityLifecycleCallbacks
-import com.kickstarter.models.User
 
 /**
  * Remote PushNotifications specification
@@ -170,8 +170,8 @@ open class BrazeClient(
     }
 
     companion object {
-        fun setInAppCustomListener(loggedInUser: User?, config: Config?, build: Build, context: Context) {
-            AppboyInAppMessageManager.getInstance().setCustomInAppMessageManagerListener(InAppCustomListener(loggedInUser, config, context, build))
+        fun setInAppCustomListener(currentUser: CurrentUserType, currentConfig: CurrentConfigType, build: Build, context: Context) {
+            AppboyInAppMessageManager.getInstance().setCustomInAppMessageManagerListener(InAppCustomListener(currentUser, currentConfig, context, build))
         }
     }
 }

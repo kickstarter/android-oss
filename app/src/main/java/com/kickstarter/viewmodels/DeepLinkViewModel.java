@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
@@ -108,7 +107,7 @@ public interface DeepLinkViewModel {
         .subscribe(this.startBrowser::onNext);
     }
 
-    private void refreshUserAndFinishActivity(User user, CurrentUserType currentUser) {
+    private void refreshUserAndFinishActivity(final User user, final CurrentUserType currentUser) {
       currentUser.refresh(user);
       this.finishDeeplinkActivity.onNext(null);
     }
@@ -127,7 +126,7 @@ public interface DeepLinkViewModel {
       return uri.getLastPathSegment().equals("projects");
     }
 
-    private Observable<Notification<User>> updateSettings(User user, ApiClientType apiClientType) {
+    private Observable<Notification<User>> updateSettings(final User user, final ApiClientType apiClientType) {
       final User updatedUser = user.toBuilder().notifyMobileOfMarketingUpdate(true).build();
       return apiClientType.updateUserSettings(updatedUser)
               .materialize()

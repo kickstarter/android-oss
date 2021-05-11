@@ -170,8 +170,8 @@ open class BrazeClient(
     }
 
     companion object {
-        fun setInAppCustomListener(currentUser: CurrentUserType, currentConfig: CurrentConfigType, build: Build, context: Context) {
-            AppboyInAppMessageManager.getInstance().setCustomInAppMessageManagerListener(InAppCustomListener(currentUser, currentConfig, context, build))
+        fun setInAppCustomListener(currentUser: CurrentUserType, currentConfig: CurrentConfigType, build: Build) {
+            AppboyInAppMessageManager.getInstance().setCustomInAppMessageManagerListener(InAppCustomListener(currentUser, currentConfig, build))
         }
     }
 }

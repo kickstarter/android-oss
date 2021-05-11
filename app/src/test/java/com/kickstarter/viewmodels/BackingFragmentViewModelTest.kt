@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels
 
-import android.os.Looper
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
@@ -27,7 +26,6 @@ import com.stripe.android.model.Card
 import junit.framework.TestCase
 import org.joda.time.DateTime
 import org.junit.Test
-import org.robolectric.Shadows
 import rx.Observable
 import rx.observers.TestSubscriber
 import java.math.RoundingMode

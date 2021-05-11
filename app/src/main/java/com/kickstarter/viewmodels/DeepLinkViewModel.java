@@ -5,19 +5,27 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.kickstarter.libs.ActivityViewModel;
+import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.UrlUtils;
+import com.kickstarter.models.User;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.KSUri;
 import com.kickstarter.ui.activities.DeepLinkActivity;
 
 import androidx.annotation.NonNull;
+
+import rx.Notification;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
+import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
 public interface DeepLinkViewModel {
 
@@ -33,11 +41,16 @@ public interface DeepLinkViewModel {
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity} with pledge sheet expanded. */
     Observable<Uri> startProjectActivityForCheckout();
+
+    /** Emits when we should finish the current activity */
+    Observable<Void> finisDeeplinkActivity();
   }
 
   final class ViewModel extends ActivityViewModel<DeepLinkActivity> implements Outputs {
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
+      final ApiClientType apiClientType = environment.apiClient();
+      final CurrentUserType currentUser = environment.currentUser();
 
       final Observable<Uri> uriFromIntent = intent()
         .map(Intent::getData)
@@ -58,6 +71,18 @@ public interface DeepLinkViewModel {
         .subscribe(this.startProjectActivity::onNext);
 
       uriFromIntent
+        .map(KSUri::isSettingsUrl)
+        .filter(Boolean::booleanValue)
+        .compose(bindToLifecycle())
+        .subscribe(this.updateUserPreferences::onNext);
+
+      currentUser.observable()
+        .compose(combineLatestPair(this.updateUserPreferences))
+        .switchMap(it -> updateSettings(it.first, apiClientType))
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.finishDeeplinkActivity.onNext(null));
+
+      uriFromIntent
         .filter(uri -> KSUri.isCheckoutUri(uri, Secrets.WebEndpoint.PRODUCTION))
         .map(this::appendRefTagIfNone)
         .compose(bindToLifecycle())
@@ -68,6 +93,7 @@ public interface DeepLinkViewModel {
 
       final Observable<Uri> unsupportedDeepLink = uriFromIntent
         .filter(uri -> !lastPathSegmentIsProjects(uri))
+        .filter(uri -> !KSUri.isSettingsUrl(uri))
         .filter(uri -> !KSUri.isCheckoutUri(uri, Secrets.WebEndpoint.PRODUCTION))
         .filter(uri -> !KSUri.isProjectUri(uri, Secrets.WebEndpoint.PRODUCTION));
 
@@ -92,11 +118,18 @@ public interface DeepLinkViewModel {
       return uri.getLastPathSegment().equals("projects");
     }
 
+    private Observable<Notification<User>> updateSettings(User user, ApiClientType apiClientType) {
+      return apiClientType.updateUserSettings(user)
+              .materialize()
+              .share();
+    }
+
     private final BehaviorSubject<String> startBrowser = BehaviorSubject.create();
     private final BehaviorSubject<Void> startDiscoveryActivity = BehaviorSubject.create();
     private final BehaviorSubject<Uri> startProjectActivity = BehaviorSubject.create();
     private final BehaviorSubject<Uri> startProjectActivityWithCheckout = BehaviorSubject.create();
-
+    private final BehaviorSubject<Boolean> updateUserPreferences = BehaviorSubject.create();
+    private final BehaviorSubject<Void> finishDeeplinkActivity = BehaviorSubject.create();
     public final Outputs outputs = this;
 
     @Override public @NonNull Observable<String> startBrowser() {
@@ -110,6 +143,11 @@ public interface DeepLinkViewModel {
     }
     @Override public @NonNull Observable<Uri> startProjectActivityForCheckout() {
       return this.startProjectActivityWithCheckout;
+    }
+
+    @Override
+    public Observable<Void> finisDeeplinkActivity() {
+      return this.finishDeeplinkActivity;
     }
   }
 }

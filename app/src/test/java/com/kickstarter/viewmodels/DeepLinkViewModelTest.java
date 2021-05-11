@@ -4,7 +4,15 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.MockCurrentUser;
+import com.kickstarter.libs.models.OptimizelyFeature;
+import com.kickstarter.libs.utils.ExperimentData;
+import com.kickstarter.mock.MockExperimentsClientType;
+import com.kickstarter.mock.factories.UserFactory;
+import com.kickstarter.models.User;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import rx.observers.TestSubscriber;
@@ -15,6 +23,7 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Void> startDiscoveryActivity = new TestSubscriber<>();
   private final TestSubscriber<Uri> startProjectActivity = new TestSubscriber<>();
   private final TestSubscriber<Uri> startProjectActivityForCheckout = new TestSubscriber<>();
+  private final TestSubscriber<Void> finisDeeplinkActivity = new TestSubscriber<>();
 
   protected void setUpEnvironment() {
     this.vm = new DeepLinkViewModel.ViewModel(environment());
@@ -22,6 +31,16 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.startDiscoveryActivity().subscribe(this.startDiscoveryActivity);
     this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
     this.vm.outputs.startProjectActivityForCheckout().subscribe(this.startProjectActivityForCheckout);
+    this.vm.outputs.finisDeeplinkActivity().subscribe(this.finisDeeplinkActivity);
+  }
+
+  protected void setUpEnvironment(Environment environment) {
+    this.vm = new DeepLinkViewModel.ViewModel(environment);
+    this.vm.outputs.startBrowser().subscribe(this.startBrowser);
+    this.vm.outputs.startDiscoveryActivity().subscribe(this.startDiscoveryActivity);
+    this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
+    this.vm.outputs.startProjectActivityForCheckout().subscribe(this.startProjectActivityForCheckout);
+    this.vm.outputs.finisDeeplinkActivity().subscribe(this.finisDeeplinkActivity);
   }
 
   @Test
@@ -115,6 +134,56 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
     this.startBrowser.assertNoValues();
     this.startProjectActivity.assertNoValues();
     this.startProjectActivityForCheckout.assertNoValues();
+  }
+
+  @Test
+  public void testInAppMessageLink_UpdateUser_refreshUser_HTTPS_schema() {
+    final User user = UserFactory.allTraitsTrue().toBuilder().notifyMobileOfMarketingUpdate(false).build();
+    final MockCurrentUser mockUser = new MockCurrentUser(user);
+
+    final Environment environment = environment().toBuilder()
+            .currentUser(mockUser)
+            .build();
+    setUpEnvironment(environment);
+
+    final String url = "https://staging.kickstarter.com/settings/notify_mobile_of_marketing_update/true";
+    this.vm.intent(intentWithData(url));
+
+    this.startBrowser.assertNoValues();
+    this.finisDeeplinkActivity.assertValueCount(1);
+  }
+
+  @Test
+  public void testInAppMessageLink_UpdateUser_refreshUser_KSR_schema() {
+    final User user = UserFactory.allTraitsTrue().toBuilder().notifyMobileOfMarketingUpdate(false).build();
+    final MockCurrentUser mockUser = new MockCurrentUser(user);
+
+    final Environment environment = environment().toBuilder()
+            .currentUser(mockUser)
+            .build();
+    setUpEnvironment(environment);
+
+    final String url = "ksr://staging.kickstarter.com/settings/notify_mobile_of_marketing_update/true";
+    this.vm.intent(intentWithData(url));
+
+    this.startBrowser.assertNoValues();
+    this.finisDeeplinkActivity.assertValueCount(1);
+  }
+
+  @Test
+  public void testInAppMessageLink_NoUser_KSR_schema() {
+    final MockCurrentUser mockUser = new MockCurrentUser();
+
+    final Environment environment = environment().toBuilder()
+            .currentUser(mockUser)
+            .build();
+    setUpEnvironment(environment);
+
+    final String url = "ksr://staging.kickstarter.com/settings/notify_mobile_of_marketing_update/true";
+    this.vm.intent(intentWithData(url));
+
+    this.startBrowser.assertNoValues();
+    this.finisDeeplinkActivity.assertNoValues();
   }
 
   private Intent intentWithData(final String url) {

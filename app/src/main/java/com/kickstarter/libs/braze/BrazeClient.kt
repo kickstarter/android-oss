@@ -169,6 +169,11 @@ open class BrazeClient(
         }
     }
 
+    /**
+     * Static initialization for the `setCustomInAppMessageManagerListener`
+     * this method should be called once the Segment dependency finalized the integration
+     * on the `onIntegrationReady` callback
+     */
     companion object {
         fun setInAppCustomListener(currentUser: CurrentUserType, currentConfig: CurrentConfigType, build: Build) {
             AppboyInAppMessageManager.getInstance().setCustomInAppMessageManagerListener(InAppCustomListener(currentUser, currentConfig, build))

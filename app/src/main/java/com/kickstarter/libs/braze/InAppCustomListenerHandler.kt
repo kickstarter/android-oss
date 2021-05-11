@@ -30,6 +30,15 @@ class InAppCustomListenerHandler(
             }
     }
 
+    /**
+     * In case the user is logged in, and the
+     * feature flag is active
+     * @return true
+     *
+     * In case no user logged in or the feature flag not active
+     * feature
+     * @return false
+     */
     fun shouldShowMessage() =
         if (this.config != null && this.loggedInUser != null) {
             this.config?.isFeatureFlagEnabled(ConfigFeatureName.BRAZE_ENABLED.configFeatureName) ?: false

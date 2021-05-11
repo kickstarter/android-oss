@@ -18,8 +18,6 @@ import com.kickstarter.ui.activities.DeepLinkActivity;
 
 import androidx.annotation.NonNull;
 
-import java.util.Objects;
-
 import rx.Notification;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;

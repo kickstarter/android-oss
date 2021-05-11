@@ -130,10 +130,12 @@ open class SegmentTrackingClient(
 
             Analytics.setSingletonInstance(segmentClient)
 
+            // - onIntegrationReady Callback will be called once Segment has finalized the integration with Braze
+            // - moment when we will set App the Listener for InAppMessages
             Analytics.with(context).onIntegrationReady(
                 AppboyIntegration.FACTORY.key(),
                 Analytics.Callback<Any?> {
-                    if (build.isDebug) Timber.d("${type().tag} Integration with ${AppboyIntegration.FACTORY} completed")
+                    if (build.isDebug) Timber.d("${type().tag} Integration with ${AppboyIntegration.FACTORY} finalized")
                     BrazeClient.setInAppCustomListener(this.currentUser, this.currentConfig, this.build)
                 }
             )

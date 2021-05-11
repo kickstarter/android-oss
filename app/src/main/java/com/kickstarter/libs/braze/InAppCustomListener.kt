@@ -9,8 +9,8 @@ import com.kickstarter.libs.CurrentUserType
 import timber.log.Timber
 
 class InAppCustomListener(
-    private val loggedInUser: CurrentUserType,
-    private val config: CurrentConfigType,
+    loggedInUser: CurrentUserType,
+    config: CurrentConfigType,
     private val build: Build
 ) : AppboyDefaultInAppMessageManagerListener() {
 

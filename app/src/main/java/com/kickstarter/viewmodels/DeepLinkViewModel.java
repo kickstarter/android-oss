@@ -77,10 +77,14 @@ public interface DeepLinkViewModel {
         .subscribe(this.updateUserPreferences::onNext);
 
       currentUser.observable()
+        .filter(user -> !user.notifyMobileOfMarketingUpdate())
         .compose(combineLatestPair(this.updateUserPreferences))
+        .distinctUntilChanged()
         .switchMap(it -> updateSettings(it.first, apiClientType))
+        .compose(values())
+        .distinctUntilChanged()
         .compose(bindToLifecycle())
-        .subscribe(__ -> this.finishDeeplinkActivity.onNext(null));
+        .subscribe(user -> refreshUserAndFinishActivity(user, currentUser));
 
       uriFromIntent
         .filter(uri -> KSUri.isCheckoutUri(uri, Secrets.WebEndpoint.PRODUCTION))
@@ -104,6 +108,11 @@ public interface DeepLinkViewModel {
         .subscribe(this.startBrowser::onNext);
     }
 
+    private void refreshUserAndFinishActivity(User user, CurrentUserType currentUser) {
+      currentUser.refresh(user);
+      this.finishDeeplinkActivity.onNext(null);
+    }
+
     private Uri appendRefTagIfNone(final @NonNull Uri uri) {
       final String url = uri.toString();
       final String ref = UrlUtils.INSTANCE.refTag(url);
@@ -119,7 +128,8 @@ public interface DeepLinkViewModel {
     }
 
     private Observable<Notification<User>> updateSettings(User user, ApiClientType apiClientType) {
-      return apiClientType.updateUserSettings(user)
+      final User updatedUser = user.toBuilder().notifyMobileOfMarketingUpdate(true).build();
+      return apiClientType.updateUserSettings(updatedUser)
               .materialize()
               .share();
     }
@@ -144,7 +154,6 @@ public interface DeepLinkViewModel {
     @Override public @NonNull Observable<Uri> startProjectActivityForCheckout() {
       return this.startProjectActivityWithCheckout;
     }
-
     @Override
     public Observable<Void> finisDeeplinkActivity() {
       return this.finishDeeplinkActivity;

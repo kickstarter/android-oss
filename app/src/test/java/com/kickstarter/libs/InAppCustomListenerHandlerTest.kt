@@ -14,7 +14,7 @@ import org.mockito.Mockito
 class InAppCustomListenerHandlerTest : KSRobolectricTestCase() {
 
     @Test
-    fun testInitialize_MessageShouldShow_True() {
+    fun testMessageShouldShow_True() {
         val user = UserFactory.user()
         val mockUser = MockCurrentUser(user)
         val mockConfig = MockCurrentConfig().apply {
@@ -26,7 +26,7 @@ class InAppCustomListenerHandlerTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testInitialize_MessageShouldShow_False() {
+    fun testMessageShouldShow_False() {
         val mockUser = MockCurrentUser()
         val mockConfig = MockCurrentConfig().apply {
             val config = ConfigFactory.configWithFeatureDisabled(ConfigFeatureName.BRAZE_ENABLED.configFeatureName)

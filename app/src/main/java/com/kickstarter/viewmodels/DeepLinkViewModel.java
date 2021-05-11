@@ -18,6 +18,8 @@ import com.kickstarter.ui.activities.DeepLinkActivity;
 
 import androidx.annotation.NonNull;
 
+import java.util.Objects;
+
 import rx.Notification;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -76,6 +78,7 @@ public interface DeepLinkViewModel {
         .subscribe(this.updateUserPreferences::onNext);
 
       currentUser.observable()
+        .filter(ObjectUtils::isNotNull)
         .compose(combineLatestPair(this.updateUserPreferences))
         .switchMap(it -> updateSettings(it.first, apiClientType))
         .compose(values())

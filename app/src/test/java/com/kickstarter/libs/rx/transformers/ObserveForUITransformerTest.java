@@ -23,13 +23,13 @@ public final class ObserveForUITransformerTest extends KSRobolectricTestCase {
   @Before
   public void setUp() {
     RxAndroidPlugins.getInstance().reset();
-    //ShadowLooper.pauseLooper(Looper.myLooper());
+    //ShadowLooper.pauseMainLooper();
   }
 
   @After
   public void tearDown() {
     RxAndroidPlugins.getInstance().reset();
-    //ShadowLooper.unPauseLooper(Looper.myLooper());
+    //ShadowLooper.unPauseMainLooper();
   }
 
   @Test

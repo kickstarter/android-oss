@@ -116,7 +116,6 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startThanksActivity().subscribe(this.startThanksActivity)
         this.vm.outputs.startVideoActivity().subscribe(this.startVideoActivity)
         this.vm.outputs.updateFragments().subscribe(this.updateFragments)
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 
     @Test

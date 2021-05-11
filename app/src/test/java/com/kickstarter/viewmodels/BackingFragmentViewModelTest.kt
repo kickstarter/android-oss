@@ -96,7 +96,6 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.projectDataAndAddOns().subscribe(this.listAddOns)
         this.vm.outputs.bonusSupport().map { it.toString() }.subscribe(this.bonusAmount)
         this.vm.outputs.deliveryDisclaimerSectionIsGone().subscribe(this.disclaimerSectionIsGone)
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 
     @Test

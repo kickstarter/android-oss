@@ -145,7 +145,6 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.setUnsuccessfulProjectStateView().subscribe(this.setUnsuccessfulProjectStateView);
     this.vm.outputs.startProjectSocialActivity().subscribe(this.startProjectSocialActivity);
     this.vm.outputs.updatesCountTextViewText().subscribe(this.updatesCountTextViewText);
-    Shadows.shadowOf(Looper.getMainLooper()).idle();
     this.vm.inputs.configureWith(projectData);
   }
 

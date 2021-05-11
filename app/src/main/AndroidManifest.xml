@@ -262,6 +262,10 @@
                     android:host="*.kickstarter.com"
                     android:pathPrefix="/settings/"
                     android:scheme="ksr" />
+                <data
+                    android:host="*.kickstarter.com"
+                    android:pathPrefix="/settings/"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <!-- SERVICES, PROVIDERS, RECEIVERS -->

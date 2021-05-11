@@ -8,8 +8,10 @@ import org.junit.Test;
 
 public final class KSUriTest extends KSRobolectricTestCase {
   private final Uri checkoutUri = Uri.parse("https://www.ksr.com/projects/creator/project/pledge");
-  private final Uri deepLinkMarketingHttps = Uri.parse("https://staging.kickstarter.com/settings/notify_mobile_of_marketing_update/true");
-  private final Uri deepLinkMarketingKsr = Uri.parse("ksr://staging.kickstarter.com/settings/notify_mobile_of_marketing_update/true");
+  private final Uri deepLinkMarketingHttps = Uri.parse("https://www.kickstarter.com/settings/notify_mobile_of_marketing_update/true");
+  private final Uri deepLinkMarketingHttpsStaging = Uri.parse("https://staging.kickstarter.com/settings/notify_mobile_of_marketing_update/true");
+  private final Uri deepLinkMarketingKsr = Uri.parse("ksr://www.kickstarter.com/settings/notify_mobile_of_marketing_update/true");
+  private final Uri deepLinkMarketingKsrStaging = Uri.parse("ksr://staging.kickstarter.com/settings/notify_mobile_of_marketing_update/true");
   private final Uri discoverCategoriesUri = Uri.parse("https://www.ksr.com/discover/categories/art");
   private final Uri discoverScopeUri = Uri.parse("https://www.kickstarter.com/discover/ending-soon");
   private final Uri discoverPlacesUri = Uri.parse("https://www.ksr.com/discover/places/newest");
@@ -31,6 +33,8 @@ public final class KSUriTest extends KSRobolectricTestCase {
   public void testKSUri_isSettingsURI() {
     assertTrue(KSUri.isSettingsUrl(this.deepLinkMarketingHttps));
     assertTrue(KSUri.isSettingsUrl(this.deepLinkMarketingKsr));
+    assertTrue(KSUri.isSettingsUrl(this.deepLinkMarketingHttpsStaging));
+    assertTrue(KSUri.isSettingsUrl(this.deepLinkMarketingKsrStaging));
   }
 
   @Test

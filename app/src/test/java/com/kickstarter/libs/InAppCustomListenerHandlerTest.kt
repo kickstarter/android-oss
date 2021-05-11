@@ -22,6 +22,8 @@ class InAppCustomListenerHandlerTest : KSRobolectricTestCase() {
             config(config)
         }
         val handler = InAppCustomListenerHandler(mockUser, mockConfig)
+
+        Thread.sleep(100) // wait a bit until InAppCustomListenerHandler.init block executed
         assertTrue(handler.shouldShowMessage())
     }
 
@@ -33,6 +35,8 @@ class InAppCustomListenerHandlerTest : KSRobolectricTestCase() {
             config(config)
         }
         val handler = InAppCustomListenerHandler(mockUser, mockConfig)
+
+        Thread.sleep(100) // wait a bit until InAppCustomListenerHandler.init block executed
         assertFalse(handler.shouldShowMessage())
     }
 
@@ -49,6 +53,7 @@ class InAppCustomListenerHandlerTest : KSRobolectricTestCase() {
         }
         val listener = InAppCustomListener(mockUser, mockConfig, build)
 
+        Thread.sleep(100) // wait a bit until InAppCustomListener.init block executed
         assertTrue(listener.beforeInAppMessageDisplayed(null) == InAppMessageOperation.DISPLAY_NOW)
     }
 
@@ -65,6 +70,7 @@ class InAppCustomListenerHandlerTest : KSRobolectricTestCase() {
         }
         val listener = InAppCustomListener(mockUser, mockConfig, build)
 
+        Thread.sleep(100) // wait a bit until InAppCustomListener.init block executed
         assertTrue(listener.beforeInAppMessageDisplayed(null) == InAppMessageOperation.DISCARD)
     }
 }

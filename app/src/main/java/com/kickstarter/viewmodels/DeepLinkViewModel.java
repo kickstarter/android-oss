@@ -76,9 +76,7 @@ public interface DeepLinkViewModel {
         .subscribe(this.updateUserPreferences::onNext);
 
       currentUser.observable()
-        .filter(user -> !user.notifyMobileOfMarketingUpdate())
         .compose(combineLatestPair(this.updateUserPreferences))
-        .distinctUntilChanged()
         .switchMap(it -> updateSettings(it.first, apiClientType))
         .compose(values())
         .distinctUntilChanged()

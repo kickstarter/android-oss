@@ -247,7 +247,7 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activities.DeepLinkActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar">
+        <activity android:name=".ui.activities.DeepLinkActivity" android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 

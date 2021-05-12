@@ -11,9 +11,10 @@ import org.json.JSONObject
 import rx.Observable
 import rx.subjects.PublishSubject
 
-open class MockExperimentsClientType(private val variant: OptimizelyExperiment.Variant, private val optimizelyEnvironment: OptimizelyEnvironment) : ExperimentsClientType {
-    constructor(variant: OptimizelyExperiment.Variant) : this(variant, OptimizelyEnvironment.DEVELOPMENT)
-    constructor() : this(OptimizelyExperiment.Variant.CONTROL, OptimizelyEnvironment.DEVELOPMENT)
+open class MockExperimentsClientType(private val variant: OptimizelyExperiment.Variant, private val optimizelyEnvironment: OptimizelyEnvironment, private val enabledFlag: Boolean) : ExperimentsClientType {
+    constructor(variant: OptimizelyExperiment.Variant) : this(variant, OptimizelyEnvironment.DEVELOPMENT, false)
+    constructor() : this(OptimizelyExperiment.Variant.CONTROL, OptimizelyEnvironment.DEVELOPMENT, false)
+    constructor(enabled: Boolean) : this(OptimizelyExperiment.Variant.CONTROL, OptimizelyEnvironment.DEVELOPMENT, enabled)
 
     class ExperimentsEvent internal constructor(internal val eventKey: String, internal val attributes: Map<String, *>, internal val tags: Map<String, *>?)
 
@@ -26,7 +27,7 @@ open class MockExperimentsClientType(private val variant: OptimizelyExperiment.V
 
     override fun isFeatureEnabled(feature: OptimizelyFeature.Key, experimentData: ExperimentData): Boolean = false
 
-    override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean = false
+    override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean = this.enabledFlag
 
     override fun optimizelyEnvironment(): OptimizelyEnvironment = this.optimizelyEnvironment
 

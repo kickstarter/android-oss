@@ -5,30 +5,12 @@ import android.content.SharedPreferences
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R
-import com.kickstarter.libs.ActivityRequestCodes
-import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
-import com.kickstarter.libs.Either
-import com.kickstarter.libs.Environment
-import com.kickstarter.libs.ExperimentsClientType
-import com.kickstarter.libs.KSCurrency
-import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.*
 import com.kickstarter.libs.models.OptimizelyExperiment
-import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
-import com.kickstarter.libs.rx.transformers.Transformers.errors
-import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
-import com.kickstarter.libs.rx.transformers.Transformers.neverError
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
-import com.kickstarter.libs.rx.transformers.Transformers.values
-import com.kickstarter.libs.utils.BooleanUtils
+import com.kickstarter.libs.models.OptimizelyFeature
+import com.kickstarter.libs.rx.transformers.Transformers.*
+import com.kickstarter.libs.utils.*
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.OVERVIEW
-import com.kickstarter.libs.utils.ExperimentData
-import com.kickstarter.libs.utils.IntegerUtils
-import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.ProjectUtils
-import com.kickstarter.libs.utils.ProjectViewUtils
-import com.kickstarter.libs.utils.RefTagUtils
-import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.models.Backing
@@ -39,14 +21,11 @@ import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ProjectActivity
 import com.kickstarter.ui.adapters.ProjectAdapter
-import com.kickstarter.ui.data.CheckoutData
-import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.PledgeFlowContext
-import com.kickstarter.ui.data.PledgeReason
-import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.data.*
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import com.kickstarter.ui.viewholders.ProjectViewHolder
 import rx.Observable
+import rx.functions.Func1
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
@@ -219,6 +198,9 @@ interface ProjectViewModel {
         /** Emits when we should start [com.kickstarter.ui.activities.CommentsActivity].  */
         fun startCommentsActivity(): Observable<Pair<Project, ProjectData>>
 
+        /** Emits when we should start [com.kickstarter.ui.activities. TODO: DEFINE NAME https://kickstarter.atlassian.net/browse/NT-1920].  */
+        fun startCommentsThreadedActivity(): Observable<Pair<Project, ProjectData>>
+
         /** Emits when we should start the creator bio [com.kickstarter.ui.activities.CreatorBioActivity].  */
         fun startCreatorBioWebViewActivity(): Observable<Project>
 
@@ -308,6 +290,7 @@ interface ProjectViewModel {
         private val showUpdatePledgeSuccess = PublishSubject.create<Void>()
         private val startCampaignWebViewActivity = PublishSubject.create<ProjectData>()
         private val startCommentsActivity = PublishSubject.create<Pair<Project, ProjectData>>()
+        private val startCommentsThreadedActivity = PublishSubject.create<Pair<Project, ProjectData>>()
         private val startCreatorBioWebViewActivity = PublishSubject.create<Project>()
         private val startCreatorDashboardActivity = PublishSubject.create<Project>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
@@ -482,10 +465,18 @@ interface ProjectViewModel {
                 .subscribe(this.startCreatorBioWebViewActivity)
 
             currentProject
+                .filter { !optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_THREADING) }
                 .compose<Project>(takeWhen(this.commentsTextViewClicked))
                 .compose<Pair<Project, ProjectData>>(combineLatestPair(projectData))
                 .compose(bindToLifecycle())
                 .subscribe(this.startCommentsActivity)
+
+            currentProject
+                .filter { optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_THREADING) }
+                .compose<Project>(takeWhen(this.commentsTextViewClicked))
+                .compose<Pair<Project, ProjectData>>(combineLatestPair(projectData))
+                .compose(bindToLifecycle())
+                .subscribe(this.startCommentsThreadedActivity)
 
             currentProject
                 .compose<Project>(takeWhen(this.creatorDashboardButtonClicked))
@@ -1068,6 +1059,9 @@ interface ProjectViewModel {
 
         @NonNull
         override fun startCommentsActivity(): Observable<Pair<Project, ProjectData>> = this.startCommentsActivity
+
+        @NonNull
+        override fun startCommentsThreadedActivity(): Observable<Pair<Project, ProjectData>> = this.startCommentsThreadedActivity
 
         @NonNull
         override fun startCreatorBioWebViewActivity(): Observable<Project> = this.startCreatorBioWebViewActivity

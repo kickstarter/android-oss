@@ -34,6 +34,10 @@ class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManag
         return optimizelyClient().isFeatureEnabled(feature.key, userId(), attributes(experimentData, this.optimizelyEnvironment))
     }
 
+    override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        return optimizelyClient().isFeatureEnabled(feature.key, userId())
+    }
+
     override fun variant(experiment: OptimizelyExperiment.Key, experimentData: ExperimentData): OptimizelyExperiment.Variant {
         val user = experimentData.user
         val variationString: String? = if (user?.isAdmin == true) {

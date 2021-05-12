@@ -26,6 +26,8 @@ open class MockExperimentsClientType(private val variant: OptimizelyExperiment.V
 
     override fun isFeatureEnabled(feature: OptimizelyFeature.Key, experimentData: ExperimentData): Boolean = false
 
+    override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean = false
+
     override fun optimizelyEnvironment(): OptimizelyEnvironment = this.optimizelyEnvironment
 
     override fun optimizelyProperties(experimentData: ExperimentData): Map<String, Any> {

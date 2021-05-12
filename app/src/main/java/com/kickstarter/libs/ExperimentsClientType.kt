@@ -45,6 +45,7 @@ interface ExperimentsClientType {
     fun appVersion(): String
     fun enabledFeatures(user: User?): List<String>
     fun isFeatureEnabled(feature: OptimizelyFeature.Key, experimentData: ExperimentData): Boolean
+    fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean
     fun optimizelyEnvironment(): OptimizelyEnvironment
     fun OSVersion(): String
     fun track(eventKey: String, experimentData: ExperimentData)

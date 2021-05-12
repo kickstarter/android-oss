@@ -12,7 +12,7 @@ import org.json.JSONObject
 interface ExperimentsClientType {
 
     fun ExperimentsClientType.attributes(experimentData: ExperimentData, optimizelyEnvironment: OptimizelyEnvironment): Map<String, *> {
-        return ExperimentUtils.attributes(experimentData, appVersion(), OSVersion(), optimizelyEnvironment)
+        return ExperimentUtils.attributes(experimentData, appVersion(), OSVersion(), versionCode(), optimizelyEnvironment)
     }
 
     /**
@@ -42,6 +42,7 @@ interface ExperimentsClientType {
         return properties
     }
 
+    fun versionCode(): Int
     fun appVersion(): String
     fun enabledFeatures(user: User?): List<String>
     fun isFeatureEnabled(feature: OptimizelyFeature.Key, experimentData: ExperimentData): Boolean

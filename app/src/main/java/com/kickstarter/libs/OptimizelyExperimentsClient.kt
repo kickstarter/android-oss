@@ -14,6 +14,8 @@ import com.optimizely.ab.android.sdk.OptimizelyManager
 class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManager, private val optimizelyEnvironment: OptimizelyEnvironment) : ExperimentsClientType {
     override fun appVersion(): String = BuildConfig.VERSION_NAME
 
+    override fun versionCode() = BuildConfig.VERSION_CODE
+
     override fun OSVersion(): String = Build.VERSION.RELEASE
 
     override fun track(eventKey: String, experimentData: ExperimentData) {
@@ -35,7 +37,7 @@ class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManag
     }
 
     override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
-        return optimizelyClient().isFeatureEnabled(feature.key, userId())
+        return optimizelyClient().isFeatureEnabled(feature.key, userId(), attributes(ExperimentData(null, null, null), this.optimizelyEnvironment))
     }
 
     override fun variant(experiment: OptimizelyExperiment.Key, experimentData: ExperimentData): OptimizelyExperiment.Variant {

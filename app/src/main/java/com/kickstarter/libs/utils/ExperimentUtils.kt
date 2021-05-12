@@ -10,10 +10,16 @@ import java.util.Locale
 
 object ExperimentUtils {
 
-    fun attributes(experimentData: ExperimentData, appVersion: String, OSVersion: String, optimizelyEnvironment: OptimizelyEnvironment): Map<String, Any?> {
+    /**
+     * Attributes we need to send alongside with the Experiment Data or Feature Flag,
+     * Optimizely will use this attributes for setting up audiences.
+     */
+    fun attributes(experimentData: ExperimentData, appVersion: String, OSVersion: String, versionCode: Int, optimizelyEnvironment: OptimizelyEnvironment): Map<String, Any?> {
         return mapOf(
             Pair("distinct_id", getInstanceId(optimizelyEnvironment)),
             Pair("session_app_release_version", appVersion),
+            Pair("session_app_release_version_number", appVersion.replace(".", "").toInt()),
+            Pair("session_app_release_version_code", versionCode),
             Pair("session_os_version", String.format("Android %s", OSVersion)),
             Pair("session_ref_tag", experimentData.intentRefTag?.tag()),
             Pair("session_referrer_credit", experimentData.cookieRefTag?.tag()),

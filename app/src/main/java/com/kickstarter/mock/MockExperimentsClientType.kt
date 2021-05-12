@@ -21,6 +21,8 @@ open class MockExperimentsClientType(private val variant: OptimizelyExperiment.V
     private val experimentEvents: PublishSubject<ExperimentsEvent> = PublishSubject.create()
     val eventKeys: Observable<String> = this.experimentEvents.map { e -> e.eventKey }
 
+    override fun versionCode(): Int = 999999999
+
     override fun appVersion(): String = "9.9.9"
 
     override fun enabledFeatures(user: User?): List<String> = emptyList()

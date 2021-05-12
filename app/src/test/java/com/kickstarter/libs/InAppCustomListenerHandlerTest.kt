@@ -9,9 +9,15 @@ import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.UserFactory
 import org.junit.Test
-import org.mockito.Mockito
 
 class InAppCustomListenerHandlerTest : KSRobolectricTestCase() {
+
+    lateinit var build: Build
+
+    override fun setUp() {
+        super.setUp()
+        build = environment().build()
+    }
 
     @Test
     fun testMessageShouldShow_True() {
@@ -42,9 +48,6 @@ class InAppCustomListenerHandlerTest : KSRobolectricTestCase() {
 
     @Test
     fun testInAppCustomListener_DisplayNow() {
-        val build = Mockito.mock(Build::class.java)
-        Mockito.`when`(build.isDebug).thenReturn(true)
-
         val user = UserFactory.user()
         val mockUser = MockCurrentUser(user)
         val mockConfig = MockCurrentConfig().apply {
@@ -59,9 +62,6 @@ class InAppCustomListenerHandlerTest : KSRobolectricTestCase() {
 
     @Test
     fun testInAppCustomListener_Discard() {
-        val build = Mockito.mock(Build::class.java)
-        Mockito.`when`(build.isDebug).thenReturn(true)
-
         val user = UserFactory.user()
         val mockUser = MockCurrentUser(user)
         val mockConfig = MockCurrentConfig().apply {

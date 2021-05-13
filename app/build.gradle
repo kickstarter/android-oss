@@ -40,6 +40,7 @@ jacoco {
 }
 tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true
+    jacoco.excludes = ['jdk.internal.*']
 }
 
 // Creates tasks based on the application build variant (productFlavor + buildType = variant)
@@ -101,13 +102,13 @@ android.applicationVariants.all { variant ->
 
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     buildToolsVersion '29.0.3'
 
     defaultConfig {
         applicationId "com.kickstarter"
         minSdkVersion 23
-        targetSdkVersion 29
+        targetSdkVersion 30
         testApplicationId "com.kickstarter.kickstarter.regression.test"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -330,8 +331,8 @@ dependencies {
     // Testing
     testImplementation "junit:junit:4.12"
     testImplementation "org.mockito:mockito-core:2.8.9"
-    testImplementation "org.robolectric:robolectric:4.3"
-    testImplementation "org.robolectric:shadows-multidex:4.3"
+    testImplementation "org.robolectric:robolectric:4.4"
+    testImplementation "org.robolectric:shadows-multidex:4.4"
     testImplementation "androidx.test:core:1.3.0"
     androidTestImplementation 'androidx.annotation:annotation:1.1.0'
 

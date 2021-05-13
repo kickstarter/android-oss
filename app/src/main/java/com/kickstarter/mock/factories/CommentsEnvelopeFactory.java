@@ -10,15 +10,15 @@ public final class CommentsEnvelopeFactory {
   private CommentsEnvelopeFactory() {}
 
   public static @NonNull
-  DeprecatedCommentsEnvelope commentsEnvelope() {
+    DeprecatedCommentsEnvelope commentsEnvelope() {
     return DeprecatedCommentsEnvelope.builder()
-      .urls(DeprecatedCommentsEnvelope.UrlsEnvelope.builder()
-        .api(DeprecatedCommentsEnvelope.UrlsEnvelope.ApiEnvelope.builder()
-          .moreComments("http://kck.str/comments/more")
-          .newerComments("http://kck.str/comments/newer")
-          .build())
+    .urls(DeprecatedCommentsEnvelope.UrlsEnvelope.builder()
+      .api(DeprecatedCommentsEnvelope.UrlsEnvelope.ApiEnvelope.builder()
+        .moreComments("http://kck.str/comments/more")
+        .newerComments("http://kck.str/comments/newer")
         .build())
-      .comments(Collections.singletonList(CommentFactory.comment()))
-      .build();
+      .build())
+    .comments(Collections.singletonList(CommentFactory.comment()))
+    .build();
   }
 }

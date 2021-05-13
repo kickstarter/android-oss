@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding.view.RxView
 import com.jakewharton.rxbinding.widget.RxTextView
 import com.kickstarter.R
-import com.kickstarter.databinding.CommentsLayoutBinding
+import com.kickstarter.databinding.DeprecatedCommentsLayoutBinding
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.RecyclerViewPaginator
@@ -39,11 +39,11 @@ class DeprecatedCommentsActivity : BaseActivity<DeprecatedCommentsViewModel.View
     private lateinit var recyclerViewPaginator: RecyclerViewPaginator
     private lateinit var swipeRefresher: SwipeRefresher
     private val alertDialog = PublishSubject.create<AlertDialog>()
-    private lateinit var binding: CommentsLayoutBinding
+    private lateinit var binding: DeprecatedCommentsLayoutBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = CommentsLayoutBinding.inflate(layoutInflater)
+        binding = DeprecatedCommentsLayoutBinding.inflate(layoutInflater)
         val view: View = binding.root
         setContentView(view)
 

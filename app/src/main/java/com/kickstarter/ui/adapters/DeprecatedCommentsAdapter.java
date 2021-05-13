@@ -8,7 +8,7 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 
 import com.kickstarter.R;
-import com.kickstarter.databinding.CommentCardViewBinding;
+import com.kickstarter.databinding.DeprecatedCommentCardViewBinding;
 import com.kickstarter.databinding.EmptyCommentsLayoutBinding;
 import com.kickstarter.databinding.ProjectContextViewBinding;
 import com.kickstarter.models.DeprecatedComment;
@@ -75,7 +75,7 @@ public final class DeprecatedCommentsAdapter extends KSAdapter {
     } else if (layout == R.layout.empty_comments_layout) {
       return new EmptyCommentsViewHolder(EmptyCommentsLayoutBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
     } else {
-      return new DeprecatedCommentViewHolder(CommentCardViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
+      return new DeprecatedCommentViewHolder(DeprecatedCommentCardViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
     }
   }
 

@@ -4,7 +4,7 @@ import android.graphics.Typeface
 import android.util.Pair
 import android.view.View
 import com.kickstarter.R
-import com.kickstarter.databinding.CommentCardViewBinding
+import com.kickstarter.databinding.DeprecatedCommentCardViewBinding
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.CommentUtils
 import com.kickstarter.libs.utils.DateTimeUtils
@@ -13,7 +13,7 @@ import com.kickstarter.models.DeprecatedComment
 import com.kickstarter.models.Project
 import com.squareup.picasso.Picasso
 
-class DeprecatedCommentViewHolder(private val binding: CommentCardViewBinding) : KSViewHolder(binding.root) {
+class DeprecatedCommentViewHolder(private val binding: DeprecatedCommentCardViewBinding) : KSViewHolder(binding.root) {
     private var comment: DeprecatedComment? = null
     private val ksString = environment().ksString()
     private var project: Project? = null

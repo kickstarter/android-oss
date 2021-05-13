@@ -1,6 +1,6 @@
 package com.kickstarter.mock.factories;
 
-import com.kickstarter.services.apiresponses.CommentsEnvelope;
+import com.kickstarter.services.apiresponses.DeprecatedCommentsEnvelope;
 
 import java.util.Collections;
 
@@ -9,10 +9,11 @@ import androidx.annotation.NonNull;
 public final class CommentsEnvelopeFactory {
   private CommentsEnvelopeFactory() {}
 
-  public static @NonNull CommentsEnvelope commentsEnvelope() {
-    return CommentsEnvelope.builder()
-      .urls(CommentsEnvelope.UrlsEnvelope.builder()
-        .api(CommentsEnvelope.UrlsEnvelope.ApiEnvelope.builder()
+  public static @NonNull
+  DeprecatedCommentsEnvelope commentsEnvelope() {
+    return DeprecatedCommentsEnvelope.builder()
+      .urls(DeprecatedCommentsEnvelope.UrlsEnvelope.builder()
+        .api(DeprecatedCommentsEnvelope.UrlsEnvelope.ApiEnvelope.builder()
           .moreComments("http://kck.str/comments/more")
           .newerComments("http://kck.str/comments/newer")
           .build())

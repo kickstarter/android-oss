@@ -9,12 +9,12 @@ import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.CommentUtils
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.models.Comment
+import com.kickstarter.models.DeprecatedComment
 import com.kickstarter.models.Project
 import com.squareup.picasso.Picasso
 
-class CommentViewHolder(private val binding: CommentCardViewBinding) : KSViewHolder(binding.root) {
-    private var comment: Comment? = null
+class DeprecatedCommentViewHolder(private val binding: CommentCardViewBinding) : KSViewHolder(binding.root) {
+    private var comment: DeprecatedComment? = null
     private val ksString = environment().ksString()
     private var project: Project? = null
 
@@ -22,7 +22,7 @@ class CommentViewHolder(private val binding: CommentCardViewBinding) : KSViewHol
     override fun bindData(data: Any?) {
         val projectAndComment = ObjectUtils.requireNonNull(data as? Pair<*, *>?)
         project = ObjectUtils.requireNonNull(projectAndComment.first as? Project, Project::class.java)
-        comment = ObjectUtils.requireNonNull(projectAndComment.second as? Comment, Comment::class.java)
+        comment = ObjectUtils.requireNonNull(projectAndComment.second as? DeprecatedComment, DeprecatedComment::class.java)
     }
 
     override fun onBind() {

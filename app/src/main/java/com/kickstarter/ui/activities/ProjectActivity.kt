@@ -659,7 +659,7 @@ class ProjectActivity :
     }
 
     private fun startCommentsActivity(projectAndData: Pair<Project, ProjectData>) {
-        val intent = Intent(this, CommentsActivity::class.java)
+        val intent = Intent(this, DeprecatedCommentsActivity::class.java)
             .putExtra(IntentKey.PROJECT, projectAndData.first)
             .putExtra(IntentKey.PROJECT_DATA, projectAndData.second)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)

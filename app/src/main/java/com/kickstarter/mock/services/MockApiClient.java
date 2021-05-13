@@ -20,7 +20,7 @@ import com.kickstarter.mock.factories.UpdateFactory;
 import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
-import com.kickstarter.models.Comment;
+import com.kickstarter.models.DeprecatedComment;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
@@ -34,7 +34,7 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
-import com.kickstarter.services.apiresponses.CommentsEnvelope;
+import com.kickstarter.services.apiresponses.DeprecatedCommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.EmailVerificationEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
@@ -177,17 +177,17 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Project project) {
+  public @NonNull Observable<DeprecatedCommentsEnvelope> fetchComments(final @NonNull Project project) {
     return Observable.just(CommentsEnvelopeFactory.commentsEnvelope());
   }
 
   @Override
-  public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Update update) {
+  public @NonNull Observable<DeprecatedCommentsEnvelope> fetchComments(final @NonNull Update update) {
     return Observable.just(CommentsEnvelopeFactory.commentsEnvelope());
   }
 
   @Override
-  public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull String paginationPath) {
+  public @NonNull Observable<DeprecatedCommentsEnvelope> fetchComments(final @NonNull String paginationPath) {
     return Observable.just(CommentsEnvelopeFactory.commentsEnvelope());
   }
 
@@ -368,12 +368,12 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<Comment> postComment(final @NonNull Project project, final @NonNull String body) {
+  public @NonNull Observable<DeprecatedComment> postComment(final @NonNull Project project, final @NonNull String body) {
     return Observable.just(CommentFactory.comment().toBuilder().body(body).build());
   }
 
   @Override
-  public @NonNull Observable<Comment> postComment(final @NonNull Update update, final @NonNull String body) {
+  public @NonNull Observable<DeprecatedComment> postComment(final @NonNull Update update, final @NonNull String body) {
     return Observable.just(CommentFactory.comment().toBuilder().body(body).build());
   }
 

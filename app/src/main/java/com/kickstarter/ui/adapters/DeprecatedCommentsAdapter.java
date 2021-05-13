@@ -38,7 +38,7 @@ public final class DeprecatedCommentsAdapter extends KSAdapter {
     if (sectionRow.section() == 0) {
       return R.layout.project_context_view;
     } else if (sectionRow.section() == 1){
-      return R.layout.comment_card_view;
+      return R.layout.deprecated_comment_card_view;
     } else {
       return R.layout.empty_comments_layout;
     }

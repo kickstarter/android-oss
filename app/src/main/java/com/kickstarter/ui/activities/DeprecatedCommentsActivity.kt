@@ -158,7 +158,7 @@ class DeprecatedCommentsActivity : BaseActivity<DeprecatedCommentsViewModel.View
 
     private fun showCommentDialog(project: Project) {
         val commentDialog = AlertDialog.Builder(this)
-            .setView(R.layout.comment_dialog)
+            .setView(R.layout.deprecated_comment_dialog)
             .create()
         commentDialog.show()
         commentDialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)

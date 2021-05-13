@@ -32,3 +32,42 @@ query GetProjectAddOns($slug: String!, $locationId: ID!) {
     }
   }
 }
+
+query GetProjectComments($slug: String!){
+      project(slug: $slug) {
+        collaborators {
+          edges {
+            node {
+              id
+              name
+            }
+          }
+        }
+        comments {
+          edges {
+            cursor
+            node {
+              authorBadges
+              ...comment
+              replies {
+                edges {
+                cursor
+                  node {
+                    ...comment
+                  }
+                }
+                pageInfo {
+                    ...pageInfo
+                 }
+                totalCount
+              }
+            }
+          }
+          pageInfo {
+                  ...pageInfo
+           }
+          totalCount
+        }
+      }
+   }
+

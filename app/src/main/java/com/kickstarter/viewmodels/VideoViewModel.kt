@@ -45,7 +45,9 @@ interface VideoViewModel {
 
         init {
             val project = intent()
-                .map { it.getParcelableExtra(IntentKey.PROJECT) as Project }
+                .map { it.getParcelableExtra(IntentKey.PROJECT) as Project? }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
 
             project.map { it.video() }
                 .filter { ObjectUtils.isNotNull(it) }

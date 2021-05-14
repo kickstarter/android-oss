@@ -71,6 +71,13 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
                 startCommentsActivity(update)
             }
 
+        viewModel.outputs.startRootCommentsActivity()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { update ->
+                startRootCommentsActivity(update)
+            }
+
         viewModel.outputs.startProjectActivity()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
@@ -144,6 +151,10 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
         val intent = Intent(this, CommentsActivity::class.java)
             .putExtra(IntentKey.UPDATE, update)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+    }
+
+    private fun startRootCommentsActivity(update: Update) {
+        // TODO: Start the new activity defined in https://kickstarter.atlassian.net/browse/NT-1920
     }
 
     private fun startProjectActivity(uri: Uri, refTag: RefTag) {

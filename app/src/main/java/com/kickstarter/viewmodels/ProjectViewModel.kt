@@ -220,8 +220,8 @@ interface ProjectViewModel {
         /** Emits when we should start [com.kickstarter.ui.activities.CommentsActivity].  */
         fun startCommentsActivity(): Observable<Pair<Project, ProjectData>>
 
-        /** Emits when we should start [com.kickstarter.ui.activities. TODO: DEFINE NAME https://kickstarter.atlassian.net/browse/NT-1920].  */
-        fun startCommentsThreadedActivity(): Observable<Pair<Project, ProjectData>>
+        /** Emits when we should start [com.kickstarter.ui.activities.RootCommentsActivity]. */
+        fun startRootCommentsActivity(): Observable<Pair<Project, ProjectData>>
 
         /** Emits when we should start the creator bio [com.kickstarter.ui.activities.CreatorBioActivity].  */
         fun startCreatorBioWebViewActivity(): Observable<Project>
@@ -312,7 +312,7 @@ interface ProjectViewModel {
         private val showUpdatePledgeSuccess = PublishSubject.create<Void>()
         private val startCampaignWebViewActivity = PublishSubject.create<ProjectData>()
         private val startCommentsActivity = PublishSubject.create<Pair<Project, ProjectData>>()
-        private val startCommentsThreadedActivity = PublishSubject.create<Pair<Project, ProjectData>>()
+        private val startRootCommentsActivity = PublishSubject.create<Pair<Project, ProjectData>>()
         private val startCreatorBioWebViewActivity = PublishSubject.create<Project>()
         private val startCreatorDashboardActivity = PublishSubject.create<Project>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
@@ -498,7 +498,7 @@ interface ProjectViewModel {
                 .compose<Project>(takeWhen(this.commentsTextViewClicked))
                 .compose<Pair<Project, ProjectData>>(combineLatestPair(projectData))
                 .compose(bindToLifecycle())
-                .subscribe(this.startCommentsThreadedActivity)
+                .subscribe(this.startRootCommentsActivity)
 
             currentProject
                 .compose<Project>(takeWhen(this.creatorDashboardButtonClicked))
@@ -1083,7 +1083,7 @@ interface ProjectViewModel {
         override fun startCommentsActivity(): Observable<Pair<Project, ProjectData>> = this.startCommentsActivity
 
         @NonNull
-        override fun startCommentsThreadedActivity(): Observable<Pair<Project, ProjectData>> = this.startCommentsThreadedActivity
+        override fun startRootCommentsActivity(): Observable<Pair<Project, ProjectData>> = this.startRootCommentsActivity
 
         @NonNull
         override fun startCreatorBioWebViewActivity(): Observable<Project> = this.startCreatorBioWebViewActivity

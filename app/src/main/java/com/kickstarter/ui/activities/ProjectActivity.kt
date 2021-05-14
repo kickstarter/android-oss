@@ -256,10 +256,10 @@ class ProjectActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { this.startCommentsActivity(it) }
 
-        this.viewModel.outputs.startCommentsThreadedActivity()
+        this.viewModel.outputs.startRootCommentsActivity()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { this.startCommentsThreadedActivity(it) }
+            .subscribe { this.startRootCommentsActivity(it) }
 
         this.viewModel.outputs.startCreatorBioWebViewActivity()
             .compose(bindToLifecycle())
@@ -670,7 +670,7 @@ class ProjectActivity :
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
-    private fun startCommentsThreadedActivity(projectAndData: Pair<Project, ProjectData>) {
+    private fun startRootCommentsActivity(projectAndData: Pair<Project, ProjectData>) {
         // TODO: Start the new activity defined in https://kickstarter.atlassian.net/browse/NT-1920
     }
 

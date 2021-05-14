@@ -66,7 +66,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val showUpdatePledgeSuccess = TestSubscriber<Void>()
     private val startCampaignWebViewActivity = TestSubscriber<ProjectData>()
     private val startCommentsActivity = TestSubscriber<Pair<Project, ProjectData>>()
-    private val startCommentsThreadedActivity = TestSubscriber<Pair<Project, ProjectData>>()
+    private val startRootCommentsActivityivity = TestSubscriber<Pair<Project, ProjectData>>()
     private val startCreatorBioWebViewActivity = TestSubscriber<Project>()
     private val startCreatorDashboardActivity = TestSubscriber<Project>()
     private val startLoginToutActivity = TestSubscriber<Void>()
@@ -108,7 +108,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.projectData().map { pD -> pD.project().isStarred }.subscribe(this.savedTest)
         this.vm.outputs.startCampaignWebViewActivity().subscribe(this.startCampaignWebViewActivity)
         this.vm.outputs.startCommentsActivity().subscribe(this.startCommentsActivity)
-        this.vm.outputs.startCommentsThreadedActivity().subscribe(this.startCommentsThreadedActivity)
+        this.vm.outputs.startRootCommentsActivity().subscribe(this.startRootCommentsActivityivity)
         this.vm.outputs.startCreatorBioWebViewActivity().subscribe(this.startCreatorBioWebViewActivity)
         this.vm.outputs.startCreatorDashboardActivity().subscribe(this.startCreatorDashboardActivity)
         this.vm.outputs.startMessagesActivity().subscribe(this.startMessagesActivity)
@@ -594,7 +594,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.commentsTextViewClicked()
         this.startCommentsActivity.assertValues(projectAndData)
-        this.startCommentsThreadedActivity.assertNoValues()
+        this.startRootCommentsActivityivity.assertNoValues()
     }
 
     @Test
@@ -614,7 +614,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.commentsTextViewClicked()
         this.startCommentsActivity.assertNoValues()
-        this.startCommentsThreadedActivity.assertValues(projectAndData)
+        this.startRootCommentsActivityivity.assertValues(projectAndData)
     }
 
     @Test
@@ -633,7 +633,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
         this.vm.inputs.commentsTextViewClicked()
-        this.startCommentsThreadedActivity.assertValues(projectAndData)
+        this.startRootCommentsActivityivity.assertValues(projectAndData)
         this.startCommentsActivity.assertNoValues()
     }
 
@@ -653,7 +653,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
         this.vm.inputs.commentsTextViewClicked()
-        this.startCommentsThreadedActivity.assertNoValues()
+        this.startRootCommentsActivityivity.assertNoValues()
         this.startCommentsActivity.assertValues(projectAndData)
     }
 

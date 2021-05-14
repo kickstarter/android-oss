@@ -23,6 +23,10 @@ def externalPublicVersion = new File(project.rootDir.path + "/app/external_versi
 def internalPrivateVersion = new File(project.rootDir.path + "/app/internal_version_code.txt").text.trim().toInteger()
 def internalPublicVersion = new File(project.rootDir.path + "/app/internal_version_name.txt").text.trim()
 def isCircle = "true" == System.getenv("CIRCLECI")
+def isReleaseJob = System.getenv("CIRCLE_PROJECT_REPONAME")
+project.logger.lifecycle(isReleaseJob + "******************")
+project.logger.lifecycle(System.getenv("CIRCLE_PROJECT_REPONAME") + " REPONAME ******************")
+project.logger.lifecycle(System.getenv("CIRCLE_JOB") + " CIRCLE JOB ******************")
 
 ext.signing = [
         storeFilePath: "path/to/keystore",

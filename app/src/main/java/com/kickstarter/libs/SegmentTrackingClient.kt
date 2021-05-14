@@ -2,6 +2,7 @@ package com.kickstarter.libs
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.kickstarter.libs.braze.BrazeClient
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isKSApplication
@@ -128,6 +129,17 @@ open class SegmentTrackingClient(
             }
 
             Analytics.setSingletonInstance(segmentClient)
+
+            // - onIntegrationReady Callback will be called once Segment has finalized the integration with Braze
+            // - moment when we will set App the Listener for InAppMessages
+            Analytics.with(context).onIntegrationReady(
+                AppboyIntegration.FACTORY.key(),
+                Analytics.Callback<Any?> {
+                    if (build.isDebug) Timber.d("${type().tag} Integration with ${AppboyIntegration.FACTORY} finalized")
+                    BrazeClient.setInAppCustomListener(this.currentUser, this.currentConfig, this.build)
+                }
+            )
+
             this.isInitialized = true
 
             if (build.isDebug) {

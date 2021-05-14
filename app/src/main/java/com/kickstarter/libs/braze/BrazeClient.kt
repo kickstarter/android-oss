@@ -8,10 +8,12 @@ import com.appboy.AppboyFirebaseMessagingService
 import com.appboy.AppboyLifecycleCallbackListener
 import com.appboy.configuration.AppboyConfig
 import com.appboy.support.AppboyLogger
+import com.appboy.ui.inappmessage.AppboyInAppMessageManager
 import com.google.firebase.messaging.RemoteMessage
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.Config
 import com.kickstarter.libs.CurrentConfigType
+import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.utils.ConfigFeatureName
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isFeatureFlagEnabled
@@ -164,6 +166,17 @@ open class BrazeClient(
     override fun registerActivityLifecycleCallbacks(context: Context) {
         if (isSDKEnabled() && context.isKSApplication()) {
             context.registerActivityLifecycleCallbacks(getLifeCycleCallbacks())
+        }
+    }
+
+    /**
+     * Static initialization for the `setCustomInAppMessageManagerListener`
+     * this method should be called once the Segment dependency finalized the integration
+     * on the `onIntegrationReady` callback
+     */
+    companion object {
+        fun setInAppCustomListener(currentUser: CurrentUserType, currentConfig: CurrentConfigType, build: Build) {
+            AppboyInAppMessageManager.getInstance().setCustomInAppMessageManagerListener(InAppCustomListener(currentUser, currentConfig, build))
         }
     }
 }

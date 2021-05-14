@@ -671,7 +671,12 @@ class ProjectActivity :
     }
 
     private fun startRootCommentsActivity(projectAndData: Pair<Project, ProjectData>) {
-        // TODO: Start the new activity defined in https://kickstarter.atlassian.net/browse/NT-1920
+        startActivityWithTransition(
+                Intent(this, CommentsActivity::class.java)
+                        .putExtra(IntentKey.PROJECT, projectAndData.first)
+                        .putExtra(IntentKey.PROJECT_DATA, projectAndData.second),
+                R.anim.slide_in_right,
+                R.anim.fade_out_slide_out_left)
     }
 
     private fun startShareIntent(projectNameAndShareUrl: Pair<String, String>) {

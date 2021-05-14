@@ -6,8 +6,8 @@ import java.util.Collections;
 
 import androidx.annotation.NonNull;
 
-public final class CommentsEnvelopeFactory {
-  private CommentsEnvelopeFactory() {}
+public final class DeprecatedCommentsEnvelopeFactory {
+  private DeprecatedCommentsEnvelopeFactory() {}
 
   public static @NonNull
     DeprecatedCommentsEnvelope commentsEnvelope() {

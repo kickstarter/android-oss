@@ -9,7 +9,7 @@ import com.kickstarter.mock.factories.ActivityFactory;
 import com.kickstarter.mock.factories.BackingFactory;
 import com.kickstarter.mock.factories.CategoryFactory;
 import com.kickstarter.mock.factories.CommentFactory;
-import com.kickstarter.mock.factories.CommentsEnvelopeFactory;
+import com.kickstarter.mock.factories.DeprecatedCommentsEnvelopeFactory;
 import com.kickstarter.mock.factories.LocationFactory;
 import com.kickstarter.mock.factories.MessageThreadEnvelopeFactory;
 import com.kickstarter.mock.factories.MessageThreadsEnvelopeFactory;
@@ -178,17 +178,17 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<DeprecatedCommentsEnvelope> fetchComments(final @NonNull Project project) {
-    return Observable.just(CommentsEnvelopeFactory.commentsEnvelope());
+    return Observable.just(DeprecatedCommentsEnvelopeFactory.commentsEnvelope());
   }
 
   @Override
   public @NonNull Observable<DeprecatedCommentsEnvelope> fetchComments(final @NonNull Update update) {
-    return Observable.just(CommentsEnvelopeFactory.commentsEnvelope());
+    return Observable.just(DeprecatedCommentsEnvelopeFactory.commentsEnvelope());
   }
 
   @Override
   public @NonNull Observable<DeprecatedCommentsEnvelope> fetchComments(final @NonNull String paginationPath) {
-    return Observable.just(CommentsEnvelopeFactory.commentsEnvelope());
+    return Observable.just(DeprecatedCommentsEnvelopeFactory.commentsEnvelope());
   }
 
   @Override

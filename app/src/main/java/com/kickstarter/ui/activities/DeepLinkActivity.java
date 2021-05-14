@@ -43,7 +43,7 @@ public final class DeepLinkActivity extends BaseActivity<DeepLinkViewModel.ViewM
       .compose(observeForUI())
       .subscribe(this::startProjectActivityForCheckout);
 
-    this.viewModel.outputs.finisDeeplinkActivity()
+    this.viewModel.outputs.finishDeeplinkActivity()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(__ -> finish());

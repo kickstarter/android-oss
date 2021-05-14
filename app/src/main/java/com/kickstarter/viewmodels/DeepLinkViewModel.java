@@ -42,7 +42,7 @@ public interface DeepLinkViewModel {
     Observable<Uri> startProjectActivityForCheckout();
 
     /** Emits when we should finish the current activity */
-    Observable<Void> finisDeeplinkActivity();
+    Observable<Void> finishDeeplinkActivity();
   }
 
   final class ViewModel extends ActivityViewModel<DeepLinkActivity> implements Outputs {
@@ -153,7 +153,7 @@ public interface DeepLinkViewModel {
       return this.startProjectActivityWithCheckout;
     }
     @Override
-    public Observable<Void> finisDeeplinkActivity() {
+    public Observable<Void> finishDeeplinkActivity() {
       return this.finishDeeplinkActivity;
     }
   }

@@ -19,7 +19,7 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Void> startDiscoveryActivity = new TestSubscriber<>();
   private final TestSubscriber<Uri> startProjectActivity = new TestSubscriber<>();
   private final TestSubscriber<Uri> startProjectActivityForCheckout = new TestSubscriber<>();
-  private final TestSubscriber<Void> finisDeeplinkActivity = new TestSubscriber<>();
+  private final TestSubscriber<Void> finishDeeplinkActivity = new TestSubscriber<>();
 
   protected void setUpEnvironment() {
     this.vm = new DeepLinkViewModel.ViewModel(environment());
@@ -27,7 +27,7 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.startDiscoveryActivity().subscribe(this.startDiscoveryActivity);
     this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
     this.vm.outputs.startProjectActivityForCheckout().subscribe(this.startProjectActivityForCheckout);
-    this.vm.outputs.finisDeeplinkActivity().subscribe(this.finisDeeplinkActivity);
+    this.vm.outputs.finishDeeplinkActivity().subscribe(this.finishDeeplinkActivity);
   }
 
   protected void setUpEnvironment(final Environment environment) {
@@ -36,7 +36,7 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.startDiscoveryActivity().subscribe(this.startDiscoveryActivity);
     this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
     this.vm.outputs.startProjectActivityForCheckout().subscribe(this.startProjectActivityForCheckout);
-    this.vm.outputs.finisDeeplinkActivity().subscribe(this.finisDeeplinkActivity);
+    this.vm.outputs.finishDeeplinkActivity().subscribe(this.finishDeeplinkActivity);
   }
 
   @Test
@@ -146,7 +146,7 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(intentWithData(url));
 
     this.startBrowser.assertNoValues();
-    this.finisDeeplinkActivity.assertValueCount(1);
+    this.finishDeeplinkActivity.assertValueCount(1);
   }
 
   @Test
@@ -163,7 +163,7 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(intentWithData(url));
 
     this.startBrowser.assertNoValues();
-    this.finisDeeplinkActivity.assertValueCount(1);
+    this.finishDeeplinkActivity.assertValueCount(1);
   }
 
   @Test
@@ -179,7 +179,7 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(intentWithData(url));
 
     this.startBrowser.assertNoValues();
-    this.finisDeeplinkActivity.assertNoValues();
+    this.finishDeeplinkActivity.assertNoValues();
   }
 
   private Intent intentWithData(final String url) {

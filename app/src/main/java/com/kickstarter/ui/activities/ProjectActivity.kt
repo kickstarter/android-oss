@@ -672,11 +672,12 @@ class ProjectActivity :
 
     private fun startRootCommentsActivity(projectAndData: Pair<Project, ProjectData>) {
         startActivityWithTransition(
-                Intent(this, CommentsActivity::class.java)
-                        .putExtra(IntentKey.PROJECT, projectAndData.first)
-                        .putExtra(IntentKey.PROJECT_DATA, projectAndData.second),
-                R.anim.slide_in_right,
-                R.anim.fade_out_slide_out_left)
+            Intent(this, CommentsActivity::class.java)
+                .putExtra(IntentKey.PROJECT, projectAndData.first)
+                .putExtra(IntentKey.PROJECT_DATA, projectAndData.second),
+            R.anim.slide_in_right,
+            R.anim.fade_out_slide_out_left
+        )
     }
 
     private fun startShareIntent(projectNameAndShareUrl: Pair<String, String>) {

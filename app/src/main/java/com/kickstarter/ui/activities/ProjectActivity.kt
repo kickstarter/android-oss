@@ -256,6 +256,11 @@ class ProjectActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { this.startCommentsActivity(it) }
 
+        this.viewModel.outputs.startRootCommentsActivity()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.startRootCommentsActivity(it) }
+
         this.viewModel.outputs.startCreatorBioWebViewActivity()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
@@ -663,6 +668,10 @@ class ProjectActivity :
             .putExtra(IntentKey.PROJECT, projectAndData.first)
             .putExtra(IntentKey.PROJECT_DATA, projectAndData.second)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+    }
+
+    private fun startRootCommentsActivity(projectAndData: Pair<Project, ProjectData>) {
+        // TODO: Start the new activity defined in https://kickstarter.atlassian.net/browse/NT-1920
     }
 
     private fun startShareIntent(projectNameAndShareUrl: Pair<String, String>) {

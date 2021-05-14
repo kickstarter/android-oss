@@ -254,7 +254,7 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activities.DeepLinkActivity">
+        <activity android:name=".ui.activities.DeepLinkActivity" android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -264,6 +264,14 @@
                 <data
                     android:host="www.kickstarter.com"
                     android:pathPrefix="/projects"
+                    android:scheme="https" />
+                <data
+                    android:host="*.kickstarter.com"
+                    android:pathPrefix="/settings/"
+                    android:scheme="ksr" />
+                <data
+                    android:host="*.kickstarter.com"
+                    android:pathPrefix="/settings/"
                     android:scheme="https" />
             </intent-filter>
         </activity>

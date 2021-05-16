@@ -242,7 +242,9 @@ android {
 buildscript {
     repositories {
         google()
-        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath 'com.apollographql.apollo:apollo-gradle-plugin:2.3.0'
@@ -259,6 +261,8 @@ apollo {
 }
 
 repositories {
+    // This is the only reference we cannot remove yet as it has not been migrated to mavenCentral() or google()
+    // see - https://github.com/google/flexbox-layout/issues/566
     jcenter()
     maven {
         url 'https://maven.google.com'
@@ -294,7 +298,7 @@ dependencies {
     implementation "com.jakewharton.rxbinding:rxbinding-recyclerview-v7:$rx_binding_version"
     implementation "com.jakewharton.rxbinding:rxbinding-support-v4:$rx_binding_version"
     implementation "com.jakewharton.timber:timber:3.0.1"
-    implementation 'com.optimizely.ab:android-sdk:3.5.1'
+    implementation 'com.optimizely.ab:android-sdk:3.10.1'
     implementation 'com.qualtrics:digital:1.3'
     implementation "com.stripe:stripe-android:12.0.1"
     final okhttp_version = "4.8.+"
@@ -315,7 +319,7 @@ dependencies {
 
     // Analytics Segment-Braze
     implementation 'com.segment.analytics.android:analytics:4.9.4'
-    implementation 'com.appboy:appboy-segment-integration:7.0.0'
+    implementation 'com.appboy:appboy-segment-integration:8.0.2'
 
     // Security
     implementation 'com.perimeterx.sdk:msdk:1.13.1'

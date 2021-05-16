@@ -1,9 +1,14 @@
 package com.kickstarter.models;
 
 import android.os.Parcelable;
+
+import androidx.annotation.Nullable;
+
 import com.kickstarter.libs.qualifiers.AutoGson;
 
 import org.joda.time.DateTime;
+
+import java.util.Objects;
 
 import auto.parcel.AutoParcel;
 
@@ -33,4 +38,23 @@ public abstract class CommentThread implements Parcelable{
   }
 
   public abstract CommentThread.Builder toBuilder();
+
+  @Override
+  public boolean equals(final @Nullable Object obj) {
+    boolean equals = super.equals(obj);
+
+    if (obj instanceof CommentThread) {
+      final CommentThread other = (CommentThread) obj;
+      equals = Objects.equals(this.id(), other.id()) &&
+              Objects.equals(this.author(), other.author()) &&
+              Objects.equals(this.parentId(), other.parentId());
+    }
+
+    return equals;
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
 }

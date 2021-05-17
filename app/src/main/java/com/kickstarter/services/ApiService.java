@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.kickstarter.libs.Config;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
-import com.kickstarter.models.Comment;
+import com.kickstarter.models.DeprecatedComment;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
@@ -14,7 +14,7 @@ import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.BackingBody;
-import com.kickstarter.services.apirequests.CommentBody;
+import com.kickstarter.services.apirequests.DeprecatedCommentBody;
 import com.kickstarter.services.apirequests.LoginWithFacebookBody;
 import com.kickstarter.services.apirequests.MessageBody;
 import com.kickstarter.services.apirequests.ProjectNotificationBody;
@@ -27,7 +27,7 @@ import com.kickstarter.services.apirequests.XauthBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CategoriesEnvelope;
-import com.kickstarter.services.apiresponses.CommentsEnvelope;
+import com.kickstarter.services.apiresponses.DeprecatedCommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.EmailVerificationEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
@@ -107,17 +107,17 @@ public interface ApiService {
   );
 
   @GET
-  Observable<Response<CommentsEnvelope>> paginatedProjectComments(@Url String paginationPath);
+  Observable<Response<DeprecatedCommentsEnvelope>> paginatedProjectComments(@Url String paginationPath);
 
   @GET
   Observable<Response<MessageThreadsEnvelope>> paginatedMessageThreads(@Url String paginationPath);
 
   @POST("/v1/projects/{param}/comments/")
-  Observable<Response<Comment>> postProjectComment(@Path("param") String param, @Body CommentBody body);
+  Observable<Response<DeprecatedComment>> postProjectComment(@Path("param") String param, @Body DeprecatedCommentBody body);
 
   @POST("/v1/projects/{project_id}/updates/{update_id}/comments")
-  Observable<Response<Comment>> postUpdateComment(@Path("project_id") long projectId, @Path("update_id") long updateId,
-    @Body CommentBody body);
+  Observable<Response<DeprecatedComment>> postUpdateComment(@Path("project_id") long projectId, @Path("update_id") long updateId,
+                                                            @Body DeprecatedCommentBody body);
 
   @GET("/v1/projects/{project_param}/backers/{user_param}")
   Observable<Response<Backing>> projectBacking(
@@ -136,7 +136,7 @@ public interface ApiService {
   Observable<Response<Project>> project(@Path("param") String param);
 
   @GET("/v1/projects/{project_param}/comments")
-  Observable<Response<CommentsEnvelope>> projectComments(@Path("project_param") String projectParam);
+  Observable<Response<DeprecatedCommentsEnvelope>> projectComments(@Path("project_param") String projectParam);
 
   @GET("/v1/users/self/notifications")
   Observable<Response<List<ProjectNotification>>> projectNotifications();
@@ -192,7 +192,7 @@ public interface ApiService {
   Observable<Response<Update>> update(@Path("project_param") String projectParam, @Path("update_param") String updateParam);
 
   @GET("/v1/projects/{project_id}/updates/{update_id}/comments")
-  Observable<Response<CommentsEnvelope>> updateComments(@Path("project_id") long projectId, @Path("update_id") long updateId);
+  Observable<Response<DeprecatedCommentsEnvelope>> updateComments(@Path("project_id") long projectId, @Path("update_id") long updateId);
 
   @GET("/v1/projects/{project_param}/updates")
   Observable<Response<UpdatesEnvelope>> updates(@Path("project_param") String projectParam);

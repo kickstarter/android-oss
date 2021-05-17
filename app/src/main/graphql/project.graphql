@@ -33,7 +33,7 @@ query GetProjectAddOns($slug: String!, $locationId: ID!) {
   }
 }
 
-query GetProjectComments($slug: String!, $cursor: String!){
+query GetProjectComments($slug: String!, $cursor: String){
       project(slug: $slug) {
         collaborators {
           edges {

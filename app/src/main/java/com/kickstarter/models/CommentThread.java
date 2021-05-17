@@ -4,6 +4,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
 
+import com.kickstarter.libs.Build;
 import com.kickstarter.libs.qualifiers.AutoGson;
 
 import org.joda.time.DateTime;
@@ -20,6 +21,7 @@ public abstract class CommentThread implements Parcelable{
   public abstract DateTime createdAt();
   public abstract Boolean deleted();
   public abstract long id();
+  public abstract String cursor();
   public abstract long parentId();
 
   @AutoParcel.Builder
@@ -29,6 +31,7 @@ public abstract class CommentThread implements Parcelable{
     public abstract Builder createdAt(DateTime __);
     public abstract Builder deleted(Boolean __);
     public abstract Builder id(long __);
+    public abstract Builder cursor(String __);
     public abstract Builder parentId(long __);
     public abstract CommentThread build();
   }

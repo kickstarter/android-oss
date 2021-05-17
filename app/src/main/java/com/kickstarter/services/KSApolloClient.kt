@@ -24,7 +24,7 @@ import com.apollographql.apollo.exception.ApolloException
 import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.*
-import com.kickstarter.services.apiresponses.commentthreadenvelope.CommentEnvelope
+import com.kickstarter.services.apiresponses.commentthreadenvelope.CommentThreadEnvelope
 import com.kickstarter.services.apiresponses.commentthreadenvelope.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.SavePaymentMethodData
@@ -194,9 +194,14 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                 .build()
     }
 
-    override fun getProjectComments(slug: String, cursor: String?): Observable<CommentEnvelope> {
+    private fun createPageInfoObject(pageFr: fragment.PageInfo?) : PageInfoEnvelope {
+        return PageInfoEnvelope.builder()
+
+    }
+
+    override fun getProjectComments(slug: String, cursor: String?): Observable<CommentThreadEnvelope> {
         return Observable.defer {
-            val ps = PublishSubject.create<CommentEnvelope>()
+            val ps = PublishSubject.create<CommentThreadEnvelope>()
 
                     this.service.query(
                             GetProjectCommentsQuery.builder()
@@ -215,13 +220,13 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                         .filter { it?.comments() != null }
                                         .map { project ->
 
-                                           CommentEnvelope(
+                                           CommentThreadEnvelope(
                                                     comments = project?.comments()?.edges()?.map { edge ->
                                                         createCommentObject(edge?.node()?.fragments()?.comment())
                                                     },
                                                     totalCount = project?.comments()?.totalCount() ?: 0,
-                                                    page = null,
-                                                    cursor = ""
+                                                    //page = project?.comments()?.pageInfo().f=,
+                                                    //cursor = pro
                                             )
                                          }
                                         .filter { ObjectUtils.isNotNull(it) }

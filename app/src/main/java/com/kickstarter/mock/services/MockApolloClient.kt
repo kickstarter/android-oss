@@ -15,8 +15,7 @@ import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.models.*
 import com.kickstarter.services.ApolloClientType
-import com.kickstarter.services.apiresponses.commentthreadenvelope.CommentEnvelope
-import com.kickstarter.services.apiresponses.commentthreadenvelope.PageInfoEnvelope
+import com.kickstarter.services.apiresponses.commentthreadenvelope.CommentThreadEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
@@ -51,7 +50,7 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(0)
     }
 
-    override fun getProjectComments(slug: String, cursor: String?): Observable<CommentEnvelope> {
+    override fun getProjectComments(slug: String, cursor: String?): Observable<CommentThreadEnvelope> {
         TODO("Not yet implemented")
     }
 

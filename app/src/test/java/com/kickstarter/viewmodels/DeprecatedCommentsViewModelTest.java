@@ -14,12 +14,12 @@ import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.UpdateFactory;
 import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.mock.services.MockApiClient;
-import com.kickstarter.models.Comment;
+import com.kickstarter.models.DeprecatedComment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
-import com.kickstarter.services.apiresponses.CommentsEnvelope;
+import com.kickstarter.services.apiresponses.DeprecatedCommentsEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.data.CommentsData;
 import com.kickstarter.ui.data.ProjectData;
@@ -32,19 +32,19 @@ import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 
-public class CommentsViewModelTest extends KSRobolectricTestCase {
+public class DeprecatedCommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void init_whenViewModelInstantiated_shouldSendPageViewedEvent() {
     final ApiClientType apiClient = new MockApiClient() {
       @Override
-      public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Update update) {
+      public @NonNull Observable<DeprecatedCommentsEnvelope> fetchComments(final @NonNull Update update) {
         return Observable.empty();
       }
     };
 
     final Environment env = environment().toBuilder().apiClient(apiClient).build();
-    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(env);
+    final DeprecatedCommentsViewModel.ViewModel vm = new DeprecatedCommentsViewModel.ViewModel(env);
 
     final Project project = ProjectFactory.project();
     final ProjectData projectData = ProjectDataFactory.Companion.project(project);
@@ -60,13 +60,13 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
   public void testCommentsViewModel_EmptyState() {
     final ApiClientType apiClient = new MockApiClient() {
       @Override
-      public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Update update) {
+      public @NonNull Observable<DeprecatedCommentsEnvelope> fetchComments(final @NonNull Update update) {
         return Observable.empty();
       }
     };
 
     final Environment env = environment().toBuilder().apiClient(apiClient).build();
-    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(env);
+    final DeprecatedCommentsViewModel.ViewModel vm = new DeprecatedCommentsViewModel.ViewModel(env);
 
     final TestSubscriber<CommentsData> commentsData = new TestSubscriber<>();
     vm.outputs.commentsData().subscribe(commentsData);
@@ -79,9 +79,9 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testCommentsViewModel_ProjectCommentsEmit() {
-    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(environment());
+    final DeprecatedCommentsViewModel.ViewModel vm = new DeprecatedCommentsViewModel.ViewModel(environment());
 
-    final TestSubscriber<List<Comment>> comments = new TestSubscriber<>();
+    final TestSubscriber<List<DeprecatedComment>> comments = new TestSubscriber<>();
     vm.outputs.commentsData().map(CommentsData::comments).subscribe(comments);
 
     final TestSubscriber<Boolean> isFetchingComments = new TestSubscriber<>();
@@ -99,13 +99,13 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
   public void testCommentsViewModel_postCommentError() {
     final ApiClientType apiClient = new MockApiClient() {
       @Override
-      public @NonNull Observable<Comment> postComment(final @NonNull Project project, final @NonNull String body) {
+      public @NonNull Observable<DeprecatedComment> postComment(final @NonNull Project project, final @NonNull String body) {
         return Observable.error(ApiExceptionFactory.badRequestException());
       }
     };
 
     final Environment env = environment().toBuilder().apiClient(apiClient).build();
-    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(env);
+    final DeprecatedCommentsViewModel.ViewModel vm = new DeprecatedCommentsViewModel.ViewModel(env);
 
     final TestSubscriber<String> showPostCommentErrorToast = new TestSubscriber<>();
     vm.outputs.showPostCommentErrorToast().subscribe(showPostCommentErrorToast);
@@ -128,7 +128,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testCommentsViewModel_postCommentFlow() {
-    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(
+    final DeprecatedCommentsViewModel.ViewModel vm = new DeprecatedCommentsViewModel.ViewModel(
       environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build()
     );
 
@@ -176,7 +176,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testCommentsViewModel_loggedOutShowDialogFlow() {
     final CurrentUserType currentUser = new MockCurrentUser(UserFactory.user());
-    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(
+    final DeprecatedCommentsViewModel.ViewModel vm = new DeprecatedCommentsViewModel.ViewModel(
       environment().toBuilder().currentUser(currentUser).build()
     );
 
@@ -201,7 +201,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testCommentsViewModel_showCommentButton_isBacking() {
-    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(
+    final DeprecatedCommentsViewModel.ViewModel vm = new DeprecatedCommentsViewModel.ViewModel(
       environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build()
     );
 
@@ -225,7 +225,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
       .isBacking(false)
       .build();
 
-    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(
+    final DeprecatedCommentsViewModel.ViewModel vm = new DeprecatedCommentsViewModel.ViewModel(
       environment().toBuilder().currentUser(new MockCurrentUser(currentUser)).build()
     );
 
@@ -250,7 +250,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
       .isBacking(false)
       .build();
 
-    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(
+    final DeprecatedCommentsViewModel.ViewModel vm = new DeprecatedCommentsViewModel.ViewModel(
       environment().toBuilder().currentUser(new MockCurrentUser(currentUser)).build()
     );
 
@@ -266,7 +266,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testCommentsViewModel_dismissCommentDialog() {
-    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(environment());
+    final DeprecatedCommentsViewModel.ViewModel vm = new DeprecatedCommentsViewModel.ViewModel(environment());
 
     final TestSubscriber<Void> dismissCommentDialogTest = new TestSubscriber<>();
     vm.outputs.dismissCommentDialog().subscribe(dismissCommentDialogTest);
@@ -293,7 +293,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testCommentsViewModel_currentCommentBody() {
-    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(environment());
+    final DeprecatedCommentsViewModel.ViewModel vm = new DeprecatedCommentsViewModel.ViewModel(environment());
 
     final TestSubscriber<String> currentCommentBodyTest = new TestSubscriber<>();
     vm.outputs.currentCommentBody().subscribe(currentCommentBodyTest);
@@ -306,7 +306,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testCommentsViewModel_showCommentDialog() {
-    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(environment());
+    final DeprecatedCommentsViewModel.ViewModel vm = new DeprecatedCommentsViewModel.ViewModel(environment());
 
     final TestSubscriber<Pair<Project, Boolean>> showCommentDialogTest = new TestSubscriber<>();
     vm.outputs.showCommentDialog().subscribe(showCommentDialogTest);
@@ -327,7 +327,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testCommentsViewModel_UpdateCommentsEmit() {
-    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(environment());
+    final DeprecatedCommentsViewModel.ViewModel vm = new DeprecatedCommentsViewModel.ViewModel(environment());
 
     final TestSubscriber<CommentsData> commentsData = new TestSubscriber<>();
     vm.outputs.commentsData().subscribe(commentsData);

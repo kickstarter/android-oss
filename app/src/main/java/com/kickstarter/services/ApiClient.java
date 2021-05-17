@@ -9,7 +9,7 @@ import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
-import com.kickstarter.models.Comment;
+import com.kickstarter.models.DeprecatedComment;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
@@ -20,7 +20,7 @@ import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.BackingBody;
-import com.kickstarter.services.apirequests.CommentBody;
+import com.kickstarter.services.apirequests.DeprecatedCommentBody;
 import com.kickstarter.services.apirequests.LoginWithFacebookBody;
 import com.kickstarter.services.apirequests.MessageBody;
 import com.kickstarter.services.apirequests.ProjectNotificationBody;
@@ -33,7 +33,7 @@ import com.kickstarter.services.apirequests.XauthBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CategoriesEnvelope;
-import com.kickstarter.services.apiresponses.CommentsEnvelope;
+import com.kickstarter.services.apiresponses.DeprecatedCommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.EmailVerificationEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
@@ -204,7 +204,7 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Project project) {
+  public @NonNull Observable<DeprecatedCommentsEnvelope> fetchComments(final @NonNull Project project) {
     return this.service
       .projectComments(project.param())
       .lift(apiErrorOperator())
@@ -212,7 +212,7 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Update update) {
+  public @NonNull Observable<DeprecatedCommentsEnvelope> fetchComments(final @NonNull Update update) {
     return this.service
       .updateComments(update.projectId(), update.id())
       .lift(apiErrorOperator())
@@ -220,7 +220,7 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull String paginationPath) {
+  public @NonNull Observable<DeprecatedCommentsEnvelope> fetchComments(final @NonNull String paginationPath) {
     return this.service
       .paginatedProjectComments(paginationPath)
       .lift(apiErrorOperator())
@@ -378,17 +378,17 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<Comment> postComment(final @NonNull Project project, final @NonNull String body) {
+  public @NonNull Observable<DeprecatedComment> postComment(final @NonNull Project project, final @NonNull String body) {
     return this.service
-      .postProjectComment(project.param(), CommentBody.builder().body(body).build())
+      .postProjectComment(project.param(), DeprecatedCommentBody.builder().body(body).build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
   @Override
-  public @NonNull Observable<Comment> postComment(final @NonNull Update update, final @NonNull String body) {
+  public @NonNull Observable<DeprecatedComment> postComment(final @NonNull Update update, final @NonNull String body) {
     return this.service
-      .postUpdateComment(update.projectId(), update.id(), CommentBody.builder().body(body).build())
+      .postUpdateComment(update.projectId(), update.id(), DeprecatedCommentBody.builder().body(body).build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }

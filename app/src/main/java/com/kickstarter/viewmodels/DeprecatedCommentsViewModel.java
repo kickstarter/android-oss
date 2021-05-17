@@ -13,15 +13,15 @@ import com.kickstarter.libs.utils.EventContextValues;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.extensions.ProjectDataExtKt;
 import com.kickstarter.libs.utils.extensions.StringExt;
-import com.kickstarter.models.Comment;
+import com.kickstarter.models.DeprecatedComment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
-import com.kickstarter.services.apiresponses.CommentsEnvelope;
+import com.kickstarter.services.apiresponses.DeprecatedCommentsEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.activities.CommentsActivity;
+import com.kickstarter.ui.activities.DeprecatedCommentsActivity;
 import com.kickstarter.ui.adapters.data.CommentsData;
 import com.kickstarter.ui.data.ProjectData;
 
@@ -41,7 +41,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
-public interface CommentsViewModel {
+public interface DeprecatedCommentsViewModel {
 
   interface Inputs {
     /** Call when the comment body changes. */
@@ -95,7 +95,7 @@ public interface CommentsViewModel {
     Observable<String> showPostCommentErrorToast();
   }
 
-  final class ViewModel extends ActivityViewModel<CommentsActivity> implements Inputs, Outputs {
+  final class ViewModel extends ActivityViewModel<DeprecatedCommentsActivity> implements Inputs, Outputs {
     private final ApiClientType client;
     private final CookieManager cookieManager;
     private final CurrentUserType currentUser;
@@ -156,7 +156,7 @@ public interface CommentsViewModel {
       final Observable<Boolean> commentHasBody = this.commentBodyChanged
         .map(it -> !ObjectUtils.isNull(it) && StringExt.isPresent(it));
 
-      final Observable<Notification<Comment>> commentNotification = projectOrUpdate
+      final Observable<Notification<DeprecatedComment>> commentNotification = projectOrUpdate
         .compose(combineLatestPair(this.commentBodyChanged))
         .compose(takeWhen(this.postCommentClicked))
         .switchMap(projectOrUpdateAndBody ->
@@ -167,7 +167,7 @@ public interface CommentsViewModel {
         )
         .share();
 
-      final Observable<Comment> postedComment = commentNotification
+      final Observable<DeprecatedComment> postedComment = commentNotification
         .compose(values());
 
       final Observable<Either<Project, Update>> startOverWith = Observable.merge(
@@ -175,18 +175,18 @@ public interface CommentsViewModel {
         projectOrUpdate.compose(takeWhen(this.refresh))
       );
 
-      final ApiPaginator<Comment, CommentsEnvelope, Either<Project, Update>> paginator =
-        ApiPaginator.<Comment, CommentsEnvelope, Either<Project, Update>>builder()
+      final ApiPaginator<DeprecatedComment, DeprecatedCommentsEnvelope, Either<Project, Update>> paginator =
+        ApiPaginator.<DeprecatedComment, DeprecatedCommentsEnvelope, Either<Project, Update>>builder()
           .nextPage(this.nextPage)
           .distinctUntilChanged(true)
           .startOverWith(startOverWith)
-          .envelopeToListOfData(CommentsEnvelope::comments)
+          .envelopeToListOfData(DeprecatedCommentsEnvelope::comments)
           .envelopeToMoreUrl(env -> env.urls().api().moreComments())
           .loadWithParams(pu -> pu.either(this.client::fetchComments, this.client::fetchComments))
           .loadWithPaginationPath(this.client::fetchComments)
           .build();
 
-      final Observable<List<Comment>> comments = paginator.paginatedData().share();
+      final Observable<List<DeprecatedComment>> comments = paginator.paginatedData().share();
 
       final Observable<Boolean> userCanComment = Observable.combineLatest(
         currentUser,
@@ -288,7 +288,7 @@ public interface CommentsViewModel {
       final Observable<Update> update = projectOrUpdate.map(Either::right);
     }
 
-    private @NonNull Observable<Comment> postComment(final @NonNull Either<Project, Update> projectOrUpdate, final @NonNull String body) {
+    private @NonNull Observable<DeprecatedComment> postComment(final @NonNull Either<Project, Update> projectOrUpdate, final @NonNull String body) {
       return projectOrUpdate.either(
         p -> this.client.postComment(p, body),
         u -> this.client.postComment(u, body)

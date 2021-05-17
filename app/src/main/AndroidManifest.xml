@@ -47,10 +47,13 @@
             android:name=".ui.activities.ChangePasswordActivity"
             android:theme="@style/SettingsActivity" />
         <activity
+            android:name=".ui.activities.CommentsActivity"
+            android:theme="@style/CommentsActivity" />
+        <activity
             android:name=".ui.activities.EditProfileActivity"
             android:theme="@style/SettingsActivity" />
         <activity
-            android:name=".ui.activities.CommentsActivity"
+            android:name=".ui.activities.DeprecatedCommentsActivity"
             android:parentActivityName=".ui.activities.ProjectActivity"
             android:theme="@style/CommentsActivity" />
         <activity android:name=".ui.activities.CreatorBioActivity" />

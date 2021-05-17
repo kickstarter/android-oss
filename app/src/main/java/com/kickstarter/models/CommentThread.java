@@ -49,9 +49,11 @@ public abstract class CommentThread implements Parcelable{
     if (obj instanceof CommentThread) {
       final CommentThread other = (CommentThread) obj;
       equals = Objects.equals(this.id(), other.id()) &&
+              Objects.equals(this.body(), other.body()) &&
               Objects.equals(this.author(), other.author()) &&
-              Objects.equals(this.deleted(), other.deleted()) &&
               Objects.equals(this.cursor(), other.cursor()) &&
+              Objects.equals(this.deleted(), other.deleted()) &&
+              Objects.equals(this.createdAt(), other.createdAt()) &&
               Objects.equals(this.parentId(), other.parentId());
     }
 

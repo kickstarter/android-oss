@@ -16,15 +16,15 @@ public abstract class CommentThread implements Parcelable{
     public abstract String body();
     public abstract DateTime createdAt();
     public abstract Boolean deleted();
+    public abstract List<CommentThread> replies();
     public abstract long id();
     public abstract long parentId();
-    public abstract String cursor();
     public abstract List<String> authorBadges();
 
     @AutoParcel.Builder
     public abstract static class Builder {
         public abstract Builder author(User __);
-        public abstract Builder cursor(String __);
+        public abstract Builder replies(List<CommentThread> __);
         public abstract Builder body(String __);
         public abstract Builder createdAt(DateTime __);
         public abstract Builder deleted(Boolean __);

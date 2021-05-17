@@ -196,6 +196,11 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
     private fun createPageInfoObject(pageFr: fragment.PageInfo?) : PageInfoEnvelope {
         return PageInfoEnvelope.builder()
+                .endCursor(pageFr?.endCursor() ?: "")
+                .hasNextPage(pageFr?.hasNextPage() ?: false)
+                .hasPreviousPage(pageFr?.hasPreviousPage() ?: false)
+                .startCursor(pageFr?.startCursor() ?: "")
+                .build()
 
     }
 
@@ -225,8 +230,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                                         createCommentObject(edge?.node()?.fragments()?.comment())
                                                     },
                                                     totalCount = project?.comments()?.totalCount() ?: 0,
-                                                    //page = project?.comments()?.pageInfo().f=,
-                                                    //cursor = pro
+                                                    page = createPageInfoObject(project?.comments()?.pageInfo()?.fragments()?.pageInfo())
                                             )
                                          }
                                         .filter { ObjectUtils.isNotNull(it) }

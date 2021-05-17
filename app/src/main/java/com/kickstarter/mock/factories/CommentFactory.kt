@@ -3,7 +3,7 @@ package com.kickstarter.mock.factories
 import com.kickstarter.models.Comment
 import org.joda.time.DateTime
 
-class CommentThreadFactory {
+class CommentFactory {
 
     companion object {
         fun comment(): Comment {

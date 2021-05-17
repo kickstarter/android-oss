@@ -8,7 +8,7 @@ import com.kickstarter.mock.factories.ActivityEnvelopeFactory;
 import com.kickstarter.mock.factories.ActivityFactory;
 import com.kickstarter.mock.factories.BackingFactory;
 import com.kickstarter.mock.factories.CategoryFactory;
-import com.kickstarter.mock.factories.CommentFactory;
+import com.kickstarter.mock.factories.DeprecatedCommentFactory;
 import com.kickstarter.mock.factories.DeprecatedCommentsEnvelopeFactory;
 import com.kickstarter.mock.factories.LocationFactory;
 import com.kickstarter.mock.factories.MessageThreadEnvelopeFactory;
@@ -369,12 +369,12 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<DeprecatedComment> postComment(final @NonNull Project project, final @NonNull String body) {
-    return Observable.just(CommentFactory.comment().toBuilder().body(body).build());
+    return Observable.just(DeprecatedCommentFactory.comment().toBuilder().body(body).build());
   }
 
   @Override
   public @NonNull Observable<DeprecatedComment> postComment(final @NonNull Update update, final @NonNull String body) {
-    return Observable.just(CommentFactory.comment().toBuilder().body(body).build());
+    return Observable.just(DeprecatedCommentFactory.comment().toBuilder().body(body).build());
   }
 
   @Override

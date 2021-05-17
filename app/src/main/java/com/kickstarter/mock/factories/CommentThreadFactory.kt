@@ -16,7 +16,7 @@ class CommentThreadFactory {
                         .build()
                 )
                 .parentId(1)
-                .replies(listOf())
+                .repliesCount(0)
                 .cursor("")
                 .authorBadges(listOf())
                 .deleted(false)

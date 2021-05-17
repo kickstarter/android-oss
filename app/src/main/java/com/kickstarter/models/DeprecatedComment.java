@@ -10,7 +10,7 @@ import auto.parcel.AutoParcel;
 
 @AutoGson
 @AutoParcel
-public abstract class Comment implements Parcelable {
+public abstract class DeprecatedComment implements Parcelable {
   public abstract User author();
   public abstract String body();
   public abstract DateTime createdAt();
@@ -24,11 +24,11 @@ public abstract class Comment implements Parcelable {
     public abstract Builder createdAt(DateTime __);
     public abstract Builder deletedAt(DateTime __);
     public abstract Builder id(long __);
-    public abstract Comment build();
+    public abstract DeprecatedComment build();
   }
 
   public static Builder builder() {
-    return new AutoParcel_Comment.Builder();
+    return new AutoParcel_DeprecatedComment.Builder();
   }
 
   public abstract Builder toBuilder();

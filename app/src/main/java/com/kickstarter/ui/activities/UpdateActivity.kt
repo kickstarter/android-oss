@@ -148,7 +148,7 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
     }
 
     private fun startCommentsActivity(update: Update) {
-        val intent = Intent(this, CommentsActivity::class.java)
+        val intent = Intent(this, DeprecatedCommentsActivity::class.java)
             .putExtra(IntentKey.UPDATE, update)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }

@@ -3,7 +3,7 @@ package com.kickstarter.services.apiresponses;
 import android.os.Parcelable;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
-import com.kickstarter.models.Comment;
+import com.kickstarter.models.DeprecatedComment;
 
 import java.util.List;
 
@@ -11,8 +11,8 @@ import auto.parcel.AutoParcel;
 
 @AutoGson
 @AutoParcel
-public abstract class CommentsEnvelope implements Parcelable {
-  public abstract List<Comment> comments();
+public abstract class DeprecatedCommentsEnvelope implements Parcelable {
+  public abstract List<DeprecatedComment> comments();
   public abstract UrlsEnvelope urls();
 
   @AutoGson
@@ -34,7 +34,7 @@ public abstract class CommentsEnvelope implements Parcelable {
       }
 
       public static Builder builder() {
-        return new AutoParcel_CommentsEnvelope_UrlsEnvelope_ApiEnvelope.Builder();
+        return new AutoParcel_DeprecatedCommentsEnvelope_UrlsEnvelope_ApiEnvelope.Builder();
       }
     }
 
@@ -45,19 +45,19 @@ public abstract class CommentsEnvelope implements Parcelable {
     }
 
     public static Builder builder() {
-      return new AutoParcel_CommentsEnvelope_UrlsEnvelope.Builder();
+      return new AutoParcel_DeprecatedCommentsEnvelope_UrlsEnvelope.Builder();
     }
   }
 
   @AutoParcel.Builder
   public abstract static class Builder {
-    public abstract Builder comments(List<Comment> __);
+    public abstract Builder comments(List<DeprecatedComment> __);
     public abstract Builder urls(UrlsEnvelope __);
-    public abstract CommentsEnvelope build();
+    public abstract DeprecatedCommentsEnvelope build();
   }
 
   public static Builder builder() {
-    return new AutoParcel_CommentsEnvelope.Builder();
+    return new AutoParcel_DeprecatedCommentsEnvelope.Builder();
   }
 
   public abstract Builder toBuilder();

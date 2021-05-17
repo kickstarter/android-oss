@@ -6,7 +6,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   style="@style/Toolbar"
   android:background="@color/kds_support_100"
-  tools:showIn="@layout/comments_layout"
+  tools:showIn="@layout/deprecated_comments_layout"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp">
 

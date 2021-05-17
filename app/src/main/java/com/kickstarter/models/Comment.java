@@ -11,7 +11,7 @@ import auto.parcel.AutoParcel;
 
 @AutoGson
 @AutoParcel
-public abstract class CommentThread implements Parcelable{
+public abstract class Comment implements Parcelable{
   public abstract User author();
   public abstract String body();
   public abstract DateTime createdAt();
@@ -33,21 +33,21 @@ public abstract class CommentThread implements Parcelable{
     public abstract Builder deleted(Boolean __);
     public abstract Builder id(long __);
     public abstract Builder parentId(long __);
-    public abstract CommentThread build();
+    public abstract Comment build();
   }
 
-  public static CommentThread.Builder builder() {
-    return new AutoParcel_CommentThread.Builder();
+  public static Builder builder() {
+    return new AutoParcel_Comment.Builder();
   }
 
-  public abstract CommentThread.Builder toBuilder();
+  public abstract Builder toBuilder();
 
   @Override
   public boolean equals(final @Nullable Object obj) {
     boolean equals = super.equals(obj);
 
-    if (obj instanceof CommentThread) {
-      final CommentThread other = (CommentThread) obj;
+    if (obj instanceof Comment) {
+      final Comment other = (Comment) obj;
       equals = Objects.equals(this.id(), other.id()) &&
               Objects.equals(this.body(), other.body()) &&
               Objects.equals(this.author(), other.author()) &&

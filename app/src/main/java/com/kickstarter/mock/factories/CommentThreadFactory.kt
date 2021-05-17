@@ -1,13 +1,13 @@
 package com.kickstarter.mock.factories
 
-import com.kickstarter.models.CommentThread
+import com.kickstarter.models.Comment
 import org.joda.time.DateTime
 
 class CommentThreadFactory {
 
     companion object {
-        fun comment(): CommentThread {
-            return CommentThread.builder()
+        fun comment(): Comment {
+            return Comment.builder()
                 .id(1)
                 .author(
                     UserFactory.user()

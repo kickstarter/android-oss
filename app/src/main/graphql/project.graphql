@@ -38,8 +38,7 @@ query GetProjectComments($slug: String!, $cursor: String!){
         collaborators {
           edges {
             node {
-              id
-              name
+              ...user
             }
           }
         }

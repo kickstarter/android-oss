@@ -5,6 +5,8 @@ import com.kickstarter.libs.qualifiers.AutoGson;
 
 import org.joda.time.DateTime;
 
+import java.util.List;
+
 import auto.parcel.AutoParcel;
 
 @AutoGson
@@ -16,6 +18,7 @@ public abstract class CommentThread implements Parcelable{
     public abstract Boolean deleted();
     public abstract long id();
     public abstract long parentId();
+    public abstract List<String> authorBadges();
 
     @AutoParcel.Builder
     public abstract static class Builder {
@@ -25,6 +28,7 @@ public abstract class CommentThread implements Parcelable{
         public abstract Builder deleted(Boolean __);
         public abstract Builder id(long __);
         public abstract Builder parentId(long __);
+        public abstract Builder authorBadges(List<String> __);
         public abstract CommentThread build();
     }
 

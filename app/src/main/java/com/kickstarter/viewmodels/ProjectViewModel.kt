@@ -14,6 +14,7 @@ import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.OptimizelyExperiment
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
@@ -219,6 +220,9 @@ interface ProjectViewModel {
         /** Emits when we should start [com.kickstarter.ui.activities.CommentsActivity].  */
         fun startCommentsActivity(): Observable<Pair<Project, ProjectData>>
 
+        /** Emits when we should start [com.kickstarter.ui.activities.RootCommentsActivity]. */
+        fun startRootCommentsActivity(): Observable<Pair<Project, ProjectData>>
+
         /** Emits when we should start the creator bio [com.kickstarter.ui.activities.CreatorBioActivity].  */
         fun startCreatorBioWebViewActivity(): Observable<Project>
 
@@ -308,6 +312,7 @@ interface ProjectViewModel {
         private val showUpdatePledgeSuccess = PublishSubject.create<Void>()
         private val startCampaignWebViewActivity = PublishSubject.create<ProjectData>()
         private val startCommentsActivity = PublishSubject.create<Pair<Project, ProjectData>>()
+        private val startRootCommentsActivity = PublishSubject.create<Pair<Project, ProjectData>>()
         private val startCreatorBioWebViewActivity = PublishSubject.create<Project>()
         private val startCreatorDashboardActivity = PublishSubject.create<Project>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
@@ -482,10 +487,18 @@ interface ProjectViewModel {
                 .subscribe(this.startCreatorBioWebViewActivity)
 
             currentProject
+                .filter { !optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_THREADING) }
                 .compose<Project>(takeWhen(this.commentsTextViewClicked))
                 .compose<Pair<Project, ProjectData>>(combineLatestPair(projectData))
                 .compose(bindToLifecycle())
                 .subscribe(this.startCommentsActivity)
+
+            currentProject
+                .filter { optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_THREADING) }
+                .compose<Project>(takeWhen(this.commentsTextViewClicked))
+                .compose<Pair<Project, ProjectData>>(combineLatestPair(projectData))
+                .compose(bindToLifecycle())
+                .subscribe(this.startRootCommentsActivity)
 
             currentProject
                 .compose<Project>(takeWhen(this.creatorDashboardButtonClicked))
@@ -1068,6 +1081,9 @@ interface ProjectViewModel {
 
         @NonNull
         override fun startCommentsActivity(): Observable<Pair<Project, ProjectData>> = this.startCommentsActivity
+
+        @NonNull
+        override fun startRootCommentsActivity(): Observable<Pair<Project, ProjectData>> = this.startRootCommentsActivity
 
         @NonNull
         override fun startCreatorBioWebViewActivity(): Observable<Project> = this.startCreatorBioWebViewActivity

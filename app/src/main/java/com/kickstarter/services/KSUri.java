@@ -14,6 +14,10 @@ import androidx.annotation.NonNull;
 public final class KSUri {
   private KSUri() {}
 
+  public static boolean isSettingsUrl(final @NonNull Uri uri) {
+    return uri.toString().contains("/settings/notify_mobile_of_marketing_update/true");
+  }
+
   public static boolean isVerificationEmailUrl(final @NonNull Uri uri) {
     return uri.toString().contains(VERIFICATION);
   }

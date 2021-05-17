@@ -17,7 +17,7 @@ public abstract class CommentThread implements Parcelable{
   public abstract DateTime createdAt();
   public abstract Boolean deleted();
   public abstract String cursor();
-  public abstract List<CommentThread> replies();
+  public abstract Integer repliesCount();
   public abstract List<String> authorBadges();
   public abstract long id();
   public abstract long parentId();
@@ -27,7 +27,7 @@ public abstract class CommentThread implements Parcelable{
     public abstract Builder author(User __);
     public abstract Builder cursor(String __);
     public abstract Builder authorBadges(List<String> __);
-    public abstract Builder replies(List<CommentThread> __);
+    public abstract Builder repliesCount(Integer __);
     public abstract Builder body(String __);
     public abstract Builder createdAt(DateTime __);
     public abstract Builder deleted(Boolean __);

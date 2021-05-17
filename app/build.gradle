@@ -26,14 +26,6 @@ def isCircle = "true" == System.getenv("CIRCLECI")
 def isPrivateCIEnv = ("android-private" == System.getenv("CIRCLE_PROJECT_REPONAME"))
 def isRelease = ("external" == System.getenv("CIRCLE_BRANCH"))
 
-project.logger.lifecycle("******* is PRIVATE ENV: ")
-project.logger.lifecycle(isPrivateCIEnv.toString())
-project.logger.lifecycle("******* is RELEASE branch:")
-project.logger.lifecycle(isRelease.toString())
-project.logger.lifecycle(System.getenv("CIRCLE_PROJECT_REPONAME") + " REPONAME ******************")
-project.logger.lifecycle(System.getenv("CIRCLE_BRANCH") + " BRANCH ******************")
-project.logger.lifecycle(System.getenv("CIRCLE_JOB") + " CIRCLE JOB ******************")
-
 ext.signing = [
         storeFilePath: "path/to/keystore",
         storePassword: "keystore password",

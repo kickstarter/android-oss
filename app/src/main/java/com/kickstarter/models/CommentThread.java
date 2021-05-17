@@ -15,7 +15,6 @@ public abstract class CommentThread implements Parcelable{
   public abstract DateTime createdAt();
   public abstract Boolean deleted();
   public abstract long id();
-  public abstract String cursor();
   public abstract long parentId();
 
   @AutoParcel.Builder
@@ -25,7 +24,6 @@ public abstract class CommentThread implements Parcelable{
     public abstract Builder createdAt(DateTime __);
     public abstract Builder deleted(Boolean __);
     public abstract Builder id(long __);
-    public abstract Builder cursor(String __);
     public abstract Builder parentId(long __);
     public abstract CommentThread build();
   }
@@ -44,6 +42,7 @@ public abstract class CommentThread implements Parcelable{
       final CommentThread other = (CommentThread) obj;
       equals = Objects.equals(this.id(), other.id()) &&
               Objects.equals(this.author(), other.author()) &&
+              Objects.equals(this.deleted(), other.deleted()) &&
               Objects.equals(this.parentId(), other.parentId());
     }
 

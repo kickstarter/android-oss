@@ -607,6 +607,22 @@ interface ProjectViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .share()
 
+            val comments = projectData
+                    .switchMap {
+                        this.apolloClient.getProjectComments(it.project().slug() ?: "", null)
+                    }
+                    .filter {
+                        val v = it
+                        ObjectUtils.isNotNull(it)
+                    }
+                    .share()
+
+                comments
+                    .compose(bindToLifecycle())
+                    .subscribe{it -> {
+                        val comm = it
+                    }}
+
             // - Update fragments with the backing data
             projectData
                 .filter { it.project().hasRewards() }

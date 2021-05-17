@@ -23,20 +23,9 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.models.Avatar
-import com.kickstarter.models.Backing
-import com.kickstarter.models.Checkout
-import com.kickstarter.models.CreatorDetails
-import com.kickstarter.models.ErroredBacking
-import com.kickstarter.models.Item
-import com.kickstarter.models.Location
-import com.kickstarter.models.Project
-import com.kickstarter.models.Relay
-import com.kickstarter.models.Reward
-import com.kickstarter.models.RewardsItem
-import com.kickstarter.models.ShippingRule
-import com.kickstarter.models.StoredCard
-import com.kickstarter.models.User
+import com.kickstarter.models.*
+import com.kickstarter.services.apiresponses.commentthreadenvelope.CommentEnvelope
+import com.kickstarter.services.apiresponses.commentthreadenvelope.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
@@ -160,6 +149,8 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }.subscribeOn(Schedulers.io())
     }
 
+
+
     override fun clearUnseenActivity(): Observable<Int> {
         return Observable.defer {
             val ps = PublishSubject.create<Int>()
@@ -183,6 +174,68 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                 })
             return@defer ps
         }
+    }
+
+    private fun createCommentObject(commentFr: fragment.Comment?) : CommentThread {
+        val author = User.builder()
+                .id(decodeRelayId(commentFr?.author()?.fragments()?.user()?.id()) ?: 0 )
+                .name(commentFr?.author()?.fragments()?.user()?.name())
+                .avatar(Avatar.builder()
+                .medium(commentFr?.author()?.fragments()?.user()?.imageUrl())
+                .build())
+                .build()
+
+        return CommentThread.builder()
+                .id(decodeRelayId(commentFr?.id()) ?: 0)
+                .author(author)
+                .body(commentFr?.body())
+                .authorBadges(listOf())
+                .createdAt(commentFr?.createdAt())
+                .deleted(commentFr?.deleted())
+                .parentId(decodeRelayId(commentFr?.parentId()) ?: 0)
+                .build()
+    }
+
+    override fun getProjectComments(slug: String, cursor: String?): Observable<CommentEnvelope> {
+        return Observable.defer {
+            val ps = PublishSubject.create<CommentEnvelope>()
+
+                    this.service.query(
+                            GetProjectCommentsQuery.builder()
+                                    .cursor(cursor)
+                                    .slug(slug)
+                                    .build()
+                    )
+                    .enqueue(object : ApolloCall.Callback<GetProjectCommentsQuery.Data>() {
+                        override fun onFailure(e: ApolloException) {
+                            ps.onError(e)
+                        }
+
+                        override fun onResponse(response: Response<GetProjectCommentsQuery.Data>) {
+                            response.data?.let { data ->
+                                Observable.just(data.project())
+                                        .filter { it?.comments() != null }
+                                        .map { project ->
+
+                                           CommentEnvelope(
+                                                    comments = project?.comments()?.edges()?.map { edge ->
+                                                        createCommentObject(edge?.node()?.fragments()?.comment())
+                                                    },
+                                                    totalCount = project?.comments()?.totalCount() ?: 0,
+                                                    page = null,
+                                                    cursor = ""
+                                            )
+                                         }
+                                        .filter { ObjectUtils.isNotNull(it) }
+                                        .subscribe {
+                                            ps.onNext(it)
+                                            ps.onCompleted()
+                                        }
+                            }
+                        }
+                    })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
     }
 
     override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {

@@ -22,6 +22,8 @@ public abstract class PageInfoEnvelope implements Parcelable {
     }
 
     public static Builder builder() {
-        return new AutoParcel_PageInfoEnvelope.Builder();
+            return new AutoParcel_PageInfoEnvelope.Builder();
     }
+
+    public abstract Builder toBuilder();
 }

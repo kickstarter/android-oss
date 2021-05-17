@@ -13,16 +13,10 @@ import com.kickstarter.mock.factories.CreatorDetailsFactory
 import com.kickstarter.mock.factories.ErroredBackingFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.StoredCardFactory
-import com.kickstarter.models.Backing
-import com.kickstarter.models.Checkout
-import com.kickstarter.models.CreatorDetails
-import com.kickstarter.models.ErroredBacking
-import com.kickstarter.models.Location
-import com.kickstarter.models.Project
-import com.kickstarter.models.Reward
-import com.kickstarter.models.StoredCard
-import com.kickstarter.models.User
+import com.kickstarter.models.*
 import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.apiresponses.commentthreadenvelope.CommentEnvelope
+import com.kickstarter.services.apiresponses.commentthreadenvelope.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
@@ -55,6 +49,10 @@ open class MockApolloClient : ApolloClientType {
 
     override fun clearUnseenActivity(): Observable<Int> {
         return Observable.just(0)
+    }
+
+    override fun getProjectComments(slug: String, cursor: String?): Observable<CommentEnvelope> {
+        TODO("Not yet implemented")
     }
 
     override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {

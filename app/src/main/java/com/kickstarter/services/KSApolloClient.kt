@@ -149,8 +149,6 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }.subscribeOn(Schedulers.io())
     }
 
-
-
     override fun clearUnseenActivity(): Observable<Int> {
         return Observable.defer {
             val ps = PublishSubject.create<Int>()

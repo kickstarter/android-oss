@@ -114,13 +114,13 @@ public interface UpdateViewModel {
         .subscribe(this.startShareIntent::onNext);
 
       currentUpdate
-        .filter(__ -> !optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_THREADING))
+        .filter(__ -> !this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_THREADING))
         .compose(takeWhen(this.goToCommentsRequest))
         .compose(bindToLifecycle())
         .subscribe(this.startCommentsActivity::onNext);
 
       currentUpdate
-        .filter(__ -> optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_THREADING))
+        .filter(__ -> this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_THREADING))
         .compose(takeWhen(this.goToCommentsRequest))
         .compose(bindToLifecycle())
         .subscribe(this.startRootCommentsActivity::onNext);

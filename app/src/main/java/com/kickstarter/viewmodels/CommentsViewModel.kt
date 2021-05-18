@@ -16,7 +16,6 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CommentsActivity
 import com.kickstarter.ui.data.ProjectData
 import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
 import rx.subjects.BehaviorSubject
 
 interface CommentsViewModel {
@@ -59,9 +58,7 @@ interface CommentsViewModel {
             intent()
                 .map { it.getParcelableExtra(IntentKey.PROJECT_DATA) as ProjectData? }
                 .ofType(ProjectData::class.java)
-                .filter { it.project().isBacking || ProjectUtils.userIsCreator(it.project(), it.user()) }
                 .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     enableCommentComposer.onNext(isProjectBackedOrUserIsCreator(Pair(it.project(), it.user())))
                 }

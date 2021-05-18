@@ -6,7 +6,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @AutoGson
-class PageInfoEnvelope private constructor(
+class PageInfoEnvelope(
     val hasPreviousPage: Boolean?,
     val hasNextPage: Boolean?,
     val startCursor: String?,

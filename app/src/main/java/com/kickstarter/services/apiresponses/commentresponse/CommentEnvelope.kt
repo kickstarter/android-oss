@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @AutoGson
-class CommentEnvelope private constructor(
+class CommentEnvelope(
     val comments: List<Comment>?,
     val pageInfoEnvelope: PageInfoEnvelope?,
     val totalCount: Int?

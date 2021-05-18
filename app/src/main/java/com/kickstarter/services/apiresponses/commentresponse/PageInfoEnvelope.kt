@@ -1,18 +1,26 @@
 package com.kickstarter.services.apiresponses.commentresponse
 
+import android.os.Parcelable
+import com.kickstarter.libs.qualifiers.AutoGson
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+@AutoGson
 class PageInfoEnvelope private constructor(
     val hasPreviousPage: Boolean?,
     val hasNextPage: Boolean?,
     val startCursor: String?,
     val endCursor: String?
-) {
+) : Parcelable {
 
+    @Parcelize
+    @AutoGson
     data class Builder(
         var hasPreviousPage: Boolean? = null,
         var hasNextPage: Boolean? = null,
         var startCursor: String? = null,
         var endCursor: String? = null
-    ) {
+    ) : Parcelable {
 
         fun hasPreviousPage(hasPreviousPage: Boolean) = apply { this.hasPreviousPage = hasPreviousPage }
         fun hasNextPage(hasNextPage: Boolean) = apply { this.hasNextPage = hasNextPage }

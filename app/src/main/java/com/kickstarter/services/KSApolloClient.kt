@@ -188,7 +188,14 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    private fun createCommentObject(commentFr: fragment.Comment?): Comment {
+    private fun createCommentObject(commentNode: GetProjectCommentsQuery.Node1?): Comment {
+
+        val commentFr = commentNode?.fragments()?.comment()
+
+        val badges: List<String>? = commentNode?.authorBadges()?.map { badge ->
+            badge?.rawValue() ?: ""
+        }
+
         val author = User.builder()
             .id(decodeRelayId(commentFr?.author()?.fragments()?.user()?.id()) ?: -1)
             .name(commentFr?.author()?.fragments()?.user()?.name())
@@ -202,9 +209,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         return Comment.builder()
             .id(decodeRelayId(commentFr?.id()) ?: -1)
             .author(author)
-            .repliesCount(0)
+            .repliesCount(commentNode?.replies()?.totalCount() ?: 0)
             .body(commentFr?.body())
-            .authorBadges(listOf())
+            .authorBadges(badges)
             .cursor("")
             .createdAt(commentFr?.createdAt())
             .deleted(commentFr?.deleted())
@@ -215,7 +222,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
     private fun createPageInfoObject(pageFr: fragment.PageInfo?): PageInfoEnvelope {
         return PageInfoEnvelope.builder()
             .endCursor(pageFr?.endCursor() ?: "")
-            .hasNextPage(pageFr?.hasNextPage() ?: false)
+            // .hasNextPage(pageFr?.hasNextPage() ?: false)
             .hasPreviousPage(pageFr?.hasPreviousPage() ?: false)
             .startCursor(pageFr?.startCursor() ?: "")
             .build()
@@ -243,8 +250,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                 .map { project ->
 
                                     val comments = project?.comments()?.edges()?.map { edge ->
-                                        createCommentObject(edge?.node()?.fragments()?.comment())
-                                            .toBuilder().repliesCount(edge?.node()?.replies()?.totalCount()).build()
+                                        createCommentObject(edge?.node())
                                     }
 
                                     CommentEnvelope.builder()

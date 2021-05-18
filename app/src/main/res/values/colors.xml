@@ -34,6 +34,7 @@
   <color name="kds_trust_700">#0A007D</color>
   <color name="kds_warn">#F9D66D</color>
   <color name="kds_white">@android:color/white</color>
+  <color name="kds_legacy_grey_500">#DCDEDD</color>
 
   <!-- Colors with hex opacity:
     http://stackoverflow.com/questions/5445085/understanding-colors-in-android-6-characters/11019879#11019879 -->
@@ -54,7 +55,9 @@
   <color name="green_alpha_50">#80009E74</color>
   <color name="green_darken_10">@color/soft_black_alpha_17</color>
   <color name="soft_black_alpha_17">#2B282828</color>
+  <color name="soft_black">#282828</color>
   <color name="white_alpha_60">#99ffffff</color>
+  <color name="soft_grey_disable">#9B9E9E</color>
 
   <!-- Click colors -->
   <color name="dark_gray_click">@color/ripple_light</color>

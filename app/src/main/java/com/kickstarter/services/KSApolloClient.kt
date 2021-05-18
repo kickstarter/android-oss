@@ -23,7 +23,21 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.models.*
+import com.kickstarter.models.Avatar
+import com.kickstarter.models.Backing
+import com.kickstarter.models.Checkout
+import com.kickstarter.models.Comment
+import com.kickstarter.models.CreatorDetails
+import com.kickstarter.models.ErroredBacking
+import com.kickstarter.models.Item
+import com.kickstarter.models.Location
+import com.kickstarter.models.Project
+import com.kickstarter.models.Relay
+import com.kickstarter.models.Reward
+import com.kickstarter.models.RewardsItem
+import com.kickstarter.models.ShippingRule
+import com.kickstarter.models.StoredCard
+import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
@@ -174,78 +188,79 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    private fun createCommentObject(commentFr: fragment.Comment?) : Comment {
+    private fun createCommentObject(commentFr: fragment.Comment?): Comment {
         val author = User.builder()
-                .id(decodeRelayId(commentFr?.author()?.fragments()?.user()?.id()) ?: -1 )
-                .name(commentFr?.author()?.fragments()?.user()?.name())
-                .avatar(Avatar.builder()
-                .medium(commentFr?.author()?.fragments()?.user()?.imageUrl())
-                .build())
-                .build()
+            .id(decodeRelayId(commentFr?.author()?.fragments()?.user()?.id()) ?: -1)
+            .name(commentFr?.author()?.fragments()?.user()?.name())
+            .avatar(
+                Avatar.builder()
+                    .medium(commentFr?.author()?.fragments()?.user()?.imageUrl())
+                    .build()
+            )
+            .build()
 
         return Comment.builder()
-                .id(decodeRelayId(commentFr?.id()) ?: -1)
-                .author(author)
-                .repliesCount(0)
-                .body(commentFr?.body())
-                .authorBadges(listOf())
-                .cursor("")
-                .createdAt(commentFr?.createdAt())
-                .deleted(commentFr?.deleted())
-                .parentId(decodeRelayId(commentFr?.parentId()) ?: -1)
-                .build()
+            .id(decodeRelayId(commentFr?.id()) ?: -1)
+            .author(author)
+            .repliesCount(0)
+            .body(commentFr?.body())
+            .authorBadges(listOf())
+            .cursor("")
+            .createdAt(commentFr?.createdAt())
+            .deleted(commentFr?.deleted())
+            .parentId(decodeRelayId(commentFr?.parentId()) ?: -1)
+            .build()
     }
 
-    private fun createPageInfoObject(pageFr: fragment.PageInfo?) : PageInfoEnvelope {
+    private fun createPageInfoObject(pageFr: fragment.PageInfo?): PageInfoEnvelope {
         return PageInfoEnvelope.builder()
-                .endCursor(pageFr?.endCursor() ?: "")
-                .hasNextPage(pageFr?.hasNextPage() ?: false)
-                .hasPreviousPage(pageFr?.hasPreviousPage() ?: false)
-                .startCursor(pageFr?.startCursor() ?: "")
-                .build()
-
+            .endCursor(pageFr?.endCursor() ?: "")
+            .hasNextPage(pageFr?.hasNextPage() ?: false)
+            .hasPreviousPage(pageFr?.hasPreviousPage() ?: false)
+            .startCursor(pageFr?.startCursor() ?: "")
+            .build()
     }
 
     override fun getProjectComments(slug: String, cursor: String?): Observable<CommentEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<CommentEnvelope>()
 
-                    this.service.query(
-                            GetProjectCommentsQuery.builder()
-                                    .cursor(cursor)
-                                    .slug(slug)
-                                    .build()
-                    )
-                    .enqueue(object : ApolloCall.Callback<GetProjectCommentsQuery.Data>() {
-                        override fun onFailure(e: ApolloException) {
-                            ps.onError(e)
+            this.service.query(
+                GetProjectCommentsQuery.builder()
+                    .cursor(cursor)
+                    .slug(slug)
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<GetProjectCommentsQuery.Data>() {
+                    override fun onFailure(e: ApolloException) {
+                        ps.onError(e)
+                    }
+
+                    override fun onResponse(response: Response<GetProjectCommentsQuery.Data>) {
+                        response.data?.let { data ->
+                            Observable.just(data.project())
+                                .filter { it?.comments() != null }
+                                .map { project ->
+
+                                    val comments = project?.comments()?.edges()?.map { edge ->
+                                        createCommentObject(edge?.node()?.fragments()?.comment())
+                                            .toBuilder().repliesCount(edge?.node()?.replies()?.totalCount()).build()
+                                    }
+
+                                    CommentEnvelope.builder()
+                                        .comments(comments)
+                                        .totalCount(project?.comments()?.totalCount() ?: 0)
+                                        .pageInfoEnvelope(createPageInfoObject(project?.comments()?.pageInfo()?.fragments()?.pageInfo()))
+                                        .build()
+                                }
+                                .filter { ObjectUtils.isNotNull(it) }
+                                .subscribe {
+                                    ps.onNext(it)
+                                    ps.onCompleted()
+                                }
                         }
-
-                        override fun onResponse(response: Response<GetProjectCommentsQuery.Data>) {
-                            response.data?.let { data ->
-                                Observable.just(data.project())
-                                        .filter { it?.comments() != null }
-                                        .map { project ->
-
-                                          val  comments = project?.comments()?.edges()?.map { edge ->
-                                                      createCommentObject(edge?.node()?.fragments()?.comment())
-                                                                .toBuilder().repliesCount(edge?.node()?.replies()?.totalCount()).build()
-                                                    }
-
-                                            CommentEnvelope.builder()
-                                                    .comments(comments)
-                                                    .totalCount(project?.comments()?.totalCount() ?: 0)
-                                                    .pageInfoEnvelope(createPageInfoObject(project?.comments()?.pageInfo()?.fragments()?.pageInfo()))
-                                                    .build()
-                                         }
-                                        .filter { ObjectUtils.isNotNull(it) }
-                                        .subscribe {
-                                            ps.onNext(it)
-                                            ps.onCompleted()
-                                        }
-                            }
-                        }
-                    })
+                    }
+                })
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }

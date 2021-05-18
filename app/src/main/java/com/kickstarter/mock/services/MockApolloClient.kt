@@ -43,15 +43,18 @@ open class MockApolloClient : ApolloClientType {
     }
 
     override fun getProjectComments(slug: String, cursor: String?): Observable<CommentEnvelope> {
-        return Observable.just(CommentEnvelope.builder()
-                .pageInfoEnvelope(PageInfoEnvelope.builder()
+        return Observable.just(
+            CommentEnvelope.builder()
+                .pageInfoEnvelope(
+                    PageInfoEnvelope.builder()
                         .endCursor("WzMyNDk1MzMzXQ==")
                         .startCursor("WzMyNDk1MzMzXQ==")
                         .build()
                 )
                 .comments(listOf(CommentFactory.comment()))
                 .totalCount(1)
-                .build())
+                .build()
+        )
     }
 
     override fun clearUnseenActivity(): Observable<Int> {

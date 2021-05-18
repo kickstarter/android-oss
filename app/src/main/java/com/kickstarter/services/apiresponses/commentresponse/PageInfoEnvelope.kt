@@ -1,16 +1,18 @@
-package com.kickstarter.services.apiresponses.commentresponse;
+package com.kickstarter.services.apiresponses.commentresponse
 
 class PageInfoEnvelope private constructor(
-        val hasPreviousPage: Boolean?,
-        val hasNextPage: Boolean?,
-        val startCursor: String?,
-        val endCursor: String?) {
+    val hasPreviousPage: Boolean?,
+    val hasNextPage: Boolean?,
+    val startCursor: String?,
+    val endCursor: String?
+) {
 
     data class Builder(
-            var hasPreviousPage: Boolean? = null,
-            var hasNextPage: Boolean? = null,
-            var startCursor: String? = null,
-            var endCursor: String? = null) {
+        var hasPreviousPage: Boolean? = null,
+        var hasNextPage: Boolean? = null,
+        var startCursor: String? = null,
+        var endCursor: String? = null
+    ) {
 
         fun hasPreviousPage(hasPreviousPage: Boolean) = apply { this.hasPreviousPage = hasPreviousPage }
         fun hasNextPage(hasNextPage: Boolean) = apply { this.hasNextPage = hasNextPage }
@@ -19,7 +21,7 @@ class PageInfoEnvelope private constructor(
         fun build() = PageInfoEnvelope(hasPreviousPage, hasNextPage, startCursor, endCursor)
     }
 
-    companion object{
+    companion object {
         fun builder() = Builder()
     }
 

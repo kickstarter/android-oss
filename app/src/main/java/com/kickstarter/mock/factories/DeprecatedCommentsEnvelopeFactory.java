@@ -18,7 +18,7 @@ public final class DeprecatedCommentsEnvelopeFactory {
         .newerComments("http://kck.str/comments/newer")
         .build())
       .build())
-    .comments(Collections.singletonList(CommentFactory.comment()))
+    .comments(Collections.singletonList(DeprecatedCommentFactory.comment()))
     .build();
   }
 }

@@ -8,8 +8,8 @@ import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPrivacyQuery
 import com.kickstarter.mock.factories.BackingFactory
-import com.kickstarter.mock.factories.CommentFactory
 import com.kickstarter.mock.factories.CheckoutFactory
+import com.kickstarter.mock.factories.CommentFactory
 import com.kickstarter.mock.factories.CreatorDetailsFactory
 import com.kickstarter.mock.factories.ErroredBackingFactory
 import com.kickstarter.mock.factories.RewardFactory

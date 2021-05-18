@@ -222,7 +222,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
     private fun createPageInfoObject(pageFr: fragment.PageInfo?): PageInfoEnvelope {
         return PageInfoEnvelope.builder()
             .endCursor(pageFr?.endCursor() ?: "")
-            // .hasNextPage(pageFr?.hasNextPage() ?: false)
+            .hasNextPage(pageFr?.hasNextPage() ?: false)
             .hasPreviousPage(pageFr?.hasPreviousPage() ?: false)
             .startCursor(pageFr?.startCursor() ?: "")
             .build()

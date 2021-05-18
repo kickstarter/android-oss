@@ -7,6 +7,7 @@ import android.util.Pair;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.mock.MockExperimentsClientType;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.UpdateFactory;
 import com.kickstarter.mock.factories.UserFactory;
@@ -78,8 +79,9 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testUpdateViewModel_StartCommentsActivity() {
-    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment());
+  public void testUpdateViewModel_StartCommentsActivity_featureFlagOff() {
+    final Environment environment = environment().toBuilder().optimizely(new MockExperimentsClientType(false)).build();
+    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment);
     final Update update = UpdateFactory.update();
 
     final Request commentsRequest = new Request.Builder()
@@ -87,7 +89,9 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
       .build();
 
     final TestSubscriber<Update> startCommentsActivity = new TestSubscriber<>();
+    final TestSubscriber<Update> startRootCommentsActivity = new TestSubscriber<>();
     vm.outputs.startCommentsActivity().subscribe(startCommentsActivity);
+    vm.outputs.startRootCommentsActivity().subscribe(startRootCommentsActivity);
 
     // Start the intent with a project and update.
     vm.intent(new Intent()
@@ -97,6 +101,33 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
 
     vm.inputs.goToCommentsRequest(commentsRequest);
     startCommentsActivity.assertValues(update);
+    startRootCommentsActivity.assertNoValues();
+  }
+
+  @Test
+  public void testUpdateViewModel_StartCommentsActivity_featureFlagOn() {
+    final Environment environment = environment().toBuilder().optimizely(new MockExperimentsClientType(true)).build();
+    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment);
+    final Update update = UpdateFactory.update();
+
+    final Request commentsRequest = new Request.Builder()
+            .url("https://kck.str/projects/param/param/posts/id/comments")
+            .build();
+
+    final TestSubscriber<Update> startCommentsActivity = new TestSubscriber<>();
+    final TestSubscriber<Update> startRootCommentsActivity = new TestSubscriber<>();
+    vm.outputs.startCommentsActivity().subscribe(startCommentsActivity);
+    vm.outputs.startRootCommentsActivity().subscribe(startRootCommentsActivity);
+
+    // Start the intent with a project and update.
+    vm.intent(new Intent()
+            .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+            .putExtra(IntentKey.UPDATE, update)
+    );
+
+    vm.inputs.goToCommentsRequest(commentsRequest);
+    startCommentsActivity.assertNoValues();
+    startRootCommentsActivity.assertValue(update);
   }
 
   @Test

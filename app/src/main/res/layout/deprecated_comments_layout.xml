@@ -7,7 +7,7 @@
 
   <include
       android:id="@+id/comments_toolbar"
-      layout="@layout/comments_toolbar"/>
+      layout="@layout/deprecated_comments_toolbar"/>
 
   <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     android:id="@+id/comments_swipe_refresh_layout"

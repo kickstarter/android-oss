@@ -217,7 +217,7 @@ interface ProjectViewModel {
         /** Emits when we should start the campaign [com.kickstarter.ui.activities.CampaignDetailsActivity].  */
         fun startCampaignWebViewActivity(): Observable<ProjectData>
 
-        /** Emits when we should start [com.kickstarter.ui.activities.CommentsActivity].  */
+        /** Emits when we should start [com.kickstarter.ui.activities.DeprecatedCommentsActivity].  */
         fun startCommentsActivity(): Observable<Pair<Project, ProjectData>>
 
         /** Emits when we should start [com.kickstarter.ui.activities.RootCommentsActivity]. */
@@ -606,22 +606,6 @@ interface ProjectViewModel {
                 .compose(values())
                 .filter { ObjectUtils.isNotNull(it) }
                 .share()
-
-            val comments = projectData
-                    .switchMap {
-                        this.apolloClient.getProjectComments(it.project().slug() ?: "", null)
-                    }
-                    .filter {
-                        val v = it
-                        ObjectUtils.isNotNull(it)
-                    }
-                    .share()
-
-                comments
-                    .compose(bindToLifecycle())
-                    .subscribe{it -> {
-                        val comm = it
-                    }}
 
             // - Update fragments with the backing data
             projectData

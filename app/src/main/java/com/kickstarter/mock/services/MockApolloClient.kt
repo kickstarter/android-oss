@@ -7,15 +7,11 @@ import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPrivacyQuery
-import com.kickstarter.mock.factories.BackingFactory
-import com.kickstarter.mock.factories.CheckoutFactory
-import com.kickstarter.mock.factories.CreatorDetailsFactory
-import com.kickstarter.mock.factories.ErroredBackingFactory
-import com.kickstarter.mock.factories.RewardFactory
-import com.kickstarter.mock.factories.StoredCardFactory
+import com.kickstarter.mock.factories.*
 import com.kickstarter.models.*
 import com.kickstarter.services.ApolloClientType
-import com.kickstarter.services.apiresponses.commentthreadenvelope.CommentThreadEnvelope
+import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
+import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
@@ -46,12 +42,20 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(BackingFactory.backing())
     }
 
-    override fun clearUnseenActivity(): Observable<Int> {
-        return Observable.just(0)
+    override fun getProjectComments(slug: String, cursor: String?): Observable<CommentEnvelope> {
+        return Observable.just(CommentEnvelope.builder()
+                .pageInfoEnvelope(PageInfoEnvelope.builder()
+                        .endCursor("WzMyNDk1MzMzXQ==")
+                        .startCursor("WzMyNDk1MzMzXQ==")
+                        .build()
+                )
+                .comments(listOf(CommentFactory.comment()))
+                .totalCount(1)
+                .build())
     }
 
-    override fun getProjectComments(slug: String, cursor: String?): Observable<CommentThreadEnvelope> {
-        TODO("Not yet implemented")
+    override fun clearUnseenActivity(): Observable<Int> {
+        return Observable.just(0)
     }
 
     override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {

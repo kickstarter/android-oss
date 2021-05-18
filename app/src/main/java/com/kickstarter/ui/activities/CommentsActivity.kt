@@ -21,25 +21,25 @@ class CommentsActivity : BaseActivity<CommentsViewModel.ViewModel>() {
         setContentView(view)
 
         viewModel.outputs.currentUserAvatar()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    binding.commentComposer.setAvatarUrl(it)
-                }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                binding.commentComposer.setAvatarUrl(it)
+            }
 
         viewModel.outputs.enableCommentComposer()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    binding.commentComposer.isDisabledViewVisible(!it)
-                }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                binding.commentComposer.isDisabledViewVisible(!it)
+            }
 
         viewModel.outputs.showCommentComposer()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    binding.commentComposer.isVisible = true
-                }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                binding.commentComposer.isVisible = true
+            }
 
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {
             override fun onClickActionListener(string: String) {

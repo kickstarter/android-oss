@@ -17,7 +17,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCommentsViewModel_showCommentComposer_isLogInUser() {
         val vm = CommentsViewModel.ViewModel(
-                environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build()
+            environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build()
         )
         vm.outputs.enableCommentComposer().subscribe(enableCommentComposer)
         vm.outputs.showCommentComposer().subscribe(showCommentComposer)
@@ -33,7 +33,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCommentsViewModel_showCommentComposer_isLogoutUser() {
         val vm = CommentsViewModel.ViewModel(
-                environment().toBuilder().build()
+            environment().toBuilder().build()
         )
 
         vm.outputs.enableCommentComposer().subscribe(enableCommentComposer)
@@ -50,7 +50,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCommentsViewModel_enableCommentComposer_isBacking() {
         val vm = CommentsViewModel.ViewModel(
-                environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build()
+            environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build()
         )
         val enableCommentComposer = TestSubscriber<Boolean>()
         vm.outputs.enableCommentComposer().subscribe(enableCommentComposer)
@@ -66,12 +66,12 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     fun testCommentsViewModel_enableCommentComposer_isCreator() {
         val currentUser = UserFactory.user().toBuilder().id(1234).build()
         val project = ProjectFactory.project()
-                .toBuilder()
-                .creator(currentUser)
-                .isBacking(false)
-                .build()
+            .toBuilder()
+            .creator(currentUser)
+            .isBacking(false)
+            .build()
         val vm = CommentsViewModel.ViewModel(
-                environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+            environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
         )
         val enableCommentComposer = TestSubscriber<Boolean>()
         vm.outputs.enableCommentComposer().subscribe(enableCommentComposer)
@@ -88,12 +88,12 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         val creator = UserFactory.creator().toBuilder().id(222).build()
         val currentUser = UserFactory.user().toBuilder().id(111).build()
         val project = ProjectFactory.project()
-                .toBuilder()
-                .creator(creator)
-                .isBacking(false)
-                .build()
+            .toBuilder()
+            .creator(creator)
+            .isBacking(false)
+            .build()
         val vm = CommentsViewModel.ViewModel(
-                environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+            environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
         )
         val enableCommentComposer = TestSubscriber<Boolean>()
         vm.outputs.enableCommentComposer().subscribe(enableCommentComposer)
@@ -108,15 +108,15 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     fun testCommentsViewModel_setCurrentUserAvatar() {
         val userAvatar = AvatarFactory.avatar()
         val currentUser = UserFactory.user().toBuilder().id(111).avatar(
-                userAvatar
+            userAvatar
         ).build()
         val project = ProjectFactory.project()
-                .toBuilder()
-                .isBacking(false)
-                .build()
+            .toBuilder()
+            .isBacking(false)
+            .build()
 
         val vm = CommentsViewModel.ViewModel(
-                environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+            environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
         )
         val currentUserAvatar = TestSubscriber<String?>()
         vm.outputs.currentUserAvatar().subscribe(currentUserAvatar)

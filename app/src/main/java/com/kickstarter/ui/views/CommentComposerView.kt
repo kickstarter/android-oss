@@ -25,7 +25,7 @@ class CommentComposerView @JvmOverloads constructor(
     init {
         obtainStyledAttributes(context, attrs, defStyleAttr)
         binding.commentActionButton.isVisible = false
-      
+
         binding.commentActionButton.setOnClickListener {
             onCommentComposerViewClickedListener?.onClickActionListener(binding.commentTextComposer.text.toString())
         }
@@ -41,9 +41,9 @@ class CommentComposerView @JvmOverloads constructor(
 
     private fun obtainStyledAttributes(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         context.withStyledAttributes(
-                set = attrs,
-                attrs = R.styleable.CommentComposerView,
-                defStyleAttr = defStyleAttr
+            set = attrs,
+            attrs = R.styleable.CommentComposerView,
+            defStyleAttr = defStyleAttr
         ) {
             getString(R.styleable.CommentComposerView_composer_hint)?.also {
                 setCommentComposerHint(it)
@@ -55,7 +55,7 @@ class CommentComposerView @JvmOverloads constructor(
                 setAvatarUrl(it)
             }
             getBoolean(R.styleable.CommentComposerView_composer_disabled, false).also {
-             isDisabledViewVisible(it)
+                isDisabledViewVisible(it)
             }
         }
     }
@@ -83,14 +83,14 @@ class CommentComposerView @JvmOverloads constructor(
     }
 
     fun setCommentComposerActionClickListener(onCommentComposerViewClickedListener: OnCommentComposerViewClickedListener?) {
-       this.onCommentComposerViewClickedListener = onCommentComposerViewClickedListener
+        this.onCommentComposerViewClickedListener = onCommentComposerViewClickedListener
     }
 
     fun setAvatarUrl(url: String?) {
         url?.let {
             Picasso.get().load(it)
-                    .transform(CircleTransformation())
-                    .into(binding.avatar)
+                .transform(CircleTransformation())
+                .into(binding.avatar)
         }
     }
 }

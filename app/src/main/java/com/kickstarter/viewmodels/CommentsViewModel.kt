@@ -41,62 +41,67 @@ interface CommentsViewModel {
         init {
 
             val loggedInUser = this.currentUser.loggedInUser()
-                    .filter { u -> u != null }
-                    .map { requireNotNull(it) }
+                .filter { u -> u != null }
+                .map { requireNotNull(it) }
 
             loggedInUser
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        currentUserAvatar.onNext(it.avatar().small())
-            }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    currentUserAvatar.onNext(it.avatar().small())
+                }
 
             loggedInUser
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        showCommentComposer.onNext(null)
-                    }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    showCommentComposer.onNext(null)
+                }
 
-              intent()
-                    .map { it.getParcelableExtra(IntentKey.PROJECT_DATA) as ProjectData? }
-                    .ofType(ProjectData::class.java)
-                    .filter { it.project().isBacking || ProjectUtils.userIsCreator(it.project(), it.user()) }
-                    .compose(bindToLifecycle())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        enableCommentComposer.onNext(it.project().isBacking || ProjectUtils.userIsCreator(it.project(), it.user()))
-                    }
+            intent()
+                .map { it.getParcelableExtra(IntentKey.PROJECT_DATA) as ProjectData? }
+                .ofType(ProjectData::class.java)
+                .filter { it.project().isBacking || ProjectUtils.userIsCreator(it.project(), it.user()) }
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    enableCommentComposer.onNext(isProjectBackedOrUserIsCreator(Pair(it.project(), it.user())))
+                }
 
             val projectOrUpdate = intent()
-                    .map<Any?> {
-                        val project = it.getParcelableExtra(IntentKey.PROJECT) as? Project
-                        val update = it.getParcelableExtra(IntentKey.UPDATE)as? Update
-                        project?.let {
-                            Either.Left<Project?, Update?>(it)
-                        }
-                        ?: Either.Right<Project?, Update?>(update)
+                .map<Any?> {
+                    val project = it.getParcelableExtra(IntentKey.PROJECT) as? Project
+                    val update = it.getParcelableExtra(IntentKey.UPDATE)as? Update
+                    project?.let {
+                        Either.Left<Project?, Update?>(it)
                     }
-                    .ofType(Either::class.java)
-                    .take(1)
+                        ?: Either.Right<Project?, Update?>(update)
+                }
+                .ofType(Either::class.java)
+                .take(1)
 
-           val initialProject = projectOrUpdate.map {
+            val initialProject = projectOrUpdate.map {
                 it as? Either<Project?, Update?>
             }.flatMap {
-                it?.either<Observable<Project?>>({ value: Project? -> Observable.just(value) },
-                        { u: Update? -> client.fetchProject(u?.projectId().toString()).compose(Transformers.neverError()) })
+                it?.either<Observable<Project?>>(
+                    { value: Project? -> Observable.just(value) },
+                    { u: Update? -> client.fetchProject(u?.projectId().toString()).compose(Transformers.neverError()) }
+                )
             }.share()
 
             Observable.combineLatest(
-                    loggedInUser,
-                    initialProject) { a: User?, b: Project? ->
-                       Pair.create(a, b)
+                loggedInUser,
+                initialProject
+            ) { a: User?, b: Project? ->
+                Pair.create(a, b)
+            }.compose(bindToLifecycle())
+                .subscribe {
+                    it.second?.let { project ->
+                        enableCommentComposer.onNext(isProjectBackedOrUserIsCreator(Pair(project, it.first)))
                     }
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        it.second?.let { project ->
-                            enableCommentComposer.onNext(project.isBacking || ProjectUtils.userIsCreator(project, it.first))
-                        }
-                    }
+                }
         }
+
+        private fun isProjectBackedOrUserIsCreator(pair: Pair<Project, User>) =
+            pair.first.isBacking || ProjectUtils.userIsCreator(pair.first, pair.second)
 
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
         override fun enableCommentComposer(): Observable<Boolean> = enableCommentComposer

@@ -1,14 +1,14 @@
 package com.kickstarter.mock.factories;
 
-import com.kickstarter.models.Comment;
+import com.kickstarter.models.DeprecatedComment;
 
 import org.joda.time.DateTime;
 
-public final class CommentFactory {
-  private CommentFactory() {}
+public final class DeprecatedCommentFactory {
+  private DeprecatedCommentFactory() {}
 
-  public static Comment comment() {
-    return Comment.builder()
+  public static DeprecatedComment comment() {
+    return DeprecatedComment.builder()
       .author(UserFactory.user())
       .body("Some comment")
       .createdAt(DateTime.now())

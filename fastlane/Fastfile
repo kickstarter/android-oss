@@ -33,7 +33,7 @@ lane :external do
   version_code  = Milkrun::VersionCode.new(audience: audience).bump
   version_name  = Milkrun::VersionName.new(audience: audience).read
   slack_message = ["🚀",audience,build_type,"|",version_name,version_code,"successfully delivered to Firebase!"].join(' ')
-  release_notes = changelog_from_git_commits(pretty: "- %an | %s %h | %as")
+  release_notes = "Release " + version_name
 
   build_android_app(task: "assembleExternalRelease")
 

@@ -83,6 +83,17 @@ fragment reward on Reward {
     rewardType
 }
 
+fragment comment on Comment {
+    id
+    author {
+       ...user
+    }
+    body
+    deleted
+    parentId
+    createdAt
+}
+
 fragment shippingRule on ShippingRule {
     cost {
         ... amount
@@ -95,8 +106,11 @@ fragment shippingRule on ShippingRule {
 fragment user on User {
     name
     id
-    imageUrl(blur: false, width: 54)
+    imageUrl(blur: false, width: 54),
+    isCreator
 }
+
+
 
 fragment amount on Money {
     amount
@@ -108,6 +122,13 @@ fragment location on Location {
     displayableName
     id
     name
+}
+
+fragment pageInfo on PageInfo {
+      hasPreviousPage
+      hasNextPage
+      startCursor
+      endCursor
 }
 
 fragment payment on CreditCard {

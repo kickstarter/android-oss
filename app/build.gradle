@@ -23,6 +23,8 @@ def externalPublicVersion = new File(project.rootDir.path + "/app/external_versi
 def internalPrivateVersion = new File(project.rootDir.path + "/app/internal_version_code.txt").text.trim().toInteger()
 def internalPublicVersion = new File(project.rootDir.path + "/app/internal_version_name.txt").text.trim()
 def isCircle = "true" == System.getenv("CIRCLECI")
+def isPrivateCIEnv = ("android-private" == System.getenv("CIRCLE_PROJECT_REPONAME"))
+def isRelease = ("external" == System.getenv("CIRCLE_BRANCH"))
 
 ext.signing = [
         storeFilePath: "path/to/keystore",
@@ -140,13 +142,10 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            if (isCircle) {
-                // The release build generated on CircleCI doesn't need to be signed with our real
-                // keystore - we just need a release build to verify that it compiles. Using the
-                // debug keystore means we don't have to expose our keystore.
-                signingConfig signingConfigs.debug
-            } else {
+            if (isCircle && isPrivateCIEnv && isRelease) {
                 signingConfig signingConfigs.release
+            } else {
+                signingConfig signingConfigs.debug
             }
         }
         debug {

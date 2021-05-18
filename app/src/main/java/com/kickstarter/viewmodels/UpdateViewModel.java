@@ -5,7 +5,9 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.UrlUtils;
@@ -55,6 +57,9 @@ public interface UpdateViewModel {
     /** Emits an update to start the comments activity with. */
     Observable<Update> startCommentsActivity();
 
+    /** Emits an update to start the comments activity with. */
+    Observable<Update> startRootCommentsActivity();
+
     /** Emits a Uri and a ref tag to start the project activity with. */
     Observable<Pair<Uri, RefTag>> startProjectActivity();
 
@@ -67,11 +72,13 @@ public interface UpdateViewModel {
 
   final class ViewModel extends ActivityViewModel<UpdateActivity> implements Inputs, Outputs {
     private final ApiClientType client;
+    private final ExperimentsClientType optimizely;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       this.client = environment.apiClient();
+      this.optimizely = environment.optimizely();
 
       final Observable<Update> initialUpdate = intent()
         .map(i -> i.getParcelableExtra(IntentKey.UPDATE))
@@ -107,9 +114,16 @@ public interface UpdateViewModel {
         .subscribe(this.startShareIntent::onNext);
 
       currentUpdate
+        .filter(__ -> !this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_THREADING))
         .compose(takeWhen(this.goToCommentsRequest))
         .compose(bindToLifecycle())
         .subscribe(this.startCommentsActivity::onNext);
+
+      currentUpdate
+        .filter(__ -> this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_THREADING))
+        .compose(takeWhen(this.goToCommentsRequest))
+        .compose(bindToLifecycle())
+        .subscribe(this.startRootCommentsActivity::onNext);
 
       currentUpdate
         .map(u -> NumberUtils.format(u.sequence()))
@@ -157,6 +171,7 @@ public interface UpdateViewModel {
     private final PublishSubject<String> openProjectExternally = PublishSubject.create();
     private final PublishSubject<Pair<Update, String>> startShareIntent = PublishSubject.create();
     private final PublishSubject<Update> startCommentsActivity = PublishSubject.create();
+    private final PublishSubject<Update> startRootCommentsActivity = PublishSubject.create();
     private final PublishSubject<Pair<Uri, RefTag>> startProjectActivity = PublishSubject.create();
     private final BehaviorSubject<String> updateSequence = BehaviorSubject.create();
     private final BehaviorSubject<String> webViewUrl = BehaviorSubject.create();
@@ -188,6 +203,9 @@ public interface UpdateViewModel {
     }
     @Override public @NonNull Observable<Update> startCommentsActivity() {
       return this.startCommentsActivity;
+    }
+    @Override public @NonNull Observable<Update> startRootCommentsActivity() {
+      return this.startRootCommentsActivity;
     }
     @Override public @NonNull Observable<Pair<Uri, RefTag>> startProjectActivity() {
       return this.startProjectActivity;

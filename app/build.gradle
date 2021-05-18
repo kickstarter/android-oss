@@ -227,7 +227,6 @@ android {
 
     buildFeatures {
         viewBinding true
-        dataBinding true
     }
 
     variantFilter { variant ->

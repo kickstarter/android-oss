@@ -6,6 +6,7 @@ import androidx.core.view.isVisible
 import com.kickstarter.databinding.ActivityCommentsLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
 import com.kickstarter.viewmodels.CommentsViewModel
 import rx.android.schedulers.AndroidSchedulers
 
@@ -39,5 +40,10 @@ class CommentsActivity : BaseActivity<CommentsViewModel.ViewModel>() {
                 .subscribe {
                     binding.commentComposer.isVisible = true
                 }
+
+        binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {
+            override fun onClickActionListener(string: String) {
+            }
+        })
     }
 }

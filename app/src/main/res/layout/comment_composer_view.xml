@@ -56,7 +56,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/comments_disable_msg"
         style="@style/CommentsDisabledMessageTextView"
-        android:text="@string/This_post_is_for_backers_only"
+        android:text="Only backers can leave comments"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/avatar"
         app:layout_constraintEnd_toEndOf="parent"

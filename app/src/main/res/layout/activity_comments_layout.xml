@@ -1,0 +1,17 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:focusable="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <com.kickstarter.ui.views.CommentComposerView
+      android:id="@+id/comment_composer"
+      android:layout_width="match_parent"
+      app:composer_disabled ="false"
+      android:visibility="gone"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      android:layout_height="wrap_content"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
+

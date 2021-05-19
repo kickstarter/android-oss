@@ -4,16 +4,16 @@ import com.kickstarter.mock.factories.CommentFactory
 import com.kickstarter.mock.factories.UserFactory
 import junit.framework.TestCase
 
-class CommentThreadTest : TestCase() {
+class CommentTest : TestCase() {
 
-    fun testEquals_whenSecondCommentThreadDifferentId_returnFalse() {
+    fun testEquals_whenSecondCommentDifferentId_returnFalse() {
         val commentA = CommentFactory.comment()
         val commentB = CommentFactory.comment().toBuilder().id(2).build()
 
         assertFalse(commentA == commentB)
     }
 
-    fun testEquals_whenSecondCommentThreadDifferentUser_returnFalse() {
+    fun testEquals_whenSecondCommentDifferentUser_returnFalse() {
         val commentA = CommentFactory.comment()
         val commentB = CommentFactory.comment().toBuilder().author(
             UserFactory.user()
@@ -25,7 +25,7 @@ class CommentThreadTest : TestCase() {
         assertFalse(commentA == commentB)
     }
 
-    fun testEquals_whenSecondCommentThreadDifferentParentId_returnFalse() {
+    fun testEquals_whenSecondCommentDifferentParentId_returnFalse() {
         val commentA = CommentFactory.comment()
         val commentB = CommentFactory.comment()
             .toBuilder()
@@ -35,7 +35,7 @@ class CommentThreadTest : TestCase() {
         assertFalse(commentA == commentB)
     }
 
-    fun testEquals_whenCommentThreadEquals_returnTrue() {
+    fun testEquals_whenCommentEquals_returnTrue() {
         val commentA = CommentFactory.comment()
         val commentB = CommentFactory.comment()
 

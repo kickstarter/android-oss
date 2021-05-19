@@ -78,4 +78,9 @@
   <string name="email_verification_interstitial" formatted="false">Email Verification Interstitial</string>
 
   <string name="estimated_delivery_data" formatted="false">%{title} %{estimated_delivery_data}</string>
+
+  <!-- comment composer -->
+  <string name="post">Post</string>
+  <string name="leave_comment">Leave a comment…</string>
+  <string name="only_backers_can_leave_comments">Only backers can leave comments</string>
 </resources>

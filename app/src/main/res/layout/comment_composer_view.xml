@@ -31,7 +31,7 @@
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/comment_text_composer"
         style="@style/CommentsTextInputLayout"
-        android:hint="Leave a comment…"
+        android:hint="@string/leave_comment"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/comment_action_button"
         app:layout_constraintStart_toStartOf="@+id/editTextTextBackground"
@@ -41,7 +41,7 @@
         android:id="@+id/comment_action_button"
         style="@style/CommentsButton"
         android:enabled="false"
-        android:text="@string/social_buttons_send"
+        android:text="@string/post"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/editTextTextBackground"
@@ -56,7 +56,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/comments_disable_msg"
         style="@style/CommentsDisabledMessageTextView"
-        android:text="Only backers can leave comments"
+        android:text="@string/only_backers_can_leave_comments"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/avatar"
         app:layout_constraintEnd_toEndOf="parent"

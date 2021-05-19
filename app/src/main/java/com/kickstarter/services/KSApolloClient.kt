@@ -26,6 +26,7 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Avatar
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
+import com.kickstarter.models.Comment
 import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Item
@@ -37,6 +38,8 @@ import com.kickstarter.models.RewardsItem
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
+import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
+import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
@@ -183,6 +186,89 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                 })
             return@defer ps
         }
+    }
+
+    private fun createCommentObject(commentNode: GetProjectCommentsQuery.Node1?): Comment {
+
+        val commentFr = commentNode?.fragments()?.comment()
+
+        val badges: List<String>? = commentNode?.authorBadges()?.map { badge ->
+            badge?.rawValue() ?: ""
+        }
+
+        val author = User.builder()
+            .id(decodeRelayId(commentFr?.author()?.fragments()?.user()?.id()) ?: -1)
+            .name(commentFr?.author()?.fragments()?.user()?.name())
+            .avatar(
+                Avatar.builder()
+                    .medium(commentFr?.author()?.fragments()?.user()?.imageUrl())
+                    .build()
+            )
+            .build()
+
+        return Comment.builder()
+            .id(decodeRelayId(commentFr?.id()) ?: -1)
+            .author(author)
+            .repliesCount(commentNode?.replies()?.totalCount() ?: 0)
+            .body(commentFr?.body())
+            .authorBadges(badges)
+            .cursor("")
+            .createdAt(commentFr?.createdAt())
+            .deleted(commentFr?.deleted())
+            .parentId(decodeRelayId(commentFr?.parentId()) ?: -1)
+            .build()
+    }
+
+    private fun createPageInfoObject(pageFr: fragment.PageInfo?): PageInfoEnvelope {
+        return PageInfoEnvelope.builder()
+            .endCursor(pageFr?.endCursor() ?: "")
+            .hasNextPage(pageFr?.hasNextPage() ?: false)
+            .hasPreviousPage(pageFr?.hasPreviousPage() ?: false)
+            .startCursor(pageFr?.startCursor() ?: "")
+            .build()
+    }
+
+    override fun getProjectComments(slug: String, cursor: String?): Observable<CommentEnvelope> {
+        return Observable.defer {
+            val ps = PublishSubject.create<CommentEnvelope>()
+
+            this.service.query(
+                GetProjectCommentsQuery.builder()
+                    .cursor(cursor)
+                    .slug(slug)
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<GetProjectCommentsQuery.Data>() {
+                    override fun onFailure(e: ApolloException) {
+                        ps.onError(e)
+                    }
+
+                    override fun onResponse(response: Response<GetProjectCommentsQuery.Data>) {
+                        response.data?.let { data ->
+                            Observable.just(data.project())
+                                .filter { it?.comments() != null }
+                                .map { project ->
+
+                                    val comments = project?.comments()?.edges()?.map { edge ->
+                                        createCommentObject(edge?.node())
+                                    }
+
+                                    CommentEnvelope.builder()
+                                        .comments(comments)
+                                        .totalCount(project?.comments()?.totalCount() ?: 0)
+                                        .pageInfoEnvelope(createPageInfoObject(project?.comments()?.pageInfo()?.fragments()?.pageInfo()))
+                                        .build()
+                                }
+                                .filter { ObjectUtils.isNotNull(it) }
+                                .subscribe {
+                                    ps.onNext(it)
+                                    ps.onCompleted()
+                                }
+                        }
+                    }
+                })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
     }
 
     override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {

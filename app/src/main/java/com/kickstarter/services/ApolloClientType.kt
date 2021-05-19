@@ -16,6 +16,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
+import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
@@ -30,6 +31,8 @@ interface ApolloClientType {
     fun getBacking(backingId: String): Observable<Backing>
 
     fun clearUnseenActivity(): Observable<Int>
+
+    fun getProjectComments(slug: String, cursor: String?): Observable<CommentEnvelope>
 
     fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data>
 

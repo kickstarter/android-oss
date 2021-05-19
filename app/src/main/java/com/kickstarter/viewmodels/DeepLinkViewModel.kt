@@ -94,10 +94,7 @@ interface DeepLinkViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .compose(Transformers.combineLatestPair(updateUserPreferences))
                 .switchMap { it: Pair<User, Boolean?> ->
-                    updateSettings(
-                        it.first,
-                        apiClientType
-                    )
+                    updateSettings(it.first, apiClientType)
                 }
                 .compose(Transformers.values())
                 .distinctUntilChanged()
@@ -109,61 +106,31 @@ interface DeepLinkViewModel {
                 }
 
             uriFromIntent
-                .filter { uri: Uri? ->
-                    KSUri.isCheckoutUri(
-                        uri!!, Secrets.WebEndpoint.PRODUCTION
-                    )
-                }
-                .map { uri: Uri ->
-                    appendRefTagIfNone(
-                        uri
-                    )
-                }
+                .filter { ObjectUtils.isNotNull(it) }
+                .filter { KSUri.isCheckoutUri(it, Secrets.WebEndpoint.PRODUCTION) }
+                .map { appendRefTagIfNone(it) }
                 .compose(bindToLifecycle())
-                .subscribe { v: Uri ->
-                    startProjectActivityWithCheckout.onNext(
-                        v
-                    )
+                .subscribe {
+                    startProjectActivityWithCheckout.onNext(it)
                 }
 
             val projectPreview = uriFromIntent
-                .filter { uri: Uri? ->
-                    KSUri.isProjectPreviewUri(
-                        uri!!, Secrets.WebEndpoint.PRODUCTION
-                    )
-                }
+                .filter { ObjectUtils.isNotNull(it) }
+                .filter { KSUri.isProjectPreviewUri(it, Secrets.WebEndpoint.PRODUCTION) }
 
             val unsupportedDeepLink = uriFromIntent
-                .filter { uri: Uri ->
-                    !lastPathSegmentIsProjects(
-                        uri
-                    )
-                }
-                .filter { uri: Uri? ->
-                    !KSUri.isSettingsUrl(
-                        uri!!
-                    )
-                }
-                .filter { uri: Uri? ->
-                    !KSUri.isCheckoutUri(
-                        uri!!, Secrets.WebEndpoint.PRODUCTION
-                    )
-                }
-                .filter { uri: Uri? ->
-                    !KSUri.isProjectUri(
-                        uri!!, Secrets.WebEndpoint.PRODUCTION
-                    )
-                }
+                .filter { !lastPathSegmentIsProjects(it) }
+                .filter { !KSUri.isSettingsUrl(it) }
+                .filter { !KSUri.isCheckoutUri(it, Secrets.WebEndpoint.PRODUCTION) }
+                .filter { !KSUri.isProjectUri(it, Secrets.WebEndpoint.PRODUCTION) }
 
             Observable.merge(projectPreview, unsupportedDeepLink)
                 .map { obj: Uri -> obj.toString() }
-                .filter { url: String? ->
-                    !TextUtils.isEmpty(
-                        url
-                    )
-                }
+                .filter { !TextUtils.isEmpty(it) }
                 .compose(bindToLifecycle())
-                .subscribe { v: String -> startBrowser.onNext(v) }
+                .subscribe {
+                    startBrowser.onNext(it)
+                }
         }
 
         private fun refreshUserAndFinishActivity(user: User, currentUser: CurrentUserType) {

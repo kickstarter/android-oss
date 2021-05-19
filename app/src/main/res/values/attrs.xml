@@ -6,4 +6,11 @@
       <enum name="ss_kickstarter" value="1" />
     </attr>
   </declare-styleable>
+
+  <declare-styleable name="CommentComposerView">
+    <attr name="composer_hint" format="string" />
+    <attr name="composer_action_title" format="string" />
+    <attr name="composer_disabled" format="boolean" />
+    <attr name="composer_avatar_url" format="string" />
+  </declare-styleable>
 </resources>

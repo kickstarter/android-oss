@@ -197,4 +197,7 @@
   <dimen name="progress_bar_min_height">@dimen/grid_1_half</dimen>
   <dimen name="progress_bar_height">@dimen/grid_1_half</dimen>
 
+  <!-- max height-->
+  <dimen name="comments_edit_view_max_height">200dp</dimen>
+
 </resources>

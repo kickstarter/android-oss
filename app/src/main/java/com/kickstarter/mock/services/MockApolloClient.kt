@@ -14,15 +14,7 @@ import com.kickstarter.mock.factories.CreatorDetailsFactory
 import com.kickstarter.mock.factories.ErroredBackingFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.StoredCardFactory
-import com.kickstarter.models.Backing
-import com.kickstarter.models.Checkout
-import com.kickstarter.models.CreatorDetails
-import com.kickstarter.models.ErroredBacking
-import com.kickstarter.models.Location
-import com.kickstarter.models.Project
-import com.kickstarter.models.Reward
-import com.kickstarter.models.StoredCard
-import com.kickstarter.models.User
+import com.kickstarter.models.*
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
@@ -69,6 +61,10 @@ open class MockApolloClient : ApolloClientType {
                 .totalCount(1)
                 .build()
         )
+    }
+
+    override fun createComment(comment: PostCommentInput): Observable<Comment> {
+        return Observable.just(CommentFactory.comment())
     }
 
     override fun clearUnseenActivity(): Observable<Int> {

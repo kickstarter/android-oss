@@ -32,10 +32,7 @@ import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
-import com.kickstarter.models.Backing
-import com.kickstarter.models.Project
-import com.kickstarter.models.Reward
-import com.kickstarter.models.User
+import com.kickstarter.models.*
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ProjectActivity

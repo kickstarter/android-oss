@@ -85,12 +85,16 @@ fragment reward on Reward {
 
 fragment comment on Comment {
     id
+    authorBadges
     author {
        ...user
     }
     body
     deleted
     parentId
+    replies {
+        totalCount
+    }
     createdAt
 }
 

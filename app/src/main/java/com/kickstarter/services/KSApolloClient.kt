@@ -21,23 +21,11 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
-import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.models.Avatar
-import com.kickstarter.models.Backing
-import com.kickstarter.models.Checkout
-import com.kickstarter.models.Comment
-import com.kickstarter.models.CreatorDetails
-import com.kickstarter.models.ErroredBacking
-import com.kickstarter.models.Item
-import com.kickstarter.models.Location
-import com.kickstarter.models.Project
-import com.kickstarter.models.Relay
-import com.kickstarter.models.Reward
-import com.kickstarter.models.RewardsItem
-import com.kickstarter.models.ShippingRule
-import com.kickstarter.models.StoredCard
-import com.kickstarter.models.User
+import com.kickstarter.libs.utils.decodeRelayId
+import com.kickstarter.libs.utils.encodeRelayId
+import com.kickstarter.mock.factories.CommentFactory
+import com.kickstarter.models.*
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
@@ -53,8 +41,6 @@ import type.CurrencyCode
 import type.PaymentTypes
 import type.RewardType
 import type.ShippingPreference
-import java.nio.charset.Charset
-import kotlin.math.absoluteValue
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
@@ -188,11 +174,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    private fun createCommentObject(commentNode: GetProjectCommentsQuery.Node1?): Comment {
+    private fun createCommentObject(commentFr: fragment.Comment?): Comment {
 
-        val commentFr = commentNode?.fragments()?.comment()
-
-        val badges: List<String>? = commentNode?.authorBadges()?.map { badge ->
+        val badges: List<String>? = commentFr?.authorBadges()?.map { badge ->
             badge?.rawValue() ?: ""
         }
 
@@ -209,7 +193,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         return Comment.builder()
             .id(decodeRelayId(commentFr?.id()) ?: -1)
             .author(author)
-            .repliesCount(commentNode?.replies()?.totalCount() ?: 0)
+            .repliesCount(commentFr?.replies()?.totalCount() ?: 0)
             .body(commentFr?.body())
             .authorBadges(badges)
             .cursor("")
@@ -250,7 +234,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                 .map { project ->
 
                                     val comments = project?.comments()?.edges()?.map { edge ->
-                                        createCommentObject(edge?.node())
+                                        createCommentObject(edge?.node()?.fragments()?.comment())
                                     }
 
                                     CommentEnvelope.builder()
@@ -269,6 +253,37 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                 })
             return@defer ps
         }.subscribeOn(Schedulers.io())
+    }
+
+    override fun createComment(comment: PostCommentInput): Observable<Comment> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Comment>()
+            this.service.mutate(
+                CreateCommentMutation.builder()
+                    .parentId(comment.parentId)
+                    .commentableId(comment.commentableId() ?: "")
+                    .clientMutationId(comment.clientMutationId)
+                    .body(comment.body ?: "")
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<CreateCommentMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<CreateCommentMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                        }
+
+                        ps.onNext(
+                            createCommentObject(response.data?.createComment()?.comment()?.fragments()?.comment())
+                        )
+                        ps.onCompleted()
+                    }
+                })
+            return@defer ps
+        }
     }
 
     override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
@@ -788,23 +803,6 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
         .cancelable(backingGr?.cancelable() ?: false)
         .completedByBacker(completedByBacker)
         .build()
-}
-
-fun <T : Relay> encodeRelayId(relay: T): String {
-    val classSimpleName = relay.javaClass.simpleName.replaceFirst("AutoParcel_", "")
-    val id = relay.id()
-    return Base64Utils.encodeUrlSafe(("$classSimpleName-$id").toByteArray(Charset.defaultCharset()))
-}
-
-fun decodeRelayId(encodedRelayId: String?): Long? {
-    return try {
-        String(Base64Utils.decode(encodedRelayId), Charset.defaultCharset())
-            .replaceBeforeLast("-", "", "")
-            .toLong()
-            .absoluteValue
-    } catch (e: Exception) {
-        null
-    }
 }
 
 private fun <T : Any?> handleResponse(it: T, ps: PublishSubject<T>) {

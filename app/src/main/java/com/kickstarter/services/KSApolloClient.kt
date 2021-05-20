@@ -24,7 +24,6 @@ import com.apollographql.apollo.exception.ApolloException
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.decodeRelayId
 import com.kickstarter.libs.utils.encodeRelayId
-import com.kickstarter.mock.factories.CommentFactory
 import com.kickstarter.models.*
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope

@@ -7,17 +7,18 @@ import kotlinx.android.parcel.Parcelize
 
 @AutoGson
 @Parcelize
-class PostCommentInput (
+class PostCommentInput(
     val body: String?,
     val parentId: String?,
     val project: Project?,
-    val clientMutationId: String?) : Parcelable {
+    val clientMutationId: String?
+) : Parcelable {
 
     fun commentableId() = this.project?.let { encodeRelayId(it) }
 
     @AutoGson
     @Parcelize
-    data class Builder (
+    data class Builder(
         var body: String? = null,
         var project: Project? = null,
         var parentId: String? = null,
@@ -40,5 +41,4 @@ class PostCommentInput (
         this.parentId,
         this.clientMutationId
     )
-
 }

@@ -66,7 +66,6 @@ fun checkoutProperties(
         .build()
 }
 
-
 fun <T : Relay> encodeRelayId(relay: T): String {
     val classSimpleName = relay.javaClass.simpleName.replaceFirst("AutoParcel_", "")
     val id = relay.id()

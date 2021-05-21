@@ -31,18 +31,18 @@ class CommentCard @JvmOverloads constructor(
         bindFlaggedMessage()
 
         binding.retryButton.setOnClickListener {
-            onCommentCardClickedListener?.onRetryClickListener(it)
+            onCommentCardClickedListener?.onRetryViewClicked(it)
         }
 
         binding.flagButton.setOnClickListener {
-            onCommentCardClickedListener?.onFlagButtonClickListener(it)
+            onCommentCardClickedListener?.onFlagButtonClicked(it)
         }
 
         binding.flaggedMessage.setOnClickListener {
-            onCommentCardClickedListener?.onFlaggedMessageClickListener(it)
+            onCommentCardClickedListener?.onCommentGuideLinesClicked(it)
         }
         binding.replyButton.setOnClickListener {
-            onCommentCardClickedListener?.onReplyClickListener(it)
+            onCommentCardClickedListener?.onReplyButtonClicked(it)
         }
     }
 
@@ -52,7 +52,7 @@ class CommentCard @JvmOverloads constructor(
             Pair(
                 context.resources.getString(R.string.learn_more_about_comment_guidelines),
                 OnClickListener {
-                    onCommentCardClickedListener?.onFlaggedMessageClickListener(it)
+                    onCommentCardClickedListener?.onCommentGuideLinesClicked(it)
                 },
 
             ),
@@ -137,10 +137,10 @@ class CommentCard @JvmOverloads constructor(
 }
 
 interface OnCommentCardClickedListener {
-    fun onRetryClickListener(view: View)
-    fun onReplyClickListener(view: View)
-    fun onFlagButtonClickListener(view: View)
-    fun onFlaggedMessageClickListener(view: View)
+    fun onRetryViewClicked(view: View)
+    fun onReplyButtonClicked(view: View)
+    fun onFlagButtonClicked(view: View)
+    fun onCommentGuideLinesClicked(view: View)
 }
 
 enum class CommentCardStatus(val commentCardStatus: Int) {

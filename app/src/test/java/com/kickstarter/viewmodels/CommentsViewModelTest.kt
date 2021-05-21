@@ -5,9 +5,14 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.mock.factories.AvatarFactory
 import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.UpdateFactory
 import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.models.Comment
+import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.ui.IntentKey
 import org.junit.Test
+import rx.Observable
 import rx.observers.TestSubscriber
 
 class CommentsViewModelTest : KSRobolectricTestCase() {
@@ -17,7 +22,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCommentsViewModel_showCommentComposer_isLogInUser() {
         val vm = CommentsViewModel.ViewModel(
-            environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build()
+                environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build()
         )
         vm.outputs.enableCommentComposer().subscribe(enableCommentComposer)
         vm.outputs.showCommentComposer().subscribe(showCommentComposer)
@@ -33,7 +38,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCommentsViewModel_showCommentComposer_isLogoutUser() {
         val vm = CommentsViewModel.ViewModel(
-            environment().toBuilder().build()
+                environment().toBuilder().build()
         )
 
         vm.outputs.enableCommentComposer().subscribe(enableCommentComposer)
@@ -50,7 +55,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCommentsViewModel_enableCommentComposer_isBacking() {
         val vm = CommentsViewModel.ViewModel(
-            environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build()
+                environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build()
         )
         val enableCommentComposer = TestSubscriber<Boolean>()
         vm.outputs.enableCommentComposer().subscribe(enableCommentComposer)
@@ -71,7 +76,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             .isBacking(false)
             .build()
         val vm = CommentsViewModel.ViewModel(
-            environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+                environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
         )
         val enableCommentComposer = TestSubscriber<Boolean>()
         vm.outputs.enableCommentComposer().subscribe(enableCommentComposer)
@@ -93,7 +98,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             .isBacking(false)
             .build()
         val vm = CommentsViewModel.ViewModel(
-            environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+                environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
         )
         val enableCommentComposer = TestSubscriber<Boolean>()
         vm.outputs.enableCommentComposer().subscribe(enableCommentComposer)
@@ -108,7 +113,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     fun testCommentsViewModel_setCurrentUserAvatar() {
         val userAvatar = AvatarFactory.avatar()
         val currentUser = UserFactory.user().toBuilder().id(111).avatar(
-            userAvatar
+                userAvatar
         ).build()
         val project = ProjectFactory.project()
             .toBuilder()
@@ -116,7 +121,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             .build()
 
         val vm = CommentsViewModel.ViewModel(
-            environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+                environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
         )
         val currentUserAvatar = TestSubscriber<String?>()
         vm.outputs.currentUserAvatar().subscribe(currentUserAvatar)
@@ -125,5 +130,33 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         // set user avatar with small url
         currentUserAvatar.assertValue(userAvatar.small())
+    }
+
+    @Test
+    fun testCommentsViewModel_EmptyState() {
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun getProjectComments(slug: String, cursor: String?): Observable<CommentEnvelope> {
+                return Observable.empty()
+            }
+        }).build()
+        val vm = CommentsViewModel.ViewModel(env)
+        val commentsList = TestSubscriber<List<Comment>?>()
+        vm.outputs.commentsList().subscribe(commentsList)
+
+        // Start the view model with an update.
+        vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
+        commentsList.assertNoValues()
+    }
+
+    @Test
+    fun testCommentsViewModel_ProjectCommentsEmit() {
+        val vm = CommentsViewModel.ViewModel(environment())
+        val commentsList = TestSubscriber<List<Comment>?>()
+        vm.outputs.commentsList().subscribe(commentsList)
+        // Start the view model with a project.
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+
+        // Comments should emit.
+        commentsList.assertValueCount(1)
     }
 }

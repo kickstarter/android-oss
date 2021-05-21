@@ -21,9 +21,8 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
+import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.decodeRelayId
-import com.kickstarter.libs.utils.encodeRelayId
 import com.kickstarter.models.Avatar
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
@@ -32,8 +31,8 @@ import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Item
 import com.kickstarter.models.Location
-import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.models.Project
+import com.kickstarter.models.Relay
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
 import com.kickstarter.models.ShippingRule
@@ -42,6 +41,7 @@ import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
+import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
 import org.joda.time.DateTime
@@ -54,6 +54,8 @@ import type.CurrencyCode
 import type.PaymentTypes
 import type.RewardType
 import type.ShippingPreference
+import java.nio.charset.Charset
+import kotlin.math.absoluteValue
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
@@ -274,9 +276,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             this.service.mutate(
                 CreateCommentMutation.builder()
                     .parentId(comment.parentId)
-                    .commentableId(comment.commentableId() ?: "")
+                    .commentableId(encodeRelayId(comment.project))
                     .clientMutationId(comment.clientMutationId)
-                    .body(comment.body ?: "")
+                    .body(comment.body)
                     .build()
             )
                 .enqueue(object : ApolloCall.Callback<CreateCommentMutation.Data>() {
@@ -816,6 +818,23 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
         .cancelable(backingGr?.cancelable() ?: false)
         .completedByBacker(completedByBacker)
         .build()
+}
+
+fun decodeRelayId(encodedRelayId: String?): Long? {
+    return try {
+        String(Base64Utils.decode(encodedRelayId), Charset.defaultCharset())
+            .replaceBeforeLast("-", "", "")
+            .toLong()
+            .absoluteValue
+    } catch (e: Exception) {
+        null
+    }
+}
+
+fun <T : Relay> encodeRelayId(relay: T): String {
+    val classSimpleName = relay.javaClass.simpleName.replaceFirst("AutoParcel_", "")
+    val id = relay.id()
+    return Base64Utils.encodeUrlSafe(("$classSimpleName-$id").toByteArray(Charset.defaultCharset()))
 }
 
 private fun <T : Any?> handleResponse(it: T, ps: PublishSubject<T>) {

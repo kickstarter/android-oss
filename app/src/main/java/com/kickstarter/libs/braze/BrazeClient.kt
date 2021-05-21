@@ -11,12 +11,8 @@ import com.appboy.support.AppboyLogger
 import com.appboy.ui.inappmessage.AppboyInAppMessageManager
 import com.google.firebase.messaging.RemoteMessage
 import com.kickstarter.libs.Build
-import com.kickstarter.libs.Config
-import com.kickstarter.libs.CurrentConfigType
 import com.kickstarter.libs.CurrentUserType
-import com.kickstarter.libs.utils.ConfigFeatureName
 import com.kickstarter.libs.utils.Secrets
-import com.kickstarter.libs.utils.extensions.isFeatureFlagEnabled
 import com.kickstarter.libs.utils.extensions.isKSApplication
 import com.kickstarter.libs.utils.extensions.registerActivityLifecycleCallbacks
 
@@ -76,39 +72,16 @@ interface RemotePushClientType {
  * Braze client SDK wrapper class.
  * @param context It needs the application context to be initialized,
  * @param build the type of build will determine the IdSender from Firebase and the logs mode
- * @param configuration current configuration, it will be used mainly to check feature flag enable/disable
  */
 open class BrazeClient(
     private val context: Context,
-    private val build: Build,
-    private val configuration: CurrentConfigType
+    private val build: Build
 ) : RemotePushClientType {
 
-    private var config: Config? = null
     private var initialized = false
 
     override val isInitialized: Boolean
         get() = initialized
-
-    init {
-        this.configuration.observable()
-            .distinctUntilChanged()
-            .subscribe { c ->
-                // - Cache the most recent config
-                this.config = c
-                initialize()
-            }
-    }
-
-    /**
-     * - Do not initialize Braze SDK until the current configuration is loaded
-     * and it has not previously being initialized
-     */
-    private fun initialize() {
-        if (isSDKEnabled() && this.context.isKSApplication() && !this.isInitialized) {
-            this.init()
-        }
-    }
 
     override fun init() {
         if (isSDKEnabled() && !this.initialized) {

@@ -13,7 +13,7 @@ import com.kickstarter.models.Comment
 import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Location
-import com.kickstarter.models.PostCommentInput
+import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
@@ -36,7 +36,7 @@ interface ApolloClientType {
 
     fun getProjectComments(slug: String, cursor: String?): Observable<CommentEnvelope>
 
-    fun createComment(comment: PostCommentInput): Observable<Comment>
+    fun createComment(comment: PostCommentData): Observable<Comment>
 
     fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data>
 

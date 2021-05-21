@@ -32,7 +32,7 @@ import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Item
 import com.kickstarter.models.Location
-import com.kickstarter.models.PostCommentInput
+import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
@@ -268,7 +268,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }.subscribeOn(Schedulers.io())
     }
 
-    override fun createComment(comment: PostCommentInput): Observable<Comment> {
+    override fun createComment(comment: PostCommentData): Observable<Comment> {
         return Observable.defer {
             val ps = PublishSubject.create<Comment>()
             this.service.mutate(

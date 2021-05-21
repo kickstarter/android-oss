@@ -1,13 +1,14 @@
-package com.kickstarter.models
+package com.kickstarter.services.mutations
 
 import android.os.Parcelable
 import com.kickstarter.libs.qualifiers.AutoGson
 import com.kickstarter.libs.utils.encodeRelayId
+import com.kickstarter.models.Project
 import kotlinx.android.parcel.Parcelize
 
 @AutoGson
 @Parcelize
-class PostCommentInput(
+class PostCommentData(
     val body: String?,
     val parentId: String?,
     val project: Project?,
@@ -28,7 +29,7 @@ class PostCommentInput(
         fun project(project: Project) = apply { this.project = project }
         fun parentId(parentId: String?) = apply { this.parentId = parentId }
         fun clientMutationId(clientMutationId: String) = apply { this.clientMutationId = clientMutationId }
-        fun build() = PostCommentInput(body, parentId, project, clientMutationId)
+        fun build() = PostCommentData(body, parentId, project, clientMutationId)
     }
 
     companion object {

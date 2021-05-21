@@ -129,8 +129,7 @@ open class BrazeClient(
         }
     }
 
-    override fun isSDKEnabled(): Boolean =
-        config?.isFeatureFlagEnabled(ConfigFeatureName.BRAZE_ENABLED.configFeatureName) ?: false
+    override fun isSDKEnabled(): Boolean = true
 
     override fun getIdSender(): String {
         var senderId = ""
@@ -175,8 +174,8 @@ open class BrazeClient(
      * on the `onIntegrationReady` callback
      */
     companion object {
-        fun setInAppCustomListener(currentUser: CurrentUserType, currentConfig: CurrentConfigType, build: Build) {
-            AppboyInAppMessageManager.getInstance().setCustomInAppMessageManagerListener(InAppCustomListener(currentUser, currentConfig, build))
+        fun setInAppCustomListener(currentUser: CurrentUserType, build: Build) {
+            AppboyInAppMessageManager.getInstance().setCustomInAppMessageManagerListener(InAppCustomListener(currentUser, build))
         }
     }
 }

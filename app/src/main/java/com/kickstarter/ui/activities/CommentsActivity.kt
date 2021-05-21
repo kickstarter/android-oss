@@ -14,8 +14,9 @@ import com.kickstarter.viewmodels.CommentsViewModel
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(CommentsViewModel.ViewModel::class)
-class CommentsActivity : BaseActivity<CommentsViewModel.ViewModel>(),
-        CommentsAdapter.Delegate {
+class CommentsActivity :
+    BaseActivity<CommentsViewModel.ViewModel>(),
+    CommentsAdapter.Delegate {
     private lateinit var binding: ActivityCommentsLayoutBinding
     private val adapter = CommentsAdapter(this)
 
@@ -25,7 +26,7 @@ class CommentsActivity : BaseActivity<CommentsViewModel.ViewModel>(),
         val view: View = binding.root
         setContentView(view)
         binding.commentsRecyclerView.adapter = adapter
-        
+
         viewModel.outputs.commentsList()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())

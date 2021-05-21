@@ -84,7 +84,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
         val userAvatar = AvatarFactory.avatar()
         val currentUser = UserFactory.user().toBuilder().id(111).avatar(
-                userAvatar
+            userAvatar
         ).build()
         this.vm.inputs.configureWith(CommentFactory.comment(currentUser.avatar()))
 

@@ -36,39 +36,39 @@ class CommentCardViewHolder(
             .subscribe { binding.commentsCardView.setAvatarUrl(it) }
 
         this.vm.outputs.commentMessageBody()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { binding.commentsCardView.setCommentBody(it) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.commentsCardView.setCommentBody(it) }
 
         this.vm.outputs.commentCardStatus()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { binding.commentsCardView.setCommentCardStatus(it) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.commentsCardView.setCommentCardStatus(it) }
 
         this.vm.outputs.commentPostTime()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { binding.commentsCardView.setCommentPostTime(DateTimeUtils.relative(context(), ksString, it)) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.commentsCardView.setCommentPostTime(DateTimeUtils.relative(context(), ksString, it)) }
 
         this.vm.outputs.openCommentGuideLines()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { this.delegate.onCommentGuideLinesClicked(it) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { this.delegate.onCommentGuideLinesClicked(it) }
 
         this.vm.outputs.replyToComment()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { this.delegate.onReplyButtonClicked(it) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { this.delegate.onReplyButtonClicked(it) }
 
         this.vm.outputs.retrySendComment()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { this.delegate.onRetryViewClicked(it) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { this.delegate.onRetryViewClicked(it) }
 
         this.vm.outputs.flagComment()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { this.delegate.onFlagButtonClicked(it) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { this.delegate.onFlagButtonClicked(it) }
 
         binding.commentsCardView.setCommentCardClickedListener(object : OnCommentCardClickedListener {
             override fun onRetryViewClicked(view: View) {

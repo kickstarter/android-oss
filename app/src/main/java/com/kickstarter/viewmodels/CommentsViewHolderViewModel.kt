@@ -116,19 +116,19 @@ interface CommentsViewHolderViewModel {
                 .subscribe(this.openCommentGuideLines)
 
             this.commentInput
-                    .compose(takeWhen(this.onReplyButtonClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe(this.replyToComment)
+                .compose(takeWhen(this.onReplyButtonClicked))
+                .compose(bindToLifecycle())
+                .subscribe(this.replyToComment)
 
             this.commentInput
-                    .compose(takeWhen(this.onRetryViewClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe(this.retrySendComment)
+                .compose(takeWhen(this.onRetryViewClicked))
+                .compose(bindToLifecycle())
+                .subscribe(this.retrySendComment)
 
             this.commentInput
-                    .compose(takeWhen(this.onFlagButtonClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe(this.flagComment)
+                .compose(takeWhen(this.onFlagButtonClicked))
+                .compose(bindToLifecycle())
+                .subscribe(this.flagComment)
         }
 
         override fun configureWith(comment: Comment) = this.commentInput.onNext(comment)

@@ -290,7 +290,10 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         if (response.hasErrors()) {
                             ps.onError(java.lang.Exception(response.errors?.first()?.message))
                         }
-
+                        /* make a copy of what you posted. just in case
+                         * we want to update the list without doing
+                         * a full refresh.
+                         */
                         ps.onNext(
                             createCommentObject(response.data?.createComment()?.comment()?.fragments()?.comment())
                         )

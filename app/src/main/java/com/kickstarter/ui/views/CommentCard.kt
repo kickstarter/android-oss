@@ -11,10 +11,9 @@ import androidx.core.content.withStyledAttributes
 import androidx.core.view.isVisible
 import com.kickstarter.R
 import com.kickstarter.databinding.CommentCardBinding
-import com.kickstarter.libs.transformations.CircleTransformation
+import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.ui.extensions.makeLinks
 import com.kickstarter.ui.extensions.parseHtmlTag
-import com.squareup.picasso.Picasso
 
 class CommentCard @JvmOverloads constructor(
     context: Context,
@@ -128,11 +127,7 @@ class CommentCard @JvmOverloads constructor(
     }
 
     fun setAvatarUrl(url: String?) {
-        url?.let {
-            Picasso.get().load(it)
-                .transform(CircleTransformation())
-                .into(binding.avatar)
-        }
+        binding.avatar.loadCircleImage(url)
     }
 }
 

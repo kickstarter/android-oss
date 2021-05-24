@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.facebook.appevents.AppEventsLogger;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentConfigType;
@@ -83,16 +84,19 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
    */
   private void handleConfigApiError(final @NonNull ErrorEnvelope error) {
     if (error.httpCode() == 401) {
-      forceLogout();
+      forceLogout("config_api_error");
     }
   }
 
   /**
    * Forces the current user session to be logged out.
    */
-  private void forceLogout() {
+  private void forceLogout(final @NonNull String context) {
     this.logout.execute();
     ApplicationUtils.startNewDiscoveryActivity(this.application);
+    Bundle params = new Bundle();
+    params.putString("location", context);
+    FirebaseAnalytics.getInstance(this.application).logEvent("force_logout", params);
   }
 
   /**
@@ -104,7 +108,7 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
 
     // Check if the access token is null and the user is still logged in.
     if (isloggedIn && ObjectUtils.isNull(accessToken)) {
-      forceLogout();
+      forceLogout("access_token_null");
     } else {
       if (ObjectUtils.isNotNull(accessToken)) {
         this.client.fetchCurrentUser()

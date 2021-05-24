@@ -9,16 +9,20 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import org.jsoup.Jsoup
 import java.util.Locale
 
-fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>) {
+fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>, @ColorRes linkColor: Int = -1) {
     val spannableString = SpannableString(this.text)
     var startIndexOfLink = -1
     for (link in links) {
         val clickableSpan = object : ClickableSpan() {
             override fun updateDrawState(textPaint: TextPaint) {
                 textPaint.isUnderlineText = true
+                if (linkColor != -1)
+                    textPaint.color = ContextCompat.getColor(context, linkColor)
             }
 
             override fun onClick(view: View) {
@@ -28,7 +32,7 @@ fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>) {
             }
         }
 
-        startIndexOfLink = this.text.toString().indexOf(link.first.toLowerCase(Locale.getDefault()), startIndexOfLink + 1)
+        startIndexOfLink = this.text.toString().toLowerCase(Locale.getDefault()).indexOf(link.first.toLowerCase(Locale.getDefault()), startIndexOfLink + 1)
 
         if (startIndexOfLink == -1) continue // todo if you want to verify your texts contains links text
 

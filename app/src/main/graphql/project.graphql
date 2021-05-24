@@ -46,7 +46,7 @@ mutation CreateComment($body: String!, $commentableId: ID!, $parentId: ID, $clie
   }
 }
 
-query GetProjectComments($slug: String!, $cursor: String){
+query GetProjectComments($slug: String!, $limit: Int!, $cursor: String){
       project(slug: $slug) {
         collaborators {
           edges {
@@ -56,7 +56,7 @@ query GetProjectComments($slug: String!, $cursor: String){
             }
           }
         }
-        comments(after: $cursor) {
+        comments(first: $limit, after: $cursor) {
           edges {
             cursor
             node {

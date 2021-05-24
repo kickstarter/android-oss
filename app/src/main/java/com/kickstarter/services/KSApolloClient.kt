@@ -227,7 +227,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             .build()
     }
 
-    override fun getProjectComments(slug: String, cursor: String?): Observable<CommentEnvelope> {
+    override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<CommentEnvelope>()
 
@@ -235,6 +235,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                 GetProjectCommentsQuery.builder()
                     .cursor(cursor)
                     .slug(slug)
+                    .limit(limit)
                     .build()
             )
                 .enqueue(object : ApolloCall.Callback<GetProjectCommentsQuery.Data>() {

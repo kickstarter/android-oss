@@ -32,7 +32,6 @@ class CommentsAdapter(private val delegate: Delegate) : KSAdapter() {
     }
 
     companion object {
-        private const val SECTION_EMPTY_VIEW = 0
-        private const val SECTION_COMMENTS_VIEW = 1
+        private const val SECTION_COMMENTS_VIEW = 0
     }
 }

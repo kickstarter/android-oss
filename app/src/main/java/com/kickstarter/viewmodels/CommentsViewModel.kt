@@ -28,7 +28,7 @@ interface CommentsViewModel {
         fun currentUserAvatar(): Observable<String?>
         fun enableCommentComposer(): Observable<Boolean>
         fun showCommentComposer(): Observable<Void>
-        fun commentsList(): Observable<List<Comment>?>
+        fun commentsList(): Observable<List<Comment>>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
@@ -126,6 +126,6 @@ interface CommentsViewModel {
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
         override fun enableCommentComposer(): Observable<Boolean> = enableCommentComposer
         override fun showCommentComposer(): Observable<Void> = showCommentComposer
-        override fun commentsList(): Observable<List<Comment>?> = commentsList
+        override fun commentsList(): Observable<List<Comment>> = commentsList
     }
 }

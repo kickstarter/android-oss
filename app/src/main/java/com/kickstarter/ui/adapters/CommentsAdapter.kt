@@ -7,17 +7,21 @@ import com.kickstarter.R
 import com.kickstarter.databinding.EmptyCommentsLayoutBinding
 import com.kickstarter.databinding.ItemCommentCardBinding
 import com.kickstarter.models.Comment
+import com.kickstarter.models.Empty
 import com.kickstarter.ui.viewholders.CommentCardViewHolder
 import com.kickstarter.ui.viewholders.EmptyCommentsViewHolder
 import com.kickstarter.ui.viewholders.KSViewHolder
-import rx.Observable
 
 class CommentsAdapter(private val delegate: Delegate) : KSAdapter() {
     interface Delegate : EmptyCommentsViewHolder.Delegate, CommentCardViewHolder.Delegate
 
+    init {
+        insertSection(SECTION_EMPTY_VIEW, emptyList<Any>())
+        insertSection(SECTION_COMMENTS_VIEW, emptyList<Any>())
+    }
     @LayoutRes
     override fun layout(sectionRow: SectionRow): Int {
-        return if (sectionRow.section() == 0) {
+        return if (sectionRow.section() == SECTION_COMMENTS_VIEW) {
             R.layout.item_comment_card
         } else {
             R.layout.empty_comments_layout
@@ -25,11 +29,11 @@ class CommentsAdapter(private val delegate: Delegate) : KSAdapter() {
     }
 
     fun takeData(comments: List<Comment>) {
-        sections().clear()
-        addSection(Observable.from(comments).toList().toBlocking().single())
 
         if (comments.isEmpty()) {
-            sections().add(emptyList())
+            setSection(SECTION_EMPTY_VIEW, listOf(Empty.get()))
+        } else {
+            setSection(SECTION_COMMENTS_VIEW, comments)
         }
 
         notifyDataSetChanged()
@@ -41,5 +45,10 @@ class CommentsAdapter(private val delegate: Delegate) : KSAdapter() {
         } else {
             EmptyCommentsViewHolder(EmptyCommentsLayoutBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate)
         }
+    }
+
+    companion object {
+        private const val SECTION_EMPTY_VIEW = 0
+        private const val SECTION_COMMENTS_VIEW = 1
     }
 }

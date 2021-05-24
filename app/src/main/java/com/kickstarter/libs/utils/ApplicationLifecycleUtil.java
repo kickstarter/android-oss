@@ -53,29 +53,27 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
       // Facebook: logs 'install' and 'app activate' App Events.
       AppEventsLogger.activateApp(activity.getApplication());
 
-      // Refresh the config file
-      this.client.config()
-              .compose(Transformers.pipeApiErrorsTo(this::handleConfigApiError))
-              .compose(Transformers.neverError())
-              .subscribe(c -> {
-                //sync save features flags in the config object
-                if (this.build.isDebug() || Build.isInternal()) {
-                  ConfigExtension.syncUserFeatureFlagsFromPref(c, this.featuresFlagPreference);
-                }
-                this.config.config(c);
-              });
-
-
-      // Refresh the user
-      final String accessToken = this.currentUser.getAccessToken();
-      if (ObjectUtils.isNotNull(accessToken)) {
-        this.client.fetchCurrentUser()
-                .compose(Transformers.neverError())
-                .subscribe(u -> this.currentUser.refresh(u));
-      }
+      refreshConfigFile();
+      refreshUser();
 
       this.isInBackground = false;
     }
+  }
+
+  /**
+   * Refresh the config file.
+   */
+  private void refreshConfigFile() {
+    this.client.config()
+      .compose(Transformers.pipeApiErrorsTo(this::handleConfigApiError))
+      .compose(Transformers.neverError())
+      .subscribe(c -> {
+        //sync save features flags in the config object
+        if (this.build.isDebug() || Build.isInternal()) {
+          ConfigExtension.syncUserFeatureFlagsFromPref(c, this.featuresFlagPreference);
+        }
+        this.config.config(c);
+      });
   }
 
   /**
@@ -85,8 +83,34 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
    */
   private void handleConfigApiError(final @NonNull ErrorEnvelope error) {
     if (error.httpCode() == 401) {
-      this.logout.execute();
-      ApplicationUtils.startNewDiscoveryActivity(this.application);
+      forceLogout();
+    }
+  }
+
+  /**
+   * Forces the current user session to be logged out.
+   */
+  private void forceLogout() {
+    this.logout.execute();
+    ApplicationUtils.startNewDiscoveryActivity(this.application);
+  }
+
+  /**
+   * Refreshes the user object if there is not a user logged in with a non-null access token.
+   */
+  private void refreshUser() {
+    final String accessToken = this.currentUser.getAccessToken();
+    final Boolean isloggedIn = ObjectUtils.isNotNull(this.currentUser.getUser());
+
+    // Check if the access token is null and the user is still logged in.
+    if (isloggedIn && ObjectUtils.isNull(accessToken)) {
+      forceLogout();
+    } else {
+      if (ObjectUtils.isNotNull(accessToken)) {
+        this.client.fetchCurrentUser()
+          .compose(Transformers.neverError())
+          .subscribe(u -> this.currentUser.refresh(u));
+      }
     }
   }
 

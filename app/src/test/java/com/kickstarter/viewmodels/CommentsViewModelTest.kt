@@ -135,7 +135,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCommentsViewModel_EmptyState() {
         val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun getProjectComments(slug: String, cursor: String?): Observable<CommentEnvelope> {
+            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
                 return Observable.empty()
             }
         }).build()

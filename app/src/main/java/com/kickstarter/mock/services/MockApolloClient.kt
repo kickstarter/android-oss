@@ -12,6 +12,7 @@ import com.kickstarter.mock.factories.CheckoutFactory
 import com.kickstarter.mock.factories.CommentFactory
 import com.kickstarter.mock.factories.CreatorDetailsFactory
 import com.kickstarter.mock.factories.ErroredBackingFactory
+import com.kickstarter.mock.factories.PageInfoEnvelopeFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.models.Backing
@@ -26,7 +27,6 @@ import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
-import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
@@ -62,10 +62,7 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(
             CommentEnvelope.builder()
                 .pageInfoEnvelope(
-                    PageInfoEnvelope.builder()
-                        .endCursor("WzMyNDk1MzMzXQ==")
-                        .startCursor("WzMyNDk1MzMzXQ==")
-                        .build()
+                    PageInfoEnvelopeFactory.pageInfoEnvelope()
                 )
                 .comments(listOf(CommentFactory.comment()))
                 .totalCount(1)

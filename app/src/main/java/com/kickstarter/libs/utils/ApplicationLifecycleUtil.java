@@ -96,6 +96,7 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
     ApplicationUtils.startNewDiscoveryActivity(this.application);
     Bundle params = new Bundle();
     params.putString("location", context);
+
     FirebaseAnalytics.getInstance(this.application).logEvent("force_logout", params);
   }
 

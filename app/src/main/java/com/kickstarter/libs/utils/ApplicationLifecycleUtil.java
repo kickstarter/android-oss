@@ -34,10 +34,15 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
 
   private final KSApplication application;
   private boolean isInBackground = true;
+  private boolean isLoggedIn = false;
 
   public ApplicationLifecycleUtil(final @NonNull KSApplication application) {
     this.application = application;
     application.component().inject(this);
+
+    this.currentUser.isLoggedIn().subscribe(isLoggedIn -> {
+      this.isLoggedIn = isLoggedIn;
+    });
   }
 
   @Override
@@ -94,7 +99,7 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
   private void forceLogout(final @NonNull String context) {
     this.logout.execute();
     ApplicationUtils.startNewDiscoveryActivity(this.application);
-    Bundle params = new Bundle();
+    final Bundle params = new Bundle();
     params.putString("location", context);
 
     FirebaseAnalytics.getInstance(this.application).logEvent("force_logout", params);
@@ -105,10 +110,9 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
    */
   private void refreshUser() {
     final String accessToken = this.currentUser.getAccessToken();
-    final Boolean isloggedIn = ObjectUtils.isNotNull(this.currentUser.getUser());
 
     // Check if the access token is null and the user is still logged in.
-    if (isloggedIn && ObjectUtils.isNull(accessToken)) {
+    if (this.isLoggedIn && ObjectUtils.isNull(accessToken)) {
       forceLogout("access_token_null");
     } else {
       if (ObjectUtils.isNotNull(accessToken)) {

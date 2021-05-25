@@ -1,44 +1,100 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:background="@color/comment_background"
+    tools:context="com.kickstarter.ui.activities.CommentsActivity"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:focusable="true"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/comments_swipe_refresh_layout"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/separtor"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/comments_recycler_view"
+        <com.kickstarter.ui.toolbars.KSToolbar
+            style="@style/Toolbar"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.kickstarter.ui.views.IconButton
+                    android:id="@+id/back_button"
+                    style="@style/ToolbarIconBackButton" />
+
+                <TextView
+                    style="@style/ToolbarTitle"
+                    android:text="@string/project_menu_buttons_comments" />
+            </RelativeLayout>
+
+        </com.kickstarter.ui.toolbars.KSToolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        tools:context="com.kickstarter.ui.activities.CommentsActivity"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/no_comments"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/grid_11"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:text="@string/No_comments_yet"
+            style="@style/CalloutSecondary"
+            android:layout_height="wrap_content"/>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/comments_swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/kds_white"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/comment_card" />
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/separtor"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/comments_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/kds_white"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/comment_card" />
 
-    <View
-        android:id="@+id/separtor"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="@color/kds_support_200"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/comment_composer" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <com.kickstarter.ui.views.CommentComposerView
-        android:id="@+id/comment_composer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:composer_disabled="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <View
+            android:id="@+id/separtor"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/kds_support_200"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/comment_composer" />
+
+        <com.kickstarter.ui.views.CommentComposerView
+            android:id="@+id/comment_composer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:composer_disabled="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
 

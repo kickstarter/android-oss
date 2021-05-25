@@ -53,10 +53,28 @@ class CommentsActivity :
                 binding.commentComposer.isVisible = true
             }
 
+        viewModel.outputs.setEmptyState()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(this::setEmptyState)
+
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {
             override fun onClickActionListener(string: String) {
             }
         })
+    }
+
+    fun setEmptyState(visibility: Boolean) {
+        val d = visibility
+        binding.commentsSwipeRefreshLayout.visibility = when (visibility) {
+            true -> View.GONE
+            else -> View.VISIBLE
+        }
+
+        binding.noComments.visibility = when (visibility) {
+            true -> View.VISIBLE
+            else -> View.GONE
+        }
     }
 
     override fun emptyCommentsLoginClicked(viewHolder: EmptyCommentsViewHolder?) {

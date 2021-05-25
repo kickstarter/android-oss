@@ -3,10 +3,7 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.MockCurrentUser
-import com.kickstarter.mock.factories.AvatarFactory
-import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.mock.factories.UpdateFactory
-import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.mock.factories.*
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Comment
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
@@ -18,6 +15,7 @@ import rx.observers.TestSubscriber
 class CommentsViewModelTest : KSRobolectricTestCase() {
     private val enableCommentComposer = TestSubscriber<Boolean>()
     private val showCommentComposer = TestSubscriber<Void>()
+    private val showEmptyState = TestSubscriber<Boolean>()
 
     @Test
     fun testCommentsViewModel_showCommentComposer_isLogInUser() {
@@ -158,5 +156,41 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         // Comments should emit.
         commentsList.assertValueCount(1)
+    }
+
+    /*
+     * test when no comment available
+     */
+    @Test
+    fun testCommentsViewModel_EmptyCommentState() {
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+                return Observable.just(CommentEnvelopeFactory.emptyCommentsEnvelope())
+            }
+        }).build()
+        val vm = CommentsViewModel.ViewModel(env)
+        vm.outputs.setEmptyState().subscribe(showEmptyState)
+
+        // Start the view model with an update.
+        vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
+        showEmptyState.assertValue(true)
+    }
+
+    /*
+     * test when comment(s) available
+     */
+    @Test
+    fun testCommentsViewModel_CommentsAvailableState() {
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+                return Observable.just(CommentEnvelopeFactory.commentsEnvelope())
+            }
+        }).build()
+        val vm = CommentsViewModel.ViewModel(env)
+        vm.outputs.setEmptyState().subscribe(showEmptyState)
+
+        // Start the view model with an update.
+        vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
+        showEmptyState.assertValue(false)
     }
 }

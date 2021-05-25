@@ -34,14 +34,14 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
 
   private final KSApplication application;
   private boolean isInBackground = true;
-  private boolean isLoggedIn = false;
+  private boolean isLoggedIn;
 
   public ApplicationLifecycleUtil(final @NonNull KSApplication application) {
     this.application = application;
     application.component().inject(this);
 
-    this.currentUser.isLoggedIn().subscribe(isLoggedIn -> {
-      this.isLoggedIn = isLoggedIn;
+    this.currentUser.isLoggedIn().subscribe(userLoggedIn -> {
+      this.isLoggedIn = userLoggedIn;
     });
   }
 

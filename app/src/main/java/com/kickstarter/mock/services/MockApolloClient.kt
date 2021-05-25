@@ -58,7 +58,7 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(BackingFactory.backing())
     }
 
-    override fun getProjectComments(slug: String, cursor: String?): Observable<CommentEnvelope> {
+    override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
         return Observable.just(
             CommentEnvelope.builder()
                 .pageInfoEnvelope(

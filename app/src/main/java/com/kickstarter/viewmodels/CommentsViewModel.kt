@@ -119,10 +119,8 @@ interface CommentsViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     it.totalCount?.let { count ->
-                        if (count > 0) {
-                            this.setEmptyState.onNext(false)
-                            commentsList.onNext(it.comments)
-                        } else this.setEmptyState.onNext(true)
+                        this.setEmptyState.onNext(count < 1)
+                        commentsList.onNext(it.comments)
                     }
                 }
         }

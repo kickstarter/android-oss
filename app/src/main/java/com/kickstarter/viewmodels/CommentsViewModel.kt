@@ -29,6 +29,7 @@ interface CommentsViewModel {
         fun enableCommentComposer(): Observable<Boolean>
         fun showCommentComposer(): Observable<Void>
         fun commentsList(): Observable<List<Comment>>
+        fun setEmptyState(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
@@ -43,6 +44,8 @@ interface CommentsViewModel {
         private val enableCommentComposer = BehaviorSubject.create<Boolean>()
         private val showCommentComposer = BehaviorSubject.create<Void>()
         private val commentsList = BehaviorSubject.create<List<Comment>?>()
+
+        private val setEmptyState = BehaviorSubject.create<Boolean>()
 
         init {
 
@@ -112,11 +115,13 @@ interface CommentsViewModel {
                 .share()
 
             commentEnvelope
-                .map { it.comments }
                 .filter { ObjectUtils.isNotNull(it) }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    commentsList.onNext(it)
+                    it.totalCount?.let { count ->
+                        this.setEmptyState.onNext(count < 1)
+                        commentsList.onNext(it.comments)
+                    }
                 }
         }
 
@@ -127,5 +132,7 @@ interface CommentsViewModel {
         override fun enableCommentComposer(): Observable<Boolean> = enableCommentComposer
         override fun showCommentComposer(): Observable<Void> = showCommentComposer
         override fun commentsList(): Observable<List<Comment>> = commentsList
+
+        override fun setEmptyState(): Observable<Boolean> = setEmptyState
     }
 }

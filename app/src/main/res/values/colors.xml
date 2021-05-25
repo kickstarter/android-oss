@@ -76,4 +76,7 @@
   <color name="facebook_blue">#1877F2</color>
 
   <color name="retry_color">#FF5151</color>
+
+  <!-- comments -->
+  <color name="comment_background">#FBFBFA</color>
 </resources>

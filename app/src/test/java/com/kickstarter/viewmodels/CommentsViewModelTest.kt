@@ -200,15 +200,15 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
      * test when comment(s) available
      */
     @Test
-    fun testCommentsViewModel_PostComment() {
+    fun testCommentsViewModel_PostComment_CommentAddedToView() {
         val userAvatar = AvatarFactory.avatar()
-        val currentUser = UserFactory.user().toBuilder().id(111).avatar(
+        val currentUser = UserFactory.user().toBuilder().id(1).avatar(
             userAvatar
         ).build()
 
         val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun createComment(comment: PostCommentData): Observable<Comment> {
-                return Observable.just(CommentFactory.comment())
+                return Observable.just(CommentFactory.liveComment())
             }
         }).build()
 
@@ -219,9 +219,10 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // Start the view model with an update.
         vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
         vm.outputs.insertComment().subscribe(commentSubscriber)
-        // post a comment
-        vm.inputs.postComment("Sample Comment")
 
-        commentSubscriber.assertNoValues()
+        // post a comment
+        vm.inputs.postComment("Some Comment")
+
+        commentSubscriber.assertValue(CommentFactory.liveComment())
     }
 }

@@ -39,7 +39,7 @@
   <!-- Activities -->
   <style name="ActivityFeedActivity" parent="KSTheme" />
 
-  <style name="CommentsActivity" parent="KSTheme">
+  <style name="WhiteActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/kds_white</item>
   </style>
 

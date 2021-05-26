@@ -1,5 +1,7 @@
 package com.kickstarter.ui.activities
 
+import android.app.ActivityOptions
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
@@ -83,6 +85,9 @@ class CommentsActivity :
     }
 
     override fun onReplyButtonClicked(comment: Comment) {
+        val threadIntent = Intent(this, ThreadActivity::class.java)
+        startActivity(threadIntent,
+            ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
     }
 
     override fun onFlagButtonClicked(comment: Comment) {

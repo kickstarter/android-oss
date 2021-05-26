@@ -65,7 +65,6 @@ class CommentsActivity :
     }
 
     fun setEmptyState(visibility: Boolean) {
-        val d = visibility
         binding.commentsSwipeRefreshLayout.visibility = when (visibility) {
             true -> View.GONE
             else -> View.VISIBLE

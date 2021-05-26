@@ -11,6 +11,7 @@ import com.kickstarter.ui.adapters.CommentsAdapter
 import com.kickstarter.ui.viewholders.EmptyCommentsViewHolder
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
 import com.kickstarter.viewmodels.CommentsViewModel
+import org.joda.time.DateTime
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(CommentsViewModel.ViewModel::class)
@@ -68,7 +69,7 @@ class CommentsActivity :
 
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {
             override fun onClickActionListener(string: String) {
-                viewModel.inputs.postComment(string)
+                viewModel.inputs.postComment(string, DateTime.now())
                 binding.commentComposer.clearCommentComposer()
             }
         })

@@ -32,12 +32,12 @@ class CommentFactory {
                 .build()
         }
 
-        fun liveComment(): Comment {
+        fun liveComment(comment: String = "Some Comment", createdAt: DateTime): Comment {
             return Comment.builder()
-                .body("Some Comment")
+                .body(comment)
                 .parentId(-1)
                 .authorBadges(listOf())
-                .createdAt(DateTime.now())
+                .createdAt(createdAt)
                 .cursor("")
                 .deleted(false)
                 .id(-1)

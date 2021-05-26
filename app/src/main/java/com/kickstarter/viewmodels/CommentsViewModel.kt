@@ -27,7 +27,7 @@ import rx.subjects.PublishSubject
 interface CommentsViewModel {
 
     interface Inputs {
-        fun postComment(comment: String)
+        fun postComment(comment: String, createdAt: DateTime)
     }
 
     interface Outputs {
@@ -52,7 +52,7 @@ interface CommentsViewModel {
         private val showCommentComposer = BehaviorSubject.create<Void>()
         private val commentsList = BehaviorSubject.create<List<Comment>?>()
 
-        private val postComment = PublishSubject.create<String>()
+        private val postComment = PublishSubject.create<Pair<String, DateTime>>()
         private val setEmptyState = BehaviorSubject.create<Boolean>()
         private val insertComment = BehaviorSubject.create<Comment>()
 
@@ -138,10 +138,10 @@ interface CommentsViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     val comment = Comment.builder()
-                        .body(it.second)
+                        .body(it.second.first)
                         .parentId(-1)
                         .authorBadges(listOf())
-                        .createdAt(DateTime.now())
+                        .createdAt(it.second.second)
                         .cursor("")
                         .deleted(false)
                         .id(-1)
@@ -160,7 +160,7 @@ interface CommentsViewModel {
                         this.apolloClient.createComment(
                             PostCommentData(
                                 project = project,
-                                body = it.second,
+                                body = it.second.first,
                                 clientMutationId = null,
                                 parentId = null
                             )
@@ -185,6 +185,6 @@ interface CommentsViewModel {
 
         override fun setEmptyState(): Observable<Boolean> = setEmptyState
         override fun insertComment(): Observable<Comment> = this.insertComment
-        override fun postComment(comment: String) = postComment.onNext(comment)
+        override fun postComment(comment: String, createdAt: DateTime) = postComment.onNext(Pair(comment, createdAt))
     }
 }

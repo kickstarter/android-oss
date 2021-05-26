@@ -14,6 +14,7 @@ import com.kickstarter.models.Comment
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.IntentKey
+import org.joda.time.DateTime
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -211,9 +212,11 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             userAvatar
         ).build()
 
+        val createdAt = DateTime.now()
+
         val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun createComment(comment: PostCommentData): Observable<Comment> {
-                return Observable.just(CommentFactory.liveComment())
+                return Observable.just(CommentFactory.liveComment(createdAt = createdAt))
             }
         }).build()
 
@@ -226,8 +229,8 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.outputs.insertComment().subscribe(commentSubscriber)
 
         // post a comment
-        vm.inputs.postComment("Some Comment")
+        vm.inputs.postComment("Some Comment", createdAt)
 
-        commentSubscriber.assertValue(CommentFactory.liveComment())
+        commentSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
     }
 }

@@ -3,14 +3,11 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.MockCurrentUser
-import com.kickstarter.mock.factories.AvatarFactory
-import com.kickstarter.mock.factories.CommentEnvelopeFactory
-import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.mock.factories.UpdateFactory
-import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.mock.factories.*
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Comment
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
+import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.IntentKey
 import org.junit.Test
 import rx.Observable
@@ -20,6 +17,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     private val enableCommentComposer = TestSubscriber<Boolean>()
     private val showCommentComposer = TestSubscriber<Void>()
     private val showEmptyState = TestSubscriber<Boolean>()
+    private val commentSubscriber = TestSubscriber<Comment>()
 
     @Test
     fun testCommentsViewModel_showCommentComposer_isLogInUser() {
@@ -196,5 +194,34 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // Start the view model with an update.
         vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
         showEmptyState.assertValue(false)
+    }
+
+    /*
+     * test when comment(s) available
+     */
+    @Test
+    fun testCommentsViewModel_PostComment() {
+        val userAvatar = AvatarFactory.avatar()
+        val currentUser = UserFactory.user().toBuilder().id(111).avatar(
+            userAvatar
+        ).build()
+
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun createComment(comment: PostCommentData): Observable<Comment> {
+                return Observable.just(CommentFactory.comment())
+            }
+        }).build()
+
+        val vm = CommentsViewModel.ViewModel(
+            env.toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+        )
+
+        // Start the view model with an update.
+        vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
+        vm.outputs.insertComment().subscribe(commentSubscriber)
+        // post a comment
+        vm.inputs.postComment("Sample Comment")
+
+        commentSubscriber.assertNoValues()
     }
 }

@@ -86,8 +86,10 @@ class CommentsActivity :
 
     override fun onReplyButtonClicked(comment: Comment) {
         val threadIntent = Intent(this, ThreadActivity::class.java)
-        startActivity(threadIntent,
-            ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(
+            threadIntent,
+            ActivityOptions.makeSceneTransitionAnimation(this).toBundle()
+        )
     }
 
     override fun onFlagButtonClicked(comment: Comment) {

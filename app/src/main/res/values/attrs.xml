@@ -13,4 +13,12 @@
     <attr name="composer_disabled" format="boolean" />
     <attr name="composer_avatar_url" format="string" />
   </declare-styleable>
+
+  <declare-styleable name="CommentCardView">
+    <attr name="comment_card_status" format="integer"  />
+    <attr name="comment_card_user_name" format="string" />
+    <attr name="comment_card_post_time" format="string" />
+    <attr name="comment_card_message" format="string" />
+    <attr name="comment_card_avatar_url" format="string" />
+  </declare-styleable>
 </resources>

@@ -12,10 +12,12 @@ import com.kickstarter.mock.factories.CheckoutFactory
 import com.kickstarter.mock.factories.CommentFactory
 import com.kickstarter.mock.factories.CreatorDetailsFactory
 import com.kickstarter.mock.factories.ErroredBackingFactory
+import com.kickstarter.mock.factories.PageInfoEnvelopeFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
+import com.kickstarter.models.Comment
 import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Location
@@ -25,8 +27,8 @@ import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
-import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
+import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
 import rx.Observable
@@ -56,19 +58,20 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(BackingFactory.backing())
     }
 
-    override fun getProjectComments(slug: String, cursor: String?): Observable<CommentEnvelope> {
+    override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
         return Observable.just(
             CommentEnvelope.builder()
                 .pageInfoEnvelope(
-                    PageInfoEnvelope.builder()
-                        .endCursor("WzMyNDk1MzMzXQ==")
-                        .startCursor("WzMyNDk1MzMzXQ==")
-                        .build()
+                    PageInfoEnvelopeFactory.pageInfoEnvelope()
                 )
                 .comments(listOf(CommentFactory.comment()))
                 .totalCount(1)
                 .build()
         )
+    }
+
+    override fun createComment(comment: PostCommentData): Observable<Comment> {
+        return Observable.just(CommentFactory.comment())
     }
 
     override fun clearUnseenActivity(): Observable<Int> {

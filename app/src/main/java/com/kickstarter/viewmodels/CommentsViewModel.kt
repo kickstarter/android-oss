@@ -15,9 +15,11 @@ import com.kickstarter.models.Update
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CommentsActivity
 import com.kickstarter.ui.data.ProjectData
+import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -25,7 +27,7 @@ import rx.subjects.PublishSubject
 interface CommentsViewModel {
 
     interface Inputs {
-        fun postComment(comment: Comment)
+        fun postComment(comment: String)
     }
 
     interface Outputs {
@@ -34,6 +36,7 @@ interface CommentsViewModel {
         fun showCommentComposer(): Observable<Void>
         fun commentsList(): Observable<List<Comment>>
         fun setEmptyState(): Observable<Boolean>
+        fun insertComment(): Observable<Comment>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
@@ -49,9 +52,9 @@ interface CommentsViewModel {
         private val showCommentComposer = BehaviorSubject.create<Void>()
         private val commentsList = BehaviorSubject.create<List<Comment>?>()
 
-        private val postComment = PublishSubject.create<Comment>()
-
+        private val postComment = PublishSubject.create<String>()
         private val setEmptyState = BehaviorSubject.create<Boolean>()
+        private val insertComment = BehaviorSubject.create<Comment>()
 
         init {
 
@@ -130,20 +133,46 @@ interface CommentsViewModel {
                     }
                 }
 
-//            initialProject
-//                .compose(Transformers.combineLatestPair(this.postComment))
-//                .compose(bindToLifecycle())
-//                .switchMap {
-//                  //  this.apolloClient.
-//                }
-//                .subscribe (
-//                    {
-//
-//                    },
-//                    {
-//
-//                    }
-//                )
+            this.currentUser.loggedInUser()
+                .compose(Transformers.takePairWhen(this.postComment))
+                .compose(bindToLifecycle())
+                .subscribe {
+                    val comment = Comment.builder()
+                        .body(it.second)
+                        .parentId(-1)
+                        .authorBadges(listOf())
+                        .createdAt(DateTime.now())
+                        .cursor("")
+                        .deleted(false)
+                        .id(-1)
+                        .repliesCount(0)
+                        .author(it.first)
+                        .build()
+
+                    this.insertComment.onNext(comment)
+                }
+
+            initialProject
+                .compose(Transformers.takePairWhen(this.postComment))
+                .compose(bindToLifecycle())
+                .switchMap {
+                    it.first?.let { project ->
+                        this.apolloClient.createComment(
+                            PostCommentData(
+                                project = project,
+                                body = it.second,
+                                clientMutationId = null,
+                                parentId = null
+                            )
+                        )
+                    }
+                }
+                .subscribe(
+                    {
+                    },
+                    {
+                    }
+                )
         }
 
         private fun isProjectBackedOrUserIsCreator(pair: Pair<Project, User>) =
@@ -155,6 +184,7 @@ interface CommentsViewModel {
         override fun commentsList(): Observable<List<Comment>> = commentsList
 
         override fun setEmptyState(): Observable<Boolean> = setEmptyState
-        override fun postComment(comment: Comment) = postComment.onNext(comment)
+        override fun insertComment(): Observable<Comment> = this.insertComment
+        override fun postComment(comment: String) = postComment.onNext(comment)
     }
 }

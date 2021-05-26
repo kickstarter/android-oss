@@ -9,6 +9,7 @@ import UpdateUserPasswordMutation
 import UserPrivacyQuery
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
+import com.kickstarter.models.Comment
 import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Location
@@ -18,6 +19,7 @@ import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
+import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
 import rx.Observable
@@ -32,7 +34,9 @@ interface ApolloClientType {
 
     fun clearUnseenActivity(): Observable<Int>
 
-    fun getProjectComments(slug: String, cursor: String?): Observable<CommentEnvelope>
+    fun getProjectComments(slug: String, cursor: String?, limit: Int = 25): Observable<CommentEnvelope>
+
+    fun createComment(comment: PostCommentData): Observable<Comment>
 
     fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data>
 

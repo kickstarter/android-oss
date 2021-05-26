@@ -7,36 +7,52 @@ import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectUtils
+import com.kickstarter.models.Comment
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CommentsActivity
 import com.kickstarter.ui.data.ProjectData
 import rx.Observable
 import rx.subjects.BehaviorSubject
+import rx.subjects.PublishSubject
 
 interface CommentsViewModel {
 
-    interface Inputs
+    interface Inputs {
+        fun postComment(comment: Comment)
+    }
+
     interface Outputs {
         fun currentUserAvatar(): Observable<String?>
         fun enableCommentComposer(): Observable<Boolean>
         fun showCommentComposer(): Observable<Void>
+        fun commentsList(): Observable<List<Comment>>
+        fun setEmptyState(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
 
-        val currentUser: CurrentUserType = environment.currentUser()
-        val client: ApiClientType = environment.apiClient()
+        private val currentUser: CurrentUserType = environment.currentUser()
+        private val client: ApiClientType = environment.apiClient()
+        private val apolloClient: ApolloClientType = environment.apolloClient()
         val inputs: Inputs = this
         val outputs: Outputs = this
 
         private val currentUserAvatar = BehaviorSubject.create<String?>()
         private val enableCommentComposer = BehaviorSubject.create<Boolean>()
         private val showCommentComposer = BehaviorSubject.create<Void>()
+        private val commentsList = BehaviorSubject.create<List<Comment>?>()
+
+        private val postComment = PublishSubject.create<Comment>()
+
+        private val setEmptyState = BehaviorSubject.create<Boolean>()
+
         init {
 
             val loggedInUser = this.currentUser.loggedInUser()
@@ -95,6 +111,39 @@ interface CommentsViewModel {
                         enableCommentComposer.onNext(isProjectBackedOrUserIsCreator(Pair(project, it.first)))
                     }
                 }
+
+            val commentEnvelope = initialProject
+                .map { requireNotNull(it?.slug()) }
+                .switchMap {
+                    this.apolloClient.getProjectComments(it, null)
+                }
+                .filter { ObjectUtils.isNotNull(it) }
+                .share()
+
+            commentEnvelope
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    it.totalCount?.let { count ->
+                        this.setEmptyState.onNext(count < 1)
+                        commentsList.onNext(it.comments)
+                    }
+                }
+
+//            initialProject
+//                .compose(Transformers.combineLatestPair(this.postComment))
+//                .compose(bindToLifecycle())
+//                .switchMap {
+//                  //  this.apolloClient.
+//                }
+//                .subscribe (
+//                    {
+//
+//                    },
+//                    {
+//
+//                    }
+//                )
         }
 
         private fun isProjectBackedOrUserIsCreator(pair: Pair<Project, User>) =
@@ -103,5 +152,9 @@ interface CommentsViewModel {
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
         override fun enableCommentComposer(): Observable<Boolean> = enableCommentComposer
         override fun showCommentComposer(): Observable<Void> = showCommentComposer
+        override fun commentsList(): Observable<List<Comment>> = commentsList
+
+        override fun setEmptyState(): Observable<Boolean> = setEmptyState
+        override fun postComment(comment: Comment) = postComment.onNext(comment)
     }
 }

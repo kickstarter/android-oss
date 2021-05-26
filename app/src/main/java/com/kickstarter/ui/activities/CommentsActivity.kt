@@ -69,6 +69,7 @@ class CommentsActivity :
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {
             override fun onClickActionListener(string: String) {
                 viewModel.inputs.postComment(string)
+                binding.commentComposer.clearCommentComposer()
             }
         })
     }

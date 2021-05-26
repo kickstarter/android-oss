@@ -24,6 +24,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     private val showCommentComposer = TestSubscriber<Void>()
     private val showEmptyState = TestSubscriber<Boolean>()
     private val commentSubscriber = TestSubscriber<Comment>()
+    private val commentPostedSubscriber = TestSubscriber<Comment>()
 
     @Test
     fun testCommentsViewModel_showCommentComposer_isLogInUser() {
@@ -227,10 +228,12 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // Start the view model with an update.
         vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
         vm.outputs.insertComment().subscribe(commentSubscriber)
+        vm.outputs.commentPosted().subscribe(commentPostedSubscriber)
 
         // post a comment
         vm.inputs.postComment("Some Comment", createdAt)
 
+        commentPostedSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
         commentSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
     }
 }

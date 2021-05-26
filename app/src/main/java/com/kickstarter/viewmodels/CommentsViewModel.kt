@@ -37,6 +37,7 @@ interface CommentsViewModel {
         fun commentsList(): Observable<List<Comment>>
         fun setEmptyState(): Observable<Boolean>
         fun insertComment(): Observable<Comment>
+        fun commentPosted(): Observable<Comment>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
@@ -55,6 +56,7 @@ interface CommentsViewModel {
         private val postComment = PublishSubject.create<Pair<String, DateTime>>()
         private val setEmptyState = BehaviorSubject.create<Boolean>()
         private val insertComment = BehaviorSubject.create<Comment>()
+        private val commentPosted = BehaviorSubject.create<Comment>()
 
         init {
 
@@ -169,6 +171,7 @@ interface CommentsViewModel {
                 }
                 .subscribe(
                     {
+                        this.commentPosted.onNext(it)
                     },
                     {
                     }
@@ -185,6 +188,8 @@ interface CommentsViewModel {
 
         override fun setEmptyState(): Observable<Boolean> = setEmptyState
         override fun insertComment(): Observable<Comment> = this.insertComment
+        override fun commentPosted(): Observable<Comment> = this.commentPosted
+
         override fun postComment(comment: String, createdAt: DateTime) = postComment.onNext(Pair(comment, createdAt))
     }
 }

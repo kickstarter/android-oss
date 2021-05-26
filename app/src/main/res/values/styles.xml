@@ -41,6 +41,7 @@
 
   <style name="WhiteActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/kds_white</item>
+    <item name="android:windowContentTransitions">true</item>
   </style>
 
   <style name="DiscoveryBase" parent="KSTheme">

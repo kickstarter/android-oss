@@ -27,6 +27,11 @@ class CommentsAdapter(private val delegate: Delegate) : KSAdapter() {
         notifyDataSetChanged()
     }
 
+    fun insertData(comment: Comment, position: Int) {
+        insertSection(position, listOf(comment))
+        notifyItemChanged(position)
+    }
+
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
         return CommentCardViewHolder(ItemCommentCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate)
     }

@@ -15,21 +15,30 @@ import com.kickstarter.models.Update
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CommentsActivity
 import com.kickstarter.ui.data.ProjectData
+import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
+import rx.subjects.PublishSubject
 
 interface CommentsViewModel {
 
-    interface Inputs
+    interface Inputs {
+        fun postComment(comment: String, createdAt: DateTime)
+    }
+
     interface Outputs {
         fun currentUserAvatar(): Observable<String?>
         fun enableCommentComposer(): Observable<Boolean>
         fun showCommentComposer(): Observable<Void>
         fun commentsList(): Observable<List<Comment>>
         fun setEmptyState(): Observable<Boolean>
+        fun insertComment(): Observable<Comment>
+        fun commentPosted(): Observable<Comment>
+        fun updateFailedComment(): Observable<Comment>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
@@ -45,7 +54,12 @@ interface CommentsViewModel {
         private val showCommentComposer = BehaviorSubject.create<Void>()
         private val commentsList = BehaviorSubject.create<List<Comment>?>()
 
+        private val postComment = PublishSubject.create<Pair<String, DateTime>>()
         private val setEmptyState = BehaviorSubject.create<Boolean>()
+        private val insertComment = BehaviorSubject.create<Comment>()
+        private val commentPosted = BehaviorSubject.create<Comment>()
+        private val updateFailedComment = BehaviorSubject.create<Comment>()
+        private val failedPostedCommentObserver = BehaviorSubject.create<Void>()
 
         init {
 
@@ -123,6 +137,59 @@ interface CommentsViewModel {
                         commentsList.onNext(it.comments)
                     }
                 }
+
+            this.currentUser.loggedInUser()
+                .compose(Transformers.takePairWhen(this.postComment))
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.insertComment.onNext(buildCommentBody(it))
+                }
+
+            this.currentUser.loggedInUser()
+                .compose(Transformers.takePairWhen(this.postComment))
+                .compose(Transformers.takePairWhen(this.failedPostedCommentObserver))
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.updateFailedComment.onNext(buildCommentBody(it.first))
+                }
+
+            initialProject
+                .compose(Transformers.takePairWhen(this.postComment))
+                .compose(bindToLifecycle())
+                .switchMap {
+                    it.first?.let { project ->
+                        this.apolloClient.createComment(
+                            PostCommentData(
+                                project = project,
+                                body = it.second.first,
+                                clientMutationId = null,
+                                parentId = null
+                            )
+                        )
+                    }
+                }
+                .subscribe(
+                    {
+                        this.commentPosted.onNext(it)
+                    },
+                    {
+                        this.failedPostedCommentObserver.onNext(null)
+                    }
+                )
+        }
+
+        private fun buildCommentBody(it: Pair<User, Pair<String, DateTime>>): Comment? {
+            return Comment.builder()
+                .body(it.second.first)
+                .parentId(-1)
+                .authorBadges(listOf())
+                .createdAt(it.second.second)
+                .cursor("")
+                .deleted(false)
+                .id(-1)
+                .repliesCount(0)
+                .author(it.first)
+                .build()
         }
 
         private fun isProjectBackedOrUserIsCreator(pair: Pair<Project, User>) =
@@ -134,5 +201,10 @@ interface CommentsViewModel {
         override fun commentsList(): Observable<List<Comment>> = commentsList
 
         override fun setEmptyState(): Observable<Boolean> = setEmptyState
+        override fun insertComment(): Observable<Comment> = this.insertComment
+        override fun commentPosted(): Observable<Comment> = this.commentPosted
+        override fun updateFailedComment(): Observable<Comment> = this.updateFailedComment
+
+        override fun postComment(comment: String, createdAt: DateTime) = postComment.onNext(Pair(comment, createdAt))
     }
 }

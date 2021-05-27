@@ -14,6 +14,7 @@ import com.kickstarter.ui.adapters.CommentsAdapter
 import com.kickstarter.ui.viewholders.EmptyCommentsViewHolder
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
 import com.kickstarter.viewmodels.CommentsViewModel
+import org.joda.time.DateTime
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(CommentsViewModel.ViewModel::class)
@@ -61,10 +62,30 @@ class CommentsActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::setEmptyState)
 
+        viewModel.outputs.insertComment()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                adapter.insertData(it, 0)
+                binding.commentsRecyclerView.scrollToPosition(0)
+            }
+
+        viewModel.outputs.updateFailedComment()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+            }
+
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {
             override fun onClickActionListener(string: String) {
+                postComment(string)
             }
         })
+    }
+
+    fun postComment(comment: String) {
+        this.viewModel.inputs.postComment(comment, DateTime.now())
+        this.binding.commentComposer.clearCommentComposer()
     }
 
     fun setEmptyState(visibility: Boolean) {

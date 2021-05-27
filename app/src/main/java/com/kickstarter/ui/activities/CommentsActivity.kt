@@ -71,7 +71,6 @@ class CommentsActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-
             }
 
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {
@@ -81,7 +80,7 @@ class CommentsActivity :
         })
     }
 
-    fun postComment(comment: String){
+    fun postComment(comment: String) {
         this.viewModel.inputs.postComment(comment, DateTime.now())
         this.binding.commentComposer.clearCommentComposer()
     }

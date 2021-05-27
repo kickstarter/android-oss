@@ -250,7 +250,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                 .map { project ->
 
                                     val comments = project?.comments()?.edges()?.map { edge ->
-                                        createCommentObject(edge?.node()?.fragments()?.comment())
+                                        createCommentObject(edge?.node()?.fragments()?.comment()).toBuilder()
+                                            .cursor(edge?.cursor())
+                                            .build()
                                     }
 
                                     CommentEnvelope.builder()

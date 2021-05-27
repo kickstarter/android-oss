@@ -34,6 +34,7 @@ interface CommentsViewModel {
         fun enableCommentComposer(): Observable<Boolean>
         fun showCommentComposer(): Observable<Void>
         fun commentsList(): Observable<List<Comment>>
+        fun setEmptyState(): Observable<Boolean>
         fun isLoadingMoreItems(): Observable<Boolean>
         fun isRefreshing(): Observable<Boolean>
         fun enableLoadMore(): Observable<Boolean>
@@ -60,17 +61,19 @@ interface CommentsViewModel {
         var lastCommentCursour: String? = null
         protected var loadMoreListData = mutableListOf<Comment>()
 
+        private val setEmptyState = BehaviorSubject.create<Boolean>()
+
         init {
 
             val loggedInUser = this.currentUser.loggedInUser()
-                    .filter { u -> u != null }
-                    .map { requireNotNull(it) }
+                .filter { u -> u != null }
+                .map { requireNotNull(it) }
 
             loggedInUser
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        currentUserAvatar.onNext(it.avatar().small())
-                    }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    currentUserAvatar.onNext(it.avatar().small())
+                }
 
             loggedInUser
                     .compose(bindToLifecycle())
@@ -119,7 +122,23 @@ interface CommentsViewModel {
                             enableCommentComposer.onNext(isProjectBackedOrUserIsCreator(Pair(project, it.first)))
                         }
                     }
+            val commentEnvelope = initialProject
+                    .map { requireNotNull(it?.slug()) }
+                    .switchMap {
+                        this.apolloClient.getProjectComments(it, null)
+                    }
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .share()
 
+            commentEnvelope
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        it.totalCount?.let { count ->
+                            this.setEmptyState.onNext(count < 1)
+                            commentsList.onNext(it.comments)
+                        }
+                    }
             val projectSlug = initialProject
                     .map { requireNotNull(it?.slug()) }
 
@@ -188,7 +207,7 @@ interface CommentsViewModel {
         }
 
         private fun isProjectBackedOrUserIsCreator(pair: Pair<Project, User>) =
-                pair.first.isBacking || ProjectUtils.userIsCreator(pair.first, pair.second)
+            pair.first.isBacking || ProjectUtils.userIsCreator(pair.first, pair.second)
 
         override fun refresh() = refresh.onNext(null)
         override fun nextPage() = nextPage.onNext(null)
@@ -197,6 +216,8 @@ interface CommentsViewModel {
         override fun enableCommentComposer(): Observable<Boolean> = enableCommentComposer
         override fun showCommentComposer(): Observable<Void> = showCommentComposer
         override fun commentsList(): Observable<List<Comment>> = commentsList
+
+        override fun setEmptyState(): Observable<Boolean> = setEmptyState
         override fun isLoadingMoreItems(): Observable<Boolean> = isLoadingMoreItems
         override fun enableLoadMore(): Observable<Boolean> = enableLoadMore
         override fun isRefreshing(): Observable<Boolean> = isRefreshing

@@ -6,7 +6,6 @@ import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.perimeterx.PerimeterXClientType
 import com.kickstarter.libs.utils.WebUtils.userAgent
-import com.kickstarter.models.User
 import com.kickstarter.services.KSUri
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Builder
@@ -53,7 +52,11 @@ class ApiRequestInterceptor(
         val builder: Builder = initialHttpUrl.newBuilder()
             .setQueryParameter("client_id", clientId)
         currentUser.observable()
-            .subscribe { user: User? -> builder.setQueryParameter("oauth_token", currentUser.accessToken) }
+            .subscribe {
+                if (currentUser.accessToken != null) {
+                    builder.setQueryParameter("oauth_token", currentUser.accessToken)
+                }
+            }
         return builder.build()
     }
 

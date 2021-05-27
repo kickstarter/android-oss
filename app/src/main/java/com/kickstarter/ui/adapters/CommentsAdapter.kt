@@ -13,7 +13,7 @@ import com.kickstarter.ui.viewholders.KSViewHolder
 
 class CommentsAdapter(private val delegate: Delegate, diffUtil: DiffUtil.ItemCallback<Any>) : KSListAdapter(diffUtil) {
     interface Delegate : EmptyCommentsViewHolder.Delegate, CommentCardViewHolder.Delegate
-    
+
     @LayoutRes
     override fun layout(sectionRow: SectionRow): Int {
         return R.layout.item_comment_card

@@ -54,23 +54,23 @@ class PaginationHandler(
             })
     }
 
-     fun refreshing(refreshing: Boolean) {
+    fun refreshing(refreshing: Boolean) {
         swipeRefreshLayout.isRefreshing = refreshing
     }
 
-     fun isLoading(isLoading: Boolean) {
-       this.isLoading = isLoading
+    fun isLoading(isLoading: Boolean) {
+        this.isLoading = isLoading
     }
 
     fun enableRefreshing(isEnabled: Boolean) {
         swipeRefreshLayout.isEnabled = isEnabled
     }
 
-     fun loadMoreDone() {
+    fun loadMoreDone() {
         isLoading = false
     }
 
-     fun getCurListData(): List<*> = adapter.currentList
+    fun getCurListData(): List<*> = adapter.currentList
 }
 
 enum class LoadingType {

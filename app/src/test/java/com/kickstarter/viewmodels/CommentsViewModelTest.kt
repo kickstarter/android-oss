@@ -17,9 +17,13 @@ import rx.Observable
 import rx.observers.TestSubscriber
 
 class CommentsViewModelTest : KSRobolectricTestCase() {
+    private val commentsList = TestSubscriber<List<Comment>?>()
     private val enableCommentComposer = TestSubscriber<Boolean>()
     private val showCommentComposer = TestSubscriber<Void>()
     private val showEmptyState = TestSubscriber<Boolean>()
+    private val isLoadingMoreItems = TestSubscriber<Boolean>()
+    private val isRefreshing = TestSubscriber<Boolean>()
+    private val enablePagination = TestSubscriber<Boolean>()
 
     @Test
     fun testCommentsViewModel_showCommentComposer_isLogInUser() {
@@ -142,7 +146,6 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             }
         }).build()
         val vm = CommentsViewModel.ViewModel(env)
-        val commentsList = TestSubscriber<List<Comment>?>()
         vm.outputs.commentsList().subscribe(commentsList)
 
         // Start the view model with an update.
@@ -153,7 +156,6 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCommentsViewModel_ProjectCommentsEmit() {
         val vm = CommentsViewModel.ViewModel(environment())
-        val commentsList = TestSubscriber<List<Comment>?>()
         vm.outputs.commentsList().subscribe(commentsList)
         // Start the view model with a project.
         vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
@@ -196,5 +198,53 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // Start the view model with an update.
         vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
         showEmptyState.assertValue(false)
+    }
+
+    @Test
+    fun testCommentsViewModel_ProjectRefresh() {
+        val vm = CommentsViewModel.ViewModel(environment())
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        vm.outputs.isRefreshing().subscribe(isRefreshing)
+
+        // Start the view model with a project.
+        vm.inputs.refresh()
+        vm.outputs.commentsList().subscribe(commentsList)
+
+        // Comments should emit.
+        isRefreshing.assertValues(false, true, false)
+        commentsList.assertValueCount(1)
+    }
+
+    /*
+  * test Pagination
+  */
+    @Test
+    fun testCommentsViewModel_ProjectLoadingMore() {
+        var firstCall = true
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+                return if (firstCall)
+                    Observable.just(CommentEnvelopeFactory.commentsEnvelope())
+                else
+                    Observable.just(CommentEnvelopeFactory.emptyCommentsEnvelope())
+            }
+        }).build()
+
+        val vm = CommentsViewModel.ViewModel(env)
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+
+        vm.outputs.enablePagination().subscribe(enablePagination)
+        vm.outputs.isLoadingMoreItems().subscribe(isLoadingMoreItems)
+
+        enablePagination.assertValues(true)
+
+        firstCall = false
+        // get the next page which is end of page
+        vm.inputs.nextPage()
+        vm.outputs.commentsList().subscribe(commentsList)
+
+        isLoadingMoreItems.assertValues(false, true, false)
+        enablePagination.assertValues(true, false)
+        commentsList.assertValueCount(1)
     }
 }

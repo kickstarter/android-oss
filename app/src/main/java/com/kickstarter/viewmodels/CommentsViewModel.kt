@@ -39,7 +39,7 @@ interface CommentsViewModel {
         fun setEmptyState(): Observable<Boolean>
     }
 
-    class ViewModelOutput(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
+    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
 
         private val currentUser: CurrentUserType = environment.currentUser()
         private val client: ApiClientType = environment.apiClient()
@@ -55,7 +55,7 @@ interface CommentsViewModel {
         private val commentsList = BehaviorSubject.create<List<Comment>?>()
         private val isLoadingMoreItems = BehaviorSubject.create<Boolean>()
         private val isRefreshing = BehaviorSubject.create<Boolean>()
-        private val enableLoadMore = BehaviorSubject.create<Boolean>()
+        private val enablePagination = BehaviorSubject.create<Boolean>()
         private val setEmptyState = BehaviorSubject.create<Boolean>()
 
         private var lastCommentCursour: String? = null
@@ -106,7 +106,7 @@ interface CommentsViewModel {
                     { u: Update? -> client.fetchProject(u?.projectId().toString()).compose(Transformers.neverError()) }
                 )
             }.map { requireNotNull(it) }
-                    .share()
+                .share()
 
             Observable.combineLatest(
                 loggedInUser,
@@ -121,7 +121,7 @@ interface CommentsViewModel {
                 }
 
             val projectSlug = initialProject
-                    .map { requireNotNull(it?.slug()) }
+                .map { requireNotNull(it?.slug()) }
 
             val commentEnvelope = projectSlug
                 .switchMap {
@@ -130,56 +130,56 @@ interface CommentsViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
 
             commentEnvelope
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        it.totalCount?.let { count ->
-                            this.setEmptyState.onNext(count < 1)
-                            updatePaginatedData(
-                                    LoadingType.NORMAL,
-                                    it.comments
-                            )
-                        }
-                    }
-
-            projectSlug
-                    .compose(Transformers.takeWhen(this.nextPage))
-                    .doOnNext {
-                        this.isLoadingMoreItems.onNext(true)
-                    }
-                    .switchMap {
-                        this.apolloClient.getProjectComments(it, lastCommentCursour)
-                    }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe {
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    it.totalCount?.let { count ->
+                        this.setEmptyState.onNext(count < 1)
                         updatePaginatedData(
-                                LoadingType.LOAD_MORE,
-                                it.comments
+                            LoadingType.NORMAL,
+                            it.comments
                         )
                     }
+                }
 
             projectSlug
-                    .compose(Transformers.takeWhen(this.refresh))
-                    .doOnNext {
-                        this.isRefreshing.onNext(true)
+                .compose(Transformers.takeWhen(this.nextPage))
+                .doOnNext {
+                    this.isLoadingMoreItems.onNext(true)
+                }
+                .switchMap {
+                    this.apolloClient.getProjectComments(it, lastCommentCursour)
+                }
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    updatePaginatedData(
+                        LoadingType.LOAD_MORE,
+                        it.comments
+                    )
+                }
+
+            projectSlug
+                .compose(Transformers.takeWhen(this.refresh))
+                .doOnNext {
+                    this.isRefreshing.onNext(true)
+                }
+                .switchMap {
+                    it.let { slug ->
+                        this.apolloClient.getProjectComments(slug, null)
                     }
-                    .switchMap {
-                        it.let { slug ->
-                            this.apolloClient.getProjectComments(slug, null)
-                        }
+                }
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    it.totalCount?.let { count ->
+                        this.setEmptyState.onNext(count < 1)
+                        updatePaginatedData(
+                            LoadingType.PULL_REFRESH,
+                            it.comments
+                        )
                     }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        it.totalCount?.let { count ->
-                            this.setEmptyState.onNext(count < 1)
-                            updatePaginatedData(
-                                    LoadingType.PULL_REFRESH,
-                                    it.comments
-                            )
-                        }
-                    }
+                }
         }
 
         private fun isProjectBackedOrUserIsCreator(pair: Pair<Project, User>) =
@@ -194,7 +194,7 @@ interface CommentsViewModel {
         override fun commentsList(): Observable<List<Comment>> = commentsList
         override fun setEmptyState(): Observable<Boolean> = setEmptyState
         override fun isLoadingMoreItems(): Observable<Boolean> = isLoadingMoreItems
-        override fun enablePagination(): Observable<Boolean> = enableLoadMore
+        override fun enablePagination(): Observable<Boolean> = enablePagination
         override fun isRefreshing(): Observable<Boolean> = isRefreshing
 
         override fun bindPaginatedData(data: List<Comment>?) {
@@ -206,7 +206,7 @@ interface CommentsViewModel {
         }
 
         override fun updatePaginatedState(enabled: Boolean) {
-            enableLoadMore.onNext(enabled)
+            enablePagination.onNext(enabled)
         }
     }
 }

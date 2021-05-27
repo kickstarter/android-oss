@@ -15,26 +15,29 @@ import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
 import com.kickstarter.viewmodels.CommentsViewModel
 import rx.android.schedulers.AndroidSchedulers
 
-@RequiresActivityViewModel(CommentsViewModel.ViewModelOutput::class)
+@RequiresActivityViewModel(CommentsViewModel.ViewModel::class)
 class CommentsActivity :
-    BaseActivity<CommentsViewModel.ViewModelOutput>(),
+    BaseActivity<CommentsViewModel.ViewModel>(),
     CommentsAdapter.Delegate {
     private lateinit var binding: ActivityCommentsLayoutBinding
-    private val adapter = CommentsAdapter(this, object : DiffUtil.ItemCallback<Any>() {
-        override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-            return threadsAreTheSame(oldItem, newItem)
-        }
+    private val adapter = CommentsAdapter(
+        this,
+        object : DiffUtil.ItemCallback<Any>() {
+            override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
+                return threadsAreTheSame(oldItem, newItem)
+            }
 
-        override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
-            return threadsAreTheSame(oldItem, newItem)
-        }
+            override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+                return threadsAreTheSame(oldItem, newItem)
+            }
 
-        private fun threadsAreTheSame(oldItem: Any, newItem: Any): Boolean {
-            val oldThread = oldItem as Comment
-            val newThread = newItem as Comment
-            return oldThread.id() == newThread.id()
+            private fun threadsAreTheSame(oldItem: Any, newItem: Any): Boolean {
+                val oldThread = oldItem as Comment
+                val newThread = newItem as Comment
+                return oldThread.id() == newThread.id()
+            }
         }
-    })
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,10 +46,10 @@ class CommentsActivity :
         setContentView(view)
         binding.commentsRecyclerView.adapter = adapter
 
-       val loadMoreListView = PaginationHandler(
-                adapter,
-                binding.commentsRecyclerView,
-                binding.commentsSwipeRefreshLayout
+        val loadMoreListView = PaginationHandler(
+            adapter,
+            binding.commentsRecyclerView,
+            binding.commentsSwipeRefreshLayout
         )
 
         loadMoreListView.onRefreshListener = {
@@ -54,29 +57,30 @@ class CommentsActivity :
         }
 
         loadMoreListView.onLoadMoreListener = {
-                viewModel.inputs.nextPage()
+            viewModel.inputs.nextPage()
         }
 
         viewModel.outputs.enablePagination()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    loadMoreListView.loadMoreEnabled = it
-                }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                loadMoreListView.loadMoreEnabled = it
+            }
 
         viewModel.outputs.isLoadingMoreItems()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    loadMoreListView.isLoading(it)
-                }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                loadMoreListView.isLoading(it)
+                binding.commentsLoadingIndicator.isVisible = it
+            }
 
         viewModel.outputs.isRefreshing()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    loadMoreListView.refreshing(it)
-                }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                loadMoreListView.refreshing(it)
+            }
 
         viewModel.outputs.commentsList()
             .compose(bindToLifecycle())

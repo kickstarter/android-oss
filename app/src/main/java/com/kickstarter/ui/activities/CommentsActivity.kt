@@ -67,6 +67,13 @@ class CommentsActivity :
                 binding.commentsRecyclerView.scrollToPosition(0)
             }
 
+        viewModel.outputs.updateFailedComment()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+
+            }
+
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {
             override fun onClickActionListener(string: String) {
                 postComment(string)

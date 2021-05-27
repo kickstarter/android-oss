@@ -236,4 +236,35 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         commentPostedSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
         commentSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
     }
+
+    @Test
+    fun testCommentsViewModel_PostComment_FailedComment() {
+        val userAvatar = AvatarFactory.avatar()
+        val currentUser = UserFactory.user().toBuilder().id(1).avatar(
+            userAvatar
+        ).build()
+
+        val createdAt = DateTime.now()
+
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun createComment(comment: PostCommentData): Observable<Comment> {
+                return Observable.error(Throwable())
+            }
+        }).build()
+
+        val vm = CommentsViewModel.ViewModel(
+            env.toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+        )
+
+        // Start the view model with an update.
+        vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
+        vm.outputs.insertComment().subscribe(commentSubscriber)
+        vm.outputs.updateFailedComment().subscribe(commentPostedSubscriber)
+
+        // post a comment
+        vm.inputs.postComment("Some Comment", createdAt)
+
+        commentPostedSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
+        commentSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
+    }
 }

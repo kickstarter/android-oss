@@ -38,6 +38,7 @@ interface CommentsViewModel {
         fun setEmptyState(): Observable<Boolean>
         fun insertComment(): Observable<Comment>
         fun commentPosted(): Observable<Comment>
+        fun updateFailedComment(): Observable<Comment>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
@@ -57,6 +58,8 @@ interface CommentsViewModel {
         private val setEmptyState = BehaviorSubject.create<Boolean>()
         private val insertComment = BehaviorSubject.create<Comment>()
         private val commentPosted = BehaviorSubject.create<Comment>()
+        private val updateFailedComment = BehaviorSubject.create<Comment>()
+        private val failedPostedCommentObserver = BehaviorSubject.create<Void>()
 
         init {
 
@@ -139,19 +142,15 @@ interface CommentsViewModel {
                 .compose(Transformers.takePairWhen(this.postComment))
                 .compose(bindToLifecycle())
                 .subscribe {
-                    val comment = Comment.builder()
-                        .body(it.second.first)
-                        .parentId(-1)
-                        .authorBadges(listOf())
-                        .createdAt(it.second.second)
-                        .cursor("")
-                        .deleted(false)
-                        .id(-1)
-                        .repliesCount(0)
-                        .author(it.first)
-                        .build()
+                    this.insertComment.onNext(buildCommentBody(it))
+                }
 
-                    this.insertComment.onNext(comment)
+            this.currentUser.loggedInUser()
+                .compose(Transformers.takePairWhen(this.postComment))
+                .compose(Transformers.takePairWhen(this.failedPostedCommentObserver))
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.updateFailedComment.onNext(buildCommentBody(it.first))
                 }
 
             initialProject
@@ -174,8 +173,23 @@ interface CommentsViewModel {
                         this.commentPosted.onNext(it)
                     },
                     {
+                        this.failedPostedCommentObserver.onNext(null)
                     }
                 )
+        }
+
+        private fun buildCommentBody(it: Pair<User, Pair<String, DateTime>>): Comment? {
+            return Comment.builder()
+                .body(it.second.first)
+                .parentId(-1)
+                .authorBadges(listOf())
+                .createdAt(it.second.second)
+                .cursor("")
+                .deleted(false)
+                .id(-1)
+                .repliesCount(0)
+                .author(it.first)
+                .build()
         }
 
         private fun isProjectBackedOrUserIsCreator(pair: Pair<Project, User>) =
@@ -189,6 +203,7 @@ interface CommentsViewModel {
         override fun setEmptyState(): Observable<Boolean> = setEmptyState
         override fun insertComment(): Observable<Comment> = this.insertComment
         override fun commentPosted(): Observable<Comment> = this.commentPosted
+        override fun updateFailedComment(): Observable<Comment> = this.updateFailedComment
 
         override fun postComment(comment: String, createdAt: DateTime) = postComment.onNext(Pair(comment, createdAt))
     }

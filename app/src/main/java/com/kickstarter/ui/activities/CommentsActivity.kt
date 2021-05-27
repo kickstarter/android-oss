@@ -103,6 +103,7 @@ class CommentsActivity :
      *      false: in case we just need to open the replies screen
      *
      * // TODO: Once the viewReplies UI is completed call this method with openKeyboard = false
+     * // TODO: https://kickstarter.atlassian.net/browse/NT-1955
      */
     private fun startThreadActivity(comment: Comment, openKeyboard: Boolean) {
         val threadIntent = Intent(this, ThreadActivity::class.java).apply {

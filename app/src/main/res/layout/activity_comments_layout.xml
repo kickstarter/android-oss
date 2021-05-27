@@ -40,26 +40,26 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:focusable="true"
-        android:orientation="vertical"
+        tools:context="com.kickstarter.ui.activities.CommentsActivity"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context="com.kickstarter.ui.activities.CommentsActivity">
+        android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/no_comments"
-            style="@style/CalloutSecondary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_11"
-            android:text="@string/No_comments_yet"
             android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/grid_11"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:text="@string/No_comments_yet"
+            style="@style/CalloutSecondary"
+            android:layout_height="wrap_content"/>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/comments_swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/separtor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

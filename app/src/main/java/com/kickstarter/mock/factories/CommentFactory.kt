@@ -31,5 +31,25 @@ class CommentFactory {
                 .body(body)
                 .build()
         }
+
+        fun liveComment(comment: String = "Some Comment", createdAt: DateTime): Comment {
+            return Comment.builder()
+                .body(comment)
+                .parentId(-1)
+                .authorBadges(listOf())
+                .createdAt(createdAt)
+                .cursor("")
+                .deleted(false)
+                .id(-1)
+                .repliesCount(0)
+                .author(
+                    UserFactory.user()
+                        .toBuilder()
+                        .id(1)
+                        .avatar(AvatarFactory.avatar())
+                        .build()
+                )
+                .build()
+        }
     }
 }

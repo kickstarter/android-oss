@@ -5,13 +5,16 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.mock.factories.AvatarFactory
 import com.kickstarter.mock.factories.CommentEnvelopeFactory
+import com.kickstarter.mock.factories.CommentFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UpdateFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Comment
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
+import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.IntentKey
+import org.joda.time.DateTime
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -20,6 +23,8 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     private val enableCommentComposer = TestSubscriber<Boolean>()
     private val showCommentComposer = TestSubscriber<Void>()
     private val showEmptyState = TestSubscriber<Boolean>()
+    private val commentSubscriber = TestSubscriber<Comment>()
+    private val commentPostedSubscriber = TestSubscriber<Comment>()
 
     @Test
     fun testCommentsViewModel_showCommentComposer_isLogInUser() {
@@ -196,5 +201,70 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // Start the view model with an update.
         vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
         showEmptyState.assertValue(false)
+    }
+
+    /*
+     * test when comment(s) available
+     */
+    @Test
+    fun testCommentsViewModel_PostComment_CommentAddedToView() {
+        val userAvatar = AvatarFactory.avatar()
+        val currentUser = UserFactory.user().toBuilder().id(1).avatar(
+            userAvatar
+        ).build()
+
+        val createdAt = DateTime.now()
+
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun createComment(comment: PostCommentData): Observable<Comment> {
+                return Observable.just(CommentFactory.liveComment(createdAt = createdAt))
+            }
+        }).build()
+
+        val vm = CommentsViewModel.ViewModel(
+            env.toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+        )
+
+        // Start the view model with an update.
+        vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
+        vm.outputs.insertComment().subscribe(commentSubscriber)
+        vm.outputs.commentPosted().subscribe(commentPostedSubscriber)
+
+        // post a comment
+        vm.inputs.postComment("Some Comment", createdAt)
+
+        commentPostedSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
+        commentSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
+    }
+
+    @Test
+    fun testCommentsViewModel_PostComment_FailedComment() {
+        val userAvatar = AvatarFactory.avatar()
+        val currentUser = UserFactory.user().toBuilder().id(1).avatar(
+            userAvatar
+        ).build()
+
+        val createdAt = DateTime.now()
+
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun createComment(comment: PostCommentData): Observable<Comment> {
+                return Observable.error(Throwable())
+            }
+        }).build()
+
+        val vm = CommentsViewModel.ViewModel(
+            env.toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+        )
+
+        // Start the view model with an update.
+        vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
+        vm.outputs.insertComment().subscribe(commentSubscriber)
+        vm.outputs.updateFailedComment().subscribe(commentPostedSubscriber)
+
+        // post a comment
+        vm.inputs.postComment("Some Comment", createdAt)
+
+        commentPostedSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
+        commentSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
     }
 }

@@ -157,17 +157,17 @@ interface CommentsViewModel {
             initialProject
                 .compose(Transformers.takePairWhen(this.postComment))
                 .compose(bindToLifecycle())
-                .map {
-                    it.first?.let { project ->
-                    PostCommentData(
-                        project = project,
-                        body = it.second.first,
-                        clientMutationId = null,
-                        parentId = null
-                    )
-                } }
                 .switchMap {
-                    this.apolloClient.createComment(it)
+                    it.first?.let { project ->
+                        this.apolloClient.createComment(
+                            PostCommentData(
+                                project = project,
+                                body = it.second.first,
+                                clientMutationId = null,
+                                parentId = null
+                            )
+                        )
+                    }
                 }
                 .subscribe(
                     {

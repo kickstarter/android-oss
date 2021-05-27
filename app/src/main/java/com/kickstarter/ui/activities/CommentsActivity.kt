@@ -3,8 +3,10 @@ package com.kickstarter.ui.activities
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.DiffUtil
 import com.kickstarter.databinding.ActivityCommentsLayoutBinding
 import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.loadmore.PaginationHandler
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.adapters.CommentsAdapter
@@ -18,7 +20,21 @@ class CommentsActivity :
     BaseActivity<CommentsViewModel.ViewModel>(),
     CommentsAdapter.Delegate {
     private lateinit var binding: ActivityCommentsLayoutBinding
-    private val adapter = CommentsAdapter(this)
+    private val adapter = CommentsAdapter(this, object : DiffUtil.ItemCallback<Any>() {
+        override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
+            return threadsAreTheSame(oldItem, newItem)
+        }
+
+        override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+            return threadsAreTheSame(oldItem, newItem)
+        }
+
+        private fun threadsAreTheSame(oldItem: Any, newItem: Any): Boolean {
+            val oldThread = oldItem as Comment
+            val newThread = newItem as Comment
+            return oldThread.id() == newThread.id()
+        }
+    })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,10 +43,47 @@ class CommentsActivity :
         setContentView(view)
         binding.commentsRecyclerView.adapter = adapter
 
+       val loadMoreListView = PaginationHandler(
+                adapter,
+                binding.commentsRecyclerView,
+                binding.commentsSwipeRefreshLayout
+        )
+
+        loadMoreListView.onRefreshListener = {
+            viewModel.inputs.refresh()
+        }
+
+        loadMoreListView.onLoadMoreListener = {
+                viewModel.inputs.nextPage()
+        }
+
+        viewModel.outputs.enableLoadMore()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    loadMoreListView.loadMoreEnabled = it
+                }
+
+        viewModel.outputs.isLoadingMoreItems()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    loadMoreListView.isLoading(it)
+                }
+
+        viewModel.outputs.isRefreshing()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    loadMoreListView.refreshing(it)
+                }
+
         viewModel.outputs.commentsList()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { it?.let { comments -> adapter.takeData(comments) } }
+            .subscribe {
+                it?.let { comments -> adapter.takeData(comments) }
+            }
 
         viewModel.outputs.currentUserAvatar()
             .compose(bindToLifecycle())
@@ -72,5 +125,11 @@ class CommentsActivity :
     }
 
     override fun onCommentGuideLinesClicked(comment: Comment) {
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // recyclerViewPaginator.stop()
+        binding.commentsRecyclerView.adapter = null
     }
 }

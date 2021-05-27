@@ -72,7 +72,7 @@ interface CommentsViewModel {
         private val failedPostedCommentObserver = BehaviorSubject.create<Void>()
 
         private var lastCommentCursour: String? = null
-        override var loadMoreListData: MutableList<Comment> = mutableListOf<Comment>()
+        override var loadMoreListData = mutableListOf<Comment>()
         init {
 
             val loggedInUser = this.currentUser.loggedInUser()
@@ -259,6 +259,11 @@ interface CommentsViewModel {
         override fun isLoadingMoreItems(): Observable<Boolean> = isLoadingMoreItems
         override fun enablePagination(): Observable<Boolean> = enablePagination
         override fun isRefreshing(): Observable<Boolean> = isRefreshing
+        override fun insertComment(): Observable<Comment> = this.insertComment
+        override fun commentPosted(): Observable<Comment> = this.commentPosted
+        override fun updateFailedComment(): Observable<Comment> = this.updateFailedComment
+
+        override fun postComment(comment: String, createdAt: DateTime) = postComment.onNext(Pair(comment, createdAt))
 
         override fun bindPaginatedData(data: List<Comment>?) {
             lastCommentCursour = data?.lastOrNull()?.cursor()
@@ -271,10 +276,5 @@ interface CommentsViewModel {
         override fun updatePaginatedState(enabled: Boolean) {
             enablePagination.onNext(enabled)
         }
-        override fun insertComment(): Observable<Comment> = this.insertComment
-        override fun commentPosted(): Observable<Comment> = this.commentPosted
-        override fun updateFailedComment(): Observable<Comment> = this.updateFailedComment
-
-        override fun postComment(comment: String, createdAt: DateTime) = postComment.onNext(Pair(comment, createdAt))
     }
 }

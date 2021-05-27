@@ -145,7 +145,7 @@ class CommentsActivity :
         this.binding.commentComposer.clearCommentComposer()
     }
 
-    fun setEmptyState(visibility: Boolean) {
+    private fun setEmptyState(visibility: Boolean) {
         binding.commentsSwipeRefreshLayout.visibility = when (visibility) {
             true -> View.GONE
             else -> View.VISIBLE
@@ -198,7 +198,6 @@ class CommentsActivity :
 
     override fun onDestroy() {
         super.onDestroy()
-        // recyclerViewPaginator.stop()
         binding.commentsRecyclerView.adapter = null
     }
 }

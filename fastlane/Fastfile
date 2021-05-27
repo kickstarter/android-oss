@@ -42,6 +42,13 @@ lane :external do
     groups: "android-testers, dev",
     release_notes: release_notes
   )
+/*
+  upload_to_play_store(
+  json_key: ENV[NAME_KEY_FILE],
+  track: "production",
+  release_status: "draft",
+  version_name: version_name
+  )*/
 
   slack(
     slack_url: Milkrun::SlackWebhookExtractor.new.webhook,

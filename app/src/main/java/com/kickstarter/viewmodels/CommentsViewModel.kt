@@ -17,6 +17,7 @@ import com.kickstarter.models.Update
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CommentsActivity
 import com.kickstarter.ui.data.ProjectData
@@ -133,13 +134,8 @@ interface CommentsViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    it.totalCount?.let { count ->
-                        this.setEmptyState.onNext(count < 1)
-                        updatePaginatedData(
-                            LoadingType.NORMAL,
-                            it.comments
-                        )
-                    }
+                   
+                        bindCommentList(it, LoadingType.NORMAL)
                 }
 
             projectSlug
@@ -165,21 +161,24 @@ interface CommentsViewModel {
                     this.isRefreshing.onNext(true)
                 }
                 .switchMap {
-                    it.let { slug ->
-                        this.apolloClient.getProjectComments(slug, null)
-                    }
+                        this.apolloClient.getProjectComments(it, null)
                 }
                 .filter { ObjectUtils.isNotNull(it) }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    it.totalCount?.let { count ->
-                        this.setEmptyState.onNext(count < 1)
-                        updatePaginatedData(
-                            LoadingType.PULL_REFRESH,
-                            it.comments
-                        )
-                    }
+                    bindCommentList(it, LoadingType.PULL_REFRESH)
                 }
+        }
+
+        private fun bindCommentList(commentEnvelope: CommentEnvelope, loadingType: LoadingType) {
+            commentEnvelope.totalCount?.let { count ->
+            this.setEmptyState.onNext(count < 1)
+            updatePaginatedData(
+                    loadingType,
+                    commentEnvelope.comments
+            
+            )
+        }
         }
 
         private fun isProjectBackedOrUserIsCreator(pair: Pair<Project, User>) =

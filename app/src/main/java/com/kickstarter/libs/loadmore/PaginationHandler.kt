@@ -5,6 +5,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.kickstarter.ui.adapters.KSListAdapter
 
 private const val PAGE_SIZE = 25
+
 class PaginationHandler(
     private val adapter: KSListAdapter,
     private val recyclerView: RecyclerView,
@@ -53,11 +54,11 @@ class PaginationHandler(
             })
     }
 
-    open fun refreshing(refreshing: Boolean) {
+     fun refreshing(refreshing: Boolean) {
         swipeRefreshLayout.isRefreshing = refreshing
     }
 
-    open fun isLoading(isLoading: Boolean) {
+     fun isLoading(isLoading: Boolean) {
        this.isLoading = isLoading
     }
 
@@ -65,9 +66,15 @@ class PaginationHandler(
         swipeRefreshLayout.isEnabled = isEnabled
     }
 
-    open fun loadMoreDone() {
+     fun loadMoreDone() {
         isLoading = false
     }
 
-    open fun getCurListData(): List<*> = adapter.currentList
+     fun getCurListData(): List<*> = adapter.currentList
+}
+
+enum class LoadingType {
+    NORMAL,
+    LOAD_MORE,
+    PULL_REFRESH
 }

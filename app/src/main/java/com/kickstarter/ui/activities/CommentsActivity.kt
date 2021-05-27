@@ -15,9 +15,9 @@ import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
 import com.kickstarter.viewmodels.CommentsViewModel
 import rx.android.schedulers.AndroidSchedulers
 
-@RequiresActivityViewModel(CommentsViewModel.ViewModel::class)
+@RequiresActivityViewModel(CommentsViewModel.ViewModelOutput::class)
 class CommentsActivity :
-    BaseActivity<CommentsViewModel.ViewModel>(),
+    BaseActivity<CommentsViewModel.ViewModelOutput>(),
     CommentsAdapter.Delegate {
     private lateinit var binding: ActivityCommentsLayoutBinding
     private val adapter = CommentsAdapter(this, object : DiffUtil.ItemCallback<Any>() {
@@ -57,7 +57,7 @@ class CommentsActivity :
                 viewModel.inputs.nextPage()
         }
 
-        viewModel.outputs.enableLoadMore()
+        viewModel.outputs.enablePagination()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {

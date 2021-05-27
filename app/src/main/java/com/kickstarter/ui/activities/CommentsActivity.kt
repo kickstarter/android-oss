@@ -69,14 +69,17 @@ class CommentsActivity :
 
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {
             override fun onClickActionListener(string: String) {
-                viewModel.inputs.postComment(string, DateTime.now())
-                binding.commentComposer.clearCommentComposer()
+                postComment(string)
             }
         })
     }
 
+    fun postComment(comment: String){
+        this.viewModel.inputs.postComment(comment, DateTime.now())
+        this.binding.commentComposer.clearCommentComposer()
+    }
+
     fun setEmptyState(visibility: Boolean) {
-        val d = visibility
         binding.commentsSwipeRefreshLayout.visibility = when (visibility) {
             true -> View.GONE
             else -> View.VISIBLE

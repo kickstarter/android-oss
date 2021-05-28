@@ -1,0 +1,16 @@
+query GetRepliesForComment($commentableId: ID!, $cursor: String) {
+    commentable: node(id: $commentableId) {
+        ... on Comment {
+            # TODO: By default I used a page size of 25 make sure that's correct
+            replies(last: 25, before: $cursor) {
+                totalCount
+                nodes {
+                    ...comment
+                }
+                pageInfo {
+                    ...pageInfo
+                }
+            }
+        }
+    }
+}

@@ -11,6 +11,7 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ThreadActivity
 import rx.Observable
 import rx.subjects.BehaviorSubject
+import timber.log.Timber
 
 interface ThreadViewModel {
 
@@ -29,13 +30,17 @@ interface ThreadViewModel {
 
         private val rootComment = BehaviorSubject.create<Comment>()
         private val focusOnCompose = BehaviorSubject.create<Boolean>()
+
         val inputs = this
         val outputs = this
 
         init {
             getCommentFromIntent()
-                .compose(bindToLifecycle())
-                .subscribe(this.rootComment)
+
+            val comment = getCommentFromIntent()
+                .distinctUntilChanged()
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
 
             intent()
                 .map { it.getBooleanExtra(IntentKey.REPLY_EXPAND, false) }
@@ -43,19 +48,32 @@ interface ThreadViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(this.focusOnCompose)
 
-            getCommentFromIntent()
+            val commentEnvelope = getCommentFromIntent()
                 .switchMap {
                     this.apolloClient.getRepliesForComment(it)
                 }
-                .filter { ObjectUtils.isNotNull(it) }
                 .share()
+
+            commentEnvelope
+                .compose(bindToLifecycle())
+                .subscribe {
+                    Timber.i(
+                        "******* Comment envelope with \n" +
+                            "totalComments:${it.totalCount} \n" +
+                            "commentsList: ${it.comments?.map { comment -> comment.body() + " |"}} \n" +
+                            "commentsListSize: ${it.comments?.size} \n" +
+                            "pageInfo: ${it.pageInfoEnvelope} ****"
+                    )
+                }
+
+            comment
+                .compose(bindToLifecycle())
+                .subscribe(this.rootComment)
         }
 
         private fun getCommentFromIntent() = intent()
             .map { it.getParcelableExtra(IntentKey.COMMENT) as Comment? }
-            .distinctUntilChanged()
-            .filter { ObjectUtils.isNotNull(it) }
-            .map { requireNotNull(it) }
+            .ofType(Comment::class.java)
 
         override fun getRootComment(): Observable<Comment> = this.rootComment
         override fun shouldFocusOnCompose(): Observable<Boolean> = this.focusOnCompose

@@ -273,6 +273,33 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }.subscribeOn(Schedulers.io())
     }
 
+    override fun getCommentReplies(
+        commentId: String,
+        cursor: String,
+        pageSize: Int
+    ): Observable<CommentEnvelope> {
+        return Observable.defer {
+            val ps = PublishSubject.create<CommentEnvelope>()
+
+            this.service.query(
+                GetRepliesForCommentQuery.builder()
+                    .commentableId(commentId)
+                    .cursor(cursor)
+                    .pageSize(pageSize)
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<GetRepliesForCommentQuery.Data>() {
+                    override fun onFailure(e: ApolloException) {
+                        ps.onError(e)
+                    }
+
+                    override fun onResponse(response: Response<GetRepliesForCommentQuery.Data>) {
+                    }
+                })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
+    }
+
     override fun createComment(comment: PostCommentData): Observable<Comment> {
         return Observable.defer {
             val ps = PublishSubject.create<Comment>()

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.DiffUtil
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityCommentsLayoutBinding
 import com.kickstarter.libs.BaseActivity
@@ -24,24 +23,7 @@ class CommentsActivity :
     BaseActivity<CommentsViewModel.ViewModel>(),
     CommentsAdapter.Delegate {
     private lateinit var binding: ActivityCommentsLayoutBinding
-    private val adapter = CommentsAdapter(
-        this,
-        object : DiffUtil.ItemCallback<Any>() {
-            override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-                return threadsAreTheSame(oldItem, newItem)
-            }
-
-            override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
-                return threadsAreTheSame(oldItem, newItem)
-            }
-
-            private fun threadsAreTheSame(oldItem: Any, newItem: Any): Boolean {
-                val oldThread = oldItem as Comment
-                val newThread = newItem as Comment
-                return oldThread.id() == newThread.id()
-            }
-        }
-    )
+    private val adapter = CommentsAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,47 +32,14 @@ class CommentsActivity :
         setContentView(view)
         binding.commentsRecyclerView.adapter = adapter
 
-        val loadMoreListView = PaginationHandler(
-            adapter,
-            binding.commentsRecyclerView,
-            binding.commentsSwipeRefreshLayout
-        )
-
-        loadMoreListView.onRefreshListener = {
-            viewModel.inputs.refresh()
-        }
-
-        loadMoreListView.onLoadMoreListener = {
-            viewModel.inputs.nextPage()
-        }
-
-        viewModel.outputs.enablePagination()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                loadMoreListView.loadMoreEnabled = it
-            }
-
-        viewModel.outputs.isLoadingMoreItems()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                loadMoreListView.isLoading(it)
-                binding.commentsLoadingIndicator.isVisible = it
-            }
-
-        viewModel.outputs.isRefreshing()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                loadMoreListView.refreshing(it)
-            }
+        setupPagination()
 
         viewModel.outputs.commentsList()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                it?.let { comments -> adapter.takeData(comments) }
+                comments ->
+                adapter.takeData(comments)
             }
 
         viewModel.outputs.currentUserAvatar()
@@ -138,6 +87,44 @@ class CommentsActivity :
                 postComment(string)
             }
         })
+    }
+
+    private fun setupPagination() {
+        val paginationHandler = PaginationHandler(
+            adapter,
+            binding.commentsRecyclerView,
+            binding.commentsSwipeRefreshLayout
+        )
+
+        paginationHandler.onRefreshListener = {
+            viewModel.inputs.refresh()
+        }
+
+        paginationHandler.onLoadMoreListener = {
+            viewModel.inputs.nextPage()
+        }
+
+        viewModel.outputs.enablePagination()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                paginationHandler.loadMoreEnabled = it
+            }
+
+        viewModel.outputs.isLoadingMoreItems()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                paginationHandler.isLoading(it)
+                binding.commentsLoadingIndicator.isVisible = it
+            }
+
+        viewModel.outputs.isRefreshing()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                paginationHandler.refreshing(it)
+            }
     }
 
     fun postComment(comment: String) {

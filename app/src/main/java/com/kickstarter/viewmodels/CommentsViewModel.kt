@@ -146,7 +146,7 @@ interface CommentsViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .compose(bindToLifecycle())
                 .subscribe {
-                        bindCommentList(it, LoadingType.NORMAL)
+                    bindCommentList(it, LoadingType.NORMAL)
                 }
 
             projectSlug
@@ -172,7 +172,7 @@ interface CommentsViewModel {
                     this.isRefreshing.onNext(true)
                 }
                 .switchMap {
-                        this.apolloClient.getProjectComments(it, null)
+                    this.apolloClient.getProjectComments(it, null)
                 }
                 .filter { ObjectUtils.isNotNull(it) }
                 .compose(bindToLifecycle())
@@ -181,68 +181,68 @@ interface CommentsViewModel {
                 }
 
             this.currentUser.loggedInUser()
-                    .compose(Transformers.takePairWhen(this.postComment))
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.insertComment.onNext(buildCommentBody(it))
-                    }
+                .compose(Transformers.takePairWhen(this.postComment))
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.insertComment.onNext(buildCommentBody(it))
+                }
 
             this.currentUser.loggedInUser()
-                    .compose(Transformers.takePairWhen(this.postComment))
-                    .compose(Transformers.takePairWhen(this.failedPostedCommentObserver))
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.updateFailedComment.onNext(buildCommentBody(it.first))
-                    }
+                .compose(Transformers.takePairWhen(this.postComment))
+                .compose(Transformers.takePairWhen(this.failedPostedCommentObserver))
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.updateFailedComment.onNext(buildCommentBody(it.first))
+                }
 
             initialProject
-                    .compose(Transformers.takePairWhen(this.postComment))
-                    .compose(bindToLifecycle())
-                    .switchMap {
-                        it.first?.let { project ->
-                            this.apolloClient.createComment(
-                                    PostCommentData(
-                                            project = project,
-                                            body = it.second.first,
-                                            clientMutationId = null,
-                                            parentId = null
-                                    )
+                .compose(Transformers.takePairWhen(this.postComment))
+                .compose(bindToLifecycle())
+                .switchMap {
+                    it.first?.let { project ->
+                        this.apolloClient.createComment(
+                            PostCommentData(
+                                project = project,
+                                body = it.second.first,
+                                clientMutationId = null,
+                                parentId = null
                             )
-                        }
+                        )
                     }
-                    .subscribe(
-                            {
-                                this.commentPosted.onNext(it)
-                            },
-                            {
-                                this.failedPostedCommentObserver.onNext(null)
-                            }
-                    )
+                }
+                .subscribe(
+                    {
+                        this.commentPosted.onNext(it)
+                    },
+                    {
+                        this.failedPostedCommentObserver.onNext(null)
+                    }
+                )
         }
 
         private fun buildCommentBody(it: Pair<User, Pair<String, DateTime>>): Comment? {
             return Comment.builder()
-                    .body(it.second.first)
-                    .parentId(-1)
-                    .authorBadges(listOf())
-                    .createdAt(it.second.second)
-                    .cursor("")
-                    .deleted(false)
-                    .id(-1)
-                    .repliesCount(0)
-                    .author(it.first)
-                    .build()
+                .body(it.second.first)
+                .parentId(-1)
+                .authorBadges(listOf())
+                .createdAt(it.second.second)
+                .cursor("")
+                .deleted(false)
+                .id(-1)
+                .repliesCount(0)
+                .author(it.first)
+                .build()
         }
 
         private fun bindCommentList(commentEnvelope: CommentEnvelope, loadingType: LoadingType) {
             commentEnvelope.totalCount?.let { count ->
-            this.setEmptyState.onNext(count < 1)
-            updatePaginatedData(
+                this.setEmptyState.onNext(count < 1)
+                updatePaginatedData(
                     loadingType,
                     commentEnvelope.comments
 
-            )
-        }
+                )
+            }
         }
 
         private fun isProjectBackedOrUserIsCreator(pair: Pair<Project, User>) =

@@ -33,11 +33,7 @@ interface ThreadViewModel {
         val outputs = this
 
         init {
-            intent()
-                .map { it.getParcelableExtra(IntentKey.COMMENT) as Comment? }
-                .distinctUntilChanged()
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
+            getCommentFromIntent()
                 .compose(bindToLifecycle())
                 .subscribe(this.rootComment)
 
@@ -46,7 +42,20 @@ interface ThreadViewModel {
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(this.focusOnCompose)
+
+            getCommentFromIntent()
+                .switchMap {
+                    this.apolloClient.getRepliesForComment(it)
+                }
+                .filter { ObjectUtils.isNotNull(it) }
+                .share()
         }
+
+        private fun getCommentFromIntent() = intent()
+            .map { it.getParcelableExtra(IntentKey.COMMENT) as Comment? }
+            .distinctUntilChanged()
+            .filter { ObjectUtils.isNotNull(it) }
+            .map { requireNotNull(it) }
 
         override fun getRootComment(): Observable<Comment> = this.rootComment
         override fun shouldFocusOnCompose(): Observable<Boolean> = this.focusOnCompose

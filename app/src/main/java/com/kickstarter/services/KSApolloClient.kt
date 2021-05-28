@@ -273,17 +273,13 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }.subscribeOn(Schedulers.io())
     }
 
-    override fun getCommentReplies(
-        commentId: String,
-        cursor: String,
-        pageSize: Int
-    ): Observable<CommentEnvelope> {
+    override fun getRepliesForComment(comment: Comment, cursor: String, pageSize: Int): Observable<CommentEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<CommentEnvelope>()
 
             this.service.query(
                 GetRepliesForCommentQuery.builder()
-                    .commentableId(commentId)
+                    .commentableId(encodeRelayId(comment))
                     .cursor(cursor)
                     .pageSize(pageSize)
                     .build()
@@ -294,6 +290,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     }
 
                     override fun onResponse(response: Response<GetRepliesForCommentQuery.Data>) {
+                        response.data?.let { data ->
+                            Observable.just(data.commentable())
+                        }
                     }
                 })
             return@defer ps

@@ -88,4 +88,5 @@
   <string name="learn_more_about_comment_guidelines">Learn more about comment guidelines</string>
   <string name="failed_to_post_retry">Failed to post. Tap to retry</string>
   <string name="reply">Reply</string>
+  <string name="fpo_replies">Replies</string>
 </resources>

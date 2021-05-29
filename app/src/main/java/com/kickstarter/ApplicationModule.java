@@ -173,8 +173,8 @@ public class ApplicationModule {
   @Provides
   @Nonnull
   @Singleton
-  static RemotePushClientType provideBrazeClient(final @NonNull Build build, final @ApplicationContext @NonNull Context context, final @NonNull CurrentConfigType currentConfig) {
-    return new BrazeClient(context, build, currentConfig);
+  static RemotePushClientType provideBrazeClient(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
+    return new BrazeClient(context, build);
   }
 
   @Provides

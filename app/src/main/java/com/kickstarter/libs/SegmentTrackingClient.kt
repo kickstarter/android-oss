@@ -136,7 +136,7 @@ open class SegmentTrackingClient(
                 AppboyIntegration.FACTORY.key(),
                 Analytics.Callback<Any?> {
                     if (build.isDebug) Timber.d("${type().tag} Integration with ${AppboyIntegration.FACTORY} finalized")
-                    BrazeClient.setInAppCustomListener(this.currentUser, this.currentConfig, this.build)
+                    BrazeClient.setInAppCustomListener(this.currentUser, this.build)
                 }
             )
 

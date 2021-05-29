@@ -4,7 +4,6 @@ import com.appboy.models.IInAppMessage
 import com.appboy.ui.inappmessage.InAppMessageOperation
 import com.appboy.ui.inappmessage.listeners.AppboyDefaultInAppMessageManagerListener
 import com.kickstarter.libs.Build
-import com.kickstarter.libs.CurrentConfigType
 import com.kickstarter.libs.CurrentUserType
 import timber.log.Timber
 
@@ -16,7 +15,6 @@ import timber.log.Timber
  */
 class InAppCustomListener(
     loggedInUser: CurrentUserType,
-    config: CurrentConfigType,
     private val build: Build
 ) : AppboyDefaultInAppMessageManagerListener() {
 
@@ -24,7 +22,7 @@ class InAppCustomListener(
 
     init {
         if (build.isDebug) Timber.d("${this.javaClass.canonicalName} Init block custom listener")
-        handler = InAppCustomListenerHandler(loggedInUser, config)
+        handler = InAppCustomListenerHandler(loggedInUser)
     }
 
     /**

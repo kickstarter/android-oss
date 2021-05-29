@@ -83,4 +83,10 @@
   <string name="post">Post</string>
   <string name="leave_comment">Leave a comment…</string>
   <string name="only_backers_can_leave_comments">Only backers can leave comments</string>
+  <!-- comment card -->
+  <string name="comment_has_been_removed">This comment has been removed by Kickstarter.<u>Learn more about comment guidelines</u> </string>
+  <string name="learn_more_about_comment_guidelines">Learn more about comment guidelines</string>
+  <string name="failed_to_post_retry">Failed to post. Tap to retry</string>
+  <string name="reply">Reply</string>
+  <string name="fpo_replies">Replies</string>
 </resources>

@@ -48,14 +48,17 @@
             android:theme="@style/SettingsActivity" />
         <activity
             android:name=".ui.activities.CommentsActivity"
-            android:theme="@style/CommentsActivity" />
+            android:theme="@style/WhiteActivity" />
+        <activity
+            android:name=".ui.activities.ThreadActivity"
+            android:theme="@style/WhiteActivity" />
         <activity
             android:name=".ui.activities.EditProfileActivity"
             android:theme="@style/SettingsActivity" />
         <activity
             android:name=".ui.activities.DeprecatedCommentsActivity"
             android:parentActivityName=".ui.activities.ProjectActivity"
-            android:theme="@style/CommentsActivity" />
+            android:theme="@style/WhiteActivity" />
         <activity android:name=".ui.activities.CreatorBioActivity" />
         <activity
             android:name=".ui.activities.CreatePasswordActivity"

@@ -9,8 +9,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import com.kickstarter.R
 import com.kickstarter.databinding.CommentComposerViewBinding
-import com.kickstarter.libs.transformations.CircleTransformation
-import com.squareup.picasso.Picasso
+import com.kickstarter.ui.extensions.loadCircleImage
 
 class CommentComposerView @JvmOverloads constructor(
     context: Context,
@@ -60,6 +59,10 @@ class CommentComposerView @JvmOverloads constructor(
         }
     }
 
+    fun clearCommentComposer() {
+        binding.commentTextComposer.text?.clear()
+    }
+
     fun setActionButtonTitle(title: String) {
         binding.commentActionButton.text = title
     }
@@ -87,11 +90,7 @@ class CommentComposerView @JvmOverloads constructor(
     }
 
     fun setAvatarUrl(url: String?) {
-        url?.let {
-            Picasso.get().load(it)
-                .transform(CircleTransformation())
-                .into(binding.avatar)
-        }
+        binding.avatar.loadCircleImage(url)
     }
 }
 

@@ -4,15 +4,27 @@ import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.mock.factories.AvatarFactory
+import com.kickstarter.mock.factories.CommentEnvelopeFactory
+import com.kickstarter.mock.factories.CommentFactory
 import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.UpdateFactory
 import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.models.Comment
+import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
+import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.IntentKey
+import org.joda.time.DateTime
 import org.junit.Test
+import rx.Observable
 import rx.observers.TestSubscriber
 
 class CommentsViewModelTest : KSRobolectricTestCase() {
     private val enableCommentComposer = TestSubscriber<Boolean>()
     private val showCommentComposer = TestSubscriber<Void>()
+    private val showEmptyState = TestSubscriber<Boolean>()
+    private val commentSubscriber = TestSubscriber<Comment>()
+    private val commentPostedSubscriber = TestSubscriber<Comment>()
 
     @Test
     fun testCommentsViewModel_showCommentComposer_isLogInUser() {
@@ -125,5 +137,134 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         // set user avatar with small url
         currentUserAvatar.assertValue(userAvatar.small())
+    }
+
+    @Test
+    fun testCommentsViewModel_EmptyState() {
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+                return Observable.empty()
+            }
+        }).build()
+        val vm = CommentsViewModel.ViewModel(env)
+        val commentsList = TestSubscriber<List<Comment>?>()
+        vm.outputs.commentsList().subscribe(commentsList)
+
+        // Start the view model with an update.
+        vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
+        commentsList.assertNoValues()
+    }
+
+    @Test
+    fun testCommentsViewModel_ProjectCommentsEmit() {
+        val vm = CommentsViewModel.ViewModel(environment())
+        val commentsList = TestSubscriber<List<Comment>?>()
+        vm.outputs.commentsList().subscribe(commentsList)
+        // Start the view model with a project.
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+
+        // Comments should emit.
+        commentsList.assertValueCount(1)
+    }
+
+    /*
+     * test when no comment available
+     */
+    @Test
+    fun testCommentsViewModel_EmptyCommentState() {
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+                return Observable.just(CommentEnvelopeFactory.emptyCommentsEnvelope())
+            }
+        }).build()
+        val vm = CommentsViewModel.ViewModel(env)
+        vm.outputs.setEmptyState().subscribe(showEmptyState)
+
+        // Start the view model with an update.
+        vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
+        showEmptyState.assertValue(true)
+    }
+
+    /*
+     * test when comment(s) available
+     */
+    @Test
+    fun testCommentsViewModel_CommentsAvailableState() {
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+                return Observable.just(CommentEnvelopeFactory.commentsEnvelope())
+            }
+        }).build()
+        val vm = CommentsViewModel.ViewModel(env)
+        vm.outputs.setEmptyState().subscribe(showEmptyState)
+
+        // Start the view model with an update.
+        vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
+        showEmptyState.assertValue(false)
+    }
+
+    /*
+     * test when comment(s) available
+     */
+    @Test
+    fun testCommentsViewModel_PostComment_CommentAddedToView() {
+        val userAvatar = AvatarFactory.avatar()
+        val currentUser = UserFactory.user().toBuilder().id(1).avatar(
+            userAvatar
+        ).build()
+
+        val createdAt = DateTime.now()
+
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun createComment(comment: PostCommentData): Observable<Comment> {
+                return Observable.just(CommentFactory.liveComment(createdAt = createdAt))
+            }
+        }).build()
+
+        val vm = CommentsViewModel.ViewModel(
+            env.toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+        )
+
+        // Start the view model with an update.
+        vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
+        vm.outputs.insertComment().subscribe(commentSubscriber)
+        vm.outputs.commentPosted().subscribe(commentPostedSubscriber)
+
+        // post a comment
+        vm.inputs.postComment("Some Comment", createdAt)
+
+        commentPostedSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
+        commentSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
+    }
+
+    @Test
+    fun testCommentsViewModel_PostComment_FailedComment() {
+        val userAvatar = AvatarFactory.avatar()
+        val currentUser = UserFactory.user().toBuilder().id(1).avatar(
+            userAvatar
+        ).build()
+
+        val createdAt = DateTime.now()
+
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun createComment(comment: PostCommentData): Observable<Comment> {
+                return Observable.error(Throwable())
+            }
+        }).build()
+
+        val vm = CommentsViewModel.ViewModel(
+            env.toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+        )
+
+        // Start the view model with an update.
+        vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
+        vm.outputs.insertComment().subscribe(commentSubscriber)
+        vm.outputs.updateFailedComment().subscribe(commentPostedSubscriber)
+
+        // post a comment
+        vm.inputs.postComment("Some Comment", createdAt)
+
+        commentPostedSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
+        commentSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
     }
 }

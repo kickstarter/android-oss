@@ -36,7 +36,6 @@ interface CommentsViewHolderViewModel {
         /** Emits the commentCardStatus */
         fun commentCardStatus(): Observable<CommentCardStatus>
 
-
         /** Emits the comment replies count. */
         fun commentRepliesCount(): Observable<Int>
 

@@ -2,7 +2,6 @@ package com.kickstarter.ui.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
@@ -101,9 +100,9 @@ class CommentCard @JvmOverloads constructor(
         binding.commentDeletedMessageGroup.isVisible =
             cardCommentStatus == CommentCardStatus.DELETED_COMMENT
 
-        binding.commentBody.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLAY
-                || cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLAY
-                || cardCommentStatus != CommentCardStatus.DELETED_COMMENT
+        binding.commentBody.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLAY ||
+            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLAY ||
+            cardCommentStatus != CommentCardStatus.DELETED_COMMENT
 
         binding.commentActionGroup.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLAY ||
             cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLAY

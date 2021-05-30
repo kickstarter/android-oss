@@ -27,7 +27,6 @@ class CommentReplyCard @JvmOverloads constructor(
         binding.retryButton.setOnClickListener {
             onCommentCardClickedListener?.onRetryViewClicked(it)
         }
-
     }
 
     private fun obtainStyledAttributes(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
@@ -62,9 +61,9 @@ class CommentReplyCard @JvmOverloads constructor(
 
     fun setCommentCardStatus(cardCommentStatus: CommentCardStatus) {
 
-        binding.commentBody.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLAY
-                || cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLAY
-                || cardCommentStatus != CommentCardStatus.DELETED_COMMENT
+        binding.commentBody.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLAY ||
+            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLAY ||
+            cardCommentStatus != CommentCardStatus.DELETED_COMMENT
 
         binding.retryButton.isVisible =
             cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT
@@ -97,6 +96,4 @@ class CommentReplyCard @JvmOverloads constructor(
     fun setAvatarUrl(url: String?) {
         binding.avatar.loadCircleImage(url)
     }
-
-
 }

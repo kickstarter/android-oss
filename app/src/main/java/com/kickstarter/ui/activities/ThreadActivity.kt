@@ -8,7 +8,6 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.extensions.hideKeyboard
-import com.kickstarter.ui.views.CommentCardStatus
 import com.kickstarter.viewmodels.ThreadViewModel
 import rx.android.schedulers.AndroidSchedulers
 

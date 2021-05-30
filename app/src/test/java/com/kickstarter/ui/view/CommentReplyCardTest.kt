@@ -39,5 +39,4 @@ class CommentReplyCardTest : KSRobolectricTestCase() {
         assertTrue(commentBody.isVisible)
         assertFalse(retryButton.isVisible)
     }
-
 }

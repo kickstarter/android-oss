@@ -21,7 +21,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/comment_user_name"
         style="@style/CommentCardTitle"
-        android:text="@string/Track_your_backings"
+        android:text="@string/Name"
         android:layout_marginStart="@dimen/grid_2"
         app:layout_constraintBottom_toTopOf="@+id/comment_post_time"
         app:layout_constraintStart_toEndOf="@+id/avatar"
@@ -30,9 +30,9 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/comment_post_time"
         style="@style/FootnotePrimary"
+        android:text="@string/dates_time_days_ago_one"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/Track_your_backings"
         android:textColor="@color/kds_support_400"
         app:layout_constraintBottom_toBottomOf="@id/avatar"
         app:layout_constraintStart_toStartOf="@id/comment_user_name"
@@ -41,7 +41,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/comment_body"
         style="@style/CommentCardBody"
-        android:text="@string/A_successfully_funded_project_will_collect_your_pledge_in_its_native_currency"
+        android:text="@string/Stay_up_to_date_newsletter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/avatar"
         app:layout_constraintTop_toBottomOf="@id/avatar" />

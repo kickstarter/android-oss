@@ -23,7 +23,6 @@ class CommentsAdapter(private val delegate: Delegate) : KSAdapter() {
 
     fun takeData(comments: List<Comment>) {
         setSection(SECTION_COMMENTS_VIEW, comments)
-
         notifyDataSetChanged()
     }
 

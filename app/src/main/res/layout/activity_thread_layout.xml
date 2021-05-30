@@ -51,5 +51,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/comment_replies_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/kds_white"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@id/comments_card_view"
+            tools:layout_editor_absoluteX="0dp"
+            tools:listitem="@layout/comment_reply_card" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

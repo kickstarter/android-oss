@@ -22,6 +22,9 @@ interface CommentsViewHolderViewModel {
         /** Call when the user clicks reply to comment */
         fun onReplyButtonClicked()
 
+        /** Call when the user clicks view replies to comment */
+        fun onViewRepliesButtonClicked()
+
         /** Call when the user clicks flag comment */
         fun onFlagButtonClicked()
 
@@ -32,6 +35,10 @@ interface CommentsViewHolderViewModel {
     interface Outputs {
         /** Emits the commentCardStatus */
         fun commentCardStatus(): Observable<CommentCardStatus>
+
+
+        /** Emits the comment replies count. */
+        fun commentRepliesCount(): Observable<Int>
 
         /** Emits the comment Author Name. */
         fun commentAuthorName(): Observable<String>
@@ -56,6 +63,9 @@ interface CommentsViewHolderViewModel {
 
         /** Emits the current [Comment] when flag clicked.. */
         fun flagComment(): Observable<Comment>
+
+        /** Emits the current [Comment] when view replies clicked.. */
+        fun viewCommentReplies(): Observable<Comment>
     }
 
     class ViewModel(environment: Environment) : ActivityViewModel<CommentCardViewHolder>(environment), Inputs, Outputs {
@@ -64,16 +74,19 @@ interface CommentsViewHolderViewModel {
         private val onRetryViewClicked = PublishSubject.create<Void>()
         private val onReplyButtonClicked = PublishSubject.create<Void>()
         private val onFlagButtonClicked = PublishSubject.create<Void>()
+        private val onViewCommentRepliesButtonClicked = PublishSubject.create<Void>()
 
         private val commentCardStatus = BehaviorSubject.create<CommentCardStatus>()
         private val commentAuthorName = BehaviorSubject.create<String>()
         private val commentAuthorAvatarUrl = BehaviorSubject.create<String>()
         private val commentMessageBody = BehaviorSubject.create<String>()
+        private val commentRepliesCount = BehaviorSubject.create<Int>()
         private val commentPostTime = BehaviorSubject.create<DateTime>()
         private val openCommentGuideLines = PublishSubject.create<Comment>()
         private val retrySendComment = PublishSubject.create<Comment>()
         private val replyToComment = PublishSubject.create<Comment>()
         private val flagComment = PublishSubject.create<Comment>()
+        private val viewCommentReplies = PublishSubject.create<Comment>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -89,6 +102,11 @@ interface CommentsViewHolderViewModel {
                     }
                     this.commentCardStatus.onNext(cardStatus)
                 }
+
+            this.commentInput
+                .map { it.repliesCount() }
+                .compose(bindToLifecycle())
+                .subscribe(this.commentRepliesCount)
 
             this.commentInput
                 .map { it.author().name() }
@@ -109,6 +127,11 @@ interface CommentsViewHolderViewModel {
                 .map { it.createdAt() }
                 .compose(bindToLifecycle())
                 .subscribe(this.commentPostTime)
+
+            this.commentInput
+                .compose(takeWhen(this.onViewCommentRepliesButtonClicked))
+                .compose(bindToLifecycle())
+                .subscribe(this.viewCommentReplies)
 
             this.commentInput
                 .compose(takeWhen(this.onCommentGuideLinesClicked))
@@ -139,9 +162,13 @@ interface CommentsViewHolderViewModel {
 
         override fun onReplyButtonClicked() = this.onReplyButtonClicked.onNext(null)
 
+        override fun onViewRepliesButtonClicked() = this.onViewCommentRepliesButtonClicked.onNext(null)
+
         override fun onFlagButtonClicked() = this.onFlagButtonClicked.onNext(null)
 
         override fun commentCardStatus(): Observable<CommentCardStatus> = this.commentCardStatus
+
+        override fun commentRepliesCount(): Observable<Int> = this.commentRepliesCount
 
         override fun commentAuthorName(): Observable<String> = this.commentAuthorName
 
@@ -158,5 +185,7 @@ interface CommentsViewHolderViewModel {
         override fun replyToComment(): Observable<Comment> = replyToComment
 
         override fun flagComment(): Observable<Comment> = flagComment
+
+        override fun viewCommentReplies(): Observable<Comment> = this.viewCommentReplies
     }
 }

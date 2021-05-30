@@ -7,11 +7,11 @@
     android:focusable="true"
     android:orientation="vertical">
 
-    <com.kickstarter.ui.views.CommentCard
-        android:id="@+id/comments_card_view"
+    <com.kickstarter.ui.views.CommentReplyCard
+        android:id="@+id/comment_reply_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

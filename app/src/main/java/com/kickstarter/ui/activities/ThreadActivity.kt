@@ -8,6 +8,7 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.extensions.hideKeyboard
+import com.kickstarter.ui.views.CommentCardStatus
 import com.kickstarter.viewmodels.ThreadViewModel
 import rx.android.schedulers.AndroidSchedulers
 
@@ -47,6 +48,7 @@ class ThreadActivity : BaseActivity<ThreadViewModel.ViewModel>() {
     private fun configureRootCommentView(comment: Comment) {
         binding.commentsCardView.setCommentUserName(comment.author().name())
         binding.commentsCardView.setCommentBody(comment.body())
+        binding.commentsCardView.hideReplyViewGroup()
         binding.commentsCardView.setCommentPostTime(DateTimeUtils.relative(this, ksString, comment.createdAt()))
         binding.commentsCardView.setCommentUserName(comment.author().name())
         binding.commentsCardView.setAvatarUrl(comment.author().avatar().medium())

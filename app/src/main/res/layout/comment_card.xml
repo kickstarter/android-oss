@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/CommentCard">
@@ -36,11 +37,40 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/comment_body"
         style="@style/CommentCardBody"
-        android:text="@string/A_successfully_funded_project_will_collect_your_pledge_in_its_native_currency"
-        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/avatar"
         app:layout_constraintTop_toBottomOf="@id/avatar" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/replies_container"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:paddingBottom="@dimen/grid_3"
+        app:layout_constraintTop_toBottomOf="@id/comment_body"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/replies_wrapper"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_marginHorizontal="@dimen/grid_3"
+            android:background="@drawable/rect_trans_rounded_darker"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/replies"
+                android:layout_weight="1"
+                android:text="@string/view_replies"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:src="@drawable/ic_mask"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/reply_button"
@@ -49,15 +79,16 @@
         android:text="@string/reply"
         app:layout_constraintBottom_toTopOf="@+id/separtor"
         app:layout_constraintStart_toStartOf="@id/avatar"
-        app:layout_constraintTop_toBottomOf="@id/comment_body" />
+        app:layout_constraintTop_toBottomOf="@id/replies_container" />
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/flag_button"
         style="@style/CommentsReplayButton"
         android:src="@drawable/ic_flag"
+        android:layout_marginEnd="@dimen/grid_3"
         app:layout_constraintBottom_toTopOf="@+id/separtor"
-        app:layout_constraintEnd_toEndOf="@id/comment_body"
-        app:layout_constraintTop_toBottomOf="@id/comment_body" />
+        app:layout_constraintEnd_toEndOf="@id/replies_container"
+        app:layout_constraintTop_toBottomOf="@id/replies_container" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/retry_button"

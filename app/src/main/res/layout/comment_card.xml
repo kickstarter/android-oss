@@ -37,6 +37,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/comment_body"
         style="@style/CommentCardBody"
+        android:text="@string/A_successfully_funded_project_will_collect_your_pledge_in_its_native_currency"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/avatar"
         app:layout_constraintTop_toBottomOf="@id/avatar" />

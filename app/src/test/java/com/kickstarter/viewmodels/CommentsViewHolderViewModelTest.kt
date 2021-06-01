@@ -100,7 +100,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(commentCardData)
 
         this.commentAuthorAvatarUrl.assertValue(userAvatar.medium())
-        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_WITHOUT_REPLY)
+        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_WITHOUT_REPLIES)
     }
 
     @Test
@@ -111,7 +111,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(commentCardData)
 
         this.commentAuthorName.assertValue(comment.author().name())
-        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_WITHOUT_REPLY)
+        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_WITHOUT_REPLIES)
     }
 
     @Test
@@ -122,7 +122,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(commentCardData)
 
         this.commentMessageBody.assertValue(comment.body())
-        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_WITHOUT_REPLY)
+        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_WITHOUT_REPLIES)
     }
 
     @Test
@@ -151,7 +151,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         val comment = CommentFactory.comment()
         val commentCardData = CommentCardData.builder().comment(comment).build()
         this.vm.inputs.configureWith(commentCardData)
-        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_WITHOUT_REPLY)
+        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_WITHOUT_REPLIES)
     }
 
     @Test
@@ -160,7 +160,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         val updatedComment = CommentFactory.comment(repliesCount = 10)
         val commentCardData = CommentCardData.builder().comment(updatedComment).build()
         this.vm.inputs.configureWith(commentCardData)
-        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_WITH_REPLY)
+        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_WITH_REPLIES)
     }
 
     @Test

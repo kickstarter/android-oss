@@ -7,7 +7,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.models.Comment
-import com.kickstarter.models.Project
+import com.kickstarter.models.User
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.viewholders.CommentCardViewHolder
 import com.kickstarter.ui.views.CommentCardStatus
@@ -89,32 +89,19 @@ interface CommentsViewHolderViewModel {
 
         init {
             this.commentInput
-                    .map { it.comment }
-                    .filter { ObjectUtils.isNotNull(it) }
+                .map { it.comment }
+                .filter { ObjectUtils.isNotNull(it) }
                 .compose(bindToLifecycle())
-                .subscribe {
-                    val cardStatus = when {
-                        it?.deleted() ?: false -> CommentCardStatus.DELETED_COMMENT
-                        (it?.repliesCount() ?: false != 0) -> CommentCardStatus.COMMENT_WITH_REPLY
-                        else -> CommentCardStatus.COMMENT_WITHOUT_REPLY
-                    }
-                    this.commentCardStatus.onNext(cardStatus)
-                }
+                .subscribe { this.commentCardStatus.onNext(cardStatus(it)) }
 
             this.commentInput
-                    .compose(Transformers.combineLatestPair(environment.currentUser().observable()))
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        val isActionGroupVisibile = it.first.project?.let {
-                            project: Project -> project.isBacking ||
-                            ProjectUtils.userIsCreator(project, it.second)
-                        } ?: false
-                        this.isCommentActionGroupVisible.onNext(isActionGroupVisibile)
-                    }
+                .compose(Transformers.combineLatestPair(environment.currentUser().observable()))
+                .compose(bindToLifecycle())
+                .subscribe { this.isCommentActionGroupVisible.onNext(isActionGroupVisible(it.first, it.second)) }
 
             val comment = this.commentInput
-                    .map { it.comment }
-                    .map{requireNotNull(it)}
+                .map { it.comment }
+                .map{requireNotNull(it)}
 
             comment
                 .map { it.author()?.name() }
@@ -124,20 +111,20 @@ interface CommentsViewHolderViewModel {
 
             comment
                 .map { it.author()?.avatar()?.medium() }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .compose(bindToLifecycle())
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
                 .subscribe(this.commentAuthorAvatarUrl)
 
             comment
                 .map { it.body() }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .compose(bindToLifecycle())
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
                 .subscribe(this.commentMessageBody)
 
             comment
                 .map { it.createdAt() }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .compose(bindToLifecycle())
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
                 .subscribe(this.commentPostTime)
 
             comment
@@ -159,6 +146,17 @@ interface CommentsViewHolderViewModel {
                 .compose(takeWhen(this.onFlagButtonClicked))
                 .compose(bindToLifecycle())
                 .subscribe(this.flagComment)
+        }
+
+        private fun isActionGroupVisible(commentCardData: CommentCardData, user: User?) =
+                commentCardData.project?.let {
+                    it.isBacking || ProjectUtils.userIsCreator(it, user)
+                } ?: false
+
+        private fun cardStatus(comment: Comment?) = when {
+            comment?.deleted() ?: false -> CommentCardStatus.DELETED_COMMENT
+            (comment?.repliesCount() ?: false != 0) -> CommentCardStatus.COMMENT_WITH_REPLIES
+            else -> CommentCardStatus.COMMENT_WITHOUT_REPLIES
         }
 
         override fun configureWith(commentCardData: CommentCardData) = this.commentInput.onNext(commentCardData)

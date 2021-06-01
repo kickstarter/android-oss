@@ -36,9 +36,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testCommentsViewModel_showCommentComposer_isLogoutUser() {
-        val vm = CommentsViewModel.ViewModel(
-            environment().toBuilder().build()
-        )
+        val vm = CommentsViewModel.ViewModel(environment())
 
         vm.outputs.enableCommentComposer().subscribe(enableCommentComposer)
         vm.outputs.showCommentComposer().subscribe(showCommentComposer)

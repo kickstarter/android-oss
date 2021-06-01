@@ -101,8 +101,8 @@ class CommentCard @JvmOverloads constructor(
         binding.commentDeletedMessageGroup.isVisible =
             cardCommentStatus == CommentCardStatus.DELETED_COMMENT
 
-        binding.commentBody.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLY ||
-            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLY
+        binding.commentBody.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLIES ||
+            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLIES
 
         binding.retryButton.isVisible =
             cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT
@@ -145,8 +145,8 @@ interface OnCommentCardClickedListener {
 }
 
 enum class CommentCardStatus(val commentCardStatus: Int) {
-    COMMENT_WITHOUT_REPLY(0), // comments without reply view
-    COMMENT_WITH_REPLY(1), // comments with reply view
+    COMMENT_WITHOUT_REPLIES(0), // comments without reply view
+    COMMENT_WITH_REPLIES(1), // comments with reply view
     FAILED_TO_SEND_COMMENT(2), // pending comment
     DELETED_COMMENT(3) // Deleted comment
 }

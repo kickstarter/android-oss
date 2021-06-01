@@ -51,7 +51,7 @@ class CommentCardTest : KSRobolectricTestCase() {
 
     @Test
     fun testCommentWithoutReplyStatus() {
-        commentCard.setCommentCardStatus(CommentCardStatus.COMMENT_WITHOUT_REPLY)
+        commentCard.setCommentCardStatus(CommentCardStatus.COMMENT_WITHOUT_REPLIES)
         assertTrue(commentBody.isVisible)
         assertTrue(commentActionGroup.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
@@ -60,7 +60,7 @@ class CommentCardTest : KSRobolectricTestCase() {
 
     @Test
     fun testCommentWithReplyStatus() {
-        commentCard.setCommentCardStatus(CommentCardStatus.COMMENT_WITH_REPLY)
+        commentCard.setCommentCardStatus(CommentCardStatus.COMMENT_WITH_REPLIES)
         assertTrue(commentBody.isVisible)
         assertTrue(commentActionGroup.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)

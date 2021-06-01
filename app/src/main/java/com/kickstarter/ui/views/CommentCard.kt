@@ -119,11 +119,11 @@ class CommentCard @JvmOverloads constructor(
         binding.commentBody.setTextColor(ContextCompat.getColor(context, commentBodyTextColor))
     }
 
+    /*
+     * To display replies count
+     * binding.replies.text = String.format("%s (%d)",resources.getString(R.string.view_replies), replies)
+     */
     fun setCommentReplies(replies: Int) {
-        /*
-         * To display replies count
-         * binding.replies.text = String.format("%s (%d)",resources.getString(R.string.view_replies), replies)
-         */
         binding.repliesContainer.isVisible = replies > 0
     }
 

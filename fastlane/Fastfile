@@ -43,6 +43,13 @@ lane :external do
     release_notes: release_notes
   )
 
+  upload_to_play_store(
+    json_key_data: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
+    track: "production",
+    release_status: "draft",
+    version_name: version_name
+  )
+
   slack(
     slack_url: Milkrun::SlackWebhookExtractor.new.webhook,
     message: slack_message

@@ -7,6 +7,7 @@ import androidx.core.view.isVisible
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityCommentsLayoutBinding
 import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.loadmore.PaginationHandler
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.IntentKey
@@ -31,10 +32,15 @@ class CommentsActivity :
         setContentView(view)
         binding.commentsRecyclerView.adapter = adapter
 
+        setupPagination()
+
         viewModel.outputs.commentsList()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { it?.let { comments -> adapter.takeData(comments) } }
+            .subscribe {
+                comments ->
+                adapter.takeData(comments)
+            }
 
         viewModel.outputs.currentUserAvatar()
             .compose(bindToLifecycle())
@@ -83,12 +89,50 @@ class CommentsActivity :
         })
     }
 
+    private fun setupPagination() {
+        val paginationHandler = PaginationHandler(
+            adapter,
+            binding.commentsRecyclerView,
+            binding.commentsSwipeRefreshLayout
+        )
+
+        paginationHandler.onRefreshListener = {
+            viewModel.inputs.refresh()
+        }
+
+        paginationHandler.onLoadMoreListener = {
+            viewModel.inputs.nextPage()
+        }
+
+        viewModel.outputs.enablePagination()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                paginationHandler.loadMoreEnabled = it
+            }
+
+        viewModel.outputs.isLoadingMoreItems()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                paginationHandler.isLoading(it)
+                binding.commentsLoadingIndicator.isVisible = it
+            }
+
+        viewModel.outputs.isRefreshing()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                paginationHandler.refreshing(it)
+            }
+    }
+
     fun postComment(comment: String) {
         this.viewModel.inputs.postComment(comment, DateTime.now())
         this.binding.commentComposer.clearCommentComposer()
     }
 
-    fun setEmptyState(visibility: Boolean) {
+    private fun setEmptyState(visibility: Boolean) {
         binding.commentsSwipeRefreshLayout.visibility = when (visibility) {
             true -> View.GONE
             else -> View.VISIBLE
@@ -141,5 +185,10 @@ class CommentsActivity :
             R.anim.slide_in_right,
             R.anim.fade_out_slide_out_left
         )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.commentsRecyclerView.adapter = null
     }
 }

@@ -37,7 +37,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.commentAuthorAvatarUrl().subscribe(this.commentAuthorAvatarUrl)
         this.vm.outputs.commentMessageBody().subscribe(this.commentMessageBody)
         this.vm.outputs.commentPostTime().subscribe(this.commentPostTime)
-        this.vm.outputs.isActionGroupVisible().subscribe(this.isActionGroupVisible)
+        this.vm.outputs.isCommentActionGroupVisible().subscribe(this.isActionGroupVisible)
         this.vm.outputs.openCommentGuideLines().subscribe(this.openCommentGuideLines)
         this.vm.outputs.retrySendComment().subscribe(this.retrySendComment)
         this.vm.outputs.replyToComment().subscribe(this.replyToComment)

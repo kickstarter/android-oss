@@ -51,7 +51,7 @@ interface CommentsViewHolderViewModel {
         fun commentPostTime(): Observable<DateTime>
 
         /** Emits the visibility of the comment card action group */
-        fun isActionGroupVisible(): Observable<Boolean>
+        fun isCommentActionGroupVisible(): Observable<Boolean>
 
         /** Emits the current [Comment] when Comment GuideLines clicked.. */
         fun openCommentGuideLines(): Observable<Comment>
@@ -74,7 +74,7 @@ interface CommentsViewHolderViewModel {
         private val onFlagButtonClicked = PublishSubject.create<Void>()
 
         private val commentCardStatus = BehaviorSubject.create<CommentCardStatus>()
-        private val isActionGroupVisible = BehaviorSubject.create<Boolean>()
+        private val isCommentActionGroupVisible = BehaviorSubject.create<Boolean>()
         private val commentAuthorName = BehaviorSubject.create<String>()
         private val commentAuthorAvatarUrl = BehaviorSubject.create<String>()
         private val commentMessageBody = BehaviorSubject.create<String>()
@@ -109,7 +109,7 @@ interface CommentsViewHolderViewModel {
                             project: Project -> project.isBacking ||
                             ProjectUtils.userIsCreator(project, it.second)
                         } ?: false
-                        this.isActionGroupVisible.onNext(isActionGroupVisibile)
+                        this.isCommentActionGroupVisible.onNext(isActionGroupVisibile)
                     }
 
             val comment = this.commentInput
@@ -181,7 +181,7 @@ interface CommentsViewHolderViewModel {
 
         override fun commentPostTime(): Observable<DateTime> = this.commentPostTime
 
-        override fun isActionGroupVisible(): Observable<Boolean> = this.isActionGroupVisible
+        override fun isCommentActionGroupVisible(): Observable<Boolean> = this.isCommentActionGroupVisible
 
         override fun openCommentGuideLines(): Observable<Comment> = openCommentGuideLines
 

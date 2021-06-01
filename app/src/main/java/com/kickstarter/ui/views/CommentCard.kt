@@ -80,7 +80,7 @@ class CommentCard @JvmOverloads constructor(
             }
 
             getBoolean(R.styleable.CommentCardView_is_comment_action_group_visible, true)?.also {
-                setActionGroupVisibility(it)
+                setCommentActionGroupVisibility(it)
             }
 
             getInt(R.styleable.CommentCardView_comment_card_status, 0).also { attrValue ->
@@ -93,7 +93,7 @@ class CommentCard @JvmOverloads constructor(
         }
     }
 
-    fun setActionGroupVisibility(isGroupVisble: Boolean) {
+    fun setCommentActionGroupVisibility(isGroupVisble: Boolean) {
         binding.commentActionGroup.isVisible = isGroupVisble
     }
 

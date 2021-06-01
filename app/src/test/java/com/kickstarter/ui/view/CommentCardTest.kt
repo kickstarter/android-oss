@@ -69,7 +69,7 @@ class CommentCardTest : KSRobolectricTestCase() {
 
     @Test
     fun setCommentActionGroupVisibility_whenFalse_setToInvisible() {
-        commentCard.setActionGroupVisibility(false)
+        commentCard.setCommentActionGroupVisibility(false)
         assertTrue(commentBody.isVisible)
         assertFalse(commentActionGroup.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
@@ -78,7 +78,7 @@ class CommentCardTest : KSRobolectricTestCase() {
 
     @Test
     fun setCommentActionGroupVisibility_whenTrue_setToInvisible() {
-        commentCard.setActionGroupVisibility(true)
+        commentCard.setCommentActionGroupVisibility(true)
         assertTrue(commentBody.isVisible)
         assertTrue(commentActionGroup.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)

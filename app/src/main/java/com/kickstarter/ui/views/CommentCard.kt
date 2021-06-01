@@ -124,7 +124,7 @@ class CommentCard @JvmOverloads constructor(
      * binding.replies.text = String.format("%s (%d)",resources.getString(R.string.view_replies), replies)
      */
     fun setCommentReplies(replies: Int) {
-        binding.repliesContainer.isVisible = replies > 0
+        binding.repliesWrapper.isVisible = replies > 0
     }
 
     fun setCommentUserName(username: String) {

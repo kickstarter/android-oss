@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 import com.kickstarter.R
 import com.kickstarter.databinding.ItemCommentCardBinding
 import com.kickstarter.models.Comment
+import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.viewholders.CommentCardViewHolder
 import com.kickstarter.ui.viewholders.EmptyCommentsViewHolder
 import com.kickstarter.ui.viewholders.KSViewHolder
@@ -21,7 +22,7 @@ class CommentsAdapter(private val delegate: Delegate) : KSAdapter() {
         return R.layout.item_comment_card
     }
 
-    fun takeData(comments: List<Comment>) {
+    fun takeData(comments: List<CommentCardData>) {
         setSection(SECTION_COMMENTS_VIEW, comments)
 
         notifyDataSetChanged()

@@ -7,6 +7,7 @@ import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.models.Comment
@@ -15,8 +16,10 @@ import com.kickstarter.models.Update
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CommentsActivity
+import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.data.ProjectData
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -27,8 +30,9 @@ interface CommentsViewModel {
     interface Outputs {
         fun currentUserAvatar(): Observable<String?>
         fun enableCommentComposer(): Observable<Boolean>
+        fun enableReplyButton(): Observable<Boolean>
         fun showCommentComposer(): Observable<Void>
-        fun commentsList(): Observable<List<Comment>>
+        fun commentsList(): Observable<List<CommentCardData>>
         fun setEmptyState(): Observable<Boolean>
     }
 
@@ -43,7 +47,8 @@ interface CommentsViewModel {
         private val currentUserAvatar = BehaviorSubject.create<String?>()
         private val enableCommentComposer = BehaviorSubject.create<Boolean>()
         private val showCommentComposer = BehaviorSubject.create<Void>()
-        private val commentsList = BehaviorSubject.create<List<Comment>?>()
+        private val commentsList = BehaviorSubject.create<List<CommentCardData>?>()
+        private val disableReplyButton = BehaviorSubject.create<Boolean>()
 
         private val setEmptyState = BehaviorSubject.create<Boolean>()
 
@@ -115,23 +120,30 @@ interface CommentsViewModel {
                 .share()
 
             commentEnvelope
-                .filter { ObjectUtils.isNotNull(it) }
+                .compose<Pair<CommentEnvelope, Project?>>(combineLatestPair(initialProject))
+                .map<Pair<List<CommentCardData>, Int>> {
+                    val commentCardDataList: List<CommentCardData>? = it.first.comments?.map {
+                        comment: Comment -> CommentCardData.builder().comment(comment).project(it.second).build()
+                    }
+                    Pair.create(commentCardDataList, it.first.totalCount)
+                }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    it.totalCount?.let { count ->
+                    it.second?.let { count ->
                         this.setEmptyState.onNext(count < 1)
-                        commentsList.onNext(it.comments)
+                        commentsList.onNext(it.first)
                     }
                 }
         }
 
-        private fun isProjectBackedOrUserIsCreator(pair: Pair<Project, User>) =
+        private fun isProjectBackedOrUserIsCreator(pair: Pair<Project, User?>) =
             pair.first.isBacking || ProjectUtils.userIsCreator(pair.first, pair.second)
 
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
         override fun enableCommentComposer(): Observable<Boolean> = enableCommentComposer
         override fun showCommentComposer(): Observable<Void> = showCommentComposer
-        override fun commentsList(): Observable<List<Comment>> = commentsList
+        override fun commentsList(): Observable<List<CommentCardData>> = commentsList
+        override fun enableReplyButton(): Observable<Boolean> = disableReplyButton
 
         override fun setEmptyState(): Observable<Boolean> = setEmptyState
     }

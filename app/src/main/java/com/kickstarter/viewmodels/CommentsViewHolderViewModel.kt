@@ -2,8 +2,13 @@ package com.kickstarter.viewmodels
 
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.models.Comment
+import com.kickstarter.models.Project
+import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.viewholders.CommentCardViewHolder
 import com.kickstarter.ui.views.CommentCardStatus
 import org.joda.time.DateTime
@@ -26,7 +31,7 @@ interface CommentsViewHolderViewModel {
         fun onFlagButtonClicked()
 
         /** Configure the view model with the [Comment]. */
-        fun configureWith(comment: Comment)
+        fun configureWith(commentCardData: CommentCardData)
     }
 
     interface Outputs {
@@ -45,6 +50,9 @@ interface CommentsViewHolderViewModel {
         /** Emits the comment post time */
         fun commentPostTime(): Observable<DateTime>
 
+        /** Emits the visibility of the comment card action group */
+        fun isActionGroupVisible(): Observable<Boolean>
+
         /** Emits the current [Comment] when Comment GuideLines clicked.. */
         fun openCommentGuideLines(): Observable<Comment>
 
@@ -59,13 +67,14 @@ interface CommentsViewHolderViewModel {
     }
 
     class ViewModel(environment: Environment) : ActivityViewModel<CommentCardViewHolder>(environment), Inputs, Outputs {
-        private val commentInput = PublishSubject.create<Comment>()
+        private val commentInput = PublishSubject.create<CommentCardData>()
         private val onCommentGuideLinesClicked = PublishSubject.create<Void>()
         private val onRetryViewClicked = PublishSubject.create<Void>()
         private val onReplyButtonClicked = PublishSubject.create<Void>()
         private val onFlagButtonClicked = PublishSubject.create<Void>()
 
         private val commentCardStatus = BehaviorSubject.create<CommentCardStatus>()
+        private val isActionGroupVisible = BehaviorSubject.create<Boolean>()
         private val commentAuthorName = BehaviorSubject.create<String>()
         private val commentAuthorAvatarUrl = BehaviorSubject.create<String>()
         private val commentMessageBody = BehaviorSubject.create<String>()
@@ -80,58 +89,79 @@ interface CommentsViewHolderViewModel {
 
         init {
             this.commentInput
+                    .map { it.comment }
+                    .filter { ObjectUtils.isNotNull(it) }
                 .compose(bindToLifecycle())
                 .subscribe {
                     val cardStatus = when {
-                        it.deleted() -> CommentCardStatus.DELETED_COMMENT
-                        (it.repliesCount() != 0) -> CommentCardStatus.COMMENT_WITH_REPLAY
-                        else -> CommentCardStatus.COMMENT_WITHOUT_REPLAY
+                        it?.deleted() ?: false -> CommentCardStatus.DELETED_COMMENT
+                        (it?.repliesCount() ?: false != 0) -> CommentCardStatus.COMMENT_WITH_REPLY
+                        else -> CommentCardStatus.COMMENT_WITHOUT_REPLY
                     }
                     this.commentCardStatus.onNext(cardStatus)
                 }
 
             this.commentInput
-                .map { it.author().name() }
+                    .compose(Transformers.combineLatestPair(environment.currentUser().observable()))
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        val isActionGroupVisibile = it.first.project?.let {
+                            project: Project -> project.isBacking ||
+                            ProjectUtils.userIsCreator(project, it.second)
+                        } ?: false
+                        this.isActionGroupVisible.onNext(isActionGroupVisibile)
+                    }
+
+            val comment = this.commentInput
+                    .map { it.comment }
+                    .map{requireNotNull(it)}
+
+            comment
+                .map { it.author()?.name() }
+                .filter { ObjectUtils.isNotNull(it) }
                 .compose(bindToLifecycle())
                 .subscribe(this.commentAuthorName)
 
-            this.commentInput
-                .map { it.author().avatar().medium() }
-                .compose(bindToLifecycle())
+            comment
+                .map { it.author()?.avatar()?.medium() }
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .compose(bindToLifecycle())
                 .subscribe(this.commentAuthorAvatarUrl)
 
-            this.commentInput
+            comment
                 .map { it.body() }
-                .compose(bindToLifecycle())
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .compose(bindToLifecycle())
                 .subscribe(this.commentMessageBody)
 
-            this.commentInput
+            comment
                 .map { it.createdAt() }
-                .compose(bindToLifecycle())
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .compose(bindToLifecycle())
                 .subscribe(this.commentPostTime)
 
-            this.commentInput
+            comment
                 .compose(takeWhen(this.onCommentGuideLinesClicked))
                 .compose(bindToLifecycle())
                 .subscribe(this.openCommentGuideLines)
 
-            this.commentInput
+            comment
                 .compose(takeWhen(this.onReplyButtonClicked))
                 .compose(bindToLifecycle())
                 .subscribe(this.replyToComment)
 
-            this.commentInput
+            comment
                 .compose(takeWhen(this.onRetryViewClicked))
                 .compose(bindToLifecycle())
                 .subscribe(this.retrySendComment)
 
-            this.commentInput
+            comment
                 .compose(takeWhen(this.onFlagButtonClicked))
                 .compose(bindToLifecycle())
                 .subscribe(this.flagComment)
         }
 
-        override fun configureWith(comment: Comment) = this.commentInput.onNext(comment)
+        override fun configureWith(commentCardData: CommentCardData) = this.commentInput.onNext(commentCardData)
 
         override fun onCommentGuideLinesClicked() = this.onCommentGuideLinesClicked.onNext(null)
 
@@ -150,6 +180,8 @@ interface CommentsViewHolderViewModel {
         override fun commentMessageBody(): Observable<String> = this.commentMessageBody
 
         override fun commentPostTime(): Observable<DateTime> = this.commentPostTime
+
+        override fun isActionGroupVisible(): Observable<Boolean> = this.isActionGroupVisible
 
         override fun openCommentGuideLines(): Observable<Comment> = openCommentGuideLines
 

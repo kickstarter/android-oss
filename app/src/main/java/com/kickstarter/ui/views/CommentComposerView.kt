@@ -54,7 +54,7 @@ class CommentComposerView @JvmOverloads constructor(
                 setAvatarUrl(it)
             }
             getBoolean(R.styleable.CommentComposerView_composer_disabled, false).also {
-                isDisabledViewVisible(it)
+                showCommentComposerDisabledView(it)
             }
         }
     }
@@ -75,7 +75,7 @@ class CommentComposerView @JvmOverloads constructor(
         binding.commentTextComposer.hint = context.getString(hint)
     }
 
-    fun isDisabledViewVisible(isVisible: Boolean) {
+    fun showCommentComposerDisabledView(isVisible: Boolean) {
         binding.commentsDisableMsg.isVisible = isVisible
         binding.commentTextGroup.isVisible = !isVisible
         binding.commentActionButton.isVisible = !isVisible

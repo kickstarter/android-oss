@@ -36,7 +36,7 @@ class CommentCardTest : KSRobolectricTestCase() {
         commentCard.setCommentCardStatus(CommentCardStatus.DELETED_COMMENT)
         assertFalse(commentBody.isVisible)
         assertFalse(retryButton.isVisible)
-        assertFalse(commentActionGroup.isVisible)
+        assertTrue(commentActionGroup.isVisible)
         assertTrue(commentDeletedMessageGroup.isVisible)
     }
 
@@ -45,13 +45,13 @@ class CommentCardTest : KSRobolectricTestCase() {
         commentCard.setCommentCardStatus(CommentCardStatus.FAILED_TO_SEND_COMMENT)
         assertFalse(commentBody.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
-        assertFalse(commentActionGroup.isVisible)
+        assertTrue(commentActionGroup.isVisible)
         assertTrue(retryButton.isVisible)
     }
 
     @Test
     fun testCommentWithoutReplyStatus() {
-        commentCard.setCommentCardStatus(CommentCardStatus.COMMENT_WITHOUT_REPLAY)
+        commentCard.setCommentCardStatus(CommentCardStatus.COMMENT_WITHOUT_REPLY)
         assertTrue(commentBody.isVisible)
         assertTrue(commentActionGroup.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
@@ -60,7 +60,25 @@ class CommentCardTest : KSRobolectricTestCase() {
 
     @Test
     fun testCommentWithReplyStatus() {
-        commentCard.setCommentCardStatus(CommentCardStatus.COMMENT_WITH_REPLAY)
+        commentCard.setCommentCardStatus(CommentCardStatus.COMMENT_WITH_REPLY)
+        assertTrue(commentBody.isVisible)
+        assertTrue(commentActionGroup.isVisible)
+        assertFalse(commentDeletedMessageGroup.isVisible)
+        assertFalse(retryButton.isVisible)
+    }
+
+    @Test
+    fun setCommentActionGroupVisibility_whenFalse_setToInvisible() {
+        commentCard.setActionGroupVisibility(false)
+        assertTrue(commentBody.isVisible)
+        assertFalse(commentActionGroup.isVisible)
+        assertFalse(commentDeletedMessageGroup.isVisible)
+        assertFalse(retryButton.isVisible)
+    }
+
+    @Test
+    fun setCommentActionGroupVisibility_whenTrue_setToInvisible() {
+        commentCard.setActionGroupVisibility(true)
         assertTrue(commentBody.isVisible)
         assertTrue(commentActionGroup.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)

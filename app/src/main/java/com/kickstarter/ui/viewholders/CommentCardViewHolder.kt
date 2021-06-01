@@ -7,7 +7,6 @@ import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.views.OnCommentCardClickedListener
 import com.kickstarter.viewmodels.CommentsViewHolderViewModel
-import kotlinx.android.synthetic.main.comment_card.view.*
 
 class CommentCardViewHolder(
     val binding: ItemCommentCardBinding,

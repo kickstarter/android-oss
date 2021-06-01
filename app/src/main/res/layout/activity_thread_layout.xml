@@ -51,16 +51,25 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/left_guideline"
+            app:layout_constraintGuide_begin="@dimen/grid_5"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/comment_replies_recycler_view"
-            android:layout_width="match_parent"
+            app:layout_constraintStart_toEndOf="@id/left_guideline"
+            android:layout_width="0dp"
+            android:paddingEnd="@dimen/grid_3"
             android:layout_height="wrap_content"
             android:background="@color/kds_white"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@id/comments_card_view"
             tools:layout_editor_absoluteX="0dp"
-            tools:listitem="@layout/comment_reply_card" />
+            tools:listitem="@layout/comment_card" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

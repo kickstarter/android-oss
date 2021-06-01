@@ -123,7 +123,8 @@ interface CommentsViewModel {
                 .compose<Pair<CommentEnvelope, Project?>>(combineLatestPair(initialProject))
                 .map<Pair<List<CommentCardData>, Int>> {
                     val commentCardDataList: List<CommentCardData>? = it.first.comments?.map {
-                        comment: Comment -> CommentCardData.builder().comment(comment).project(it.second).build()
+                        comment: Comment ->
+                        CommentCardData.builder().comment(comment).project(it.second).build()
                     }
                     Pair.create(commentCardDataList, it.first.totalCount)
                 }

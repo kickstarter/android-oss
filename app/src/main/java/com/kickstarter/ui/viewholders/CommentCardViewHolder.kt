@@ -49,7 +49,7 @@ class CommentCardViewHolder(
         this.vm.outputs.isCommentActionGroupVisible()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe{ binding.commentsCardView.setCommentActionGroupVisibility(it)}
+            .subscribe { binding.commentsCardView.setCommentActionGroupVisibility(it) }
 
         this.vm.outputs.commentPostTime()
             .compose(bindToLifecycle())

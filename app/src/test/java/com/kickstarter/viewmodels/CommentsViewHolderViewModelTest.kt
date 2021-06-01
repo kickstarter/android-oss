@@ -199,5 +199,4 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(commentCardData)
         this.isActionGroupVisible.assertValue(true)
     }
-
 }

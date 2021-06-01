@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.kickstarter.R
 import com.kickstarter.databinding.ItemCommentCardBinding
-import com.kickstarter.models.Comment
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.viewholders.CommentCardViewHolder
 import com.kickstarter.ui.viewholders.EmptyCommentsViewHolder

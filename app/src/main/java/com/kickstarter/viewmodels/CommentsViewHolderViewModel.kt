@@ -101,7 +101,7 @@ interface CommentsViewHolderViewModel {
 
             val comment = this.commentInput
                 .map { it.comment }
-                .map{requireNotNull(it)}
+                .map { requireNotNull(it) }
 
             comment
                 .map { it.author()?.name() }
@@ -149,9 +149,9 @@ interface CommentsViewHolderViewModel {
         }
 
         private fun isActionGroupVisible(commentCardData: CommentCardData, user: User?) =
-                commentCardData.project?.let {
-                    it.isBacking || ProjectUtils.userIsCreator(it, user)
-                } ?: false
+            commentCardData.project?.let {
+                it.isBacking || ProjectUtils.userIsCreator(it, user)
+            } ?: false
 
         private fun cardStatus(comment: Comment?) = when {
             comment?.deleted() ?: false -> CommentCardStatus.DELETED_COMMENT

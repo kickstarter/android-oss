@@ -9,6 +9,7 @@ import UpdateUserPasswordMutation
 import UserPrivacyQuery
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.CheckoutFactory
+import com.kickstarter.mock.factories.CommentEnvelopeFactory
 import com.kickstarter.mock.factories.CommentFactory
 import com.kickstarter.mock.factories.CreatorDetailsFactory
 import com.kickstarter.mock.factories.ErroredBackingFactory
@@ -68,6 +69,10 @@ open class MockApolloClient : ApolloClientType {
                 .totalCount(1)
                 .build()
         )
+    }
+
+    override fun getRepliesForComment(comment: Comment, cursor: String, pageSize: Int): Observable<CommentEnvelope> {
+        return Observable.just(CommentEnvelopeFactory.emptyCommentsEnvelope())
     }
 
     override fun createComment(comment: PostCommentData): Observable<Comment> {

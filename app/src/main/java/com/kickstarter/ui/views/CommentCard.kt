@@ -78,6 +78,11 @@ class CommentCard @JvmOverloads constructor(
             getString(R.styleable.CommentCardView_comment_card_user_name)?.also {
                 setCommentUserName(it)
             }
+
+            getBoolean(R.styleable.CommentCardView_is_comment_action_group_visible, true)?.also {
+                setCommentActionGroupVisibility(it)
+            }
+
             getInt(R.styleable.CommentCardView_comment_card_status, 0).also { attrValue ->
                 CommentCardStatus.values().firstOrNull {
                     it.commentCardStatus == attrValue
@@ -88,15 +93,16 @@ class CommentCard @JvmOverloads constructor(
         }
     }
 
+    fun setCommentActionGroupVisibility(isGroupVisble: Boolean) {
+        binding.commentActionGroup.isVisible = isGroupVisble
+    }
+
     fun setCommentCardStatus(cardCommentStatus: CommentCardStatus) {
         binding.commentDeletedMessageGroup.isVisible =
             cardCommentStatus == CommentCardStatus.DELETED_COMMENT
 
-        binding.commentBody.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLAY ||
-            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLAY
-
-        binding.commentActionGroup.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLAY ||
-            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLAY
+        binding.commentBody.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLIES ||
+            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLIES
 
         binding.retryButton.isVisible =
             cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT
@@ -139,8 +145,8 @@ interface OnCommentCardClickedListener {
 }
 
 enum class CommentCardStatus(val commentCardStatus: Int) {
-    COMMENT_WITHOUT_REPLAY(0), // comments without replay view
-    COMMENT_WITH_REPLAY(1), // comments with replay view
+    COMMENT_WITHOUT_REPLIES(0), // comments without reply view
+    COMMENT_WITH_REPLIES(1), // comments with reply view
     FAILED_TO_SEND_COMMENT(2), // pending comment
     DELETED_COMMENT(3) // Deleted comment
 }

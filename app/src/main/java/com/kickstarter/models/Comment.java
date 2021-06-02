@@ -11,7 +11,7 @@ import auto.parcel.AutoParcel;
 
 @AutoGson
 @AutoParcel
-public abstract class Comment implements Parcelable{
+public abstract class Comment implements Parcelable, Relay{
   public abstract User author();
   public abstract String body();
   public abstract DateTime createdAt();

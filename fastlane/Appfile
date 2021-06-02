@@ -6,3 +6,4 @@
 
 # app_identifier "com.your.app" # the bundle identifier of your app
 # apple_id "apple@fastlane.tools" # Your Apple ID
+package_name("com.kickstarter.kickstarter")

@@ -165,8 +165,8 @@ interface CommentsViewModel {
                 .compose(Transformers.takeWhen(this.refresh))
                 .doOnNext {
                     this.isRefreshing.onNext(true)
-                }
-                .compose(CommentEnvelopeTransformer(initialProject))
+                    lastCommentCursour = null
+                }.compose(CommentEnvelopeTransformer(initialProject))
                 .compose(bindToLifecycle())
                 .subscribe {
                     bindCommentList(it.first, LoadingType.PULL_REFRESH, it.second)

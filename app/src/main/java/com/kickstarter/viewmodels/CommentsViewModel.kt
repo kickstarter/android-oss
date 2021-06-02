@@ -165,6 +165,7 @@ interface CommentsViewModel {
                 .compose(Transformers.takeWhen(this.refresh))
                 .doOnNext {
                     this.isRefreshing.onNext(true)
+                    // reset cursor
                     lastCommentCursour = null
                 }.compose(CommentEnvelopeTransformer(initialProject))
                 .compose(bindToLifecycle())

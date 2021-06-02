@@ -62,8 +62,30 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/retry_button"
         style="@style/CommentsRetryButton"
-        android:drawableStart="@drawable/ic_retry"
+        android:drawableStart="@drawable/ic_retry_send_comment"
         android:text="@string/failed_to_post_retry"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/separtor"
+        app:layout_constraintStart_toStartOf="@id/avatar"
+        app:layout_constraintTop_toBottomOf="@id/comment_body" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/posting_button"
+        style="@style/CommentsReplayButton"
+        android:drawableTint="@color/kds_support_400"
+        android:drawableStart="@drawable/ic_retry_send_comment"
+        android:text="@string/posting"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/separtor"
+        app:layout_constraintStart_toStartOf="@id/avatar"
+        app:layout_constraintTop_toBottomOf="@id/comment_body" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/posted_button"
+        style="@style/CommentsReplayButton"
+        android:textColor="@color/kds_create_700"
+        android:drawableStart="@drawable/ic_posted_check"
+        android:text="@string/posted"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/separtor"
         app:layout_constraintStart_toStartOf="@id/avatar"

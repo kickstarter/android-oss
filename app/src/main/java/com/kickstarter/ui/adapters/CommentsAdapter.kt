@@ -9,6 +9,7 @@ import com.kickstarter.models.Comment
 import com.kickstarter.ui.viewholders.CommentCardViewHolder
 import com.kickstarter.ui.viewholders.EmptyCommentsViewHolder
 import com.kickstarter.ui.viewholders.KSViewHolder
+import com.kickstarter.ui.views.CommentCardStatus
 
 class CommentsAdapter(private val delegate: Delegate) : KSListAdapter() {
     interface Delegate : EmptyCommentsViewHolder.Delegate, CommentCardViewHolder.Delegate
@@ -26,6 +27,11 @@ class CommentsAdapter(private val delegate: Delegate) : KSListAdapter() {
 
     fun insertData(comment: Comment, position: Int) {
         insertSection(position, listOf(comment))
+        notifyItemChanged(position)
+    }
+
+    fun updateItem(comment: Comment, position: Int, commentCardStatus: CommentCardStatus) {
+        setSection(position, listOf(Pair(comment, commentCardStatus)))
         notifyItemChanged(position)
     }
 

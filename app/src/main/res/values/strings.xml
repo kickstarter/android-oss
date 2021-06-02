@@ -89,4 +89,6 @@
   <string name="failed_to_post_retry">Failed to post. Tap to retry</string>
   <string name="reply">Reply</string>
   <string name="fpo_replies">Replies</string>
+  <string name="posting">Posting...</string>
+  <string name="posted">Posted</string>
 </resources>

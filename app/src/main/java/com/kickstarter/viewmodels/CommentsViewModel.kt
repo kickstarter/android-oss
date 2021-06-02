@@ -22,10 +22,12 @@ import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CommentsActivity
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.views.CommentCardStatus
 import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 
 interface CommentsViewModel {
 
@@ -33,6 +35,7 @@ interface CommentsViewModel {
         fun refresh()
         fun nextPage()
         fun postComment(comment: String, createdAt: DateTime)
+        fun retryPostComment(comment: Comment)
     }
 
     interface Outputs : PaginatedViewModelOutput<Comment> {
@@ -42,6 +45,7 @@ interface CommentsViewModel {
         fun commentsList(): Observable<List<Comment>>
         fun setEmptyState(): Observable<Boolean>
         fun insertComment(): Observable<Comment>
+        fun updateCommentStatus(): Observable<Pair<Comment, CommentCardStatus>>
         fun commentPosted(): Observable<Comment>
         fun updateFailedComment(): Observable<Comment>
     }
@@ -62,11 +66,13 @@ interface CommentsViewModel {
         private val commentsList = BehaviorSubject.create<List<Comment>?>()
 
         private val postComment = PublishSubject.create<Pair<String, DateTime>>()
+        private val retryPostCommentData = PublishSubject.create<Comment>()
         private val isLoadingMoreItems = BehaviorSubject.create<Boolean>()
         private val isRefreshing = BehaviorSubject.create<Boolean>()
         private val enablePagination = BehaviorSubject.create<Boolean>()
         private val setEmptyState = BehaviorSubject.create<Boolean>()
         private val insertComment = BehaviorSubject.create<Comment>()
+        private val updateCommentStatus = BehaviorSubject.create<Pair<Comment, CommentCardStatus>>()
         private val commentPosted = BehaviorSubject.create<Comment>()
         private val updateFailedComment = BehaviorSubject.create<Comment>()
         private val failedPostedCommentObserver = BehaviorSubject.create<Void>()
@@ -188,6 +194,13 @@ interface CommentsViewModel {
                 }
 
             this.currentUser.loggedInUser()
+                    .compose(Transformers.takePairWhen(this.retryPostCommentData))
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        this.updateCommentStatus.onNext(Pair(it.second, CommentCardStatus.TRYING_TO_POST))
+                    }
+
+            this.currentUser.loggedInUser()
                 .compose(Transformers.takePairWhen(this.postComment))
                 .compose(Transformers.takePairWhen(this.failedPostedCommentObserver))
                 .compose(bindToLifecycle())
@@ -195,29 +208,51 @@ interface CommentsViewModel {
                     this.updateFailedComment.onNext(buildCommentBody(it.first))
                 }
 
-            initialProject
+            this.currentUser.loggedInUser()
+                    .compose(Transformers.takePairWhen(this.postComment))
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        this.insertComment.onNext(buildCommentBody(it))
+                    }
+
+          val postComment = initialProject
                 .compose(Transformers.takePairWhen(this.postComment))
-                .compose(bindToLifecycle())
-                .switchMap {
-                    it.first?.let { project ->
-                        this.apolloClient.createComment(
-                            PostCommentData(
-                                project = project,
-                                body = it.second.first,
-                                clientMutationId = null,
-                                parentId = null
+
+            postCommentToServer(postComment, false)
+
+            val retryPosting = initialProject
+                    .compose(Transformers.takePairWhen(this.retryPostCommentData))
+                    .map {
+                        Pair(it.first, Pair(it.second.body(), it.second.createdAt()))
+                    }.delay(500, TimeUnit.MILLISECONDS)
+            postCommentToServer(retryPosting, true)
+        }
+
+        private fun postCommentToServer(postComment: Observable<Pair<Project, Pair<String, DateTime>>>, isRetrying: Boolean) {
+            postComment.compose(bindToLifecycle())
+                    .switchMap {
+                        it.first?.let { project ->
+                            this.apolloClient.createComment(
+                                    PostCommentData(
+                                            project = project,
+                                            body = it.second.first,
+                                            clientMutationId = null,
+                                            parentId = null
+                                    )
                             )
-                        )
-                    }
-                }
-                .subscribe(
-                    {
-                        this.commentPosted.onNext(it)
-                    },
-                    {
-                        this.failedPostedCommentObserver.onNext(null)
-                    }
-                )
+                        }
+                    }.subscribe(
+                            {
+                                if (isRetrying) {
+                                    this.updateCommentStatus.onNext(Pair(it, CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY))
+                                } else {
+                                    this.commentPosted.onNext(it)
+                                }
+                            },
+                            {
+                                this.failedPostedCommentObserver.onNext(null)
+                            }
+                    )
         }
 
         private fun buildCommentBody(it: Pair<User, Pair<String, DateTime>>): Comment? {
@@ -260,10 +295,12 @@ interface CommentsViewModel {
         override fun enablePagination(): Observable<Boolean> = enablePagination
         override fun isRefreshing(): Observable<Boolean> = isRefreshing
         override fun insertComment(): Observable<Comment> = this.insertComment
+        override fun updateCommentStatus(): Observable<Pair<Comment, CommentCardStatus>> = updateCommentStatus
         override fun commentPosted(): Observable<Comment> = this.commentPosted
         override fun updateFailedComment(): Observable<Comment> = this.updateFailedComment
 
         override fun postComment(comment: String, createdAt: DateTime) = postComment.onNext(Pair(comment, createdAt))
+        override fun retryPostComment(comment: Comment) = retryPostCommentData.onNext(comment)
 
         override fun bindPaginatedData(data: List<Comment>?) {
             lastCommentCursour = data?.lastOrNull()?.cursor()

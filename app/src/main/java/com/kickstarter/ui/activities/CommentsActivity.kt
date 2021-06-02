@@ -2,6 +2,8 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.core.view.isVisible
 import com.kickstarter.R
@@ -13,6 +15,7 @@ import com.kickstarter.models.Comment
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.CommentsAdapter
 import com.kickstarter.ui.viewholders.EmptyCommentsViewHolder
+import com.kickstarter.ui.views.CommentCardStatus
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
 import com.kickstarter.viewmodels.CommentsViewModel
 import org.joda.time.DateTime
@@ -76,10 +79,23 @@ class CommentsActivity :
                 binding.commentsRecyclerView.scrollToPosition(0)
             }
 
+        viewModel.outputs.updateCommentStatus()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    adapter.updateItem(it.first, 0, it.second)
+                    if (it.second == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY) {
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            adapter.updateItem(it.first, 0, CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
+                        }, 3000)
+                    }
+                }
+
         viewModel.outputs.updateFailedComment()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
+                adapter.updateItem(it, 0, CommentCardStatus.FAILED_TO_SEND_COMMENT)
             }
 
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {
@@ -148,6 +164,7 @@ class CommentsActivity :
     }
 
     override fun onRetryViewClicked(comment: Comment) {
+        this.viewModel.inputs.retryPostComment(comment)
     }
 
     override fun onReplyButtonClicked(comment: Comment) {

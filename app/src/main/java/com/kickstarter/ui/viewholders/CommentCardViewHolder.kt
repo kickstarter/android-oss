@@ -5,6 +5,7 @@ import com.kickstarter.databinding.ItemCommentCardBinding
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.models.Comment
+import com.kickstarter.ui.views.CommentCardStatus
 import com.kickstarter.ui.views.OnCommentCardClickedListener
 import com.kickstarter.viewmodels.CommentsViewHolderViewModel
 
@@ -90,6 +91,12 @@ class CommentCardViewHolder(
     }
 
     override fun bindData(data: Any?) {
-        this.vm.inputs.configureWith(data as Comment)
+        if (data is (Pair<*, *>)) {
+            if (data.first is Comment && data.second is CommentCardStatus) {
+                  this.vm.inputs.configureWith((data.first as Comment), (data.second as CommentCardStatus))
+            }
+        } else {
+            this.vm.inputs.configureWith((data as Comment), CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
+        }
     }
 }

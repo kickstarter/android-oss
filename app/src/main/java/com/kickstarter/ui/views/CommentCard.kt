@@ -93,15 +93,25 @@ class CommentCard @JvmOverloads constructor(
             cardCommentStatus == CommentCardStatus.DELETED_COMMENT
 
         binding.commentBody.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLAY ||
-            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLAY
+            cardCommentStatus == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS ||
+                cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT ||
+                cardCommentStatus == CommentCardStatus.TRYING_TO_POST ||
+                cardCommentStatus == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY
 
         binding.commentActionGroup.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLAY ||
-            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLAY
+            cardCommentStatus == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS
 
         binding.retryButton.isVisible =
             cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT
 
-        val commentBodyTextColor = if (cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT) {
+        binding.postingButton.isVisible =
+                cardCommentStatus == CommentCardStatus.TRYING_TO_POST
+
+        binding.postedButton.isVisible =
+                cardCommentStatus == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY
+
+        val commentBodyTextColor = if (cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT ||
+                cardCommentStatus == CommentCardStatus.TRYING_TO_POST) {
             R.color.soft_grey_disable
         } else {
             R.color.text_primary
@@ -110,6 +120,9 @@ class CommentCard @JvmOverloads constructor(
         binding.commentBody.setTextColor(ContextCompat.getColor(context, commentBodyTextColor))
     }
 
+    fun setReplyActionVisibility(isVisable: Boolean) {
+        binding.commentActionGroup.isVisible = isVisable
+    }
     fun setCommentUserName(username: String) {
         binding.commentUserName.text = username
     }
@@ -139,8 +152,10 @@ interface OnCommentCardClickedListener {
 }
 
 enum class CommentCardStatus(val commentCardStatus: Int) {
-    COMMENT_WITHOUT_REPLAY(0), // comments without replay view
+    COMMENT_FOR_LOGIN_BACKED_USERS(0), // comments without replay view
     COMMENT_WITH_REPLAY(1), // comments with replay view
     FAILED_TO_SEND_COMMENT(2), // pending comment
-    DELETED_COMMENT(3) // Deleted comment
+    DELETED_COMMENT(3), // Deleted comment
+    TRYING_TO_POST(4), // trying to post comment
+    POSTING_COMMENT_COMPLETED_SUCCESSFULLY(5), // trying to post comment
 }

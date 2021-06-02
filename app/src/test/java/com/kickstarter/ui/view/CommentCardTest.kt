@@ -51,7 +51,7 @@ class CommentCardTest : KSRobolectricTestCase() {
 
     @Test
     fun testCommentWithoutReplyStatus() {
-        commentCard.setCommentCardStatus(CommentCardStatus.COMMENT_WITHOUT_REPLAY)
+        commentCard.setCommentCardStatus(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
         assertTrue(commentBody.isVisible)
         assertTrue(commentActionGroup.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)

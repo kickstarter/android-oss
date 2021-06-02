@@ -3,13 +3,14 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.MockCurrentUser
-import com.kickstarter.mock.factories.UserFactory
-import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.AvatarFactory
-import com.kickstarter.mock.factories.UpdateFactory
 import com.kickstarter.mock.factories.CommentEnvelopeFactory
 import com.kickstarter.mock.factories.CommentFactory
+import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.UpdateFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.models.Comment
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.IntentKey
@@ -286,8 +287,8 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // post a comment
         vm.inputs.postComment("Some Comment", createdAt)
 
-        commentPostedSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
-        commentSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
+        commentPostedSubscriber.assertValue(CommentFactory.liveCommentCardData(createdAt = createdAt))
+        commentSubscriber.assertValue(CommentFactory.liveCommentCardData(createdAt = createdAt))
     }
 
     @Test
@@ -317,7 +318,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // post a comment
         vm.inputs.postComment("Some Comment", createdAt)
 
-        commentPostedSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
-        commentSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
+        commentPostedSubscriber.assertValue(CommentFactory.liveCommentCardData(createdAt = createdAt))
+        commentSubscriber.assertValue(CommentFactory.liveCommentCardData(createdAt = createdAt))
     }
 }

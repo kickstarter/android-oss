@@ -5,6 +5,7 @@ import com.kickstarter.databinding.ItemCommentCardBinding
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.models.Comment
+import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.views.OnCommentCardClickedListener
 import com.kickstarter.viewmodels.CommentsViewHolderViewModel
 
@@ -50,6 +51,11 @@ class CommentCardViewHolder(
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { binding.commentsCardView.setCommentCardStatus(it) }
+
+        this.vm.outputs.isCommentActionGroupVisible()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.commentsCardView.setCommentActionGroupVisibility(it) }
 
         this.vm.outputs.commentPostTime()
             .compose(bindToLifecycle())
@@ -105,6 +111,6 @@ class CommentCardViewHolder(
     }
 
     override fun bindData(data: Any?) {
-        this.vm.inputs.configureWith(data as Comment)
+        this.vm.inputs.configureWith(data as CommentCardData)
     }
 }

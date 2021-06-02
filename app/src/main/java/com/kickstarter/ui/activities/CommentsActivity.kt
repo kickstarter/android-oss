@@ -53,7 +53,7 @@ class CommentsActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                binding.commentComposer.isDisabledViewVisible(!it)
+                binding.commentComposer.showCommentComposerDisabledView(!it)
             }
 
         viewModel.outputs.showCommentComposer()

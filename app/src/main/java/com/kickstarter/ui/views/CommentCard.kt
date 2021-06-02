@@ -37,7 +37,7 @@ class CommentCard @JvmOverloads constructor(
             onCommentCardClickedListener?.onFlagButtonClicked(it)
         }
 
-        binding.repliesWrapper.setOnClickListener {
+        binding.replies.setOnClickListener {
             onCommentCardClickedListener?.onViewRepliesButtonClicked(it)
         }
 
@@ -124,7 +124,7 @@ class CommentCard @JvmOverloads constructor(
      * binding.replies.text = String.format("%s (%d)",resources.getString(R.string.view_replies), replies)
      */
     fun setCommentReplies(replies: Int) {
-        binding.repliesWrapper.isVisible = replies > 0
+        binding.replies.isVisible = replies > 0
     }
 
     fun setCommentUserName(username: String) {

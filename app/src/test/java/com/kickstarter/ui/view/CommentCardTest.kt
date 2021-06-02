@@ -31,7 +31,7 @@ class CommentCardTest : KSRobolectricTestCase() {
         commentDeletedMessageGroup = commentCard.findViewById(R.id.comment_deleted_message_group)
         commentActionGroup = commentCard.findViewById(R.id.comment_action_group)
         retryButton = commentCard.findViewById(R.id.retry_button)
-        repliesContainer = commentCard.findViewById(R.id.replies_wrapper)
+        repliesContainer = commentCard.findViewById(R.id.replies)
     }
 
     @Test

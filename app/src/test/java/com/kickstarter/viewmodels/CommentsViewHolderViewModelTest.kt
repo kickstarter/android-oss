@@ -28,6 +28,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     private val retrySendComment = TestSubscriber<Comment>()
     private val replyToComment = TestSubscriber<Comment>()
     private val flagComment = TestSubscriber<Comment>()
+    private val repliesCount = TestSubscriber<Int>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = CommentsViewHolderViewModel.ViewModel(environment)
@@ -42,6 +43,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.retrySendComment().subscribe(this.retrySendComment)
         this.vm.outputs.replyToComment().subscribe(this.replyToComment)
         this.vm.outputs.flagComment().subscribe(this.flagComment)
+        this.vm.outputs.commentRepliesCount().subscribe(this.repliesCount)
     }
 
     @Test
@@ -198,5 +200,14 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         val commentCardData = CommentCardData.builder().comment(comment).project(ProjectFactory.project().toBuilder().creator(user).build()).build()
         this.vm.inputs.configureWith(commentCardData)
         this.isActionGroupVisible.assertValue(true)
+    }
+
+    @Test
+    fun testSetRepliesCount() {
+        setUpEnvironment(environment())
+        val comment = CommentFactory.comment(repliesCount = 1)
+        val commentData = CommentCardData.builder().comment(comment).project(ProjectFactory.project()).build()
+        this.vm.inputs.configureWith(commentData)
+        this.repliesCount.assertValue(comment.repliesCount())
     }
 }

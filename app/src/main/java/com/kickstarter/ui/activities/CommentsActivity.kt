@@ -160,6 +160,10 @@ class CommentsActivity :
     override fun onCommentGuideLinesClicked(comment: Comment) {
     }
 
+    override fun onCommentRepliesClicked(comment: Comment) {
+        startThreadActivity(comment, false)
+    }
+
     /**
      * Start the Thread activity with
      * @param comment the selected comment to reply

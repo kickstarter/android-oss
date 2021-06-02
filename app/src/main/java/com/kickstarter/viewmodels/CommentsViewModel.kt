@@ -230,12 +230,10 @@ interface CommentsViewModel {
                 )
         }
 
-        private fun mapToCommentCardDataList(it: Pair<CommentEnvelope, Project?>): Pair<List<CommentCardData>, Int>? {
-            val commentCardDataList: List<CommentCardData>? = it.first.comments?.map { comment: Comment ->
+        private fun mapToCommentCardDataList(it: Pair<CommentEnvelope, Project?>) =
+            it.first.comments?.map { comment: Comment ->
                 CommentCardData.builder().comment(comment).project(it.second).build()
             }
-            return Pair.create(commentCardDataList, it.first.totalCount)
-        }
 
         private fun buildCommentBody(it: Pair<User, Pair<String, DateTime>>): Comment? {
             return Comment.builder()
@@ -269,9 +267,7 @@ interface CommentsViewModel {
                 }
                     .filter { ObjectUtils.isNotNull(it) }
                     .compose<Pair<CommentEnvelope, Project?>>(combineLatestPair(initialProject))
-                    .map {
-                        mapToCommentCardDataList(it)
-                    }
+                    .map { Pair(mapToCommentCardDataList(it), it.first.totalCount) }
             }
         }
 

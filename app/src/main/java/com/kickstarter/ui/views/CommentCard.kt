@@ -114,7 +114,8 @@ class CommentCard @JvmOverloads constructor(
             cardCommentStatus != CommentCardStatus.DELETED_COMMENT
 
         binding.commentActionGroup.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLIES ||
-            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLIES
+            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLIES ||
+            cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT
 
         binding.retryButton.isVisible =
             cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT

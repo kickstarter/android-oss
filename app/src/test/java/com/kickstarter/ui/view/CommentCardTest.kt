@@ -39,7 +39,7 @@ class CommentCardTest : KSRobolectricTestCase() {
         commentCard.setCommentCardStatus(CommentCardStatus.DELETED_COMMENT)
         assertFalse(commentBody.isVisible)
         assertFalse(retryButton.isVisible)
-        assertTrue(commentActionGroup.isVisible)
+        assertFalse(commentActionGroup.isVisible)
         assertTrue(commentDeletedMessageGroup.isVisible)
     }
 

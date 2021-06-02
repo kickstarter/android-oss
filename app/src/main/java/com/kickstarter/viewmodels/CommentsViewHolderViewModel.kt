@@ -101,6 +101,7 @@ interface CommentsViewHolderViewModel {
 
             val comment = this.commentInput
                 .map { it.comment }
+                .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
 
             comment

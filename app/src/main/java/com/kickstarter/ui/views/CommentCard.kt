@@ -37,6 +37,10 @@ class CommentCard @JvmOverloads constructor(
             onCommentCardClickedListener?.onFlagButtonClicked(it)
         }
 
+        binding.replies.setOnClickListener {
+            onCommentCardClickedListener?.onViewRepliesButtonClicked(it)
+        }
+
         binding.flaggedMessage.setOnClickListener {
             onCommentCardClickedListener?.onCommentGuideLinesClicked(it)
         }
@@ -75,6 +79,10 @@ class CommentCard @JvmOverloads constructor(
                 setAvatarUrl(it)
             }
 
+            getInt(R.styleable.CommentCardView_comment_card_replies, 0).also {
+                setCommentReplies(it)
+            }
+
             getString(R.styleable.CommentCardView_comment_card_user_name)?.also {
                 setCommentUserName(it)
             }
@@ -102,7 +110,12 @@ class CommentCard @JvmOverloads constructor(
             cardCommentStatus == CommentCardStatus.DELETED_COMMENT
 
         binding.commentBody.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLIES ||
-            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLIES
+            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLIES ||
+            cardCommentStatus != CommentCardStatus.DELETED_COMMENT
+
+        binding.commentActionGroup.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLIES ||
+            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLIES ||
+            cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT
 
         binding.retryButton.isVisible =
             cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT
@@ -116,8 +129,20 @@ class CommentCard @JvmOverloads constructor(
         binding.commentBody.setTextColor(ContextCompat.getColor(context, commentBodyTextColor))
     }
 
+    /*
+     * To display replies count
+     * binding.replies.text = String.format("%s (%d)",resources.getString(R.string.view_replies), replies)
+     */
+    fun setCommentReplies(replies: Int) {
+        binding.replies.isVisible = replies > 0
+    }
+
     fun setCommentUserName(username: String) {
         binding.commentUserName.text = username
+    }
+
+    fun hideReplyViewGroup() {
+        binding.commentActionGroup.isVisible = false
     }
 
     fun setCommentPostTime(time: String) {
@@ -141,6 +166,7 @@ interface OnCommentCardClickedListener {
     fun onRetryViewClicked(view: View)
     fun onReplyButtonClicked(view: View)
     fun onFlagButtonClicked(view: View)
+    fun onViewRepliesButtonClicked(view: View)
     fun onCommentGuideLinesClicked(view: View)
 }
 

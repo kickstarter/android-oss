@@ -25,8 +25,12 @@ class CommentsAdapter(private val delegate: Delegate) : KSListAdapter() {
     }
 
     fun insertData(comment: CommentCardData, position: Int) {
-        insertSection(position, listOf(comment))
-        notifyItemChanged(position)
+        val list = currentList.toMutableList()
+        list.add(
+            position,
+            comment
+        )
+        takeData(list as List<CommentCardData>)
     }
 
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {

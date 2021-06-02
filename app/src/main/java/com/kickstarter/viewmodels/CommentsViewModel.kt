@@ -166,6 +166,9 @@ interface CommentsViewModel {
                 .doOnNext {
                     this.isRefreshing.onNext(true)
                 }
+                .doOnNext {
+                    lastCommentCursour = null
+                }
                 .compose(CommentEnvelopeTransformer(initialProject))
                 .compose(bindToLifecycle())
                 .subscribe {

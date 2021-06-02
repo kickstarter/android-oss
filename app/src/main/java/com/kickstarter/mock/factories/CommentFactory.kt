@@ -2,6 +2,7 @@ package com.kickstarter.mock.factories
 
 import com.kickstarter.models.Avatar
 import com.kickstarter.models.Comment
+import com.kickstarter.models.User
 import com.kickstarter.ui.data.CommentCardData
 import org.joda.time.DateTime
 
@@ -53,25 +54,19 @@ class CommentFactory {
                 .build()
         }
 
-        fun liveCommentCardData(comment: String = "Some Comment", createdAt: DateTime): CommentCardData {
+        fun liveCommentCardData(comment: String = "Some Comment", createdAt: DateTime, currentUser: User): CommentCardData {
             return CommentCardData(
-                Comment.builder()
-                    .body(comment)
-                    .parentId(-1)
-                    .authorBadges(listOf())
-                    .createdAt(createdAt)
-                    .cursor("")
-                    .deleted(false)
-                    .id(-1)
-                    .repliesCount(0)
-                    .author(
-                        UserFactory.user()
-                            .toBuilder()
-                            .id(1)
-                            .avatar(AvatarFactory.avatar())
-                            .build()
-                    )
-                    .build(),
+                    Comment.builder()
+                            .body(comment)
+                            .parentId(-1)
+                            .authorBadges(listOf())
+                            .createdAt(createdAt)
+                            .cursor("")
+                            .deleted(false)
+                            .id(-1)
+                            .repliesCount(0)
+                            .author(currentUser)
+                            .build(),
                 0,
                 ProjectFactory.project().toBuilder().creator(UserFactory.creator().toBuilder().id(278438049).build()).build()
 

@@ -29,8 +29,8 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     private val isLoadingMoreItems = TestSubscriber<Boolean>()
     private val isRefreshing = TestSubscriber<Boolean>()
     private val enablePagination = TestSubscriber<Boolean>()
-    private val commentSubscriber = TestSubscriber<CommentCardData>()
-    private val commentPostedSubscriber = TestSubscriber<CommentCardData>()
+    private val commentSubscriber = BehaviorSubject.create<CommentCardData>()
+    private val commentPostedSubscriber = BehaviorSubject.create<CommentCardData>()
 
     @Test
     fun testCommentsViewModel_showCommentComposer_isLogInUser() {
@@ -287,8 +287,8 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // post a comment
         vm.inputs.postComment("Some Comment", createdAt)
 
-        commentPostedSubscriber.assertValue(CommentFactory.liveCommentCardData(createdAt = createdAt))
-        commentSubscriber.assertValue(CommentFactory.liveCommentCardData(createdAt = createdAt))
+        assertEquals(CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser).comment, commentPostedSubscriber.value.comment)
+        assertEquals(CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser).comment, commentSubscriber.value.comment)
     }
 
     @Test
@@ -318,7 +318,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // post a comment
         vm.inputs.postComment("Some Comment", createdAt)
 
-        commentPostedSubscriber.assertValue(CommentFactory.liveCommentCardData(createdAt = createdAt))
-        commentSubscriber.assertValue(CommentFactory.liveCommentCardData(createdAt = createdAt))
+        assertEquals(CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser).comment, commentPostedSubscriber.value.comment)
+        assertEquals(CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser).comment, commentSubscriber.value.comment)
     }
 }

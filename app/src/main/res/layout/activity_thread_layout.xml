@@ -63,7 +63,7 @@
             android:id="@+id/comment_replies_recycler_view"
             app:layout_constraintStart_toEndOf="@id/left_guideline"
             android:layout_width="0dp"
-            android:paddingEnd="@dimen/grid_3"
+            android:paddingEnd="@dimen/grid_5"
             android:layout_height="wrap_content"
             android:background="@color/kds_white"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

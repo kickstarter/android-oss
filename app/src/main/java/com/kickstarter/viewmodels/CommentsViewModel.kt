@@ -6,6 +6,8 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.loadmore.LoadingType
+import com.kickstarter.libs.loadmore.PaginatedViewModelOutput
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.ObjectUtils
@@ -17,23 +19,35 @@ import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
+import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
+import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CommentsActivity
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.data.ProjectData
+import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
+import rx.subjects.PublishSubject
 
 interface CommentsViewModel {
 
-    interface Inputs
-    interface Outputs {
+    interface Inputs {
+        fun refresh()
+        fun nextPage()
+        fun postComment(comment: String, createdAt: DateTime)
+    }
+
+    interface Outputs : PaginatedViewModelOutput<Comment> {
         fun currentUserAvatar(): Observable<String?>
         fun enableCommentComposer(): Observable<Boolean>
         fun enableReplyButton(): Observable<Boolean>
         fun showCommentComposer(): Observable<Void>
         fun commentsList(): Observable<List<CommentCardData>>
         fun setEmptyState(): Observable<Boolean>
+        fun insertComment(): Observable<Comment>
+        fun commentPosted(): Observable<Comment>
+        fun updateFailedComment(): Observable<Comment>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
@@ -43,6 +57,8 @@ interface CommentsViewModel {
         private val apolloClient: ApolloClientType = environment.apolloClient()
         val inputs: Inputs = this
         val outputs: Outputs = this
+        private val refresh = PublishSubject.create<Void>()
+        private val nextPage = PublishSubject.create<Void>()
 
         private val currentUserAvatar = BehaviorSubject.create<String?>()
         private val enableCommentComposer = BehaviorSubject.create<Boolean>()
@@ -50,8 +66,18 @@ interface CommentsViewModel {
         private val commentsList = BehaviorSubject.create<List<CommentCardData>?>()
         private val disableReplyButton = BehaviorSubject.create<Boolean>()
 
+        private val postComment = PublishSubject.create<Pair<String, DateTime>>()
+        private val isLoadingMoreItems = BehaviorSubject.create<Boolean>()
+        private val isRefreshing = BehaviorSubject.create<Boolean>()
+        private val enablePagination = BehaviorSubject.create<Boolean>()
         private val setEmptyState = BehaviorSubject.create<Boolean>()
+        private val insertComment = BehaviorSubject.create<Comment>()
+        private val commentPosted = BehaviorSubject.create<Comment>()
+        private val updateFailedComment = BehaviorSubject.create<Comment>()
+        private val failedPostedCommentObserver = BehaviorSubject.create<Void>()
 
+        private var lastCommentCursour: String? = null
+        override var loadMoreListData = mutableListOf<Comment>()
         init {
 
             val loggedInUser = this.currentUser.loggedInUser()
@@ -97,12 +123,13 @@ interface CommentsViewModel {
                     { value: Project? -> Observable.just(value) },
                     { u: Update? -> client.fetchProject(u?.projectId().toString()).compose(Transformers.neverError()) }
                 )
-            }.share()
+            }.map { requireNotNull(it) }
+                .share()
 
             Observable.combineLatest(
                 loggedInUser,
                 initialProject
-            ) { a: User?, b: Project? ->
+            ) { a: User?, b: Project ->
                 Pair.create(a, b)
             }.compose(bindToLifecycle())
                 .subscribe {
@@ -111,13 +138,14 @@ interface CommentsViewModel {
                     }
                 }
 
-            val commentEnvelope = initialProject
+            val projectSlug = initialProject
                 .map { requireNotNull(it?.slug()) }
+
+            val commentEnvelope = projectSlug
                 .switchMap {
-                    this.apolloClient.getProjectComments(it, null)
+                    this.apolloClient.getProjectComments(it, lastCommentCursour)
                 }
                 .filter { ObjectUtils.isNotNull(it) }
-                .share()
 
             commentEnvelope
                 .compose<Pair<CommentEnvelope, Project?>>(combineLatestPair(initialProject))
@@ -130,15 +158,110 @@ interface CommentsViewModel {
                 }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    it.second?.let { count ->
-                        this.setEmptyState.onNext(count < 1)
-                        commentsList.onNext(it.first)
+                    bindCommentList(it, LoadingType.NORMAL)
+                }
+
+            projectSlug
+                .compose(Transformers.takeWhen(this.nextPage))
+                .doOnNext {
+                    this.isLoadingMoreItems.onNext(true)
+                }
+                .switchMap {
+                    this.apolloClient.getProjectComments(it, lastCommentCursour)
+                }
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    updatePaginatedData(
+                        LoadingType.LOAD_MORE,
+                        it.comments
+                    )
+                }
+
+            projectSlug
+                .compose(Transformers.takeWhen(this.refresh))
+                .doOnNext {
+                    this.isRefreshing.onNext(true)
+                }
+                .switchMap {
+                    this.apolloClient.getProjectComments(it, null)
+                }
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    bindCommentList(it, LoadingType.PULL_REFRESH)
+                }
+
+            this.currentUser.loggedInUser()
+                .compose(Transformers.takePairWhen(this.postComment))
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.insertComment.onNext(buildCommentBody(it))
+                }
+
+            this.currentUser.loggedInUser()
+                .compose(Transformers.takePairWhen(this.postComment))
+                .compose(Transformers.takePairWhen(this.failedPostedCommentObserver))
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.updateFailedComment.onNext(buildCommentBody(it.first))
+                }
+
+            initialProject
+                .compose(Transformers.takePairWhen(this.postComment))
+                .compose(bindToLifecycle())
+                .switchMap {
+                    it.first?.let { project ->
+                        this.apolloClient.createComment(
+                            PostCommentData(
+                                project = project,
+                                body = it.second.first,
+                                clientMutationId = null,
+                                parentId = null
+                            )
+                        )
                     }
                 }
+                .subscribe(
+                    {
+                        this.commentPosted.onNext(it)
+                    },
+                    {
+                        this.failedPostedCommentObserver.onNext(null)
+                    }
+                )
+        }
+
+        private fun buildCommentBody(it: Pair<User, Pair<String, DateTime>>): Comment? {
+            return Comment.builder()
+                .body(it.second.first)
+                .parentId(-1)
+                .authorBadges(listOf())
+                .createdAt(it.second.second)
+                .cursor("")
+                .deleted(false)
+                .id(-1)
+                .repliesCount(0)
+                .author(it.first)
+                .build()
+        }
+
+        private fun bindCommentList(commentEnvelope: CommentEnvelope, loadingType: LoadingType) {
+            commentEnvelope.totalCount?.let { count ->
+                this.setEmptyState.onNext(count < 1)
+                updatePaginatedData(
+                    loadingType,
+                    commentEnvelope.comments
+
+                )
+            }
         }
 
         private fun isProjectBackedOrUserIsCreator(pair: Pair<Project, User?>) =
             pair.first.isBacking || ProjectUtils.userIsCreator(pair.first, pair.second)
+
+        override fun refresh() = refresh.onNext(null)
+        override fun nextPage() = nextPage.onNext(null)
 
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
         override fun enableCommentComposer(): Observable<Boolean> = enableCommentComposer
@@ -147,5 +270,25 @@ interface CommentsViewModel {
         override fun enableReplyButton(): Observable<Boolean> = disableReplyButton
 
         override fun setEmptyState(): Observable<Boolean> = setEmptyState
+        override fun isLoadingMoreItems(): Observable<Boolean> = isLoadingMoreItems
+        override fun enablePagination(): Observable<Boolean> = enablePagination
+        override fun isRefreshing(): Observable<Boolean> = isRefreshing
+        override fun insertComment(): Observable<Comment> = this.insertComment
+        override fun commentPosted(): Observable<Comment> = this.commentPosted
+        override fun updateFailedComment(): Observable<Comment> = this.updateFailedComment
+
+        override fun postComment(comment: String, createdAt: DateTime) = postComment.onNext(Pair(comment, createdAt))
+
+        override fun bindPaginatedData(data: List<Comment>?) {
+            lastCommentCursour = data?.lastOrNull()?.cursor()
+            data?.let { loadMoreListData.addAll(it) }
+            commentsList.onNext(loadMoreListData)
+            this.isRefreshing.onNext(false)
+            this.isLoadingMoreItems.onNext(false)
+        }
+
+        override fun updatePaginatedState(enabled: Boolean) {
+            enablePagination.onNext(enabled)
+        }
     }
 }

@@ -189,44 +189,6 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    private fun createCommentObject(commentFr: fragment.Comment?): Comment {
-
-        val badges: List<String>? = commentFr?.authorBadges()?.map { badge ->
-            badge?.rawValue() ?: ""
-        }
-
-        val author = User.builder()
-            .id(decodeRelayId(commentFr?.author()?.fragments()?.user()?.id()) ?: -1)
-            .name(commentFr?.author()?.fragments()?.user()?.name())
-            .avatar(
-                Avatar.builder()
-                    .medium(commentFr?.author()?.fragments()?.user()?.imageUrl())
-                    .build()
-            )
-            .build()
-
-        return Comment.builder()
-            .id(decodeRelayId(commentFr?.id()) ?: -1)
-            .author(author)
-            .repliesCount(commentFr?.replies()?.totalCount() ?: 0)
-            .body(commentFr?.body())
-            .authorBadges(badges)
-            .cursor("")
-            .createdAt(commentFr?.createdAt())
-            .deleted(commentFr?.deleted())
-            .parentId(decodeRelayId(commentFr?.parentId()) ?: -1)
-            .build()
-    }
-
-    private fun createPageInfoObject(pageFr: fragment.PageInfo?): PageInfoEnvelope {
-        return PageInfoEnvelope.builder()
-            .endCursor(pageFr?.endCursor() ?: "")
-            .hasNextPage(pageFr?.hasNextPage() ?: false)
-            .hasPreviousPage(pageFr?.hasPreviousPage() ?: false)
-            .startCursor(pageFr?.startCursor() ?: "")
-            .build()
-    }
-
     override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<CommentEnvelope>()
@@ -250,7 +212,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                 .map { project ->
 
                                     val comments = project?.comments()?.edges()?.map { edge ->
-                                        createCommentObject(edge?.node()?.fragments()?.comment())
+                                        createCommentObject(edge?.node()?.fragments()?.comment()).toBuilder()
+                                            .cursor(edge?.cursor())
+                                            .build()
                                     }
 
                                     CommentEnvelope.builder()
@@ -267,6 +231,34 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         }
                     }
                 })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
+    }
+
+    override fun getRepliesForComment(comment: Comment, cursor: String, pageSize: Int): Observable<CommentEnvelope> {
+        return Observable.defer {
+            val ps = PublishSubject.create<CommentEnvelope>()
+            this.service.query(
+                GetRepliesForCommentQuery.builder()
+                    .commentableId(encodeRelayId(comment))
+                    .cursor(cursor)
+                    .pageSize(pageSize)
+                    .build()
+            ).enqueue(object : ApolloCall.Callback<GetRepliesForCommentQuery.Data>() {
+                override fun onFailure(e: ApolloException) {
+                    ps.onError(e)
+                }
+
+                override fun onResponse(response: Response<GetRepliesForCommentQuery.Data>) {
+                    response.data?.let { responseData ->
+                        Observable.just(createCommentEnvelop(responseData))
+                            .subscribe {
+                                ps.onNext(it)
+                                ps.onCompleted()
+                            }
+                    }
+                }
+            })
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }
@@ -757,6 +749,59 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             return@defer ps
         }
     }
+}
+
+private fun createCommentObject(commentFr: fragment.Comment?): Comment {
+
+    val badges: List<String>? = commentFr?.authorBadges()?.map { badge ->
+        badge?.rawValue() ?: ""
+    }
+
+    val author = User.builder()
+        .id(decodeRelayId(commentFr?.author()?.fragments()?.user()?.id()) ?: -1)
+        .name(commentFr?.author()?.fragments()?.user()?.name())
+        .avatar(
+            Avatar.builder()
+                .medium(commentFr?.author()?.fragments()?.user()?.imageUrl())
+                .build()
+        )
+        .build()
+
+    return Comment.builder()
+        .id(decodeRelayId(commentFr?.id()) ?: -1)
+        .author(author)
+        .repliesCount(commentFr?.replies()?.totalCount() ?: 0)
+        .body(commentFr?.body())
+        .authorBadges(badges)
+        .cursor("")
+        .createdAt(commentFr?.createdAt())
+        .deleted(commentFr?.deleted())
+        .parentId(decodeRelayId(commentFr?.parentId()) ?: -1)
+        .build()
+}
+
+private fun createPageInfoObject(pageFr: fragment.PageInfo?): PageInfoEnvelope {
+    return PageInfoEnvelope.builder()
+        .endCursor(pageFr?.endCursor() ?: "")
+        .hasNextPage(pageFr?.hasNextPage() ?: false)
+        .hasPreviousPage(pageFr?.hasPreviousPage() ?: false)
+        .startCursor(pageFr?.startCursor() ?: "")
+        .build()
+}
+
+private fun createCommentEnvelop(responseData: GetRepliesForCommentQuery.Data): CommentEnvelope {
+    val replies = (responseData.commentable() as GetRepliesForCommentQuery.AsComment).replies()
+    val listOfComments = replies?.nodes()?.map { commentFragment ->
+        createCommentObject(commentFragment.fragments().comment())
+    } ?: emptyList()
+    val totalCount = replies?.totalCount() ?: 0
+    val pageInfo = createPageInfoObject(replies?.pageInfo()?.fragments()?.pageInfo())
+
+    return CommentEnvelope.builder()
+        .comments(listOfComments)
+        .pageInfoEnvelope(pageInfo)
+        .totalCount(totalCount)
+        .build()
 }
 
 private fun createBackingObject(backingGr: fragment.Backing?): Backing {

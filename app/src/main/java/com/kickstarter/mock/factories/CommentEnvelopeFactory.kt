@@ -8,7 +8,7 @@ class CommentEnvelopeFactory {
         fun emptyCommentsEnvelope(): CommentEnvelope {
             return CommentEnvelope.builder()
                 .totalCount(0)
-                .comments(listOf())
+                .comments(emptyList())
                 .pageInfoEnvelope(null)
                 .build()
         }

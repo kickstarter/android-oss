@@ -1,5 +1,6 @@
 package com.kickstarter.ui.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +15,16 @@ import com.kickstarter.ui.viewholders.KSViewHolder
 import com.trello.rxlifecycle.ActivityEvent
 import java.util.ArrayList
 
-abstract class KSListAdapter(diffUtil: DiffUtil.ItemCallback<Any>) : ListAdapter<Any, KSViewHolder>(diffUtil) {
+abstract class KSListAdapter(
+    diffUtil: DiffUtil.ItemCallback<Any> = object : DiffUtil.ItemCallback<Any>() {
+        override fun areItemsTheSame(oldItem: Any, newItem: Any) = oldItem == newItem
+
+        @SuppressLint("DiffUtilEquals")
+        override fun areContentsTheSame(oldItem: Any, newItem: Any) = oldItem == newItem
+
+        override fun getChangePayload(oldItem: Any, newItem: Any) = false
+    }
+) : ListAdapter<Any, KSViewHolder>(diffUtil) {
     private val sections = ArrayList<List<Any>>()
 
     fun sections(): List<List<Any>> {

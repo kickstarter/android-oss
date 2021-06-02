@@ -73,7 +73,7 @@ class CommentFactory {
                     )
                     .build(),
                 0,
-                    ProjectFactory.project().toBuilder().creator(UserFactory.creator().toBuilder().id(278438049).build()).build()
+                ProjectFactory.project().toBuilder().creator(UserFactory.creator().toBuilder().id(278438049).build()).build()
 
             )
         }

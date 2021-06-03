@@ -49,18 +49,18 @@ class CommentsActivity :
                 binding.commentComposer.setAvatarUrl(it)
             }
 
-        viewModel.outputs.enableCommentComposer()
+        viewModel.outputs.commentComposerStatus()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                binding.commentComposer.showCommentComposerDisabledView(!it)
+                binding.commentComposer.setCommentComposerStatus(it)
             }
 
         viewModel.outputs.showCommentComposer()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                binding.commentComposer.isVisible = true
+                binding.commentComposer.isVisible = it
             }
 
         viewModel.outputs.setEmptyState()

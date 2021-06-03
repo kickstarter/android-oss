@@ -5,23 +5,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:padding="@dimen/grid_3">
+    android:background="@color/white">
+
+    <View
+        android:id="@+id/separtor"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/kds_support_200"
+        android:layout_marginBottom="@dimen/grid_3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/comments_feed_avatar_width"
         android:layout_height="@dimen/comments_feed_avatar_height"
         android:layout_alignParentStart="true"
+        app:layout_constraintTop_toBottomOf="@id/separtor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription"
+        android:layout_marginTop="@dimen/grid_3"
+        android:layout_marginStart="@dimen/grid_3"
+        android:layout_marginBottom="@dimen/grid_3"/>
 
     <View
         android:id="@+id/editTextTextBackground"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/grid_2"
+        android:layout_marginEnd="@dimen/grid_3"
         android:background="@drawable/border_rounded_soft_grey_50"
         app:layout_constraintBottom_toBottomOf="@+id/comment_text_composer"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,7 +57,8 @@
         android:enabled="false"
         android:text="@string/post"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@id/comment_text_composer"
+        app:layout_constraintBottom_toBottomOf="@id/comment_text_composer"
         app:layout_constraintEnd_toEndOf="@+id/editTextTextBackground"
         app:layout_constraintStart_toEndOf="@+id/comment_text_composer" />
 
@@ -58,6 +73,9 @@
         style="@style/CommentsDisabledMessageTextView"
         android:text="@string/only_backers_can_leave_comments"
         android:visibility="gone"
+        android:layout_marginTop="@dimen/grid_3"
+        android:layout_marginStart="@dimen/grid_2"
+        android:layout_marginBottom="@dimen/grid_3"
         app:layout_constraintBottom_toBottomOf="@id/avatar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/avatar"

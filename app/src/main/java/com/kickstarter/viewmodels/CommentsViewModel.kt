@@ -23,8 +23,7 @@ import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CommentsActivity
 import com.kickstarter.ui.data.CommentCardData
-import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.views.CommentCardStatus
+import com.kickstarter.ui.views.CommentComposerStatus
 import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -41,9 +40,9 @@ interface CommentsViewModel {
 
     interface Outputs : PaginatedViewModelOutput<CommentCardData> {
         fun currentUserAvatar(): Observable<String?>
-        fun enableCommentComposer(): Observable<Boolean>
+        fun commentComposerStatus(): Observable<CommentComposerStatus>
         fun enableReplyButton(): Observable<Boolean>
-        fun showCommentComposer(): Observable<Void>
+        fun showCommentComposer(): Observable<Boolean>
         fun commentsList(): Observable<List<CommentCardData>>
         fun setEmptyState(): Observable<Boolean>
         fun insertComment(): Observable<CommentCardData>
@@ -63,8 +62,8 @@ interface CommentsViewModel {
         private val nextPage = PublishSubject.create<Void>()
 
         private val currentUserAvatar = BehaviorSubject.create<String?>()
-        private val enableCommentComposer = BehaviorSubject.create<Boolean>()
-        private val showCommentComposer = BehaviorSubject.create<Void>()
+        private val commentComposerStatus = BehaviorSubject.create<CommentComposerStatus>()
+        private val showCommentComposer = BehaviorSubject.create<Boolean>()
         private val commentsList = BehaviorSubject.create<List<CommentCardData>?>()
         private val disableReplyButton = BehaviorSubject.create<Boolean>()
 
@@ -97,15 +96,7 @@ interface CommentsViewModel {
             loggedInUser
                 .compose(bindToLifecycle())
                 .subscribe {
-                    showCommentComposer.onNext(null)
-                }
-
-            intent()
-                .map { it.getParcelableExtra(IntentKey.PROJECT_DATA) as ProjectData? }
-                .ofType(ProjectData::class.java)
-                .compose(bindToLifecycle())
-                .subscribe {
-                    enableCommentComposer.onNext(isProjectBackedOrUserIsCreator(Pair(it.project(), it.user())))
+                    showCommentComposer.onNext(true)
                 }
 
             val projectOrUpdate = intent()
@@ -130,16 +121,13 @@ interface CommentsViewModel {
             }.map { requireNotNull(it) }
                 .share()
 
-            Observable.combineLatest(
-                loggedInUser,
-                initialProject
-            ) { a: User?, b: Project ->
-                Pair.create(a, b)
-            }.compose(bindToLifecycle())
+            initialProject
+                .compose(combineLatestPair(currentUser.observable()))
+                .compose(bindToLifecycle())
                 .subscribe {
-                    it.second?.let { project ->
-                        enableCommentComposer.onNext(isProjectBackedOrUserIsCreator(Pair(project, it.first)))
-                    }
+                    val composerStatus = getCommentComposerStatus(Pair(it.first, it.second))
+                    showCommentComposer.onNext(composerStatus != CommentComposerStatus.GONE)
+                    commentComposerStatus.onNext(composerStatus)
                 }
 
             loadCommentList(initialProject)
@@ -295,50 +283,64 @@ interface CommentsViewModel {
                 .subscribe {
                     bindCommentList(it.first, LoadingType.PULL_REFRESH, it.second)
                 }
+
+            this.currentUser.loggedInUser()
+                .compose(Transformers.takePairWhen(this.postComment))
+                .map {
+                    buildCommentBody(it)
+                }
+                .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
+                .map {
+                    CommentCardData.builder().comment(it.first).project(it.second).build()
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.insertComment.onNext(it)
+                }
+
+            this.currentUser.loggedInUser()
+                .compose(Transformers.takePairWhen(this.postComment))
+                .compose(Transformers.takePairWhen(this.failedPostedCommentObserver))
+                .map {
+                    buildCommentBody(it.first)
+                }
+                .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
+                .map {
+                    CommentCardData.builder().comment(it.first).project(it.second).build()
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.updateFailedComment.onNext(it)
+                }
+
+            initialProject
+                .compose(Transformers.takePairWhen(this.postComment))
+                .compose(bindToLifecycle())
+                .switchMap {
+                    it.first?.let { project ->
+                        this.apolloClient.createComment(
+                            PostCommentData(
+                                project = project,
+                                body = it.second.first,
+                                clientMutationId = null,
+                                parentId = null
+                            )
+                        )
+                    }
+                }
+                .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
+                .map {
+                    CommentCardData.builder().comment(it.first).project(it.second).build()
+                }
+                .subscribe(
+                    {
+                        this.commentPosted.onNext(it)
+                    },
+                    {
+                        this.failedPostedCommentObserver.onNext(null)
+                    }
+                )
         }
-//
-//        private fun postCommentToServer(postComment: Observable<Pair<Pair<Comment, Int>, Project?>>, isRetrying: Boolean) {
-//            postComment.compose(bindToLifecycle())
-//                .switchMap {
-//                    it.second?.let { project ->
-//                        this.apolloClient.createComment(
-//                            PostCommentData(
-//                                project = project,
-//                                body = it.first.first.body(),
-//                                clientMutationId = null,
-//                                parentId = null
-//                            ),
-//                            isRetrying
-//                        )
-//                    }
-//                }
-//                .compose<Pair<Comment, Pair< Project?, Int>>>(combineLatestPair(postComment.map { Pair(it.second, it.first.second) }))
-//                .subscribe(
-//                    {
-//                        if (isRetrying) {
-//                            this.updateCommentStatus.onNext(
-//                               Pair(CommentCardData.builder()
-//                                    .comment(it.first)
-//                                    .project(it.second.first)
-//                                    .commentCardState(CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY.commentCardStatus)
-//                                    .build(),
-//                                    it.second.second)
-//                            )
-//                        } else {
-//
-//                            this.commentPosted.onNext(
-//                                CommentCardData.builder()
-//                                    .comment(it.first)
-//                                    .project(it.second.first)
-//                                    .build()
-//                            )
-//                        }
-//                    },
-//                    {
-//                        this.failedPostedCommentObserver.onNext(0)
-//                    }
-//                )
-//        }
 
         private fun mapToCommentCardDataList(it: Pair<CommentEnvelope, Project?>) =
             it.first.comments?.map { comment: Comment ->
@@ -381,15 +383,19 @@ interface CommentsViewModel {
             }
         }
 
-        private fun isProjectBackedOrUserIsCreator(pair: Pair<Project, User?>) =
-            pair.first.isBacking || ProjectUtils.userIsCreator(pair.first, pair.second)
+        private fun getCommentComposerStatus(projectAndUser: Pair<Project, User?>) =
+            when {
+                projectAndUser.second == null -> CommentComposerStatus.GONE
+                projectAndUser.first.isBacking || ProjectUtils.userIsCreator(projectAndUser.first, projectAndUser.second) -> CommentComposerStatus.ENABLED
+                else -> CommentComposerStatus.DISABLED
+            }
 
         override fun refresh() = refresh.onNext(null)
         override fun nextPage() = nextPage.onNext(null)
 
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
-        override fun enableCommentComposer(): Observable<Boolean> = enableCommentComposer
-        override fun showCommentComposer(): Observable<Void> = showCommentComposer
+        override fun commentComposerStatus(): Observable<CommentComposerStatus> = commentComposerStatus
+        override fun showCommentComposer(): Observable<Boolean> = showCommentComposer
         override fun commentsList(): Observable<List<CommentCardData>> = commentsList
         override fun enableReplyButton(): Observable<Boolean> = disableReplyButton
 

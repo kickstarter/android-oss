@@ -154,8 +154,7 @@ interface CommentsViewModel {
                                             body = it.first.first,
                                             clientMutationId = null,
                                             parentId = null
-                                    ),
-                                    false
+                                    )
                             )
                         }
                     }
@@ -188,32 +187,29 @@ interface CommentsViewModel {
                     this.updateFailedComment.onNext(it)
                 }
 
-            this.currentUser.loggedInUser()
-                .compose(Transformers.takePairWhen(this.postComment))
-                .map { buildCommentBody(it) }
-                .compose(combineLatestPair(initialProject))
-                .map {
-                    CommentCardData.builder()
-                        .comment(it.first)
-                        .project(it.second)
-                        .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
-                        .build()
-                }
-                .compose(bindToLifecycle())
-                .subscribe {
-                    
-                    this.insertComment.onNext(it)
-                }
-
-            postComment.compose(bindToLifecycle())
-                .subscribe(
-                    {
-                        this.commentPosted.onNext(it)
-                    },
-                    {
-                        this.failedPostedCommentObserver.onNext(null)
+            Observable
+                    .combineLatest(initialProject, this.postComment) { project, pair ->
+                        return@combineLatest this.apolloClient.createComment(
+                                PostCommentData(
+                                        project = project,
+                                        body = pair.first,
+                                        clientMutationId = null,
+                                        parentId = null
+                                )).doOnError {
+                            this.failedPostedCommentObserver.onNext(null)
+                        }
+                                .onErrorResumeNext(Observable.empty())
                     }
-                )
+                    .switchMap {
+                        it
+                    }
+                    .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
+                    .map {
+                        CommentCardData.builder().comment(it.first).project(it.second).build()
+                    }
+                    .subscribe {
+                        this.commentPosted.onNext(it)
+                    }
 
             this.currentUser.loggedInUser()
                 .compose(Transformers.takePairWhen(this.postComment))

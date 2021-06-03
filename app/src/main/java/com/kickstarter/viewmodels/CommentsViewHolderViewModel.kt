@@ -194,8 +194,7 @@ interface CommentsViewHolderViewModel {
                                     body = body,
                                     clientMutationId = null,
                                     parentId = null
-                                ),
-                                true
+                                )
                             )
                         }
                     }

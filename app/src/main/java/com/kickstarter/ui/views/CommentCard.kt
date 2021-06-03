@@ -135,8 +135,8 @@ class CommentCard @JvmOverloads constructor(
 
     private fun shouldShowReplyButton(cardCommentStatus: CommentCardStatus) =
         cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLIES ||
-        cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLIES ||
-        cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT
+            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLIES ||
+            cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT
 
     /*
      * To display replies count
@@ -146,7 +146,7 @@ class CommentCard @JvmOverloads constructor(
         setViewRepliesVisibility(replies > 0)
     }
 
-    fun setViewRepliesVisibility(isViewRepliesVisible: Boolean){
+    fun setViewRepliesVisibility(isViewRepliesVisible: Boolean) {
         binding.replies.isVisible = isViewRepliesVisible && isCommentEnabledThreads
     }
 

@@ -245,6 +245,6 @@ interface CommentsViewHolderViewModel {
 
         override fun viewCommentReplies(): Observable<Comment> = this.viewCommentReplies
 
-        override fun isCommentEnableThreads(): Observable<Boolean> =  this.isCommentEnableThreads
+        override fun isCommentEnableThreads(): Observable<Boolean> = this.isCommentEnableThreads
     }
 }

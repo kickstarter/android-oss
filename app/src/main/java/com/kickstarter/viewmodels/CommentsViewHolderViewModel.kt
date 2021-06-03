@@ -2,12 +2,11 @@ package com.kickstarter.viewmodels
 
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.ExperimentsClientType
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.models.Comment
-import com.kickstarter.models.User
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.viewholders.CommentCardViewHolder
 import com.kickstarter.ui.views.CommentCardStatus
@@ -57,7 +56,7 @@ interface CommentsViewHolderViewModel {
         fun commentPostTime(): Observable<DateTime>
 
         /** Emits the visibility of the comment card action group */
-        fun isCommentActionGroupVisible(): Observable<Boolean>
+        fun isReplyButtonVisible(): Observable<Boolean>
 
         /** Emits the current [Comment] when Comment GuideLines clicked.. */
         fun openCommentGuideLines(): Observable<Comment>
@@ -73,6 +72,9 @@ interface CommentsViewHolderViewModel {
 
         /** Emits the current [Comment] when view replies clicked.. */
         fun viewCommentReplies(): Observable<Comment>
+
+        /** Emits the current [OptimizelyFeature.Key.COMMENT_ENABLE_THREADS] status to the CommentCard UI*/
+        fun isCommentEnableThreads(): Observable<Boolean>
     }
 
     class ViewModel(environment: Environment) : ActivityViewModel<CommentCardViewHolder>(environment), Inputs, Outputs {
@@ -84,7 +86,7 @@ interface CommentsViewHolderViewModel {
         private val onViewCommentRepliesButtonClicked = PublishSubject.create<Void>()
 
         private val commentCardStatus = BehaviorSubject.create<CommentCardStatus>()
-        private val isCommentActionGroupVisible = BehaviorSubject.create<Boolean>()
+        private val isReplyButtonVisible = BehaviorSubject.create<Boolean>()
         private val commentAuthorName = BehaviorSubject.create<String>()
         private val commentAuthorAvatarUrl = BehaviorSubject.create<String>()
         private val commentMessageBody = BehaviorSubject.create<String>()
@@ -95,21 +97,29 @@ interface CommentsViewHolderViewModel {
         private val replyToComment = PublishSubject.create<Comment>()
         private val flagComment = PublishSubject.create<Comment>()
         private val viewCommentReplies = PublishSubject.create<Comment>()
+        private val isCommentEnableThreads = PublishSubject.create<Boolean>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
+
+        private val optimizely: ExperimentsClientType = environment.optimizely()
 
         init {
             this.commentInput
                 .map { it.comment }
                 .filter { ObjectUtils.isNotNull(it) }
                 .compose(bindToLifecycle())
-                .subscribe { this.commentCardStatus.onNext(cardStatus(it)) }
+                .subscribe {
+                    this.commentCardStatus.onNext(cardStatus(it))
+                }
 
             this.commentInput
-                .compose(Transformers.combineLatestPair(environment.currentUser().observable()))
                 .compose(bindToLifecycle())
-                .subscribe { this.isCommentActionGroupVisible.onNext(isActionGroupVisible(it.first, it.second)) }
+                .subscribe {
+                    this.isReplyButtonVisible.onNext(
+                        shouldReplyButtonBeVisible(it, optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_ENABLE_THREADS))
+                    )
+                }
 
             val comment = this.commentInput
                 .map { it.comment }
@@ -171,15 +181,32 @@ interface CommentsViewHolderViewModel {
                 .subscribe(this.flagComment)
         }
 
-        private fun isActionGroupVisible(commentCardData: CommentCardData, user: User?) =
-            commentCardData.project?.let {
-                it.isBacking || ProjectUtils.userIsCreator(it, user)
-            } ?: false
+        /**
+         * Checks if the current user is backing the current project
+         *  @param commentCardData
+         *  @param featureFlagActive
+         *
+         *  @return
+         *  true -> if current user is backer and the feature flag is active
+         *  false -> any of the previous conditions fails
+         */
+        private fun shouldReplyButtonBeVisible(
+            commentCardData: CommentCardData,
+            featureFlagActive: Boolean
+        ) =
+            commentCardData.project?.let { it.isBacking && featureFlagActive } ?: false
 
+        /**
+         * Updates the status of the current comment card.
+         * Also updates the current state of the [OptimizelyFeature.Key.COMMENT_ENABLE_THREADS]
+         * everytime the state changes.
+         */
         private fun cardStatus(comment: Comment?) = when {
             comment?.deleted() ?: false -> CommentCardStatus.DELETED_COMMENT
             (comment?.repliesCount() ?: false != 0) -> CommentCardStatus.COMMENT_WITH_REPLIES
             else -> CommentCardStatus.COMMENT_WITHOUT_REPLIES
+        }.also {
+            this.isCommentEnableThreads.onNext(optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_ENABLE_THREADS))
         }
 
         override fun configureWith(commentCardData: CommentCardData) = this.commentInput.onNext(commentCardData)
@@ -206,7 +233,7 @@ interface CommentsViewHolderViewModel {
 
         override fun commentPostTime(): Observable<DateTime> = this.commentPostTime
 
-        override fun isCommentActionGroupVisible(): Observable<Boolean> = this.isCommentActionGroupVisible
+        override fun isReplyButtonVisible(): Observable<Boolean> = this.isReplyButtonVisible
 
         override fun openCommentGuideLines(): Observable<Comment> = openCommentGuideLines
 
@@ -217,5 +244,7 @@ interface CommentsViewHolderViewModel {
         override fun flagComment(): Observable<Comment> = flagComment
 
         override fun viewCommentReplies(): Observable<Comment> = this.viewCommentReplies
+
+        override fun isCommentEnableThreads(): Observable<Boolean> =  this.isCommentEnableThreads
     }
 }

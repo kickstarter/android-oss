@@ -88,21 +88,21 @@ class CommentComposerView @JvmOverloads constructor(
         }
     }
 
-    fun showCommentComposerDisabledView() {
+    private fun showCommentComposerDisabledView() {
         binding.separtor.isVisible = true
         binding.commentsDisableMsg.isVisible = true
         binding.commentTextGroup.isVisible = false
         binding.commentActionButton.isVisible = false
     }
 
-    fun showCommentComposerEnabledView() {
+    private fun showCommentComposerEnabledView() {
         binding.separtor.isVisible = true
         binding.commentsDisableMsg.isVisible = false
         binding.commentTextGroup.isVisible = true
         binding.commentActionButton.isVisible = true
     }
 
-    fun hideCommentComposer() {
+    private fun hideCommentComposer() {
         binding.commentsDisableMsg.isGone = true
         binding.commentTextGroup.isGone = true
         binding.commentActionButton.isGone = true

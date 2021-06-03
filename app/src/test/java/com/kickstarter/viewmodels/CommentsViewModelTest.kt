@@ -15,6 +15,7 @@ import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.CommentCardData
+import com.kickstarter.ui.views.CommentComposerStatus
 import org.joda.time.DateTime
 import org.junit.Test
 import rx.Observable
@@ -23,8 +24,8 @@ import rx.subjects.BehaviorSubject
 
 class CommentsViewModelTest : KSRobolectricTestCase() {
     private val commentsList = TestSubscriber<List<CommentCardData>?>()
-    private val enableCommentComposer = TestSubscriber<Boolean>()
-    private val showCommentComposer = TestSubscriber<Void>()
+    private val commentComposerStatus = TestSubscriber<CommentComposerStatus>()
+    private val showCommentComposer = TestSubscriber<Boolean>()
     private val showEmptyState = TestSubscriber<Boolean>()
     private val isLoadingMoreItems = TestSubscriber<Boolean>()
     private val isRefreshing = TestSubscriber<Boolean>()
@@ -33,53 +34,54 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     private val commentPostedSubscriber = BehaviorSubject.create<CommentCardData>()
 
     @Test
-    fun testCommentsViewModel_showCommentComposer_isLogInUser() {
+    fun testCommentsViewModel_whenUserLoggedInAndBacking_shouldShowEnabledComposer() {
         val vm = CommentsViewModel.ViewModel(
             environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build()
         )
-        vm.outputs.enableCommentComposer().subscribe(enableCommentComposer)
+        vm.outputs.commentComposerStatus().subscribe(commentComposerStatus)
         vm.outputs.showCommentComposer().subscribe(showCommentComposer)
 
         // Start the view model with a backed project.
         vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
 
         // The comment composer should be shown to backer and enabled to write comments
-        enableCommentComposer.assertValue(true)
-        showCommentComposer.assertValueCount(1)
+        commentComposerStatus.assertValue(CommentComposerStatus.ENABLED)
+        showCommentComposer.assertValues(true, true)
     }
 
     @Test
-    fun testCommentsViewModel_showCommentComposer_isLogoutUser() {
-        val vm = CommentsViewModel.ViewModel(environment())
+    fun testCommentsViewModel_whenUserIsLoggedOut_composerShouldBeGone() {
+        val vm = CommentsViewModel.ViewModel(environment().toBuilder().build())
 
-        vm.outputs.enableCommentComposer().subscribe(enableCommentComposer)
+        vm.outputs.commentComposerStatus().subscribe(commentComposerStatus)
         vm.outputs.showCommentComposer().subscribe(showCommentComposer)
 
         // Start the view model with a backed project.
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
-        // The comment composer should be hidden and disabled to write comments as no user login -ed
-        showCommentComposer.assertNoValues()
-        enableCommentComposer.assertNoValues()
+        // The comment composer should be hidden and disabled to write comments as no user logged-in
+        showCommentComposer.assertValue(false)
+        commentComposerStatus.assertValue(CommentComposerStatus.GONE)
     }
 
     @Test
-    fun testCommentsViewModel_enableCommentComposer_isBacking() {
+    fun testCommentsViewModel_whenUserIsLoggedInNotBacking_shouldShowDisabledComposer() {
         val vm = CommentsViewModel.ViewModel(
             environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build()
         )
-        val enableCommentComposer = TestSubscriber<Boolean>()
-        vm.outputs.enableCommentComposer().subscribe(enableCommentComposer)
+        vm.outputs.commentComposerStatus().subscribe(commentComposerStatus)
+        vm.outputs.showCommentComposer().subscribe(showCommentComposer)
 
         // Start the view model with a backed project.
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
-        // The comment composer enabled to write comments
-        enableCommentComposer.assertValue(true)
+        // The comment composer should show but in disabled state
+        commentComposerStatus.assertValue(CommentComposerStatus.DISABLED)
+        showCommentComposer.assertValues(true, true)
     }
 
     @Test
-    fun testCommentsViewModel_enableCommentComposer_isCreator() {
+    fun testCommentsViewModel_whenUserIsCreator_shouldShowEnabledComposer() {
         val currentUser = UserFactory.user().toBuilder().id(1234).build()
         val project = ProjectFactory.project()
             .toBuilder()
@@ -89,14 +91,16 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         val vm = CommentsViewModel.ViewModel(
             environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
         )
-        val enableCommentComposer = TestSubscriber<Boolean>()
-        vm.outputs.enableCommentComposer().subscribe(enableCommentComposer)
+
+        vm.outputs.commentComposerStatus().subscribe(commentComposerStatus)
+        vm.outputs.showCommentComposer().subscribe(showCommentComposer)
 
         // Start the view model with a project.
         vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
         // The comment composer enabled to write comments for creator
-        enableCommentComposer.assertValues(true)
+        showCommentComposer.assertValues(true, true)
+        commentComposerStatus.assertValues(CommentComposerStatus.ENABLED)
     }
 
     @Test
@@ -111,14 +115,16 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         val vm = CommentsViewModel.ViewModel(
             environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
         )
-        val enableCommentComposer = TestSubscriber<Boolean>()
-        vm.outputs.enableCommentComposer().subscribe(enableCommentComposer)
+
+        vm.outputs.commentComposerStatus().subscribe(commentComposerStatus)
+        vm.outputs.showCommentComposer().subscribe(showCommentComposer)
 
         // Start the view model with a project.
         vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
         // Comment composer should be disabled and shown the disabled msg if not backing and not creator.
-        enableCommentComposer.assertValue(false)
+        showCommentComposer.assertValues(true, true)
+        commentComposerStatus.assertValue(CommentComposerStatus.DISABLED)
     }
     @Test
     fun testCommentsViewModel_setCurrentUserAvatar() {

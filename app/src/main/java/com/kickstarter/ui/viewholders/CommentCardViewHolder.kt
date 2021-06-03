@@ -65,7 +65,7 @@ class CommentCardViewHolder(
         this.vm.outputs.isCommentEnableThreads()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { binding.commentsCardView}
+            .subscribe { binding.commentsCardView.setCommentEnabledThreads(it) }
 
         this.vm.outputs.openCommentGuideLines()
             .compose(bindToLifecycle())

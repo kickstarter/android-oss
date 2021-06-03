@@ -85,7 +85,7 @@ class CommentCard @JvmOverloads constructor(
                 setCommentUserName(it)
             }
 
-            getBoolean(R.styleable.CommentCardView_is_comment_action_group_visible, true)?.also {
+            getBoolean(R.styleable.CommentCardView_is_comment_reply_button_visible, true)?.also {
                 setReplyButtonVisibility(it)
             }
 

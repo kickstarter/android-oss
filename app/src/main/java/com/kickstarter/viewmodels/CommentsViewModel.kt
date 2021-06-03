@@ -29,7 +29,6 @@ import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
-import java.util.concurrent.TimeUnit
 
 interface CommentsViewModel {
 
@@ -37,7 +36,7 @@ interface CommentsViewModel {
         fun refresh()
         fun nextPage()
         fun postComment(comment: String, createdAt: DateTime)
-        fun retryPostComment(comment: Comment)
+        fun retryPostComment(comment: Comment, position: Int)
     }
 
     interface Outputs : PaginatedViewModelOutput<CommentCardData> {
@@ -70,7 +69,7 @@ interface CommentsViewModel {
         private val disableReplyButton = BehaviorSubject.create<Boolean>()
 
         private val postComment = PublishSubject.create<Pair<String, DateTime>>()
-        private val retryPostCommentData = PublishSubject.create<Comment>()
+        private val retryPostCommentData = PublishSubject.create<Pair<Comment, Int>>()
         private val isLoadingMoreItems = BehaviorSubject.create<Boolean>()
         private val isRefreshing = BehaviorSubject.create<Boolean>()
         private val enablePagination = BehaviorSubject.create<Boolean>()
@@ -145,6 +144,31 @@ interface CommentsViewModel {
 
             loadCommentList(initialProject)
 
+            val postComment = postComment
+                    .compose(combineLatestPair(initialProject))
+                    .switchMap {
+                        it.second?.let { project ->
+                            this.apolloClient.createComment(
+                                    PostCommentData(
+                                            project = project,
+                                            body = it.first.first,
+                                            clientMutationId = null,
+                                            parentId = null
+                                    ),
+                                    false
+                            )
+                        }
+                    }
+                    .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
+                    .map {
+                        CommentCardData.builder().comment(it.first).project(it.second).build()
+                    }
+                    .onErrorResumeNext {
+                        this.failedPostedCommentObserver.onNext(null)
+                        Observable.empty()
+                    } // add this line
+                    .share()
+
             this.currentUser.loggedInUser()
                 .compose(Transformers.takePairWhen(this.postComment))
                 .compose(Transformers.takePairWhen(this.failedPostedCommentObserver))
@@ -164,83 +188,79 @@ interface CommentsViewModel {
                     this.updateFailedComment.onNext(it)
                 }
 
-//            initialProject
-//                .compose(Transformers.takePairWhen(this.postComment))
-//                .compose(bindToLifecycle())
-//                .switchMap {
-//                    it.first?.let { project ->
-//                        this.apolloClient.createComment(
-//                            PostCommentData(
-//                                project = project,
-//                                body = it.second.first,
-//                                clientMutationId = null,
-//                                parentId = null
-//                            )
-//                        )
-//                    }
-//                }
-//                .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
-//                .map {
-//                    CommentCardData.builder().comment(it.first).project(it.second).build()
-//                }
-//                .subscribe(
-//                    {
-//                        this.commentPosted.onNext(it)
-//                    },
-//                    {
-//                        this.failedPostedCommentObserver.onNext(null)
-//                    }
-//                )
-
-//            this.currentUser.loggedInUser()
-//                    .compose(Transformers.takePairWhen(this.postComment))
-//                    .compose(bindToLifecycle())
-//                    .subscribe {
-//                        this.insertComment.onNext(buildCommentBody(it))
-//                    }
-
-            val postComment = initialProject
-                .compose(Transformers.takePairWhen(this.postComment))
-
             this.currentUser.loggedInUser()
                 .compose(Transformers.takePairWhen(this.postComment))
-                .map {
-                    buildCommentBody(it)
-                }
-                .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
-                .map {
-                    CommentCardData.builder().comment(it.first).project(it.second).build()
-                }
-                .compose(bindToLifecycle())
-                .subscribe {
-                    this.insertComment.onNext(it)
-                }
-
-            postCommentToServer(postComment, false)
-
-            val retryPosting = initialProject
-                .compose(Transformers.takePairWhen(this.retryPostCommentData))
-                .map {
-                    Pair(it.first, Pair(it.second.body(), it.second.createdAt()))
-                }
-                .delay(500, TimeUnit.MILLISECONDS)
-
-            this.currentUser.loggedInUser()
-                .compose(Transformers.takePairWhen(this.retryPostCommentData))
-                .compose<Pair<Pair<User, Comment>, Project?>>(combineLatestPair(initialProject))
+                .map { buildCommentBody(it) }
+                .compose(combineLatestPair(initialProject))
                 .map {
                     CommentCardData.builder()
-                        .comment(it.first.second)
+                        .comment(it.first)
                         .project(it.second)
-                        .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
+                        .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
                         .build()
                 }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.updateCommentStatus.onNext(it)
+                    
+                    this.insertComment.onNext(it)
                 }
 
-            postCommentToServer(retryPosting, true)
+            postComment.compose(bindToLifecycle())
+                .subscribe(
+                    {
+                        this.commentPosted.onNext(it)
+                    },
+                    {
+                        this.failedPostedCommentObserver.onNext(null)
+                    }
+                )
+
+            this.currentUser.loggedInUser()
+                .compose(Transformers.takePairWhen(this.postComment))
+                .compose(Transformers.takePairWhen(this.failedPostedCommentObserver))
+                .map {
+                    buildCommentBody(it.first)
+                }
+                .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
+                .map {
+                    CommentCardData.builder()
+                        .comment(it.first)
+                        .project(it.second)
+                        .commentCardState(CommentCardStatus.FAILED_TO_SEND_COMMENT.commentCardStatus).build()
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.updateFailedComment.onNext(it)
+                }
+
+            // postCommentToServer(postComment, false)
+
+//            val retryPosting = initialProject
+//                .compose(Transformers.takePairWhen(this.retryPostCommentData))
+//                .map {
+//                    Pair(it.second, it.first)
+//                }
+//                .delay(500, TimeUnit.MILLISECONDS)
+
+//            this.currentUser.loggedInUser()
+//                .compose(Transformers.takePairWhen(this.retryPostCommentData))
+//                .compose<Pair<Pair<User, Pair<Comment, Int>>, Project?>>(combineLatestPair(initialProject))
+//                .map {
+//                    Pair(
+//                        CommentCardData.builder()
+//                            .comment(it.first.second.first)
+//                            .project(it.second)
+//                            .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
+//                            .build(),
+//                        it.first.second.second
+//                    )
+//                }
+//                .compose(bindToLifecycle())
+//                .subscribe {
+//                    this.updateCommentStatus.onNext(it)
+//                }
+//
+//            postCommentToServer(retryPosting, true)
         }
 
         private fun loadCommentList(initialProject: Observable<Project>) {
@@ -280,54 +300,56 @@ interface CommentsViewModel {
                     bindCommentList(it.first, LoadingType.PULL_REFRESH, it.second)
                 }
         }
-
-        private fun postCommentToServer(postComment: Observable<Pair<Project, Pair<String, DateTime>>>, isRetrying: Boolean) {
-            postComment.compose(bindToLifecycle())
-                .switchMap {
-                    it.first?.let { project ->
-                        this.apolloClient.createComment(
-                            PostCommentData(
-                                project = project,
-                                body = it.second.first,
-                                clientMutationId = null,
-                                parentId = null
-                            )
-                        )
-                    }
-                }
-                .compose<Pair<Comment, Project?>>(combineLatestPair(postComment.map { it.first }))
-                .subscribe(
-                    {
-                        if (isRetrying) {
-                            this.updateCommentStatus.onNext(
-                                CommentCardData.builder()
-                                    .comment(it.first)
-                                    .project(it.second)
-                                    .commentCardState(CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY.commentCardStatus)
-                                    .build()
-                            )
-                        } else {
-
-                            this.commentPosted.onNext(
-                                CommentCardData.builder()
-                                    .comment(it.first)
-                                    .project(it.second)
-                                    .build()
-                            )
-                        }
-                    },
-                    {
-                        this.failedPostedCommentObserver.onNext(null)
-                    }
-                )
-        }
+//
+//        private fun postCommentToServer(postComment: Observable<Pair<Pair<Comment, Int>, Project?>>, isRetrying: Boolean) {
+//            postComment.compose(bindToLifecycle())
+//                .switchMap {
+//                    it.second?.let { project ->
+//                        this.apolloClient.createComment(
+//                            PostCommentData(
+//                                project = project,
+//                                body = it.first.first.body(),
+//                                clientMutationId = null,
+//                                parentId = null
+//                            ),
+//                            isRetrying
+//                        )
+//                    }
+//                }
+//                .compose<Pair<Comment, Pair< Project?, Int>>>(combineLatestPair(postComment.map { Pair(it.second, it.first.second) }))
+//                .subscribe(
+//                    {
+//                        if (isRetrying) {
+//                            this.updateCommentStatus.onNext(
+//                               Pair(CommentCardData.builder()
+//                                    .comment(it.first)
+//                                    .project(it.second.first)
+//                                    .commentCardState(CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY.commentCardStatus)
+//                                    .build(),
+//                                    it.second.second)
+//                            )
+//                        } else {
+//
+//                            this.commentPosted.onNext(
+//                                CommentCardData.builder()
+//                                    .comment(it.first)
+//                                    .project(it.second.first)
+//                                    .build()
+//                            )
+//                        }
+//                    },
+//                    {
+//                        this.failedPostedCommentObserver.onNext(0)
+//                    }
+//                )
+//        }
 
         private fun mapToCommentCardDataList(it: Pair<CommentEnvelope, Project?>) =
             it.first.comments?.map { comment: Comment ->
                 CommentCardData.builder().comment(comment).project(it.second).build()
             }
 
-        private fun buildCommentBody(it: Pair<User, Pair<String, DateTime>>): Comment? {
+        private fun buildCommentBody(it: Pair<User, Pair<String, DateTime>>): Comment {
             return Comment.builder()
                 .body(it.second.first)
                 .parentId(-1)
@@ -385,7 +407,7 @@ interface CommentsViewModel {
         override fun updateCommentStatus(): Observable<CommentCardData> = this.updateCommentStatus
 
         override fun postComment(comment: String, createdAt: DateTime) = postComment.onNext(Pair(comment, createdAt))
-        override fun retryPostComment(comment: Comment) = retryPostCommentData.onNext(comment)
+        override fun retryPostComment(comment: Comment, position: Int) = retryPostCommentData.onNext(Pair(comment, position))
 
         override fun bindPaginatedData(data: List<CommentCardData>?) {
             lastCommentCursour = data?.lastOrNull()?.comment?.cursor()

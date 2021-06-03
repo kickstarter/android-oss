@@ -15,7 +15,7 @@ class CommentCardViewHolder(
 ) : KSViewHolder(binding.root) {
 
     interface Delegate {
-        fun onRetryViewClicked(comment: Comment)
+        fun onRetryViewClicked(comment: Comment, position: Int)
         fun onReplyButtonClicked(comment: Comment)
         fun onFlagButtonClicked(comment: Comment)
         fun onCommentGuideLinesClicked(comment: Comment)
@@ -70,12 +70,14 @@ class CommentCardViewHolder(
         this.vm.outputs.replyToComment()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { this.delegate.onReplyButtonClicked(it) }
+            .subscribe {
+                this.delegate.onReplyButtonClicked(it)
+            }
 
         this.vm.outputs.retrySendComment()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { this.delegate.onRetryViewClicked(it) }
+            .subscribe { this.delegate.onRetryViewClicked(it, bindingAdapterPosition) }
 
         this.vm.outputs.viewCommentReplies()
             .compose(bindToLifecycle())

@@ -2,8 +2,6 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import androidx.core.view.isVisible
 import com.kickstarter.R
@@ -15,7 +13,6 @@ import com.kickstarter.models.Comment
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.CommentsAdapter
 import com.kickstarter.ui.viewholders.EmptyCommentsViewHolder
-import com.kickstarter.ui.views.CommentCardStatus
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
 import com.kickstarter.viewmodels.CommentsViewModel
 import org.joda.time.DateTime
@@ -79,20 +76,12 @@ class CommentsActivity :
                 binding.commentsRecyclerView.scrollToPosition(0)
             }
 
-        viewModel.outputs.updateCommentStatus()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-
-                if (it.commentCardState == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY.commentCardStatus) {
-                    Handler(Looper.getMainLooper()).postDelayed(
-                        {
-                            adapter.updateItem(it, 0)
-                        },
-                        3000
-                    )
-                }
-            }
+//        viewModel.outputs.updateCommentStatus()
+//            .compose(bindToLifecycle())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe {
+//                adapter.updateItem(it, 0)
+//            }
 
         viewModel.outputs.updateFailedComment()
             .compose(bindToLifecycle())
@@ -166,8 +155,8 @@ class CommentsActivity :
     override fun emptyCommentsLoginClicked(viewHolder: EmptyCommentsViewHolder?) {
     }
 
-    override fun onRetryViewClicked(comment: Comment) {
-        this.viewModel.inputs.retryPostComment(comment)
+    override fun onRetryViewClicked(comment: Comment, position: Int) {
+        this.viewModel.inputs.retryPostComment(comment, position)
     }
 
     override fun onReplyButtonClicked(comment: Comment) {

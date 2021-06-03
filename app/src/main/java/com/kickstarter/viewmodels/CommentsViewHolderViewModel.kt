@@ -1,5 +1,7 @@
 package com.kickstarter.viewmodels
 
+import android.os.Handler
+import android.os.Looper
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -8,6 +10,8 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.models.Comment
 import com.kickstarter.models.User
+import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.viewholders.CommentCardViewHolder
 import com.kickstarter.ui.views.CommentCardStatus
@@ -98,7 +102,7 @@ interface CommentsViewHolderViewModel {
 
         val inputs: Inputs = this
         val outputs: Outputs = this
-
+        private val apolloClient: ApolloClientType = environment.apolloClient()
         init {
             this.commentInput
                 .filter { ObjectUtils.isNotNull(it) }
@@ -119,7 +123,9 @@ interface CommentsViewHolderViewModel {
             this.commentInput
                 .compose(Transformers.combineLatestPair(environment.currentUser().observable()))
                 .compose(bindToLifecycle())
-                .subscribe { this.isCommentActionGroupVisible.onNext(isActionGroupVisible(it.first, it.second)) }
+                .subscribe {
+                    this.isCommentActionGroupVisible.onNext(isActionGroupVisible(it.first, it.second))
+                }
 
             val comment = this.commentInput
                 .map { it.comment }
@@ -173,7 +179,41 @@ interface CommentsViewHolderViewModel {
             comment
                 .compose(takeWhen(this.onRetryViewClicked))
                 .compose(bindToLifecycle())
-                .subscribe(this.retrySendComment)
+                .subscribe {
+                    this.commentCardStatus.onNext(CommentCardStatus.TRYING_TO_POST)
+                }
+
+            this.commentInput
+                .compose(takeWhen(this.onRetryViewClicked))
+                .switchMap {
+                    it.project?.let { project ->
+                        it.comment?.body()?.let { body ->
+                            this.apolloClient.createComment(
+                                PostCommentData(
+                                    project = project,
+                                    body = body,
+                                    clientMutationId = null,
+                                    parentId = null
+                                ),
+                                true
+                            )
+                        }
+                    }
+                }.compose(bindToLifecycle())
+                .subscribe(
+                    {
+                        this.commentCardStatus.onNext(CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY)
+                        Handler(Looper.getMainLooper()).postDelayed(
+                            {
+                                this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
+                            },
+                            3000
+                        )
+                    },
+                    {
+                        this.commentCardStatus.onNext(CommentCardStatus.FAILED_TO_SEND_COMMENT)
+                    }
+                )
 
             comment
                 .compose(takeWhen(this.onFlagButtonClicked))
@@ -183,7 +223,10 @@ interface CommentsViewHolderViewModel {
 
         private fun isActionGroupVisible(commentCardData: CommentCardData, user: User?) =
             commentCardData.project?.let {
-                it.isBacking || ProjectUtils.userIsCreator(it, user)
+                (it.isBacking || ProjectUtils.userIsCreator(it, user)) && (
+                    commentCardData.commentCardState == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus ||
+                        commentCardData.commentCardState == CommentCardStatus.COMMENT_WITH_REPLIES.commentCardStatus
+                    )
             } ?: false
 
         private fun cardStatus(commentCardData: CommentCardData) = when {

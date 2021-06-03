@@ -4,9 +4,12 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.models.OptimizelyFeature
+import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.models.Comment
+import com.kickstarter.models.User
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.viewholders.CommentCardViewHolder
 import com.kickstarter.ui.views.CommentCardStatus
@@ -114,10 +117,11 @@ interface CommentsViewHolderViewModel {
                 }
 
             this.commentInput
+                .compose(Transformers.combineLatestPair(environment.currentUser().observable()))
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.isReplyButtonVisible.onNext(
-                        shouldReplyButtonBeVisible(it, optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_ENABLE_THREADS))
+                        shouldReplyButtonBeVisible(it.first, it.second, optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_ENABLE_THREADS))
                     )
                 }
 
@@ -182,7 +186,8 @@ interface CommentsViewHolderViewModel {
         }
 
         /**
-         * Checks if the current user is backing the current project
+         * Checks if the current user is backing the current project,
+         * or the current user is the creator of the project
          *  @param commentCardData
          *  @param featureFlagActive
          *
@@ -192,9 +197,10 @@ interface CommentsViewHolderViewModel {
          */
         private fun shouldReplyButtonBeVisible(
             commentCardData: CommentCardData,
+            user: User?,
             featureFlagActive: Boolean
         ) =
-            commentCardData.project?.let { it.isBacking && featureFlagActive } ?: false
+            commentCardData.project?.let { (it.isBacking || ProjectUtils.userIsCreator(it, user)) && featureFlagActive } ?: false
 
         /**
          * Updates the status of the current comment card.

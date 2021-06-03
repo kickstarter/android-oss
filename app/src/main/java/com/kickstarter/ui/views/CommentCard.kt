@@ -104,7 +104,7 @@ class CommentCard @JvmOverloads constructor(
     }
 
     fun setReplyButtonVisibility(isGroupVisible: Boolean) {
-        binding.replyButton.isVisible = isGroupVisible && isCommentEnabledThreads
+        binding.replyButton.isVisible = isGroupVisible && this.isCommentEnabledThreads
     }
 
     fun setCommentCardStatus(cardCommentStatus: CommentCardStatus) {
@@ -122,7 +122,7 @@ class CommentCard @JvmOverloads constructor(
         }
 
         binding.retryButton.isVisible =
-            cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT && isCommentEnabledThreads
+            cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT
 
         val commentBodyTextColor = if (cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT) {
             R.color.soft_grey_disable

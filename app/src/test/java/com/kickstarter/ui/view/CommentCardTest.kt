@@ -1,7 +1,6 @@
 package com.kickstarter.ui.view
 
 import android.view.LayoutInflater
-import android.view.View
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -27,14 +26,14 @@ class CommentCardTest : KSRobolectricTestCase() {
     override fun setUp() {
         commentCard = (LayoutInflater.from(context()).inflate(R.layout.item_comment_card, null) as ConstraintLayout)
             .findViewById(R.id.comments_card_view)
+        // - Specify Feature Flag enabled
+        commentCard.setCommentEnabledThreads(true)
+
         commentBody = commentCard.findViewById(R.id.comment_body)
         commentDeletedMessageGroup = commentCard.findViewById(R.id.comment_deleted_message_group)
         replyButton = commentCard.findViewById(R.id.reply_button)
         retryButton = commentCard.findViewById(R.id.retry_button)
         repliesButton = commentCard.findViewById(R.id.replies)
-
-        // - Specify Feature Flag enabled
-        commentCard.setCommentEnabledThreads(true)
     }
 
     @Test
@@ -94,6 +93,8 @@ class CommentCardTest : KSRobolectricTestCase() {
     @Test
     fun testCommentViewReplyStatus_With_Replies() {
         commentCard.setCommentReplies(1)
+        commentCard.setCommentCardStatus(CommentCardStatus.COMMENT_WITH_REPLIES)
+
         assertTrue(commentBody.isVisible)
         assertTrue(replyButton.isVisible)
         assertTrue(repliesButton.isVisible)
@@ -103,8 +104,8 @@ class CommentCardTest : KSRobolectricTestCase() {
 
     @Test
     fun testCommentViewReplyStatus_No_Replies() {
-        commentCard.setCommentEnabledThreads(true)
         commentCard.setCommentReplies(0)
+        commentCard.setCommentCardStatus(CommentCardStatus.COMMENT_WITHOUT_REPLIES)
 
         assertTrue(commentBody.isVisible)
         assertTrue(replyButton.isVisible)
@@ -118,6 +119,8 @@ class CommentCardTest : KSRobolectricTestCase() {
         commentCard.setCommentEnabledThreads(false)
 
         commentCard.setCommentReplies(10)
+        commentCard.setCommentCardStatus(CommentCardStatus.COMMENT_WITH_REPLIES)
+
         assertTrue(commentBody.isVisible)
         assertFalse(replyButton.isVisible)
         assertFalse(repliesButton.isVisible)

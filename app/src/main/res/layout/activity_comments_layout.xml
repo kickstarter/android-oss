@@ -74,6 +74,7 @@
                 tools:listitem="@layout/comment_card" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
         <ProgressBar
             android:id="@+id/comments_loading_indicator"
             android:layout_width="match_parent"
@@ -90,19 +91,5 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <View
-            android:id="@+id/separtor"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@color/kds_support_200"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/comment_composer" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
-

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.withStyledAttributes
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import com.kickstarter.R
@@ -54,7 +55,7 @@ class CommentComposerView @JvmOverloads constructor(
                 setAvatarUrl(it)
             }
             getBoolean(R.styleable.CommentComposerView_composer_disabled, false).also {
-                showCommentComposerDisabledView(it)
+                showCommentComposerDisabledView()
             }
         }
     }
@@ -79,10 +80,32 @@ class CommentComposerView @JvmOverloads constructor(
         binding.commentTextComposer.hint = context.getString(hint)
     }
 
-    fun showCommentComposerDisabledView(isVisible: Boolean) {
-        binding.commentsDisableMsg.isVisible = isVisible
-        binding.commentTextGroup.isVisible = !isVisible
-        binding.commentActionButton.isVisible = !isVisible
+    fun setCommentComposerStatus(commentComposerStatus: CommentComposerStatus) {
+        when (commentComposerStatus) {
+            CommentComposerStatus.ENABLED -> showCommentComposerEnabledView()
+            CommentComposerStatus.DISABLED -> showCommentComposerDisabledView()
+            CommentComposerStatus.GONE -> hideCommentComposer()
+        }
+    }
+
+    fun showCommentComposerDisabledView() {
+        binding.separtor.isVisible = true
+        binding.commentsDisableMsg.isVisible = true
+        binding.commentTextGroup.isVisible = false
+        binding.commentActionButton.isVisible = false
+    }
+
+    fun showCommentComposerEnabledView() {
+        binding.separtor.isVisible = true
+        binding.commentsDisableMsg.isVisible = false
+        binding.commentTextGroup.isVisible = true
+        binding.commentActionButton.isVisible = true
+    }
+
+    fun hideCommentComposer() {
+        binding.commentsDisableMsg.isGone = true
+        binding.commentTextGroup.isGone = true
+        binding.commentActionButton.isGone = true
     }
 
     fun setCommentComposerActionClickListener(onCommentComposerViewClickedListener: OnCommentComposerViewClickedListener?) {
@@ -96,4 +119,10 @@ class CommentComposerView @JvmOverloads constructor(
 
 interface OnCommentComposerViewClickedListener {
     fun onClickActionListener(string: String)
+}
+
+enum class CommentComposerStatus(val commentComposerStatus: Int) {
+    ENABLED(0), // Visible and interactable
+    DISABLED(1), // Visible and not interactable
+    GONE(2) // Entire view is completely gone
 }

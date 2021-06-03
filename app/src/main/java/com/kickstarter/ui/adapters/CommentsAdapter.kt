@@ -33,12 +33,10 @@ class CommentsAdapter(private val delegate: Delegate) : KSListAdapter() {
         )
         takeData(list as List<CommentCardData>)
     }
-
     fun updateItem(comment: Comment, position: Int, commentCardStatus: CommentCardStatus) {
         setSection(position, listOf(Pair(comment, commentCardStatus)))
         notifyItemChanged(position)
     }
-
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
         return CommentCardViewHolder(ItemCommentCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate)
     }

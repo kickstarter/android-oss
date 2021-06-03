@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.kickstarter.R
 import com.kickstarter.databinding.ItemCommentCardBinding
-import com.kickstarter.models.Comment
+import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.viewholders.CommentCardViewHolder
 import com.kickstarter.ui.viewholders.EmptyCommentsViewHolder
 import com.kickstarter.ui.viewholders.KSViewHolder
@@ -19,15 +19,19 @@ class CommentsAdapter(private val delegate: Delegate) : KSListAdapter() {
         return R.layout.item_comment_card
     }
 
-    fun takeData(comments: List<Comment>) {
+    fun takeData(comments: List<CommentCardData>) {
         clearSections()
         addSection(comments)
         submitList(items())
     }
 
-    fun insertData(comment: Comment, position: Int) {
-        insertSection(position, listOf(comment))
-        notifyItemChanged(position)
+    fun insertData(comment: CommentCardData, position: Int) {
+        val list = currentList.toMutableList()
+        list.add(
+            position,
+            comment
+        )
+        takeData(list as List<CommentCardData>)
     }
 
     fun updateItem(comment: Comment, position: Int, commentCardStatus: CommentCardStatus) {

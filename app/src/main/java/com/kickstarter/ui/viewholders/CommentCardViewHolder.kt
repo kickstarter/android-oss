@@ -5,7 +5,7 @@ import com.kickstarter.databinding.ItemCommentCardBinding
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.models.Comment
-import com.kickstarter.ui.views.CommentCardStatus
+import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.views.OnCommentCardClickedListener
 import com.kickstarter.viewmodels.CommentsViewHolderViewModel
 
@@ -19,6 +19,7 @@ class CommentCardViewHolder(
         fun onReplyButtonClicked(comment: Comment)
         fun onFlagButtonClicked(comment: Comment)
         fun onCommentGuideLinesClicked(comment: Comment)
+        fun onCommentRepliesClicked(comment: Comment)
     }
 
     private val vm: CommentsViewHolderViewModel.ViewModel = CommentsViewHolderViewModel.ViewModel(environment())
@@ -30,6 +31,11 @@ class CommentCardViewHolder(
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { binding.commentsCardView.setCommentUserName(it) }
+
+        this.vm.outputs.commentRepliesCount()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.commentsCardView.setCommentReplies(it) }
 
         this.vm.outputs.commentAuthorAvatarUrl()
             .compose(bindToLifecycle())
@@ -45,6 +51,11 @@ class CommentCardViewHolder(
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { binding.commentsCardView.setCommentCardStatus(it) }
+
+        this.vm.outputs.isCommentActionGroupVisible()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.commentsCardView.setCommentActionGroupVisibility(it) }
 
         this.vm.outputs.commentPostTime()
             .compose(bindToLifecycle())
@@ -66,6 +77,11 @@ class CommentCardViewHolder(
             .compose(Transformers.observeForUI())
             .subscribe { this.delegate.onRetryViewClicked(it) }
 
+        this.vm.outputs.viewCommentReplies()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { this.delegate.onCommentRepliesClicked(it) }
+
         this.vm.outputs.flagComment()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
@@ -84,6 +100,10 @@ class CommentCardViewHolder(
                 vm.inputs.onFlagButtonClicked()
             }
 
+            override fun onViewRepliesButtonClicked(view: View) {
+                vm.inputs.onViewRepliesButtonClicked()
+            }
+
             override fun onCommentGuideLinesClicked(view: View) {
                 vm.inputs.onCommentGuideLinesClicked()
             }
@@ -91,12 +111,6 @@ class CommentCardViewHolder(
     }
 
     override fun bindData(data: Any?) {
-        if (data is (Pair<*, *>)) {
-            if (data.first is Comment && data.second is CommentCardStatus) {
-                  this.vm.inputs.configureWith((data.first as Comment), (data.second as CommentCardStatus))
-            }
-        } else {
-            this.vm.inputs.configureWith((data as Comment), CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
-        }
+        this.vm.inputs.configureWith(data as CommentCardData)
     }
 }

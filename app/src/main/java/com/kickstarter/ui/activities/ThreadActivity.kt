@@ -47,6 +47,7 @@ class ThreadActivity : BaseActivity<ThreadViewModel.ViewModel>() {
     private fun configureRootCommentView(comment: Comment) {
         binding.commentsCardView.setCommentUserName(comment.author().name())
         binding.commentsCardView.setCommentBody(comment.body())
+        binding.commentsCardView.hideReplyViewGroup()
         binding.commentsCardView.setCommentPostTime(DateTimeUtils.relative(this, ksString, comment.createdAt()))
         binding.commentsCardView.setCommentUserName(comment.author().name())
         binding.commentsCardView.setAvatarUrl(comment.author().avatar().medium())

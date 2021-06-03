@@ -37,6 +37,10 @@ class CommentCard @JvmOverloads constructor(
             onCommentCardClickedListener?.onFlagButtonClicked(it)
         }
 
+        binding.replies.setOnClickListener {
+            onCommentCardClickedListener?.onViewRepliesButtonClicked(it)
+        }
+
         binding.flaggedMessage.setOnClickListener {
             onCommentCardClickedListener?.onCommentGuideLinesClicked(it)
         }
@@ -75,9 +79,18 @@ class CommentCard @JvmOverloads constructor(
                 setAvatarUrl(it)
             }
 
+            getInt(R.styleable.CommentCardView_comment_card_replies, 0).also {
+                setCommentReplies(it)
+            }
+
             getString(R.styleable.CommentCardView_comment_card_user_name)?.also {
                 setCommentUserName(it)
             }
+
+            getBoolean(R.styleable.CommentCardView_is_comment_action_group_visible, true)?.also {
+                setCommentActionGroupVisibility(it)
+            }
+
             getInt(R.styleable.CommentCardView_comment_card_status, 0).also { attrValue ->
                 CommentCardStatus.values().firstOrNull {
                     it.commentCardStatus == attrValue
@@ -88,16 +101,26 @@ class CommentCard @JvmOverloads constructor(
         }
     }
 
+    fun setCommentActionGroupVisibility(isGroupVisble: Boolean) {
+        binding.commentActionGroup.isVisible = isGroupVisble
+    }
+
     fun setCommentCardStatus(cardCommentStatus: CommentCardStatus) {
         binding.commentDeletedMessageGroup.isVisible =
             cardCommentStatus == CommentCardStatus.DELETED_COMMENT
 
+        binding.commentBody.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLIES ||
+            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLIES ||
+            cardCommentStatus != CommentCardStatus.DELETED_COMMENT
         binding.commentBody.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLAY ||
             cardCommentStatus == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS ||
                 cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT ||
                 cardCommentStatus == CommentCardStatus.TRYING_TO_POST ||
                 cardCommentStatus == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY
 
+        binding.commentActionGroup.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLIES ||
+            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLIES ||
+            cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT
         binding.commentActionGroup.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLAY ||
             cardCommentStatus == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS
 
@@ -120,11 +143,20 @@ class CommentCard @JvmOverloads constructor(
         binding.commentBody.setTextColor(ContextCompat.getColor(context, commentBodyTextColor))
     }
 
-    fun setReplyActionVisibility(isVisable: Boolean) {
-        binding.commentActionGroup.isVisible = isVisable
+    /*
+     * To display replies count
+     * binding.replies.text = String.format("%s (%d)",resources.getString(R.string.view_replies), replies)
+     */
+    fun setCommentReplies(replies: Int) {
+        binding.replies.isVisible = replies > 0
     }
+
     fun setCommentUserName(username: String) {
         binding.commentUserName.text = username
+    }
+
+    fun hideReplyViewGroup() {
+        binding.commentActionGroup.isVisible = false
     }
 
     fun setCommentPostTime(time: String) {
@@ -148,12 +180,13 @@ interface OnCommentCardClickedListener {
     fun onRetryViewClicked(view: View)
     fun onReplyButtonClicked(view: View)
     fun onFlagButtonClicked(view: View)
+    fun onViewRepliesButtonClicked(view: View)
     fun onCommentGuideLinesClicked(view: View)
 }
 
 enum class CommentCardStatus(val commentCardStatus: Int) {
-    COMMENT_FOR_LOGIN_BACKED_USERS(0), // comments without replay view
-    COMMENT_WITH_REPLAY(1), // comments with replay view
+    COMMENT_WITHOUT_REPLIES(0), // comments without reply view
+    COMMENT_WITH_REPLIES(1), // comments with reply view
     FAILED_TO_SEND_COMMENT(2), // pending comment
     DELETED_COMMENT(3), // Deleted comment
     TRYING_TO_POST(4), // trying to post comment

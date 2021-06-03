@@ -14,21 +14,23 @@ import com.kickstarter.models.Comment
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.data.CommentCardData
 import org.joda.time.DateTime
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
+import rx.subjects.BehaviorSubject
 
 class CommentsViewModelTest : KSRobolectricTestCase() {
-    private val commentsList = TestSubscriber<List<Comment>?>()
+    private val commentsList = TestSubscriber<List<CommentCardData>?>()
     private val enableCommentComposer = TestSubscriber<Boolean>()
     private val showCommentComposer = TestSubscriber<Void>()
     private val showEmptyState = TestSubscriber<Boolean>()
     private val isLoadingMoreItems = TestSubscriber<Boolean>()
     private val isRefreshing = TestSubscriber<Boolean>()
     private val enablePagination = TestSubscriber<Boolean>()
-    private val commentSubscriber = TestSubscriber<Comment>()
-    private val commentPostedSubscriber = TestSubscriber<Comment>()
+    private val commentSubscriber = BehaviorSubject.create<CommentCardData>()
+    private val commentPostedSubscriber = BehaviorSubject.create<CommentCardData>()
 
     @Test
     fun testCommentsViewModel_showCommentComposer_isLogInUser() {
@@ -48,9 +50,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testCommentsViewModel_showCommentComposer_isLogoutUser() {
-        val vm = CommentsViewModel.ViewModel(
-            environment().toBuilder().build()
-        )
+        val vm = CommentsViewModel.ViewModel(environment())
 
         vm.outputs.enableCommentComposer().subscribe(enableCommentComposer)
         vm.outputs.showCommentComposer().subscribe(showCommentComposer)
@@ -151,6 +151,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             }
         }).build()
         val vm = CommentsViewModel.ViewModel(env)
+        val commentsList = TestSubscriber<List<CommentCardData>?>()
         vm.outputs.commentsList().subscribe(commentsList)
 
         // Start the view model with an update.
@@ -160,13 +161,16 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testCommentsViewModel_ProjectCommentsEmit() {
+        val commentsList = BehaviorSubject.create<List<CommentCardData>?>()
         val vm = CommentsViewModel.ViewModel(environment())
         vm.outputs.commentsList().subscribe(commentsList)
         // Start the view model with a project.
         vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
         // Comments should emit.
-        commentsList.assertValueCount(1)
+        val commentCardDataList = commentsList.value
+        assertEquals(1, commentCardDataList?.size)
+        assertEquals(CommentFactory.comment(), commentCardDataList?.get(0)?.comment)
     }
 
     /*
@@ -283,8 +287,8 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // post a comment
         vm.inputs.postComment("Some Comment", createdAt)
 
-        commentPostedSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
-        commentSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
+        assertEquals(CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser).comment, commentPostedSubscriber.value.comment)
+        assertEquals(CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser).comment, commentSubscriber.value.comment)
     }
 
     @Test
@@ -314,7 +318,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // post a comment
         vm.inputs.postComment("Some Comment", createdAt)
 
-        commentPostedSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
-        commentSubscriber.assertValue(CommentFactory.liveComment(createdAt = createdAt))
+        assertEquals(CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser).comment, commentPostedSubscriber.value.comment)
+        assertEquals(CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser).comment, commentSubscriber.value.comment)
     }
 }

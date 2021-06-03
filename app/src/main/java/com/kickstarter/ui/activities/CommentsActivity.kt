@@ -56,7 +56,7 @@ class CommentsActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                binding.commentComposer.isDisabledViewVisible(!it)
+                binding.commentComposer.showCommentComposerDisabledView(!it)
             }
 
         viewModel.outputs.showCommentComposer()
@@ -175,6 +175,10 @@ class CommentsActivity :
     }
 
     override fun onCommentGuideLinesClicked(comment: Comment) {
+    }
+
+    override fun onCommentRepliesClicked(comment: Comment) {
+        startThreadActivity(comment, false)
     }
 
     /**

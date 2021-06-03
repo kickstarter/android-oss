@@ -19,7 +19,7 @@ class CommentCardTest : KSRobolectricTestCase() {
     private lateinit var commentDeletedMessageGroup: Group
     private lateinit var commentBody: AppCompatTextView
     private lateinit var replyButton: AppCompatButton
-    private lateinit var repliesContainer: View
+    private lateinit var repliesButton: AppCompatTextView
     private lateinit var retryButton: AppCompatButton
 
     @Before
@@ -31,7 +31,7 @@ class CommentCardTest : KSRobolectricTestCase() {
         commentDeletedMessageGroup = commentCard.findViewById(R.id.comment_deleted_message_group)
         replyButton = commentCard.findViewById(R.id.reply_button)
         retryButton = commentCard.findViewById(R.id.retry_button)
-        repliesContainer = commentCard.findViewById(R.id.replies)
+        repliesButton = commentCard.findViewById(R.id.replies)
 
         // - Specify Feature Flag enabled
         commentCard.setCommentEnabledThreads(true)
@@ -96,17 +96,19 @@ class CommentCardTest : KSRobolectricTestCase() {
         commentCard.setCommentReplies(1)
         assertTrue(commentBody.isVisible)
         assertTrue(replyButton.isVisible)
-        assertTrue(repliesContainer.isVisible)
+        assertTrue(repliesButton.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
         assertFalse(retryButton.isVisible)
     }
 
     @Test
     fun testCommentViewReplyStatus_No_Replies() {
+        commentCard.setCommentEnabledThreads(true)
         commentCard.setCommentReplies(0)
+
         assertTrue(commentBody.isVisible)
         assertTrue(replyButton.isVisible)
-        assertFalse(repliesContainer.isVisible)
+        assertFalse(repliesButton.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
         assertFalse(retryButton.isVisible)
     }
@@ -118,7 +120,7 @@ class CommentCardTest : KSRobolectricTestCase() {
         commentCard.setCommentReplies(10)
         assertTrue(commentBody.isVisible)
         assertFalse(replyButton.isVisible)
-        assertFalse(repliesContainer.isVisible)
+        assertFalse(repliesButton.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
         assertFalse(retryButton.isVisible)
     }

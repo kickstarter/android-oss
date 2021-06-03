@@ -9,7 +9,6 @@ import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.viewholders.CommentCardViewHolder
 import com.kickstarter.ui.viewholders.EmptyCommentsViewHolder
 import com.kickstarter.ui.viewholders.KSViewHolder
-import com.kickstarter.ui.views.CommentCardStatus
 
 class CommentsAdapter(private val delegate: Delegate) : KSListAdapter() {
     interface Delegate : EmptyCommentsViewHolder.Delegate, CommentCardViewHolder.Delegate
@@ -33,9 +32,16 @@ class CommentsAdapter(private val delegate: Delegate) : KSListAdapter() {
         )
         takeData(list as List<CommentCardData>)
     }
-    fun updateItem(comment: Comment, position: Int, commentCardStatus: CommentCardStatus) {
-        setSection(position, listOf(Pair(comment, commentCardStatus)))
-        notifyItemChanged(position)
+
+    fun updateItem(comment: CommentCardData, position: Int) {
+        val list = currentList.toMutableList()
+
+        list.add(
+            position,
+            comment
+        )
+
+        takeData(list as List<CommentCardData>)
     }
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
         return CommentCardViewHolder(ItemCommentCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate)

@@ -7,7 +7,7 @@
         android:right="@dimen/grid_3"
         android:top="@dimen/grid_2" />
     <stroke
-        android:width="1px"
+        android:width="2dp"
         android:color="@color/kds_support_200" />
     <corners android:radius="@dimen/grid_0" />
 </shape>

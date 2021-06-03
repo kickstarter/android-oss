@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels
 
-import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -102,20 +101,21 @@ interface CommentsViewHolderViewModel {
 
         init {
             this.commentInput
-                .map { it.comment }
                 .filter { ObjectUtils.isNotNull(it) }
                 .compose(bindToLifecycle())
-                .subscribe { this.commentCardStatus.onNext(cardStatus(it)) }
-            this.commentInput
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        val cardStatus = when {
-                            it.first.deleted() -> CommentCardStatus.DELETED_COMMENT
-                            (it.first.repliesCount() != 0) -> CommentCardStatus.COMMENT_WITH_REPLAY
-                            else -> it.second
-                        }
-                        this.commentCardStatus.onNext(cardStatus)
-                    }
+                .subscribe {
+                    this.commentCardStatus.onNext(cardStatus(it))
+                }
+//            this.commentInput
+//                    .compose(bindToLifecycle())
+//                    .subscribe {
+//                        val cardStatus = when {
+//                            it.first.deleted() -> CommentCardStatus.DELETED_COMMENT
+//                            (it.first.repliesCount() != 0) -> CommentCardStatus.COMMENT_WITH_REPLAY
+//                            else -> it.second
+//                        }
+//                        this.commentCardStatus.onNext(cardStatus)
+//                    }
             this.commentInput
                 .compose(Transformers.combineLatestPair(environment.currentUser().observable()))
                 .compose(bindToLifecycle())
@@ -186,10 +186,10 @@ interface CommentsViewHolderViewModel {
                 it.isBacking || ProjectUtils.userIsCreator(it, user)
             } ?: false
 
-        private fun cardStatus(comment: Comment?) = when {
-            comment?.deleted() ?: false -> CommentCardStatus.DELETED_COMMENT
-            (comment?.repliesCount() ?: false != 0) -> CommentCardStatus.COMMENT_WITH_REPLIES
-            else -> CommentCardStatus.COMMENT_WITHOUT_REPLIES
+        private fun cardStatus(commentCardData: CommentCardData) = when {
+            commentCardData.comment?.deleted() ?: false -> CommentCardStatus.DELETED_COMMENT
+            (commentCardData.comment?.repliesCount() ?: false != 0) -> CommentCardStatus.COMMENT_WITH_REPLIES
+            else -> CommentCardStatus.values().firstOrNull { it.commentCardStatus == commentCardData.commentCardState }
         }
 
         override fun configureWith(commentCardData: CommentCardData) = this.commentInput.onNext(commentCardData)

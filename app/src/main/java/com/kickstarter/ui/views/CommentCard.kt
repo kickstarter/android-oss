@@ -87,7 +87,7 @@ class CommentCard @JvmOverloads constructor(
                 setCommentUserName(it)
             }
 
-            getBoolean(R.styleable.CommentCardView_is_comment_action_group_visible, true)?.also {
+            getBoolean(R.styleable.CommentCardView_is_comment_action_group_visible, true).also {
                 setCommentActionGroupVisibility(it)
             }
 
@@ -110,31 +110,30 @@ class CommentCard @JvmOverloads constructor(
             cardCommentStatus == CommentCardStatus.DELETED_COMMENT
 
         binding.commentBody.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLIES ||
-            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLIES ||
-            cardCommentStatus != CommentCardStatus.DELETED_COMMENT
-        binding.commentBody.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLAY ||
             cardCommentStatus == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS ||
-                cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT ||
-                cardCommentStatus == CommentCardStatus.TRYING_TO_POST ||
-                cardCommentStatus == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY
+            cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT ||
+            cardCommentStatus == CommentCardStatus.TRYING_TO_POST ||
+            cardCommentStatus == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY
 
         binding.commentActionGroup.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLIES ||
-            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLIES ||
+            cardCommentStatus == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS ||
             cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT
-        binding.commentActionGroup.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLAY ||
+
+        binding.commentActionGroup.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS ||
             cardCommentStatus == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS
 
         binding.retryButton.isVisible =
             cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT
 
         binding.postingButton.isVisible =
-                cardCommentStatus == CommentCardStatus.TRYING_TO_POST
+            cardCommentStatus == CommentCardStatus.TRYING_TO_POST
 
         binding.postedButton.isVisible =
-                cardCommentStatus == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY
+            cardCommentStatus == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY
 
         val commentBodyTextColor = if (cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT ||
-                cardCommentStatus == CommentCardStatus.TRYING_TO_POST) {
+            cardCommentStatus == CommentCardStatus.TRYING_TO_POST
+        ) {
             R.color.soft_grey_disable
         } else {
             R.color.text_primary
@@ -185,7 +184,7 @@ interface OnCommentCardClickedListener {
 }
 
 enum class CommentCardStatus(val commentCardStatus: Int) {
-    COMMENT_WITHOUT_REPLIES(0), // comments without reply view
+    COMMENT_FOR_LOGIN_BACKED_USERS(0), // comments without reply view
     COMMENT_WITH_REPLIES(1), // comments with reply view
     FAILED_TO_SEND_COMMENT(2), // pending comment
     DELETED_COMMENT(3), // Deleted comment

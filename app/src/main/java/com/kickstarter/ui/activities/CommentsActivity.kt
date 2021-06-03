@@ -80,22 +80,25 @@ class CommentsActivity :
             }
 
         viewModel.outputs.updateCommentStatus()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    adapter.updateItem(it.first, 0, it.second)
-                    if (it.second == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY) {
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            adapter.updateItem(it.first, 0, CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
-                        }, 3000)
-                    }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+
+                if (it.commentCardState == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY.commentCardStatus) {
+                    Handler(Looper.getMainLooper()).postDelayed(
+                        {
+                            adapter.updateItem(it, 0)
+                        },
+                        3000
+                    )
                 }
+            }
 
         viewModel.outputs.updateFailedComment()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                adapter.updateItem(it, 0, CommentCardStatus.FAILED_TO_SEND_COMMENT)
+                adapter.updateItem(it, 0)
             }
 
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {

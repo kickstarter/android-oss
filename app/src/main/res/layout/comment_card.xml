@@ -52,7 +52,8 @@
         android:layout_marginStart="@dimen/grid_3"
         android:layout_marginEnd="@dimen/grid_3"
         android:text="@string/view_replies"
-        app:layout_goneMarginBottom="@dimen/activity_feed_avatar_width"
+        app:layout_constraintBottom_toTopOf="@+id/reply_button"
+        app:layout_goneMarginBottom="@dimen/grid_3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

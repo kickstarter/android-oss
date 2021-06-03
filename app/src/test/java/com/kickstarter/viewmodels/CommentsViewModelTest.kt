@@ -59,7 +59,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // Start the view model with a backed project.
         vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
-        // The comment composer should be hidden and disabled to write comments as no user login -ed
+        // The comment composer should be hidden and disabled to write comments as no user logged-in
         showCommentComposer.assertValue(false)
         commentComposerStatus.assertValue(CommentComposerStatus.GONE)
     }
@@ -75,7 +75,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // Start the view model with a backed project.
         vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
-        // The comment composer enabled to write comments
+        // The comment composer should show but in disabled state
         commentComposerStatus.assertValue(CommentComposerStatus.DISABLED)
         showCommentComposer.assertValues(true, true)
     }

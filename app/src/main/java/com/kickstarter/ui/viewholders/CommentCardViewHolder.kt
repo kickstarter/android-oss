@@ -52,15 +52,20 @@ class CommentCardViewHolder(
             .compose(Transformers.observeForUI())
             .subscribe { binding.commentsCardView.setCommentCardStatus(it) }
 
-        this.vm.outputs.isCommentActionGroupVisible()
+        this.vm.outputs.isReplyButtonVisible()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { binding.commentsCardView.setCommentActionGroupVisibility(it) }
+            .subscribe { binding.commentsCardView.setReplyButtonVisibility(it) }
 
         this.vm.outputs.commentPostTime()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { binding.commentsCardView.setCommentPostTime(DateTimeUtils.relative(context(), ksString, it)) }
+
+        this.vm.outputs.isCommentEnableThreads()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.commentsCardView.setCommentEnabledThreads(it) }
 
         this.vm.outputs.openCommentGuideLines()
             .compose(bindToLifecycle())

@@ -1,9 +1,9 @@
-package com.kickstarter
-    .viewmodels
+package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.AvatarFactory
 import com.kickstarter.mock.factories.CommentFactory
 import com.kickstarter.mock.factories.ProjectFactory
@@ -27,7 +27,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     private val commentAuthorAvatarUrl = TestSubscriber<String>()
     private val commentMessageBody = TestSubscriber<String>()
     private val commentPostTime = TestSubscriber<DateTime>()
-    private val isActionGroupVisible = TestSubscriber<Boolean>()
+    private val isReplyButtonVisible = TestSubscriber<Boolean>()
     private val openCommentGuideLines = TestSubscriber<Comment>()
     private val retrySendComment = TestSubscriber<Comment>()
     private val replyToComment = TestSubscriber<Comment>()
@@ -48,7 +48,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.commentAuthorAvatarUrl().subscribe(this.commentAuthorAvatarUrl)
         this.vm.outputs.commentMessageBody().subscribe(this.commentMessageBody)
         this.vm.outputs.commentPostTime().subscribe(this.commentPostTime)
-        this.vm.outputs.isCommentActionGroupVisible().subscribe(this.isActionGroupVisible)
+        this.vm.outputs.isReplyButtonVisible().subscribe(this.isReplyButtonVisible)
         this.vm.outputs.openCommentGuideLines().subscribe(this.openCommentGuideLines)
         this.vm.outputs.retrySendComment().subscribe(this.retrySendComment)
         this.vm.outputs.replyToComment().subscribe(this.replyToComment)
@@ -176,40 +176,106 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCommentActionGroupVisibility_whenUserLoggedInAndProjectBacked_shouldSendTrue() {
-        setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build())
+    fun testCommentReplyButtonVisibility_whenUserLoggedInAndProjectBackedFFOn_shouldSendTrue() {
+        val environment = optimizelyFeatureFlagOn().toBuilder()
+            .currentUser(MockCurrentUser(UserFactory.user()))
+            .build()
+        setUpEnvironment(environment)
         val comment = CommentFactory.comment()
         val commentCardData = CommentCardData.builder().comment(comment).project(ProjectFactory.backedProject()).build()
         this.vm.inputs.configureWith(commentCardData)
-        this.isActionGroupVisible.assertValue(true)
+        this.isReplyButtonVisible.assertValue(true)
     }
 
     @Test
-    fun testCommentActionGroupVisibility_whenUserLoggedInAndProjectNotBacked_shouldSendFalse() {
-        setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build())
+    fun testCommentReplyButtonVisibility_whenUserLoggedInAndProjectBackedFFOff_shouldSendFalse() {
+        val environment = optimizelyFeatureFlagOff().toBuilder()
+            .currentUser(MockCurrentUser(UserFactory.user()))
+            .build()
+        setUpEnvironment(environment)
+        val comment = CommentFactory.comment()
+        val commentCardData = CommentCardData.builder().comment(comment).project(ProjectFactory.backedProject()).build()
+
+        this.vm.inputs.configureWith(commentCardData)
+        this.isReplyButtonVisible.assertValue(false)
+    }
+
+    @Test
+    fun testCommentReplyButtonVisibility_whenUserLoggedInAndProjectNotBackedFFOff_shouldSendFalse() {
+        val environment = optimizelyFeatureFlagOff().toBuilder()
+            .currentUser(MockCurrentUser(UserFactory.user()))
+            .build()
+        setUpEnvironment(environment)
         val comment = CommentFactory.comment()
         val commentCardData = CommentCardData.builder().comment(comment).project(ProjectFactory.project()).build()
         this.vm.inputs.configureWith(commentCardData)
-        this.isActionGroupVisible.assertValue(false)
+        this.isReplyButtonVisible.assertValue(false)
     }
 
     @Test
-    fun testCommentActionGroupVisibility_whenUserNotLoggedIn_shouldSendFalse() {
-        setUpEnvironment(environment())
+    fun testCommentReplyButtonVisibility_whenUserLoggedInAndProjectNotBackedFFOn_shouldSendFalse() {
+        val environment = optimizelyFeatureFlagOn().toBuilder()
+            .currentUser(MockCurrentUser(UserFactory.user()))
+            .build()
+        setUpEnvironment(environment)
         val comment = CommentFactory.comment()
         val commentCardData = CommentCardData.builder().comment(comment).project(ProjectFactory.project()).build()
         this.vm.inputs.configureWith(commentCardData)
-        this.isActionGroupVisible.assertValue(false)
+        this.isReplyButtonVisible.assertValue(false)
     }
 
     @Test
-    fun testCommentActionGroupVisibility_whenProjectNotBackedAndUserIsCreator_shouldSendTrue() {
+    fun testCommentReplyButtonVisibility_whenProjectNotBackedAndUserIsCreatorFFOn_shouldSendTrue() {
         val user = UserFactory.creator().toBuilder().id(2).build()
-        setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(user)).build())
+
+        val environment = optimizelyFeatureFlagOn().toBuilder()
+            .currentUser(MockCurrentUser(user))
+            .build()
+        setUpEnvironment(environment)
+
         val comment = CommentFactory.comment()
         val commentCardData = CommentCardData.builder().comment(comment).project(ProjectFactory.project().toBuilder().creator(user).build()).build()
         this.vm.inputs.configureWith(commentCardData)
-        this.isActionGroupVisible.assertValue(true)
+        this.isReplyButtonVisible.assertValue(true)
+    }
+
+    @Test
+    fun testCommentReplyButtonVisibility_whenProjectNotBackedAndUserIsCreatorFFOff_shouldSendFalse() {
+        val user = UserFactory.creator().toBuilder().id(2).build()
+
+        val environment = optimizelyFeatureFlagOff().toBuilder()
+            .currentUser(MockCurrentUser(user))
+            .build()
+        setUpEnvironment(environment)
+
+        val comment = CommentFactory.comment()
+        val commentCardData = CommentCardData.builder().comment(comment).project(ProjectFactory.project().toBuilder().creator(user).build()).build()
+        this.vm.inputs.configureWith(commentCardData)
+        this.isReplyButtonVisible.assertValue(false)
+    }
+
+    @Test
+    fun testCommentReplyButtonVisibility_whenUserNotLoggedInFFOn_shouldSendFalse() {
+        val environment = optimizelyFeatureFlagOn().toBuilder()
+            .build()
+        setUpEnvironment(environment)
+
+        val comment = CommentFactory.comment()
+        val commentCardData = CommentCardData.builder().comment(comment).project(ProjectFactory.project()).build()
+        this.vm.inputs.configureWith(commentCardData)
+        this.isReplyButtonVisible.assertValue(false)
+    }
+
+    @Test
+    fun testCommentReplyButtonVisibility_whenUserNotLoggedInFFOff_shouldSendFalse() {
+        val environment = optimizelyFeatureFlagOff().toBuilder()
+            .build()
+        setUpEnvironment(environment)
+
+        val comment = CommentFactory.comment()
+        val commentCardData = CommentCardData.builder().comment(comment).project(ProjectFactory.project()).build()
+        this.vm.inputs.configureWith(commentCardData)
+        this.isReplyButtonVisible.assertValue(false)
     }
 
     @Test
@@ -220,6 +286,14 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(commentData)
         this.repliesCount.assertValue(comment.repliesCount())
     }
+
+    private fun optimizelyFeatureFlagOn() = environment().toBuilder()
+        .optimizely(MockExperimentsClientType(true))
+        .build()
+
+    private fun optimizelyFeatureFlagOff() = environment().toBuilder()
+        .optimizely(MockExperimentsClientType(false))
+        .build()
 
     @Test
     fun testRetrySendCommentErrorClicked() {

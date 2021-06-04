@@ -24,6 +24,8 @@ class CommentCard @JvmOverloads constructor(
 
     private var onCommentCardClickedListener: OnCommentCardClickedListener? = null
 
+    private var isCommentEnabledThreads: Boolean = false
+
     init {
         obtainStyledAttributes(context, attrs, defStyleAttr)
 
@@ -31,10 +33,6 @@ class CommentCard @JvmOverloads constructor(
 
         binding.retryButton.setOnClickListener {
             onCommentCardClickedListener?.onRetryViewClicked(it)
-        }
-
-        binding.flagButton.setOnClickListener {
-            onCommentCardClickedListener?.onFlagButtonClicked(it)
         }
 
         binding.replies.setOnClickListener {
@@ -87,8 +85,8 @@ class CommentCard @JvmOverloads constructor(
                 setCommentUserName(it)
             }
 
-            getBoolean(R.styleable.CommentCardView_is_comment_action_group_visible, true).also {
-                setCommentActionGroupVisibility(it)
+            getBoolean(R.styleable.CommentCardView_is_comment_reply_button_visible, true)?.also {
+                setReplyButtonVisibility(it)
             }
 
             getInt(R.styleable.CommentCardView_comment_card_status, 0).also { attrValue ->
@@ -101,8 +99,12 @@ class CommentCard @JvmOverloads constructor(
         }
     }
 
-    fun setCommentActionGroupVisibility(isGroupVisble: Boolean) {
-        binding.commentActionGroup.isVisible = isGroupVisble
+    fun setCommentEnabledThreads(isActiveFeatureFlag: Boolean) {
+        this.isCommentEnabledThreads = isActiveFeatureFlag
+    }
+
+    fun setReplyButtonVisibility(isGroupVisible: Boolean) {
+        binding.replyButton.isVisible = isGroupVisible && this.isCommentEnabledThreads
     }
 
     fun setCommentCardStatus(cardCommentStatus: CommentCardStatus) {
@@ -116,9 +118,11 @@ class CommentCard @JvmOverloads constructor(
             cardCommentStatus == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY ||
             cardCommentStatus == CommentCardStatus.TRYING_TO_POST
 
-        binding.commentActionGroup.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLIES ||
-            cardCommentStatus == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS ||
-            cardCommentStatus == CommentCardStatus.TRYING_TO_POST
+        if (shouldShowReplyButton(cardCommentStatus)) {
+            setReplyButtonVisibility(true)
+        } else {
+            hideReplyButton()
+        }
 
         binding.retryButton.isVisible =
             cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT
@@ -140,20 +144,29 @@ class CommentCard @JvmOverloads constructor(
         binding.commentBody.setTextColor(ContextCompat.getColor(context, commentBodyTextColor))
     }
 
+    private fun shouldShowReplyButton(cardCommentStatus: CommentCardStatus) =
+        cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLIES ||
+            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLIES ||
+            cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT
+
     /*
      * To display replies count
      * binding.replies.text = String.format("%s (%d)",resources.getString(R.string.view_replies), replies)
      */
     fun setCommentReplies(replies: Int) {
-        binding.replies.isVisible = replies > 0
+        setViewRepliesVisibility(replies > 0)
+    }
+
+    fun setViewRepliesVisibility(isViewRepliesVisible: Boolean) {
+        binding.replies.isVisible = isViewRepliesVisible && isCommentEnabledThreads
     }
 
     fun setCommentUserName(username: String) {
         binding.commentUserName.text = username
     }
 
-    fun hideReplyViewGroup() {
-        binding.commentActionGroup.isVisible = false
+    fun hideReplyButton() {
+        binding.replyButton.isVisible = false
     }
 
     fun setCommentPostTime(time: String) {

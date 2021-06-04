@@ -57,7 +57,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/reply_button"
         style="@style/CommentsReplayButton"
@@ -68,16 +67,6 @@
         app:layout_constraintBottom_toTopOf="@+id/separtor"
         app:layout_constraintStart_toStartOf="@id/avatar"
         app:layout_constraintTop_toBottomOf="@id/replies" />
-
-    <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/flag_button"
-        style="@style/CommentsReplayButton"
-        android:src="@drawable/ic_flag"
-        android:layout_marginTop="@dimen/grid_3"
-        app:layout_goneMarginTop="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/separtor"
-        app:layout_constraintEnd_toEndOf="@id/comment_body"
-        app:layout_constraintTop_toBottomOf="@id/replies"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/retry_button"
@@ -137,17 +126,11 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.Group
-        android:id="@+id/comment_action_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_ids="reply_button,flag_button" />
-
-    <androidx.constraintlayout.widget.Group
         android:id="@+id/reply_message_group"
         android:layout_width="wrap_content"
         android:visibility="gone"
         android:layout_height="wrap_content"
+        tools:visibility="visible"
         app:constraint_referenced_ids="flagged_message,info_button" />
 
     <androidx.constraintlayout.widget.Group
@@ -155,5 +138,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        tools:visibility="visible"
         app:constraint_referenced_ids="flagged_message,info_button" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,5 @@
 package com.kickstarter
-.viewmodels
+    .viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
@@ -36,7 +36,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
 
     private val createdAt = DateTime.now()
     private val currentUser = UserFactory.user().toBuilder().id(1).avatar(
-            AvatarFactory.avatar()
+        AvatarFactory.avatar()
     ).name("joe").build()
 
     private fun setUpEnvironment(environment: Environment) {
@@ -236,16 +236,20 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.onRetryViewClicked()
 
         this.retrySendComment.assertValue(comment)
-        this.commentCardStatus.assertValues(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS,
-                CommentCardStatus.TRYING_TO_POST,
-                CommentCardStatus.FAILED_TO_SEND_COMMENT)
+        this.commentCardStatus.assertValues(
+            CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS,
+            CommentCardStatus.TRYING_TO_POST,
+            CommentCardStatus.FAILED_TO_SEND_COMMENT
+        )
 
         this.vm.inputs.onRetryViewClicked()
 
-        this.commentCardStatus.assertValues(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS,
-                CommentCardStatus.TRYING_TO_POST,
-                CommentCardStatus.FAILED_TO_SEND_COMMENT,
-                CommentCardStatus.TRYING_TO_POST,
-                CommentCardStatus.FAILED_TO_SEND_COMMENT)
+        this.commentCardStatus.assertValues(
+            CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS,
+            CommentCardStatus.TRYING_TO_POST,
+            CommentCardStatus.FAILED_TO_SEND_COMMENT,
+            CommentCardStatus.TRYING_TO_POST,
+            CommentCardStatus.FAILED_TO_SEND_COMMENT
+        )
     }
 }

@@ -30,8 +30,9 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     private val isLoadingMoreItems = TestSubscriber<Boolean>()
     private val isRefreshing = TestSubscriber<Boolean>()
     private val enablePagination = TestSubscriber<Boolean>()
-    private val commentSubscriber = BehaviorSubject.create<CommentCardData>()
+    private val insertNewCommentToListSubscriber = BehaviorSubject.create<CommentCardData>()
     private val commentPostedSubscriber = BehaviorSubject.create<CommentCardData>()
+    private val updateFailedCommentSubscriber = BehaviorSubject.create<CommentCardData>()
 
     @Test
     fun testCommentsViewModel_whenUserLoggedInAndBacking_shouldShowEnabledComposer() {
@@ -268,10 +269,11 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
      */
     @Test
     fun testCommentsViewModel_PostComment_CommentAddedToView() {
-        val userAvatar = AvatarFactory.avatar()
-        val currentUser = UserFactory.user().toBuilder().id(1).avatar(
-            userAvatar
-        ).build()
+        val currentUser = UserFactory.user()
+            .toBuilder()
+            .id(1)
+            .avatar(AvatarFactory.avatar())
+            .build()
 
         val createdAt = DateTime.now()
 
@@ -285,16 +287,18 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             env.toBuilder().currentUser(MockCurrentUser(currentUser)).build()
         )
 
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser)
         // Start the view model with an update.
         vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
-        vm.outputs.insertComment().subscribe(commentSubscriber)
+        vm.outputs.insertComment().subscribe(insertNewCommentToListSubscriber)
         vm.outputs.commentPosted().subscribe(commentPostedSubscriber)
 
         // post a comment
-        vm.inputs.postComment("Some Comment", createdAt)
+        vm.inputs.insertNewCommentToList(commentCardData.comment?.body()!!, createdAt)
+        assertEquals(commentCardData.comment, insertNewCommentToListSubscriber.value.comment)
 
-        assertEquals(CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser).comment, commentPostedSubscriber.value.comment)
-        assertEquals(CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser).comment, commentSubscriber.value.comment)
+        vm.inputs.postCommentToServer(commentCardData)
+        assertEquals(commentCardData.comment, commentPostedSubscriber.value.comment)
     }
 
     @Test
@@ -316,15 +320,27 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             env.toBuilder().currentUser(MockCurrentUser(currentUser)).build()
         )
 
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser)
         // Start the view model with an update.
         vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
-        vm.outputs.insertComment().subscribe(commentSubscriber)
-        vm.outputs.updateFailedComment().subscribe(commentPostedSubscriber)
+        vm.outputs.insertComment().subscribe(insertNewCommentToListSubscriber)
+        vm.outputs.commentPosted().subscribe(commentPostedSubscriber)
+        vm.outputs.updateFailedComment().subscribe(updateFailedCommentSubscriber)
 
         // post a comment
-        vm.inputs.postComment("Some Comment", createdAt)
+        vm.inputs.insertNewCommentToList(commentCardData.comment?.body()!!, createdAt)
+        assertEquals(commentCardData.comment, insertNewCommentToListSubscriber.value.comment)
 
-        assertEquals(CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser).comment, commentPostedSubscriber.value.comment)
-        assertEquals(CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser).comment, commentSubscriber.value.comment)
+        vm.inputs.postCommentToServer(commentCardData)
+        assertEquals(commentCardData.comment, updateFailedCommentSubscriber.value.comment)
+        assertEquals(null, commentPostedSubscriber.value)
+
+        // post new comment
+        vm.inputs.insertNewCommentToList(commentCardData.comment?.body()!!, createdAt)
+        assertEquals(commentCardData.comment, insertNewCommentToListSubscriber.value.comment)
+
+        vm.inputs.postCommentToServer(commentCardData)
+        assertEquals(commentCardData.comment, updateFailedCommentSubscriber.value.comment)
+        assertEquals(null, commentPostedSubscriber.value)
     }
 }

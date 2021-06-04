@@ -131,7 +131,7 @@ class CommentsActivity :
     }
 
     fun postComment(comment: String) {
-        this.viewModel.inputs.postComment(comment, DateTime.now())
+        this.viewModel.inputs.insertNewCommentToList(comment, DateTime.now())
         this.binding.commentComposer.clearCommentComposer()
     }
 

@@ -34,7 +34,7 @@ interface CommentsViewModel {
     interface Inputs {
         fun refresh()
         fun nextPage()
-        fun postComment(comment: String, createdAt: DateTime)
+        fun insertNewCommentToList(comment: String, createdAt: DateTime)
         fun postCommentToServer(commentCardData: CommentCardData)
     }
 
@@ -66,7 +66,7 @@ interface CommentsViewModel {
         private val commentsList = BehaviorSubject.create<List<CommentCardData>?>()
         private val disableReplyButton = BehaviorSubject.create<Boolean>()
 
-        private val postComment = PublishSubject.create<Pair<String, DateTime>>()
+        private val insertNewCommentToList = PublishSubject.create<Pair<String, DateTime>>()
         private val postCommentToServer = BehaviorSubject.create<CommentCardData>()
         private val isLoadingMoreItems = BehaviorSubject.create<Boolean>()
         private val isRefreshing = BehaviorSubject.create<Boolean>()
@@ -131,7 +131,7 @@ interface CommentsViewModel {
             loadCommentList(initialProject)
 
             this.currentUser.loggedInUser()
-                .compose(Transformers.takePairWhen(this.postComment))
+                .compose(Transformers.takePairWhen(this.insertNewCommentToList))
                 .map {
                     buildCommentBody(it)
                 }
@@ -171,6 +171,7 @@ interface CommentsViewModel {
                 .subscribe {
                     this.updateFailedComment.onNext(it)
                 }
+
             Observable
                 .combineLatest(initialProject, commentData) { project, comment ->
                     return@combineLatest this.apolloClient.createComment(
@@ -300,7 +301,7 @@ interface CommentsViewModel {
         override fun commentPosted(): Observable<CommentCardData> = this.commentPosted
         override fun updateFailedComment(): Observable<CommentCardData> = this.updateFailedComment
 
-        override fun postComment(comment: String, createdAt: DateTime) = postComment.onNext(Pair(comment, createdAt))
+        override fun insertNewCommentToList(comment: String, createdAt: DateTime) = insertNewCommentToList.onNext(Pair(comment, createdAt))
         override fun postCommentToServer(commentCardData: CommentCardData) = postCommentToServer.onNext(commentCardData)
 
         override fun bindPaginatedData(data: List<CommentCardData>?) {

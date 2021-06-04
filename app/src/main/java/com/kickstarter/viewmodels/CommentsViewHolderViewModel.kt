@@ -175,36 +175,36 @@ interface CommentsViewHolderViewModel {
                     this.retrySendComment.onNext(it)
                     this.commentCardStatus.onNext(CommentCardStatus.TRYING_TO_POST)
                 }
-            
-            val commentData = this.commentInput.map { 
+
+            val commentData = this.commentInput.map {
                 Pair(requireNotNull(it.comment?.body()), requireNotNull(it.project))
             }
 
             Observable
-                    .combineLatest(commentData, onRetryViewClicked) { commentData, _ ->
-                        return@combineLatest this.apolloClient.createComment(
-                                PostCommentData(
-                                        project = commentData.second,
-                                        body = commentData.first,
-                                        clientMutationId = null,
-                                        parentId = null
-                                )
-                        ).doOnError {
-                            this.commentCardStatus.onNext(CommentCardStatus.FAILED_TO_SEND_COMMENT)
-                        }
-                                .onErrorResumeNext(Observable.empty())
-                    }
-                    .switchMap {
-                        it
-                    }.subscribe {
-                        this.commentCardStatus.onNext(CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY)
-                        Handler(Looper.getMainLooper()).postDelayed(
-                                {
-                                    this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
-                                },
-                                3000
+                .combineLatest(commentData, onRetryViewClicked) { commentData, _ ->
+                    return@combineLatest this.apolloClient.createComment(
+                        PostCommentData(
+                            project = commentData.second,
+                            body = commentData.first,
+                            clientMutationId = null,
+                            parentId = null
                         )
+                    ).doOnError {
+                        this.commentCardStatus.onNext(CommentCardStatus.FAILED_TO_SEND_COMMENT)
                     }
+                        .onErrorResumeNext(Observable.empty())
+                }
+                .switchMap {
+                    it
+                }.subscribe {
+                    this.commentCardStatus.onNext(CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY)
+                    Handler(Looper.getMainLooper()).postDelayed(
+                        {
+                            this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
+                        },
+                        3000
+                    )
+                }
 
             comment
                 .compose(takeWhen(this.onFlagButtonClicked))

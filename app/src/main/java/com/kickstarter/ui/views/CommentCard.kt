@@ -116,7 +116,7 @@ class CommentCard @JvmOverloads constructor(
             cardCommentStatus == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY
 
         binding.commentActionGroup.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLIES ||
-                cardCommentStatus == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS
+            cardCommentStatus == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS
 
         binding.retryButton.isVisible =
             cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT

@@ -19,6 +19,7 @@ class CommentCardViewHolder(
         fun onReplyButtonClicked(comment: Comment)
         fun onFlagButtonClicked(comment: Comment)
         fun onCommentGuideLinesClicked(comment: Comment)
+        fun onCommentRepliesClicked(comment: Comment)
     }
 
     private val vm: CommentsViewHolderViewModel.ViewModel = CommentsViewHolderViewModel.ViewModel(environment())
@@ -30,6 +31,11 @@ class CommentCardViewHolder(
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { binding.commentsCardView.setCommentUserName(it) }
+
+        this.vm.outputs.commentRepliesCount()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.commentsCardView.setCommentReplies(it) }
 
         this.vm.outputs.commentAuthorAvatarUrl()
             .compose(bindToLifecycle())
@@ -71,6 +77,11 @@ class CommentCardViewHolder(
             .compose(Transformers.observeForUI())
             .subscribe { this.delegate.onRetryViewClicked(it) }
 
+        this.vm.outputs.viewCommentReplies()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { this.delegate.onCommentRepliesClicked(it) }
+
         this.vm.outputs.flagComment()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
@@ -87,6 +98,10 @@ class CommentCardViewHolder(
 
             override fun onFlagButtonClicked(view: View) {
                 vm.inputs.onFlagButtonClicked()
+            }
+
+            override fun onViewRepliesButtonClicked(view: View) {
+                vm.inputs.onViewRepliesButtonClicked()
             }
 
             override fun onCommentGuideLinesClicked(view: View) {

@@ -1,5 +1,6 @@
 <resources>
   <!-- Kickstarter six-point grid keylines-->
+  <dimen name="grid_0">2dp</dimen>
   <dimen name="grid_1_half">3dp</dimen>
   <dimen name="grid_1">6dp</dimen>
   <dimen name="grid_3_half">9dp</dimen>

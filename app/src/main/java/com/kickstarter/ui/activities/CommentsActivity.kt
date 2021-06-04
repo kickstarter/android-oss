@@ -17,6 +17,7 @@ import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
 import com.kickstarter.viewmodels.CommentsViewModel
 import org.joda.time.DateTime
 import rx.android.schedulers.AndroidSchedulers
+import java.util.concurrent.TimeUnit
 
 @RequiresActivityViewModel(CommentsViewModel.ViewModel::class)
 class CommentsActivity :
@@ -49,18 +50,18 @@ class CommentsActivity :
                 binding.commentComposer.setAvatarUrl(it)
             }
 
-        viewModel.outputs.enableCommentComposer()
+        viewModel.outputs.commentComposerStatus()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                binding.commentComposer.showCommentComposerDisabledView(!it)
+                binding.commentComposer.setCommentComposerStatus(it)
             }
 
         viewModel.outputs.showCommentComposer()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                binding.commentComposer.isVisible = true
+                binding.commentComposer.isVisible = it
             }
 
         viewModel.outputs.setEmptyState()
@@ -73,6 +74,17 @@ class CommentsActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 adapter.insertData(it, 0)
+            }
+
+        /*
+         * A little delay after new item is inserted
+         * This is necessary for the scroll to take effect
+         */
+        viewModel.outputs.insertComment()
+            .compose(bindToLifecycle())
+            .delay(200, TimeUnit.MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
                 binding.commentsRecyclerView.scrollToPosition(0)
             }
 
@@ -158,6 +170,10 @@ class CommentsActivity :
     }
 
     override fun onCommentGuideLinesClicked(comment: Comment) {
+    }
+
+    override fun onCommentRepliesClicked(comment: Comment) {
+        startThreadActivity(comment, false)
     }
 
     /**

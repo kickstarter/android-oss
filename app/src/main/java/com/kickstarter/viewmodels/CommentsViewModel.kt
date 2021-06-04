@@ -129,6 +129,7 @@ interface CommentsViewModel {
                 }
 
             loadCommentList(initialProject)
+
             this.currentUser.loggedInUser()
                     .compose(Transformers.takePairWhen(this.postComment))
                     .map {
@@ -144,6 +145,7 @@ interface CommentsViewModel {
                     }
 
             val commentData = this.postCommentToServer.map { requireNotNull(it.comment) }
+
             this.currentUser.loggedInUser()
                     .compose(Transformers.takePairWhen(commentData))
                     .compose(Transformers.takePairWhen(this.failedPostedCommentObserver))
@@ -231,63 +233,6 @@ interface CommentsViewModel {
                 .subscribe {
                     bindCommentList(it.first, LoadingType.PULL_REFRESH, it.second)
                 }
-
-            this.currentUser.loggedInUser()
-                .compose(Transformers.takePairWhen(this.postComment))
-                .map {
-                    buildCommentBody(it)
-                }
-                .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
-                .map {
-                    CommentCardData.builder().comment(it.first).project(it.second).build()
-                }
-                .compose(bindToLifecycle())
-                .subscribe {
-                    this.insertComment.onNext(it)
-                }
-
-            this.currentUser.loggedInUser()
-                .compose(Transformers.takePairWhen(this.postComment))
-                .compose(Transformers.takePairWhen(this.failedPostedCommentObserver))
-                .map {
-                    buildCommentBody(it.first)
-                }
-                .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
-                .map {
-                    CommentCardData.builder().comment(it.first).project(it.second).build()
-                }
-                .compose(bindToLifecycle())
-                .subscribe {
-                    this.updateFailedComment.onNext(it)
-                }
-
-            initialProject
-                .compose(Transformers.takePairWhen(this.postComment))
-                .compose(bindToLifecycle())
-                .switchMap {
-                    it.first?.let { project ->
-                        this.apolloClient.createComment(
-                            PostCommentData(
-                                project = project,
-                                body = it.second.first,
-                                clientMutationId = null,
-                                parentId = null
-                            )
-                        )
-                    }
-                }
-                .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
-                .map {
-                    CommentCardData.builder().comment(it.first).project(it.second).build()
-                }
-                .subscribe(
-                    {
-                        this.commentPosted.onNext(it)
-                    },
-                    {
-                        this.failedPostedCommentObserver.onNext(null)
-                    }
-                )
         }
 
         private fun mapToCommentCardDataList(it: Pair<CommentEnvelope, Project?>) =

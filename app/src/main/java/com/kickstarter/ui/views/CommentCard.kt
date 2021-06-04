@@ -85,7 +85,7 @@ class CommentCard @JvmOverloads constructor(
                 setCommentUserName(it)
             }
 
-            getBoolean(R.styleable.CommentCardView_is_comment_reply_button_visible, true)?.also {
+            getBoolean(R.styleable.CommentCardView_is_comment_reply_button_visible, true).also {
                 setReplyButtonVisibility(it)
             }
 
@@ -146,7 +146,7 @@ class CommentCard @JvmOverloads constructor(
 
     private fun shouldShowReplyButton(cardCommentStatus: CommentCardStatus) =
         cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLIES ||
-            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLIES ||
+            cardCommentStatus == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS ||
             cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT
 
     /*

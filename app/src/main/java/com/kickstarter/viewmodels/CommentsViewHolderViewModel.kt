@@ -85,7 +85,7 @@ interface CommentsViewHolderViewModel {
         /** Emits the current [OptimizelyFeature.Key.COMMENT_ENABLE_THREADS] status to the CommentCard UI*/
         fun isCommentEnableThreads(): Observable<Boolean>
 
-       /** Emits the new bind comment to ui */
+        /** Emits the new bind comment to ui */
         fun newCommentBind(): Observable<CommentCardData>
     }
 
@@ -271,12 +271,13 @@ interface CommentsViewHolderViewModel {
             user: User?,
             featureFlagActive: Boolean
         ) =
-            commentCardData.project?.let { (it.isBacking || ProjectUtils.userIsCreator(it, user)) && featureFlagActive &&
+            commentCardData.project?.let {
+                (it.isBacking || ProjectUtils.userIsCreator(it, user)) && featureFlagActive &&
                     (
-                    commentCardData.commentCardState == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus ||
+                        commentCardData.commentCardState == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus ||
                             commentCardData.commentCardState == CommentCardStatus.COMMENT_WITH_REPLIES.commentCardStatus ||
                             commentCardData.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus
-                    )
+                        )
             } ?: false
 
         /**

@@ -146,7 +146,6 @@ class CommentCardTest : KSRobolectricTestCase() {
         assertFalse(repliesButton.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
         assertFalse(retryButton.isVisible)
-
     }
     @Test
     fun testTryingToPostCommentStatus() {

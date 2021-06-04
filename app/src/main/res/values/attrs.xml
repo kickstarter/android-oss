@@ -21,6 +21,6 @@
     <attr name="comment_card_message" format="string" />
     <attr name="comment_card_replies" format="integer" />
     <attr name="comment_card_avatar_url" format="string" />
-    <attr name="is_comment_action_group_visible" format="boolean" />
+    <attr name="is_comment_reply_button_visible" format="boolean" />
   </declare-styleable>
 </resources>

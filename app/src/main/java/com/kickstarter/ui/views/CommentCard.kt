@@ -146,8 +146,7 @@ class CommentCard @JvmOverloads constructor(
 
     private fun shouldShowReplyButton(cardCommentStatus: CommentCardStatus) =
         cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLIES ||
-            cardCommentStatus == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS ||
-            cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT
+            cardCommentStatus == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS
 
     /*
      * To display replies count

@@ -15,7 +15,7 @@ class CommentCardViewHolder(
 ) : KSViewHolder(binding.root) {
 
     interface Delegate {
-        fun onRetryViewClicked(comment: Comment, position: Int)
+        fun onRetryViewClicked(comment: Comment)
         fun onReplyButtonClicked(comment: Comment)
         fun onFlagButtonClicked(comment: Comment)
         fun onCommentGuideLinesClicked(comment: Comment)
@@ -70,14 +70,12 @@ class CommentCardViewHolder(
         this.vm.outputs.replyToComment()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe {
-                this.delegate.onReplyButtonClicked(it)
-            }
+            .subscribe { this.delegate.onReplyButtonClicked(it) }
 
         this.vm.outputs.retrySendComment()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { this.delegate.onRetryViewClicked(it, bindingAdapterPosition) }
+            .subscribe { this.delegate.onRetryViewClicked(it) }
 
         this.vm.outputs.viewCommentReplies()
             .compose(bindToLifecycle())
@@ -113,13 +111,6 @@ class CommentCardViewHolder(
     }
 
     override fun bindData(data: Any?) {
-//        if (data is (Pair<*, *>)) {
-//            if (data.first is Comment && data.second is CommentCardStatus) {
-//                this.vm.inputs.configureWith((data.first as Comment), (data.second as CommentCardStatus))
-//            }
-//        } else {
-//            this.vm.inputs.configureWith((data as Comment), CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
-//        }
         this.vm.inputs.configureWith(data as CommentCardData)
     }
 }

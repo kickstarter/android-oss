@@ -74,20 +74,15 @@ class CommentsActivity :
             .subscribe {
                 adapter.insertData(it, 0)
                 binding.commentsRecyclerView.scrollToPosition(0)
+                viewModel.inputs.postCommentToServer(it)
             }
-
-//        viewModel.outputs.updateCommentStatus()
-//            .compose(bindToLifecycle())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe {
-//                adapter.updateItem(it, 0)
-//            }
 
         viewModel.outputs.updateFailedComment()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                adapter.updateItem(it, 0)
+                adapter.update(it, 0)
+                binding.commentsRecyclerView.scrollToPosition(0)
             }
 
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {
@@ -155,8 +150,7 @@ class CommentsActivity :
     override fun emptyCommentsLoginClicked(viewHolder: EmptyCommentsViewHolder?) {
     }
 
-    override fun onRetryViewClicked(comment: Comment, position: Int) {
-        this.viewModel.inputs.retryPostComment(comment, position)
+    override fun onRetryViewClicked(comment: Comment) {
     }
 
     override fun onReplyButtonClicked(comment: Comment) {

@@ -150,18 +150,7 @@ interface CommentsViewModel {
                 .compose(Transformers.takePairWhen(commentData))
                 .compose(Transformers.takePairWhen(this.failedPostedCommentObserver))
                 .map {
-
-                    Comment.builder()
-                        .body(it.first.second.body())
-                        .parentId(-1)
-                        .authorBadges(listOf())
-                        .createdAt(it.first.second.createdAt())
-                        .cursor("")
-                        .deleted(false)
-                        .id(-1)
-                        .repliesCount(0)
-                        .author(it.first.first)
-                        .build()
+                    buildCommentBody(Pair(it.first.first, Pair(it.first.second.body(), it.first.second.createdAt())))
                 }
                 .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
                 .map {

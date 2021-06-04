@@ -56,7 +56,7 @@ class CommentCardTest : KSRobolectricTestCase() {
         commentCard.setCommentCardStatus(CommentCardStatus.FAILED_TO_SEND_COMMENT)
         assertTrue(commentBody.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
-        assertTrue(replyButton.isVisible)
+        assertFalse(replyButton.isVisible)
         assertTrue(retryButton.isVisible)
         assertFalse(postedButton.isVisible)
         assertFalse(postingButton.isVisible)

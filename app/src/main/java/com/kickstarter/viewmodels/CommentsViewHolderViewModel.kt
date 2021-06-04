@@ -190,6 +190,7 @@ interface CommentsViewHolderViewModel {
          * or the current user is the creator of the project
          *  @param commentCardData
          *  @param featureFlagActive
+         *  @param user
          *
          *  @return
          *  true -> if current user is backer and the feature flag is active

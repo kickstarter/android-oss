@@ -204,33 +204,29 @@ interface CommentsViewModel {
                     this.updateFailedComment.onNext(it)
                 }
 
-            initialProject
-                .compose(Transformers.takePairWhen(this.postComment))
-                .compose(bindToLifecycle())
-                .switchMap {
-                    it.first?.let { project ->
-                        this.apolloClient.createComment(
-                            PostCommentData(
-                                project = project,
-                                body = it.second.first,
-                                clientMutationId = null,
-                                parentId = null
-                            )
-                        )
+            Observable
+                .combineLatest(initialProject, postComment) { project, pair ->
+                    return@combineLatest this.apolloClient.createComment(
+                        PostCommentData(
+                            project = project,
+                            body = pair.first,
+                            clientMutationId = null,
+                            parentId = null
+                        )).doOnError {
+                        this.failedPostedCommentObserver.onNext(null)
                     }
+                        .onErrorResumeNext(Observable.empty())
+                }
+                .switchMap {
+                    it
                 }
                 .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
                 .map {
                     CommentCardData.builder().comment(it.first).project(it.second).build()
                 }
-                .subscribe(
-                    {
-                        this.commentPosted.onNext(it)
-                    },
-                    {
-                        this.failedPostedCommentObserver.onNext(null)
-                    }
-                )
+                .subscribe {
+                    this.commentPosted.onNext(it)
+                }
         }
 
         private fun mapToCommentCardDataList(it: Pair<CommentEnvelope, Project?>) =

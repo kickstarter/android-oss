@@ -1,4 +1,5 @@
-package com.kickstarter.viewmodels
+package com.kickstarter
+.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
@@ -7,11 +8,14 @@ import com.kickstarter.mock.factories.AvatarFactory
 import com.kickstarter.mock.factories.CommentFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Comment
+import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.views.CommentCardStatus
 import org.joda.time.DateTime
 import org.junit.Test
+import rx.Observable
 import rx.observers.TestSubscriber
 
 class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
@@ -29,6 +33,11 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     private val replyToComment = TestSubscriber<Comment>()
     private val flagComment = TestSubscriber<Comment>()
     private val repliesCount = TestSubscriber<Int>()
+
+    private val createdAt = DateTime.now()
+    private val currentUser = UserFactory.user().toBuilder().id(1).avatar(
+            AvatarFactory.avatar()
+    ).name("joe").build()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = CommentsViewHolderViewModel.ViewModel(environment)
@@ -49,45 +58,44 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testOpenCommentGuideLinesClicked() {
         setUpEnvironment(environment())
-        val comment = CommentFactory.comment()
-        val commentCardData = CommentCardData.builder().comment(comment).build()
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser)
+
         this.vm.inputs.configureWith(commentCardData)
         this.vm.inputs.onCommentGuideLinesClicked()
 
-        this.openCommentGuideLines.assertValue(comment)
+        this.openCommentGuideLines.assertValue(commentCardData.comment)
     }
 
     @Test
     fun testReplyToCommentClicked() {
         setUpEnvironment(environment())
-        val comment = CommentFactory.comment()
-        val commentCardData = CommentCardData.builder().comment(comment).build()
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser)
+
         this.vm.inputs.configureWith(commentCardData)
         this.vm.inputs.onReplyButtonClicked()
 
-        this.replyToComment.assertValue(comment)
+        this.replyToComment.assertValue(commentCardData.comment)
     }
 
     @Test
     fun testRetrySendCommentClicked() {
         setUpEnvironment(environment())
-        val comment = CommentFactory.comment()
-        val commentCardData = CommentCardData.builder().comment(comment).build()
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser)
+
         this.vm.inputs.configureWith(commentCardData)
         this.vm.inputs.onRetryViewClicked()
 
-        this.retrySendComment.assertValue(comment)
+        this.retrySendComment.assertValue(commentCardData.comment)
     }
 
     @Test
     fun testFlagCommentClicked() {
         setUpEnvironment(environment())
-        val comment = CommentFactory.comment()
-        val commentCardData = CommentCardData.builder().comment(comment).build()
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser)
         this.vm.inputs.configureWith(commentCardData)
         this.vm.inputs.onFlagButtonClicked()
 
-        this.flagComment.assertValue(comment)
+        this.flagComment.assertValue(commentCardData.comment)
     }
 
     @Test
@@ -97,41 +105,40 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         val currentUser = UserFactory.user().toBuilder().id(111).avatar(
             userAvatar
         ).build()
-        val comment = CommentFactory.comment(currentUser.avatar())
-        val commentCardData = CommentCardData.builder().comment(comment).build()
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser)
         this.vm.inputs.configureWith(commentCardData)
 
         this.commentAuthorAvatarUrl.assertValue(userAvatar.medium())
-        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_WITHOUT_REPLIES)
+        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
     }
 
     @Test
     fun testCommentAuthorName() {
         setUpEnvironment(environment())
-        val comment = CommentFactory.comment()
-        val commentCardData = CommentCardData.builder().comment(comment).build()
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser)
+
         this.vm.inputs.configureWith(commentCardData)
 
-        this.commentAuthorName.assertValue(comment.author().name())
-        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_WITHOUT_REPLIES)
+        this.commentAuthorName.assertValue(commentCardData.comment?.author()?.name())
+        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
     }
 
     @Test
     fun testCommentMessageBody() {
         setUpEnvironment(environment())
-        val comment = CommentFactory.comment()
-        val commentCardData = CommentCardData.builder().comment(comment).build()
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser)
+
         this.vm.inputs.configureWith(commentCardData)
 
-        this.commentMessageBody.assertValue(comment.body())
-        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_WITHOUT_REPLIES)
+        this.commentMessageBody.assertValue(commentCardData.comment?.body())
+        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
     }
 
     @Test
     fun testDeletedComment() {
         setUpEnvironment(environment())
-        val comment = CommentFactory.comment(isDelete = true)
-        val commentCardData = CommentCardData.builder().comment(comment).build()
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser, isDelete = true)
+
         this.vm.inputs.configureWith(commentCardData)
 
         this.commentCardStatus.assertValue(CommentCardStatus.DELETED_COMMENT)
@@ -140,27 +147,28 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCommentPostTime() {
         setUpEnvironment(environment())
-        val comment = CommentFactory.comment()
-        val commentCardData = CommentCardData.builder().comment(comment).build()
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser, isDelete = true)
+
         this.vm.inputs.configureWith(commentCardData)
 
-        this.commentPostTime.assertValue(comment.createdAt())
+        this.commentPostTime.assertValue(commentCardData.comment?.createdAt())
     }
 
     @Test
     fun testNoReplyCountForBindingCardStatus() {
         setUpEnvironment(environment())
-        val comment = CommentFactory.comment()
-        val commentCardData = CommentCardData.builder().comment(comment).build()
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser)
+
         this.vm.inputs.configureWith(commentCardData)
-        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_WITHOUT_REPLIES)
+
+        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
     }
 
     @Test
     fun testReplyCountForBindingCardStatus() {
         setUpEnvironment(environment())
-        val updatedComment = CommentFactory.comment(repliesCount = 10)
-        val commentCardData = CommentCardData.builder().comment(updatedComment).build()
+
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser, repliesCount = 20)
         this.vm.inputs.configureWith(commentCardData)
         this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_WITH_REPLIES)
     }
@@ -209,5 +217,35 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         val commentData = CommentCardData.builder().comment(comment).project(ProjectFactory.project()).build()
         this.vm.inputs.configureWith(commentData)
         this.repliesCount.assertValue(comment.repliesCount())
+    }
+
+    @Test
+    fun testRetrySendCommentErrorClicked() {
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun createComment(comment: PostCommentData): Observable<Comment> {
+                return Observable.error(Throwable())
+            }
+        }).build()
+        val currentUser = UserFactory.user().toBuilder().id(1).build()
+        env.toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+        setUpEnvironment(env)
+
+        val comment = CommentFactory.comment()
+        val commentCardData = CommentCardData.builder().comment(comment).project(ProjectFactory.initialProject()).build()
+        this.vm.inputs.configureWith(commentCardData)
+        this.vm.inputs.onRetryViewClicked()
+
+        this.retrySendComment.assertValue(comment)
+        this.commentCardStatus.assertValues(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS,
+                CommentCardStatus.TRYING_TO_POST,
+                CommentCardStatus.FAILED_TO_SEND_COMMENT)
+
+        this.vm.inputs.onRetryViewClicked()
+
+        this.commentCardStatus.assertValues(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS,
+                CommentCardStatus.TRYING_TO_POST,
+                CommentCardStatus.FAILED_TO_SEND_COMMENT,
+                CommentCardStatus.TRYING_TO_POST,
+                CommentCardStatus.FAILED_TO_SEND_COMMENT)
     }
 }

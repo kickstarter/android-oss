@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -171,39 +172,39 @@ interface CommentsViewHolderViewModel {
                 .compose(takeWhen(this.onRetryViewClicked))
                 .compose(bindToLifecycle())
                 .subscribe {
+                    this.retrySendComment.onNext(it)
                     this.commentCardStatus.onNext(CommentCardStatus.TRYING_TO_POST)
                 }
+            
+            val commentData = this.commentInput.map { 
+                Pair(requireNotNull(it.comment?.body()), requireNotNull(it.project))
+            }
 
-            this.commentInput
-                .compose(takeWhen(this.onRetryViewClicked))
-                .switchMap {
-                    it.project?.let { project ->
-                        it.comment?.body()?.let { body ->
-                            this.apolloClient.createComment(
+            Observable
+                    .combineLatest(commentData, onRetryViewClicked) { commentData, _ ->
+                        return@combineLatest this.apolloClient.createComment(
                                 PostCommentData(
-                                    project = project,
-                                    body = body,
-                                    clientMutationId = null,
-                                    parentId = null
+                                        project = commentData.second,
+                                        body = commentData.first,
+                                        clientMutationId = null,
+                                        parentId = null
                                 )
-                            )
+                        ).doOnError {
+                            this.commentCardStatus.onNext(CommentCardStatus.FAILED_TO_SEND_COMMENT)
                         }
+                                .onErrorResumeNext(Observable.empty())
                     }
-                }.compose(bindToLifecycle())
-                .subscribe(
-                    {
+                    .switchMap {
+                        it
+                    }.subscribe {
                         this.commentCardStatus.onNext(CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY)
                         Handler(Looper.getMainLooper()).postDelayed(
-                            {
-                                this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
-                            },
-                            3000
+                                {
+                                    this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
+                                },
+                                3000
                         )
-                    },
-                    {
-                        this.commentCardStatus.onNext(CommentCardStatus.FAILED_TO_SEND_COMMENT)
                     }
-                )
 
             comment
                 .compose(takeWhen(this.onFlagButtonClicked))

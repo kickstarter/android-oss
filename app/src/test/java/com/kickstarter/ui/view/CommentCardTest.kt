@@ -21,6 +21,8 @@ class CommentCardTest : KSRobolectricTestCase() {
     private lateinit var commentActionGroup: Group
     private lateinit var repliesContainer: View
     private lateinit var retryButton: AppCompatButton
+    private lateinit var postingButton: AppCompatButton
+    private lateinit var postedButton: AppCompatButton
 
     @Before
     @Throws(Exception::class)
@@ -32,6 +34,8 @@ class CommentCardTest : KSRobolectricTestCase() {
         commentActionGroup = commentCard.findViewById(R.id.comment_action_group)
         retryButton = commentCard.findViewById(R.id.retry_button)
         repliesContainer = commentCard.findViewById(R.id.replies)
+        postingButton = commentCard.findViewById(R.id.posting_button)
+        postedButton = commentCard.findViewById(R.id.posted_button)
     }
 
     @Test
@@ -41,6 +45,8 @@ class CommentCardTest : KSRobolectricTestCase() {
         assertFalse(retryButton.isVisible)
         assertFalse(commentActionGroup.isVisible)
         assertTrue(commentDeletedMessageGroup.isVisible)
+        assertFalse(postedButton.isVisible)
+        assertFalse(postingButton.isVisible)
     }
 
     @Test
@@ -48,17 +54,21 @@ class CommentCardTest : KSRobolectricTestCase() {
         commentCard.setCommentCardStatus(CommentCardStatus.FAILED_TO_SEND_COMMENT)
         assertTrue(commentBody.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
-        assertTrue(commentActionGroup.isVisible)
+        assertFalse(commentActionGroup.isVisible)
         assertTrue(retryButton.isVisible)
+        assertFalse(postedButton.isVisible)
+        assertFalse(postingButton.isVisible)
     }
 
     @Test
     fun testCommentWithoutReplyStatus() {
-        commentCard.setCommentCardStatus(CommentCardStatus.COMMENT_WITHOUT_REPLIES)
+        commentCard.setCommentCardStatus(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
         assertTrue(commentBody.isVisible)
         assertTrue(commentActionGroup.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
         assertFalse(retryButton.isVisible)
+        assertFalse(postedButton.isVisible)
+        assertFalse(postingButton.isVisible)
     }
 
     @Test
@@ -68,15 +78,20 @@ class CommentCardTest : KSRobolectricTestCase() {
         assertTrue(commentActionGroup.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
         assertFalse(retryButton.isVisible)
+        assertFalse(postedButton.isVisible)
+        assertFalse(postingButton.isVisible)
     }
 
     @Test
     fun setCommentActionGroupVisibility_whenFalse_setToInvisible() {
+        commentCard.setCommentCardStatus(CommentCardStatus.COMMENT_WITH_REPLIES)
         commentCard.setCommentActionGroupVisibility(false)
         assertTrue(commentBody.isVisible)
         assertFalse(commentActionGroup.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
         assertFalse(retryButton.isVisible)
+        assertFalse(postedButton.isVisible)
+        assertFalse(postingButton.isVisible)
     }
 
     @Test
@@ -86,6 +101,8 @@ class CommentCardTest : KSRobolectricTestCase() {
         assertTrue(commentActionGroup.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
         assertFalse(retryButton.isVisible)
+        assertFalse(postedButton.isVisible)
+        assertFalse(postingButton.isVisible)
     }
 
     @Test
@@ -96,6 +113,8 @@ class CommentCardTest : KSRobolectricTestCase() {
         assertTrue(repliesContainer.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
         assertFalse(retryButton.isVisible)
+        assertFalse(postedButton.isVisible)
+        assertFalse(postingButton.isVisible)
     }
 
     @Test
@@ -106,5 +125,29 @@ class CommentCardTest : KSRobolectricTestCase() {
         assertFalse(repliesContainer.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
         assertFalse(retryButton.isVisible)
+        assertFalse(postedButton.isVisible)
+        assertFalse(postingButton.isVisible)
+    }
+
+    @Test
+    fun testTryingToPostCommentStatus() {
+        commentCard.setCommentCardStatus(CommentCardStatus.TRYING_TO_POST)
+        assertTrue(commentBody.isVisible)
+        assertFalse(commentDeletedMessageGroup.isVisible)
+        assertFalse(commentActionGroup.isVisible)
+        assertFalse(retryButton.isVisible)
+        assertFalse(postedButton.isVisible)
+        assertTrue(postingButton.isVisible)
+    }
+
+    @Test
+    fun testSuccessfullyPostCommentStatus() {
+        commentCard.setCommentCardStatus(CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY)
+        assertTrue(commentBody.isVisible)
+        assertFalse(commentDeletedMessageGroup.isVisible)
+        assertFalse(commentActionGroup.isVisible)
+        assertFalse(retryButton.isVisible)
+        assertTrue(postedButton.isVisible)
+        assertFalse(postingButton.isVisible)
     }
 }

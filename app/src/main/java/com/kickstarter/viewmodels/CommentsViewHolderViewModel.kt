@@ -10,6 +10,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.models.Comment
+import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.mutations.PostCommentData
@@ -198,17 +199,7 @@ interface CommentsViewHolderViewModel {
 
             Observable
                 .combineLatest(commentData, postNewComment) { commentData, _ ->
-                    return@combineLatest this.apolloClient.createComment(
-                        PostCommentData(
-                            project = commentData.second,
-                            body = commentData.first,
-                            clientMutationId = null,
-                            parentId = null
-                        )
-                    ).doOnError {
-                        this.commentCardStatus.onNext(CommentCardStatus.FAILED_TO_SEND_COMMENT)
-                    }
-                        .onErrorResumeNext(Observable.empty())
+                    return@combineLatest executePostCommentMutation(commentData)
                 }
                 .switchMap {
                     it
@@ -218,22 +209,11 @@ interface CommentsViewHolderViewModel {
 
             Observable
                 .combineLatest(commentData, onRetryViewClicked) { commentData, _ ->
-                    return@combineLatest this.apolloClient.createComment(
-                        PostCommentData(
-                            project = commentData.second,
-                            body = commentData.first,
-                            clientMutationId = null,
-                            parentId = null
-                        )
-                    ).doOnError {
-                        this.commentCardStatus.onNext(CommentCardStatus.FAILED_TO_SEND_COMMENT)
-                    }
-                        .onErrorResumeNext(Observable.empty())
+                    return@combineLatest executePostCommentMutation(commentData)
                 }
                 .switchMap {
                     it
                 }.doOnNext {
-
                     this.commentCardStatus.onNext(CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY)
                 }
                 .delay(3000, TimeUnit.MILLISECONDS)
@@ -254,6 +234,19 @@ interface CommentsViewHolderViewModel {
                     this.newCommentBind.onNext(it)
                 }
         }
+
+        private fun executePostCommentMutation(commentData: Pair<String, Project>) =
+            this.apolloClient.createComment(
+                PostCommentData(
+                    project = commentData.second,
+                    body = commentData.first,
+                    clientMutationId = null,
+                    parentId = null
+                )
+            ).doOnError {
+                this.commentCardStatus.onNext(CommentCardStatus.FAILED_TO_SEND_COMMENT)
+            }
+                .onErrorResumeNext(Observable.empty())
 
         /**
          * Checks if the current user is backing the current project,

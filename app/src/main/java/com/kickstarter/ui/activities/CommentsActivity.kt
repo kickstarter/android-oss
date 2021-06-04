@@ -12,6 +12,7 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.CommentsAdapter
+import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.viewholders.EmptyCommentsViewHolder
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
 import com.kickstarter.viewmodels.CommentsViewModel
@@ -79,6 +80,7 @@ class CommentsActivity :
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {
             override fun onClickActionListener(string: String) {
                 postComment(string)
+                hideKeyboard()
             }
         })
     }

@@ -19,10 +19,10 @@ import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
-import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CommentsActivity
 import com.kickstarter.ui.data.CommentCardData
+import com.kickstarter.ui.views.CommentCardStatus
 import com.kickstarter.ui.views.CommentComposerStatus
 import org.joda.time.DateTime
 import rx.Observable
@@ -35,7 +35,6 @@ interface CommentsViewModel {
         fun refresh()
         fun nextPage()
         fun insertNewCommentToList(comment: String, createdAt: DateTime)
-        fun postCommentToServer(commentCardData: CommentCardData)
     }
 
     interface Outputs : PaginatedViewModelOutput<CommentCardData> {
@@ -46,8 +45,6 @@ interface CommentsViewModel {
         fun commentsList(): Observable<List<CommentCardData>>
         fun setEmptyState(): Observable<Boolean>
         fun insertComment(): Observable<CommentCardData>
-        fun commentPosted(): Observable<CommentCardData>
-        fun updateFailedComment(): Observable<CommentCardData>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
@@ -67,15 +64,11 @@ interface CommentsViewModel {
         private val disableReplyButton = BehaviorSubject.create<Boolean>()
 
         private val insertNewCommentToList = PublishSubject.create<Pair<String, DateTime>>()
-        private val postCommentToServer = BehaviorSubject.create<CommentCardData>()
         private val isLoadingMoreItems = BehaviorSubject.create<Boolean>()
         private val isRefreshing = BehaviorSubject.create<Boolean>()
         private val enablePagination = BehaviorSubject.create<Boolean>()
         private val setEmptyState = BehaviorSubject.create<Boolean>()
         private val insertComment = BehaviorSubject.create<CommentCardData>()
-        private val commentPosted = BehaviorSubject.create<CommentCardData>()
-        private val updateFailedComment = BehaviorSubject.create<CommentCardData>()
-        private val failedPostedCommentObserver = BehaviorSubject.create<Void>()
 
         private var lastCommentCursour: String? = null
         override var loadMoreListData = mutableListOf<CommentCardData>()
@@ -137,53 +130,15 @@ interface CommentsViewModel {
                 }
                 .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
                 .map {
-                    CommentCardData.builder().comment(it.first).project(it.second).build()
+                    CommentCardData.builder()
+                        .comment(it.first)
+                        .project(it.second)
+                        .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
+                        .build()
                 }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.insertComment.onNext(it)
-                }
-
-            val commentData = this.postCommentToServer.map { requireNotNull(it.comment) }
-
-            this.currentUser.loggedInUser()
-                .compose(Transformers.takePairWhen(commentData))
-                .compose(Transformers.takePairWhen(this.failedPostedCommentObserver))
-                .map {
-                    buildCommentBody(Pair(it.first.first, Pair(it.first.second.body(), it.first.second.createdAt())))
-                }
-                .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
-                .map {
-                    CommentCardData.builder().comment(it.first).project(it.second).commentCardState(2).build()
-                }
-                .compose(bindToLifecycle())
-                .subscribe {
-                    this.updateFailedComment.onNext(it)
-                }
-
-            Observable
-                .combineLatest(initialProject, commentData) { project, comment ->
-                    return@combineLatest this.apolloClient.createComment(
-                        PostCommentData(
-                            project = project,
-                            body = comment.body(),
-                            clientMutationId = null,
-                            parentId = null
-                        )
-                    ).doOnError {
-                        this.failedPostedCommentObserver.onNext(null)
-                    }
-                        .onErrorResumeNext(Observable.empty())
-                }
-                .switchMap {
-                    it
-                }
-                .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
-                .map {
-                    CommentCardData.builder().comment(it.first).project(it.second).build()
-                }
-                .subscribe {
-                    this.commentPosted.onNext(it)
                 }
         }
 
@@ -287,11 +242,7 @@ interface CommentsViewModel {
         override fun enablePagination(): Observable<Boolean> = enablePagination
         override fun isRefreshing(): Observable<Boolean> = isRefreshing
         override fun insertComment(): Observable<CommentCardData> = this.insertComment
-        override fun commentPosted(): Observable<CommentCardData> = this.commentPosted
-        override fun updateFailedComment(): Observable<CommentCardData> = this.updateFailedComment
-
         override fun insertNewCommentToList(comment: String, createdAt: DateTime) = insertNewCommentToList.onNext(Pair(comment, createdAt))
-        override fun postCommentToServer(commentCardData: CommentCardData) = postCommentToServer.onNext(commentCardData)
 
         override fun bindPaginatedData(data: List<CommentCardData>?) {
             lastCommentCursour = data?.lastOrNull()?.comment?.cursor()

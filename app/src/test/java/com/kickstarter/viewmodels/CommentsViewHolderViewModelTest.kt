@@ -33,6 +33,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     private val replyToComment = TestSubscriber<Comment>()
     private val flagComment = TestSubscriber<Comment>()
     private val repliesCount = TestSubscriber<Int>()
+    private val newCommentBind = TestSubscriber<CommentCardData>()
 
     private val createdAt = DateTime.now()
     private val currentUser = UserFactory.user().toBuilder().id(1).avatar(
@@ -53,6 +54,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.replyToComment().subscribe(this.replyToComment)
         this.vm.outputs.flagComment().subscribe(this.flagComment)
         this.vm.outputs.commentRepliesCount().subscribe(this.repliesCount)
+        this.vm.outputs.newCommentBind().subscribe(this.newCommentBind)
     }
 
     @Test
@@ -238,7 +240,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.retrySendComment.assertValue(comment)
         this.commentCardStatus.assertValues(
             CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS,
-            CommentCardStatus.TRYING_TO_POST,
+            CommentCardStatus.RE_TRYING_TO_POST,
             CommentCardStatus.FAILED_TO_SEND_COMMENT
         )
 
@@ -246,9 +248,67 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.commentCardStatus.assertValues(
             CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS,
+            CommentCardStatus.RE_TRYING_TO_POST,
+            CommentCardStatus.FAILED_TO_SEND_COMMENT,
+            CommentCardStatus.RE_TRYING_TO_POST,
+            CommentCardStatus.FAILED_TO_SEND_COMMENT
+        )
+    }
+
+    @Test
+    fun testSendCommentClicked() {
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun createComment(comment: PostCommentData): Observable<Comment> {
+                return Observable.just(CommentFactory.liveComment(createdAt = createdAt))
+            }
+        }).build()
+        val currentUser = UserFactory.user().toBuilder().id(1).build()
+        env.toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+        setUpEnvironment(env)
+
+        val comment = CommentFactory.comment()
+        val commentCardData = CommentCardData.builder()
+            .comment(comment)
+            .project(ProjectFactory.initialProject())
+            .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
+            .build()
+
+        this.vm.inputs.configureWith(commentCardData)
+        this.vm.inputs.postNewComment(commentCardData)
+
+        this.commentCardStatus.assertValues(
+            CommentCardStatus.TRYING_TO_POST,
+            CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS
+        )
+    }
+
+    @Test
+    fun testSendCommentFailedAndPressRetry() {
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun createComment(comment: PostCommentData): Observable<Comment> {
+                return Observable.error(Throwable())
+            }
+        }).build()
+        val currentUser = UserFactory.user().toBuilder().id(1).build()
+        env.toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+        setUpEnvironment(env)
+
+        val comment = CommentFactory.comment()
+        val commentCardData = CommentCardData.builder()
+            .comment(comment)
+            .project(ProjectFactory.initialProject())
+            .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
+            .build()
+
+        this.vm.inputs.configureWith(commentCardData)
+        this.vm.inputs.postNewComment(commentCardData)
+        this.vm.inputs.onRetryViewClicked()
+
+        this.retrySendComment.assertValue(comment)
+        this.commentCardStatus.assertValues(
             CommentCardStatus.TRYING_TO_POST,
             CommentCardStatus.FAILED_TO_SEND_COMMENT,
-            CommentCardStatus.TRYING_TO_POST,
+            CommentCardStatus.RE_TRYING_TO_POST,
             CommentCardStatus.FAILED_TO_SEND_COMMENT
         )
     }

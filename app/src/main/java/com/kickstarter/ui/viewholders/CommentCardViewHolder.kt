@@ -87,6 +87,11 @@ class CommentCardViewHolder(
             .compose(Transformers.observeForUI())
             .subscribe { this.delegate.onFlagButtonClicked(it) }
 
+        this.vm.outputs.newCommentBind()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { vm.inputs.postNewComment(it) }
+
         binding.commentsCardView.setCommentCardClickedListener(object : OnCommentCardClickedListener {
             override fun onRetryViewClicked(view: View) {
                 vm.inputs.onRetryViewClicked()

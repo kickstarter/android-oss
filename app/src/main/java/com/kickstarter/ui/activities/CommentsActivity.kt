@@ -74,16 +74,16 @@ class CommentsActivity :
             .subscribe {
                 adapter.insertData(it, 0)
                 binding.commentsRecyclerView.scrollToPosition(0)
-                viewModel.inputs.postCommentToServer(it)
+                //  viewModel.inputs.postCommentToServer(it)
             }
-
-        viewModel.outputs.updateFailedComment()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                adapter.update(it, 0)
-                binding.commentsRecyclerView.scrollToPosition(0)
-            }
+//
+//        viewModel.outputs.updateFailedComment()
+//            .compose(bindToLifecycle())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe {
+//                adapter.update(it, 0)
+//                binding.commentsRecyclerView.scrollToPosition(0)
+//            }
 
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {
             override fun onClickActionListener(string: String) {

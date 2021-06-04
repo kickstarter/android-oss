@@ -131,7 +131,7 @@ class CommentCardTest : KSRobolectricTestCase() {
 
     @Test
     fun testTryingToPostCommentStatus() {
-        commentCard.setCommentCardStatus(CommentCardStatus.TRYING_TO_POST)
+        commentCard.setCommentCardStatus(CommentCardStatus.RE_TRYING_TO_POST)
         assertTrue(commentBody.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
         assertFalse(commentActionGroup.isVisible)

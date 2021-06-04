@@ -1,7 +1,5 @@
 package com.kickstarter.viewmodels
 
-import android.os.Handler
-import android.os.Looper
 import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
@@ -20,6 +18,7 @@ import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 
 interface CommentsViewHolderViewModel {
     interface Inputs {
@@ -40,6 +39,8 @@ interface CommentsViewHolderViewModel {
 
         /** Configure the view model with the [Comment]. */
         fun configureWith(commentCardData: CommentCardData)
+
+        fun postNewComment(commentCardData: CommentCardData)
     }
 
     interface Outputs {
@@ -78,6 +79,8 @@ interface CommentsViewHolderViewModel {
 
         /** Emits the current [Comment] when view replies clicked.. */
         fun viewCommentReplies(): Observable<Comment>
+
+        fun newCommentBind(): Observable<CommentCardData>
     }
 
     class ViewModel(environment: Environment) : ActivityViewModel<CommentCardViewHolder>(environment), Inputs, Outputs {
@@ -100,6 +103,8 @@ interface CommentsViewHolderViewModel {
         private val replyToComment = PublishSubject.create<Comment>()
         private val flagComment = PublishSubject.create<Comment>()
         private val viewCommentReplies = PublishSubject.create<Comment>()
+        private val postNewComment = BehaviorSubject.create<CommentCardData>()
+        private val newCommentBind = BehaviorSubject.create<CommentCardData>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -109,7 +114,8 @@ interface CommentsViewHolderViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.commentCardStatus.onNext(cardStatus(it))
+                    val commentCardStatus = cardStatus(it)
+                    this.commentCardStatus.onNext(commentCardStatus)
                 }
 
             this.commentInput
@@ -173,12 +179,32 @@ interface CommentsViewHolderViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.retrySendComment.onNext(it)
-                    this.commentCardStatus.onNext(CommentCardStatus.TRYING_TO_POST)
+                    this.commentCardStatus.onNext(CommentCardStatus.RE_TRYING_TO_POST)
                 }
 
             val commentData = this.commentInput.map {
                 Pair(requireNotNull(it.comment?.body()), requireNotNull(it.project))
             }
+
+            Observable
+                .combineLatest(commentData, postNewComment) { commentData, _ ->
+                    return@combineLatest this.apolloClient.createComment(
+                        PostCommentData(
+                            project = commentData.second,
+                            body = commentData.first,
+                            clientMutationId = null,
+                            parentId = null
+                        )
+                    ).doOnError {
+                        this.commentCardStatus.onNext(CommentCardStatus.FAILED_TO_SEND_COMMENT)
+                    }
+                        .onErrorResumeNext(Observable.empty())
+                }
+                .switchMap {
+                    it
+                }.subscribe {
+                    this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
+                }
 
             Observable
                 .combineLatest(commentData, onRetryViewClicked) { commentData, _ ->
@@ -196,27 +222,35 @@ interface CommentsViewHolderViewModel {
                 }
                 .switchMap {
                     it
-                }.subscribe {
+                }.doOnNext {
+
                     this.commentCardStatus.onNext(CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY)
-                    Handler(Looper.getMainLooper()).postDelayed(
-                        {
-                            this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
-                        },
-                        3000
-                    )
+                }
+                .delay(3000, TimeUnit.MILLISECONDS)
+                .subscribe {
+                    this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
                 }
 
             comment
                 .compose(takeWhen(this.onFlagButtonClicked))
                 .compose(bindToLifecycle())
                 .subscribe(this.flagComment)
+
+            this.commentInput
+                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.newCommentBind.onNext(it)
+                }
         }
 
         private fun isActionGroupVisible(commentCardData: CommentCardData, user: User?) =
             commentCardData.project?.let {
                 (it.isBacking || ProjectUtils.userIsCreator(it, user)) && (
                     commentCardData.commentCardState == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus ||
-                        commentCardData.commentCardState == CommentCardStatus.COMMENT_WITH_REPLIES.commentCardStatus
+                        commentCardData.commentCardState == CommentCardStatus.COMMENT_WITH_REPLIES.commentCardStatus ||
+                        commentCardData.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus
                     )
             } ?: false
 
@@ -261,5 +295,8 @@ interface CommentsViewHolderViewModel {
         override fun flagComment(): Observable<Comment> = flagComment
 
         override fun viewCommentReplies(): Observable<Comment> = this.viewCommentReplies
+
+        override fun newCommentBind(): Observable<CommentCardData> = this.newCommentBind
+        override fun postNewComment(commentCardData: CommentCardData) = postNewComment.onNext(commentCardData)
     }
 }

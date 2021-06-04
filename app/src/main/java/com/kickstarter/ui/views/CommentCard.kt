@@ -112,23 +112,25 @@ class CommentCard @JvmOverloads constructor(
         binding.commentBody.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLIES ||
             cardCommentStatus == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS ||
             cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT ||
-            cardCommentStatus == CommentCardStatus.TRYING_TO_POST ||
-            cardCommentStatus == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY
+            cardCommentStatus == CommentCardStatus.RE_TRYING_TO_POST ||
+            cardCommentStatus == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY ||
+            cardCommentStatus == CommentCardStatus.TRYING_TO_POST
 
         binding.commentActionGroup.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLIES ||
-            cardCommentStatus == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS
+            cardCommentStatus == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS ||
+            cardCommentStatus == CommentCardStatus.TRYING_TO_POST
 
         binding.retryButton.isVisible =
             cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT
 
         binding.postingButton.isVisible =
-            cardCommentStatus == CommentCardStatus.TRYING_TO_POST
+            cardCommentStatus == CommentCardStatus.RE_TRYING_TO_POST
 
         binding.postedButton.isVisible =
             cardCommentStatus == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY
 
         val commentBodyTextColor = if (cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT ||
-            cardCommentStatus == CommentCardStatus.TRYING_TO_POST
+            cardCommentStatus == CommentCardStatus.RE_TRYING_TO_POST
         ) {
             R.color.soft_grey_disable
         } else {
@@ -184,6 +186,7 @@ enum class CommentCardStatus(val commentCardStatus: Int) {
     COMMENT_WITH_REPLIES(1), // comments with reply view
     FAILED_TO_SEND_COMMENT(2), // pending comment
     DELETED_COMMENT(3), // Deleted comment
-    TRYING_TO_POST(4), // trying to post comment
-    POSTING_COMMENT_COMPLETED_SUCCESSFULLY(5), // trying to post comment
+    RE_TRYING_TO_POST(4), // trying to post comment
+    POSTING_COMMENT_COMPLETED_SUCCESSFULLY(5), // trying to post comment,
+    TRYING_TO_POST(6), // comments without reply view
 }

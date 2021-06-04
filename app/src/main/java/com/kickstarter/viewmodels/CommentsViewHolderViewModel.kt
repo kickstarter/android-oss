@@ -110,16 +110,7 @@ interface CommentsViewHolderViewModel {
                 .subscribe {
                     this.commentCardStatus.onNext(cardStatus(it))
                 }
-//            this.commentInput
-//                    .compose(bindToLifecycle())
-//                    .subscribe {
-//                        val cardStatus = when {
-//                            it.first.deleted() -> CommentCardStatus.DELETED_COMMENT
-//                            (it.first.repliesCount() != 0) -> CommentCardStatus.COMMENT_WITH_REPLAY
-//                            else -> it.second
-//                        }
-//                        this.commentCardStatus.onNext(cardStatus)
-//                    }
+
             this.commentInput
                 .compose(Transformers.combineLatestPair(environment.currentUser().observable()))
                 .compose(bindToLifecycle())

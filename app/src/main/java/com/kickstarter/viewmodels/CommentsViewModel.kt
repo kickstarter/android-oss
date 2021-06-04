@@ -131,70 +131,70 @@ interface CommentsViewModel {
             loadCommentList(initialProject)
 
             this.currentUser.loggedInUser()
-                    .compose(Transformers.takePairWhen(this.postComment))
-                    .map {
-                        buildCommentBody(it)
-                    }
-                    .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
-                    .map {
-                        CommentCardData.builder().comment(it.first).project(it.second).build()
-                    }
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.insertComment.onNext(it)
-                    }
+                .compose(Transformers.takePairWhen(this.postComment))
+                .map {
+                    buildCommentBody(it)
+                }
+                .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
+                .map {
+                    CommentCardData.builder().comment(it.first).project(it.second).build()
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.insertComment.onNext(it)
+                }
 
             val commentData = this.postCommentToServer.map { requireNotNull(it.comment) }
 
             this.currentUser.loggedInUser()
-                    .compose(Transformers.takePairWhen(commentData))
-                    .compose(Transformers.takePairWhen(this.failedPostedCommentObserver))
-                    .map {
+                .compose(Transformers.takePairWhen(commentData))
+                .compose(Transformers.takePairWhen(this.failedPostedCommentObserver))
+                .map {
 
-                        Comment.builder()
-                                .body(it.first.second.body())
-                                .parentId(-1)
-                                .authorBadges(listOf())
-                                .createdAt(it.first.second.createdAt())
-                                .cursor("")
-                                .deleted(false)
-                                .id(-1)
-                                .repliesCount(0)
-                                .author(it.first.first)
-                                .build()
-                    }
-                    .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
-                    .map {
-                        CommentCardData.builder().comment(it.first).project(it.second).commentCardState(2).build()
-                    }
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.updateFailedComment.onNext(it)
-                    }
+                    Comment.builder()
+                        .body(it.first.second.body())
+                        .parentId(-1)
+                        .authorBadges(listOf())
+                        .createdAt(it.first.second.createdAt())
+                        .cursor("")
+                        .deleted(false)
+                        .id(-1)
+                        .repliesCount(0)
+                        .author(it.first.first)
+                        .build()
+                }
+                .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
+                .map {
+                    CommentCardData.builder().comment(it.first).project(it.second).commentCardState(2).build()
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.updateFailedComment.onNext(it)
+                }
             Observable
-                    .combineLatest(initialProject, commentData) { project, comment ->
-                        return@combineLatest this.apolloClient.createComment(
-                                PostCommentData(
-                                        project = project,
-                                        body = comment.body(),
-                                        clientMutationId = null,
-                                        parentId = null
-                                )
-                        ).doOnError {
-                            this.failedPostedCommentObserver.onNext(null)
-                        }
-                                .onErrorResumeNext(Observable.empty())
+                .combineLatest(initialProject, commentData) { project, comment ->
+                    return@combineLatest this.apolloClient.createComment(
+                        PostCommentData(
+                            project = project,
+                            body = comment.body(),
+                            clientMutationId = null,
+                            parentId = null
+                        )
+                    ).doOnError {
+                        this.failedPostedCommentObserver.onNext(null)
                     }
-                    .switchMap {
-                        it
-                    }
-                    .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
-                    .map {
-                        CommentCardData.builder().comment(it.first).project(it.second).build()
-                    }
-                    .subscribe {
-                        this.commentPosted.onNext(it)
-                    }
+                        .onErrorResumeNext(Observable.empty())
+                }
+                .switchMap {
+                    it
+                }
+                .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
+                .map {
+                    CommentCardData.builder().comment(it.first).project(it.second).build()
+                }
+                .subscribe {
+                    this.commentPosted.onNext(it)
+                }
         }
 
         private fun loadCommentList(initialProject: Observable<Project>) {

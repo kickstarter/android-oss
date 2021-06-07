@@ -175,6 +175,9 @@ interface CommentsViewModel {
             // - Load comments from pagination & Handle pagination errors
             initialProject
                 .compose(Transformers.takeWhen(this.nextPage))
+                .doOnNext {
+                    this.isLoadingMoreItems.onNext(true)
+                }
                 .switchMap { getProjectComments(Observable.just(it), this.paginationError) }
                 .compose(bindToLifecycle())
                 .subscribe {
@@ -201,10 +204,10 @@ interface CommentsViewModel {
         }.doOnError {
             errorObservable.onNext(it)
         }
-            .onErrorResumeNext(Observable.empty())
-            .filter { ObjectUtils.isNotNull(it) }
-            .compose<Pair<CommentEnvelope, Project>>(combineLatestPair(project))
-            .map { Pair(requireNotNull(mapToCommentCardDataList(it)), it.first.totalCount) }
+        .onErrorResumeNext(Observable.empty())
+        .filter { ObjectUtils.isNotNull(it) }
+        .compose<Pair<CommentEnvelope, Project>>(combineLatestPair(project))
+        .map { Pair(requireNotNull(mapToCommentCardDataList(it)), it.first.totalCount) }
 
         private fun mapToCommentCardDataList(it: Pair<CommentEnvelope, Project>) =
             it.first.comments?.map { comment: Comment ->

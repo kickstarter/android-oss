@@ -46,6 +46,9 @@ interface CommentsViewModel {
         fun commentsList(): Observable<List<CommentCardData>>
         fun setEmptyState(): Observable<Boolean>
         fun insertComment(): Observable<CommentCardData>
+        fun initialLoadCommentsError(): Observable<Throwable>
+        fun paginateCommentsError(): Observable<Throwable>
+        fun pullToRefreshError(): Observable<Throwable>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
@@ -256,6 +259,9 @@ interface CommentsViewModel {
         override fun showCommentComposer(): Observable<Boolean> = showCommentComposer
         override fun commentsList(): Observable<List<CommentCardData>> = commentsList
         override fun enableReplyButton(): Observable<Boolean> = disableReplyButton
+        override fun initialLoadCommentsError(): Observable<Throwable> = this.initialError
+        override fun paginateCommentsError(): Observable<Throwable> = this.paginationError
+        override fun pullToRefreshError(): Observable<Throwable> = this.pullToRefreshError
 
         override fun setEmptyState(): Observable<Boolean> = setEmptyState
         override fun isLoadingMoreItems(): Observable<Boolean> = isLoadingMoreItems

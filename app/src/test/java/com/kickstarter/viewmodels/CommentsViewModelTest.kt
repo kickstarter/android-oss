@@ -29,6 +29,9 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     private val isRefreshing = TestSubscriber<Boolean>()
     private val enablePagination = TestSubscriber<Boolean>()
     private val insertNewCommentToListSubscriber = BehaviorSubject.create<CommentCardData>()
+    private val pullToRefreshError = TestSubscriber.create<Throwable>()
+    private val initialLoadError = TestSubscriber.create<Throwable>()
+    private val paginationError = TestSubscriber.create<Throwable>()
 
     @Test
     fun testCommentsViewModel_whenUserLoggedInAndBacking_shouldShowEnabledComposer() {
@@ -225,6 +228,29 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // Comments should emit.
         isRefreshing.assertValues(false, true, false)
         commentsList.assertValueCount(1)
+    }
+
+    @Test
+    fun testCommentsViewModel_ProjectRefresh_withError() {
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+                return Observable.error(ApiExceptionFactory.badRequestException())
+            }
+        }).build()
+
+        val vm = CommentsViewModel.ViewModel(env)
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        vm.outputs.isRefreshing().subscribe(isRefreshing)
+        vm.outputs.pullToRefreshError().subscribe(pullToRefreshError)
+
+        // Start the view model with a project.
+        vm.inputs.refresh()
+        vm.outputs.commentsList().subscribe(commentsList)
+
+        // Comments should emit.
+        isRefreshing.assertValues(true)
+        commentsList.assertValueCount(0)
+        pullToRefreshError.assertValueCount(1)
     }
 
     /*

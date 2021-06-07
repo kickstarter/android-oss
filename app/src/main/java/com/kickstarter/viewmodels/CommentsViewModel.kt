@@ -70,6 +70,11 @@ interface CommentsViewModel {
         private val setEmptyState = BehaviorSubject.create<Boolean>()
         private val insertComment = BehaviorSubject.create<CommentCardData>()
 
+        // - Error observables to handle the 3 different use cases
+        private val initialError = BehaviorSubject.create<Throwable>()
+        private val paginationError = BehaviorSubject.create<Throwable>()
+        private val pullToRefreshError = BehaviorSubject.create<Throwable>()
+
         private var lastCommentCursour: String? = null
         override var loadMoreListData = mutableListOf<CommentCardData>()
         init {
@@ -143,44 +148,52 @@ interface CommentsViewModel {
         }
 
         private fun loadCommentList(initialProject: Observable<Project>) {
-            val projectSlug = initialProject
-                .map { requireNotNull(it?.slug()) }
 
-            projectSlug
-                .compose(CommentEnvelopeTransformer(initialProject))
+            // - First load for comments
+            getProjectComments(initialProject, this.initialError)
                 .compose(bindToLifecycle())
                 .subscribe {
                     bindCommentList(it.first, LoadingType.NORMAL, it.second)
                 }
 
-            projectSlug
+            // - Handle pagination errors
+            initialProject
                 .compose(Transformers.takeWhen(this.nextPage))
                 .doOnNext {
                     this.isLoadingMoreItems.onNext(true)
                 }
-                .compose(CommentEnvelopeTransformer(initialProject))
+                .switchMap { getProjectComments(Observable.just(it), this.paginationError) }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    updatePaginatedData(
-                        LoadingType.LOAD_MORE,
-                        it.first
-                    )
+                    bindCommentList(it.first, LoadingType.NORMAL, it.second)
                 }
 
-            projectSlug
+            // - Handle pull to refresh errors
+            initialProject
                 .compose(Transformers.takeWhen(this.refresh))
                 .doOnNext {
                     this.isRefreshing.onNext(true)
                     // reset cursor
                     lastCommentCursour = null
-                }.compose(CommentEnvelopeTransformer(initialProject))
+                }
+                .switchMap { getProjectComments(Observable.just(it), this.pullToRefreshError) }
                 .compose(bindToLifecycle())
                 .subscribe {
                     bindCommentList(it.first, LoadingType.PULL_REFRESH, it.second)
                 }
         }
 
-        private fun mapToCommentCardDataList(it: Pair<CommentEnvelope, Project?>) =
+        private fun getProjectComments(project: Observable<Project>, errorObservable: BehaviorSubject<Throwable>) = project.switchMap {
+            return@switchMap apolloClient.getProjectComments(it.slug() ?: "", lastCommentCursour)
+        }.doOnError {
+            errorObservable.onNext(it)
+        }
+        .onErrorResumeNext(Observable.empty())
+        .filter { ObjectUtils.isNotNull(it) }
+        .compose<Pair<CommentEnvelope, Project>>(combineLatestPair(project))
+        .map { Pair(requireNotNull(mapToCommentCardDataList(it)), it.first.totalCount) }
+
+        private fun mapToCommentCardDataList(it: Pair<CommentEnvelope, Project>) =
             it.first.comments?.map { comment: Comment ->
                 CommentCardData.builder().comment(comment).project(it.second).build()
             }
@@ -205,19 +218,22 @@ interface CommentsViewModel {
                 updatePaginatedData(
                     loadingType,
                     commentCardDataList
-
                 )
             }
         }
 
-        inner class CommentEnvelopeTransformer(private val initialProject: Observable<Project>) : Observable.Transformer<String, Pair<List<CommentCardData>, Int>> {
+        inner class CommentEnvelopeTransformer(private val initialProject: Observable<Project>, private val errorObservable: BehaviorSubject<Throwable>) : Observable.Transformer<String, Pair<List<CommentCardData>, Int>> {
             override fun call(t: Observable<String>): Observable<Pair<List<CommentCardData>, Int>> {
                 return t.switchMap {
                     apolloClient.getProjectComments(it, lastCommentCursour)
                 }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .compose<Pair<CommentEnvelope, Project?>>(combineLatestPair(initialProject))
-                    .map { Pair(mapToCommentCardDataList(it), it.first.totalCount) }
+                .doOnError {
+                    errorObservable.onNext(it)
+                }
+                .onErrorResumeNext(Observable.empty())
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose<Pair<CommentEnvelope, Project>>(combineLatestPair(initialProject))
+                .map { Pair(mapToCommentCardDataList(it), it.first.totalCount) }
             }
         }
 

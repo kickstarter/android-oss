@@ -35,6 +35,7 @@ interface CommentsViewModel {
         fun refresh()
         fun nextPage()
         fun insertNewCommentToList(comment: String, createdAt: DateTime)
+        fun onShowGuideLinesLinkClicked()
     }
 
     interface Outputs : PaginatedViewModelOutput<CommentCardData> {
@@ -44,7 +45,8 @@ interface CommentsViewModel {
         fun showCommentComposer(): Observable<Boolean>
         fun commentsList(): Observable<List<CommentCardData>>
         fun setEmptyState(): Observable<Boolean>
-        fun insertComment(): Observable<CommentCardData>
+        fun insertComment(): Observable<List<CommentCardData>>
+        fun showCommentGuideLinesLink(): Observable<Void>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
@@ -56,11 +58,13 @@ interface CommentsViewModel {
         val outputs: Outputs = this
         private val refresh = PublishSubject.create<Void>()
         private val nextPage = PublishSubject.create<Void>()
+        private val onShowGuideLinesLinkClicked = PublishSubject.create<Void>()
 
         private val currentUserAvatar = BehaviorSubject.create<String?>()
         private val commentComposerStatus = BehaviorSubject.create<CommentComposerStatus>()
         private val showCommentComposer = BehaviorSubject.create<Boolean>()
         private val commentsList = BehaviorSubject.create<List<CommentCardData>?>()
+        private val showGuideLinesLink = BehaviorSubject.create<Void>()
         private val disableReplyButton = BehaviorSubject.create<Boolean>()
 
         private val insertNewCommentToList = PublishSubject.create<Pair<String, DateTime>>()
@@ -68,7 +72,7 @@ interface CommentsViewModel {
         private val isRefreshing = BehaviorSubject.create<Boolean>()
         private val enablePagination = BehaviorSubject.create<Boolean>()
         private val setEmptyState = BehaviorSubject.create<Boolean>()
-        private val insertComment = BehaviorSubject.create<CommentCardData>()
+        private val insertComment = BehaviorSubject.create<List<CommentCardData>>()
 
         private var lastCommentCursour: String? = null
         override var loadMoreListData = mutableListOf<CommentCardData>()
@@ -138,7 +142,16 @@ interface CommentsViewModel {
                 }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.insertComment.onNext(it)
+                    loadMoreListData.apply {
+                        add(0, it)
+                        this@ViewModel.insertComment.onNext(this)
+                    }
+                }
+
+            this.onShowGuideLinesLinkClicked
+                .compose(bindToLifecycle())
+                .subscribe {
+                    showGuideLinesLink.onNext(null)
                 }
         }
 
@@ -230,18 +243,20 @@ interface CommentsViewModel {
 
         override fun refresh() = refresh.onNext(null)
         override fun nextPage() = nextPage.onNext(null)
+        override fun onShowGuideLinesLinkClicked() = onShowGuideLinesLinkClicked.onNext(null)
 
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
         override fun commentComposerStatus(): Observable<CommentComposerStatus> = commentComposerStatus
         override fun showCommentComposer(): Observable<Boolean> = showCommentComposer
         override fun commentsList(): Observable<List<CommentCardData>> = commentsList
         override fun enableReplyButton(): Observable<Boolean> = disableReplyButton
+        override fun showCommentGuideLinesLink(): Observable<Void> = showGuideLinesLink
 
         override fun setEmptyState(): Observable<Boolean> = setEmptyState
         override fun isLoadingMoreItems(): Observable<Boolean> = isLoadingMoreItems
         override fun enablePagination(): Observable<Boolean> = enablePagination
         override fun isRefreshing(): Observable<Boolean> = isRefreshing
-        override fun insertComment(): Observable<CommentCardData> = this.insertComment
+        override fun insertComment(): Observable<List<CommentCardData>> = this.insertComment
         override fun insertNewCommentToList(comment: String, createdAt: DateTime) = insertNewCommentToList.onNext(Pair(comment, createdAt))
 
         override fun bindPaginatedData(data: List<CommentCardData>?) {

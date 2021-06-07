@@ -120,14 +120,20 @@ interface CommentsViewHolderViewModel {
         private val optimizely: ExperimentsClientType = environment.optimizely()
         private val apolloClient: ApolloClientType = environment.apolloClient()
         init {
-            this.commentInput
+            val updatedCommentedCard = this.commentInput
                 .filter { ObjectUtils.isNotNull(it) }
+                .map {
+                    val commentCardState = cardStatus(it)
+                    it.toBuilder().commentCardState(commentCardState?.commentCardStatus ?: 0).build()
+                }
+
+            updatedCommentedCard
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.commentCardStatus.onNext(cardStatus(it))
                 }
 
-            this.commentInput
+            updatedCommentedCard
                 .compose(Transformers.combineLatestPair(environment.currentUser().observable()))
                 .compose(bindToLifecycle())
                 .subscribe {

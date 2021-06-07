@@ -9,6 +9,7 @@ import com.kickstarter.databinding.ActivityCommentsLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.loadmore.PaginationHandler
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.CommentsAdapter
@@ -74,7 +75,7 @@ class CommentsActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                adapter.insertData(it, 0)
+                adapter.takeData(it)
             }
 
         /*
@@ -95,6 +96,13 @@ class CommentsActivity :
                 hideKeyboard()
             }
         })
+
+        viewModel.outputs.showCommentGuideLinesLink()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                ApplicationUtils.openUrlExternally(this, COMMENT_KICKSTARTER_GUIDELINES)
+            }
     }
 
     private fun setupPagination() {
@@ -166,6 +174,7 @@ class CommentsActivity :
     }
 
     override fun onCommentGuideLinesClicked(comment: Comment) {
+        viewModel.inputs.onShowGuideLinesLinkClicked()
     }
 
     override fun onCommentRepliesClicked(comment: Comment) {
@@ -198,5 +207,9 @@ class CommentsActivity :
     override fun onDestroy() {
         super.onDestroy()
         binding.commentsRecyclerView.adapter = null
+    }
+
+    companion object {
+        const val COMMENT_KICKSTARTER_GUIDELINES = "https://www.kickstarter.com/help/community"
     }
 }

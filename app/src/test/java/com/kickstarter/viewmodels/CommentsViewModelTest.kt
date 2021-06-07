@@ -28,7 +28,8 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     private val isLoadingMoreItems = TestSubscriber<Boolean>()
     private val isRefreshing = TestSubscriber<Boolean>()
     private val enablePagination = TestSubscriber<Boolean>()
-    private val insertNewCommentToListSubscriber = BehaviorSubject.create<CommentCardData>()
+    private val insertNewCommentToListSubscriber = BehaviorSubject.create<List<CommentCardData>>()
+    private val openCommentGuideLines = TestSubscriber<Void>()
 
     @Test
     fun testCommentsViewModel_whenUserLoggedInAndBacking_shouldShowEnabledComposer() {
@@ -284,6 +285,27 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         // post a comment
         vm.inputs.insertNewCommentToList(commentCardData.comment?.body()!!, createdAt)
-        assertEquals(commentCardData.comment, insertNewCommentToListSubscriber.value.comment)
+        assertEquals(commentCardData.comment, insertNewCommentToListSubscriber.value.first().comment)
+    }
+
+    @Test
+    fun testCommentsViewModel_openCommentGuidelinesLink() {
+        val currentUser = UserFactory.user()
+            .toBuilder()
+            .id(1)
+            .avatar(AvatarFactory.avatar())
+            .build()
+
+        val vm = CommentsViewModel.ViewModel(
+            environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+        )
+
+        // Start the view model with an update.
+        vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
+        vm.outputs.showCommentGuideLinesLink().subscribe(openCommentGuideLines)
+
+        // post a comment
+        vm.inputs.onShowGuideLinesLinkClicked()
+        openCommentGuideLines.assertValueCount(1)
     }
 }

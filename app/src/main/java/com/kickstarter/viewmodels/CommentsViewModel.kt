@@ -148,14 +148,14 @@ interface CommentsViewModel {
                     this.insertComment.onNext(it)
                 }
 
-            // TODO showcasing subscription to initialization error: https://kickstarter.atlassian.net/browse/NT-1951
+            // TODO showcasing subscription to initialization to be completed on : https://kickstarter.atlassian.net/browse/NT-1951
             this.initialError
                 .subscribe {
                     it.localizedMessage
                     Timber.d("************ On initializing error")
                 }
 
-            // TODO showcasing pagination error subscription
+            // TODO showcasing pagination error subscriptionto be completed on : https://kickstarter.atlassian.net/browse/NT-2019
             this.paginationError
                 .subscribe {
                     it.localizedMessage

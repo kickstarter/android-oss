@@ -10,9 +10,7 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UpdateFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient
-import com.kickstarter.models.Comment
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
-import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.views.CommentComposerStatus
@@ -30,8 +28,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     private val isLoadingMoreItems = TestSubscriber<Boolean>()
     private val isRefreshing = TestSubscriber<Boolean>()
     private val enablePagination = TestSubscriber<Boolean>()
-    private val commentSubscriber = BehaviorSubject.create<CommentCardData>()
-    private val commentPostedSubscriber = BehaviorSubject.create<CommentCardData>()
+    private val insertNewCommentToListSubscriber = BehaviorSubject.create<CommentCardData>()
 
     @Test
     fun testCommentsViewModel_whenUserLoggedInAndBacking_shouldShowEnabledComposer() {
@@ -268,63 +265,25 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
      */
     @Test
     fun testCommentsViewModel_PostComment_CommentAddedToView() {
-        val userAvatar = AvatarFactory.avatar()
-        val currentUser = UserFactory.user().toBuilder().id(1).avatar(
-            userAvatar
-        ).build()
+        val currentUser = UserFactory.user()
+            .toBuilder()
+            .id(1)
+            .avatar(AvatarFactory.avatar())
+            .build()
 
         val createdAt = DateTime.now()
 
-        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun createComment(comment: PostCommentData): Observable<Comment> {
-                return Observable.just(CommentFactory.liveComment(createdAt = createdAt))
-            }
-        }).build()
-
         val vm = CommentsViewModel.ViewModel(
-            env.toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+            environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
         )
 
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser)
         // Start the view model with an update.
         vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
-        vm.outputs.insertComment().subscribe(commentSubscriber)
-        vm.outputs.commentPosted().subscribe(commentPostedSubscriber)
+        vm.outputs.insertComment().subscribe(insertNewCommentToListSubscriber)
 
         // post a comment
-        vm.inputs.postComment("Some Comment", createdAt)
-
-        assertEquals(CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser).comment, commentPostedSubscriber.value.comment)
-        assertEquals(CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser).comment, commentSubscriber.value.comment)
-    }
-
-    @Test
-    fun testCommentsViewModel_PostComment_FailedComment() {
-        val userAvatar = AvatarFactory.avatar()
-        val currentUser = UserFactory.user().toBuilder().id(1).avatar(
-            userAvatar
-        ).build()
-
-        val createdAt = DateTime.now()
-
-        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun createComment(comment: PostCommentData): Observable<Comment> {
-                return Observable.error(Throwable())
-            }
-        }).build()
-
-        val vm = CommentsViewModel.ViewModel(
-            env.toBuilder().currentUser(MockCurrentUser(currentUser)).build()
-        )
-
-        // Start the view model with an update.
-        vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
-        vm.outputs.insertComment().subscribe(commentSubscriber)
-        vm.outputs.updateFailedComment().subscribe(commentPostedSubscriber)
-
-        // post a comment
-        vm.inputs.postComment("Some Comment", createdAt)
-
-        assertEquals(CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser).comment, commentPostedSubscriber.value.comment)
-        assertEquals(CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser).comment, commentSubscriber.value.comment)
+        vm.inputs.insertNewCommentToList(commentCardData.comment?.body()!!, createdAt)
+        assertEquals(commentCardData.comment, insertNewCommentToListSubscriber.value.comment)
     }
 }

@@ -12,6 +12,7 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.CommentsAdapter
+import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.viewholders.EmptyCommentsViewHolder
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
 import com.kickstarter.viewmodels.CommentsViewModel
@@ -88,15 +89,10 @@ class CommentsActivity :
                 binding.commentsRecyclerView.scrollToPosition(0)
             }
 
-        viewModel.outputs.updateFailedComment()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-            }
-
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {
             override fun onClickActionListener(string: String) {
                 postComment(string)
+                hideKeyboard()
             }
         })
     }
@@ -140,7 +136,7 @@ class CommentsActivity :
     }
 
     fun postComment(comment: String) {
-        this.viewModel.inputs.postComment(comment, DateTime.now())
+        this.viewModel.inputs.insertNewCommentToList(comment, DateTime.now())
         this.binding.commentComposer.clearCommentComposer()
     }
 

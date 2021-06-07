@@ -90,4 +90,6 @@
   <string name="reply">Reply</string>
   <string name="fpo_replies">Replies</string>
   <string name="view_replies">View replies</string>
+  <string name="posting">Posting...</string>
+  <string name="posted">Posted</string>
 </resources>

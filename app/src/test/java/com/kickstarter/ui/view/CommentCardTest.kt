@@ -20,6 +20,8 @@ class CommentCardTest : KSRobolectricTestCase() {
     private lateinit var replyButton: AppCompatButton
     private lateinit var repliesButton: AppCompatTextView
     private lateinit var retryButton: AppCompatButton
+    private lateinit var postingButton: AppCompatButton
+    private lateinit var postedButton: AppCompatButton
 
     @Before
     @Throws(Exception::class)
@@ -34,6 +36,8 @@ class CommentCardTest : KSRobolectricTestCase() {
         replyButton = commentCard.findViewById(R.id.reply_button)
         retryButton = commentCard.findViewById(R.id.retry_button)
         repliesButton = commentCard.findViewById(R.id.replies)
+        postingButton = commentCard.findViewById(R.id.posting_button)
+        postedButton = commentCard.findViewById(R.id.posted_button)
     }
 
     @Test
@@ -43,6 +47,8 @@ class CommentCardTest : KSRobolectricTestCase() {
         assertFalse(retryButton.isVisible)
         assertFalse(replyButton.isVisible)
         assertTrue(commentDeletedMessageGroup.isVisible)
+        assertFalse(postedButton.isVisible)
+        assertFalse(postingButton.isVisible)
     }
 
     @Test
@@ -50,17 +56,21 @@ class CommentCardTest : KSRobolectricTestCase() {
         commentCard.setCommentCardStatus(CommentCardStatus.FAILED_TO_SEND_COMMENT)
         assertTrue(commentBody.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
-        assertTrue(replyButton.isVisible)
+        assertFalse(replyButton.isVisible)
         assertTrue(retryButton.isVisible)
+        assertFalse(postedButton.isVisible)
+        assertFalse(postingButton.isVisible)
     }
 
     @Test
     fun testCommentWithoutReplyStatus() {
-        commentCard.setCommentCardStatus(CommentCardStatus.COMMENT_WITHOUT_REPLIES)
+        commentCard.setCommentCardStatus(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
         assertTrue(commentBody.isVisible)
         assertTrue(replyButton.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
         assertFalse(retryButton.isVisible)
+        assertFalse(postedButton.isVisible)
+        assertFalse(postingButton.isVisible)
     }
 
     @Test
@@ -70,6 +80,8 @@ class CommentCardTest : KSRobolectricTestCase() {
         assertTrue(replyButton.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
         assertFalse(retryButton.isVisible)
+        assertFalse(postedButton.isVisible)
+        assertFalse(postingButton.isVisible)
     }
 
     @Test
@@ -79,6 +91,8 @@ class CommentCardTest : KSRobolectricTestCase() {
         assertFalse(replyButton.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
         assertFalse(retryButton.isVisible)
+        assertFalse(postedButton.isVisible)
+        assertFalse(postingButton.isVisible)
     }
 
     @Test
@@ -88,6 +102,8 @@ class CommentCardTest : KSRobolectricTestCase() {
         assertTrue(replyButton.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
         assertFalse(retryButton.isVisible)
+        assertFalse(postedButton.isVisible)
+        assertFalse(postingButton.isVisible)
     }
 
     @Test
@@ -100,18 +116,22 @@ class CommentCardTest : KSRobolectricTestCase() {
         assertTrue(repliesButton.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
         assertFalse(retryButton.isVisible)
+        assertFalse(postedButton.isVisible)
+        assertFalse(postingButton.isVisible)
     }
 
     @Test
     fun testCommentViewReplyStatus_No_Replies() {
         commentCard.setCommentReplies(0)
-        commentCard.setCommentCardStatus(CommentCardStatus.COMMENT_WITHOUT_REPLIES)
+        commentCard.setCommentCardStatus(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
 
         assertTrue(commentBody.isVisible)
         assertTrue(replyButton.isVisible)
         assertFalse(repliesButton.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
         assertFalse(retryButton.isVisible)
+        assertFalse(postedButton.isVisible)
+        assertFalse(postingButton.isVisible)
     }
 
     @Test
@@ -126,5 +146,26 @@ class CommentCardTest : KSRobolectricTestCase() {
         assertFalse(repliesButton.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
         assertFalse(retryButton.isVisible)
+    }
+    @Test
+    fun testTryingToPostCommentStatus() {
+        commentCard.setCommentCardStatus(CommentCardStatus.RE_TRYING_TO_POST)
+        assertTrue(commentBody.isVisible)
+        assertFalse(commentDeletedMessageGroup.isVisible)
+        assertFalse(replyButton.isVisible)
+        assertFalse(retryButton.isVisible)
+        assertFalse(postedButton.isVisible)
+        assertTrue(postingButton.isVisible)
+    }
+
+    @Test
+    fun testSuccessfullyPostCommentStatus() {
+        commentCard.setCommentCardStatus(CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY)
+        assertTrue(commentBody.isVisible)
+        assertFalse(commentDeletedMessageGroup.isVisible)
+        assertFalse(replyButton.isVisible)
+        assertFalse(retryButton.isVisible)
+        assertTrue(postedButton.isVisible)
+        assertFalse(postingButton.isVisible)
     }
 }

@@ -54,7 +54,7 @@ class CommentFactory {
                 .build()
         }
 
-        fun liveCommentCardData(comment: String = "Some Comment", createdAt: DateTime, currentUser: User): CommentCardData {
+        fun liveCommentCardData(comment: String = "Some Comment", createdAt: DateTime, currentUser: User, isDelete: Boolean = false, repliesCount: Int = 0): CommentCardData {
             return CommentCardData(
                 Comment.builder()
                     .body(comment)
@@ -62,9 +62,9 @@ class CommentFactory {
                     .authorBadges(listOf())
                     .createdAt(createdAt)
                     .cursor("")
-                    .deleted(false)
+                    .deleted(isDelete)
                     .id(-1)
-                    .repliesCount(0)
+                    .repliesCount(repliesCount)
                     .author(currentUser)
                     .build(),
                 0,

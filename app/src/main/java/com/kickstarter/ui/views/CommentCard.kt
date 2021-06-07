@@ -85,7 +85,7 @@ class CommentCard @JvmOverloads constructor(
                 setCommentUserName(it)
             }
 
-            getBoolean(R.styleable.CommentCardView_is_comment_reply_button_visible, true)?.also {
+            getBoolean(R.styleable.CommentCardView_is_comment_reply_button_visible, true).also {
                 setReplyButtonVisibility(it)
             }
 
@@ -112,8 +112,11 @@ class CommentCard @JvmOverloads constructor(
             cardCommentStatus == CommentCardStatus.DELETED_COMMENT
 
         binding.commentBody.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLIES ||
-            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLIES ||
-            cardCommentStatus != CommentCardStatus.DELETED_COMMENT
+            cardCommentStatus == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS ||
+            cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT ||
+            cardCommentStatus == CommentCardStatus.RE_TRYING_TO_POST ||
+            cardCommentStatus == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY ||
+            cardCommentStatus == CommentCardStatus.TRYING_TO_POST
 
         if (shouldShowReplyButton(cardCommentStatus)) {
             setReplyButtonVisibility(true)
@@ -124,7 +127,15 @@ class CommentCard @JvmOverloads constructor(
         binding.retryButton.isVisible =
             cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT
 
-        val commentBodyTextColor = if (cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT) {
+        binding.postingButton.isVisible =
+            cardCommentStatus == CommentCardStatus.RE_TRYING_TO_POST
+
+        binding.postedButton.isVisible =
+            cardCommentStatus == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY
+
+        val commentBodyTextColor = if (cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT ||
+            cardCommentStatus == CommentCardStatus.RE_TRYING_TO_POST
+        ) {
             R.color.soft_grey_disable
         } else {
             R.color.text_primary
@@ -135,8 +146,7 @@ class CommentCard @JvmOverloads constructor(
 
     private fun shouldShowReplyButton(cardCommentStatus: CommentCardStatus) =
         cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLIES ||
-            cardCommentStatus == CommentCardStatus.COMMENT_WITHOUT_REPLIES ||
-            cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT
+            cardCommentStatus == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS
 
     /*
      * To display replies count
@@ -184,8 +194,11 @@ interface OnCommentCardClickedListener {
 }
 
 enum class CommentCardStatus(val commentCardStatus: Int) {
-    COMMENT_WITHOUT_REPLIES(0), // comments without reply view
+    COMMENT_FOR_LOGIN_BACKED_USERS(0), // comments without reply view
     COMMENT_WITH_REPLIES(1), // comments with reply view
     FAILED_TO_SEND_COMMENT(2), // pending comment
-    DELETED_COMMENT(3) // Deleted comment
+    DELETED_COMMENT(3), // Deleted comment
+    RE_TRYING_TO_POST(4), // trying to post comment
+    POSTING_COMMENT_COMPLETED_SUCCESSFULLY(5), // trying to post comment,
+    TRYING_TO_POST(6), // comments without reply view
 }

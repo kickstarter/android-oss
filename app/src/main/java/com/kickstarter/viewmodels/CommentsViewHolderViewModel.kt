@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ExperimentsClientType
@@ -9,7 +10,10 @@ import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.models.Comment
+import com.kickstarter.models.Project
 import com.kickstarter.models.User
+import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.viewholders.CommentCardViewHolder
 import com.kickstarter.ui.views.CommentCardStatus
@@ -17,6 +21,7 @@ import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 
 interface CommentsViewHolderViewModel {
     interface Inputs {
@@ -37,6 +42,8 @@ interface CommentsViewHolderViewModel {
 
         /** Configure the view model with the [Comment]. */
         fun configureWith(commentCardData: CommentCardData)
+
+        fun postNewComment(commentCardData: CommentCardData)
     }
 
     interface Outputs {
@@ -78,6 +85,9 @@ interface CommentsViewHolderViewModel {
 
         /** Emits the current [OptimizelyFeature.Key.COMMENT_ENABLE_THREADS] status to the CommentCard UI*/
         fun isCommentEnableThreads(): Observable<Boolean>
+
+        /** Emits the new bind comment to ui */
+        fun newCommentBind(): Observable<CommentCardData>
     }
 
     class ViewModel(environment: Environment) : ActivityViewModel<CommentCardViewHolder>(environment), Inputs, Outputs {
@@ -100,16 +110,17 @@ interface CommentsViewHolderViewModel {
         private val replyToComment = PublishSubject.create<Comment>()
         private val flagComment = PublishSubject.create<Comment>()
         private val viewCommentReplies = PublishSubject.create<Comment>()
+        private val postNewComment = BehaviorSubject.create<CommentCardData>()
+        private val newCommentBind = BehaviorSubject.create<CommentCardData>()
         private val isCommentEnableThreads = PublishSubject.create<Boolean>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
 
         private val optimizely: ExperimentsClientType = environment.optimizely()
-
+        private val apolloClient: ApolloClientType = environment.apolloClient()
         init {
             this.commentInput
-                .map { it.comment }
                 .filter { ObjectUtils.isNotNull(it) }
                 .compose(bindToLifecycle())
                 .subscribe {
@@ -177,13 +188,65 @@ interface CommentsViewHolderViewModel {
             comment
                 .compose(takeWhen(this.onRetryViewClicked))
                 .compose(bindToLifecycle())
-                .subscribe(this.retrySendComment)
+                .subscribe {
+                    this.retrySendComment.onNext(it)
+                    this.commentCardStatus.onNext(CommentCardStatus.RE_TRYING_TO_POST)
+                }
+
+            val commentData = this.commentInput.map {
+                Pair(requireNotNull(it.comment?.body()), requireNotNull(it.project))
+            }
+
+            Observable
+                .combineLatest(commentData, postNewComment) { commentData, _ ->
+                    return@combineLatest executePostCommentMutation(commentData)
+                }
+                .switchMap {
+                    it
+                }.subscribe {
+                    this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
+                }
+
+            Observable
+                .combineLatest(commentData, onRetryViewClicked) { commentData, _ ->
+                    return@combineLatest executePostCommentMutation(commentData)
+                }
+                .switchMap {
+                    it
+                }.doOnNext {
+                    this.commentCardStatus.onNext(CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY)
+                }
+                .delay(3000, TimeUnit.MILLISECONDS)
+                .subscribe {
+                    this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
+                }
 
             comment
                 .compose(takeWhen(this.onFlagButtonClicked))
                 .compose(bindToLifecycle())
                 .subscribe(this.flagComment)
+
+            this.commentInput
+                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.newCommentBind.onNext(it)
+                }
         }
+
+        private fun executePostCommentMutation(commentData: Pair<String, Project>) =
+            this.apolloClient.createComment(
+                PostCommentData(
+                    project = commentData.second,
+                    body = commentData.first,
+                    clientMutationId = null,
+                    parentId = null
+                )
+            ).doOnError {
+                this.commentCardStatus.onNext(CommentCardStatus.FAILED_TO_SEND_COMMENT)
+            }
+                .onErrorResumeNext(Observable.empty())
 
         /**
          * Checks if the current user is backing the current project,
@@ -201,17 +264,24 @@ interface CommentsViewHolderViewModel {
             user: User?,
             featureFlagActive: Boolean
         ) =
-            commentCardData.project?.let { (it.isBacking || ProjectUtils.userIsCreator(it, user)) && featureFlagActive } ?: false
+            commentCardData.project?.let {
+                (it.isBacking || ProjectUtils.userIsCreator(it, user)) && featureFlagActive &&
+                    (
+                        commentCardData.commentCardState == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus ||
+                            commentCardData.commentCardState == CommentCardStatus.COMMENT_WITH_REPLIES.commentCardStatus ||
+                            commentCardData.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus
+                        )
+            } ?: false
 
         /**
          * Updates the status of the current comment card.
          * Also updates the current state of the [OptimizelyFeature.Key.COMMENT_ENABLE_THREADS]
          * everytime the state changes.
          */
-        private fun cardStatus(comment: Comment?) = when {
-            comment?.deleted() ?: false -> CommentCardStatus.DELETED_COMMENT
-            (comment?.repliesCount() ?: false != 0) -> CommentCardStatus.COMMENT_WITH_REPLIES
-            else -> CommentCardStatus.COMMENT_WITHOUT_REPLIES
+        private fun cardStatus(commentCardData: CommentCardData) = when {
+            commentCardData.comment?.deleted() ?: false -> CommentCardStatus.DELETED_COMMENT
+            (commentCardData.comment?.repliesCount() ?: false != 0) -> CommentCardStatus.COMMENT_WITH_REPLIES
+            else -> CommentCardStatus.values().firstOrNull { it.commentCardStatus == commentCardData.commentCardState }
         }.also {
             this.isCommentEnableThreads.onNext(optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_ENABLE_THREADS))
         }
@@ -253,5 +323,9 @@ interface CommentsViewHolderViewModel {
         override fun viewCommentReplies(): Observable<Comment> = this.viewCommentReplies
 
         override fun isCommentEnableThreads(): Observable<Boolean> = this.isCommentEnableThreads
+
+        override fun newCommentBind(): Observable<CommentCardData> = this.newCommentBind
+
+        override fun postNewComment(commentCardData: CommentCardData) = postNewComment.onNext(commentCardData)
     }
 }

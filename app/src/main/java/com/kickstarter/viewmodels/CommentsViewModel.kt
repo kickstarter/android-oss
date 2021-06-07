@@ -181,7 +181,10 @@ interface CommentsViewModel {
                 .switchMap { getProjectComments(Observable.just(it), this.paginationError) }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    bindCommentList(it.first, LoadingType.NORMAL, it.second)
+                    updatePaginatedData(
+                        LoadingType.LOAD_MORE,
+                        it.first
+                    )
                 }
 
             // - Handle pull to refresh and it's errors

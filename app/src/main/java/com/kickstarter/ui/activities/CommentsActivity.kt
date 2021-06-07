@@ -34,6 +34,8 @@ class CommentsActivity :
         setContentView(view)
         binding.commentsRecyclerView.adapter = adapter
 
+        binding.backButton.setOnClickListener { viewModel.inputs.backPressed() }
+
         setupPagination()
 
         viewModel.outputs.commentsList()
@@ -89,12 +91,21 @@ class CommentsActivity :
                 binding.commentsRecyclerView.scrollToPosition(0)
             }
 
+        viewModel.outputs.closeCommentsPage()
+                .compose(bindToLifecycle())
+                .subscribe { closeCommentsActivity() }
+
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {
             override fun onClickActionListener(string: String) {
                 postComment(string)
                 hideKeyboard()
             }
         })
+    }
+
+    private fun closeCommentsActivity() {
+        super.back()
+        this.finish()
     }
 
     private fun setupPagination() {

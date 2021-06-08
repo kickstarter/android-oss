@@ -33,7 +33,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     private val pullToRefreshError = TestSubscriber.create<Throwable>()
     private val initialLoadError = TestSubscriber.create<Throwable>()
     private val paginationError = TestSubscriber.create<Throwable>()
-     private val openCommentGuideLines = TestSubscriber<Void>()
+    private val openCommentGuideLines = TestSubscriber<Void>()
 
     @Test
     fun testCommentsViewModel_whenUserLoggedInAndBacking_shouldShowEnabledComposer() {

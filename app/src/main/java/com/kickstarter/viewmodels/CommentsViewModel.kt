@@ -156,7 +156,7 @@ interface CommentsViewModel {
                             .build()
                     )
                 }
-                    .doOnNext { scrollToTop.onNext(true) }
+                .doOnNext { scrollToTop.onNext(true) }
                 .compose(bindToLifecycle())
                 .subscribe {
                     it.first.toMutableList().apply {

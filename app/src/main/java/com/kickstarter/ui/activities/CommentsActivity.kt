@@ -105,7 +105,7 @@ class CommentsActivity :
 
     private fun closeCommentsActivity() {
         super.back()
-        this.finish()
+        this.finishActivity(taskId)
     }
 
     private fun setupPagination() {

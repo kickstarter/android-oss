@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.AvatarFactory
 import com.kickstarter.mock.factories.CommentEnvelopeFactory
 import com.kickstarter.mock.factories.CommentFactory
@@ -166,6 +167,22 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testCommentsViewModel_InitialLoad_Error() {
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+                return Observable.empty()
+            }
+        }).build()
+        val vm = CommentsViewModel.ViewModel(env)
+        val commentsList = TestSubscriber<List<CommentCardData>?>()
+        vm.outputs.commentsList().subscribe(commentsList)
+
+        // Start the view model with an update.
+        vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
+        commentsList.assertNoValues()
+    }
+
+    @Test
     fun testCommentsViewModel_ProjectCommentsEmit() {
         val commentsList = BehaviorSubject.create<List<CommentCardData>?>()
         val vm = CommentsViewModel.ViewModel(environment())
@@ -242,6 +259,8 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
         vm.outputs.isRefreshing().subscribe(isRefreshing)
         vm.outputs.pullToRefreshError().subscribe(pullToRefreshError)
+        vm.outputs.initialLoadCommentsError().subscribe(initialLoadError)
+        vm.outputs.paginateCommentsError().subscribe(paginationError)
 
         // Start the view model with a project.
         vm.inputs.refresh()
@@ -251,6 +270,39 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         isRefreshing.assertValues(true)
         commentsList.assertValueCount(0)
         pullToRefreshError.assertValueCount(1)
+        initialLoadError.assertValueCount(0)
+        paginationError.assertNoValues()
+    }
+
+    @Test
+    fun testCommentsViewModel_PaginationWith_Errors() {
+        var firstCall = true
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+                return if (firstCall)
+                    Observable.just(CommentEnvelopeFactory.commentsEnvelope())
+                else
+                    Observable.error(ApiExceptionFactory.badRequestException())
+            }
+        }).build()
+
+        val vm = CommentsViewModel.ViewModel(env)
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+
+        vm.outputs.enablePagination().subscribe(enablePagination)
+        vm.outputs.isLoadingMoreItems().subscribe(isLoadingMoreItems)
+        vm.outputs.commentsList().subscribe(commentsList)
+        vm.outputs.paginateCommentsError().subscribe(paginationError)
+
+        enablePagination.assertValues(true)
+
+        firstCall = false
+        // get the next page which is end of page
+        vm.inputs.nextPage()
+
+        enablePagination.assertValues(true)
+        commentsList.assertValueCount(1)
+        paginationError.assertValueCount(1)
     }
 
     /*

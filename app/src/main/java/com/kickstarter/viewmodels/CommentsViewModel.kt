@@ -75,6 +75,7 @@ interface CommentsViewModel {
         private val insertComment = BehaviorSubject.create<CommentCardData>()
 
         // - Error observables to handle the 3 different use cases
+        private val internalError = BehaviorSubject.create<Throwable>()
         private val initialError = BehaviorSubject.create<Throwable>()
         private val paginationError = BehaviorSubject.create<Throwable>()
         private val pullToRefreshError = BehaviorSubject.create<Throwable>()
@@ -152,10 +153,14 @@ interface CommentsViewModel {
                 }
 
             // TODO showcasing subscription to initialization to be completed on : https://kickstarter.atlassian.net/browse/NT-1951
-            this.initialError
+            this.internalError
+                .compose(combineLatestPair(commentsList))
+                .filter { it.second.isEmpty() }
+                .map { it.first }
                 .subscribe {
                     it.localizedMessage
                     Timber.d("************ On initializing error")
+                    this.initialError.onNext(it)
                 }
 
             // TODO showcasing pagination error subscriptionto be completed on : https://kickstarter.atlassian.net/browse/NT-2019
@@ -169,7 +174,7 @@ interface CommentsViewModel {
         private fun loadCommentList(initialProject: Observable<Project>) {
 
             // - First load for comments & handle initial load errors
-            getProjectComments(initialProject, this.initialError)
+            getProjectComments(initialProject, this.internalError)
                 .compose(bindToLifecycle())
                 .subscribe {
                     bindCommentList(it.first, LoadingType.NORMAL, it.second)
@@ -210,10 +215,10 @@ interface CommentsViewModel {
         }.doOnError {
             errorObservable.onNext(it)
         }
-        .onErrorResumeNext(Observable.empty())
-        .filter { ObjectUtils.isNotNull(it) }
-        .compose<Pair<CommentEnvelope, Project>>(combineLatestPair(project))
-        .map { Pair(requireNotNull(mapToCommentCardDataList(it)), it.first.totalCount) }
+            .onErrorResumeNext(Observable.empty())
+            .filter { ObjectUtils.isNotNull(it) }
+            .compose<Pair<CommentEnvelope, Project>>(combineLatestPair(project))
+            .map { Pair(requireNotNull(mapToCommentCardDataList(it)), it.first.totalCount) }
 
         private fun mapToCommentCardDataList(it: Pair<CommentEnvelope, Project>) =
             it.first.comments?.map { comment: Comment ->

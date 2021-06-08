@@ -28,6 +28,7 @@ import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
+import timber.log.Timber
 
 interface CommentsViewModel {
 
@@ -46,6 +47,9 @@ interface CommentsViewModel {
         fun commentsList(): Observable<Pair<List<CommentCardData>, Boolean>>
         fun setEmptyState(): Observable<Boolean>
         fun showCommentGuideLinesLink(): Observable<Void>
+        fun initialLoadCommentsError(): Observable<Throwable>
+        fun paginateCommentsError(): Observable<Throwable>
+        fun pullToRefreshError(): Observable<Throwable>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
@@ -71,9 +75,17 @@ interface CommentsViewModel {
         private val isRefreshing = BehaviorSubject.create<Boolean>()
         private val enablePagination = BehaviorSubject.create<Boolean>()
         private val setEmptyState = BehaviorSubject.create<Boolean>()
+        private val insertComment = BehaviorSubject.create<CommentCardData>()
 
-        private var lastCommentCursour: String? = null
+        // - Error observables to handle the 3 different use cases
+        private val internalError = BehaviorSubject.create<Throwable>()
+        private val initialError = BehaviorSubject.create<Throwable>()
+        private val paginationError = BehaviorSubject.create<Throwable>()
+        private val pullToRefreshError = BehaviorSubject.create<Throwable>()
+
+        private var lastCommentCursor: String? = null
         override var loadMoreListData = mutableListOf<CommentCardData>()
+
         init {
 
             val loggedInUser = this.currentUser.loggedInUser()
@@ -155,25 +167,52 @@ interface CommentsViewModel {
                 .subscribe {
                     showGuideLinesLink.onNext(null)
                 }
-        }
 
-        private fun loadCommentList(initialProject: Observable<Project>) {
-            val projectSlug = initialProject
-                .map { requireNotNull(it?.slug()) }
 
-            projectSlug
-                .compose(CommentEnvelopeTransformer(initialProject))
+            this.commentsList
+                .map { it.size }
+                .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe {
-                    bindCommentList(it.first, LoadingType.NORMAL, it.second)
+                    this.setEmptyState.onNext(it == 0)
                 }
 
-            projectSlug
+            // TODO showcasing subscription to initialization to be completed on : https://kickstarter.atlassian.net/browse/NT-1951
+            this.internalError
+                .compose(combineLatestPair(commentsList))
+                .filter { it.second.isEmpty() }
+                .map { it.first }
+                .subscribe {
+                    it.localizedMessage
+                    Timber.d("************ On initializing error")
+                    this.initialError.onNext(it)
+                }
+
+            // TODO showcasing pagination error subscriptionto be completed on : https://kickstarter.atlassian.net/browse/NT-2019
+            this.paginationError
+                .subscribe {
+                    it.localizedMessage
+                    Timber.d("************ On pagination error")
+                }
+        }
+
+
+        private fun loadCommentList(initialProject: Observable<Project>) {
+
+            // - First load for comments & handle initial load errors
+            getProjectComments(initialProject, this.internalError)
+                .compose(bindToLifecycle())
+                .subscribe {
+                    bindCommentList(it.first, LoadingType.NORMAL)
+                }
+
+            // - Load comments from pagination & Handle pagination errors
+            initialProject
                 .compose(Transformers.takeWhen(this.nextPage))
                 .doOnNext {
                     this.isLoadingMoreItems.onNext(true)
                 }
-                .compose(CommentEnvelopeTransformer(initialProject))
+                .switchMap { getProjectComments(Observable.just(it), this.paginationError) }
                 .compose(bindToLifecycle())
                 .subscribe {
                     updatePaginatedData(
@@ -182,20 +221,32 @@ interface CommentsViewModel {
                     )
                 }
 
-            projectSlug
+            // - Handle pull to refresh and it's errors
+            initialProject
                 .compose(Transformers.takeWhen(this.refresh))
                 .doOnNext {
                     this.isRefreshing.onNext(true)
                     // reset cursor
-                    lastCommentCursour = null
-                }.compose(CommentEnvelopeTransformer(initialProject))
+                    lastCommentCursor = null
+                }
+                .switchMap { getProjectComments(Observable.just(it), this.pullToRefreshError) }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    bindCommentList(it.first, LoadingType.PULL_REFRESH, it.second)
+                    bindCommentList(it.first, LoadingType.PULL_REFRESH)
                 }
         }
 
-        private fun mapToCommentCardDataList(it: Pair<CommentEnvelope, Project?>) =
+        private fun getProjectComments(project: Observable<Project>, errorObservable: BehaviorSubject<Throwable>) = project.switchMap {
+            return@switchMap apolloClient.getProjectComments(it.slug() ?: "", lastCommentCursor)
+        }.doOnError {
+            errorObservable.onNext(it)
+        }
+            .onErrorResumeNext(Observable.empty())
+            .filter { ObjectUtils.isNotNull(it) }
+            .compose<Pair<CommentEnvelope, Project>>(combineLatestPair(project))
+            .map { Pair(requireNotNull(mapToCommentCardDataList(it)), it.first.totalCount) }
+
+        private fun mapToCommentCardDataList(it: Pair<CommentEnvelope, Project>) =
             it.first.comments?.map { comment: Comment ->
                 CommentCardData.builder().comment(comment).project(it.second).build()
             }
@@ -214,25 +265,11 @@ interface CommentsViewModel {
                 .build()
         }
 
-        private fun bindCommentList(commentCardDataList: List<CommentCardData>, loadingType: LoadingType, totalCount: Int?) {
-            totalCount?.let { count ->
-                this.setEmptyState.onNext(count < 1)
-                updatePaginatedData(
-                    loadingType,
-                    commentCardDataList
-                )
-            }
-        }
-
-        inner class CommentEnvelopeTransformer(private val initialProject: Observable<Project>) : Observable.Transformer<String, Pair<List<CommentCardData>, Int>> {
-            override fun call(t: Observable<String>): Observable<Pair<List<CommentCardData>, Int>> {
-                return t.switchMap {
-                    apolloClient.getProjectComments(it, lastCommentCursour)
-                }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .compose<Pair<CommentEnvelope, Project?>>(combineLatestPair(initialProject))
-                    .map { Pair(mapToCommentCardDataList(it), it.first.totalCount) }
-            }
+        private fun bindCommentList(commentCardDataList: List<CommentCardData>, loadingType: LoadingType) {
+            updatePaginatedData(
+                loadingType,
+                commentCardDataList
+            )
         }
 
         private fun getCommentComposerStatus(projectAndUser: Pair<Project, User?>) =
@@ -252,6 +289,9 @@ interface CommentsViewModel {
         override fun commentsList(): Observable<Pair<List<CommentCardData>, Boolean>> = commentsList
         override fun enableReplyButton(): Observable<Boolean> = disableReplyButton
         override fun showCommentGuideLinesLink(): Observable<Void> = showGuideLinesLink
+        override fun initialLoadCommentsError(): Observable<Throwable> = this.initialError
+        override fun paginateCommentsError(): Observable<Throwable> = this.paginationError
+        override fun pullToRefreshError(): Observable<Throwable> = this.pullToRefreshError
 
         override fun setEmptyState(): Observable<Boolean> = setEmptyState
         override fun isLoadingMoreItems(): Observable<Boolean> = isLoadingMoreItems
@@ -260,11 +300,23 @@ interface CommentsViewModel {
         override fun insertNewCommentToList(comment: String, createdAt: DateTime) = insertNewCommentToList.onNext(Pair(comment, createdAt))
 
         override fun bindPaginatedData(data: List<CommentCardData>?) {
-            lastCommentCursour = data?.lastOrNull()?.comment?.cursor()
-            data?.let { loadMoreListData.addAll(it) }
-            commentsList.onNext(Pair(loadMoreListData, false))
+            lastCommentCursor = data?.lastOrNull()?.comment?.cursor()
+            val newList = data?.let { it } ?: emptyList()
+
+            appendMoreComments(newList)
+
             this.isRefreshing.onNext(false)
             this.isLoadingMoreItems.onNext(false)
+        }
+
+        private fun appendMoreComments(newList: List<CommentCardData>) {
+            Observable.just(this.loadMoreListData)
+                .compose(combineLatestPair(Observable.just(newList)))
+                .distinctUntilChanged()
+                .subscribe {
+                    it.first.addAll(newList)
+                    this.commentsList.onNext(it.first)
+                }
         }
 
         override fun updatePaginatedState(enabled: Boolean) {

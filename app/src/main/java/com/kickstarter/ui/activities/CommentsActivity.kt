@@ -70,13 +70,6 @@ class CommentsActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::setEmptyState)
 
-        viewModel.outputs.insertComment()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                adapter.insertData(it, 0)
-            }
-
         /*
          * A little delay after new item is inserted
          * This is necessary for the scroll to take effect

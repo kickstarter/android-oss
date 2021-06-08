@@ -152,6 +152,8 @@ interface CommentsViewModel {
                     this.insertComment.onNext(it)
                 }
 
+            appendOneComment(this.insertComment)
+
             // TODO showcasing subscription to initialization to be completed on : https://kickstarter.atlassian.net/browse/NT-1951
             this.internalError
                 .compose(combineLatestPair(commentsList))
@@ -168,6 +170,16 @@ interface CommentsViewModel {
                 .subscribe {
                     it.localizedMessage
                     Timber.d("************ On pagination error")
+                }
+        }
+
+        private fun appendOneComment(newCommentObservable: BehaviorSubject<CommentCardData>) {
+            Observable.just(this.loadMoreListData)
+                .compose(combineLatestPair(newCommentObservable))
+                .distinctUntilChanged()
+                .subscribe {
+                    it.first.add(0, it.second)
+                    this.commentsList.onNext(it.first.toList())
                 }
         }
 
@@ -277,10 +289,22 @@ interface CommentsViewModel {
 
         override fun bindPaginatedData(data: List<CommentCardData>?) {
             lastCommentCursor = data?.lastOrNull()?.comment?.cursor()
-            data?.let { loadMoreListData.addAll(it) }
-            commentsList.onNext(loadMoreListData)
+            val newList = data?.let { it } ?: emptyList()
+
+            appendMoreComments(newList)
+
             this.isRefreshing.onNext(false)
             this.isLoadingMoreItems.onNext(false)
+        }
+
+        private fun appendMoreComments(newList: List<CommentCardData>) {
+            Observable.just(this.loadMoreListData)
+                .compose(combineLatestPair(Observable.just(newList)))
+                .distinctUntilChanged()
+                .subscribe {
+                    it.first.addAll(newList)
+                    this.commentsList.onNext(it.first)
+                }
         }
 
         override fun updatePaginatedState(enabled: Boolean) {

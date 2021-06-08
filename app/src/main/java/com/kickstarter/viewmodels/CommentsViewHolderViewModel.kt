@@ -6,6 +6,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectUtils
@@ -199,8 +200,15 @@ interface CommentsViewHolderViewModel {
                     this.commentCardStatus.onNext(CommentCardStatus.RE_TRYING_TO_POST)
                 }
 
-            val commentData = this.commentInput.map {
-                Pair(requireNotNull(it.comment?.body()), requireNotNull(it.project))
+            val commentData = this.commentInput
+                    .compose(combineLatestPair(environment.currentUser().loggedInUser()))
+                    .filter {
+                        it.first.comment != null &&
+                                it.first.comment!!.id() <0 &&
+                                it?.first?.comment?.author() == it.second
+                    }
+                    .map {
+                    Pair(requireNotNull(it.first.comment?.body()), requireNotNull(it.first.project))
             }
 
             Observable
@@ -221,10 +229,14 @@ interface CommentsViewHolderViewModel {
                     it
                 }.doOnNext {
                     this.commentCardStatus.onNext(CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY)
-                }
+                }.compose(combineLatestPair(this.commentInput))
                 .delay(3000, TimeUnit.MILLISECONDS)
                 .subscribe {
-                    this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
+                    this.commentInput.onNext(
+                            it.second.toBuilder().comment(it.first).commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus).build()
+                    )
+
+//                    this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
                 }
 
             comment

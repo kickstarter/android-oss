@@ -200,44 +200,15 @@ interface CommentsViewHolderViewModel {
                     this.commentCardStatus.onNext(CommentCardStatus.RE_TRYING_TO_POST)
                 }
 
+            // - CommentData will hold the information
             val commentData = this.commentInput
-                    .compose(combineLatestPair(environment.currentUser().loggedInUser()))
-                    .filter {
-                        it.first.comment != null &&
-                                it.first.comment!!.id() <0 &&
-                                it?.first?.comment?.author() == it.second
-                    }
-                    .map {
+                .compose(combineLatestPair(environment.currentUser().loggedInUser()))
+                .filter { shouldCommentBePosted(it) }
+                .map {
                     Pair(requireNotNull(it.first.comment?.body()), requireNotNull(it.first.project))
-            }
-
-            Observable
-                .combineLatest(postNewComment, commentData) { _, commentData ->
-                    return@combineLatest executePostCommentMutation(commentData)
-                }
-                .switchMap {
-                    it
-                }.subscribe {
-                    this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
                 }
 
-            Observable
-                .combineLatest(onRetryViewClicked, commentData) { _, commentData ->
-                    return@combineLatest executePostCommentMutation(commentData)
-                }
-                .switchMap {
-                    it
-                }.doOnNext {
-                    this.commentCardStatus.onNext(CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY)
-                }.compose(combineLatestPair(this.commentInput))
-                .delay(3000, TimeUnit.MILLISECONDS)
-                .subscribe {
-                    this.commentInput.onNext(
-                            it.second.toBuilder().comment(it.first).commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus).build()
-                    )
-
-//                    this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
-                }
+            postComment(commentData)
 
             comment
                 .compose(takeWhen(this.onFlagButtonClicked))
@@ -251,6 +222,60 @@ interface CommentsViewHolderViewModel {
                 .subscribe {
                     this.newCommentBind.onNext(it)
                 }
+        }
+
+        /**
+         * Handles the logic for posting comments (new ones, and the retry attempts)
+         * @param commentData will emmit only in case we need to post a new comment
+         */
+        private fun postComment(commentData: Observable<Pair<String, Project>>) {
+            commentData
+                .map { executePostCommentMutation(it) }
+                .switchMap {
+                    it
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
+                }
+
+            Observable
+                .combineLatest(onRetryViewClicked, commentData) { _, newData ->
+                    return@combineLatest executePostCommentMutation(newData)
+                }
+                .switchMap {
+                    it
+                }.doOnNext {
+                    this.commentCardStatus.onNext(CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY)
+                }.compose(combineLatestPair(this.commentInput))
+                .delay(3000, TimeUnit.MILLISECONDS)
+                .compose(bindToLifecycle())
+                .subscribe {
+                    // - update the current input with the mutation response and new state after successful mutation
+                    this.commentInput.onNext(
+                        it.second.toBuilder().comment(it.first)
+                            .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
+                            .build()
+                    )
+                }
+        }
+
+        /**
+         * In order to decide if a comment needs to be posted we need to check:
+         * - The comment author is the current user
+         * - the comment id is negative, this happens when a comment is created on the app, and has not been posted
+         * to the backed yet, otherwise it should have a id bigger than 0
+         */
+        private fun shouldCommentBePosted(dataCommentAndUser: Pair<CommentCardData, User>): Boolean {
+            var shouldPost = false
+            val currentUser = dataCommentAndUser.second
+            val comment = dataCommentAndUser.first?.comment?.let { return@let it }
+
+            comment?.let {
+                shouldPost = it.id() < 0 && it.author() == currentUser
+            }
+
+            return shouldPost
         }
 
         private fun executePostCommentMutation(commentData: Pair<String, Project>) =

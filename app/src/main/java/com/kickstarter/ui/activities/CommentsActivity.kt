@@ -82,7 +82,7 @@ class CommentsActivity :
             .delay(200, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                binding.commentsRecyclerView.scrollToPosition(0)
+                binding.commentsRecyclerView.smoothScrollToPosition(0)
             }
 
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {

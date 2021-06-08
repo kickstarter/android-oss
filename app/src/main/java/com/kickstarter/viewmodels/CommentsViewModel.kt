@@ -77,7 +77,6 @@ interface CommentsViewModel {
         private val isRefreshing = BehaviorSubject.create<Boolean>()
         private val enablePagination = BehaviorSubject.create<Boolean>()
         private val setEmptyState = BehaviorSubject.create<Boolean>()
-        private val insertComment = BehaviorSubject.create<CommentCardData>()
 
         // - Error observables to handle the 3 different use cases
         private val internalError = BehaviorSubject.create<Throwable>()
@@ -223,12 +222,15 @@ interface CommentsViewModel {
                 }
 
             // - Handle pull to refresh and it's errors
-            initialProject
-                .compose(Transformers.takeWhen(this.refresh))
+            // - Pull to refresh cleans the entire list and makes a new request
+            this.refresh
+                .compose(combineLatestPair(initialProject))
+                .map { it.second }
                 .doOnNext {
                     this.isRefreshing.onNext(true)
                     // reset cursor
                     lastCommentCursor = null
+                    this.loadMoreListData.clear()
                 }
                 .switchMap { getProjectComments(Observable.just(it), this.pullToRefreshError) }
                 .compose(bindToLifecycle())

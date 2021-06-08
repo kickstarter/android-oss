@@ -44,7 +44,8 @@ interface CommentsViewModel {
         fun commentComposerStatus(): Observable<CommentComposerStatus>
         fun enableReplyButton(): Observable<Boolean>
         fun showCommentComposer(): Observable<Boolean>
-        fun commentsList(): Observable<Pair<List<CommentCardData>, Boolean>>
+        fun commentsList(): Observable<List<CommentCardData>>
+        fun scrollToTop(): Observable<Boolean>
         fun setEmptyState(): Observable<Boolean>
         fun showCommentGuideLinesLink(): Observable<Void>
         fun initialLoadCommentsError(): Observable<Throwable>
@@ -66,9 +67,10 @@ interface CommentsViewModel {
         private val currentUserAvatar = BehaviorSubject.create<String?>()
         private val commentComposerStatus = BehaviorSubject.create<CommentComposerStatus>()
         private val showCommentComposer = BehaviorSubject.create<Boolean>()
-        private val commentsList = BehaviorSubject.create<Pair<List<CommentCardData>, Boolean>>()
+        private val commentsList = BehaviorSubject.create<List<CommentCardData>>()
         private val showGuideLinesLink = BehaviorSubject.create<Void>()
         private val disableReplyButton = BehaviorSubject.create<Boolean>()
+        private val scrollToTop = BehaviorSubject.create<Boolean>()
 
         private val insertNewCommentToList = PublishSubject.create<Pair<String, DateTime>>()
         private val isLoadingMoreItems = BehaviorSubject.create<Boolean>()
@@ -137,7 +139,7 @@ interface CommentsViewModel {
 
             loadCommentList(initialProject)
 
-            commentsList.map { it.first }
+            commentsList
                 .compose<Pair<List<CommentCardData>, User >>(combineLatestPair(this.currentUser.loggedInUser()))
                 .compose(Transformers.takePairWhen(this.insertNewCommentToList))
                 .map {
@@ -154,11 +156,12 @@ interface CommentsViewModel {
                             .build()
                     )
                 }
+                    .doOnNext { scrollToTop.onNext(true) }
                 .compose(bindToLifecycle())
                 .subscribe {
                     it.first.toMutableList().apply {
                         add(0, it.second)
-                        commentsList.onNext(Pair(this, true))
+                        commentsList.onNext(this)
                     }
                 }
 
@@ -167,7 +170,6 @@ interface CommentsViewModel {
                 .subscribe {
                     showGuideLinesLink.onNext(null)
                 }
-
 
             this.commentsList
                 .map { it.size }
@@ -195,7 +197,6 @@ interface CommentsViewModel {
                     Timber.d("************ On pagination error")
                 }
         }
-
 
         private fun loadCommentList(initialProject: Observable<Project>) {
 
@@ -286,12 +287,13 @@ interface CommentsViewModel {
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
         override fun commentComposerStatus(): Observable<CommentComposerStatus> = commentComposerStatus
         override fun showCommentComposer(): Observable<Boolean> = showCommentComposer
-        override fun commentsList(): Observable<Pair<List<CommentCardData>, Boolean>> = commentsList
+        override fun commentsList(): Observable<List<CommentCardData>> = commentsList
         override fun enableReplyButton(): Observable<Boolean> = disableReplyButton
         override fun showCommentGuideLinesLink(): Observable<Void> = showGuideLinesLink
         override fun initialLoadCommentsError(): Observable<Throwable> = this.initialError
         override fun paginateCommentsError(): Observable<Throwable> = this.paginationError
         override fun pullToRefreshError(): Observable<Throwable> = this.pullToRefreshError
+        override fun scrollToTop(): Observable<Boolean> = this.scrollToTop
 
         override fun setEmptyState(): Observable<Boolean> = setEmptyState
         override fun isLoadingMoreItems(): Observable<Boolean> = isLoadingMoreItems

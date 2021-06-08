@@ -39,7 +39,6 @@ class CommentsActivity :
         setupPagination()
 
         viewModel.outputs.commentsList()
-            .map { it.first }
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
@@ -77,8 +76,7 @@ class CommentsActivity :
          * A little delay after new item is inserted
          * This is necessary for the scroll to take effect
          */
-        viewModel.outputs.commentsList()
-            .map { it.second }
+        viewModel.outputs.scrollToTop()
             .filter { it == true }
             .compose(bindToLifecycle())
             .delay(200, TimeUnit.MILLISECONDS)

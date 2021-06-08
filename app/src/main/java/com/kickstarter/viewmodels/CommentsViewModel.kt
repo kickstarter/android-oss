@@ -154,6 +154,14 @@ interface CommentsViewModel {
 
             appendOneComment(this.insertComment)
 
+            this.commentsList
+                .map { it.size }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.setEmptyState.onNext(it == 0)
+                }
+
             // TODO showcasing subscription to initialization to be completed on : https://kickstarter.atlassian.net/browse/NT-1951
             this.internalError
                 .compose(combineLatestPair(commentsList))
@@ -189,7 +197,7 @@ interface CommentsViewModel {
             getProjectComments(initialProject, this.internalError)
                 .compose(bindToLifecycle())
                 .subscribe {
-                    bindCommentList(it.first, LoadingType.NORMAL, it.second)
+                    bindCommentList(it.first, LoadingType.NORMAL)
                 }
 
             // - Load comments from pagination & Handle pagination errors
@@ -218,7 +226,7 @@ interface CommentsViewModel {
                 .switchMap { getProjectComments(Observable.just(it), this.pullToRefreshError) }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    bindCommentList(it.first, LoadingType.PULL_REFRESH, it.second)
+                    bindCommentList(it.first, LoadingType.PULL_REFRESH)
                 }
         }
 
@@ -251,14 +259,11 @@ interface CommentsViewModel {
                 .build()
         }
 
-        private fun bindCommentList(commentCardDataList: List<CommentCardData>, loadingType: LoadingType, totalCount: Int?) {
-            totalCount?.let { count ->
-                this.setEmptyState.onNext(count < 1)
-                updatePaginatedData(
-                    loadingType,
-                    commentCardDataList
-                )
-            }
+        private fun bindCommentList(commentCardDataList: List<CommentCardData>, loadingType: LoadingType) {
+            updatePaginatedData(
+                loadingType,
+                commentCardDataList
+            )
         }
 
         private fun getCommentComposerStatus(projectAndUser: Pair<Project, User?>) =

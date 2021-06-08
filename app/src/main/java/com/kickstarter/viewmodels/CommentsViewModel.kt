@@ -45,6 +45,7 @@ interface CommentsViewModel {
         fun commentsList(): Observable<List<CommentCardData>>
         fun setEmptyState(): Observable<Boolean>
         fun insertComment(): Observable<CommentCardData>
+        fun setInitialErrorState(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
@@ -69,6 +70,7 @@ interface CommentsViewModel {
         private val enablePagination = BehaviorSubject.create<Boolean>()
         private val setEmptyState = BehaviorSubject.create<Boolean>()
         private val insertComment = BehaviorSubject.create<CommentCardData>()
+        private val onInitialErrorState = BehaviorSubject.create<Boolean>()
 
         private var lastCommentCursour: String? = null
         override var loadMoreListData = mutableListOf<CommentCardData>()
@@ -149,9 +151,13 @@ interface CommentsViewModel {
             projectSlug
                 .compose(CommentEnvelopeTransformer(initialProject))
                 .compose(bindToLifecycle())
-                .subscribe {
-                    bindCommentList(it.first, LoadingType.NORMAL, it.second)
-                }
+                .subscribe(
+                    {
+                        bindCommentList(it.first, LoadingType.NORMAL, it.second)
+                    },
+                    {
+                        this.onInitialErrorState.onNext(lastCommentCursour == null)}
+                    )
 
             projectSlug
                 .compose(Transformers.takeWhen(this.nextPage))
@@ -205,13 +211,13 @@ interface CommentsViewModel {
                 updatePaginatedData(
                     loadingType,
                     commentCardDataList
-
                 )
             }
         }
 
         inner class CommentEnvelopeTransformer(private val initialProject: Observable<Project>) : Observable.Transformer<String, Pair<List<CommentCardData>, Int>> {
             override fun call(t: Observable<String>): Observable<Pair<List<CommentCardData>, Int>> {
+
                 return t.switchMap {
                     apolloClient.getProjectComments(it, lastCommentCursour)
                 }
@@ -242,6 +248,8 @@ interface CommentsViewModel {
         override fun enablePagination(): Observable<Boolean> = enablePagination
         override fun isRefreshing(): Observable<Boolean> = isRefreshing
         override fun insertComment(): Observable<CommentCardData> = this.insertComment
+        override fun setInitialErrorState(): Observable<Boolean> = this.onInitialErrorState
+
         override fun insertNewCommentToList(comment: String, createdAt: DateTime) = insertNewCommentToList.onNext(Pair(comment, createdAt))
 
         override fun bindPaginatedData(data: List<CommentCardData>?) {

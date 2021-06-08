@@ -9,6 +9,7 @@ import com.kickstarter.databinding.ActivityCommentsLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.loadmore.PaginationHandler
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.CommentsAdapter
@@ -141,15 +142,8 @@ class CommentsActivity :
     }
 
     private fun setEmptyState(visibility: Boolean) {
-        binding.commentsSwipeRefreshLayout.visibility = when (visibility) {
-            true -> View.GONE
-            else -> View.VISIBLE
-        }
-
-        binding.noComments.visibility = when (visibility) {
-            true -> View.VISIBLE
-            else -> View.GONE
-        }
+        binding.commentsSwipeRefreshLayout.visibility = (!visibility).toVisibility()
+        binding.noComments.visibility = visibility.toVisibility()
     }
 
     override fun emptyCommentsLoginClicked(viewHolder: EmptyCommentsViewHolder?) {

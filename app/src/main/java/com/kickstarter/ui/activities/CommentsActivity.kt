@@ -10,6 +10,7 @@ import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.loadmore.PaginationHandler
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ApplicationUtils
+import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.CommentsAdapter
@@ -38,6 +39,7 @@ class CommentsActivity :
         setupPagination()
 
         viewModel.outputs.commentsList()
+            .map { it.first }
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
@@ -71,18 +73,13 @@ class CommentsActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::setEmptyState)
 
-        viewModel.outputs.insertComment()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                adapter.takeData(it)
-            }
-
         /*
          * A little delay after new item is inserted
          * This is necessary for the scroll to take effect
          */
-        viewModel.outputs.insertComment()
+        viewModel.outputs.commentsList()
+            .map { it.second }
+            .filter { it == true }
             .compose(bindToLifecycle())
             .delay(200, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
@@ -101,7 +98,7 @@ class CommentsActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                ApplicationUtils.openUrlExternally(this, COMMENT_KICKSTARTER_GUIDELINES)
+                ApplicationUtils.openUrlExternally(this, UrlUtils.appendPath(environment().webEndpoint(), COMMENT_KICKSTARTER_GUIDELINES))
             }
     }
 
@@ -210,6 +207,6 @@ class CommentsActivity :
     }
 
     companion object {
-        const val COMMENT_KICKSTARTER_GUIDELINES = "https://www.kickstarter.com/help/community"
+        const val COMMENT_KICKSTARTER_GUIDELINES = "help/community"
     }
 }

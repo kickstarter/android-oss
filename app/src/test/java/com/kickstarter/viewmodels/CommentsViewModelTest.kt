@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels
 
 import android.content.Intent
+import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.mock.factories.AvatarFactory
@@ -21,14 +22,14 @@ import rx.observers.TestSubscriber
 import rx.subjects.BehaviorSubject
 
 class CommentsViewModelTest : KSRobolectricTestCase() {
-    private val commentsList = TestSubscriber<List<CommentCardData>?>()
+    private val commentsList = TestSubscriber<Pair<List<CommentCardData>, Boolean>>()
     private val commentComposerStatus = TestSubscriber<CommentComposerStatus>()
     private val showCommentComposer = TestSubscriber<Boolean>()
     private val showEmptyState = TestSubscriber<Boolean>()
     private val isLoadingMoreItems = TestSubscriber<Boolean>()
     private val isRefreshing = TestSubscriber<Boolean>()
     private val enablePagination = TestSubscriber<Boolean>()
-    private val insertNewCommentToListSubscriber = BehaviorSubject.create<List<CommentCardData>>()
+    private val scrollToTopSubscriber = TestSubscriber<Boolean>()
     private val openCommentGuideLines = TestSubscriber<Void>()
 
     @Test
@@ -155,7 +156,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             }
         }).build()
         val vm = CommentsViewModel.ViewModel(env)
-        val commentsList = TestSubscriber<List<CommentCardData>?>()
+        val commentsList = TestSubscriber<Pair<List<CommentCardData>, Boolean>>()
         vm.outputs.commentsList().subscribe(commentsList)
 
         // Start the view model with an update.
@@ -165,7 +166,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testCommentsViewModel_ProjectCommentsEmit() {
-        val commentsList = BehaviorSubject.create<List<CommentCardData>?>()
+        val commentsList = BehaviorSubject.create<Pair<List<CommentCardData>, Boolean>>()
         val vm = CommentsViewModel.ViewModel(environment())
         vm.outputs.commentsList().subscribe(commentsList)
         // Start the view model with a project.
@@ -173,8 +174,8 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         // Comments should emit.
         val commentCardDataList = commentsList.value
-        assertEquals(1, commentCardDataList?.size)
-        assertEquals(CommentFactory.comment(), commentCardDataList?.get(0)?.comment)
+        assertEquals(1, commentCardDataList?.first?.size)
+        assertEquals(CommentFactory.comment(), commentCardDataList?.first?.get(0)?.comment)
     }
 
     /*
@@ -281,11 +282,13 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser)
         // Start the view model with an update.
         vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
-        vm.outputs.insertComment().subscribe(insertNewCommentToListSubscriber)
+        val commentsList = BehaviorSubject.create<Pair<List<CommentCardData>, Boolean>>()
+        vm.outputs.commentsList().subscribe(commentsList)
 
         // post a comment
         vm.inputs.insertNewCommentToList(commentCardData.comment?.body()!!, createdAt)
-        assertEquals(commentCardData.comment, insertNewCommentToListSubscriber.value.first().comment)
+        assertEquals(2, commentsList.value?.first?.size)
+        assertEquals(CommentFactory.comment(), commentsList.value?.first?.last()?.comment)
     }
 
     @Test

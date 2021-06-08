@@ -204,7 +204,7 @@ interface CommentsViewHolderViewModel {
             }
 
             Observable
-                .combineLatest(commentData, postNewComment) { commentData, _ ->
+                .combineLatest(postNewComment, commentData) { _, commentData ->
                     return@combineLatest executePostCommentMutation(commentData)
                 }
                 .switchMap {
@@ -214,7 +214,7 @@ interface CommentsViewHolderViewModel {
                 }
 
             Observable
-                .combineLatest(commentData, onRetryViewClicked) { commentData, _ ->
+                .combineLatest(onRetryViewClicked, commentData) { _, commentData ->
                     return@combineLatest executePostCommentMutation(commentData)
                 }
                 .switchMap {

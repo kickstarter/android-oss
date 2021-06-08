@@ -43,9 +43,8 @@ interface CommentsViewModel {
         fun commentComposerStatus(): Observable<CommentComposerStatus>
         fun enableReplyButton(): Observable<Boolean>
         fun showCommentComposer(): Observable<Boolean>
-        fun commentsList(): Observable<List<CommentCardData>>
+        fun commentsList(): Observable<Pair<List<CommentCardData>, Boolean>>
         fun setEmptyState(): Observable<Boolean>
-        fun insertComment(): Observable<List<CommentCardData>>
         fun showCommentGuideLinesLink(): Observable<Void>
     }
 
@@ -63,7 +62,7 @@ interface CommentsViewModel {
         private val currentUserAvatar = BehaviorSubject.create<String?>()
         private val commentComposerStatus = BehaviorSubject.create<CommentComposerStatus>()
         private val showCommentComposer = BehaviorSubject.create<Boolean>()
-        private val commentsList = BehaviorSubject.create<List<CommentCardData>?>()
+        private val commentsList = BehaviorSubject.create<Pair<List<CommentCardData>, Boolean>>()
         private val showGuideLinesLink = BehaviorSubject.create<Void>()
         private val disableReplyButton = BehaviorSubject.create<Boolean>()
 
@@ -72,7 +71,6 @@ interface CommentsViewModel {
         private val isRefreshing = BehaviorSubject.create<Boolean>()
         private val enablePagination = BehaviorSubject.create<Boolean>()
         private val setEmptyState = BehaviorSubject.create<Boolean>()
-        private val insertComment = BehaviorSubject.create<List<CommentCardData>>()
 
         private var lastCommentCursour: String? = null
         override var loadMoreListData = mutableListOf<CommentCardData>()
@@ -127,24 +125,28 @@ interface CommentsViewModel {
 
             loadCommentList(initialProject)
 
-            this.currentUser.loggedInUser()
+            commentsList.map { it.first }
+                .compose<Pair<List<CommentCardData>, User >>(combineLatestPair(this.currentUser.loggedInUser()))
                 .compose(Transformers.takePairWhen(this.insertNewCommentToList))
                 .map {
-                    buildCommentBody(it)
+                    Pair(it.first.first, buildCommentBody(Pair(it.first.second, it.second)))
                 }
-                .compose<Pair<Comment, Project?>>(combineLatestPair(initialProject))
+                .compose(combineLatestPair(initialProject))
                 .map {
-                    CommentCardData.builder()
-                        .comment(it.first)
-                        .project(it.second)
-                        .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
-                        .build()
+                    Pair(
+                        it.first.first,
+                        CommentCardData.builder()
+                            .comment(it.first.second)
+                            .project(it.second)
+                            .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
+                            .build()
+                    )
                 }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    loadMoreListData.apply {
-                        add(0, it)
-                        this@ViewModel.insertComment.onNext(this)
+                    it.first.toMutableList().apply {
+                        add(0, it.second)
+                        commentsList.onNext(Pair(this, true))
                     }
                 }
 
@@ -218,7 +220,6 @@ interface CommentsViewModel {
                 updatePaginatedData(
                     loadingType,
                     commentCardDataList
-
                 )
             }
         }
@@ -248,7 +249,7 @@ interface CommentsViewModel {
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
         override fun commentComposerStatus(): Observable<CommentComposerStatus> = commentComposerStatus
         override fun showCommentComposer(): Observable<Boolean> = showCommentComposer
-        override fun commentsList(): Observable<List<CommentCardData>> = commentsList
+        override fun commentsList(): Observable<Pair<List<CommentCardData>, Boolean>> = commentsList
         override fun enableReplyButton(): Observable<Boolean> = disableReplyButton
         override fun showCommentGuideLinesLink(): Observable<Void> = showGuideLinesLink
 
@@ -256,13 +257,12 @@ interface CommentsViewModel {
         override fun isLoadingMoreItems(): Observable<Boolean> = isLoadingMoreItems
         override fun enablePagination(): Observable<Boolean> = enablePagination
         override fun isRefreshing(): Observable<Boolean> = isRefreshing
-        override fun insertComment(): Observable<List<CommentCardData>> = this.insertComment
         override fun insertNewCommentToList(comment: String, createdAt: DateTime) = insertNewCommentToList.onNext(Pair(comment, createdAt))
 
         override fun bindPaginatedData(data: List<CommentCardData>?) {
             lastCommentCursour = data?.lastOrNull()?.comment?.cursor()
             data?.let { loadMoreListData.addAll(it) }
-            commentsList.onNext(loadMoreListData)
+            commentsList.onNext(Pair(loadMoreListData, false))
             this.isRefreshing.onNext(false)
             this.isLoadingMoreItems.onNext(false)
         }

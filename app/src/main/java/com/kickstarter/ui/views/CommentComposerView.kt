@@ -31,11 +31,8 @@ class CommentComposerView @JvmOverloads constructor(
         }
 
         binding.commentTextComposer.doOnTextChanged { text, _, _, _ ->
+            binding.commentActionButton.isVisible = text?.trim()?.isNotEmpty() ?: false
             binding.commentActionButton.isEnabled = text?.trim()?.isNotEmpty() ?: false
-        }
-
-        binding.commentTextComposer.setOnFocusChangeListener { _, hasFocus ->
-            binding.commentActionButton.isVisible = hasFocus
         }
     }
 
@@ -57,7 +54,14 @@ class CommentComposerView @JvmOverloads constructor(
             getBoolean(R.styleable.CommentComposerView_composer_disabled, false).also {
                 showCommentComposerDisabledView()
             }
+            getBoolean(R.styleable.CommentComposerView_composer_action_button_gone, false).also {
+                hideCommentComposerActionView(it)
+            }
         }
+    }
+
+    private fun hideCommentComposerActionView(it: Boolean) {
+        binding.commentActionButton.isGone = it
     }
 
     fun clearCommentComposer() {
@@ -99,7 +103,6 @@ class CommentComposerView @JvmOverloads constructor(
         binding.separtor.isVisible = true
         binding.commentsDisableMsg.isVisible = false
         binding.commentTextGroup.isVisible = true
-        binding.commentActionButton.isVisible = true
     }
 
     private fun hideCommentComposer() {

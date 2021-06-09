@@ -309,22 +309,27 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(env)
 
         val comment = CommentFactory.commentToPostWithUser(currentUser)
-        val commentCardData = CommentCardData.builder().comment(comment).project(ProjectFactory.initialProject()).build()
+        val commentCardData = CommentCardData.builder()
+            .comment(comment)
+            .project(ProjectFactory.initialProject())
+            .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
+            .build()
+
         this.vm.inputs.configureWith(commentCardData)
         this.vm.inputs.onRetryViewClicked()
 
         this.retrySendComment.assertValue(comment)
         this.commentCardStatus.assertValues(
-            CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS,
+            CommentCardStatus.TRYING_TO_POST,
             CommentCardStatus.FAILED_TO_SEND_COMMENT,
             CommentCardStatus.RE_TRYING_TO_POST,
-            CommentCardStatus.FAILED_TO_SEND_COMMENT
+            CommentCardStatus.FAILED_TO_SEND_COMMENT,
         )
 
         this.vm.inputs.onRetryViewClicked()
 
         this.commentCardStatus.assertValues(
-            CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS,
+            CommentCardStatus.TRYING_TO_POST,
             CommentCardStatus.FAILED_TO_SEND_COMMENT,
             CommentCardStatus.RE_TRYING_TO_POST,
             CommentCardStatus.FAILED_TO_SEND_COMMENT,

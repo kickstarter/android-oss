@@ -255,15 +255,19 @@ interface CommentsViewHolderViewModel {
          * - The comment author is the current user
          * - the comment id is negative, this happens when a comment is created on the app, and has not been posted
          * to the backed yet, otherwise it should have a id bigger than 0
+         * - The state we recognize as a comment that needs to be posted is: `TRYING_TO_POST`, no other state is allowed
          */
         private fun shouldCommentBePosted(dataCommentAndUser: Pair<CommentCardData, User>): Boolean {
             var shouldPost = false
             val currentUser = dataCommentAndUser.second
             val comment = dataCommentAndUser.first?.comment?.let { return@let it }
+            val status = dataCommentAndUser.first.commentCardState
 
             comment?.let {
                 shouldPost = it.id() < 0 && it.author() == currentUser
             }
+
+            shouldPost = shouldPost && status == CommentCardStatus.TRYING_TO_POST.commentCardStatus
 
             return shouldPost
         }

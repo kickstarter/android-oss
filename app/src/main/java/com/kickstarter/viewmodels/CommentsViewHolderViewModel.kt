@@ -202,8 +202,14 @@ interface CommentsViewHolderViewModel {
                     this.commentCardStatus.onNext(CommentCardStatus.RE_TRYING_TO_POST)
                 }
 
+            comment
+                .compose(takeWhen(this.onFlagButtonClicked))
+                .compose(bindToLifecycle())
+                .subscribe(this.flagComment)
+
             // - CommentData will hold the information for posting a new comment if needed
             val commentData = this.commentInput
+                .distinctUntilChanged()
                 .compose(combineLatestPair(currentUser.loggedInUser()))
                 .filter { shouldCommentBePosted(it) }
                 .map {
@@ -211,19 +217,6 @@ interface CommentsViewHolderViewModel {
                 }
 
             postComment(commentData)
-
-            comment
-                .compose(takeWhen(this.onFlagButtonClicked))
-                .compose(bindToLifecycle())
-                .subscribe(this.flagComment)
-
-            this.commentInput
-                .filter { ObjectUtils.isNotNull(it) }
-                .filter { it.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus }
-                .compose(bindToLifecycle())
-                .subscribe {
-                    this.newCommentBind.onNext(it)
-                }
         }
 
         /**
@@ -249,17 +242,11 @@ interface CommentsViewHolderViewModel {
                     it
                 }.doOnNext {
                     this.commentCardStatus.onNext(CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY)
-                }.compose(combineLatestPair(this.commentInput))
+                }
                 .delay(3000, TimeUnit.MILLISECONDS)
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.commentCardStatus.onNext(CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY)
-                    // - update the current input with the mutation response and new state after successful mutation
-                    this.commentInput.onNext(
-                        it.second.toBuilder().comment(it.first)
-                            .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
-                            .build()
-                    )
+                    this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
                 }
         }
 

@@ -122,9 +122,9 @@ class CommentCard @JvmOverloads constructor(
         }
 
         binding.commentDeletedMessageGroup.isVisible =
-                cardCommentStatus == CommentCardStatus.DELETED_COMMENT
+            cardCommentStatus == CommentCardStatus.DELETED_COMMENT
 
-                if (shouldShowReplyButton(cardCommentStatus)) {
+        if (shouldShowReplyButton(cardCommentStatus)) {
             setReplyButtonVisibility(true)
         } else {
             hideReplyButton()

@@ -5,7 +5,6 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.models.OptimizelyFeature
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
@@ -43,8 +42,6 @@ interface CommentsViewHolderViewModel {
 
         /** Configure the view model with the [Comment]. */
         fun configureWith(commentCardData: CommentCardData)
-
-        fun postNewComment(commentCardData: CommentCardData)
     }
 
     interface Outputs {
@@ -86,9 +83,6 @@ interface CommentsViewHolderViewModel {
 
         /** Emits the current [OptimizelyFeature.Key.COMMENT_ENABLE_THREADS] status to the CommentCard UI*/
         fun isCommentEnableThreads(): Observable<Boolean>
-
-        /** Emits the new bind comment to ui */
-        fun newCommentBind(): Observable<CommentCardData>
     }
 
     class ViewModel(environment: Environment) : ActivityViewModel<CommentCardViewHolder>(environment), Inputs, Outputs {
@@ -111,8 +105,6 @@ interface CommentsViewHolderViewModel {
         private val replyToComment = PublishSubject.create<Comment>()
         private val flagComment = PublishSubject.create<Comment>()
         private val viewCommentReplies = PublishSubject.create<Comment>()
-        private val postNewComment = BehaviorSubject.create<CommentCardData>()
-        private val newCommentBind = BehaviorSubject.create<CommentCardData>()
         private val isCommentEnableThreads = PublishSubject.create<Boolean>()
 
         val inputs: Inputs = this
@@ -123,33 +115,62 @@ interface CommentsViewHolderViewModel {
         private val currentUser = environment.currentUser()
 
         init {
-            val updatedCommentedCard = this.commentInput
-                .filter { ObjectUtils.isNotNull(it) }
-                .map {
-                    val commentCardState = cardStatus(it)
-                    it.toBuilder().commentCardState(commentCardState?.commentCardStatus ?: 0).build()
-                }
-
-            updatedCommentedCard
-                .compose(bindToLifecycle())
-                .subscribe {
-                    this.commentCardStatus.onNext(cardStatus(it))
-                }
-
-            updatedCommentedCard
-                .compose(Transformers.combineLatestPair(environment.currentUser().observable()))
-                .compose(bindToLifecycle())
-                .subscribe {
-                    this.isReplyButtonVisible.onNext(
-                        shouldReplyButtonBeVisible(it.first, it.second, optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_ENABLE_THREADS))
-                    )
-                }
 
             val comment = this.commentInput
                 .map { it.comment }
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
+            configureCommentCardWithComment(comment)
 
+            val commentCardStatus = this.commentInput
+                .filter { ObjectUtils.isNotNull(it) }
+                .map {
+                    val commentCardState = cardStatus(it)
+                    it.toBuilder().commentCardState(commentCardState?.commentCardStatus ?: 0).build()
+                }
+            handleStatus(commentCardStatus)
+
+            // - CommentData will hold the information for posting a new comment if needed
+            val commentData = this.commentInput
+                .distinctUntilChanged()
+                .compose(combineLatestPair(currentUser.loggedInUser()))
+                .filter { shouldCommentBePosted(it) }
+                .map {
+                    Pair(requireNotNull(it.first.comment?.body()), requireNotNull(it.first.project))
+                }
+            postComment(commentData)
+        }
+
+        /**
+         * Handles the configuration and behaviour for the comment card
+         * @param comment the comment observable
+         */
+        private fun handleStatus(commentCardStatus: Observable<CommentCardData>) {
+            commentCardStatus
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.commentCardStatus.onNext(cardStatus(it))
+                }
+
+            commentCardStatus
+                .compose(combineLatestPair(currentUser.observable()))
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.isReplyButtonVisible.onNext(
+                        shouldReplyButtonBeVisible(
+                            it.first,
+                            it.second,
+                            optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_ENABLE_THREADS)
+                        )
+                    )
+                }
+        }
+
+        /**
+         * Handles the configuration and behaviour for the comment card
+         * @param comment the comment observable
+         */
+        private fun configureCommentCardWithComment(comment: Observable<Comment>) {
             comment
                 .map { it.repliesCount() }
                 .compose(bindToLifecycle())
@@ -206,17 +227,6 @@ interface CommentsViewHolderViewModel {
                 .compose(takeWhen(this.onFlagButtonClicked))
                 .compose(bindToLifecycle())
                 .subscribe(this.flagComment)
-
-            // - CommentData will hold the information for posting a new comment if needed
-            val commentData = this.commentInput
-                .distinctUntilChanged()
-                .compose(combineLatestPair(currentUser.loggedInUser()))
-                .filter { shouldCommentBePosted(it) }
-                .map {
-                    Pair(requireNotNull(it.first.comment?.body()), requireNotNull(it.first.project))
-                }
-
-            postComment(commentData)
         }
 
         /**
@@ -272,6 +282,13 @@ interface CommentsViewHolderViewModel {
             return shouldPost
         }
 
+        /**
+         * Function that will execute the PostCommentMutation
+         * @param commentData holds the comment body and the project to be posted
+         * // TODO: for the future threads wi will need to send to the mutation not just the body,
+         * // TODO: we will need the entire comment plus very important the [parentId]
+         * @return Observable<Comment>
+         */
         private fun executePostCommentMutation(commentData: Pair<String, Project>) =
             this.apolloClient.createComment(
                 PostCommentData(
@@ -360,9 +377,5 @@ interface CommentsViewHolderViewModel {
         override fun viewCommentReplies(): Observable<Comment> = this.viewCommentReplies
 
         override fun isCommentEnableThreads(): Observable<Boolean> = this.isCommentEnableThreads
-
-        override fun newCommentBind(): Observable<CommentCardData> = this.newCommentBind
-
-        override fun postNewComment(commentCardData: CommentCardData) = postNewComment.onNext(commentCardData)
     }
 }

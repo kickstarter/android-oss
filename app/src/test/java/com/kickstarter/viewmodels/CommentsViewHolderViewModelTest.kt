@@ -54,7 +54,6 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.replyToComment().subscribe(this.replyToComment)
         this.vm.outputs.flagComment().subscribe(this.flagComment)
         this.vm.outputs.commentRepliesCount().subscribe(this.repliesCount)
-        this.vm.outputs.newCommentBind().subscribe(this.newCommentBind)
     }
 
     @Test
@@ -359,7 +358,6 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
             .build()
 
         this.vm.inputs.configureWith(commentCardData)
-        this.vm.inputs.postNewComment(commentCardData)
 
         this.commentCardStatus.assertValues(
             CommentCardStatus.TRYING_TO_POST,
@@ -388,7 +386,6 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
             .build()
 
         this.vm.inputs.configureWith(commentCardData)
-        this.vm.inputs.postNewComment(commentCardData)
 
         // State has not changed from the initialization
         this.commentCardStatus.assertValues(
@@ -416,7 +413,6 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
             .build()
 
         this.vm.inputs.configureWith(commentCardData)
-        this.vm.inputs.postNewComment(commentCardData)
         this.vm.inputs.onRetryViewClicked()
 
         this.retrySendComment.assertValue(comment)

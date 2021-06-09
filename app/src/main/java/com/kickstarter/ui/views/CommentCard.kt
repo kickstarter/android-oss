@@ -8,6 +8,7 @@ import android.view.View.OnClickListener
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.kickstarter.R
 import com.kickstarter.databinding.CommentCardBinding
@@ -108,8 +109,6 @@ class CommentCard @JvmOverloads constructor(
     }
 
     fun setCommentCardStatus(cardCommentStatus: CommentCardStatus) {
-        binding.commentDeletedMessageGroup.isVisible =
-            cardCommentStatus == CommentCardStatus.DELETED_COMMENT
 
         binding.commentBody.isVisible = cardCommentStatus == CommentCardStatus.COMMENT_WITH_REPLIES ||
             cardCommentStatus == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS ||
@@ -118,7 +117,14 @@ class CommentCard @JvmOverloads constructor(
             cardCommentStatus == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY ||
             cardCommentStatus == CommentCardStatus.TRYING_TO_POST
 
-        if (shouldShowReplyButton(cardCommentStatus)) {
+        if (cardCommentStatus == CommentCardStatus.DELETED_COMMENT) {
+            binding.commentBody.isInvisible = true
+        }
+
+        binding.commentDeletedMessageGroup.isVisible =
+                cardCommentStatus == CommentCardStatus.DELETED_COMMENT
+
+                if (shouldShowReplyButton(cardCommentStatus)) {
             setReplyButtonVisibility(true)
         } else {
             hideReplyButton()

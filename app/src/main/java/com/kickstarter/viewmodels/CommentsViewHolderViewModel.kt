@@ -120,6 +120,8 @@ interface CommentsViewHolderViewModel {
 
         private val optimizely: ExperimentsClientType = environment.optimizely()
         private val apolloClient: ApolloClientType = environment.apolloClient()
+        private val currentUser = environment.currentUser()
+
         init {
             val updatedCommentedCard = this.commentInput
                 .filter { ObjectUtils.isNotNull(it) }
@@ -200,9 +202,9 @@ interface CommentsViewHolderViewModel {
                     this.commentCardStatus.onNext(CommentCardStatus.RE_TRYING_TO_POST)
                 }
 
-            // - CommentData will hold the information
+            // - CommentData will hold the information for posting a new comment if needed
             val commentData = this.commentInput
-                .compose(combineLatestPair(environment.currentUser().loggedInUser()))
+                .compose(combineLatestPair(currentUser.loggedInUser()))
                 .filter { shouldCommentBePosted(it) }
                 .map {
                     Pair(requireNotNull(it.first.comment?.body()), requireNotNull(it.first.project))
@@ -251,6 +253,7 @@ interface CommentsViewHolderViewModel {
                 .delay(3000, TimeUnit.MILLISECONDS)
                 .compose(bindToLifecycle())
                 .subscribe {
+                    this.commentCardStatus.onNext(CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY)
                     // - update the current input with the mutation response and new state after successful mutation
                     this.commentInput.onNext(
                         it.second.toBuilder().comment(it.first)

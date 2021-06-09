@@ -331,16 +331,18 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSendCommentClicked() {
-        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+        val currentUser = UserFactory.user().toBuilder().id(1).build()
+        val env = environment().toBuilder()
+            .apolloClient(object : MockApolloClient() {
             override fun createComment(comment: PostCommentData): Observable<Comment> {
                 return Observable.just(CommentFactory.liveComment(createdAt = createdAt))
             }
-        }).build()
-        val currentUser = UserFactory.user().toBuilder().id(1).build()
-        env.toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+        })
+            .currentUser(MockCurrentUser(currentUser))
+            .build()
         setUpEnvironment(env)
 
-        val comment = CommentFactory.comment()
+        val comment = CommentFactory.commentToPostWithUser(currentUser)
         val commentCardData = CommentCardData.builder()
             .comment(comment)
             .project(ProjectFactory.initialProject())

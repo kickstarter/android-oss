@@ -145,7 +145,7 @@ class CommentsActivity :
 
     private fun setEmptyState(visibility: Boolean) {
         binding.commentsSwipeRefreshLayout.visibility = when (visibility) {
-            true -> View.GONE
+            true -> View.INVISIBLE
             else -> View.VISIBLE
         }
 

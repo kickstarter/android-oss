@@ -10,7 +10,6 @@ import com.kickstarter.libs.loadmore.LoadingType
 import com.kickstarter.libs.loadmore.PaginatedViewModelOutput
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
-import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.models.Comment
@@ -29,7 +28,6 @@ import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
-import timber.log.Timber
 
 interface CommentsViewModel {
 
@@ -192,7 +190,8 @@ interface CommentsViewModel {
                 .compose(combineLatestPair(isFetchingData))
                 .filter {
                     this.lastCommentCursor == null &&
-                            it.second == INITIAL_LOAD}
+                        it.second == INITIAL_LOAD
+                }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.initialError.onNext(it.first)
@@ -201,7 +200,7 @@ interface CommentsViewModel {
 
             // TODO showcasing pagination error subscription to be completed on : https://kickstarter.atlassian.net/browse/NT-2019
             this.internalError
-                .filter {this.lastCommentCursor != null }
+                .filter { this.lastCommentCursor != null }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.paginationError.onNext(it)
@@ -214,7 +213,7 @@ interface CommentsViewModel {
                 .filter { it.second == PULL_LOAD }
                 .compose(bindToLifecycle())
                 .subscribe {
-                   it.first.localizedMessage
+                    it.first.localizedMessage
                     this.isRefreshing.onNext(false)
                 }
         }
@@ -260,7 +259,7 @@ interface CommentsViewModel {
                 }
         }
 
-        private fun getProjectComments(project: Observable<Project>, state: Int) : Observable<Pair<List<CommentCardData>, Int>>{
+        private fun getProjectComments(project: Observable<Project>, state: Int): Observable<Pair<List<CommentCardData>, Int>> {
             isFetchingData.onNext(state)
             return project.switchMap {
                 return@switchMap apolloClient.getProjectComments(it.slug() ?: "", lastCommentCursor)

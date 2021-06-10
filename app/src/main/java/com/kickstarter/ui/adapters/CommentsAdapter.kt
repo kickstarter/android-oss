@@ -26,14 +26,14 @@ class CommentsAdapter(private val delegate: Delegate) : KSListAdapter() {
 
     @LayoutRes
     override fun layout(sectionRow: SectionRow): Int {
-        return when(sectionRow.section()) {
+        return when (sectionRow.section()) {
             SECTION_COMMENT_CARD -> R.layout.item_comment_card
             SECTION_INITIAL_LOAD_ERROR -> R.layout.comment_initial_load_error_layout
             else -> 0
         }
     }
 
-   private fun resetList(){
+    private fun resetList() {
         clearSections()
         insertSection(SECTION_INITIAL_LOAD_ERROR, emptyList<Boolean>())
         insertSection(SECTION_COMMENT_CARD, emptyList<CommentCardData>())
@@ -45,14 +45,14 @@ class CommentsAdapter(private val delegate: Delegate) : KSListAdapter() {
         submitList(items())
     }
 
-    fun insertPageError(){
+    fun insertPageError() {
         resetList()
         setSection(SECTION_INITIAL_LOAD_ERROR, listOf(true))
         submitList(items())
     }
 
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
-        return when(layout){
+        return when (layout) {
             R.layout.item_comment_card -> CommentCardViewHolder(ItemCommentCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate)
             R.layout.comment_initial_load_error_layout -> InitialCommentLoadErrorViewHolder(
                 CommentInitialLoadErrorLayoutBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)

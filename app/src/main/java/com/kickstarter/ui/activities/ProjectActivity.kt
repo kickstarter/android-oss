@@ -255,7 +255,8 @@ class ProjectActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                this.startCommentsActivity(it) }
+                this.startCommentsActivity(it)
+            }
 
         this.viewModel.outputs.startRootCommentsActivity()
             .compose(bindToLifecycle())

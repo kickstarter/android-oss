@@ -147,7 +147,7 @@ interface CommentsViewModel {
 
             this.backPressed
                 .compose(bindToLifecycle())
-                .subscribe{ this.closeCommentsPage.onNext(it) }
+                .subscribe { this.closeCommentsPage.onNext(it) }
         }
 
         private fun loadCommentList(initialProject: Observable<Project>) {

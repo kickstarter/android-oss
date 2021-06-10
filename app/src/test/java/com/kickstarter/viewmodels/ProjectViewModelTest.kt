@@ -664,9 +664,9 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         val projectAndData = Pair.create(project, projectData)
 
         setUpEnvironment(
-                environment().toBuilder()
-                        .optimizely(MockExperimentsClientType(true))
-                        .build()
+            environment().toBuilder()
+                .optimizely(MockExperimentsClientType(true))
+                .build()
         )
 
         // Start the view model with a project.

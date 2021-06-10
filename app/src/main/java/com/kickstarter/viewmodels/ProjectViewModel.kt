@@ -503,10 +503,10 @@ interface ProjectViewModel {
             val latestProjectAndProjectData = currentProject.compose<Pair<Project, ProjectData>>(combineLatestPair(projectData))
 
             this.commentsTextViewClicked
-                    .withLatestFrom(latestProjectAndProjectData) {_, project -> project}
-                    .filter { optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_THREADING) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.startRootCommentsActivity)
+                .withLatestFrom(latestProjectAndProjectData) { _, project -> project }
+                .filter { optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_THREADING) }
+                .compose(bindToLifecycle())
+                .subscribe(this.startRootCommentsActivity)
 
             currentProject
                 .compose<Project>(takeWhen(this.creatorDashboardButtonClicked))
@@ -514,7 +514,7 @@ interface ProjectViewModel {
                 .subscribe(this.startCreatorDashboardActivity)
 
             this.updatesTextViewClicked
-                .withLatestFrom(latestProjectAndProjectData) {_, project -> project}
+                .withLatestFrom(latestProjectAndProjectData) { _, project -> project }
                 .compose(bindToLifecycle())
                 .subscribe(this.startProjectUpdatesActivity)
 

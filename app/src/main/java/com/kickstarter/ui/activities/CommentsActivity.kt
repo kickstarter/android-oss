@@ -92,8 +92,8 @@ class CommentsActivity :
             }
 
         viewModel.outputs.closeCommentsPage()
-                .compose(bindToLifecycle())
-                .subscribe { closeCommentsActivity() }
+            .compose(bindToLifecycle())
+            .subscribe { closeCommentsActivity() }
 
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {
             override fun onClickActionListener(string: String) {

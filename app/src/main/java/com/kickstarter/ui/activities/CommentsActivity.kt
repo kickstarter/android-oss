@@ -100,7 +100,6 @@ class CommentsActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 adapter.addErrorPaginationCell()
-                binding.commentsRecyclerView.smoothScrollToPosition(adapter.itemCount)
             }
 
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {

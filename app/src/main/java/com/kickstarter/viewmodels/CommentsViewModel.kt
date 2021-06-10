@@ -45,7 +45,7 @@ interface CommentsViewModel {
         fun commentsList(): Observable<List<CommentCardData>>
         fun setEmptyState(): Observable<Boolean>
         fun insertComment(): Observable<CommentCardData>
-        fun setInitialErrorState(): Observable<Boolean>
+        fun onInitialErrorState(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
@@ -248,7 +248,7 @@ interface CommentsViewModel {
         override fun enablePagination(): Observable<Boolean> = enablePagination
         override fun isRefreshing(): Observable<Boolean> = isRefreshing
         override fun insertComment(): Observable<CommentCardData> = this.insertComment
-        override fun setInitialErrorState(): Observable<Boolean> = this.onInitialErrorState
+        override fun onInitialErrorState(): Observable<Boolean> = this.onInitialErrorState
 
         override fun insertNewCommentToList(comment: String, createdAt: DateTime) = insertNewCommentToList.onNext(Pair(comment, createdAt))
 

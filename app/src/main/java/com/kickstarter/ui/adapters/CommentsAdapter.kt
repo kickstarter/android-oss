@@ -20,22 +20,28 @@ class CommentsAdapter(private val delegate: Delegate) : KSListAdapter() {
         private const val SECTION_COMMENT_CARD = 1
     }
 
+    init {
+        insertSection(SECTION_INITIAL_LOAD_ERROR, emptyList<Boolean>())
+        insertSection(SECTION_COMMENT_CARD, emptyList<CommentCardData>())
+    }
+
     @LayoutRes
-    override fun layout(sectionRow: SectionRow): Int = when(sectionRow.section()) {
-        SECTION_COMMENT_CARD -> R.layout.item_comment_card
-        SECTION_INITIAL_LOAD_ERROR -> R.layout.comment_initial_load_error_layout
-        else -> 0
+    override fun layout(sectionRow: SectionRow): Int {
+        return when(sectionRow.section()) {
+            SECTION_COMMENT_CARD -> R.layout.item_comment_card
+            SECTION_INITIAL_LOAD_ERROR -> R.layout.comment_initial_load_error_layout
+            else -> 0
+        }
     }
 
     fun takeData(comments: List<CommentCardData>) {
-        clearSections()
-        insertSection(SECTION_COMMENT_CARD, comments)
+        setSection(SECTION_COMMENT_CARD, comments)
         submitList(items())
     }
 
     fun insertPageError(){
-        clearSections()
-        insertSection(SECTION_INITIAL_LOAD_ERROR, emptyList<CommentCardData>())
+        setSection(SECTION_INITIAL_LOAD_ERROR, listOf(true))
+        submitList(items())
     }
 
     fun insertData(comment: CommentCardData, position: Int) {
@@ -51,10 +57,10 @@ class CommentsAdapter(private val delegate: Delegate) : KSListAdapter() {
         return when(layout){
             R.layout.item_comment_card -> CommentCardViewHolder(ItemCommentCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate)
             R.layout.comment_initial_load_error_layout -> InitialCommentLoadErrorViewHolder(
-                CommentInitialLoadErrorLayoutBinding.inflate(LayoutInflater.from(viewGroup.context))
+                CommentInitialLoadErrorLayoutBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
             )
             else -> InitialCommentLoadErrorViewHolder(
-                CommentInitialLoadErrorLayoutBinding.inflate(LayoutInflater.from(viewGroup.context))
+                CommentInitialLoadErrorLayoutBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
             )
         }
     }

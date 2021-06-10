@@ -84,7 +84,7 @@
   <string name="leave_comment">Leave a comment…</string>
   <string name="only_backers_can_leave_comments">Only backers can leave comments</string>
   <!-- comment card -->
-  <string name="something_went_wrong">Something went wrong. Pull <br/>down to reload this page.</string>
+  <string name="something_went_wrong">Something went wrong. Pull \ndown to reload this page.</string>
   <string name="comment_has_been_removed">This comment has been removed by Kickstarter.<u>Learn more about comment guidelines</u> </string>
   <string name="learn_more_about_comment_guidelines">Learn more about comment guidelines</string>
   <string name="failed_to_post_retry">Failed to post. Tap to retry</string>

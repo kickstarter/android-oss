@@ -78,6 +78,13 @@ class CommentsActivity :
                 adapter.insertData(it, 0)
             }
 
+        viewModel.outputs.onInitialErrorState()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                adapter.insertPageError()
+            }
+
         /*
          * A little delay after new item is inserted
          * This is necessary for the scroll to take effect

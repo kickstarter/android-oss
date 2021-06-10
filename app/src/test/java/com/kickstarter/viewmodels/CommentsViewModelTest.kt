@@ -268,7 +268,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.outputs.commentsList().subscribe(commentsList)
 
         // Comments should emit.
-        isRefreshing.assertValues(true)
+        isRefreshing.assertValues(true, false, false)
         commentsList.assertValueCount(0)
         initialLoadError.assertValueCount(1)
         paginationError.assertNoValues()

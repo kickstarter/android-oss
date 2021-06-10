@@ -210,7 +210,10 @@ interface CommentsViewModel {
             // TODO showcasing subscription to pull to refresh error
             this.internalError
                 .compose(combineLatestPair(isFetchingData))
-                .filter { it.second == PULL_LOAD }
+                .filter {
+                    val d = it
+                    this.lastCommentCursor == null &&
+                        it.second == PULL_LOAD }
                 .compose(bindToLifecycle())
                 .subscribe {
                     it.first.localizedMessage

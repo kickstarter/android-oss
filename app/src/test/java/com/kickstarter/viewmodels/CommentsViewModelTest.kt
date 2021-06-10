@@ -34,6 +34,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     private val pullToRefreshError = TestSubscriber.create<Throwable>()
     private val initialLoadError = TestSubscriber.create<Throwable>()
     private val paginationError = TestSubscriber.create<Throwable>()
+    private val shouldShowPaginatedCell = TestSubscriber.create<Boolean>()
     private val openCommentGuideLines = TestSubscriber<Void>()
 
     @Test
@@ -263,6 +264,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.outputs.pullToRefreshError().subscribe(pullToRefreshError)
         vm.outputs.initialLoadCommentsError().subscribe(initialLoadError)
         vm.outputs.paginateCommentsError().subscribe(paginationError)
+        vm.outputs.shouldShowPaginationErrorUI().subscribe(shouldShowPaginatedCell)
 
         // Start the view model with a project.
         vm.inputs.refresh()
@@ -274,6 +276,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         pullToRefreshError.assertValueCount(1)
         initialLoadError.assertValueCount(0)
         paginationError.assertNoValues()
+        shouldShowPaginatedCell.assertNoValues()
     }
 
     @Test
@@ -295,6 +298,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.outputs.isLoadingMoreItems().subscribe(isLoadingMoreItems)
         vm.outputs.commentsList().subscribe(commentsList)
         vm.outputs.paginateCommentsError().subscribe(paginationError)
+        vm.outputs.shouldShowPaginationErrorUI().subscribe(shouldShowPaginatedCell)
 
         enablePagination.assertValues(true)
 
@@ -305,6 +309,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         enablePagination.assertValues(true)
         commentsList.assertValueCount(1)
         paginationError.assertValueCount(1)
+        shouldShowPaginatedCell.assertValue(true)
     }
 
     /*

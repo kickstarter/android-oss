@@ -52,7 +52,7 @@ class CommentCard @JvmOverloads constructor(
         binding.flaggedMessage.parseHtmlTag()
         binding.flaggedMessage.makeLinks(
             Pair(
-                context.resources.getString(R.string.learn_more_about_comment_guidelines),
+                context.resources.getString(R.string.Learn_more_about_comment_guidelines),
                 OnClickListener {
                     onCommentCardClickedListener?.onCommentGuideLinesClicked(it)
                 },

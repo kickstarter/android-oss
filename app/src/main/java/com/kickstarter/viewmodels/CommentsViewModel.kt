@@ -85,10 +85,16 @@ interface CommentsViewModel {
         private val paginationError = BehaviorSubject.create<Throwable>()
         private val pullToRefreshError = BehaviorSubject.create<Throwable>()
 
-        private val isFetchingData = BehaviorSubject.create<Void>()
+        private val isFetchingData = BehaviorSubject.create<Int>()
 
         private var lastCommentCursor: String? = null
         override var loadMoreListData = mutableListOf<CommentCardData>()
+
+        companion object {
+            private const val INITIAL_LOAD = 1
+            private const val PULL_LOAD = 2
+            private const val PAGE_LOAD = 3
+        }
 
         init {
 
@@ -183,26 +189,39 @@ interface CommentsViewModel {
 
             // TODO showcasing subscription to initialization to be completed on : https://kickstarter.atlassian.net/browse/NT-1951
             this.internalError
-                .compose(takePairWhen(isFetchingData))
-                .filter { this.lastCommentCursor == null}
+                .compose(combineLatestPair(isFetchingData))
+                .filter {
+                    this.lastCommentCursor == null &&
+                            it.second == INITIAL_LOAD}
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.initialError.onNext(it.first)
                     this.isLoadingMoreItems.onNext(false)
                 }
 
-            // TODO showcasing pagination error subscriptionto be completed on : https://kickstarter.atlassian.net/browse/NT-2019
+            // TODO showcasing pagination error subscription to be completed on : https://kickstarter.atlassian.net/browse/NT-2019
             this.internalError
-                .filter {this.lastCommentCursor != null}
+                .filter {this.lastCommentCursor != null }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.paginationError.onNext(it)
+                    this.isLoadingMoreItems.onNext(false)
+                }
+
+            // TODO showcasing subscription to pull to refresh error
+            this.internalError
+                .compose(combineLatestPair(isFetchingData))
+                .filter { it.second == PULL_LOAD }
+                .compose(bindToLifecycle())
+                .subscribe {
+                   it.first.localizedMessage
+                    this.isRefreshing.onNext(false)
                 }
         }
 
         private fun loadCommentList(initialProject: Observable<Project>) {
             // - First load for comments & handle initial load errors
-            getProjectComments(initialProject)
+            getProjectComments(initialProject, INITIAL_LOAD)
                 .compose(bindToLifecycle())
                 .subscribe {
                     bindCommentList(it.first, LoadingType.NORMAL)
@@ -214,7 +233,7 @@ interface CommentsViewModel {
                 .doOnNext {
                     this.isLoadingMoreItems.onNext(true)
                 }
-                .switchMap { getProjectComments(Observable.just(it)) }
+                .switchMap { getProjectComments(Observable.just(it), PAGE_LOAD) }
                 .compose(bindToLifecycle())
                 .subscribe {
                     updatePaginatedData(
@@ -234,15 +253,15 @@ interface CommentsViewModel {
                     lastCommentCursor = null
                     this.loadMoreListData.clear()
                 }
-                .switchMap { getProjectComments(Observable.just(it)) }
+                .switchMap { getProjectComments(Observable.just(it), PULL_LOAD) }
                 .compose(bindToLifecycle())
                 .subscribe {
                     bindCommentList(it.first, LoadingType.PULL_REFRESH)
                 }
         }
 
-        private fun getProjectComments(project: Observable<Project>) : Observable<Pair<List<CommentCardData>, Int>>{
-            isFetchingData.onNext(null)
+        private fun getProjectComments(project: Observable<Project>, state: Int) : Observable<Pair<List<CommentCardData>, Int>>{
+            isFetchingData.onNext(state)
             return project.switchMap {
                 return@switchMap apolloClient.getProjectComments(it.slug() ?: "", lastCommentCursor)
             }.doOnError {

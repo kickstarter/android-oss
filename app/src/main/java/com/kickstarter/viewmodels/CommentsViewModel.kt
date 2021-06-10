@@ -196,10 +196,9 @@ interface CommentsViewModel {
                     Timber.d("************ On initializing error")
                 }
 
-            // TODO showcasing pagination error subscriptionto be completed on : https://kickstarter.atlassian.net/browse/NT-2019
             this.paginationError
+                .compose(bindToLifecycle())
                 .subscribe {
-                    this.isLoadingMoreItems.onNext(false)
                     this.displayPaginationError.onNext(true)
                 }
 
@@ -222,7 +221,6 @@ interface CommentsViewModel {
                 .compose(Transformers.takeWhen(this.nextPage))
                 .doOnNext {
                     this.isLoadingMoreItems.onNext(true)
-                    this.displayPaginationError.onNext(false)
                 }
                 .switchMap { getProjectComments(Observable.just(it), this.paginationError) }
                 .compose(bindToLifecycle())
@@ -255,6 +253,7 @@ interface CommentsViewModel {
             return@switchMap apolloClient.getProjectComments(it.slug() ?: "", lastCommentCursor)
         }.doOnError {
             errorObservable.onNext(it)
+            this.isLoadingMoreItems.onNext(false)
         }
             .onErrorResumeNext(Observable.empty())
             .filter { ObjectUtils.isNotNull(it) }

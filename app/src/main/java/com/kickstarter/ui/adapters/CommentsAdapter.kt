@@ -8,7 +8,10 @@ import com.kickstarter.databinding.EmptyViewBinding
 import com.kickstarter.databinding.ItemCommentCardBinding
 import com.kickstarter.databinding.ItemErrorPaginationBinding
 import com.kickstarter.ui.data.CommentCardData
-import com.kickstarter.ui.viewholders.*
+import com.kickstarter.ui.viewholders.CommentCardViewHolder
+import com.kickstarter.ui.viewholders.EmptyCommentsViewHolder
+import com.kickstarter.ui.viewholders.EmptyViewHolder
+import com.kickstarter.ui.viewholders.KSViewHolder
 
 class CommentsAdapter(private val delegate: Delegate) : KSListAdapter() {
     interface Delegate : EmptyCommentsViewHolder.Delegate, CommentCardViewHolder.Delegate

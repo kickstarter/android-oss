@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities
 
 import android.content.Intent
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
@@ -21,7 +22,6 @@ import com.kickstarter.viewmodels.CommentsViewModel
 import org.joda.time.DateTime
 import rx.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
-
 
 @RequiresActivityViewModel(CommentsViewModel.ViewModel::class)
 class CommentsActivity :
@@ -100,6 +100,7 @@ class CommentsActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 adapter.addErrorPaginationCell()
+                binding.commentsRecyclerView.smoothScrollToPosition(adapter.itemCount)
             }
 
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {

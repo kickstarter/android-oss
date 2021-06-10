@@ -9,6 +9,8 @@ import com.kickstarter.databinding.ActivityCommentsLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.loadmore.PaginationHandler
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.utils.ApplicationUtils
+import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.CommentsAdapter
@@ -72,23 +74,17 @@ class CommentsActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::setEmptyState)
 
-        viewModel.outputs.insertComment()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                adapter.insertData(it, 0)
-            }
-
         /*
          * A little delay after new item is inserted
          * This is necessary for the scroll to take effect
          */
-        viewModel.outputs.insertComment()
+        viewModel.outputs.scrollToTop()
+            .filter { it == true }
             .compose(bindToLifecycle())
             .delay(200, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                binding.commentsRecyclerView.scrollToPosition(0)
+                binding.commentsRecyclerView.smoothScrollToPosition(0)
             }
 
         viewModel.outputs.closeCommentsPage()
@@ -101,6 +97,13 @@ class CommentsActivity :
                 hideKeyboard()
             }
         })
+
+        viewModel.outputs.showCommentGuideLinesLink()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                ApplicationUtils.openUrlExternally(this, UrlUtils.appendPath(environment().webEndpoint(), COMMENT_KICKSTARTER_GUIDELINES))
+            }
     }
 
     private fun closeCommentsActivity() {
@@ -153,7 +156,7 @@ class CommentsActivity :
 
     private fun setEmptyState(visibility: Boolean) {
         binding.commentsSwipeRefreshLayout.visibility = when (visibility) {
-            true -> View.GONE
+            true -> View.INVISIBLE
             else -> View.VISIBLE
         }
 
@@ -177,6 +180,7 @@ class CommentsActivity :
     }
 
     override fun onCommentGuideLinesClicked(comment: Comment) {
+        viewModel.inputs.onShowGuideLinesLinkClicked()
     }
 
     override fun onCommentRepliesClicked(comment: Comment) {
@@ -209,5 +213,9 @@ class CommentsActivity :
     override fun onDestroy() {
         super.onDestroy()
         binding.commentsRecyclerView.adapter = null
+    }
+
+    companion object {
+        const val COMMENT_KICKSTARTER_GUIDELINES = "help/community"
     }
 }

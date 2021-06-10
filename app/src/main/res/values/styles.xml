@@ -878,7 +878,7 @@
     <item name="android:inputType">textCapSentences|textMultiLine|textAutoCorrect</item>
     <item name="android:paddingTop">@dimen/grid_3_half</item>
     <item name="android:paddingBottom">@dimen/grid_3_half</item>
-    <item name="android:paddingStart">@dimen/grid_2</item>
+    <item name="android:paddingStart">@dimen/grid_5_half</item>
     <item name="android:textColor">@color/soft_black</item>
     <item name="android:textSize">@dimen/body</item>
     <item name="android:maxLength">9000</item>

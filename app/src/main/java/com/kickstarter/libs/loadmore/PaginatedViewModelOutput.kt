@@ -11,7 +11,6 @@ interface PaginatedViewModelOutput<T> {
     fun updatePaginatedState(enabled: Boolean)
     fun updatePaginatedData(loadingType: LoadingType, data: List<T>?) {
         if (loadingType != LoadingType.LOAD_MORE) {
-            loadMoreListData = mutableListOf()
             updatePaginatedState(true)
         }
         if (data?.isEmpty() == true) {

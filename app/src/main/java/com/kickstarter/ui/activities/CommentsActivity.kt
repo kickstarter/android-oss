@@ -1,7 +1,6 @@
 package com.kickstarter.ui.activities
 
 import android.content.Intent
-import android.opengl.Visibility
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible

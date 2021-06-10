@@ -72,7 +72,7 @@
         android:id="@+id/retry_button"
         style="@style/CommentsRetryButton"
         android:drawableStart="@drawable/ic_retry_send_comment"
-        android:text="@string/failed_to_post_retry"
+        android:text="@string/Couldnt_post"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/separtor"
         app:layout_constraintStart_toStartOf="@id/avatar"
@@ -111,7 +111,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/flagged_message"
         style="@style/CommentCardFlaggedMessage"
-        android:text="@string/comment_has_been_removed"
+        android:text="@string/This_comment_has_been_removed_by_Kickstarter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/info_button"
         app:layout_constraintTop_toBottomOf="@id/avatar"/>

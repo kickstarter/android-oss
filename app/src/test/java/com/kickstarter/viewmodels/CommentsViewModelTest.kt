@@ -249,7 +249,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCommentsViewModel_ProjectRefresh_withError() {
+    fun testCommentsViewModel_ProjectRefresh_AndInitialLoad_withError() {
         val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
                 return Observable.error(ApiExceptionFactory.badRequestException())
@@ -270,8 +270,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // Comments should emit.
         isRefreshing.assertValues(true)
         commentsList.assertValueCount(0)
-        pullToRefreshError.assertValueCount(1)
-        initialLoadError.assertValueCount(0)
+        initialLoadError.assertValueCount(1)
         paginationError.assertNoValues()
     }
 

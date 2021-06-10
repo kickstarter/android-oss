@@ -73,14 +73,7 @@ class CommentsActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::setEmptyState)
 
-        viewModel.outputs.insertComment()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                adapter.insertData(it, 0)
-            }
-
-        viewModel.outputs.onInitialErrorState()
+        viewModel.outputs.initialLoadCommentsError()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {

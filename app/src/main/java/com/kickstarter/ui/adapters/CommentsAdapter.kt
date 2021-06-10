@@ -21,8 +21,7 @@ class CommentsAdapter(private val delegate: Delegate) : KSListAdapter() {
     }
 
     init {
-        insertSection(SECTION_INITIAL_LOAD_ERROR, emptyList<Boolean>())
-        insertSection(SECTION_COMMENT_CARD, emptyList<CommentCardData>())
+        resetList()
     }
 
     @LayoutRes
@@ -34,12 +33,20 @@ class CommentsAdapter(private val delegate: Delegate) : KSListAdapter() {
         }
     }
 
+   private fun resetList(){
+        clearSections()
+        insertSection(SECTION_INITIAL_LOAD_ERROR, emptyList<Boolean>())
+        insertSection(SECTION_COMMENT_CARD, emptyList<CommentCardData>())
+    }
+
     fun takeData(comments: List<CommentCardData>) {
+        resetList()
         setSection(SECTION_COMMENT_CARD, comments)
         submitList(items())
     }
 
     fun insertPageError(){
+        resetList()
         setSection(SECTION_INITIAL_LOAD_ERROR, listOf(true))
         submitList(items())
     }

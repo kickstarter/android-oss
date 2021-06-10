@@ -53,6 +53,9 @@ interface CommentsViewModel {
         fun initialLoadCommentsError(): Observable<Throwable>
         fun paginateCommentsError(): Observable<Throwable>
         fun pullToRefreshError(): Observable<Throwable>
+
+        /** Display the bottom pagination Error **/
+        fun shouldShowPaginationErrorUI(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
@@ -81,6 +84,7 @@ interface CommentsViewModel {
         private val isRefreshing = BehaviorSubject.create<Boolean>()
         private val enablePagination = BehaviorSubject.create<Boolean>()
         private val setEmptyState = BehaviorSubject.create<Boolean>()
+        private val displayPaginationError = BehaviorSubject.create<Boolean>()
 
         // - Error observables to handle the 3 different use cases
         private val internalError = BehaviorSubject.create<Throwable>()
@@ -184,20 +188,19 @@ interface CommentsViewModel {
 
             // TODO showcasing subscription to initialization to be completed on : https://kickstarter.atlassian.net/browse/NT-1951
             this.internalError
-                .compose(combineLatestPair(commentsList))
+                .withLatestFrom(this.commentsList) { error, commentList -> Pair(error, commentList) }
                 .filter { it.second.isEmpty() }
                 .map { it.first }
                 .subscribe {
                     it.localizedMessage
                     Timber.d("************ On initializing error")
-                    this.initialError.onNext(it)
                 }
 
             // TODO showcasing pagination error subscriptionto be completed on : https://kickstarter.atlassian.net/browse/NT-2019
             this.paginationError
                 .subscribe {
-                    it.localizedMessage
-                    Timber.d("************ On pagination error")
+                    this.isLoadingMoreItems.onNext(false)
+                    this.displayPaginationError.onNext(true)
                 }
 
             this.backPressed
@@ -219,6 +222,7 @@ interface CommentsViewModel {
                 .compose(Transformers.takeWhen(this.nextPage))
                 .doOnNext {
                     this.isLoadingMoreItems.onNext(true)
+                    this.displayPaginationError.onNext(false)
                 }
                 .switchMap { getProjectComments(Observable.just(it), this.paginationError) }
                 .compose(bindToLifecycle())
@@ -306,6 +310,7 @@ interface CommentsViewModel {
         override fun paginateCommentsError(): Observable<Throwable> = this.paginationError
         override fun pullToRefreshError(): Observable<Throwable> = this.pullToRefreshError
         override fun scrollToTop(): Observable<Boolean> = this.scrollToTop
+        override fun shouldShowPaginationErrorUI(): Observable<Boolean> = this.displayPaginationError
 
         override fun setEmptyState(): Observable<Boolean> = setEmptyState
         override fun isLoadingMoreItems(): Observable<Boolean> = isLoadingMoreItems

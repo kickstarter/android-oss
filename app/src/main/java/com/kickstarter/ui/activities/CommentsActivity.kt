@@ -1,9 +1,14 @@
 package com.kickstarter.ui.activities
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
+import androidx.transition.ChangeBounds
+import androidx.transition.TransitionManager
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityCommentsLayoutBinding
 import com.kickstarter.libs.BaseActivity
@@ -18,9 +23,11 @@ import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.viewholders.EmptyCommentsViewHolder
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
 import com.kickstarter.viewmodels.CommentsViewModel
+import kotlinx.android.synthetic.main.fragment_pledge_section_header_reward_sumary.*
 import org.joda.time.DateTime
 import rx.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
+
 
 @RequiresActivityViewModel(CommentsViewModel.ViewModel::class)
 class CommentsActivity :
@@ -89,7 +96,26 @@ class CommentsActivity :
 
         viewModel.outputs.closeCommentsPage()
             .compose(bindToLifecycle())
-            .subscribe { closeCommentsActivity() }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                closeCommentsActivity()
+            }
+
+        viewModel.outputs.shouldShowPaginationErrorUI()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                val alphaValue = if (it) 1.0f else 0.0f
+                binding.paginationErrorComponent.animate()
+                    .alpha(alphaValue)
+                    .setDuration(300)
+                    .setListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            super.onAnimationEnd(animation)
+                            binding.paginationErrorComponent.visibility = if (it) View.VISIBLE else View.GONE
+                        }
+                    })
+            }
 
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {
             override fun onClickActionListener(string: String) {

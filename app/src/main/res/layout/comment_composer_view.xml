@@ -13,6 +13,8 @@
         android:layout_height="1dp"
         android:background="@color/kds_support_200"
         android:layout_marginBottom="@dimen/grid_3"
+        app:layout_goneMarginBottom="@dimen/grid_6"
+        app:layout_constraintBottom_toTopOf="@+id/comment_text_composer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

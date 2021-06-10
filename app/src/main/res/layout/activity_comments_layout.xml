@@ -61,7 +61,7 @@
             android:id="@+id/comments_swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/pagination_error_component"
+            app:layout_constraintBottom_toTopOf="@+id/comment_composer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -74,16 +74,6 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/comment_card" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/pagination_error_component"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/grid_8"
-            android:background="@color/kds_alert"
-            android:visibility="gone"
-            android:animateLayoutChanges="true"
-            app:layout_constraintTop_toBottomOf="@id/comments_swipe_refresh_layout"
-            app:layout_constraintBottom_toTopOf="@id/comment_composer"/>
 
         <ProgressBar
             android:id="@+id/comments_loading_indicator"

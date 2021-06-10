@@ -248,6 +248,7 @@ interface CommentsViewHolderViewModel {
                 .combineLatest(onRetryViewClicked, commentData) { _, newData ->
                     return@combineLatest executePostCommentMutation(newData)
                 }
+                .delay(1, TimeUnit.SECONDS)
                 .switchMap {
                     it
                 }.doOnNext {

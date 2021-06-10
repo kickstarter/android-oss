@@ -44,7 +44,7 @@
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/comment_text_composer"
         style="@style/CommentsTextInputLayout"
-        android:hint="@string/leave_comment"
+        android:hint="@string/Write_a_comment"
         android:layout_marginBottom="@dimen/grid_3"
         android:layout_marginTop="@dimen/grid_3"
         android:layout_marginStart="@dimen/grid_5_half"
@@ -58,7 +58,7 @@
         style="@style/CommentsButton"
         android:layout_height="@dimen/grid_15_half"
         android:enabled="false"
-        android:text="@string/post"
+        android:text="@string/Post"
         android:textColor="@color/kds_create_700"
         android:layout_marginEnd="@dimen/grid_1"
         android:visibility="gone"
@@ -76,7 +76,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/comments_disable_msg"
         style="@style/CommentsDisabledMessageTextView"
-        android:text="@string/only_backers_can_leave_comments"
+        android:text="@string/Only_backers_can_post_comments"
         android:visibility="gone"
         android:layout_marginTop="@dimen/grid_3"
         android:layout_marginStart="@dimen/grid_2"

@@ -658,6 +658,34 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testCommentsActivity_whenCommentsOpenedAndThenCheckoutCompleted_shouldOnlyEmitOnce() {
+        val project = ProjectFactory.project()
+        val projectData = ProjectDataFactory.project(project)
+        val projectAndData = Pair.create(project, projectData)
+
+        setUpEnvironment(
+            environment().toBuilder()
+                .optimizely(MockExperimentsClientType(true))
+                .build()
+        )
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.vm.inputs.commentsTextViewClicked()
+        this.startRootCommentsActivityivity.assertValues(projectAndData)
+        this.startRootCommentsActivityivity.assertValueCount(1)
+        this.startThanksActivity.assertNoValues()
+
+        val checkoutData = CheckoutDataFactory.checkoutData(3L, 20.0, 30.0)
+        val pledgeData = PledgeData.with(PledgeFlowContext.NEW_PLEDGE, ProjectDataFactory.project(project), RewardFactory.reward())
+        this.vm.inputs.pledgeSuccessfullyCreated(Pair(checkoutData, pledgeData))
+
+        this.startThanksActivity.assertValue(Pair(checkoutData, pledgeData))
+        this.startRootCommentsActivityivity.assertValueCount(1)
+    }
+
+    @Test
     fun testStartProjectUpdatesActivity() {
         val project = ProjectFactory.project()
         val projectData = ProjectDataFactory.project(project)
@@ -670,6 +698,30 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         // Click on Updates button.
         this.vm.inputs.updatesTextViewClicked()
         this.startProjectUpdatesActivity.assertValues(projectAndData)
+    }
+
+    @Test
+    fun testUpdateActivity_whenUpdatesOpenedAndThenCheckoutCompleted_shouldOnlyEmitOnce() {
+        val project = ProjectFactory.project()
+        val projectData = ProjectDataFactory.project(project)
+        val projectAndData = Pair.create(project, projectData)
+        setUpEnvironment(environment())
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        // Click on Updates button.
+        this.vm.inputs.updatesTextViewClicked()
+        this.startProjectUpdatesActivity.assertValues(projectAndData)
+        this.startProjectUpdatesActivity.assertValueCount(1)
+        this.startThanksActivity.assertNoValues()
+
+        val checkoutData = CheckoutDataFactory.checkoutData(3L, 20.0, 30.0)
+        val pledgeData = PledgeData.with(PledgeFlowContext.NEW_PLEDGE, ProjectDataFactory.project(project), RewardFactory.reward())
+        this.vm.inputs.pledgeSuccessfullyCreated(Pair(checkoutData, pledgeData))
+
+        this.startThanksActivity.assertValue(Pair(checkoutData, pledgeData))
+        this.startProjectUpdatesActivity.assertValueCount(1)
     }
 
     @Test
@@ -693,7 +745,6 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.pledgeActionButtonColor.assertValuesAndClear(R.color.button_pledge_manage)
         this.pledgeActionButtonText.assertValuesAndClear(R.string.Manage)
     }
-
     @Test
     fun testPledgeActionButtonUIOutputs_projectIsLiveAndNotBacked() {
         setUpEnvironment(environment())

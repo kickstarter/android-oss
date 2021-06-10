@@ -36,6 +36,8 @@ class CommentsActivity :
         setContentView(view)
         binding.commentsRecyclerView.adapter = adapter
 
+        binding.backButton.setOnClickListener { viewModel.inputs.backPressed() }
+
         setupPagination()
 
         viewModel.outputs.commentsList()
@@ -85,6 +87,10 @@ class CommentsActivity :
                 binding.commentsRecyclerView.smoothScrollToPosition(0)
             }
 
+        viewModel.outputs.closeCommentsPage()
+            .compose(bindToLifecycle())
+            .subscribe { closeCommentsActivity() }
+
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {
             override fun onClickActionListener(string: String) {
                 postComment(string)
@@ -98,6 +104,11 @@ class CommentsActivity :
             .subscribe {
                 ApplicationUtils.openUrlExternally(this, UrlUtils.appendPath(environment().webEndpoint(), COMMENT_KICKSTARTER_GUIDELINES))
             }
+    }
+
+    private fun closeCommentsActivity() {
+        super.back()
+        this.finishActivity(taskId)
     }
 
     private fun setupPagination() {

@@ -35,11 +35,13 @@ interface CommentsViewModel {
     interface Inputs {
         fun refresh()
         fun nextPage()
+        fun backPressed()
         fun insertNewCommentToList(comment: String, createdAt: DateTime)
         fun onShowGuideLinesLinkClicked()
     }
 
     interface Outputs : PaginatedViewModelOutput<CommentCardData> {
+        fun closeCommentsPage(): Observable<Void>
         fun currentUserAvatar(): Observable<String?>
         fun commentComposerStatus(): Observable<CommentComposerStatus>
         fun enableReplyButton(): Observable<Boolean>
@@ -60,10 +62,12 @@ interface CommentsViewModel {
         private val apolloClient: ApolloClientType = environment.apolloClient()
         val inputs: Inputs = this
         val outputs: Outputs = this
+        private val backPressed = PublishSubject.create<Void>()
         private val refresh = PublishSubject.create<Void>()
         private val nextPage = PublishSubject.create<Void>()
         private val onShowGuideLinesLinkClicked = PublishSubject.create<Void>()
 
+        private val closeCommentsPage = BehaviorSubject.create<Void>()
         private val currentUserAvatar = BehaviorSubject.create<String?>()
         private val commentComposerStatus = BehaviorSubject.create<CommentComposerStatus>()
         private val showCommentComposer = BehaviorSubject.create<Boolean>()
@@ -195,6 +199,10 @@ interface CommentsViewModel {
                     it.localizedMessage
                     Timber.d("************ On pagination error")
                 }
+
+            this.backPressed
+                .compose(bindToLifecycle())
+                .subscribe { this.closeCommentsPage.onNext(it) }
         }
 
         private fun loadCommentList(initialProject: Observable<Project>) {
@@ -282,10 +290,12 @@ interface CommentsViewModel {
                 else -> CommentComposerStatus.DISABLED
             }
 
+        override fun backPressed() = backPressed.onNext(null)
         override fun refresh() = refresh.onNext(null)
         override fun nextPage() = nextPage.onNext(null)
         override fun onShowGuideLinesLinkClicked() = onShowGuideLinesLinkClicked.onNext(null)
 
+        override fun closeCommentsPage(): Observable<Void> = closeCommentsPage
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
         override fun commentComposerStatus(): Observable<CommentComposerStatus> = commentComposerStatus
         override fun showCommentComposer(): Observable<Boolean> = showCommentComposer

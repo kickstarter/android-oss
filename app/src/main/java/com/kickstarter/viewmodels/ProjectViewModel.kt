@@ -321,6 +321,7 @@ interface ProjectViewModel {
         private val startThanksActivity = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
         private val startVideoActivity = PublishSubject.create<Project>()
         private val updateFragments = BehaviorSubject.create<ProjectData>()
+        private val updatedProject = PublishSubject.create<Project>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -379,7 +380,9 @@ interface ProjectViewModel {
                 .subscribe(this.prelaunchUrl)
 
             val initialProject = mappedProjectValues
-                .filter { BooleanUtils.isFalse(it.displayPrelaunch()) }
+                .filter {
+                    BooleanUtils.isFalse(it.displayPrelaunch())
+                }
 
             // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
             val cookieRefTag = initialProject
@@ -402,7 +405,9 @@ interface ProjectViewModel {
 
             val projectOnUserChangeSave = initialProject
                 .compose(takeWhen<Project, User>(loggedInUserOnHeartClick))
-                .switchMap { this.toggleProjectSave(it) }
+                .switchMap {
+                    this.toggleProjectSave(it)
+                }
                 .share()
 
             val refreshProjectEvent = Observable.merge(
@@ -438,7 +443,9 @@ interface ProjectViewModel {
                 .filter { su -> su.second != null }
                 .withLatestFrom<Project, Project>(initialProject) { _, p -> p }
                 .take(1)
-                .switchMap { this.saveProject(it) }
+                .switchMap {
+                    this.saveProject(it)
+                }
                 .share()
 
             val currentProject = Observable.merge(
@@ -493,10 +500,11 @@ interface ProjectViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(this.startCommentsActivity)
 
-            currentProject
+            val latestProjectAndProjectData = currentProject.compose<Pair<Project, ProjectData>>(combineLatestPair(projectData))
+
+            this.commentsTextViewClicked
+                .withLatestFrom(latestProjectAndProjectData) { _, project -> project }
                 .filter { optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_THREADING) }
-                .compose<Project>(takeWhen(this.commentsTextViewClicked))
-                .compose<Pair<Project, ProjectData>>(combineLatestPair(projectData))
                 .compose(bindToLifecycle())
                 .subscribe(this.startRootCommentsActivity)
 
@@ -505,9 +513,8 @@ interface ProjectViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(this.startCreatorDashboardActivity)
 
-            currentProject
-                .compose<Project>(takeWhen(this.updatesTextViewClicked))
-                .compose<Pair<Project, ProjectData>>(combineLatestPair(projectData))
+            this.updatesTextViewClicked
+                .withLatestFrom(latestProjectAndProjectData) { _, project -> project }
                 .compose(bindToLifecycle())
                 .subscribe(this.startProjectUpdatesActivity)
 
@@ -641,8 +648,7 @@ interface ProjectViewModel {
 
             val projectDataAndBackedReward = projectData
                 .compose<Pair<ProjectData, Backing>>(combineLatestPair(backing))
-                .map {
-                    pD ->
+                .map { pD ->
                     pD.first.project().backing()?.backedReward(pD.first.project())?.let {
                         Pair(pD.first.toBuilder().backing(pD.second).build(), it)
                     }
@@ -1061,6 +1067,7 @@ interface ProjectViewModel {
 
         @NonNull
         override fun showCancelPledgeSuccess(): Observable<Void> = this.showCancelPledgeSuccess
+
         @NonNull
         override fun showPledgeNotCancelableDialog(): Observable<Void> = this.showPledgeNotCancelableDialog
 

@@ -217,7 +217,8 @@ interface CommentsViewModel {
                 .filter {
                     val d = it
                     this.lastCommentCursor == null &&
-                        it.second == PULL_LOAD }
+                        it.second == PULL_LOAD
+                }
                 .compose(bindToLifecycle())
                 .subscribe {
                     it.first.localizedMessage

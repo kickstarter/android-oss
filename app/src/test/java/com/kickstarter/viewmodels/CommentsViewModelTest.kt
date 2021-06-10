@@ -22,6 +22,7 @@ import rx.observers.TestSubscriber
 import rx.subjects.BehaviorSubject
 
 class CommentsViewModelTest : KSRobolectricTestCase() {
+    private val closeCommentPage = TestSubscriber<Void>()
     private val commentsList = TestSubscriber<List<CommentCardData>?>()
     private val commentComposerStatus = TestSubscriber<CommentComposerStatus>()
     private val showCommentComposer = TestSubscriber<Boolean>()
@@ -388,5 +389,14 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // post a comment
         vm.inputs.onShowGuideLinesLinkClicked()
         openCommentGuideLines.assertValueCount(1)
+    }
+
+    @Test
+    fun backButtonPressed_whenEmits_shouldEmitToCloseActivityStream() {
+        val vm = CommentsViewModel.ViewModel(environment())
+        vm.outputs.closeCommentsPage().subscribe(closeCommentPage)
+
+        vm.inputs.backPressed()
+        closeCommentPage.assertValueCount(1)
     }
 }

@@ -9,6 +9,22 @@ import org.joda.time.DateTime
 class CommentFactory {
 
     companion object {
+
+        // - Comment created on the app that has not yet being send to the backend
+        fun commentToPostWithUser(user: User): Comment {
+            return Comment.builder()
+                .id(-1)
+                .author(user)
+                .body("Some text here")
+                .parentId(1)
+                .repliesCount(0)
+                .cursor("")
+                .authorBadges(listOf())
+                .deleted(false)
+                .createdAt(DateTime.now())
+                .build()
+        }
+
         fun comment(
             avatar: Avatar = AvatarFactory.avatar(),
             name: String = "joe",

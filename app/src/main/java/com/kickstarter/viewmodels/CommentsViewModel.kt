@@ -188,7 +188,7 @@ interface CommentsViewModel {
 
             // TODO showcasing subscription to initialization to be completed on : https://kickstarter.atlassian.net/browse/NT-1951
             this.internalError
-                .withLatestFrom(this.commentsList) { error, commentList -> Pair(error, commentList) }
+                .compose(combineLatestPair(commentsList))
                 .filter { it.second.isEmpty() }
                 .map { it.first }
                 .subscribe {

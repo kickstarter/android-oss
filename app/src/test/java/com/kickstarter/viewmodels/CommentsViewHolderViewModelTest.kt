@@ -54,7 +54,6 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.replyToComment().subscribe(this.replyToComment)
         this.vm.outputs.flagComment().subscribe(this.flagComment)
         this.vm.outputs.commentRepliesCount().subscribe(this.repliesCount)
-        this.vm.outputs.newCommentBind().subscribe(this.newCommentBind)
     }
 
     @Test
@@ -297,31 +296,40 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testRetrySendCommentErrorClicked() {
+        val currentUser = UserFactory.user().toBuilder().id(1).build()
         val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun createComment(comment: PostCommentData): Observable<Comment> {
                 return Observable.error(Throwable())
             }
-        }).build()
-        val currentUser = UserFactory.user().toBuilder().id(1).build()
-        env.toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+        })
+            .currentUser(MockCurrentUser(currentUser))
+            .build()
+
         setUpEnvironment(env)
 
-        val comment = CommentFactory.comment()
-        val commentCardData = CommentCardData.builder().comment(comment).project(ProjectFactory.initialProject()).build()
+        val comment = CommentFactory.commentToPostWithUser(currentUser)
+        val commentCardData = CommentCardData.builder()
+            .comment(comment)
+            .project(ProjectFactory.initialProject())
+            .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
+            .build()
+
         this.vm.inputs.configureWith(commentCardData)
         this.vm.inputs.onRetryViewClicked()
 
         this.retrySendComment.assertValue(comment)
         this.commentCardStatus.assertValues(
-            CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS,
+            CommentCardStatus.TRYING_TO_POST,
+            CommentCardStatus.FAILED_TO_SEND_COMMENT,
             CommentCardStatus.RE_TRYING_TO_POST,
-            CommentCardStatus.FAILED_TO_SEND_COMMENT
+            CommentCardStatus.FAILED_TO_SEND_COMMENT,
         )
 
         this.vm.inputs.onRetryViewClicked()
 
         this.commentCardStatus.assertValues(
-            CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS,
+            CommentCardStatus.TRYING_TO_POST,
+            CommentCardStatus.FAILED_TO_SEND_COMMENT,
             CommentCardStatus.RE_TRYING_TO_POST,
             CommentCardStatus.FAILED_TO_SEND_COMMENT,
             CommentCardStatus.RE_TRYING_TO_POST,
@@ -330,17 +338,46 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testSendCommentClicked() {
-        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun createComment(comment: PostCommentData): Observable<Comment> {
-                return Observable.just(CommentFactory.liveComment(createdAt = createdAt))
-            }
-        }).build()
+    fun testSendCommentShouldNotPost() {
         val currentUser = UserFactory.user().toBuilder().id(1).build()
-        env.toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+        val env = environment().toBuilder()
+            .apolloClient(object : MockApolloClient() {
+                override fun createComment(comment: PostCommentData): Observable<Comment> {
+                    return Observable.just(CommentFactory.liveComment(createdAt = createdAt))
+                }
+            })
+            .currentUser(MockCurrentUser(currentUser))
+            .build()
         setUpEnvironment(env)
 
-        val comment = CommentFactory.comment()
+        val comment = CommentFactory.commentToPostWithUser(currentUser)
+        val commentCardData = CommentCardData.builder()
+            .comment(comment)
+            .project(ProjectFactory.initialProject())
+            .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
+            .build()
+
+        this.vm.inputs.configureWith(commentCardData)
+
+        this.commentCardStatus.assertValue(
+            CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS
+        )
+    }
+
+    @Test
+    fun testSendCommentClicked() {
+        val currentUser = UserFactory.user().toBuilder().id(1).build()
+        val env = environment().toBuilder()
+            .apolloClient(object : MockApolloClient() {
+                override fun createComment(comment: PostCommentData): Observable<Comment> {
+                    return Observable.just(CommentFactory.liveComment(createdAt = createdAt))
+                }
+            })
+            .currentUser(MockCurrentUser(currentUser))
+            .build()
+        setUpEnvironment(env)
+
+        val comment = CommentFactory.commentToPostWithUser(currentUser)
         val commentCardData = CommentCardData.builder()
             .comment(comment)
             .project(ProjectFactory.initialProject())
@@ -348,7 +385,6 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
             .build()
 
         this.vm.inputs.configureWith(commentCardData)
-        this.vm.inputs.postNewComment(commentCardData)
 
         this.commentCardStatus.assertValues(
             CommentCardStatus.TRYING_TO_POST,
@@ -357,17 +393,19 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testSendCommentFailedAndPressRetry() {
-        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun createComment(comment: PostCommentData): Observable<Comment> {
-                return Observable.error(Throwable())
-            }
-        }).build()
+    fun testSendCommentClicked_withOtherUser() {
         val currentUser = UserFactory.user().toBuilder().id(1).build()
-        env.toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+        val env = environment().toBuilder()
+            .apolloClient(object : MockApolloClient() {
+                override fun createComment(comment: PostCommentData): Observable<Comment> {
+                    return Observable.just(CommentFactory.liveComment(createdAt = createdAt))
+                }
+            })
+            .currentUser(MockCurrentUser(currentUser))
+            .build()
         setUpEnvironment(env)
 
-        val comment = CommentFactory.comment()
+        val comment = CommentFactory.commentToPostWithUser(UserFactory.germanUser())
         val commentCardData = CommentCardData.builder()
             .comment(comment)
             .project(ProjectFactory.initialProject())
@@ -375,7 +413,33 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
             .build()
 
         this.vm.inputs.configureWith(commentCardData)
-        this.vm.inputs.postNewComment(commentCardData)
+
+        // State has not changed from the initialization
+        this.commentCardStatus.assertValues(
+            CommentCardStatus.TRYING_TO_POST
+        )
+    }
+
+    @Test
+    fun testSendCommentFailedAndPressRetry() {
+        val currentUser = UserFactory.user().toBuilder().id(1).build()
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun createComment(comment: PostCommentData): Observable<Comment> {
+                return Observable.error(Throwable())
+            }
+        })
+            .currentUser(MockCurrentUser(currentUser))
+            .build()
+        setUpEnvironment(env)
+
+        val comment = CommentFactory.commentToPostWithUser(currentUser)
+        val commentCardData = CommentCardData.builder()
+            .comment(comment)
+            .project(ProjectFactory.initialProject())
+            .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
+            .build()
+
+        this.vm.inputs.configureWith(commentCardData)
         this.vm.inputs.onRetryViewClicked()
 
         this.retrySendComment.assertValue(comment)

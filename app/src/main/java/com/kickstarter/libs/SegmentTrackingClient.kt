@@ -142,6 +142,10 @@ open class SegmentTrackingClient(
 
             this.isInitialized = true
 
+            loggedInUser?.let {
+                identify(it)
+            }
+
             if (build.isDebug) {
                 Timber.d("${type().tag} client:$segmentClient isInitialized:$isInitialized")
                 Timber.d("${type().tag} currentThread: ${Thread.currentThread()}")

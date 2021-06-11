@@ -97,7 +97,17 @@ class CommentsActivity :
 
         viewModel.outputs.closeCommentsPage()
             .compose(bindToLifecycle())
-            .subscribe { closeCommentsActivity() }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                closeCommentsActivity()
+            }
+
+        viewModel.outputs.shouldShowPaginationErrorUI()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                adapter.addErrorPaginationCell()
+            }
 
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {
             override fun onClickActionListener(string: String) {

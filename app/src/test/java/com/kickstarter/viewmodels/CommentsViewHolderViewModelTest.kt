@@ -35,7 +35,6 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     private val replyToComment = TestSubscriber<Comment>()
     private val flagComment = TestSubscriber<Comment>()
     private val repliesCount = TestSubscriber<Int>()
-    private val internalError = TestSubscriber<Throwable>()
     private val testScheduler = TestScheduler()
 
     private val createdAt = DateTime.now()
@@ -57,7 +56,6 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.replyToComment().subscribe(this.replyToComment)
         this.vm.outputs.flagComment().subscribe(this.flagComment)
         this.vm.outputs.commentRepliesCount().subscribe(this.repliesCount)
-        this.vm.outputs.internalError().subscribe(this.internalError)
     }
 
     @Test
@@ -330,23 +328,24 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.retrySendComment.assertValue(comment)
 
-        this.internalError.assertValueCount(2)
-
         this.commentCardStatus.assertValues(
             CommentCardStatus.TRYING_TO_POST,
-            CommentCardStatus.RE_TRYING_TO_POST
+            CommentCardStatus.FAILED_TO_SEND_COMMENT,
+            CommentCardStatus.RE_TRYING_TO_POST,
+            CommentCardStatus.FAILED_TO_SEND_COMMENT,
         )
 
         this.vm.inputs.onRetryViewClicked()
 
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
-        this.internalError.assertValueCount(3)
-
         this.commentCardStatus.assertValues(
             CommentCardStatus.TRYING_TO_POST,
+            CommentCardStatus.FAILED_TO_SEND_COMMENT,
             CommentCardStatus.RE_TRYING_TO_POST,
+            CommentCardStatus.FAILED_TO_SEND_COMMENT,
             CommentCardStatus.RE_TRYING_TO_POST,
+            CommentCardStatus.FAILED_TO_SEND_COMMENT
         )
     }
 
@@ -436,7 +435,6 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testSendCommentFailedAndPressRetry() {
         val currentUser = UserFactory.user().toBuilder().id(1).build()
-
         val env = environment().toBuilder()
             .apolloClient(object : MockApolloClient() {
                 override fun createComment(comment: PostCommentData): Observable<Comment> {
@@ -445,7 +443,6 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
             }).scheduler(testScheduler)
             .currentUser(MockCurrentUser(currentUser))
             .build()
-
         setUpEnvironment(env)
 
         val comment = CommentFactory.commentToPostWithUser(currentUser)
@@ -462,11 +459,11 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
         this.retrySendComment.assertValue(comment)
-
-        this.internalError.assertValueCount(2)
         this.commentCardStatus.assertValues(
             CommentCardStatus.TRYING_TO_POST,
-            CommentCardStatus.RE_TRYING_TO_POST
+            CommentCardStatus.FAILED_TO_SEND_COMMENT,
+            CommentCardStatus.RE_TRYING_TO_POST,
+            CommentCardStatus.FAILED_TO_SEND_COMMENT
         )
     }
 }

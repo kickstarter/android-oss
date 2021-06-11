@@ -19,7 +19,6 @@ import com.kickstarter.ui.viewholders.CommentCardViewHolder
 import com.kickstarter.ui.views.CommentCardStatus
 import org.joda.time.DateTime
 import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
@@ -84,8 +83,6 @@ interface CommentsViewHolderViewModel {
 
         /** Emits the current [OptimizelyFeature.Key.COMMENT_ENABLE_THREADS] status to the CommentCard UI*/
         fun isCommentEnableThreads(): Observable<Boolean>
-
-        fun internalError(): Observable<Throwable>
     }
 
     class ViewModel(environment: Environment) : ActivityViewModel<CommentCardViewHolder>(environment), Inputs, Outputs {
@@ -145,8 +142,7 @@ interface CommentsViewHolderViewModel {
 
             this.internalError
                 .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .delay(1, TimeUnit.SECONDS)
+                .delay(1, TimeUnit.SECONDS, environment.scheduler())
                 .subscribe {
                     this.commentCardStatus.onNext(CommentCardStatus.FAILED_TO_SEND_COMMENT)
                 }
@@ -390,7 +386,5 @@ interface CommentsViewHolderViewModel {
         override fun viewCommentReplies(): Observable<Comment> = this.viewCommentReplies
 
         override fun isCommentEnableThreads(): Observable<Boolean> = this.isCommentEnableThreads
-
-        override fun internalError(): Observable<Throwable> = this.internalError
     }
 }

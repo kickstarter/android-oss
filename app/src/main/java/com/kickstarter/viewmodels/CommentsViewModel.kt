@@ -28,7 +28,6 @@ import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
-import timber.log.Timber
 
 interface CommentsViewModel {
 
@@ -88,8 +87,16 @@ interface CommentsViewModel {
         private val paginationError = BehaviorSubject.create<Throwable>()
         private val pullToRefreshError = BehaviorSubject.create<Throwable>()
 
+        private val isFetchingData = BehaviorSubject.create<Int>()
+
         private var lastCommentCursor: String? = null
         override var loadMoreListData = mutableListOf<CommentCardData>()
+
+        companion object {
+            private const val INITIAL_LOAD = 1
+            private const val PULL_LOAD = 2
+            private const val PAGE_LOAD = 3
+        }
 
         init {
 
@@ -182,22 +189,34 @@ interface CommentsViewModel {
                     this.setEmptyState.onNext(it == 0)
                 }
 
-            // TODO showcasing subscription to initialization to be completed on : https://kickstarter.atlassian.net/browse/NT-1951
             this.internalError
-                .compose(combineLatestPair(commentsList))
-                .filter { it.second.isEmpty() }
-                .map { it.first }
+                .compose(combineLatestPair(isFetchingData))
+                .filter {
+                    this.lastCommentCursor == null &&
+                        it.second == INITIAL_LOAD
+                }
+                .compose(bindToLifecycle())
                 .subscribe {
-                    it.localizedMessage
-                    Timber.d("************ On initializing error")
-                    this.initialError.onNext(it)
+                    this.initialError.onNext(it.first)
                 }
 
-            // TODO showcasing pagination error subscriptionto be completed on : https://kickstarter.atlassian.net/browse/NT-2019
-            this.paginationError
+            this.internalError
+                .filter { this.lastCommentCursor != null }
+                .compose(bindToLifecycle())
                 .subscribe {
-                    it.localizedMessage
-                    Timber.d("************ On pagination error")
+                    this.paginationError.onNext(it)
+                }
+
+            this.internalError
+                .compose(combineLatestPair(isFetchingData))
+                .filter {
+                    this.lastCommentCursor == null &&
+                        it.second == PULL_LOAD
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    it.first.localizedMessage
+                    this.isRefreshing.onNext(false)
                 }
 
             this.backPressed
@@ -206,9 +225,8 @@ interface CommentsViewModel {
         }
 
         private fun loadCommentList(initialProject: Observable<Project>) {
-
             // - First load for comments & handle initial load errors
-            getProjectComments(initialProject, this.internalError)
+            getProjectComments(initialProject, INITIAL_LOAD)
                 .compose(bindToLifecycle())
                 .subscribe {
                     bindCommentList(it.first, LoadingType.NORMAL)
@@ -220,7 +238,7 @@ interface CommentsViewModel {
                 .doOnNext {
                     this.isLoadingMoreItems.onNext(true)
                 }
-                .switchMap { getProjectComments(Observable.just(it), this.paginationError) }
+                .switchMap { getProjectComments(Observable.just(it), PAGE_LOAD) }
                 .compose(bindToLifecycle())
                 .subscribe {
                     updatePaginatedData(
@@ -240,22 +258,26 @@ interface CommentsViewModel {
                     lastCommentCursor = null
                     this.loadMoreListData.clear()
                 }
-                .switchMap { getProjectComments(Observable.just(it), this.pullToRefreshError) }
+                .switchMap { getProjectComments(Observable.just(it), PULL_LOAD) }
                 .compose(bindToLifecycle())
                 .subscribe {
                     bindCommentList(it.first, LoadingType.PULL_REFRESH)
                 }
         }
 
-        private fun getProjectComments(project: Observable<Project>, errorObservable: BehaviorSubject<Throwable>) = project.switchMap {
-            return@switchMap apolloClient.getProjectComments(it.slug() ?: "", lastCommentCursor)
-        }.doOnError {
-            errorObservable.onNext(it)
+        private fun getProjectComments(project: Observable<Project>, state: Int): Observable<Pair<List<CommentCardData>, Int>> {
+            isFetchingData.onNext(state)
+            return project.switchMap {
+                return@switchMap apolloClient.getProjectComments(it.slug() ?: "", lastCommentCursor)
+            }.doOnError {
+                this.internalError.onNext(it)
+                this.isLoadingMoreItems.onNext(false)
+            }
+                .onErrorResumeNext(Observable.empty())
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose<Pair<CommentEnvelope, Project>>(combineLatestPair(project))
+                .map { Pair(requireNotNull(mapToCommentCardDataList(it)), it.first.totalCount) }
         }
-            .onErrorResumeNext(Observable.empty())
-            .filter { ObjectUtils.isNotNull(it) }
-            .compose<Pair<CommentEnvelope, Project>>(combineLatestPair(project))
-            .map { Pair(requireNotNull(mapToCommentCardDataList(it)), it.first.totalCount) }
 
         private fun mapToCommentCardDataList(it: Pair<CommentEnvelope, Project>) =
             it.first.comments?.map { comment: Comment ->

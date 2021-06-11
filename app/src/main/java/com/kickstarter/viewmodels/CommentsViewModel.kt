@@ -198,7 +198,6 @@ interface CommentsViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.initialError.onNext(it.first)
-                    this.isLoadingMoreItems.onNext(false)
                 }
 
             this.internalError
@@ -206,7 +205,6 @@ interface CommentsViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.paginationError.onNext(it)
-                    this.isLoadingMoreItems.onNext(false)
                 }
 
             this.internalError
@@ -273,6 +271,7 @@ interface CommentsViewModel {
                 return@switchMap apolloClient.getProjectComments(it.slug() ?: "", lastCommentCursor)
             }.doOnError {
                 this.internalError.onNext(it)
+                this.isLoadingMoreItems.onNext(false)
             }
                 .onErrorResumeNext(Observable.empty())
                 .filter { ObjectUtils.isNotNull(it) }

@@ -11,6 +11,7 @@ import com.kickstarter.libs.loadmore.PaginationHandler
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.UrlUtils
+import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.CommentsAdapter
@@ -73,6 +74,13 @@ class CommentsActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::setEmptyState)
+
+        viewModel.outputs.initialLoadCommentsError()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                adapter.insertPageError()
+            }
 
         /*
          * A little delay after new item is inserted
@@ -164,6 +172,8 @@ class CommentsActivity :
             true -> View.VISIBLE
             else -> View.GONE
         }
+        binding.commentsSwipeRefreshLayout.visibility = (!visibility).toVisibility()
+        binding.noComments.visibility = visibility.toVisibility()
     }
 
     override fun emptyCommentsLoginClicked(viewHolder: EmptyCommentsViewHolder?) {

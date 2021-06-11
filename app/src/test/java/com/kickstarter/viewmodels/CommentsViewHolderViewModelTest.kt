@@ -17,6 +17,8 @@ import org.joda.time.DateTime
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
+import rx.schedulers.TestScheduler
+import java.util.concurrent.TimeUnit
 
 class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
 
@@ -33,7 +35,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     private val replyToComment = TestSubscriber<Comment>()
     private val flagComment = TestSubscriber<Comment>()
     private val repliesCount = TestSubscriber<Int>()
-    private val newCommentBind = TestSubscriber<CommentCardData>()
+    private val testScheduler = TestScheduler()
 
     private val createdAt = DateTime.now()
     private val currentUser = UserFactory.user().toBuilder().id(1).avatar(
@@ -302,6 +304,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
                 return Observable.error(Throwable())
             }
         })
+            .scheduler(testScheduler)
             .currentUser(MockCurrentUser(currentUser))
             .build()
 
@@ -315,9 +318,16 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
             .build()
 
         this.vm.inputs.configureWith(commentCardData)
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+
         this.vm.inputs.onRetryViewClicked()
 
         this.retrySendComment.assertValue(comment)
+
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+
+        this.retrySendComment.assertValue(comment)
+
         this.commentCardStatus.assertValues(
             CommentCardStatus.TRYING_TO_POST,
             CommentCardStatus.FAILED_TO_SEND_COMMENT,
@@ -326,6 +336,8 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         )
 
         this.vm.inputs.onRetryViewClicked()
+
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
         this.commentCardStatus.assertValues(
             CommentCardStatus.TRYING_TO_POST,
@@ -423,11 +435,12 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testSendCommentFailedAndPressRetry() {
         val currentUser = UserFactory.user().toBuilder().id(1).build()
-        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun createComment(comment: PostCommentData): Observable<Comment> {
-                return Observable.error(Throwable())
-            }
-        })
+        val env = environment().toBuilder()
+            .apolloClient(object : MockApolloClient() {
+                override fun createComment(comment: PostCommentData): Observable<Comment> {
+                    return Observable.error(Throwable())
+                }
+            }).scheduler(testScheduler)
             .currentUser(MockCurrentUser(currentUser))
             .build()
         setUpEnvironment(env)
@@ -440,7 +453,10 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
             .build()
 
         this.vm.inputs.configureWith(commentCardData)
+        testScheduler.advanceTimeBy(1, TimeUnit.SECONDS)
+
         this.vm.inputs.onRetryViewClicked()
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
         this.retrySendComment.assertValue(comment)
         this.commentCardStatus.assertValues(

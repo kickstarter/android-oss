@@ -438,11 +438,11 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         val currentUser = UserFactory.user().toBuilder().id(1).build()
 
         val env = environment().toBuilder()
-                .apolloClient(object : MockApolloClient() {
-            override fun createComment(comment: PostCommentData): Observable<Comment> {
-                return Observable.error(Throwable())
-            }
-        }).scheduler(testScheduler)
+            .apolloClient(object : MockApolloClient() {
+                override fun createComment(comment: PostCommentData): Observable<Comment> {
+                    return Observable.error(Throwable())
+                }
+            }).scheduler(testScheduler)
             .currentUser(MockCurrentUser(currentUser))
             .build()
 

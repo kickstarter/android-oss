@@ -189,7 +189,6 @@ interface CommentsViewModel {
                     this.setEmptyState.onNext(it == 0)
                 }
 
-            // TODO showcasing subscription to initialization to be completed on : https://kickstarter.atlassian.net/browse/NT-1951
             this.internalError
                 .compose(combineLatestPair(isFetchingData))
                 .filter {
@@ -202,7 +201,6 @@ interface CommentsViewModel {
                     this.isLoadingMoreItems.onNext(false)
                 }
 
-            // TODO showcasing pagination error subscription to be completed on : https://kickstarter.atlassian.net/browse/NT-2019
             this.internalError
                 .filter { this.lastCommentCursor != null }
                 .compose(bindToLifecycle())
@@ -211,11 +209,9 @@ interface CommentsViewModel {
                     this.isLoadingMoreItems.onNext(false)
                 }
 
-            // TODO showcasing subscription to pull to refresh error
             this.internalError
                 .compose(combineLatestPair(isFetchingData))
                 .filter {
-                    val d = it
                     this.lastCommentCursor == null &&
                         it.second == PULL_LOAD
                 }

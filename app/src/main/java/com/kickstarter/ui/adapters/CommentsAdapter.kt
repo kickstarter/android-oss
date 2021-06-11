@@ -7,10 +7,7 @@ import com.kickstarter.R
 import com.kickstarter.databinding.CommentInitialLoadErrorLayoutBinding
 import com.kickstarter.databinding.ItemCommentCardBinding
 import com.kickstarter.ui.data.CommentCardData
-import com.kickstarter.ui.viewholders.CommentCardViewHolder
-import com.kickstarter.ui.viewholders.EmptyCommentsViewHolder
-import com.kickstarter.ui.viewholders.InitialCommentLoadErrorViewHolder
-import com.kickstarter.ui.viewholders.KSViewHolder
+import com.kickstarter.ui.viewholders.*
 
 class CommentsAdapter(private val delegate: Delegate) : KSListAdapter() {
     interface Delegate : EmptyCommentsViewHolder.Delegate, CommentCardViewHolder.Delegate
@@ -54,10 +51,10 @@ class CommentsAdapter(private val delegate: Delegate) : KSListAdapter() {
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
         return when (layout) {
             R.layout.item_comment_card -> CommentCardViewHolder(ItemCommentCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate)
-            R.layout.comment_initial_load_error_layout -> InitialCommentLoadErrorViewHolder(
+            R.layout.comment_initial_load_error_layout -> EmptyViewHolder(
                 CommentInitialLoadErrorLayoutBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
             )
-            else -> InitialCommentLoadErrorViewHolder(
+            else -> EmptyViewHolder(
                 CommentInitialLoadErrorLayoutBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
             )
         }

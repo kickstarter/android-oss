@@ -106,6 +106,7 @@ interface CommentsViewHolderViewModel {
         private val flagComment = PublishSubject.create<Comment>()
         private val viewCommentReplies = PublishSubject.create<Comment>()
         private val isCommentEnableThreads = PublishSubject.create<Boolean>()
+        private val internalError = BehaviorSubject.create<Throwable>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -138,7 +139,14 @@ interface CommentsViewHolderViewModel {
                 .map {
                     Pair(requireNotNull(it.first.comment?.body()), requireNotNull(it.first.project))
                 }
-            postComment(commentData)
+
+            this.internalError
+                .compose(bindToLifecycle())
+                .delay(1, TimeUnit.SECONDS, environment.scheduler())
+                .subscribe {
+                    this.commentCardStatus.onNext(CommentCardStatus.FAILED_TO_SEND_COMMENT)
+                }
+            postComment(commentData, internalError)
         }
 
         /**
@@ -217,10 +225,12 @@ interface CommentsViewHolderViewModel {
 
             comment
                 .compose(takeWhen(this.onRetryViewClicked))
+                .doOnNext {
+                    this.commentCardStatus.onNext(CommentCardStatus.RE_TRYING_TO_POST)
+                }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.retrySendComment.onNext(it)
-                    this.commentCardStatus.onNext(CommentCardStatus.RE_TRYING_TO_POST)
                 }
 
             comment
@@ -233,9 +243,9 @@ interface CommentsViewHolderViewModel {
          * Handles the logic for posting comments (new ones, and the retry attempts)
          * @param commentData will emmit only in case we need to post a new comment
          */
-        private fun postComment(commentData: Observable<Pair<String, Project>>) {
+        private fun postComment(commentData: Observable<Pair<String, Project>>, errorObservable: BehaviorSubject<Throwable>) {
             commentData
-                .map { executePostCommentMutation(it) }
+                .map { executePostCommentMutation(it, errorObservable) }
                 .switchMap {
                     it
                 }
@@ -246,9 +256,8 @@ interface CommentsViewHolderViewModel {
 
             Observable
                 .combineLatest(onRetryViewClicked, commentData) { _, newData ->
-                    return@combineLatest executePostCommentMutation(newData)
-                }
-                .switchMap {
+                    return@combineLatest executePostCommentMutation(newData, errorObservable)
+                }.switchMap {
                     it
                 }.doOnNext {
                     this.commentCardStatus.onNext(CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY)
@@ -289,7 +298,7 @@ interface CommentsViewHolderViewModel {
          * // TODO: we will need the entire comment plus very important the [parentId]
          * @return Observable<Comment>
          */
-        private fun executePostCommentMutation(commentData: Pair<String, Project>) =
+        private fun executePostCommentMutation(commentData: Pair<String, Project>, errorObservable: BehaviorSubject<Throwable>) =
             this.apolloClient.createComment(
                 PostCommentData(
                     project = commentData.second,
@@ -298,7 +307,7 @@ interface CommentsViewHolderViewModel {
                     parentId = null
                 )
             ).doOnError {
-                this.commentCardStatus.onNext(CommentCardStatus.FAILED_TO_SEND_COMMENT)
+                errorObservable.onNext(it)
             }
                 .onErrorResumeNext(Observable.empty())
 

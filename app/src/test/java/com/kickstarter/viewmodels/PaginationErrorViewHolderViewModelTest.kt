@@ -4,7 +4,7 @@ import com.kickstarter.KSRobolectricTestCase
 import org.junit.Test
 import rx.observers.TestSubscriber
 
-class PaginationErrorViewHolderViewModelTest: KSRobolectricTestCase(){
+class PaginationErrorViewHolderViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: PaginationErrorViewHolderViewModel.ViewModel
 
     private val isErrorCellVisible = TestSubscriber<Boolean>()

@@ -68,15 +68,26 @@
         app:layout_constraintStart_toStartOf="@id/avatar"
         app:layout_constraintTop_toBottomOf="@id/replies" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/retry_button"
-        style="@style/CommentsRetryButton"
-        android:drawableStart="@drawable/ic_retry_send_comment"
-        android:text="@string/Couldnt_post"
-        android:visibility="gone"
+        android:layout_width="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/separtor"
         app:layout_constraintStart_toStartOf="@id/avatar"
-        app:layout_constraintTop_toBottomOf="@id/replies" />
+        app:layout_constraintTop_toBottomOf="@id/replies"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="@dimen/grid_3"
+            android:layout_height="@dimen/grid_3"
+            android:layout_marginRight="@dimen/grid_1"
+            android:src="@drawable/ic_retry_send_comment" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/CommentsRetryButton"
+            android:text="@string/Couldnt_post"
+            android:gravity="fill_horizontal"
+         />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/posting_button"

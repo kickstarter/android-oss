@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders
 
 import android.view.View
+import com.kickstarter.R
 import com.kickstarter.databinding.ItemCommentCardBinding
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
@@ -8,6 +9,7 @@ import com.kickstarter.models.Comment
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.views.OnCommentCardClickedListener
 import com.kickstarter.viewmodels.CommentsViewHolderViewModel
+import kotlinx.android.synthetic.main.comment_card.view.*
 
 class CommentCardViewHolder(
     val binding: ItemCommentCardBinding,
@@ -113,6 +115,11 @@ class CommentCardViewHolder(
                 vm.inputs.onCommentGuideLinesClicked()
             }
         })
+
+        binding.commentsCardView.setFlaggedMessage(
+            context().getString(R.string.This_comment_has_been_removed_by_Kickstarter) +
+                context().getString(R.string.Learn_more_about_comment_guidelines)
+        )
     }
 
     override fun bindData(data: Any?) {

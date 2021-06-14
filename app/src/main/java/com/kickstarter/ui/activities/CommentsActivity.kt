@@ -16,7 +16,6 @@ import com.kickstarter.models.Comment
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.CommentsAdapter
 import com.kickstarter.ui.extensions.hideKeyboard
-import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.ui.viewholders.EmptyCommentsViewHolder
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
 import com.kickstarter.viewmodels.CommentsViewModel
@@ -188,9 +187,7 @@ class CommentsActivity :
     }
 
     override fun retryCallback() {
-        // TODO: retry the same page https://kickstarter.atlassian.net/browse/NT-2039
-        // TODO: snackbar to help QA, should be deleted once NT-2039 is finished
-        this.showSnackbar(binding.commentsSwipeRefreshLayout, R.string.Couldnt_load_more_comments)
+        viewModel.inputs.nextPage()
     }
 
     override fun emptyCommentsLoginClicked(viewHolder: EmptyCommentsViewHolder?) {

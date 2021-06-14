@@ -2,16 +2,24 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:id="@+id/pagination_error_cell"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/pagination_error_component"
+    <androidx.appcompat.widget.AppCompatButton
         android:layout_width="match_parent"
-        android:layout_height="@dimen/grid_8"
-        android:background="@color/kds_alert"
-        android:animateLayoutChanges="true"
+        android:id="@+id/error_pagination_retry_button"
+        style="@style/CommentsRetryButton"
+        android:layout_height="@dimen/grid_9"
+        android:layout_marginStart="@dimen/grid_3"
+        android:layout_marginTop="@dimen/grid_2"
+        android:drawableStart="@drawable/ic_retry_send_comment"
+        android:text="@string/Couldnt_load_more_comments"
+        android:gravity="center_vertical"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

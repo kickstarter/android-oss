@@ -13,9 +13,10 @@ import com.kickstarter.ui.viewholders.CommentCardViewHolder
 import com.kickstarter.ui.viewholders.EmptyCommentsViewHolder
 import com.kickstarter.ui.viewholders.EmptyViewHolder
 import com.kickstarter.ui.viewholders.KSViewHolder
+import com.kickstarter.ui.viewholders.PaginationErrorViewHolder
 
 class CommentsAdapter(private val delegate: Delegate) : KSListAdapter() {
-    interface Delegate : EmptyCommentsViewHolder.Delegate, CommentCardViewHolder.Delegate
+    interface Delegate : EmptyCommentsViewHolder.Delegate, CommentCardViewHolder.Delegate, PaginationErrorViewHolder.ViewListener
 
     init {
         insertSection(SECTION_INITIAL_LOAD_ERROR, emptyList<Boolean>())
@@ -37,9 +38,9 @@ class CommentsAdapter(private val delegate: Delegate) : KSListAdapter() {
         submitList(items())
     }
 
-    fun addErrorPaginationCell() {
+    fun addErrorPaginationCell(shouldShowErrorCell: Boolean) {
         // - we want to display SECTION_COMMENTS & SECTION_ERROR_PAGINATING at the same time so we should not clean SECTION_COMMENTS
-        setSection(SECTION_ERROR_PAGINATING, listOf(true))
+        setSection(SECTION_ERROR_PAGINATING, listOf(shouldShowErrorCell))
         setSection(SECTION_INITIAL_LOAD_ERROR, emptyList<Boolean>())
         submitList(items())
     }
@@ -55,7 +56,7 @@ class CommentsAdapter(private val delegate: Delegate) : KSListAdapter() {
         return when (layout) {
             R.layout.item_comment_card -> CommentCardViewHolder(ItemCommentCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate)
             R.layout.comment_initial_load_error_layout -> EmptyViewHolder(CommentInitialLoadErrorLayoutBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
-            R.layout.item_error_pagination -> EmptyViewHolder(ItemErrorPaginationBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
+            R.layout.item_error_pagination -> PaginationErrorViewHolder(ItemErrorPaginationBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate)
             else -> EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
         }
     }

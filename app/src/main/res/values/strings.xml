@@ -93,4 +93,5 @@
   <string name="view_replies">View replies</string>
   <string name="posting">Posting...</string>
   <string name="posted">Posted</string>
+    <string name="Couldnt_load_more_comments">Couldnt load more comments. Tap to retry</string>
 </resources>

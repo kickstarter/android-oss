@@ -1,6 +1,7 @@
 package com.kickstarter.ui.view
 
 import android.view.LayoutInflater
+import android.view.View
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -20,7 +21,7 @@ class CommentCardTest : KSRobolectricTestCase() {
     private lateinit var commentBody: AppCompatTextView
     private lateinit var replyButton: AppCompatButton
     private lateinit var repliesButton: AppCompatTextView
-    private lateinit var retryButton: AppCompatButton
+    private lateinit var retryButton: View
     private lateinit var postingButton: AppCompatButton
     private lateinit var postedButton: AppCompatButton
 

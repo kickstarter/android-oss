@@ -36,6 +36,7 @@ interface CommentsViewModel {
         fun nextPage()
         fun backPressed()
         fun insertNewCommentToList(comment: String, createdAt: DateTime)
+        fun onReplayClicked(comment: Comment, openKeyboard: Boolean)
         fun onShowGuideLinesLinkClicked()
     }
 
@@ -52,6 +53,7 @@ interface CommentsViewModel {
         fun initialLoadCommentsError(): Observable<Throwable>
         fun paginateCommentsError(): Observable<Throwable>
         fun pullToRefreshError(): Observable<Throwable>
+        fun startThreadActivity(): Observable<Pair<Pair<Comment, Boolean>, Project>>
 
         /** Display the bottom pagination Error Cell **/
         fun shouldShowPaginationErrorUI(): Observable<Boolean>
@@ -68,6 +70,7 @@ interface CommentsViewModel {
         private val refresh = PublishSubject.create<Void>()
         private val nextPage = PublishSubject.create<Void>()
         private val onShowGuideLinesLinkClicked = PublishSubject.create<Void>()
+        private val onReplayClicked = PublishSubject.create<Pair<Comment, Boolean>>()
 
         private val closeCommentsPage = BehaviorSubject.create<Void>()
         private val currentUserAvatar = BehaviorSubject.create<String?>()
@@ -84,6 +87,7 @@ interface CommentsViewModel {
         private val enablePagination = BehaviorSubject.create<Boolean>()
         private val setEmptyState = BehaviorSubject.create<Boolean>()
         private val displayPaginationError = BehaviorSubject.create<Boolean>()
+        private val startThreadActivity = BehaviorSubject.create<Pair<Pair<Comment, Boolean>, Project>>()
 
         // - Error observables to handle the 3 different use cases
         private val internalError = BehaviorSubject.create<Throwable>()
@@ -229,6 +233,13 @@ interface CommentsViewModel {
             this.backPressed
                 .compose(bindToLifecycle())
                 .subscribe { this.closeCommentsPage.onNext(it) }
+
+            this.onReplayClicked
+                .compose(combineLatestPair(initialProject))
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.startThreadActivity.onNext(it)
+                }
         }
 
         private fun loadCommentList(initialProject: Observable<Project>) {
@@ -341,6 +352,9 @@ interface CommentsViewModel {
         override fun enablePagination(): Observable<Boolean> = enablePagination
         override fun isRefreshing(): Observable<Boolean> = isRefreshing
         override fun insertNewCommentToList(comment: String, createdAt: DateTime) = insertNewCommentToList.onNext(Pair(comment, createdAt))
+
+        override fun onReplayClicked(comment: Comment, openKeyboard: Boolean) = onReplayClicked.onNext(Pair(comment, openKeyboard))
+        override fun startThreadActivity(): Observable<Pair<Pair<Comment, Boolean>, Project>> = this.startThreadActivity
 
         override fun bindPaginatedData(data: List<CommentCardData>?) {
             lastCommentCursor = data?.lastOrNull()?.comment?.cursor()

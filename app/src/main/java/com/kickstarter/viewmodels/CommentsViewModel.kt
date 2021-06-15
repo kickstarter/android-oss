@@ -77,6 +77,7 @@ interface CommentsViewModel {
         private val commentComposerStatus = BehaviorSubject.create<CommentComposerStatus>()
         private val showCommentComposer = BehaviorSubject.create<Boolean>()
         private val commentsList = BehaviorSubject.create<List<CommentCardData>>()
+        private val outputCommentList = BehaviorSubject.create<List<CommentCardData>>()
         private val showGuideLinesLink = BehaviorSubject.create<Void>()
         private val disableReplyButton = BehaviorSubject.create<Boolean>()
         private val scrollToTop = BehaviorSubject.create<Boolean>()
@@ -240,32 +241,35 @@ interface CommentsViewModel {
                 .compose(bindToLifecycle())
                 .subscribe { this.closeCommentsPage.onNext(it) }
 
-
-            // - Update with the latest state
+            // - Update internal mutable list with the latest state after successful response
             this.commentToRefresh
-                .compose(combineLatestPair(initialProject))
-                .map { commentToUpdateAndProject ->
-                    updateCommentAfterSuccessfulPost(
-                        commentToUpdateAndProject,
-                        this.loadMoreListData
-                    )
-                }
+                .map { updateCommentAfterSuccessfulPost(it) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe { this.commentsList.onNext(it) }
+
+            // - Reunite in only one place where the output list gets new updates
+            this.commentsList
+                .filter { it.isNotEmpty() }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.commentsList.onNext(it)
+                    this.outputCommentList.onNext(it)
                 }
         }
 
+        /**
+         * Update the internal persisted list of comments with the successful response
+         * from calling the Post Mutation
+         */
         private fun updateCommentAfterSuccessfulPost(
-            commentToUpdateAndProject: Pair<Comment, Project>,
-            listOfComments: MutableList<CommentCardData>
+            commentToUpdate: Comment
         ): MutableList<CommentCardData> {
-            val project = commentToUpdateAndProject.second
-            val commentToUpdate = commentToUpdateAndProject.first
+            val listOfComments = this.loadMoreListData
 
             var position = -1
             listOfComments.forEachIndexed { index, commentCardData ->
-                if (commentCardData.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus && commentCardData.comment?.body() == commentToUpdate.body() &&
+                if (commentCardData.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus &&
+                    commentCardData.comment?.body() == commentToUpdate.body() &&
                     commentCardData.comment?.author()?.id() == commentToUpdate.author().id()
                 ) {
                     position = index
@@ -273,11 +277,11 @@ interface CommentsViewModel {
             }
 
             if (position >= 0 && position < listOfComments.size) {
-                this.loadMoreListData[position] = CommentCardData(
-                    commentToUpdate,
-                    CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus,
-                    project
-                )
+                val commentCardData = this.loadMoreListData[position].toBuilder()
+                    .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
+                    .comment(commentToUpdate)
+                    .build()
+                this.loadMoreListData[position] = commentCardData
             }
 
             return this.loadMoreListData
@@ -383,7 +387,7 @@ interface CommentsViewModel {
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
         override fun commentComposerStatus(): Observable<CommentComposerStatus> = commentComposerStatus
         override fun showCommentComposer(): Observable<Boolean> = showCommentComposer
-        override fun commentsList(): Observable<List<CommentCardData>> = commentsList
+        override fun commentsList(): Observable<List<CommentCardData>> = this.outputCommentList
         override fun enableReplyButton(): Observable<Boolean> = disableReplyButton
         override fun showCommentGuideLinesLink(): Observable<Void> = showGuideLinesLink
         override fun initialLoadCommentsError(): Observable<Throwable> = this.initialError

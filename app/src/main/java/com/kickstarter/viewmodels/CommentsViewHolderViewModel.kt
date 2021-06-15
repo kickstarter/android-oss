@@ -143,7 +143,7 @@ interface CommentsViewHolderViewModel {
                 .map {
                     Pair(requireNotNull(it.first.comment?.body()), requireNotNull(it.first.project))
                 }
-           // postComment(commentData, internalError)
+            postComment(commentData, internalError)
 
             this.internalError
                 .compose(bindToLifecycle())

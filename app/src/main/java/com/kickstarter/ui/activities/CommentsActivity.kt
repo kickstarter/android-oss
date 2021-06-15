@@ -106,7 +106,7 @@ class CommentsActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                adapter.addErrorPaginationCell()
+                adapter.addErrorPaginationCell(it)
             }
 
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {
@@ -184,6 +184,10 @@ class CommentsActivity :
         }
         binding.commentsSwipeRefreshLayout.visibility = (!visibility).toVisibility()
         binding.noComments.visibility = visibility.toVisibility()
+    }
+
+    override fun retryCallback() {
+        viewModel.inputs.nextPage()
     }
 
     override fun emptyCommentsLoginClicked(viewHolder: EmptyCommentsViewHolder?) {

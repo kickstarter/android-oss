@@ -37,6 +37,9 @@ interface CommentsViewModel {
         fun backPressed()
         fun insertNewCommentToList(comment: String, createdAt: DateTime)
         fun onShowGuideLinesLinkClicked()
+
+        /** Will be called with the successful response when calling the `postComment` Mutation **/
+        fun refreshComment(comment: Comment)
     }
 
     interface Outputs : PaginatedViewModelOutput<CommentCardData> {
@@ -84,6 +87,7 @@ interface CommentsViewModel {
         private val enablePagination = BehaviorSubject.create<Boolean>()
         private val setEmptyState = BehaviorSubject.create<Boolean>()
         private val displayPaginationError = BehaviorSubject.create<Boolean>()
+        private val commentToRefresh = PublishSubject.create<Comment>()
 
         // - Error observables to handle the 3 different use cases
         private val internalError = BehaviorSubject.create<Throwable>()
@@ -153,13 +157,19 @@ interface CommentsViewModel {
 
             loadCommentList(initialProject)
 
-            commentsList
-                .compose<Pair<List<CommentCardData>, User >>(combineLatestPair(this.currentUser.loggedInUser()))
-                .compose(Transformers.takePairWhen(this.insertNewCommentToList))
-                .map {
-                    Pair(it.first.first, buildCommentBody(Pair(it.first.second, it.second)))
+            this.insertNewCommentToList
+                .distinctUntilChanged()
+                .withLatestFrom(this.currentUser.loggedInUser()) {
+                    comment, user ->
+                    Pair(comment, user)
                 }
-                .compose(combineLatestPair(initialProject))
+                .map {
+                    Pair(it.first, buildCommentBody(Pair(it.second, it.first)))
+                }
+                .withLatestFrom(initialProject) {
+                    commentData, project ->
+                    Pair(commentData, project)
+                }
                 .map {
                     Pair(
                         it.first.first,
@@ -173,10 +183,10 @@ interface CommentsViewModel {
                 .doOnNext { scrollToTop.onNext(true) }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    it.first.toMutableList().apply {
+                    this.loadMoreListData.apply {
                         add(0, it.second)
-                        commentsList.onNext(this)
                     }
+                    commentsList.onNext(this.loadMoreListData)
                 }
 
             this.onShowGuideLinesLinkClicked
@@ -229,6 +239,48 @@ interface CommentsViewModel {
             this.backPressed
                 .compose(bindToLifecycle())
                 .subscribe { this.closeCommentsPage.onNext(it) }
+
+
+            // - Update with the latest state
+            this.commentToRefresh
+                .compose(combineLatestPair(initialProject))
+                .map { commentToUpdateAndProject ->
+                    updateCommentAfterSuccessfulPost(
+                        commentToUpdateAndProject,
+                        this.loadMoreListData
+                    )
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.commentsList.onNext(it)
+                }
+        }
+
+        private fun updateCommentAfterSuccessfulPost(
+            commentToUpdateAndProject: Pair<Comment, Project>,
+            listOfComments: MutableList<CommentCardData>
+        ): MutableList<CommentCardData> {
+            val project = commentToUpdateAndProject.second
+            val commentToUpdate = commentToUpdateAndProject.first
+
+            var position = -1
+            listOfComments.forEachIndexed { index, commentCardData ->
+                if (commentCardData.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus && commentCardData.comment?.body() == commentToUpdate.body() &&
+                    commentCardData.comment?.author()?.id() == commentToUpdate.author().id()
+                ) {
+                    position = index
+                }
+            }
+
+            if (position >= 0 && position < listOfComments.size) {
+                this.loadMoreListData[position] = CommentCardData(
+                    commentToUpdate,
+                    CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus,
+                    project
+                )
+            }
+
+            return this.loadMoreListData
         }
 
         private fun loadCommentList(initialProject: Observable<Project>) {
@@ -318,11 +370,15 @@ interface CommentsViewModel {
                 else -> CommentComposerStatus.DISABLED
             }
 
+        // - Inputs
         override fun backPressed() = backPressed.onNext(null)
         override fun refresh() = refresh.onNext(null)
         override fun nextPage() = nextPage.onNext(null)
+        override fun insertNewCommentToList(comment: String, createdAt: DateTime) = insertNewCommentToList.onNext(Pair(comment, createdAt))
         override fun onShowGuideLinesLinkClicked() = onShowGuideLinesLinkClicked.onNext(null)
+        override fun refreshComment(comment: Comment) = this.commentToRefresh.onNext(comment)
 
+        // - Outputs
         override fun closeCommentsPage(): Observable<Void> = closeCommentsPage
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
         override fun commentComposerStatus(): Observable<CommentComposerStatus> = commentComposerStatus
@@ -340,7 +396,6 @@ interface CommentsViewModel {
         override fun isLoadingMoreItems(): Observable<Boolean> = isLoadingMoreItems
         override fun enablePagination(): Observable<Boolean> = enablePagination
         override fun isRefreshing(): Observable<Boolean> = isRefreshing
-        override fun insertNewCommentToList(comment: String, createdAt: DateTime) = insertNewCommentToList.onNext(Pair(comment, createdAt))
 
         override fun bindPaginatedData(data: List<CommentCardData>?) {
             lastCommentCursor = data?.lastOrNull()?.comment?.cursor()

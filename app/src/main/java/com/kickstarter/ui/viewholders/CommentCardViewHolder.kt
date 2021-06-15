@@ -22,6 +22,7 @@ class CommentCardViewHolder(
         fun onFlagButtonClicked(comment: Comment)
         fun onCommentGuideLinesClicked(comment: Comment)
         fun onCommentRepliesClicked(comment: Comment)
+        fun onCommentPostedSuccessFully(comment: Comment)
     }
 
     private val vm: CommentsViewHolderViewModel.ViewModel = CommentsViewHolderViewModel.ViewModel(environment())
@@ -93,6 +94,11 @@ class CommentCardViewHolder(
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { this.delegate.onFlagButtonClicked(it) }
+
+        this.vm.outputs.isSuccessfullyPosted()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { this.delegate.onCommentPostedSuccessFully(it) }
 
         binding.commentsCardView.setCommentCardClickedListener(object : OnCommentCardClickedListener {
             override fun onRetryViewClicked(view: View) {

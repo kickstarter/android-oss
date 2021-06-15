@@ -207,6 +207,10 @@ class CommentsActivity :
         viewModel.inputs.onShowGuideLinesLinkClicked()
     }
 
+    override fun onCommentPostedSuccessFully(comment: Comment) {
+        viewModel.inputs.refreshComment(comment)
+    }
+
     override fun onCommentRepliesClicked(comment: Comment) {
         startThreadActivity(comment, false)
     }

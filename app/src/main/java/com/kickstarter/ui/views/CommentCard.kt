@@ -183,6 +183,11 @@ class CommentCard @JvmOverloads constructor(
         binding.commentBody.text = comment
     }
 
+    fun setFlaggedMessage(message: String) {
+        binding.flaggedMessage.text = message
+        bindFlaggedMessage()
+    }
+
     fun setCommentCardClickedListener(onCommentCardClickedListener: OnCommentCardClickedListener?) {
         this.onCommentCardClickedListener = onCommentCardClickedListener
     }

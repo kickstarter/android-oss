@@ -12,6 +12,7 @@ import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
 import com.kickstarter.viewmodels.ThreadViewModel
 import rx.android.schedulers.AndroidSchedulers
+import java.util.concurrent.TimeUnit
 
 @RequiresActivityViewModel(ThreadViewModel.ViewModel::class)
 class ThreadActivity : BaseActivity<ThreadViewModel.ViewModel>() {
@@ -34,10 +35,11 @@ class ThreadActivity : BaseActivity<ThreadViewModel.ViewModel>() {
             }
 
         this.viewModel.shouldFocusOnCompose()
+            .delay(30, TimeUnit.MILLISECONDS)
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { shouldOpenKeyboard ->
-                // TODO: Once compose view is integrated we can set focus and open the keyboard
+               binding.replyComposer.requestCommentComposerKeyBoard(shouldOpenKeyboard)
             }
 
         viewModel.outputs.currentUserAvatar()

@@ -14,7 +14,7 @@
         android:layout_marginStart="@dimen/grid_3"
         android:layout_marginTop="@dimen/grid_2"
         android:drawableStart="@drawable/ic_retry_send_comment"
-        android:text="@string/Couldnt_load_more_comments"
+        android:text="@string/Couldnt_load_more_comments_Tap_to_retry"
         android:gravity="center_vertical"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"

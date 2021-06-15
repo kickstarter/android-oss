@@ -132,6 +132,8 @@ Please tap to retry.</string>
   <string name="Continue_with_quantity_count_add_ons_zero" formatted="false">Continue with %{quantity_count} add-ons</string>
   <string name="Continue_with_this_reward" formatted="false">Continue with this reward?</string>
   <string name="Couldnt_add_attachment" formatted="false">Couldn\'t add attachment</string>
+  <string name="Couldnt_load_more_comments_Tap_to_retry" formatted="false">Couldn\'t load more comments.\n
+Tap to retry</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">Couldn‘t open live stream. Try again later.</string>
   <string name="Couldnt_post" formatted="false">Couldn\'t post. Tap to retry</string>
   <string name="Couldnt_remove_attachment" formatted="false">Couldn\'t remove attachment</string>
@@ -323,7 +325,7 @@ with friends.</string>
   <string name="Kickstarter_on_Film" formatted="false">Kickstarter on Film</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Know when creators and backers message you by enabling notifications.</string>
   <string name="Learn_more_about_accountability" formatted="false">Learn more about accountability</string>
-  <string name="Learn_more_about_comment_guidelines" formatted="false">Learn more about comment guidelines</string>
+  <string name="Learn_more_about_comment_guidelines" formatted="false">&lt;a href="%{community_link}">Learn more about comment guidelines&lt;/a></string>
   <string name="Left_count_left_few" formatted="false">%{left_count} left</string>
   <string name="Left_count_left_many" formatted="false">%{left_count} left</string>
   <string name="Left_count_left_one" formatted="false">%{left_count} left</string>
@@ -441,6 +443,8 @@ from friends yet.</string>
   <string name="Post" formatted="false">Post</string>
   <string name="Postal_code" formatted="false">Postal code</string>
   <string name="Postcode" formatted="false">Postcode</string>
+  <string name="Posted" formatted="false">Posted</string>
+  <string name="Posting" formatted="false">Posting...</string>
   <string name="Preparing_your_personal_data" formatted="false">Preparing your personal data...</string>
   <string name="Privacy" formatted="false">Privacy</string>
   <string name="Private_profile" formatted="false">Private profile</string>
@@ -661,6 +665,7 @@ catch your eye?</string>
   <string name="View_dashboard" formatted="false">View dashboard</string>
   <string name="View_progress" formatted="false">View progress</string>
   <string name="View_project" formatted="false">View project</string>
+  <string name="View_replies" formatted="false">View replies</string>
   <string name="View_rewards" formatted="false">View rewards</string>
   <string name="View_the_rewards" formatted="false">View the rewards</string>
   <string name="View_your_pledge" formatted="false">View your pledge</string>

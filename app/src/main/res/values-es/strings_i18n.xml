@@ -132,6 +132,8 @@ Haz clic para volver a intentarlo.</string>
   <string name="Continue_with_quantity_count_add_ons_zero" formatted="false">Continuar con %{quantity_count} complementos</string>
   <string name="Continue_with_this_reward" formatted="false">¿Continuar con esta recompensa?</string>
   <string name="Couldnt_add_attachment" formatted="false">No se pudo añadir el anexo</string>
+  <string name="Couldnt_load_more_comments_Tap_to_retry" formatted="false">No se pudo cargar más comentarios.\n
+Toca para intentar de nuevo.</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">No se pudo abrir este live stream, por favor inténtalo de nuevo más tarde.</string>
   <string name="Couldnt_post" formatted="false">No se pudo publicar. Toca para intentar de nuevo.</string>
   <string name="Couldnt_remove_attachment" formatted="false">No se pudo remover el anexo</string>
@@ -323,7 +325,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Kickstarter_on_Film" formatted="false">Kickstarter on Film</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Entérate cuando los creadores y patrocinadores te envíen mensajes habilitando las notificaciones.</string>
   <string name="Learn_more_about_accountability" formatted="false">Más información sobre las responsabilidades</string>
-  <string name="Learn_more_about_comment_guidelines" formatted="false">Más información sobre las reglas de los comentarios</string>
+  <string name="Learn_more_about_comment_guidelines" formatted="false">&lt;a href="%{community_link}">Más información sobre las reglas de los comentarios&lt;/a></string>
   <string name="Left_count_left_few" formatted="false">%{left_count} restantes</string>
   <string name="Left_count_left_many" formatted="false">%{left_count} restantes</string>
   <string name="Left_count_left_one" formatted="false">%{left_count} restante</string>
@@ -440,6 +442,8 @@ Haz clic para volver a intentarlo.</string>
   <string name="Post" formatted="false">Publicar</string>
   <string name="Postal_code" formatted="false">Código postal</string>
   <string name="Postcode" formatted="false">Código postal</string>
+  <string name="Posted" formatted="false">Publicado</string>
+  <string name="Posting" formatted="false">Publicación en proceso...</string>
   <string name="Preparing_your_personal_data" formatted="false">Preparando tus datos personales...</string>
   <string name="Privacy" formatted="false">Privacidad</string>
   <string name="Private_profile" formatted="false">Perfil privado</string>
@@ -658,6 +662,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="View_dashboard" formatted="false">Ver panel</string>
   <string name="View_progress" formatted="false">Ver progreso</string>
   <string name="View_project" formatted="false">Ver proyecto</string>
+  <string name="View_replies" formatted="false">Ver respuestas</string>
   <string name="View_rewards" formatted="false">Ver recompensas</string>
   <string name="View_the_rewards" formatted="false">Ver las recompensas</string>
   <string name="View_your_pledge" formatted="false">Revisa tu contribución</string>

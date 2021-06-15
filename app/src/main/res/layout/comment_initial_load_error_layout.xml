@@ -16,7 +16,7 @@
         android:drawableTop="@drawable/ic_info"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="wrap_content"
-        android:text="@string/something_went_wrong"
+        android:text="@string/Something_went_wrong_pull_to_refresh"
         style="@style/CalloutSecondary"
         android:layout_height="wrap_content"/>
 

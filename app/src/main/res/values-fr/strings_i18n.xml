@@ -132,6 +132,8 @@ contributeurs</string>
   <string name="Continue_with_quantity_count_add_ons_zero" formatted="false">Continuer avec %{quantity_count} compléments</string>
   <string name="Continue_with_this_reward" formatted="false">Continuer avec cette récompense ?</string>
   <string name="Couldnt_add_attachment" formatted="false">Impossible d\'ajouter la pièce jointe</string>
+  <string name="Couldnt_load_more_comments_Tap_to_retry" formatted="false">Impossible de charger plus de commentaires.\n
+Cliquez pour réessayer.</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">Impossible d\'ouvrir la diffusion en direct. Veuillez réessayer plus tard.</string>
   <string name="Couldnt_post" formatted="false">Publication impossible. Cliquez pour réessayer.</string>
   <string name="Couldnt_remove_attachment" formatted="false">Impossible de supprimer la pièce jointe</string>
@@ -322,7 +324,7 @@ contributeurs</string>
   <string name="Kickstarter_on_Film" formatted="false">Kickstarter on Film</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Activez vos notifications pour savoir quand un créateur ou un contributeur vous envoie un message.</string>
   <string name="Learn_more_about_accountability" formatted="false">En savoir plus sur la responsabilité</string>
-  <string name="Learn_more_about_comment_guidelines" formatted="false">En savoir plus sur les directives applicables aux commentaires</string>
+  <string name="Learn_more_about_comment_guidelines" formatted="false">&lt;a href="%{community_link}">En savoir plus sur les directives applicables aux commentaires&lt;/a></string>
   <string name="Left_count_left_few" formatted="false">%{left_count} restantes</string>
   <string name="Left_count_left_many" formatted="false">%{left_count} restantes</string>
   <string name="Left_count_left_one" formatted="false">%{left_count} restante</string>
@@ -440,6 +442,8 @@ n\'ont rien soutenu.</string>
   <string name="Post" formatted="false">Publier</string>
   <string name="Postal_code" formatted="false">Code postal</string>
   <string name="Postcode" formatted="false">Code postal</string>
+  <string name="Posted" formatted="false">Publié</string>
+  <string name="Posting" formatted="false">Publication en cours...</string>
   <string name="Preparing_your_personal_data" formatted="false">La préparation de vos données personnelles est en cours...</string>
   <string name="Privacy" formatted="false">Vie privée</string>
   <string name="Private_profile" formatted="false">Profil privé</string>
@@ -658,6 +662,7 @@ n\'ont rien soutenu.</string>
   <string name="View_dashboard" formatted="false">Tableau de bord</string>
   <string name="View_progress" formatted="false">Voir les progrès</string>
   <string name="View_project" formatted="false">Afficher le projet</string>
+  <string name="View_replies" formatted="false">Afficher les réponses</string>
   <string name="View_rewards" formatted="false">Afficher les récompenses</string>
   <string name="View_the_rewards" formatted="false">Voir les récompenses</string>
   <string name="View_your_pledge" formatted="false">Afficher mon engagement</string>

@@ -428,7 +428,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         // Start the view model with a project.
 
-        vm.inputs.onReplayClicked(comment, true)
+        vm.inputs.onReplyClicked(comment, true)
 
         assertEquals(startThreadActivity.value.second, project)
         assertEquals(startThreadActivity.value.first.first, comment)

@@ -205,7 +205,7 @@ class CommentsActivity :
     }
 
     override fun onReplyButtonClicked(comment: Comment) {
-        viewModel.inputs.onReplayClicked(comment, true)
+        viewModel.inputs.onReplyClicked(comment, true)
     }
 
     override fun onFlagButtonClicked(comment: Comment) {
@@ -216,7 +216,7 @@ class CommentsActivity :
     }
 
     override fun onCommentRepliesClicked(comment: Comment) {
-        viewModel.inputs.onReplayClicked(comment, false)
+        viewModel.inputs.onReplyClicked(comment, false)
     }
 
     /**

@@ -39,7 +39,7 @@ class ThreadActivity : BaseActivity<ThreadViewModel.ViewModel>() {
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { shouldOpenKeyboard ->
-               binding.replyComposer.requestCommentComposerKeyBoard(shouldOpenKeyboard)
+                binding.replyComposer.requestCommentComposerKeyBoard(shouldOpenKeyboard)
             }
 
         viewModel.outputs.currentUserAvatar()

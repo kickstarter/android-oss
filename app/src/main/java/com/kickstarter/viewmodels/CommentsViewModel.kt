@@ -36,7 +36,7 @@ interface CommentsViewModel {
         fun nextPage()
         fun backPressed()
         fun insertNewCommentToList(comment: String, createdAt: DateTime)
-        fun onReplayClicked(comment: Comment, openKeyboard: Boolean)
+        fun onReplyClicked(comment: Comment, openKeyboard: Boolean)
         fun onShowGuideLinesLinkClicked()
     }
 
@@ -353,7 +353,7 @@ interface CommentsViewModel {
         override fun isRefreshing(): Observable<Boolean> = isRefreshing
         override fun insertNewCommentToList(comment: String, createdAt: DateTime) = insertNewCommentToList.onNext(Pair(comment, createdAt))
 
-        override fun onReplayClicked(comment: Comment, openKeyboard: Boolean) = onReplayClicked.onNext(Pair(comment, openKeyboard))
+        override fun onReplyClicked(comment: Comment, openKeyboard: Boolean) = onReplayClicked.onNext(Pair(comment, openKeyboard))
         override fun startThreadActivity(): Observable<Pair<Pair<Comment, Boolean>, Project>> = this.startThreadActivity
 
         override fun bindPaginatedData(data: List<CommentCardData>?) {

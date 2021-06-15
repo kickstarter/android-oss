@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
+import androidx.core.view.isVisible
 import com.kickstarter.databinding.ActivityThreadLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
@@ -8,6 +9,7 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.extensions.hideKeyboard
+import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
 import com.kickstarter.viewmodels.ThreadViewModel
 import rx.android.schedulers.AndroidSchedulers
 
@@ -37,6 +39,35 @@ class ThreadActivity : BaseActivity<ThreadViewModel.ViewModel>() {
             .subscribe { shouldOpenKeyboard ->
                 // TODO: Once compose view is integrated we can set focus and open the keyboard
             }
+
+        viewModel.outputs.currentUserAvatar()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                binding.replyComposer.setAvatarUrl(it)
+            }
+
+        viewModel.outputs.replayComposerStatus()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                binding.replyComposer.setCommentComposerStatus(it)
+            }
+
+        viewModel.outputs.showReplayComposer()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                binding.replyComposer.isVisible = it
+            }
+
+        binding.replyComposer.setCommentComposerActionClickListener(object :
+                OnCommentComposerViewClickedListener {
+                override fun onClickActionListener(string: String) {
+                    // TODO add Post Replay
+                    hideKeyboard()
+                }
+            })
     }
 
     override fun onStop() {

@@ -37,7 +37,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:focusable="true"
         tools:context="com.kickstarter.ui.activities.ThreadActivity"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -62,14 +62,25 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/comment_replies_recycler_view"
             app:layout_constraintStart_toEndOf="@id/left_guideline"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="0dp"
             android:paddingEnd="@dimen/grid_5"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:background="@color/kds_white"
+            app:layout_constraintBottom_toTopOf="@+id/reply_composer"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@id/comments_card_view"
-            tools:layout_editor_absoluteX="0dp"
             tools:listitem="@layout/comment_card" />
+
+        <com.kickstarter.ui.views.CommentComposerView
+            android:id="@+id/reply_composer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:composer_action_title ="@string/reply"
+            app:composer_disabled="false"
+            app:composer_action_button_gone="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

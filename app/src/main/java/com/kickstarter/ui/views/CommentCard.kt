@@ -12,6 +12,7 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.kickstarter.R
 import com.kickstarter.databinding.CommentCardBinding
+import com.kickstarter.libs.utils.extensions.setAllOnClickListener
 import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.ui.extensions.makeLinks
 import com.kickstarter.ui.extensions.parseHtmlTag
@@ -32,7 +33,7 @@ class CommentCard @JvmOverloads constructor(
 
         bindFlaggedMessage()
 
-        binding.retryButton.setOnClickListener {
+        binding.retryButtonGroup.setAllOnClickListener {
             onCommentCardClickedListener?.onRetryViewClicked(it)
         }
 
@@ -130,7 +131,7 @@ class CommentCard @JvmOverloads constructor(
             hideReplyButton()
         }
 
-        binding.retryButton.isVisible =
+        binding.retryButtonGroup.isVisible =
             cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT
 
         binding.postingButton.isVisible =

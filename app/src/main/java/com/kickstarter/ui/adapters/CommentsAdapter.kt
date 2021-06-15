@@ -26,7 +26,7 @@ class CommentsAdapter(private val delegate: Delegate) : KSListAdapter() {
 
     fun takeData(comments: List<CommentCardData>) {
         setSection(SECTION_INITIAL_LOAD_ERROR, emptyList<Boolean>())
-        if(comments.isNotEmpty()) {
+        if (comments.isNotEmpty()) {
             setSection(SECTION_COMMENTS, comments)
         }
         setSection(SECTION_ERROR_PAGINATING, emptyList<Boolean>())

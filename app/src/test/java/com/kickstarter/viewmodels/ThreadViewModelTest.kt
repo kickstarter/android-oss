@@ -20,8 +20,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
     private val getComment = TestSubscriber<Comment>()
     private val focusCompose = TestSubscriber<Boolean>()
 
-    private val replayComposerStatus = TestSubscriber<CommentComposerStatus>()
-    private val showReplayComposer = TestSubscriber<Boolean>()
+    private val replyComposerStatus = TestSubscriber<CommentComposerStatus>()
+    private val showReplyComposer = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment() {
         setUpEnvironment(environment())
@@ -88,30 +88,30 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         val vm = ThreadViewModel.ViewModel(
             environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build()
         )
-        vm.outputs.replyComposerStatus().subscribe(replayComposerStatus)
-        vm.outputs.showReplyComposer().subscribe(showReplayComposer)
+        vm.outputs.replyComposerStatus().subscribe(replyComposerStatus)
+        vm.outputs.showReplyComposer().subscribe(showReplyComposer)
 
         // Start the view model with a backed project.
         vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
 
         // The comment composer should be shown to backer and enabled to write comments
-        replayComposerStatus.assertValue(CommentComposerStatus.ENABLED)
-        showReplayComposer.assertValues(true, true)
+        replyComposerStatus.assertValue(CommentComposerStatus.ENABLED)
+        showReplyComposer.assertValues(true, true)
     }
 
     @Test
     fun testThreadViewModel_whenUserIsLoggedOut_composerShouldBeGone() {
         val vm = ThreadViewModel.ViewModel(environment().toBuilder().build())
 
-        vm.outputs.replyComposerStatus().subscribe(replayComposerStatus)
-        vm.outputs.showReplyComposer().subscribe(showReplayComposer)
+        vm.outputs.replyComposerStatus().subscribe(replyComposerStatus)
+        vm.outputs.showReplyComposer().subscribe(showReplyComposer)
 
         // Start the view model with a backed project.
         vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
         // The comment composer should be hidden and disabled to write comments as no user logged-in
-        showReplayComposer.assertValue(false)
-        replayComposerStatus.assertValue(CommentComposerStatus.GONE)
+        showReplyComposer.assertValue(false)
+        replyComposerStatus.assertValue(CommentComposerStatus.GONE)
     }
 
     @Test
@@ -119,15 +119,15 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         val vm = ThreadViewModel.ViewModel(
             environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build()
         )
-        vm.outputs.replyComposerStatus().subscribe(replayComposerStatus)
-        vm.outputs.showReplyComposer().subscribe(showReplayComposer)
+        vm.outputs.replyComposerStatus().subscribe(replyComposerStatus)
+        vm.outputs.showReplyComposer().subscribe(showReplyComposer)
 
         // Start the view model with a backed project.
         vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
         // The comment composer should show but in disabled state
-        replayComposerStatus.assertValue(CommentComposerStatus.DISABLED)
-        showReplayComposer.assertValues(true, true)
+        replyComposerStatus.assertValue(CommentComposerStatus.DISABLED)
+        showReplyComposer.assertValues(true, true)
     }
 
     @Test
@@ -142,15 +142,15 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
             environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
         )
 
-        vm.outputs.replyComposerStatus().subscribe(replayComposerStatus)
-        vm.outputs.showReplyComposer().subscribe(showReplayComposer)
+        vm.outputs.replyComposerStatus().subscribe(replyComposerStatus)
+        vm.outputs.showReplyComposer().subscribe(showReplyComposer)
 
         // Start the view model with a project.
         vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
         // The comment composer enabled to write comments for creator
-        showReplayComposer.assertValues(true, true)
-        replayComposerStatus.assertValues(CommentComposerStatus.ENABLED)
+        showReplyComposer.assertValues(true, true)
+        replyComposerStatus.assertValues(CommentComposerStatus.ENABLED)
     }
 
     @Test
@@ -166,14 +166,14 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
             environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
         )
 
-        vm.outputs.replyComposerStatus().subscribe(replayComposerStatus)
-        vm.outputs.showReplyComposer().subscribe(showReplayComposer)
+        vm.outputs.replyComposerStatus().subscribe(replyComposerStatus)
+        vm.outputs.showReplyComposer().subscribe(showReplyComposer)
 
         // Start the view model with a project.
         vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
         // Comment composer should be disabled and shown the disabled msg if not backing and not creator.
-        showReplayComposer.assertValues(true, true)
-        replayComposerStatus.assertValue(CommentComposerStatus.DISABLED)
+        showReplyComposer.assertValues(true, true)
+        replyComposerStatus.assertValue(CommentComposerStatus.DISABLED)
     }
 }

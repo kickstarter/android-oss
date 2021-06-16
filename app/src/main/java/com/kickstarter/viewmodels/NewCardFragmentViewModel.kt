@@ -20,6 +20,7 @@ import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.fragments.NewCardFragment
 import com.stripe.android.CardUtils
 import com.stripe.android.model.Card
+import com.stripe.android.model.PaymentMethod
 import com.stripe.android.model.Token
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -338,20 +339,20 @@ interface NewCardFragmentViewModel {
                 }
 
                 private val allowedCardTypes = arrayOf(
-                    Card.CardBrand.AMERICAN_EXPRESS,
-                    Card.CardBrand.DINERS_CLUB,
-                    Card.CardBrand.DISCOVER,
-                    Card.CardBrand.JCB,
-                    Card.CardBrand.MASTERCARD,
-                    Card.CardBrand.UNIONPAY,
-                    Card.CardBrand.VISA
+                    PaymentMethod.Card.Brand.AMERICAN_EXPRESS,
+                    PaymentMethod.Card.Brand.DINERS_CLUB,
+                    PaymentMethod.Card.Brand.DISCOVER,
+                    PaymentMethod.Card.Brand.JCB,
+                    PaymentMethod.Card.Brand.MASTERCARD,
+                    PaymentMethod.Card.Brand.UNIONPAY,
+                    PaymentMethod.Card.Brand.VISA
                 )
 
                 private val usdCardTypes = allowedCardTypes
                 private val nonUsdCardTypes = arrayOf(
-                    Card.CardBrand.AMERICAN_EXPRESS,
-                    Card.CardBrand.MASTERCARD,
-                    Card.CardBrand.VISA
+                    PaymentMethod.Card.Brand.AMERICAN_EXPRESS,
+                    PaymentMethod.Card.Brand.MASTERCARD,
+                    PaymentMethod.Card.Brand.VISA
                 )
             }
         }

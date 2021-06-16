@@ -59,9 +59,9 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/reply_button"
-        style="@style/CommentsReplayButton"
+        style="@style/CommentsReplyButton"
         android:drawableStart="@drawable/ic_arrow_reply"
-        android:text="@string/Replay"
+        android:text="@string/general_navigation_buttons_reply"
         android:layout_marginTop="@dimen/grid_3"
         app:layout_goneMarginTop="@dimen/grid_none"
         android:layout_marginStart="@dimen/grid_none"
@@ -72,7 +72,7 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/retry_button"
-        style="@style/CommentsReplayButton"
+        style="@style/CommentsReplyButton"
         android:layout_marginStart="@dimen/grid_none"
         android:layout_marginTop="@dimen/grid_0"
         app:layout_constraintTop_toBottomOf="@id/replies"
@@ -93,7 +93,7 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/posting_button"
-        style="@style/CommentsReplayButton"
+        style="@style/CommentsReplyButton"
         android:drawableTint="@color/kds_support_400"
         android:drawableStart="@drawable/ic_retry_send_comment"
         android:text="@string/Posting"
@@ -105,7 +105,7 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/posted_button"
-        style="@style/CommentsReplayButton"
+        style="@style/CommentsReplyButton"
         android:textColor="@color/kds_create_700"
         android:drawableStart="@drawable/ic_posted_check"
         android:text="@string/Posted"
@@ -117,7 +117,7 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/info_button"
-        style="@style/CommentsReplayButton"
+        style="@style/CommentsReplyButton"
         android:src="@drawable/ic_info"
         app:layout_constraintTop_toTopOf="@+id/flagged_message"
         app:layout_constraintStart_toStartOf="@id/avatar"

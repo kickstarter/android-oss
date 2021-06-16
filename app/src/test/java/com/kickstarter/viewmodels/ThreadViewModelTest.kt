@@ -88,8 +88,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         val vm = ThreadViewModel.ViewModel(
             environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build()
         )
-        vm.outputs.replayComposerStatus().subscribe(replayComposerStatus)
-        vm.outputs.showReplayComposer().subscribe(showReplayComposer)
+        vm.outputs.replyComposerStatus().subscribe(replayComposerStatus)
+        vm.outputs.showReplyComposer().subscribe(showReplayComposer)
 
         // Start the view model with a backed project.
         vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
@@ -103,8 +103,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
     fun testThreadViewModel_whenUserIsLoggedOut_composerShouldBeGone() {
         val vm = ThreadViewModel.ViewModel(environment().toBuilder().build())
 
-        vm.outputs.replayComposerStatus().subscribe(replayComposerStatus)
-        vm.outputs.showReplayComposer().subscribe(showReplayComposer)
+        vm.outputs.replyComposerStatus().subscribe(replayComposerStatus)
+        vm.outputs.showReplyComposer().subscribe(showReplayComposer)
 
         // Start the view model with a backed project.
         vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
@@ -119,8 +119,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         val vm = ThreadViewModel.ViewModel(
             environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build()
         )
-        vm.outputs.replayComposerStatus().subscribe(replayComposerStatus)
-        vm.outputs.showReplayComposer().subscribe(showReplayComposer)
+        vm.outputs.replyComposerStatus().subscribe(replayComposerStatus)
+        vm.outputs.showReplyComposer().subscribe(showReplayComposer)
 
         // Start the view model with a backed project.
         vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
@@ -142,8 +142,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
             environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
         )
 
-        vm.outputs.replayComposerStatus().subscribe(replayComposerStatus)
-        vm.outputs.showReplayComposer().subscribe(showReplayComposer)
+        vm.outputs.replyComposerStatus().subscribe(replayComposerStatus)
+        vm.outputs.showReplyComposer().subscribe(showReplayComposer)
 
         // Start the view model with a project.
         vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
@@ -166,8 +166,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
             environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
         )
 
-        vm.outputs.replayComposerStatus().subscribe(replayComposerStatus)
-        vm.outputs.showReplayComposer().subscribe(showReplayComposer)
+        vm.outputs.replyComposerStatus().subscribe(replayComposerStatus)
+        vm.outputs.showReplyComposer().subscribe(showReplayComposer)
 
         // Start the view model with a project.
         vm.intent(Intent().putExtra(IntentKey.PROJECT, project))

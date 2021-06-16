@@ -30,8 +30,8 @@ interface ThreadViewModel {
         fun shouldFocusOnCompose(): Observable<Boolean>
 
         fun currentUserAvatar(): Observable<String?>
-        fun replayComposerStatus(): Observable<CommentComposerStatus>
-        fun showReplayComposer(): Observable<Boolean>
+        fun replyComposerStatus(): Observable<CommentComposerStatus>
+        fun showReplyComposer(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ThreadActivity>(environment), Inputs, Outputs {
@@ -41,8 +41,8 @@ interface ThreadViewModel {
         private val rootComment = BehaviorSubject.create<Comment>()
         private val focusOnCompose = BehaviorSubject.create<Boolean>()
         private val currentUserAvatar = BehaviorSubject.create<String?>()
-        private val replayComposerStatus = BehaviorSubject.create<CommentComposerStatus>()
-        private val showReplayComposer = BehaviorSubject.create<Boolean>()
+        private val replyComposerStatus = BehaviorSubject.create<CommentComposerStatus>()
+        private val showReplyComposer = BehaviorSubject.create<Boolean>()
 
         val inputs = this
         val outputs = this
@@ -101,7 +101,7 @@ interface ThreadViewModel {
             loggedInUser
                 .compose(bindToLifecycle())
                 .subscribe {
-                    showReplayComposer.onNext(true)
+                    showReplyComposer.onNext(true)
                 }
 
             project
@@ -109,8 +109,8 @@ interface ThreadViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     val composerStatus = getCommentComposerStatus(Pair(it.first, it.second))
-                    showReplayComposer.onNext(composerStatus != CommentComposerStatus.GONE)
-                    replayComposerStatus.onNext(composerStatus)
+                    showReplyComposer.onNext(composerStatus != CommentComposerStatus.GONE)
+                    replyComposerStatus.onNext(composerStatus)
                 }
         }
 
@@ -128,7 +128,7 @@ interface ThreadViewModel {
         override fun getRootComment(): Observable<Comment> = this.rootComment
         override fun shouldFocusOnCompose(): Observable<Boolean> = this.focusOnCompose
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
-        override fun replayComposerStatus(): Observable<CommentComposerStatus> = replayComposerStatus
-        override fun showReplayComposer(): Observable<Boolean> = showReplayComposer
+        override fun replyComposerStatus(): Observable<CommentComposerStatus> = replyComposerStatus
+        override fun showReplyComposer(): Observable<Boolean> = showReplyComposer
     }
 }

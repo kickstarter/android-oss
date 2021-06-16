@@ -49,14 +49,14 @@ class ThreadActivity : BaseActivity<ThreadViewModel.ViewModel>() {
                 binding.replyComposer.setAvatarUrl(it)
             }
 
-        viewModel.outputs.replayComposerStatus()
+        viewModel.outputs.replyComposerStatus()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.replyComposer.setCommentComposerStatus(it)
             }
 
-        viewModel.outputs.showReplayComposer()
+        viewModel.outputs.showReplyComposer()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {

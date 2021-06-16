@@ -37,6 +37,9 @@ interface CommentsViewModel {
         fun backPressed()
         fun insertNewCommentToList(comment: String, createdAt: DateTime)
         fun onShowGuideLinesLinkClicked()
+
+        /** Will be called with the successful response when calling the `postComment` Mutation **/
+        fun refreshComment(comment: Comment)
     }
 
     interface Outputs : PaginatedViewModelOutput<CommentCardData> {
@@ -74,6 +77,7 @@ interface CommentsViewModel {
         private val commentComposerStatus = BehaviorSubject.create<CommentComposerStatus>()
         private val showCommentComposer = BehaviorSubject.create<Boolean>()
         private val commentsList = BehaviorSubject.create<List<CommentCardData>>()
+        private val outputCommentList = BehaviorSubject.create<List<CommentCardData>>()
         private val showGuideLinesLink = BehaviorSubject.create<Void>()
         private val disableReplyButton = BehaviorSubject.create<Boolean>()
         private val scrollToTop = BehaviorSubject.create<Boolean>()
@@ -84,6 +88,7 @@ interface CommentsViewModel {
         private val enablePagination = BehaviorSubject.create<Boolean>()
         private val setEmptyState = BehaviorSubject.create<Boolean>()
         private val displayPaginationError = BehaviorSubject.create<Boolean>()
+        private val commentToRefresh = PublishSubject.create<Comment>()
 
         // - Error observables to handle the 3 different use cases
         private val internalError = BehaviorSubject.create<Throwable>()
@@ -153,13 +158,19 @@ interface CommentsViewModel {
 
             loadCommentList(initialProject)
 
-            commentsList
-                .compose<Pair<List<CommentCardData>, User >>(combineLatestPair(this.currentUser.loggedInUser()))
-                .compose(Transformers.takePairWhen(this.insertNewCommentToList))
-                .map {
-                    Pair(it.first.first, buildCommentBody(Pair(it.first.second, it.second)))
+            this.insertNewCommentToList
+                .distinctUntilChanged()
+                .withLatestFrom(this.currentUser.loggedInUser()) {
+                    comment, user ->
+                    Pair(comment, user)
                 }
-                .compose(combineLatestPair(initialProject))
+                .map {
+                    Pair(it.first, buildCommentBody(Pair(it.second, it.first)))
+                }
+                .withLatestFrom(initialProject) {
+                    commentData, project ->
+                    Pair(commentData, project)
+                }
                 .map {
                     Pair(
                         it.first.first,
@@ -173,10 +184,10 @@ interface CommentsViewModel {
                 .doOnNext { scrollToTop.onNext(true) }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    it.first.toMutableList().apply {
+                    this.loadMoreListData.apply {
                         add(0, it.second)
-                        commentsList.onNext(this)
                     }
+                    commentsList.onNext(this.loadMoreListData)
                 }
 
             this.onShowGuideLinesLinkClicked
@@ -229,6 +240,51 @@ interface CommentsViewModel {
             this.backPressed
                 .compose(bindToLifecycle())
                 .subscribe { this.closeCommentsPage.onNext(it) }
+
+            // - Update internal mutable list with the latest state after successful response
+            this.commentToRefresh
+                .map { updateCommentAfterSuccessfulPost(it) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe { this.commentsList.onNext(it) }
+
+            // - Reunite in only one place where the output list gets new updates
+            this.commentsList
+                .filter { it.isNotEmpty() }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.outputCommentList.onNext(it)
+                }
+        }
+
+        /**
+         * Update the internal persisted list of comments with the successful response
+         * from calling the Post Mutation
+         */
+        private fun updateCommentAfterSuccessfulPost(
+            commentToUpdate: Comment
+        ): MutableList<CommentCardData> {
+            val listOfComments = this.loadMoreListData
+
+            var position = -1
+            listOfComments.forEachIndexed { index, commentCardData ->
+                if (commentCardData.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus &&
+                    commentCardData.comment?.body() == commentToUpdate.body() &&
+                    commentCardData.comment?.author()?.id() == commentToUpdate.author().id()
+                ) {
+                    position = index
+                }
+            }
+
+            if (position >= 0 && position < listOfComments.size) {
+                val commentCardData = this.loadMoreListData[position].toBuilder()
+                    .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
+                    .comment(commentToUpdate)
+                    .build()
+                this.loadMoreListData[position] = commentCardData
+            }
+
+            return this.loadMoreListData
         }
 
         private fun loadCommentList(initialProject: Observable<Project>) {
@@ -318,16 +374,20 @@ interface CommentsViewModel {
                 else -> CommentComposerStatus.DISABLED
             }
 
+        // - Inputs
         override fun backPressed() = backPressed.onNext(null)
         override fun refresh() = refresh.onNext(null)
         override fun nextPage() = nextPage.onNext(null)
+        override fun insertNewCommentToList(comment: String, createdAt: DateTime) = insertNewCommentToList.onNext(Pair(comment, createdAt))
         override fun onShowGuideLinesLinkClicked() = onShowGuideLinesLinkClicked.onNext(null)
+        override fun refreshComment(comment: Comment) = this.commentToRefresh.onNext(comment)
 
+        // - Outputs
         override fun closeCommentsPage(): Observable<Void> = closeCommentsPage
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
         override fun commentComposerStatus(): Observable<CommentComposerStatus> = commentComposerStatus
         override fun showCommentComposer(): Observable<Boolean> = showCommentComposer
-        override fun commentsList(): Observable<List<CommentCardData>> = commentsList
+        override fun commentsList(): Observable<List<CommentCardData>> = this.outputCommentList
         override fun enableReplyButton(): Observable<Boolean> = disableReplyButton
         override fun showCommentGuideLinesLink(): Observable<Void> = showGuideLinesLink
         override fun initialLoadCommentsError(): Observable<Throwable> = this.initialError
@@ -340,7 +400,6 @@ interface CommentsViewModel {
         override fun isLoadingMoreItems(): Observable<Boolean> = isLoadingMoreItems
         override fun enablePagination(): Observable<Boolean> = enablePagination
         override fun isRefreshing(): Observable<Boolean> = isRefreshing
-        override fun insertNewCommentToList(comment: String, createdAt: DateTime) = insertNewCommentToList.onNext(Pair(comment, createdAt))
 
         override fun bindPaginatedData(data: List<CommentCardData>?) {
             lastCommentCursor = data?.lastOrNull()?.comment?.cursor()

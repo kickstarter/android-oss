@@ -51,7 +51,7 @@
         android:drawableRight="@drawable/ic_mask"
         android:layout_marginStart="@dimen/grid_3"
         android:layout_marginEnd="@dimen/grid_3"
-        android:text="@string/view_replies"
+        android:text="@string/View_replies"
         app:layout_constraintBottom_toTopOf="@+id/reply_button"
         app:layout_goneMarginBottom="@dimen/grid_3"
         android:layout_width="match_parent"
@@ -61,7 +61,7 @@
         android:id="@+id/reply_button"
         style="@style/CommentsReplayButton"
         android:drawableStart="@drawable/ic_arrow_reply"
-        android:text="@string/reply"
+        android:text="@string/Replay"
         android:layout_marginTop="@dimen/grid_3"
         app:layout_goneMarginTop="@dimen/grid_none"
         android:layout_marginStart="@dimen/grid_none"
@@ -69,12 +69,12 @@
         app:layout_constraintStart_toStartOf="@id/avatar"
         app:layout_constraintTop_toBottomOf="@id/replies" />
 
-
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/retry_button"
         style="@style/CommentsReplayButton"
         android:layout_marginStart="@dimen/grid_none"
         android:layout_marginTop="@dimen/grid_0"
+        app:layout_constraintTop_toTopOf="@id/retry_message"
         app:layout_constraintTop_toBottomOf="@id/replies"
         app:layout_constraintStart_toStartOf="@id/avatar"
         android:src="@drawable/ic_retry_send_comment" />
@@ -84,17 +84,18 @@
         style="@style/CommentsRetryButton"
         android:layout_width="@dimen/grid_none"
         android:gravity="start"
-        android:text="@string/Couldnt_post"
+        android:text="@string/Discover_arts_news"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/retry_button"
-        app:layout_constraintTop_toBottomOf="@id/replies" />
+        app:layout_constraintTop_toBottomOf="@id/replies"
+        app:layout_constraintBottom_toTopOf="@+id/separtor"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/posting_button"
         style="@style/CommentsReplayButton"
         android:drawableTint="@color/kds_support_400"
         android:drawableStart="@drawable/ic_retry_send_comment"
-        android:text="@string/posting"
+        android:text="@string/Posting"
         android:visibility="gone"
         android:layout_marginStart="@dimen/grid_none"
         app:layout_constraintBottom_toTopOf="@+id/separtor"
@@ -106,7 +107,7 @@
         style="@style/CommentsReplayButton"
         android:textColor="@color/kds_create_700"
         android:drawableStart="@drawable/ic_posted_check"
-        android:text="@string/posted"
+        android:text="@string/Posted"
         android:visibility="gone"
         android:layout_marginStart="@dimen/grid_none"
         app:layout_constraintBottom_toTopOf="@+id/separtor"

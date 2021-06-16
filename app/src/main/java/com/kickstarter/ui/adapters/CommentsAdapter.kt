@@ -25,9 +25,11 @@ class CommentsAdapter(private val delegate: Delegate) : KSListAdapter() {
     }
 
     fun takeData(comments: List<CommentCardData>) {
-        setSection(SECTION_COMMENTS, comments)
-        setSection(SECTION_ERROR_PAGINATING, emptyList<Boolean>())
         setSection(SECTION_INITIAL_LOAD_ERROR, emptyList<Boolean>())
+        if (comments.isNotEmpty()) {
+            setSection(SECTION_COMMENTS, comments)
+        }
+        setSection(SECTION_ERROR_PAGINATING, emptyList<Boolean>())
         submitList(items())
     }
 
@@ -39,9 +41,9 @@ class CommentsAdapter(private val delegate: Delegate) : KSListAdapter() {
     }
 
     fun addErrorPaginationCell(shouldShowErrorCell: Boolean) {
+        setSection(SECTION_INITIAL_LOAD_ERROR, emptyList<Boolean>())
         // - we want to display SECTION_COMMENTS & SECTION_ERROR_PAGINATING at the same time so we should not clean SECTION_COMMENTS
         setSection(SECTION_ERROR_PAGINATING, listOf(shouldShowErrorCell))
-        setSection(SECTION_INITIAL_LOAD_ERROR, emptyList<Boolean>())
         submitList(items())
     }
 

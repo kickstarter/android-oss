@@ -83,6 +83,9 @@ interface CommentsViewHolderViewModel {
 
         /** Emits the current [OptimizelyFeature.Key.COMMENT_ENABLE_THREADS] status to the CommentCard UI*/
         fun isCommentEnableThreads(): Observable<Boolean>
+
+        /** Emits when the execution of the post mutation is successful, it will be used to update the main list state for this comment**/
+        fun isSuccessfullyPosted(): Observable<Comment>
     }
 
     class ViewModel(environment: Environment) : ActivityViewModel<CommentCardViewHolder>(environment), Inputs, Outputs {
@@ -107,6 +110,7 @@ interface CommentsViewHolderViewModel {
         private val viewCommentReplies = PublishSubject.create<Comment>()
         private val isCommentEnableThreads = PublishSubject.create<Boolean>()
         private val internalError = BehaviorSubject.create<Throwable>()
+        private val postedSuccessfully = BehaviorSubject.create<Comment>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -134,11 +138,12 @@ interface CommentsViewHolderViewModel {
             // - CommentData will hold the information for posting a new comment if needed
             val commentData = this.commentInput
                 .distinctUntilChanged()
-                .compose(combineLatestPair(currentUser.loggedInUser()))
+                .withLatestFrom(currentUser.loggedInUser()) { input, user -> Pair(input, user) }
                 .filter { shouldCommentBePosted(it) }
                 .map {
                     Pair(requireNotNull(it.first.comment?.body()), requireNotNull(it.first.project))
                 }
+            postComment(commentData, internalError)
 
             this.internalError
                 .compose(bindToLifecycle())
@@ -146,7 +151,6 @@ interface CommentsViewHolderViewModel {
                 .subscribe {
                     this.commentCardStatus.onNext(CommentCardStatus.FAILED_TO_SEND_COMMENT)
                 }
-            postComment(commentData, internalError)
         }
 
         /**
@@ -245,13 +249,16 @@ interface CommentsViewHolderViewModel {
          */
         private fun postComment(commentData: Observable<Pair<String, Project>>, errorObservable: BehaviorSubject<Throwable>) {
             commentData
-                .map { executePostCommentMutation(it, errorObservable) }
+                .map {
+                    executePostCommentMutation(it, errorObservable)
+                }
                 .switchMap {
                     it
                 }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
+                    this.postedSuccessfully.onNext(it)
                 }
 
             Observable
@@ -386,5 +393,7 @@ interface CommentsViewHolderViewModel {
         override fun viewCommentReplies(): Observable<Comment> = this.viewCommentReplies
 
         override fun isCommentEnableThreads(): Observable<Boolean> = this.isCommentEnableThreads
+
+        override fun isSuccessfullyPosted(): Observable<Comment> = this.postedSuccessfully
     }
 }

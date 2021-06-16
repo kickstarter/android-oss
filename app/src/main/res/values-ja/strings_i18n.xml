@@ -130,6 +130,8 @@
   <string name="Continue_with_quantity_count_add_ons_zero" formatted="false">%{quantity_count} 個のアドオンで続行する</string>
   <string name="Continue_with_this_reward" formatted="false">このリワードで続けますか？</string>
   <string name="Couldnt_add_attachment" formatted="false">添付ファイルを追加できませんでした</string>
+  <string name="Couldnt_load_more_comments_Tap_to_retry" formatted="false">他のコメントを読み込めませんでした。\n
+タップして再試行してください</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">ライブ配信を開けませんでした。後ほどお試しください。</string>
   <string name="Couldnt_post" formatted="false">投稿できませんでした。タップして再試行してください。</string>
   <string name="Couldnt_remove_attachment" formatted="false">添付ファイルを削除できませんでした</string>
@@ -320,7 +322,7 @@
   <string name="Kickstarter_on_Film" formatted="false">Kickstarter on Film</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">クリエイターやバッカ―からメッセージが届いた場合にすぐ分かるように、通知機能を有効にしましょう。</string>
   <string name="Learn_more_about_accountability" formatted="false">報告義務に関してさらに詳しく</string>
-  <string name="Learn_more_about_comment_guidelines" formatted="false">コメントのガイドラインについて詳細を見る</string>
+  <string name="Learn_more_about_comment_guidelines" formatted="false">&lt;a href="%{community_link}">コメントのガイドラインについてもっと詳しく&lt;/a></string>
   <string name="Left_count_left_few" formatted="false">残り%{left_count}</string>
   <string name="Left_count_left_many" formatted="false">残り%{left_count}</string>
   <string name="Left_count_left_one" formatted="false">残り%{left_count}</string>
@@ -437,6 +439,8 @@
   <string name="Post" formatted="false">投稿する</string>
   <string name="Postal_code" formatted="false">郵便番号</string>
   <string name="Postcode" formatted="false">郵便番号</string>
+  <string name="Posted" formatted="false">投稿しました</string>
+  <string name="Posting" formatted="false">投稿中…</string>
   <string name="Preparing_your_personal_data" formatted="false">あなたの個人データを準備中…</string>
   <string name="Privacy" formatted="false">プライバシー</string>
   <string name="Private_profile" formatted="false">プライベート設定のプロフィール</string>
@@ -656,6 +660,7 @@
   <string name="View_dashboard" formatted="false">ダッシュボードを表示</string>
   <string name="View_progress" formatted="false">進捗状況を表示</string>
   <string name="View_project" formatted="false">プロジェクトを見る</string>
+  <string name="View_replies" formatted="false">返信を表示</string>
   <string name="View_rewards" formatted="false">リワードを見る</string>
   <string name="View_the_rewards" formatted="false">リワードを表示</string>
   <string name="View_your_pledge" formatted="false">プレッジをみる</string>

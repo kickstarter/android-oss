@@ -14,13 +14,13 @@ import androidx.core.content.ContextCompat
 import org.jsoup.Jsoup
 import java.util.Locale
 
-fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>, @ColorRes linkColor: Int = -1) {
+fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>, @ColorRes linkColor: Int = -1, isUnderlineText: Boolean = true) {
     val spannableString = SpannableString(this.text)
     var startIndexOfLink = -1
     for (link in links) {
         val clickableSpan = object : ClickableSpan() {
             override fun updateDrawState(textPaint: TextPaint) {
-                textPaint.isUnderlineText = true
+                textPaint.isUnderlineText = isUnderlineText
                 if (linkColor != -1)
                     textPaint.color = ContextCompat.getColor(context, linkColor)
             }

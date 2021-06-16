@@ -35,6 +35,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     private val replyToComment = TestSubscriber<Comment>()
     private val flagComment = TestSubscriber<Comment>()
     private val repliesCount = TestSubscriber<Int>()
+    private val commentSuccessfullyPosted = TestSubscriber<Comment>()
     private val testScheduler = TestScheduler()
 
     private val createdAt = DateTime.now()
@@ -56,6 +57,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.replyToComment().subscribe(this.replyToComment)
         this.vm.outputs.flagComment().subscribe(this.flagComment)
         this.vm.outputs.commentRepliesCount().subscribe(this.repliesCount)
+        this.vm.outputs.isSuccessfullyPosted().subscribe(this.commentSuccessfullyPosted)
     }
 
     @Test
@@ -347,15 +349,18 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
             CommentCardStatus.RE_TRYING_TO_POST,
             CommentCardStatus.FAILED_TO_SEND_COMMENT
         )
+
+        this.commentSuccessfullyPosted.assertNoValues()
     }
 
     @Test
     fun testSendCommentShouldNotPost() {
+        val responseComment = CommentFactory.liveComment(createdAt = createdAt)
         val currentUser = UserFactory.user().toBuilder().id(1).build()
         val env = environment().toBuilder()
             .apolloClient(object : MockApolloClient() {
                 override fun createComment(comment: PostCommentData): Observable<Comment> {
-                    return Observable.just(CommentFactory.liveComment(createdAt = createdAt))
+                    return Observable.just(responseComment)
                 }
             })
             .currentUser(MockCurrentUser(currentUser))
@@ -374,15 +379,18 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.commentCardStatus.assertValue(
             CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS
         )
+
+        this.commentSuccessfullyPosted.assertNoValues()
     }
 
     @Test
     fun testSendCommentClicked() {
+        val commentResponse = CommentFactory.liveComment(createdAt = createdAt)
         val currentUser = UserFactory.user().toBuilder().id(1).build()
         val env = environment().toBuilder()
             .apolloClient(object : MockApolloClient() {
                 override fun createComment(comment: PostCommentData): Observable<Comment> {
-                    return Observable.just(CommentFactory.liveComment(createdAt = createdAt))
+                    return Observable.just(commentResponse)
                 }
             })
             .currentUser(MockCurrentUser(currentUser))
@@ -402,6 +410,8 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
             CommentCardStatus.TRYING_TO_POST,
             CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS
         )
+
+        this.commentSuccessfullyPosted.assertValue(commentResponse)
     }
 
     @Test
@@ -430,6 +440,8 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.commentCardStatus.assertValues(
             CommentCardStatus.TRYING_TO_POST
         )
+
+        this.commentSuccessfullyPosted.assertNoValues()
     }
 
     @Test
@@ -465,5 +477,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
             CommentCardStatus.RE_TRYING_TO_POST,
             CommentCardStatus.FAILED_TO_SEND_COMMENT
         )
+
+        this.commentSuccessfullyPosted.assertNoValues()
     }
 }

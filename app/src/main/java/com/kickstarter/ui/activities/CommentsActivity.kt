@@ -241,6 +241,7 @@ class CommentsActivity :
     override fun onDestroy() {
         super.onDestroy()
         binding.commentsRecyclerView.adapter = null
+        this.viewModel = null
     }
 
     companion object {

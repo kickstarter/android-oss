@@ -201,18 +201,15 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
     }
 
     private fun createStripeToken(card: Card) {
-        this.viewModel.environment.stripe().createToken(
-            card,
-            object : ApiResultCallback<Token> {
-                override fun onSuccess(result: Token) {
-                    this@NewCardFragment.viewModel.inputs.stripeTokenResultSuccessful(result)
-                }
-
-                override fun onError(e: Exception) {
-                    this@NewCardFragment.viewModel.inputs.stripeTokenResultUnsuccessful(e)
-                }
+        this.viewModel.environment.stripe().createCardToken(card = card, callback = object : ApiResultCallback<Token> {
+            override fun onSuccess(result: Token) {
+                this@NewCardFragment.viewModel.inputs.stripeTokenResultSuccessful(result)
             }
-        )
+
+            override fun onError(e: Exception) {
+                this@NewCardFragment.viewModel.inputs.stripeTokenResultUnsuccessful(e)
+            }
+        })
     }
 
     private fun modal(): Boolean {

@@ -911,7 +911,7 @@
     <item name="android:background">@android:color/transparent</item>
   </style>
 
-  <style name="CommentsReplayButton" parent="CommentsCardButton">
+  <style name="CommentsReplyButton" parent="CommentsCardButton">
     <item name="android:textAllCaps">false</item>
     <item name="android:layout_width">0dp</item>
     <item name="android:layout_marginEnd">@dimen/grid_3</item>
@@ -931,7 +931,7 @@
     <item name="android:letterSpacing">0.01</item>
   </style>
 
-  <style name="CommentsRetryButton" parent="CommentsReplayButton">
+  <style name="CommentsRetryButton" parent="CommentsReplyButton">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:textColor">@color/retry_color</item>
   </style>

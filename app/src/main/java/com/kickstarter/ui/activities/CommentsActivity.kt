@@ -215,6 +215,10 @@ class CommentsActivity :
         viewModel.inputs.onShowGuideLinesLinkClicked()
     }
 
+    override fun onCommentPostedSuccessFully(comment: Comment) {
+        viewModel.inputs.refreshComment(comment)
+    }
+
     override fun onCommentRepliesClicked(comment: Comment) {
         viewModel.inputs.onReplyClicked(comment, false)
     }
@@ -246,6 +250,7 @@ class CommentsActivity :
     override fun onDestroy() {
         super.onDestroy()
         binding.commentsRecyclerView.adapter = null
+        this.viewModel = null
     }
 
     companion object {

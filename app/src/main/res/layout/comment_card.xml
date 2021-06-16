@@ -84,7 +84,7 @@
         style="@style/CommentsRetryButton"
         android:layout_width="@dimen/grid_none"
         android:gravity="start"
-        android:text="@string/Discover_arts_news"
+        android:text="@string/Couldnt_post"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/retry_button"
         app:layout_constraintTop_toBottomOf="@id/replies"

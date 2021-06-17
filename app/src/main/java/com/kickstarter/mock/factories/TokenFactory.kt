@@ -1,5 +1,5 @@
 package com.kickstarter.mock.factories
-import com.stripe.android.model.Card
+import com.stripe.android.model.CardParams
 import com.stripe.android.model.Token
 import org.json.JSONObject
 
@@ -11,13 +11,13 @@ class TokenFactory private constructor() {
          * @param card to generate the token for
          * see:  https://github.com/stripe/stripe-android/blob/ad426ca33105e7bc5f17c027f8146354d13f75ae/payments-core/src/test/java/com/stripe/android/model/TokenTest.kt
          */
-        fun token(card: Card): Token {
+        fun token(cardParam: CardParams): Token {
             val tokenString = JSONObject(
                 """
             {
                 "object": "token",
                 "card": {
-                    "id": "${card.id}",
+                    "id": "card_189fi32eZvKYlo2CHK8NPRME",
                     "object": "card",
                     "address_city": null,
                     "address_country": null,
@@ -27,14 +27,14 @@ class TokenFactory private constructor() {
                     "address_state": null,
                     "address_zip": null,
                     "address_zip_check": null,
-                    "brand": "${card.brand}",
-                    "country": "${card.country}",
+                    "brand": "${cardParam.brand}",
+                    "country": "US",
                     "cvc_check": null,
                     "dynamic_last4": null,
-                    "exp_month": ${card.expMonth},
-                    "exp_year": ${card.expYear},
-                    "funding": "${card.funding}",
-                    "last4": "${card.last4}",
+                    "exp_month": 1,
+                    "exp_year": 2025,
+                    "funding": "credit",
+                    "last4": "${cardParam.last4}",
                     "metadata": {},
                     "name": null,
                     "tokenization_method": null

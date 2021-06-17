@@ -1,0 +1,7 @@
+query GetProjectUpdateComments($id: ID!,$limit: Int!, $cursor: String){
+  post(id: $id)  {
+    id
+    ...freeformPost
+  }
+}
+

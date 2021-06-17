@@ -19,8 +19,8 @@ import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.fragments.NewCardFragment
 import com.stripe.android.CardUtils
-import com.stripe.android.model.Card
 import com.stripe.android.model.CardBrand
+import com.stripe.android.model.CardParams
 import com.stripe.android.model.Token
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -29,7 +29,7 @@ import rx.subjects.PublishSubject
 interface NewCardFragmentViewModel {
     interface Inputs {
         /** Call when the card validity changes. */
-        fun card(card: Card?)
+        fun card(cardParams: CardParams?)
 
         /** Call when the card input has focus. */
         fun cardFocus(hasFocus: Boolean)
@@ -70,7 +70,7 @@ interface NewCardFragmentViewModel {
         fun cardWidgetFocusDrawable(): Observable<Int>
 
         /** Emits when we should create a Stripe token using card. */
-        fun createStripeToken(): Observable<Card>
+        fun createStripeToken(): Observable<CardParams>
 
         /** Emits a boolean determining if the form divider should be visible. */
         fun dividerIsVisible(): Observable<Boolean>
@@ -96,7 +96,7 @@ interface NewCardFragmentViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<NewCardFragment>(environment), Inputs, Outputs {
 
-        private val card = PublishSubject.create<Card?>()
+        private val cardParams = PublishSubject.create<CardParams>()
         private val cardFocus = PublishSubject.create<Boolean>()
         private val cardNumber = PublishSubject.create<String>()
         private val name = PublishSubject.create<String>()
@@ -110,7 +110,7 @@ interface NewCardFragmentViewModel {
         private val allowedCardWarningIsVisible = BehaviorSubject.create<Boolean>()
         private val appBarLayoutHasElevation = BehaviorSubject.create<Boolean>()
         private val cardWidgetFocusDrawable = BehaviorSubject.create<Int>()
-        private val createStripeToken = PublishSubject.create<Card>()
+        private val createStripeToken = PublishSubject.create<CardParams>()
         private val dividerIsVisible = BehaviorSubject.create<Boolean>()
         private val error = BehaviorSubject.create<Void>()
         private val modalError = BehaviorSubject.create<Void>()
@@ -123,7 +123,6 @@ interface NewCardFragmentViewModel {
         val outputs: Outputs = this
 
         private val apolloClient = this.environment.apolloClient()
-        private val stripe = this.environment.stripe()
 
         init {
             val modal = arguments()
@@ -155,7 +154,7 @@ interface NewCardFragmentViewModel {
 
             val cardForm = Observable.combineLatest(
                 this.name,
-                this.card,
+                this.cardParams,
                 this.cardNumber,
                 this.postalCode,
                 reusable
@@ -203,9 +202,9 @@ interface NewCardFragmentViewModel {
                 }
 
             cardForm
-                .map { it.card?.toBuilder()?.name(it.name)?.addressZip(it.postalCode)?.build() }
+                .map { it.cardParams }
                 .filter { ObjectUtils.isNotNull(it) }
-                .compose<Card>(takeWhen(this.saveCardClicked))
+                .compose<CardParams>(takeWhen(this.saveCardClicked))
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.createStripeToken.onNext(it)
@@ -243,8 +242,8 @@ interface NewCardFragmentViewModel {
             errors.subscribe { this.progressBarIsVisible.onNext(false) }
         }
 
-        override fun card(card: Card?) {
-            this.card.onNext(card)
+        override fun card(cardParams: CardParams?) {
+            this.cardParams.onNext(cardParams)
         }
 
         override fun cardFocus(hasFocus: Boolean) {
@@ -287,7 +286,7 @@ interface NewCardFragmentViewModel {
 
         override fun cardWidgetFocusDrawable(): Observable<Int> = this.cardWidgetFocusDrawable
 
-        override fun createStripeToken(): Observable<Card> = this.createStripeToken
+        override fun createStripeToken(): Observable<CardParams> = this.createStripeToken
 
         override fun dividerIsVisible(): Observable<Boolean> = this.dividerIsVisible
 
@@ -303,7 +302,7 @@ interface NewCardFragmentViewModel {
 
         override fun success(): Observable<StoredCard> = this.success
 
-        data class CardForm(val name: String, val card: Card?, val cardNumber: String, val postalCode: String, val reusable: Boolean) {
+        data class CardForm(val name: String, val cardParams: CardParams?, val cardNumber: String, val postalCode: String, val reusable: Boolean) {
 
             fun isValid(project: Project?): Boolean {
                 return this.name.isNotEmpty() &&
@@ -312,7 +311,7 @@ interface NewCardFragmentViewModel {
             }
 
             private fun isValidCard(project: Project?): Boolean {
-                return this.card != null && warning(this.cardNumber, project) == null && this.card.validateNumber() && this.card.validateExpiryDate() && card.validateCVC()
+                return this.cardParams != null && warning(this.cardNumber, project) == null
             }
 
             companion object {

@@ -26,7 +26,7 @@ import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.NewCardFragmentViewModel
 import com.stripe.android.ApiResultCallback
-import com.stripe.android.model.Card
+import com.stripe.android.model.CardParams
 import com.stripe.android.model.Token
 import com.stripe.android.view.CardInputListener
 import kotlinx.android.synthetic.main.form_new_card.allowed_card_warning
@@ -194,12 +194,12 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
     }
 
     private fun cardChanged() {
-        this.viewModel.inputs.card(card_input_widget.card)
+        this.viewModel.inputs.card(card_input_widget.cardParams)
     }
 
-    private fun createStripeToken(card: Card) {
+    private fun createStripeToken(card: CardParams) {
         this.viewModel.environment.stripe().createCardToken(
-            card = card,
+            cardParams = card,
             callback = object : ApiResultCallback<Token> {
                 override fun onSuccess(result: Token) {
                     this@NewCardFragment.viewModel.inputs.stripeTokenResultSuccessful(result)

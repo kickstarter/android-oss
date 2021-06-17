@@ -20,7 +20,7 @@ import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.fragments.NewCardFragment
 import com.stripe.android.CardUtils
 import com.stripe.android.model.Card
-import com.stripe.android.model.PaymentMethod
+import com.stripe.android.model.CardBrand
 import com.stripe.android.model.Token
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -320,11 +320,11 @@ interface NewCardFragmentViewModel {
                     else {
                         when (project) {
                             null -> when {
-                                CardUtils.getPossibleCardType(cardNumber) !in allowedCardTypes -> R.string.Unsupported_card_type
+                                CardUtils.getPossibleCardBrand(cardNumber) in allowedCardTypes -> R.string.Unsupported_card_type
                                 else -> null
                             }
                             else -> when {
-                                CardUtils.getPossibleCardType(cardNumber) !in getAllowedTypes(project) -> R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country
+                                CardUtils.getPossibleCardBrand(cardNumber) in getAllowedTypes(project) -> R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country
                                 else -> null
                             }
                         }
@@ -339,20 +339,20 @@ interface NewCardFragmentViewModel {
                 }
 
                 private val allowedCardTypes = arrayOf(
-                    PaymentMethod.Card.Brand.AMERICAN_EXPRESS,
-                    PaymentMethod.Card.Brand.DINERS_CLUB,
-                    PaymentMethod.Card.Brand.DISCOVER,
-                    PaymentMethod.Card.Brand.JCB,
-                    PaymentMethod.Card.Brand.MASTERCARD,
-                    PaymentMethod.Card.Brand.UNIONPAY,
-                    PaymentMethod.Card.Brand.VISA
+                    CardBrand.AmericanExpress.code,
+                    CardBrand.DinersClub.code,
+                    CardBrand.Discover.code,
+                    CardBrand.JCB.code,
+                    CardBrand.MasterCard.code,
+                    CardBrand.UnionPay.code,
+                    CardBrand.Visa.code
                 )
 
                 private val usdCardTypes = allowedCardTypes
                 private val nonUsdCardTypes = arrayOf(
-                    PaymentMethod.Card.Brand.AMERICAN_EXPRESS,
-                    PaymentMethod.Card.Brand.MASTERCARD,
-                    PaymentMethod.Card.Brand.VISA
+                    CardBrand.AmericanExpress.code,
+                    CardBrand.MasterCard.code,
+                    CardBrand.Visa.code
                 )
             }
         }

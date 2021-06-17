@@ -29,7 +29,7 @@ import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.BackingFragment
 import com.stripe.android.model.Card
-import com.stripe.android.model.PaymentMethod
+import com.stripe.android.model.CardBrand
 import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -486,12 +486,13 @@ interface BackingFragmentViewModel {
             return Pair(projectData, reward)
         }
 
+        // TODO: Probably will need to change the second part from Int to String
         private fun cardIssuer(paymentSource: Backing.PaymentSource): Either<String, Int> {
             return when (CreditCardPaymentType.safeValueOf(paymentSource.paymentType())) {
                 CreditCardPaymentType.ANDROID_PAY -> Either.Right(R.string.googlepay_button_content_description)
                 CreditCardPaymentType.APPLE_PAY -> Either.Right(R.string.apple_pay_content_description)
                 CreditCardPaymentType.CREDIT_CARD -> Either.Left(StoredCard.issuer(CreditCardTypes.safeValueOf(paymentSource.type())))
-                else -> Either.Left(PaymentMethod.Card.Brand.UNKNOWN)
+                else -> Either.Left(CardBrand.Unknown.code)
             }
         }
 

@@ -22,9 +22,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
-import com.stripe.android.model.Card
 import com.stripe.android.model.CardBrand
-import com.stripe.android.model.PaymentMethod
 import junit.framework.TestCase
 import org.joda.time.DateTime
 import org.junit.Test

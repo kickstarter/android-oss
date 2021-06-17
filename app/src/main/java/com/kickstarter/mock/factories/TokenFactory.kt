@@ -6,14 +6,18 @@ import org.json.JSONObject
 class TokenFactory private constructor() {
     companion object {
 
+        /**
+         * Returns a Token
+         * @param card to generate the token for
+         * see:  https://github.com/stripe/stripe-android/blob/ad426ca33105e7bc5f17c027f8146354d13f75ae/payments-core/src/test/java/com/stripe/android/model/TokenTest.kt
+         */
         fun token(card: Card): Token {
-            // - From here: https://github.com/stripe/stripe-android/blob/ad426ca33105e7bc5f17c027f8146354d13f75ae/payments-core/src/test/java/com/stripe/android/model/TokenTest.kt
-            val RAW_TOKEN_NO_ID = JSONObject(
+            val tokenString = JSONObject(
                 """
             {
                 "object": "token",
                 "card": {
-                    "id": "card_189fi32eZvKYlo2CHK8NPRME",
+                    "id": "${card.id}",
                     "object": "card",
                     "address_city": null,
                     "address_country": null,
@@ -23,14 +27,14 @@ class TokenFactory private constructor() {
                     "address_state": null,
                     "address_zip": null,
                     "address_zip_check": null,
-                    "brand": "Visa",
-                    "country": "US",
+                    "brand": "${card.brand}",
+                    "country": "${card.country}",
                     "cvc_check": null,
                     "dynamic_last4": null,
-                    "exp_month": 8,
-                    "exp_year": 2017,
-                    "funding": "credit",
-                    "last4": "4242",
+                    "exp_month": ${card.expMonth},
+                    "exp_year": ${card.expYear},
+                    "funding": "${card.funding}",
+                    "last4": "${card.last4}",
                     "metadata": {},
                     "name": null,
                     "tokenization_method": null
@@ -43,7 +47,7 @@ class TokenFactory private constructor() {
             }
                 """.trimIndent()
             )
-            return requireNotNull(Token.fromJson(RAW_TOKEN_NO_ID))
+            return requireNotNull(Token.fromJson(tokenString))
         }
     }
 }

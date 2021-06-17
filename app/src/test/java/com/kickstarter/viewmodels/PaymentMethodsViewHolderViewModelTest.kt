@@ -4,9 +4,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.StoredCardFactory
-import com.stripe.android.model.Card
 import com.stripe.android.model.CardBrand
-import com.stripe.android.model.PaymentMethod
 import org.junit.Test
 import rx.observers.TestSubscriber
 import java.util.Date

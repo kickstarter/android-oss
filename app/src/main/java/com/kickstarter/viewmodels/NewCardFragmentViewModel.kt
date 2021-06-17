@@ -198,7 +198,9 @@ interface NewCardFragmentViewModel {
                     }
                 }
                 .distinctUntilChanged()
-                .subscribe { this.cardWidgetFocusDrawable.onNext(it) }
+                .subscribe {
+                    this.cardWidgetFocusDrawable.onNext(it)
+                }
 
             cardForm
                 .map { it.card?.toBuilder()?.name(it.name)?.addressZip(it.postalCode)?.build() }

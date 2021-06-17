@@ -2,6 +2,7 @@ package com.kickstarter.ui.views
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.inputmethod.InputMethodManager
 import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.withStyledAttributes
@@ -82,6 +83,14 @@ class CommentComposerView @JvmOverloads constructor(
 
     fun setCommentComposerHint(@StringRes hint: Int) {
         binding.commentTextComposer.hint = context.getString(hint)
+    }
+
+    fun requestCommentComposerKeyBoard(isFocusable: Boolean) {
+        if (isFocusable) {
+            binding.commentTextComposer.requestFocus()
+            val inputManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputManager.showSoftInput(binding.commentTextComposer, 0)
+        }
     }
 
     fun setCommentComposerStatus(commentComposerStatus: CommentComposerStatus) {

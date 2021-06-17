@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels
 
 import android.content.Intent
+import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.mock.factories.ApiExceptionFactory
@@ -11,6 +12,8 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UpdateFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.models.Comment
+import com.kickstarter.models.Project
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.CommentCardData
@@ -39,6 +42,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     private val paginationError = TestSubscriber.create<Throwable>()
     private val shouldShowPaginatedCell = TestSubscriber.create<Boolean>()
     private val openCommentGuideLines = TestSubscriber<Void>()
+    private val startThreadActivity = BehaviorSubject.create<Pair<Pair<Comment, Boolean>, Project>>()
 
     @Test
     fun testCommentsViewModel_whenUserLoggedInAndBacking_shouldShowEnabledComposer() {
@@ -405,6 +409,33 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         vm.inputs.backPressed()
         closeCommentPage.assertValueCount(1)
+    }
+
+    @Test
+    fun onReplyClicked_whenEmits_shouldEmitToCloseThreadActivity() {
+        val currentUser = UserFactory.user()
+            .toBuilder()
+            .id(1)
+            .avatar(AvatarFactory.avatar())
+            .build()
+
+        val createdAt = DateTime.now()
+
+        val vm = CommentsViewModel.ViewModel(
+            environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+        )
+        val comment = CommentFactory.liveComment(createdAt = createdAt)
+        val project = ProjectFactory.project()
+        vm.outputs.startThreadActivity().subscribe(startThreadActivity)
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        // Start the view model with a project.
+
+        vm.inputs.onReplyClicked(comment, true)
+
+        assertEquals(startThreadActivity.value.second, project)
+        assertEquals(startThreadActivity.value.first.first, comment)
+        assertTrue(startThreadActivity.value.first.second)
     }
 
     @Test

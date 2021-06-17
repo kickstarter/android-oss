@@ -13,6 +13,7 @@ import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Comment
+import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.CommentsAdapter
 import com.kickstarter.ui.extensions.hideKeyboard
@@ -165,6 +166,13 @@ class CommentsActivity :
             .subscribe {
                 paginationHandler.refreshing(it)
             }
+
+        viewModel.outputs.startThreadActivity()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                startThreadActivity(it.first.first, it.second, it.first.second)
+            }
     }
 
     fun postComment(comment: String) {
@@ -197,7 +205,7 @@ class CommentsActivity :
     }
 
     override fun onReplyButtonClicked(comment: Comment) {
-        startThreadActivity(comment, true)
+        viewModel.inputs.onReplyClicked(comment, true)
     }
 
     override fun onFlagButtonClicked(comment: Comment) {
@@ -212,7 +220,7 @@ class CommentsActivity :
     }
 
     override fun onCommentRepliesClicked(comment: Comment) {
-        startThreadActivity(comment, false)
+        viewModel.inputs.onReplyClicked(comment, false)
     }
 
     /**
@@ -225,9 +233,10 @@ class CommentsActivity :
      * // TODO: Once the viewReplies UI is completed call this method with openKeyboard = false
      * // TODO: https://kickstarter.atlassian.net/browse/NT-1955
      */
-    private fun startThreadActivity(comment: Comment, openKeyboard: Boolean) {
+    private fun startThreadActivity(comment: Comment, project: Project, openKeyboard: Boolean) {
         val threadIntent = Intent(this, ThreadActivity::class.java).apply {
             putExtra(IntentKey.COMMENT, comment)
+            putExtra(IntentKey.PROJECT, project)
             putExtra(IntentKey.REPLY_EXPAND, openKeyboard)
         }
 

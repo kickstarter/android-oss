@@ -7,6 +7,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.stripe.android.model.Card
+import com.stripe.android.model.CardBrand
 import com.stripe.android.model.PaymentMethod
 import org.junit.Test
 import rx.observers.TestSubscriber
@@ -64,7 +65,7 @@ class RewardCardSelectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
 
-        this.issuer.assertValue(PaymentMethod.Card.Brand.DISCOVER)
+        this.issuer.assertValue(CardBrand.Discover.code)
     }
 
     @Test

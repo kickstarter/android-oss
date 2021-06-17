@@ -69,15 +69,14 @@
         app:layout_constraintStart_toStartOf="@id/avatar"
         app:layout_constraintTop_toBottomOf="@id/replies" />
 
-
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/retry_button"
         style="@style/CommentsReplyButton"
         android:layout_marginStart="@dimen/grid_none"
         android:layout_marginTop="@dimen/grid_0"
+        app:layout_constraintTop_toTopOf="@id/retry_message"
         app:layout_constraintTop_toBottomOf="@id/replies"
         app:layout_constraintStart_toStartOf="@id/avatar"
-        app:layout_constraintBottom_toTopOf="@+id/separtor"
         android:src="@drawable/ic_retry_send_comment" />
 
     <androidx.appcompat.widget.AppCompatTextView

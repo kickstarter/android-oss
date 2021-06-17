@@ -2,6 +2,7 @@
 package com.kickstarter.libs.utils.extensions
 
 import android.util.Patterns
+import org.jsoup.Jsoup
 import java.util.Locale
 
 const val MINIMUM_PASSWORD_LENGTH = 6
@@ -53,3 +54,7 @@ fun String.trimAllWhitespace(): String {
  * Returns a string wrapped in parentheses.
  */
 fun String.wrapInParentheses() = "($this)"
+
+fun String.parseHtmlTag(): String {
+    return Jsoup.parse(this).text()
+}

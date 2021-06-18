@@ -13,7 +13,6 @@ import com.kickstarter.ui.activities.ThreadActivity
 import com.kickstarter.ui.data.CommentCardData
 import rx.Observable
 import rx.subjects.BehaviorSubject
-import timber.log.Timber
 
 interface ThreadViewModel {
 
@@ -23,7 +22,7 @@ interface ThreadViewModel {
         fun getRootComment(): Observable<Comment>
 
         /** get comment replies **/
-        fun onCommentReplies() : Observable<List<CommentCardData>>
+        fun onCommentReplies(): Observable<List<CommentCardData>>
 
         /** Will tell to the compose view if should open the keyboard */
         fun shouldFocusOnCompose(): Observable<Boolean>
@@ -65,11 +64,12 @@ interface ThreadViewModel {
                 .compose(Transformers.combineLatestPair(comment))
                 .compose(bindToLifecycle())
                 .subscribe {
-                  val comments =  it.first.comments?.map { comment: Comment ->
+                    val comments = it.first.comments?.map { comment: Comment ->
                         CommentCardData.builder().comment(
-                            comment.toBuilder().
-                            parentId(it.second.id()).
-                            build())
+                            comment.toBuilder()
+                                .parentId(it.second.id())
+                                .build()
+                        )
                             .build()
                     }
 

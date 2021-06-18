@@ -17,11 +17,10 @@ class RepliesAdapter(private val delegate: Delegate) : KSListAdapter() {
     }
 
     override fun layout(sectionRow: SectionRow): Int {
-       return R.layout.item_comment_card
+        return R.layout.item_comment_card
     }
 
     override fun viewHolder(layout: Int, view: ViewGroup): KSViewHolder {
         return CommentCardViewHolder(ItemCommentCardBinding.inflate(LayoutInflater.from(view.context), view, false), delegate)
     }
-
 }

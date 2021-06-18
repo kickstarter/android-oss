@@ -13,8 +13,9 @@ import com.kickstarter.viewmodels.ThreadViewModel
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(ThreadViewModel.ViewModel::class)
-class ThreadActivity : BaseActivity<ThreadViewModel.ViewModel>(),
-        RepliesAdapter.Delegate {
+class ThreadActivity :
+    BaseActivity<ThreadViewModel.ViewModel>(),
+    RepliesAdapter.Delegate {
 
     private lateinit var binding: ActivityThreadLayoutBinding
     private lateinit var ksString: KSString
@@ -36,7 +37,6 @@ class ThreadActivity : BaseActivity<ThreadViewModel.ViewModel>(),
             .subscribe { comment ->
                 configureRootCommentView(comment)
             }
-
 
         this.viewModel.onCommentReplies()
             .compose(bindToLifecycle())

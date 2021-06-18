@@ -190,9 +190,9 @@ interface CommentsViewHolderViewModel {
         private fun configureCommentCardWithComment(comment: Observable<Comment>) {
 
             comment
-                .filter { it.parentId() > 0}
+                .filter { it.parentId() > 0 }
                 .compose(bindToLifecycle())
-                .subscribe{
+                .subscribe {
                     this.isCommentReply.onNext(null)
                 }
 

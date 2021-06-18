@@ -76,13 +76,13 @@ open class MockApolloClient : ApolloClientType {
         cursor: String?,
         limit: Int
     ): Observable<CommentEnvelope> {
-
         return Observable.just(
             CommentEnvelope.builder()
                 .pageInfoEnvelope(
                     PageInfoEnvelopeFactory.pageInfoEnvelope()
                 )
                 .comments(listOf(CommentFactory.comment()))
+                .commentableId(updateId)
                 .totalCount(1)
                 .build()
         )

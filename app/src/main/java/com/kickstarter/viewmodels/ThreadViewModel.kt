@@ -4,11 +4,13 @@ import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Comment
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ThreadActivity
+import com.kickstarter.ui.data.CommentCardData
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import timber.log.Timber
@@ -20,6 +22,9 @@ interface ThreadViewModel {
         /** The anchored root comment */
         fun getRootComment(): Observable<Comment>
 
+        /** get comment replies **/
+        fun onCommentReplies() : Observable<List<CommentCardData>>
+
         /** Will tell to the compose view if should open the keyboard */
         fun shouldFocusOnCompose(): Observable<Boolean>
     }
@@ -30,6 +35,8 @@ interface ThreadViewModel {
 
         private val rootComment = BehaviorSubject.create<Comment>()
         private val focusOnCompose = BehaviorSubject.create<Boolean>()
+
+        private val onCommentReplies = BehaviorSubject.create<List<CommentCardData>>()
 
         val inputs = this
         val outputs = this
@@ -55,15 +62,18 @@ interface ThreadViewModel {
                 .share()
 
             commentEnvelope
+                .compose(Transformers.combineLatestPair(comment))
                 .compose(bindToLifecycle())
                 .subscribe {
-                    Timber.i(
-                        "******* Comment envelope with \n" +
-                            "totalComments:${it.totalCount} \n" +
-                            "commentsList: ${it.comments?.map { comment -> comment.body() + " |"}} \n" +
-                            "commentsListSize: ${it.comments?.size} \n" +
-                            "pageInfo: ${it.pageInfoEnvelope} ****"
-                    )
+                  val comments =  it.first.comments?.map { comment: Comment ->
+                        CommentCardData.builder().comment(
+                            comment.toBuilder().
+                            parentId(it.second.id()).
+                            build())
+                            .build()
+                    }
+
+                    this.onCommentReplies.onNext(comments)
                 }
 
             comment
@@ -76,6 +86,8 @@ interface ThreadViewModel {
             .ofType(Comment::class.java)
 
         override fun getRootComment(): Observable<Comment> = this.rootComment
+        override fun onCommentReplies(): Observable<List<CommentCardData>> = this.onCommentReplies
+
         override fun shouldFocusOnCompose(): Observable<Boolean> = this.focusOnCompose
     }
 }

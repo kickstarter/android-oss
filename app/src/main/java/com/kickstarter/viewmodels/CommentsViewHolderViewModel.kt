@@ -84,6 +84,9 @@ interface CommentsViewHolderViewModel {
         /** Emits the current [OptimizelyFeature.Key.COMMENT_ENABLE_THREADS] status to the CommentCard UI*/
         fun isCommentEnableThreads(): Observable<Boolean>
 
+        /** Emits the current [OptimizelyFeature.Key.COMMENT_ENABLE_THREADS] status to the CommentCard UI*/
+        fun isCommentReply(): Observable<Void>
+
         /** Emits when the execution of the post mutation is successful, it will be used to update the main list state for this comment**/
         fun isSuccessfullyPosted(): Observable<Comment>
     }
@@ -111,6 +114,8 @@ interface CommentsViewHolderViewModel {
         private val isCommentEnableThreads = PublishSubject.create<Boolean>()
         private val internalError = BehaviorSubject.create<Throwable>()
         private val postedSuccessfully = BehaviorSubject.create<Comment>()
+
+        private val isCommentReply = BehaviorSubject.create<Void>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -183,6 +188,14 @@ interface CommentsViewHolderViewModel {
          * @param comment the comment observable
          */
         private fun configureCommentCardWithComment(comment: Observable<Comment>) {
+
+            comment
+                .filter { it.parentId() > 0}
+                .compose(bindToLifecycle())
+                .subscribe{
+                    this.isCommentReply.onNext(null)
+                }
+
             comment
                 .map { it.repliesCount() }
                 .compose(bindToLifecycle())
@@ -393,6 +406,8 @@ interface CommentsViewHolderViewModel {
         override fun viewCommentReplies(): Observable<Comment> = this.viewCommentReplies
 
         override fun isCommentEnableThreads(): Observable<Boolean> = this.isCommentEnableThreads
+
+        override fun isCommentReply(): Observable<Void> = this.isCommentReply
 
         override fun isSuccessfullyPosted(): Observable<Comment> = this.postedSuccessfully
     }

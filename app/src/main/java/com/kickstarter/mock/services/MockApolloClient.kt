@@ -71,7 +71,7 @@ open class MockApolloClient : ApolloClientType {
         )
     }
 
-    override fun getRepliesForComment(comment: Comment, cursor: String, pageSize: Int): Observable<CommentEnvelope> {
+    override fun getRepliesForComment(comment: Comment, cursor: String?, pageSize: Int): Observable<CommentEnvelope> {
         return Observable.just(CommentEnvelopeFactory.emptyCommentsEnvelope())
     }
 

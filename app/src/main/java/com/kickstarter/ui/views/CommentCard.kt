@@ -1,6 +1,7 @@
 package com.kickstarter.ui.views
 
 import android.content.Context
+import android.opengl.Visibility
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -161,6 +162,10 @@ class CommentCard @JvmOverloads constructor(
      */
     fun setCommentReplies(replies: Int) {
         setViewRepliesVisibility(replies > 0)
+    }
+
+    fun setSeparatorVisibility(visibility: Boolean){
+        binding.separtor.isVisible = visibility
     }
 
     fun setViewRepliesVisibility(isViewRepliesVisible: Boolean) {

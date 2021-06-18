@@ -35,41 +35,36 @@
         </com.kickstarter.ui.toolbars.KSToolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:focusable="true"
-        tools:context="com.kickstarter.ui.activities.ThreadActivity"
+    <androidx.core.widget.NestedScrollView
+        android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:orientation="vertical">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <com.kickstarter.ui.views.CommentCard
-            android:id="@+id/comments_card_view"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+       <androidx.appcompat.widget.LinearLayoutCompat
+           android:layout_width="match_parent"
+           android:orientation="vertical"
+           android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/left_guideline"
-            app:layout_constraintGuide_begin="@dimen/grid_5"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+           <com.kickstarter.ui.views.CommentCard
+               android:id="@+id/comments_card_view"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               />
 
+           <androidx.recyclerview.widget.RecyclerView
+               android:layout_marginStart="@dimen/grid_5"
+               android:id="@+id/comment_replies_recycler_view"
+               android:layout_width="match_parent"
+               android:paddingEnd="@dimen/grid_5"
+               android:layout_height="wrap_content"
+               android:nestedScrollingEnabled="false"
+               android:background="@color/kds_white"
+               app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+               tools:listitem="@layout/comment_card" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/comment_replies_recycler_view"
-            app:layout_constraintStart_toEndOf="@id/left_guideline"
-            android:layout_width="0dp"
-            android:paddingEnd="@dimen/grid_5"
-            android:layout_height="wrap_content"
-            android:background="@color/kds_white"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@id/comments_card_view"
-            tools:layout_editor_absoluteX="0dp"
-            tools:listitem="@layout/comment_card" />
+       </androidx.appcompat.widget.LinearLayoutCompat>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

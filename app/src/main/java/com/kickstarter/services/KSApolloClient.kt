@@ -218,6 +218,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                     }
 
                                     CommentEnvelope.builder()
+                                        .commentableId(project?.id())
                                         .comments(comments)
                                         .totalCount(project?.comments()?.totalCount() ?: 0)
                                         .pageInfoEnvelope(createPageInfoObject(project?.comments()?.pageInfo()?.fragments()?.pageInfo()))
@@ -255,9 +256,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         response.data?.let { data ->
                             Observable.just(data.post())
                                 .filter { it?.fragments()?.freeformPost()?.comments() != null }
-                                .map { project ->
+                                .map { post ->
 
-                                    val comments = project?.fragments()?.freeformPost()?.comments()?.edges()?.map { edge ->
+                                    val comments = post?.fragments()?.freeformPost()?.comments()?.edges()?.map { edge ->
                                         createCommentObject(edge?.node()?.fragments()?.comment()).toBuilder()
                                             .cursor(edge?.cursor())
                                             .build()
@@ -265,8 +266,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                                     CommentEnvelope.builder()
                                         .comments(comments)
-                                        .totalCount(project?.fragments()?.freeformPost()?.comments()?.totalCount() ?: 0)
-                                        .pageInfoEnvelope(createPageInfoObject(project?.fragments()?.freeformPost()?.comments()?.pageInfo()?.fragments()?.pageInfo()))
+                                        .commentableId(post?.id())
+                                        .totalCount(post?.fragments()?.freeformPost()?.comments()?.totalCount() ?: 0)
+                                        .pageInfoEnvelope(createPageInfoObject(post?.fragments()?.freeformPost()?.comments()?.pageInfo()?.fragments()?.pageInfo()))
                                         .build()
                                 }
                                 .filter { ObjectUtils.isNotNull(it) }
@@ -315,7 +317,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             this.service.mutate(
                 CreateCommentMutation.builder()
                     .parentId(comment.parentId)
-                    .commentableId(encodeRelayId(comment.project))
+                    .commentableId(comment.commentableId)
                     .clientMutationId(comment.clientMutationId)
                     .body(comment.body)
                     .build()

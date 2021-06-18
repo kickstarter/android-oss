@@ -6,6 +6,7 @@ import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.toCommentCardList
 import com.kickstarter.models.Comment
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.IntentKey
@@ -64,16 +65,7 @@ interface ThreadViewModel {
                 .compose(Transformers.combineLatestPair(comment))
                 .compose(bindToLifecycle())
                 .subscribe {
-                    val comments = it.first.comments?.map { comment: Comment ->
-                        CommentCardData.builder().comment(
-                            comment.toBuilder()
-                                .parentId(it.second.id())
-                                .build()
-                        )
-                            .build()
-                    }
-
-                    this.onCommentReplies.onNext(comments)
+                    this.onCommentReplies.onNext(it.first.comments?.toCommentCardList(null))
                 }
 
             comment

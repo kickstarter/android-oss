@@ -29,4 +29,19 @@ class CommentCardData(
     }
 
     fun toBuilder() = CommentCardData.Builder(this.comment, this.commentCardState, this.project)
+
+    override fun equals(other: Any?): Boolean {
+        var equals = super.equals(other)
+
+        if (other is CommentCardData) {
+            val obj: CommentCardData = other
+            equals = (
+                obj.comment?.equals(this.comment) == true &&
+                    obj.commentCardState == this.commentCardState &&
+                    obj.project?.equals(this.project) == true
+                )
+        }
+
+        return equals
+    }
 }

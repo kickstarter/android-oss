@@ -37,6 +37,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     private val repliesCount = TestSubscriber<Int>()
     private val commentSuccessfullyPosted = TestSubscriber<Comment>()
     private val testScheduler = TestScheduler()
+    private val isCommentReply = TestSubscriber<Void>()
 
     private val createdAt = DateTime.now()
     private val currentUser = UserFactory.user().toBuilder().id(1).avatar(
@@ -58,6 +59,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.flagComment().subscribe(this.flagComment)
         this.vm.outputs.commentRepliesCount().subscribe(this.repliesCount)
         this.vm.outputs.isSuccessfullyPosted().subscribe(this.commentSuccessfullyPosted)
+        this.vm.isCommentReply().subscribe(this.isCommentReply)
     }
 
     @Test
@@ -479,5 +481,27 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         )
 
         this.commentSuccessfullyPosted.assertNoValues()
+    }
+
+    @Test
+    fun testIsCommentReply() {
+        val reply = CommentFactory.reply(createdAt = createdAt)
+        val commentCardData = CommentCardData.builder()
+            .comment(reply)
+            .project(ProjectFactory.initialProject())
+            .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
+            .build()
+
+        val env = environment()
+        setUpEnvironment(env)
+
+        this.vm.inputs.configureWith(commentCardData)
+
+        // State has not changed from the initialization
+        this.commentCardStatus.assertValues(
+            CommentCardStatus.TRYING_TO_POST
+        )
+
+        this.isCommentReply.assertValue(null)
     }
 }

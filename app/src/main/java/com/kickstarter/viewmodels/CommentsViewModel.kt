@@ -12,6 +12,7 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectUtils
+import com.kickstarter.libs.utils.extensions.toCommentCardList
 import com.kickstarter.models.Comment
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
@@ -338,13 +339,8 @@ interface CommentsViewModel {
                 .onErrorResumeNext(Observable.empty())
                 .filter { ObjectUtils.isNotNull(it) }
                 .compose<Pair<CommentEnvelope, Project>>(combineLatestPair(project))
-                .map { Pair(requireNotNull(mapToCommentCardDataList(it)), it.first.totalCount) }
+                .map { Pair(requireNotNull(it.first.comments?.toCommentCardList(it.second)), it.first.totalCount) }
         }
-
-        private fun mapToCommentCardDataList(it: Pair<CommentEnvelope, Project>) =
-            it.first.comments?.map { comment: Comment ->
-                CommentCardData.builder().comment(comment).project(it.second).build()
-            }
 
         private fun buildCommentBody(it: Pair<User, Pair<String, DateTime>>): Comment {
             return Comment.builder()

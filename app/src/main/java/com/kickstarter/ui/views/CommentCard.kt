@@ -12,6 +12,7 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.kickstarter.R
 import com.kickstarter.databinding.CommentCardBinding
+import com.kickstarter.libs.utils.extensions.parseHtmlTag
 import com.kickstarter.libs.utils.extensions.setAllOnClickListener
 import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.ui.extensions.makeLinks
@@ -53,13 +54,14 @@ class CommentCard @JvmOverloads constructor(
         binding.flaggedMessage.parseHtmlTag()
         binding.flaggedMessage.makeLinks(
             Pair(
-                context.resources.getString(R.string.Learn_more_about_comment_guidelines),
+                context.resources.getString(R.string.Learn_more_about_comment_guidelines).parseHtmlTag(),
                 OnClickListener {
                     onCommentCardClickedListener?.onCommentGuideLinesClicked(it)
                 },
 
             ),
-            linkColor = R.color.kds_create_500
+            linkColor = R.color.kds_create_500,
+            isUnderlineText = false
         )
     }
 

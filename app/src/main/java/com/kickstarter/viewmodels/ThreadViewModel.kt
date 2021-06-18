@@ -1,17 +1,22 @@
 package com.kickstarter.viewmodels
 
+import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.extensions.toCommentCardList
 import com.kickstarter.models.Comment
+import com.kickstarter.models.Project
+import com.kickstarter.models.User
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ThreadActivity
 import com.kickstarter.ui.data.CommentCardData
+import com.kickstarter.ui.views.CommentComposerStatus
 import rx.Observable
 import rx.subjects.BehaviorSubject
 
@@ -27,6 +32,10 @@ interface ThreadViewModel {
 
         /** Will tell to the compose view if should open the keyboard */
         fun shouldFocusOnCompose(): Observable<Boolean>
+
+        fun currentUserAvatar(): Observable<String?>
+        fun replyComposerStatus(): Observable<CommentComposerStatus>
+        fun showReplyComposer(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ThreadActivity>(environment), Inputs, Outputs {
@@ -35,6 +44,9 @@ interface ThreadViewModel {
 
         private val rootComment = BehaviorSubject.create<Comment>()
         private val focusOnCompose = BehaviorSubject.create<Boolean>()
+        private val currentUserAvatar = BehaviorSubject.create<String?>()
+        private val replyComposerStatus = BehaviorSubject.create<CommentComposerStatus>()
+        private val showReplyComposer = BehaviorSubject.create<Boolean>()
 
         private val onCommentReplies = BehaviorSubject.create<List<CommentCardData>>()
 
@@ -71,7 +83,44 @@ interface ThreadViewModel {
             comment
                 .compose(bindToLifecycle())
                 .subscribe(this.rootComment)
+
+            val project = intent()
+                .map { it.getParcelableExtra(IntentKey.PROJECT) as Project? }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+
+            val loggedInUser = this.currentUser.loggedInUser()
+                .filter { u -> u != null }
+                .map { requireNotNull(it) }
+
+            loggedInUser
+                .compose(bindToLifecycle())
+                .subscribe {
+                    currentUserAvatar.onNext(it.avatar().small())
+                }
+
+            loggedInUser
+                .compose(bindToLifecycle())
+                .subscribe {
+                    showReplyComposer.onNext(true)
+                }
+
+            project
+                .compose(Transformers.combineLatestPair(currentUser.observable()))
+                .compose(bindToLifecycle())
+                .subscribe {
+                    val composerStatus = getCommentComposerStatus(Pair(it.first, it.second))
+                    showReplyComposer.onNext(composerStatus != CommentComposerStatus.GONE)
+                    replyComposerStatus.onNext(composerStatus)
+                }
         }
+
+        private fun getCommentComposerStatus(projectAndUser: Pair<Project, User?>) =
+            when {
+                projectAndUser.second == null -> CommentComposerStatus.GONE
+                projectAndUser.first.isBacking || ProjectUtils.userIsCreator(projectAndUser.first, projectAndUser.second) -> CommentComposerStatus.ENABLED
+                else -> CommentComposerStatus.DISABLED
+            }
 
         private fun getCommentFromIntent() = intent()
             .map { it.getParcelableExtra(IntentKey.COMMENT) as Comment? }
@@ -81,5 +130,8 @@ interface ThreadViewModel {
         override fun onCommentReplies(): Observable<List<CommentCardData>> = this.onCommentReplies
 
         override fun shouldFocusOnCompose(): Observable<Boolean> = this.focusOnCompose
+        override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
+        override fun replyComposerStatus(): Observable<CommentComposerStatus> = replyComposerStatus
+        override fun showReplyComposer(): Observable<Boolean> = showReplyComposer
     }
 }

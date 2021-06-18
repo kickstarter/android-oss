@@ -103,6 +103,7 @@ interface CommentsViewModel {
         private val isFetchingData = BehaviorSubject.create<Int>()
 
         private var lastCommentCursor: String? = null
+        private var commentableId: String? = null
         override var loadMoreListData = mutableListOf<CommentCardData>()
 
         companion object {
@@ -169,8 +170,8 @@ interface CommentsViewModel {
                     Pair(it.second, it.first?.right())
                 }
 
-            //  loadCommentList(initialProject)
             loadCommentListFromProjectOrUpdate(projectOrUpdateComment)
+
             this.insertNewCommentToList
                 .distinctUntilChanged()
                 .withLatestFrom(this.currentUser.loggedInUser()) {
@@ -190,6 +191,7 @@ interface CommentsViewModel {
                         CommentCardData.builder()
                             .comment(it.first.second)
                             .project(it.second)
+                            .commentableId(commentableId)
                             .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
                             .build()
                     )
@@ -309,7 +311,7 @@ interface CommentsViewModel {
 
         private fun loadCommentListFromProjectOrUpdate(projectOrUpdate: Observable<Pair<Project, Update?>>) {
             // - First load for comments & handle initial load errors
-            getProjectUpdateComments(projectOrUpdate, INITIAL_LOAD)
+            getProjectOrUpdateComments(projectOrUpdate, INITIAL_LOAD)
                 .compose(bindToLifecycle())
                 .subscribe {
                     bindCommentList(it.first, LoadingType.NORMAL)
@@ -318,7 +320,7 @@ interface CommentsViewModel {
             // - Load comments from pagination & Handle pagination errors
             projectOrUpdate
                 .compose(Transformers.takeWhen(this.nextPage))
-                .switchMap { getProjectUpdateComments(Observable.just(it), PAGE_LOAD) }
+                .switchMap { getProjectOrUpdateComments(Observable.just(it), PAGE_LOAD) }
                 .compose(bindToLifecycle())
                 .subscribe {
                     updatePaginatedData(
@@ -338,14 +340,14 @@ interface CommentsViewModel {
                     lastCommentCursor = null
                     this.loadMoreListData.clear()
                 }
-                .switchMap { getProjectUpdateComments(Observable.just(it), PULL_LOAD) }
+                .switchMap { getProjectOrUpdateComments(Observable.just(it), PULL_LOAD) }
                 .compose(bindToLifecycle())
                 .subscribe {
                     bindCommentList(it.first, LoadingType.PULL_REFRESH)
                 }
         }
 
-        private fun getProjectUpdateComments(
+        private fun getProjectOrUpdateComments(
             projectOrUpdate: Observable<Pair<Project, Update?>>,
             state: Int
         ): Observable<Pair<List<CommentCardData>, Int>> {
@@ -365,12 +367,17 @@ interface CommentsViewModel {
                 .onErrorResumeNext(Observable.empty())
                 .filter { ObjectUtils.isNotNull(it) }
                 .compose<Pair<CommentEnvelope, Project>>(combineLatestPair(projectOrUpdate.map { it.first }))
+                .doOnNext { commentableId = it.first.commentableId } // its either Project id or update post id
                 .map { Pair(requireNotNull(mapToCommentCardDataList(it)), it.first.totalCount) }
         }
 
         private fun mapToCommentCardDataList(it: Pair<CommentEnvelope, Project>) =
             it.first.comments?.map { comment: Comment ->
-                CommentCardData.builder().comment(comment).project(it.second).build()
+                CommentCardData.builder()
+                    .comment(comment)
+                    .project(it.second)
+                    .commentableId(it.first.commentableId)
+                    .build()
             }
 
         private fun buildCommentBody(it: Pair<User, Pair<String, DateTime>>): Comment {

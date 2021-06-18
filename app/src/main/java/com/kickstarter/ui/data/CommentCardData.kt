@@ -9,6 +9,7 @@ import kotlinx.android.parcel.Parcelize
 class CommentCardData(
     val comment: Comment?,
     val commentCardState: Int,
+    val commentableId: String?,
     val project: Project?
 ) : Parcelable {
 
@@ -16,17 +17,19 @@ class CommentCardData(
     data class Builder(
         var comment: Comment? = null,
         var commentCardState: Int = 0,
+        var commentableId: String? = null,
         var project: Project? = null
     ) : Parcelable {
         fun comment(comment: Comment?) = apply { this.comment = comment }
         fun commentCardState(commentCardState: Int) = apply { this.commentCardState = commentCardState }
         fun project(project: Project?) = apply { this.project = project }
-        fun build() = CommentCardData(comment, commentCardState, project)
+        fun commentableId(commentableId: String?) = apply { this.commentableId = commentableId }
+        fun build() = CommentCardData(comment, commentCardState, commentableId, project)
     }
 
     companion object {
         fun builder() = CommentCardData.Builder()
     }
 
-    fun toBuilder() = CommentCardData.Builder(this.comment, this.commentCardState, this.project)
+    fun toBuilder() = CommentCardData.Builder(this.comment, this.commentCardState, this.commentableId, this.project)
 }

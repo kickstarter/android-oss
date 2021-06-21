@@ -25,6 +25,7 @@ import rx.Observable
 import rx.observers.TestSubscriber
 import rx.schedulers.TestScheduler
 import rx.subjects.BehaviorSubject
+import java.lang.Exception
 import java.util.concurrent.TimeUnit
 
 class CommentsViewModelTest : KSRobolectricTestCase() {
@@ -163,6 +164,13 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCommentsViewModel_EmptyState() {
         val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun getProjectUpdateComments(
+                updateId: String,
+                cursor: String?,
+                limit: Int
+            ): Observable<CommentEnvelope> {
+                return Observable.empty()
+            }
             override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
                 return Observable.empty()
             }
@@ -174,13 +182,25 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // Start the view model with an update.
         vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
         commentsList.assertNoValues()
+
+        // Start the view model with a project.
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        commentsList.assertNoValues()
     }
 
     @Test
     fun testCommentsViewModel_InitialLoad_Error() {
         val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun getProjectUpdateComments(
+                updateId: String,
+                cursor: String?,
+                limit: Int
+            ): Observable<CommentEnvelope> {
+                return Observable.error(Exception())
+            }
+
             override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
-                return Observable.empty()
+                return Observable.error(Exception())
             }
         }).build()
         val vm = CommentsViewModel.ViewModel(env)
@@ -189,6 +209,10 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         // Start the view model with an update.
         vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
+        commentsList.assertNoValues()
+
+        // Start the view model with a project.
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
         commentsList.assertNoValues()
     }
 
@@ -207,12 +231,26 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     }
 
     /*
-     * test when no comment available
-     */
+   * test when no comment available
+   */
+
     @Test
     fun testCommentsViewModel_EmptyCommentState() {
         val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+
+            override fun getProjectComments(
+                slug: String,
+                cursor: String?,
+                limit: Int
+            ): Observable<CommentEnvelope> {
+                return Observable.just(CommentEnvelopeFactory.emptyCommentsEnvelope())
+            }
+
+            override fun getProjectUpdateComments(
+                updateId: String,
+                cursor: String?,
+                limit: Int
+            ): Observable<CommentEnvelope> {
                 return Observable.just(CommentEnvelopeFactory.emptyCommentsEnvelope())
             }
         }).build()
@@ -221,6 +259,10 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         // Start the view model with an update.
         vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
+        showEmptyState.assertValue(true)
+
+        // Start the view model with a project.
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
         showEmptyState.assertValue(true)
     }
 

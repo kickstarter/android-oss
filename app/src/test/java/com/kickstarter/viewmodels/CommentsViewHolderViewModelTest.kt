@@ -316,10 +316,12 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         val commentCardData = CommentCardData.builder()
             .comment(comment)
             .project(ProjectFactory.initialProject())
+            .commentableId(ProjectFactory.initialProject().id().toString())
             .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
             .build()
 
         this.vm.inputs.configureWith(commentCardData)
+
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
         this.vm.inputs.onRetryViewClicked()
@@ -401,6 +403,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         val commentCardData = CommentCardData.builder()
             .comment(comment)
             .project(ProjectFactory.initialProject())
+            .commentableId(ProjectFactory.initialProject().id().toString())
             .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
             .build()
 
@@ -461,6 +464,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         val commentCardData = CommentCardData.builder()
             .comment(comment)
             .project(ProjectFactory.initialProject())
+            .commentableId(ProjectFactory.initialProject().id().toString())
             .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
             .build()
 

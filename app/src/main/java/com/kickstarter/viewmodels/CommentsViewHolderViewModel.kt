@@ -141,8 +141,9 @@ interface CommentsViewHolderViewModel {
                 .withLatestFrom(currentUser.loggedInUser()) { input, user -> Pair(input, user) }
                 .filter { shouldCommentBePosted(it) }
                 .map {
-                    Pair(requireNotNull(it.first.comment?.body()), requireNotNull(it.first.project))
+                    Pair(requireNotNull(it.first), requireNotNull(it.first.project))
                 }
+
             postComment(commentData, internalError)
 
             this.internalError
@@ -247,11 +248,26 @@ interface CommentsViewHolderViewModel {
          * Handles the logic for posting comments (new ones, and the retry attempts)
          * @param commentData will emmit only in case we need to post a new comment
          */
-        private fun postComment(commentData: Observable<Pair<String, Project>>, errorObservable: BehaviorSubject<Throwable>) {
-            commentData
+        private fun postComment(commentData: Observable<Pair<CommentCardData, Project>>, errorObservable: BehaviorSubject<Throwable>) {
+            val postCommentData = commentData
                 .map {
-                    executePostCommentMutation(it, errorObservable)
+                    Pair(
+                        requireNotNull(it.first.commentableId),
+                        requireNotNull(it.first?.comment?.body())
+                    )
                 }
+                .map {
+                    PostCommentData(
+                        commentableId = it.first,
+                        body = it.second,
+                        clientMutationId = null,
+                        parentId = null
+                    )
+                }
+
+            postCommentData.map {
+                executePostCommentMutation(it, errorObservable)
+            }
                 .switchMap {
                     it
                 }
@@ -262,7 +278,7 @@ interface CommentsViewHolderViewModel {
                 }
 
             Observable
-                .combineLatest(onRetryViewClicked, commentData) { _, newData ->
+                .combineLatest(onRetryViewClicked, postCommentData) { _, newData ->
                     return@combineLatest executePostCommentMutation(newData, errorObservable)
                 }.switchMap {
                     it
@@ -300,19 +316,14 @@ interface CommentsViewHolderViewModel {
 
         /**
          * Function that will execute the PostCommentMutation
-         * @param commentData holds the comment body and the project to be posted
+         * @param postCommentData holds the comment body and the commentableId for project or update to be posted
          * // TODO: for the future threads wi will need to send to the mutation not just the body,
          * // TODO: we will need the entire comment plus very important the [parentId]
          * @return Observable<Comment>
          */
-        private fun executePostCommentMutation(commentData: Pair<String, Project>, errorObservable: BehaviorSubject<Throwable>) =
+        private fun executePostCommentMutation(postCommentData: PostCommentData, errorObservable: BehaviorSubject<Throwable>) =
             this.apolloClient.createComment(
-                PostCommentData(
-                    project = commentData.second,
-                    body = commentData.first,
-                    clientMutationId = null,
-                    parentId = null
-                )
+                postCommentData
             ).doOnError {
                 errorObservable.onNext(it)
             }

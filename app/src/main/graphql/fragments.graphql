@@ -142,3 +142,18 @@ fragment payment on CreditCard {
     type
     state
 }
+
+fragment freeformPost on FreeformPost {
+    comments (first: $limit, after: $cursor) {
+        edges {
+            cursor
+            node {
+                ...comment
+            }
+        }
+        pageInfo {
+            ...pageInfo
+        }
+        totalCount
+    }
+}

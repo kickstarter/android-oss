@@ -71,6 +71,7 @@ class CommentFactory {
         }
 
         fun liveCommentCardData(comment: String = "Some Comment", createdAt: DateTime, currentUser: User, isDelete: Boolean = false, repliesCount: Int = 0): CommentCardData {
+            val project = ProjectFactory.project().toBuilder().creator(UserFactory.creator().toBuilder().id(278438049).build()).build()
             return CommentCardData(
                 Comment.builder()
                     .body(comment)
@@ -84,7 +85,8 @@ class CommentFactory {
                     .author(currentUser)
                     .build(),
                 0,
-                ProjectFactory.project().toBuilder().creator(UserFactory.creator().toBuilder().id(278438049).build()).build()
+                project.id().toString(),
+                project
 
             )
         }

@@ -291,7 +291,7 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.card(CardParamsFactory.params())
         this.vm.inputs.cardNumber(CardParamsFactory.params().last4 ?: "")
         this.vm.inputs.saveCardClicked()
-        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token(CardParamsFactory.params()))
+        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token())
         this.createStripeToken.assertValueCount(1)
         this.error.assertValueCount(1)
     }
@@ -306,7 +306,7 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.cardNumber(CardParamsFactory.params().last4 ?: "")
         this.vm.inputs.saveCardClicked()
         this.createStripeToken.assertValueCount(1)
-        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token(CardParamsFactory.params()))
+        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token())
         this.modalError.assertValueCount(1)
     }
 
@@ -351,7 +351,7 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.cardNumber(card.last4 ?: "")
         this.vm.inputs.saveCardClicked()
         this.createStripeToken.assertValueCount(1)
-        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token(CardParamsFactory.params()))
+        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token())
         this.progressBarIsVisible.assertValues(true)
     }
 
@@ -366,7 +366,7 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.cardNumber(card.last4 ?: "")
         this.vm.inputs.saveCardClicked()
         this.createStripeToken.assertValueCount(1)
-        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token(CardParamsFactory.params()))
+        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token())
         this.progressBarIsVisible.assertValues(true, false)
     }
 
@@ -530,7 +530,7 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.card(card)
         this.vm.inputs.cardNumber(card.last4 ?: "")
         this.vm.inputs.saveCardClicked()
-        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token(CardParamsFactory.params()))
+        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token())
         this.success.assertValue(visa)
     }
 

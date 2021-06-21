@@ -1,19 +1,12 @@
 package com.kickstarter.mock.factories
-import com.stripe.android.model.CardParams
 import com.stripe.android.model.Token
 import org.json.JSONObject
 
 class TokenFactory private constructor() {
     companion object {
 
-        /**
-         * Returns a Token
-         * @param card to generate the token for
-         * see:  https://github.com/stripe/stripe-android/blob/ad426ca33105e7bc5f17c027f8146354d13f75ae/payments-core/src/test/java/com/stripe/android/model/TokenTest.kt
-         */
-        fun token(cardParam: CardParams): Token {
-            val tokenString = JSONObject(
-                """
+        private val RAW_TOKEN_NO_ID = JSONObject(
+            """
             {
                 "object": "token",
                 "card": {
@@ -27,14 +20,14 @@ class TokenFactory private constructor() {
                     "address_state": null,
                     "address_zip": null,
                     "address_zip_check": null,
-                    "brand": "${cardParam.brand}",
+                    "brand": "Visa",
                     "country": "US",
                     "cvc_check": null,
                     "dynamic_last4": null,
-                    "exp_month": 1,
-                    "exp_year": 2025,
+                    "exp_month": 8,
+                    "exp_year": 2017,
                     "funding": "credit",
-                    "last4": "${cardParam.last4}",
+                    "last4": "4242",
                     "metadata": {},
                     "name": null,
                     "tokenization_method": null
@@ -43,11 +36,19 @@ class TokenFactory private constructor() {
                 "created": 1462905355,
                 "livemode": false,
                 "type": "card",
-                "used": false
+                "used": false,
+                "id": "btok_9xJAbronBnS9bH"
             }
-                """.trimIndent()
-            )
-            return requireNotNull(Token.fromJson(tokenString))
+            """.trimIndent()
+        )
+
+        /**
+         * Returns a Token
+         * @return Token
+         * see:  https://github.com/stripe/stripe-android/blob/ad426ca33105e7bc5f17c027f8146354d13f75ae/payments-core/src/test/java/com/stripe/android/model/TokenTest.kt
+         */
+        fun token(): Token {
+            return requireNotNull(Token.fromJson(RAW_TOKEN_NO_ID))
         }
     }
 }

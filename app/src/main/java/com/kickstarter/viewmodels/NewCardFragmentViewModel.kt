@@ -317,7 +317,7 @@ interface NewCardFragmentViewModel {
             companion object {
                 fun warning(params: CardParams, project: Project?): Int? {
                     return if (params.last4.length < 3)
-                        null
+                        -1
                     else {
                         when (project) {
                             null -> when (params.brand.code) {

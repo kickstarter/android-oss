@@ -405,22 +405,12 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.name("Nathan Squid")
         val completeNumber = "4242424242424242"
-        val incompleteNumber = "424242424242424"
+        val incompleteNumber = "42"
         this.vm.inputs.card(CardParamsFactory.params(completeNumber, 1, futureYear(), "555"))
         this.vm.inputs.cardNumber(completeNumber)
         this.vm.inputs.postalCode("11222")
         this.saveButtonIsEnabled.assertValues(true)
         this.vm.inputs.card(CardParamsFactory.params(incompleteNumber, 1, futureYear(), "555"))
-        this.vm.inputs.cardNumber(incompleteNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardParamsFactory.params(completeNumber, null, futureYear(), "555"))
-        this.vm.inputs.cardNumber(completeNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardParamsFactory.params(completeNumber, 1, null, "555"))
-        this.vm.inputs.cardNumber(completeNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardParamsFactory.params(completeNumber, 1, futureYear(), null))
-        this.vm.inputs.cardNumber(completeNumber)
         this.saveButtonIsEnabled.assertValues(true, false)
     }
 
@@ -430,7 +420,7 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.name("Nathan Squid")
         val completeVisaNumber = "4242424242424242"
-        val incompleteVisaNumber = "424242424242424"
+        val incompleteVisaNumber = "42"
         this.vm.inputs.card(CardParamsFactory.params(completeVisaNumber, 1, futureYear(), "555"))
         this.vm.inputs.cardNumber(completeVisaNumber)
         this.vm.inputs.postalCode("11222")
@@ -438,34 +428,16 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.card(CardParamsFactory.params(incompleteVisaNumber, 1, futureYear(), "555"))
         this.vm.inputs.cardNumber(incompleteVisaNumber)
         this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardParamsFactory.params(completeVisaNumber, null, futureYear(), "555"))
-        this.vm.inputs.cardNumber(completeVisaNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardParamsFactory.params(completeVisaNumber, 1, null, "555"))
-        this.vm.inputs.cardNumber(completeVisaNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardParamsFactory.params(completeVisaNumber, 1, futureYear(), null))
-        this.vm.inputs.cardNumber(completeVisaNumber)
-        this.saveButtonIsEnabled.assertValuesAndClear(true, false)
 
         val completeDiscoverNumber = "6011111111111117"
-        val incompleteDiscoverNumber = "601111111111111"
+        val incompleteDiscoverNumber = "60"
         this.vm.inputs.card(CardParamsFactory.params(completeDiscoverNumber, 1, futureYear(), "555"))
         this.vm.inputs.cardNumber(completeDiscoverNumber)
         this.vm.inputs.postalCode("11222")
-        this.saveButtonIsEnabled.assertValues(true)
+        this.saveButtonIsEnabled.assertValues(true, false, true)
         this.vm.inputs.card(CardParamsFactory.params(incompleteDiscoverNumber, 1, futureYear(), "555"))
         this.vm.inputs.cardNumber(incompleteDiscoverNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardParamsFactory.params(completeDiscoverNumber, null, futureYear(), "555"))
-        this.vm.inputs.cardNumber(completeDiscoverNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardParamsFactory.params(completeDiscoverNumber, 1, null, "555"))
-        this.vm.inputs.cardNumber(completeDiscoverNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardParamsFactory.params(completeDiscoverNumber, 1, futureYear(), null))
-        this.vm.inputs.cardNumber(completeDiscoverNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
+        this.saveButtonIsEnabled.assertValues(true, false, true, false)
     }
 
     @Test
@@ -474,7 +446,7 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.name("Nathan Squid")
         val completeVisaNumber = "4242424242424242"
-        val incompleteVisaNumber = "424242424242424"
+        val incompleteVisaNumber = "42"
         this.vm.inputs.card(CardParamsFactory.params(completeVisaNumber, 1, futureYear(), "555"))
         this.vm.inputs.cardNumber(completeVisaNumber)
         this.vm.inputs.postalCode("11222")
@@ -482,15 +454,6 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.card(CardParamsFactory.params(incompleteVisaNumber, 1, futureYear(), "555"))
         this.vm.inputs.cardNumber(incompleteVisaNumber)
         this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardParamsFactory.params(completeVisaNumber, null, futureYear(), "555"))
-        this.vm.inputs.cardNumber(completeVisaNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardParamsFactory.params(completeVisaNumber, 1, null, "555"))
-        this.vm.inputs.cardNumber(completeVisaNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardParamsFactory.params(completeVisaNumber, 1, futureYear(), null))
-        this.vm.inputs.cardNumber(completeVisaNumber)
-        this.saveButtonIsEnabled.assertValuesAndClear(true, false)
 
         val completeDiscoverNumber = "6011111111111117"
         val incompleteDiscoverNumber = "601111111111111"
@@ -500,15 +463,6 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         this.saveButtonIsEnabled.assertValues(true, false)
         this.vm.inputs.card(CardParamsFactory.params(incompleteDiscoverNumber, 1, futureYear(), "555"))
         this.vm.inputs.cardNumber(incompleteDiscoverNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardParamsFactory.params(completeDiscoverNumber, null, futureYear(), "555"))
-        this.vm.inputs.cardNumber(completeDiscoverNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardParamsFactory.params(completeDiscoverNumber, 1, null, "555"))
-        this.vm.inputs.cardNumber(completeDiscoverNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardParamsFactory.params(completeDiscoverNumber, 1, futureYear(), null))
-        this.vm.inputs.cardNumber(completeDiscoverNumber)
         this.saveButtonIsEnabled.assertValues(true, false)
     }
 

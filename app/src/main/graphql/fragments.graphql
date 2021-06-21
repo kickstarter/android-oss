@@ -148,7 +148,6 @@ fragment freeformPost on FreeformPost {
         edges {
             cursor
             node {
-                authorBadges
                 ...comment
             }
         }

@@ -61,7 +61,6 @@ query GetProjectComments($slug: String!, $limit: Int!, $cursor: String) {
       edges {
         cursor
         node {
-          authorBadges
           ...comment
         }
       }
@@ -73,3 +72,9 @@ query GetProjectComments($slug: String!, $limit: Int!, $cursor: String) {
   }
 }
 
+query GetProjectUpdateComments($id: ID!,$limit: Int!, $cursor: String){
+  post(id: $id)  {
+    id
+    ...freeformPost
+  }
+}

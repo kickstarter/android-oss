@@ -66,15 +66,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         // Union Pay
-        this.vm.inputs.cardNumber("620")
+        this.vm.inputs.card(CardParamsFactory.unionPay())
         this.allowedCardWarning.assertValue(null)
 
         // Visa
-        this.vm.inputs.cardNumber("424")
+        this.vm.inputs.card(CardParamsFactory.visa())
         this.allowedCardWarning.assertValue(null)
 
         // Unknown
-        this.vm.inputs.cardNumber("000")
+        this.vm.inputs.card(CardParamsFactory.unknown())
         this.allowedCardWarning.assertValues(null, R.string.Unsupported_card_type)
     }
 
@@ -84,15 +84,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment(), true, project = project)
 
         // Union Pay
-        this.vm.inputs.cardNumber("620")
+        this.vm.inputs.card(CardParamsFactory.unionPay())
         this.allowedCardWarning.assertValue(null)
 
         // Visa
-        this.vm.inputs.cardNumber("424")
+        this.vm.inputs.card(CardParamsFactory.visa())
         this.allowedCardWarning.assertValue(null)
 
         // Unknown
-        this.vm.inputs.cardNumber("000")
+        this.vm.inputs.card(CardParamsFactory.unknown())
         this.allowedCardWarning.assertValues(null, R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country)
     }
 
@@ -102,15 +102,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment(), true, project = project)
 
         // Union Pay
-        this.vm.inputs.cardNumber("620")
+        this.vm.inputs.card(CardParamsFactory.unionPay())
         this.allowedCardWarning.assertValue(R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country)
 
         // Visa
-        this.vm.inputs.cardNumber("424")
+        this.vm.inputs.card(CardParamsFactory.visa())
         this.allowedCardWarning.assertValues(R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country, null)
 
         // Unknown
-        this.vm.inputs.cardNumber("000")
+        this.vm.inputs.card(CardParamsFactory.unknown())
         this.allowedCardWarning.assertValues(
             R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country, null,
             R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country
@@ -122,15 +122,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         // Union Pay
-        this.vm.inputs.cardNumber("620")
+        this.vm.inputs.card(CardParamsFactory.unionPay())
         this.allowedCardWarningIsVisible.assertValue(false)
 
         // Visa
-        this.vm.inputs.cardNumber("424")
+        this.vm.inputs.card(CardParamsFactory.visa())
         this.allowedCardWarningIsVisible.assertValues(false)
 
         // Unknown
-        this.vm.inputs.cardNumber("000")
+        this.vm.inputs.card(CardParamsFactory.unknown())
         this.allowedCardWarningIsVisible.assertValues(false, true)
     }
 
@@ -139,15 +139,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment(), true)
 
         // Union Pay
-        this.vm.inputs.cardNumber("620")
+        this.vm.inputs.card(CardParamsFactory.unionPay())
         this.allowedCardWarningIsVisible.assertValue(false)
 
         // Visa
-        this.vm.inputs.cardNumber("424")
+        this.vm.inputs.card(CardParamsFactory.visa())
         this.allowedCardWarningIsVisible.assertValues(false)
 
         // Unknown
-        this.vm.inputs.cardNumber("000")
+        this.vm.inputs.card(CardParamsFactory.unknown())
         this.allowedCardWarningIsVisible.assertValues(false, true)
     }
 
@@ -156,15 +156,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment(), true, ProjectFactory.mxProject())
 
         // Union Pay
-        this.vm.inputs.cardNumber("620")
+        this.vm.inputs.card(CardParamsFactory.unionPay())
         this.allowedCardWarningIsVisible.assertValue(true)
 
         // Visa
-        this.vm.inputs.cardNumber("424")
+        this.vm.inputs.card(CardParamsFactory.visa())
         this.allowedCardWarningIsVisible.assertValues(true, false)
 
         // Unknown
-        this.vm.inputs.cardNumber("000")
+        this.vm.inputs.card(CardParamsFactory.unknown())
         this.allowedCardWarningIsVisible.assertValues(true, false, true)
     }
 
@@ -196,15 +196,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
         // Union Pay
         this.vm.inputs.cardFocus(true)
-        this.vm.inputs.cardNumber("620")
+        this.vm.inputs.card(CardParamsFactory.unionPay())
         this.cardWidgetFocusDrawable.assertValue(R.drawable.divider_green_horizontal)
 
         // Visa
-        this.vm.inputs.cardNumber("424")
+        this.vm.inputs.card(CardParamsFactory.visa())
         this.cardWidgetFocusDrawable.assertValuesAndClear(R.drawable.divider_green_horizontal)
 
         // Unknown
-        this.vm.inputs.cardNumber("000")
+        this.vm.inputs.card(CardParamsFactory.unknown())
         this.cardWidgetFocusDrawable.assertValuesAndClear(R.drawable.divider_red_400_horizontal)
     }
 
@@ -222,15 +222,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
         // Union Pay
         this.vm.inputs.cardFocus(true)
-        this.vm.inputs.cardNumber("620")
+        this.vm.inputs.card(CardParamsFactory.unionPay())
         this.cardWidgetFocusDrawable.assertValue(R.drawable.divider_green_horizontal)
 
         // Visa
-        this.vm.inputs.cardNumber("424")
+        this.vm.inputs.card(CardParamsFactory.visa())
         this.cardWidgetFocusDrawable.assertValuesAndClear(R.drawable.divider_green_horizontal)
 
         // Unknown
-        this.vm.inputs.cardNumber("000")
+        this.vm.inputs.card(CardParamsFactory.unknown())
         this.cardWidgetFocusDrawable.assertValue(R.drawable.divider_red_400_horizontal)
 
         // Remains red until error is resolved
@@ -252,15 +252,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
         // Union Pay
         this.vm.inputs.cardFocus(true)
-        this.vm.inputs.cardNumber("620")
+        this.vm.inputs.card(CardParamsFactory.unionPay())
         this.cardWidgetFocusDrawable.assertValuesAndClear(R.drawable.divider_green_horizontal, R.drawable.divider_red_400_horizontal)
 
         // Visa
-        this.vm.inputs.cardNumber("424")
+        this.vm.inputs.card(CardParamsFactory.visa())
         this.cardWidgetFocusDrawable.assertValuesAndClear(R.drawable.divider_green_horizontal)
 
         // Unknown
-        this.vm.inputs.cardNumber("000")
+        this.vm.inputs.card(CardParamsFactory.unknown())
         this.cardWidgetFocusDrawable.assertValue(R.drawable.divider_red_400_horizontal)
 
         // Remains red until error is resolved

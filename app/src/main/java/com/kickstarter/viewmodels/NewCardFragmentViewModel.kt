@@ -18,7 +18,6 @@ import com.kickstarter.models.StoredCard
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.fragments.NewCardFragment
-import com.stripe.android.CardUtils
 import com.stripe.android.model.CardBrand
 import com.stripe.android.model.CardParams
 import com.stripe.android.model.Token
@@ -167,8 +166,9 @@ interface NewCardFragmentViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(this.saveButtonIsEnabled)
 
-            val warning = this.cardNumber
-                .compose<Pair<String, Project?>>(combineLatestPair(project))
+            val warning = this.cardParams
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose<Pair<CardParams, Project?>>(combineLatestPair(project))
                 .map<Pair<Int?, Project?>> { Pair(CardForm.warning(it.first, it.second), it.second) }
                 .distinctUntilChanged()
 
@@ -311,22 +311,22 @@ interface NewCardFragmentViewModel {
             }
 
             private fun isValidCard(project: Project?): Boolean {
-                return this.cardParams != null && warning(this.cardNumber, project) == null
+                return this.cardParams != null && warning(this.cardParams, project) == null
             }
 
             companion object {
-                fun warning(cardNumber: String, project: Project?): Int? {
-                    return if (cardNumber.length < 3)
+                fun warning(params: CardParams, project: Project?): Int? {
+                    return if (params.last4.length < 3)
                         null
                     else {
                         when (project) {
-                            null -> when {
-                                CardUtils.getPossibleCardBrand(cardNumber) in allowedCardTypes -> R.string.Unsupported_card_type
-                                else -> null
+                            null -> when (params.brand.code) {
+                                in allowedCardTypes -> null
+                                else -> R.string.Unsupported_card_type
                             }
-                            else -> when {
-                                CardUtils.getPossibleCardBrand(cardNumber) in getAllowedTypes(project) -> R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country
-                                else -> null
+                            else -> when (params.brand.code) {
+                                in getAllowedTypes(project) -> null
+                                else -> R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country
                             }
                         }
                     }

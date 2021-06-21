@@ -485,7 +485,7 @@ interface BackingFragmentViewModel {
 
             return Pair(projectData, reward)
         }
-        
+
         private fun cardIssuer(paymentSource: Backing.PaymentSource): Either<String, Int> {
             return when (CreditCardPaymentType.safeValueOf(paymentSource.paymentType())) {
                 CreditCardPaymentType.ANDROID_PAY -> Either.Right(R.string.googlepay_button_content_description)

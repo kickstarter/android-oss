@@ -41,18 +41,11 @@ class CommentCardData(
             equals = (
                 obj.comment?.equals(this.comment) == true &&
                     obj.commentCardState == this.commentCardState &&
+                    obj.commentableId === this.commentableId &&
                     obj.project?.equals(this.project) == true
                 )
         }
 
         return equals
-    }
-
-    override fun hashCode(): Int {
-        var result = comment?.hashCode() ?: 0
-        result = 31 * result + commentCardState
-        result = 31 * result + (commentableId?.hashCode() ?: 0)
-        result = 31 * result + (project?.hashCode() ?: 0)
-        return result
     }
 }

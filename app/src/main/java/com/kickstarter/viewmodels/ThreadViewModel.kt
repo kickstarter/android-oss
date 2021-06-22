@@ -81,26 +81,7 @@ interface ThreadViewModel {
                     )
                 }
 
-            commentData
-                .switchMap {
-                    this.apolloClient.createComment(
-                        PostCommentData(
-                            commentableId = it.commentableId ?: "",
-                            body = "Just a comment reply",
-                            clientMutationId = null,
-                            parent = it.comment
-                        )
-                    )
-                }
-                .compose(bindToLifecycle())
-                .subscribe(
-                    {
-                        val c = it
-                    },
-                    {
-                       val e = it
-                    }
-                 )
+
 
             commentData
                 .compose(bindToLifecycle())

@@ -8,16 +8,4 @@ data class PostCommentData(
     val parent: Comment?,
     val commentableId: String,
     val clientMutationId: String?
-){
-//    fun parent(): Comment? = this.parentId?.let { it1 ->
-//        Comment.builder().id(it1)
-//            .deleted(false)
-//            .createdAt(DateTime.now())
-//            .body("")
-//            .authorBadges(emptyList())
-//            .cursor("")
-//            .author(null)
-//            .repliesCount(0)
-//            .build()
-//    }
-}
+)

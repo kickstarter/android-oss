@@ -13,6 +13,7 @@ import com.kickstarter.models.Comment
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ThreadActivity
 import com.kickstarter.ui.data.CommentCardData
@@ -79,11 +80,10 @@ interface ThreadViewModel {
                 .map { requireNotNull(it) }
 
             commentEnvelope
-                .compose(Transformers.combineLatestPair(comment))
-                .compose(Transformers.combineLatestPair(project))
+                .compose<Pair<CommentEnvelope, Project>>(Transformers.combineLatestPair(project))
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.onCommentReplies.onNext(it.first.first?.comments?.toCommentCardList(it.second))
+                    this.onCommentReplies.onNext(it.first.comments?.toCommentCardList(it.second))
                 }
 
             comment

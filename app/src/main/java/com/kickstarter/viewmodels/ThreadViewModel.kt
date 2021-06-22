@@ -90,7 +90,6 @@ interface ThreadViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(this.rootComment)
 
-
             val loggedInUser = this.currentUser.loggedInUser()
                 .filter { u -> u != null }
                 .map { requireNotNull(it) }

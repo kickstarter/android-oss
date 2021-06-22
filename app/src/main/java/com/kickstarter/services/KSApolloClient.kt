@@ -218,9 +218,57 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                     }
 
                                     CommentEnvelope.builder()
+                                        .commentableId(project?.id())
                                         .comments(comments)
                                         .totalCount(project?.comments()?.totalCount() ?: 0)
                                         .pageInfoEnvelope(createPageInfoObject(project?.comments()?.pageInfo()?.fragments()?.pageInfo()))
+                                        .build()
+                                }
+                                .filter { ObjectUtils.isNotNull(it) }
+                                .subscribe {
+                                    ps.onNext(it)
+                                    ps.onCompleted()
+                                }
+                        }
+                    }
+                })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
+    }
+
+    override fun getProjectUpdateComments(updateId: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+        return Observable.defer {
+            val ps = PublishSubject.create<CommentEnvelope>()
+
+            this.service.query(
+                GetProjectUpdateCommentsQuery.builder()
+                    .cursor(cursor)
+                    .id(updateId)
+                    .limit(limit)
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<GetProjectUpdateCommentsQuery.Data>() {
+                    override fun onFailure(e: ApolloException) {
+                        ps.onError(e)
+                    }
+
+                    override fun onResponse(response: Response<GetProjectUpdateCommentsQuery.Data>) {
+                        response.data?.let { data ->
+                            Observable.just(data.post())
+                                .filter { it?.fragments()?.freeformPost()?.comments() != null }
+                                .map { post ->
+
+                                    val comments = post?.fragments()?.freeformPost()?.comments()?.edges()?.map { edge ->
+                                        createCommentObject(edge?.node()?.fragments()?.comment()).toBuilder()
+                                            .cursor(edge?.cursor())
+                                            .build()
+                                    }
+
+                                    CommentEnvelope.builder()
+                                        .comments(comments)
+                                        .commentableId(post?.id())
+                                        .totalCount(post?.fragments()?.freeformPost()?.comments()?.totalCount() ?: 0)
+                                        .pageInfoEnvelope(createPageInfoObject(post?.fragments()?.freeformPost()?.comments()?.pageInfo()?.fragments()?.pageInfo()))
                                         .build()
                                 }
                                 .filter { ObjectUtils.isNotNull(it) }
@@ -269,7 +317,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             this.service.mutate(
                 CreateCommentMutation.builder()
                     .parentId(comment.parentId)
-                    .commentableId(encodeRelayId(comment.project))
+                    .commentableId(comment.commentableId)
                     .clientMutationId(comment.clientMutationId)
                     .body(comment.body)
                     .build()

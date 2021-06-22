@@ -46,29 +46,35 @@ mutation CreateComment($body: String!, $commentableId: ID!, $parentId: ID, $clie
   }
 }
 
-query GetProjectComments($slug: String!, $limit: Int!, $cursor: String){
-      project(slug: $slug) {
-        collaborators {
-          edges {
-            node {
-              id
-              name
-            }
-          }
-        }
-        comments(first: $limit, after: $cursor) {
-          edges {
-            cursor
-            node {
-              authorBadges
-              ...comment
-            }
-          }
-          pageInfo {
-                  ...pageInfo
-           }
-          totalCount
+query GetProjectComments($slug: String!, $limit: Int!, $cursor: String) {
+  project(slug: $slug) {
+    id
+    collaborators {
+      edges {
+        node {
+          id
+          name
         }
       }
-   }
+    }
+    comments(first: $limit, after: $cursor) {
+      edges {
+        cursor
+        node {
+          ...comment
+        }
+      }
+      pageInfo {
+        ...pageInfo
+      }
+      totalCount
+    }
+  }
+}
 
+query GetProjectUpdateComments($id: ID!,$limit: Int!, $cursor: String){
+  post(id: $id)  {
+    id
+    ...freeformPost
+  }
+}

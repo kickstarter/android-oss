@@ -350,7 +350,7 @@ interface CommentsViewHolderViewModel {
          *  @param user
          *
          *  @return
-         *  true -> if current user is backer and the feature flag is active
+         *  true -> if current user is backer and the feature flag is active and the comment is not a reply
          *  false -> any of the previous conditions fails
          */
         private fun shouldReplyButtonBeVisible(

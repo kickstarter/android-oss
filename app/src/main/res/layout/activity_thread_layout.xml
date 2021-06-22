@@ -59,7 +59,6 @@
                   android:layout_height="wrap_content" />
 
               <androidx.recyclerview.widget.RecyclerView
-                  app:layout_constraintBottom_toBottomOf="parent"
                   app:layout_constraintTop_toBottomOf="@id/comments_card_view"
                   android:id="@+id/comment_replies_recycler_view"
                   android:layout_width="match_parent"

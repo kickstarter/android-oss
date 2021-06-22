@@ -364,7 +364,8 @@ interface CommentsViewHolderViewModel {
                         commentCardData.commentCardState == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus ||
                             commentCardData.commentCardState == CommentCardStatus.COMMENT_WITH_REPLIES.commentCardStatus ||
                             commentCardData.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus
-                        )
+                        ) &&
+                        (commentCardData.comment?.parentId() ?: 0) < 0
             } ?: false
 
         /**

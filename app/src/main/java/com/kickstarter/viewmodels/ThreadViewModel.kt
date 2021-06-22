@@ -12,8 +12,10 @@ import com.kickstarter.models.Comment
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ThreadActivity
+import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.views.CommentComposerStatus
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -48,9 +50,9 @@ interface ThreadViewModel {
         val outputs = this
 
         init {
-            getCommentFromIntent()
+            getCommentCardDataFromIntent()
 
-            val comment = getCommentFromIntent()
+            val commentData = getCommentCardDataFromIntent()
                 .distinctUntilChanged()
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
@@ -61,9 +63,9 @@ interface ThreadViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(this.focusOnCompose)
 
-            val commentEnvelope = getCommentFromIntent()
+            val commentEnvelope = getCommentCardDataFromIntent()
                 .switchMap {
-                    this.apolloClient.getRepliesForComment(it)
+                    it.comment?.let { it1 -> this.apolloClient.getRepliesForComment(it1) }
                 }
                 .share()
 
@@ -79,9 +81,32 @@ interface ThreadViewModel {
                     )
                 }
 
-            comment
+            commentData
+                .switchMap {
+                    this.apolloClient.createComment(
+                        PostCommentData(
+                            commentableId = it.commentableId ?: "",
+                            body = "Just a comment reply",
+                            clientMutationId = null,
+                            parent = it.comment
+                        )
+                    )
+                }
                 .compose(bindToLifecycle())
-                .subscribe(this.rootComment)
+                .subscribe(
+                    {
+                        val c = it
+                    },
+                    {
+                       val e = it
+                    }
+                 )
+
+            commentData
+                .compose(bindToLifecycle())
+                .subscribe{
+                    this.rootComment.onNext(it.comment)
+                }
 
             val project = intent()
                 .map { it.getParcelableExtra(IntentKey.PROJECT) as Project? }
@@ -121,9 +146,9 @@ interface ThreadViewModel {
                 else -> CommentComposerStatus.DISABLED
             }
 
-        private fun getCommentFromIntent() = intent()
-            .map { it.getParcelableExtra(IntentKey.COMMENT) as Comment? }
-            .ofType(Comment::class.java)
+        private fun getCommentCardDataFromIntent() = intent()
+            .map { it.getParcelableExtra(IntentKey.COMMENT_CARD_DATA) as CommentCardData? }
+            .ofType(CommentCardData::class.java)
 
         override fun getRootComment(): Observable<Comment> = this.rootComment
         override fun shouldFocusOnCompose(): Observable<Boolean> = this.focusOnCompose

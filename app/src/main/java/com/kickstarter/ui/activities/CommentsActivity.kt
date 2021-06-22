@@ -16,6 +16,7 @@ import com.kickstarter.models.Comment
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.CommentsAdapter
+import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.viewholders.EmptyCommentsViewHolder
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
@@ -171,7 +172,7 @@ class CommentsActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                startThreadActivity(it.first.first, it.second, it.first.second)
+                startThreadActivity(it.first, it.second)
             }
     }
 
@@ -233,10 +234,9 @@ class CommentsActivity :
      * // TODO: Once the viewReplies UI is completed call this method with openKeyboard = false
      * // TODO: https://kickstarter.atlassian.net/browse/NT-1955
      */
-    private fun startThreadActivity(comment: Comment, project: Project, openKeyboard: Boolean) {
+    private fun startThreadActivity(commentData: CommentCardData, openKeyboard: Boolean) {
         val threadIntent = Intent(this, ThreadActivity::class.java).apply {
-            putExtra(IntentKey.COMMENT, comment)
-            putExtra(IntentKey.PROJECT, project)
+            putExtra(IntentKey.COMMENT_CARD_DATA, commentData)
             putExtra(IntentKey.REPLY_EXPAND, openKeyboard)
         }
 

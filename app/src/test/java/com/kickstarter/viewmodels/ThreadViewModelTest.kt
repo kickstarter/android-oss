@@ -176,4 +176,6 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         showReplyComposer.assertValues(true, true)
         replyComposerStatus.assertValue(CommentComposerStatus.DISABLED)
     }
+
+
 }

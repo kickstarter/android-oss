@@ -261,12 +261,14 @@ interface CommentsViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.startThreadActivity.onNext(
-                        Pair(CommentCardData.builder()
-                            .comment(it.first.first)
-                            .commentableId(commentableId)
-                            .project(it.second)
-                            .build(),
-                            it.first.second)
+                        Pair(
+                            CommentCardData.builder()
+                                .comment(it.first.first)
+                                .commentableId(commentableId)
+                                .project(it.second)
+                                .build(),
+                            it.first.second
+                        )
                     )
                 }
 

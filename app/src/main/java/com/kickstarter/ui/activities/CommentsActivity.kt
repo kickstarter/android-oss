@@ -13,7 +13,6 @@ import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Comment
-import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.CommentsAdapter
 import com.kickstarter.ui.data.CommentCardData

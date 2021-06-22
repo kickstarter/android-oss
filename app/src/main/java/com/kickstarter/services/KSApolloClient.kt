@@ -316,7 +316,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             val ps = PublishSubject.create<Comment>()
             this.service.mutate(
                 CreateCommentMutation.builder()
-                    .parentId(comment.parent?.let { encodeRelayId(it)})
+                    .parentId(comment.parent?.let { encodeRelayId(it) })
                     .commentableId(comment.commentableId)
                     .clientMutationId(comment.clientMutationId)
                     .body(comment.body)

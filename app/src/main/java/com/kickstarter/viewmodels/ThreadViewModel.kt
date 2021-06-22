@@ -81,7 +81,6 @@ interface ThreadViewModel {
                     )
                 }
 
-
             /*
              * This block should be removed as its meant to test reply to a comment
              * The block above should show the replies
@@ -103,13 +102,13 @@ interface ThreadViewModel {
                         val c = it
                     },
                     {
-                       val e = it
+                        val e = it
                     }
-                 )
+                )
 
             commentData
                 .compose(bindToLifecycle())
-                .subscribe{
+                .subscribe {
                     this.rootComment.onNext(it.comment)
                 }
 

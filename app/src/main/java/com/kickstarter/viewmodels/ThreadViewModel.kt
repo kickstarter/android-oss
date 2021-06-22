@@ -82,6 +82,30 @@ interface ThreadViewModel {
                 }
 
 
+            /*
+             * This block should be removed as its meant to test reply to a comment
+             * The block above should show the replies
+             */
+            commentData
+                .switchMap {
+                    this.apolloClient.createComment(
+                        PostCommentData(
+                            commentableId = it.commentableId ?: "",
+                            body = "Just a comment reply",
+                            clientMutationId = null,
+                            parent = it.comment
+                        )
+                    )
+                }
+                .compose(bindToLifecycle())
+                .subscribe(
+                    {
+                        val c = it
+                    },
+                    {
+                       val e = it
+                    }
+                 )
 
             commentData
                 .compose(bindToLifecycle())

@@ -365,7 +365,7 @@ interface CommentsViewHolderViewModel {
                             commentCardData.commentCardState == CommentCardStatus.COMMENT_WITH_REPLIES.commentCardStatus ||
                             commentCardData.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus
                         ) &&
-                        (commentCardData.comment?.parentId() ?: -1) < 0
+                    (commentCardData.comment?.parentId() ?: -1) < 0
             } ?: false
 
         /**

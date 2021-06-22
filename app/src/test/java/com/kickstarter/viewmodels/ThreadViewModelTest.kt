@@ -203,6 +203,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(env)
 
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
         this.vm.intent(Intent().putExtra(IntentKey.COMMENT, CommentFactory.reply(createdAt = createdAt)))
 
         this.onReplies.assertValueCount(1)

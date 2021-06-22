@@ -73,21 +73,23 @@ interface ThreadViewModel {
                 }
                 .share()
 
+            val project = intent()
+                .map { it.getParcelableExtra(IntentKey.PROJECT) as Project? }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+
             commentEnvelope
                 .compose(Transformers.combineLatestPair(comment))
+                .compose(Transformers.combineLatestPair(project))
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.onCommentReplies.onNext(it.first.comments?.toCommentCardList(null))
+                    this.onCommentReplies.onNext(it.first.first?.comments?.toCommentCardList(it.second))
                 }
 
             comment
                 .compose(bindToLifecycle())
                 .subscribe(this.rootComment)
 
-            val project = intent()
-                .map { it.getParcelableExtra(IntentKey.PROJECT) as Project? }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
 
             val loggedInUser = this.currentUser.loggedInUser()
                 .filter { u -> u != null }

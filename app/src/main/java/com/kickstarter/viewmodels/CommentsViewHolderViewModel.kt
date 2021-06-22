@@ -84,7 +84,7 @@ interface CommentsViewHolderViewModel {
         /** Emits the current [OptimizelyFeature.Key.COMMENT_ENABLE_THREADS] status to the CommentCard UI*/
         fun isCommentEnableThreads(): Observable<Boolean>
 
-        /** Emits the current [OptimizelyFeature.Key.COMMENT_ENABLE_THREADS] status to the CommentCard UI*/
+        /** Emits if the comment is a reply to root comment */
         fun isCommentReply(): Observable<Void>
 
         /** Emits when the execution of the post mutation is successful, it will be used to update the main list state for this comment**/

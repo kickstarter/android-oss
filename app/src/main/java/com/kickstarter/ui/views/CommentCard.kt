@@ -165,6 +165,10 @@ class CommentCard @JvmOverloads constructor(
         setViewRepliesVisibility(replies > 0)
     }
 
+    fun setSeparatorVisibility(visibility: Boolean) {
+        binding.separtor.isVisible = visibility
+    }
+
     fun setViewRepliesVisibility(isViewRepliesVisible: Boolean) {
         binding.replies.isVisible = isViewRepliesVisible && isCommentEnabledThreads
     }

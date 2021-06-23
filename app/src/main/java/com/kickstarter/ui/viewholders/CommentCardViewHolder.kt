@@ -30,6 +30,11 @@ class CommentCardViewHolder(
 
     init {
 
+        this.vm.outputs.isCommentReply()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.commentsCardView.setSeparatorVisibility(false) }
+
         this.vm.outputs.commentAuthorName()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())

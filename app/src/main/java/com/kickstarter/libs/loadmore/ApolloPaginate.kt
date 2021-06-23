@@ -18,7 +18,8 @@ class ApolloPaginate<Data, Envelope : ApolloEnvelope, Params>(
     val pageTransformation: Func1<List<Data>, List<Data>>,
     val clearWhenStartingOver: Boolean = true,
     val concater: Func2<List<Data>?, List<Data>?, List<Data>?>,
-    val distinctUntilChanged: Boolean
+    val distinctUntilChanged: Boolean,
+    val isReversed: Boolean
 ) {
     private val _morePath = PublishSubject.create<String?>()
     private val _isFetching = PublishSubject.create<Boolean>()
@@ -49,6 +50,7 @@ class ApolloPaginate<Data, Envelope : ApolloEnvelope, Params>(
             x
         }
         private var clearWhenStartingOver = false
+
         private var concater: Func2<List<Data>?, List<Data>?, List<Data>?> =
             Func2 { xs: List<Data>?, ys: List<Data>? ->
                 mutableListOf<Data>().apply {
@@ -57,6 +59,7 @@ class ApolloPaginate<Data, Envelope : ApolloEnvelope, Params>(
                 }.toList()
             }
         private var distinctUntilChanged = false
+        private var isReversed = false
 
         /**
          * [Required] An observable that emits whenever a new page of data should be loaded.
@@ -124,6 +127,14 @@ class ApolloPaginate<Data, Envelope : ApolloEnvelope, Params>(
             return this
         }
 
+        /**
+         * [Optional] Determines if the list of loaded data is should be distinct until changed.
+         */
+        fun isReversed(distinctUntilChanged: Boolean): Builder<Data, Envelope, Params> {
+            this.isReversed = isReversed
+            return this
+        }
+
         @Throws(RuntimeException::class)
         fun build(): ApolloPaginate<Data, Envelope, Params> {
             // Early error when required field is not set
@@ -150,7 +161,8 @@ class ApolloPaginate<Data, Envelope : ApolloEnvelope, Params>(
                 pageTransformation,
                 clearWhenStartingOver,
                 concater,
-                distinctUntilChanged
+                distinctUntilChanged,
+                isReversed
             )
         }
     }
@@ -215,7 +227,13 @@ class ApolloPaginate<Data, Envelope : ApolloEnvelope, Params>(
 
     private fun keepMorePath(envelope: Envelope) {
         try {
-            _morePath.onNext(envelope.pageInfoEnvelope()?.endCursor)
+            _morePath.onNext(
+                if (isReversed)
+                    envelope.pageInfoEnvelope()?.startCursor
+                else
+
+                    envelope.pageInfoEnvelope()?.endCursor
+            )
         } catch (ignored: MalformedURLException) {
             ignored.printStackTrace()
         }

@@ -339,7 +339,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // get the next page which is end of page
         vm.inputs.nextPage()
         vm.outputs.commentsList().subscribe(commentsList)
-        
+
         commentsList.assertValueCount(1)
     }
 

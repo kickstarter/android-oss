@@ -264,13 +264,12 @@ interface CommentsViewModel {
             }
 
             if (position >= 0 && position < listOfComments.size) {
-               return listOfComments.toMutableList().apply {
-                    this[position]=listOfComments[position].toBuilder()
+                return listOfComments.toMutableList().apply {
+                    this[position] = listOfComments[position].toBuilder()
                         .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
                         .comment(commentToUpdate)
                         .build()
                 }
-
             }
 
             return listOfComments

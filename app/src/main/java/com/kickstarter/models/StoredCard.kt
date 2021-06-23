@@ -3,7 +3,7 @@ package com.kickstarter.models
 import android.os.Parcelable
 import auto.parcel.AutoParcel
 import com.kickstarter.R
-import com.stripe.android.model.Card
+import com.stripe.android.model.CardBrand
 import type.CreditCardTypes
 import java.util.Date
 
@@ -46,14 +46,14 @@ abstract class StoredCard : Parcelable {
 
         internal fun issuer(cardType: CreditCardTypes): String {
             return when (cardType) {
-                CreditCardTypes.AMEX -> Card.CardBrand.AMERICAN_EXPRESS
-                CreditCardTypes.DINERS -> Card.CardBrand.DINERS_CLUB
-                CreditCardTypes.DISCOVER -> Card.CardBrand.DISCOVER
-                CreditCardTypes.JCB -> Card.CardBrand.JCB
-                CreditCardTypes.MASTERCARD -> Card.CardBrand.MASTERCARD
-                CreditCardTypes.UNION_PAY -> Card.CardBrand.UNIONPAY
-                CreditCardTypes.VISA -> Card.CardBrand.VISA
-                else -> Card.CardBrand.UNKNOWN
+                CreditCardTypes.AMEX -> CardBrand.AmericanExpress.code
+                CreditCardTypes.DINERS -> CardBrand.DinersClub.code
+                CreditCardTypes.DISCOVER -> CardBrand.Discover.code
+                CreditCardTypes.JCB -> CardBrand.JCB.code
+                CreditCardTypes.MASTERCARD -> CardBrand.MasterCard.code
+                CreditCardTypes.UNION_PAY -> CardBrand.UnionPay.code
+                CreditCardTypes.VISA -> CardBrand.Visa.code
+                else -> CardBrand.Unknown.code
             }
         }
 

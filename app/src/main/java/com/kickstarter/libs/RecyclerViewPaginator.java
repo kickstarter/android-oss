@@ -9,15 +9,9 @@ import com.kickstarter.libs.utils.Secrets;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.jetbrains.annotations.NotNull;
-
-import io.reactivex.disposables.CompositeDisposable;
 import rx.Observable;
-import rx.Observer;
 import rx.Subscription;
 import rx.functions.Action0;
-import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
@@ -67,16 +61,15 @@ public final class RecyclerViewPaginator {
     this.subscription = loadNextPage
       .subscribe(__ -> this.nextPage.call());
 
-    this.retrySubscription = retryLoadingNextPageSubject
+    this.retrySubscription = this.retryLoadingNextPageSubject
             .subscribe(__ ->
             this.nextPage.call()
     );
   }
 
   public void reload() {
-    retryLoadingNextPageSubject.onNext(null);
+    this.retryLoadingNextPageSubject.onNext(null);
   }
-
 
   /**
    * Stop listening to recycler view scroll events and discard the

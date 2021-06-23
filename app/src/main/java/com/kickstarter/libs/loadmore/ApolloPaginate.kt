@@ -231,7 +231,6 @@ class ApolloPaginate<Data, Envelope : ApolloEnvelope, Params>(
                 if (isReversed)
                     envelope.pageInfoEnvelope()?.startCursor
                 else
-
                     envelope.pageInfoEnvelope()?.endCursor
             )
         } catch (ignored: MalformedURLException) {

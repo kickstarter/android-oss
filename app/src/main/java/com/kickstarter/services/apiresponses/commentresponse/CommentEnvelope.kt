@@ -2,6 +2,7 @@ package com.kickstarter.services.apiresponses.commentresponse
 
 import android.os.Parcelable
 import com.kickstarter.libs.qualifiers.AutoGson
+import com.kickstarter.models.ApolloEnvelope
 import com.kickstarter.models.Comment
 import kotlinx.android.parcel.Parcelize
 
@@ -12,7 +13,7 @@ class CommentEnvelope(
     val commentableId: String?,
     val pageInfoEnvelope: PageInfoEnvelope?,
     val totalCount: Int?
-) : Parcelable {
+) : Parcelable, ApolloEnvelope {
 
     @Parcelize
     @AutoGson
@@ -35,4 +36,5 @@ class CommentEnvelope(
     }
 
     fun toBuilder() = Builder(this.comments, this.commentableId, this.pageInfoEnvelope, this.totalCount)
+    override fun pageInfoEnvelope(): PageInfoEnvelope? = this.pageInfoEnvelope
 }

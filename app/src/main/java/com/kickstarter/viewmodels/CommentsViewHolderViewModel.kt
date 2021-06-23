@@ -84,6 +84,9 @@ interface CommentsViewHolderViewModel {
         /** Emits the current [OptimizelyFeature.Key.COMMENT_ENABLE_THREADS] status to the CommentCard UI*/
         fun isCommentEnableThreads(): Observable<Boolean>
 
+        /** Emits if the comment is a reply to root comment */
+        fun isCommentReply(): Observable<Void>
+
         /** Emits when the execution of the post mutation is successful, it will be used to update the main list state for this comment**/
         fun isSuccessfullyPosted(): Observable<Comment>
     }
@@ -111,6 +114,8 @@ interface CommentsViewHolderViewModel {
         private val isCommentEnableThreads = PublishSubject.create<Boolean>()
         private val internalError = BehaviorSubject.create<Throwable>()
         private val postedSuccessfully = BehaviorSubject.create<Comment>()
+
+        private val isCommentReply = BehaviorSubject.create<Void>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -184,6 +189,14 @@ interface CommentsViewHolderViewModel {
          * @param comment the comment observable
          */
         private fun configureCommentCardWithComment(comment: Observable<Comment>) {
+
+            comment
+                .filter { it.parentId() > 0 }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.isCommentReply.onNext(null)
+                }
+
             comment
                 .map { it.repliesCount() }
                 .compose(bindToLifecycle())
@@ -337,7 +350,7 @@ interface CommentsViewHolderViewModel {
          *  @param user
          *
          *  @return
-         *  true -> if current user is backer and the feature flag is active
+         *  true -> if current user is backer and the feature flag is active and the comment is not a reply
          *  false -> any of the previous conditions fails
          */
         private fun shouldReplyButtonBeVisible(
@@ -351,7 +364,8 @@ interface CommentsViewHolderViewModel {
                         commentCardData.commentCardState == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus ||
                             commentCardData.commentCardState == CommentCardStatus.COMMENT_WITH_REPLIES.commentCardStatus ||
                             commentCardData.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus
-                        )
+                        ) &&
+                    (commentCardData.comment?.parentId() ?: -1) < 0
             } ?: false
 
         /**
@@ -404,6 +418,8 @@ interface CommentsViewHolderViewModel {
         override fun viewCommentReplies(): Observable<Comment> = this.viewCommentReplies
 
         override fun isCommentEnableThreads(): Observable<Boolean> = this.isCommentEnableThreads
+
+        override fun isCommentReply(): Observable<Void> = this.isCommentReply
 
         override fun isSuccessfullyPosted(): Observable<Comment> = this.postedSuccessfully
     }

@@ -87,9 +87,7 @@ interface CommentsViewModel {
         private val scrollToTop = BehaviorSubject.create<Boolean>()
 
         private val insertNewCommentToList = PublishSubject.create<Pair<String, DateTime>>()
-        private val isLoadingMoreItems = BehaviorSubject.create<Boolean>()
         private val isRefreshing = BehaviorSubject.create<Boolean>()
-        private val enablePagination = BehaviorSubject.create<Boolean>()
         private val setEmptyState = BehaviorSubject.create<Boolean>()
         private val displayPaginationError = BehaviorSubject.create<Boolean>()
         private val commentToRefresh = PublishSubject.create<Comment>()
@@ -266,11 +264,13 @@ interface CommentsViewModel {
             }
 
             if (position >= 0 && position < listOfComments.size) {
+               return listOfComments.toMutableList().apply {
+                    this[position]=listOfComments[position].toBuilder()
+                        .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
+                        .comment(commentToUpdate)
+                        .build()
+                }
 
-                listOfComments[position].toBuilder()
-                    .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
-                    .comment(commentToUpdate)
-                    .build()
             }
 
             return listOfComments

@@ -332,12 +332,6 @@ interface CommentsViewModel {
                 }
 
             this.refresh
-//                .doOnNext {
-// //                    this.isRefreshing.onNext(true)
-// //                    // reset cursor
-// //                    lastCommentCursor = null
-// //                    this.loadMoreListData.clear()
-// //                }
                 .doOnNext {
                     this.isRefreshing.onNext(true)
                 }

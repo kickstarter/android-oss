@@ -178,7 +178,8 @@ class CommentsActivity :
     }
 
     override fun retryCallback() {
-        viewModel.inputs.nextPage()
+        recyclerViewPaginator.reload()
+        // viewModel.inputs.nextPage()
     }
 
     override fun emptyCommentsLoginClicked(viewHolder: EmptyCommentsViewHolder?) {

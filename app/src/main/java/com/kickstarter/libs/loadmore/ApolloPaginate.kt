@@ -163,7 +163,7 @@ class ApolloPaginate<Data, Envelope : ApolloEnvelope, Params>(
      * Returns an observable that emits the accumulated list of paginated data each time a new page is loaded.
      */
     private fun dataWithPagination(firstPageParams: Params): Observable<List<Data>?>? {
-        val data = paramsAndMoreUrlWithPagination(firstPageParams)?.distinctUntilChanged()?.concatMap {
+        val data = paramsAndMoreUrlWithPagination(firstPageParams)?.concatMap {
             fetchData(it)
         }?.takeUntil { obj ->
             obj?.isEmpty()

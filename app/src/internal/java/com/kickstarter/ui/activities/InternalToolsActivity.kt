@@ -7,7 +7,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.webkit.URLUtil
 import android.widget.EditText
@@ -29,13 +28,11 @@ import com.kickstarter.libs.Logout
 import com.kickstarter.libs.preferences.StringPreferenceType
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.utils.LoginHelper
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.WorkUtils
 import com.kickstarter.services.firebase.ResetDeviceIdWorker
-import com.kickstarter.ui.fragments.Callbacks
 import com.kickstarter.viewmodels.InternalToolsViewModel
 import org.joda.time.format.DateTimeFormat
 import java.util.concurrent.TimeUnit
@@ -107,10 +104,6 @@ class InternalToolsActivity : BaseActivity<InternalToolsViewModel>() {
             featureFlagsClick()
         }
 
-        binding.emailVerificationButton.setOnClickListener {
-            emailVerificationInterstitialClick()
-        }
-
         binding.resetDeviceId.setOnClickListener {
             resetDeviceIdClick()
         }
@@ -162,18 +155,6 @@ class InternalToolsActivity : BaseActivity<InternalToolsViewModel>() {
     private fun featureFlagsClick() {
         val featureFlagIntent = Intent(this, FeatureFlagsActivity::class.java)
         startActivity(featureFlagIntent)
-    }
-
-    private fun emailVerificationInterstitialClick() {
-        LoginHelper.showInterstitialFragment(
-            this.supportFragmentManager,
-            R.id.email_verification_interstitial_fragment_container,
-            object : Callbacks {
-                override fun onDismiss() {
-                    Log.i(this@InternalToolsActivity.localClassName, "Placeholder for callback function")
-                }
-            }
-        )
     }
 
     private fun resetDeviceIdClick() {

@@ -8,7 +8,7 @@ import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.preferences.StringPreferenceType
-import com.kickstarter.libs.utils.ConfigFeatureName.SEGMENT_ENABLED
+import com.kickstarter.libs.utils.ConfigFeatureFlagName.SEGMENT_ENABLED
 import com.kickstarter.libs.utils.extensions.setUserFeatureFlagsPrefWithFeatureFlag
 import com.kickstarter.model.FeatureFlagsModel
 import com.kickstarter.ui.activities.FeatureFlagsActivity
@@ -57,7 +57,7 @@ interface FeatureFlagsViewModel {
                 .map { it?.entries?.toList() ?: listOf<Map.Entry<String, Boolean>>() }
                 .map { it.filter { entry -> entry.key.startsWith("android_") } }
                 .map { it.sortedBy { entry -> entry.key } }
-                .map { it.map { entry -> FeatureFlagsModel(entry.key, entry.value, entry.key.equals(SEGMENT_ENABLED.configFeatureName)) }.toList() }
+                .map { it.map { entry -> FeatureFlagsModel(entry.key, entry.value, entry.key.equals(SEGMENT_ENABLED.featureFlag)) }.toList() }
                 .compose(bindToLifecycle())
                 .subscribe(this.configFeatures)
 
@@ -73,7 +73,7 @@ interface FeatureFlagsViewModel {
                 .subscribe {
                     config?.setUserFeatureFlagsPrefWithFeatureFlag(
                         it.second,
-                        SEGMENT_ENABLED.configFeatureName,
+                        SEGMENT_ENABLED.featureFlag,
                         it.first
                     )
                     environment.currentConfig().config(config)

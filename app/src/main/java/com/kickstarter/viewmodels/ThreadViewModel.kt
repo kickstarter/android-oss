@@ -55,7 +55,6 @@ interface ThreadViewModel {
         val outputs = this
 
         init {
-            getCommentCardDataFromIntent()
 
             val commentData = getCommentCardDataFromIntent()
                 .distinctUntilChanged()
@@ -74,8 +73,8 @@ interface ThreadViewModel {
                 }
                 .share()
 
-            val project = intent()
-                .map { it.getParcelableExtra(IntentKey.PROJECT) as Project? }
+            val project = commentData
+                .map { it.project }
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
 

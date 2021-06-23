@@ -4,9 +4,15 @@ import com.kickstarter.ui.data.CommentCardData
 
 class CommentCardDataFactory {
     companion object {
-        fun commentCardData(): CommentCardData = CommentCardData.builder()
+        fun commentCardDataBacked(): CommentCardData = CommentCardData.builder()
             .comment(CommentFactory.comment())
             .project(ProjectFactory.backedProject())
+            .commentableId(null)
+            .build()
+
+        fun commentCardData(): CommentCardData = CommentCardData.builder()
+            .comment(CommentFactory.comment())
+            .project(ProjectFactory.project())
             .commentableId(null)
             .build()
     }

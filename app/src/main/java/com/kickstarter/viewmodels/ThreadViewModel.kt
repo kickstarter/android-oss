@@ -8,16 +8,18 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectUtils
+import com.kickstarter.libs.utils.extensions.toCommentCardList
 import com.kickstarter.models.Comment
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ThreadActivity
+import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.views.CommentComposerStatus
 import rx.Observable
 import rx.subjects.BehaviorSubject
-import timber.log.Timber
 
 interface ThreadViewModel {
 
@@ -25,6 +27,9 @@ interface ThreadViewModel {
     interface Outputs {
         /** The anchored root comment */
         fun getRootComment(): Observable<Comment>
+
+        /** get comment replies **/
+        fun onCommentReplies(): Observable<List<CommentCardData>>
 
         /** Will tell to the compose view if should open the keyboard */
         fun shouldFocusOnCompose(): Observable<Boolean>
@@ -43,6 +48,8 @@ interface ThreadViewModel {
         private val currentUserAvatar = BehaviorSubject.create<String?>()
         private val replyComposerStatus = BehaviorSubject.create<CommentComposerStatus>()
         private val showReplyComposer = BehaviorSubject.create<Boolean>()
+
+        private val onCommentReplies = BehaviorSubject.create<List<CommentCardData>>()
 
         val inputs = this
         val outputs = this
@@ -67,26 +74,21 @@ interface ThreadViewModel {
                 }
                 .share()
 
+            val project = intent()
+                .map { it.getParcelableExtra(IntentKey.PROJECT) as Project? }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+
             commentEnvelope
+                .compose<Pair<CommentEnvelope, Project>>(Transformers.combineLatestPair(project))
                 .compose(bindToLifecycle())
                 .subscribe {
-                    Timber.i(
-                        "******* Comment envelope with \n" +
-                            "totalComments:${it.totalCount} \n" +
-                            "commentsList: ${it.comments?.map { comment -> comment.body() + " |"}} \n" +
-                            "commentsListSize: ${it.comments?.size} \n" +
-                            "pageInfo: ${it.pageInfoEnvelope} ****"
-                    )
+                    this.onCommentReplies.onNext(it.first.comments?.toCommentCardList(it.second))
                 }
 
             comment
                 .compose(bindToLifecycle())
                 .subscribe(this.rootComment)
-
-            val project = intent()
-                .map { it.getParcelableExtra(IntentKey.PROJECT) as Project? }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
 
             val loggedInUser = this.currentUser.loggedInUser()
                 .filter { u -> u != null }
@@ -126,6 +128,8 @@ interface ThreadViewModel {
             .ofType(Comment::class.java)
 
         override fun getRootComment(): Observable<Comment> = this.rootComment
+        override fun onCommentReplies(): Observable<List<CommentCardData>> = this.onCommentReplies
+
         override fun shouldFocusOnCompose(): Observable<Boolean> = this.focusOnCompose
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
         override fun replyComposerStatus(): Observable<CommentComposerStatus> = replyComposerStatus

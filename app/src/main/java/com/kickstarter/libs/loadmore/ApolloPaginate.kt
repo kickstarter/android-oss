@@ -154,10 +154,10 @@ class ApolloPaginate<Data, Envelope : ApolloEnvelope, Params>(
             }
 
             return ApolloPaginate(
-                nextPage!!,
-                startOverWith!!,
-                envelopeToListOfData!!,
-                loadWithParams!!,
+                requireNotNull(nextPage),
+                requireNotNull(startOverWith),
+                requireNotNull(envelopeToListOfData),
+                requireNotNull(loadWithParams),
                 pageTransformation,
                 clearWhenStartingOver,
                 concater,

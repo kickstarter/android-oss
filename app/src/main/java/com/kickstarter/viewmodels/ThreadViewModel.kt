@@ -55,9 +55,8 @@ interface ThreadViewModel {
         val outputs = this
 
         init {
-            getCommentFromIntent()
 
-            val comment = getCommentFromIntent()
+            val commentData = getCommentCardDataFromIntent()
                 .distinctUntilChanged()
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
@@ -68,14 +67,14 @@ interface ThreadViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(this.focusOnCompose)
 
-            val commentEnvelope = getCommentFromIntent()
+            val commentEnvelope = getCommentCardDataFromIntent()
                 .switchMap {
-                    this.apolloClient.getRepliesForComment(it)
+                    it.comment?.let { comment -> this.apolloClient.getRepliesForComment(comment) }
                 }
                 .share()
 
-            val project = intent()
-                .map { it.getParcelableExtra(IntentKey.PROJECT) as Project? }
+            val project = commentData
+                .map { it.project }
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
 
@@ -86,9 +85,11 @@ interface ThreadViewModel {
                     this.onCommentReplies.onNext(it.first.comments?.toCommentCardList(it.second))
                 }
 
-            comment
+            commentData
                 .compose(bindToLifecycle())
-                .subscribe(this.rootComment)
+                .subscribe {
+                    this.rootComment.onNext(it.comment)
+                }
 
             val loggedInUser = this.currentUser.loggedInUser()
                 .filter { u -> u != null }
@@ -123,9 +124,9 @@ interface ThreadViewModel {
                 else -> CommentComposerStatus.DISABLED
             }
 
-        private fun getCommentFromIntent() = intent()
-            .map { it.getParcelableExtra(IntentKey.COMMENT) as Comment? }
-            .ofType(Comment::class.java)
+        private fun getCommentCardDataFromIntent() = intent()
+            .map { it.getParcelableExtra(IntentKey.COMMENT_CARD_DATA) as CommentCardData? }
+            .ofType(CommentCardData::class.java)
 
         override fun getRootComment(): Observable<Comment> = this.rootComment
         override fun onCommentReplies(): Observable<List<CommentCardData>> = this.onCommentReplies

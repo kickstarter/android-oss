@@ -12,8 +12,6 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UpdateFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient
-import com.kickstarter.models.Comment
-import com.kickstarter.models.Project
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.CommentCardData
@@ -39,7 +37,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     private val paginationError = TestSubscriber.create<Throwable>()
     private val shouldShowPaginatedCell = TestSubscriber.create<Boolean>()
     private val openCommentGuideLines = TestSubscriber<Void>()
-    private val startThreadActivity = BehaviorSubject.create<Pair<Pair<Comment, Boolean>, Project>>()
+    private val startThreadActivity = BehaviorSubject.create<Pair<CommentCardData, Boolean>>()
 
     @Test
     fun testCommentsViewModel_whenUserLoggedInAndBacking_shouldShowEnabledComposer() {
@@ -425,9 +423,9 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         vm.inputs.onReplyClicked(comment, true)
 
-        assertEquals(startThreadActivity.value.second, project)
-        assertEquals(startThreadActivity.value.first.first, comment)
-        assertTrue(startThreadActivity.value.first.second)
+        assertEquals(startThreadActivity.value.first.project, project)
+        assertEquals(startThreadActivity.value.first.comment, comment)
+        assertTrue(startThreadActivity.value.second)
     }
 
     @Test

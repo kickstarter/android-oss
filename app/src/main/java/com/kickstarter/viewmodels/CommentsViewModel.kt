@@ -54,7 +54,7 @@ interface CommentsViewModel {
         fun initialLoadCommentsError(): Observable<Throwable>
         fun paginateCommentsError(): Observable<Throwable>
         fun pullToRefreshError(): Observable<Throwable>
-        fun startThreadActivity(): Observable<Pair<Pair<Comment, Boolean>, Project>>
+        fun startThreadActivity(): Observable<Pair<CommentCardData, Boolean>>
 
         /** Emits a boolean indicating whether comments are being fetched from the API.  */
         fun isFetchingComments(): Observable<Boolean>
@@ -74,7 +74,7 @@ interface CommentsViewModel {
         private val refresh = PublishSubject.create<Void>()
         private val nextPage = PublishSubject.create<Void>()
         private val onShowGuideLinesLinkClicked = PublishSubject.create<Void>()
-        private val onReplayClicked = PublishSubject.create<Pair<Comment, Boolean>>()
+        private val onReplyClicked = PublishSubject.create<Pair<Comment, Boolean>>()
 
         private val closeCommentsPage = BehaviorSubject.create<Void>()
         private val currentUserAvatar = BehaviorSubject.create<String?>()
@@ -91,7 +91,7 @@ interface CommentsViewModel {
         private val setEmptyState = BehaviorSubject.create<Boolean>()
         private val displayPaginationError = BehaviorSubject.create<Boolean>()
         private val commentToRefresh = PublishSubject.create<Comment>()
-        private val startThreadActivity = BehaviorSubject.create<Pair<Pair<Comment, Boolean>, Project>>()
+        private val startThreadActivity = BehaviorSubject.create<Pair<CommentCardData, Boolean>>()
 
         // - Error observables to handle the 3 different use cases
         private val internalError = BehaviorSubject.create<Throwable>()
@@ -220,11 +220,20 @@ interface CommentsViewModel {
                 .compose(bindToLifecycle())
                 .subscribe { this.closeCommentsPage.onNext(it) }
 
-            this.onReplayClicked
+            this.onReplyClicked
                 .compose(combineLatestPair(initialProject))
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.startThreadActivity.onNext(it)
+                    this.startThreadActivity.onNext(
+                        Pair(
+                            CommentCardData.builder()
+                                .comment(it.first.first)
+                                .commentableId(commentableId)
+                                .project(it.second)
+                                .build(),
+                            it.first.second
+                        )
+                    )
                 }
 
             // - Update internal mutable list with the latest state after successful response
@@ -353,7 +362,7 @@ interface CommentsViewModel {
         ): Observable<CommentEnvelope> {
             return projectOrUpdate.switchMap {
                 return@switchMap if (it.second?.id() != null) {
-                    apolloClient.getProjectUpdateComments(it.second?.id().toString(), cursor)
+                    apolloClient.getProjectUpdateComments(it.second?.id().toString(), lastCommentCursor)
                 } else {
                     apolloClient.getProjectComments(it.first?.slug() ?: "", cursor)
                 }
@@ -403,7 +412,7 @@ interface CommentsViewModel {
         override fun insertNewCommentToList(comment: String, createdAt: DateTime) = insertNewCommentToList.onNext(Pair(comment, createdAt))
         override fun onShowGuideLinesLinkClicked() = onShowGuideLinesLinkClicked.onNext(null)
         override fun refreshComment(comment: Comment) = this.commentToRefresh.onNext(comment)
-        override fun onReplyClicked(comment: Comment, openKeyboard: Boolean) = onReplayClicked.onNext(Pair(comment, openKeyboard))
+        override fun onReplyClicked(comment: Comment, openKeyboard: Boolean) = onReplyClicked.onNext(Pair(comment, openKeyboard))
 
         // - Outputs
         override fun closeCommentsPage(): Observable<Void> = closeCommentsPage
@@ -421,7 +430,7 @@ interface CommentsViewModel {
 
         override fun setEmptyState(): Observable<Boolean> = setEmptyState
 
-        override fun startThreadActivity(): Observable<Pair<Pair<Comment, Boolean>, Project>> = this.startThreadActivity
+        override fun startThreadActivity(): Observable<Pair<CommentCardData, Boolean>> = this.startThreadActivity
         override fun isFetchingComments(): Observable<Boolean> = this.isFetchingComments
     }
 }

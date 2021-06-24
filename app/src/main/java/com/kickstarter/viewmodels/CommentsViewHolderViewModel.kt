@@ -266,15 +266,15 @@ interface CommentsViewHolderViewModel {
                 .map {
                     Pair(
                         requireNotNull(it.first.commentableId),
-                        requireNotNull(it.first?.comment?.body())
+                        requireNotNull(it.first?.comment)
                     )
                 }
                 .map {
                     PostCommentData(
                         commentableId = it.first,
-                        body = it.second,
+                        body = it.second.body(),
                         clientMutationId = null,
-                        parentId = null
+                        parent = it.second?.parentId()?.let { id -> it.second.toBuilder().id(id).build() }
                     )
                 }
 

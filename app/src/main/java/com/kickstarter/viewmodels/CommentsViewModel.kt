@@ -362,7 +362,7 @@ interface CommentsViewModel {
         ): Observable<CommentEnvelope> {
             return projectOrUpdate.switchMap {
                 return@switchMap if (it.second?.id() != null) {
-                    apolloClient.getProjectUpdateComments(it.second?.id().toString(), lastCommentCursor)
+                    apolloClient.getProjectUpdateComments(it.second?.id().toString(), cursor)
                 } else {
                     apolloClient.getProjectComments(it.first?.slug() ?: "", cursor)
                 }

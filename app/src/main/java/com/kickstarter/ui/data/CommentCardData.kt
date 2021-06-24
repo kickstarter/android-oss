@@ -28,8 +28,24 @@ class CommentCardData(
     }
 
     companion object {
-        fun builder() = CommentCardData.Builder()
+        fun builder() = Builder()
     }
 
-    fun toBuilder() = CommentCardData.Builder(this.comment, this.commentCardState, this.commentableId, this.project)
+    fun toBuilder() = Builder(this.comment, this.commentCardState, this.commentableId, this.project)
+
+    override fun equals(other: Any?): Boolean {
+        var equals = super.equals(other)
+
+        if (other is CommentCardData) {
+            val obj: CommentCardData = other
+            equals = (
+                obj.comment?.equals(this.comment) == true &&
+                    obj.commentCardState == this.commentCardState &&
+                    obj.commentableId === this.commentableId &&
+                    obj.project?.equals(this.project) == true
+                )
+        }
+
+        return equals
+    }
 }

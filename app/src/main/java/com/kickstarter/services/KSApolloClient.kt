@@ -283,7 +283,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }.subscribeOn(Schedulers.io())
     }
 
-    override fun getRepliesForComment(comment: Comment, cursor: String, pageSize: Int): Observable<CommentEnvelope> {
+    override fun getRepliesForComment(comment: Comment, cursor: String?, pageSize: Int): Observable<CommentEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<CommentEnvelope>()
             this.service.query(
@@ -316,7 +316,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             val ps = PublishSubject.create<Comment>()
             this.service.mutate(
                 CreateCommentMutation.builder()
-                    .parentId(comment.parentId)
+                    .parentId(comment.parent?.let { encodeRelayId(it) })
                     .commentableId(comment.commentableId)
                     .clientMutationId(comment.clientMutationId)
                     .body(comment.body)

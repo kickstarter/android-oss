@@ -38,5 +38,6 @@ public final class IntentKey {
   public static final String URL = "com.kickstarter.kickstarter.intent_url";
   public static final String PUSH_NOTIFICATION_ENVELOPE = "com.kickstarter.kickstarter.push_notification_envelope";
   public static final String COMMENT = "com.kickstarter.kickstarter.intent_comment";
+  public static final String COMMENT_CARD_DATA = "com.kickstarter.kickstarter.intent_comment_card_data";
   public static final String REPLY_EXPAND = "com.kickstarter.kickstarter.intent_reply_expand";
 }

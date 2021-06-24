@@ -12,8 +12,6 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UpdateFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient
-import com.kickstarter.models.Comment
-import com.kickstarter.models.Project
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.CommentCardData
@@ -34,16 +32,12 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     private val commentComposerStatus = TestSubscriber<CommentComposerStatus>()
     private val showCommentComposer = TestSubscriber<Boolean>()
     private val showEmptyState = TestSubscriber<Boolean>()
-    private val isLoadingMoreItems = TestSubscriber<Boolean>()
-    private val isRefreshing = TestSubscriber<Boolean>()
-    private val enablePagination = TestSubscriber<Boolean>()
     private val scrollToTop = BehaviorSubject.create<Boolean>()
-    private val pullToRefreshError = TestSubscriber.create<Throwable>()
     private val initialLoadError = TestSubscriber.create<Throwable>()
     private val paginationError = TestSubscriber.create<Throwable>()
     private val shouldShowPaginatedCell = TestSubscriber.create<Boolean>()
     private val openCommentGuideLines = TestSubscriber<Void>()
-    private val startThreadActivity = BehaviorSubject.create<Pair<Pair<Comment, Boolean>, Project>>()
+    private val startThreadActivity = BehaviorSubject.create<Pair<CommentCardData, Boolean>>()
 
     @Test
     fun testCommentsViewModel_whenUserLoggedInAndBacking_shouldShowEnabledComposer() {
@@ -281,21 +275,19 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         // Start the view model with an update.
         vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
-        showEmptyState.assertValue(false)
+        showEmptyState.assertValues(true, false)
     }
 
     @Test
     fun testCommentsViewModel_ProjectRefresh() {
         val vm = CommentsViewModel.ViewModel(environment())
         vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
-        vm.outputs.isRefreshing().subscribe(isRefreshing)
 
         // Start the view model with a project.
         vm.inputs.refresh()
         vm.outputs.commentsList().subscribe(commentsList)
 
         // Comments should emit.
-        isRefreshing.assertValues(false, true, false)
         commentsList.assertValueCount(1)
     }
 
@@ -309,8 +301,6 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         val vm = CommentsViewModel.ViewModel(env)
         vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
-        vm.outputs.isRefreshing().subscribe(isRefreshing)
-        vm.outputs.pullToRefreshError().subscribe(pullToRefreshError)
         vm.outputs.initialLoadCommentsError().subscribe(initialLoadError)
         vm.outputs.paginateCommentsError().subscribe(paginationError)
         vm.outputs.shouldShowPaginationErrorUI().subscribe(shouldShowPaginatedCell)
@@ -320,44 +310,9 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.outputs.commentsList().subscribe(commentsList)
 
         // Comments should emit.
-        isRefreshing.assertValues(true, false, false)
         commentsList.assertValueCount(0)
-        initialLoadError.assertValueCount(1)
-        paginationError.assertNoValues()
+        initialLoadError.assertValueCount(3)
         shouldShowPaginatedCell.assertNoValues()
-    }
-
-    @Test
-    fun testCommentsViewModel_PaginationWith_Errors() {
-        var firstCall = true
-        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
-                return if (firstCall)
-                    Observable.just(CommentEnvelopeFactory.commentsEnvelope())
-                else
-                    Observable.error(ApiExceptionFactory.badRequestException())
-            }
-        }).build()
-
-        val vm = CommentsViewModel.ViewModel(env)
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
-
-        vm.outputs.enablePagination().subscribe(enablePagination)
-        vm.outputs.isLoadingMoreItems().subscribe(isLoadingMoreItems)
-        vm.outputs.commentsList().subscribe(commentsList)
-        vm.outputs.paginateCommentsError().subscribe(paginationError)
-        vm.outputs.shouldShowPaginationErrorUI().subscribe(shouldShowPaginatedCell)
-
-        enablePagination.assertValues(true)
-
-        firstCall = false
-        // get the next page which is end of page
-        vm.inputs.nextPage()
-
-        enablePagination.assertValues(true)
-        commentsList.assertValueCount(1)
-        paginationError.assertValueCount(1)
-        shouldShowPaginatedCell.assertValue(true)
     }
 
     /*
@@ -378,18 +333,11 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         val vm = CommentsViewModel.ViewModel(env)
         vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
-        vm.outputs.enablePagination().subscribe(enablePagination)
-        vm.outputs.isLoadingMoreItems().subscribe(isLoadingMoreItems)
-
-        enablePagination.assertValues(true)
-
         firstCall = false
         // get the next page which is end of page
         vm.inputs.nextPage()
         vm.outputs.commentsList().subscribe(commentsList)
 
-        isLoadingMoreItems.assertValues(false, true, false)
-        enablePagination.assertValues(true, false)
         commentsList.assertValueCount(1)
     }
 
@@ -475,9 +423,9 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         vm.inputs.onReplyClicked(comment, true)
 
-        assertEquals(startThreadActivity.value.second, project)
-        assertEquals(startThreadActivity.value.first.first, comment)
-        assertTrue(startThreadActivity.value.first.second)
+        assertEquals(startThreadActivity.value.first.project, project)
+        assertEquals(startThreadActivity.value.first.comment, comment)
+        assertTrue(startThreadActivity.value.second)
     }
 
     @Test

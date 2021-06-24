@@ -3,7 +3,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content">
+  android:layout_height="match_parent">
 
   <com.google.android.material.appbar.AppBarLayout
     android:layout_width="match_parent"
@@ -68,15 +68,6 @@
         tools:listitem="@layout/item_feature_flag" />
 
       <include layout="@layout/horizontal_line_1dp_view" />
-
-      <TextView
-        style="@style/CalloutSecondaryMedium"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_3"
-        android:paddingStart="@dimen/activity_vertical_margin"
-        android:paddingEnd="@dimen/activity_vertical_margin"
-        android:text="@string/Overrides" />
     </LinearLayout>
 
   </ScrollView>

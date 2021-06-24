@@ -28,8 +28,6 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
     private val focusCompose = TestSubscriber<Boolean>()
     private val onReplies = TestSubscriber<List<CommentCardData>>()
 
-    // private val createdAt = DateTime.now()
-
     private val replyComposerStatus = TestSubscriber<CommentComposerStatus>()
     private val showReplyComposer = TestSubscriber<Boolean>()
 

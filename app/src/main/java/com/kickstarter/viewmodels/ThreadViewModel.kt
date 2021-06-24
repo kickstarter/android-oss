@@ -69,7 +69,7 @@ interface ThreadViewModel {
 
             val commentEnvelope = getCommentCardDataFromIntent()
                 .switchMap {
-                    it.comment?.let { it1 -> this.apolloClient.getRepliesForComment(it1) }
+                    it.comment?.let { comment -> this.apolloClient.getRepliesForComment(comment) }
                 }
                 .share()
 

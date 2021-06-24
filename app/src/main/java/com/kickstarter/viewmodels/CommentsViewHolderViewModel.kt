@@ -274,7 +274,7 @@ interface CommentsViewHolderViewModel {
                         commentableId = it.first,
                         body = it.second.body(),
                         clientMutationId = null,
-                        parent = it.second?.parentId()?.let { it1 -> it.second.toBuilder().id(it1).build() }
+                        parent = it.second?.parentId()?.let { id -> it.second.toBuilder().id(id).build() }
                     )
                 }
 

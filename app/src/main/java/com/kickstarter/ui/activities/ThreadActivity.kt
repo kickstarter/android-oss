@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
+import android.view.View
 import androidx.core.view.isVisible
 import com.kickstarter.databinding.ActivityThreadLayoutBinding
 import com.kickstarter.libs.BaseActivity
@@ -76,7 +77,7 @@ class ThreadActivity :
             .delay(200, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                binding.commentRepliesRecyclerView.scrollToPosition(5)
+                binding.parentScrollContainer.fullScroll(View.FOCUS_DOWN)
             }
 
         viewModel.outputs.showReplyComposer()

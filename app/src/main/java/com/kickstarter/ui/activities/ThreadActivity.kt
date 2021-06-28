@@ -136,6 +136,5 @@ class ThreadActivity :
     }
 
     override fun onCommentPostedSuccessFully(comment: Comment) {
-
     }
 }

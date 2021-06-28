@@ -97,11 +97,11 @@ interface ThreadViewModel {
             this.insertNewReplyToList
                 .distinctUntilChanged()
                 .withLatestFrom(this.currentUser.loggedInUser()) {
-                        comment, user ->
+                    comment, user ->
                     Pair(comment, user)
                 }
                 .withLatestFrom(commentData) {
-                        reply, parent ->
+                    reply, parent ->
                     Pair(reply, parent)
                 }
                 .map {

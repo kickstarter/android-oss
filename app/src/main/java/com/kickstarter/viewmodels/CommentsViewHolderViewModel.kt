@@ -288,7 +288,7 @@ interface CommentsViewHolderViewModel {
                 .subscribe {
                     this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
                     this.postedSuccessfully.onNext(it)
-                    if(it.parentId() > 0) this.isReplyButtonVisible.onNext(false)
+                    if (it.parentId() > 0) this.isReplyButtonVisible.onNext(false)
                 }
 
             Observable

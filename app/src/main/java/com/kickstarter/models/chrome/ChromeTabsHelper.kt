@@ -22,6 +22,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
+import timber.log.Timber
 
 /**
  * Helper class for Custom Tabs.
@@ -121,7 +122,7 @@ object ChromeTabsHelper {
                 return true
             }
         } catch (e: RuntimeException) {
-            Log.e(TAG, "Runtime exception while getting specialized handlers")
+            Timber.e("%sRuntime exception while getting specialized handlers", TAG)
         }
 
         return false

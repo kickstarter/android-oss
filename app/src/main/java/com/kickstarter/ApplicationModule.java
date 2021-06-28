@@ -105,6 +105,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Scheduler;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 import type.CustomType;
 
 @Module
@@ -623,7 +624,7 @@ public class ApplicationModule {
         FirebaseCrashlytics.getInstance().recordException(new Throwable("Optimizely failed to initialize."));
       } else {
         if (build.isDebug()) {
-          Log.d(ApplicationModule.class.getSimpleName(), "🔮 Optimizely successfully initialized.");
+          Timber.d(ApplicationModule.class.getSimpleName(), "🔮 Optimizely successfully initialized.");
         }
         context.sendBroadcast(new Intent(ExperimentsClientTypeKt.EXPERIMENTS_CLIENT_READY));
       }

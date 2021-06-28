@@ -8,7 +8,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
-import android.util.Log;
 
 import com.apollographql.apollo.ApolloClient;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;

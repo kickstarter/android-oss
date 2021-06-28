@@ -186,7 +186,6 @@ interface CommentsViewModel {
                     )
                 }
                 .doOnNext { scrollToTop.onNext(true) }
-
                 .withLatestFrom(this.commentsList) { it, list ->
                     list.toMutableList().apply {
                         add(0, it.second)

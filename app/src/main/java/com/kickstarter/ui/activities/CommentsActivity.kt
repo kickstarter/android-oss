@@ -7,8 +7,7 @@ import androidx.core.view.isVisible
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityCommentsLayoutBinding
 import com.kickstarter.libs.BaseActivity
-import com.kickstarter.libs.RecyclerViewPaginator
-import com.kickstarter.libs.SwipeRefresher
+import com.kickstarter.libs.loadmore.PaginationHandler
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.UrlUtils
@@ -31,9 +30,6 @@ class CommentsActivity :
     CommentsAdapter.Delegate {
     private lateinit var binding: ActivityCommentsLayoutBinding
     private val adapter = CommentsAdapter(this)
-
-    private lateinit var recyclerViewPaginator: RecyclerViewPaginator
-    private lateinit var swipeRefresher: SwipeRefresher
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,7 +80,6 @@ class CommentsActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                setEmptyState(false)
                 adapter.insertPageError()
             }
 
@@ -136,18 +131,40 @@ class CommentsActivity :
     }
 
     private fun setupPagination() {
+        val paginationHandler = PaginationHandler(
+            adapter,
+            binding.commentsRecyclerView,
+            binding.commentsSwipeRefreshLayout
+        )
 
-        recyclerViewPaginator = RecyclerViewPaginator(binding.commentsRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingComments())
+        paginationHandler.onRefreshListener = {
+            viewModel.inputs.refresh()
+        }
 
-        swipeRefresher = SwipeRefresher(
-            this, binding.commentsSwipeRefreshLayout, { viewModel.inputs.refresh() }
-        ) { viewModel.outputs.isFetchingComments() }
+        paginationHandler.onLoadMoreListener = {
+            viewModel.inputs.nextPage()
+        }
 
-        viewModel.outputs.isFetchingComments()
+        viewModel.outputs.enablePagination()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
+                paginationHandler.loadMoreEnabled = it
+            }
+
+        viewModel.outputs.isLoadingMoreItems()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                paginationHandler.isLoading(it)
                 binding.commentsLoadingIndicator.isVisible = it
+            }
+
+        viewModel.outputs.isRefreshing()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                paginationHandler.refreshing(it)
             }
 
         viewModel.outputs.startThreadActivity()
@@ -178,8 +195,7 @@ class CommentsActivity :
     }
 
     override fun retryCallback() {
-        recyclerViewPaginator.reload()
-        // viewModel.inputs.nextPage()
+        viewModel.inputs.nextPage()
     }
 
     override fun emptyCommentsLoginClicked(viewHolder: EmptyCommentsViewHolder?) {
@@ -232,7 +248,6 @@ class CommentsActivity :
 
     override fun onDestroy() {
         super.onDestroy()
-        recyclerViewPaginator.stop()
         binding.commentsRecyclerView.adapter = null
         this.viewModel = null
     }

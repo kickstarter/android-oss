@@ -420,7 +420,7 @@ public final class PushNotifications {
       }
       return requestCreator.get();
     } catch (IOException e) {
-      Timber.e("Failed to load large icon: %s",  e);
+      Timber.e(e.getMessage(), "Failed to load large icon: %s");
       return null;
     }
   }

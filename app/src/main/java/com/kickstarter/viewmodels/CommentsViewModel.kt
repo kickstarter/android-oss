@@ -101,6 +101,7 @@ interface CommentsViewModel {
         private var commentableId: String? = null
 
         private val isFetchingComments = BehaviorSubject.create<Boolean>()
+        private lateinit var project: Project
 
         init {
 
@@ -141,7 +142,10 @@ interface CommentsViewModel {
                 )
             }.map {
                 requireNotNull(it)
-            }.share()
+            }.doOnNext {
+                this.project = it
+            }
+                .share()
 
             initialProject
                 .compose(combineLatestPair(currentUser.observable()))
@@ -301,7 +305,7 @@ interface CommentsViewModel {
                     .distinctUntilChanged(true)
                     .startOverWith(startOverWith)
                     .envelopeToListOfData {
-                        mapToCommentCardDataList(Pair(it, null))
+                        mapToCommentCardDataList(Pair(it, this.project))
                     }
                     .loadWithParams {
                         loadWithProjectOrUpdateComments(Observable.just(it.first), it.second)

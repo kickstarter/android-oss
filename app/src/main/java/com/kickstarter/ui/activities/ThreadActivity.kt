@@ -1,7 +1,9 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
+import android.util.Pair
 import androidx.core.view.isVisible
+import com.kickstarter.R
 import com.kickstarter.databinding.ActivityThreadLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
@@ -98,6 +100,10 @@ class ThreadActivity :
         binding.commentsCardView.setCommentPostTime(DateTimeUtils.relative(this, ksString, comment.createdAt()))
         binding.commentsCardView.setCommentUserName(comment.author().name())
         binding.commentsCardView.setAvatarUrl(comment.author().avatar().medium())
+    }
+
+    override fun exitTransition(): Pair<Int, Int>? {
+        return Pair.create(R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
     }
 
     override fun onRetryViewClicked(comment: Comment) {

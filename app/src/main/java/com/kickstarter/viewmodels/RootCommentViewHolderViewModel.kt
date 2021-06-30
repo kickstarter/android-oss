@@ -3,7 +3,7 @@ package com.kickstarter.viewmodels
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.models.Comment
-import com.kickstarter.ui.viewholders.PaginationErrorViewHolder
+import com.kickstarter.ui.viewholders.RootCommentViewHolder
 import rx.Observable
 import rx.subjects.BehaviorSubject
 
@@ -16,7 +16,7 @@ interface RootCommentViewHolderViewModel {
         fun bindRootComment(): Observable<Comment>
     }
 
-    class ViewModel(environment: Environment) : ActivityViewModel<PaginationErrorViewHolder>(environment), Inputs, Outputs {
+    class ViewModel(environment: Environment) : ActivityViewModel<RootCommentViewHolder>(environment), Inputs, Outputs {
         private val bindRootComment = BehaviorSubject.create<Comment>()
         private val initCellConfig = BehaviorSubject.create<Comment>()
 

@@ -936,6 +936,9 @@
     <item name="android:textColor">@color/retry_color</item>
   </style>
 
+  <style name="CommentsShowMoreButton" parent="CommentsRetryButton">
+    <item name="android:textColor">@color/kds_create_700</item>
+  </style>
 
   <style name="CommentCard">
     <item name="android:layout_width">match_parent</item>

@@ -90,6 +90,13 @@ class ThreadActivity :
                 binding.replyComposer.isVisible = it
             }
 
+        viewModel.outputs.loadMoreReplies()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                recyclerViewPaginator.reload()
+            }
+
         binding.replyComposer.setCommentComposerActionClickListener(object :
                 OnCommentComposerViewClickedListener {
                 override fun onClickActionListener(string: String) {
@@ -129,7 +136,7 @@ class ThreadActivity :
     }
 
     override fun loadMoreCallback() {
-        recyclerViewPaginator.reload()
+        viewModel.inputs.onViewMoreClicked()
     }
 
     override fun onDestroy() {

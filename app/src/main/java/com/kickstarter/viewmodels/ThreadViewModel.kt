@@ -27,6 +27,7 @@ interface ThreadViewModel {
 
     interface Inputs {
         fun nextPage()
+        fun onViewMoreClicked()
     }
     interface Outputs {
         /** The anchored root comment */
@@ -43,6 +44,7 @@ interface ThreadViewModel {
         fun showReplyComposer(): Observable<Boolean>
 
         fun isFetchingReplies(): Observable<Boolean>
+        fun loadMoreReplies(): Observable<Void>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ThreadActivity>(environment), Inputs, Outputs {
@@ -50,6 +52,7 @@ interface ThreadViewModel {
         private val currentUser: CurrentUserType = environment.currentUser()
 
         private val nextPage = PublishSubject.create<Void>()
+        private val onViewMoreClicked = PublishSubject.create<Void>()
 
         private val rootComment = BehaviorSubject.create<Comment>()
         private val focusOnCompose = BehaviorSubject.create<Boolean>()
@@ -59,9 +62,10 @@ interface ThreadViewModel {
         private val isFetchingReplies = BehaviorSubject.create<Boolean>()
         private val hasPreviousElements = BehaviorSubject.create<Boolean>()
         private val refresh = PublishSubject.create<Void>()
+        private val loadMoreReplies = PublishSubject.create<Void>()
 
         private val onCommentReplies = BehaviorSubject.create<Pair<List<CommentCardData>, Boolean>>()
-        private lateinit var project: Project
+        private var project: Project? = null
 
         val inputs = this
         val outputs = this
@@ -85,7 +89,9 @@ interface ThreadViewModel {
                 .map { it.project }
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
-                .doOnNext {
+
+            project.take(1)
+                .subscribe {
                     this.project = it
                 }
 
@@ -121,6 +127,12 @@ interface ThreadViewModel {
                     showReplyComposer.onNext(composerStatus != CommentComposerStatus.GONE)
                     replyComposerStatus.onNext(composerStatus)
                 }
+
+            this.onViewMoreClicked
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.loadMoreReplies.onNext(null)
+                }
         }
 
         private fun loadCommentListFromProjectOrUpdate(comment: Observable<Comment>) {
@@ -141,7 +153,7 @@ interface ThreadViewModel {
                     .startOverWith(startOverWith)
                     .envelopeToListOfData {
                         hasPreviousElements.onNext(it.pageInfoEnvelope()?.hasPreviousPage ?: false)
-                        mapListToData(it)
+                        this.project?.let { project -> mapListToData(it, project) }
                     }
                     .loadWithParams {
                         loadWithProjectReplies(
@@ -161,13 +173,14 @@ interface ThreadViewModel {
                 .paginatedData()
                 ?.compose(Transformers.combineLatestPair(this.hasPreviousElements))
                 ?.distinctUntilChanged()
+                ?.filter { it.first.isNotEmpty() }
                 ?.share()
                 ?.subscribe {
                     this.onCommentReplies.onNext(it)
                 }
         }
 
-        private fun mapListToData(it: CommentEnvelope) = it.comments?.toCommentCardList(this.project)
+        private fun mapListToData(it: CommentEnvelope, project: Project) = it.comments?.toCommentCardList(project)
 
         private fun loadWithProjectReplies(
             comment: Observable<Comment>,
@@ -190,14 +203,16 @@ interface ThreadViewModel {
             .ofType(CommentCardData::class.java)
 
         override fun nextPage() = nextPage.onNext(null)
+        override fun onViewMoreClicked() = onViewMoreClicked.onNext(null)
 
         override fun getRootComment(): Observable<Comment> = this.rootComment
         override fun onCommentReplies(): Observable<Pair<List<CommentCardData>, Boolean>> = this.onCommentReplies
 
         override fun shouldFocusOnCompose(): Observable<Boolean> = this.focusOnCompose
-        override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
-        override fun replyComposerStatus(): Observable<CommentComposerStatus> = replyComposerStatus
-        override fun showReplyComposer(): Observable<Boolean> = showReplyComposer
+        override fun currentUserAvatar(): Observable<String?> = this.currentUserAvatar
+        override fun replyComposerStatus(): Observable<CommentComposerStatus> = this.replyComposerStatus
+        override fun showReplyComposer(): Observable<Boolean> = this.showReplyComposer
         override fun isFetchingReplies(): Observable<Boolean> = this.isFetchingReplies
+        override fun loadMoreReplies(): Observable<Void> = this.loadMoreReplies
     }
 }

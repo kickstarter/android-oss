@@ -54,8 +54,13 @@ class ApolloPaginate<Data, Envelope : ApolloEnvelope, Params>(
         private var concater: Func2<List<Data>?, List<Data>?, List<Data>?> =
             Func2 { xs: List<Data>?, ys: List<Data>? ->
                 mutableListOf<Data>().apply {
-                    xs?.toMutableList()?.let { this.addAll(it) }
-                    ys?.toMutableList()?.let { this.addAll(it) }
+                    if (isReversed) {
+                        ys?.toMutableList()?.let { this.addAll(it) }
+                        xs?.toMutableList()?.let { this.addAll(it) }
+                    } else {
+                        xs?.toMutableList()?.let { this.addAll(it) }
+                        ys?.toMutableList()?.let { this.addAll(it) }
+                    }
                 }.toList()
             }
         private var distinctUntilChanged = false
@@ -130,7 +135,7 @@ class ApolloPaginate<Data, Envelope : ApolloEnvelope, Params>(
         /**
          * [Optional] Determines if the list of loaded data is should be distinct until changed.
          */
-        fun isReversed(distinctUntilChanged: Boolean): Builder<Data, Envelope, Params> {
+        fun isReversed(isReversed: Boolean): Builder<Data, Envelope, Params> {
             this.isReversed = isReversed
             return this
         }

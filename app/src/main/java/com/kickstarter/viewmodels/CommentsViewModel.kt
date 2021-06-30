@@ -379,7 +379,7 @@ interface CommentsViewModel {
                 .onErrorResumeNext(Observable.empty())
         }
 
-        private fun mapToCommentCardDataList(it: Pair<CommentEnvelope, Project?>) =
+        private fun mapToCommentCardDataList(it: Pair<CommentEnvelope, Project>) =
             it.first.comments?.map { comment: Comment ->
                 CommentCardData.builder()
                     .comment(comment)

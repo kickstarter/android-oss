@@ -186,7 +186,7 @@ interface ThreadViewModel {
         override fun onCommentReplies(): Observable<List<CommentCardData>> = this.onCommentReplies
 
         override fun shouldFocusOnCompose(): Observable<Boolean> = this.focusOnCompose
-            override fun scrollToBottom(): Observable<Void> = this.scrollToBottom
+        override fun scrollToBottom(): Observable<Void> = this.scrollToBottom
 
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
         override fun replyComposerStatus(): Observable<CommentComposerStatus> = replyComposerStatus

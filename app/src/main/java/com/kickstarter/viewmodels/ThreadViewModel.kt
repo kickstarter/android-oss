@@ -39,7 +39,7 @@ interface ThreadViewModel {
 
         /** Will tell to the compose view if should open the keyboard */
         fun shouldFocusOnCompose(): Observable<Boolean>
-        fun scrollToBottom(): Observable<Int>
+        fun scrollToBottom(): Observable<Void>
 
         fun currentUserAvatar(): Observable<String?>
         fun replyComposerStatus(): Observable<CommentComposerStatus>
@@ -55,7 +55,7 @@ interface ThreadViewModel {
         private val currentUserAvatar = BehaviorSubject.create<String?>()
         private val replyComposerStatus = BehaviorSubject.create<CommentComposerStatus>()
         private val showReplyComposer = BehaviorSubject.create<Boolean>()
-        private val scrollToBottom = BehaviorSubject.create<Int>()
+        private val scrollToBottom = BehaviorSubject.create<Void>()
         private val insertNewReplyToList = PublishSubject.create<Pair<String, DateTime>>()
 
         private val onCommentReplies = BehaviorSubject.create<List<CommentCardData>>()
@@ -122,7 +122,7 @@ interface ThreadViewModel {
                 }.compose(bindToLifecycle())
                 .subscribe {
                     onCommentReplies.onNext(it)
-                    scrollToBottom.onNext(it.size - 1)
+                    scrollToBottom.onNext(null)
                 }
 
             commentData
@@ -186,7 +186,7 @@ interface ThreadViewModel {
         override fun onCommentReplies(): Observable<List<CommentCardData>> = this.onCommentReplies
 
         override fun shouldFocusOnCompose(): Observable<Boolean> = this.focusOnCompose
-        override fun scrollToBottom(): Observable<Int> = this.scrollToBottom
+            override fun scrollToBottom(): Observable<Void> = this.scrollToBottom
 
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
         override fun replyComposerStatus(): Observable<CommentComposerStatus> = replyComposerStatus

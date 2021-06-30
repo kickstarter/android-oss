@@ -34,11 +34,11 @@ interface ApolloClientType {
 
     fun clearUnseenActivity(): Observable<Int>
 
-    fun getProjectComments(slug: String, cursor: String?, limit: Int = 25): Observable<CommentEnvelope>
+    fun getProjectComments(slug: String, cursor: String?, limit: Int = PAGE_SIZE): Observable<CommentEnvelope>
 
-    fun getProjectUpdateComments(updateId: String, cursor: String?, limit: Int = 25): Observable<CommentEnvelope>
+    fun getProjectUpdateComments(updateId: String, cursor: String?, limit: Int = PAGE_SIZE): Observable<CommentEnvelope>
 
-    fun getRepliesForComment(comment: Comment, cursor: String? = null, pageSize: Int = 25): Observable<CommentEnvelope>
+    fun getRepliesForComment(comment: Comment, cursor: String? = null, pageSize: Int = REPLIES_PAGE_SIZE): Observable<CommentEnvelope>
 
     fun createComment(comment: PostCommentData): Observable<Comment>
 
@@ -72,3 +72,7 @@ interface ApolloClientType {
 
     fun userPrivacy(): Observable<UserPrivacyQuery.Data>
 }
+
+private const val PAGE_SIZE = 25
+
+private const val REPLIES_PAGE_SIZE = 7

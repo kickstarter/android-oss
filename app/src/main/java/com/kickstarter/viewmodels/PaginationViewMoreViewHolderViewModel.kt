@@ -2,7 +2,7 @@ package com.kickstarter.viewmodels
 
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
-import com.kickstarter.ui.viewholders.PaginationErrorViewHolder
+import com.kickstarter.ui.viewholders.PaginationViewMoreRepliesViewHolder
 import rx.Observable
 import rx.subjects.BehaviorSubject
 
@@ -15,7 +15,7 @@ interface PaginationViewMoreViewHolderViewModel {
         fun isViewMoreRepliesPaginationVisible(): Observable<Boolean>
     }
 
-    class ViewModel(environment: Environment) : ActivityViewModel<PaginationErrorViewHolder>(environment), Inputs, Outputs {
+    class ViewModel(environment: Environment) : ActivityViewModel<PaginationViewMoreRepliesViewHolder>(environment), Inputs, Outputs {
         private val isViewMoreRepliesPaginationVisible = BehaviorSubject.create<Boolean>()
         private val initCellConfig = BehaviorSubject.create<Boolean>()
 

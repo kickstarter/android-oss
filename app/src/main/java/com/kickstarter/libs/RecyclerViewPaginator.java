@@ -18,6 +18,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPai
 
 public final class RecyclerViewPaginator {
   private final @NonNull RecyclerView recyclerView;
+  private final @NonNull Boolean isScrollEnabled;
   private final @NonNull Action0 nextPage;
   private final Observable<Boolean> isLoading;
   private Subscription subscription;
@@ -29,6 +30,15 @@ public final class RecyclerViewPaginator {
     this.recyclerView = recyclerView;
     this.nextPage = nextPage;
     this.isLoading = isLoading;
+    this.isScrollEnabled =true;
+    start();
+  }
+
+  public RecyclerViewPaginator(final @NonNull RecyclerView recyclerView, final @NonNull Action0 nextPage, final @NonNull Observable<Boolean> isLoading,final @NonNull Boolean isScrollEnabled) {
+    this.recyclerView = recyclerView;
+    this.nextPage = nextPage;
+    this.isLoading = isLoading;
+    this.isScrollEnabled =isScrollEnabled;
     start();
   }
 
@@ -59,7 +69,11 @@ public final class RecyclerViewPaginator {
       .filter(this::visibleItemIsCloseToBottom);
 
     this.subscription = loadNextPage
-      .subscribe(__ -> this.nextPage.call());
+      .subscribe(__ ->{
+        if(isScrollEnabled) {
+          nextPage.call();
+        }
+      });
 
     this.retrySubscription = this.retryLoadingNextPageSubject
             .subscribe(__ ->

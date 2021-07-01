@@ -4,16 +4,14 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.source.ExtractorMediaSource
+import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.trackselection.TrackSelection
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.util.Util
 import com.kickstarter.databinding.VideoPlayerLayoutBinding
 import com.kickstarter.libs.BaseActivity
@@ -27,7 +25,7 @@ import com.trello.rxlifecycle.ActivityEvent
 @RequiresActivityViewModel(VideoViewModel.ViewModel::class)
 class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
     private lateinit var build: Build
-    private var player: ExoPlayer? = null
+    private var player: SimpleExoPlayer? = null
     private var playerPosition: Long? = null
     private var trackSelector: DefaultTrackSelector? = null
     private lateinit var binding: VideoPlayerLayoutBinding
@@ -90,9 +88,17 @@ class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
     }
 
     private fun preparePlayer(videoUrl: String) {
-        val adaptiveTrackSelectionFactory: TrackSelection.Factory = AdaptiveTrackSelection.Factory()
-        trackSelector = DefaultTrackSelector(adaptiveTrackSelectionFactory)
-        player = ExoPlayerFactory.newSimpleInstance(this, trackSelector)
+        val adaptiveTrackSelectionFactory: AdaptiveTrackSelection.Factory = AdaptiveTrackSelection.Factory()
+        trackSelector = DefaultTrackSelector(this, adaptiveTrackSelectionFactory)
+//        player = ExoPlayerFactory.newSimpleInstance(this, trackSelector)
+        val player2 = trackSelector?.let {
+            SimpleExoPlayer.Builder(this).setTrackSelector(
+                it
+            )
+        }
+        val playerBuilder = SimpleExoPlayer.Builder(this)
+        trackSelector?.let { playerBuilder.setTrackSelector(it) }
+        player = playerBuilder.build()
 
         binding.playerView.player = player
         player?.addListener(eventListener)
@@ -106,14 +112,14 @@ class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
     }
 
     private fun getMediaSource(videoUrl: String): MediaSource {
-        val dataSourceFactory = DefaultHttpDataSourceFactory(userAgent(build))
+        val dataSourceFactory = DefaultHttpDataSource.Factory().setUserAgent(userAgent(build))
         val videoUri = Uri.parse(videoUrl)
         val fileType = Util.inferContentType(videoUri)
 
         return if (fileType == C.TYPE_HLS) {
             HlsMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri)
         } else {
-            ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri)
+            ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri)
         }
     }
 

@@ -34,7 +34,7 @@ public final class RecyclerViewPaginator {
     start();
   }
 
-  public RecyclerViewPaginator(final @NonNull RecyclerView recyclerView, final @NonNull Action0 nextPage, final @NonNull Observable<Boolean> isLoading,final @NonNull Boolean isScrollEnabled) {
+  public RecyclerViewPaginator(final @NonNull RecyclerView recyclerView, final @NonNull Action0 nextPage, final @NonNull Observable<Boolean> isLoading, final @NonNull Boolean isScrollEnabled) {
     this.recyclerView = recyclerView;
     this.nextPage = nextPage;
     this.isLoading = isLoading;
@@ -70,8 +70,8 @@ public final class RecyclerViewPaginator {
 
     this.subscription = loadNextPage
       .subscribe(__ ->{
-        if(isScrollEnabled) {
-          nextPage.call();
+        if(this.isScrollEnabled) {
+          this.nextPage.call();
         }
       });
 

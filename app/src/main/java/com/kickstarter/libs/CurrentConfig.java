@@ -79,7 +79,7 @@ public final class CurrentConfig implements CurrentConfigType {
 
       return new String(buffer);
     } catch (final IOException e) {
-      Timber.e(e.getMessage());
+      Timber.e(e);
       // TODO: This should probably be fatal?
     }
 

@@ -226,7 +226,7 @@ class CommentsActivity :
         startActivityWithTransition(
             threadIntent,
             R.anim.slide_in_right,
-            R.anim.fade_out_slide_out_left
+            R.anim.slide_out_right
         )
     }
 

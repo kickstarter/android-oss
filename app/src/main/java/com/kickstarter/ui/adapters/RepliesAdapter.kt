@@ -11,8 +11,11 @@ import com.kickstarter.ui.viewholders.KSViewHolder
 class RepliesAdapter(private val delegate: Delegate) : KSListAdapter() {
     interface Delegate : CommentCardViewHolder.Delegate
 
+    init {
+        insertSection(SECTION_REPLIES, emptyList<CommentCardData>())
+    }
     fun takeData(replies: List<CommentCardData>) {
-        addSection(replies)
+        setSection(SECTION_REPLIES, replies)
         submitList(items())
     }
 
@@ -22,5 +25,9 @@ class RepliesAdapter(private val delegate: Delegate) : KSListAdapter() {
 
     override fun viewHolder(layout: Int, view: ViewGroup): KSViewHolder {
         return CommentCardViewHolder(ItemCommentCardBinding.inflate(LayoutInflater.from(view.context), view, false), delegate)
+    }
+
+    companion object {
+        private const val SECTION_REPLIES = 0
     }
 }

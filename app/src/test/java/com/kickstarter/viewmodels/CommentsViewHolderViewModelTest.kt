@@ -508,4 +508,37 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.isCommentReply.assertValue(null)
     }
+
+    @Test
+    fun testPostReply_Successful() {
+        val reply = CommentFactory.reply(createdAt = createdAt)
+        val currentUser = UserFactory.user().toBuilder().id(1).build()
+
+        val env = environment().toBuilder()
+            .apolloClient(object : MockApolloClient() {
+                override fun createComment(comment: PostCommentData): Observable<Comment> {
+                    return Observable.just(reply)
+                }
+            })
+            .currentUser(MockCurrentUser(currentUser))
+            .build()
+        setUpEnvironment(env)
+
+        val comment = CommentFactory.commentToPostWithUser(currentUser)
+        val commentCardData = CommentCardData.builder()
+            .comment(comment)
+            .project(ProjectFactory.initialProject())
+            .commentableId(ProjectFactory.initialProject().id().toString())
+            .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
+            .build()
+
+        this.vm.inputs.configureWith(commentCardData)
+
+        this.commentCardStatus.assertValues(
+            CommentCardStatus.TRYING_TO_POST,
+            CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS
+        )
+
+        this.commentSuccessfullyPosted.assertValue(reply)
+    }
 }

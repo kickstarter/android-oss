@@ -5,6 +5,7 @@ import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.loadmore.ApolloPaginate
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectUtils
@@ -27,6 +28,8 @@ import rx.subjects.PublishSubject
 interface ThreadViewModel {
 
     interface Inputs {
+        fun nextPage()
+        fun onViewMoreClicked()
         fun insertNewReplyToList(comment: String, createdAt: DateTime)
     }
 
@@ -35,7 +38,7 @@ interface ThreadViewModel {
         fun getRootComment(): Observable<Comment>
 
         /** get comment replies **/
-        fun onCommentReplies(): Observable<List<CommentCardData>>
+        fun onCommentReplies(): Observable<Pair<List<CommentCardData>, Boolean>>
 
         /** Will tell to the compose view if should open the keyboard */
         fun shouldFocusOnCompose(): Observable<Boolean>
@@ -44,11 +47,17 @@ interface ThreadViewModel {
         fun currentUserAvatar(): Observable<String?>
         fun replyComposerStatus(): Observable<CommentComposerStatus>
         fun showReplyComposer(): Observable<Boolean>
+
+        fun isFetchingReplies(): Observable<Boolean>
+        fun loadMoreReplies(): Observable<Void>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ThreadActivity>(environment), Inputs, Outputs {
         private val apolloClient: ApolloClientType = environment.apolloClient()
         private val currentUser: CurrentUserType = environment.currentUser()
+
+        private val nextPage = PublishSubject.create<Void>()
+        private val onViewMoreClicked = PublishSubject.create<Void>()
 
         private val rootComment = BehaviorSubject.create<Comment>()
         private val focusOnCompose = BehaviorSubject.create<Boolean>()
@@ -57,8 +66,13 @@ interface ThreadViewModel {
         private val showReplyComposer = BehaviorSubject.create<Boolean>()
         private val scrollToBottom = BehaviorSubject.create<Void>()
         private val insertNewReplyToList = PublishSubject.create<Pair<String, DateTime>>()
+        private val isFetchingReplies = BehaviorSubject.create<Boolean>()
+        private val hasPreviousElements = BehaviorSubject.create<Boolean>()
+        private val refresh = PublishSubject.create<Void>()
+        private val loadMoreReplies = PublishSubject.create<Void>()
 
-        private val onCommentReplies = BehaviorSubject.create<List<CommentCardData>>()
+        private val onCommentReplies = BehaviorSubject.create<Pair<List<CommentCardData>, Boolean>>()
+        private var project: Project? = null
 
         val inputs = this
         val outputs = this
@@ -76,23 +90,19 @@ interface ThreadViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(this.focusOnCompose)
 
-            val commentEnvelope = getCommentCardDataFromIntent()
-                .switchMap {
-                    it.comment?.let { comment -> this.apolloClient.getRepliesForComment(comment) }
-                }
-                .share()
+            val comment = getCommentCardDataFromIntent().map { it.comment }.map { requireNotNull(it) }
 
             val project = commentData
                 .map { it.project }
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
 
-            commentEnvelope
-                .compose<Pair<CommentEnvelope, Project>>(Transformers.combineLatestPair(project))
-                .compose(bindToLifecycle())
+            project.take(1)
                 .subscribe {
-                    this.onCommentReplies.onNext(it.first.comments?.toCommentCardList(it.second))
+                    this.project = it
                 }
+
+            loadCommentListFromProjectOrUpdate(comment)
 
             this.insertNewReplyToList
                 .distinctUntilChanged()
@@ -115,10 +125,13 @@ interface ThreadViewModel {
                         .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
                         .build()
                 }
-                .withLatestFrom(this.onCommentReplies) { reply, list ->
-                    list.toMutableList().apply {
-                        add(reply)
-                    }.toList()
+                .withLatestFrom(this.onCommentReplies) { reply, pair ->
+                    Pair(
+                        pair.first.toMutableList().apply {
+                            add(reply)
+                        }.toList(),
+                        pair.second
+                    )
                 }.compose(bindToLifecycle())
                 .subscribe {
                     onCommentReplies.onNext(it)
@@ -155,6 +168,67 @@ interface ThreadViewModel {
                     showReplyComposer.onNext(composerStatus != CommentComposerStatus.GONE)
                     replyComposerStatus.onNext(composerStatus)
                 }
+
+            this.onViewMoreClicked
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.loadMoreReplies.onNext(null)
+                }
+        }
+
+        private fun loadCommentListFromProjectOrUpdate(comment: Observable<Comment>) {
+            val startOverWith =
+                Observable.merge(
+                    comment,
+                    comment.compose(
+                        Transformers.takeWhen(
+                            refresh
+                        )
+                    )
+                )
+
+            val apolloPaginate =
+                ApolloPaginate.builder<CommentCardData, CommentEnvelope, Comment?>()
+                    .nextPage(nextPage)
+                    .distinctUntilChanged(true)
+                    .startOverWith(startOverWith)
+                    .envelopeToListOfData {
+                        hasPreviousElements.onNext(it.pageInfoEnvelope()?.hasPreviousPage ?: false)
+                        this.project?.let { project -> mapListToData(it, project) }
+                    }
+                    .loadWithParams {
+                        loadWithProjectReplies(
+                            Observable.just(it.first), it.second
+                        )
+                    }
+                    .isReversed(true)
+                    .clearWhenStartingOver(true)
+                    .build()
+
+            apolloPaginate
+                .isFetching()
+                .compose(bindToLifecycle<Boolean>())
+                .subscribe(this.isFetchingReplies)
+
+            apolloPaginate
+                .paginatedData()
+                ?.compose(Transformers.combineLatestPair(this.hasPreviousElements))
+                ?.distinctUntilChanged()
+                ?.share()
+                ?.subscribe {
+                    this.onCommentReplies.onNext(it)
+                }
+        }
+
+        private fun mapListToData(it: CommentEnvelope, project: Project) = it.comments?.toCommentCardList(project)
+
+        private fun loadWithProjectReplies(
+            comment: Observable<Comment>,
+            cursor: String?
+        ): Observable<CommentEnvelope> {
+            return comment.switchMap {
+                return@switchMap this.apolloClient.getRepliesForComment(it, cursor)
+            }
         }
 
         private fun buildReplyBody(it: Pair<Pair<CommentCardData, User>, Pair<String, DateTime>>): Comment {
@@ -182,8 +256,11 @@ interface ThreadViewModel {
             .map { it.getParcelableExtra(IntentKey.COMMENT_CARD_DATA) as CommentCardData? }
             .ofType(CommentCardData::class.java)
 
+        override fun nextPage() = nextPage.onNext(null)
+        override fun onViewMoreClicked() = onViewMoreClicked.onNext(null)
+
         override fun getRootComment(): Observable<Comment> = this.rootComment
-        override fun onCommentReplies(): Observable<List<CommentCardData>> = this.onCommentReplies
+        override fun onCommentReplies(): Observable<Pair<List<CommentCardData>, Boolean>> = this.onCommentReplies
 
         override fun shouldFocusOnCompose(): Observable<Boolean> = this.focusOnCompose
         override fun scrollToBottom(): Observable<Void> = this.scrollToBottom
@@ -194,5 +271,7 @@ interface ThreadViewModel {
         override fun insertNewReplyToList(comment: String, createdAt: DateTime) = this.insertNewReplyToList.onNext(
             Pair(comment, createdAt)
         )
+        override fun isFetchingReplies(): Observable<Boolean> = this.isFetchingReplies
+        override fun loadMoreReplies(): Observable<Void> = this.loadMoreReplies
     }
 }

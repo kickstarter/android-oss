@@ -81,4 +81,5 @@
 
   <!-- Replies Screen -->
   <string name="fpo_replies">Replies</string>
+  <string name="view_more_replies">View more replies</string>
 </resources>

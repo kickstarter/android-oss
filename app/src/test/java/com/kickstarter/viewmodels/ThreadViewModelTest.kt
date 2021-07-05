@@ -209,7 +209,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         // Start the view model with a backed project and comment.
         vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, CommentCardDataFactory.commentCardData()))
 
-        this.onReplies.assertValueCount(1)
+        this.onReplies.assertValueCount(2)
     }
 
     @Test

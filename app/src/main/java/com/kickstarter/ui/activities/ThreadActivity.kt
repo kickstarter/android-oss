@@ -40,14 +40,14 @@ class ThreadActivity :
         binding.commentRepliesRecyclerView.adapter = adapter
         binding.commentRepliesRecyclerView.layoutManager = linearLayoutManager
 
-        this.viewModel.getRootComment()
+        this.viewModel.outputs.getRootComment()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { comment ->
                 adapter.updateRootCommentCell(comment)
             }
 
-        this.viewModel
+        this.viewModel.outputs
             .onCommentReplies()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())

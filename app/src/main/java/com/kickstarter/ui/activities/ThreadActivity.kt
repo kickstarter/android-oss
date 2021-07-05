@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
+import android.view.View
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.databinding.ActivityThreadLayoutBinding
@@ -13,6 +14,7 @@ import com.kickstarter.ui.adapters.RepliesAdapter
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
 import com.kickstarter.viewmodels.ThreadViewModel
+import org.joda.time.DateTime
 import rx.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
 
@@ -83,6 +85,14 @@ class ThreadActivity :
                 binding.replyComposer.setCommentComposerStatus(it)
             }
 
+        viewModel.outputs.scrollToBottom()
+            .compose(bindToLifecycle())
+            .delay(200, TimeUnit.MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                binding.parentScrollContainer.fullScroll(View.FOCUS_DOWN)
+            }
+
         viewModel.outputs.showReplyComposer()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
@@ -100,10 +110,15 @@ class ThreadActivity :
         binding.replyComposer.setCommentComposerActionClickListener(object :
                 OnCommentComposerViewClickedListener {
                 override fun onClickActionListener(string: String) {
-                    // TODO add Post Replay
+                    postReply(string)
                     hideKeyboard()
                 }
             })
+    }
+
+    fun postReply(comment: String) {
+        this.viewModel.inputs.insertNewReplyToList(comment, DateTime.now())
+        this.binding.replyComposer.clearCommentComposer()
     }
 
     override fun onStop() {
@@ -132,7 +147,6 @@ class ThreadActivity :
     }
 
     override fun onCommentPostedSuccessFully(comment: Comment) {
-        TODO("Not yet implemented")
     }
 
     override fun loadMoreCallback() {

@@ -1,5 +1,7 @@
 package com.kickstarter.ui.viewholders
 
+import androidx.constraintlayout.widget.Constraints
+import com.kickstarter.R
 import com.kickstarter.databinding.ItemErrorPaginationBinding
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.extensions.toVisibility
@@ -8,7 +10,8 @@ import com.kickstarter.viewmodels.PaginationErrorViewHolderViewModel
 @Suppress("UNCHECKED_CAST")
 class PaginationErrorViewHolder(
     val binding: ItemErrorPaginationBinding,
-    private val viewListener: ViewListener
+    private val viewListener: ViewListener,
+    val isReply: Boolean = false
 ) : KSViewHolder(binding.root) {
 
     interface ViewListener {
@@ -27,6 +30,15 @@ class PaginationErrorViewHolder(
 
         binding.errorPaginationRetryButton.setOnClickListener {
             viewListener.retryCallback()
+        }
+
+        if (isReply) {
+            val params = Constraints.LayoutParams(
+                Constraints.LayoutParams.MATCH_PARENT,
+                Constraints.LayoutParams.WRAP_CONTENT
+            )
+            params.setMargins(context().resources.getDimension(R.dimen.grid_5).toInt(), 0, 0, 0)
+            binding.paginationErrorCell.layoutParams = params
         }
     }
 

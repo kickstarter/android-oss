@@ -5,22 +5,26 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.kickstarter.R
 import com.kickstarter.databinding.ItemCommentCardBinding
+import com.kickstarter.databinding.ItemErrorPaginationBinding
 import com.kickstarter.databinding.ItemShowMoreRepliesBinding
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.viewholders.CommentCardViewHolder
 import com.kickstarter.ui.viewholders.KSViewHolder
+import com.kickstarter.ui.viewholders.PaginationErrorViewHolder
 import com.kickstarter.ui.viewholders.PaginationViewMoreRepliesViewHolder
 import com.kickstarter.ui.viewholders.RootCommentViewHolder
 
 class RepliesAdapter(private val delegate: Delegate) : KSListAdapter() {
     interface Delegate :
         CommentCardViewHolder.Delegate,
-        PaginationViewMoreRepliesViewHolder.ViewListener
+        PaginationViewMoreRepliesViewHolder.ViewListener,
+        PaginationErrorViewHolder.ViewListener
 
     init {
         insertSection(SECTION_COMMENTS, emptyList<CommentCardData>())
         insertSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, emptyList<Boolean>())
+        insertSection(SECTION_ERROR_PAGINATING, emptyList<Boolean>())
         insertSection(SECTION_ROOT_COMMENT, emptyList<Comment>())
     }
 
@@ -29,6 +33,7 @@ class RepliesAdapter(private val delegate: Delegate) : KSListAdapter() {
             setSection(SECTION_COMMENTS, replies)
             setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, listOf(shouldViewMoreRepliesCell))
         }
+        setSection(SECTION_ERROR_PAGINATING, emptyList<Boolean>())
         submitList(items())
     }
 
@@ -37,9 +42,16 @@ class RepliesAdapter(private val delegate: Delegate) : KSListAdapter() {
         submitList(items())
     }
 
+    fun addErrorPaginationCell(shouldShowErrorCell: Boolean) {
+        setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, emptyList<Boolean>())
+        // - we want to display SECTION_COMMENTS & SECTION_ERROR_PAGINATING at the same time so we should not clean SECTION_COMMENTS
+        setSection(SECTION_ERROR_PAGINATING, listOf(shouldShowErrorCell))
+        submitList(items())
+    }
     override fun layout(sectionRow: SectionRow): Int = when (sectionRow.section()) {
         SECTION_COMMENTS -> R.layout.item_comment_card
         SECTION_SHOW_MORE_REPLIES_PAGINATING -> R.layout.item_show_more_replies
+        SECTION_ERROR_PAGINATING -> R.layout.item_error_pagination
         else -> 0
     }
 
@@ -49,13 +61,19 @@ class RepliesAdapter(private val delegate: Delegate) : KSListAdapter() {
             R.layout.item_show_more_replies -> PaginationViewMoreRepliesViewHolder(
                 ItemShowMoreRepliesBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate
             )
+            R.layout.item_error_pagination -> PaginationErrorViewHolder(ItemErrorPaginationBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate, true)
             else -> RootCommentViewHolder(ItemCommentCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
         }
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
     }
 
     companion object {
         private const val SECTION_COMMENTS = 0
         private const val SECTION_SHOW_MORE_REPLIES_PAGINATING = 1
-        private const val SECTION_ROOT_COMMENT = 2
+        private const val SECTION_ERROR_PAGINATING = 2
+        private const val SECTION_ROOT_COMMENT = 3
     }
 }

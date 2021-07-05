@@ -11,6 +11,7 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.adapters.RepliesAdapter
 import com.kickstarter.ui.extensions.hideKeyboard
+import com.kickstarter.ui.viewholders.PaginationErrorViewHolder
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
 import com.kickstarter.viewmodels.ThreadViewModel
 import org.joda.time.DateTime
@@ -20,6 +21,7 @@ import java.util.concurrent.TimeUnit
 @RequiresActivityViewModel(ThreadViewModel.ViewModel::class)
 class ThreadActivity :
     BaseActivity<ThreadViewModel.ViewModel>(),
+    PaginationErrorViewHolder.ViewListener,
     RepliesAdapter.Delegate {
 
     private lateinit var binding: ActivityThreadLayoutBinding
@@ -55,11 +57,18 @@ class ThreadActivity :
                 this.adapter.takeData(it.first.reversed(), it.second)
             }
 
+        viewModel.outputs.shouldShowPaginationErrorUI()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                adapter.addErrorPaginationCell(it)
+            }
+
         viewModel.outputs.isFetchingReplies()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                // binding.commentsLoadingIndicator.isVisible = it
+                binding.commentsLoadingIndicator.isVisible = it
             }
 
         this.viewModel.shouldFocusOnCompose()
@@ -149,6 +158,10 @@ class ThreadActivity :
     }
 
     override fun loadMoreCallback() {
+        viewModel.inputs.onViewMoreClicked()
+    }
+
+    override fun retryCallback() {
         viewModel.inputs.onViewMoreClicked()
     }
 

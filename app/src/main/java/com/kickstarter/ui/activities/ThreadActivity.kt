@@ -1,8 +1,11 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
+import android.util.Pair
+import android.view.View
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.kickstarter.R
 import com.kickstarter.databinding.ActivityThreadLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
@@ -58,8 +61,8 @@ class ThreadActivity :
         viewModel.outputs.isFetchingReplies()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                binding.repliesLoadingIndicator.isVisible = it
+            .subscribe { comments ->
+                this.adapter.takeData(comments)
             }
 
         this.viewModel.shouldFocusOnCompose()
@@ -86,7 +89,7 @@ class ThreadActivity :
 
         viewModel.outputs.scrollToBottom()
             .compose(bindToLifecycle())
-            .delay(500, TimeUnit.MILLISECONDS)
+            .delay(200, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.commentRepliesRecyclerView.smoothScrollToPosition(0)
@@ -123,6 +126,10 @@ class ThreadActivity :
     override fun onStop() {
         super.onStop()
         hideKeyboard()
+    }
+
+    override fun exitTransition(): Pair<Int, Int>? {
+        return Pair.create(R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
     }
 
     override fun onRetryViewClicked(comment: Comment) {

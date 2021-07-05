@@ -125,10 +125,10 @@ interface ThreadViewModel {
                         .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
                         .build()
                 }
-                .withLatestFrom(this.onCommentReplies) { reply, list ->
-                    list.toMutableList().apply {
+                .withLatestFrom(this.onCommentReplies) { reply, pair ->
+                    Pair(pair.first.toMutableList().apply {
                         add(reply)
-                    }.toList()
+                    }.toList(), pair.second)
                 }.compose(bindToLifecycle())
                 .subscribe {
                     onCommentReplies.onNext(it)
@@ -211,7 +211,6 @@ interface ThreadViewModel {
                 .paginatedData()
                 ?.compose(Transformers.combineLatestPair(this.hasPreviousElements))
                 ?.distinctUntilChanged()
-                ?.filter { it.first.isNotEmpty() }
                 ?.share()
                 ?.subscribe {
                     this.onCommentReplies.onNext(it)
@@ -269,9 +268,6 @@ interface ThreadViewModel {
         override fun insertNewReplyToList(comment: String, createdAt: DateTime) = this.insertNewReplyToList.onNext(
             Pair(comment, createdAt)
         )
-        override fun currentUserAvatar(): Observable<String?> = this.currentUserAvatar
-        override fun replyComposerStatus(): Observable<CommentComposerStatus> = this.replyComposerStatus
-        override fun showReplyComposer(): Observable<Boolean> = this.showReplyComposer
         override fun isFetchingReplies(): Observable<Boolean> = this.isFetchingReplies
         override fun loadMoreReplies(): Observable<Void> = this.loadMoreReplies
     }

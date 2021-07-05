@@ -1,7 +1,6 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
-import android.view.View
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.databinding.ActivityThreadLayoutBinding
@@ -37,7 +36,7 @@ class ThreadActivity :
         setContentView(binding.root)
         ksString = environment().ksString()
         recyclerViewPaginator = RecyclerViewPaginator(binding.commentRepliesRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingReplies(), false)
-
+        linearLayoutManager.stackFromEnd = true
         binding.commentRepliesRecyclerView.adapter = adapter
         binding.commentRepliesRecyclerView.layoutManager = linearLayoutManager
 
@@ -87,10 +86,10 @@ class ThreadActivity :
 
         viewModel.outputs.scrollToBottom()
             .compose(bindToLifecycle())
-            .delay(200, TimeUnit.MILLISECONDS)
+            .delay(500, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                binding.parentScrollContainer.fullScroll(View.FOCUS_DOWN)
+                binding.commentRepliesRecyclerView.smoothScrollToPosition(0)
             }
 
         viewModel.outputs.showReplyComposer()

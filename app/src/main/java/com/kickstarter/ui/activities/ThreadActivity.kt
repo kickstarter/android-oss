@@ -59,7 +59,7 @@ class ThreadActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                 binding.repliesLoadingIndicator.isVisible = it
+                binding.repliesLoadingIndicator.isVisible = it
             }
 
         this.viewModel.shouldFocusOnCompose()

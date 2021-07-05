@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Pair
 import android.view.View
 import androidx.core.view.isVisible
 import com.kickstarter.R
@@ -11,6 +12,7 @@ import com.kickstarter.libs.RecyclerViewPaginator
 import com.kickstarter.libs.SwipeRefresher
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ApplicationUtils
+import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Comment
@@ -223,11 +225,14 @@ class CommentsActivity :
             putExtra(IntentKey.REPLY_EXPAND, openKeyboard)
         }
 
-        startActivityWithTransition(
-            threadIntent,
-            R.anim.slide_in_right,
-            R.anim.slide_out_right
-        )
+        startActivity(threadIntent)
+        this.let {
+            TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
+        }
+    }
+
+    override fun exitTransition(): Pair<Int, Int>? {
+        return Pair.create(R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
     }
 
     override fun onDestroy() {

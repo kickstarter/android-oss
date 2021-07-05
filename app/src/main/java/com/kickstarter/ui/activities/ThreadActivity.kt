@@ -1,8 +1,10 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
+import android.util.Pair
 import android.view.View
 import androidx.core.view.isVisible
+import com.kickstarter.R
 import com.kickstarter.databinding.ActivityThreadLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
@@ -115,6 +117,10 @@ class ThreadActivity :
         binding.commentsCardView.setAvatarUrl(comment.author().avatar().medium())
     }
 
+    override fun exitTransition(): Pair<Int, Int>? {
+        return Pair.create(R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
+    }
+
     override fun onRetryViewClicked(comment: Comment) {
         TODO("Not yet implemented")
     }
@@ -136,5 +142,6 @@ class ThreadActivity :
     }
 
     override fun onCommentPostedSuccessFully(comment: Comment) {
+        TODO("Not yet implemented")
     }
 }

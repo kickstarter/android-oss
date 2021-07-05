@@ -17,13 +17,19 @@ import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ThreadActivity
 import com.kickstarter.ui.data.CommentCardData
+import com.kickstarter.ui.views.CommentCardStatus
 import com.kickstarter.ui.views.CommentComposerStatus
+import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
+import rx.subjects.PublishSubject
 
 interface ThreadViewModel {
 
-    interface Inputs
+    interface Inputs {
+        fun insertNewReplyToList(comment: String, createdAt: DateTime)
+    }
+
     interface Outputs {
         /** The anchored root comment */
         fun getRootComment(): Observable<Comment>
@@ -33,6 +39,7 @@ interface ThreadViewModel {
 
         /** Will tell to the compose view if should open the keyboard */
         fun shouldFocusOnCompose(): Observable<Boolean>
+        fun scrollToBottom(): Observable<Void>
 
         fun currentUserAvatar(): Observable<String?>
         fun replyComposerStatus(): Observable<CommentComposerStatus>
@@ -48,6 +55,8 @@ interface ThreadViewModel {
         private val currentUserAvatar = BehaviorSubject.create<String?>()
         private val replyComposerStatus = BehaviorSubject.create<CommentComposerStatus>()
         private val showReplyComposer = BehaviorSubject.create<Boolean>()
+        private val scrollToBottom = BehaviorSubject.create<Void>()
+        private val insertNewReplyToList = PublishSubject.create<Pair<String, DateTime>>()
 
         private val onCommentReplies = BehaviorSubject.create<List<CommentCardData>>()
 
@@ -85,6 +94,37 @@ interface ThreadViewModel {
                     this.onCommentReplies.onNext(it.first.comments?.toCommentCardList(it.second))
                 }
 
+            this.insertNewReplyToList
+                .distinctUntilChanged()
+                .withLatestFrom(this.currentUser.loggedInUser()) {
+                    comment, user ->
+                    Pair(comment, user)
+                }
+                .withLatestFrom(commentData) {
+                    reply, parent ->
+                    Pair(reply, parent)
+                }
+                .map {
+                    Pair(it.second, buildReplyBody(Pair(Pair(it.second, it.first.second), it.first.first)))
+                }
+                .map {
+                    CommentCardData.builder()
+                        .comment(it.second)
+                        .project(it.first.project)
+                        .commentableId(it.first.commentableId)
+                        .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
+                        .build()
+                }
+                .withLatestFrom(this.onCommentReplies) { reply, list ->
+                    list.toMutableList().apply {
+                        add(reply)
+                    }.toList()
+                }.compose(bindToLifecycle())
+                .subscribe {
+                    onCommentReplies.onNext(it)
+                    scrollToBottom.onNext(null)
+                }
+
             commentData
                 .compose(bindToLifecycle())
                 .subscribe {
@@ -117,6 +157,20 @@ interface ThreadViewModel {
                 }
         }
 
+        private fun buildReplyBody(it: Pair<Pair<CommentCardData, User>, Pair<String, DateTime>>): Comment {
+            return Comment.builder()
+                .body(it.second.first)
+                .parentId(it.first.first.comment?.id() ?: -1)
+                .authorBadges(listOf())
+                .createdAt(it.second.second)
+                .cursor("")
+                .deleted(false)
+                .id(-1)
+                .repliesCount(0)
+                .author(it.first.second)
+                .build()
+        }
+
         private fun getCommentComposerStatus(projectAndUser: Pair<Project, User?>) =
             when {
                 projectAndUser.second == null -> CommentComposerStatus.GONE
@@ -132,8 +186,13 @@ interface ThreadViewModel {
         override fun onCommentReplies(): Observable<List<CommentCardData>> = this.onCommentReplies
 
         override fun shouldFocusOnCompose(): Observable<Boolean> = this.focusOnCompose
+        override fun scrollToBottom(): Observable<Void> = this.scrollToBottom
+
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
         override fun replyComposerStatus(): Observable<CommentComposerStatus> = replyComposerStatus
         override fun showReplyComposer(): Observable<Boolean> = showReplyComposer
+        override fun insertNewReplyToList(comment: String, createdAt: DateTime) = this.insertNewReplyToList.onNext(
+            Pair(comment, createdAt)
+        )
     }
 }

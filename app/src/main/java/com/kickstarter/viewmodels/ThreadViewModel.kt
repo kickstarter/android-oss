@@ -126,9 +126,12 @@ interface ThreadViewModel {
                         .build()
                 }
                 .withLatestFrom(this.onCommentReplies) { reply, pair ->
-                    Pair(pair.first.toMutableList().apply {
-                        add(reply)
-                    }.toList(), pair.second)
+                    Pair(
+                        pair.first.toMutableList().apply {
+                            add(reply)
+                        }.toList(),
+                        pair.second
+                    )
                 }.compose(bindToLifecycle())
                 .subscribe {
                     onCommentReplies.onNext(it)

@@ -2,14 +2,14 @@ package com.kickstarter.ui.activities
 
 import android.os.Bundle
 import android.util.Pair
-import android.view.View
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityThreadLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
+import com.kickstarter.libs.RecyclerViewPaginator
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.adapters.RepliesAdapter
 import com.kickstarter.ui.extensions.hideKeyboard
@@ -28,6 +28,8 @@ class ThreadActivity :
     private lateinit var ksString: KSString
 
     private val adapter = RepliesAdapter(this)
+    private val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
+    private lateinit var recyclerViewPaginator: RecyclerViewPaginator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,21 +37,31 @@ class ThreadActivity :
         binding = ActivityThreadLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ksString = environment().ksString()
-
+        recyclerViewPaginator = RecyclerViewPaginator(binding.commentRepliesRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingReplies(), false)
+        linearLayoutManager.stackFromEnd = true
         binding.commentRepliesRecyclerView.adapter = adapter
+        binding.commentRepliesRecyclerView.layoutManager = linearLayoutManager
 
-        this.viewModel.getRootComment()
+        this.viewModel.outputs.getRootComment()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { comment ->
-                configureRootCommentView(comment)
+                adapter.updateRootCommentCell(comment)
             }
 
-        this.viewModel.onCommentReplies()
+        this.viewModel.outputs
+            .onCommentReplies()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { comments ->
-                this.adapter.takeData(comments)
+            .subscribe {
+                this.adapter.takeData(it.first.reversed(), it.second)
+            }
+
+        viewModel.outputs.isFetchingReplies()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                binding.repliesLoadingIndicator.isVisible = it
             }
 
         this.viewModel.shouldFocusOnCompose()
@@ -79,7 +91,7 @@ class ThreadActivity :
             .delay(200, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                binding.parentScrollContainer.fullScroll(View.FOCUS_DOWN)
+                binding.commentRepliesRecyclerView.smoothScrollToPosition(0)
             }
 
         viewModel.outputs.showReplyComposer()
@@ -87,6 +99,13 @@ class ThreadActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.replyComposer.isVisible = it
+            }
+
+        viewModel.outputs.loadMoreReplies()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                recyclerViewPaginator.reload()
             }
 
         binding.replyComposer.setCommentComposerActionClickListener(object :
@@ -106,15 +125,6 @@ class ThreadActivity :
     override fun onStop() {
         super.onStop()
         hideKeyboard()
-    }
-
-    private fun configureRootCommentView(comment: Comment) {
-        binding.commentsCardView.setCommentUserName(comment.author().name())
-        binding.commentsCardView.setCommentBody(comment.body())
-        binding.commentsCardView.hideReplyButton()
-        binding.commentsCardView.setCommentPostTime(DateTimeUtils.relative(this, ksString, comment.createdAt()))
-        binding.commentsCardView.setCommentUserName(comment.author().name())
-        binding.commentsCardView.setAvatarUrl(comment.author().avatar().medium())
     }
 
     override fun exitTransition(): Pair<Int, Int>? {
@@ -142,6 +152,16 @@ class ThreadActivity :
     }
 
     override fun onCommentPostedSuccessFully(comment: Comment) {
-        TODO("Not yet implemented")
+    }
+
+    override fun loadMoreCallback() {
+        viewModel.inputs.onViewMoreClicked()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        recyclerViewPaginator.stop()
+        binding.commentRepliesRecyclerView.adapter = null
+        this.viewModel = null
     }
 }

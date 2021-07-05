@@ -2,7 +2,6 @@ package com.kickstarter.ui.activities
 
 import android.os.Bundle
 import android.util.Pair
-import android.view.View
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
@@ -61,8 +60,8 @@ class ThreadActivity :
         viewModel.outputs.isFetchingReplies()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { comments ->
-                this.adapter.takeData(comments)
+            .subscribe {
+                binding.repliesLoadingIndicator.isVisible = it
             }
 
         this.viewModel.shouldFocusOnCompose()

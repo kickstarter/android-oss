@@ -33,7 +33,7 @@ class RepliesAdapter(private val delegate: Delegate) : KSListAdapter() {
             setSection(SECTION_COMMENTS, replies)
             setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, listOf(shouldViewMoreRepliesCell))
         }
-        setSection(SECTION_ERROR_PAGINATING, emptyList<Boolean>())
+        setSection(SECTION_ERROR_PAGINATING, listOf(false))
         submitList(items())
     }
 

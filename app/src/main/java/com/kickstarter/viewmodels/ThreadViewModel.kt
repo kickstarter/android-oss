@@ -85,7 +85,6 @@ interface ThreadViewModel {
         private val internalError = BehaviorSubject.create<Throwable>()
         private val initialError = BehaviorSubject.create<Throwable>()
         private val paginationError = BehaviorSubject.create<Throwable>()
-        private val pullToRefreshError = BehaviorSubject.create<Throwable>()
 
         init {
 
@@ -232,6 +231,7 @@ interface ThreadViewModel {
                 ?.distinctUntilChanged()
                 ?.share()
                 ?.subscribe {
+                    this.displayPaginationError.onNext(false)
                     this.onCommentReplies.onNext(it)
                 }
 

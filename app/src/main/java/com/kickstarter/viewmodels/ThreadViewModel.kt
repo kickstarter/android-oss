@@ -51,7 +51,7 @@ interface ThreadViewModel {
         fun isFetchingReplies(): Observable<Boolean>
         fun loadMoreReplies(): Observable<Void>
 
-        /** Display the bottom pagination Error Cell **/
+        /** Display the pagination Error Cell **/
         fun shouldShowPaginationErrorUI(): Observable<Boolean>
     }
 
@@ -238,7 +238,6 @@ interface ThreadViewModel {
             this.internalError
                 .compose(Transformers.combineLatestPair(onCommentReplies))
                 .filter {
-                    // it.first.second &&
                     it.second.first.isNullOrEmpty()
                 }
                 .compose(bindToLifecycle())

@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.6.1'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.7.1'
     }
 }
 
@@ -218,12 +218,6 @@ android {
         }
     }
 
-    configurations.all {
-        resolutionStrategy.force 'com.android.support:appcompat-v7:27.1.1'
-        resolutionStrategy.force 'com.android.support:animated-vector-drawable:27.1.1'
-        resolutionStrategy.force 'com.android.support:customtabs:27.1.1'
-    }
-
     buildFeatures {
         viewBinding true
     }
@@ -270,7 +264,7 @@ repositories {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.annotation:annotation:1.2.0'
-    implementation 'androidx.appcompat:appcompat:1.4.0-alpha02'
+    implementation 'androidx.appcompat:appcompat:1.3.0'
     implementation 'androidx.browser:browser:1.3.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.preference:preference-ktx:1.1.1'

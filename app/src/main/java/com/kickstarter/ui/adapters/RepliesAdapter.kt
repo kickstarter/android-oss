@@ -43,7 +43,7 @@ class RepliesAdapter(private val delegate: Delegate) : KSListAdapter() {
     }
 
     fun addErrorPaginationCell(shouldShowErrorCell: Boolean) {
-        setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, emptyList<Boolean>())
+        setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, listOf(false))
         // - we want to display SECTION_COMMENTS & SECTION_ERROR_PAGINATING at the same time so we should not clean SECTION_COMMENTS
         setSection(SECTION_ERROR_PAGINATING, listOf(shouldShowErrorCell))
         submitList(items())

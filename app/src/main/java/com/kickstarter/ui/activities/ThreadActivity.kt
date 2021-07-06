@@ -5,7 +5,6 @@ import android.util.Pair
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.databinding.ActivityThreadLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
@@ -60,7 +59,7 @@ class ThreadActivity :
                 this.adapter.takeData(it.first.reversed(), it.second)
             }
 
-            viewModel.outputs.shouldShowPaginationErrorUI()
+        viewModel.outputs.shouldShowPaginationErrorUI()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {

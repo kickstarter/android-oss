@@ -40,7 +40,7 @@ class ThreadActivity :
         setContentView(binding.root)
         ksString = environment().ksString()
         recyclerViewPaginator = RecyclerViewPaginator(binding.commentRepliesRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingReplies(), false)
-        linearLayoutManager.stackFromEnd = true
+        
         binding.commentRepliesRecyclerView.adapter = adapter
         binding.commentRepliesRecyclerView.layoutManager = linearLayoutManager
 
@@ -99,6 +99,7 @@ class ThreadActivity :
             .compose(bindToLifecycle())
             .delay(200, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnNext { reBindLayoutManager(true) }
             .subscribe {
                 binding.commentRepliesRecyclerView.smoothScrollToPosition(0)
             }
@@ -164,11 +165,19 @@ class ThreadActivity :
     }
 
     override fun loadMoreCallback() {
+        reBindLayoutManager(false)
         viewModel.inputs.onViewMoreClicked()
     }
 
     override fun retryCallback() {
+        reBindLayoutManager(false)
         viewModel.inputs.onViewMoreClicked()
+    }
+
+    // we want to change stackFromEnd to be able to scroll after adding new comment
+    private fun reBindLayoutManager(stackFromEnd: Boolean) {
+        linearLayoutManager.stackFromEnd = stackFromEnd
+        binding.commentRepliesRecyclerView.layoutManager = linearLayoutManager
     }
 
     override fun onDestroy() {

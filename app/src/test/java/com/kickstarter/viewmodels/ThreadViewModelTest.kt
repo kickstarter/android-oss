@@ -245,38 +245,4 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
 
         this.loadMoreReplies.assertValueCount(1)
     }
-
-    @Test
-    fun testLoadCommentReplies_pagination() {
-        val createdAt = DateTime.now()
-        val replies = CommentEnvelopeFactory.repliesCommentsEnvelopeHasPrevious(createdAt = createdAt)
-        val env = environment().toBuilder()
-            .apolloClient(object : MockApolloClient() {
-                override fun getRepliesForComment(
-                    comment: Comment,
-                    cursor: String?,
-                    pageSize: Int
-                ): Observable<CommentEnvelope> {
-                    return Observable.just(replies)
-                }
-            })
-            .build()
-
-        setUpEnvironment(env)
-
-        val onReplies = BehaviorSubject.create<Pair<List<CommentCardData>, Boolean>>()
-        this.vm.onCommentReplies().subscribe(onReplies)
-
-        // Start the view model with a backed project and comment.
-        vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, CommentCardDataFactory.commentCardData()))
-
-        val onRepliesResult = onReplies.value
-
-        assertEquals(replies.comments?.size, onRepliesResult?.first?.size)
-        assertEquals(true, onRepliesResult?.second)
-
-        vm.inputs.onViewMoreClicked()
-
-        this.loadMoreReplies.assertValueCount(1)
-    }
 }

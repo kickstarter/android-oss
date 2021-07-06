@@ -28,7 +28,7 @@ class RepliesAdapter(private val delegate: Delegate) : KSListAdapter() {
         insertSection(SECTION_ROOT_COMMENT, emptyList<Comment>())
     }
 
-    fun takeData(replies: List<CommentCardData>, shouldViewMoreRepliesCell: Boolean,) {
+    fun takeData(replies: List<CommentCardData>, shouldViewMoreRepliesCell: Boolean) {
         if (replies.isNotEmpty()) {
             setSection(SECTION_COMMENTS, replies)
             setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, listOf(shouldViewMoreRepliesCell))

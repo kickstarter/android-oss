@@ -838,7 +838,7 @@ private fun createPageInfoObject(pageFr: fragment.PageInfo?): PageInfoEnvelope {
 }
 
 private fun createCommentEnvelop(responseData: GetRepliesForCommentQuery.Data): CommentEnvelope {
-    val replies = (responseData.commentable() as GetRepliesForCommentQuery.AsComment).replies()
+    val replies = (responseData.commentable() as? GetRepliesForCommentQuery.AsComment)?.replies()
     val listOfComments = replies?.nodes()?.map { commentFragment ->
         createCommentObject(commentFragment.fragments().comment())
     } ?: emptyList()

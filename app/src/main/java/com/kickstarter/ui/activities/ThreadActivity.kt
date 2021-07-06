@@ -1,29 +1,37 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
+import android.util.Pair
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.kickstarter.R
 import com.kickstarter.databinding.ActivityThreadLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
+import com.kickstarter.libs.RecyclerViewPaginator
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.adapters.RepliesAdapter
 import com.kickstarter.ui.extensions.hideKeyboard
+import com.kickstarter.ui.viewholders.PaginationErrorViewHolder
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
 import com.kickstarter.viewmodels.ThreadViewModel
+import org.joda.time.DateTime
 import rx.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
 
 @RequiresActivityViewModel(ThreadViewModel.ViewModel::class)
 class ThreadActivity :
     BaseActivity<ThreadViewModel.ViewModel>(),
+    PaginationErrorViewHolder.ViewListener,
     RepliesAdapter.Delegate {
 
     private lateinit var binding: ActivityThreadLayoutBinding
     private lateinit var ksString: KSString
 
     private val adapter = RepliesAdapter(this)
+    private val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
+    private lateinit var recyclerViewPaginator: RecyclerViewPaginator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,21 +39,38 @@ class ThreadActivity :
         binding = ActivityThreadLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ksString = environment().ksString()
+        recyclerViewPaginator = RecyclerViewPaginator(binding.commentRepliesRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingReplies(), false)
 
         binding.commentRepliesRecyclerView.adapter = adapter
+        binding.commentRepliesRecyclerView.layoutManager = linearLayoutManager
 
-        this.viewModel.getRootComment()
+        this.viewModel.outputs.getRootComment()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { comment ->
-                configureRootCommentView(comment)
+                adapter.updateRootCommentCell(comment)
             }
 
-        this.viewModel.onCommentReplies()
+        this.viewModel.outputs
+            .onCommentReplies()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { comments ->
-                this.adapter.takeData(comments)
+            .subscribe {
+                this.adapter.takeData(it.first.reversed(), it.second)
+            }
+
+        viewModel.outputs.shouldShowPaginationErrorUI()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                adapter.addErrorPaginationCell(it)
+            }
+
+        viewModel.outputs.isFetchingReplies()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                binding.repliesLoadingIndicator.isVisible = it
             }
 
         this.viewModel.shouldFocusOnCompose()
@@ -70,6 +95,15 @@ class ThreadActivity :
                 binding.replyComposer.setCommentComposerStatus(it)
             }
 
+        viewModel.outputs.scrollToBottom()
+            .compose(bindToLifecycle())
+            .delay(200, TimeUnit.MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnNext { reBindLayoutManager(true) }
+            .subscribe {
+                binding.commentRepliesRecyclerView.smoothScrollToPosition(0)
+            }
+
         viewModel.outputs.showReplyComposer()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
@@ -77,13 +111,25 @@ class ThreadActivity :
                 binding.replyComposer.isVisible = it
             }
 
+        viewModel.outputs.loadMoreReplies()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                recyclerViewPaginator.reload()
+            }
+
         binding.replyComposer.setCommentComposerActionClickListener(object :
                 OnCommentComposerViewClickedListener {
                 override fun onClickActionListener(string: String) {
-                    // TODO add Post Replay
+                    postReply(string)
                     hideKeyboard()
                 }
             })
+    }
+
+    fun postReply(comment: String) {
+        this.viewModel.inputs.insertNewReplyToList(comment, DateTime.now())
+        this.binding.replyComposer.clearCommentComposer()
     }
 
     override fun onStop() {
@@ -91,13 +137,8 @@ class ThreadActivity :
         hideKeyboard()
     }
 
-    private fun configureRootCommentView(comment: Comment) {
-        binding.commentsCardView.setCommentUserName(comment.author().name())
-        binding.commentsCardView.setCommentBody(comment.body())
-        binding.commentsCardView.hideReplyButton()
-        binding.commentsCardView.setCommentPostTime(DateTimeUtils.relative(this, ksString, comment.createdAt()))
-        binding.commentsCardView.setCommentUserName(comment.author().name())
-        binding.commentsCardView.setAvatarUrl(comment.author().avatar().medium())
+    override fun exitTransition(): Pair<Int, Int>? {
+        return Pair.create(R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
     }
 
     override fun onRetryViewClicked(comment: Comment) {
@@ -121,6 +162,31 @@ class ThreadActivity :
     }
 
     override fun onCommentPostedSuccessFully(comment: Comment) {
-        TODO("Not yet implemented")
+    }
+
+    override fun loadMoreCallback() {
+        reBindLayoutManager(false)
+        viewModel.inputs.onViewMoreClicked()
+    }
+
+    override fun retryCallback() {
+        reBindLayoutManager(false)
+        viewModel.inputs.onViewMoreClicked()
+    }
+
+    // we want to change stackFromEnd to be able to scroll after adding new comment
+    private fun reBindLayoutManager(stackFromEnd: Boolean) {
+        if (linearLayoutManager.stackFromEnd == stackFromEnd) {
+            return
+        }
+        linearLayoutManager.stackFromEnd = stackFromEnd
+        binding.commentRepliesRecyclerView.layoutManager = linearLayoutManager
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        recyclerViewPaginator.stop()
+        binding.commentRepliesRecyclerView.adapter = null
+        this.viewModel = null
     }
 }

@@ -29,5 +29,13 @@ class CommentEnvelopeFactory {
                 .pageInfoEnvelope(PageInfoEnvelopeFactory.pageInfoEnvelope())
                 .build()
         }
+
+        fun repliesCommentsEnvelopeHasPrevious(createdAt: DateTime): CommentEnvelope {
+            return CommentEnvelope.builder()
+                .totalCount(1)
+                .comments(listOf(CommentFactory.reply(createdAt = createdAt)))
+                .pageInfoEnvelope(PageInfoEnvelopeFactory.pageInfoEnvelopeHasPrevious())
+                .build()
+        }
     }
 }

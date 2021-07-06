@@ -9,6 +9,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectUtils
+import com.kickstarter.libs.utils.extensions.isReply
 import com.kickstarter.models.Comment
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -199,8 +200,11 @@ interface CommentsViewHolderViewModel {
 
             comment
                 .map { it.repliesCount() }
+                .compose(combineLatestPair(this.isCommentEnableThreads))
                 .compose(bindToLifecycle())
-                .subscribe(this.commentRepliesCount)
+                .subscribe {
+                    this.commentRepliesCount.onNext(it.first)
+                }
 
             comment
                 .map { it.author()?.name() }
@@ -266,15 +270,15 @@ interface CommentsViewHolderViewModel {
                 .map {
                     Pair(
                         requireNotNull(it.first.commentableId),
-                        requireNotNull(it.first?.comment?.body())
+                        requireNotNull(it.first?.comment)
                     )
                 }
                 .map {
                     PostCommentData(
                         commentableId = it.first,
-                        body = it.second,
+                        body = it.second.body(),
                         clientMutationId = null,
-                        parentId = null
+                        parent = it.second?.parentId()?.let { id -> it.second.toBuilder().id(id).build() }
                     )
                 }
 
@@ -288,6 +292,7 @@ interface CommentsViewHolderViewModel {
                 .subscribe {
                     this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
                     this.postedSuccessfully.onNext(it)
+                    if (it.isReply()) this.isReplyButtonVisible.onNext(false)
                 }
 
             Observable
@@ -375,7 +380,7 @@ interface CommentsViewHolderViewModel {
          */
         private fun cardStatus(commentCardData: CommentCardData) = when {
             commentCardData.comment?.deleted() ?: false -> CommentCardStatus.DELETED_COMMENT
-            (commentCardData.comment?.repliesCount() ?: false != 0) -> CommentCardStatus.COMMENT_WITH_REPLIES
+            (commentCardData.comment?.repliesCount() ?: 0 != 0) -> CommentCardStatus.COMMENT_WITH_REPLIES
             else -> CommentCardStatus.values().firstOrNull { it.commentCardStatus == commentCardData.commentCardState }
         }.also {
             this.isCommentEnableThreads.onNext(optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_ENABLE_THREADS))

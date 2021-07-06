@@ -30,6 +30,7 @@ import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
+import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
@@ -673,13 +674,15 @@ class ProjectActivity :
     }
 
     private fun startRootCommentsActivity(projectAndData: Pair<Project, ProjectData>) {
-        startActivityWithTransition(
+        startActivity(
             Intent(this, CommentsActivity::class.java)
                 .putExtra(IntentKey.PROJECT, projectAndData.first)
-                .putExtra(IntentKey.PROJECT_DATA, projectAndData.second),
-            R.anim.slide_in_right,
-            R.anim.fade_out_slide_out_left
+                .putExtra(IntentKey.PROJECT_DATA, projectAndData.second)
         )
+
+        this.let {
+            TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
+        }
     }
 
     private fun startShareIntent(projectNameAndShareUrl: Pair<String, String>) {

@@ -12,20 +12,33 @@ import androidx.recyclerview.widget.RecyclerView;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action0;
+import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 
 public final class RecyclerViewPaginator {
   private final @NonNull RecyclerView recyclerView;
+  private final @NonNull Boolean isScrollEnabled;
   private final @NonNull Action0 nextPage;
-  private Observable<Boolean> isLoading;
+  private final Observable<Boolean> isLoading;
   private Subscription subscription;
   private static final int DIRECTION_DOWN = 1;
+  private Subscription retrySubscription;
+  private final PublishSubject<Void> retryLoadingNextPageSubject =  PublishSubject.create();
 
   public RecyclerViewPaginator(final @NonNull RecyclerView recyclerView, final @NonNull Action0 nextPage, final @NonNull Observable<Boolean> isLoading) {
     this.recyclerView = recyclerView;
     this.nextPage = nextPage;
     this.isLoading = isLoading;
+    this.isScrollEnabled =true;
+    start();
+  }
+
+  public RecyclerViewPaginator(final @NonNull RecyclerView recyclerView, final @NonNull Action0 nextPage, final @NonNull Observable<Boolean> isLoading, final @NonNull Boolean isScrollEnabled) {
+    this.recyclerView = recyclerView;
+    this.nextPage = nextPage;
+    this.isLoading = isLoading;
+    this.isScrollEnabled =isScrollEnabled;
     start();
   }
 
@@ -56,7 +69,20 @@ public final class RecyclerViewPaginator {
       .filter(this::visibleItemIsCloseToBottom);
 
     this.subscription = loadNextPage
-      .subscribe(__ -> this.nextPage.call());
+      .subscribe(__ ->{
+        if(this.isScrollEnabled) {
+          this.nextPage.call();
+        }
+      });
+
+    this.retrySubscription = this.retryLoadingNextPageSubject
+            .subscribe(__ ->
+            this.nextPage.call()
+    );
+  }
+
+  public void reload() {
+    this.retryLoadingNextPageSubject.onNext(null);
   }
 
   /**
@@ -68,6 +94,10 @@ public final class RecyclerViewPaginator {
     if (this.subscription != null) {
       this.subscription.unsubscribe();
       this.subscription = null;
+    }
+    if (this.retrySubscription != null) {
+      this.retrySubscription.unsubscribe();
+      this.retrySubscription = null;
     }
   }
 

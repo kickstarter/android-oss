@@ -18,6 +18,7 @@ import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
 import rx.schedulers.TestScheduler
+import rx.subjects.BehaviorSubject
 import java.util.concurrent.TimeUnit
 
 class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
@@ -285,11 +286,17 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSetRepliesCount() {
-        setUpEnvironment(environment())
+        val repliesCount = BehaviorSubject.create<Int>()
+
+        val environment = optimizelyFeatureFlagOn().toBuilder()
+            .currentUser(MockCurrentUser(UserFactory.user()))
+            .build()
+        setUpEnvironment(environment)
         val comment = CommentFactory.comment(repliesCount = 1)
         val commentData = CommentCardData.builder().comment(comment).project(ProjectFactory.project()).build()
+        this.vm.outputs.commentRepliesCount().subscribe(repliesCount)
         this.vm.inputs.configureWith(commentData)
-        this.repliesCount.assertValue(comment.repliesCount())
+        assertEquals(comment.repliesCount(), repliesCount.value)
     }
 
     private fun optimizelyFeatureFlagOn() = environment().toBuilder()
@@ -507,5 +514,38 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         )
 
         this.isCommentReply.assertValue(null)
+    }
+
+    @Test
+    fun testPostReply_Successful() {
+        val reply = CommentFactory.reply(createdAt = createdAt)
+        val currentUser = UserFactory.user().toBuilder().id(1).build()
+
+        val env = environment().toBuilder()
+            .apolloClient(object : MockApolloClient() {
+                override fun createComment(comment: PostCommentData): Observable<Comment> {
+                    return Observable.just(reply)
+                }
+            })
+            .currentUser(MockCurrentUser(currentUser))
+            .build()
+        setUpEnvironment(env)
+
+        val comment = CommentFactory.commentToPostWithUser(currentUser)
+        val commentCardData = CommentCardData.builder()
+            .comment(comment)
+            .project(ProjectFactory.initialProject())
+            .commentableId(ProjectFactory.initialProject().id().toString())
+            .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
+            .build()
+
+        this.vm.inputs.configureWith(commentCardData)
+
+        this.commentCardStatus.assertValues(
+            CommentCardStatus.TRYING_TO_POST,
+            CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS
+        )
+
+        this.commentSuccessfullyPosted.assertValue(reply)
     }
 }

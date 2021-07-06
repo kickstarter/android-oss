@@ -316,7 +316,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             val ps = PublishSubject.create<Comment>()
             this.service.mutate(
                 CreateCommentMutation.builder()
-                    .parentId(comment.parentId)
+                    .parentId(comment.parent?.let { encodeRelayId(it) })
                     .commentableId(comment.commentableId)
                     .clientMutationId(comment.clientMutationId)
                     .body(comment.body)
@@ -807,7 +807,7 @@ private fun createCommentObject(commentFr: fragment.Comment?): Comment {
 
     val author = User.builder()
         .id(decodeRelayId(commentFr?.author()?.fragments()?.user()?.id()) ?: -1)
-        .name(commentFr?.author()?.fragments()?.user()?.name())
+        .name(commentFr?.author()?.fragments()?.user()?.name() ?: "")
         .avatar(
             Avatar.builder()
                 .medium(commentFr?.author()?.fragments()?.user()?.imageUrl())

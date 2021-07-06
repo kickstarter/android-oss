@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders
 
 import android.view.View
+import androidx.constraintlayout.widget.Constraints
 import com.kickstarter.R
 import com.kickstarter.databinding.ItemCommentCardBinding
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -9,11 +10,11 @@ import com.kickstarter.models.Comment
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.views.OnCommentCardClickedListener
 import com.kickstarter.viewmodels.CommentsViewHolderViewModel
-import kotlinx.android.synthetic.main.comment_card.view.*
 
 class CommentCardViewHolder(
     val binding: ItemCommentCardBinding,
-    val delegate: Delegate
+    val delegate: Delegate,
+    val isReply: Boolean = false
 ) : KSViewHolder(binding.root) {
 
     interface Delegate {
@@ -131,6 +132,15 @@ class CommentCardViewHolder(
             context().getString(R.string.This_comment_has_been_removed_by_Kickstarter) +
                 context().getString(R.string.Learn_more_about_comment_guidelines)
         )
+
+        if (isReply) {
+            val params = Constraints.LayoutParams(
+                Constraints.LayoutParams.MATCH_PARENT,
+                Constraints.LayoutParams.WRAP_CONTENT
+            )
+            params.setMargins(context().resources.getDimension(R.dimen.grid_5).toInt(), 0, 0, 0)
+            binding.cardCl.layoutParams = params
+        }
     }
 
     override fun bindData(data: Any?) {

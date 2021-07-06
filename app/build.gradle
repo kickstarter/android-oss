@@ -269,25 +269,25 @@ repositories {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.annotation:annotation:1.1.0'
-    implementation 'androidx.appcompat:appcompat:1.3.0-alpha02'
+    implementation 'androidx.annotation:annotation:1.2.0'
+    implementation 'androidx.appcompat:appcompat:1.4.0-alpha02'
     implementation 'androidx.browser:browser:1.3.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.preference:preference-ktx:1.1.1'
-    implementation 'androidx.recyclerview:recyclerview:1.2.0-beta01'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.work:work-runtime-ktx:2.4.0'
+    implementation 'androidx.work:work-runtime-ktx:2.6.0-beta01'
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
     implementation 'com.apollographql.apollo:apollo-runtime:2.3.0'
     implementation 'com.facebook.android:facebook-android-sdk:7.1.0'
     final auto_parcel_version = "0.3.1"
     implementation "com.github.frankiesardo:auto-parcel:$auto_parcel_version"
     kapt "com.github.frankiesardo:auto-parcel-processor:$auto_parcel_version"
-    implementation "com.google.android.gms:play-services-wallet:18.1.2"
-    implementation "com.google.android.exoplayer:exoplayer:2.10.2"
+    implementation "com.google.android.gms:play-services-wallet:18.1.3"
+    implementation "com.google.android.exoplayer:exoplayer:2.14.1"
     implementation 'com.google.android:flexbox:1.1.0'
-    implementation 'com.google.android.material:material:1.3.0-beta01'
-    final dagger_version = "2.28.3"
+    implementation 'com.google.android.material:material:1.4.0-rc01'
+    final dagger_version = "2.37"
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     implementation "com.jakewharton:process-phoenix:2.0.0"
@@ -295,7 +295,7 @@ dependencies {
     implementation "com.jakewharton.rxbinding:rxbinding:$rx_binding_version"
     implementation "com.jakewharton.rxbinding:rxbinding-recyclerview-v7:$rx_binding_version"
     implementation "com.jakewharton.rxbinding:rxbinding-support-v4:$rx_binding_version"
-    implementation "com.jakewharton.timber:timber:3.0.1"
+    implementation "com.jakewharton.timber:timber:4.7.1"
     implementation 'com.optimizely.ab:android-sdk:3.10.1'
     implementation 'com.qualtrics:digital:1.3'
     implementation "com.stripe:stripe-android:16.10.0"
@@ -312,7 +312,7 @@ dependencies {
     implementation "com.trello:rxlifecycle-components:$rx_lifecycle_version"
     implementation 'io.reactivex:rxandroid:1.2.1'
     implementation "io.reactivex:rxjava:1.3.8"
-    implementation "net.danlew:android.joda:2.9.3"
+    implementation "net.danlew:android.joda:2.10.7"
     implementation "org.jsoup:jsoup:1.12.1"
 
     // Analytics Segment-Braze
@@ -331,12 +331,12 @@ dependencies {
     implementation 'com.google.firebase:firebase-inappmessaging-display'
 
     // Testing
-    testImplementation "junit:junit:4.12"
-    testImplementation "org.mockito:mockito-core:2.8.9"
+    testImplementation "junit:junit:4.13.2"
+    testImplementation "org.mockito:mockito-core:3.6.0"
     testImplementation "org.robolectric:robolectric:4.4"
     testImplementation "org.robolectric:shadows-multidex:4.4"
     testImplementation "androidx.test:core:1.3.0"
-    androidTestImplementation 'androidx.annotation:annotation:1.1.0'
+    androidTestImplementation 'androidx.annotation:annotation:1.2.0'
 
     def espresso = '3.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:' + espresso

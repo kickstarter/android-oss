@@ -1,12 +1,13 @@
 package com.kickstarter.viewmodels
 
 import android.content.Intent
+import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.mock.factories.AvatarFactory
+import com.kickstarter.mock.factories.CommentCardDataFactory
 import com.kickstarter.mock.factories.CommentEnvelopeFactory
-import com.kickstarter.mock.factories.CommentFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient
@@ -19,18 +20,18 @@ import org.joda.time.DateTime
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
+import rx.subjects.BehaviorSubject
 
 class ThreadViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: ThreadViewModel.ViewModel
     private val getComment = TestSubscriber<Comment>()
     private val focusCompose = TestSubscriber<Boolean>()
-    private val onReplies = TestSubscriber<List<CommentCardData>>()
-
-    private val createdAt = DateTime.now()
+    private val onReplies = TestSubscriber<Pair<List<CommentCardData>, Boolean>>()
 
     private val replyComposerStatus = TestSubscriber<CommentComposerStatus>()
     private val showReplyComposer = TestSubscriber<Boolean>()
+    private val loadMoreReplies = TestSubscriber<Void>()
 
     private fun setUpEnvironment() {
         setUpEnvironment(environment())
@@ -41,19 +42,20 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         this.vm.getRootComment().subscribe(getComment)
         this.vm.shouldFocusOnCompose().subscribe(focusCompose)
         this.vm.onCommentReplies().subscribe(onReplies)
+        this.vm.loadMoreReplies().subscribe(loadMoreReplies)
     }
 
     @Test
     fun testGetRootComment() {
         setUpEnvironment()
 
-        val comment = CommentFactory.comment(avatar = AvatarFactory.avatar())
+        val commentCardData = CommentCardDataFactory.commentCardData()
 
-        this.vm.intent(Intent().putExtra(IntentKey.COMMENT, comment))
-        getComment.assertValue(comment)
+        this.vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, CommentCardDataFactory.commentCardData()))
+        getComment.assertValue(commentCardData.comment)
 
-        this.vm.intent(Intent().putExtra("Some other Key", comment))
-        getComment.assertValue(comment)
+        this.vm.intent(Intent().putExtra("Some other Key", commentCardData))
+        getComment.assertValue(commentCardData.comment)
     }
 
     @Test
@@ -101,8 +103,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         vm.outputs.replyComposerStatus().subscribe(replyComposerStatus)
         vm.outputs.showReplyComposer().subscribe(showReplyComposer)
 
-        // Start the view model with a backed project.
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+        // Start the view model with a backed project and comment.
+        vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, CommentCardDataFactory.commentCardDataBacked()))
 
         // The comment composer should be shown to backer and enabled to write comments
         replyComposerStatus.assertValue(CommentComposerStatus.ENABLED)
@@ -116,8 +118,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         vm.outputs.replyComposerStatus().subscribe(replyComposerStatus)
         vm.outputs.showReplyComposer().subscribe(showReplyComposer)
 
-        // Start the view model with a backed project.
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        // Start the view model with a backed project and comment.
+        vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, CommentCardDataFactory.commentCardData()))
 
         // The comment composer should be hidden and disabled to write comments as no user logged-in
         showReplyComposer.assertValue(false)
@@ -132,8 +134,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         vm.outputs.replyComposerStatus().subscribe(replyComposerStatus)
         vm.outputs.showReplyComposer().subscribe(showReplyComposer)
 
-        // Start the view model with a backed project.
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        // Start the view model with a backed project and comment.
+        vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, CommentCardDataFactory.commentCardData()))
 
         // The comment composer should show but in disabled state
         replyComposerStatus.assertValue(CommentComposerStatus.DISABLED)
@@ -155,8 +157,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         vm.outputs.replyComposerStatus().subscribe(replyComposerStatus)
         vm.outputs.showReplyComposer().subscribe(showReplyComposer)
 
-        // Start the view model with a project.
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        // Start the view model with a backed project and comment.
+        vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, CommentCardDataFactory.commentCardDataBacked()))
 
         // The comment composer enabled to write comments for creator
         showReplyComposer.assertValues(true, true)
@@ -179,8 +181,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         vm.outputs.replyComposerStatus().subscribe(replyComposerStatus)
         vm.outputs.showReplyComposer().subscribe(showReplyComposer)
 
-        // Start the view model with a project.
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        // Start the view model with a backed project and comment.
+        vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, CommentCardDataFactory.commentCardData()))
 
         // Comment composer should be disabled and shown the disabled msg if not backing and not creator.
         showReplyComposer.assertValues(true, true)
@@ -189,6 +191,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testLoadCommentReplies_Successful() {
+        val createdAt = DateTime.now()
         val env = environment().toBuilder()
             .apolloClient(object : MockApolloClient() {
                 override fun getRepliesForComment(
@@ -203,9 +206,43 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(env)
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
-        this.vm.intent(Intent().putExtra(IntentKey.COMMENT, CommentFactory.reply(createdAt = createdAt)))
+        // Start the view model with a backed project and comment.
+        vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, CommentCardDataFactory.commentCardData()))
 
-        this.onReplies.assertValueCount(1)
+        this.onReplies.assertValueCount(2)
+    }
+
+    @Test
+    fun testLoadCommentReplies_pagination() {
+        val createdAt = DateTime.now()
+        val replies = CommentEnvelopeFactory.repliesCommentsEnvelopeHasPrevious(createdAt = createdAt)
+        val env = environment().toBuilder()
+            .apolloClient(object : MockApolloClient() {
+                override fun getRepliesForComment(
+                    comment: Comment,
+                    cursor: String?,
+                    pageSize: Int
+                ): Observable<CommentEnvelope> {
+                    return Observable.just(replies)
+                }
+            })
+            .build()
+
+        setUpEnvironment(env)
+
+        val onReplies = BehaviorSubject.create<Pair<List<CommentCardData>, Boolean>>()
+        this.vm.onCommentReplies().subscribe(onReplies)
+
+        // Start the view model with a backed project and comment.
+        vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, CommentCardDataFactory.commentCardData()))
+
+        val onRepliesResult = onReplies.value
+
+        assertEquals(replies.comments?.size, onRepliesResult?.first?.size)
+        assertEquals(true, onRepliesResult?.second)
+
+        vm.inputs.onViewMoreClicked()
+
+        this.loadMoreReplies.assertValueCount(1)
     }
 }

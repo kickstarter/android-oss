@@ -2,20 +2,23 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Pair
 import android.view.View
 import androidx.core.view.isVisible
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityCommentsLayoutBinding
 import com.kickstarter.libs.BaseActivity
-import com.kickstarter.libs.loadmore.PaginationHandler
+import com.kickstarter.libs.RecyclerViewPaginator
+import com.kickstarter.libs.SwipeRefresher
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ApplicationUtils
+import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Comment
-import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.CommentsAdapter
+import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.viewholders.EmptyCommentsViewHolder
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
@@ -30,6 +33,9 @@ class CommentsActivity :
     CommentsAdapter.Delegate {
     private lateinit var binding: ActivityCommentsLayoutBinding
     private val adapter = CommentsAdapter(this)
+
+    private lateinit var recyclerViewPaginator: RecyclerViewPaginator
+    private lateinit var swipeRefresher: SwipeRefresher
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,6 +86,7 @@ class CommentsActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
+                setEmptyState(false)
                 adapter.insertPageError()
             }
 
@@ -131,47 +138,25 @@ class CommentsActivity :
     }
 
     private fun setupPagination() {
-        val paginationHandler = PaginationHandler(
-            adapter,
-            binding.commentsRecyclerView,
-            binding.commentsSwipeRefreshLayout
-        )
 
-        paginationHandler.onRefreshListener = {
-            viewModel.inputs.refresh()
-        }
+        recyclerViewPaginator = RecyclerViewPaginator(binding.commentsRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingComments())
 
-        paginationHandler.onLoadMoreListener = {
-            viewModel.inputs.nextPage()
-        }
+        swipeRefresher = SwipeRefresher(
+            this, binding.commentsSwipeRefreshLayout, { viewModel.inputs.refresh() }
+        ) { viewModel.outputs.isFetchingComments() }
 
-        viewModel.outputs.enablePagination()
+        viewModel.outputs.isFetchingComments()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                paginationHandler.loadMoreEnabled = it
-            }
-
-        viewModel.outputs.isLoadingMoreItems()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                paginationHandler.isLoading(it)
                 binding.commentsLoadingIndicator.isVisible = it
-            }
-
-        viewModel.outputs.isRefreshing()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                paginationHandler.refreshing(it)
             }
 
         viewModel.outputs.startThreadActivity()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                startThreadActivity(it.first.first, it.second, it.first.second)
+                startThreadActivity(it.first, it.second)
             }
     }
 
@@ -195,7 +180,7 @@ class CommentsActivity :
     }
 
     override fun retryCallback() {
-        viewModel.inputs.nextPage()
+        recyclerViewPaginator.reload()
     }
 
     override fun emptyCommentsLoginClicked(viewHolder: EmptyCommentsViewHolder?) {
@@ -233,22 +218,25 @@ class CommentsActivity :
      * // TODO: Once the viewReplies UI is completed call this method with openKeyboard = false
      * // TODO: https://kickstarter.atlassian.net/browse/NT-1955
      */
-    private fun startThreadActivity(comment: Comment, project: Project, openKeyboard: Boolean) {
+    private fun startThreadActivity(commentData: CommentCardData, openKeyboard: Boolean) {
         val threadIntent = Intent(this, ThreadActivity::class.java).apply {
-            putExtra(IntentKey.COMMENT, comment)
-            putExtra(IntentKey.PROJECT, project)
+            putExtra(IntentKey.COMMENT_CARD_DATA, commentData)
             putExtra(IntentKey.REPLY_EXPAND, openKeyboard)
         }
 
-        startActivityWithTransition(
-            threadIntent,
-            R.anim.slide_in_right,
-            R.anim.fade_out_slide_out_left
-        )
+        startActivity(threadIntent)
+        this.let {
+            TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
+        }
+    }
+
+    override fun exitTransition(): Pair<Int, Int>? {
+        return Pair.create(R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        recyclerViewPaginator.stop()
         binding.commentsRecyclerView.adapter = null
         this.viewModel = null
     }

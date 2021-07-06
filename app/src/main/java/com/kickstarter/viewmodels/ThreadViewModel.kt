@@ -50,6 +50,9 @@ interface ThreadViewModel {
 
         fun isFetchingReplies(): Observable<Boolean>
         fun loadMoreReplies(): Observable<Void>
+
+        /** Display the pagination Error Cell **/
+        fun shouldShowPaginationErrorUI(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ThreadActivity>(environment), Inputs, Outputs {
@@ -70,12 +73,18 @@ interface ThreadViewModel {
         private val hasPreviousElements = BehaviorSubject.create<Boolean>()
         private val refresh = PublishSubject.create<Void>()
         private val loadMoreReplies = PublishSubject.create<Void>()
+        private val displayPaginationError = BehaviorSubject.create<Boolean>()
 
         private val onCommentReplies = BehaviorSubject.create<Pair<List<CommentCardData>, Boolean>>()
         private var project: Project? = null
 
         val inputs = this
         val outputs = this
+
+        // - Error observables to handle the 3 different use cases
+        private val internalError = BehaviorSubject.create<Throwable>()
+        private val initialError = BehaviorSubject.create<Throwable>()
+        private val paginationError = BehaviorSubject.create<Throwable>()
 
         init {
 
@@ -174,6 +183,12 @@ interface ThreadViewModel {
                 .subscribe {
                     this.loadMoreReplies.onNext(null)
                 }
+
+            this.paginationError
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.displayPaginationError.onNext(true)
+                }
         }
 
         private fun loadCommentListFromProjectOrUpdate(comment: Observable<Comment>) {
@@ -216,7 +231,28 @@ interface ThreadViewModel {
                 ?.distinctUntilChanged()
                 ?.share()
                 ?.subscribe {
+                    this.displayPaginationError.onNext(false)
                     this.onCommentReplies.onNext(it)
+                }
+
+            this.internalError
+                .compose(Transformers.combineLatestPair(onCommentReplies))
+                .filter {
+                    it.second.first.isNullOrEmpty()
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.initialError.onNext(it.first)
+                }
+
+            this.internalError
+                .compose(Transformers.combineLatestPair(onCommentReplies))
+                .filter {
+                    it.second.first.isNotEmpty()
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.paginationError.onNext(it.first)
                 }
         }
 
@@ -228,7 +264,10 @@ interface ThreadViewModel {
         ): Observable<CommentEnvelope> {
             return comment.switchMap {
                 return@switchMap this.apolloClient.getRepliesForComment(it, cursor)
+            }.doOnError {
+                this.internalError.onNext(it)
             }
+                .onErrorResumeNext(Observable.empty())
         }
 
         private fun buildReplyBody(it: Pair<Pair<CommentCardData, User>, Pair<String, DateTime>>): Comment {
@@ -273,5 +312,6 @@ interface ThreadViewModel {
         )
         override fun isFetchingReplies(): Observable<Boolean> = this.isFetchingReplies
         override fun loadMoreReplies(): Observable<Void> = this.loadMoreReplies
+        override fun shouldShowPaginationErrorUI(): Observable<Boolean> = this.displayPaginationError
     }
 }

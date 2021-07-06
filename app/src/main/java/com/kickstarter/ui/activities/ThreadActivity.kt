@@ -40,7 +40,7 @@ class ThreadActivity :
         setContentView(binding.root)
         ksString = environment().ksString()
         recyclerViewPaginator = RecyclerViewPaginator(binding.commentRepliesRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingReplies(), false)
-        
+
         binding.commentRepliesRecyclerView.adapter = adapter
         binding.commentRepliesRecyclerView.layoutManager = linearLayoutManager
 
@@ -176,6 +176,9 @@ class ThreadActivity :
 
     // we want to change stackFromEnd to be able to scroll after adding new comment
     private fun reBindLayoutManager(stackFromEnd: Boolean) {
+        if (linearLayoutManager.stackFromEnd == stackFromEnd) {
+            return
+        }
         linearLayoutManager.stackFromEnd = stackFromEnd
         binding.commentRepliesRecyclerView.layoutManager = linearLayoutManager
     }

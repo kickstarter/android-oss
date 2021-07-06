@@ -50,6 +50,7 @@ interface ThreadViewModel {
 
         fun isFetchingReplies(): Observable<Boolean>
         fun loadMoreReplies(): Observable<Void>
+
         /** Display the bottom pagination Error Cell **/
         fun shouldShowPaginationErrorUI(): Observable<Boolean>
     }

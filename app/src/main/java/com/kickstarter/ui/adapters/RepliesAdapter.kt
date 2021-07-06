@@ -48,6 +48,7 @@ class RepliesAdapter(private val delegate: Delegate) : KSListAdapter() {
         setSection(SECTION_ERROR_PAGINATING, listOf(shouldShowErrorCell))
         submitList(items())
     }
+
     override fun layout(sectionRow: SectionRow): Int = when (sectionRow.section()) {
         SECTION_COMMENTS -> R.layout.item_comment_card
         SECTION_SHOW_MORE_REPLIES_PAGINATING -> R.layout.item_show_more_replies
@@ -64,10 +65,6 @@ class RepliesAdapter(private val delegate: Delegate) : KSListAdapter() {
             R.layout.item_error_pagination -> PaginationErrorViewHolder(ItemErrorPaginationBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate, true)
             else -> RootCommentViewHolder(ItemCommentCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
         }
-    }
-
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
     }
 
     companion object {

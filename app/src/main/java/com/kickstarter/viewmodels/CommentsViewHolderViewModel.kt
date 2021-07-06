@@ -200,8 +200,11 @@ interface CommentsViewHolderViewModel {
 
             comment
                 .map { it.repliesCount() }
+                .compose(combineLatestPair(this.isCommentEnableThreads))
                 .compose(bindToLifecycle())
-                .subscribe(this.commentRepliesCount)
+                .subscribe {
+                    this.commentRepliesCount.onNext(it.first)
+                }
 
             comment
                 .map { it.author()?.name() }

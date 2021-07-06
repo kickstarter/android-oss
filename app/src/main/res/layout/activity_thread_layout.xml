@@ -59,7 +59,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ProgressBar
-            android:id="@+id/comments_loading_indicator"
+            android:id="@+id/replies_loading_indicator"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"

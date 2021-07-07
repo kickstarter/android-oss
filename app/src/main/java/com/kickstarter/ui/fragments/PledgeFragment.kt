@@ -418,7 +418,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.showSCAFlow()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { this.viewModel.environment.stripe().authenticateSetup(this, it) }
+            .subscribe { this.viewModel.environment.stripe().handleNextActionForSetupIntent(this, it) }
 
         this.viewModel.outputs.showPledgeError()
             .compose(bindToLifecycle())

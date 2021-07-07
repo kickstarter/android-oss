@@ -1,6 +1,5 @@
 package com.kickstarter.ui.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -58,8 +57,9 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         return inflater.inflate(layout, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         (activity as AppCompatActivity).setSupportActionBar(new_card_toolbar)
         setHasOptionsMenu(true)
 
@@ -148,8 +148,9 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         }
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
         this.onCardSavedListener = context as? OnCardSavedListener
         if (this.onCardSavedListener == null) {
             throw ClassCastException("$context must implement OnCardSavedListener")

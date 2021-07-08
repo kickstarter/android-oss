@@ -31,9 +31,13 @@ class RepliesAdapter(private val delegate: Delegate) : KSListAdapter() {
     fun takeData(replies: List<CommentCardData>, shouldViewMoreRepliesCell: Boolean) {
         if (replies.isNotEmpty()) {
             setSection(SECTION_COMMENTS, replies)
-            setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, listOf(shouldViewMoreRepliesCell))
+            if (shouldViewMoreRepliesCell)
+                setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, listOf(shouldViewMoreRepliesCell))
+            else
+                setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, emptyList<Boolean>())
         }
-        setSection(SECTION_ERROR_PAGINATING, listOf(false))
+        setSection(SECTION_ERROR_PAGINATING, emptyList<Boolean>())
+
         submitList(items())
     }
 
@@ -50,20 +54,20 @@ class RepliesAdapter(private val delegate: Delegate) : KSListAdapter() {
     }
 
     override fun layout(sectionRow: SectionRow): Int = when (sectionRow.section()) {
-        SECTION_COMMENTS -> R.layout.item_comment_card
-        SECTION_SHOW_MORE_REPLIES_PAGINATING -> R.layout.item_show_more_replies
+        SECTION_ROOT_COMMENT -> R.layout.item_comment_card
         SECTION_ERROR_PAGINATING -> R.layout.item_error_pagination
+        SECTION_SHOW_MORE_REPLIES_PAGINATING -> R.layout.item_show_more_replies
         else -> 0
     }
 
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
         return when (layout) {
-            R.layout.item_comment_card -> CommentCardViewHolder(ItemCommentCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate, true)
+            R.layout.item_comment_card -> RootCommentViewHolder(ItemCommentCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
+            R.layout.item_error_pagination -> PaginationErrorViewHolder(ItemErrorPaginationBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate, true)
             R.layout.item_show_more_replies -> PaginationViewMoreRepliesViewHolder(
                 ItemShowMoreRepliesBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate
             )
-            R.layout.item_error_pagination -> PaginationErrorViewHolder(ItemErrorPaginationBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate, true)
-            else -> RootCommentViewHolder(ItemCommentCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
+            else -> CommentCardViewHolder(ItemCommentCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate, true)
         }
     }
 

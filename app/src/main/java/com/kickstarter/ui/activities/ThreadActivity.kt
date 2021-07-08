@@ -10,6 +10,8 @@ import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.RecyclerViewPaginator
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.utils.ApplicationUtils
+import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.adapters.RepliesAdapter
 import com.kickstarter.ui.extensions.hideKeyboard
@@ -125,6 +127,19 @@ class ThreadActivity :
                     hideKeyboard()
                 }
             })
+
+        viewModel.outputs.showCommentGuideLinesLink()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                ApplicationUtils.openUrlExternally(
+                    this,
+                    UrlUtils.appendPath(
+                        environment().webEndpoint(),
+                        CommentsActivity.COMMENT_KICKSTARTER_GUIDELINES
+                    )
+                )
+            }
     }
 
     fun postReply(comment: String) {
@@ -146,7 +161,6 @@ class ThreadActivity :
     }
 
     override fun onReplyButtonClicked(comment: Comment) {
-        TODO("Not yet implemented")
     }
 
     override fun onFlagButtonClicked(comment: Comment) {
@@ -154,11 +168,10 @@ class ThreadActivity :
     }
 
     override fun onCommentGuideLinesClicked(comment: Comment) {
-        TODO("Not yet implemented")
+        viewModel.inputs.onShowGuideLinesLinkClicked()
     }
 
     override fun onCommentRepliesClicked(comment: Comment) {
-        TODO("Not yet implemented")
     }
 
     override fun onCommentPostedSuccessFully(comment: Comment) {

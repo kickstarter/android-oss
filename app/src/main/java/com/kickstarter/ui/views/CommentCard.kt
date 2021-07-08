@@ -18,7 +18,7 @@ import com.kickstarter.libs.utils.extensions.setAllOnClickListener
 import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.ui.extensions.makeLinks
 import com.kickstarter.ui.extensions.parseHtmlTag
-import com.kickstarter.ui.extensions.stripUnderlines
+import com.kickstarter.ui.extensions.urlSpanWithoutUnderlines
 
 class CommentCard @JvmOverloads constructor(
     context: Context,
@@ -190,7 +190,7 @@ class CommentCard @JvmOverloads constructor(
     fun setCommentBody(comment: String) {
         binding.commentBody.text = comment
         Linkify.addLinks(binding.commentBody, Linkify.WEB_URLS)
-        binding.commentBody.stripUnderlines()
+        binding.commentBody.urlSpanWithoutUnderlines()
     }
 
     fun setFlaggedMessage(message: String) {

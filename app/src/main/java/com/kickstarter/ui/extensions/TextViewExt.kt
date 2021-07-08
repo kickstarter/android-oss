@@ -59,20 +59,19 @@ fun TextView.parseHtmlTag() {
     this.text = Jsoup.parse(this.text.toString()).text()
 }
 
-fun TextView.stripUnderlines() {
-    val s: Spannable = SpannableString(this.text)
-    var spans = s.getSpans(0, s.length, URLSpan::class.java)
-    for (span in spans) {
-        val start = s.getSpanStart(span)
-        val end = s.getSpanEnd(span)
-        s.removeSpan(span)
+fun TextView.urlSpanWithoutUnderlines() {
+    val spannable: Spannable = SpannableString(this.text)
+    spannable.getSpans(0, spannable.length, URLSpan::class.java).forEach { span ->
+        val start = spannable.getSpanStart(span)
+        val end = spannable.getSpanEnd(span)
+        spannable.removeSpan(span)
         val newSpan = object : URLSpan(span.url) {
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
             }
         }
-        s.setSpan(newSpan, start, end, 0)
+        spannable.setSpan(newSpan, start, end, 0)
     }
-    text = s
+    text = spannable
 }

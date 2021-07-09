@@ -171,6 +171,7 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         card_input_widget.clearFocus()
         cardholder_name.onFocusChangeListener = cardFocusChangeListener
         postal_code.onFocusChangeListener = cardFocusChangeListener
+        card_input_widget.postalCodeEnabled = false
         card_input_widget.setCardNumberTextWatcher(cardNumberWatcher)
         card_input_widget.setCvcNumberTextWatcher(cardValidityWatcher)
         card_input_widget.setExpiryDateTextWatcher(cardValidityWatcher)

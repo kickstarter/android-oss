@@ -35,7 +35,6 @@ import kotlinx.android.synthetic.main.form_new_card.cardholder_name
 import kotlinx.android.synthetic.main.form_new_card.form_container
 import kotlinx.android.synthetic.main.form_new_card.new_card_app_bar_layout
 import kotlinx.android.synthetic.main.form_new_card.new_card_toolbar
-import kotlinx.android.synthetic.main.form_new_card.postal_code
 import kotlinx.android.synthetic.main.form_new_card.progress_bar
 import kotlinx.android.synthetic.main.form_new_card.reusable_container
 import kotlinx.android.synthetic.main.form_new_card.reusable_switch
@@ -133,7 +132,6 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
             .subscribe { this.viewModel.inputs.reusable(reusable_switch.isChecked) }
 
         cardholder_name.onChange { this.viewModel.inputs.name(it) }
-        postal_code.onChange { this.viewModel.inputs.postalCode(it) }
         addListeners()
         cardholder_name.requestFocus()
     }
@@ -171,10 +169,11 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
     private fun addListeners() {
         card_input_widget.clearFocus()
         cardholder_name.onFocusChangeListener = cardFocusChangeListener
-        postal_code.onFocusChangeListener = cardFocusChangeListener
+        card_input_widget.postalCodeEnabled = true
         card_input_widget.setCardNumberTextWatcher(cardNumberWatcher)
         card_input_widget.setCvcNumberTextWatcher(cardValidityWatcher)
         card_input_widget.setExpiryDateTextWatcher(cardValidityWatcher)
+        card_input_widget.setPostalCodeTextWatcher(postalCodeWatcher)
         card_input_widget.setCardInputListener(object : CardInputListener {
             override fun onFocusChange(focusField: CardInputListener.FocusField) {
                 this@NewCardFragment.viewModel.inputs.cardFocus(true)
@@ -192,10 +191,14 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
                 cardChanged()
             }
         })
+
+        card_input_widget.paymentMethodCard
     }
 
     private fun cardChanged() {
-        this.viewModel.inputs.card(card_input_widget.cardParams)
+        if (card_input_widget.cardParams != null && card_input_widget.paymentMethodCard != null) {
+            this.viewModel.inputs.card(card_input_widget.cardParams)
+        }
     }
 
     private fun createStripeToken(card: CardParams) {
@@ -259,6 +262,20 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             this@NewCardFragment.viewModel.inputs.cardNumber(s?.toString() ?: "")
             cardChanged()
+        }
+    }
+
+    private val postalCodeWatcher = object : TextWatcher {
+        override fun afterTextChanged(s: Editable?) {
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            if (card_input_widget.cardParams != null && card_input_widget.paymentMethodCard != null) {
+                this@NewCardFragment.viewModel.inputs.postalCode(s.toString())
+            }
         }
     }
 

@@ -93,21 +93,6 @@
               android:src="@drawable/divider_dark_grey_500_horizontal" />
 
           </FrameLayout>
-
-          <com.google.android.material.textfield.TextInputLayout
-            android:layout_marginBottom="@dimen/grid_2"
-            style="@style/UnderlineTextInputLayout">
-
-            <com.google.android.material.textfield.TextInputEditText
-              android:id="@+id/postal_code"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:hint="@string/Postal_code"
-              android:inputType="textPostalAddress"
-              android:maxLines="1" />
-
-          </com.google.android.material.textfield.TextInputLayout>
-
         </LinearLayout>
 
         <TextView

@@ -55,6 +55,11 @@ class ThreadActivity :
             .onCommentReplies()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnNext {
+                /** in case of first comment */
+                if (this.adapter.itemCount == 1)
+                 reBindLayoutManager(true)
+            }
             .subscribe {
                 this.adapter.takeData(it.first.reversed(), it.second)
             }

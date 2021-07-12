@@ -32,23 +32,25 @@ class RepliesAdapter(private val delegate: Delegate) : KSListAdapter() {
             if (shouldViewMoreRepliesCell)
                 setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, listOf(RepliesStatusCellType.VIEW_MORE))
             else
-                setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, emptyList<Boolean>())
+                setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, emptyList<RepliesStatusCellType>())
         }
 
         submitList(items())
     }
 
     fun updateRootCommentCell(rootComment: Comment) {
+        setSection(SECTION_COMMENTS, emptyList<CommentCardData>())
+        setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, emptyList<RepliesStatusCellType>())
         setSection(SECTION_ROOT_COMMENT, listOf(rootComment))
         submitList(items())
     }
 
     fun addErrorPaginationCell(shouldShowErrorCell: Boolean) {
+        // - we want to display SECTION_COMMENTS & SECTION_ERROR_PAGINATING at the same time so we should not clean SECTION_COMMENTS
         if (shouldShowErrorCell)
             setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, listOf(RepliesStatusCellType.PAGINATION_ERROR))
         else
-            setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, emptyList<Boolean>())
-        // - we want to display SECTION_COMMENTS & SECTION_ERROR_PAGINATING at the same time so we should not clean SECTION_COMMENTS
+            setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, emptyList<RepliesStatusCellType>())
         submitList(items())
     }
 

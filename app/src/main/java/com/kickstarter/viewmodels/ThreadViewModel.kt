@@ -231,7 +231,6 @@ interface ThreadViewModel {
                 ?.distinctUntilChanged()
                 ?.share()
                 ?.subscribe {
-                    this.displayPaginationError.onNext(false)
                     this.onCommentReplies.onNext(it)
                 }
 

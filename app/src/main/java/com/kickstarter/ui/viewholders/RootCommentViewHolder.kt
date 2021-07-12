@@ -1,6 +1,6 @@
 package com.kickstarter.ui.viewholders
 
-import com.kickstarter.databinding.ItemCommentCardBinding
+import com.kickstarter.databinding.ItemRootCommentCardBinding
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.models.Comment
@@ -8,7 +8,7 @@ import com.kickstarter.viewmodels.RootCommentViewHolderViewModel
 
 @Suppress("UNCHECKED_CAST")
 class RootCommentViewHolder(
-    val binding: ItemCommentCardBinding
+    val binding: ItemRootCommentCardBinding
 ) : KSViewHolder(binding.root) {
 
     private val vm: RootCommentViewHolderViewModel.ViewModel = RootCommentViewHolderViewModel.ViewModel(environment())

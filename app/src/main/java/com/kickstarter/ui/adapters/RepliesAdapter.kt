@@ -53,14 +53,15 @@ class RepliesAdapter(private val delegate: Delegate) : KSListAdapter() {
     }
 
     override fun layout(sectionRow: SectionRow): Int = when (sectionRow.section()) {
-        SECTION_ROOT_COMMENT -> R.layout.item_comment_card
+        SECTION_ROOT_COMMENT -> R.layout.item_root_comment_card
+        SECTION_COMMENTS -> R.layout.item_comment_card
         SECTION_SHOW_MORE_REPLIES_PAGINATING -> R.layout.item_show_more_replies
         else -> 0
     }
 
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
         return when (layout) {
-            R.layout.item_comment_card -> RootCommentViewHolder(ItemRootCommentCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
+            R.layout.item_root_comment_card -> RootCommentViewHolder(ItemRootCommentCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
             R.layout.item_show_more_replies -> RepliesStatusCellViewHolder(
                 ItemShowMoreRepliesBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate
             )

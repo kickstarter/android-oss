@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities
 import android.os.Bundle
 import android.util.Pair
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityThreadLayoutBinding
@@ -12,6 +13,8 @@ import com.kickstarter.libs.RecyclerViewPaginator
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.adapters.RepliesAdapter
+import com.kickstarter.ui.adapters.RepliesStatusAdapter
+import com.kickstarter.ui.adapters.RootCommentAdapter
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.viewholders.PaginationErrorViewHolder
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
@@ -30,8 +33,11 @@ class ThreadActivity :
     private lateinit var ksString: KSString
 
     private val adapter = RepliesAdapter(this)
+    private val repliesStatusAdapter = RepliesStatusAdapter(this)
+    private val rootCommentAdapter = RootCommentAdapter()
     private val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
     private lateinit var recyclerViewPaginator: RecyclerViewPaginator
+    var isPaginated = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,34 +47,31 @@ class ThreadActivity :
         ksString = environment().ksString()
         recyclerViewPaginator = RecyclerViewPaginator(binding.commentRepliesRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingReplies(), false)
 
-        binding.commentRepliesRecyclerView.adapter = adapter
+        binding.commentRepliesRecyclerView.adapter = ConcatAdapter(adapter, repliesStatusAdapter, rootCommentAdapter)
         binding.commentRepliesRecyclerView.layoutManager = linearLayoutManager
 
         this.viewModel.outputs.getRootComment()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { comment ->
-                adapter.updateRootCommentCell(comment)
+                 rootCommentAdapter.updateRootCommentCell(comment)
             }
 
         this.viewModel.outputs
             .onCommentReplies()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext {
-                /** in case of first comment */
-                if (this.adapter.itemCount == 1)
-                 reBindLayoutManager(true)
-            }
+            .filter { it.first.isNotEmpty() }
             .subscribe {
-                this.adapter.takeData(it.first.reversed(), it.second)
+                this.repliesStatusAdapter.addViewMoreCell(it.second)
+                this.adapter.takeData(it.first.reversed())
             }
 
         viewModel.outputs.shouldShowPaginationErrorUI()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                adapter.addErrorPaginationCell(it)
+                repliesStatusAdapter.addErrorPaginationCell(it)
             }
 
         viewModel.outputs.isFetchingReplies()
@@ -102,9 +105,8 @@ class ThreadActivity :
 
         viewModel.outputs.scrollToBottom()
             .compose(bindToLifecycle())
-            .delay(200, TimeUnit.MILLISECONDS)
+            .delay(500, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext { reBindLayoutManager(true) }
             .subscribe {
                 binding.commentRepliesRecyclerView.smoothScrollToPosition(0)
             }
@@ -170,22 +172,11 @@ class ThreadActivity :
     }
 
     override fun loadMoreCallback() {
-        reBindLayoutManager(false)
         viewModel.inputs.onViewMoreClicked()
     }
 
     override fun retryCallback() {
-        reBindLayoutManager(false)
         viewModel.inputs.onViewMoreClicked()
-    }
-
-    // we want to change stackFromEnd to be able to scroll after adding new comment
-    private fun reBindLayoutManager(stackFromEnd: Boolean) {
-        if (linearLayoutManager.stackFromEnd == stackFromEnd) {
-            return
-        }
-        linearLayoutManager.stackFromEnd = stackFromEnd
-        binding.commentRepliesRecyclerView.layoutManager = linearLayoutManager
     }
 
     override fun onDestroy() {

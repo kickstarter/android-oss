@@ -54,7 +54,7 @@ class ThreadActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { comment ->
-                 rootCommentAdapter.updateRootCommentCell(comment)
+                rootCommentAdapter.updateRootCommentCell(comment)
             }
 
         this.viewModel.outputs

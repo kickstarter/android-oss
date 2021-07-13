@@ -18,7 +18,6 @@ import com.kickstarter.ui.adapters.RepliesAdapter
 import com.kickstarter.ui.adapters.RepliesStatusAdapter
 import com.kickstarter.ui.adapters.RootCommentAdapter
 import com.kickstarter.ui.extensions.hideKeyboard
-import com.kickstarter.ui.viewholders.PaginationErrorViewHolder
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
 import com.kickstarter.viewmodels.ThreadViewModel
 import org.joda.time.DateTime
@@ -28,7 +27,7 @@ import java.util.concurrent.TimeUnit
 @RequiresActivityViewModel(ThreadViewModel.ViewModel::class)
 class ThreadActivity :
     BaseActivity<ThreadViewModel.ViewModel>(),
-    PaginationErrorViewHolder.ViewListener,
+    RepliesStatusAdapter.Delegate,
     RepliesAdapter.Delegate {
 
     private lateinit var binding: ActivityThreadLayoutBinding

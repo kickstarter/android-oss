@@ -32,6 +32,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
     private val replyComposerStatus = TestSubscriber<CommentComposerStatus>()
     private val showReplyComposer = TestSubscriber<Boolean>()
     private val loadMoreReplies = TestSubscriber<Void>()
+    private val openCommentGuideLines = TestSubscriber<Void>()
 
     private fun setUpEnvironment() {
         setUpEnvironment(environment())
@@ -244,5 +245,19 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         vm.inputs.onViewMoreClicked()
 
         this.loadMoreReplies.assertValueCount(1)
+    }
+
+    @Test
+    fun testThreadsViewModel_openCommentGuidelinesLink() {
+        setUpEnvironment()
+
+        this.vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, CommentCardDataFactory.commentCardData()))
+
+        // Start the view model with an update.
+        vm.outputs.showCommentGuideLinesLink().subscribe(openCommentGuideLines)
+
+        // post a comment
+        vm.inputs.onShowGuideLinesLinkClicked()
+        openCommentGuideLines.assertValueCount(1)
     }
 }

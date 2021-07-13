@@ -1,6 +1,7 @@
 package com.kickstarter.ui.views
 
 import android.content.Context
+import android.text.util.Linkify
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +18,7 @@ import com.kickstarter.libs.utils.extensions.setAllOnClickListener
 import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.ui.extensions.makeLinks
 import com.kickstarter.ui.extensions.parseHtmlTag
+import com.kickstarter.ui.extensions.urlSpanWithoutUnderlines
 
 class CommentCard @JvmOverloads constructor(
     context: Context,
@@ -187,6 +189,8 @@ class CommentCard @JvmOverloads constructor(
 
     fun setCommentBody(comment: String) {
         binding.commentBody.text = comment
+        Linkify.addLinks(binding.commentBody, Linkify.WEB_URLS)
+        binding.commentBody.urlSpanWithoutUnderlines()
     }
 
     fun setFlaggedMessage(message: String) {

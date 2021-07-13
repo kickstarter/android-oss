@@ -62,6 +62,7 @@ class ThreadActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .filter { it.first.isNotEmpty() }
+            .doOnNext { linearLayoutManager.stackFromEnd = false }
             .subscribe {
                 this.repliesStatusAdapter.addViewMoreCell(it.second)
                 this.adapter.takeData(it.first.reversed())
@@ -107,6 +108,7 @@ class ThreadActivity :
             .compose(bindToLifecycle())
             .delay(500, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnNext { linearLayoutManager.stackFromEnd = true }
             .subscribe {
                 binding.commentRepliesRecyclerView.smoothScrollToPosition(0)
             }

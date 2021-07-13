@@ -32,10 +32,15 @@ class ThreadActivity :
     private lateinit var binding: ActivityThreadLayoutBinding
     private lateinit var ksString: KSString
 
-    private val adapter = RepliesAdapter(this)
+    /** Replies list adapter **/
+    private val repliesAdapter = RepliesAdapter(this)
+    /**  Replies cell status viewMore or Error  **/
     private val repliesStatusAdapter = RepliesStatusAdapter(this)
+    /** Replies Root comment cell adapter **/
     private val rootCommentAdapter = RootCommentAdapter()
+    /** reverse Layout to bind the replies from bottom **/
     private val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
+
     private lateinit var recyclerViewPaginator: RecyclerViewPaginator
     var isPaginated = false
 
@@ -47,13 +52,15 @@ class ThreadActivity :
         ksString = environment().ksString()
         recyclerViewPaginator = RecyclerViewPaginator(binding.commentRepliesRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingReplies(), false)
 
-        binding.commentRepliesRecyclerView.adapter = ConcatAdapter(adapter, repliesStatusAdapter, rootCommentAdapter)
+        /** use ConcatAdapter to bind adapters  to recycler view **/
+        binding.commentRepliesRecyclerView.adapter = ConcatAdapter(repliesAdapter, repliesStatusAdapter, rootCommentAdapter)
         binding.commentRepliesRecyclerView.layoutManager = linearLayoutManager
 
         this.viewModel.outputs.getRootComment()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { comment ->
+                /** bind root comment by updating the adapter list**/
                 rootCommentAdapter.updateRootCommentCell(comment)
             }
 
@@ -64,8 +71,10 @@ class ThreadActivity :
             .filter { it.first.isNotEmpty() }
             .doOnNext { linearLayoutManager.stackFromEnd = false }
             .subscribe {
+                /** bind View more cell if the replies more than 7 **/
                 this.repliesStatusAdapter.addViewMoreCell(it.second)
-                this.adapter.takeData(it.first.reversed())
+                /** bind replies list to adapter as reversed as the layout is reversed **/
+                this.repliesAdapter.takeData(it.first.reversed())
             }
 
         viewModel.outputs.shouldShowPaginationErrorUI()
@@ -73,6 +82,7 @@ class ThreadActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .filter { it }
             .subscribe {
+                /** bind Error Pagination cell **/
                 repliesStatusAdapter.addErrorPaginationCell(it)
             }
 
@@ -109,7 +119,9 @@ class ThreadActivity :
             .compose(bindToLifecycle())
             .delay(500, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext { linearLayoutManager.stackFromEnd = true }
+            .doOnNext {
+                linearLayoutManager.stackFromEnd = true
+            }
             .subscribe {
                 binding.commentRepliesRecyclerView.smoothScrollToPosition(0)
             }

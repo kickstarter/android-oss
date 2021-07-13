@@ -9,6 +9,7 @@ import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.ui.viewholders.RepliesStatusCellType
 import com.kickstarter.ui.viewholders.RepliesStatusCellViewHolder
 
+/**  Replies cell status viewMore or Error  **/
 class RepliesStatusAdapter(private val delegate: RepliesAdapter.Delegate) : KSListAdapter() {
     interface Delegate :
         RepliesStatusCellViewHolder.ViewListener

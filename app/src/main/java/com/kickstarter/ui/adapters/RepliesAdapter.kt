@@ -10,6 +10,7 @@ import com.kickstarter.ui.viewholders.CommentCardViewHolder
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.ui.viewholders.RepliesStatusCellViewHolder
 
+/** Replies list adapter to show replies list **/
 class RepliesAdapter(private val delegate: Delegate) : KSListAdapter() {
     interface Delegate :
         CommentCardViewHolder.Delegate,

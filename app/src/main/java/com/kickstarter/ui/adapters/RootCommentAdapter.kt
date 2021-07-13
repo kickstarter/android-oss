@@ -9,6 +9,7 @@ import com.kickstarter.models.Comment
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.ui.viewholders.RootCommentViewHolder
 
+/** Replies Root comment cell adapter **/
 class RootCommentAdapter : KSListAdapter() {
 
     fun updateRootCommentCell(rootComment: Comment) {

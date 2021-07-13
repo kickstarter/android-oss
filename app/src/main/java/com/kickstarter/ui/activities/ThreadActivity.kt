@@ -52,7 +52,7 @@ class ThreadActivity :
         ksString = environment().ksString()
         recyclerViewPaginator = RecyclerViewPaginator(binding.commentRepliesRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingReplies(), false)
 
-        /** use ConcatAdapter to bind adapters  to recycler view **/
+        /** use ConcatAdapter to bind adapters to recycler view and replace the section issue **/
         binding.commentRepliesRecyclerView.adapter = ConcatAdapter(repliesAdapter, repliesStatusAdapter, rootCommentAdapter)
         binding.commentRepliesRecyclerView.layoutManager = linearLayoutManager
 

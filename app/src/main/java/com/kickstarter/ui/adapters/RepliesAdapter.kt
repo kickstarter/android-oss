@@ -8,13 +8,11 @@ import com.kickstarter.databinding.ItemCommentCardBinding
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.viewholders.CommentCardViewHolder
 import com.kickstarter.ui.viewholders.KSViewHolder
-import com.kickstarter.ui.viewholders.RepliesStatusCellViewHolder
 
 /** Replies list adapter to show replies list **/
 class RepliesAdapter(private val delegate: Delegate) : KSListAdapter() {
     interface Delegate :
-        CommentCardViewHolder.Delegate,
-        RepliesStatusCellViewHolder.ViewListener
+        CommentCardViewHolder.Delegate
 
     init {
         insertSection(SECTION_COMMENTS, emptyList<CommentCardData>())

@@ -85,6 +85,14 @@ class ThreadActivity :
                 repliesStatusAdapter.addErrorPaginationCell(it)
             }
 
+        viewModel.outputs.initialLoadCommentsError()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                /** bind Error initial loading cell **/
+                repliesStatusAdapter.addInitiallyLoadingErrorCell(true)
+            }
+
         viewModel.outputs.isFetchingReplies()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())

@@ -34,7 +34,7 @@ interface RepliesStatusCellViewHolderViewModel {
                             this.isErrorPaginationVisible.onNext(false)
                             this.isViewMoreRepliesPaginationVisible.onNext(true)
                         }
-                        RepliesStatusCellType.PAGINATION_ERROR -> {
+                        RepliesStatusCellType.PAGINATION_ERROR, RepliesStatusCellType.INITIAL_ERROR -> {
                             this.isErrorPaginationVisible.onNext(true)
                             this.isViewMoreRepliesPaginationVisible.onNext(false)
                         }

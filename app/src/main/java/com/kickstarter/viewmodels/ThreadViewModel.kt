@@ -53,6 +53,8 @@ interface ThreadViewModel {
 
         /** Display the pagination Error Cell **/
         fun shouldShowPaginationErrorUI(): Observable<Boolean>
+        /** Display the Initial Error Cell **/
+        fun initialLoadCommentsError(): Observable<Throwable>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ThreadActivity>(environment), Inputs, Outputs {
@@ -179,9 +181,15 @@ interface ThreadViewModel {
                 }
 
             this.onViewMoreClicked
-                .compose(bindToLifecycle())
+                .map {
+                    this.onCommentReplies.value
+                }.compose(bindToLifecycle())
                 .subscribe {
-                    this.loadMoreReplies.onNext(null)
+                    if (it.first.isNullOrEmpty()) {
+                        loadCommentListFromProjectOrUpdate(comment)
+                    } else {
+                        this.loadMoreReplies.onNext(null)
+                    }
                 }
 
             this.paginationError
@@ -235,13 +243,9 @@ interface ThreadViewModel {
                 }
 
             this.internalError
-                .compose(Transformers.combineLatestPair(onCommentReplies))
-                .filter {
-                    it.second.first.isNullOrEmpty()
-                }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.initialError.onNext(it.first)
+                    this.initialError.onNext(it)
                 }
 
             this.internalError
@@ -312,5 +316,6 @@ interface ThreadViewModel {
         override fun isFetchingReplies(): Observable<Boolean> = this.isFetchingReplies
         override fun loadMoreReplies(): Observable<Void> = this.loadMoreReplies
         override fun shouldShowPaginationErrorUI(): Observable<Boolean> = this.displayPaginationError
+        override fun initialLoadCommentsError(): Observable<Throwable> = this.initialError
     }
 }

@@ -34,6 +34,14 @@ class RepliesStatusAdapter(private val delegate: Delegate) : KSListAdapter() {
         submitList(items())
     }
 
+    fun addInitiallyLoadingErrorCell(shouldShowErrorCell: Boolean) {
+        if (shouldShowErrorCell)
+            setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, listOf(RepliesStatusCellType.INITIAL_ERROR))
+        else
+            setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, emptyList<RepliesStatusCellType>())
+        submitList(items())
+    }
+
     override fun layout(sectionRow: SectionRow): Int = R.layout.item_show_more_replies
 
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {

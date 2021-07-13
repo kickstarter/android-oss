@@ -43,7 +43,7 @@ interface RepliesStatusCellViewHolderViewModel {
         }
 
         // - Inputs
-        override fun configureWith(shouldShowErrorCell: RepliesStatusCellType) = this.initCellConfig.onNext(shouldShowErrorCell)
+        override fun configureWith(cellType: RepliesStatusCellType) = this.initCellConfig.onNext(cellType)
 
         // - Outputs
         override fun isViewMoreRepliesPaginationVisible(): Observable<Boolean> = this.isViewMoreRepliesPaginationVisible

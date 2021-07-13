@@ -71,6 +71,7 @@ class ThreadActivity :
         viewModel.outputs.shouldShowPaginationErrorUI()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
+            .filter { it }
             .subscribe {
                 repliesStatusAdapter.addErrorPaginationCell(it)
             }

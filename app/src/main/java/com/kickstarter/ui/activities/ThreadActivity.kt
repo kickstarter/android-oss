@@ -208,11 +208,11 @@ class ThreadActivity :
     }
 
     override fun loadMoreCallback() {
-        viewModel.inputs.onViewMoreClicked()
+        viewModel.inputs.reloadRepliesPage()
     }
 
     override fun retryCallback() {
-        viewModel.inputs.onViewMoreClicked()
+        viewModel.inputs.reloadRepliesPage()
     }
 
     override fun onDestroy() {

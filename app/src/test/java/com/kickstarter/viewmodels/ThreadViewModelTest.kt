@@ -238,7 +238,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
 
         this.onReplies.assertValueCount(0)
 
-        vm.onViewMoreClicked()
+        vm.reloadRepliesPage()
         this.refresh.assertValueCount(1)
     }
 
@@ -271,7 +271,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         assertEquals(replies.comments?.size, onRepliesResult?.first?.size)
         assertEquals(true, onRepliesResult?.second)
 
-        vm.inputs.onViewMoreClicked()
+        vm.inputs.reloadRepliesPage()
 
         this.loadMoreReplies.assertValueCount(1)
     }

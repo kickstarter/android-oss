@@ -29,7 +29,7 @@ interface ThreadViewModel {
 
     interface Inputs {
         fun nextPage()
-        fun onViewMoreClicked()
+        fun reloadRepliesPage()
         fun insertNewReplyToList(comment: String, createdAt: DateTime)
         fun onShowGuideLinesLinkClicked()
     }
@@ -326,7 +326,7 @@ interface ThreadViewModel {
             .ofType(CommentCardData::class.java)
 
         override fun nextPage() = nextPage.onNext(null)
-        override fun onViewMoreClicked() = onViewMoreClicked.onNext(null)
+        override fun reloadRepliesPage() = onViewMoreClicked.onNext(null)
 
         override fun getRootComment(): Observable<Comment> = this.rootComment
         override fun onCommentReplies(): Observable<Pair<List<CommentCardData>, Boolean>> =

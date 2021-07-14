@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
-import com.kickstarter.mock.factories.CardFactory
+import com.kickstarter.mock.factories.CardParamsFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.mock.factories.TokenFactory
@@ -13,7 +13,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.ui.ArgumentsKey
-import com.stripe.android.model.Card
+import com.stripe.android.model.CardParams
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -26,7 +26,7 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
     private val allowedCardWarningIsVisible = TestSubscriber<Boolean>()
     private val appBarLayoutHasElevation = TestSubscriber<Boolean>()
     private val cardWidgetFocusDrawable = TestSubscriber<Int>()
-    private val createStripeToken = TestSubscriber<Card>()
+    private val createStripeToken = TestSubscriber<CardParams>()
     private val dividerIsVisible = TestSubscriber<Boolean>()
     private val error = TestSubscriber<Void>()
     private val modalError = TestSubscriber<Void>()
@@ -66,15 +66,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         // Union Pay
-        this.vm.inputs.cardNumber("620")
+        this.vm.inputs.card(CardParamsFactory.unionPay())
         this.allowedCardWarning.assertValue(null)
 
         // Visa
-        this.vm.inputs.cardNumber("424")
+        this.vm.inputs.card(CardParamsFactory.visa())
         this.allowedCardWarning.assertValue(null)
 
         // Unknown
-        this.vm.inputs.cardNumber("000")
+        this.vm.inputs.card(CardParamsFactory.unknown())
         this.allowedCardWarning.assertValues(null, R.string.Unsupported_card_type)
     }
 
@@ -84,15 +84,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment(), true, project = project)
 
         // Union Pay
-        this.vm.inputs.cardNumber("620")
+        this.vm.inputs.card(CardParamsFactory.unionPay())
         this.allowedCardWarning.assertValue(null)
 
         // Visa
-        this.vm.inputs.cardNumber("424")
+        this.vm.inputs.card(CardParamsFactory.visa())
         this.allowedCardWarning.assertValue(null)
 
         // Unknown
-        this.vm.inputs.cardNumber("000")
+        this.vm.inputs.card(CardParamsFactory.unknown())
         this.allowedCardWarning.assertValues(null, R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country)
     }
 
@@ -102,15 +102,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment(), true, project = project)
 
         // Union Pay
-        this.vm.inputs.cardNumber("620")
+        this.vm.inputs.card(CardParamsFactory.unionPay())
         this.allowedCardWarning.assertValue(R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country)
 
         // Visa
-        this.vm.inputs.cardNumber("424")
+        this.vm.inputs.card(CardParamsFactory.visa())
         this.allowedCardWarning.assertValues(R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country, null)
 
         // Unknown
-        this.vm.inputs.cardNumber("000")
+        this.vm.inputs.card(CardParamsFactory.unknown())
         this.allowedCardWarning.assertValues(
             R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country, null,
             R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country
@@ -122,15 +122,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         // Union Pay
-        this.vm.inputs.cardNumber("620")
+        this.vm.inputs.card(CardParamsFactory.unionPay())
         this.allowedCardWarningIsVisible.assertValue(false)
 
         // Visa
-        this.vm.inputs.cardNumber("424")
+        this.vm.inputs.card(CardParamsFactory.visa())
         this.allowedCardWarningIsVisible.assertValues(false)
 
         // Unknown
-        this.vm.inputs.cardNumber("000")
+        this.vm.inputs.card(CardParamsFactory.unknown())
         this.allowedCardWarningIsVisible.assertValues(false, true)
     }
 
@@ -139,15 +139,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment(), true)
 
         // Union Pay
-        this.vm.inputs.cardNumber("620")
+        this.vm.inputs.card(CardParamsFactory.unionPay())
         this.allowedCardWarningIsVisible.assertValue(false)
 
         // Visa
-        this.vm.inputs.cardNumber("424")
+        this.vm.inputs.card(CardParamsFactory.visa())
         this.allowedCardWarningIsVisible.assertValues(false)
 
         // Unknown
-        this.vm.inputs.cardNumber("000")
+        this.vm.inputs.card(CardParamsFactory.unknown())
         this.allowedCardWarningIsVisible.assertValues(false, true)
     }
 
@@ -156,15 +156,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment(), true, ProjectFactory.mxProject())
 
         // Union Pay
-        this.vm.inputs.cardNumber("620")
+        this.vm.inputs.card(CardParamsFactory.unionPay())
         this.allowedCardWarningIsVisible.assertValue(true)
 
         // Visa
-        this.vm.inputs.cardNumber("424")
+        this.vm.inputs.card(CardParamsFactory.visa())
         this.allowedCardWarningIsVisible.assertValues(true, false)
 
         // Unknown
-        this.vm.inputs.cardNumber("000")
+        this.vm.inputs.card(CardParamsFactory.unknown())
         this.allowedCardWarningIsVisible.assertValues(true, false, true)
     }
 
@@ -196,15 +196,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
         // Union Pay
         this.vm.inputs.cardFocus(true)
-        this.vm.inputs.cardNumber("620")
+        this.vm.inputs.card(CardParamsFactory.unionPay())
         this.cardWidgetFocusDrawable.assertValue(R.drawable.divider_green_horizontal)
 
         // Visa
-        this.vm.inputs.cardNumber("424")
+        this.vm.inputs.card(CardParamsFactory.visa())
         this.cardWidgetFocusDrawable.assertValuesAndClear(R.drawable.divider_green_horizontal)
 
         // Unknown
-        this.vm.inputs.cardNumber("000")
+        this.vm.inputs.card(CardParamsFactory.unknown())
         this.cardWidgetFocusDrawable.assertValuesAndClear(R.drawable.divider_red_400_horizontal)
     }
 
@@ -222,15 +222,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
         // Union Pay
         this.vm.inputs.cardFocus(true)
-        this.vm.inputs.cardNumber("620")
+        this.vm.inputs.card(CardParamsFactory.unionPay())
         this.cardWidgetFocusDrawable.assertValue(R.drawable.divider_green_horizontal)
 
         // Visa
-        this.vm.inputs.cardNumber("424")
+        this.vm.inputs.card(CardParamsFactory.visa())
         this.cardWidgetFocusDrawable.assertValuesAndClear(R.drawable.divider_green_horizontal)
 
         // Unknown
-        this.vm.inputs.cardNumber("000")
+        this.vm.inputs.card(CardParamsFactory.unknown())
         this.cardWidgetFocusDrawable.assertValue(R.drawable.divider_red_400_horizontal)
 
         // Remains red until error is resolved
@@ -252,15 +252,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
         // Union Pay
         this.vm.inputs.cardFocus(true)
-        this.vm.inputs.cardNumber("620")
+        this.vm.inputs.card(CardParamsFactory.unionPay())
         this.cardWidgetFocusDrawable.assertValuesAndClear(R.drawable.divider_green_horizontal, R.drawable.divider_red_400_horizontal)
 
         // Visa
-        this.vm.inputs.cardNumber("424")
+        this.vm.inputs.card(CardParamsFactory.visa())
         this.cardWidgetFocusDrawable.assertValuesAndClear(R.drawable.divider_green_horizontal)
 
         // Unknown
-        this.vm.inputs.cardNumber("000")
+        this.vm.inputs.card(CardParamsFactory.unknown())
         this.cardWidgetFocusDrawable.assertValue(R.drawable.divider_red_400_horizontal)
 
         // Remains red until error is resolved
@@ -288,10 +288,10 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.name("Nathan Squid")
         this.vm.inputs.postalCode("11222")
-        this.vm.inputs.card(CardFactory.card())
-        this.vm.inputs.cardNumber(CardFactory.card().number ?: "")
+        this.vm.inputs.card(CardParamsFactory.params())
+        this.vm.inputs.cardNumber(CardParamsFactory.params().last4 ?: "")
         this.vm.inputs.saveCardClicked()
-        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token(CardFactory.card()))
+        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token())
         this.createStripeToken.assertValueCount(1)
         this.error.assertValueCount(1)
     }
@@ -302,11 +302,11 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.name("Nathan Squid")
         this.vm.inputs.postalCode("11222")
-        this.vm.inputs.card(CardFactory.card())
-        this.vm.inputs.cardNumber(CardFactory.card().number ?: "")
+        this.vm.inputs.card(CardParamsFactory.params())
+        this.vm.inputs.cardNumber(CardParamsFactory.params().last4 ?: "")
         this.vm.inputs.saveCardClicked()
         this.createStripeToken.assertValueCount(1)
-        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token(CardFactory.card()))
+        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token())
         this.modalError.assertValueCount(1)
     }
 
@@ -316,8 +316,8 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.name("Nathan Squid")
         this.vm.inputs.postalCode("11222")
-        this.vm.inputs.card(CardFactory.card())
-        this.vm.inputs.cardNumber(CardFactory.card().number ?: "")
+        this.vm.inputs.card(CardParamsFactory.params())
+        this.vm.inputs.cardNumber(CardParamsFactory.params().last4 ?: "")
         this.vm.inputs.saveCardClicked()
         this.createStripeToken.assertValueCount(1)
         this.vm.inputs.stripeTokenResultUnsuccessful(java.lang.Exception("yikes"))
@@ -331,8 +331,8 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.name("Nathan Squid")
         this.vm.inputs.postalCode("11222")
-        this.vm.inputs.card(CardFactory.card())
-        this.vm.inputs.cardNumber(CardFactory.card().number ?: "")
+        this.vm.inputs.card(CardParamsFactory.params())
+        this.vm.inputs.cardNumber(CardParamsFactory.params().last4 ?: "")
         this.vm.inputs.saveCardClicked()
         this.createStripeToken.assertValueCount(1)
         this.vm.inputs.stripeTokenResultUnsuccessful(java.lang.Exception("yikes"))
@@ -346,12 +346,12 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.name("Nathan Squid")
         this.vm.inputs.postalCode("11222")
-        val card = CardFactory.card()
+        val card = CardParamsFactory.params()
         this.vm.inputs.card(card)
-        this.vm.inputs.cardNumber(card.number ?: "")
+        this.vm.inputs.cardNumber(card.last4 ?: "")
         this.vm.inputs.saveCardClicked()
         this.createStripeToken.assertValueCount(1)
-        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token(CardFactory.card()))
+        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token())
         this.progressBarIsVisible.assertValues(true)
     }
 
@@ -361,12 +361,12 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.name("Nathan Squid")
         this.vm.inputs.postalCode("11222")
-        val card = CardFactory.card()
+        val card = CardParamsFactory.params()
         this.vm.inputs.card(card)
-        this.vm.inputs.cardNumber(card.number ?: "")
+        this.vm.inputs.cardNumber(card.last4 ?: "")
         this.vm.inputs.saveCardClicked()
         this.createStripeToken.assertValueCount(1)
-        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token(CardFactory.card()))
+        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token())
         this.progressBarIsVisible.assertValues(true, false)
     }
 
@@ -376,9 +376,9 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.name("Nathan Squid")
         this.vm.inputs.postalCode("11222")
-        val card = CardFactory.card()
+        val card = CardParamsFactory.params()
         this.vm.inputs.card(card)
-        this.vm.inputs.cardNumber(card.number ?: "")
+        this.vm.inputs.cardNumber(card.last4 ?: "")
         this.vm.inputs.saveCardClicked()
         this.createStripeToken.assertValueCount(1)
         this.vm.inputs.stripeTokenResultUnsuccessful(java.lang.Exception("yikes"))
@@ -405,22 +405,12 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.name("Nathan Squid")
         val completeNumber = "4242424242424242"
-        val incompleteNumber = "424242424242424"
-        this.vm.inputs.card(CardFactory.card(completeNumber, 1, futureYear(), "555"))
+        val incompleteNumber = "42"
+        this.vm.inputs.card(CardParamsFactory.params(completeNumber, 1, futureYear(), "555"))
         this.vm.inputs.cardNumber(completeNumber)
         this.vm.inputs.postalCode("11222")
         this.saveButtonIsEnabled.assertValues(true)
-        this.vm.inputs.card(CardFactory.card(incompleteNumber, 1, futureYear(), "555"))
-        this.vm.inputs.cardNumber(incompleteNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardFactory.card(completeNumber, null, futureYear(), "555"))
-        this.vm.inputs.cardNumber(completeNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardFactory.card(completeNumber, 1, null, "555"))
-        this.vm.inputs.cardNumber(completeNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardFactory.card(completeNumber, 1, futureYear(), null))
-        this.vm.inputs.cardNumber(completeNumber)
+        this.vm.inputs.card(CardParamsFactory.params(incompleteNumber, 1, futureYear(), "555"))
         this.saveButtonIsEnabled.assertValues(true, false)
     }
 
@@ -430,42 +420,24 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.name("Nathan Squid")
         val completeVisaNumber = "4242424242424242"
-        val incompleteVisaNumber = "424242424242424"
-        this.vm.inputs.card(CardFactory.card(completeVisaNumber, 1, futureYear(), "555"))
+        val incompleteVisaNumber = "42"
+        this.vm.inputs.card(CardParamsFactory.params(completeVisaNumber, 1, futureYear(), "555"))
         this.vm.inputs.cardNumber(completeVisaNumber)
         this.vm.inputs.postalCode("11222")
         this.saveButtonIsEnabled.assertValues(true)
-        this.vm.inputs.card(CardFactory.card(incompleteVisaNumber, 1, futureYear(), "555"))
+        this.vm.inputs.card(CardParamsFactory.params(incompleteVisaNumber, 1, futureYear(), "555"))
         this.vm.inputs.cardNumber(incompleteVisaNumber)
         this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardFactory.card(completeVisaNumber, null, futureYear(), "555"))
-        this.vm.inputs.cardNumber(completeVisaNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardFactory.card(completeVisaNumber, 1, null, "555"))
-        this.vm.inputs.cardNumber(completeVisaNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardFactory.card(completeVisaNumber, 1, futureYear(), null))
-        this.vm.inputs.cardNumber(completeVisaNumber)
-        this.saveButtonIsEnabled.assertValuesAndClear(true, false)
 
         val completeDiscoverNumber = "6011111111111117"
-        val incompleteDiscoverNumber = "601111111111111"
-        this.vm.inputs.card(CardFactory.card(completeDiscoverNumber, 1, futureYear(), "555"))
+        val incompleteDiscoverNumber = "60"
+        this.vm.inputs.card(CardParamsFactory.params(completeDiscoverNumber, 1, futureYear(), "555"))
         this.vm.inputs.cardNumber(completeDiscoverNumber)
         this.vm.inputs.postalCode("11222")
-        this.saveButtonIsEnabled.assertValues(true)
-        this.vm.inputs.card(CardFactory.card(incompleteDiscoverNumber, 1, futureYear(), "555"))
+        this.saveButtonIsEnabled.assertValues(true, false, true)
+        this.vm.inputs.card(CardParamsFactory.params(incompleteDiscoverNumber, 1, futureYear(), "555"))
         this.vm.inputs.cardNumber(incompleteDiscoverNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardFactory.card(completeDiscoverNumber, null, futureYear(), "555"))
-        this.vm.inputs.cardNumber(completeDiscoverNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardFactory.card(completeDiscoverNumber, 1, null, "555"))
-        this.vm.inputs.cardNumber(completeDiscoverNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardFactory.card(completeDiscoverNumber, 1, futureYear(), null))
-        this.vm.inputs.cardNumber(completeDiscoverNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
+        this.saveButtonIsEnabled.assertValues(true, false, true, false)
     }
 
     @Test
@@ -474,41 +446,23 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.name("Nathan Squid")
         val completeVisaNumber = "4242424242424242"
-        val incompleteVisaNumber = "424242424242424"
-        this.vm.inputs.card(CardFactory.card(completeVisaNumber, 1, futureYear(), "555"))
+        val incompleteVisaNumber = "42"
+        this.vm.inputs.card(CardParamsFactory.params(completeVisaNumber, 1, futureYear(), "555"))
         this.vm.inputs.cardNumber(completeVisaNumber)
         this.vm.inputs.postalCode("11222")
         this.saveButtonIsEnabled.assertValues(true)
-        this.vm.inputs.card(CardFactory.card(incompleteVisaNumber, 1, futureYear(), "555"))
+        this.vm.inputs.card(CardParamsFactory.params(incompleteVisaNumber, 1, futureYear(), "555"))
         this.vm.inputs.cardNumber(incompleteVisaNumber)
         this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardFactory.card(completeVisaNumber, null, futureYear(), "555"))
-        this.vm.inputs.cardNumber(completeVisaNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardFactory.card(completeVisaNumber, 1, null, "555"))
-        this.vm.inputs.cardNumber(completeVisaNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardFactory.card(completeVisaNumber, 1, futureYear(), null))
-        this.vm.inputs.cardNumber(completeVisaNumber)
-        this.saveButtonIsEnabled.assertValuesAndClear(true, false)
 
         val completeDiscoverNumber = "6011111111111117"
         val incompleteDiscoverNumber = "601111111111111"
-        this.vm.inputs.card(CardFactory.card(completeDiscoverNumber, 1, futureYear(), "555"))
+        this.vm.inputs.card(CardParamsFactory.params(completeDiscoverNumber, 1, futureYear(), "555"))
         this.vm.inputs.cardNumber(completeDiscoverNumber)
         this.vm.inputs.postalCode("11222")
         this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardFactory.card(incompleteDiscoverNumber, 1, futureYear(), "555"))
+        this.vm.inputs.card(CardParamsFactory.params(incompleteDiscoverNumber, 1, futureYear(), "555"))
         this.vm.inputs.cardNumber(incompleteDiscoverNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardFactory.card(completeDiscoverNumber, null, futureYear(), "555"))
-        this.vm.inputs.cardNumber(completeDiscoverNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardFactory.card(completeDiscoverNumber, 1, null, "555"))
-        this.vm.inputs.cardNumber(completeDiscoverNumber)
-        this.saveButtonIsEnabled.assertValues(true, false)
-        this.vm.inputs.card(CardFactory.card(completeDiscoverNumber, 1, futureYear(), null))
-        this.vm.inputs.cardNumber(completeDiscoverNumber)
         this.saveButtonIsEnabled.assertValues(true, false)
     }
 
@@ -526,11 +480,11 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.name("Nathan Squid")
         this.vm.inputs.postalCode("11222")
-        val card = CardFactory.card()
+        val card = CardParamsFactory.params()
         this.vm.inputs.card(card)
-        this.vm.inputs.cardNumber(card.number ?: "")
+        this.vm.inputs.cardNumber(card.last4 ?: "")
         this.vm.inputs.saveCardClicked()
-        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token(CardFactory.card()))
+        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token())
         this.success.assertValue(visa)
     }
 

@@ -80,6 +80,7 @@ import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.ui.SharedPreferenceKey;
 import com.optimizely.ab.android.sdk.OptimizelyManager;
+import com.stripe.android.PaymentConfiguration;
 import com.stripe.android.Stripe;
 
 import org.joda.time.DateTime;
@@ -596,6 +597,9 @@ public class ApplicationModule {
     final String stripePublishableKey = apiEndpoint == ApiEndpoint.PRODUCTION
       ? Secrets.StripePublishableKey.PRODUCTION
       : Secrets.StripePublishableKey.STAGING;
+    PaymentConfiguration.init(
+            context,
+            stripePublishableKey);
     return new Stripe(context, stripePublishableKey);
   }
 

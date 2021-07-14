@@ -29,7 +29,7 @@ interface ThreadViewModel {
 
     interface Inputs {
         fun nextPage()
-        fun onViewMoreClicked()
+        fun reloadRepliesPage()
         fun insertNewReplyToList(comment: String, createdAt: DateTime)
         fun onShowGuideLinesLinkClicked()
     }
@@ -54,6 +54,10 @@ interface ThreadViewModel {
 
         /** Display the pagination Error Cell **/
         fun shouldShowPaginationErrorUI(): Observable<Boolean>
+        /** Display the Initial Error Cell **/
+        fun initialLoadCommentsError(): Observable<Boolean>
+
+        fun refresh(): Observable<Void>
 
         fun showCommentGuideLinesLink(): Observable<Void>
     }
@@ -63,7 +67,7 @@ interface ThreadViewModel {
         private val currentUser: CurrentUserType = environment.currentUser()
 
         private val nextPage = PublishSubject.create<Void>()
-        private val onViewMoreClicked = PublishSubject.create<Void>()
+        private val onLoadingReplies = PublishSubject.create<Void>()
         private val insertNewReplyToList = PublishSubject.create<Pair<String, DateTime>>()
         private val onShowGuideLinesLinkClicked = PublishSubject.create<Void>()
 
@@ -78,6 +82,7 @@ interface ThreadViewModel {
         private val refresh = PublishSubject.create<Void>()
         private val loadMoreReplies = PublishSubject.create<Void>()
         private val displayPaginationError = BehaviorSubject.create<Boolean>()
+        private val initialLoadCommentsError = BehaviorSubject.create<Boolean>()
         private val showGuideLinesLink = BehaviorSubject.create<Void>()
 
         private val onCommentReplies =
@@ -186,10 +191,22 @@ interface ThreadViewModel {
                     replyComposerStatus.onNext(composerStatus)
                 }
 
-            this.onViewMoreClicked
+            this.onLoadingReplies
+                .map {
+                    this.onCommentReplies.value
+                }.compose(bindToLifecycle())
+                .subscribe {
+                    if (it?.first?.isNotEmpty() == true) {
+                        this.loadMoreReplies.onNext(null)
+                    } else {
+                        this.refresh.onNext(null)
+                    }
+                }
+
+            this.initialError
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.loadMoreReplies.onNext(null)
+                    this.initialLoadCommentsError.onNext(true)
                 }
 
             this.paginationError
@@ -249,13 +266,9 @@ interface ThreadViewModel {
                 }
 
             this.internalError
-                .compose(Transformers.combineLatestPair(onCommentReplies))
-                .filter {
-                    it.second.first.isNullOrEmpty()
-                }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.initialError.onNext(it.first)
+                    this.initialError.onNext(it)
                 }
 
             this.internalError
@@ -313,7 +326,7 @@ interface ThreadViewModel {
             .ofType(CommentCardData::class.java)
 
         override fun nextPage() = nextPage.onNext(null)
-        override fun onViewMoreClicked() = onViewMoreClicked.onNext(null)
+        override fun reloadRepliesPage() = onLoadingReplies.onNext(null)
 
         override fun getRootComment(): Observable<Comment> = this.rootComment
         override fun onCommentReplies(): Observable<Pair<List<CommentCardData>, Boolean>> =
@@ -333,9 +346,9 @@ interface ThreadViewModel {
         override fun showReplyComposer(): Observable<Boolean> = showReplyComposer
         override fun isFetchingReplies(): Observable<Boolean> = this.isFetchingReplies
         override fun loadMoreReplies(): Observable<Void> = this.loadMoreReplies
-        override fun shouldShowPaginationErrorUI(): Observable<Boolean> =
-            this.displayPaginationError
-
         override fun showCommentGuideLinesLink(): Observable<Void> = showGuideLinesLink
+        override fun shouldShowPaginationErrorUI(): Observable<Boolean> = this.displayPaginationError
+        override fun initialLoadCommentsError(): Observable<Boolean> = this.initialLoadCommentsError
+        override fun refresh(): Observable<Void> = this.refresh
     }
 }

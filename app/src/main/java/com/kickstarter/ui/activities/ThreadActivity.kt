@@ -87,6 +87,15 @@ class ThreadActivity :
                 repliesStatusAdapter.addErrorPaginationCell(it)
             }
 
+        viewModel.outputs.initialLoadCommentsError()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .filter { it }
+            .subscribe {
+                /** bind Error initial loading cell **/
+                repliesStatusAdapter.addInitiallyLoadingErrorCell(it)
+            }
+
         viewModel.outputs.isFetchingReplies()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
@@ -199,11 +208,11 @@ class ThreadActivity :
     }
 
     override fun loadMoreCallback() {
-        viewModel.inputs.onViewMoreClicked()
+        viewModel.inputs.reloadRepliesPage()
     }
 
     override fun retryCallback() {
-        viewModel.inputs.onViewMoreClicked()
+        viewModel.inputs.reloadRepliesPage()
     }
 
     override fun onDestroy() {

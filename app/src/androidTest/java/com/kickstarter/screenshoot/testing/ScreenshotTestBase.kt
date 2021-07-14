@@ -12,7 +12,7 @@ import com.kickstarter.R
 import org.junit.Before
 import org.junit.Rule
 import org.junit.rules.TestName
-import java.util.*
+import java.util.Locale
 import kotlin.collections.ArrayList
 
 open class ScreenshotTestBase {

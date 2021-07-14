@@ -1,7 +1,7 @@
 package com.kickstarter.screenshoot.testing
 
 import android.view.ViewGroup
-import java.util.*
+import java.util.Locale
 
 data class TestDevice(val width: Int, val height: Int) {
 

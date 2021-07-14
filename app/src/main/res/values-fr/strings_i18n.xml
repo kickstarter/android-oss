@@ -81,6 +81,7 @@ contributeurs</string>
   <string name="By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">Lorsque vous vous engagez, vous acceptez les &lt;a href="%{terms_of_use_link}">Conditions d\'utilisation&lt;/a> de Kickstarter, notre &lt;a href="%{privacy_policy_link}">Politique de confidentialité&lt;/a> et notre &lt;a href="%{cookie_policy_link}">Politique en matière de cookies&lt;/a>.</string>
   <string name="By_signing_up_you_agree_to_our_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">En vous inscrivant, vous acceptez nos conditions d\'utilisation, notre politique de confidentialité et notre politique en matière de cookies. Ces deux dernières politiques décrivent comment nous utilisons vos données pour proposer, améliorer et faire la promotion de nos services et de notre site, ainsi que les droits dont vous disposez pour contrôler cette utilisation et comment les exercer.</string>
   <string name="By_signing_up_youll_log_in_to_Kickstarter_using_your_Facebook_account" formatted="false">En vous inscrivant ici, vous vous connecterez à Kickstarter avec votre compte Facebook. Si vous préférez ne pas utiliser Facebook, veuillez redémarrer cette application et choisir une autre option.</string>
+  <string name="By_submitting_your_pledge_you_agree_that_Stripe_may_charge_your_payment_method" formatted="false">En vous engageant, vous acceptez que Stripe, notre prestataire de traitement des règlements, débite votre moyen de paiement.</string>
   <string name="CVC" formatted="false">Cryptogramme</string>
   <string name="Cancel" formatted="false">Annuler</string>
   <string name="Cancel_pledge" formatted="false">Annuler mon engagement</string>
@@ -108,6 +109,7 @@ contributeurs</string>
   <string name="Closes_filters" formatted="false">Ferme les filtres.</string>
   <string name="Closes_live_stream" formatted="false">Ferme la diffusion en direct.</string>
   <string name="Closes_project" formatted="false">Ferme le projet.</string>
+  <string name="Collaborator" formatted="false">Collaborateur</string>
   <string name="Collapses_subcategories" formatted="false">Masque les sous-catégories.</string>
   <string name="Collections" formatted="false">Collections</string>
   <string name="Comment_reply_digest" formatted="false">Résumé des réponses aux commentaires</string>
@@ -487,6 +489,7 @@ n\'ont rien soutenu.</string>
   <string name="Replay_live_stream_with_creator_name" formatted="false">Revoir la diffusion en direct de &lt;br>&lt;b>%{creator_name}&lt;/b></string>
   <string name="Replay_past_live_stream" formatted="false">Rediffusion</string>
   <string name="Replay_past_live_streams" formatted="false">Revoir des diffusions en direct passées</string>
+  <string name="Replies" formatted="false">Réponses</string>
   <string name="Reply_to_user_name" formatted="false">Répondre à %{user_name}…</string>
   <string name="Request_my_data" formatted="false">Demander mes données</string>
   <string name="Request_my_personal_data" formatted="false">Demander mes données personnelles</string>
@@ -660,6 +663,7 @@ n\'ont rien soutenu.</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">Vidéo désactivée en attente d\'une meilleure connexion Internet</string>
   <string name="View" formatted="false">Afficher</string>
   <string name="View_dashboard" formatted="false">Tableau de bord</string>
+  <string name="View_more_replies" formatted="false">Afficher davantage de réponses</string>
   <string name="View_progress" formatted="false">Voir les progrès</string>
   <string name="View_project" formatted="false">Afficher le projet</string>
   <string name="View_replies" formatted="false">Afficher les réponses</string>

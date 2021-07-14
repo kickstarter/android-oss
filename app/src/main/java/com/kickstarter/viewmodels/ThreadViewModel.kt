@@ -55,7 +55,9 @@ interface ThreadViewModel {
         /** Display the pagination Error Cell **/
         fun shouldShowPaginationErrorUI(): Observable<Boolean>
         /** Display the Initial Error Cell **/
-        fun initialLoadCommentsError(): Observable<Throwable>
+        fun initialLoadCommentsError(): Observable<Boolean>
+
+        fun refresh(): Observable<Void>
 
         fun showCommentGuideLinesLink(): Observable<Void>
     }
@@ -80,6 +82,7 @@ interface ThreadViewModel {
         private val refresh = PublishSubject.create<Void>()
         private val loadMoreReplies = PublishSubject.create<Void>()
         private val displayPaginationError = BehaviorSubject.create<Boolean>()
+        private val initialLoadCommentsError = BehaviorSubject.create<Boolean>()
         private val showGuideLinesLink = BehaviorSubject.create<Void>()
 
         private val onCommentReplies =
@@ -193,11 +196,17 @@ interface ThreadViewModel {
                     this.onCommentReplies.value
                 }.compose(bindToLifecycle())
                 .subscribe {
-                    if (it.first.isNullOrEmpty()) {
-                        loadCommentListFromProjectOrUpdate(comment)
-                    } else {
+                    if (it?.first?.isNotEmpty() == true) {
                         this.loadMoreReplies.onNext(null)
+                    } else {
+                        this.refresh.onNext(null)
                     }
+                }
+
+            this.initialError
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.initialLoadCommentsError.onNext(true)
                 }
 
             this.paginationError
@@ -337,11 +346,9 @@ interface ThreadViewModel {
         override fun showReplyComposer(): Observable<Boolean> = showReplyComposer
         override fun isFetchingReplies(): Observable<Boolean> = this.isFetchingReplies
         override fun loadMoreReplies(): Observable<Void> = this.loadMoreReplies
-        override fun shouldShowPaginationErrorUI(): Observable<Boolean> =
-            this.displayPaginationError
-
         override fun showCommentGuideLinesLink(): Observable<Void> = showGuideLinesLink
         override fun shouldShowPaginationErrorUI(): Observable<Boolean> = this.displayPaginationError
-        override fun initialLoadCommentsError(): Observable<Throwable> = this.initialError
+        override fun initialLoadCommentsError(): Observable<Boolean> = this.initialLoadCommentsError
+        override fun refresh(): Observable<Void> = this.refresh
     }
 }

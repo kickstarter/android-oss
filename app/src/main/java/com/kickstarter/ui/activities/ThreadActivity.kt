@@ -93,8 +93,8 @@ class ThreadActivity :
             .filter { it }
             .subscribe {
                 /** bind Error initial loading cell **/
-                repliesStatusAdapter.addInitiallyLoadingErrorCell(true)
-                         }
+                repliesStatusAdapter.addInitiallyLoadingErrorCell(it)
+            }
 
         viewModel.outputs.isFetchingReplies()
             .compose(bindToLifecycle())

@@ -21,6 +21,7 @@ import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
 import rx.subjects.BehaviorSubject
+import java.io.IOException
 
 class ThreadViewModelTest : KSRobolectricTestCase() {
 
@@ -33,6 +34,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
     private val showReplyComposer = TestSubscriber<Boolean>()
     private val loadMoreReplies = TestSubscriber<Void>()
     private val openCommentGuideLines = TestSubscriber<Void>()
+    private val refresh = TestSubscriber<Void>()
 
     private fun setUpEnvironment() {
         setUpEnvironment(environment())
@@ -44,6 +46,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         this.vm.shouldFocusOnCompose().subscribe(focusCompose)
         this.vm.onCommentReplies().subscribe(onReplies)
         this.vm.loadMoreReplies().subscribe(loadMoreReplies)
+        this.vm.refresh().subscribe(refresh)
     }
 
     @Test
@@ -211,6 +214,32 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, CommentCardDataFactory.commentCardData()))
 
         this.onReplies.assertValueCount(2)
+    }
+
+    @Test
+    fun testLoadCommentReplies_Error() {
+        val createdAt = DateTime.now()
+        val env = environment().toBuilder()
+            .apolloClient(object : MockApolloClient() {
+                override fun getRepliesForComment(
+                    comment: Comment,
+                    cursor: String?,
+                    pageSize: Int
+                ): Observable<CommentEnvelope> {
+                    return Observable.error(IOException())
+                }
+            })
+            .build()
+
+        setUpEnvironment(env)
+
+        // Start the view model with a backed project and comment.
+        vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, CommentCardDataFactory.commentCardData()))
+
+        this.onReplies.assertValueCount(0)
+
+        vm.onViewMoreClicked()
+        this.refresh.assertValueCount(1)
     }
 
     @Test

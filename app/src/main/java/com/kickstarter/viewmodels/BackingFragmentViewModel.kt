@@ -29,6 +29,7 @@ import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.BackingFragment
 import com.stripe.android.model.Card
+import com.stripe.android.model.CardBrand
 import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -490,7 +491,7 @@ interface BackingFragmentViewModel {
                 CreditCardPaymentType.ANDROID_PAY -> Either.Right(R.string.googlepay_button_content_description)
                 CreditCardPaymentType.APPLE_PAY -> Either.Right(R.string.apple_pay_content_description)
                 CreditCardPaymentType.CREDIT_CARD -> Either.Left(StoredCard.issuer(CreditCardTypes.safeValueOf(paymentSource.type())))
-                else -> Either.Left(Card.CardBrand.UNKNOWN)
+                else -> Either.Left(CardBrand.Unknown.code)
             }
         }
 

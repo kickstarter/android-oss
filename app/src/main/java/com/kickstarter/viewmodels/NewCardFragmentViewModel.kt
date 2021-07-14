@@ -18,8 +18,8 @@ import com.kickstarter.models.StoredCard
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.fragments.NewCardFragment
-import com.stripe.android.CardUtils
-import com.stripe.android.model.Card
+import com.stripe.android.model.CardBrand
+import com.stripe.android.model.CardParams
 import com.stripe.android.model.Token
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -28,7 +28,7 @@ import rx.subjects.PublishSubject
 interface NewCardFragmentViewModel {
     interface Inputs {
         /** Call when the card validity changes. */
-        fun card(card: Card?)
+        fun card(cardParams: CardParams?)
 
         /** Call when the card input has focus. */
         fun cardFocus(hasFocus: Boolean)
@@ -69,7 +69,7 @@ interface NewCardFragmentViewModel {
         fun cardWidgetFocusDrawable(): Observable<Int>
 
         /** Emits when we should create a Stripe token using card. */
-        fun createStripeToken(): Observable<Card>
+        fun createStripeToken(): Observable<CardParams>
 
         /** Emits a boolean determining if the form divider should be visible. */
         fun dividerIsVisible(): Observable<Boolean>
@@ -95,7 +95,7 @@ interface NewCardFragmentViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<NewCardFragment>(environment), Inputs, Outputs {
 
-        private val card = PublishSubject.create<Card?>()
+        private val cardParams = PublishSubject.create<CardParams>()
         private val cardFocus = PublishSubject.create<Boolean>()
         private val cardNumber = PublishSubject.create<String>()
         private val name = PublishSubject.create<String>()
@@ -109,7 +109,7 @@ interface NewCardFragmentViewModel {
         private val allowedCardWarningIsVisible = BehaviorSubject.create<Boolean>()
         private val appBarLayoutHasElevation = BehaviorSubject.create<Boolean>()
         private val cardWidgetFocusDrawable = BehaviorSubject.create<Int>()
-        private val createStripeToken = PublishSubject.create<Card>()
+        private val createStripeToken = PublishSubject.create<CardParams>()
         private val dividerIsVisible = BehaviorSubject.create<Boolean>()
         private val error = BehaviorSubject.create<Void>()
         private val modalError = BehaviorSubject.create<Void>()
@@ -122,7 +122,6 @@ interface NewCardFragmentViewModel {
         val outputs: Outputs = this
 
         private val apolloClient = this.environment.apolloClient()
-        private val stripe = this.environment.stripe()
 
         init {
             val modal = arguments()
@@ -154,7 +153,7 @@ interface NewCardFragmentViewModel {
 
             val cardForm = Observable.combineLatest(
                 this.name,
-                this.card,
+                this.cardParams,
                 this.cardNumber,
                 this.postalCode,
                 reusable
@@ -167,8 +166,9 @@ interface NewCardFragmentViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(this.saveButtonIsEnabled)
 
-            val warning = this.cardNumber
-                .compose<Pair<String, Project?>>(combineLatestPair(project))
+            val warning = this.cardParams
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose<Pair<CardParams, Project?>>(combineLatestPair(project))
                 .map<Pair<Int?, Project?>> { Pair(CardForm.warning(it.first, it.second), it.second) }
                 .distinctUntilChanged()
 
@@ -197,12 +197,14 @@ interface NewCardFragmentViewModel {
                     }
                 }
                 .distinctUntilChanged()
-                .subscribe { this.cardWidgetFocusDrawable.onNext(it) }
+                .subscribe {
+                    this.cardWidgetFocusDrawable.onNext(it)
+                }
 
             cardForm
-                .map { it.card?.toBuilder()?.name(it.name)?.addressZip(it.postalCode)?.build() }
+                .map { it.cardParams }
                 .filter { ObjectUtils.isNotNull(it) }
-                .compose<Card>(takeWhen(this.saveCardClicked))
+                .compose<CardParams>(takeWhen(this.saveCardClicked))
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.createStripeToken.onNext(it)
@@ -240,8 +242,8 @@ interface NewCardFragmentViewModel {
             errors.subscribe { this.progressBarIsVisible.onNext(false) }
         }
 
-        override fun card(card: Card?) {
-            this.card.onNext(card)
+        override fun card(cardParams: CardParams?) {
+            this.cardParams.onNext(cardParams)
         }
 
         override fun cardFocus(hasFocus: Boolean) {
@@ -284,7 +286,7 @@ interface NewCardFragmentViewModel {
 
         override fun cardWidgetFocusDrawable(): Observable<Int> = this.cardWidgetFocusDrawable
 
-        override fun createStripeToken(): Observable<Card> = this.createStripeToken
+        override fun createStripeToken(): Observable<CardParams> = this.createStripeToken
 
         override fun dividerIsVisible(): Observable<Boolean> = this.dividerIsVisible
 
@@ -300,7 +302,7 @@ interface NewCardFragmentViewModel {
 
         override fun success(): Observable<StoredCard> = this.success
 
-        data class CardForm(val name: String, val card: Card?, val cardNumber: String, val postalCode: String, val reusable: Boolean) {
+        data class CardForm(val name: String, val cardParams: CardParams?, val cardNumber: String, val postalCode: String, val reusable: Boolean) {
 
             fun isValid(project: Project?): Boolean {
                 return this.name.isNotEmpty() &&
@@ -309,22 +311,22 @@ interface NewCardFragmentViewModel {
             }
 
             private fun isValidCard(project: Project?): Boolean {
-                return this.card != null && warning(this.cardNumber, project) == null && this.card.validateNumber() && this.card.validateExpiryDate() && card.validateCVC()
+                return this.cardParams != null && warning(this.cardParams, project) == null
             }
 
             companion object {
-                fun warning(cardNumber: String, project: Project?): Int? {
-                    return if (cardNumber.length < 3)
-                        null
+                fun warning(params: CardParams, project: Project?): Int? {
+                    return if (params.last4.length < 3)
+                        -1
                     else {
                         when (project) {
-                            null -> when {
-                                CardUtils.getPossibleCardType(cardNumber) !in allowedCardTypes -> R.string.Unsupported_card_type
-                                else -> null
+                            null -> when (params.brand.code) {
+                                in allowedCardTypes -> null
+                                else -> R.string.Unsupported_card_type
                             }
-                            else -> when {
-                                CardUtils.getPossibleCardType(cardNumber) !in getAllowedTypes(project) -> R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country
-                                else -> null
+                            else -> when (params.brand.code) {
+                                in getAllowedTypes(project) -> null
+                                else -> R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country
                             }
                         }
                     }
@@ -338,20 +340,20 @@ interface NewCardFragmentViewModel {
                 }
 
                 private val allowedCardTypes = arrayOf(
-                    Card.CardBrand.AMERICAN_EXPRESS,
-                    Card.CardBrand.DINERS_CLUB,
-                    Card.CardBrand.DISCOVER,
-                    Card.CardBrand.JCB,
-                    Card.CardBrand.MASTERCARD,
-                    Card.CardBrand.UNIONPAY,
-                    Card.CardBrand.VISA
+                    CardBrand.AmericanExpress.code,
+                    CardBrand.DinersClub.code,
+                    CardBrand.Discover.code,
+                    CardBrand.JCB.code,
+                    CardBrand.MasterCard.code,
+                    CardBrand.UnionPay.code,
+                    CardBrand.Visa.code
                 )
 
                 private val usdCardTypes = allowedCardTypes
                 private val nonUsdCardTypes = arrayOf(
-                    Card.CardBrand.AMERICAN_EXPRESS,
-                    Card.CardBrand.MASTERCARD,
-                    Card.CardBrand.VISA
+                    CardBrand.AmericanExpress.code,
+                    CardBrand.MasterCard.code,
+                    CardBrand.Visa.code
                 )
             }
         }

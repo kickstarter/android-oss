@@ -22,7 +22,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
-import com.stripe.android.model.Card
+import com.stripe.android.model.CardBrand
 import junit.framework.TestCase
 import org.joda.time.DateTime
 import org.junit.Test
@@ -375,7 +375,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        this.cardIssuer.assertValue(Either.Left(Card.CardBrand.VISA))
+        this.cardIssuer.assertValue(Either.Left(CardBrand.Visa.code))
     }
 
     @Test

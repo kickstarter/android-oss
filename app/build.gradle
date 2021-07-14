@@ -110,8 +110,7 @@ android {
         applicationId "com.kickstarter"
         minSdkVersion 23
         targetSdkVersion 30
-        testApplicationId "com.kickstarter.kickstarter.regression.test"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.kickstarter.screenshoot.testing.ScreenshotTestRunner"
 
         buildConfigField "String", "GIT_SHA", "\"${commitSha()}\""
         buildConfigField "String", "BUILD_DATE", "\"${buildDate()}\""
@@ -172,12 +171,6 @@ android {
             versionCode externalPrivateVersion
             versionName externalPublicVersion
         }
-        regression {
-            dimension "AUDIENCE"
-            applicationId "com.kickstarter.kickstarter.regression"
-            versionCode externalPrivateVersion
-            versionName externalPublicVersion
-        }
     }
 
     compileOptions {
@@ -203,13 +196,6 @@ android {
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
         exclude 'LICENSE.txt'
-    }
-
-    sourceSets {
-        regression {
-            androidTest.java.srcDirs = ['src/androidTestRegressionDebug/kotlin']
-        }
-        main.java.srcDirs += 'src/main/kotlin'
     }
 
     testOptions {
@@ -240,6 +226,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.apollographql.apollo:apollo-gradle-plugin:2.3.0'
+        classpath 'com.karumi:shot:2.2.0'
     }
 }
 
@@ -381,3 +368,10 @@ gradle.taskGraph.beforeTask { Task task ->
 }
 
 apply plugin: 'com.google.gms.google-services'
+
+apply plugin: 'shot'
+shot {
+    appId = 'com.kickstarter'
+    instrumentationTestTask = 'connectedInternalDebugAndroidTest'
+    packageTestApkTask = 'packageInternalDebugAndroidTest'
+}

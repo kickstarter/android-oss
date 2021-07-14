@@ -31,6 +31,7 @@ interface ThreadViewModel {
         fun nextPage()
         fun onViewMoreClicked()
         fun insertNewReplyToList(comment: String, createdAt: DateTime)
+        fun onShowGuideLinesLinkClicked()
     }
 
     interface Outputs {
@@ -55,6 +56,8 @@ interface ThreadViewModel {
         fun shouldShowPaginationErrorUI(): Observable<Boolean>
         /** Display the Initial Error Cell **/
         fun initialLoadCommentsError(): Observable<Throwable>
+
+        fun showCommentGuideLinesLink(): Observable<Void>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ThreadActivity>(environment), Inputs, Outputs {
@@ -63,6 +66,8 @@ interface ThreadViewModel {
 
         private val nextPage = PublishSubject.create<Void>()
         private val onViewMoreClicked = PublishSubject.create<Void>()
+        private val insertNewReplyToList = PublishSubject.create<Pair<String, DateTime>>()
+        private val onShowGuideLinesLinkClicked = PublishSubject.create<Void>()
 
         private val rootComment = BehaviorSubject.create<Comment>()
         private val focusOnCompose = BehaviorSubject.create<Boolean>()
@@ -70,14 +75,15 @@ interface ThreadViewModel {
         private val replyComposerStatus = BehaviorSubject.create<CommentComposerStatus>()
         private val showReplyComposer = BehaviorSubject.create<Boolean>()
         private val scrollToBottom = BehaviorSubject.create<Void>()
-        private val insertNewReplyToList = PublishSubject.create<Pair<String, DateTime>>()
         private val isFetchingReplies = BehaviorSubject.create<Boolean>()
         private val hasPreviousElements = BehaviorSubject.create<Boolean>()
         private val refresh = PublishSubject.create<Void>()
         private val loadMoreReplies = PublishSubject.create<Void>()
         private val displayPaginationError = BehaviorSubject.create<Boolean>()
+        private val showGuideLinesLink = BehaviorSubject.create<Void>()
 
-        private val onCommentReplies = BehaviorSubject.create<Pair<List<CommentCardData>, Boolean>>()
+        private val onCommentReplies =
+            BehaviorSubject.create<Pair<List<CommentCardData>, Boolean>>()
         private var project: Project? = null
 
         val inputs = this
@@ -101,7 +107,8 @@ interface ThreadViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(this.focusOnCompose)
 
-            val comment = getCommentCardDataFromIntent().map { it.comment }.map { requireNotNull(it) }
+            val comment =
+                getCommentCardDataFromIntent().map { it.comment }.map { requireNotNull(it) }
 
             val project = commentData
                 .map { it.project }
@@ -117,16 +124,17 @@ interface ThreadViewModel {
 
             this.insertNewReplyToList
                 .distinctUntilChanged()
-                .withLatestFrom(this.currentUser.loggedInUser()) {
-                    comment, user ->
+                .withLatestFrom(this.currentUser.loggedInUser()) { comment, user ->
                     Pair(comment, user)
                 }
-                .withLatestFrom(commentData) {
-                    reply, parent ->
+                .withLatestFrom(commentData) { reply, parent ->
                     Pair(reply, parent)
                 }
                 .map {
-                    Pair(it.second, buildReplyBody(Pair(Pair(it.second, it.first.second), it.first.first)))
+                    Pair(
+                        it.second,
+                        buildReplyBody(Pair(Pair(it.second, it.first.second), it.first.first))
+                    )
                 }
                 .map {
                     CommentCardData.builder()
@@ -197,6 +205,12 @@ interface ThreadViewModel {
                 .subscribe {
                     this.displayPaginationError.onNext(true)
                 }
+
+            this.onShowGuideLinesLinkClicked
+                .compose(bindToLifecycle())
+                .subscribe {
+                    showGuideLinesLink.onNext(null)
+                }
         }
 
         private fun loadCommentListFromProjectOrUpdate(comment: Observable<Comment>) {
@@ -259,7 +273,8 @@ interface ThreadViewModel {
                 }
         }
 
-        private fun mapListToData(it: CommentEnvelope, project: Project) = it.comments?.toCommentCardList(project)
+        private fun mapListToData(it: CommentEnvelope, project: Project) =
+            it.comments?.toCommentCardList(project)
 
         private fun loadWithProjectReplies(
             comment: Observable<Comment>,
@@ -290,7 +305,10 @@ interface ThreadViewModel {
         private fun getCommentComposerStatus(projectAndUser: Pair<Project, User?>) =
             when {
                 projectAndUser.second == null -> CommentComposerStatus.GONE
-                projectAndUser.first.isBacking || ProjectUtils.userIsCreator(projectAndUser.first, projectAndUser.second) -> CommentComposerStatus.ENABLED
+                projectAndUser.first.isBacking || ProjectUtils.userIsCreator(
+                    projectAndUser.first,
+                    projectAndUser.second
+                ) -> CommentComposerStatus.ENABLED
                 else -> CommentComposerStatus.DISABLED
             }
 
@@ -302,19 +320,27 @@ interface ThreadViewModel {
         override fun onViewMoreClicked() = onViewMoreClicked.onNext(null)
 
         override fun getRootComment(): Observable<Comment> = this.rootComment
-        override fun onCommentReplies(): Observable<Pair<List<CommentCardData>, Boolean>> = this.onCommentReplies
+        override fun onCommentReplies(): Observable<Pair<List<CommentCardData>, Boolean>> =
+            this.onCommentReplies
+
+        override fun insertNewReplyToList(comment: String, createdAt: DateTime) =
+            this.insertNewReplyToList.onNext(
+                Pair(comment, createdAt)
+            )
+
+        override fun onShowGuideLinesLinkClicked() = onShowGuideLinesLinkClicked.onNext(null)
 
         override fun shouldFocusOnCompose(): Observable<Boolean> = this.focusOnCompose
         override fun scrollToBottom(): Observable<Void> = this.scrollToBottom
-
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
         override fun replyComposerStatus(): Observable<CommentComposerStatus> = replyComposerStatus
         override fun showReplyComposer(): Observable<Boolean> = showReplyComposer
-        override fun insertNewReplyToList(comment: String, createdAt: DateTime) = this.insertNewReplyToList.onNext(
-            Pair(comment, createdAt)
-        )
         override fun isFetchingReplies(): Observable<Boolean> = this.isFetchingReplies
         override fun loadMoreReplies(): Observable<Void> = this.loadMoreReplies
+        override fun shouldShowPaginationErrorUI(): Observable<Boolean> =
+            this.displayPaginationError
+
+        override fun showCommentGuideLinesLink(): Observable<Void> = showGuideLinesLink
         override fun shouldShowPaginationErrorUI(): Observable<Boolean> = this.displayPaginationError
         override fun initialLoadCommentsError(): Observable<Throwable> = this.initialError
     }

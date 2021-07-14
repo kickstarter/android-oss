@@ -7,6 +7,7 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.URLSpan
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.ColorRes
@@ -56,4 +57,21 @@ Parse HTML into a Document. As no base URI is specified, absolute URL detection 
  */
 fun TextView.parseHtmlTag() {
     this.text = Jsoup.parse(this.text.toString()).text()
+}
+
+fun TextView.urlSpanWithoutUnderlines() {
+    val spannable: Spannable = SpannableString(this.text)
+    spannable.getSpans(0, spannable.length, URLSpan::class.java).forEach { span ->
+        val start = spannable.getSpanStart(span)
+        val end = spannable.getSpanEnd(span)
+        spannable.removeSpan(span)
+        val newSpan = object : URLSpan(span.url) {
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = false
+            }
+        }
+        spannable.setSpan(newSpan, start, end, 0)
+    }
+    text = spannable
 }

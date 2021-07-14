@@ -3,13 +3,11 @@ package com.kickstarter.screenshoot.testing.ui.components
 import android.view.LayoutInflater
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.test.rule.GrantPermissionRule
 import com.kickstarter.R
 import com.kickstarter.screenshoot.testing.ScreenshotTestBase
 import com.kickstarter.ui.views.CommentCard
 import com.kickstarter.ui.views.CommentCardStatus
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 
 class CommentCardShotTest : ScreenshotTestBase() {

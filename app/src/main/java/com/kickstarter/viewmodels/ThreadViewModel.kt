@@ -67,7 +67,7 @@ interface ThreadViewModel {
         private val currentUser: CurrentUserType = environment.currentUser()
 
         private val nextPage = PublishSubject.create<Void>()
-        private val onViewMoreClicked = PublishSubject.create<Void>()
+        private val onLoadingReplies = PublishSubject.create<Void>()
         private val insertNewReplyToList = PublishSubject.create<Pair<String, DateTime>>()
         private val onShowGuideLinesLinkClicked = PublishSubject.create<Void>()
 
@@ -191,7 +191,7 @@ interface ThreadViewModel {
                     replyComposerStatus.onNext(composerStatus)
                 }
 
-            this.onViewMoreClicked
+            this.onLoadingReplies
                 .map {
                     this.onCommentReplies.value
                 }.compose(bindToLifecycle())
@@ -326,7 +326,7 @@ interface ThreadViewModel {
             .ofType(CommentCardData::class.java)
 
         override fun nextPage() = nextPage.onNext(null)
-        override fun reloadRepliesPage() = onViewMoreClicked.onNext(null)
+        override fun reloadRepliesPage() = onLoadingReplies.onNext(null)
 
         override fun getRootComment(): Observable<Comment> = this.rootComment
         override fun onCommentReplies(): Observable<Pair<List<CommentCardData>, Boolean>> =

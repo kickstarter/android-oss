@@ -29,7 +29,7 @@
 
                 <TextView
                     style="@style/ToolbarTitle"
-                    android:text="@string/fpo_replies" />
+                    android:text="@string/Replies" />
             </RelativeLayout>
         </com.kickstarter.ui.toolbars.KSToolbar>
     </com.google.android.material.appbar.AppBarLayout>

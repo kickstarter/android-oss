@@ -9,6 +9,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.loadmore.ApolloPaginate
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
+import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.models.Comment
 import com.kickstarter.models.Project
@@ -36,6 +37,7 @@ interface CommentsViewModel {
         fun insertNewCommentToList(comment: String, createdAt: DateTime)
         fun onReplyClicked(comment: Comment, openKeyboard: Boolean)
         fun onShowGuideLinesLinkClicked()
+        fun checkIfThereAnyPendingComments(isBackAction: Boolean)
 
         /** Will be called with the successful response when calling the `postComment` Mutation **/
         fun refreshComment(comment: Comment)
@@ -55,6 +57,7 @@ interface CommentsViewModel {
         fun paginateCommentsError(): Observable<Throwable>
         fun pullToRefreshError(): Observable<Throwable>
         fun startThreadActivity(): Observable<Pair<CommentCardData, Boolean>>
+        fun hasPendingComments(): Observable<Pair<Boolean, Boolean>>
 
         /** Emits a boolean indicating whether comments are being fetched from the API.  */
         fun isFetchingComments(): Observable<Boolean>
@@ -75,6 +78,7 @@ interface CommentsViewModel {
         private val nextPage = PublishSubject.create<Void>()
         private val onShowGuideLinesLinkClicked = PublishSubject.create<Void>()
         private val onReplyClicked = PublishSubject.create<Pair<Comment, Boolean>>()
+        private val checkIfThereAnyPendingComments = PublishSubject.create<Boolean>()
 
         private val closeCommentsPage = BehaviorSubject.create<Void>()
         private val currentUserAvatar = BehaviorSubject.create<String?>()
@@ -92,6 +96,7 @@ interface CommentsViewModel {
         private val displayPaginationError = BehaviorSubject.create<Boolean>()
         private val commentToRefresh = PublishSubject.create<Comment>()
         private val startThreadActivity = BehaviorSubject.create<Pair<CommentCardData, Boolean>>()
+        private val hasPendingComments = BehaviorSubject.create<Pair<Boolean, Boolean>>()
 
         // - Error observables to handle the 3 different use cases
         private val internalError = BehaviorSubject.create<Throwable>()
@@ -217,6 +222,20 @@ interface CommentsViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.displayPaginationError.onNext(true)
+                }
+
+            this.commentsList
+                .compose(takePairWhen(checkIfThereAnyPendingComments))
+                .compose(bindToLifecycle())
+                .subscribe { pair ->
+                    this.hasPendingComments.onNext(
+                        Pair(
+                            pair.first.any {
+                                it.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus
+                            },
+                            pair.second
+                        )
+                    )
                 }
 
             this.backPressed
@@ -416,7 +435,7 @@ interface CommentsViewModel {
         override fun onShowGuideLinesLinkClicked() = onShowGuideLinesLinkClicked.onNext(null)
         override fun refreshComment(comment: Comment) = this.commentToRefresh.onNext(comment)
         override fun onReplyClicked(comment: Comment, openKeyboard: Boolean) = onReplyClicked.onNext(Pair(comment, openKeyboard))
-
+        override fun checkIfThereAnyPendingComments(isBackAction: Boolean) = checkIfThereAnyPendingComments.onNext(isBackAction)
         // - Outputs
         override fun closeCommentsPage(): Observable<Void> = closeCommentsPage
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar
@@ -435,5 +454,7 @@ interface CommentsViewModel {
 
         override fun startThreadActivity(): Observable<Pair<CommentCardData, Boolean>> = this.startThreadActivity
         override fun isFetchingComments(): Observable<Boolean> = this.isFetchingComments
+
+        override fun hasPendingComments(): Observable<Pair<Boolean, Boolean>> = this.hasPendingComments
     }
 }

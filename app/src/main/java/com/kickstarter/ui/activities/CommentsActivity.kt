@@ -14,6 +14,7 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.UrlUtils
+import com.kickstarter.libs.utils.extensions.showAlertDialog
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.IntentKey
@@ -44,7 +45,9 @@ class CommentsActivity :
         setContentView(view)
         binding.commentsRecyclerView.adapter = adapter
 
-        binding.backButton.setOnClickListener { viewModel.inputs.backPressed() }
+        binding.backButton.setOnClickListener {
+            viewModel.inputs.checkIfThereAnyPendingComments(true)
+        }
 
         setupPagination()
 
@@ -130,6 +133,43 @@ class CommentsActivity :
             .subscribe {
                 ApplicationUtils.openUrlExternally(this, UrlUtils.appendPath(environment().webEndpoint(), COMMENT_KICKSTARTER_GUIDELINES))
             }
+
+        viewModel.outputs.hasPendingComments()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (it.first) {
+                    handleBackAction(it.second)
+                } else {
+                    executeActions(it.second)
+                }
+            }
+    }
+
+    private fun handleBackAction(isBackAction: Boolean) {
+        this.showAlertDialog(
+            getString(R.string.Your_comment_wasnt_posted),
+            getString(R.string.You_will_lose_the_comment),
+            getString(R.string.cancel),
+            getString(R.string.leave_page),
+            false,
+            positiveAction = {
+                executeActions(isBackAction)
+            },
+            negativeAction = {
+                viewModel.inputs.backPressed()
+            }
+        )
+    }
+
+    fun executeActions(isBackAction: Boolean) {
+        if (!isBackAction) {
+            viewModel.inputs.refresh()
+        }
+    }
+
+    override fun back() {
+        viewModel.inputs.checkIfThereAnyPendingComments(true)
     }
 
     private fun closeCommentsActivity() {
@@ -142,7 +182,10 @@ class CommentsActivity :
         recyclerViewPaginator = RecyclerViewPaginator(binding.commentsRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingComments())
 
         swipeRefresher = SwipeRefresher(
-            this, binding.commentsSwipeRefreshLayout, { viewModel.inputs.refresh() }
+            this, binding.commentsSwipeRefreshLayout,
+            {
+                viewModel.inputs.checkIfThereAnyPendingComments(false)
+            }
         ) { viewModel.outputs.isFetchingComments() }
 
         viewModel.outputs.isFetchingComments()

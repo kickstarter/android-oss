@@ -17,11 +17,11 @@ class CommentCardShotTest : ScreenshotTest {
 
     @Test
     fun commentCardScreenshotTest_COMMENT_FOR_LOGIN_BACKED_USERS() {
-        var commentCard:CommentCard = (LayoutInflater.from(context).inflate(R.layout.item_comment_card, null) as ConstraintLayout)
+        var commentCard: CommentCard = (LayoutInflater.from(context).inflate(R.layout.item_comment_card, null) as ConstraintLayout)
             .findViewById(R.id.comments_card_view)
 
         val user = UserFactory.user()
-        commentCard.setAvatarUrl(null)  // -> internal network call to picasso we need to extract that.
+        commentCard.setAvatarUrl(null) // -> internal network call to picasso we need to extract that.
         commentCard.setReplyButtonVisibility(true)
         commentCard.setViewRepliesVisibility(true)
         commentCard.setCommentUserName(user.name())

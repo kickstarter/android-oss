@@ -187,7 +187,6 @@ class ThreadActivity :
     }
 
     override fun onRetryViewClicked(comment: Comment) {
-        TODO("Not yet implemented")
     }
 
     override fun onReplyButtonClicked(comment: Comment) {

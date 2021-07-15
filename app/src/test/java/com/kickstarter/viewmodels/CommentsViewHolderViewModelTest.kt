@@ -365,6 +365,96 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testRetrySendComment_whenReply_shouldSendCommentReplyStatus() {
+        val currentUser = UserFactory.user().toBuilder().id(1).build()
+        val reply = CommentFactory.reply(createdAt = createdAt)
+        val commentCardData = CommentCardData.builder()
+            .comment(reply)
+            .project(ProjectFactory.initialProject())
+            .commentableId(ProjectFactory.initialProject().id().toString())
+            .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
+            .build()
+        var isFirstRun = true
+        var env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun createComment(comment: PostCommentData): Observable<Comment> {
+                return if (isFirstRun) Observable.error(Throwable()) else Observable.just(reply)
+            }
+        }).scheduler(testScheduler)
+            .currentUser(MockCurrentUser(currentUser))
+            .build()
+        setUpEnvironment(env)
+        this.vm.inputs.configureWith(commentCardData)
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+        this.vm.inputs.onRetryViewClicked()
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+        this.commentCardStatus.assertValues(
+            CommentCardStatus.TRYING_TO_POST,
+            CommentCardStatus.FAILED_TO_SEND_COMMENT,
+            CommentCardStatus.RE_TRYING_TO_POST,
+            CommentCardStatus.FAILED_TO_SEND_COMMENT,
+        )
+        this.commentSuccessfullyPosted.assertNoValues()
+        isFirstRun = false
+        this.vm.inputs.onRetryViewClicked()
+        testScheduler.advanceTimeBy(4, TimeUnit.SECONDS)
+        this.commentCardStatus.assertValues(
+            CommentCardStatus.TRYING_TO_POST,
+            CommentCardStatus.FAILED_TO_SEND_COMMENT,
+            CommentCardStatus.RE_TRYING_TO_POST,
+            CommentCardStatus.FAILED_TO_SEND_COMMENT,
+            CommentCardStatus.TRYING_TO_POST,
+            CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY,
+            CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS
+        )
+        this.isCommentReply.assertValue(null)
+        this.commentSuccessfullyPosted.assertValue(reply)
+    }
+
+    @Test
+    fun whenCommentIsReply_retrySendsReplyStatus() {
+        val currentUser = UserFactory.user().toBuilder().id(1).build()
+        val reply = CommentFactory.reply(createdAt = createdAt)
+        val commentCardData = CommentCardData.builder()
+            .comment(reply)
+            .project(ProjectFactory.initialProject())
+            .commentableId(ProjectFactory.initialProject().id().toString())
+            .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
+            .build()
+
+        val env = environment().toBuilder()
+            .apolloClient(object : MockApolloClient() {
+                override fun createComment(comment: PostCommentData): Observable<Comment> {
+                    return Observable.just(reply)
+                }
+            })
+            .scheduler(testScheduler)
+            .currentUser(MockCurrentUser(currentUser))
+            .build()
+
+        setUpEnvironment(env)
+
+        this.vm.inputs.configureWith(commentCardData)
+
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+
+        this.vm.inputs.onRetryViewClicked()
+
+        testScheduler.advanceTimeBy(8, TimeUnit.SECONDS)
+
+        this.commentCardStatus.assertValues(
+            CommentCardStatus.TRYING_TO_POST,
+            CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS,
+            CommentCardStatus.RE_TRYING_TO_POST,
+            CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY,
+            CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS,
+        )
+
+        this.isCommentReply.assertValue(null)
+
+        this.commentSuccessfullyPosted.assertValue(reply)
+    }
+
+    @Test
     fun testSendCommentShouldNotPost() {
         val responseComment = CommentFactory.liveComment(createdAt = createdAt)
         val currentUser = UserFactory.user().toBuilder().id(1).build()

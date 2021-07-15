@@ -232,6 +232,7 @@ interface CommentsViewHolderViewModel {
 
             comment
                 .compose(takeWhen(this.onViewCommentRepliesButtonClicked))
+                .map { postedSuccessfully?.value ?: it }
                 .compose(bindToLifecycle())
                 .subscribe(this.viewCommentReplies)
 
@@ -242,6 +243,7 @@ interface CommentsViewHolderViewModel {
 
             comment
                 .compose(takeWhen(this.onReplyButtonClicked))
+                .map { postedSuccessfully?.value ?: it }
                 .compose(bindToLifecycle())
                 .subscribe(this.replyToComment)
 
@@ -281,7 +283,6 @@ interface CommentsViewHolderViewModel {
                         parent = it.second?.parentId()?.let { id -> it.second.toBuilder().id(id).build() }
                     )
                 }
-
             postCommentData.map {
                 executePostCommentMutation(it, errorObservable)
             }
@@ -294,7 +295,6 @@ interface CommentsViewHolderViewModel {
                     this.postedSuccessfully.onNext(it)
                     if (it.isReply()) this.isReplyButtonVisible.onNext(false)
                 }
-
             Observable
                 .combineLatest(onRetryViewClicked, postCommentData) { _, newData ->
                     return@combineLatest executePostCommentMutation(newData, errorObservable)
@@ -307,6 +307,8 @@ interface CommentsViewHolderViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
+                    this.postedSuccessfully.onNext(it)
+                    if (it.isReply()) this.isReplyButtonVisible.onNext(false)
                 }
         }
 

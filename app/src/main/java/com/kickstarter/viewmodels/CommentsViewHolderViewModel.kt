@@ -345,8 +345,6 @@ interface CommentsViewHolderViewModel {
         /**
          * Function that will execute the PostCommentMutation
          * @param postCommentData holds the comment body and the commentableId for project or update to be posted
-         * // TODO: for the future threads wi will need to send to the mutation not just the body,
-         * // TODO: we will need the entire comment plus very important the [parentId]
          * @return Observable<Comment>
          */
         private fun executePostCommentMutation(

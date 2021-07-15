@@ -129,12 +129,7 @@ class ThreadActivity :
             .compose(bindToLifecycle())
             .delay(500, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext {
-                linearLayoutManager.stackFromEnd = true
-            }
-            .subscribe {
-                binding.commentRepliesRecyclerView.smoothScrollToPosition(0)
-            }
+            .subscribe { binding.commentRepliesRecyclerView.smoothScrollToPosition(0) }
 
         viewModel.outputs.showReplyComposer()
             .compose(bindToLifecycle())

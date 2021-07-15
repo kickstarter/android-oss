@@ -317,6 +317,7 @@ interface CommentsViewModel {
                 .subscribe(this.isFetchingComments)
 
             apolloPaginate.paginatedData()?.share()
+                ?.skip(1)
                 ?.subscribe {
                     this.commentsList.onNext(it)
                 }

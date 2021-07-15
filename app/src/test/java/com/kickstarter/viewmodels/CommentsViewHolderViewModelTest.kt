@@ -416,14 +416,14 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
             CommentCardStatus.FAILED_TO_SEND_COMMENT,
             CommentCardStatus.RE_TRYING_TO_POST,
             CommentCardStatus.FAILED_TO_SEND_COMMENT,
-            CommentCardStatus.TRYING_TO_POST,
+            CommentCardStatus.RE_TRYING_TO_POST,
             CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY,
             CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS
         )
 
         this.isCommentReply.assertValue(null)
-        this.commentSuccessfullyPosted.assertValues(reply, reply)
-        this.isReplyButtonVisible.assertValue(false)
+        this.commentSuccessfullyPosted.assertValues(reply)
+        this.isReplyButtonVisible.assertValues(false, false)
     }
 
     @Test

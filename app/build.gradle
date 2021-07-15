@@ -110,7 +110,7 @@ android {
         applicationId "com.kickstarter"
         minSdkVersion 23
         targetSdkVersion 30
-        testInstrumentationRunner "com.kickstarter.screenshoot.testing.ScreenshotTestRunner"
+        testInstrumentationRunner "com.karumi.shot.ShotTestRunner"
 
         buildConfigField "String", "GIT_SHA", "\"${commitSha()}\""
         buildConfigField "String", "BUILD_DATE", "\"${buildDate()}\""
@@ -196,6 +196,8 @@ android {
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
         exclude 'LICENSE.txt'
+        exclude 'META-INF/AL2.0'
+        exclude 'META-INF/LGPL2.1'
     }
 
     testOptions {
@@ -226,7 +228,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.apollographql.apollo:apollo-gradle-plugin:2.3.0'
-        classpath 'com.karumi:shot:2.2.0'
+        classpath 'com.karumi:shot:5.11.0'
     }
 }
 
@@ -371,7 +373,5 @@ apply plugin: 'com.google.gms.google-services'
 
 apply plugin: 'shot'
 shot {
-    appId = 'com.kickstarter'
-    instrumentationTestTask = 'connectedInternalDebugAndroidTest'
-    packageTestApkTask = 'packageInternalDebugAndroidTest'
+    runInstrumentation = false
 }

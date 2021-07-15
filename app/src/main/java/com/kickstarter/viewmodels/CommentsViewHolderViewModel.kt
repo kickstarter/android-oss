@@ -378,11 +378,11 @@ interface CommentsViewHolderViewModel {
         ) =
             commentCardData.project?.let {
                 (it.isBacking || ProjectUtils.userIsCreator(it, user)) && featureFlagActive &&
-                        (
-                                commentCardData.commentCardState == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus ||
-                                        commentCardData.commentCardState == CommentCardStatus.COMMENT_WITH_REPLIES.commentCardStatus
-                                ) &&
-                        (commentCardData.comment?.parentId() ?: -1) < 0
+                    (
+                        commentCardData.commentCardState == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus ||
+                            commentCardData.commentCardState == CommentCardStatus.COMMENT_WITH_REPLIES.commentCardStatus
+                        ) &&
+                    (commentCardData.comment?.parentId() ?: -1) < 0
             } ?: false
 
         /**

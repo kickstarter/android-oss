@@ -128,10 +128,10 @@ interface CommentsViewHolderViewModel {
 
         init {
 
-            val comment = this.commentInput
-                .map { it.comment }
+            val comment = Observable.merge(this.commentInput.map { it.comment }, postedSuccessfully)
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
+
             configureCommentCardWithComment(comment)
 
             val commentCardStatus = this.commentInput
@@ -234,7 +234,6 @@ interface CommentsViewHolderViewModel {
 
             comment
                 .compose(takeWhen(this.onViewCommentRepliesButtonClicked))
-                .map { postedSuccessfully?.value ?: it }
                 .compose(bindToLifecycle())
                 .subscribe(this.viewCommentReplies)
 
@@ -245,7 +244,6 @@ interface CommentsViewHolderViewModel {
 
             comment
                 .compose(takeWhen(this.onReplyButtonClicked))
-                .map { postedSuccessfully?.value ?: it }
                 .compose(bindToLifecycle())
                 .subscribe(this.replyToComment)
 

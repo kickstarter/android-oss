@@ -307,6 +307,8 @@ interface CommentsViewHolderViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
+                    this.postedSuccessfully.onNext(it)
+                    if (it.isReply()) this.isReplyButtonVisible.onNext(false)
                 }
         }
 

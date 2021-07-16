@@ -13,6 +13,8 @@ import com.kickstarter.libs.utils.extensions.toCommentCardList
 import com.kickstarter.models.Comment
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
+import com.kickstarter.models.extensions.updateCommentAfterSuccessfulPost
+import com.kickstarter.models.extensions.updateCommentFailedToPost
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.ui.IntentKey
@@ -32,7 +34,8 @@ interface ThreadViewModel {
         fun reloadRepliesPage()
         fun insertNewReplyToList(comment: String, createdAt: DateTime)
         fun onShowGuideLinesLinkClicked()
-        fun refreshCommentCard(commentCardData: CommentCardData)
+        fun refreshCommentCardInCaseFailedPosted(comment: Comment)
+        fun refreshCommentCardInCaseSuccessPosted(comment: Comment)
     }
 
     interface Outputs {
@@ -71,7 +74,8 @@ interface ThreadViewModel {
         private val onLoadingReplies = PublishSubject.create<Void>()
         private val insertNewReplyToList = PublishSubject.create<Pair<String, DateTime>>()
         private val onShowGuideLinesLinkClicked = PublishSubject.create<Void>()
-        private val commentCardToRefresh = PublishSubject.create<CommentCardData>()
+        private val failedCommentCardToRefresh = PublishSubject.create<Comment>()
+        private val successfullyPostedCommentCardToRefresh = PublishSubject.create<Comment>()
 
         private val rootComment = BehaviorSubject.create<Comment>()
         private val focusOnCompose = BehaviorSubject.create<Boolean>()
@@ -223,11 +227,23 @@ interface ThreadViewModel {
                     showGuideLinesLink.onNext(null)
                 }
 
-            // - Update internal mutable list with the latest state after successful response
-            this.commentCardToRefresh
+            // - Update internal mutable list with the latest state after failed response
+            this.failedCommentCardToRefresh
                 .compose(Transformers.combineLatestPair(this.onCommentReplies))
                 .map {
-                    Pair(updateCommentFailedToPost(it.first, it.second.first), it.second.second)
+                    Pair(it.first.updateCommentFailedToPost(it.second.first), it.second.second)
+                }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.onCommentReplies.onNext(it)
+                }
+
+            // - Update internal mutable list with the latest state after successful response
+            this.successfullyPostedCommentCardToRefresh
+                .compose(Transformers.combineLatestPair(this.onCommentReplies))
+                .map {
+                    Pair(it.first.updateCommentAfterSuccessfulPost(it.second.first), it.second.second)
                 }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
@@ -324,32 +340,6 @@ interface ThreadViewModel {
                 .author(it.first.second)
                 .build()
         }
-        /**
-         * Update the internal persisted list of comments with the successful response
-         * from calling the Post Mutation
-         */
-        private fun updateCommentFailedToPost(
-            commentToUpdate: CommentCardData,
-            listOfComments: List<CommentCardData>
-        ): List<CommentCardData> {
-
-            val position = listOfComments.indexOfFirst { commentCardData ->
-                commentCardData.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus &&
-                    commentCardData.comment?.body() == commentToUpdate.comment?.body() &&
-                    commentCardData.comment?.author()?.id() == commentToUpdate.comment?.author()?.id()
-            }
-
-            if (position >= 0 && position < listOfComments.size) {
-                return listOfComments.toMutableList().apply {
-                    this[position] = listOfComments[position].toBuilder()
-                        .commentCardState(CommentCardStatus.FAILED_TO_SEND_COMMENT.commentCardStatus)
-                        .comment(commentToUpdate.comment)
-                        .build()
-                }
-            }
-
-            return listOfComments
-        }
 
         private fun getCommentComposerStatus(projectAndUser: Pair<Project, User?>) =
             when {
@@ -367,7 +357,11 @@ interface ThreadViewModel {
 
         override fun nextPage() = nextPage.onNext(null)
         override fun reloadRepliesPage() = onLoadingReplies.onNext(null)
-        override fun refreshCommentCard(commentCardData: CommentCardData) = this.commentCardToRefresh.onNext(commentCardData)
+        override fun refreshCommentCardInCaseFailedPosted(comment: Comment) =
+            this.failedCommentCardToRefresh.onNext(comment)
+
+        override fun refreshCommentCardInCaseSuccessPosted(comment: Comment) =
+            this.successfullyPostedCommentCardToRefresh.onNext(comment)
 
         override fun getRootComment(): Observable<Comment> = this.rootComment
         override fun onCommentReplies(): Observable<Pair<List<CommentCardData>, Boolean>> =

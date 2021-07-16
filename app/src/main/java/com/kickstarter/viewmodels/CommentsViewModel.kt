@@ -14,6 +14,7 @@ import com.kickstarter.models.Comment
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
 import com.kickstarter.models.User
+import com.kickstarter.models.extensions.updateCommentAfterSuccessfulPost
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
@@ -243,7 +244,7 @@ interface CommentsViewModel {
             this.commentToRefresh
                 .compose(combineLatestPair(this.commentsList))
                 .map {
-                    updateCommentAfterSuccessfulPost(it.first, it.second)
+                    it.first.updateCommentAfterSuccessfulPost(it.second)
                 }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
@@ -258,33 +259,6 @@ interface CommentsViewModel {
                 .subscribe {
                     this.outputCommentList.onNext(it)
                 }
-        }
-
-        /**
-         * Update the internal persisted list of comments with the successful response
-         * from calling the Post Mutation
-         */
-        private fun updateCommentAfterSuccessfulPost(
-            commentToUpdate: Comment,
-            listOfComments: List<CommentCardData>
-        ): List<CommentCardData> {
-
-            val position = listOfComments.indexOfFirst { commentCardData ->
-                commentCardData.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus &&
-                    commentCardData.comment?.body() == commentToUpdate.body() &&
-                    commentCardData.comment?.author()?.id() == commentToUpdate.author().id()
-            }
-
-            if (position >= 0 && position < listOfComments.size) {
-                return listOfComments.toMutableList().apply {
-                    this[position] = listOfComments[position].toBuilder()
-                        .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
-                        .comment(commentToUpdate)
-                        .build()
-                }
-            }
-
-            return listOfComments
         }
 
         private fun loadCommentListFromProjectOrUpdate(projectOrUpdate: Observable<Pair<Project, Update?>>) {

@@ -17,7 +17,6 @@ import com.kickstarter.models.Comment
 import com.kickstarter.ui.adapters.RepliesAdapter
 import com.kickstarter.ui.adapters.RepliesStatusAdapter
 import com.kickstarter.ui.adapters.RootCommentAdapter
-import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
 import com.kickstarter.viewmodels.ThreadViewModel
@@ -199,11 +198,12 @@ class ThreadActivity :
     override fun onCommentRepliesClicked(comment: Comment) {
     }
 
-    override fun onCommentPostedFailed(commentCardData: CommentCardData) {
-        viewModel.inputs.refreshCommentCard(commentCardData)
+    override fun onCommentPostedFailed(comment: Comment) {
+        viewModel.inputs.refreshCommentCardInCaseFailedPosted(comment)
     }
 
     override fun onCommentPostedSuccessFully(comment: Comment) {
+        viewModel.inputs.refreshCommentCardInCaseSuccessPosted(comment)
     }
 
     override fun loadMoreCallback() {

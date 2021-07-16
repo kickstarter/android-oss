@@ -24,7 +24,7 @@ class CommentCardViewHolder(
         fun onCommentGuideLinesClicked(comment: Comment)
         fun onCommentRepliesClicked(comment: Comment)
         fun onCommentPostedSuccessFully(comment: Comment)
-        fun onCommentPostedFailed(commentCardData: CommentCardData)
+        fun onCommentPostedFailed(comment: Comment)
     }
 
     private val vm: CommentsViewHolderViewModel.ViewModel = CommentsViewHolderViewModel.ViewModel(environment())

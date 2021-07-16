@@ -198,7 +198,12 @@ class ThreadActivity :
     override fun onCommentRepliesClicked(comment: Comment) {
     }
 
+    override fun onCommentPostedFailed(comment: Comment) {
+        viewModel.inputs.refreshCommentCardInCaseFailedPosted(comment)
+    }
+
     override fun onCommentPostedSuccessFully(comment: Comment) {
+        viewModel.inputs.refreshCommentCardInCaseSuccessPosted(comment)
     }
 
     override fun loadMoreCallback() {

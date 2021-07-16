@@ -204,6 +204,9 @@ class CommentsActivity :
         viewModel.inputs.refreshComment(comment)
     }
 
+    override fun onCommentPostedFailed(commentCardData: CommentCardData) {
+    }
+
     override fun onCommentRepliesClicked(comment: Comment) {
         viewModel.inputs.onReplyClicked(comment, false)
     }

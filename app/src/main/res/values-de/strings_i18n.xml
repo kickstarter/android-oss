@@ -81,6 +81,7 @@ Unterstützer</string>
   <string name="By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">Bei Leistung eines Finanzierungsbeitrags erkennst du Kickstarters &lt;a href="%{terms_of_use_link}">Nutzungsbedingungen&lt;/a>, &lt;a href="%{privacy_policy_link}">Datenschutzrichtlinien&lt;/a> und &lt;a href="%{cookie_policy_link}">Cookie-Richtlinien&lt;/a> an.</string>
   <string name="By_signing_up_you_agree_to_our_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">Bei Registrierung stimmst du unseren Nutzungsbedingungen, Datenschutzrichtlinien und Cookie-Richtlinien zu. Unsere Richtlinien erläutern, wie wir deine Daten zur Bereitstellung, Verbesserung und Promotion unserer Services und unserer Webseite nutzen.</string>
   <string name="By_signing_up_youll_log_in_to_Kickstarter_using_your_Facebook_account" formatted="false">Mit deiner Registrierung wirst du auf Kickstarter mit deinem Facebook-Konto angemeldet. Wenn du Facebook dazu lieber nicht benutzen möchtest, starte die App bitte erneut und wähle eine andere Option.</string>
+  <string name="By_submitting_your_pledge_you_agree_that_Stripe_may_charge_your_payment_method" formatted="false">Durch das Einsenden deines Finanzierungsbeitrags erklärst du dich mit einer Abbuchung von deiner Zahlungsweise durch unseren Zahlungsdienstleister Stripe einverstanden.</string>
   <string name="CVC" formatted="false">CVC</string>
   <string name="Cancel" formatted="false">Abbrechen</string>
   <string name="Cancel_pledge" formatted="false">Beitrag zurückziehen</string>
@@ -108,6 +109,7 @@ Unterstützer</string>
   <string name="Closes_filters" formatted="false">Filter schließen.</string>
   <string name="Closes_live_stream" formatted="false">Schließt Live-Stream.</string>
   <string name="Closes_project" formatted="false">Schließt das Projekt.</string>
+  <string name="Collaborator" formatted="false">Mitarbeiter</string>
   <string name="Collapses_subcategories" formatted="false">Reduziert die Anzeige der Unterkategorien.</string>
   <string name="Collections" formatted="false">Sammlungen</string>
   <string name="Comment_reply_digest" formatted="false">Tägliche Zusammenfassung Kommentare</string>
@@ -486,6 +488,7 @@ Antippen und erneut versuchen</string>
   <string name="Replay_live_stream_with_creator_name" formatted="false">Wiedergabe des Live-Streams von&lt;br>&lt;b>%{creator_name}&lt;/b></string>
   <string name="Replay_past_live_stream" formatted="false">Wiedergabe des vorigen Live-Streams</string>
   <string name="Replay_past_live_streams" formatted="false">Wiedergabe vergangener Live-Streams</string>
+  <string name="Replies" formatted="false">Antworten</string>
   <string name="Reply_to_user_name" formatted="false">%{user_name} antworten …</string>
   <string name="Request_my_data" formatted="false">Meine Daten anfordern</string>
   <string name="Request_my_personal_data" formatted="false">Meine persönlichen Daten anfordern</string>
@@ -659,6 +662,7 @@ Antippen und erneut versuchen</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">Video bis zur Wiederherstellung der Internetverbindung deaktiviert</string>
   <string name="View" formatted="false">Anzeigen</string>
   <string name="View_dashboard" formatted="false">Dashboard ansehen</string>
+  <string name="View_more_replies" formatted="false">Weitere Antworten ansehen</string>
   <string name="View_progress" formatted="false">Verlauf ansehen</string>
   <string name="View_project" formatted="false">Projekt ansehen</string>
   <string name="View_replies" formatted="false">Antworten ansehen</string>

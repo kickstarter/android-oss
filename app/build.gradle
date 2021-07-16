@@ -111,7 +111,7 @@ android {
         minSdkVersion 23
         targetSdkVersion 30
         testApplicationId "com.kickstarter.internal.debug.test"
-        testInstrumentationRunner "com.karumi.shot.ShotTestRunner"
+        testInstrumentationRunner "com.kickstarter.screenshoot.testing.KSScreenShotTestRunner"
 
         buildConfigField "String", "GIT_SHA", "\"${commitSha()}\""
         buildConfigField "String", "BUILD_DATE", "\"${buildDate()}\""

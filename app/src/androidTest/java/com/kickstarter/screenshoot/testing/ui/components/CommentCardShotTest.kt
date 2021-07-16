@@ -6,8 +6,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.karumi.shot.ScreenshotTest
 import com.kickstarter.R
-import com.kickstarter.libs.utils.extensions.asKSApplication
 import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.screenshoot.testing.InstrumentedApp
 import com.kickstarter.ui.views.CommentCard
 import com.kickstarter.ui.views.CommentCardStatus
 import org.joda.time.DateTime
@@ -18,7 +18,9 @@ class CommentCardShotTest : ScreenshotTest {
 
     @Before
     fun setup() {
-        val app = InstrumentationRegistry.getInstrumentation().targetContext.asKSApplication()
+        val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as InstrumentedApp
+        // - Dagger component
+        val component = app.component()
     }
 
     @Test

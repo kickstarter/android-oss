@@ -1,5 +1,6 @@
 package com.kickstarter
 
+import android.app.Application
 import androidx.annotation.NonNull
 import com.apollographql.apollo.ApolloClient
 import com.google.gson.Gson
@@ -18,7 +19,7 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module(includes = [ApplicationModule::class])
-class AndroidTestApplicationModule {
+class AndroidTestApplicationModule(private val application: Application) : ApplicationModule(application) {
 
     @Provides
     @Singleton

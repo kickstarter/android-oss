@@ -1,5 +1,6 @@
 package com.kickstarter;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -28,7 +29,7 @@ import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 import timber.log.Timber;
 
-public class KSApplication extends MultiDexApplication {
+public class KSApplication extends MultiDexApplication implements IKSApplicationComponent {
   private ApplicationComponent component;
   @Inject protected CookieManager cookieManager;
   @Inject protected PushNotifications pushNotifications;
@@ -40,9 +41,19 @@ public class KSApplication extends MultiDexApplication {
   public void onCreate() {
     super.onCreate();
 
+    this.component = getComponent();
+    component().inject(this);
+
     if (!isInUnitTests()) {
       initApplication();
     }
+  }
+
+  public ApplicationComponent getComponent() {
+    ApplicationComponent component =  DaggerApplicationComponent.builder()
+            .applicationModule(new ApplicationModule(this))
+            .build();
+    return component;
   }
 
   private void initApplication() {
@@ -52,11 +63,6 @@ public class KSApplication extends MultiDexApplication {
     if (BuildConfig.FLAVOR.equals("internal")) {
       Timber.plant(new Timber.DebugTree());
     }
-
-    this.component = DaggerApplicationComponent.builder()
-            .applicationModule(new ApplicationModule(this))
-            .build();
-    component().inject(this);
 
     if (FirebaseApp.getApps(getApplicationContext()).isEmpty()) {
       FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);

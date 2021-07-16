@@ -421,7 +421,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
             CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS
         )
 
-        this.isCommentReply.assertValue(null)
+        this.isCommentReply.assertValues(null, null)
         this.commentSuccessfullyPosted.assertValues(reply)
         this.isReplyButtonVisible.assertValues(false, false)
     }

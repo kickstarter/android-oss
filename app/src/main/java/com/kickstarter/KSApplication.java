@@ -1,6 +1,5 @@
 package com.kickstarter;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -50,7 +49,7 @@ public class KSApplication extends MultiDexApplication implements IKSApplication
   }
 
   public ApplicationComponent getComponent() {
-    ApplicationComponent component =  DaggerApplicationComponent.builder()
+    final ApplicationComponent component =  DaggerApplicationComponent.builder()
             .applicationModule(new ApplicationModule(this))
             .build();
     return component;

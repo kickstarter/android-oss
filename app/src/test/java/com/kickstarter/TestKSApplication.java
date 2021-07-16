@@ -6,7 +6,7 @@ public class TestKSApplication extends KSApplication {
 
   @Override
   public ApplicationComponent getComponent() {
-    ApplicationComponent component = DaggerApplicationComponent.builder()
+    final ApplicationComponent component = DaggerApplicationComponent.builder()
             .applicationModule(new TestApplicationModule(this))
             .build();
 

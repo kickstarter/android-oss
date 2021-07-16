@@ -16,27 +16,52 @@ import org.junit.Test
 
 class CommentCardShotTest : ScreenshotTest {
 
+    lateinit var commentCard: CommentCard
     @Before
     fun setup() {
         val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as InstrumentedApp
-        // - Dagger component
+        // - Test Dagger component for future mock objects
         val component = app.component()
+
+        commentCard = (LayoutInflater.from(getInstrumentation().targetContext).inflate(R.layout.item_comment_card, null) as ConstraintLayout)
+            .findViewById(R.id.comments_card_view)
+
+        val user = UserFactory.user()
+        commentCard.setAvatarUrl(user.avatar().medium()) // -> internal network call to picasso we need to extract that.
+        commentCard.setReplyButtonVisibility(true)
+        commentCard.setViewRepliesVisibility(true)
+        commentCard.setCommentUserName(user.name())
+        commentCard.setCommentBody("Message here for the Screenshot test lets see how it behaves ...")
+        commentCard.setCommentPostTime(DateTime.parse("yyyy-MM-dd").toString())
     }
 
     @Test
     fun commentCardScreenshotTest_COMMENT_FOR_LOGIN_BACKED_USERS() {
-        var commentCard: CommentCard = (LayoutInflater.from(getInstrumentation().targetContext).inflate(R.layout.item_comment_card, null) as ConstraintLayout)
-            .findViewById(R.id.comments_card_view)
-
-        val user = UserFactory.user()
-        commentCard.setAvatarUrl(null) // -> internal network call to picasso we need to extract that.
-        commentCard.setReplyButtonVisibility(true)
-        commentCard.setViewRepliesVisibility(true)
-        commentCard.setCommentUserName(user.name())
-        commentCard.setCommentBody("Message here for the Screenshot test lets see how it behaves ....")
-        commentCard.setCommentPostTime(DateTime.now().toString())
-
         commentCard.setCommentCardStatus(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
+        compareScreenshot(commentCard)
+    }
+
+    @Test
+    fun commentCardScreenshotTest_COMMENT_WITH_REPLIES() {
+        commentCard.setCommentCardStatus(CommentCardStatus.COMMENT_WITH_REPLIES)
+        compareScreenshot(commentCard)
+    }
+
+    @Test
+    fun commentCardScreenshotTest_FAILED_TO_SEND_COMMENT() {
+        commentCard.setCommentCardStatus(CommentCardStatus.FAILED_TO_SEND_COMMENT)
+        compareScreenshot(commentCard)
+    }
+
+    @Test
+    fun commentCardScreenshotTest_DELETED_COMMENT() {
+        commentCard.setCommentCardStatus(CommentCardStatus.DELETED_COMMENT)
+        compareScreenshot(commentCard)
+    }
+
+    @Test
+    fun commentCardScreenshotTest_RE_TRYING_TO_POST() {
+        commentCard.setCommentCardStatus(CommentCardStatus.RE_TRYING_TO_POST)
         compareScreenshot(commentCard)
     }
 }

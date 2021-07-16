@@ -79,6 +79,7 @@
   <string name="By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">プレッジをすることにより、Kickstarter の &lt;a href="%{terms_of_use_link}">利用規約&lt;/a>、&lt;a href="%{privacy_policy_link}">プライバシーポリシー&lt;/a>、&lt;a href="%{cookie_policy_link}">Cookie ポリシー&lt;/a>に同意したとみなされます。</string>
   <string name="By_signing_up_you_agree_to_our_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">サインアップすることで、Kickstarter の利用規約、プライバシーポリシー、Cookie ポリシーに同意するものとみなされます。当社のポリシーでは、Kickstarter のサービスとサイトを配信、改善、促進するために、同社がお客様のデータをどのように使用しているか、そしてそのようなデータ使用を管理するためのお客様の権利について説明しています。</string>
   <string name="By_signing_up_youll_log_in_to_Kickstarter_using_your_Facebook_account" formatted="false">サインアップすることで、Kickstarter に Facebook アカウントを使ってログインすることになります。Facebook を使用したくない場合は、このアプリを再起動して別のオプションをお選びください。</string>
+  <string name="By_submitting_your_pledge_you_agree_that_Stripe_may_charge_your_payment_method" formatted="false">プレッジを送信することで、Kickstarter の決済サービスプロバイダー、Stripe がご利用のお支払い方法へ請求を行うことに同意するものとみなされます。</string>
   <string name="CVC" formatted="false">CVC</string>
   <string name="Cancel" formatted="false">キャンセル</string>
   <string name="Cancel_pledge" formatted="false">プレッジを取り消す</string>
@@ -106,6 +107,7 @@
   <string name="Closes_filters" formatted="false">フィルターを閉じる</string>
   <string name="Closes_live_stream" formatted="false">ライブ配信を閉じる</string>
   <string name="Closes_project" formatted="false">プロジェクトを閉じる</string>
+  <string name="Collaborator" formatted="false">コラボレーター（協力者）</string>
   <string name="Collapses_subcategories" formatted="false">サブカテゴリーを閉じる</string>
   <string name="Collections" formatted="false">コレクション</string>
   <string name="Comment_reply_digest" formatted="false">コメント返信のダイジェスト</string>
@@ -485,6 +487,7 @@
   <string name="Replay_live_stream_with_creator_name" formatted="false">&lt;b>%{creator_name}&lt;/b>のライブ配信を再生</string>
   <string name="Replay_past_live_stream" formatted="false">過去のライブ配信をリプレイ</string>
   <string name="Replay_past_live_streams" formatted="false">過去のライブ配信をリプレイ</string>
+  <string name="Replies" formatted="false">返信</string>
   <string name="Reply_to_user_name" formatted="false">%{user_nameに返信</string>
   <string name="Request_my_data" formatted="false">自分のデータをリクエストする</string>
   <string name="Request_my_personal_data" formatted="false">自分の個人データをリクエストする</string>
@@ -658,6 +661,7 @@
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">インターネット通信状態が向上するまでビデオはご利用いいただけません。</string>
   <string name="View" formatted="false">みる</string>
   <string name="View_dashboard" formatted="false">ダッシュボードを表示</string>
+  <string name="View_more_replies" formatted="false">他の返信を表示</string>
   <string name="View_progress" formatted="false">進捗状況を表示</string>
   <string name="View_project" formatted="false">プロジェクトを見る</string>
   <string name="View_replies" formatted="false">返信を表示</string>
@@ -1177,7 +1181,7 @@
   <string name="discovery_all_of_scope" formatted="false">%{scope} の全て</string>
   <string name="discovery_backing" formatted="false">バック</string>
   <string name="discovery_baseball_card_accessibility_category_label" formatted="false">カテゴリー</string>
-  <string name="discovery_baseball_card_accessibility_location_label" formatted="false">住所</string>
+  <string name="discovery_baseball_card_accessibility_location_label" formatted="false">地域</string>
   <string name="discovery_baseball_card_blurb_read_more" formatted="false">%{blurb}%{space}&lt;u>さらに%{space}読む&lt;/u>%{space}</string>
   <string name="discovery_baseball_card_button_share" formatted="false">シェア</string>
   <string name="discovery_baseball_card_deadline_units_days" formatted="false">日</string>

@@ -92,7 +92,8 @@ interface CommentsViewHolderViewModel {
         fun isSuccessfullyPosted(): Observable<Comment>
     }
 
-    class ViewModel(environment: Environment) : ActivityViewModel<CommentCardViewHolder>(environment), Inputs, Outputs {
+    class ViewModel(environment: Environment) :
+        ActivityViewModel<CommentCardViewHolder>(environment), Inputs, Outputs {
         private val commentInput = PublishSubject.create<CommentCardData>()
         private val onCommentGuideLinesClicked = PublishSubject.create<Void>()
         private val onRetryViewClicked = PublishSubject.create<Void>()
@@ -127,17 +128,18 @@ interface CommentsViewHolderViewModel {
 
         init {
 
-            val comment = this.commentInput
-                .map { it.comment }
+            val comment = Observable.merge(this.commentInput.map { it.comment }, postedSuccessfully)
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
+
             configureCommentCardWithComment(comment)
 
             val commentCardStatus = this.commentInput
                 .filter { ObjectUtils.isNotNull(it) }
                 .map {
                     val commentCardState = cardStatus(it)
-                    it.toBuilder().commentCardState(commentCardState?.commentCardStatus ?: 0).build()
+                    it.toBuilder().commentCardState(commentCardState?.commentCardStatus ?: 0)
+                        .build()
                 }
             handleStatus(commentCardStatus)
 
@@ -150,7 +152,7 @@ interface CommentsViewHolderViewModel {
                     Pair(requireNotNull(it.first), requireNotNull(it.first.project))
                 }
 
-            postComment(commentData, internalError)
+            postComment(commentData, internalError, environment)
 
             this.internalError
                 .compose(bindToLifecycle())
@@ -265,7 +267,11 @@ interface CommentsViewHolderViewModel {
          * Handles the logic for posting comments (new ones, and the retry attempts)
          * @param commentData will emmit only in case we need to post a new comment
          */
-        private fun postComment(commentData: Observable<Pair<CommentCardData, Project>>, errorObservable: BehaviorSubject<Throwable>) {
+        private fun postComment(
+            commentData: Observable<Pair<CommentCardData, Project>>,
+            errorObservable: BehaviorSubject<Throwable>,
+            environment: Environment
+        ) {
             val postCommentData = commentData
                 .map {
                     Pair(
@@ -278,10 +284,10 @@ interface CommentsViewHolderViewModel {
                         commentableId = it.first,
                         body = it.second.body(),
                         clientMutationId = null,
-                        parent = it.second?.parentId()?.let { id -> it.second.toBuilder().id(id).build() }
+                        parent = it.second?.parentId()
+                            ?.let { id -> it.second.toBuilder().id(id).build() }
                     )
                 }
-
             postCommentData.map {
                 executePostCommentMutation(it, errorObservable)
             }
@@ -303,10 +309,12 @@ interface CommentsViewHolderViewModel {
                 }.doOnNext {
                     this.commentCardStatus.onNext(CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY)
                 }
-                .delay(3000, TimeUnit.MILLISECONDS)
+                .delay(3000, TimeUnit.MILLISECONDS, environment.scheduler())
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.commentCardStatus.onNext(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
+                    this.postedSuccessfully.onNext(it)
+                    if (it.isReply()) this.isReplyButtonVisible.onNext(false)
                 }
         }
 
@@ -335,11 +343,12 @@ interface CommentsViewHolderViewModel {
         /**
          * Function that will execute the PostCommentMutation
          * @param postCommentData holds the comment body and the commentableId for project or update to be posted
-         * // TODO: for the future threads wi will need to send to the mutation not just the body,
-         * // TODO: we will need the entire comment plus very important the [parentId]
          * @return Observable<Comment>
          */
-        private fun executePostCommentMutation(postCommentData: PostCommentData, errorObservable: BehaviorSubject<Throwable>) =
+        private fun executePostCommentMutation(
+            postCommentData: PostCommentData,
+            errorObservable: BehaviorSubject<Throwable>
+        ) =
             this.apolloClient.createComment(
                 postCommentData
             ).doOnError {
@@ -380,12 +389,14 @@ interface CommentsViewHolderViewModel {
         private fun cardStatus(commentCardData: CommentCardData) = when {
             commentCardData.comment?.deleted() ?: false -> CommentCardStatus.DELETED_COMMENT
             (commentCardData.comment?.repliesCount() ?: 0 != 0) -> CommentCardStatus.COMMENT_WITH_REPLIES
-            else -> CommentCardStatus.values().firstOrNull { it.commentCardStatus == commentCardData.commentCardState }
+            else -> CommentCardStatus.values()
+                .firstOrNull { it.commentCardStatus == commentCardData.commentCardState }
         }.also {
             this.isCommentEnableThreads.onNext(optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_ENABLE_THREADS))
         }
 
-        override fun configureWith(commentCardData: CommentCardData) = this.commentInput.onNext(commentCardData)
+        override fun configureWith(commentCardData: CommentCardData) =
+            this.commentInput.onNext(commentCardData)
 
         override fun onCommentGuideLinesClicked() = this.onCommentGuideLinesClicked.onNext(null)
 
@@ -393,7 +404,8 @@ interface CommentsViewHolderViewModel {
 
         override fun onReplyButtonClicked() = this.onReplyButtonClicked.onNext(null)
 
-        override fun onViewRepliesButtonClicked() = this.onViewCommentRepliesButtonClicked.onNext(null)
+        override fun onViewRepliesButtonClicked() =
+            this.onViewCommentRepliesButtonClicked.onNext(null)
 
         override fun onFlagButtonClicked() = this.onFlagButtonClicked.onNext(null)
 

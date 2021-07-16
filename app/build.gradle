@@ -110,6 +110,7 @@ android {
         applicationId "com.kickstarter"
         minSdkVersion 23
         targetSdkVersion 30
+        testApplicationId "com.kickstarter.internal.debug.test"
         testInstrumentationRunner "com.karumi.shot.ShotTestRunner"
 
         buildConfigField "String", "GIT_SHA", "\"${commitSha()}\""
@@ -194,6 +195,9 @@ android {
     }
 
     packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
         exclude 'META-INF/LICENSE.txt'
         exclude 'LICENSE.txt'
         exclude 'META-INF/AL2.0'
@@ -373,5 +377,5 @@ apply plugin: 'com.google.gms.google-services'
 
 apply plugin: 'shot'
 shot {
-    runInstrumentation = false
+    useComposer = false
 }

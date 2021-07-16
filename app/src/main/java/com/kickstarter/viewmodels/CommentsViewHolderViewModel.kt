@@ -95,7 +95,8 @@ interface CommentsViewHolderViewModel {
         fun isFailedToPost(): Observable<Comment>
     }
 
-    class ViewModel(environment: Environment) : ActivityViewModel<CommentCardViewHolder>(environment), Inputs, Outputs {
+    class ViewModel(environment: Environment) :
+        ActivityViewModel<CommentCardViewHolder>(environment), Inputs, Outputs {
         private val commentInput = PublishSubject.create<CommentCardData>()
         private val onCommentGuideLinesClicked = PublishSubject.create<Void>()
         private val onRetryViewClicked = PublishSubject.create<Void>()

@@ -16,6 +16,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Update
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.updateCommentAfterSuccessfulPost
+import com.kickstarter.models.extensions.updateCommentFailedToPost
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
@@ -42,6 +43,7 @@ interface CommentsViewModel {
 
         /** Will be called with the successful response when calling the `postComment` Mutation **/
         fun refreshComment(comment: Comment)
+        fun refreshCommentCardInCaseFailedPosted(comment: Comment)
     }
 
     interface Outputs {
@@ -80,6 +82,7 @@ interface CommentsViewModel {
         private val onShowGuideLinesLinkClicked = PublishSubject.create<Void>()
         private val onReplyClicked = PublishSubject.create<Pair<Comment, Boolean>>()
         private val checkIfThereAnyPendingComments = PublishSubject.create<Boolean>()
+        private val failedCommentCardToRefresh = PublishSubject.create<Comment>()
 
         private val closeCommentsPage = BehaviorSubject.create<Void>()
         private val currentUserAvatar = BehaviorSubject.create<String?>()
@@ -232,7 +235,8 @@ interface CommentsViewModel {
                     this.hasPendingComments.onNext(
                         Pair(
                             pair.first.any {
-                                it.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus
+                                it.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus ||
+                                        it.commentCardState == CommentCardStatus.FAILED_TO_SEND_COMMENT.commentCardStatus
                             },
                             pair.second
                         )
@@ -260,10 +264,10 @@ interface CommentsViewModel {
                 }
 
             // - Update internal mutable list with the latest state after successful response
-            this.commentToRefresh
-                .compose(combineLatestPair(this.commentsList))
+            this.commentsList
+                .compose(takePairWhen(this.commentToRefresh))
                 .map {
-                    it.first.updateCommentAfterSuccessfulPost(it.second)
+                    it.second.updateCommentAfterSuccessfulPost(it.first)
                 }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
@@ -277,6 +281,17 @@ interface CommentsViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.outputCommentList.onNext(it)
+                }
+            // - Update internal mutable list with the latest state after failed response
+            this.commentsList
+                .compose(takePairWhen(this.failedCommentCardToRefresh))
+                .map {
+                  it.second.updateCommentFailedToPost(it.first)
+                }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.commentsList.onNext(it)
                 }
         }
 
@@ -410,6 +425,8 @@ interface CommentsViewModel {
         override fun refreshComment(comment: Comment) = this.commentToRefresh.onNext(comment)
         override fun onReplyClicked(comment: Comment, openKeyboard: Boolean) = onReplyClicked.onNext(Pair(comment, openKeyboard))
         override fun checkIfThereAnyPendingComments(isBackAction: Boolean) = checkIfThereAnyPendingComments.onNext(isBackAction)
+        override fun refreshCommentCardInCaseFailedPosted(comment: Comment) =
+            this.failedCommentCardToRefresh.onNext(comment)
         // - Outputs
         override fun closeCommentsPage(): Observable<Void> = closeCommentsPage
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar

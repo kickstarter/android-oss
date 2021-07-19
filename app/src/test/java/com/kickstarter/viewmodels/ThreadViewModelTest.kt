@@ -8,6 +8,7 @@ import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.mock.factories.AvatarFactory
 import com.kickstarter.mock.factories.CommentCardDataFactory
 import com.kickstarter.mock.factories.CommentEnvelopeFactory
+import com.kickstarter.mock.factories.CommentFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient
@@ -15,13 +16,16 @@ import com.kickstarter.models.Comment
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.CommentCardData
+import com.kickstarter.ui.views.CommentCardStatus
 import com.kickstarter.ui.views.CommentComposerStatus
 import org.joda.time.DateTime
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
+import rx.schedulers.TestScheduler
 import rx.subjects.BehaviorSubject
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 class ThreadViewModelTest : KSRobolectricTestCase() {
 
@@ -288,5 +292,228 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         // post a comment
         vm.inputs.onShowGuideLinesLinkClicked()
         openCommentGuideLines.assertValueCount(1)
+    }
+
+    @Test
+    fun testComments_UpdateCommentStateAfterPost() {
+        val currentUser = UserFactory.user()
+            .toBuilder()
+            .id(1)
+            .build()
+
+        val comment1 = CommentFactory.commentToPostWithUser(currentUser).toBuilder().id(1).body("comment1").build()
+        val comment2 = CommentFactory.commentToPostWithUser(currentUser).toBuilder().id(2).body("comment2").build()
+        val newPostedComment = CommentFactory.commentToPostWithUser(currentUser).toBuilder().id(3).body("comment3").build()
+
+        val commentEnvelope = CommentEnvelopeFactory.commentsEnvelope().toBuilder()
+            .comments(listOf(comment1, comment2))
+            .build()
+
+        val testScheduler = TestScheduler()
+
+        val env = environment().toBuilder()
+            .apolloClient(object : MockApolloClient() {
+                override fun getRepliesForComment(
+                    comment: Comment,
+                    cursor: String?,
+                    pageSize: Int
+                ): Observable<CommentEnvelope> {
+                    return Observable.just(commentEnvelope)
+                }
+            })
+            .currentUser(MockCurrentUser(currentUser))
+            .scheduler(testScheduler)
+            .build()
+
+        val commentCardData1 = CommentCardData.builder()
+            .comment(comment1)
+            .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
+            .build()
+        val commentCardData2 = CommentCardData.builder()
+            .comment(comment2)
+            .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
+            .build()
+        val commentCardData3 = CommentCardData.builder()
+            .comment(newPostedComment)
+            .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
+            .build()
+        val commentCardData3Updated = CommentCardData.builder()
+            .comment(newPostedComment)
+            .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
+            .build()
+
+        val vm = ThreadViewModel.ViewModel(env)
+        // Start the view model with a backed project and comment.
+        vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, CommentCardDataFactory.commentCardData()))
+        vm.outputs.onCommentReplies().subscribe(onReplies)
+
+        onReplies.assertValueCount(1)
+        vm.outputs.onCommentReplies().take(0).subscribe {
+            val newList = it.first
+            assertTrue(newList.size == 2)
+            assertTrue(newList[0].comment?.body() == commentCardData1.comment?.body())
+            assertTrue(newList[0].commentCardState == commentCardData1.commentCardState)
+
+            assertTrue(newList[1].comment?.body() == commentCardData2.comment?.body())
+            assertTrue(newList[1].commentCardState == commentCardData2.commentCardState)
+        }
+
+        // - New posted comment with status "TRYING_TO_POST"
+        vm.inputs.insertNewReplyToList(newPostedComment.body(), DateTime.now())
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
+        onReplies.assertValueCount(2)
+        vm.outputs.onCommentReplies().take(0).subscribe {
+            val newList = it.first
+            assertTrue(newList.size == 3)
+            assertTrue(newList[0].comment?.body() == commentCardData3.comment?.body())
+            assertTrue(newList[0].commentCardState == commentCardData3.commentCardState)
+
+            assertTrue(newList[1].comment?.body() == commentCardData1.comment?.body())
+            assertTrue(newList[1].commentCardState == commentCardData1.commentCardState)
+
+            assertTrue(newList[2].comment?.body() == commentCardData2.comment?.body())
+            assertTrue(newList[2].commentCardState == commentCardData2.commentCardState)
+        }
+
+        // - Check the status of the newly posted comment has been updated to "COMMENT_FOR_LOGIN_BACKED_USERS"
+        vm.inputs.refreshCommentCardInCaseSuccessPosted(newPostedComment)
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+
+        onReplies.assertValueCount(3)
+        vm.outputs.onCommentReplies().take(0).subscribe {
+            val newList = it.first
+            assertTrue(newList.size == 3)
+            assertTrue(newList[0].comment?.body() == commentCardData3Updated.comment?.body())
+            assertTrue(newList[0].commentCardState == commentCardData3Updated.commentCardState)
+
+            assertTrue(newList[1].comment?.body() == commentCardData1.comment?.body())
+            assertTrue(newList[1].commentCardState == commentCardData1.commentCardState)
+
+            assertTrue(newList[2].comment?.body() == commentCardData2.comment?.body())
+            assertTrue(newList[2].commentCardState == commentCardData2.commentCardState)
+        }
+    }
+
+    @Test
+    fun testComments_UpdateCommentStateAfterPostFailed() {
+        val currentUser = UserFactory.user()
+            .toBuilder()
+            .id(1)
+            .build()
+
+        val comment1 = CommentFactory.commentToPostWithUser(currentUser).toBuilder().id(1).body("comment1").build()
+        val comment2 = CommentFactory.commentToPostWithUser(currentUser).toBuilder().id(2).body("comment2").build()
+        val newPostedComment = CommentFactory.commentToPostWithUser(currentUser).toBuilder().id(3).body("comment3").build()
+
+        val commentEnvelope = CommentEnvelopeFactory.commentsEnvelope().toBuilder()
+            .comments(listOf(comment1, comment2))
+            .build()
+
+        val testScheduler = TestScheduler()
+
+        val env = environment().toBuilder()
+            .apolloClient(object : MockApolloClient() {
+                override fun getRepliesForComment(
+                    comment: Comment,
+                    cursor: String?,
+                    pageSize: Int
+                ): Observable<CommentEnvelope> {
+                    return Observable.just(commentEnvelope)
+                }
+            })
+            .currentUser(MockCurrentUser(currentUser))
+            .scheduler(testScheduler)
+            .build()
+
+        val commentCardData1 = CommentCardData.builder()
+            .comment(comment1)
+            .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
+            .build()
+        val commentCardData2 = CommentCardData.builder()
+            .comment(comment2)
+            .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
+            .build()
+        val commentCardData3 = CommentCardData.builder()
+            .comment(newPostedComment)
+            .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
+            .build()
+
+        val commentCardData3Failed = CommentCardData.builder()
+            .comment(newPostedComment)
+            .commentCardState(CommentCardStatus.FAILED_TO_SEND_COMMENT.commentCardStatus)
+            .build()
+
+        val commentCardData3Updated = CommentCardData.builder()
+            .comment(newPostedComment)
+            .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
+            .build()
+
+        val vm = ThreadViewModel.ViewModel(env)
+        // Start the view model with a backed project and comment.
+        vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, CommentCardDataFactory.commentCardData()))
+        vm.outputs.onCommentReplies().subscribe(onReplies)
+
+        onReplies.assertValueCount(1)
+        vm.outputs.onCommentReplies().take(0).subscribe {
+            val newList = it.first
+            assertTrue(newList.size == 2)
+            assertTrue(newList[0].comment?.body() == commentCardData1.comment?.body())
+            assertTrue(newList[0].commentCardState == commentCardData1.commentCardState)
+
+            assertTrue(newList[1].comment?.body() == commentCardData2.comment?.body())
+            assertTrue(newList[1].commentCardState == commentCardData2.commentCardState)
+        }
+
+        // - New posted comment with status "TRYING_TO_POST"
+        vm.inputs.insertNewReplyToList(newPostedComment.body(), DateTime.now())
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
+        onReplies.assertValueCount(2)
+        vm.outputs.onCommentReplies().take(0).subscribe {
+            val newList = it.first
+            assertTrue(newList.size == 3)
+            assertTrue(newList[0].comment?.body() == commentCardData3.comment?.body())
+            assertTrue(newList[0].commentCardState == commentCardData3.commentCardState)
+
+            assertTrue(newList[1].comment?.body() == commentCardData1.comment?.body())
+            assertTrue(newList[1].commentCardState == commentCardData1.commentCardState)
+
+            assertTrue(newList[2].comment?.body() == commentCardData2.comment?.body())
+            assertTrue(newList[2].commentCardState == commentCardData2.commentCardState)
+        }
+
+        // - Check the status of the newly posted comment has been updated to "FAILED_TO_SEND_COMMENT"
+        vm.inputs.refreshCommentCardInCaseFailedPosted(newPostedComment)
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+
+        onReplies.assertValueCount(3)
+        vm.outputs.onCommentReplies().take(0).subscribe {
+            val newList = it.first
+            assertTrue(newList.size == 3)
+            assertTrue(newList[0].comment?.body() == commentCardData3Failed.comment?.body())
+            assertTrue(newList[0].commentCardState == commentCardData3Failed.commentCardState)
+
+            assertTrue(newList[1].comment?.body() == commentCardData1.comment?.body())
+            assertTrue(newList[1].commentCardState == commentCardData1.commentCardState)
+
+            assertTrue(newList[2].comment?.body() == commentCardData2.comment?.body())
+            assertTrue(newList[2].commentCardState == commentCardData2.commentCardState)
+        }
+
+        // - Check the status of the newly posted comment has been updated to "COMMENT_FOR_LOGIN_BACKED_USERS"
+        vm.inputs.refreshCommentCardInCaseSuccessPosted(newPostedComment)
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+
+        vm.outputs.onCommentReplies().take(0).subscribe {
+            val newList = it.first
+            assertTrue(newList.size == 3)
+            assertTrue(newList[0].comment?.body() == commentCardData3Updated.comment?.body())
+            assertTrue(newList[0].commentCardState == commentCardData3Updated.commentCardState)
+
+            assertTrue(newList[1].comment?.body() == commentCardData1.comment?.body())
+            assertTrue(newList[1].commentCardState == commentCardData1.commentCardState)
+
+            assertTrue(newList[2].comment?.body() == commentCardData2.comment?.body())
+            assertTrue(newList[2].commentCardState == commentCardData2.commentCardState)
+        }
     }
 }

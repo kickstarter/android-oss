@@ -19,7 +19,7 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module(includes = [ApplicationModule::class])
-class AndroidTestApplicationModule(private val application: Application) : ApplicationModule(application){
+class AndroidTestApplicationModule(private val application: Application) : ApplicationModule(application) {
 
     @Provides
     @Singleton

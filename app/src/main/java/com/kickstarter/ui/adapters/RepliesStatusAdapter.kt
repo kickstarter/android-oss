@@ -22,7 +22,7 @@ class RepliesStatusAdapter(private val delegate: Delegate) : KSListAdapter() {
         if (shouldViewMoreRepliesCell)
             setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, listOf(RepliesStatusCellType.VIEW_MORE))
         else
-            setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, emptyList<RepliesStatusCellType>())
+            setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, listOf(RepliesStatusCellType.EMTPY))
         submitList(items())
     }
 
@@ -30,7 +30,7 @@ class RepliesStatusAdapter(private val delegate: Delegate) : KSListAdapter() {
         if (shouldShowErrorCell)
             setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, listOf(RepliesStatusCellType.PAGINATION_ERROR))
         else
-            setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, emptyList<RepliesStatusCellType>())
+            setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, listOf(RepliesStatusCellType.EMTPY))
         submitList(items())
     }
 
@@ -38,7 +38,7 @@ class RepliesStatusAdapter(private val delegate: Delegate) : KSListAdapter() {
         if (shouldShowErrorCell)
             setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, listOf(RepliesStatusCellType.INITIAL_ERROR))
         else
-            setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, emptyList<RepliesStatusCellType>())
+            setSection(SECTION_SHOW_MORE_REPLIES_PAGINATING, listOf(RepliesStatusCellType.EMTPY))
         submitList(items())
     }
 

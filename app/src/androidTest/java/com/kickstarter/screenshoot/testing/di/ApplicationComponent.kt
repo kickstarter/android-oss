@@ -4,5 +4,5 @@ import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [RegressionApplicationModule::class])
+@Component(modules = [AndroidTestApplicationModule::class])
 interface ApplicationComponent : ApplicationGraph

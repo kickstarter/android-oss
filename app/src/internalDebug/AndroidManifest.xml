@@ -3,10 +3,6 @@
     package="com.kickstarter"
     android:sharedUserId="com.kickstarter">
 
-    <!-- Strip away maxSdkVersion -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:remove="android:maxSdkVersion"/>
-
     <!-- Add the permission with no maxSdkVersion defined -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>

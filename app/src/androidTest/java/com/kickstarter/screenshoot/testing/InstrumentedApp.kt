@@ -6,6 +6,11 @@ import com.kickstarter.DaggerApplicationComponent
 import com.kickstarter.KSApplication
 
 class InstrumentedApp : KSApplication() {
+
+    override fun onCreate() {
+        super.onCreate()
+    }
+
     override fun getComponent(): ApplicationComponent? {
         return DaggerApplicationComponent.builder()
             .applicationModule(AndroidTestApplicationModule(this))

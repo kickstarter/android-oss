@@ -21,13 +21,11 @@ class CommentCardShotTest : ScreenshotTest {
 
     lateinit var commentCard: CommentCard
     lateinit var component: ApplicationComponent
-    val relativeTime = DateTime.now().minusMinutes(5)
-    lateinit var commentPostedRelativeTime:DateTime
 
     @Before
     fun setup() {
-        //val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as InstrumentedApp
-        val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as KSApplication
+        val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as InstrumentedApp
+        //val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as KSApplication
         // - Test Dagger component for future mock objects
         component = app.component()
 
@@ -38,6 +36,8 @@ class CommentCardShotTest : ScreenshotTest {
         commentCard.setAvatarUrl(null) // -> internal network call to picasso we need to wrap Picasso into our own client to be able to mock on testing.
         commentCard.setCommentUserName(user.name())
         commentCard.setCommentBody("Message here for the Screenshot test lets see how it behaves ...")
+
+        val relativeTime = DateTime.now().minusMinutes(5)
         val commentPostedRelativeTime = DateTimeUtils.relative(getInstrumentation().targetContext, component.environment().ksString(), relativeTime)
         commentCard.setCommentPostTime(commentPostedRelativeTime)
     }

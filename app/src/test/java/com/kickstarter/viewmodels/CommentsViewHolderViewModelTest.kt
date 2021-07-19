@@ -365,6 +365,68 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testRetrySendComment_whenReplyAndAfterSuccess_shouldSendReplyButtonVisibilityFalse() {
+        val currentUser = UserFactory.user().toBuilder().id(1).build()
+        val reply = CommentFactory.reply(createdAt = createdAt)
+        val commentCardData = CommentCardData.builder()
+            .comment(reply)
+            .project(ProjectFactory.initialProject())
+            .commentableId(ProjectFactory.initialProject().id().toString())
+            .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
+            .build()
+
+        var isFirstRun = true
+
+        var env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun createComment(comment: PostCommentData): Observable<Comment> {
+                return if (isFirstRun) Observable.error(Throwable()) else Observable.just(reply)
+            }
+        })
+            .scheduler(testScheduler)
+            .currentUser(MockCurrentUser(currentUser))
+            .build()
+
+        setUpEnvironment(env)
+
+        this.vm.inputs.configureWith(commentCardData)
+
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+
+        this.vm.inputs.onRetryViewClicked()
+
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+
+        this.commentCardStatus.assertValues(
+            CommentCardStatus.TRYING_TO_POST,
+            CommentCardStatus.FAILED_TO_SEND_COMMENT,
+            CommentCardStatus.RE_TRYING_TO_POST,
+            CommentCardStatus.FAILED_TO_SEND_COMMENT,
+        )
+
+        this.commentSuccessfullyPosted.assertNoValues()
+
+        isFirstRun = false
+
+        this.vm.inputs.onRetryViewClicked()
+
+        testScheduler.advanceTimeBy(4, TimeUnit.SECONDS)
+
+        this.commentCardStatus.assertValues(
+            CommentCardStatus.TRYING_TO_POST,
+            CommentCardStatus.FAILED_TO_SEND_COMMENT,
+            CommentCardStatus.RE_TRYING_TO_POST,
+            CommentCardStatus.FAILED_TO_SEND_COMMENT,
+            CommentCardStatus.RE_TRYING_TO_POST,
+            CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY,
+            CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS
+        )
+
+        this.isCommentReply.assertValues(null, null)
+        this.commentSuccessfullyPosted.assertValues(reply)
+        this.isReplyButtonVisible.assertValues(false, false)
+    }
+
+    @Test
     fun testSendCommentShouldNotPost() {
         val responseComment = CommentFactory.liveComment(createdAt = createdAt)
         val currentUser = UserFactory.user().toBuilder().id(1).build()

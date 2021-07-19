@@ -129,12 +129,7 @@ class ThreadActivity :
             .compose(bindToLifecycle())
             .delay(500, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext {
-                linearLayoutManager.stackFromEnd = true
-            }
-            .subscribe {
-                binding.commentRepliesRecyclerView.smoothScrollToPosition(0)
-            }
+            .subscribe { binding.commentRepliesRecyclerView.smoothScrollToPosition(0) }
 
         viewModel.outputs.showReplyComposer()
             .compose(bindToLifecycle())
@@ -187,7 +182,6 @@ class ThreadActivity :
     }
 
     override fun onRetryViewClicked(comment: Comment) {
-        TODO("Not yet implemented")
     }
 
     override fun onReplyButtonClicked(comment: Comment) {
@@ -204,7 +198,12 @@ class ThreadActivity :
     override fun onCommentRepliesClicked(comment: Comment) {
     }
 
+    override fun onCommentPostedFailed(comment: Comment) {
+        viewModel.inputs.refreshCommentCardInCaseFailedPosted(comment)
+    }
+
     override fun onCommentPostedSuccessFully(comment: Comment) {
+        viewModel.inputs.refreshCommentCardInCaseSuccessPosted(comment)
     }
 
     override fun loadMoreCallback() {

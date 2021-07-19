@@ -81,6 +81,7 @@ backers</string>
   <string name="By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">By pledging you agree to Kickstarter\'s &lt;a href="%{terms_of_use_link}">Terms of Use&lt;/a>, &lt;a href="%{privacy_policy_link}">Privacy Policy&lt;/a> and &lt;a href="%{cookie_policy_link}">Cookie Policy&lt;/a>.</string>
   <string name="By_signing_up_you_agree_to_our_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">By signing up, you agree to our Terms of Use, Privacy Policy, and Cookie Policy. Our policies explain how we use your data to deliver, improve, and promote our service and our site, and how you can exercise your rights to control that use.</string>
   <string name="By_signing_up_youll_log_in_to_Kickstarter_using_your_Facebook_account" formatted="false">By signing up, you’ll log in to Kickstarter using your Facebook account. If you prefer not to use Facebook, restart this app and choose another option.</string>
+  <string name="By_submitting_your_pledge_you_agree_that_Stripe_may_charge_your_payment_method" formatted="false">By submitting your pledge, you agree that our payment processor, Stripe, may charge your payment method.</string>
   <string name="CVC" formatted="false">CVC</string>
   <string name="Cancel" formatted="false">Cancel</string>
   <string name="Cancel_pledge" formatted="false">Cancel pledge</string>
@@ -108,6 +109,7 @@ backers</string>
   <string name="Closes_filters" formatted="false">Closes filters.</string>
   <string name="Closes_live_stream" formatted="false">Closes live stream.</string>
   <string name="Closes_project" formatted="false">Closes project.</string>
+  <string name="Collaborator" formatted="false">Collaborator</string>
   <string name="Collapses_subcategories" formatted="false">Collapses subcategories.</string>
   <string name="Collections" formatted="false">Collections</string>
   <string name="Comment_reply_digest" formatted="false">Comment reply digest</string>
@@ -489,6 +491,7 @@ daring ideas.</string>
   <string name="Replay_live_stream_with_creator_name" formatted="false">Replay live stream with&lt;br>&lt;b>%{creator_name}&lt;/b></string>
   <string name="Replay_past_live_stream" formatted="false">Replay past live stream</string>
   <string name="Replay_past_live_streams" formatted="false">Replay past live streams</string>
+  <string name="Replies" formatted="false">Replies</string>
   <string name="Reply_to_user_name" formatted="false">Reply to %{user_name}…</string>
   <string name="Request_my_data" formatted="false">Request my data</string>
   <string name="Request_my_personal_data" formatted="false">Request my personal data</string>
@@ -663,6 +666,7 @@ catch your eye?</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">Video disabled until the internet connection improves</string>
   <string name="View" formatted="false">View</string>
   <string name="View_dashboard" formatted="false">View dashboard</string>
+  <string name="View_more_replies" formatted="false">View more replies</string>
   <string name="View_progress" formatted="false">View progress</string>
   <string name="View_project" formatted="false">View project</string>
   <string name="View_replies" formatted="false">View replies</string>

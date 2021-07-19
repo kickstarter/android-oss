@@ -38,6 +38,10 @@ interface RepliesStatusCellViewHolderViewModel {
                             this.isErrorPaginationVisible.onNext(true)
                             this.isViewMoreRepliesPaginationVisible.onNext(false)
                         }
+                        RepliesStatusCellType.EMTPY -> {
+                            this.isErrorPaginationVisible.onNext(false)
+                            this.isViewMoreRepliesPaginationVisible.onNext(false)
+                        }
                     }
                 }
         }

@@ -34,4 +34,13 @@ class RepliesStatusCellViewHolderViewModelTest : KSRobolectricTestCase() {
         this.isViewMoreRepliesPaginationVisible.assertValue(false)
         this.isErrorPaginationVisible.assertValue(true)
     }
+
+    @Test
+    fun isEmptyState() {
+        setupEnvironment()
+
+        this.vm.inputs.configureWith(RepliesStatusCellType.EMTPY)
+        this.isViewMoreRepliesPaginationVisible.assertValue(false)
+        this.isErrorPaginationVisible.assertValue(false)
+    }
 }

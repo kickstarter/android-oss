@@ -13,6 +13,7 @@ import com.kickstarter.libs.RecyclerViewPaginator
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.UrlUtils
+import com.kickstarter.libs.utils.extensions.showAlertDialog
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.adapters.RepliesAdapter
 import com.kickstarter.ui.adapters.RepliesStatusAdapter
@@ -71,13 +72,14 @@ class ThreadActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext {
                 linearLayoutManager.stackFromEnd = false
+            }
+            .subscribe {
                 /** bind View more cell if the replies more than 7 or update after refresh initial error state **/
                 this.repliesStatusAdapter.addViewMoreCell(it.second)
-            }
-            .filter { it.first.isNotEmpty() }
-            .subscribe {
-                /** bind replies list to adapter as reversed as the layout is reversed **/
-                this.repliesAdapter.takeData(it.first.reversed())
+                if (it.first.isNotEmpty()) {
+                    /** bind replies list to adapter as reversed as the layout is reversed **/
+                    this.repliesAdapter.takeData(it.first.reversed())
+                }
             }
 
         viewModel.outputs.shouldShowPaginationErrorUI()
@@ -167,6 +169,48 @@ class ThreadActivity :
                     )
                 )
             }
+
+        viewModel.outputs.hasPendingComments()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (it) {
+                    handleBackAction()
+                } else {
+                    viewModel.inputs.backPressed()
+                }
+            }
+
+        viewModel.outputs.closeThreadActivity()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                closeCommentsActivity()
+            }
+    }
+
+    private fun handleBackAction() {
+        this.showAlertDialog(
+            getString(R.string.Your_comment_wasnt_posted),
+            getString(R.string.You_will_lose_the_comment),
+            getString(R.string.cancel),
+            getString(R.string.leave_page),
+            false,
+            positiveAction = {
+            },
+            negativeAction = {
+                viewModel.inputs.backPressed()
+            }
+        )
+    }
+
+    override fun back() {
+        viewModel.inputs.checkIfThereAnyPendingComments()
+    }
+
+    private fun closeCommentsActivity() {
+        super.back()
+        this.finishActivity(taskId)
     }
 
     fun postReply(comment: String) {

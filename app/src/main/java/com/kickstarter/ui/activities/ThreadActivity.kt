@@ -174,11 +174,7 @@ class ThreadActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                if (it) {
-                    handleBackAction()
-                } else {
-                    viewModel.inputs.backPressed()
-                }
+                if (it) handleBackAction() else viewModel.inputs.backPressed()
             }
 
         viewModel.outputs.closeThreadActivity()

@@ -75,7 +75,6 @@ class ThreadActivity :
                 this.repliesStatusAdapter.addViewMoreCell(it.second)
             }
             .filter { it.first.isNotEmpty() }
-            .doOnNext { linearLayoutManager.stackFromEnd = false }
             .subscribe {
                 /** bind replies list to adapter as reversed as the layout is reversed **/
                 this.repliesAdapter.takeData(it.first.reversed())

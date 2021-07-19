@@ -14,7 +14,7 @@
         android:layout_height="@dimen/grid_4"
         android:layout_marginStart="@dimen/grid_3"
         android:layout_marginTop="@dimen/grid_3"
-        android:text="@string/view_more_replies"
+        android:text="@string/View_more_replies"
         android:gravity="center_vertical"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"

@@ -78,6 +78,16 @@ class ThreadActivity :
                 this.repliesAdapter.takeData(it.first.reversed())
             }
 
+        this.viewModel.outputs
+            .onCommentReplies()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .filter { it.first.isNullOrEmpty() }
+            .doOnNext { linearLayoutManager.stackFromEnd = false }
+            .subscribe {
+                this.repliesStatusAdapter.addViewMoreCell(it.second)
+            }
+
         viewModel.outputs.shouldShowPaginationErrorUI()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())

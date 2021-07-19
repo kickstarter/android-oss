@@ -10,6 +10,6 @@ class KSScreenShotTestRunner : ShotTestRunner() {
         className: String?,
         context: Context?
     ): Application {
-        return InstrumentedApp()
+        return super.newApplication(cl, className, context)
     }
 }

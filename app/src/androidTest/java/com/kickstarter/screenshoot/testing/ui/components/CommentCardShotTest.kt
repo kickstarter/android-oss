@@ -2,11 +2,9 @@ package com.kickstarter.screenshoot.testing.ui.components
 
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.karumi.shot.ScreenshotTest
 import com.kickstarter.ApplicationComponent
-import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.mock.factories.UserFactory
@@ -24,9 +22,9 @@ class CommentCardShotTest : ScreenshotTest {
 
     @Before
     fun setup() {
-        val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as InstrumentedApp
-        //val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as KSApplication
-        // - Test Dagger component for future mock objects
+        // - Test Application
+        val app = getInstrumentation().targetContext.applicationContext as InstrumentedApp
+        // - Test Dagger component for injecting on environment Mock Objects
         component = app.component()
 
         commentCard = (LayoutInflater.from(getInstrumentation().targetContext).inflate(R.layout.item_comment_card, null) as ConstraintLayout)

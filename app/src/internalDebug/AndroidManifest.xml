@@ -1,9 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.kickstarter"
-    android:sharedUserId="com.kickstarter">
+    package="com.kickstarter">
 
-    <!-- Add the permission with no maxSdkVersion defined -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 </manifest>

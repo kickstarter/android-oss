@@ -52,5 +52,6 @@ class RepliesStatusCellViewHolder(
 enum class RepliesStatusCellType {
     PAGINATION_ERROR,
     VIEW_MORE,
-    INITIAL_ERROR
+    INITIAL_ERROR,
+    EMTPY
 }

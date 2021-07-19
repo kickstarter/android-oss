@@ -1,13 +1,13 @@
-package com.kickstarter
+package com.kickstarter.screenshoot.testing.di
 
 import android.app.Application
 import androidx.annotation.NonNull
 import com.apollographql.apollo.ApolloClient
 import com.google.gson.Gson
+import com.kickstarter.ApplicationModule
 import com.kickstarter.libs.ApiEndpoint
 import com.kickstarter.libs.BuildCheck
 import com.kickstarter.libs.InternalToolsType
-import com.kickstarter.libs.NoopBuildCheck
 import com.kickstarter.libs.NoopInternalTools
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApolloClient
@@ -19,7 +19,7 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module(includes = [ApplicationModule::class])
-class AndroidTestApplicationModule(private val application: Application) : ApplicationModule(application) {
+class AndroidTestApplicationModule(private val application: Application) : ApplicationModule(application){
 
     @Provides
     @Singleton

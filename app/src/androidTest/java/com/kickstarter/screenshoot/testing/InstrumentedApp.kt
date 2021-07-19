@@ -1,9 +1,9 @@
 package com.kickstarter.screenshoot.testing
 
-import com.kickstarter.AndroidTestApplicationModule
 import com.kickstarter.ApplicationComponent
 import com.kickstarter.DaggerApplicationComponent
 import com.kickstarter.KSApplication
+import com.kickstarter.screenshoot.testing.di.AndroidTestApplicationModule
 
 class InstrumentedApp : KSApplication() {
 

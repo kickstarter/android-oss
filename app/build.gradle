@@ -110,7 +110,8 @@ android {
         applicationId "com.kickstarter"
         minSdkVersion 23
         targetSdkVersion 30
-        testInstrumentationRunner "com.karumi.shot.ShotTestRunner"
+        testApplicationId "com.kickstarter.internal.debug.test"
+        testInstrumentationRunner "com.kickstarter.screenshoot.testing.KSScreenShotTestRunner"
 
         buildConfigField "String", "GIT_SHA", "\"${commitSha()}\""
         buildConfigField "String", "BUILD_DATE", "\"${buildDate()}\""
@@ -373,5 +374,5 @@ apply plugin: 'com.google.gms.google-services'
 
 apply plugin: 'shot'
 shot {
-    runInstrumentation = false
+    useComposer = false
 }

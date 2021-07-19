@@ -1,5 +1,6 @@
-package com.kickstarter
+package com.kickstarter.screenshoot.testing.di
 
+import com.kickstarter.ApplicationGraph
 import dagger.Component
 import javax.inject.Singleton
 

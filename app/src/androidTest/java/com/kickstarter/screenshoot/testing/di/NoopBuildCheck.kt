@@ -1,6 +1,7 @@
-package com.kickstarter.libs
+package com.kickstarter.screenshoot.testing.di
 
 import androidx.annotation.NonNull
+import com.kickstarter.libs.BuildCheck
 import com.kickstarter.services.WebClientType
 import com.kickstarter.viewmodels.DiscoveryViewModel
 

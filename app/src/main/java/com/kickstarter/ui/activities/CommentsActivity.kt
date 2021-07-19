@@ -154,10 +154,12 @@ class CommentsActivity :
             getString(R.string.leave_page),
             false,
             positiveAction = {
-                executeActions(isBackAction)
+                if (!isBackAction) {
+                     binding.commentsSwipeRefreshLayout.isRefreshing = false
+                }
             },
             negativeAction = {
-                viewModel.inputs.backPressed()
+                executeActions(isBackAction)
             }
         )
     }
@@ -165,6 +167,8 @@ class CommentsActivity :
     fun executeActions(isBackAction: Boolean) {
         if (!isBackAction) {
             viewModel.inputs.refresh()
+        } else {
+            viewModel.inputs.backPressed()
         }
     }
 

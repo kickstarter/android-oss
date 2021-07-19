@@ -8,8 +8,6 @@ import com.kickstarter.KSApplication
 
 fun Context.isKSApplication() = (this is KSApplication) && !this.isInUnitTests
 
-fun Context.asKSApplication() = this.applicationContext as KSApplication
-
 /**
  * if the current context is an instance of Application android base class
  * register the callbacks provided on the parameter.

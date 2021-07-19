@@ -36,6 +36,8 @@ interface ThreadViewModel {
         fun onShowGuideLinesLinkClicked()
         fun refreshCommentCardInCaseFailedPosted(comment: Comment)
         fun refreshCommentCardInCaseSuccessPosted(comment: Comment)
+        fun checkIfThereAnyPendingComments()
+        fun backPressed()
     }
 
     interface Outputs {
@@ -64,6 +66,8 @@ interface ThreadViewModel {
         fun refresh(): Observable<Void>
 
         fun showCommentGuideLinesLink(): Observable<Void>
+        fun hasPendingComments(): Observable<Boolean>
+        fun closeThreadActivity(): Observable<Void>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ThreadActivity>(environment), Inputs, Outputs {
@@ -76,6 +80,8 @@ interface ThreadViewModel {
         private val onShowGuideLinesLinkClicked = PublishSubject.create<Void>()
         private val failedCommentCardToRefresh = PublishSubject.create<Comment>()
         private val successfullyPostedCommentCardToRefresh = PublishSubject.create<Comment>()
+        private val checkIfThereAnyPendingComments = PublishSubject.create<Void>()
+        private val backPressed = PublishSubject.create<Void>()
 
         private val rootComment = BehaviorSubject.create<Comment>()
         private val focusOnCompose = BehaviorSubject.create<Boolean>()
@@ -90,6 +96,8 @@ interface ThreadViewModel {
         private val displayPaginationError = BehaviorSubject.create<Boolean>()
         private val initialLoadCommentsError = BehaviorSubject.create<Boolean>()
         private val showGuideLinesLink = BehaviorSubject.create<Void>()
+        private val hasPendingComments = BehaviorSubject.create<Boolean>()
+        private val closeThreadActivity = BehaviorSubject.create<Void>()
 
         private val onCommentReplies =
             BehaviorSubject.create<Pair<List<CommentCardData>, Boolean>>()
@@ -228,10 +236,10 @@ interface ThreadViewModel {
                 }
 
             // - Update internal mutable list with the latest state after failed response
-            this.failedCommentCardToRefresh
-                .compose(Transformers.combineLatestPair(this.onCommentReplies))
+            this.onCommentReplies
+                .compose(Transformers.combineLatestPair(this.failedCommentCardToRefresh))
                 .map {
-                    Pair(it.first.updateCommentFailedToPost(it.second.first), it.second.second)
+                    Pair(it.second.updateCommentFailedToPost(it.first.first), it.first.second)
                 }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
@@ -240,16 +248,32 @@ interface ThreadViewModel {
                 }
 
             // - Update internal mutable list with the latest state after successful response
-            this.successfullyPostedCommentCardToRefresh
-                .compose(Transformers.combineLatestPair(this.onCommentReplies))
+            this.onCommentReplies
+                .compose(Transformers.combineLatestPair(this.successfullyPostedCommentCardToRefresh))
                 .map {
-                    Pair(it.first.updateCommentAfterSuccessfulPost(it.second.first), it.second.second)
+                    Pair(it.second.updateCommentAfterSuccessfulPost(it.first.first), it.first.second)
                 }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.onCommentReplies.onNext(it)
                 }
+
+            this.onCommentReplies
+                .compose(Transformers.takePairWhen(checkIfThereAnyPendingComments))
+                .compose(bindToLifecycle())
+                .subscribe { pair ->
+                    this.hasPendingComments.onNext(
+                        pair.first.first.any {
+                            it.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus ||
+                                it.commentCardState == CommentCardStatus.FAILED_TO_SEND_COMMENT.commentCardStatus
+                        }
+                    )
+                }
+
+            this.backPressed
+                .compose(bindToLifecycle())
+                .subscribe { this.closeThreadActivity.onNext(it) }
         }
 
         private fun loadCommentListFromProjectOrUpdate(comment: Observable<Comment>) {
@@ -382,8 +406,13 @@ interface ThreadViewModel {
         override fun isFetchingReplies(): Observable<Boolean> = this.isFetchingReplies
         override fun loadMoreReplies(): Observable<Void> = this.loadMoreReplies
         override fun showCommentGuideLinesLink(): Observable<Void> = showGuideLinesLink
+        override fun checkIfThereAnyPendingComments() = checkIfThereAnyPendingComments.onNext(null)
+        override fun backPressed() = backPressed.onNext(null)
+
         override fun shouldShowPaginationErrorUI(): Observable<Boolean> = this.displayPaginationError
         override fun initialLoadCommentsError(): Observable<Boolean> = this.initialLoadCommentsError
         override fun refresh(): Observable<Void> = this.refresh
+        override fun hasPendingComments(): Observable<Boolean> = this.hasPendingComments
+        override fun closeThreadActivity(): Observable<Void> = this.closeThreadActivity
     }
 }

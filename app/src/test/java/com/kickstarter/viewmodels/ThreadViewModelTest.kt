@@ -39,6 +39,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
     private val loadMoreReplies = TestSubscriber<Void>()
     private val openCommentGuideLines = TestSubscriber<Void>()
     private val refresh = TestSubscriber<Void>()
+    private val hasPendingComments = TestSubscriber<Boolean>()
+    private val closeThreadActivity = TestSubscriber<Void>()
 
     private fun setUpEnvironment() {
         setUpEnvironment(environment())
@@ -515,5 +517,135 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
             assertTrue(newList[2].comment?.body() == commentCardData2.comment?.body())
             assertTrue(newList[2].commentCardState == commentCardData2.commentCardState)
         }
+    }
+
+    @Test
+    fun backButtonPressed_whenEmits_shouldEmitToCloseActivityStream() {
+        setUpEnvironment()
+        vm.outputs.closeThreadActivity().subscribe(closeThreadActivity)
+
+        vm.inputs.backPressed()
+        closeThreadActivity.assertValueCount(1)
+    }
+
+    @Test
+    fun testReplies_BackWithPendingComment() {
+        val currentUser = UserFactory.user()
+            .toBuilder()
+            .id(1)
+            .build()
+
+        val comment1 = CommentFactory.commentToPostWithUser(currentUser).toBuilder().id(1).body("comment1").build()
+        val comment2 = CommentFactory.commentToPostWithUser(currentUser).toBuilder().id(2).body("comment2").build()
+        val newPostedComment = CommentFactory.commentToPostWithUser(currentUser).toBuilder().id(3).body("comment3").build()
+
+        val commentEnvelope = CommentEnvelopeFactory.commentsEnvelope().toBuilder()
+            .comments(listOf(comment1, comment2))
+            .build()
+
+        val testScheduler = TestScheduler()
+
+        val env = environment().toBuilder()
+            .apolloClient(object : MockApolloClient() {
+                override fun getRepliesForComment(
+                    comment: Comment,
+                    cursor: String?,
+                    pageSize: Int
+                ): Observable<CommentEnvelope> {
+                    return Observable.just(commentEnvelope)
+                }
+            })
+            .currentUser(MockCurrentUser(currentUser))
+            .scheduler(testScheduler)
+            .build()
+
+        val commentCardData1 = CommentCardData.builder()
+            .comment(comment1)
+            .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
+            .build()
+        val commentCardData2 = CommentCardData.builder()
+            .comment(comment2)
+            .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
+            .build()
+        val commentCardData3 = CommentCardData.builder()
+            .comment(newPostedComment)
+            .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
+            .build()
+
+        val commentCardData3Failed = CommentCardData.builder()
+            .comment(newPostedComment)
+            .commentCardState(CommentCardStatus.FAILED_TO_SEND_COMMENT.commentCardStatus)
+            .build()
+
+        val commentCardData3Updated = CommentCardData.builder()
+            .comment(newPostedComment)
+            .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
+            .build()
+
+        val vm = ThreadViewModel.ViewModel(env)
+        // Start the view model with a backed project and comment.
+        vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, CommentCardDataFactory.commentCardData()))
+        vm.outputs.onCommentReplies().subscribe(onReplies)
+
+        vm.outputs.onCommentReplies().subscribe()
+        vm.outputs.hasPendingComments().subscribe(hasPendingComments)
+
+        onReplies.assertValueCount(1)
+        vm.outputs.onCommentReplies().take(0).subscribe {
+            val newList = it.first
+            assertTrue(newList.size == 2)
+            assertTrue(newList[0].comment?.body() == commentCardData1.comment?.body())
+            assertTrue(newList[0].commentCardState == commentCardData1.commentCardState)
+
+            assertTrue(newList[1].comment?.body() == commentCardData2.comment?.body())
+            assertTrue(newList[1].commentCardState == commentCardData2.commentCardState)
+        }
+
+        vm.inputs.checkIfThereAnyPendingComments()
+
+        this.hasPendingComments.assertValue(false)
+        // - New posted comment with status "TRYING_TO_POST"
+        vm.inputs.insertNewReplyToList(newPostedComment.body(), DateTime.now())
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
+        onReplies.assertValueCount(2)
+        vm.outputs.onCommentReplies().take(0).subscribe {
+            val newList = it.first
+            assertTrue(newList.size == 3)
+            assertTrue(newList[0].comment?.body() == commentCardData3.comment?.body())
+            assertTrue(newList[0].commentCardState == commentCardData3.commentCardState)
+
+            assertTrue(newList[1].comment?.body() == commentCardData1.comment?.body())
+            assertTrue(newList[1].commentCardState == commentCardData1.commentCardState)
+
+            assertTrue(newList[2].comment?.body() == commentCardData2.comment?.body())
+            assertTrue(newList[2].commentCardState == commentCardData2.commentCardState)
+        }
+
+        vm.inputs.checkIfThereAnyPendingComments()
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+        this.hasPendingComments.assertValues(false, true)
+
+        // - Check the status of the newly posted comment
+        vm.inputs.refreshCommentCardInCaseFailedPosted(newPostedComment)
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+
+        onReplies.assertValueCount(3)
+        vm.outputs.onCommentReplies().take(0).subscribe {
+            val newList = it.first
+            assertTrue(newList.size == 3)
+            assertTrue(newList[0].comment?.body() == commentCardData3Failed.comment?.body())
+            assertTrue(newList[0].commentCardState == commentCardData3Failed.commentCardState)
+
+            assertTrue(newList[1].comment?.body() == commentCardData1.comment?.body())
+            assertTrue(newList[1].commentCardState == commentCardData1.commentCardState)
+
+            assertTrue(newList[2].comment?.body() == commentCardData2.comment?.body())
+            assertTrue(newList[2].commentCardState == commentCardData2.commentCardState)
+        }
+
+        // - Check Pull to refresh
+        vm.inputs.checkIfThereAnyPendingComments()
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+        this.hasPendingComments.assertValues(false, true, true)
     }
 }

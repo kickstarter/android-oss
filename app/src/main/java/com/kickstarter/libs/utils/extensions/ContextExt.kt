@@ -36,15 +36,20 @@ fun Context.showAlertDialog(
         setMessage(message)
 
         // add a button
-        setPositiveButton(positiveActionTitle) { dialog, _ ->
-            dialog.dismiss()
-            positiveAction?.invoke()
+        positiveActionTitle?.let {
+            setPositiveButton(positiveActionTitle) { dialog, _ ->
+                dialog.dismiss()
+                positiveAction?.invoke()
+            }
         }
 
-        setNegativeButton(negativeActionTitle) { dialog, _ ->
-            dialog.dismiss()
-            negativeAction?.invoke()
+        negativeActionTitle?.let {
+            setNegativeButton(negativeActionTitle) { dialog, _ ->
+                dialog.dismiss()
+                negativeAction?.invoke()
+            }
         }
+
         setCancelable(isCancelable)
     }
 

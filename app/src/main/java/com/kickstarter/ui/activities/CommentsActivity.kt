@@ -155,7 +155,7 @@ class CommentsActivity :
             false,
             positiveAction = {
                 if (!isBackAction) {
-                     binding.commentsSwipeRefreshLayout.isRefreshing = false
+                    binding.commentsSwipeRefreshLayout.isRefreshing = false
                 }
             },
             negativeAction = {

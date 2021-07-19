@@ -236,7 +236,7 @@ interface CommentsViewModel {
                         Pair(
                             pair.first.any {
                                 it.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus ||
-                                        it.commentCardState == CommentCardStatus.FAILED_TO_SEND_COMMENT.commentCardStatus
+                                    it.commentCardState == CommentCardStatus.FAILED_TO_SEND_COMMENT.commentCardStatus
                             },
                             pair.second
                         )
@@ -286,7 +286,7 @@ interface CommentsViewModel {
             this.commentsList
                 .compose(takePairWhen(this.failedCommentCardToRefresh))
                 .map {
-                  it.second.updateCommentFailedToPost(it.first)
+                    it.second.updateCommentFailedToPost(it.first)
                 }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())

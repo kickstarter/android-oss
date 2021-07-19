@@ -69,11 +69,13 @@ class ThreadActivity :
             .onCommentReplies()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .filter { it.first.isNotEmpty() }
-            .doOnNext { linearLayoutManager.stackFromEnd = false }
-            .subscribe {
-                /** bind View more cell if the replies more than 7 **/
+            .doOnNext {
+                linearLayoutManager.stackFromEnd = false
+                /** bind View more cell if the replies more than 7 or update after refresh initial error state **/
                 this.repliesStatusAdapter.addViewMoreCell(it.second)
+            }
+            .filter { it.first.isNotEmpty() }
+            .subscribe {
                 /** bind replies list to adapter as reversed as the layout is reversed **/
                 this.repliesAdapter.takeData(it.first.reversed())
             }

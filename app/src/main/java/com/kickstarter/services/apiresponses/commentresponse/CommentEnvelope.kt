@@ -21,7 +21,7 @@ class CommentEnvelope(
         var comments: List<Comment>? = null,
         var commentableId: String? = null,
         var pageInfoEnvelope: PageInfoEnvelope? = null,
-        var totalCount: Int? = 0
+        var totalCount: Int? = null
     ) : Parcelable {
 
         fun comments(comments: List<Comment>?) = apply { this.comments = comments }

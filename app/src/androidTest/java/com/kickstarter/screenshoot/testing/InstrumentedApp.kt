@@ -11,7 +11,7 @@ class InstrumentedApp : KSApplication() {
         super.onCreate()
     }
 
-    override fun getComponent(): ApplicationComponent? {
+    override fun getComponent(): ApplicationComponent {
         return DaggerApplicationComponent.builder()
             .applicationModule(AndroidTestApplicationModule(this))
             .build()

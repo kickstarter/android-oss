@@ -13,7 +13,7 @@ if $ANDROID_HOME/platform-tools/adb devices -l | grep -q emulator; then
 fi
 
 echo "Starting emulator..."
-echo "no" | $ANDROID_HOME/emulator/emulator "-avd" "Pixel_4a_API_30" "-no-audio" "-no-boot-anim" "-gpu" "swiftshader_indirect" &
+echo "no" | $ANDROID_HOME/emulator/emulator "-avd" "Pixel_4a_API_30" "-no-audio" "-no-boot-anim" "-gpu" "swiftshader_indirect"&
 $DIR/wait_for_emulator.sh
 
 echo "Emulator ready, disabling animations!"

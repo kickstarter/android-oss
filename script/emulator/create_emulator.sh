@@ -15,7 +15,7 @@ echo no | $ANDROID_HOME/tools/bin/sdkmanager "system-images;android-30;google_ap
 echo "Image downloaded!"
 
 echo "Creating the emulator to run screenshot tests..."
-echo no | $ANDROID_HOME/tools/bin/avdmanager create avd -n Pixel_4a_API_30 -k "system-images;android-30;google_apis;x86" -no-boot-anim -netdelay none -no-snapshot -wipe-data --force --sdcard sdcard.img
+echo no | $ANDROID_HOME/tools/bin/avdmanager create avd -n Pixel_4a_API_30 -k "system-images;android-30;google_apis;x86" --force --sdcard sdcard.img
 echo "Emulator created!"
 
 

@@ -16,4 +16,4 @@ $ANDROID_HOME/platform-tools/adb shell settings put global hidden_api_policy  1
 
 echo "Rebooting emulator to apply the configuration"
 $ANDROID_HOME/platform-tools/adb wait-for-device
-$DIR/reboot_emulator.sh
+#$DIR/reboot_emulator.sh

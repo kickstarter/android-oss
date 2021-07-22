@@ -173,7 +173,11 @@ class CommentsActivity :
     }
 
     override fun back() {
-        viewModel.inputs.checkIfThereAnyPendingComments(true)
+        if (binding.commentComposer.isCommentComposerEmpty() == true) {
+            viewModel.inputs.checkIfThereAnyPendingComments(true)
+        } else {
+            handleBackAction(true)
+        }
     }
 
     private fun closeCommentsActivity() {

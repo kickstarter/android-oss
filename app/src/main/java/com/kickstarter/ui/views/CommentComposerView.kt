@@ -65,6 +65,8 @@ class CommentComposerView @JvmOverloads constructor(
         binding.commentActionButton.isGone = it
     }
 
+    fun isCommentComposerEmpty(): Boolean? = binding.commentTextComposer.text?.isNullOrEmpty()
+
     fun clearCommentComposer() {
         binding.commentTextComposer.text?.clear()
     }

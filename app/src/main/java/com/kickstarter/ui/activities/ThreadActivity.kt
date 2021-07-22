@@ -201,7 +201,11 @@ class ThreadActivity :
     }
 
     override fun back() {
-        viewModel.inputs.checkIfThereAnyPendingComments()
+        if (binding.replyComposer.isCommentComposerEmpty() == true) {
+            viewModel.inputs.checkIfThereAnyPendingComments()
+        } else {
+            handleBackAction()
+        }
     }
 
     private fun closeCommentsActivity() {

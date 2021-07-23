@@ -82,3 +82,5 @@ slack.properties
 
 # temporarily ignore prerelease script
 prerelease.sh
+script/emulator/sdcard.img
+script/emulator/sdcard.img.qcow2

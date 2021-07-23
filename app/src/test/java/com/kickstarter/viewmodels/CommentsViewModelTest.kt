@@ -411,7 +411,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             .build()
 
         val comment1 = CommentFactory.commentToPostWithUser(currentUser).toBuilder().id(1).body("comment1").build()
-        
+
         val commentEnvelope = CommentEnvelopeFactory.commentsEnvelope().toBuilder()
             .comments(listOf(comment1))
             .build()
@@ -425,7 +425,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             .currentUser(MockCurrentUser(currentUser))
             .scheduler(testScheduler)
             .build()
-        
+
         val vm = CommentsViewModel.ViewModel(env)
         // Start the view model with a project.
 

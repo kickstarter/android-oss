@@ -68,7 +68,7 @@ fun Comment.updateCanceledPledgeComment(
 ): List<CommentCardData> {
 
     val position = listOfComments.indexOfFirst { commentCardData ->
-        commentCardData.commentCardState == CommentCardStatus.CANCELED_PLEDGE_MSG.commentCardStatus &&
+        commentCardData.commentCardState == CommentCardStatus.CANCELED_PLEDGE_MESSAGE.commentCardStatus &&
             commentCardData.comment?.body() == this.body() &&
             commentCardData.comment?.author()?.id() == this.author().id()
     }
@@ -87,7 +87,7 @@ fun Comment.updateCanceledPledgeComment(
 
 fun Comment.cardStatus() = when {
     this.deleted() ?: false -> CommentCardStatus.DELETED_COMMENT
-    this.authorCanceledPledge() ?: false -> CommentCardStatus.CANCELED_PLEDGE_MSG
+    this.authorCanceledPledge() ?: false -> CommentCardStatus.CANCELED_PLEDGE_MESSAGE
     this.repliesCount() ?: 0 != 0 -> CommentCardStatus.COMMENT_WITH_REPLIES
     else -> CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS
 }.commentCardStatus

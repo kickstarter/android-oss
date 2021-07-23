@@ -24,6 +24,7 @@ class CommentCardTest : KSRobolectricTestCase() {
     private lateinit var retryButton: View
     private lateinit var postingButton: AppCompatButton
     private lateinit var postedButton: AppCompatButton
+    private lateinit var showCanceledPledgeComment: AppCompatTextView
 
     @Before
     @Throws(Exception::class)
@@ -40,6 +41,7 @@ class CommentCardTest : KSRobolectricTestCase() {
         repliesButton = commentCard.findViewById(R.id.replies)
         postingButton = commentCard.findViewById(R.id.posting_button)
         postedButton = commentCard.findViewById(R.id.posted_button)
+        showCanceledPledgeComment = commentCard.findViewById(R.id.canceled_pledge_message)
     }
 
     @Test
@@ -51,6 +53,7 @@ class CommentCardTest : KSRobolectricTestCase() {
         assertTrue(commentDeletedMessageGroup.isVisible)
         assertFalse(postedButton.isVisible)
         assertFalse(postingButton.isVisible)
+        assertFalse(showCanceledPledgeComment.isVisible)
     }
 
     @Test
@@ -62,6 +65,7 @@ class CommentCardTest : KSRobolectricTestCase() {
         assertTrue(retryButton.isVisible)
         assertFalse(postedButton.isVisible)
         assertFalse(postingButton.isVisible)
+        assertFalse(showCanceledPledgeComment.isVisible)
     }
 
     @Test
@@ -84,6 +88,7 @@ class CommentCardTest : KSRobolectricTestCase() {
         assertFalse(retryButton.isVisible)
         assertFalse(postedButton.isVisible)
         assertFalse(postingButton.isVisible)
+        assertFalse(showCanceledPledgeComment.isVisible)
     }
 
     @Test
@@ -95,6 +100,7 @@ class CommentCardTest : KSRobolectricTestCase() {
         assertFalse(retryButton.isVisible)
         assertFalse(postedButton.isVisible)
         assertFalse(postingButton.isVisible)
+        assertFalse(showCanceledPledgeComment.isVisible)
     }
 
     @Test
@@ -120,6 +126,7 @@ class CommentCardTest : KSRobolectricTestCase() {
         assertFalse(retryButton.isVisible)
         assertFalse(postedButton.isVisible)
         assertFalse(postingButton.isVisible)
+        assertFalse(showCanceledPledgeComment.isVisible)
     }
 
     @Test
@@ -134,6 +141,7 @@ class CommentCardTest : KSRobolectricTestCase() {
         assertFalse(retryButton.isVisible)
         assertFalse(postedButton.isVisible)
         assertFalse(postingButton.isVisible)
+        assertFalse(showCanceledPledgeComment.isVisible)
     }
 
     @Test
@@ -148,6 +156,7 @@ class CommentCardTest : KSRobolectricTestCase() {
         assertFalse(repliesButton.isVisible)
         assertFalse(commentDeletedMessageGroup.isVisible)
         assertFalse(retryButton.isVisible)
+        assertFalse(showCanceledPledgeComment.isVisible)
     }
     @Test
     fun testTryingToPostCommentStatus() {
@@ -158,6 +167,7 @@ class CommentCardTest : KSRobolectricTestCase() {
         assertFalse(retryButton.isVisible)
         assertFalse(postedButton.isVisible)
         assertTrue(postingButton.isVisible)
+        assertFalse(showCanceledPledgeComment.isVisible)
     }
 
     @Test
@@ -168,6 +178,32 @@ class CommentCardTest : KSRobolectricTestCase() {
         assertFalse(replyButton.isVisible)
         assertFalse(retryButton.isVisible)
         assertTrue(postedButton.isVisible)
+        assertFalse(postingButton.isVisible)
+        assertFalse(postingButton.isVisible)
+        assertFalse(showCanceledPledgeComment.isVisible)
+    }
+
+    @Test
+    fun testShowCanceledPledgeCommentStatus() {
+        commentCard.setCommentCardStatus(CommentCardStatus.CANCELED_PLEDGE_COMMENT)
+        assertTrue(commentBody.isVisible)
+        assertFalse(commentDeletedMessageGroup.isVisible)
+        assertFalse(replyButton.isVisible)
+        assertFalse(retryButton.isVisible)
+        assertFalse(postedButton.isVisible)
+        assertFalse(postingButton.isVisible)
+        assertFalse(showCanceledPledgeComment.isVisible)
+    }
+    
+    @Test
+    fun testshowCanceledPledgeMessageStatus() {
+        commentCard.setCommentCardStatus(CommentCardStatus.CANCELED_PLEDGE_MESSAGE)
+        assertFalse(commentBody.isVisible)
+        assertTrue(showCanceledPledgeComment.isVisible)
+        assertFalse(commentDeletedMessageGroup.isVisible)
+        assertFalse(replyButton.isVisible)
+        assertFalse(retryButton.isVisible)
+        assertFalse(postedButton.isVisible)
         assertFalse(postingButton.isVisible)
     }
 }

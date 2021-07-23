@@ -138,7 +138,7 @@ class CommentCard @JvmOverloads constructor(
             cardCommentStatus == CommentCardStatus.TRYING_TO_POST ||
             cardCommentStatus == CommentCardStatus.CANCELED_PLEDGE_COMMENT
 
-        if (cardCommentStatus == CommentCardStatus.DELETED_COMMENT || cardCommentStatus == CommentCardStatus.CANCELED_PLEDGE_MSG) {
+        if (cardCommentStatus == CommentCardStatus.DELETED_COMMENT || cardCommentStatus == CommentCardStatus.CANCELED_PLEDGE_MESSAGE) {
             binding.commentBody.isInvisible = true
         }
 
@@ -146,7 +146,7 @@ class CommentCard @JvmOverloads constructor(
             cardCommentStatus == CommentCardStatus.DELETED_COMMENT
 
         binding.canceledPledgeMessage.isVisible =
-            cardCommentStatus == CommentCardStatus.CANCELED_PLEDGE_MSG
+            cardCommentStatus == CommentCardStatus.CANCELED_PLEDGE_MESSAGE
 
         if (shouldShowReplyButton(cardCommentStatus)) {
             setReplyButtonVisibility(true)
@@ -248,6 +248,6 @@ enum class CommentCardStatus(val commentCardStatus: Int) {
     RE_TRYING_TO_POST(4), // trying to post comment
     POSTING_COMMENT_COMPLETED_SUCCESSFULLY(5), // trying to post comment,
     TRYING_TO_POST(6), // comments without reply view,
-    CANCELED_PLEDGE_MSG(7),
+    CANCELED_PLEDGE_MESSAGE(7),
     CANCELED_PLEDGE_COMMENT(8),
 }

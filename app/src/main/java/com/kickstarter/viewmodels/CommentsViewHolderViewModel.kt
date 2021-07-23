@@ -418,7 +418,7 @@ interface CommentsViewHolderViewModel {
 
         private fun checkCanceledPledgeCommentStatus(commentCardData: CommentCardData): CommentCardStatus =
             if (commentCardData.commentCardState != CommentCardStatus.CANCELED_PLEDGE_COMMENT.commentCardStatus)
-                CommentCardStatus.CANCELED_PLEDGE_MSG
+                CommentCardStatus.CANCELED_PLEDGE_MESSAGE
             else
                 CommentCardStatus.CANCELED_PLEDGE_COMMENT
 

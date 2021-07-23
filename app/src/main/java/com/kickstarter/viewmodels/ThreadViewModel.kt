@@ -375,6 +375,7 @@ interface ThreadViewModel {
                 .deleted(false)
                 .id(-1)
                 .repliesCount(0)
+                .authorCanceledPledge(false)
                 .author(it.first.second)
                 .build()
         }

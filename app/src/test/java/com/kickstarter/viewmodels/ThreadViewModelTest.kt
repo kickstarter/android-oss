@@ -61,7 +61,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
 
         val commentCardData = CommentCardDataFactory.commentCardData()
 
-        this.vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, CommentCardDataFactory.commentCardData()))
+        this.vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, commentCardData))
         getComment.assertValue(commentCardData)
 
         this.vm.intent(Intent().putExtra("Some other Key", commentCardData))

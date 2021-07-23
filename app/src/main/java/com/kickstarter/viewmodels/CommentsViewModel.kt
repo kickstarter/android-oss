@@ -251,15 +251,16 @@ interface CommentsViewModel {
                 .compose(bindToLifecycle())
                 .subscribe { this.closeCommentsPage.onNext(it) }
 
-            this.onReplyClicked
-                .compose(combineLatestPair(commentsList))
+            commentsList
+                .compose(takePairWhen(onReplyClicked))
                 .compose(bindToLifecycle())
                 .subscribe { pair ->
-                    val cardData = pair.second.first { it.comment?.id() == pair.first.first.id() }
+
+                    val cardData = pair.first.first { it.comment?.id() == pair.second.first.id() }
                     this.startThreadActivity.onNext(
                         Pair(
                             cardData,
-                            pair.first.second
+                            pair.second.second
                         )
                     )
                 }
@@ -423,6 +424,7 @@ interface CommentsViewModel {
                 .cursor("")
                 .deleted(false)
                 .id(-1)
+                .authorCanceledPledge(false)
                 .repliesCount(0)
                 .author(it.first)
                 .build()

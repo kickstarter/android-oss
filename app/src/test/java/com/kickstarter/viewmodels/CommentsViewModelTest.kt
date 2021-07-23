@@ -410,23 +410,30 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             .avatar(AvatarFactory.avatar())
             .build()
 
-        val createdAt = DateTime.now()
+        val comment1 = CommentFactory.commentToPostWithUser(currentUser).toBuilder().id(1).body("comment1").build()
+        
+        val commentEnvelope = CommentEnvelopeFactory.commentsEnvelope().toBuilder()
+            .comments(listOf(comment1))
+            .build()
 
-        val vm = CommentsViewModel.ViewModel(
-            environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
-        )
-        val comment = CommentFactory.liveComment(createdAt = createdAt)
-        val project = ProjectFactory.project()
-        vm.outputs.startThreadActivity().subscribe(startThreadActivity)
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
+        val testScheduler = TestScheduler()
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+                return Observable.just(commentEnvelope)
+            }
+        })
+            .currentUser(MockCurrentUser(currentUser))
+            .scheduler(testScheduler)
+            .build()
+        
+        val vm = CommentsViewModel.ViewModel(env)
         // Start the view model with a project.
 
-        vm.inputs.onReplyClicked(comment, true)
-
-        assertEquals(startThreadActivity.value.first.project, project)
-        assertEquals(startThreadActivity.value.first.comment, comment)
-        assertTrue(startThreadActivity.value.second)
+        vm.inputs.onReplyClicked(comment1, true)
+        vm.outputs.startThreadActivity().take(0).subscribe {
+            assertEquals(it.first.comment, comment1)
+            assertTrue(it.second)
+        }
     }
 
     @Test

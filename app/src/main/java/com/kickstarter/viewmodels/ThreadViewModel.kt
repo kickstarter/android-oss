@@ -44,7 +44,7 @@ interface ThreadViewModel {
 
     interface Outputs {
         /** The anchored root comment */
-        fun getRootComment(): Observable<Comment>
+        fun getRootComment(): Observable<CommentCardData>
 
         /** get comment replies **/
         fun onCommentReplies(): Observable<Pair<List<CommentCardData>, Boolean>>
@@ -86,7 +86,7 @@ interface ThreadViewModel {
         private val backPressed = PublishSubject.create<Void>()
         private val showCanceledPledgeComment = PublishSubject.create<Comment>()
 
-        private val rootComment = BehaviorSubject.create<Comment>()
+        private val rootComment = BehaviorSubject.create<CommentCardData>()
         private val focusOnCompose = BehaviorSubject.create<Boolean>()
         private val currentUserAvatar = BehaviorSubject.create<String?>()
         private val replyComposerStatus = BehaviorSubject.create<CommentComposerStatus>()
@@ -180,7 +180,7 @@ interface ThreadViewModel {
             commentData
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.rootComment.onNext(it.comment)
+                    this.rootComment.onNext(it)
                 }
 
             val loggedInUser = this.currentUser.loggedInUser()
@@ -401,7 +401,7 @@ interface ThreadViewModel {
         override fun refreshCommentCardInCaseSuccessPosted(comment: Comment) =
             this.successfullyPostedCommentCardToRefresh.onNext(comment)
 
-        override fun getRootComment(): Observable<Comment> = this.rootComment
+        override fun getRootComment(): Observable<CommentCardData> = this.rootComment
         override fun onCommentReplies(): Observable<Pair<List<CommentCardData>, Boolean>> =
             this.onCommentReplies
 

@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit
 class ThreadViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: ThreadViewModel.ViewModel
-    private val getComment = TestSubscriber<Comment>()
+    private val getComment = TestSubscriber<CommentCardData>()
     private val focusCompose = TestSubscriber<Boolean>()
     private val onReplies = TestSubscriber<Pair<List<CommentCardData>, Boolean>>()
 
@@ -62,10 +62,10 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         val commentCardData = CommentCardDataFactory.commentCardData()
 
         this.vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, CommentCardDataFactory.commentCardData()))
-        getComment.assertValue(commentCardData.comment)
+        getComment.assertValue(commentCardData)
 
         this.vm.intent(Intent().putExtra("Some other Key", commentCardData))
-        getComment.assertValue(commentCardData.comment)
+        getComment.assertValue(commentCardData)
     }
 
     @Test

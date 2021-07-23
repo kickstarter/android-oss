@@ -12,7 +12,6 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UpdateFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient
-import com.kickstarter.models.Comment
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.CommentCardData
@@ -40,7 +39,6 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     private val openCommentGuideLines = TestSubscriber<Void>()
     private val startThreadActivity = BehaviorSubject.create<Pair<CommentCardData, Boolean>>()
     private val hasPendingComments = TestSubscriber<Pair<Boolean, Boolean>>()
-    private val shouldShowPaginationErrorUI = TestSubscriber<Comment>()
 
     @Test
     fun testCommentsViewModel_whenUserLoggedInAndBacking_shouldShowEnabledComposer() {

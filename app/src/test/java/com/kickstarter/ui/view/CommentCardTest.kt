@@ -194,7 +194,7 @@ class CommentCardTest : KSRobolectricTestCase() {
         assertFalse(postingButton.isVisible)
         assertFalse(showCanceledPledgeComment.isVisible)
     }
-    
+
     @Test
     fun testshowCanceledPledgeMessageStatus() {
         commentCard.setCommentCardStatus(CommentCardStatus.CANCELED_PLEDGE_MESSAGE)

@@ -252,17 +252,14 @@ interface CommentsViewModel {
                 .subscribe { this.closeCommentsPage.onNext(it) }
 
             this.onReplyClicked
-                .compose(combineLatestPair(initialProject))
+                .compose(combineLatestPair(commentsList))
                 .compose(bindToLifecycle())
-                .subscribe {
+                .subscribe { pair ->
+                    val cardData = pair.second.first { it.comment?.id() == pair.first.first.id() }
                     this.startThreadActivity.onNext(
                         Pair(
-                            CommentCardData.builder()
-                                .comment(it.first.first)
-                                .commentableId(commentableId)
-                                .project(it.second)
-                                .build(),
-                            it.first.second
+                            cardData,
+                            pair.first.second
                         )
                     )
                 }

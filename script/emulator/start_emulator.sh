@@ -22,5 +22,6 @@ $DIR/wait_for_emulator.sh
 
 echo "Emulator ready, configuring for Screenshot Testing!"
 $DIR/screenshot_config_emulator.sh
+$DIR/wait_for_emulator.sh
 
 echo "Emulator started and ready to rock!"

@@ -40,6 +40,9 @@ class RepliesStatusCellViewHolder(
         binding.retryButton.setOnClickListener {
             viewListener.retryCallback()
         }
+        binding.retryIcon.setOnClickListener {
+            viewListener.retryCallback()
+        }
     }
 
     override fun bindData(data: Any?) {

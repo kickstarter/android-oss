@@ -31,6 +31,9 @@ class PaginationErrorViewHolder(
         binding.retryButton.setOnClickListener {
             viewListener.retryCallback()
         }
+        binding.retryIcon.setOnClickListener {
+            viewListener.retryCallback()
+        }
 
         if (isReply) {
             val params = Constraints.LayoutParams(

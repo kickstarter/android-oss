@@ -67,6 +67,21 @@ class CommentCard @JvmOverloads constructor(
         )
     }
 
+    private fun bindCancelPledgeMessage() {
+        binding.canceledPledgeMessage.parseHtmlTag()
+        binding.canceledPledgeMessage.makeLinks(
+            Pair(
+                context.resources.getString(R.string.show_comment),
+                OnClickListener {
+                    onCommentCardClickedListener?.onShowCommentClicked(it)
+                },
+
+            ),
+            linkColor = R.color.kds_create_500,
+            isUnderlineText = false
+        )
+    }
+
     private fun obtainStyledAttributes(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         context.withStyledAttributes(
             set = attrs,
@@ -120,14 +135,18 @@ class CommentCard @JvmOverloads constructor(
             cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT ||
             cardCommentStatus == CommentCardStatus.RE_TRYING_TO_POST ||
             cardCommentStatus == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY ||
-            cardCommentStatus == CommentCardStatus.TRYING_TO_POST
+            cardCommentStatus == CommentCardStatus.TRYING_TO_POST ||
+            cardCommentStatus == CommentCardStatus.CANCELED_PLEDGE_COMMENT
 
-        if (cardCommentStatus == CommentCardStatus.DELETED_COMMENT) {
+        if (cardCommentStatus == CommentCardStatus.DELETED_COMMENT || cardCommentStatus == CommentCardStatus.CANCELED_PLEDGE_MESSAGE) {
             binding.commentBody.isInvisible = true
         }
 
         binding.commentDeletedMessageGroup.isVisible =
             cardCommentStatus == CommentCardStatus.DELETED_COMMENT
+
+        binding.canceledPledgeMessage.isVisible =
+            cardCommentStatus == CommentCardStatus.CANCELED_PLEDGE_MESSAGE
 
         if (shouldShowReplyButton(cardCommentStatus)) {
             setReplyButtonVisibility(true)
@@ -198,6 +217,11 @@ class CommentCard @JvmOverloads constructor(
         bindFlaggedMessage()
     }
 
+    fun setCancelPledgeMessage(message: String) {
+        binding.canceledPledgeMessage.text = message
+        bindCancelPledgeMessage()
+    }
+
     fun setCommentCardClickedListener(onCommentCardClickedListener: OnCommentCardClickedListener?) {
         this.onCommentCardClickedListener = onCommentCardClickedListener
     }
@@ -213,6 +237,7 @@ interface OnCommentCardClickedListener {
     fun onFlagButtonClicked(view: View)
     fun onViewRepliesButtonClicked(view: View)
     fun onCommentGuideLinesClicked(view: View)
+    fun onShowCommentClicked(view: View)
 }
 
 enum class CommentCardStatus(val commentCardStatus: Int) {
@@ -222,5 +247,7 @@ enum class CommentCardStatus(val commentCardStatus: Int) {
     DELETED_COMMENT(3), // Deleted comment
     RE_TRYING_TO_POST(4), // trying to post comment
     POSTING_COMMENT_COMPLETED_SUCCESSFULLY(5), // trying to post comment,
-    TRYING_TO_POST(6), // comments without reply view
+    TRYING_TO_POST(6), // comments without reply view,
+    CANCELED_PLEDGE_MESSAGE(7),
+    CANCELED_PLEDGE_COMMENT(8),
 }

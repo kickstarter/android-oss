@@ -15,6 +15,8 @@ import com.kickstarter.models.Comment
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
 import com.kickstarter.models.User
+import com.kickstarter.models.extensions.cardStatus
+import com.kickstarter.models.extensions.updateCanceledPledgeComment
 import com.kickstarter.models.extensions.updateCommentAfterSuccessfulPost
 import com.kickstarter.models.extensions.updateCommentFailedToPost
 import com.kickstarter.services.ApiClientType
@@ -44,6 +46,7 @@ interface CommentsViewModel {
         /** Will be called with the successful response when calling the `postComment` Mutation **/
         fun refreshComment(comment: Comment)
         fun refreshCommentCardInCaseFailedPosted(comment: Comment)
+        fun onShowCanceledPledgeComment(comment: Comment)
     }
 
     interface Outputs {
@@ -83,6 +86,7 @@ interface CommentsViewModel {
         private val onReplyClicked = PublishSubject.create<Pair<Comment, Boolean>>()
         private val checkIfThereAnyPendingComments = PublishSubject.create<Boolean>()
         private val failedCommentCardToRefresh = PublishSubject.create<Comment>()
+        private val showCanceledPledgeComment = PublishSubject.create<Comment>()
 
         private val closeCommentsPage = BehaviorSubject.create<Void>()
         private val currentUserAvatar = BehaviorSubject.create<String?>()
@@ -247,18 +251,16 @@ interface CommentsViewModel {
                 .compose(bindToLifecycle())
                 .subscribe { this.closeCommentsPage.onNext(it) }
 
-            this.onReplyClicked
-                .compose(combineLatestPair(initialProject))
+            commentsList
+                .compose(takePairWhen(onReplyClicked))
                 .compose(bindToLifecycle())
-                .subscribe {
+                .subscribe { pair ->
+
+                    val cardData = pair.first.first { it.comment?.id() == pair.second.first.id() }
                     this.startThreadActivity.onNext(
                         Pair(
-                            CommentCardData.builder()
-                                .comment(it.first.first)
-                                .commentableId(commentableId)
-                                .project(it.second)
-                                .build(),
-                            it.first.second
+                            cardData,
+                            pair.second.second
                         )
                     )
                 }
@@ -287,6 +289,17 @@ interface CommentsViewModel {
                 .compose(takePairWhen(this.failedCommentCardToRefresh))
                 .map {
                     it.second.updateCommentFailedToPost(it.first)
+                }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.commentsList.onNext(it)
+                }
+
+            this.commentsList
+                .compose(takePairWhen(this.showCanceledPledgeComment))
+                .map {
+                    it.second.updateCanceledPledgeComment(it.first)
                 }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
@@ -397,6 +410,7 @@ interface CommentsViewModel {
                 CommentCardData.builder()
                     .comment(comment)
                     .project(it.second)
+                    .commentCardState(comment.cardStatus())
                     .commentableId(it.first.commentableId)
                     .build()
             }
@@ -410,6 +424,7 @@ interface CommentsViewModel {
                 .cursor("")
                 .deleted(false)
                 .id(-1)
+                .authorCanceledPledge(false)
                 .repliesCount(0)
                 .author(it.first)
                 .build()
@@ -433,6 +448,8 @@ interface CommentsViewModel {
         override fun checkIfThereAnyPendingComments(isBackAction: Boolean) = checkIfThereAnyPendingComments.onNext(isBackAction)
         override fun refreshCommentCardInCaseFailedPosted(comment: Comment) =
             this.failedCommentCardToRefresh.onNext(comment)
+        override fun onShowCanceledPledgeComment(comment: Comment) =
+            this.showCanceledPledgeComment.onNext(comment)
         // - Outputs
         override fun closeCommentsPage(): Observable<Void> = closeCommentsPage
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar

@@ -824,6 +824,7 @@ private fun createCommentObject(commentFr: fragment.Comment?): Comment {
         .cursor("")
         .createdAt(commentFr?.createdAt())
         .deleted(commentFr?.deleted())
+        .authorCanceledPledge(commentFr?.authorCanceledPledge())
         .parentId(decodeRelayId(commentFr?.parentId()) ?: -1)
         .build()
 }

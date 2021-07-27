@@ -5,14 +5,14 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.kickstarter.R
 import com.kickstarter.databinding.ItemRootCommentCardBinding
-import com.kickstarter.models.Comment
+import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.ui.viewholders.RootCommentViewHolder
 
 /** Replies Root comment cell adapter **/
 class RootCommentAdapter : KSListAdapter() {
 
-    fun updateRootCommentCell(rootComment: Comment) {
+    fun updateRootCommentCell(rootComment: CommentCardData) {
         addSection(listOf(rootComment))
         submitList(items())
     }

@@ -69,6 +69,11 @@ class RootCommentViewHolder(
             .subscribe {
                 binding.commentsCardView.setCommentCardStatus(it)
             }
+
+        this.vm.outputs.authorBadge()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.commentsCardView.setCommentBadge(it)}
     }
 
     override fun bindData(data: Any?) {

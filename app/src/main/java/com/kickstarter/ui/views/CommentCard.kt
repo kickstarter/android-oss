@@ -110,6 +110,18 @@ class CommentCard @JvmOverloads constructor(
                 setReplyButtonVisibility(it)
             }
 
+            getInt(R.styleable.CommentCardView_is_comment_you_badge_visible, 0).also {
+                setCommentBadge(CommentCardBadge.NO_BADGE)
+            }
+
+            getInt(R.styleable.CommentCardView_is_comment_reply_button_visible, 0).also {
+                setCommentBadge(CommentCardBadge.NO_BADGE)
+            }
+
+            getInt(R.styleable.CommentCardView_is_comment_reply_button_visible, 0).also {
+                setCommentBadge(CommentCardBadge.NO_BADGE)
+            }
+
             getInt(R.styleable.CommentCardView_comment_card_status, 0).also { attrValue ->
                 CommentCardStatus.values().firstOrNull {
                     it.commentCardStatus == attrValue
@@ -229,6 +241,27 @@ class CommentCard @JvmOverloads constructor(
     fun setAvatarUrl(url: String?) {
         binding.avatar.loadCircleImage(url)
     }
+
+    fun setCommentBadge(badge: CommentCardBadge?) {
+        when (badge) {
+            CommentCardBadge.NO_BADGE -> setBadgesVisibility(false, false, false)
+            CommentCardBadge.YOU -> setBadgesVisibility(true, false, false)
+            CommentCardBadge.SUPERBACKER -> setBadgesVisibility(false, true, false)
+            CommentCardBadge.CREATOR -> setBadgesVisibility(false, false, true, context.getString(R.string.Creator))
+            CommentCardBadge.COLLABORATOR -> setBadgesVisibility(false, false, true, context.getString(R.string.Collaborator))
+        }
+    }
+
+    private fun setBadgesVisibility(
+        isYouBadgeVisible: Boolean,
+        isSuperBackerBadgeVisible: Boolean,
+        isCreatorBadgeVisible: Boolean,
+        creatorBadgeText: String? = null) {
+            binding.youBadge.isVisible = isYouBadgeVisible
+            binding.superbackerBadge.isVisible = isSuperBackerBadgeVisible
+            binding.ownerBadge.isVisible = isCreatorBadgeVisible
+            binding.ownerBadge.text = creatorBadgeText ?: ""
+    }
 }
 
 interface OnCommentCardClickedListener {
@@ -238,6 +271,14 @@ interface OnCommentCardClickedListener {
     fun onViewRepliesButtonClicked(view: View)
     fun onCommentGuideLinesClicked(view: View)
     fun onShowCommentClicked(view: View)
+}
+
+enum class CommentCardBadge(val commentCardBadge: Int) {
+    NO_BADGE(0),
+    YOU(1),
+    CREATOR(2),
+    SUPERBACKER(3),
+    COLLABORATOR(4),
 }
 
 enum class CommentCardStatus(val commentCardStatus: Int) {

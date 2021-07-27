@@ -118,6 +118,11 @@ class CommentCardViewHolder(
             .compose(Transformers.observeForUI())
             .subscribe { this.delegate.onCommentPostedFailed(it) }
 
+        this.vm.outputs.authorBadge()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {binding.commentsCardView.setCommentBadge(it)}
+
         binding.commentsCardView.setCommentCardClickedListener(object : OnCommentCardClickedListener {
             override fun onRetryViewClicked(view: View) {
                 vm.inputs.onRetryViewClicked()

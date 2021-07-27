@@ -1795,4 +1795,6 @@ saved</string>
   <string name="via_custom" formatted="false">via custom</string>
   <string name="via_external" formatted="false">via external</string>
   <string name="via_kickstarter" formatted="false">via Kickstarter</string>
+  <string name="you" formatted="false">You</string>
+
 </resources>

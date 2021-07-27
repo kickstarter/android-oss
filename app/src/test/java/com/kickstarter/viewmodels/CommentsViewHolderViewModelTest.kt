@@ -12,6 +12,7 @@ import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Comment
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.data.CommentCardData
+import com.kickstarter.ui.views.CommentCardBadge
 import com.kickstarter.ui.views.CommentCardStatus
 import org.joda.time.DateTime
 import org.junit.Test
@@ -19,6 +20,7 @@ import rx.Observable
 import rx.observers.TestSubscriber
 import rx.schedulers.TestScheduler
 import rx.subjects.BehaviorSubject
+import type.CommentBadge
 import java.util.concurrent.TimeUnit
 
 class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
@@ -39,6 +41,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     private val commentSuccessfullyPosted = TestSubscriber<Comment>()
     private val testScheduler = TestScheduler()
     private val isCommentReply = TestSubscriber<Void>()
+    private val authorBadge =TestSubscriber<CommentCardBadge?>()
 
     private val createdAt = DateTime.now()
     private val currentUser = UserFactory.user().toBuilder().id(1).avatar(
@@ -61,6 +64,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.commentRepliesCount().subscribe(this.repliesCount)
         this.vm.outputs.isSuccessfullyPosted().subscribe(this.commentSuccessfullyPosted)
         this.vm.isCommentReply().subscribe(this.isCommentReply)
+        this.vm.outputs.authorBadge().subscribe(this.authorBadge)
     }
 
     @Test
@@ -623,5 +627,112 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(commentCardData.toBuilder().commentCardState(CommentCardStatus.CANCELED_PLEDGE_COMMENT.commentCardStatus).build())
 
         this.commentCardStatus.assertValues(CommentCardStatus.CANCELED_PLEDGE_MESSAGE, CommentCardStatus.CANCELED_PLEDGE_COMMENT)
+    }
+
+    @Test
+    fun commentBadge_whenYou_shouldEmitYou() {
+        val authorBadges = listOf<String>(CommentBadge.SUPERBACKER.rawValue())
+        val author = UserFactory.user().toBuilder().id(1).build()
+        val currentUser = UserFactory.user().toBuilder().id(1).build()
+        val environment = environment().toBuilder()
+            .currentUser(MockCurrentUser(currentUser))
+            .build()
+        setUpEnvironment(environment)
+
+        val comment = CommentFactory.commentFromCurrentUser(author, authorBadges)
+        val commentCardData = CommentCardData.builder()
+            .comment(comment)
+            .project(ProjectFactory.initialProject())
+            .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
+            .build()
+
+        this.vm.inputs.configureWith(commentCardData)
+
+        this.authorBadge.assertValue(CommentCardBadge.YOU)
+    }
+
+    @Test
+    fun commentBadge_whenCreator_shouldEmitCreator() {
+        val currentUser = UserFactory.user().toBuilder().id(1).build()
+        val environment = environment().toBuilder()
+            .currentUser(MockCurrentUser(currentUser))
+            .build()
+
+        setUpEnvironment(environment)
+        val authorBadges = listOf<String>(CommentBadge.SUPERBACKER.rawValue(), CommentBadge.CREATOR.rawValue())
+        val author = UserFactory.user().toBuilder().id(2).build()
+        val comment = CommentFactory.commentFromCurrentUser(author, authorBadges)
+        val commentCardData = CommentCardData.builder()
+            .comment(comment)
+            .project(ProjectFactory.initialProject())
+            .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
+            .build()
+
+        this.vm.inputs.configureWith(commentCardData)
+
+        this.authorBadge.assertValue(CommentCardBadge.CREATOR)
+    }
+
+    @Test
+    fun commentBadge_whenSuperBacker_shouldEmitSuperbacker() {
+        val currentUser = UserFactory.user().toBuilder().id(1).build()
+        val environment = environment().toBuilder()
+            .currentUser(MockCurrentUser(currentUser))
+            .build()
+
+        setUpEnvironment(environment)
+        val authorBadges = listOf<String>(CommentBadge.SUPERBACKER.rawValue())
+        val author = UserFactory.user().toBuilder().id(2).build()
+        val comment = CommentFactory.commentFromCurrentUser(author, authorBadges)
+        val commentCardData = CommentCardData.builder()
+            .comment(comment)
+            .project(ProjectFactory.initialProject())
+            .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
+            .build()
+
+        this.vm.inputs.configureWith(commentCardData)
+
+        this.authorBadge.assertValue(CommentCardBadge.SUPERBACKER)
+    }
+
+    @Test
+    fun commentBadge_whenNoBadge_shouldEmitNoBadge() {
+        val currentUser = UserFactory.user().toBuilder().id(1).build()
+        val environment = environment().toBuilder()
+            .currentUser(MockCurrentUser(currentUser))
+            .build()
+
+        setUpEnvironment(environment)
+        val authorBadges = listOf<String>()
+        val author = UserFactory.user().toBuilder().id(2).build()
+        val comment = CommentFactory.commentFromCurrentUser(author, authorBadges)
+        val commentCardData = CommentCardData.builder()
+            .comment(comment)
+            .project(ProjectFactory.initialProject())
+            .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
+            .build()
+
+        this.vm.inputs.configureWith(commentCardData)
+
+        this.authorBadge.assertValue(CommentCardBadge.NO_BADGE)
+    }
+
+
+    @Test
+    fun commentBadge_whenNotLoggedInAndCommentIsFromCreator_shouldEmitCreator(){
+        setUpEnvironment(environment())
+
+        val authorBadges = listOf<String>(CommentBadge.SUPERBACKER.rawValue(), CommentBadge.CREATOR.rawValue())
+        val author = UserFactory.user().toBuilder().id(2).build()
+        val comment = CommentFactory.commentFromCurrentUser(author, authorBadges)
+        val commentCardData = CommentCardData.builder()
+            .comment(comment)
+            .project(ProjectFactory.initialProject())
+            .commentCardState(CommentCardStatus.COMMENT_WITH_REPLIES.commentCardStatus)
+            .build()
+
+        this.vm.inputs.configureWith(commentCardData)
+
+        this.authorBadge.assertValue(CommentCardBadge.CREATOR)
     }
 }

@@ -60,7 +60,6 @@ fun Comment.updateCommentFailedToPost(
     }
 
     return listOfComments
-
 }
 
 fun Comment.assignAuthorBadge(user: User? = null): CommentCardBadge {

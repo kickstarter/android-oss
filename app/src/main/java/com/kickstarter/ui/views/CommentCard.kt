@@ -256,11 +256,12 @@ class CommentCard @JvmOverloads constructor(
         isYouBadgeVisible: Boolean,
         isSuperBackerBadgeVisible: Boolean,
         isCreatorBadgeVisible: Boolean,
-        creatorBadgeText: String? = null) {
-            binding.youBadge.isVisible = isYouBadgeVisible
-            binding.superbackerBadge.isVisible = isSuperBackerBadgeVisible
-            binding.ownerBadge.isVisible = isCreatorBadgeVisible
-            binding.ownerBadge.text = creatorBadgeText ?: ""
+        creatorBadgeText: String? = null
+    ) {
+        binding.youBadge.isVisible = isYouBadgeVisible
+        binding.superbackerBadge.isVisible = isSuperBackerBadgeVisible
+        binding.ownerBadge.isVisible = isCreatorBadgeVisible
+        binding.ownerBadge.text = creatorBadgeText ?: ""
     }
 }
 

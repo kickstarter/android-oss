@@ -24,7 +24,6 @@ import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
-import type.CommentBadge
 import java.util.concurrent.TimeUnit
 
 interface CommentsViewHolderViewModel {
@@ -185,10 +184,12 @@ interface CommentsViewHolderViewModel {
                 .withLatestFrom(
                     Observable.merge(
                         currentUser.loggedInUser(),
-                        currentUser.loggedOutUser())) {comment, user -> Pair(comment, user)}
-                .map{it.first.assignAuthorBadge(it.second)}
+                        currentUser.loggedOutUser()
+                    )
+                ) { comment, user -> Pair(comment, user) }
+                .map { it.first.assignAuthorBadge(it.second) }
                 .compose(bindToLifecycle())
-                .subscribe{ this.authorBadge.onNext(it) }
+                .subscribe { this.authorBadge.onNext(it) }
         }
 
         /**

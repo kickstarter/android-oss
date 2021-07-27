@@ -95,7 +95,6 @@ class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
         this.authorBadge.assertValue(CommentCardBadge.SUPERBACKER)
     }
 
-
     @Test
     fun commentBadge_whenCollaborator_shouldEmitCollaborator() {
         val currentUser = UserFactory.user().toBuilder().id(1).build()
@@ -116,7 +115,6 @@ class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.authorBadge.assertValue(CommentCardBadge.COLLABORATOR)
     }
-
 
     @Test
     fun commentBadge_whenNoBadge_shouldEmitNoBadge() {
@@ -140,7 +138,7 @@ class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun commentBadge_whenNotLoggedInAndCommentIsFromCreator_shouldEmitCreator(){
+    fun commentBadge_whenNotLoggedInAndCommentIsFromCreator_shouldEmitCreator() {
         setupEnvironment(environment())
         val authorBadges = listOf<String>(CommentBadge.SUPERBACKER.rawValue(), CommentBadge.CREATOR.rawValue())
         val author = UserFactory.user().toBuilder().id(2).build()

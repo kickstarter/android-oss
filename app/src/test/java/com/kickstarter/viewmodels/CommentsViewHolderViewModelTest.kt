@@ -41,7 +41,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     private val commentSuccessfullyPosted = TestSubscriber<Comment>()
     private val testScheduler = TestScheduler()
     private val isCommentReply = TestSubscriber<Void>()
-    private val authorBadge =TestSubscriber<CommentCardBadge?>()
+    private val authorBadge = TestSubscriber<CommentCardBadge?>()
 
     private val createdAt = DateTime.now()
     private val currentUser = UserFactory.user().toBuilder().id(1).avatar(
@@ -717,9 +717,8 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.authorBadge.assertValue(CommentCardBadge.NO_BADGE)
     }
 
-
     @Test
-    fun commentBadge_whenNotLoggedInAndCommentIsFromCreator_shouldEmitCreator(){
+    fun commentBadge_whenNotLoggedInAndCommentIsFromCreator_shouldEmitCreator() {
         setUpEnvironment(environment())
 
         val authorBadges = listOf<String>(CommentBadge.SUPERBACKER.rawValue(), CommentBadge.CREATOR.rawValue())

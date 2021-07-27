@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo $ANDROID_HOME/tools/android list avd
 if $ANDROID_HOME/tools/android list avd | grep -q Pixel_3a_API_30; then
     echo "There is an existing an emulator to run screenshot tests"
     exit 0;

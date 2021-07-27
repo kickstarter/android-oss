@@ -339,14 +339,14 @@ interface ThreadViewModel {
                     this.initialError.onNext(it)
                 }
 
-            this.internalError
-                .compose(Transformers.combineLatestPair(onCommentReplies))
+            this.onCommentReplies
+                .compose(Transformers.takePairWhen(internalError))
                 .filter {
-                    it.second.first.isNotEmpty()
+                    it.first.first.isNotEmpty()
                 }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.paginationError.onNext(it.first)
+                    this.paginationError.onNext(it.second)
                 }
         }
 

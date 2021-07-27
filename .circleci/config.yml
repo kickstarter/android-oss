@@ -21,6 +21,9 @@ jobs:
             - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
             - v5-android-
       - run: make bootstrap-circle
+      - run:
+            name: start the emulator
+            command: ./script/emulator/start_emulator.sh
       - run: ./gradlew dependencies
       - save_cache:
           key: v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
@@ -70,9 +73,6 @@ jobs:
       - run:
           name: push to internal branch
           command: make internal
-      - run:
-          name: start the emulator
-          command: ./script/emulator/start_emulator.sh
 
   create_release:
     <<: *base_job

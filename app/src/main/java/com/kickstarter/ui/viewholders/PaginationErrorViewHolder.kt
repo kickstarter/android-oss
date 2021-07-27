@@ -25,10 +25,13 @@ class PaginationErrorViewHolder(
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                binding.errorPaginationRetryButton.visibility = it.toVisibility()
+                binding.errorPaginationRetryButtonGroup.visibility = it.toVisibility()
             }
 
-        binding.errorPaginationRetryButton.setOnClickListener {
+        binding.retryButton.setOnClickListener {
+            viewListener.retryCallback()
+        }
+        binding.retryIcon.setOnClickListener {
             viewListener.retryCallback()
         }
 

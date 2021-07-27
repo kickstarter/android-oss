@@ -43,6 +43,9 @@ interface CommentsViewHolderViewModel {
 
         /** Configure the view model with the [Comment]. */
         fun configureWith(commentCardData: CommentCardData)
+
+        /** Show cancelled comment pledge */
+        fun onShowCommentClicked()
     }
 
     interface Outputs {
@@ -93,6 +96,9 @@ interface CommentsViewHolderViewModel {
 
         /** Emits when the execution of the post mutation is error, it will be used to update the main list state for this comment**/
         fun isFailedToPost(): Observable<Comment>
+
+        /** Emits the current [Comment] when show comment for canceled pledge. */
+        fun showCanceledComment(): Observable<Comment>
     }
 
     class ViewModel(environment: Environment) :
@@ -103,6 +109,7 @@ interface CommentsViewHolderViewModel {
         private val onReplyButtonClicked = PublishSubject.create<Void>()
         private val onFlagButtonClicked = PublishSubject.create<Void>()
         private val onViewCommentRepliesButtonClicked = PublishSubject.create<Void>()
+        private val onShowCommentClicked = PublishSubject.create<Void>()
 
         private val commentCardStatus = BehaviorSubject.create<CommentCardStatus>()
         private val isReplyButtonVisible = BehaviorSubject.create<Boolean>()
@@ -120,6 +127,7 @@ interface CommentsViewHolderViewModel {
         private val internalError = BehaviorSubject.create<Throwable>()
         private val postedSuccessfully = BehaviorSubject.create<Comment>()
         private val failedToPosted = BehaviorSubject.create<Comment>()
+        private val showCanceledComment = PublishSubject.create<Comment>()
 
         private val isCommentReply = BehaviorSubject.create<Void>()
 
@@ -267,6 +275,11 @@ interface CommentsViewHolderViewModel {
                 .compose(takeWhen(this.onFlagButtonClicked))
                 .compose(bindToLifecycle())
                 .subscribe(this.flagComment)
+
+            comment
+                .compose(takeWhen(this.onShowCommentClicked))
+                .compose(bindToLifecycle())
+                .subscribe(this.showCanceledComment)
         }
 
         /**
@@ -394,12 +407,20 @@ interface CommentsViewHolderViewModel {
          */
         private fun cardStatus(commentCardData: CommentCardData) = when {
             commentCardData.comment?.deleted() ?: false -> CommentCardStatus.DELETED_COMMENT
+            commentCardData.comment?.authorCanceledPledge() ?: false -> checkCanceledPledgeCommentStatus(commentCardData)
             (commentCardData.comment?.repliesCount() ?: 0 != 0) -> CommentCardStatus.COMMENT_WITH_REPLIES
-            else -> CommentCardStatus.values()
-                .firstOrNull { it.commentCardStatus == commentCardData.commentCardState }
+            else -> CommentCardStatus.values().firstOrNull {
+                it.commentCardStatus == commentCardData.commentCardState
+            }
         }.also {
             this.isCommentEnableThreads.onNext(optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_ENABLE_THREADS))
         }
+
+        private fun checkCanceledPledgeCommentStatus(commentCardData: CommentCardData): CommentCardStatus =
+            if (commentCardData.commentCardState != CommentCardStatus.CANCELED_PLEDGE_COMMENT.commentCardStatus)
+                CommentCardStatus.CANCELED_PLEDGE_MESSAGE
+            else
+                CommentCardStatus.CANCELED_PLEDGE_COMMENT
 
         override fun configureWith(commentCardData: CommentCardData) =
             this.commentInput.onNext(commentCardData)
@@ -414,6 +435,8 @@ interface CommentsViewHolderViewModel {
             this.onViewCommentRepliesButtonClicked.onNext(null)
 
         override fun onFlagButtonClicked() = this.onFlagButtonClicked.onNext(null)
+
+        override fun onShowCommentClicked() = this.onShowCommentClicked.onNext(null)
 
         override fun commentCardStatus(): Observable<CommentCardStatus> = this.commentCardStatus
 
@@ -446,5 +469,7 @@ interface CommentsViewHolderViewModel {
         override fun isSuccessfullyPosted(): Observable<Comment> = this.postedSuccessfully
 
         override fun isFailedToPost(): Observable<Comment> = this.failedToPosted
+
+        override fun showCanceledComment(): Observable<Comment> = this.showCanceledComment
     }
 }

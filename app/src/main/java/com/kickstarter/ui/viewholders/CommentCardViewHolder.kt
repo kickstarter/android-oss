@@ -25,6 +25,7 @@ class CommentCardViewHolder(
         fun onCommentRepliesClicked(comment: Comment)
         fun onCommentPostedSuccessFully(comment: Comment)
         fun onCommentPostedFailed(comment: Comment)
+        fun onShowCommentClicked(comment: Comment)
     }
 
     private val vm: CommentsViewHolderViewModel.ViewModel = CommentsViewHolderViewModel.ViewModel(environment())
@@ -102,6 +103,11 @@ class CommentCardViewHolder(
             .compose(Transformers.observeForUI())
             .subscribe { this.delegate.onFlagButtonClicked(it) }
 
+        this.vm.outputs.showCanceledComment()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { this.delegate.onShowCommentClicked(it) }
+
         this.vm.outputs.isSuccessfullyPosted()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
@@ -132,11 +138,20 @@ class CommentCardViewHolder(
             override fun onCommentGuideLinesClicked(view: View) {
                 vm.inputs.onCommentGuideLinesClicked()
             }
+
+            override fun onShowCommentClicked(view: View) {
+                vm.inputs.onShowCommentClicked()
+            }
         })
 
         binding.commentsCardView.setFlaggedMessage(
             context().getString(R.string.This_comment_has_been_removed_by_Kickstarter) +
                 context().getString(R.string.Learn_more_about_comment_guidelines)
+        )
+
+        binding.commentsCardView.setCancelPledgeMessage(
+            context().getString(R.string.this_person_canceled_pledge) +
+                context().getString(R.string.show_comment)
         )
 
         if (isReply) {

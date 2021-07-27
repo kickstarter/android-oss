@@ -16,6 +16,7 @@ public abstract class Comment implements Parcelable, Relay{
   public abstract String body();
   public abstract DateTime createdAt();
   public abstract Boolean deleted();
+  public abstract Boolean authorCanceledPledge();
   public abstract String cursor();
   public abstract Integer repliesCount();
   public abstract List<String> authorBadges();
@@ -31,6 +32,7 @@ public abstract class Comment implements Parcelable, Relay{
     public abstract Builder body(String __);
     public abstract Builder createdAt(DateTime __);
     public abstract Builder deleted(Boolean __);
+    public abstract Builder authorCanceledPledge(Boolean __);
     public abstract Builder id(long __);
     public abstract Builder parentId(long __);
     public abstract Comment build();
@@ -53,6 +55,7 @@ public abstract class Comment implements Parcelable, Relay{
               Objects.equals(this.author(), other.author()) &&
               Objects.equals(this.cursor(), other.cursor()) &&
               Objects.equals(this.deleted(), other.deleted()) &&
+              Objects.equals(this.authorCanceledPledge(), other.authorCanceledPledge()) &&
               Objects.equals(this.createdAt(), other.createdAt()) &&
               Objects.equals(this.parentId(), other.parentId());
     }

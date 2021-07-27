@@ -13,6 +13,7 @@ class CommentCardDataFactory {
         fun commentCardData(): CommentCardData = CommentCardData.builder()
             .comment(CommentFactory.comment())
             .project(ProjectFactory.project())
+            .commentCardState(0)
             .commentableId(null)
             .build()
     }

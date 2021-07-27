@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit
 class ThreadViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: ThreadViewModel.ViewModel
-    private val getComment = TestSubscriber<Comment>()
+    private val getComment = TestSubscriber<CommentCardData>()
     private val focusCompose = TestSubscriber<Boolean>()
     private val onReplies = TestSubscriber<Pair<List<CommentCardData>, Boolean>>()
 
@@ -61,11 +61,11 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
 
         val commentCardData = CommentCardDataFactory.commentCardData()
 
-        this.vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, CommentCardDataFactory.commentCardData()))
-        getComment.assertValue(commentCardData.comment)
+        this.vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, commentCardData))
+        getComment.assertValue(commentCardData)
 
         this.vm.intent(Intent().putExtra("Some other Key", commentCardData))
-        getComment.assertValue(commentCardData.comment)
+        getComment.assertValue(commentCardData)
     }
 
     @Test
@@ -647,5 +647,65 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         vm.inputs.checkIfThereAnyPendingComments()
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
         this.hasPendingComments.assertValues(false, true, true)
+    }
+
+    @Test
+    fun testComments_onShowCanceledPledgeComment() {
+        val currentUser = UserFactory.user()
+            .toBuilder()
+            .id(1)
+            .build()
+
+        val comment1 = CommentFactory.commentWithCanceledPledgeAuthor(currentUser).toBuilder().id(1).body("comment1").build()
+
+        val commentEnvelope = CommentEnvelopeFactory.commentsEnvelope().toBuilder()
+            .comments(listOf(comment1))
+            .build()
+
+        val testScheduler = TestScheduler()
+
+        val env = environment().toBuilder()
+            .apolloClient(object : MockApolloClient() {
+                override fun getRepliesForComment(
+                    comment: Comment,
+                    cursor: String?,
+                    pageSize: Int
+                ): Observable<CommentEnvelope> {
+                    return Observable.just(commentEnvelope)
+                }
+            })
+            .currentUser(MockCurrentUser(currentUser))
+            .scheduler(testScheduler)
+            .build()
+
+        val commentCardData1 = CommentCardData.builder()
+            .comment(comment1)
+            .commentCardState(CommentCardStatus.CANCELED_PLEDGE_MESSAGE.commentCardStatus)
+            .build()
+
+        val commentCardData2 = CommentCardData.builder()
+            .comment(comment1)
+            .commentCardState(CommentCardStatus.CANCELED_PLEDGE_COMMENT.commentCardStatus)
+            .build()
+
+        val vm = ThreadViewModel.ViewModel(env)
+        // Start the view model with a backed project and comment.
+        vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, CommentCardDataFactory.commentCardData()))
+        vm.outputs.onCommentReplies().subscribe(onReplies)
+
+        onReplies.assertValueCount(1)
+        vm.outputs.onCommentReplies().take(0).subscribe {
+            val newList = it.first
+            assertTrue(newList[0].comment?.body() == commentCardData1.comment?.body())
+            assertTrue(newList[0].commentCardState == commentCardData1.commentCardState)
+        }
+
+        vm.inputs.onShowCanceledPledgeComment(comment1)
+
+        vm.outputs.onCommentReplies().take(1).subscribe {
+            val newList = it.first
+            assertTrue(newList[0].comment?.body() == commentCardData2.comment?.body())
+            assertTrue(newList[0].commentCardState == commentCardData2.commentCardState)
+        }
     }
 }

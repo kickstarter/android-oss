@@ -38,8 +38,6 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     private val shouldShowPaginatedCell = TestSubscriber.create<Boolean>()
     private val openCommentGuideLines = TestSubscriber<Void>()
     private val startThreadActivity = BehaviorSubject.create<Pair<CommentCardData, Boolean>>()
-    private val hasPendingComments = TestSubscriber<Pair<Boolean, Boolean>>()
-    private val isFetching = TestSubscriber<Boolean>()
 
     @Test
     fun testCommentsViewModel_whenUserLoggedInAndBacking_shouldShowEnabledComposer() {

@@ -189,7 +189,7 @@ class ThreadActivity :
         this.showAlertDialog(
             getString(R.string.Your_comment_wasnt_posted),
             getString(R.string.You_will_lose_the_comment),
-            getString(R.string.cancel),
+            getString(R.string.Cancel),
             getString(R.string.leave_page),
             false,
             positiveAction = {
@@ -258,6 +258,10 @@ class ThreadActivity :
 
     override fun retryCallback() {
         viewModel.inputs.reloadRepliesPage()
+    }
+
+    override fun onShowCommentClicked(comment: Comment) {
+        viewModel.inputs.onShowCanceledPledgeComment(comment)
     }
 
     override fun onDestroy() {

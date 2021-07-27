@@ -13,6 +13,7 @@ import com.kickstarter.libs.utils.extensions.toCommentCardList
 import com.kickstarter.models.Comment
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
+import com.kickstarter.models.extensions.updateCanceledPledgeComment
 import com.kickstarter.models.extensions.updateCommentAfterSuccessfulPost
 import com.kickstarter.models.extensions.updateCommentFailedToPost
 import com.kickstarter.services.ApolloClientType
@@ -38,11 +39,12 @@ interface ThreadViewModel {
         fun refreshCommentCardInCaseSuccessPosted(comment: Comment)
         fun checkIfThereAnyPendingComments()
         fun backPressed()
+        fun onShowCanceledPledgeComment(comment: Comment)
     }
 
     interface Outputs {
         /** The anchored root comment */
-        fun getRootComment(): Observable<Comment>
+        fun getRootComment(): Observable<CommentCardData>
 
         /** get comment replies **/
         fun onCommentReplies(): Observable<Pair<List<CommentCardData>, Boolean>>
@@ -82,8 +84,9 @@ interface ThreadViewModel {
         private val successfullyPostedCommentCardToRefresh = PublishSubject.create<Comment>()
         private val checkIfThereAnyPendingComments = PublishSubject.create<Void>()
         private val backPressed = PublishSubject.create<Void>()
+        private val showCanceledPledgeComment = PublishSubject.create<Comment>()
 
-        private val rootComment = BehaviorSubject.create<Comment>()
+        private val rootComment = BehaviorSubject.create<CommentCardData>()
         private val focusOnCompose = BehaviorSubject.create<Boolean>()
         private val currentUserAvatar = BehaviorSubject.create<String?>()
         private val replyComposerStatus = BehaviorSubject.create<CommentComposerStatus>()
@@ -177,7 +180,7 @@ interface ThreadViewModel {
             commentData
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.rootComment.onNext(it.comment)
+                    this.rootComment.onNext(it)
                 }
 
             val loggedInUser = this.currentUser.loggedInUser()
@@ -252,6 +255,17 @@ interface ThreadViewModel {
                 .compose(Transformers.combineLatestPair(this.successfullyPostedCommentCardToRefresh))
                 .map {
                     Pair(it.second.updateCommentAfterSuccessfulPost(it.first.first), it.first.second)
+                }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.onCommentReplies.onNext(it)
+                }
+
+            this.onCommentReplies
+                .compose(Transformers.takePairWhen(this.showCanceledPledgeComment))
+                .map {
+                    Pair(it.second.updateCanceledPledgeComment(it.first.first), it.first.second)
                 }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
@@ -361,6 +375,7 @@ interface ThreadViewModel {
                 .deleted(false)
                 .id(-1)
                 .repliesCount(0)
+                .authorCanceledPledge(false)
                 .author(it.first.second)
                 .build()
         }
@@ -387,7 +402,7 @@ interface ThreadViewModel {
         override fun refreshCommentCardInCaseSuccessPosted(comment: Comment) =
             this.successfullyPostedCommentCardToRefresh.onNext(comment)
 
-        override fun getRootComment(): Observable<Comment> = this.rootComment
+        override fun getRootComment(): Observable<CommentCardData> = this.rootComment
         override fun onCommentReplies(): Observable<Pair<List<CommentCardData>, Boolean>> =
             this.onCommentReplies
 
@@ -408,6 +423,8 @@ interface ThreadViewModel {
         override fun showCommentGuideLinesLink(): Observable<Void> = showGuideLinesLink
         override fun checkIfThereAnyPendingComments() = checkIfThereAnyPendingComments.onNext(null)
         override fun backPressed() = backPressed.onNext(null)
+        override fun onShowCanceledPledgeComment(comment: Comment) =
+            this.showCanceledPledgeComment.onNext(comment)
 
         override fun shouldShowPaginationErrorUI(): Observable<Boolean> = this.displayPaginationError
         override fun initialLoadCommentsError(): Observable<Boolean> = this.initialLoadCommentsError

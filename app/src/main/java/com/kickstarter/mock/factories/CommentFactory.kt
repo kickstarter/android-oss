@@ -21,6 +21,22 @@ class CommentFactory {
                 .cursor("")
                 .authorBadges(listOf())
                 .deleted(false)
+                .authorCanceledPledge(false)
+                .createdAt(DateTime.now())
+                .build()
+        }
+
+        fun commentWithCanceledPledgeAuthor(user: User): Comment {
+            return Comment.builder()
+                .id(-1)
+                .author(user)
+                .body("Some text here")
+                .parentId(-1)
+                .repliesCount(0)
+                .cursor("")
+                .authorBadges(listOf())
+                .deleted(false)
+                .authorCanceledPledge(true)
                 .createdAt(DateTime.now())
                 .build()
         }
@@ -44,6 +60,7 @@ class CommentFactory {
                 .repliesCount(repliesCount)
                 .cursor("")
                 .authorBadges(listOf())
+                .authorCanceledPledge(false)
                 .deleted(isDelete)
                 .createdAt(DateTime.parse("2021-01-01T00:00:00Z"))
                 .body(body)
@@ -58,6 +75,7 @@ class CommentFactory {
                 .createdAt(createdAt)
                 .cursor("")
                 .deleted(false)
+                .authorCanceledPledge(false)
                 .id(-1)
                 .repliesCount(0)
                 .author(
@@ -80,6 +98,7 @@ class CommentFactory {
                 .deleted(false)
                 .id(-1)
                 .repliesCount(0)
+                .authorCanceledPledge(false)
                 .author(
                     UserFactory.user()
                         .toBuilder()
@@ -101,6 +120,29 @@ class CommentFactory {
                     .cursor("")
                     .deleted(isDelete)
                     .id(-1)
+                    .repliesCount(repliesCount)
+                    .author(currentUser)
+                    .authorCanceledPledge(false)
+                    .build(),
+                0,
+                project.id().toString(),
+                project
+
+            )
+        }
+
+        fun liveCanceledPledgeCommentCardData(comment: String = "Some Comment", createdAt: DateTime, currentUser: User, isDelete: Boolean = false, repliesCount: Int = 0): CommentCardData {
+            val project = ProjectFactory.project().toBuilder().creator(UserFactory.creator().toBuilder().id(278438049).build()).build()
+            return CommentCardData(
+                Comment.builder()
+                    .body(comment)
+                    .parentId(-1)
+                    .authorBadges(listOf())
+                    .createdAt(createdAt)
+                    .cursor("")
+                    .deleted(isDelete)
+                    .id(-1)
+                    .authorCanceledPledge(true)
                     .repliesCount(repliesCount)
                     .author(currentUser)
                     .build(),

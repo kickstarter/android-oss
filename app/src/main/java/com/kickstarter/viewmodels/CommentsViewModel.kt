@@ -337,15 +337,11 @@ interface CommentsViewModel {
                 .compose(bindToLifecycle<Boolean>())
                 .subscribe(this.isFetchingComments)
 
-            /*
-             * Since we are always emitting an empty list, we are skipping the first emission to
-             * avoid showing an empty state before loading the comments. To be removed and refactored
-             * in to separate streams.
-             */
             apolloPaginate.paginatedData()?.share()
-                ?.skip(1)
+                ?.compose(Transformers.combineLatestPair(this.isFetchingComments))
+                ?.filter { !it.second }
                 ?.subscribe {
-                    this.commentsList.onNext(it)
+                    this.commentsList.onNext(it.first)
                 }
 
             this.internalError

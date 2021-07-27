@@ -70,6 +70,9 @@ jobs:
       - run:
           name: push to internal branch
           command: make internal
+      - run:
+          name: start the emulator
+          command: ./script/emulator/start_emulator.sh
 
   create_release:
     <<: *base_job

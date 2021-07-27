@@ -46,7 +46,7 @@ class CommentsActivity :
         binding.commentsRecyclerView.adapter = adapter
 
         binding.backButton.setOnClickListener {
-            viewModel.inputs.checkIfThereAnyPendingComments(true)
+            handleBackAction()
         }
 
         setupPagination()
@@ -173,6 +173,10 @@ class CommentsActivity :
     }
 
     override fun back() {
+        handleBackAction()
+    }
+
+    private fun handleBackAction() {
         if (binding.commentComposer.isCommentComposerEmpty() == true) {
             viewModel.inputs.checkIfThereAnyPendingComments(true)
         } else {

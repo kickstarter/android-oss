@@ -150,7 +150,7 @@ class CommentsActivity :
         this.showAlertDialog(
             getString(R.string.Your_comment_wasnt_posted),
             getString(R.string.You_will_lose_the_comment),
-            getString(R.string.cancel),
+            getString(R.string.Cancel),
             getString(R.string.leave_page),
             false,
             positiveAction = {
@@ -261,6 +261,10 @@ class CommentsActivity :
 
     override fun onCommentPostedFailed(comment: Comment) {
         viewModel.inputs.refreshCommentCardInCaseFailedPosted(comment)
+    }
+
+    override fun onShowCommentClicked(comment: Comment) {
+        viewModel.inputs.onShowCanceledPledgeComment(comment)
     }
 
     override fun onCommentRepliesClicked(comment: Comment) {

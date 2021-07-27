@@ -58,3 +58,36 @@ fun Comment.updateCommentFailedToPost(
 
     return listOfComments
 }
+
+/**
+ * Update the internal persisted list of comments with the failed response
+ * from calling the Post Mutation
+ */
+fun Comment.updateCanceledPledgeComment(
+    listOfComments: List<CommentCardData>
+): List<CommentCardData> {
+
+    val position = listOfComments.indexOfFirst { commentCardData ->
+        commentCardData.commentCardState == CommentCardStatus.CANCELED_PLEDGE_MESSAGE.commentCardStatus &&
+            commentCardData.comment?.body() == this.body() &&
+            commentCardData.comment?.author()?.id() == this.author().id()
+    }
+
+    if (position >= 0 && position < listOfComments.size) {
+        return listOfComments.toMutableList().apply {
+            this[position] = listOfComments[position].toBuilder()
+                .commentCardState(CommentCardStatus.CANCELED_PLEDGE_COMMENT.commentCardStatus)
+                .comment(this@updateCanceledPledgeComment)
+                .build()
+        }
+    }
+
+    return listOfComments
+}
+
+fun Comment.cardStatus() = when {
+    this.deleted() ?: false -> CommentCardStatus.DELETED_COMMENT
+    this.authorCanceledPledge() ?: false -> CommentCardStatus.CANCELED_PLEDGE_MESSAGE
+    this.repliesCount() ?: 0 != 0 -> CommentCardStatus.COMMENT_WITH_REPLIES
+    else -> CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS
+}.commentCardStatus

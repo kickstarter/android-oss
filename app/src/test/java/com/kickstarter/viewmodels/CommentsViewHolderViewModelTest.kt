@@ -610,4 +610,18 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.commentSuccessfullyPosted.assertValue(reply)
     }
+
+    @Test
+    fun testAuthorCanceledPledgeComment() {
+        setUpEnvironment(environment())
+        val commentCardData = CommentFactory.liveCanceledPledgeCommentCardData(createdAt = createdAt, currentUser = currentUser)
+
+        this.vm.inputs.configureWith(commentCardData)
+
+        this.commentCardStatus.assertValue(CommentCardStatus.CANCELED_PLEDGE_MESSAGE)
+
+        this.vm.inputs.configureWith(commentCardData.toBuilder().commentCardState(CommentCardStatus.CANCELED_PLEDGE_COMMENT.commentCardStatus).build())
+
+        this.commentCardStatus.assertValues(CommentCardStatus.CANCELED_PLEDGE_MESSAGE, CommentCardStatus.CANCELED_PLEDGE_COMMENT)
+    }
 }

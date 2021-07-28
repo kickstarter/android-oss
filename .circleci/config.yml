@@ -1,4 +1,8 @@
 base_job: &base_job
+  parameters:
+    system-image:
+      type: string
+      default: system-images;android-30;google_apis;x86
   executor:
     name: android/android-machine
     resource-class: large
@@ -38,7 +42,6 @@ jobs:
     <<: *base_job
     steps:
       - checkout
-      - run: sdkmanager "system-images;android-30;google_apis;x86"
       - android/create-avd:
           avd-name: ScreenshotTestAVD
           system-image: system-images;android-30;default;x86
@@ -58,7 +61,8 @@ jobs:
       - run: ./gradlew lintExternalRelease
       - run: ./gradlew testExternalRelease -PdisablePreDex
       - run: ./gradlew jacocoInternalRelease
-      - run: ./gradlew internalDebugExecuteScreenshotTests
+      - android/run-tests:
+        test-command: ./gradlew executeScreenshotTests
       - codecov/upload:
           file:  app/build/reports/jacoco/jacocoInternalReleaseReport/jacocoInternalReleaseReport.xml
       - store_artifacts:

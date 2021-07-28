@@ -44,7 +44,7 @@
         app:layout_constraintStart_toEndOf="@+id/avatar"
         app:layout_constraintTop_toTopOf="@+id/comment_text_composer" />
 
-    <com.google.android.material.textfield.TextInputEditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/comment_text_composer"
         style="@style/CommentsTextInputLayout"
         android:hint="@string/Write_a_comment"

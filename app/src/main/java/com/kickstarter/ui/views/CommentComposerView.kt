@@ -79,6 +79,10 @@ class CommentComposerView @JvmOverloads constructor(
         binding.commentTextComposer.hint = hint
     }
 
+    fun setCommentComposerText(text: String) {
+        binding.commentTextComposer.setText(text)
+    }
+
     fun setActionButtonTitle(@StringRes title: Int) {
         binding.commentActionButton.text = context.getString(title)
     }

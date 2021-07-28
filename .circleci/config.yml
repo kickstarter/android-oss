@@ -38,9 +38,10 @@ jobs:
     <<: *base_job
     steps:
       - checkout
+      - run: sdkmanager "system-images;android-30;google_apis;x86"
       - android/create-avd:
           avd-name: ScreenshotTestAVD
-          system-image: system-images;android-29;default;x86
+          system-image: system-images;android-30;default;x86
           install: true
       - android/start-emulator:
           avd-name: ScreenshotTestAVD

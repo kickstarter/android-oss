@@ -38,6 +38,14 @@ jobs:
     <<: *base_job
     steps:
       - checkout
+      - android/create-avd:
+          avd-name: ScreenshotTestAVD
+          system-image: system-images;android-30;default;x86
+          install: true
+      - android/start-emulator:
+          avd-name: ScreenshotTestAVD
+          no-window: true
+          restore-gradle-cache-prefix: v1a
       - restore_cache:
           keys:
             - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
@@ -49,6 +57,7 @@ jobs:
       - run: ./gradlew lintExternalRelease
       - run: ./gradlew testExternalRelease -PdisablePreDex
       - run: ./gradlew jacocoInternalRelease
+      - run: ./gradlew internalDebugExecuteScreenshotTests
       - codecov/upload:
           file:  app/build/reports/jacoco/jacocoInternalReleaseReport/jacocoInternalReleaseReport.xml
       - store_artifacts:

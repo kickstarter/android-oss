@@ -24,6 +24,7 @@ jobs:
       - run:
             name: start the emulator
             command: sdkmanager "system-images;android-30;google_apis;x86"
+      - run: avdmanager create avd -n Pixel_3a_API_30 -k "system-images;android-30;google_apis;x86"      
       - run: ./gradlew dependencies
       - save_cache:
           key: v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}

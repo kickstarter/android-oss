@@ -50,6 +50,7 @@ class CommentFactory {
                 .repliesCount(0)
                 .cursor("")
                 .authorBadges(authorBadges)
+                .authorCanceledPledge(false)
                 .deleted(false)
                 .createdAt(DateTime.now())
                 .build()

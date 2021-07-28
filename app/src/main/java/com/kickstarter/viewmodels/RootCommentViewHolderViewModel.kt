@@ -52,12 +52,7 @@ interface RootCommentViewHolderViewModel {
                 .subscribe { this.showCanceledPledgeRootComment.onNext(CommentCardStatus.CANCELED_PLEDGE_COMMENT) }
 
             commentCardData
-                .withLatestFrom(
-                    Observable.merge(
-                        currentUser.loggedInUser(),
-                        currentUser.loggedOutUser()
-                    )
-                ) { comment, user -> Pair(comment, user) }
+                .withLatestFrom(currentUser.observable()) { comment, user -> Pair(comment, user) }
                 .map { it.first.comment?.assignAuthorBadge(it.second) }
                 .compose(bindToLifecycle())
                 .subscribe { this.authorBadge.onNext(it) }

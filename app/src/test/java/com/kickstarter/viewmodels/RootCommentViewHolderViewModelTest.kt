@@ -30,8 +30,18 @@ class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
     fun bindRootCommentTest() {
         setupEnvironment(environment())
         val comment = CommentFactory.comment()
-        this.vm.inputs.configureWith(comment)
-        this.bindRootComment.assertValue(comment)
+        val commentCardData = CommentCardData.builder()
+            .comment(comment)
+            .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
+            .build()
+
+        this.vm.inputs.configureWith(commentCardData)
+
+        vm.outputs.bindRootComment().take(0).subscribe {
+            assertTrue(it.comment?.body() == commentCardData.comment?.body())
+            assertTrue(it.comment?.authorCanceledPledge() == commentCardData.comment?.authorCanceledPledge())
+            assertTrue(it.commentCardState == commentCardData.commentCardState)
+        }
     }
 
     @Test
@@ -71,8 +81,12 @@ class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
         setupEnvironment(environment)
 
         val comment = CommentFactory.commentFromCurrentUser(author, authorBadges)
+        val commentCardData = CommentCardData.builder()
+            .comment(comment)
+            .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
+            .build()
 
-        this.vm.inputs.configureWith(comment)
+        this.vm.inputs.configureWith(commentCardData)
 
         this.authorBadge.assertValue(CommentCardBadge.YOU)
     }
@@ -88,8 +102,12 @@ class RootCommentViewHolderViewModelTest : KSRobolectricTestCase() {
         val authorBadges = listOf<String>(CommentBadge.SUPERBACKER.rawValue())
         val author = UserFactory.user().toBuilder().id(2).build()
         val comment = CommentFactory.commentFromCurrentUser(author, authorBadges)
+        val commentCardData = CommentCardData.builder()
+            .comment(comment)
+            .commentCardState(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus)
+            .build()
 
-        this.vm.inputs.configureWith(comment)
+        this.vm.inputs.configureWith(commentCardData)
 
         this.authorBadge.assertValue(CommentCardBadge.SUPERBACKER)
     }

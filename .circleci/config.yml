@@ -12,6 +12,7 @@ version: 2.1
 orbs:
   codecov: codecov/codecov@1.1.5
   android: circleci/android@1.0.3
+
 jobs:
   build:
     <<: *base_job
@@ -38,14 +39,6 @@ jobs:
     <<: *base_job
     steps:
       - checkout
-      - android/create-avd:
-          install: true
-          avd-name: ScreenshotTestAVD
-          system-image: system-images;android-30;default;x86
-      - android/start-emulator:
-          avd-name: ScreenshotTestAVD
-          no-window: true
-          restore-gradle-cache-prefix: v1a
       - restore_cache:
           keys:
             - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
@@ -57,8 +50,6 @@ jobs:
       - run: ./gradlew lintExternalRelease
       - run: ./gradlew testExternalRelease -PdisablePreDex
       - run: ./gradlew jacocoInternalRelease
-      - android/run-tests:
-        test-command: ./gradlew executeScreenshotTests
       - codecov/upload:
           file:  app/build/reports/jacoco/jacocoInternalReleaseReport/jacocoInternalReleaseReport.xml
       - store_artifacts:
@@ -67,6 +58,22 @@ jobs:
       - store_artifacts:
           path: app/build/outputs
           destination: tests
+
+  snapshot-test:
+    steps:
+      - checkout
+      - android/create-avd:
+          avd-name: SnapshotTestAVD
+          system-image: system-images;android-29;default;x86
+          install: true
+      - android/start-emulator:
+          avd-name: SnapshotTestAVD
+          no-window: true
+          restore-gradle-cache-prefix: v1a
+      - android/run-tests
+        test-command: ./gradlew executeScreenshotTests
+      - android/save-gradle-cache:
+          cache-prefix: v1a
 
   create_internal:
     <<: *base_job
@@ -158,6 +165,9 @@ workflows:
     jobs:
       - build
       - test:
+          requires:
+            - build
+      - snapshot-test:
           requires:
             - build
       - create_internal:

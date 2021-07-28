@@ -60,18 +60,21 @@ jobs:
           destination: tests
 
   snapshot-test:
+    docker:
+      - image: circleci/android:api-30
     steps:
       - checkout
       - android/create-avd:
           avd-name: SnapshotTestAVD
-          system-image: system-images;android-29;default;x86
+          system-image: system-images;android-30;default;x86
           install: true
       - android/start-emulator:
           avd-name: SnapshotTestAVD
           no-window: true
           restore-gradle-cache-prefix: v1a
-      - android/run-tests
-        test-command: ./gradlew executeScreenshotTests
+      - android/wait-for-emulator
+      - android/run-tests:
+          test-command: ./gradlew executeScreenshotTests
       - android/save-gradle-cache:
           cache-prefix: v1a
 

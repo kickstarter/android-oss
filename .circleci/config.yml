@@ -1,7 +1,7 @@
 base_job: &base_job
-  resource_class: xlarge
-  docker:
-    - image: circleci/android:api-30
+  executor:
+    name: android/android-machine
+    resource-class: large
   working_directory: '~/project'
   environment:
     TERM: dumb
@@ -11,6 +11,7 @@ base_job: &base_job
 version: 2.1
 orbs:
   codecov: codecov/codecov@1.1.5
+  android: circleci/android@1.0
 jobs:
   build:
     <<: *base_job

@@ -23,7 +23,7 @@ jobs:
       - run: make bootstrap-circle
       - run:
             name: create the emulator
-            command: ./create_emulator_CI.sh
+            command: ./script/emulator/create_emulator_CI.sh
       - run: ./gradlew dependencies
       - save_cache:
           key: v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}

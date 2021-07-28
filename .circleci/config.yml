@@ -1,8 +1,4 @@
 base_job: &base_job
-  parameters:
-    system-image:
-      type: string
-      default: system-images;android-30;google_apis;x86
   executor:
     name: android/android-machine
     resource-class: large
@@ -15,7 +11,7 @@ base_job: &base_job
 version: 2.1
 orbs:
   codecov: codecov/codecov@1.1.5
-  android: circleci/android@1.0
+  android: circleci/android@1.0.3
 jobs:
   build:
     <<: *base_job
@@ -43,9 +39,9 @@ jobs:
     steps:
       - checkout
       - android/create-avd:
+          install: true
           avd-name: ScreenshotTestAVD
           system-image: system-images;android-30;default;x86
-          install: true
       - android/start-emulator:
           avd-name: ScreenshotTestAVD
           no-window: true

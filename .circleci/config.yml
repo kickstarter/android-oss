@@ -70,7 +70,7 @@ jobs:
       - checkout
       - android/create-avd:
           avd-name: SnapshotTestAVD
-          system-image: system-images;android-30;default;x86
+          system-image: system-images;android-30;google_apis;x86
           install: true
       - android/start-emulator:
           avd-name: SnapshotTestAVD

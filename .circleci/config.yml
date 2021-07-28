@@ -3,7 +3,7 @@ executors:
     working_directory: '~/project'
     resource_class: xlarge
     docker:
-      - image: circleci/android:api-30
+      - image: androidsdk/android-30
 
 base_job: &base_job
   executor: android

@@ -4,13 +4,11 @@ import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.ui.data.CommentCardData
-import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.models.Comment
 import com.kickstarter.models.extensions.assignAuthorBadge
+import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.viewholders.RootCommentViewHolder
-import com.kickstarter.ui.views.CommentCardStatus
 import com.kickstarter.ui.views.CommentCardBadge
+import com.kickstarter.ui.views.CommentCardStatus
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -57,7 +55,9 @@ interface RootCommentViewHolderViewModel {
                 .withLatestFrom(
                     Observable.merge(
                         currentUser.loggedInUser(),
-                        currentUser.loggedOutUser())) {comment, user -> Pair(comment, user)}
+                        currentUser.loggedOutUser()
+                    )
+                ) { comment, user -> Pair(comment, user) }
                 .map { it.first.comment?.assignAuthorBadge(it.second) }
                 .compose(bindToLifecycle())
                 .subscribe { this.authorBadge.onNext(it) }

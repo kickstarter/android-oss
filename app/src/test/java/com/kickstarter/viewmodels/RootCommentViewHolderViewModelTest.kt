@@ -6,9 +6,8 @@ import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.mock.factories.CommentFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.ui.data.CommentCardData
-import com.kickstarter.ui.views.CommentCardStatus
-import com.kickstarter.models.Comment
 import com.kickstarter.ui.views.CommentCardBadge
+import com.kickstarter.ui.views.CommentCardStatus
 import org.junit.Test
 import rx.observers.TestSubscriber
 import type.CommentBadge

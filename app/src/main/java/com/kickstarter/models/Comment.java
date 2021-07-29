@@ -53,8 +53,10 @@ public abstract class Comment implements Parcelable, Relay{
       equals = Objects.equals(this.id(), other.id()) &&
               Objects.equals(this.body(), other.body()) &&
               Objects.equals(this.author(), other.author()) &&
+              Objects.equals(this.authorBadges(), other.authorBadges()) &&
               Objects.equals(this.cursor(), other.cursor()) &&
               Objects.equals(this.deleted(), other.deleted()) &&
+              Objects.equals(this.repliesCount(), other.repliesCount()) &&
               Objects.equals(this.authorCanceledPledge(), other.authorCanceledPledge()) &&
               Objects.equals(this.createdAt(), other.createdAt()) &&
               Objects.equals(this.parentId(), other.parentId());

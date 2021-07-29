@@ -23,5 +23,8 @@
     <attr name="comment_card_replies" format="integer" />
     <attr name="comment_card_avatar_url" format="string" />
     <attr name="is_comment_reply_button_visible" format="boolean" />
+    <attr name="is_comment_you_badge_visible" format="integer" />
+    <attr name="is_comment_owner_badge_visible" format="integer" />
+    <attr name="is_comment_superbacker_badge_visible" format="integer"/>
   </declare-styleable>
 </resources>

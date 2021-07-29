@@ -69,11 +69,14 @@ jobs:
           avd-name: Pixel_3a_API_30
           system-image: system-images;android-30;google_apis;x86
           install: true
+      - run: ./script/emulator/copy_emulator_configuration.sh
       - android/start-emulator:
           avd-name: Pixel_3a_API_30
           post-emulator-launch-assemble-command: "pwd"
       - android/wait-for-emulator
-      - run: ./script/emulator/create_emulator_CI.sh
+      - run: ./script/emulator/screenshot_config_emulator.sh
+      - android/wait-for-emulator
+      - run: ./gradlew executeScreenshotTests
       - android/save-gradle-cache:
           cache-prefix: v1a
 

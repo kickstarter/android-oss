@@ -68,15 +68,7 @@ jobs:
     <<: *base_job
     steps:
       - checkout
-      - android/create-avd:
-          avd-name: SnapshotTestAVD
-          system-image: system-images;android-30;google_apis;x86
-          install: true
-      - android/start-emulator:
-          avd-name: SnapshotTestAVD
-          no-window: true
-          restore-gradle-cache-prefix: v1a
-          post-emulator-launch-assemble-command: ''
+      - run: ./script/emulator/start_emulator.sh
       - android/wait-for-emulator
       - android/run-tests:
           test-command: ./gradlew executeScreenshotTests

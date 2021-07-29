@@ -31,7 +31,7 @@ class CommentCardShotTest : ScreenshotTest {
             .findViewById(R.id.comments_card_view)
 
         val user = UserFactory.user()
-        commentCard.setAvatarUrl(null) // -> internal network call to picasso we need to wrap Picasso into our own client to be able to mock on testing.
+        commentCard.setAvatarUrl(R.drawable.logo.toString()) // -> internal network call to picasso we need to wrap Picasso into our own client to be able to mock on testing.
         commentCard.setCommentUserName(user.name())
         commentCard.setCommentBody("Message here for the Screenshot test lets see how it behaves ...")
 

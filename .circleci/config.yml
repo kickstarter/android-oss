@@ -65,13 +65,15 @@ jobs:
           destination: tests
 
   snapshot-test:
-    <<: *base_job
+    executor:
+      name: android/android-machine
+      resource-class: xlarge
     steps:
       - checkout
-      - run: ./script/emulator/create_emulator_CI.sh
-      - android/wait-for-emulator
-      - android/run-tests:
+      - android/start-emulator-and-run-tests:
+          post-emulator-launch-assemble-command: ''
           test-command: ./gradlew executeScreenshotTests
+          system-image: system-images;android-30;google_apis;x86
       - android/save-gradle-cache:
           cache-prefix: v1a
 

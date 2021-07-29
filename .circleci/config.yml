@@ -1,12 +1,7 @@
-executors:
-  android:
-    working_directory: '~/project'
-    resource_class: xlarge
-    docker:
-      - image: circleci/android:api-30
-
 base_job: &base_job
-  executor: android
+  executor:
+      name: android/android-machine
+      resource-class: xlarge
   working_directory: '~/project'
   environment:
     TERM: dumb
@@ -65,13 +60,12 @@ jobs:
           destination: tests
 
   snapshot-test:
-    executor:
-      name: android/android-machine
-      resource-class: xlarge
+    <<: *base_job
     steps:
       - checkout
       - android/start-emulator-and-run-tests:
-          post-emulator-launch-assemble-command: ''
+          avd-name: "Pixel_3a_API_30"
+          post-emulator-launch-assemble-command: 'cp /script/emulator/config.ini ~/.android/avd/Pixel_3a_API_30.avd/config.ini'
           test-command: ./gradlew executeScreenshotTests
           system-image: system-images;android-30;google_apis;x86
       - android/save-gradle-cache:

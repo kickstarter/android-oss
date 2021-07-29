@@ -64,7 +64,7 @@ jobs:
     steps:
       - android/start-emulator-and-run-tests:
           avd-name: "Pixel_3a_API_30"
-          post-emulator-launch-assemble-command: ./script/emulator/create_emulator_CI.sh
+          post-emulator-launch-assemble-command: "./script/emulator/create_emulator_CI.sh"
           test-command: ./gradlew executeScreenshotTests
           system-image: system-images;android-30;google_apis;x86
       - android/save-gradle-cache:

@@ -68,7 +68,7 @@ jobs:
     <<: *base_job
     steps:
       - checkout
-      - run: ./script/emulator/start_emulator.sh
+      - run: ./script/emulator/create_emulator_CI.sh
       - android/wait-for-emulator
       - android/run-tests:
           test-command: ./gradlew executeScreenshotTests

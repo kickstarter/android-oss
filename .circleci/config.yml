@@ -62,10 +62,9 @@ jobs:
   snapshot-test:
     <<: *base_job
     steps:
-      - checkout
       - android/start-emulator-and-run-tests:
           avd-name: "Pixel_3a_API_30"
-          post-emulator-launch-assemble-command: 'echo pwd cp /script/emulator/config.ini ~/.android/avd/Pixel_3a_API_30.avd/config.ini'
+          post-emulator-launch-assemble-command: ./script/emulator/create_emulator_CI.sh
           test-command: ./gradlew executeScreenshotTests
           system-image: system-images;android-30;google_apis;x86
       - android/save-gradle-cache:

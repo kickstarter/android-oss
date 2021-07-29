@@ -163,11 +163,9 @@ workflows:
   version: 2.1
   build_and_test:
     jobs:
+      - snapshot-test
       - build
       - test:
-          requires:
-            - build
-      - snapshot-test:
           requires:
             - build
       - create_internal:

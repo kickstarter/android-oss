@@ -63,7 +63,7 @@ jobs:
     <<: *base_job
     steps:
       - android/create-avd:
-          avd-name: Pixel_3a_API_30"
+          avd-name: Pixel_3a_API_30
           system-image: system-images;android-30;google_apis;x86
           install: true
       - android/start-emulator:

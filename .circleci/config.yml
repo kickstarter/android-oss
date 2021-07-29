@@ -63,6 +63,10 @@ jobs:
     <<: *base_job
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+            - v5-android-
       - attach_workspace:
             at: ~/project
       - android/create-avd:
@@ -168,9 +172,11 @@ workflows:
   version: 2.1
   build_and_test:
     jobs:
-      - snapshot-test
       - build
       - test:
+          requires:
+            - build
+      - snapshot-test:
           requires:
             - build
       - create_internal:

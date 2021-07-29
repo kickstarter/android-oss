@@ -39,6 +39,7 @@
   <dimen name="grid_57">342dp</dimen>
 
   <!-- Typography-->
+  <dimen name="badge_superbacker">10sp</dimen>
   <dimen name="caption_2">11sp</dimen>
   <dimen name="caption_1">12sp</dimen>
   <dimen name="footnote">13sp</dimen>

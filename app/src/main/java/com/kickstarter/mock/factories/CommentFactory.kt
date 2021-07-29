@@ -41,6 +41,21 @@ class CommentFactory {
                 .build()
         }
 
+        fun commentFromCurrentUser(user: User, authorBadges: List<String>): Comment {
+            return Comment.builder()
+                .id(1)
+                .author(user)
+                .body("Some text here")
+                .parentId(1)
+                .repliesCount(0)
+                .cursor("")
+                .authorBadges(authorBadges)
+                .authorCanceledPledge(false)
+                .deleted(false)
+                .createdAt(DateTime.now())
+                .build()
+        }
+
         fun comment(
             avatar: Avatar = AvatarFactory.avatar(),
             name: String = "joe",

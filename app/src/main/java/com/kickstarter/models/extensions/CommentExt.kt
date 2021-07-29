@@ -1,8 +1,11 @@
 package com.kickstarter.models.extensions
 
 import com.kickstarter.models.Comment
+import com.kickstarter.models.User
 import com.kickstarter.ui.data.CommentCardData
+import com.kickstarter.ui.views.CommentCardBadge
 import com.kickstarter.ui.views.CommentCardStatus
+import type.CommentBadge
 
 /**
  * Update the internal persisted list of comments with the successful response
@@ -57,6 +60,14 @@ fun Comment.updateCommentFailedToPost(
     }
 
     return listOfComments
+}
+
+fun Comment.assignAuthorBadge(user: User? = null): CommentCardBadge {
+    if (this.author().id() == user?.id()) return CommentCardBadge.YOU
+    if (this.authorBadges()?.contains(CommentBadge.CREATOR.rawValue()) == true) return CommentCardBadge.CREATOR
+    if (this.authorBadges()?.contains(CommentBadge.COLLABORATOR.rawValue()) == true) return CommentCardBadge.COLLABORATOR
+    if (this.authorBadges()?.contains(CommentBadge.SUPERBACKER.rawValue()) == true) return CommentCardBadge.SUPERBACKER
+    return CommentCardBadge.NO_BADGE
 }
 
 /**

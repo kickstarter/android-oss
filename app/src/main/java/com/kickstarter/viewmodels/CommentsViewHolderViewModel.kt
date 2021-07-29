@@ -13,10 +13,12 @@ import com.kickstarter.libs.utils.extensions.isReply
 import com.kickstarter.models.Comment
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
+import com.kickstarter.models.extensions.assignAuthorBadge
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.viewholders.CommentCardViewHolder
+import com.kickstarter.ui.views.CommentCardBadge
 import com.kickstarter.ui.views.CommentCardStatus
 import org.joda.time.DateTime
 import rx.Observable
@@ -99,6 +101,8 @@ interface CommentsViewHolderViewModel {
 
         /** Emits the current [Comment] when show comment for canceled pledge. */
         fun showCanceledComment(): Observable<Comment>
+
+        fun authorBadge(): Observable<CommentCardBadge>
     }
 
     class ViewModel(environment: Environment) :
@@ -112,6 +116,7 @@ interface CommentsViewHolderViewModel {
         private val onShowCommentClicked = PublishSubject.create<Void>()
 
         private val commentCardStatus = BehaviorSubject.create<CommentCardStatus>()
+        private val authorBadge = BehaviorSubject.create<CommentCardBadge>()
         private val isReplyButtonVisible = BehaviorSubject.create<Boolean>()
         private val commentAuthorName = BehaviorSubject.create<String>()
         private val commentAuthorAvatarUrl = BehaviorSubject.create<String>()
@@ -174,6 +179,12 @@ interface CommentsViewHolderViewModel {
                     this.commentCardStatus.onNext(CommentCardStatus.FAILED_TO_SEND_COMMENT)
                     this.failedToPosted.onNext(it.second.first.comment)
                 }
+
+            comment
+                .withLatestFrom(currentUser.observable()) { comment, user -> Pair(comment, user) }
+                .map { it.first.assignAuthorBadge(it.second) }
+                .compose(bindToLifecycle())
+                .subscribe { this.authorBadge.onNext(it) }
         }
 
         /**
@@ -471,5 +482,7 @@ interface CommentsViewHolderViewModel {
         override fun isFailedToPost(): Observable<Comment> = this.failedToPosted
 
         override fun showCanceledComment(): Observable<Comment> = this.showCanceledComment
+
+        override fun authorBadge(): Observable<CommentCardBadge> = this.authorBadge
     }
 }

@@ -254,11 +254,11 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         // Start the view model with an update.
         vm.intent(Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()))
-        showEmptyState.assertNoValues()
+        showEmptyState.assertValue(true)
 
         // Start the view model with a project.
         vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
-        showEmptyState.assertNoValues()
+        showEmptyState.assertValue(true)
     }
 
     /*
@@ -312,7 +312,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         // Comments should emit.
         commentsList.assertValueCount(0)
-        initialLoadError.assertValueCount(2)
+        initialLoadError.assertValueCount(4)
         shouldShowPaginatedCell.assertNoValues()
     }
 

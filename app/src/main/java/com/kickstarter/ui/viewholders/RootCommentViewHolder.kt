@@ -26,8 +26,7 @@ class RootCommentViewHolder(
                     if (it == CommentCardStatus.CANCELED_PLEDGE_MESSAGE) {
                         binding.commentsCardView.setCommentCardStatus(it)
                         binding.commentsCardView.setCancelPledgeMessage(
-                            context().getString(R.string.this_person_canceled_pledge) +
-                                context().getString(R.string.show_comment)
+                            context().getString(R.string.this_person_canceled_pledge).plus(" ").plus(context().getString(R.string.show_comment))
                         )
                         binding.commentsCardView.setCommentCardClickedListener(object :
                                 OnCommentCardClickedListener {

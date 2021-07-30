@@ -1,10 +1,6 @@
 package com.kickstarter.ui.extensions
 
-import android.text.Selection
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
+import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.URLSpan
@@ -13,7 +9,7 @@ import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import org.jsoup.Jsoup
-import java.util.Locale
+import java.util.*
 
 fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>, @ColorRes linkColor: Int = -1, isUnderlineText: Boolean = true) {
     val spannableString = SpannableString(this.text)
@@ -74,4 +70,25 @@ fun TextView.urlSpanWithoutUnderlines() {
         spannable.setSpan(newSpan, start, end, 0)
     }
     text = spannable
+}
+
+fun TextView.getUpdatedText() {
+    this.addTextChangedListener(object : TextWatcher {
+        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+            // TODO Auto-generated method stub
+        }
+
+        override fun beforeTextChanged(
+            s: CharSequence,
+            start: Int,
+            count: Int,
+            after: Int
+        ) {
+            // TODO Auto-generated method stub
+        }
+
+        override fun afterTextChanged(s: Editable) {
+            // TODO Auto-generated method stub
+        }
+    })
 }

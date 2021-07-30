@@ -10,8 +10,8 @@ import com.kickstarter.viewmodels.PlaygroundViewModel
 
 @RequiresActivityViewModel(PlaygroundViewModel.ViewModel::class)
 class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
-    private lateinit var binding :PlaygroundLayoutBinding
-    private lateinit var view :View
+    private lateinit var binding: PlaygroundLayoutBinding
+    private lateinit var view: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +25,7 @@ class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
     private fun setStepper() {
         binding.stepper.minimum = 0
         binding.stepper.maximum = 10
-        binding.stepper.initialValue = 10
+        binding.stepper.initialValue = 5
         binding.stepper.stepperListener.onStepperUpdated().subscribe {
             snackbar(view, " $it is the amount on the stepper")
         }

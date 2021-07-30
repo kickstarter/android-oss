@@ -1,7 +1,7 @@
 base_job: &base_job
-  resource_class: xlarge
-  docker:
-    - image: circleci/android:api-30
+  executor:
+      name: android/android-machine
+      resource-class: xlarge
   working_directory: '~/project'
   environment:
     TERM: dumb
@@ -11,6 +11,8 @@ base_job: &base_job
 version: 2.1
 orbs:
   codecov: codecov/codecov@1.1.5
+  android: circleci/android@1.0.3
+
 jobs:
   build:
     <<: *base_job
@@ -56,6 +58,31 @@ jobs:
       - store_artifacts:
           path: app/build/outputs
           destination: tests
+
+  snapshot-test:
+    <<: *base_job
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+            - v5-android-
+      - attach_workspace:
+            at: ~/project
+      - android/create-avd:
+          avd-name: Pixel_3a_API_30
+          system-image: system-images;android-30;google_apis;x86
+          install: true
+      - run: ./script/emulator/copy_emulator_configuration.sh
+      - android/start-emulator:
+          avd-name: Pixel_3a_API_30
+          post-emulator-launch-assemble-command: ""
+      - android/wait-for-emulator
+      - run: ./script/emulator/screenshot_config_emulator.sh
+      - android/wait-for-emulator
+      #- run: ./gradlew executeScreenshotTests
+      - android/save-gradle-cache:
+          cache-prefix: v1a
 
   create_internal:
     <<: *base_job
@@ -147,6 +174,9 @@ workflows:
     jobs:
       - build
       - test:
+          requires:
+            - build
+      - snapshot-test:
           requires:
             - build
       - create_internal:

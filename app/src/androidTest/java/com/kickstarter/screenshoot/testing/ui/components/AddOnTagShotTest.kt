@@ -13,7 +13,7 @@ import org.junit.Test
 
 class AddOnTagShotTest : ScreenshotTest {
 
-    lateinit var addOnTagComponent: AddOnTagComponent
+    private lateinit var addOnTagComponent: AddOnTagComponent
     lateinit var component: ApplicationComponent
 
     @Before

@@ -13,7 +13,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <include layout="@layout/account_toolbar" />
+    <include android:id="@+id/account_toolbar"
+        layout="@layout/account_toolbar" />
 
   </com.google.android.material.appbar.AppBarLayout>
 

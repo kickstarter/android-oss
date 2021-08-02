@@ -95,15 +95,16 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                binding.addonBackerLimit.text = this.ksString.format(context().getString(R.string.limit_limit_per_backer), "limit_per_backer", it)
+                binding.addonTimeLeft.setAddOnTagText(this.ksString.format(context().getString(R.string.limit_limit_per_backer), "limit_per_backer", it))
             }
 
         this.viewModel.outputs.remainingQuantity()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                binding.addonQuantityRemaining.text =
+                binding.addonTimeLeft.setAddOnTagText(
                     this.ksString.format(context().getString(R.string.rewards_info_time_left), "time", it)
+                )
             }
 
         this.viewModel.outputs.deadlineCountdownIsGone()
@@ -116,7 +117,7 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
         this.viewModel.outputs.deadlineCountdown()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { binding.addonTimeLeft.text = formattedExpirationString(it) }
+            .subscribe { binding.addonTimeLeft.setAddOnTagText(formattedExpirationString(it)) }
 
         this.viewModel.outputs.shippingAmountIsGone()
             .compose(bindToLifecycle())

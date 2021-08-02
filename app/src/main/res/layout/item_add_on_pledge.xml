@@ -123,37 +123,34 @@
                     app:layout_constraintTop_toBottomOf="@id/items_container"
                     tools:visibility="gone">
 
-                    <TextView
+                    <com.kickstarter.ui.views.AddOnTagComponent
                         android:id="@+id/addon_time_left"
-                        style="@style/AddOnPill"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/grid_1"
                         android:textColor="@color/kds_support_400"
                         android:visibility="gone"
-                        tools:text="3 days left"
+                        app:add_on_tag_text="3 days left"
                         tools:visibility="visible" />
 
-                    <TextView
+                    <com.kickstarter.ui.views.AddOnTagComponent
                         android:id="@+id/addon_quantity_remaining"
-                        style="@style/AddOnPill"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/grid_1"
                         android:textColor="@color/kds_support_400"
                         android:visibility="gone"
-                        tools:text="30 left"
+                        app:add_on_tag_text="30 left"
                         tools:visibility="visible" />
 
-                    <TextView
+                    <com.kickstarter.ui.views.AddOnTagComponent
                         android:id="@+id/addon_backer_limit"
-                        style="@style/AddOnPill"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/grid_1"
                         android:textColor="@color/kds_support_400"
                         android:visibility="gone"
-                        tools:text="Limit 4"
+                        app:add_on_tag_text="Limit 4"
                         tools:visibility="visible" />
                 </LinearLayout>
 

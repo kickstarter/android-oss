@@ -27,4 +27,8 @@
     <attr name="is_comment_owner_badge_visible" format="integer" />
     <attr name="is_comment_superbacker_badge_visible" format="integer"/>
   </declare-styleable>
+
+  <declare-styleable name="AddOnTagComponent">
+    <attr name="add_on_tag_text" format="string" />
+  </declare-styleable>
 </resources>

@@ -26,8 +26,5 @@ class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
         binding.stepper.minimum = 0
         binding.stepper.maximum = 10
         binding.stepper.initialValue = 5
-        binding.stepper.stepperListener.onStepperUpdated().subscribe {
-            snackbar(view, " $it is the amount on the stepper")
-        }
     }
 }

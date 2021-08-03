@@ -1,13 +1,50 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.activities.PlaygroundActivity">
-
-  <com.kickstarter.ui.views.Stepper
-      android:id="@+id/stepper"
+  <com.google.android.material.appbar.AppBarLayout
+      android:id="@+id/appBar"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"/>
+      android:layout_height="wrap_content"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+    <com.kickstarter.ui.toolbars.KSToolbar
+        style="@style/Toolbar"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp">
+
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+        <com.kickstarter.ui.views.IconButton
+            android:id="@+id/back_button"
+            style="@style/ToolbarIconBackButton" />
+
+        <TextView
+            style="@style/ToolbarTitle"
+            android:text="@string/playground_playground" />
+      </RelativeLayout>
+
+    </com.kickstarter.ui.toolbars.KSToolbar>
+  </com.google.android.material.appbar.AppBarLayout>
+  <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/appBar">
+    <com.kickstarter.ui.views.Stepper
+        android:id="@+id/stepper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,25 +15,24 @@ class Stepper @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
     private var binding: StepperUiBinding = StepperUiBinding.inflate(LayoutInflater.from(context), this, true)
-    private var amount: Int = 0
 
+    // - inputs
     var minimum: Int = 0
     var maximum: Int = 10
     var initialValue: Int = 0
         set(value) {
             field = value
-            amount = value
+            updateAmountUI(value)
         }
 
+    // - output
     private var displayAmount: Observable<Int> = Observable.just(initialValue) // initial value or minimum
 
     init {
-        updateAmountUI(amount)
         setListenerForDecreaseButton()
         setListenerForIncreaseButton()
+        setListenerForAmountChanged()
     }
-
-    fun getDisplayAmount() = displayAmount
 
     private fun updateAmountUI(amount: Int) {
         binding.quantityAddOn.text = amount.toString()
@@ -41,13 +40,19 @@ class Stepper @JvmOverloads constructor(
 
     private fun setListenerForIncreaseButton() {
         binding.increaseQuantityAddOn.setOnClickListener {
-            updateAmountUI(increase())
+            if (getDisplayInt() <= maximum) {
+                updateAmountUI(increase())
+            }
         }
     }
 
+    private fun getDisplayInt() = binding.quantityAddOn.text.toString().toInt()
+
     private fun setListenerForDecreaseButton() {
         binding.decreaseQuantityAddOn.setOnClickListener {
-            updateAmountUI(decrease())
+            if (getDisplayInt() >= minimum) {
+                updateAmountUI(decrease())
+            }
         }
     }
 
@@ -70,6 +75,6 @@ class Stepper @JvmOverloads constructor(
         })
     }
 
-    private fun decrease() = binding.quantityAddOn.text.toString().toInt() - 1
-    private fun increase() = binding.quantityAddOn.text.toString().toInt() + 1
+    private fun decrease() = getDisplayInt() - 1
+    private fun increase() = getDisplayInt() + 1
 }

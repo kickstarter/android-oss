@@ -5,7 +5,6 @@ import android.view.View
 import com.kickstarter.databinding.PlaygroundLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.ui.extensions.snackbar
 import com.kickstarter.viewmodels.PlaygroundViewModel
 
 @RequiresActivityViewModel(PlaygroundViewModel.ViewModel::class)

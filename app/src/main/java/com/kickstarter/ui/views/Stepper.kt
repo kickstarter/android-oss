@@ -17,32 +17,44 @@ class Stepper @JvmOverloads constructor(
     private var binding: StepperUiBinding = StepperUiBinding.inflate(LayoutInflater.from(context), this, true)
 
     // - inputs
+    var variance: Int = 1
     var minimum: Int = 0
     var maximum: Int = 10
+
+    /**
+     * The initial loaded value need to be within min-max range or it will use the minimum instead
+     */
     var initialValue: Int = 0
         set(value) {
-            field = value
-            updateAmountUI(value)
+            field = if (value in minimum..maximum) {
+                value
+            } else minimum
+            updateDisplayUI(value)
         }
 
-    // - output
-    private var displayAmount: Observable<Int> = Observable.just(initialValue) // initial value or minimum
+    // - Output
+    fun display() = displayAmount
 
+    private var displayAmount: Observable<Int> = Observable.just(initialValue) // initial value or minimum
     init {
         setListenerForDecreaseButton()
         setListenerForIncreaseButton()
         setListenerForAmountChanged()
     }
 
-    private fun updateAmountUI(amount: Int) {
-        binding.quantityAddOn.text = amount.toString()
+    /**
+     * Check the amount is between the min-max range before updating the UI.
+     * If the amount is in a valid range it updates the UI with the new value
+     */
+    private fun updateDisplayUI(amount: Int) {
+        if (amount in minimum..maximum) {
+            binding.quantityAddOn.text = amount.toString()
+        }
     }
 
     private fun setListenerForIncreaseButton() {
         binding.increaseQuantityAddOn.setOnClickListener {
-            if (getDisplayInt() <= maximum) {
-                updateAmountUI(increase())
-            }
+            updateDisplayUI(increase())
         }
     }
 
@@ -50,9 +62,7 @@ class Stepper @JvmOverloads constructor(
 
     private fun setListenerForDecreaseButton() {
         binding.decreaseQuantityAddOn.setOnClickListener {
-            if (getDisplayInt() >= minimum) {
-                updateAmountUI(decrease())
-            }
+            updateDisplayUI(decrease())
         }
     }
 
@@ -75,6 +85,6 @@ class Stepper @JvmOverloads constructor(
         })
     }
 
-    private fun decrease() = getDisplayInt() - 1
-    private fun increase() = getDisplayInt() + 1
+    private fun decrease() = getDisplayInt() - variance
+    private fun increase() = getDisplayInt() + variance
 }

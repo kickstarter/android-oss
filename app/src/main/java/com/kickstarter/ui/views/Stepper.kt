@@ -81,6 +81,10 @@ class Stepper @JvmOverloads constructor(
         if (amount in minimum..maximum) {
             binding.quantityAddOn.text = amount.toString()
         }
+
+        // - update enabled state for the buttons everytime the display changes
+        binding.decreaseQuantityAddOn.isEnabled = amount > minimum
+        binding.increaseQuantityAddOn.isEnabled = amount < maximum
     }
 
     private fun setListenerForIncreaseButton() {

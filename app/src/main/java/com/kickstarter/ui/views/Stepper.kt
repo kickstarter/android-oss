@@ -62,7 +62,7 @@ class Stepper @JvmOverloads constructor(
 
     val inputs: Inputs = object : Inputs {
         override fun setVariance(const: Int) {
-            variance
+            variance = const
         }
 
         override fun setMinimum(min: Int) {

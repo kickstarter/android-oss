@@ -9,7 +9,6 @@ import android.view.View.OnClickListener
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.kickstarter.R
 import com.kickstarter.databinding.CommentCardBinding
@@ -149,10 +148,6 @@ class CommentCard @JvmOverloads constructor(
             cardCommentStatus == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY ||
             cardCommentStatus == CommentCardStatus.TRYING_TO_POST ||
             cardCommentStatus == CommentCardStatus.CANCELED_PLEDGE_COMMENT
-
-        if (cardCommentStatus == CommentCardStatus.DELETED_COMMENT || cardCommentStatus == CommentCardStatus.CANCELED_PLEDGE_MESSAGE) {
-            binding.commentBody.isInvisible = true
-        }
 
         binding.commentDeletedMessageGroup.isVisible =
             cardCommentStatus == CommentCardStatus.DELETED_COMMENT

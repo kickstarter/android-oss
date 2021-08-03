@@ -23,11 +23,14 @@ class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
         setStepper()
     }
 
+    /**
+     * Set up the stepper example
+     */
     private fun setStepper() {
         binding.stepper.inputs.setMinimum(1)
-        binding.stepper.inputs.setMaximum(12)
+        binding.stepper.inputs.setMaximum(9)
         binding.stepper.inputs.setInitialValue(5)
-        binding.stepper.inputs.setVariance(2)
+        binding.stepper.inputs.setVariance(1)
 
         binding.stepper.outputs.display()
             .compose(bindToLifecycle())

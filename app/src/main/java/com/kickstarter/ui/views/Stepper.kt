@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.kickstarter.databinding.StepperUiBinding
 import rx.Observable
+import rx.subjects.PublishSubject
 
 class Stepper @JvmOverloads constructor(
     context: Context,
@@ -16,15 +17,25 @@ class Stepper @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
     private var binding: StepperUiBinding = StepperUiBinding.inflate(LayoutInflater.from(context), this, true)
 
-    // - inputs
-    var variance: Int = 1
-    var minimum: Int = 0
-    var maximum: Int = 10
+    interface Inputs {
+        fun setVariance(const: Int)
+        fun setMinimum(min: Int)
+        fun setMaximum(max: Int)
+        fun setInitialValue(firstVal: Int)
+    }
+
+    interface Outputs {
+        fun display(): Observable<Int>
+    }
+
+    private var variance: Int = 1
+    private var minimum: Int = 0
+    private var maximum: Int = 10
 
     /**
      * The initial loaded value need to be within min-max range or it will use the minimum instead
      */
-    var initialValue: Int = 0
+    private var initialValue: Int = 0
         set(value) {
             field = if (value in minimum..maximum) {
                 value
@@ -32,10 +43,30 @@ class Stepper @JvmOverloads constructor(
             updateDisplayUI(value)
         }
 
-    // - Output
-    fun display() = displayAmount
+    private var displayAmount = PublishSubject.create<Int>()
 
-    private var displayAmount: Observable<Int> = Observable.just(initialValue) // initial value or minimum
+    val inputs: Inputs = object : Inputs {
+        override fun setVariance(const: Int) {
+            variance
+        }
+
+        override fun setMinimum(min: Int) {
+            minimum = min
+        }
+
+        override fun setMaximum(max: Int) {
+            maximum = max
+        }
+
+        override fun setInitialValue(firstVal: Int) {
+            initialValue = firstVal
+        }
+    }
+
+    val outputs: Outputs = object : Outputs {
+        override fun display(): Observable<Int> = displayAmount
+    }
+
     init {
         setListenerForDecreaseButton()
         setListenerForIncreaseButton()
@@ -69,7 +100,7 @@ class Stepper @JvmOverloads constructor(
     private fun setListenerForAmountChanged() {
         binding.quantityAddOn.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                displayAmount = Observable.just(s.toString().toInt())
+                displayAmount.onNext(s.toString().toInt())
             }
 
             override fun beforeTextChanged(

@@ -5,7 +5,9 @@ import android.view.View
 import com.kickstarter.databinding.PlaygroundLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.PlaygroundViewModel
+import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(PlaygroundViewModel.ViewModel::class)
 class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
@@ -22,8 +24,15 @@ class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
     }
 
     private fun setStepper() {
-        binding.stepper.minimum = 0
-        binding.stepper.maximum = 10
-        binding.stepper.initialValue = 5
+        binding.stepper.inputs.setMinimum(0)
+        binding.stepper.inputs.setMaximum(10)
+        binding.stepper.inputs.setInitialValue(5)
+
+        binding.stepper.outputs.display()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                showSnackbar(binding.stepper, "The updated value on the display is: $it")
+            }
     }
 }

@@ -105,7 +105,7 @@
         android:text="@string/View_replies"
         app:layout_constraintBottom_toTopOf="@+id/reply_button"
         app:layout_goneMarginBottom="@dimen/grid_3"
-        android:layout_marginTop="@dimen/grid_3_half"
+        app:layout_goneMarginTop="@dimen/grid_10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

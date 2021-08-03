@@ -1,6 +1,12 @@
 package com.kickstarter.ui.extensions
 
-import android.text.*
+import android.text.Editable
+import android.text.Selection
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.URLSpan

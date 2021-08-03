@@ -24,9 +24,10 @@ class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
     }
 
     private fun setStepper() {
-        binding.stepper.inputs.setMinimum(0)
-        binding.stepper.inputs.setMaximum(10)
+        binding.stepper.inputs.setMinimum(1)
+        binding.stepper.inputs.setMaximum(8)
         binding.stepper.inputs.setInitialValue(5)
+        binding.stepper.inputs.setVariance(3)
 
         binding.stepper.outputs.display()
             .compose(bindToLifecycle())

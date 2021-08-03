@@ -2,14 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/stepper_container_add_on"
+    android:id="@+id/stepper_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent">
 
     <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/decrease_quantity_add_on"
+        android:id="@+id/decrease_quantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_decrease"
@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/increase_quantity_add_on"
+        android:id="@+id/increase_quantity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_increase"
@@ -29,11 +29,11 @@
         android:backgroundTint="@color/soft_grey_enabled_drak_gray_disabled"
         android:src="@drawable/ic_add"
         app:tint="@color/green_enabled_dark_grey_disabled"
-        app:layout_constraintStart_toEndOf="@id/decrease_quantity_add_on"
-        app:layout_constraintTop_toTopOf="@+id/decrease_quantity_add_on" />
+        app:layout_constraintStart_toEndOf="@id/decrease_quantity"
+        app:layout_constraintTop_toTopOf="@+id/decrease_quantity" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/quantity_add_on"
+        android:id="@+id/stepper_display"
         android:layout_width="@dimen/grid_7"
         android:layout_height="@dimen/grid_7"
         android:gravity="center"
@@ -42,6 +42,6 @@
         style="@style/TextPrimary"
         android:textSize="@dimen/callout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/increase_quantity_add_on"
+        app:layout_constraintTop_toTopOf="@+id/increase_quantity"
         tools:text="1" />
 </androidx.constraintlayout.widget.ConstraintLayout>

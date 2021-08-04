@@ -92,7 +92,7 @@
             app:layout_constraintTop_toBottomOf="@+id/fragment_backing_addons_shipping_rules"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:itemCount="2"
-            tools:listitem="@layout/item_add_on_pledge"/>
+            tools:listitem="@layout/add_ons_card"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

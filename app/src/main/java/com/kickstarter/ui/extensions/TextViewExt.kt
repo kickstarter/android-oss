@@ -15,7 +15,7 @@ import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import org.jsoup.Jsoup
-import java.util.*
+import java.util.Locale
 
 fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>, @ColorRes linkColor: Int = -1, isUnderlineText: Boolean = true) {
     val spannableString = SpannableString(this.text)

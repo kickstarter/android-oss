@@ -21,7 +21,6 @@ import com.kickstarter.services.RequestHandler
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.views.KSWebView
 import com.kickstarter.viewmodels.UpdateViewModel
-import kotlinx.android.synthetic.main.update_toolbar.view.*
 import okhttp3.Request
 
 @RequiresActivityViewModel(UpdateViewModel.ViewModel::class)
@@ -100,7 +99,7 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
                 binding.updateActivityToolbar.updateToolbar.setTitle(ksString.format(resources.getString(R.string.social_update_number), "update_number", updateSequence))
             }
 
-        binding.updateActivityToolbar.updateToolbar.share_icon_button.setOnClickListener {
+        binding.updateActivityToolbar.shareIconButton.setOnClickListener {
             viewModel.inputs.shareIconButtonClicked()
         }
     }

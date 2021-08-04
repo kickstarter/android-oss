@@ -4,44 +4,50 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.view.isGone
 import com.kickstarter.R
+import com.kickstarter.databinding.ActivityChangePasswordBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Logout
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
-import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.ChangePasswordViewModel
-import kotlinx.android.synthetic.main.activity_change_password.*
-import kotlinx.android.synthetic.main.change_password_toolbar.*
+// import kotlinx.android.synthetic.main.activity_change_password.*
+// import kotlinx.android.synthetic.main.change_password_toolbar.*
 
 @RequiresActivityViewModel(ChangePasswordViewModel.ViewModel::class)
 class ChangePasswordActivity : BaseActivity<ChangePasswordViewModel.ViewModel>() {
 
     private var saveEnabled = false
     private lateinit var logout: Logout
+    private lateinit var binding: ActivityChangePasswordBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_change_password)
-        setSupportActionBar(change_password_toolbar)
+        binding = ActivityChangePasswordBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
+        setSupportActionBar(binding.changePasswordActivityToolbar.changePasswordToolbar)
 
         this.logout = environment().logout()
 
         this.viewModel.outputs.progressBarIsVisible()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { ViewUtils.setGone(progress_bar, !it) }
+            .subscribe {
+                binding.progressBar.isGone = !it
+              }
 
         this.viewModel.outputs.passwordWarning()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                warning.text = when {
+                binding.warning.text = when {
                     it != null -> getString(it)
                     else -> null
                 }
@@ -60,11 +66,11 @@ class ChangePasswordActivity : BaseActivity<ChangePasswordViewModel.ViewModel>()
         this.viewModel.outputs.error()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { showSnackbar(change_password_toolbar, it) }
+            .subscribe { showSnackbar(binding.changePasswordActivityToolbar.changePasswordToolbar, it) }
 
-        current_password.onChange { this.viewModel.inputs.currentPassword(it) }
-        new_password.onChange { this.viewModel.inputs.newPassword(it) }
-        confirm_password.onChange { this.viewModel.inputs.confirmPassword(it) }
+        binding.currentPassword.onChange { this.viewModel.inputs.currentPassword(it) }
+        binding.newPassword.onChange { this.viewModel.inputs.newPassword(it) }
+        binding.confirmPassword.onChange { this.viewModel.inputs.confirmPassword(it) }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

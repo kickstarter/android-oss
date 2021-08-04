@@ -69,15 +69,7 @@ jobs:
             - v5-android-
       - attach_workspace:
             at: ~/project
-      - android/create-avd:
-          avd-name: Pixel_3a_API_30
-          system-image: system-images;android-29;default;x86
-          install: true
-      - android/start-emulator:
-          avd-name: Pixel_3a_API_30
-          additional-args: -skin 1080x2220
-          post-emulator-launch-assemble-command: ""
-          run-logcat: true
+      - run: ./script/emulator/start_emulator.sh 
       - android/wait-for-emulator
       - android/save-gradle-cache:
           cache-prefix: v1a

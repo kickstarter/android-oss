@@ -76,8 +76,9 @@ class CommentCardShotTest : ScreenshotTest {
     fun commentCardScreenshotTest_CANCELED_PLEDGE_MESSAGE() {
         commentCard.setCommentCardStatus(CommentCardStatus.CANCELED_PLEDGE_MESSAGE)
         commentCard.setCancelPledgeMessage(
-            getInstrumentation().targetContext.getString(R.string.this_person_canceled_pledge) +
-                getInstrumentation().targetContext.getString(R.string.show_comment)
+
+            getInstrumentation().targetContext.getString(R.string.this_person_canceled_pledge).plus(" ").plus(getInstrumentation().targetContext.getString(R.string.show_comment))
+
         )
         compareScreenshot(commentCard)
     }

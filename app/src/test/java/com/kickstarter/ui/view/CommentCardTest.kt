@@ -6,7 +6,7 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
-import androidx.core.view.isInvisible
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
@@ -47,7 +47,7 @@ class CommentCardTest : KSRobolectricTestCase() {
     @Test
     fun testDeleteCommentStatus() {
         commentCard.setCommentCardStatus(CommentCardStatus.DELETED_COMMENT)
-        assertTrue(commentBody.isInvisible)
+        assertTrue(commentBody.isGone)
         assertFalse(retryButton.isVisible)
         assertFalse(replyButton.isVisible)
         assertTrue(commentDeletedMessageGroup.isVisible)

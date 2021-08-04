@@ -25,16 +25,22 @@ class StepperShotTest : ScreenshotTest {
 
     @Test
     fun stepperInitializationByDefaultTest() {
-        val stepper = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
-            R.layout.item_stepper, null) as ConstraintLayout).findViewById(R.id.stepper) as Stepper
+        val stepper = (
+            LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+                R.layout.item_stepper, null
+            ) as ConstraintLayout
+            ).findViewById(R.id.stepper) as Stepper
 
         compareScreenshot(stepper)
     }
 
     @Test
     fun stepperInitializeMaxMinInitialValue() {
-        val stepper = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
-            R.layout.item_stepper, null) as ConstraintLayout).findViewById(R.id.stepper) as Stepper
+        val stepper = (
+            LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+                R.layout.item_stepper, null
+            ) as ConstraintLayout
+            ).findViewById(R.id.stepper) as Stepper
 
         stepper.inputs.setMinimum(1)
         stepper.inputs.setMaximum(9)
@@ -45,8 +51,11 @@ class StepperShotTest : ScreenshotTest {
 
     @Test
     fun stepperHitMax() {
-        val stepper = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
-            R.layout.item_stepper, null) as ConstraintLayout).findViewById(R.id.stepper) as Stepper
+        val stepper = (
+            LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+                R.layout.item_stepper, null
+            ) as ConstraintLayout
+            ).findViewById(R.id.stepper) as Stepper
 
         stepper.inputs.setMinimum(1)
         stepper.inputs.setMaximum(9)
@@ -57,8 +66,11 @@ class StepperShotTest : ScreenshotTest {
 
     @Test
     fun stepperHitMin() {
-        val stepper = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
-            R.layout.item_stepper, null) as ConstraintLayout).findViewById(R.id.stepper) as Stepper
+        val stepper = (
+            LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+                R.layout.item_stepper, null
+            ) as ConstraintLayout
+            ).findViewById(R.id.stepper) as Stepper
 
         stepper.inputs.setMinimum(1)
         stepper.inputs.setMaximum(9)

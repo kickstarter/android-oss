@@ -83,6 +83,7 @@ class Stepper @JvmOverloads constructor(
     }
 
     init {
+        updateDisplayUI(initialValue)
         setListenerForDecreaseButton()
         setListenerForIncreaseButton()
         setListenerForAmountChanged()

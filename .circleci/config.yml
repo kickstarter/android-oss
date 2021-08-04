@@ -198,7 +198,7 @@ workflows:
             - test
           filters:
             branches:
-              only: internal
+              only: /imartin.*/
   release:
     jobs:
       - build:

@@ -17,8 +17,6 @@ import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.ChangePasswordViewModel
-// import kotlinx.android.synthetic.main.activity_change_password.*
-// import kotlinx.android.synthetic.main.change_password_toolbar.*
 
 @RequiresActivityViewModel(ChangePasswordViewModel.ViewModel::class)
 class ChangePasswordActivity : BaseActivity<ChangePasswordViewModel.ViewModel>() {

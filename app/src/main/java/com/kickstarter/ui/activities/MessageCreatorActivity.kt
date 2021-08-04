@@ -2,7 +2,9 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.core.view.isGone
 import com.kickstarter.R
+import com.kickstarter.databinding.ActivityMessageCreatorBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.MessagePreviousScreenType
@@ -14,22 +16,24 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.MessageCreatorViewModel
-import kotlinx.android.synthetic.main.activity_message_creator.*
 
 @RequiresActivityViewModel(MessageCreatorViewModel.ViewModel::class)
 class MessageCreatorActivity : BaseActivity<MessageCreatorViewModel.ViewModel>() {
     private lateinit var ksString: KSString
+    private lateinit var binding: ActivityMessageCreatorBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_message_creator)
+        binding = ActivityMessageCreatorBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
 
         this.ksString = this.environment().ksString()
 
         this.viewModel.outputs.showSentError()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { showSnackbar(message_body, it) }
+            .subscribe { showSnackbar(binding.messageBody, it) }
 
         this.viewModel.outputs.showSentSuccess()
             .compose(bindToLifecycle())
@@ -44,21 +48,23 @@ class MessageCreatorActivity : BaseActivity<MessageCreatorViewModel.ViewModel>()
         this.viewModel.outputs.progressBarIsVisible()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { ViewUtils.setGone(progress_bar, !it) }
+            .subscribe {
+                binding.progressBar.isGone = !it
+               }
 
         this.viewModel.outputs.sendButtonIsEnabled()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { send_message_button.isEnabled = it }
+            .subscribe { binding.sendMessageButton.isEnabled = it }
 
         this.viewModel.outputs.showMessageThread()
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe { finishAndStartMessagesActivity(it) }
 
-        message_body.onChange { this.viewModel.inputs.messageBodyChanged(it) }
+        binding.messageBody.onChange { this.viewModel.inputs.messageBodyChanged(it) }
 
-        send_message_button.setOnClickListener {
+        binding.sendMessageButton.setOnClickListener {
             this.viewModel.inputs.sendButtonClicked()
         }
     }
@@ -78,6 +84,6 @@ class MessageCreatorActivity : BaseActivity<MessageCreatorViewModel.ViewModel>()
     }
 
     private fun setHint(hint: String) {
-        message_body_til.hint = this.ksString.format(getString(R.string.Message_user_name), "user_name", hint)
+     binding.messageBodyTil.hint = this.ksString.format(getString(R.string.Message_user_name), "user_name", hint)
     }
 }

@@ -185,7 +185,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/canceled_pledge_message"
         style="@style/CommentCardFlaggedMessage"
-        android:text="@string/this_person_canceled_pledge"
+        android:text="@string/This_person_canceled_their_pledge"
         android:visibility="gone"
         android:paddingBottom="@dimen/grid_7_half"
         app:layout_constraintEnd_toEndOf="parent"

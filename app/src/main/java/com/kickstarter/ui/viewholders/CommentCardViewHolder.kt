@@ -155,7 +155,7 @@ class CommentCardViewHolder(
         )
 
         binding.commentsCardView.setCancelPledgeMessage(
-            context().getString(R.string.this_person_canceled_pledge).plus(" ").plus(context().getString(R.string.show_comment))
+            context().getString(R.string.This_person_canceled_their_pledge).plus(" ").plus(context().getString(R.string.Show_comment))
         )
 
         if (isReply) {

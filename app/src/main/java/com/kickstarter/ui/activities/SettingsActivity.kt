@@ -6,6 +6,7 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.kickstarter.BuildConfig
 import com.kickstarter.R
+import com.kickstarter.databinding.SettingsLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
@@ -18,16 +19,6 @@ import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.viewmodels.SettingsViewModel
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.settings_layout.account_row
-import kotlinx.android.synthetic.main.settings_layout.edit_profile_row
-import kotlinx.android.synthetic.main.settings_layout.help_row
-import kotlinx.android.synthetic.main.settings_layout.log_out_row
-import kotlinx.android.synthetic.main.settings_layout.name_text_view
-import kotlinx.android.synthetic.main.settings_layout.newsletters_row
-import kotlinx.android.synthetic.main.settings_layout.notification_row
-import kotlinx.android.synthetic.main.settings_layout.profile_picture_image_view
-import kotlinx.android.synthetic.main.settings_layout.rate_us_row
-import kotlinx.android.synthetic.main.settings_layout.version_name_text_view
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(SettingsViewModel.ViewModel::class)
@@ -37,13 +28,16 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
     private lateinit var ksString: KSString
     private lateinit var logout: Logout
     private var logoutConfirmationDialog: AlertDialog? = null
+    private lateinit var binding: SettingsLayoutBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.settings_layout)
+        binding = SettingsLayoutBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
 
         if (BuildConfig.DEBUG) {
-            edit_profile_row.visibility = View.VISIBLE
+            binding.editProfileRow.visibility = View.VISIBLE
         }
 
         this.build = environment().build()
@@ -51,7 +45,7 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
         this.ksString = environment().ksString()
         this.logout = environment().logout()
 
-        version_name_text_view.text = ksString.format(
+        binding.versionNameTextView.text = ksString.format(
             getString(R.string.profile_settings_version_number),
             "version_number", this.build.versionName()
         )
@@ -59,7 +53,7 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
         this.viewModel.outputs.avatarImageViewUrl()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { url -> Picasso.get().load(url).transform(CircleTransformation()).into(profile_picture_image_view) }
+            .subscribe { url -> Picasso.get().load(url).transform(CircleTransformation()).into(binding.profilePictureImageView) }
 
         this.viewModel.outputs.logout()
             .compose(bindToLifecycle())
@@ -80,33 +74,33 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
         this.viewModel.outputs.userNameTextViewText()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { name_text_view.text = it }
+            .subscribe { binding.nameTextView.text = it }
 
-        account_row.setOnClickListener {
+        binding.accountRow.setOnClickListener {
             startActivity(Intent(this, AccountActivity::class.java))
         }
 
-        edit_profile_row.setOnClickListener {
+        binding.editProfileRow.setOnClickListener {
             startActivity(Intent(this, EditProfileActivity::class.java))
         }
 
-        help_row.setOnClickListener {
+        binding.helpRow.setOnClickListener {
             startActivity(Intent(this, HelpSettingsActivity::class.java))
         }
 
-        log_out_row.setOnClickListener {
+        binding.logOutRow.setOnClickListener {
             this.viewModel.inputs.logoutClicked()
         }
 
-        newsletters_row.setOnClickListener {
+        binding.newslettersRow.setOnClickListener {
             startActivity(Intent(this, NewsletterActivity::class.java))
         }
 
-        notification_row.setOnClickListener {
+        binding.notificationRow.setOnClickListener {
             startActivity(Intent(this, NotificationsActivity::class.java))
         }
 
-        rate_us_row.setOnClickListener { ViewUtils.openStoreRating(this, this.packageName) }
+        binding.rateUsRow.setOnClickListener { ViewUtils.openStoreRating(this, this.packageName) }
     }
 
     private fun logout() {

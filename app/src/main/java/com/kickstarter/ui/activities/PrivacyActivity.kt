@@ -38,17 +38,17 @@ class PrivacyActivity : BaseActivity<PrivacyViewModel.ViewModel>() {
         this.viewModel.outputs.hideConfirmFollowingOptOutPrompt()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { _ -> SwitchCompatUtils.setCheckedWithoutAnimation(binding.followingSwitch, true) }
+            .subscribe { SwitchCompatUtils.setCheckedWithoutAnimation(binding.followingSwitch, true) }
 
         this.viewModel.outputs.showConfirmFollowingOptOutPrompt()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { _ -> lazyFollowingOptOutConfirmationDialog().show() }
+            .subscribe { lazyFollowingOptOutConfirmationDialog().show() }
 
         this.viewModel.errors.unableToSavePreferenceError()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { _ -> ViewUtils.showToast(this, getString(this.unableToSaveString)) }
+            .subscribe { ViewUtils.showToast(this, getString(this.unableToSaveString)) }
 
         this.viewModel.outputs.user()
             .compose(bindToLifecycle())

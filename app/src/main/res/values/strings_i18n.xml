@@ -328,6 +328,7 @@ with friends.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Know when creators and backers message you by enabling notifications.</string>
   <string name="Learn_more_about_accountability" formatted="false">Learn more about accountability</string>
   <string name="Learn_more_about_comment_guidelines" formatted="false">&lt;a href="%{community_link}">Learn more about comment guidelines&lt;/a></string>
+  <string name="Leave_page" formatted="false">Leave page</string>
   <string name="Left_count_left_few" formatted="false">%{left_count} left</string>
   <string name="Left_count_left_many" formatted="false">%{left_count} left</string>
   <string name="Left_count_left_one" formatted="false">%{left_count} left</string>
@@ -562,6 +563,7 @@ daring ideas.</string>
   <string name="Ships_to" formatted="false">Ships to:</string>
   <string name="Ships_to_shipping_summary" formatted="false">Ships to: %{shipping_summary}</string>
   <string name="Ships_worldwide" formatted="false">Ships worldwide</string>
+  <string name="Show_comment" formatted="false">Show comment</string>
   <string name="Show_me_projects" formatted="false">Show me projects</string>
   <string name="Show_password" formatted="false">Show password</string>
   <string name="Show_up_for_the_spaces_you_love" formatted="false">Show up for the spaces you love</string>
@@ -625,6 +627,7 @@ catch your eye?</string>
   <string name="This_comment_has_been_removed_by_Kickstarter" formatted="false">This comment has been removed by Kickstarter.</string>
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">This Facebook account is already linked to another Kickstarter user.</string>
   <string name="This_holiday_season_support_a_project_for_no_reward" formatted="false">This holiday season, support a project for no reward, just because it speaks to you.</string>
+  <string name="This_person_canceled_their_pledge" formatted="false">This person has canceled their pledge.</string>
   <string name="This_pledge_was_dropped_because_of_payment_errors" formatted="false">This pledge was dropped because of payment errors.</string>
   <string name="This_post_is_for_backers_only" formatted="false">This post is for backers only</string>
   <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">This project didn’t reach its funding goal, so your payment method was never charged.</string>
@@ -725,9 +728,11 @@ Please try again later.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>You pledged&lt;/b> on %{pledge_date}</string>
   <string name="You_pledged_without_a_reward" formatted="false">You pledged without a reward</string>
   <string name="You_saved_this_project" formatted="false">You saved this project.</string>
+  <string name="You_will_lose_the_comment_if_you_leave_this_page" formatted="false">You’ll lose the comment if you leave this page.</string>
   <string name="You_wont_be_charged_for_backing_a_project" formatted="false">You won\'t be charged for backing a project unless it reaches its funding goal.</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">You\'ll receive an email at %{email} when your download is ready.</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">Your chat message wasn\'t sent successfully.</string>
+  <string name="Your_comment_wasnt_posted" formatted="false">Your comment wasn\'t posted</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">Your friends haven’t backed any projects yet, but once they do, you’ll see them listed here.</string>
   <string name="Your_message_has_been_sent" formatted="false">Your message has been sent!</string>
   <string name="Your_name_displayed" formatted="false">Your name is always displayed on your profile.</string>
@@ -1795,6 +1800,4 @@ saved</string>
   <string name="via_custom" formatted="false">via custom</string>
   <string name="via_external" formatted="false">via external</string>
   <string name="via_kickstarter" formatted="false">via Kickstarter</string>
-  <string name="you" formatted="false">You</string>
-
 </resources>

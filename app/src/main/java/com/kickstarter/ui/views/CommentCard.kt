@@ -70,7 +70,7 @@ class CommentCard @JvmOverloads constructor(
         binding.canceledPledgeMessage.parseHtmlTag()
         binding.canceledPledgeMessage.makeLinks(
             Pair(
-                context.resources.getString(R.string.show_comment),
+                context.resources.getString(R.string.Show_comment),
                 OnClickListener {
                     onCommentCardClickedListener?.onShowCommentClicked(it)
                 },

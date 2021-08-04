@@ -325,6 +325,7 @@
   <string name="Know_when_creators_and_backers_message_you" formatted="false">クリエイターやバッカ―からメッセージが届いた場合にすぐ分かるように、通知機能を有効にしましょう。</string>
   <string name="Learn_more_about_accountability" formatted="false">報告義務に関してさらに詳しく</string>
   <string name="Learn_more_about_comment_guidelines" formatted="false">&lt;a href="%{community_link}">コメントのガイドラインについてもっと詳しく&lt;/a></string>
+  <string name="Leave_page" formatted="false">ページから移動</string>
   <string name="Left_count_left_few" formatted="false">残り%{left_count}</string>
   <string name="Left_count_left_many" formatted="false">残り%{left_count}</string>
   <string name="Left_count_left_one" formatted="false">残り%{left_count}</string>
@@ -558,6 +559,7 @@
   <string name="Ships_to" formatted="false">配送先：</string>
   <string name="Ships_to_shipping_summary" formatted="false">配送先: %{shipping_summary}</string>
   <string name="Ships_worldwide" formatted="false">世界各地へ配送</string>
+  <string name="Show_comment" formatted="false">コメントを表示</string>
   <string name="Show_me_projects" formatted="false">プロジェクトを表示</string>
   <string name="Show_password" formatted="false">パスワードを表示する</string>
   <string name="Show_up_for_the_spaces_you_love" formatted="false">お気に入りの場所や団体のためにできること</string>
@@ -620,6 +622,7 @@
   <string name="This_comment_has_been_removed_by_Kickstarter" formatted="false">このコメントは Kickstarter によって削除されました。</string>
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">このFacebookアカウントはすでに他のKickstarterユーザーとつながっています</string>
   <string name="This_holiday_season_support_a_project_for_no_reward" formatted="false">このホリデーシーズンはぜひ、リワード無しでも「支援したい！」と思わせてくれるような、あなたの心に訴えかけるプロジェクトをサポートしてみませんか？</string>
+  <string name="This_person_canceled_their_pledge" formatted="false">このユーザーはプレッジをキャンセルしました。</string>
   <string name="This_pledge_was_dropped_because_of_payment_errors" formatted="false">支払関連のエラーにより、このプレッジは取り消されました。</string>
   <string name="This_post_is_for_backers_only" formatted="false">この投稿はバッカー向けです</string>
   <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">このプロジェクトはファンディングゴールに到達しなかったため、お支払い方法への請求は行われませんでした。</string>
@@ -720,9 +723,11 @@
   <string name="You_pledged_on_date" formatted="false">%{pledge_date} に&lt;b>プレッジ&lt;/b></string>
   <string name="You_pledged_without_a_reward" formatted="false">リワードなしでプレッジしました</string>
   <string name="You_saved_this_project" formatted="false">保存済みです</string>
+  <string name="You_will_lose_the_comment_if_you_leave_this_page" formatted="false">このページから移動するとコメントは破棄されます。</string>
   <string name="You_wont_be_charged_for_backing_a_project" formatted="false">プロジェクトをバックした場合、プロジェクトがファンディングゴールに到達しない限り、課金されることはありません。</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">ダウンロードの準備が整い次第、%{email} にメールが届きます。</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">メッセージの送信に失敗。</string>
+  <string name="Your_comment_wasnt_posted" formatted="false">コメントは投稿されませんでした</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">バックした友達はまだいませんが、今後こちらに表示されます。</string>
   <string name="Your_message_has_been_sent" formatted="false">メッセージが送信されました！</string>
   <string name="Your_name_displayed" formatted="false">あなたの名前はプロフィールに常に表示されます。</string>

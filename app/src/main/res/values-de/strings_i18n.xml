@@ -327,6 +327,7 @@ Antippen und erneut versuchen</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Aktiviere Benachrichtigungen, damit du über eingehende Nachrichten von Projektgründern und Unterstützern Bescheid weißt.</string>
   <string name="Learn_more_about_accountability" formatted="false">Weitere Informationen zur Rechenschaftspflicht</string>
   <string name="Learn_more_about_comment_guidelines" formatted="false">&lt;a href="%{community_link}">Mehr Info zu Kommentar-Richtlinien&lt;/a></string>
+  <string name="Leave_page" formatted="false">Seite verlassen</string>
   <string name="Left_count_left_few" formatted="false">%{left_count} übrig</string>
   <string name="Left_count_left_many" formatted="false">%{left_count} übrig</string>
   <string name="Left_count_left_one" formatted="false">%{left_count} übrig</string>
@@ -559,6 +560,7 @@ Antippen und erneut versuchen</string>
   <string name="Ships_to" formatted="false">Versand an:</string>
   <string name="Ships_to_shipping_summary" formatted="false">Versand nach: %{shipping_summary}</string>
   <string name="Ships_worldwide" formatted="false">Weltweiter Versand</string>
+  <string name="Show_comment" formatted="false">Kommentar anzeigen</string>
   <string name="Show_me_projects" formatted="false">Projekte anzeigen</string>
   <string name="Show_password" formatted="false">Passwort anzeigen</string>
   <string name="Show_up_for_the_spaces_you_love" formatted="false">Zeige deinen Lieblingslokalen deine Solidarität</string>
@@ -621,6 +623,7 @@ Antippen und erneut versuchen</string>
   <string name="This_comment_has_been_removed_by_Kickstarter" formatted="false">Dieser Kommentar wurde von Kickstarter entfernt.</string>
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">Dieses Facebook-Konto ist bereits einem anderen Kickstarter-Nutzer zugeordnet.</string>
   <string name="This_holiday_season_support_a_project_for_no_reward" formatted="false">Weihnachten steht kurz vor der Tür - unterstütze ein Projekt ohne Belohnung. Einfach, weil es dich anspricht.</string>
+  <string name="This_person_canceled_their_pledge" formatted="false">Diese Person hat ihren Finanzierungsbeitrag zurückgezogen.</string>
   <string name="This_pledge_was_dropped_because_of_payment_errors" formatted="false">Dieser Finanzierungsbeitrag wurde aufgrund von Fehlern, die bei der Zahlung auftraten, nicht übernommen.</string>
   <string name="This_post_is_for_backers_only" formatted="false">Dieser Beitrag ist nur für Unterstützer</string>
   <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">Bei diesem Projekt wurde das Finanzierungsziel nicht erreicht. Daher wurde deine Zahlungsmethode nicht belastet.</string>
@@ -721,9 +724,11 @@ Bitte versuche es später noch einmal.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Finanzierungsbeitrag geleistet&lt;/b> im %{pledge_date}</string>
   <string name="You_pledged_without_a_reward" formatted="false">Unterstützt ohne Belohnung</string>
   <string name="You_saved_this_project" formatted="false">Du hast dieses Projekt gespeichert.</string>
+  <string name="You_will_lose_the_comment_if_you_leave_this_page" formatted="false">Wenn du diese Seite verlässt, wird dein Kommentar gelöscht.</string>
   <string name="You_wont_be_charged_for_backing_a_project" formatted="false">Dein Finanzierungsbeitrag wird nur abgebucht, wenn das Projekt sein Finanzierungsziel erreichte.</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">Du wirst per E-Mail unter %{email} benachrichtigt, sobald dein Download bereit ist.</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">Deine Chat-Nachricht konnte leider nicht gesendet werden.</string>
+  <string name="Your_comment_wasnt_posted" formatted="false">Dein Kommentar wurde nicht gepostet</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">Deine Freunde haben bisher noch kein Projekt unterstützt. Aber sobald sie das tun, wird es hier angezeigt.</string>
   <string name="Your_message_has_been_sent" formatted="false">Deine Nachricht wurde versandt!</string>
   <string name="Your_name_displayed" formatted="false">Dein Name wird auf deinem Profil angezeigt.</string>

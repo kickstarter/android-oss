@@ -328,6 +328,7 @@ Toca para intentar de nuevo.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Entérate cuando los creadores y patrocinadores te envíen mensajes habilitando las notificaciones.</string>
   <string name="Learn_more_about_accountability" formatted="false">Más información sobre las responsabilidades</string>
   <string name="Learn_more_about_comment_guidelines" formatted="false">&lt;a href="%{community_link}">Más información sobre las reglas de los comentarios&lt;/a></string>
+  <string name="Leave_page" formatted="false">Salir de la página</string>
   <string name="Left_count_left_few" formatted="false">%{left_count} restantes</string>
   <string name="Left_count_left_many" formatted="false">%{left_count} restantes</string>
   <string name="Left_count_left_one" formatted="false">%{left_count} restante</string>
@@ -560,6 +561,7 @@ Toca para intentar de nuevo.</string>
   <string name="Ships_to" formatted="false">Envío a:</string>
   <string name="Ships_to_shipping_summary" formatted="false">Países de envío: %{shipping_summary}</string>
   <string name="Ships_worldwide" formatted="false">Envíos a todo el mundo</string>
+  <string name="Show_comment" formatted="false">Mostrar comentario</string>
   <string name="Show_me_projects" formatted="false">Múestrame proyectos</string>
   <string name="Show_password" formatted="false">Mostrar contraseña</string>
   <string name="Show_up_for_the_spaces_you_love" formatted="false">Apoya tus espacios culturales favoritos</string>
@@ -622,6 +624,7 @@ Toca para intentar de nuevo.</string>
   <string name="This_comment_has_been_removed_by_Kickstarter" formatted="false">Este comentario ha sido eliminado por Kickstarter.</string>
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">Esta cuenta de Facebook ya está asociada a otro usuario de Kickstarter.</string>
   <string name="This_holiday_season_support_a_project_for_no_reward" formatted="false">Esta temporada de fiestas, apoya un proyecto sin recompensa, simplemente porque te resulta interesante.</string>
+  <string name="This_person_canceled_their_pledge" formatted="false">Esta persona canceló su contribución.</string>
   <string name="This_pledge_was_dropped_because_of_payment_errors" formatted="false">Esta contribución no pudo ser cobrada por un error en el método de pago.</string>
   <string name="This_post_is_for_backers_only" formatted="false">Esta publicación es únicamente para patrocinadores</string>
   <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">Este proyecto no alcanzó su meta de financiamiento, así que no se realizó ningún cargo a tu método de pago.</string>
@@ -722,9 +725,11 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Contribuiste&lt;/b> el %{pledge_date}</string>
   <string name="You_pledged_without_a_reward" formatted="false">Contribuiste sin recompensa</string>
   <string name="You_saved_this_project" formatted="false">Uno de tus proyectos guardados.</string>
+  <string name="You_will_lose_the_comment_if_you_leave_this_page" formatted="false">Perderás el comentario si sales de esta página.</string>
   <string name="You_wont_be_charged_for_backing_a_project" formatted="false">No se te cobrará por patrocinar un proyecto a menos que alcance su meta de financiamiento.</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">Recibirás un correo electrónico en %{email} cuando la descarga esté lista.</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">Tu mensaje no fue enviado.</string>
+  <string name="Your_comment_wasnt_posted" formatted="false">Tu comentario no se publicó</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">Tus amigos todavía no han hecho contribuciones, pero en cuanto lo hagan, se verán reflejadas aquí.</string>
   <string name="Your_message_has_been_sent" formatted="false">Se envió tu mensaje.</string>
   <string name="Your_name_displayed" formatted="false">Tu nombre siempre se muestra en tu perfil.</string>

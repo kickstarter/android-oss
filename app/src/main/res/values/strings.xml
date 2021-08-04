@@ -78,11 +78,5 @@
   <string name="email_verification_interstitial" formatted="false">Email Verification Interstitial</string>
 
   <string name="estimated_delivery_data" formatted="false">%{title} %{estimated_delivery_data}</string>
-
-  <!-- Replies Screen -->
-  <string name="Your_comment_wasnt_posted">Your comment wasn\'t posted</string>
-  <string name="You_will_lose_the_comment">You\'ll lose the comment if you leave this page.</string>
-  <string name="leave_page">Leave page</string>
-  <string name="this_person_canceled_pledge">This person has canceled their pledge. </string>
-  <string name="show_comment">Show comment</string>
+  <string name="you" formatted="false">You</string>
 </resources>

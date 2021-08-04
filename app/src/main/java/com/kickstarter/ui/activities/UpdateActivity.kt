@@ -6,11 +6,11 @@ import android.os.Bundle
 import android.util.Pair
 import android.webkit.WebView
 import com.kickstarter.R
+import com.kickstarter.databinding.UpdateLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.NumberUtils
@@ -21,22 +21,23 @@ import com.kickstarter.services.RequestHandler
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.views.KSWebView
 import com.kickstarter.viewmodels.UpdateViewModel
-import kotlinx.android.synthetic.main.update_layout.update_web_view
-import kotlinx.android.synthetic.main.update_toolbar.share_icon_button
-import kotlinx.android.synthetic.main.update_toolbar.update_toolbar
+import kotlinx.android.synthetic.main.update_toolbar.view.*
 import okhttp3.Request
 
 @RequiresActivityViewModel(UpdateViewModel.ViewModel::class)
 class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Delegate {
     private lateinit var ksString: KSString
+    private lateinit var binding: UpdateLayoutBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.update_layout)
+        binding = UpdateLayoutBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
         ksString = environment().ksString()
 
-        update_web_view.setDelegate(this)
-        update_web_view.registerRequestHandlers(
+        binding.updateWebView.setDelegate(this)
+        binding.updateWebView.registerRequestHandlers(
             listOf(
                 RequestHandler({ uri: Uri?, webEndpoint: String ->
                     KSUri.isProjectUpdateUri(uri?.let { it } ?: Uri.EMPTY, webEndpoint)
@@ -59,54 +60,54 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
 
         viewModel.outputs.openProjectExternally()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(observeForUI())
             .subscribe { projectUrl ->
                 openProjectExternally(projectUrl)
             }
 
         viewModel.outputs.startCommentsActivity()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(observeForUI())
             .subscribe { update ->
                 startCommentsActivity(update)
             }
 
         viewModel.outputs.startRootCommentsActivity()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(observeForUI())
             .subscribe { update ->
                 startRootCommentsActivity(update)
             }
 
         viewModel.outputs.startProjectActivity()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(observeForUI())
             .subscribe { uriAndRefTag ->
                 startProjectActivity(uriAndRefTag.first, uriAndRefTag.second)
             }
 
         viewModel.outputs.startShareIntent()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(observeForUI())
             .subscribe { updateAndShareUrl ->
                 startShareIntent(updateAndShareUrl)
             }
 
         viewModel.outputs.updateSequence()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(observeForUI())
             .subscribe { updateSequence ->
-                update_toolbar.setTitle(ksString.format(resources.getString(R.string.social_update_number), "update_number", updateSequence))
+                binding.updateActivityToolbar.updateToolbar.setTitle(ksString.format(resources.getString(R.string.social_update_number), "update_number", updateSequence))
             }
 
-        share_icon_button.setOnClickListener {
+        binding.updateActivityToolbar.updateToolbar.share_icon_button.setOnClickListener {
             viewModel.inputs.shareIconButtonClicked()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        update_web_view.setDelegate(null)
+        binding.updateWebView.setDelegate(null)
         this.viewModel = null
     }
 
@@ -122,7 +123,7 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
                 .compose(observeForUI())
                 .subscribe { url ->
                     url?.let {
-                        update_web_view.loadUrl(it)
+                        binding.updateWebView.loadUrl(it)
                     }
                 }
         }

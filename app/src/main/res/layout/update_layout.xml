@@ -5,13 +5,13 @@
   android:layout_height="match_parent">
 
   <include
-    android:id="@+id/update_toolbar"
+    android:id="@+id/update_activity_toolbar"
     layout="@layout/update_toolbar"/>
 
   <com.kickstarter.ui.views.KSWebView
     android:id="@+id/update_web_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_below="@id/update_toolbar"/>
+    android:layout_below="@id/update_activity_toolbar"/>
 
 </RelativeLayout>

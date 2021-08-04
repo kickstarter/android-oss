@@ -105,7 +105,7 @@
         android:text="@string/View_replies"
         app:layout_constraintBottom_toTopOf="@+id/reply_button"
         app:layout_goneMarginBottom="@dimen/grid_3"
-        android:layout_marginTop="@dimen/grid_3_half"
+        app:layout_goneMarginTop="@dimen/grid_10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -185,7 +185,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/canceled_pledge_message"
         style="@style/CommentCardFlaggedMessage"
-        android:text="@string/this_person_canceled_pledge"
+        android:text="@string/This_person_canceled_their_pledge"
         android:visibility="gone"
         android:paddingBottom="@dimen/grid_7_half"
         app:layout_constraintEnd_toEndOf="parent"

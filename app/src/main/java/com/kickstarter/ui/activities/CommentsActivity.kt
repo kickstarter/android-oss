@@ -149,9 +149,9 @@ class CommentsActivity :
     private fun handleBackAction(isBackAction: Boolean) {
         this.showAlertDialog(
             getString(R.string.Your_comment_wasnt_posted),
-            getString(R.string.You_will_lose_the_comment),
+            getString(R.string.You_will_lose_the_comment_if_you_leave_this_page),
             getString(R.string.Cancel),
-            getString(R.string.leave_page),
+            getString(R.string.Leave_page),
             false,
             positiveAction = {
                 if (!isBackAction) {

@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities
 import android.os.Bundle
 import androidx.annotation.NonNull
 import com.kickstarter.R
+import com.kickstarter.databinding.ActivityNewsletterBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
@@ -14,7 +15,6 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.User
 import com.kickstarter.ui.data.Newsletter
 import com.kickstarter.viewmodels.NewsletterViewModel
-import kotlinx.android.synthetic.main.activity_newsletter.*
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(NewsletterViewModel.ViewModel::class)
@@ -24,9 +24,13 @@ class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
     private lateinit var currentUserType: CurrentUserType
     private lateinit var ksString: KSString
 
+    private lateinit var binding: ActivityNewsletterBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_newsletter)
+        binding = ActivityNewsletterBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
 
         this.build = environment().build()
         this.currentUserType = environment().currentUser()
@@ -50,32 +54,32 @@ class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
         this.viewModel.outputs.subscribeAll()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { SwitchCompatUtils.setCheckedWithoutAnimation(subscribe_all_switch, it) }
+            .subscribe { SwitchCompatUtils.setCheckedWithoutAnimation(binding.subscribeAllSwitch, it) }
 
-        alumni_switch.setOnClickListener { viewModel.inputs.sendAlumniNewsletter(alumni_switch.isChecked) }
-        arts_news_switch.setOnClickListener { viewModel.inputs.sendArtsNewsNewsletter(arts_news_switch.isChecked) }
-        films_switch.setOnClickListener { viewModel.inputs.sendFilmsNewsletter(films_switch.isChecked) }
-        games_we_love_switch.setOnClickListener { viewModel.inputs.sendGamesNewsletter(games_we_love_switch.isChecked) }
-        happening_switch.setOnClickListener { viewModel.inputs.sendHappeningNewsletter(happening_switch.isChecked) }
-        invent_switch.setOnClickListener { viewModel.inputs.sendInventNewsletter(invent_switch.isChecked) }
-        music_switch.setOnClickListener { viewModel.inputs.sendMusicNewsletter(music_switch.isChecked) }
-        news_events_switch.setOnClickListener { viewModel.inputs.sendPromoNewsletter(news_events_switch.isChecked) }
-        projects_we_love_switch.setOnClickListener { viewModel.inputs.sendWeeklyNewsletter(projects_we_love_switch.isChecked) }
-        reads_switch.setOnClickListener { viewModel.inputs.sendReadsNewsletter(reads_switch.isChecked) }
-        subscribe_all_switch.setOnClickListener { viewModel.inputs.sendAllNewsletter(subscribe_all_switch.isChecked) }
+        binding.alumniSwitch.setOnClickListener { viewModel.inputs.sendAlumniNewsletter(binding.alumniSwitch.isChecked) }
+        binding.artsNewsSwitch.setOnClickListener { viewModel.inputs.sendArtsNewsNewsletter(binding.artsNewsSwitch.isChecked) }
+        binding.filmsSwitch.setOnClickListener { viewModel.inputs.sendFilmsNewsletter(binding.filmsSwitch.isChecked) }
+        binding.gamesWeLoveSwitch.setOnClickListener { viewModel.inputs.sendGamesNewsletter(binding.gamesWeLoveSwitch.isChecked) }
+        binding.happeningSwitch.setOnClickListener { viewModel.inputs.sendHappeningNewsletter(binding.happeningSwitch.isChecked) }
+        binding.inventSwitch.setOnClickListener { viewModel.inputs.sendInventNewsletter(binding.inventSwitch.isChecked) }
+        binding.musicSwitch.setOnClickListener { viewModel.inputs.sendMusicNewsletter(binding.musicSwitch.isChecked) }
+        binding.newsEventsSwitch.setOnClickListener { viewModel.inputs.sendPromoNewsletter(binding.newsEventsSwitch.isChecked) }
+        binding.projectsWeLoveSwitch.setOnClickListener { viewModel.inputs.sendWeeklyNewsletter(binding.projectsWeLoveSwitch.isChecked) }
+        binding.readsSwitch.setOnClickListener { viewModel.inputs.sendReadsNewsletter(binding.readsSwitch.isChecked) }
+        binding.subscribeAllSwitch.setOnClickListener { viewModel.inputs.sendAllNewsletter(binding.subscribeAllSwitch.isChecked) }
     }
 
     private fun displayPreferences(@NonNull user: User) {
-        SwitchCompatUtils.setCheckedWithoutAnimation(alumni_switch, isTrue(user.alumniNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(arts_news_switch, isTrue(user.artsCultureNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(films_switch, isTrue(user.filmNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(games_we_love_switch, isTrue(user.gamesNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(happening_switch, isTrue(user.happeningNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(invent_switch, isTrue(user.inventNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(music_switch, isTrue(user.musicNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(news_events_switch, isTrue(user.promoNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(projects_we_love_switch, isTrue(user.weeklyNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(reads_switch, isTrue(user.publishingNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.alumniSwitch, isTrue(user.alumniNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.artsNewsSwitch, isTrue(user.artsCultureNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.filmsSwitch, isTrue(user.filmNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.gamesWeLoveSwitch, isTrue(user.gamesNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.happeningSwitch, isTrue(user.happeningNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.inventSwitch, isTrue(user.inventNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.musicSwitch, isTrue(user.musicNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.newsEventsSwitch, isTrue(user.promoNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.projectsWeLoveSwitch, isTrue(user.weeklyNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.readsSwitch, isTrue(user.publishingNewsletter()))
     }
 
     private fun newsletterString(@NonNull newsletter: Newsletter): String? {

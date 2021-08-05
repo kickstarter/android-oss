@@ -81,10 +81,7 @@ jobs:
       - android/wait-for-emulator
       - run:
           name: Config Emulator for Screenshot test
-          command: |
-            adb shell settings put global hidden_api_policy_p_apps 1
-            adb shell settings put global hidden_api_policy_pre_p_apps 1
-            adb shell settings put global hidden_api_policy  1
+          command: ./script/emulator/screenshot_config_emulator.sh
       - run: ./gradlew executeScreenshotTests
       - android/save-gradle-cache:
           cache-prefix: v1a

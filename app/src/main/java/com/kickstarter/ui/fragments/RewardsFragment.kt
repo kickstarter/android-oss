@@ -28,13 +28,7 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
 
     private var rewardsAdapter = RewardsAdapter(this)
     private lateinit var dialog: AlertDialog
-
     private var binding: FragmentRewardsBinding? = null
-
-    interface BackingDelegate {
-        fun refreshProject()
-        fun showFixPaymentMethod()
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)

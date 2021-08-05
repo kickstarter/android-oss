@@ -175,9 +175,9 @@ workflows:
       - test:
           requires:
             - build
-      #- snapshot-test:
-      #    requires:
-      #      - build
+      - snapshot-test:
+          requires:
+            - build
       - create_internal:
           requires:
             - build

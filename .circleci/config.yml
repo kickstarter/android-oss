@@ -79,6 +79,12 @@ jobs:
           post-emulator-launch-assemble-command: "./gradlew deviceAndroidTest"
           run-logcat: true
       - android/wait-for-emulator
+      - run:
+          name: Config Emulator for Screenshot test
+          command: |
+            adb shell settings put global hidden_api_policy_p_apps 1
+            adb shell settings put global hidden_api_policy_pre_p_apps 1
+            adb shell settings put global hidden_api_policy  1
       - run: ./gradlew executeScreenshotTests
       - android/save-gradle-cache:
           cache-prefix: v1a

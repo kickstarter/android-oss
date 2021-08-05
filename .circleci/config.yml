@@ -76,7 +76,7 @@ jobs:
       - android/start-emulator:
           avd-name: Pixel_3a_API_30
           additional-args: -skin 1080x2220
-          post-emulator-launch-assemble-command: ""
+          post-emulator-launch-assemble-command: "./gradlew deviceAndroidTest"
           run-logcat: true
       - android/wait-for-emulator
       - run: ./script/emulator/screenshot_config_emulator.sh

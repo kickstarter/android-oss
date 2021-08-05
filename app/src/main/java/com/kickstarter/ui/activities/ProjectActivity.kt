@@ -77,12 +77,12 @@ class ProjectActivity :
         setContentView(binding.root)
         this.ksString = environment().ksString()
 
-        val viewTreeObserver = binding.pledgeContainer.pledgeContainerRoot.viewTreeObserver
+        val viewTreeObserver = binding.pledgeContainerLayout.pledgeContainerRoot.viewTreeObserver
         if (viewTreeObserver.isAlive) {
             viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     this@ProjectActivity.viewModel.inputs.onGlobalLayout()
-                    binding.pledgeContainer.pledgeContainerRoot.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    binding.pledgeContainerLayout.pledgeContainerRoot.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
             })
         }
@@ -112,7 +112,7 @@ class ProjectActivity :
         this.viewModel.outputs.backingDetailsTitle()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding.pledgeContainer.backingDetailsTitle.setText(it) }
+            .subscribe { binding.pledgeContainerLayout.backingDetailsTitle.setText(it) }
 
         this.viewModel.outputs.backingDetailsIsVisible()
             .compose(bindToLifecycle())
@@ -142,12 +142,12 @@ class ProjectActivity :
         this.viewModel.outputs.pledgeActionButtonColor()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding.pledgeContainer.pledgeActionButton.backgroundTintList = ContextCompat.getColorStateList(this, it) }
+            .subscribe { binding.pledgeContainerLayout.pledgeActionButton.backgroundTintList = ContextCompat.getColorStateList(this, it) }
 
         this.viewModel.outputs.pledgeActionButtonContainerIsGone()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { ViewUtils.setGone(binding.pledgeContainer.pledgeActionButtons, it) }
+            .subscribe { ViewUtils.setGone(binding.pledgeContainerLayout.pledgeActionButtonsLayout, it) }
 
         this.viewModel.outputs.pledgeActionButtonText()
             .compose(bindToLifecycle())
@@ -157,12 +157,12 @@ class ProjectActivity :
         this.viewModel.outputs.pledgeToolbarNavigationIcon()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding.pledgeContainer.pledgeToolbar.navigationIcon = ContextCompat.getDrawable(this, it) }
+            .subscribe { binding.pledgeContainerLayout.pledgeToolbar.navigationIcon = ContextCompat.getDrawable(this, it) }
 
         this.viewModel.outputs.pledgeToolbarTitle()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding.pledgeContainer.pledgeToolbar.title = getString(it) }
+            .subscribe { binding.pledgeContainerLayout.pledgeToolbar.title = getString(it) }
 
         this.viewModel.outputs.prelaunchUrl()
             .compose(bindToLifecycle())
@@ -177,12 +177,12 @@ class ProjectActivity :
         this.viewModel.outputs.reloadProjectContainerIsGone()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { ViewUtils.setGone(binding.pledgeContainer.projectRetryLayout.pledgeSheetRetryContainer, it) }
+            .subscribe { ViewUtils.setGone(binding.pledgeContainerLayout.projectRetryLayout.pledgeSheetRetryContainer, it) }
 
         this.viewModel.outputs.reloadProgressBarIsGone()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { ViewUtils.setGone(binding.pledgeContainer.projectRetryLayout.pledgeSheetProgressBar, it) }
+            .subscribe { ViewUtils.setGone(binding.pledgeContainerLayout.projectRetryLayout.pledgeSheetProgressBar, it) }
 
         this.viewModel.outputs.scrimIsVisible()
             .compose(bindToLifecycle())
@@ -299,7 +299,7 @@ class ProjectActivity :
     }
 
     override fun back() {
-        if (binding.pledgeContainer.pledgeContainerRoot.visibility == View.GONE) {
+        if (binding.pledgeContainerLayout.pledgeContainerRoot.visibility == View.GONE) {
             super.back()
         } else {
             handleNativeCheckoutBackPress()
@@ -361,24 +361,24 @@ class ProjectActivity :
     }
 
     private fun animateScrimVisibility(show: Boolean) {
-        val shouldAnimateIn = show && binding.pledgeContainer.scrim.alpha <= 1f
-        val shouldAnimateOut = !show && binding.pledgeContainer.scrim.alpha >= 0f
+        val shouldAnimateIn = show && binding.pledgeContainerLayout.scrim.alpha <= 1f
+        val shouldAnimateOut = !show && binding.pledgeContainerLayout.scrim.alpha >= 0f
         if (shouldAnimateIn || shouldAnimateOut) {
             val finalAlpha = if (show) 1f else 0f
-            binding.pledgeContainer.scrim.animate()
+            binding.pledgeContainerLayout.scrim.animate()
                 .alpha(finalAlpha)
                 .setDuration(200L)
                 .setListener(object : AnimatorListenerAdapter() {
 
                     override fun onAnimationEnd(animation: Animator?) {
                         if (!show) {
-                            ViewUtils.setGone(binding.pledgeContainer.scrim, true)
+                            ViewUtils.setGone(binding.pledgeContainerLayout.scrim, true)
                         }
                     }
 
                     override fun onAnimationStart(animation: Animator?) {
                         if (show) {
-                            ViewUtils.setGone(binding.pledgeContainer.scrim, false)
+                            ViewUtils.setGone(binding.pledgeContainerLayout.scrim, false)
                         }
                     }
                 })
@@ -394,21 +394,21 @@ class ProjectActivity :
     private fun expandPledgeSheet(expandAndAnimate: Pair<Boolean, Boolean>) {
         val expand = expandAndAnimate.first
         val animate = expandAndAnimate.second
-        val targetToShow = if (!expand) binding.pledgeContainer.pledgeActionButtons else binding.pledgeContainer.pledgeContainer 
+        val targetToShow = if (!expand) binding.pledgeContainerLayout.pledgeActionButtonsLayout else binding.pledgeContainerLayout.pledgeContainer
         val showRewardsFragmentAnimator = ObjectAnimator.ofFloat(targetToShow, View.ALPHA, 0f, 1f)
 
-        val targetToHide = if (!expand) binding.pledgeContainer.pledgeContainer else binding.pledgeContainer.pledgeActionButtons
+        val targetToHide = if (!expand) binding.pledgeContainerLayout.pledgeContainer else binding.pledgeContainerLayout.pledgeActionButtonsLayout
         val hideRewardsFragmentAnimator = ObjectAnimator.ofFloat(targetToHide, View.ALPHA, 1f, 0f)
 
         val guideline = rewardsSheetGuideline()
-        val initialValue = (if (expand) binding.pledgeContainer.pledgeContainerRoot.height - guideline else 0).toFloat()
-        val finalValue = (if (expand) 0 else binding.pledgeContainer.pledgeContainerRoot.height - guideline).toFloat()
+        val initialValue = (if (expand) binding.pledgeContainerLayout.pledgeContainerRoot.height - guideline else 0).toFloat()
+        val finalValue = (if (expand) 0 else binding.pledgeContainerLayout.pledgeContainerRoot.height - guideline).toFloat()
         val initialRadius = resources.getDimensionPixelSize(R.dimen.fab_radius).toFloat()
 
-        val pledgeContainerYAnimator = ObjectAnimator.ofFloat(binding.pledgeContainer.pledgeContainerRoot, View.Y, initialValue, finalValue).apply {
+        val pledgeContainerYAnimator = ObjectAnimator.ofFloat(binding.pledgeContainerLayout.pledgeContainerRoot, View.Y, initialValue, finalValue).apply {
             addUpdateListener { valueAnim ->
                 val radius = initialRadius * if (expand) 1 - valueAnim.animatedFraction else valueAnim.animatedFraction
-                binding.pledgeContainer.pledgeContainerRoot.radius = radius
+                binding.pledgeContainerLayout.pledgeContainerRoot.radius = radius
             }
         }
 
@@ -423,12 +423,12 @@ class ProjectActivity :
                 override fun onAnimationEnd(animation: Animator?) {
                     setFragmentsState(expand)
                     if (expand) {
-                        binding.pledgeContainer.pledgeActionButtons.visibility = View.GONE
+                        binding.pledgeContainerLayout.pledgeActionButtonsLayout.visibility = View.GONE
                         binding.projectRecyclerView.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                         binding.projectActivityToolbar.toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
-                        binding.pledgeContainer.pledgeToolbar.requestFocus()
+                        binding.pledgeContainerLayout.pledgeToolbar.requestFocus()
                     } else {
-                        binding.pledgeContainer.pledgeContainer.visibility = View.GONE
+                        binding.pledgeContainerLayout.pledgeContainer.visibility = View.GONE
                         binding.projectRecyclerView.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
                         binding.projectActivityToolbar.toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
                         if (animate) {
@@ -439,9 +439,9 @@ class ProjectActivity :
 
                 override fun onAnimationStart(animation: Animator?) {
                     if (expand) {
-                        binding.pledgeContainer.pledgeContainer.visibility = View.VISIBLE
+                        binding.pledgeContainerLayout.pledgeContainer.visibility = View.VISIBLE
                     } else if (animate) {
-                        binding.pledgeContainer.pledgeActionButtons.visibility = View.VISIBLE
+                        binding.pledgeContainerLayout.pledgeActionButtonsLayout.visibility = View.VISIBLE
                     }
                 }
             })
@@ -457,7 +457,7 @@ class ProjectActivity :
     }
 
     private fun handleNativeCheckoutBackPress() {
-        val pledgeSheetIsExpanded = binding.pledgeContainer.pledgeContainerRoot.y == 0f
+        val pledgeSheetIsExpanded = binding.pledgeContainerLayout.pledgeContainerRoot.y == 0f
 
         when {
             supportFragmentManager.backStackEntryCount > 0 -> supportFragmentManager.popBackStack()
@@ -503,20 +503,20 @@ class ProjectActivity :
         stringResOrTitle?.let { either ->
             @StringRes val stringRes = either.right()
             val title = either.left()
-            binding.pledgeContainer.backingDetailsSubtitle.text = stringRes?.let { getString(it) } ?: title
+            binding.pledgeContainerLayout.backingDetailsSubtitle.text = stringRes?.let { getString(it) } ?: title
         }
     }
 
     private fun setClickListeners() {
-        binding.pledgeContainer.pledgeActionButton.setOnClickListener {
+        binding.pledgeContainerLayout.pledgeActionButton.setOnClickListener {
             this.viewModel.inputs.nativeProjectActionButtonClicked()
         }
 
-        binding.pledgeContainer.pledgeToolbar.setNavigationOnClickListener {
+        binding.pledgeContainerLayout.pledgeToolbar.setNavigationOnClickListener {
             this.viewModel.inputs.pledgeToolbarNavigationClicked()
         }
 
-        binding.pledgeContainer.pledgeToolbar.setOnMenuItemClickListener {
+        binding.pledgeContainerLayout.pledgeToolbar.setOnMenuItemClickListener {
             when {
                 it.itemId == R.id.update_pledge -> {
                     this.viewModel.inputs.updatePledgeClicked()
@@ -542,7 +542,7 @@ class ProjectActivity :
             }
         }
 
-        binding.pledgeContainer.projectRetryLayout.pledgeSheetRetryContainer.setOnClickListener {
+        binding.pledgeContainerLayout.projectRetryLayout.pledgeSheetRetryContainer.setOnClickListener {
             this.viewModel.inputs.reloadProjectContainerClicked()
         }
 
@@ -557,7 +557,7 @@ class ProjectActivity :
 
     private fun setInitialRewardsContainerY() {
         val guideline = rewardsSheetGuideline()
-        binding.pledgeContainer.pledgeContainerRoot.y = (binding.root.height - guideline).toFloat()
+        binding.pledgeContainerLayout.pledgeContainerRoot.y = (binding.root.height - guideline).toFloat()
     }
 
     private fun showCancelPledgeFragment(project: Project) {
@@ -610,8 +610,8 @@ class ProjectActivity :
     }
 
     private fun setPledgeActionButtonCTA(stringRes: Int) {
-        binding.pledgeContainer.pledgeActionButton.setText(stringRes)
-        binding.pledgeContainer.pledgeActionButton.contentDescription = when (stringRes) {
+        binding.pledgeContainerLayout.pledgeActionButton.setText(stringRes)
+        binding.pledgeContainerLayout.pledgeActionButton.contentDescription = when (stringRes) {
             R.string.Manage -> getString(R.string.Manage_your_pledge)
             else -> getString(stringRes)
         }
@@ -705,20 +705,20 @@ class ProjectActivity :
     }
 
     private fun styleProjectActionButton(detailsAreVisible: Boolean) {
-        val buttonParams = binding.pledgeContainer.pledgeActionButton.layoutParams as LinearLayout.LayoutParams
+        val buttonParams = binding.pledgeContainerLayout.pledgeActionButton.layoutParams as LinearLayout.LayoutParams
         when {
             detailsAreVisible -> {
-                binding.pledgeContainer.backingDetails.visibility = View.VISIBLE
+                binding.pledgeContainerLayout.backingDetails.visibility = View.VISIBLE
                 buttonParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
-                binding.pledgeContainer.pledgeActionButton.cornerRadius = resources.getDimensionPixelSize(R.dimen.grid_2)
+                binding.pledgeContainerLayout.pledgeActionButton.cornerRadius = resources.getDimensionPixelSize(R.dimen.grid_2)
             }
             else -> {
-                binding.pledgeContainer.backingDetails.visibility = View.GONE
+                binding.pledgeContainerLayout.backingDetails.visibility = View.GONE
                 buttonParams.width = LinearLayout.LayoutParams.MATCH_PARENT
-                binding.pledgeContainer.pledgeActionButton.cornerRadius = resources.getDimensionPixelSize(R.dimen.fab_radius)
+                binding.pledgeContainerLayout.pledgeActionButton.cornerRadius = resources.getDimensionPixelSize(R.dimen.fab_radius)
             }
         }
-        binding.pledgeContainer.pledgeActionButton.layoutParams = buttonParams
+        binding.pledgeContainerLayout.pledgeActionButton.layoutParams = buttonParams
     }
 
     private fun updateFragments(projectData: ProjectData) {
@@ -751,9 +751,9 @@ class ProjectActivity :
 
     private fun updateManagePledgeMenu(@MenuRes menu: Int?) {
         menu?.let {
-            binding.pledgeContainer.pledgeToolbar.inflateMenu(it)
+            binding.pledgeContainerLayout.pledgeToolbar.inflateMenu(it)
         } ?: run {
-            binding.pledgeContainer.pledgeToolbar.menu.clear()
+            binding.pledgeContainerLayout.pledgeToolbar.menu.clear()
         }
     }
 }

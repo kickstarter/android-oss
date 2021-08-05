@@ -42,7 +42,7 @@
     tools:listitem="@layout/project_main_layout" />
 
   <include
-      android:id="@+id/pledge_container"
+      android:id="@+id/pledge_container_layout"
       layout="@layout/pledge_container" />
 
   <androidx.coordinatorlayout.widget.CoordinatorLayout

@@ -1,7 +1,7 @@
 base_job: &base_job
-  executor:
-      name: android/android-machine
-      resource-class: xlarge
+  resource_class: xlarge
+  docker:
+    - image: circleci/android:api-30
   working_directory: '~/project'
   environment:
     TERM: dumb
@@ -73,14 +73,13 @@ jobs:
           avd-name: Pixel_3a_API_30
           system-image: system-images;android-30;google_apis;x86
           install: true
-      - run: ./script/emulator/copy_emulator_configuration.sh
       - android/start-emulator:
           avd-name: Pixel_3a_API_30
+          additional-args: -skin 1080x2220
           post-emulator-launch-assemble-command: ""
+          run-logcat: true
       - android/wait-for-emulator
       - run: ./script/emulator/screenshot_config_emulator.sh
-      - android/wait-for-emulator
-      #- run: ./gradlew executeScreenshotTests
       - android/save-gradle-cache:
           cache-prefix: v1a
 
@@ -176,9 +175,9 @@ workflows:
       - test:
           requires:
             - build
-      - snapshot-test:
-          requires:
-            - build
+      #- snapshot-test:
+      #    requires:
+      #      - build
       - create_internal:
           requires:
             - build

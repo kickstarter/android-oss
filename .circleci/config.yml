@@ -88,6 +88,12 @@ jobs:
       - run: ./gradlew executeScreenshotTests
       - android/save-gradle-cache:
           cache-prefix: v1a
+      - store_artifacts:
+          path: app/build/reports/shot/verification/
+          destination: reports
+            - store_artifacts:
+                path: app/build/outputs
+                destination: tests
 
   create_internal:
     <<: *base_job

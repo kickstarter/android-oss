@@ -13,12 +13,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isGone
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
+import com.kickstarter.databinding.FragmentNewCardBinding
+import com.kickstarter.databinding.ModalFragmentNewCardBinding
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
-import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.ArgumentsKey
@@ -29,18 +31,6 @@ import com.stripe.android.ApiResultCallback
 import com.stripe.android.model.CardParams
 import com.stripe.android.model.Token
 import com.stripe.android.view.CardInputListener
-import kotlinx.android.synthetic.main.form_new_card.allowed_card_warning
-import kotlinx.android.synthetic.main.form_new_card.card_focus
-import kotlinx.android.synthetic.main.form_new_card.card_input_widget
-import kotlinx.android.synthetic.main.form_new_card.cardholder_name
-import kotlinx.android.synthetic.main.form_new_card.form_container
-import kotlinx.android.synthetic.main.form_new_card.new_card_app_bar_layout
-import kotlinx.android.synthetic.main.form_new_card.new_card_toolbar
-import kotlinx.android.synthetic.main.form_new_card.postal_code
-import kotlinx.android.synthetic.main.form_new_card.progress_bar
-import kotlinx.android.synthetic.main.form_new_card.reusable_container
-import kotlinx.android.synthetic.main.form_new_card.reusable_switch
-import kotlinx.android.synthetic.main.modal_fragment_new_card.modal_new_card_snackbar_anchor
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresFragmentViewModel(NewCardFragmentViewModel.ViewModel::class)
@@ -51,16 +41,23 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
 
     private var saveEnabled = false
     private var onCardSavedListener: OnCardSavedListener? = null
+    private var fragmentNewCardBinding: FragmentNewCardBinding? = null
+    private var modalFragmentNewCardBinding: ModalFragmentNewCardBinding? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        val layout = if (modal()) R.layout.modal_fragment_new_card else R.layout.fragment_new_card
-        return inflater.inflate(layout, container, false)
+        if (modal()) {
+            modalFragmentNewCardBinding = ModalFragmentNewCardBinding.inflate(inflater, container, false)
+            fragmentNewCardBinding = modalFragmentNewCardBinding?.fragmentNewCard
+            return modalFragmentNewCardBinding?.root
+        }
+        fragmentNewCardBinding = FragmentNewCardBinding.inflate(inflater, container, false)
+        return fragmentNewCardBinding?.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        (activity as AppCompatActivity).setSupportActionBar(new_card_toolbar)
+        (activity as AppCompatActivity).setSupportActionBar(fragmentNewCardBinding?.formNewCardLayout?.newCardToolbar)
         setHasOptionsMenu(true)
 
         this.viewModel.outputs.allowedCardWarning()
@@ -71,19 +68,21 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.allowedCardWarningIsVisible()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { ViewUtils.setGone(allowed_card_warning, !it) }
+            .subscribe {
+                fragmentNewCardBinding?.formNewCardLayout?.allowedCardWarning?.isGone = !it
+            }
 
         this.viewModel.outputs.cardWidgetFocusDrawable()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { card_focus.setImageResource(it) }
+            .subscribe { fragmentNewCardBinding?.formNewCardLayout?.cardFocus?.setImageResource(it) }
 
         this.viewModel.outputs.progressBarIsVisible()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .filter { this.activity != null && isVisible }
             .subscribe {
-                ViewUtils.setGone(progress_bar, !it)
+                fragmentNewCardBinding?.formNewCardLayout?.progressBar?.isGone = !it
                 updateMenu(!it)
             }
 
@@ -100,42 +99,59 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.error()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { showSnackbar(new_card_toolbar, getString(R.string.Something_went_wrong_please_try_again)) }
+            .subscribe {
+                fragmentNewCardBinding?.formNewCardLayout?.newCardToolbar?.let {
+                    showSnackbar(it, getString(R.string.Something_went_wrong_please_try_again))
+                }
+            }
 
         this.viewModel.outputs.modalError()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { showSnackbar(modal_new_card_snackbar_anchor, getString(R.string.Something_went_wrong_please_try_again)) }
+            .subscribe {
+                modalFragmentNewCardBinding?.modalNewCardSnackbarAnchor?.let { modalNewCardSnackbarAnchor ->
+                    showSnackbar(
+                        modalNewCardSnackbarAnchor, getString(R.string.Something_went_wrong_please_try_again)
+                    )
+                }
+            }
 
         this.viewModel.outputs.reusableContainerIsVisible()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { ViewUtils.setGone(reusable_container, !it) }
+            .subscribe {
+                fragmentNewCardBinding?.formNewCardLayout?.reusableContainer ?.isGone = !it
+            }
 
         this.viewModel.outputs.appBarLayoutHasElevation()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { if (!it) new_card_app_bar_layout.stateListAnimator = null }
+            .subscribe {
+                if (!it)
+                    fragmentNewCardBinding?.formNewCardLayout?.newCardAppBarLayout ?.stateListAnimator = null
+            }
 
         this.viewModel.outputs.dividerIsVisible()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { form_container.showDividers = if (it) LinearLayout.SHOW_DIVIDER_END else LinearLayout.SHOW_DIVIDER_NONE }
+            .subscribe { fragmentNewCardBinding?.formNewCardLayout?.formContainer ?.showDividers = if (it) LinearLayout.SHOW_DIVIDER_END else LinearLayout.SHOW_DIVIDER_NONE }
 
         this.viewModel.outputs.createStripeToken()
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe { createStripeToken(it) }
 
-        RxView.clicks(reusable_switch)
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { this.viewModel.inputs.reusable(reusable_switch.isChecked) }
+        fragmentNewCardBinding?.formNewCardLayout?.reusableSwitch?.let { reusableSwitch ->
+            RxView.clicks(reusableSwitch)
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.viewModel.inputs.reusable(reusableSwitch.isChecked) }
+        }
 
-        cardholder_name.onChange { this.viewModel.inputs.name(it) }
-        postal_code.onChange { this.viewModel.inputs.postalCode(it) }
+        fragmentNewCardBinding?.formNewCardLayout?.cardholderName?.onChange { this.viewModel.inputs.name(it) }
+        fragmentNewCardBinding?.formNewCardLayout?.postalCode?.onChange { this.viewModel.inputs.postalCode(it) }
         addListeners()
-        cardholder_name.requestFocus()
+        fragmentNewCardBinding?.formNewCardLayout?.cardholderName?.requestFocus()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -168,14 +184,14 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
     }
 
     private fun addListeners() {
-        card_input_widget.clearFocus()
-        cardholder_name.onFocusChangeListener = cardFocusChangeListener
-        postal_code.onFocusChangeListener = cardFocusChangeListener
-        card_input_widget.postalCodeEnabled = false
-        card_input_widget.setCardNumberTextWatcher(cardNumberWatcher)
-        card_input_widget.setCvcNumberTextWatcher(cardValidityWatcher)
-        card_input_widget.setExpiryDateTextWatcher(cardValidityWatcher)
-        card_input_widget.setCardInputListener(object : CardInputListener {
+        fragmentNewCardBinding?.formNewCardLayout?.cardInputWidget?.clearFocus()
+        fragmentNewCardBinding?.formNewCardLayout?.cardholderName?.onFocusChangeListener = cardFocusChangeListener
+        fragmentNewCardBinding?.formNewCardLayout?.postalCode?.onFocusChangeListener = cardFocusChangeListener
+        fragmentNewCardBinding?.formNewCardLayout?.cardInputWidget?.postalCodeEnabled = false
+        fragmentNewCardBinding?.formNewCardLayout?.cardInputWidget?.setCardNumberTextWatcher(cardNumberWatcher)
+        fragmentNewCardBinding?.formNewCardLayout?.cardInputWidget?.setCvcNumberTextWatcher(cardValidityWatcher)
+        fragmentNewCardBinding?.formNewCardLayout?.cardInputWidget?.setExpiryDateTextWatcher(cardValidityWatcher)
+        fragmentNewCardBinding?.formNewCardLayout?.cardInputWidget?.setCardInputListener(object : CardInputListener {
             override fun onFocusChange(focusField: CardInputListener.FocusField) {
                 this@NewCardFragment.viewModel.inputs.cardFocus(true)
             }
@@ -195,7 +211,7 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
     }
 
     private fun cardChanged() {
-        this.viewModel.inputs.card(card_input_widget.cardParams)
+        this.viewModel.inputs.card(fragmentNewCardBinding?.formNewCardLayout?.cardInputWidget?.cardParams)
     }
 
     private fun createStripeToken(card: CardParams) {
@@ -223,11 +239,11 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
 
         warning?.let {
             if (project == null) {
-                allowed_card_warning.setText(it)
+                fragmentNewCardBinding?.formNewCardLayout?.allowedCardWarning ?.setText(it)
             } else {
                 val ksString = this.viewModel.environment.ksString()
                 val country = project.location()?.expandedCountry()
-                allowed_card_warning.text = ksString.format(getString(it), "project_country", country)
+                fragmentNewCardBinding?.formNewCardLayout?.allowedCardWarning ?.text = ksString.format(getString(it), "project_country", country)
             }
         }
     }

@@ -16,5 +16,5 @@ $DIR/configure_dpi.sh
 echo "Starting emulator..."
 echo "no" | emulator -avd Emulator -no-audio -no-boot-anim -verbose -no-snapshot -gpu swiftshader_indirect -skin 1080x2220
 $DIR/disable_animations.sh
-$DIR/wait_for_emulator.sh
 $DIR/screenshot_config_emulator.sh
+$DIR/wait_for_emulator.sh

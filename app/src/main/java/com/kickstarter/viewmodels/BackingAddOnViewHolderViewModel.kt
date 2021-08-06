@@ -36,6 +36,7 @@ class BackingAddOnViewHolderViewModel {
 
         /** Emits if the increase button has been pressed */
         fun addButtonPressed()
+
     }
 
     interface Outputs {
@@ -95,6 +96,8 @@ class BackingAddOnViewHolderViewModel {
 
         /** Emits if the amount selected reach the limit available*/
         fun disableIncreaseButton(): Observable<Boolean>
+
+        fun currentQuantity(): Observable<Int>
     }
 
     /**
@@ -215,34 +218,36 @@ class BackingAddOnViewHolderViewModel {
                 .map { it?.let { it.quantity() } ?: 0 }
                 .distinctUntilChanged()
                 .subscribe(this.quantity)
-
+//
             this.quantity
                 .compose<Int>(takeWhen(this.addButtonPressed))
                 .map { increase(it) }
-                .subscribe(this.quantity)
-
-            this.quantity
-                .compose<Int>(takeWhen(this.increaseButtonPressed))
-                .map { increase(it) }
-                .subscribe(this.quantity)
-
-            this.quantity
-                .compose<Int>(takeWhen(this.decreaseButtonPressed))
-                .map { if (it > 0) decrease(it) else 0 }
-                .subscribe(this.quantity)
-
+                .subscribe(
+                    this.quantity
+                )
+//
+//            this.quantity
+//                .compose<Int>(takeWhen(this.increaseButtonPressed))
+//                .map { increase(it) }
+//                .subscribe(this.quantity)
+//
+//            this.quantity
+//                .compose<Int>(takeWhen(this.decreaseButtonPressed))
+//                .map { if (it > 0) decrease(it) else 0 }
+//                .subscribe(this.quantity)
+//
             this.quantity
                 .filter { it != null }
                 .map { it > 0 }
                 .compose(bindToLifecycle())
                 .subscribe(this.addButtonIsGone)
-
-            this.quantity
-                .compose<Pair<Int, Reward>>(combineLatestPair(addOn))
-                .map { maxLimitReached(it) }
-                .compose(bindToLifecycle())
-                .subscribe(this.disableIncreaseButton)
-
+//
+//            this.quantity
+//                .compose<Pair<Int, Reward>>(combineLatestPair(addOn))
+//                .map { maxLimitReached(it) }
+//                .compose(bindToLifecycle())
+//                .subscribe(this.disableIncreaseButton)
+//
             this.quantity
                 .compose<Pair<Int, Reward>>(combineLatestPair(addOn))
                 .map { data -> Pair(data.first, data.second.id()) }
@@ -292,6 +297,8 @@ class BackingAddOnViewHolderViewModel {
             this.addButtonPressed.onNext(null)
             this.addButtonIsGone.onNext(true)
         }
+
+        override fun currentQuantity() = this.quantity
 
         // - Outputs
         override fun titleForAddOn(): PublishSubject<String> = this.title

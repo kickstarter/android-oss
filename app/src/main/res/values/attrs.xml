@@ -33,7 +33,6 @@
   </declare-styleable>
 
   <declare-styleable name="AddOnCardComponent">
-    <attr name="add_on_tag_text" format="string" />
   </declare-styleable>
 
 </resources>

@@ -13,7 +13,7 @@ abstract class KSArrayAdapter<T>(val ctx: Context, private val resourceId: Int, 
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: LayoutInflater.from(context).inflate(resourceId, parent, false)
-        val viewHolder = viewHolder(resourceId, view)
+        val viewHolder = viewHolder(resourceId, parent)
         viewHolder.bindData(getItem(position))
         return view
     }
@@ -22,5 +22,5 @@ abstract class KSArrayAdapter<T>(val ctx: Context, private val resourceId: Int, 
      * Returns a new KSArrayViewHolder given a layout and view.
      */
     @NonNull
-    protected abstract fun viewHolder(@LayoutRes layout: Int, @NonNull view: View): KSArrayViewHolder
+    protected abstract fun viewHolder(@LayoutRes layout: Int, @NonNull viewGroup: ViewGroup): KSArrayViewHolder
 }

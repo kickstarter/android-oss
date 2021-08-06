@@ -2,8 +2,11 @@ package com.kickstarter.ui.adapters
 
 import android.content.Context
 import android.util.Pair
-import android.view.View
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.Filter
+import androidx.annotation.LayoutRes
+import com.kickstarter.databinding.ItemShippingRuleBinding
 import com.kickstarter.models.Project
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.viewholders.KSArrayViewHolder
@@ -42,8 +45,8 @@ class ShippingRulesAdapter(ctx: Context, private val resourceId: Int, val items:
         }
     }
 
-    override fun viewHolder(layout: Int, view: View): KSArrayViewHolder {
-        return ShippingRuleViewHolder(view, delegate)
+    override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSArrayViewHolder {
+        return ShippingRuleViewHolder(ItemShippingRuleBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate)
     }
 
     override fun getItem(position: Int): Pair<ShippingRule, Project>? {

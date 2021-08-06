@@ -1,9 +1,7 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
-import android.view.View
 import com.kickstarter.KSApplication
-import com.kickstarter.R
 import com.kickstarter.databinding.ActivityFeatureFlagsBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.preferences.StringPreferenceType
@@ -24,13 +22,11 @@ class FeatureFlagsActivity : BaseActivity<FeatureFlagsViewModel.ViewModel>(), Fe
     var featuresFlagPreference: StringPreferenceType? = null
 
     private lateinit var binding: ActivityFeatureFlagsBinding
-    private lateinit var view: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFeatureFlagsBinding.inflate(layoutInflater)
-        setContentView(view)
-        setContentView(R.layout.activity_feature_flags)
+        setContentView(binding.root)
 
         (applicationContext as KSApplication).component().inject(this)
 

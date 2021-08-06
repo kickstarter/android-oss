@@ -73,6 +73,9 @@ jobs:
           avd-name: Pixel_3a_API_30
           system-image: system-images;android-30;google_apis;x86
           install: true
+      - run:
+          name: Configure screen size and dpi for Screenshot test
+          command: ./script/emulator/sconfigure_dpi.sh    
       - android/start-emulator:
           avd-name: Pixel_3a_API_30
           additional-args: -skin 1080x2220

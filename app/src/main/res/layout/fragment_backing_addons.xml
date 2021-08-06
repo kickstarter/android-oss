@@ -96,5 +96,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-    <include layout="@layout/fragment_backing_addons_section_footer" />
+    <include
+        android:id="@+id/fragment_backing_addons_section_footer_layout"
+        layout="@layout/fragment_backing_addons_section_footer" />
 </FrameLayout>

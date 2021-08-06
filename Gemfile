@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'activesupport'
-gem 'aws-sdk', '~> 2.11'
+gem 'aws-sdk', '~> 2.3'
 gem 'configs'
 gem 'commander'
 gem 'excon'

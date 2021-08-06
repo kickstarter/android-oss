@@ -103,7 +103,8 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
             .compose(Transformers.observeForUI())
             .subscribe {
                 binding.addonQuantityRemaining.setAddOnTagText(
-                    this.ksString.format(context().getString(R.string.rewards_info_time_left), "time", it))
+                    this.ksString.format(context().getString(R.string.rewards_info_time_left), "time", it)
+                )
             }
 
         this.viewModel.outputs.deadlineCountdownIsGone()

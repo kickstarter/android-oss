@@ -91,9 +91,6 @@ jobs:
       - store_artifacts:
           path: app/build/reports/shot/verification/
           destination: reports
-            - store_artifacts:
-                path: app/build/outputs
-                destination: tests
 
   create_internal:
     <<: *base_job

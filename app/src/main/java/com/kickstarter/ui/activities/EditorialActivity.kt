@@ -57,7 +57,7 @@ class EditorialActivity : BaseActivity<EditorialViewModel.ViewModel>() {
             .compose(bindToLifecycle())
             .subscribe {
                 binding.editorialRetryContainer.root.isGone = it
-                }
+            }
 
         RxView.clicks(binding.editorialRetryContainer.root)
             .compose(bindToLifecycle())

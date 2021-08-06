@@ -61,7 +61,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
             adapter = discoveryAdapter
             layoutManager = LinearLayoutManager(context)
             recyclerViewPaginator = RecyclerViewPaginator(
-              this,
+                this,
                 { this@DiscoveryFragment.viewModel.inputs.nextPage() },
                 this@DiscoveryFragment.viewModel.outputs.isFetchingProjects
             )

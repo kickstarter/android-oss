@@ -56,7 +56,7 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.progressBar.isGone = !it
-               }
+            }
 
         this.viewModel.outputs.showDeleteCardDialog()
             .compose(bindToLifecycle())

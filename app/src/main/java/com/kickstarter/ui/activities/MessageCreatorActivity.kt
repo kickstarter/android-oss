@@ -50,7 +50,7 @@ class MessageCreatorActivity : BaseActivity<MessageCreatorViewModel.ViewModel>()
             .compose(observeForUI())
             .subscribe {
                 binding.progressBar.isGone = !it
-               }
+            }
 
         this.viewModel.outputs.sendButtonIsEnabled()
             .compose(bindToLifecycle())
@@ -84,6 +84,6 @@ class MessageCreatorActivity : BaseActivity<MessageCreatorViewModel.ViewModel>()
     }
 
     private fun setHint(hint: String) {
-     binding.messageBodyTil.hint = this.ksString.format(getString(R.string.Message_user_name), "user_name", hint)
+        binding.messageBodyTil.hint = this.ksString.format(getString(R.string.Message_user_name), "user_name", hint)
     }
 }

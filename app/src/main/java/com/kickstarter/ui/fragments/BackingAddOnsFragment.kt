@@ -148,14 +148,14 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
     }
 
     private fun setupRecyclerView() {
-         binding?.fragmentSelectAddonsRecycler?.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-         binding?.fragmentSelectAddonsRecycler?.adapter = backingAddonsAdapter
+        binding?.fragmentSelectAddonsRecycler?.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        binding?.fragmentSelectAddonsRecycler?.adapter = backingAddonsAdapter
     }
 
     private fun setUpShippingAdapter() {
         context?.let {
             shippingRulesAdapter = ShippingRulesAdapter(it, R.layout.item_shipping_rule, arrayListOf(), this)
-             binding?.fragmentBackingAddonsShippingRules?.setAdapter(shippingRulesAdapter)
+            binding?.fragmentBackingAddonsShippingRules?.setAdapter(shippingRulesAdapter)
         }
     }
 
@@ -182,7 +182,7 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
     }
 
     private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {
-         binding?.fragmentBackingAddonsShippingRules?.isEnabled = true
+        binding?.fragmentBackingAddonsShippingRules?.isEnabled = true
         shippingRulesAdapter.populateShippingRules(shippingRules, project)
     }
 
@@ -200,7 +200,7 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
     override fun ruleSelected(rule: ShippingRule) {
         this.viewModel.inputs.shippingRuleSelected(rule)
         activity?.hideKeyboard()
-         binding?.fragmentBackingAddonsShippingRules?.clearFocus()
+        binding?.fragmentBackingAddonsShippingRules?.clearFocus()
     }
 
     override fun quantityPerId(quantityPerId: Pair<Int, Long>) {
@@ -209,7 +209,7 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
 
     override fun onDetach() {
         super.onDetach()
-         binding?.fragmentSelectAddonsRecycler?.adapter = null
+        binding?.fragmentSelectAddonsRecycler?.adapter = null
         this.viewModel = null
     }
 }

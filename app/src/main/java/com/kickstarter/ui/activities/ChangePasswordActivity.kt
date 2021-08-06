@@ -39,7 +39,7 @@ class ChangePasswordActivity : BaseActivity<ChangePasswordViewModel.ViewModel>()
             .compose(Transformers.observeForUI())
             .subscribe {
                 binding.progressBar.isGone = !it
-              }
+            }
 
         this.viewModel.outputs.passwordWarning()
             .compose(bindToLifecycle())

@@ -101,7 +101,7 @@ class ProjectActivity :
         }
 
         this.adapter = ProjectAdapter(this.viewModel)
-       binding.projectRecyclerView.adapter = this.adapter
+        binding.projectRecyclerView.adapter = this.adapter
         binding.projectRecyclerView.layoutManager = LinearLayoutManager(this)
 
         this.viewModel.outputs.backingDetailsSubtitle()

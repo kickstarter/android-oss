@@ -34,8 +34,8 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
 
         this.adapter = ProfileAdapter(this.viewModel)
         val spanCount = if (ViewUtils.isLandscape(this)) 3 else 2
-                binding.recyclerView.layoutManager = GridLayoutManager(this, spanCount)
-                binding.recyclerView.adapter = this.adapter
+        binding.recyclerView.layoutManager = GridLayoutManager(this, spanCount)
+        binding.recyclerView.adapter = this.adapter
 
         this.paginator = RecyclerViewPaginator(
             binding.recyclerView, { this.viewModel.inputs.nextPage() },
@@ -68,63 +68,63 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
                 binding.backedTextView.isGone = it
             }
 
-                this.viewModel.outputs.createdCountTextViewHidden()
-                    .compose(bindToLifecycle())
-                    .compose(observeForUI())
-                    .subscribe {
-                        binding.createdCountTextView.isGone = it
-                    }
-
-                this.viewModel.outputs.createdCountTextViewText()
-                    .compose(bindToLifecycle())
-                    .compose(observeForUI())
-                    .subscribe {
-                        binding.createdCountTextView.text = it
-                    }
-
-                this.viewModel.outputs.createdTextViewHidden()
-                    .compose(bindToLifecycle())
-                    .compose(observeForUI())
-                    .subscribe {
-                        binding.createdTextView.isGone = it
-                    }
-
-                this.viewModel.outputs.dividerViewHidden()
-                    .compose(bindToLifecycle())
-                    .compose(observeForUI())
-                    .subscribe {
-                        binding.dividerView.isGone = it
-                    }
-
-                this.viewModel.outputs.projectList()
-                    .compose(bindToLifecycle())
-                    .compose(observeForUI())
-                    .subscribe {
-                        this.loadProjects(it)
-                    }
-
-                this.viewModel.outputs.resumeDiscoveryActivity()
-                    .compose(bindToLifecycle())
-                    .compose(observeForUI())
-                    .subscribe { resumeDiscoveryActivity() }
-
-                this.viewModel.outputs.startMessageThreadsActivity()
-                    .compose(bindToLifecycle())
-                    .compose(observeForUI())
-                    .subscribe { this.startMessageThreadsActivity() }
-
-                this.viewModel.outputs.startProjectActivity()
-                    .compose(bindToLifecycle())
-                    .compose(observeForUI())
-                    .subscribe { this.startProjectActivity(it) }
-
-                this.viewModel.outputs.userNameTextViewText()
-                    .compose(bindToLifecycle())
-                    .compose(observeForUI())
-                    .subscribe { binding.userNameTextView.text = it }
-
-           binding.profileActivityToolbar.messagesButton.setOnClickListener { this.viewModel.inputs.messagesButtonClicked() }
+        this.viewModel.outputs.createdCountTextViewHidden()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                binding.createdCountTextView.isGone = it
             }
+
+        this.viewModel.outputs.createdCountTextViewText()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                binding.createdCountTextView.text = it
+            }
+
+        this.viewModel.outputs.createdTextViewHidden()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                binding.createdTextView.isGone = it
+            }
+
+        this.viewModel.outputs.dividerViewHidden()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                binding.dividerView.isGone = it
+            }
+
+        this.viewModel.outputs.projectList()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                this.loadProjects(it)
+            }
+
+        this.viewModel.outputs.resumeDiscoveryActivity()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { resumeDiscoveryActivity() }
+
+        this.viewModel.outputs.startMessageThreadsActivity()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { this.startMessageThreadsActivity() }
+
+        this.viewModel.outputs.startProjectActivity()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { this.startProjectActivity(it) }
+
+        this.viewModel.outputs.userNameTextViewText()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.userNameTextView.text = it }
+
+        binding.profileActivityToolbar.messagesButton.setOnClickListener { this.viewModel.inputs.messagesButtonClicked() }
+    }
 
     override fun onDestroy() {
         super.onDestroy()

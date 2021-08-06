@@ -74,7 +74,7 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.creatorNotificationsSection.isGone = it
-               }
+            }
 
         this.viewModel.outputs.user()
             .compose(bindToLifecycle())
@@ -95,7 +95,7 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
     }
 
     private fun displayPreferences(user: User) {
-       binding.projectNotificationsCount.text = intValueOrZero(user.backedProjectsCount()).toString()
+        binding.projectNotificationsCount.text = intValueOrZero(user.backedProjectsCount()).toString()
 
         displayMarketingUpdates(user)
         displayBackingsNotificationSettings(user)
@@ -232,11 +232,11 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
             startProjectNotificationsSettingsActivity()
         }
 
-      binding.backingsMailIcon.setOnClickListener {
+        binding.backingsMailIcon.setOnClickListener {
             this.viewModel.inputs.notifyOfBackings(!this.notifyOfBackings)
         }
 
-       binding.backingsPhoneIcon.setOnClickListener {
+        binding.backingsPhoneIcon.setOnClickListener {
             this.viewModel.inputs.notifyMobileOfBackings(!this.notifyMobileOfBackings)
         }
 
@@ -328,7 +328,7 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
             this.viewModel.inputs.notifyMobileOfMarketingUpdate(!this.notifyMobileOfMarketingUpdates)
         }
 
-       binding.projectUpdatesRow.setOnClickListener {
+        binding.projectUpdatesRow.setOnClickListener {
             AnimationUtils.notificationBounceAnimation(binding.projectUpdatesPhoneIcon, binding.projectUpdatesMailIcon)
         }
     }

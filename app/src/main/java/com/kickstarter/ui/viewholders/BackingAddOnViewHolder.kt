@@ -95,14 +95,14 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                binding.addonTimeLeft.setAddOnTagText(this.ksString.format(context().getString(R.string.limit_limit_per_backer), "limit_per_backer", it))
+                binding.addonBackerLimit.setAddOnTagText(this.ksString.format(context().getString(R.string.limit_limit_per_backer), "limit_per_backer", it))
             }
 
         this.viewModel.outputs.remainingQuantity()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                binding.addonTimeLeft.setAddOnTagText(
+                binding.addonQuantityRemaining.setAddOnTagText(
                     this.ksString.format(context().getString(R.string.rewards_info_time_left), "time", it)
                 )
             }

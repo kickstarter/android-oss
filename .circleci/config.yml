@@ -75,7 +75,7 @@ jobs:
           install: true
       - run:
           name: Configure screen size and dpi for Screenshot test
-          command: ./script/emulator/sconfigure_dpi.sh    
+          command: ./script/emulator/configure_dpi.sh
       - android/start-emulator:
           avd-name: Pixel_3a_API_30
           additional-args: -skin 1080x2220

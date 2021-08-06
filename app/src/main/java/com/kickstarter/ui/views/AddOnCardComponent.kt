@@ -12,8 +12,8 @@ import com.kickstarter.R
 import com.kickstarter.databinding.AddOnsCardBinding
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.ui.adapters.RewardItemsAdapter
-import io.reactivex.Observable
 import kotlinx.android.synthetic.main.add_on_items.view.*
+import rx.Observable
 import java.util.*
 
 class AddOnCardComponent @JvmOverloads constructor(
@@ -22,9 +22,29 @@ class AddOnCardComponent @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : CardView(context, attrs, defStyleAttr) {
     private var binding = AddOnsCardBinding.inflate(LayoutInflater.from(context), this, true)
+    private var listener : AddonCardListener? = null
 
     init {
         obtainStyledAttributes(context, attrs, defStyleAttr)
+
+        binding.addOnStepper.outputs.display()
+            .filter { it != null }
+            .subscribe{
+                showStepper()
+            }
+
+        binding.addOnStepper.outputs.display()
+            .filter { it == 0 }
+            .subscribe {
+                hideStepper()
+            }
+
+        binding.initialStateAddOn.setOnClickListener {
+            listener?.addButtonClicks()
+        }
+
+//        binding.addOnStepper.outputs.display()
+//            .subscribe {listener?.displayChanges(it)}
     }
 
     private fun obtainStyledAttributes(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
@@ -33,9 +53,9 @@ class AddOnCardComponent @JvmOverloads constructor(
             attrs = R.styleable.AddOnCardComponent,
             defStyleAttr = defStyleAttr
         ) {
-            getString(R.styleable.AddOnCardComponent_add_on_tag_text)?.also {
+//            getString(R.styleable.AddOnCardComponent_add_on_tag_text)?.also {
 //                setAddOnTagText(it)
-            }
+//            }
         }
     }
 
@@ -76,11 +96,11 @@ class AddOnCardComponent @JvmOverloads constructor(
     }
 
     fun setBackerLimitText(backerLimit: String) {
-        binding.addonBackerLimit.text = backerLimit
+        binding.addonBackerLimit.setAddOnTagText(backerLimit)
     }
 
     fun setAddonQuantityRemainingText(quantityRemaining: String) {
-        binding.addonQuantityRemaining.text = quantityRemaining
+        binding.addonQuantityRemaining.setAddOnTagText(quantityRemaining)
     }
 
     fun setTimeLeftVisibility(isVisible: Boolean) {
@@ -88,7 +108,7 @@ class AddOnCardComponent @JvmOverloads constructor(
     }
 
     fun setAddonTimeLeftText(timeLeft: String) {
-        binding.addonTimeLeft.text = timeLeft
+        binding.addonTimeLeft.setAddOnTagText(timeLeft)
     }
 
     fun setShippingAmountVisibility(isVisible: Boolean) {
@@ -99,47 +119,78 @@ class AddOnCardComponent @JvmOverloads constructor(
         binding.addOnShippingAmount.text = shippingAmount
     }
 
-    fun setDecreaseQuantityAddonEnabled(isEnabled: Boolean) {
-        binding.decreaseQuantityAddOn.isEnabled = (isEnabled)
-    }
-
-    fun setQuantityAddonText(quantity: String) {
-        binding.quantityAddOn.text = quantity
-    }
-
-    fun setIncreaseQuantityAddonEnabled(isEnabled: Boolean) {
-        binding.increaseQuantityAddOn.isEnabled = isEnabled
-    }
+//    fun setDecreaseQuantityAddonEnabled(isEnabled: Boolean) {
+//        binding.decreaseQuantityAddOn.isEnabled = (isEnabled)
+//    }
+//
+//    fun setQuantityAddonText(quantity: String) {
+//        binding.quantityAddOn.text = quantity
+//    }
+//
+//    fun setIncreaseQuantityAddonEnabled(isEnabled: Boolean) {
+//        binding.increaseQuantityAddOn.isEnabled = isEnabled
+//    }
 
     fun hideStepper() {
         binding.initialStateAddOn.visibility = View.VISIBLE
-        binding.stepperContainerAddOn.visibility = View.GONE
+        binding.addOnStepper.visibility = View.GONE
         binding.initialStateAddOn.isEnabled = true
-        binding.increaseQuantityAddOn.isEnabled = false
+        binding.addOnStepper.isEnabled = false
     }
 
     fun showStepper() {
         binding.initialStateAddOn.visibility = View.GONE
-        binding.stepperContainerAddOn.visibility = View.VISIBLE
+        binding.addOnStepper.visibility = View.VISIBLE
         binding.initialStateAddOn.isEnabled = false
-        binding.increaseQuantityAddOn.isEnabled = true
+        binding.addOnStepper.isEnabled = true
     }
 
-    fun getAddButtonClickListener(): rx.Observable<Void> {
+    fun getAddButtonClickListener(): Observable<Void> {
         return RxView.clicks(binding.initialStateAddOn)
     }
 
-    fun getIncreaseQuantityClickListener(): rx.Observable<Void> {
-        return RxView.clicks(binding.increaseQuantityAddOn)
+    fun stepperDisplay(): Observable<Int> {
+        return binding.addOnStepper.outputs.display()
     }
-    fun getDecreaseQuantityClickListener(): rx.Observable<Void> {
-        return RxView.clicks(binding.decreaseQuantityAddOn)
+
+    fun setStepperVariance(quantity: Int) {
+        binding.addOnStepper.inputs.setVariance(quantity)
     }
+    fun setStepperMax(quantity: Int) {
+        binding.addOnStepper.inputs.setMaximum(quantity)
+    }
+    fun setStepperMin(quantity: Int) {
+        binding.addOnStepper.inputs.setMinimum(quantity)
+    }
+
+    fun setStepperInitialValue(quantity: Int) {
+        binding.addOnStepper.inputs.setInitialValue(quantity)
+    }
+
+    fun addbuttonpressed() {
+        binding.addOnStepper.inputs.setInitialValue(1)
+    }
+
+    fun setAddonCardListener(addonCardListener: AddonCardListener?) {
+        this.listener = addonCardListener
+    }
+
+//    fun getIncreaseQuantityClickListener(): rx.Observable<Void> {
+//        return RxView.clicks(binding.increaseQuantityAddOn)
+//    }
+//    fun getDecreaseQuantityClickListener(): rx.Observable<Void> {
+//        return RxView.clicks(binding.decreaseQuantityAddOn)
+//    }
 
     fun setUpItemsAdapter(rewardItemsAdapter: RewardItemsAdapter, layoutManager: RecyclerView.LayoutManager) {
         binding.addOnCard.add_on_item_recycler_view.apply {
             adapter = rewardItemsAdapter
         }
         binding.addOnCard.add_on_item_recycler_view.layoutManager = layoutManager
+    }
+
+    interface AddonCardListener {
+        fun addButtonClicks()
+//        fun displayChanges(display: Int)
     }
 }

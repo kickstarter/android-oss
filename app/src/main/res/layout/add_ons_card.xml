@@ -7,8 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
-    android:layout_marginTop="@dimen/grid_2"
-    android:layout_marginBottom="@dimen/grid_2"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -148,53 +146,63 @@
                 tools:visibility="visible" />
         </LinearLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/stepper_container_add_on"
+        <com.kickstarter.ui.views.Stepper
+            android:id="@+id/add_on_stepper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/grid_9_half"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pills_container">
+            app:layout_constraintTop_toBottomOf="@+id/pills_container"/>
 
-            <ImageButton
-                android:id="@+id/decrease_quantity_add_on"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_decrease"
-                android:backgroundTint="@color/soft_grey_enabled_drak_gray_disabled"
-                android:contentDescription="@string/Decrease_pledge"
-                android:src="@drawable/ic_remove"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/green_enabled_dark_grey_disabled" />
+<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--            android:id="@+id/stepper_container_add_on"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="@dimen/grid_9_half"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/pills_container">-->
 
-            <ImageButton
-                android:id="@+id/increase_quantity_add_on"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_increase"
-                android:backgroundTint="@color/soft_grey_enabled_drak_gray_disabled"
-                android:contentDescription="@string/Increase_pledge"
-                android:src="@drawable/ic_add"
-                app:layout_constraintStart_toEndOf="@id/decrease_quantity_add_on"
-                app:layout_constraintTop_toTopOf="@+id/decrease_quantity_add_on"
-                app:tint="@color/green_enabled_dark_grey_disabled" />
+<!--            <ImageButton-->
+<!--                android:id="@+id/decrease_quantity_add_on"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@drawable/bg_decrease"-->
+<!--                android:backgroundTint="@color/soft_grey_enabled_drak_gray_disabled"-->
+<!--                android:contentDescription="@string/Decrease_pledge"-->
+<!--                android:src="@drawable/ic_remove"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                app:tint="@color/green_enabled_dark_grey_disabled" />-->
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/quantity_add_on"
-                style="@style/TextPrimary"
-                android:layout_width="@dimen/grid_7"
-                android:layout_height="@dimen/grid_7"
-                android:background="@drawable/border_rounded_soft_grey_300"
-                android:gravity="center"
-                android:textSize="@dimen/callout"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/increase_quantity_add_on"
-                tools:text="1" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+<!--            <ImageButton-->
+<!--                android:id="@+id/increase_quantity_add_on"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@drawable/bg_increase"-->
+<!--                android:backgroundTint="@color/soft_grey_enabled_drak_gray_disabled"-->
+<!--                android:contentDescription="@string/Increase_pledge"-->
+<!--                android:src="@drawable/ic_add"-->
+<!--                app:layout_constraintStart_toEndOf="@id/decrease_quantity_add_on"-->
+<!--                app:layout_constraintTop_toTopOf="@+id/decrease_quantity_add_on"-->
+<!--                app:tint="@color/green_enabled_dark_grey_disabled" />-->
+
+<!--            <androidx.appcompat.widget.AppCompatTextView-->
+<!--                android:id="@+id/quantity_add_on"-->
+<!--                style="@style/TextPrimary"-->
+<!--                android:layout_width="@dimen/grid_7"-->
+<!--                android:layout_height="@dimen/grid_7"-->
+<!--                android:background="@drawable/border_rounded_soft_grey_300"-->
+<!--                android:gravity="center"-->
+<!--                android:textSize="@dimen/callout"-->
+<!--                android:textStyle="bold"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="@+id/increase_quantity_add_on"-->
+<!--                tools:text="1" />-->
+<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/initial_state_add_on"

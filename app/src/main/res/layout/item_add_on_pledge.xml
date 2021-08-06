@@ -130,7 +130,6 @@
                         android:layout_marginEnd="@dimen/grid_1"
                         android:textColor="@color/kds_support_400"
                         android:visibility="gone"
-                        app:add_on_tag_text="3 days left"
                         tools:visibility="visible" />
 
                     <com.kickstarter.ui.views.AddOnTagComponent
@@ -140,7 +139,6 @@
                         android:layout_marginEnd="@dimen/grid_1"
                         android:textColor="@color/kds_support_400"
                         android:visibility="gone"
-                        app:add_on_tag_text="30 left"
                         tools:visibility="visible" />
 
                     <com.kickstarter.ui.views.AddOnTagComponent
@@ -150,7 +148,6 @@
                         android:layout_marginEnd="@dimen/grid_1"
                         android:textColor="@color/kds_support_400"
                         android:visibility="gone"
-                        app:add_on_tag_text="Limit 4"
                         tools:visibility="visible" />
                 </LinearLayout>
 

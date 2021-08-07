@@ -89,7 +89,7 @@ jobs:
       - android/save-gradle-cache:
           cache-prefix: v1a
       - store_artifacts:
-          path: app/build/reports/shot/verification/reports/
+          path: app/build/reports/shot/verification/
           destination: reports
 
   create_internal:

@@ -32,7 +32,7 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
         setSupportActionBar(binding.changeEmailActivityToolbar.changeEmailToolbar)
 
         binding.newEmail.onChange { this.viewModel.inputs.email(it) }
-        binding.currentEmail.onChange { this.viewModel.inputs.password(it) }
+        binding.currentPassword.onChange { this.viewModel.inputs.password(it) }
         binding.sendVerificationEmail.setOnClickListener { this.viewModel.inputs.sendVerificationEmail() }
 
         binding.newEmail.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->

@@ -39,7 +39,7 @@ class CampaignDetailsActivity : BaseActivity<CampaignDetailsViewModel.ViewModel>
         this.viewModel.outputs.url()
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindToLifecycle())
-            .subscribe { binding.webView.loadUrl(it) }
+            .subscribe { binding.campaignWebView.loadUrl(it) }
 
         RxView.clicks(binding.campaignDetailsPledgeActionButton)
             .compose(bindToLifecycle())

@@ -11,7 +11,6 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView.setWebContentsDebuggingEnabled
 import android.widget.FrameLayout
 import com.kickstarter.KSApplication
-import com.kickstarter.R
 import com.kickstarter.databinding.WebViewBinding
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.WebViewJavascriptInterface
@@ -52,7 +51,6 @@ class KSWebView@JvmOverloads constructor(
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebView(context: Context) {
-        LayoutInflater.from(context).inflate(R.layout.web_view, this, true)
 
         if (!isInEditMode) {
             (context.applicationContext as KSApplication).component().inject(this)

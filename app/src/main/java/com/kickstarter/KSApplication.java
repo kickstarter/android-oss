@@ -63,7 +63,9 @@ public class KSApplication extends MultiDexApplication implements IKSApplication
       Timber.plant(new Timber.DebugTree());
     }
 
+    Timber.d(" **************** initApplication with AppContext: %s", getApplicationContext().getApplicationInfo().name);
     if (FirebaseApp.getApps(getApplicationContext()).isEmpty()) {
+      Timber.d(" **************** Inside the method initApplication: isUnitTest: " );
       FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
       FirebaseApp.initializeApp(getApplicationContext());
       FirebaseAnalytics.getInstance(getApplicationContext()).setAnalyticsCollectionEnabled(true);

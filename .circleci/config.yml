@@ -79,13 +79,13 @@ jobs:
       - android/start-emulator:
           avd-name: Emulator
           additional-args: -skin 1080x2220
-          post-emulator-launch-assemble-command: "./gradlew deviceAndroidTest"
+          post-emulator-launch-assemble-command: ""
           run-logcat: true
       - android/wait-for-emulator
       - run:
           name: Config Emulator for Screenshot test
           command: ./script/emulator/screenshot_config_emulator.sh
-      - run: ./gradlew executeScreenshotTests
+      - run: ./gradlew internalDebugExecuteScreenshotTests
       - android/save-gradle-cache:
           cache-prefix: v1a
       - store_artifacts:

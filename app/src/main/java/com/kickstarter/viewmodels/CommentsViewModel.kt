@@ -44,8 +44,8 @@ interface CommentsViewModel {
         fun checkIfThereAnyPendingComments(isBackAction: Boolean)
 
         /** Will be called with the successful response when calling the `postComment` Mutation **/
-        fun refreshComment(comment: Comment)
-        fun refreshCommentCardInCaseFailedPosted(comment: Comment)
+        fun refreshComment(comment: Comment, position: Int)
+        fun refreshCommentCardInCaseFailedPosted(comment: Comment, position: Int)
         fun onShowCanceledPledgeComment(comment: Comment)
     }
 
@@ -85,7 +85,7 @@ interface CommentsViewModel {
         private val onShowGuideLinesLinkClicked = PublishSubject.create<Void>()
         private val onReplyClicked = PublishSubject.create<Pair<Comment, Boolean>>()
         private val checkIfThereAnyPendingComments = PublishSubject.create<Boolean>()
-        private val failedCommentCardToRefresh = PublishSubject.create<Comment>()
+        private val failedCommentCardToRefresh = PublishSubject.create<Pair<Comment, Int>>()
         private val showCanceledPledgeComment = PublishSubject.create<Comment>()
 
         private val closeCommentsPage = BehaviorSubject.create<Void>()
@@ -102,7 +102,7 @@ interface CommentsViewModel {
         private val isRefreshing = BehaviorSubject.create<Boolean>()
         private val setEmptyState = BehaviorSubject.create<Boolean>()
         private val displayPaginationError = BehaviorSubject.create<Boolean>()
-        private val commentToRefresh = PublishSubject.create<Comment>()
+        private val commentToRefresh = PublishSubject.create<Pair<Comment, Int>>()
         private val startThreadActivity = BehaviorSubject.create<Pair<CommentCardData, Boolean>>()
         private val hasPendingComments = BehaviorSubject.create<Pair<Boolean, Boolean>>()
 
@@ -269,7 +269,7 @@ interface CommentsViewModel {
             this.commentsList
                 .compose(takePairWhen(this.commentToRefresh))
                 .map {
-                    it.second.updateCommentAfterSuccessfulPost(it.first)
+                    it.second.first.updateCommentAfterSuccessfulPost(it.first, it.second.second)
                 }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
@@ -288,7 +288,7 @@ interface CommentsViewModel {
             this.commentsList
                 .compose(takePairWhen(this.failedCommentCardToRefresh))
                 .map {
-                    it.second.updateCommentFailedToPost(it.first)
+                    it.second.first.updateCommentFailedToPost(it.first, it.second.second)
                 }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
@@ -439,11 +439,11 @@ interface CommentsViewModel {
         override fun nextPage() = nextPage.onNext(null)
         override fun insertNewCommentToList(comment: String, createdAt: DateTime) = insertNewCommentToList.onNext(Pair(comment, createdAt))
         override fun onShowGuideLinesLinkClicked() = onShowGuideLinesLinkClicked.onNext(null)
-        override fun refreshComment(comment: Comment) = this.commentToRefresh.onNext(comment)
+        override fun refreshComment(comment: Comment, position: Int) = this.commentToRefresh.onNext(Pair(comment, position))
         override fun onReplyClicked(comment: Comment, openKeyboard: Boolean) = onReplyClicked.onNext(Pair(comment, openKeyboard))
         override fun checkIfThereAnyPendingComments(isBackAction: Boolean) = checkIfThereAnyPendingComments.onNext(isBackAction)
-        override fun refreshCommentCardInCaseFailedPosted(comment: Comment) =
-            this.failedCommentCardToRefresh.onNext(comment)
+        override fun refreshCommentCardInCaseFailedPosted(comment: Comment, position: Int) =
+            this.failedCommentCardToRefresh.onNext(Pair(comment, position))
         override fun onShowCanceledPledgeComment(comment: Comment) =
             this.showCanceledPledgeComment.onNext(comment)
         // - Outputs

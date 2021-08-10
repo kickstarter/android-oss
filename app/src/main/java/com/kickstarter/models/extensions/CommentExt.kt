@@ -12,17 +12,9 @@ import type.CommentBadge
  * from calling the Post Mutation
  */
 fun Comment.updateCommentAfterSuccessfulPost(
-    listOfComments: List<CommentCardData>
+    listOfComments: List<CommentCardData>,
+    position: Int
 ): List<CommentCardData> {
-
-    val position = listOfComments.indexOfFirst { commentCardData ->
-        (
-            commentCardData.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus ||
-                commentCardData.commentCardState == CommentCardStatus.FAILED_TO_SEND_COMMENT.commentCardStatus
-            ) &&
-            commentCardData.comment?.body() == this.body() &&
-            commentCardData.comment?.author()?.id() == this.author().id()
-    }
 
     if (position >= 0 && position < listOfComments.size) {
         return listOfComments.toMutableList().apply {
@@ -41,14 +33,9 @@ fun Comment.updateCommentAfterSuccessfulPost(
  * from calling the Post Mutation
  */
 fun Comment.updateCommentFailedToPost(
-    listOfComments: List<CommentCardData>
+    listOfComments: List<CommentCardData>,
+    position: Int
 ): List<CommentCardData> {
-
-    val position = listOfComments.indexOfFirst { commentCardData ->
-        commentCardData.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus &&
-            commentCardData.comment?.body() == this.body() &&
-            commentCardData.comment?.author()?.id() == this.author().id()
-    }
 
     if (position >= 0 && position < listOfComments.size) {
         return listOfComments.toMutableList().apply {

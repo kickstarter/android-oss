@@ -2,9 +2,11 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.core.view.isGone
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
+import com.kickstarter.databinding.ProfileLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.RecyclerViewPaginator
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
@@ -17,67 +19,82 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProfileAdapter
 import com.kickstarter.viewmodels.ProfileViewModel
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.profile_layout.*
-import kotlinx.android.synthetic.main.profile_toolbar.*
 
 @RequiresActivityViewModel(ProfileViewModel.ViewModel::class)
 class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
     private lateinit var adapter: ProfileAdapter
     private lateinit var paginator: RecyclerViewPaginator
+    private lateinit var binding: ProfileLayoutBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.profile_layout)
+        binding = ProfileLayoutBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
 
         this.adapter = ProfileAdapter(this.viewModel)
         val spanCount = if (ViewUtils.isLandscape(this)) 3 else 2
-        recycler_view.layoutManager = GridLayoutManager(this, spanCount)
-        recycler_view.adapter = this.adapter
+        binding.recyclerView.layoutManager = GridLayoutManager(this, spanCount)
+        binding.recyclerView.adapter = this.adapter
 
         this.paginator = RecyclerViewPaginator(
-            recycler_view, { this.viewModel.inputs.nextPage() },
+            binding.recyclerView, { this.viewModel.inputs.nextPage() },
             this.viewModel.outputs.isFetchingProjects()
         )
 
         this.viewModel.outputs.avatarImageViewUrl()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { url -> Picasso.get().load(url).transform(CircleTransformation()).into(avatar_image_view) }
+            .subscribe { url -> Picasso.get().load(url).transform(CircleTransformation()).into(binding.avatarImageView) }
 
         this.viewModel.outputs.backedCountTextViewHidden()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe(ViewUtils.setGone(backed_count_text_view))
+            .subscribe {
+                binding.backedCountTextView.isGone = it
+            }
 
         this.viewModel.outputs.backedCountTextViewText()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { backed_count_text_view.text = it }
+            .subscribe {
+                binding.backedCountTextView.text = it
+            }
 
         this.viewModel.outputs.backedTextViewHidden()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe(ViewUtils.setGone(backed_text_view))
+            .subscribe {
+                binding.backedTextView.isGone = it
+            }
 
         this.viewModel.outputs.createdCountTextViewHidden()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe(ViewUtils.setGone(created_count_text_view))
+            .subscribe {
+                binding.createdCountTextView.isGone = it
+            }
 
         this.viewModel.outputs.createdCountTextViewText()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { created_count_text_view.text = it }
+            .subscribe {
+                binding.createdCountTextView.text = it
+            }
 
         this.viewModel.outputs.createdTextViewHidden()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe(ViewUtils.setGone(created_text_view))
+            .subscribe {
+                binding.createdTextView.isGone = it
+            }
 
         this.viewModel.outputs.dividerViewHidden()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe(ViewUtils.setGone(divider_view))
+            .subscribe {
+                binding.dividerView.isGone = it
+            }
 
         this.viewModel.outputs.projectList()
             .compose(bindToLifecycle())
@@ -104,22 +121,22 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
         this.viewModel.outputs.userNameTextViewText()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { user_name_text_view.text = it }
+            .subscribe { binding.userNameTextView.text = it }
 
-        messages_button.setOnClickListener { this.viewModel.inputs.messagesButtonClicked() }
+        binding.profileActivityToolbar.messagesButton.setOnClickListener { this.viewModel.inputs.messagesButtonClicked() }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         this.paginator.stop()
-        recycler_view.adapter = null
+        binding.recyclerView.adapter = null
     }
 
     private fun loadProjects(projects: List<Project>) {
         if (projects.isEmpty()) {
-            recycler_view.layoutManager = LinearLayoutManager(this)
-            recycler_view.setPadding(
-                0, recycler_view.paddingTop, recycler_view.paddingRight, recycler_view.paddingBottom
+            binding.recyclerView.layoutManager = LinearLayoutManager(this)
+            binding.recyclerView.setPadding(
+                0, binding.recyclerView.paddingTop, binding.recyclerView.paddingRight, binding.recyclerView.paddingBottom
             )
 
             if (ViewUtils.isPortrait(this)) {
@@ -131,7 +148,7 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
     }
 
     private fun disableNestedScrolling() {
-        recycler_view.isNestedScrollingEnabled = false
+        binding.recyclerView.isNestedScrollingEnabled = false
     }
 
     private fun resumeDiscoveryActivity() {

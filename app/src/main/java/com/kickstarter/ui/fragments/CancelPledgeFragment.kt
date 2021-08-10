@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.kickstarter.KSApplication
 import com.kickstarter.R
+import com.kickstarter.databinding.FragmentCancelPledgeBinding
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
@@ -18,7 +19,6 @@ import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.extensions.snackbar
 import com.kickstarter.ui.extensions.text
 import com.kickstarter.viewmodels.CancelPledgeViewModel
-import kotlinx.android.synthetic.main.fragment_cancel_pledge.*
 
 @RequiresFragmentViewModel(CancelPledgeViewModel.ViewModel::class)
 class CancelPledgeFragment : BaseFragment<CancelPledgeViewModel.ViewModel>() {
@@ -27,9 +27,12 @@ class CancelPledgeFragment : BaseFragment<CancelPledgeViewModel.ViewModel>() {
         fun pledgeSuccessfullyCancelled()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    private var binding: FragmentCancelPledgeBinding? = null
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        return inflater.inflate(R.layout.fragment_cancel_pledge, container, false)
+        binding = FragmentCancelPledgeBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,12 +46,12 @@ class CancelPledgeFragment : BaseFragment<CancelPledgeViewModel.ViewModel>() {
         this.viewModel.outputs.showServerError()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { cancel_pledge_root?.let { view -> snackbar(view, getString(R.string.Something_went_wrong_please_try_again)).show() } }
+            .subscribe { binding?.cancelPledgeRoot?.let { view -> snackbar(view, getString(R.string.Something_went_wrong_please_try_again)).show() } }
 
         this.viewModel.outputs.showCancelError()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { cancel_pledge_root?.let { view -> snackbar(view, it).show() } }
+            .subscribe { binding?.cancelPledgeRoot?.let { view -> snackbar(view, it).show() } }
 
         this.viewModel.outputs.dismiss()
             .compose(bindToLifecycle())
@@ -63,18 +66,22 @@ class CancelPledgeFragment : BaseFragment<CancelPledgeViewModel.ViewModel>() {
         this.viewModel.outputs.progressBarIsVisible()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { progress_bar?.let { view -> ViewUtils.setGone(view, !it) } }
+            .subscribe { binding?.progressBar?.let { view -> ViewUtils.setGone(view, !it) } }
 
         this.viewModel.outputs.cancelButtonIsVisible()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { yes_cancel_pledge_button?.let { view -> ViewUtils.setGone(view, !it) } }
+            .subscribe { binding?.yesCancelPledgeButton?.let { view -> ViewUtils.setGone(view, !it) } }
 
-        yes_cancel_pledge_button.setOnClickListener {
-            this.viewModel.inputs.confirmCancellationClicked(cancellation_note.text())
+        binding?.yesCancelPledgeButton?.setOnClickListener {
+            binding?.cancellationNote?.text()?.let { text ->
+                this.viewModel.inputs.confirmCancellationClicked(
+                    text
+                )
+            }
         }
 
-        no_cancel_pledge_button.setOnClickListener {
+        binding?.noCancelPledgeButton ?.setOnClickListener {
             this.viewModel.inputs.goBackButtonClicked()
         }
     }
@@ -97,7 +104,7 @@ class CancelPledgeFragment : BaseFragment<CancelPledgeViewModel.ViewModel>() {
         ViewUtils.addBoldSpan(spannableString, amount)
         ViewUtils.addBoldSpan(spannableString, name)
 
-        cancel_prompt?.text = spannableString
+        binding?.cancelPrompt?.text = spannableString
     }
 
     companion object {

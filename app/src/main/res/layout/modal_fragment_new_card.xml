@@ -6,8 +6,8 @@
   android:layout_height="wrap_content"
   app:cardBackgroundColor="@color/kds_white">
 
-  <include
-    layout="@layout/form_new_card"
+  <include android:id="@+id/fragment_new_card"
+    layout="@layout/fragment_new_card"
     android:layout_marginBottom="@dimen/grid_5"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" />

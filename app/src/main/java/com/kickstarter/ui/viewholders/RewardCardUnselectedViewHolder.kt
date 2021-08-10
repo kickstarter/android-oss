@@ -10,8 +10,6 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.viewmodels.RewardCardUnselectedViewHolderViewModel
-import kotlinx.android.synthetic.main.retry_card_warning.view.*
-import kotlinx.android.synthetic.main.reward_card_details.view.*
 
 class RewardCardUnselectedViewHolder(val binding: ItemRewardUnselectedCardBinding, val delegate: Delegate) : KSViewHolder(binding.root) {
 
@@ -40,17 +38,17 @@ class RewardCardUnselectedViewHolder(val binding: ItemRewardUnselectedCardBindin
         this.viewModel.outputs.issuerImage()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { this.binding.root.reward_card_logo.setImageResource(it) }
+            .subscribe { this.binding.rewardCardDetailsLayout.rewardCardLogo.setImageResource(it) }
 
         this.viewModel.outputs.issuer()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { this.binding.root.reward_card_logo.contentDescription = it }
+            .subscribe { this.binding.rewardCardDetailsLayout.rewardCardLogo.contentDescription = it }
 
         this.viewModel.outputs.issuerImageAlpha()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { this.binding.root.reward_card_logo.alpha = it }
+            .subscribe { this.binding.rewardCardDetailsLayout.rewardCardLogo.alpha = it }
 
         this.viewModel.outputs.lastFour()
             .compose(bindToLifecycle())
@@ -60,7 +58,7 @@ class RewardCardUnselectedViewHolder(val binding: ItemRewardUnselectedCardBindin
         this.viewModel.outputs.lastFourTextColor()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { this.binding.root.reward_card_last_four.setTextColor(ContextCompat.getColor(context(), it)) }
+            .subscribe { this.binding.rewardCardDetailsLayout.rewardCardLastFour.setTextColor(ContextCompat.getColor(context(), it)) }
 
         this.viewModel.outputs.notAvailableCopyIsVisible()
             .compose(bindToLifecycle())
@@ -75,7 +73,7 @@ class RewardCardUnselectedViewHolder(val binding: ItemRewardUnselectedCardBindin
         this.viewModel.outputs.retryCopyIsVisible()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { ViewUtils.setGone(this.binding.root.retry_card_warning, !it) }
+            .subscribe { ViewUtils.setGone(this.binding.retryCardWarningLayout.retryCardWarning, !it) }
 
         this.viewModel.outputs.selectImageIsVisible()
             .compose(bindToLifecycle())
@@ -94,14 +92,14 @@ class RewardCardUnselectedViewHolder(val binding: ItemRewardUnselectedCardBindin
     }
 
     private fun setExpirationDateText(date: String) {
-        this.binding.root.reward_card_expiration_date.text = this.ksString.format(
+        this.binding.rewardCardDetailsLayout.rewardCardExpirationDate.text = this.ksString.format(
             this.creditCardExpirationString,
             "expiration_date", date
         )
     }
 
     private fun setLastFourText(lastFour: String) {
-        this.binding.root.reward_card_last_four.text = this.ksString.format(
+        this.binding.rewardCardDetailsLayout.rewardCardLastFour.text = this.ksString.format(
             this.lastFourString,
             "last_four",
             lastFour

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
 import com.kickstarter.R
+import com.kickstarter.databinding.LoginLayoutBinding
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
@@ -20,8 +21,6 @@ import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.ui.extensions.text
 import com.kickstarter.ui.views.ConfirmDialog
 import com.kickstarter.viewmodels.LoginViewModel
-import kotlinx.android.synthetic.main.login_form_view.*
-import kotlinx.android.synthetic.main.login_toolbar.*
 
 @RequiresActivityViewModel(LoginViewModel.ViewModel::class)
 class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
@@ -35,17 +34,20 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
     private val unableToLoginString = R.string.login_errors_unable_to_log_in
     private val loginString = R.string.login_buttons_log_in
     private val errorTitleString = R.string.login_errors_title
+    private lateinit var binding: LoginLayoutBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.login_layout)
+        binding = LoginLayoutBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
 
         this.ksString = environment().ksString()
-        login_toolbar.setTitle(getString(this.loginString))
-        forgot_your_password_text_view.text = ViewUtils.html(getString(this.forgotPasswordString))
+        binding.loginToolbar.loginToolbar.setTitle(getString(this.loginString))
+        binding.loginFormView.forgotYourPasswordTextView.text = ViewUtils.html(getString(this.forgotPasswordString))
 
-        email.onChange { this.viewModel.inputs.email(it) }
-        password.onChange { this.viewModel.inputs.password(it) }
+        binding.loginFormView.email.onChange { this.viewModel.inputs.email(it) }
+        binding.loginFormView.password.onChange { this.viewModel.inputs.password(it) }
 
         errorMessages()
             .compose(bindToLifecycle())
@@ -66,19 +68,19 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {
-                email.setText(it)
-                email.setSelection(it.length)
+                binding.loginFormView.email.setText(it)
+                binding.loginFormView.email.setSelection(it.length)
             }
 
         this.viewModel.outputs.showChangedPasswordSnackbar()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { showSnackbar(login_toolbar, R.string.Got_it_your_changes_have_been_saved) }
+            .subscribe { showSnackbar(binding.loginToolbar.loginToolbar, R.string.Got_it_your_changes_have_been_saved) }
 
         this.viewModel.outputs.showCreatedPasswordSnackbar()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { showSnackbar(login_toolbar, R.string.Got_it_your_changes_have_been_saved) }
+            .subscribe { showSnackbar(binding.loginToolbar.loginToolbar, R.string.Got_it_your_changes_have_been_saved) }
 
         this.viewModel.outputs.showResetPasswordSuccessDialog()
             .compose(bindToLifecycle())
@@ -98,13 +100,13 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
             .compose(observeForUI())
             .subscribe({ this.setLoginButtonEnabled(it) })
 
-        forgot_your_password_text_view.setOnClickListener {
+        binding.loginFormView.forgotYourPasswordTextView.setOnClickListener {
             val intent = Intent(this, ResetPasswordActivity::class.java)
-                .putExtra(IntentKey.EMAIL, email.text.toString())
+                .putExtra(IntentKey.EMAIL, binding.loginFormView.email.text.toString())
             startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
         }
 
-        login_button.setOnClickListener {
+        binding.loginFormView.loginButton.setOnClickListener {
             this.viewModel.inputs.loginClick()
             this@LoginActivity.hideKeyboard()
         }
@@ -150,13 +152,13 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
     }
 
     private fun setLoginButtonEnabled(enabled: Boolean) {
-        login_button.isEnabled = enabled
+        binding.loginFormView.loginButton.isEnabled = enabled
     }
 
     private fun startTwoFactorActivity() {
         val intent = Intent(this, TwoFactorActivity::class.java)
-            .putExtra(IntentKey.EMAIL, email.text())
-            .putExtra(IntentKey.PASSWORD, password.text())
+            .putExtra(IntentKey.EMAIL, binding.loginFormView.email.text())
+            .putExtra(IntentKey.PASSWORD, binding.loginFormView.password.text())
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }

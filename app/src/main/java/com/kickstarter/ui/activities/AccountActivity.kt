@@ -7,6 +7,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import com.kickstarter.R
+import com.kickstarter.databinding.ActivityAccountBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
@@ -14,8 +15,6 @@ import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.AccountViewModel
-import kotlinx.android.synthetic.main.account_toolbar.*
-import kotlinx.android.synthetic.main.activity_account.*
 import rx.android.schedulers.AndroidSchedulers
 import type.CurrencyCode
 
@@ -27,6 +26,8 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
     private var showCurrencyChangeDialog: AlertDialog? = null
 
     private lateinit var ksString: KSString
+
+    private lateinit var binding: ActivityAccountBinding
 
     private val supportedCurrencies: List<CurrencyCode> by lazy {
         arrayListOf(
@@ -50,7 +51,9 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_account)
+        binding = ActivityAccountBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
 
         this.ksString = environment().ksString()
 
@@ -65,42 +68,42 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                create_password_text_view.text = this.ksString.format(getString(R.string.Youre_connected_via_Facebook_email_Create_a_password_for_this_account), "email", it)
+                binding.createPasswordTextView.text = this.ksString.format(getString(R.string.Youre_connected_via_Facebook_email_Create_a_password_for_this_account), "email", it)
             }
 
         this.viewModel.outputs.error()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { showSnackbar(account_toolbar, it) }
+            .subscribe { showSnackbar(binding.accountToolbar.accountToolbar, it) }
 
         this.viewModel.outputs.progressBarIsVisible()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { ViewUtils.setGone(progress_bar, !it) }
+            .subscribe { ViewUtils.setGone(binding.progressBar, !it) }
 
         this.viewModel.outputs.passwordRequiredContainerIsVisible()
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {
-                ViewUtils.setGone(create_password_container, it)
-                ViewUtils.setGone(password_required_container, !it)
+                ViewUtils.setGone(binding.createPasswordContainer, it)
+                ViewUtils.setGone(binding.passwordRequiredContainer, !it)
             }
 
         this.viewModel.outputs.showEmailErrorIcon()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { ViewUtils.setGone(email_error_icon, !it) }
+            .subscribe { ViewUtils.setGone(binding.emailErrorIcon, !it) }
 
         this.viewModel.outputs.success()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { showSnackbar(account_container, R.string.Got_it_your_changes_have_been_saved) }
+            .subscribe { showSnackbar(binding.accountContainer, R.string.Got_it_your_changes_have_been_saved) }
 
-        create_password_row.setOnClickListener { startActivity(Intent(this, CreatePasswordActivity::class.java)) }
-        change_email_row.setOnClickListener { startActivity(Intent(this, ChangeEmailActivity::class.java)) }
-        change_password_row.setOnClickListener { startActivity(Intent(this, ChangePasswordActivity::class.java)) }
-        payment_methods_row.setOnClickListener { startActivity(Intent(this, PaymentMethodsSettingsActivity::class.java)) }
-        privacy_row.setOnClickListener { startActivity(Intent(this, PrivacyActivity::class.java)) }
+        binding.createPasswordRow.setOnClickListener { startActivity(Intent(this, CreatePasswordActivity::class.java)) }
+        binding.changeEmailRow.setOnClickListener { startActivity(Intent(this, ChangeEmailActivity::class.java)) }
+        binding.changePasswordRow.setOnClickListener { startActivity(Intent(this, ChangePasswordActivity::class.java)) }
+        binding.paymentMethodsRow.setOnClickListener { startActivity(Intent(this, PaymentMethodsSettingsActivity::class.java)) }
+        binding.privacyRow.setOnClickListener { startActivity(Intent(this, PrivacyActivity::class.java)) }
     }
 
     private fun getListOfCurrencies(): List<String> {
@@ -153,15 +156,15 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
     private fun setSpinnerSelection(currencyCode: String) {
         val selectedCurrencyCode = CurrencyCode.safeValueOf(currencyCode)
         currentCurrencySelection = selectedCurrencyCode
-        currency_spinner.setSelection(supportedCurrencies.indexOf(selectedCurrencyCode))
+        binding.currencySpinner.setSelection(supportedCurrencies.indexOf(selectedCurrencyCode))
     }
 
     private fun setUpSpinner() {
         val arrayAdapter = ArrayAdapter<String>(this, R.layout.item_spinner, getListOfCurrencies())
         arrayAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown)
-        currency_spinner.adapter = arrayAdapter
+        binding.currencySpinner.adapter = arrayAdapter
 
-        currency_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        binding.currencySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, postion: Int, id: Long) {

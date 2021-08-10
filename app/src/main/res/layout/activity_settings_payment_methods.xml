@@ -11,7 +11,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <include layout="@layout/payment_methods_toolbar" />
+    <include
+        android:id="@+id/setting_payment_methods_activity_toolbar"
+        layout="@layout/payment_methods_toolbar" />
 
   </com.google.android.material.appbar.AppBarLayout>
 

@@ -12,7 +12,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <include layout="@layout/change_email_toolbar" />
+    <include
+        android:id="@+id/change_email_activity_toolbar"
+        layout="@layout/change_email_toolbar" />
 
   </com.google.android.material.appbar.AppBarLayout>
 

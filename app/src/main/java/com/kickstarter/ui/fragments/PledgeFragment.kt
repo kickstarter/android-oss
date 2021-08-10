@@ -21,6 +21,8 @@ import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
+import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.ChangeBounds
@@ -28,12 +30,14 @@ import androidx.transition.TransitionManager
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.KSApplication
 import com.kickstarter.R
+import com.kickstarter.databinding.FragmentPledgeBinding
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.setGone
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -57,62 +61,6 @@ import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
 import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import com.stripe.android.ApiResultCallback
 import com.stripe.android.SetupIntentResult
-import kotlinx.android.synthetic.main.fragment_pledge.deadline_warning
-import kotlinx.android.synthetic.main.fragment_pledge.divider_total
-import kotlinx.android.synthetic.main.fragment_pledge.pledge_content
-import kotlinx.android.synthetic.main.fragment_pledge.pledge_root
-import kotlinx.android.synthetic.main.fragment_pledge.shipping_rules_row
-import kotlinx.android.synthetic.main.fragment_pledge.shipping_rules_row_static
-import kotlinx.android.synthetic.main.fragment_pledge_section_accountability.accountability
-import kotlinx.android.synthetic.main.fragment_pledge_section_accountability.accountability_container
-import kotlinx.android.synthetic.main.fragment_pledge_section_bonus_support.bonus_amount
-import kotlinx.android.synthetic.main.fragment_pledge_section_bonus_support.bonus_container
-import kotlinx.android.synthetic.main.fragment_pledge_section_bonus_support.bonus_maximum
-import kotlinx.android.synthetic.main.fragment_pledge_section_bonus_support.bonus_support_label
-import kotlinx.android.synthetic.main.fragment_pledge_section_bonus_support.bonus_symbol_end
-import kotlinx.android.synthetic.main.fragment_pledge_section_bonus_support.bonus_symbol_start
-import kotlinx.android.synthetic.main.fragment_pledge_section_bonus_support.decrease_bonus
-import kotlinx.android.synthetic.main.fragment_pledge_section_bonus_support.increase_bonus
-import kotlinx.android.synthetic.main.fragment_pledge_section_editable_shipping.shipping_amount
-import kotlinx.android.synthetic.main.fragment_pledge_section_editable_shipping.shipping_amount_loading_view
-import kotlinx.android.synthetic.main.fragment_pledge_section_editable_shipping.shipping_rules
-import kotlinx.android.synthetic.main.fragment_pledge_section_editable_shipping.shipping_rules_label
-import kotlinx.android.synthetic.main.fragment_pledge_section_editable_shipping.view.shipping_rules
-import kotlinx.android.synthetic.main.fragment_pledge_section_footer.pledge_footer_continue_button
-import kotlinx.android.synthetic.main.fragment_pledge_section_footer.pledge_footer_pledge_agreement
-import kotlinx.android.synthetic.main.fragment_pledge_section_footer.pledge_footer_pledge_button
-import kotlinx.android.synthetic.main.fragment_pledge_section_footer.pledge_footer_pledge_button_progress
-import kotlinx.android.synthetic.main.fragment_pledge_section_header_reward_sumary.header_arrow_button
-import kotlinx.android.synthetic.main.fragment_pledge_section_header_reward_sumary.header_summary_list
-import kotlinx.android.synthetic.main.fragment_pledge_section_header_reward_sumary.pledge_header_container
-import kotlinx.android.synthetic.main.fragment_pledge_section_header_reward_sumary.pledge_header_estimated_delivery_label
-import kotlinx.android.synthetic.main.fragment_pledge_section_header_reward_sumary.pledge_header_summary_amount
-import kotlinx.android.synthetic.main.fragment_pledge_section_payment.cards_recycler
-import kotlinx.android.synthetic.main.fragment_pledge_section_payment.payment_container
-import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.additional_pledge_amount_container
-import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.decrease_pledge
-import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.increase_pledge
-import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.pledge_amount
-import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.pledge_amount_label
-import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.pledge_container
-import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.pledge_maximum
-import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.pledge_minimum
-import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.pledge_symbol_end
-import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.pledge_symbol_start
-import kotlinx.android.synthetic.main.fragment_pledge_section_reward_summary.pledge_header_container_no_reward
-import kotlinx.android.synthetic.main.fragment_pledge_section_reward_summary.pledge_header_title_no_reward
-import kotlinx.android.synthetic.main.fragment_pledge_section_shipping.shipping_amount_static
-import kotlinx.android.synthetic.main.fragment_pledge_section_shipping.shipping_rules_static
-import kotlinx.android.synthetic.main.fragment_pledge_section_summary_bonus.bonus_summary
-import kotlinx.android.synthetic.main.fragment_pledge_section_summary_bonus.bonus_summary_amount
-import kotlinx.android.synthetic.main.fragment_pledge_section_summary_pledge.pledge_summary
-import kotlinx.android.synthetic.main.fragment_pledge_section_summary_pledge.pledge_summary_amount
-import kotlinx.android.synthetic.main.fragment_pledge_section_summary_shipping.shipping_label
-import kotlinx.android.synthetic.main.fragment_pledge_section_summary_shipping.shipping_summary
-import kotlinx.android.synthetic.main.fragment_pledge_section_summary_shipping.shipping_summary_amount
-import kotlinx.android.synthetic.main.fragment_pledge_section_total.total_amount
-import kotlinx.android.synthetic.main.fragment_pledge_section_total.total_amount_conversion
-import kotlinx.android.synthetic.main.fragment_pledge_section_total.total_amount_loading_view
 
 @RequiresFragmentViewModel(PledgeFragmentViewModel.ViewModel::class)
 class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), RewardCardAdapter.Delegate, ShippingRulesAdapter.Delegate {
@@ -127,11 +75,15 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     private var headerAdapter = ExpandableHeaderAdapter()
     private var isExpanded = false
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    private var binding: FragmentPledgeBinding? = null
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        return inflater.inflate(R.layout.fragment_pledge, container, false)
+        binding = FragmentPledgeBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -139,70 +91,80 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         setUpShippingAdapter()
         setupRewardRecyclerView()
 
-        pledge_amount.onChange { this.viewModel.inputs.pledgeInput(it) }
+        binding?.pledgeSectionPledgeAmount?.pledgeAmount?.onChange { this.viewModel.inputs.pledgeInput(it) }
 
-        bonus_amount.onChange { this.viewModel.inputs.bonusInput(it) }
+        binding?.pledgeSectionBonusSupport?.bonusAmount?.onChange { this.viewModel.inputs.bonusInput(it) }
 
         this.viewModel.outputs.additionalPledgeAmountIsGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { ViewUtils.setGone(additional_pledge_amount_container, it) }
+            .subscribe {
+                binding?.pledgeSectionPledgeAmount?.additionalPledgeAmountContainer?.isGone = it
+            }
 
         this.viewModel.outputs.pledgeSectionIsGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { ViewUtils.setGone(pledge_container, it) }
+            .subscribe {
+                binding?.pledgeSectionPledgeAmount?.pledgeContainer?.isGone = it
+            }
 
         this.viewModel.outputs.decreasePledgeButtonIsEnabled()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { decrease_pledge.isEnabled = it }
+            .subscribe {
+                binding?.pledgeSectionPledgeAmount?.decreasePledge?.isEnabled = it
+            }
 
         this.viewModel.outputs.increasePledgeButtonIsEnabled()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { increase_pledge.isEnabled = it }
+            .subscribe { binding?.pledgeSectionPledgeAmount?.increasePledge?.isEnabled = it }
 
         this.viewModel.outputs.headerSectionIsGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {
-                ViewUtils.setGone(pledge_header_container, it)
+                binding?.pledgeSectionHeaderRewardSummary?.pledgeHeaderContainer?.isGone = it
             }
 
         this.viewModel.outputs.decreaseBonusButtonIsEnabled()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { decrease_bonus.isEnabled = it }
+            .subscribe { binding?.pledgeSectionBonusSupport?.decreaseBonus ?.isEnabled = it }
 
         this.viewModel.outputs.increaseBonusButtonIsEnabled()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { increase_bonus.isEnabled = it }
+            .subscribe { binding?.pledgeSectionBonusSupport?.increaseBonus?.isEnabled = it }
 
         this.viewModel.outputs.estimatedDelivery()
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {
-                pledge_header_estimated_delivery_label.text = pledge_header_estimated_delivery_label.text.toString() + " " + it
+                binding?.pledgeSectionHeaderRewardSummary?.pledgeHeaderEstimatedDeliveryLabel ?.text = String.format("%1$2s / %2$2s", binding?.pledgeSectionHeaderRewardSummary?.pledgeHeaderEstimatedDeliveryLabel ?.text, it)
             }
 
         this.viewModel.outputs.estimatedDeliveryInfoIsGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {
-                ViewUtils.setGone(pledge_header_estimated_delivery_label)
+                binding?.pledgeSectionHeaderRewardSummary?.pledgeHeaderEstimatedDeliveryLabel ?.setGone()
             }
 
         this.viewModel.outputs.continueButtonIsGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { ViewUtils.setGone(pledge_footer_continue_button, it) }
+            .subscribe {
+                binding?.pledgeSectionFooter?.pledgeFooterContinueButton?.isGone = it
+            }
 
         this.viewModel.outputs.conversionTextViewIsGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe(ViewUtils.setGone(total_amount_conversion))
+            .subscribe {
+                binding?.pledgeSectionTotal?.totalAmountConversion?.isGone = it
+            }
 
         this.viewModel.outputs.conversionText()
             .compose(bindToLifecycle())
@@ -212,7 +174,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.paymentContainerIsGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { ViewUtils.setGone(payment_container, it) }
+            .subscribe {
+                binding?.pledgeSectionPayment?.paymentContainer?.isGone = it
+            }
 
         this.viewModel.outputs.showSelectedCard()
             .compose(bindToLifecycle())
@@ -223,33 +187,33 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {
-                pledge_header_summary_amount.text = it
+                binding?.pledgeSectionHeaderRewardSummary?.pledgeHeaderSummaryAmount?.text = it
             }
 
         this.viewModel.outputs.pledgeAmount()
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {
-                pledge_amount.setTextAndSelection(it)
+                binding?.pledgeSectionPledgeAmount?.pledgeAmount?.setTextAndSelection(it)
             }
 
         this.viewModel.outputs.bonusAmount()
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {
-                bonus_amount.setTextAndSelection(it)
-                bonus_summary_amount.text = it
+                binding?.pledgeSectionBonusSupport?.bonusAmount?.setTextAndSelection(it)
+                binding?.pledgeSectionSummaryBonus?.bonusSummaryAmount?.text = it
             }
 
         this.viewModel.outputs.pledgeHint()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { pledge_amount.hint = it }
+            .subscribe { binding?.pledgeSectionPledgeAmount?.pledgeAmount?.hint = it }
 
         this.viewModel.outputs.bonusHint()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { bonus_amount.hint = it }
+            .subscribe { binding?.pledgeSectionBonusSupport?.bonusAmount?.hint = it }
 
         this.viewModel.outputs.pledgeMaximum()
             .compose(bindToLifecycle())
@@ -262,8 +226,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {
-                ViewUtils.setInvisible(pledge_maximum, it)
-                ViewUtils.setInvisible(bonus_maximum, it)
+                binding?.pledgeSectionPledgeAmount?.pledgeMaximum?.isInvisible = it
+                binding?.pledgeSectionBonusSupport?.bonusMaximum?.isInvisible = it
             }
 
         this.viewModel.outputs.pledgeMinimum()
@@ -281,19 +245,29 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.pledgeTextColor()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { setTextColor(it, pledge_amount, pledge_symbol_start, pledge_symbol_end) }
+            .subscribe {
+                binding?.pledgeSectionPledgeAmount?.pledgeAmount ?.let { pledgeAmount ->
+                    setTextColor(it, pledgeAmount)
+                }
+                binding?.pledgeSectionPledgeAmount?.pledgeSymbolStart ?.let { pledgeAmount ->
+                    setTextColor(it, pledgeAmount)
+                }
+                binding?.pledgeSectionPledgeAmount?.pledgeSymbolEnd ?.let { pledgeAmount ->
+                    setTextColor(it, pledgeAmount)
+                }
+            }
 
         this.viewModel.outputs.cardsAndProject()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { (cards_recycler.adapter as RewardCardAdapter).takeCards(it.first, it.second) }
+            .subscribe { (binding?.pledgeSectionPayment?.cardsRecycler?.adapter as? RewardCardAdapter)?.takeCards(it.first, it.second) }
 
         this.viewModel.outputs.addedCard()
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {
-                val position = (cards_recycler.adapter as RewardCardAdapter).insertCard(it)
-                this.viewModel.inputs.addedCardPosition(position)
+                val position = (binding?.pledgeSectionPayment?.cardsRecycler?.adapter as? RewardCardAdapter)?.insertCard(it)
+                position?.let { position -> this.viewModel.inputs.addedCardPosition(position) }
             }
 
         this.viewModel.outputs.startLoginToutActivity()
@@ -317,28 +291,42 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {
-                shipping_rules.setText(it.toString())
-                shipping_rules_static.text = it.toString()
+                binding?.pledgeSectionEditableShipping?.shippingRules?.setText(it.toString())
+                binding?.pledgeSectionShipping?. shippingRulesStatic ?.text = it.toString()
             }
 
         this.viewModel.outputs.shippingAmount()
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {
-                ViewUtils.setGone(shipping_amount_loading_view, true)
-                setPlusTextView(shipping_amount, it)
-                setPlusTextView(shipping_amount_static, it)
+                binding?.pledgeSectionEditableShipping?.shippingAmountLoadingView?.isGone = true
+                binding?.pledgeSectionEditableShipping?.shippingAmount?.let { shippingAmount ->
+                    setPlusTextView(
+                        shippingAmount, it
+                    )
+                }
+                binding?.pledgeSectionShipping?. shippingAmountStatic?.let { shippingAmountStatic ->
+                    setPlusTextView(
+                        shippingAmountStatic, it
+                    )
+                }
             }
 
         this.viewModel.outputs.shippingSummaryAmount()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { setPlusTextView(shipping_summary_amount, it) }
+            .subscribe {
+                binding?.pledgeSectionSummaryShipping?.shippingSummaryAmount?.let { shippingSummaryAmount ->
+                    setPlusTextView(shippingSummaryAmount, it)
+                }
+            }
 
         this.viewModel.outputs.shippingSummaryLocation()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { shipping_label.text = String.format("%s: %s", getString(R.string.Shipping), it) }
+            .subscribe {
+                binding?.pledgeSectionSummaryShipping?.shippingLabel?.text = String.format("%s: %s", getString(R.string.Shipping), it)
+            }
 
         this.viewModel.outputs.shippingRulesAndProject()
             .compose(bindToLifecycle())
@@ -352,52 +340,60 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {
-                ViewUtils.setGone(shipping_rules_row, it)
+                binding?.pledgeSectionEditableShipping?.editableShippingCl?.isGone = it
             }
 
         this.viewModel.outputs.shippingRuleStaticIsGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {
-                ViewUtils.setGone(shipping_rules_row_static, it)
+                binding?.pledgeSectionShipping?.staticShippingCl?.isGone = it
             }
 
         this.viewModel.outputs.shippingSummaryIsGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { ViewUtils.setGone(shipping_summary, it) }
+            .subscribe {
+                binding?.pledgeSectionSummaryShipping?.shippingSummary?.isGone = it
+            }
 
         this.viewModel.outputs.pledgeSummaryAmount()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { pledge_summary_amount.text = it }
+            .subscribe { binding?.pledgeSectionSummaryPledge?.pledgeSummaryAmount?.text = it }
 
         this.viewModel.outputs.bonusSummaryIsGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { ViewUtils.setGone(bonus_summary, it) }
+            .subscribe {
+                binding?.pledgeSectionSummaryBonus?.bonusSummary?.isGone = it
+            }
 
         this.viewModel.outputs.bonusSummaryAmount()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { bonus_summary_amount.text = it }
+            .subscribe { binding?.pledgeSectionSummaryBonus?.bonusSummaryAmount?.text = it }
 
         this.viewModel.outputs.pledgeSummaryIsGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { ViewUtils.setGone(pledge_summary, it) }
+            .subscribe {
+                binding?.pledgeSectionSummaryPledge?.pledgeSummary?.isGone = it
+            }
 
         this.viewModel.outputs.totalDividerIsGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { ViewUtils.setGone(divider_total, it) }
+            .subscribe {
+                binding?.dividerTotal?.root?.isGone = it
+            }
 
         this.viewModel.outputs.totalAmount()
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {
-                ViewUtils.setGone(total_amount_loading_view, true)
-                total_amount.text = it
+                binding?.pledgeSectionTotal?.totalAmountLoadingView?.isGone = true
+                binding?.pledgeSectionTotal?.totalAmount ?.text = it
             }
 
         this.viewModel.outputs.totalAndDeadline()
@@ -408,7 +404,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.totalAndDeadlineIsVisible()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { ViewUtils.setInvisible(deadline_warning, false) }
+            .subscribe {
+                binding?.deadlineWarning?.isInvisible = false
+            }
 
         this.viewModel.outputs.showPledgeSuccess()
             .compose(bindToLifecycle())
@@ -423,7 +421,13 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.showPledgeError()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { activity?.applicationContext?.let { showErrorToast(it, pledge_content, getString(R.string.general_error_something_wrong)) } }
+            .subscribe {
+                activity?.applicationContext?.let {
+                    binding?.pledgeContent?.let { pledgeContent ->
+                        showErrorToast(it, pledgeContent, getString(R.string.general_error_something_wrong))
+                    }
+                }
+            }
 
         this.viewModel.outputs.startChromeTab()
             .compose(bindToLifecycle())
@@ -442,7 +446,17 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.showUpdatePledgeError()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { activity?.applicationContext?.let { showErrorToast(it, pledge_content, getString(R.string.general_error_something_wrong)) } }
+            .subscribe {
+                activity?.applicationContext?.let {
+                    binding?.pledgeContent?.let { pledgeContent ->
+                        showErrorToast(
+                            it,
+                            pledgeContent,
+                            getString(R.string.general_error_something_wrong)
+                        )
+                    }
+                }
+            }
 
         this.viewModel.outputs.showUpdatePledgeSuccess()
             .compose(observeForUI())
@@ -452,7 +466,13 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.showUpdatePaymentError()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { activity?.applicationContext?.let { showErrorToast(it, pledge_content, getString(R.string.general_error_something_wrong)) } }
+            .subscribe {
+                activity?.applicationContext?.let {
+                    binding?.pledgeContent?.let { pledgeContent ->
+                        showErrorToast(it, pledgeContent, getString(R.string.general_error_something_wrong))
+                    }
+                }
+            }
 
         this.viewModel.outputs.showUpdatePaymentSuccess()
             .compose(observeForUI())
@@ -462,27 +482,31 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.pledgeButtonCTA()
             .compose(observeForUI())
             .compose(bindToLifecycle())
-            .subscribe { pledge_footer_pledge_button.setText(it) }
+            .subscribe { binding?.pledgeSectionFooter?.pledgeFooterPledgeButton?.setText(it) }
 
         this.viewModel.outputs.pledgeButtonIsEnabled()
             .compose(observeForUI())
             .compose(bindToLifecycle())
-            .subscribe { pledge_footer_pledge_button.isEnabled = it }
+            .subscribe { binding?.pledgeSectionFooter?.pledgeFooterPledgeButton?.isEnabled = it }
 
         this.viewModel.outputs.pledgeButtonIsGone()
             .compose(observeForUI())
             .compose(bindToLifecycle())
-            .subscribe { ViewUtils.setInvisible(pledge_footer_pledge_button, it) }
+            .subscribe {
+                binding?.pledgeSectionFooter?.pledgeFooterPledgeButton?.isGone = it
+            }
 
         this.viewModel.outputs.pledgeProgressIsGone()
             .compose(observeForUI())
             .compose(bindToLifecycle())
-            .subscribe { ViewUtils.setGone(pledge_footer_pledge_button_progress, it) }
+            .subscribe {
+                binding?.pledgeSectionFooter?.pledgeFooterPledgeButtonProgress?.isGone = it
+            }
 
         this.viewModel.outputs.continueButtonIsEnabled()
             .compose(observeForUI())
             .compose(bindToLifecycle())
-            .subscribe { pledge_footer_continue_button.isEnabled = it }
+            .subscribe { binding?.pledgeSectionFooter?.pledgeFooterContinueButton?.isEnabled = it }
 
         this.viewModel.outputs.headerSelectedItems()
             .compose(observeForUI())
@@ -495,80 +519,96 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             .compose(observeForUI())
             .compose(bindToLifecycle())
             .subscribe {
-                ViewUtils.setGone(pledge_minimum, it)
+                binding?.pledgeSectionPledgeAmount?.pledgeMinimum ?.isGone = it
             }
 
         this.viewModel.outputs.isBonusSupportSectionGone()
             .compose(observeForUI())
             .compose(bindToLifecycle())
             .subscribe {
-                ViewUtils.setGone(bonus_container, it)
-                pledge_container.setPadding(0, resources.getDimension(R.dimen.grid_4).toInt(), 0, 0)
+                binding?.pledgeSectionBonusSupport?.bonusContainer?.isGone = it
+                binding?.pledgeSectionPledgeAmount?.pledgeContainer?.setPadding(0, resources.getDimension(R.dimen.grid_4).toInt(), 0, 0)
             }
 
         this.viewModel.outputs.isNoReward()
             .compose(observeForUI())
             .compose(bindToLifecycle())
             .subscribe {
-                ViewUtils.setGone(pledge_header_container, it)
-                pledge_header_container_no_reward.visibility = View.VISIBLE
+                binding?.pledgeSectionHeaderRewardSummary?.pledgeHeaderContainer?.isGone = it
+                binding?.pledgeSectionRewardSummary?.pledgeHeaderContainerNoReward ?.visibility = View.VISIBLE
             }
 
         this.viewModel.outputs.projectTitle()
             .compose(observeForUI())
             .compose(bindToLifecycle())
             .subscribe {
-                pledge_header_title_no_reward.text = it
+                binding?.pledgeSectionRewardSummary?.pledgeHeaderTitleNoReward ?.text = it
             }
 
-        pledge_amount.setOnTouchListener { _, _ ->
-            pledge_amount.post {
-                pledge_root.smoothScrollTo(0, relativeTop(pledge_amount_label, pledge_root))
-                pledge_amount.requestFocus()
-            }
-            false
-        }
+        binding?.pledgeSectionPledgeAmount?. pledgeAmount?.setOnTouchListener { _, _ ->
+            binding?.pledgeSectionPledgeAmount?. pledgeAmount?.post {
+                binding?.pledgeRoot?.let { pledgeRoot ->
+                    binding?.pledgeSectionPledgeAmount?. pledgeAmountLabel?.let { pledgeAmountLabel ->
+                        pledgeRoot.smoothScrollTo(0, relativeTop(pledgeAmountLabel, pledgeRoot))
+                    }
 
-        bonus_amount.setOnTouchListener { _, _ ->
-            bonus_amount.post {
-                pledge_root.smoothScrollTo(0, relativeTop(bonus_support_label, pledge_root))
-                bonus_amount.requestFocus()
+                    binding?.pledgeSectionPledgeAmount?. pledgeAmount?.requestFocus()
+                }
             }
             false
         }
 
-        shipping_rules.setOnTouchListener { _, _ ->
-            shipping_rules_label.post {
-                pledge_root.smoothScrollTo(0, relativeTop(shipping_rules_label, pledge_root))
-                shipping_rules.requestFocus()
-                shipping_rules.showDropDown()
+        binding?.pledgeSectionBonusSupport?.bonusAmount ?.setOnTouchListener { _, _ ->
+            binding?.pledgeSectionBonusSupport?.bonusAmount ?.post {
+                binding?.pledgeRoot?.let { pledgeRoot ->
+                    binding?.pledgeSectionBonusSupport?.bonusSupportLabel ?.let {
+                        pledgeRoot.smoothScrollTo(0, relativeTop(it, pledgeRoot))
+                    }
+                    binding?.pledgeSectionBonusSupport?.bonusAmount ?.requestFocus()
+                }
             }
             false
         }
 
-        decrease_pledge.setOnClickListener {
+        binding?.pledgeSectionEditableShipping?.shippingRules?.setOnTouchListener { _, _ ->
+            binding?.pledgeSectionEditableShipping?.shippingRulesLabel?.post {
+                binding?.pledgeRoot?.let { pledgeRoot ->
+                    binding?.pledgeSectionEditableShipping?.shippingRulesLabel?.let { shippingRulesLabel ->
+                        pledgeRoot.smoothScrollTo(0, relativeTop(shippingRulesLabel, pledgeRoot))
+                    }
+                    binding?.pledgeSectionEditableShipping?.shippingRules?.requestFocus()
+                    binding?.pledgeSectionEditableShipping?.shippingRules?.showDropDown()
+                }
+            }
+            false
+        }
+
+        binding?.pledgeSectionPledgeAmount?. decreasePledge ?.setOnClickListener {
             this.viewModel.inputs.decreasePledgeButtonClicked()
         }
 
-        increase_pledge.setOnClickListener {
+        binding?.pledgeSectionPledgeAmount?. increasePledge ?.setOnClickListener {
             this.viewModel.inputs.increasePledgeButtonClicked()
         }
 
-        pledge_header_container.setOnClickListener {
+        binding?.pledgeSectionHeaderRewardSummary?.pledgeHeaderContainer?.setOnClickListener {
             toggleAnimation(isExpanded)
         }
+        binding?.pledgeSectionBonusSupport?.decreaseBonus?.setOnClickListener { this.viewModel.inputs.decreaseBonusButtonClicked() }
 
-        decrease_bonus.setOnClickListener { this.viewModel.inputs.decreaseBonusButtonClicked() }
+        binding?.pledgeSectionBonusSupport?.increaseBonus?.setOnClickListener { this.viewModel.inputs.increaseBonusButtonClicked() }
 
-        increase_bonus.setOnClickListener { this.viewModel.inputs.increaseBonusButtonClicked() }
+        binding?.pledgeSectionFooter?.pledgeFooterPledgeButton?.let {
+            RxView.clicks(it)
+                .compose(bindToLifecycle())
+                .subscribe { this.viewModel.inputs.pledgeButtonClicked() }
+        }
 
-        RxView.clicks(pledge_footer_pledge_button)
-            .compose(bindToLifecycle())
-            .subscribe { this.viewModel.inputs.pledgeButtonClicked() }
-
-        RxView.clicks(pledge_footer_continue_button)
-            .compose(bindToLifecycle())
-            .subscribe { this.viewModel.inputs.continueButtonClicked() }
+        binding?.pledgeSectionFooter?.pledgeFooterContinueButton?.let {
+            RxView.clicks(it)
+                .compose(bindToLifecycle())
+                .subscribe { this.viewModel.inputs.continueButtonClicked() }
+        }
     }
 
     private fun populateHeaderItems(selectedItems: List<Pair<Project, Reward>>) {
@@ -585,31 +625,35 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     private fun expandAnimation() {
-        header_arrow_button.animate().rotation(180f).start()
+        binding?.pledgeSectionHeaderRewardSummary?.headerArrowButton?.animate()?.rotation(180f)?.start()
 
         val constraintSet = ConstraintSet()
-        constraintSet.clone(pledge_header_container)
+        constraintSet.clone(binding?.pledgeSectionHeaderRewardSummary?.pledgeHeaderContainer)
         constraintSet.clear(R.id.header_summary_list, ConstraintSet.BOTTOM)
 
         val transition = ChangeBounds()
         transition.duration = 100
 
-        TransitionManager.beginDelayedTransition(pledge_header_container, transition)
-        constraintSet.applyTo(pledge_header_container)
+        binding?.pledgeSectionHeaderRewardSummary?.pledgeHeaderContainer?.let {
+            TransitionManager.beginDelayedTransition(it, transition)
+            constraintSet.applyTo(it)
+        }
     }
 
     private fun collapseAnimation() {
-        header_arrow_button.animate().rotation(0f).start()
+        binding?.pledgeSectionHeaderRewardSummary?.headerArrowButton?.animate()?.rotation(0f)?.start()
 
         val constraintSet = ConstraintSet()
-        constraintSet.clone(pledge_header_container)
+        constraintSet.clone(binding?.pledgeSectionHeaderRewardSummary?.pledgeHeaderContainer)
         constraintSet.connect(R.id.header_summary_list, ConstraintSet.BOTTOM, R.id.header_animation_guideline, ConstraintSet.BOTTOM)
 
         val transition = ChangeBounds()
         transition.duration = 100
 
-        TransitionManager.beginDelayedTransition(pledge_header_container, transition)
-        constraintSet.applyTo(pledge_header_container)
+        binding?.pledgeSectionHeaderRewardSummary?.pledgeHeaderContainer?.let {
+            TransitionManager.beginDelayedTransition(it, transition)
+            constraintSet.applyTo(it)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -631,8 +675,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     override fun onDetach() {
         super.onDetach()
-        cards_recycler?.adapter = null
-        header_summary_list?.adapter = null
+        binding?.pledgeSectionPayment?.cardsRecycler?.adapter = null
+        binding?.pledgeSectionHeaderRewardSummary?.headerSummaryList?.adapter = null
         this.viewModel = null
     }
 
@@ -651,15 +695,15 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     override fun ruleSelected(rule: ShippingRule) {
         this.viewModel.inputs.shippingRuleSelected(rule)
         activity?.hideKeyboard()
-        shipping_rules.clearFocus()
+        binding?.pledgeSectionEditableShipping?.shippingRules?.clearFocus()
 
-        if (!pledge_footer_pledge_button.isEnabled) {
-            pledge_footer_pledge_button.isEnabled = true
+        if (binding?.pledgeSectionFooter?.pledgeFooterPledgeButton?.isEnabled == false) {
+            binding?.pledgeSectionFooter?.pledgeFooterPledgeButton?.isEnabled = true
         }
     }
 
     private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {
-        shipping_rules.isEnabled = true
+        binding?.pledgeSectionEditableShipping?.shippingRules?.isEnabled = true
         adapter.populateShippingRules(shippingRules, project)
     }
 
@@ -675,17 +719,17 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val symbol = symbolAndStart.first
         val symbolAtStart = symbolAndStart.second
         if (symbolAtStart) {
-            pledge_symbol_start.text = symbol
-            pledge_symbol_end.text = null
+            binding?.pledgeSectionPledgeAmount?. pledgeSymbolStart ?.text = symbol
+            binding?.pledgeSectionPledgeAmount?. pledgeSymbolEnd?.text = null
 
-            bonus_symbol_start.text = symbol
-            bonus_symbol_end.text = null
+            binding?.pledgeSectionBonusSupport?.bonusSymbolStart?.text = symbol
+            binding?.pledgeSectionBonusSupport?.bonusSymbolEnd?.text = null
         } else {
-            pledge_symbol_start.text = null
-            pledge_symbol_end.text = symbol
+            binding?.pledgeSectionPledgeAmount?. pledgeSymbolStart ?.text = null
+            binding?.pledgeSectionPledgeAmount?. pledgeSymbolEnd?.text = symbol
 
-            bonus_symbol_start.text = null
-            bonus_symbol_end.text = symbol
+            binding?.pledgeSectionBonusSupport?.bonusSymbolStart?.text = null
+            binding?.pledgeSectionBonusSupport?.bonusSymbolEnd?.text = symbol
         }
     }
 
@@ -704,18 +748,18 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         ViewUtils.addBoldSpan(spannableWarning, total)
         ViewUtils.addBoldSpan(spannableWarning, deadline)
 
-        deadline_warning.text = spannableWarning
+        binding?.deadlineWarning?.text = spannableWarning
     }
 
     private fun setPledgeMaximumText(maximumAmount: String) {
         val ksString = this.viewModel.environment.ksString()
-        pledge_maximum.text = ksString.format(getString(R.string.Enter_an_amount_less_than_max_pledge), "max_pledge", maximumAmount)
-        bonus_maximum.text = ksString.format(getString(R.string.Enter_an_amount_less_than_max_pledge), "max_pledge", maximumAmount)
+        binding?.pledgeSectionPledgeAmount?. pledgeMaximum ?.text = ksString.format(getString(R.string.Enter_an_amount_less_than_max_pledge), "max_pledge", maximumAmount)
+        binding?.pledgeSectionBonusSupport?.bonusMaximum?.text = ksString.format(getString(R.string.Enter_an_amount_less_than_max_pledge), "max_pledge", maximumAmount)
     }
 
     private fun setPledgeMinimumText(minimumAmount: String) {
         val ksString = this.viewModel.environment.ksString()
-        pledge_minimum.text = ksString.format(getString(R.string.The_minimum_pledge_is_min_pledge), "min_pledge", minimumAmount)
+        binding?.pledgeSectionPledgeAmount?. pledgeMinimum ?.text = ksString.format(getString(R.string.The_minimum_pledge_is_min_pledge), "min_pledge", minimumAmount)
     }
 
     private fun setPlusTextView(textView: TextView, localizedAmount: CharSequence) {
@@ -734,22 +778,22 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     private fun setUpCardsAdapter() {
-        cards_recycler.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        cards_recycler.adapter = RewardCardAdapter(this)
-        cards_recycler.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.grid_1)))
+        binding?.pledgeSectionPayment?.cardsRecycler?.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        binding?.pledgeSectionPayment?.cardsRecycler?.adapter = RewardCardAdapter(this)
+        binding?.pledgeSectionPayment?.cardsRecycler?.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.grid_1)))
     }
 
     private fun setUpShippingAdapter() {
         context?.let {
             adapter = ShippingRulesAdapter(it, R.layout.item_shipping_rule, arrayListOf(), this)
-            shipping_rules.setAdapter(adapter)
+            binding?.pledgeSectionEditableShipping?.shippingRules?.setAdapter(adapter)
         }
 
-        this.view?.shipping_rules?.addTextChangedListener(object : TextWatcher {
+        binding?.pledgeSectionEditableShipping?.shippingRules?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
 
                 if (s.toString().isNullOrBlank()) {
-                    pledge_footer_pledge_button.isEnabled = false
+                    binding?.pledgeSectionFooter?.pledgeFooterPledgeButton?.isEnabled = false
                 }
             }
 
@@ -762,8 +806,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     private fun setupRewardRecyclerView() {
-        header_summary_list.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        header_summary_list.adapter = headerAdapter
+        binding?.pledgeSectionHeaderRewardSummary?.headerSummaryList?.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        binding?.pledgeSectionHeaderRewardSummary?.headerSummaryList?.adapter = headerAdapter
     }
 
     private fun setClickableHtml(string: String, textView: TextView) {
@@ -793,7 +837,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     private fun setConversionTextView(@NonNull amount: String) {
         val currencyConversionString = context?.getString(R.string.About_reward_amount)
-        total_amount_conversion.text = (
+        binding?.pledgeSectionTotal?.totalAmountConversion ?.text = (
             currencyConversionString?.let {
                 this.viewModel.environment.ksString().format(it, "reward_amount", amount)
             }
@@ -814,7 +858,12 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             "privacy_policy_link", privacyPolicyUrl, "cookie_policy_link", cookiePolicyUrl
         )
 
-        setClickableHtml(agreementWithUrls, pledge_footer_pledge_agreement)
+        binding?.pledgeSectionFooter?.pledgeFooterPledgeAgreement?.let {
+            setClickableHtml(
+                agreementWithUrls,
+                it
+            )
+        }
 
         val trustUrl = UrlUtils.appendPath(baseUrl, "trust")
         val accountabilityWithUrl = ksString.format(
@@ -823,8 +872,13 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             trustUrl
         )
 
-        setClickableHtml(accountabilityWithUrl, accountability)
-        accountability_container.setOnClickListener {
+        binding?.pledgeSectionAccountability?. accountability?.let {
+            setClickableHtml(
+                accountabilityWithUrl,
+                it
+            )
+        }
+        binding?.pledgeSectionAccountability?. accountabilityContainer?.setOnClickListener {
             this.viewModel.inputs.linkClicked(trustUrl)
         }
     }
@@ -832,12 +886,12 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     private fun updatePledgeCardState(positionAndCardState: Pair<Int, CardState>) {
         val position = positionAndCardState.first
         val cardState = positionAndCardState.second
-        val rewardCardAdapter = cards_recycler.adapter as RewardCardAdapter
+        val rewardCardAdapter = binding?.pledgeSectionPayment?.cardsRecycler?.adapter as? RewardCardAdapter
 
         if (cardState == CardState.SELECTED) {
-            rewardCardAdapter.setSelectedPosition(position)
+            rewardCardAdapter?.setSelectedPosition(position)
         } else {
-            rewardCardAdapter.resetSelectedPosition()
+            rewardCardAdapter?.resetSelectedPosition()
         }
     }
 

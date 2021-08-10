@@ -12,7 +12,9 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <include layout="@layout/login_toolbar" />
+    <include
+        android:id="@+id/login_toolbar"
+        layout="@layout/login_toolbar" />
 
   </com.google.android.material.appbar.AppBarLayout>
 
@@ -29,6 +31,7 @@
           app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <include
+            android:id="@+id/login_form_view"
             layout="@layout/login_form_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

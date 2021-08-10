@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isGone
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
+import com.kickstarter.databinding.FragmentRewardsBinding
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
@@ -20,17 +22,18 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.RewardsFragmentViewModel
-import kotlinx.android.synthetic.main.fragment_rewards.*
 
 @RequiresFragmentViewModel(RewardsFragmentViewModel.ViewModel::class)
 class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), RewardsAdapter.Delegate {
 
     private var rewardsAdapter = RewardsAdapter(this)
     private lateinit var dialog: AlertDialog
+    private var binding: FragmentRewardsBinding? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        return inflater.inflate(R.layout.fragment_rewards, container, false)
+        binding = FragmentRewardsBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,7 +80,7 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
             }
 
         context?.apply {
-            ViewUtils.setGone(rewards_count, ViewUtils.isLandscape(this))
+            binding?.rewardsCount?.isGone = ViewUtils.isLandscape(this)
         }
     }
 
@@ -101,8 +104,8 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
 
     private fun scrollToReward(position: Int) {
         if (position != 0) {
-            val recyclerWidth = (rewards_recycler?.width ?: 0)
-            val linearLayoutManager = rewards_recycler?.layoutManager as LinearLayoutManager
+            val recyclerWidth = (binding?.rewardsRecycler?.width ?: 0)
+            val linearLayoutManager = binding?.rewardsRecycler?.layoutManager as LinearLayoutManager
             val rewardWidth = resources.getDimensionPixelSize(R.dimen.item_reward_width)
             val rewardMargin = resources.getDimensionPixelSize(R.dimen.reward_margin)
             val center = (recyclerWidth - rewardWidth - rewardMargin) / 2
@@ -115,12 +118,12 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
             "Rewards_count_rewards", count,
             "rewards_count", NumberUtils.format(count)
         )
-        rewards_count.text = rewardsCountString
+        binding?.rewardsCount?.text = rewardsCountString
     }
 
     override fun onDetach() {
         super.onDetach()
-        rewards_recycler?.adapter = null
+        binding?.rewardsRecycler?.adapter = null
         this.viewModel = null
     }
 
@@ -134,12 +137,12 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
 
     private fun addItemDecorator() {
         val margin = resources.getDimension(R.dimen.reward_margin).toInt()
-        rewards_recycler.addItemDecoration(RewardDecoration(margin))
+        binding?.rewardsRecycler?.addItemDecoration(RewardDecoration(margin))
     }
 
     private fun setupRecyclerView() {
-        rewards_recycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        rewards_recycler.adapter = rewardsAdapter
+        binding?.rewardsRecycler?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding?.rewardsRecycler?.adapter = rewardsAdapter
         addItemDecorator()
     }
 

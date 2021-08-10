@@ -6,14 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isGone
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
+import com.kickstarter.databinding.FragmentBackingAddonsBinding
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -26,16 +27,16 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.viewholders.BackingAddOnViewHolder
 import com.kickstarter.viewmodels.BackingAddOnsFragmentViewModel
-import kotlinx.android.synthetic.main.fragment_backing_addons.*
-import kotlinx.android.synthetic.main.fragment_backing_addons_section_footer.*
 import java.util.concurrent.TimeUnit
 
 @RequiresFragmentViewModel(BackingAddOnsFragmentViewModel.ViewModel::class)
 class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewModel>(), ShippingRulesAdapter.Delegate, BackingAddOnViewHolder.ViewListener {
+    private var binding: FragmentBackingAddonsBinding? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        return inflater.inflate(R.layout.fragment_backing_addons, container, false)
+        binding = FragmentBackingAddonsBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     private val backingAddonsAdapter = BackingAddOnsAdapter(this)
@@ -69,7 +70,7 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
         this.viewModel.outputs.selectedShippingRule()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { fragment_backing_addons_shipping_rules.setText(it.toString()) }
+            .subscribe { binding?.fragmentBackingAddonsShippingRules?.setText(it.toString()) }
 
         this.viewModel.outputs.showErrorDialog()
             .compose(bindToLifecycle())
@@ -87,25 +88,25 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
             .compose(Transformers.observeForUI())
             .filter { ObjectUtils.isNotNull(it) }
             .subscribe { total ->
-                backing_addons_footer_button.text = selectProperString(total)
+                binding?.fragmentBackingAddonsSectionFooterLayout?.backingAddonsFooterButton ?.text = selectProperString(total)
             }
 
         this.viewModel.outputs.shippingSelectorIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                ViewUtils.setGone(fragment_backing_addons_shipping_rules, it)
-                ViewUtils.setGone(fragment_backing_addons_call_out, it)
+                binding?.fragmentBackingAddonsShippingRules?.isGone = it
+                binding?.fragmentBackingAddonsCallOut?.isGone = it
             }
 
         this.viewModel.outputs.isEnabledCTAButton()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                backing_addons_footer_button.isEnabled = it
+                binding?.fragmentBackingAddonsSectionFooterLayout?.backingAddonsFooterButton ?.isEnabled = it
             }
 
-        backing_addons_footer_button.setOnClickListener {
+        binding?.fragmentBackingAddonsSectionFooterLayout?.backingAddonsFooterButton ?.setOnClickListener {
             this.viewModel.inputs.continueButtonPressed()
         }
     }
@@ -147,14 +148,14 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
     }
 
     private fun setupRecyclerView() {
-        fragment_select_addons_recycler.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        fragment_select_addons_recycler.adapter = backingAddonsAdapter
+        binding?.fragmentSelectAddonsRecycler?.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        binding?.fragmentSelectAddonsRecycler?.adapter = backingAddonsAdapter
     }
 
     private fun setUpShippingAdapter() {
-        context?.let {
+        activity?.let {
             shippingRulesAdapter = ShippingRulesAdapter(it, R.layout.item_shipping_rule, arrayListOf(), this)
-            fragment_backing_addons_shipping_rules.setAdapter(shippingRulesAdapter)
+            binding?.fragmentBackingAddonsShippingRules?.setAdapter(shippingRulesAdapter)
         }
     }
 
@@ -181,7 +182,7 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
     }
 
     private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {
-        fragment_backing_addons_shipping_rules.isEnabled = true
+        binding?.fragmentBackingAddonsShippingRules?.isEnabled = true
         shippingRulesAdapter.populateShippingRules(shippingRules, project)
     }
 
@@ -199,7 +200,7 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
     override fun ruleSelected(rule: ShippingRule) {
         this.viewModel.inputs.shippingRuleSelected(rule)
         activity?.hideKeyboard()
-        fragment_backing_addons_shipping_rules.clearFocus()
+        binding?.fragmentBackingAddonsShippingRules?.clearFocus()
     }
 
     override fun quantityPerId(quantityPerId: Pair<Int, Long>) {
@@ -208,7 +209,7 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
 
     override fun onDetach() {
         super.onDetach()
-        fragment_select_addons_recycler?.adapter = null
+        binding?.fragmentSelectAddonsRecycler?.adapter = null
         this.viewModel = null
     }
 }

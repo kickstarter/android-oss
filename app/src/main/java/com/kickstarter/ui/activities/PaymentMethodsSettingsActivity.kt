@@ -4,19 +4,18 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isGone
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
+import com.kickstarter.databinding.ActivitySettingsPaymentMethodsBinding
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.PaymentMethodsViewModel
-import kotlinx.android.synthetic.main.activity_settings_payment_methods.*
-import kotlinx.android.synthetic.main.payment_methods_toolbar.*
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(PaymentMethodsViewModel.ViewModel::class)
@@ -25,9 +24,13 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
     private lateinit var adapter: PaymentMethodsAdapter
     private var showDeleteCardDialog: AlertDialog? = null
 
+    private lateinit var binding: ActivitySettingsPaymentMethodsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings_payment_methods)
+        binding = ActivitySettingsPaymentMethodsBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
 
         setUpRecyclerView()
 
@@ -39,17 +42,21 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
         this.viewModel.outputs.dividerIsVisible()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { ViewUtils.setGone(payments_divider, !it) }
+            .subscribe {
+                binding.paymentsDivider.isGone = !it
+            }
 
         this.viewModel.outputs.error()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { showSnackbar(payment_methods_toolbar, it) }
+            .subscribe { showSnackbar(binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, it) }
 
         this.viewModel.outputs.progressBarIsVisible()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { ViewUtils.setGone(progress_bar, !it) }
+            .subscribe {
+                binding.progressBar.isGone = !it
+            }
 
         this.viewModel.outputs.showDeleteCardDialog()
             .compose(bindToLifecycle())
@@ -59,9 +66,9 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
         this.viewModel.success()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { showSnackbar(payment_methods_toolbar, R.string.Got_it_your_changes_have_been_saved) }
+            .subscribe { showSnackbar(binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, R.string.Got_it_your_changes_have_been_saved) }
 
-        add_new_card.setOnClickListener {
+        binding.addNewCard.setOnClickListener {
             startActivityForResult(
                 Intent(this, NewCardActivity::class.java),
                 ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD
@@ -72,7 +79,7 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
         if (requestCode == ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD && resultCode == Activity.RESULT_OK) {
-            showSnackbar(payment_methods_toolbar, R.string.Got_it_your_changes_have_been_saved)
+            showSnackbar(binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, R.string.Got_it_your_changes_have_been_saved)
             this@PaymentMethodsSettingsActivity.viewModel.inputs.refreshCards()
         }
     }
@@ -109,7 +116,7 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
                 }
             }
         )
-        recycler_view.adapter = this.adapter
-        recycler_view.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter = this.adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
     }
 }

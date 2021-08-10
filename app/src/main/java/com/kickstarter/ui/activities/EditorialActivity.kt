@@ -1,37 +1,41 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
+import androidx.core.view.isGone
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
+import com.kickstarter.databinding.ActivityEditorialBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
-import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.ui.fragments.DiscoveryFragment
 import com.kickstarter.viewmodels.EditorialViewModel
-import kotlinx.android.synthetic.main.activity_editorial.*
 
 @RequiresActivityViewModel(EditorialViewModel.ViewModel::class)
 class EditorialActivity : BaseActivity<EditorialViewModel.ViewModel>() {
 
+    private lateinit var binding: ActivityEditorialBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_editorial)
+        binding = ActivityEditorialBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
 
         this.viewModel.outputs.description()
             .compose(observeForUI())
             .compose(bindToLifecycle())
-            .subscribe { editorial_description.setText(it) }
+            .subscribe { binding.editorialDescription.setText(it) }
 
         this.viewModel.outputs.graphic()
             .compose(observeForUI())
             .compose(bindToLifecycle())
-            .subscribe { editorial_graphic.setImageResource(it) }
+            .subscribe { binding.editorialGraphic.setImageResource(it) }
 
         this.viewModel.outputs.title()
             .compose(observeForUI())
             .compose(bindToLifecycle())
-            .subscribe { editorial_title.setText(it) }
+            .subscribe { binding.editorialTitle.setText(it) }
 
         this.viewModel.outputs.discoveryParams()
             .compose(observeForUI())
@@ -51,9 +55,11 @@ class EditorialActivity : BaseActivity<EditorialViewModel.ViewModel>() {
         this.viewModel.outputs.retryContainerIsGone()
             .compose(observeForUI())
             .compose(bindToLifecycle())
-            .subscribe { ViewUtils.setGone(editorial_retry_container, it) }
+            .subscribe {
+                binding.editorialRetryContainer.root.isGone = it
+            }
 
-        RxView.clicks(editorial_retry_container)
+        RxView.clicks(binding.editorialRetryContainer.root)
             .compose(bindToLifecycle())
             .subscribe { this.viewModel.inputs.retryContainerClicked() }
     }

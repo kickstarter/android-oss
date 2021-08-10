@@ -11,19 +11,23 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView.setWebContentsDebuggingEnabled
 import android.widget.FrameLayout
 import com.kickstarter.KSApplication
-import com.kickstarter.R
+import com.kickstarter.databinding.WebViewBinding
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.WebViewJavascriptInterface
 import com.kickstarter.libs.perimeterx.PerimeterXClientType
 import com.kickstarter.services.KSWebViewClient
 import com.kickstarter.services.RequestHandler
-import kotlinx.android.synthetic.main.web_view.view.*
 import timber.log.Timber
 import javax.inject.Inject
 
 private const val LOGTAG = "KSWebView"
-class KSWebView : FrameLayout, KSWebViewClient.Delegate {
+class KSWebView@JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : FrameLayout(context, attrs, defStyleAttr), KSWebViewClient.Delegate {
 
+    private var binding = WebViewBinding.inflate(LayoutInflater.from(context), this, true)
     @Inject
     lateinit var client: KSWebViewClient
 
@@ -41,39 +45,30 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
         fun onReceivedError(url: String)
     }
 
-    constructor(context: Context) : super(context) {
-        init(context)
-    }
-
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init(context)
-    }
-
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
-        init(context)
+    init {
+        initWebView(context)
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private fun init(context: Context) {
-        LayoutInflater.from(context).inflate(R.layout.web_view, this, true)
+    private fun initWebView(context: Context) {
 
         if (!isInEditMode) {
             (context.applicationContext as KSApplication).component().inject(this)
-            internal_web_view.webViewClient = this.client
-            internal_web_view.webChromeClient = WebChromeClient()
-            internal_web_view.settings.javaScriptEnabled = true
-            internal_web_view.settings.allowFileAccess = false
+            binding.internalWebView.webViewClient = this.client
+            binding.internalWebView.webChromeClient = WebChromeClient()
+            binding.internalWebView.settings.javaScriptEnabled = true
+            binding.internalWebView.settings.allowFileAccess = false
             this.client.setDelegate(this)
 
             if (Build.isInternal() || build.isDebug) {
                 setWebContentsDebuggingEnabled(true)
             }
 
-            internal_web_view.addJavascriptInterface(WebViewJavascriptInterface(this.client), "WebViewJavascriptInterface")
+            binding.internalWebView.addJavascriptInterface(WebViewJavascriptInterface(this.client), "WebViewJavascriptInterface")
 
-            web_view_error.setOnClickListener {
-                internal_web_view.goBack()
-                web_view_error.visibility = View.GONE
+            binding.webViewError.root.setOnClickListener {
+                binding.internalWebView.goBack()
+                binding.webViewError.root.visibility = View.GONE
             }
         }
     }
@@ -96,11 +91,11 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
     }
 
     override fun onPageFinished(url: String?) {
-        setVisibilityIfNecessary(web_view_progress, View.GONE)
+        setVisibilityIfNecessary(binding.webViewProgress.root, View.GONE)
     }
 
     override fun onPageStarted(url: String?) {
-        web_view_progress.visibility = View.VISIBLE
+        binding.webViewProgress.root.visibility = View.VISIBLE
     }
 
     override fun pageIntercepted(url: String) {
@@ -109,10 +104,10 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
 
     override fun onReceivedError(url: String) {
         this.delegate?.onReceivedError(url)
-        setVisibilityIfNecessary(web_view_progress, View.VISIBLE)
-        web_view_error.visibility = View.VISIBLE
-        internal_web_view.stopLoading()
-        internal_web_view.loadUrl("about:blank")
+        setVisibilityIfNecessary(binding.webViewProgress.root, View.VISIBLE)
+        binding.webViewError.root.visibility = View.VISIBLE
+        binding.internalWebView.stopLoading()
+        binding.internalWebView.loadUrl("about:blank")
     }
 
     override fun onDetachedFromWindow() {
@@ -121,20 +116,20 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
     }
 
     fun canGoBack(): Boolean {
-        return internal_web_view.canGoBack()
+        return binding.internalWebView.canGoBack()
     }
 
     fun evaluateJavascript(javascript: String?, resultCallback: ValueCallback<String>?) {
-        javascript?.let { internal_web_view.evaluateJavascript(it, resultCallback) }
+        javascript?.let { binding.internalWebView.evaluateJavascript(it, resultCallback) }
     }
 
     fun goBack() {
-        internal_web_view.goBack()
+        binding.internalWebView.goBack()
     }
 
     fun loadUrl(url: String?) {
         url?.let {
-            internal_web_view.loadUrl(it)
+            binding.internalWebView.loadUrl(it)
             setPerimeterXCookie(it)
         }
     }

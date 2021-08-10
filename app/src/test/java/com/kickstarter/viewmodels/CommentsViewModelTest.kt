@@ -511,7 +511,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         }
 
         // - Check the status of the newly posted comment has been updated to "COMMENT_FOR_LOGIN_BACKED_USERS"
-        vm.inputs.refreshComment(newPostedComment)
+        vm.inputs.refreshComment(newPostedComment,0)
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
         commentsList.assertValueCount(3)
@@ -612,7 +612,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         this.hasPendingComments.assertValues(Pair(false, false), Pair(true, false))
 
         // - Check the status of the newly posted comment
-        vm.inputs.refreshComment(newPostedComment)
+        vm.inputs.refreshComment(newPostedComment,0)
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
         // - Check Pull to refresh
@@ -704,7 +704,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         this.hasPendingComments.assertValues(Pair(false, true), Pair(true, true))
 
         // - Check the status of the newly posted comment
-        vm.inputs.refreshComment(newPostedComment)
+        vm.inputs.refreshComment(newPostedComment,0)
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
         // - Check Pull to refresh

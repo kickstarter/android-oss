@@ -85,7 +85,7 @@ jobs:
       - run:
           name: Config Emulator for Screenshot test
           command: ./script/emulator/screenshot_config_emulator.sh
-      - run: ./gradlew internalDebugExecuteScreenshotTests
+      - run: ./gradlew executeScreenshotTests
       - android/save-gradle-cache:
           cache-prefix: v1a
       - store_artifacts:

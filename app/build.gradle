@@ -324,9 +324,7 @@ dependencies {
     androidTestImplementation 'androidx.annotation:annotation:1.2.0'
 
     def espresso = '3.2.0'
-    androidTestImplementation ('androidx.test.espresso:espresso-contrib:' + espresso) {
-        exclude module: "protobuf-lite"
-    }
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:' + espresso
     androidTestImplementation 'androidx.test.espresso:espresso-core:' + espresso
     androidTestImplementation 'androidx.test.espresso:espresso-intents:' + espresso
     androidTestImplementation "androidx.test.ext:junit:1.1.2"

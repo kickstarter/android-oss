@@ -2,32 +2,34 @@ package com.kickstarter.ui.activities
 
 import android.os.Bundle
 import android.widget.TextView
-import com.kickstarter.R
+import androidx.core.view.isGone
+import com.kickstarter.databinding.ActivityEditProfileBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.SwitchCompatUtils
-import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.User
 import com.kickstarter.viewmodels.EditProfileViewModel
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_edit_profile.*
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(EditProfileViewModel.ViewModel::class)
 class EditProfileActivity : BaseActivity<EditProfileViewModel.ViewModel>() {
+    private lateinit var binding: ActivityEditProfileBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_edit_profile)
+        binding = ActivityEditProfileBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
 
         this.viewModel.outputs.userAvatarUrl()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { url ->
-                Picasso.get().load(url).transform(CircleTransformation()).into(avatar_image_view)
+                Picasso.get().load(url).transform(CircleTransformation()).into(binding.avatarImageView)
             }
 
         this.viewModel.outputs.user()
@@ -38,23 +40,22 @@ class EditProfileActivity : BaseActivity<EditProfileViewModel.ViewModel>() {
         this.viewModel.outputs.userName()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { name_edit_text.setText(it, TextView.BufferType.EDITABLE) }
+            .subscribe { binding.nameEditText.setText(it, TextView.BufferType.EDITABLE) }
 
         this.viewModel.outputs.hidePrivateProfileRow()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                ViewUtils.setGone(private_profile_row, it)
-                ViewUtils.setGone(private_profile_text_view, it)
-                ViewUtils.setGone(public_profile_text_view, it)
+                binding.privateProfileRow.isGone = it
+                binding.privateProfileTextView.isGone = it
+                binding.publicProfileTextView.isGone = it
             }
-
-        private_profile_switch.setOnClickListener {
-            this.viewModel.inputs.showPublicProfile(private_profile_switch.isChecked)
+        binding.privateProfileSwitch.setOnClickListener {
+            this.viewModel.inputs.showPublicProfile(binding.privateProfileSwitch.isChecked)
         }
     }
 
     private fun displayPreferences(user: User) {
-        SwitchCompatUtils.setCheckedWithoutAnimation(private_profile_switch, BooleanUtils.isFalse(user.showPublicProfile()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.privateProfileSwitch, BooleanUtils.isFalse(user.showPublicProfile()))
     }
 }

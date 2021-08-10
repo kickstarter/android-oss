@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
 import com.kickstarter.R
+import com.kickstarter.databinding.ResetPasswordLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -14,8 +15,6 @@ import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.text
 import com.kickstarter.viewmodels.ResetPasswordViewModel
-import kotlinx.android.synthetic.main.login_toolbar.*
-import kotlinx.android.synthetic.main.reset_password_form_view.*
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(ResetPasswordViewModel.ViewModel::class)
@@ -25,12 +24,15 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
     private var errorMessageString = R.string.forgot_password_error
     private var errorGenericString = R.string.Something_went_wrong_please_try_again
     private var errorTitleString = R.string.general_error_oops
+    private lateinit var binding: ResetPasswordLayoutBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ResetPasswordLayoutBinding.inflate(layoutInflater)
 
-        setContentView(R.layout.reset_password_layout)
-        login_toolbar.setTitle(getString(this.forgotPasswordString))
+        setContentView(binding.root)
+
+        binding.resetPasswordToolbar.loginToolbar.setTitle(getString(this.forgotPasswordString))
 
         this.viewModel.outputs.resetSuccess()
             .compose(bindToLifecycle())
@@ -52,15 +54,15 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { ViewUtils.showDialog(this, getString(this.errorTitleString), it) }
 
-        reset_password_button.setOnClickListener { this.viewModel.inputs.resetPasswordClick() }
+        binding.resetPasswordFormView.resetPasswordButton.setOnClickListener { this.viewModel.inputs.resetPasswordClick() }
 
-        email.onChange { this.viewModel.inputs.email(it) }
+        binding.resetPasswordFormView.email.onChange { this.viewModel.inputs.email(it) }
 
         this.viewModel.outputs.prefillEmail()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                email.setText(it)
+                binding.resetPasswordFormView.email.setText(it)
             }
     }
 
@@ -71,13 +73,13 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
     private fun onResetSuccess() {
         setFormEnabled(false)
         val intent = Intent(this, LoginActivity::class.java)
-            .putExtra(IntentKey.EMAIL, email.text())
+            .putExtra(IntentKey.EMAIL, binding.resetPasswordFormView.email.text())
             .putExtra(IntentKey.LOGIN_REASON, LoginReason.RESET_PASSWORD)
         startActivityWithTransition(intent, R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
     }
 
     private fun setFormEnabled(isEnabled: Boolean) {
-        reset_password_button.isEnabled = isEnabled
+        binding.resetPasswordFormView.resetPasswordButton.isEnabled = isEnabled
     }
 
     private fun setFormDisabled(isDisabled: Boolean) {

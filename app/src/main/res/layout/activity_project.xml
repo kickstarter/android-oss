@@ -16,7 +16,9 @@
       android:layout_height="wrap_content"
       app:layout_scrollFlags="scroll|enterAlways">
 
-      <include layout="@layout/project_toolbar" />
+      <include
+          android:id="@+id/project_activity_toolbar"
+          layout="@layout/project_toolbar" />
     </com.google.android.material.appbar.CollapsingToolbarLayout>
   </com.google.android.material.appbar.AppBarLayout>
 
@@ -39,7 +41,9 @@
     app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
     tools:listitem="@layout/project_main_layout" />
 
-  <include layout="@layout/pledge_container" />
+  <include
+      android:id="@+id/pledge_container_layout"
+      layout="@layout/pledge_container" />
 
   <androidx.coordinatorlayout.widget.CoordinatorLayout
     android:id="@+id/snackbar_anchor"

@@ -100,7 +100,9 @@
 
       </LinearLayout>
 
-      <include layout="@layout/profile_toolbar" />
+      <include
+          android:id="@+id/profile_activity_toolbar"
+          layout="@layout/profile_toolbar" />
 
     </com.google.android.material.appbar.CollapsingToolbarLayout>
 

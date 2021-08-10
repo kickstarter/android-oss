@@ -1,15 +1,14 @@
 package com.kickstarter.ui.viewholders
 
 import android.util.Pair
-import android.view.View
+import com.kickstarter.databinding.ItemShippingRuleBinding
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.viewmodels.ShippingRuleViewHolderViewModel
-import kotlinx.android.synthetic.main.item_shipping_rule.view.*
 import rx.android.schedulers.AndroidSchedulers
 
-class ShippingRuleViewHolder(private val view: View, val delegate: Delegate) : KSArrayViewHolder(view) {
+class ShippingRuleViewHolder(private val binding: ItemShippingRuleBinding, val delegate: Delegate) : KSArrayViewHolder(binding.root) {
 
     interface Delegate {
         fun ruleSelected(rule: ShippingRule)
@@ -22,9 +21,9 @@ class ShippingRuleViewHolder(private val view: View, val delegate: Delegate) : K
         this.viewModel.outputs.shippingRuleText()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { this.view.shipping_rules_item_text_view.text = it }
+            .subscribe { this.binding.shippingRulesItemTextView.text = it }
 
-        this.view.shipping_rule_root.setOnClickListener {
+        this.binding.shippingRuleRoot.setOnClickListener {
             this.delegate.ruleSelected(this.shippingRule)
         }
     }

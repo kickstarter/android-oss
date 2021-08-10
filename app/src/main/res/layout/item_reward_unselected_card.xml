@@ -28,7 +28,9 @@
         android:contentDescription="@string/Select_this_card"
         android:src="@drawable/circle_grey_500_stroke" />
 
-      <include layout="@layout/reward_card_details" />
+      <include
+          android:id="@+id/reward_card_details_layout"
+          layout="@layout/reward_card_details" />
     </LinearLayout>
 
     <TextView
@@ -44,6 +46,8 @@
       android:visibility="gone"
       tools:visibility="visible" />
 
-    <include layout="@layout/retry_card_warning" />
+    <include
+        android:id="@+id/retry_card_warning_layout"
+        layout="@layout/retry_card_warning" />
   </LinearLayout>
 </androidx.cardview.widget.CardView>

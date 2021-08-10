@@ -66,10 +66,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" />
 
-  <include layout="@layout/project_retry" />
+  <include
+      android:id="@+id/project_retry_layout"
+      layout="@layout/project_retry" />
 
   <LinearLayout
-    android:id="@+id/pledge_action_buttons"
+    android:id="@+id/pledge_action_buttons_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/activity_horizontal_margin"

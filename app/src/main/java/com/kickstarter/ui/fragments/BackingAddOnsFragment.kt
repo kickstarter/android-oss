@@ -153,7 +153,7 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
     }
 
     private fun setUpShippingAdapter() {
-        context?.let {
+        activity?.let {
             shippingRulesAdapter = ShippingRulesAdapter(it, R.layout.item_shipping_rule, arrayListOf(), this)
             binding?.fragmentBackingAddonsShippingRules?.setAdapter(shippingRulesAdapter)
         }

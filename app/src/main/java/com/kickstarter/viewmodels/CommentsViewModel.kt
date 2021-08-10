@@ -337,11 +337,14 @@ interface CommentsViewModel {
                 .compose(bindToLifecycle<Boolean>())
                 .subscribe(this.isFetchingComments)
 
-            apolloPaginate.paginatedData()?.share()
-                ?.compose(Transformers.combineLatestPair(this.isFetchingComments))
+            apolloPaginate.paginatedData()
+                ?.compose(combineLatestPair(this.isFetchingComments))
                 ?.filter { !it.second }
+                ?.distinctUntilChanged()
+                ?.share()
                 ?.subscribe {
                     this.commentsList.onNext(it.first)
+                    this.displayPaginationError.onNext(false)
                 }
 
             this.internalError
@@ -355,14 +358,13 @@ interface CommentsViewModel {
                     this.initialError.onNext(it.first)
                 }
 
-            this.internalError
-                .compose(combineLatestPair(commentsList))
+            commentsList.compose(takePairWhen(this.internalError))
                 .filter {
-                    it.second.isNotEmpty()
+                    it.first.isNotEmpty()
                 }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.paginationError.onNext(it.first)
+                    this.paginationError.onNext(it.second)
                 }
 
             this.refresh

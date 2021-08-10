@@ -35,6 +35,7 @@ class CommentsActivity :
     CommentsAdapter.Delegate,
     CommentPaginationErrorAdapter.Delegate {
     private lateinit var binding: ActivityCommentsLayoutBinding
+    /** comments list and initial load error adapter **/
     private val commentsAdapter = CommentsAdapter(this)
     private val commentPaginationErrorAdapter = CommentPaginationErrorAdapter(this)
 
@@ -46,6 +47,7 @@ class CommentsActivity :
         binding = ActivityCommentsLayoutBinding.inflate(layoutInflater)
         val view: View = binding.root
         setContentView(view)
+        /** use ConcatAdapter to bind adapters to recycler view and replace the section issue **/
         binding.commentsRecyclerView.adapter =
             ConcatAdapter(commentsAdapter, commentPaginationErrorAdapter)
 

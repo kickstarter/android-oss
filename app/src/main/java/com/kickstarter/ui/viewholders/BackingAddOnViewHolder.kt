@@ -205,7 +205,7 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
         return "$value $detail"
     }
 
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
         if (data is (Triple<*, *, *>)) {
             if (data.second is Reward) {
                 bindAddonsList(data as Triple<ProjectData, Reward, ShippingRule>)

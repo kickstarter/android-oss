@@ -25,7 +25,7 @@ class MessageThreadViewHolder(private val binding: MessageThreadViewBinding) : K
     private val ksString = environment().ksString()
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
         val messageThread = ObjectUtils.requireNonNull(data as MessageThread?)
         viewModel.inputs.configureWith(messageThread)
     }

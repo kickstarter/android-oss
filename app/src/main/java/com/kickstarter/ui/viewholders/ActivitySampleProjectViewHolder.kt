@@ -22,7 +22,7 @@ class ActivitySampleProjectViewHolder(
     }
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
         activity = ObjectUtils.requireNonNull(data as Activity?, Activity::class.java)
     }
 

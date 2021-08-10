@@ -4,7 +4,7 @@ import androidx.viewbinding.ViewBinding
 
 class EmptyViewHolder(binding: ViewBinding) : KSViewHolder(binding.root) {
     @Throws(Exception::class)
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
     }
 
     override fun onBind() {}

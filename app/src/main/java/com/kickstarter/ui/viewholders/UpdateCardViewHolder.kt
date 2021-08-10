@@ -107,7 +107,7 @@ class UpdateCardViewHolder(private val binding: ItemUpdateCardBinding, val deleg
         )
     }
 
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
         @Suppress("UNCHECKED_CAST")
         val projectAndUpdate = requireNonNull(data as Pair<Project, Update>)
         val project = requireNonNull(projectAndUpdate.first, Project::class.java)

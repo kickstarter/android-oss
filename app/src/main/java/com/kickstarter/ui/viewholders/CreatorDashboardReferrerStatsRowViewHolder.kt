@@ -36,7 +36,7 @@ class CreatorDashboardReferrerStatsRowViewHolder(
             .subscribe { binding.referrerSourceTextView.text = it }
     }
     @Throws(Exception::class)
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
         val projectAndReferrerStats = ObjectUtils.requireNonNull(data as Pair<Project, ReferrerStats>?)
         viewModel.inputs.projectAndReferrerStatsInput(projectAndReferrerStats)
     }

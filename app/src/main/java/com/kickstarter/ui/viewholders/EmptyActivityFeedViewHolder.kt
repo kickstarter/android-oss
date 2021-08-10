@@ -17,7 +17,7 @@ class EmptyActivityFeedViewHolder(
     }
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
         isLoggedIn = BooleanUtils.isTrue(data as Boolean?)
     }
 

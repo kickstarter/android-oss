@@ -57,7 +57,7 @@ class CreatorDashboardRewardStatsViewHolder(private val binding: DashboardReward
     }
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
         val projectAndRewardStats = ObjectUtils.requireNonNull(data as Pair<Project, List<RewardStats>>?)
         viewModel.inputs.projectAndRewardStatsInput(projectAndRewardStats)
         binding.dashboardRewardStatsPledgedView.setOnClickListener {

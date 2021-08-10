@@ -45,7 +45,7 @@ class PaginationErrorViewHolder(
         }
     }
 
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
         if (data is Boolean) {
             this.vm.inputs.configureWith(data)
         }

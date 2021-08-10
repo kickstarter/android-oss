@@ -79,7 +79,7 @@ class CreatorDashboardHeaderViewHolder(
             .subscribe(ViewUtils.setGone(binding.creatorViewProjectButton))
     }
 
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
         val projectDashboardData = ObjectUtils.requireNonNull(data as ProjectDashboardData?)
         viewModel.inputs.configureWith(projectDashboardData)
         binding.creatorDashboardProjectSelector.setOnClickListener {

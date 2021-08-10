@@ -56,7 +56,7 @@ class ErroredBackingViewHolder(private val binding: ItemErroredBackingBinding, v
         )
     }
 
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
         @Suppress("UNCHECKED_CAST")
         val erroredBacking = requireNonNull(data as ErroredBacking)
 

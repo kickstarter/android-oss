@@ -18,7 +18,7 @@ class ParentFilterViewHolder(
     }
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
         item = ObjectUtils.requireNonNull(data as NavigationDrawerData.Section.Row?, NavigationDrawerData.Section.Row::class.java)
     }
 

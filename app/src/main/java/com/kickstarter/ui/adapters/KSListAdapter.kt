@@ -105,7 +105,7 @@ abstract class KSListAdapter(
         val data = objectFromPosition(position)
 
         try {
-            viewHolder.bindData(data, position)
+            viewHolder.bindData(data)
         } catch (e: Exception) {
             if (BuildConfig.DEBUG) {
                 ExceptionUtils.rethrowAsRuntimeException(e)

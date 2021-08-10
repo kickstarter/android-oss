@@ -49,7 +49,7 @@ class ProjectViewHolder(
     }
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
         val projectData = ObjectUtils.requireNonNull(data as ProjectData?)
         viewModel.inputs.configureWith(projectData)
     }

@@ -17,7 +17,7 @@ class DiscoveryOnboardingViewHolder(
         }
     }
 
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
     }
 
     private fun loginToutClick() {

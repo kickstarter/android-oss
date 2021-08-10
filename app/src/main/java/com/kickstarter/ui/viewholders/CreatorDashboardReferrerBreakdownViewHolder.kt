@@ -135,7 +135,7 @@ class CreatorDashboardReferrerBreakdownViewHolder(private val binding: Dashboard
     }
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
 
         val projectAndStats = ObjectUtils.requireNonNull(data as? Pair<Project, ProjectStatsEnvelope>?)
         viewModel.inputs.projectAndStatsInput(projectAndStats as Pair<Project, ProjectStatsEnvelope>?)

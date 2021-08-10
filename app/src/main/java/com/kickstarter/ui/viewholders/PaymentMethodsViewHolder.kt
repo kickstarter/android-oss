@@ -49,7 +49,7 @@ class PaymentMethodsViewHolder(private val binding: ItemPaymentMethodBinding, @N
         binding.deleteCard.setOnClickListener { this.vm.inputs.deleteIconClicked() }
     }
 
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
         val card = requireNotNull(data as StoredCard)
         this.vm.inputs.card(card)
     }

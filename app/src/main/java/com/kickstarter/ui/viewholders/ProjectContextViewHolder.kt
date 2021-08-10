@@ -22,7 +22,7 @@ class ProjectContextViewHolder(
     }
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
         project = ObjectUtils.requireNonNull(data as Project?, Project::class.java)
     }
 

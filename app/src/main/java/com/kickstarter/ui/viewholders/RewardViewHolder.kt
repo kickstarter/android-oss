@@ -205,7 +205,7 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
             }
     }
 
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
         @Suppress("UNCHECKED_CAST")
         val projectAndReward = requireNonNull(data as Pair<ProjectData, Reward>)
         val projectTracking = requireNonNull(projectAndReward.first, ProjectData::class.java)

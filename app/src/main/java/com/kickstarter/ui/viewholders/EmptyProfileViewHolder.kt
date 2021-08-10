@@ -12,7 +12,7 @@ class EmptyProfileViewHolder(
     }
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
     }
 
     override fun onBind() {

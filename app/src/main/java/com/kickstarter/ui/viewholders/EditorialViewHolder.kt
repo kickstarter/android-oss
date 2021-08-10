@@ -41,7 +41,7 @@ class EditorialViewHolder(
         binding.lightsOnContainer.setOnClickListener { this.vm.inputs.editorialClicked() }
     }
 
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
         this.vm.inputs.configureWith(data as Editorial)
     }
 }

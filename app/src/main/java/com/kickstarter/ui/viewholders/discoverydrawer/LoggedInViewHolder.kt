@@ -86,7 +86,7 @@ class LoggedInViewHolder(private val binding: DiscoveryDrawerLoggedInViewBinding
     }
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
         this.viewModel.inputs.configureWith(requireNotNull(data as User))
     }
 }

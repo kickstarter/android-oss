@@ -7,7 +7,7 @@ import com.kickstarter.models.RewardsItem
 class RewardsItemViewHolder(private val binding: RewardsItemViewBinding) : KSViewHolder(binding.root) {
     private val ksString = environment().ksString()
     @Throws(Exception::class)
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
         val rewardsItem = ObjectUtils.requireNonNull(data as RewardsItem?)
         val title = ksString.format(
             "rewards_info_item_quantity_title", rewardsItem.quantity(),

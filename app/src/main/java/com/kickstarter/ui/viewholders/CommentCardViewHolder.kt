@@ -168,7 +168,7 @@ class CommentCardViewHolder(
         }
     }
 
-    override fun bindData(data: Any?, position: Int) {
+    override fun bindData(data: Any?) {
         this.vm.inputs.configureWith(data as CommentCardData)
     }
 }

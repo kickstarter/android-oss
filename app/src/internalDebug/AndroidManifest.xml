@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest package="com.kickstarter"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application>
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="no" />
+        <!-- https://firebase.googleblog.com/2017/03/take-control-of-your-firebase-init-on.html -->
+        <provider
+            android:name="com.google.firebase.provider.FirebaseInitProvider"
+            android:authorities="${applicationId}.firebaseinitprovider"
+            tools:node="remove"
+            />
+    </application>
+
+</manifest>

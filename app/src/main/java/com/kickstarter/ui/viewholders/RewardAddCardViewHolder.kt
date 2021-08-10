@@ -10,7 +10,7 @@ class RewardAddCardViewHolder(val binding: ItemAddCardBinding, val delegate: Del
         }
     }
 
-    override fun bindData(data: Any?) {}
+    override fun bindData(data: Any?, position: Int) {}
 
     interface Delegate {
         fun addNewCardButtonClicked()

@@ -18,7 +18,7 @@ class ActivitySampleFriendBackingViewHolder(
     private val ksString = environment().ksString()
     private var activity: Activity? = null
     @Throws(Exception::class)
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         activity = ObjectUtils.requireNonNull(data as Activity?, Activity::class.java)
     }
 

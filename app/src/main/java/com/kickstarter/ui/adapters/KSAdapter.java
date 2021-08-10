@@ -91,7 +91,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
     final Object data = objectFromPosition(position);
 
     try {
-      viewHolder.bindData(data);
+      viewHolder.bindData(data, position);
       viewHolder.onBind();
     } catch (final Exception e) {
       if (BuildConfig.DEBUG) {

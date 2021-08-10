@@ -20,7 +20,7 @@ class ActivitySampleFriendFollowViewHolder(
     }
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         activity = ObjectUtils.requireNonNull(data as Activity?, Activity::class.java)
     }
 

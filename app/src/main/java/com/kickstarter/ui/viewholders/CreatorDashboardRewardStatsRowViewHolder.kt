@@ -35,7 +35,7 @@ class CreatorDashboardRewardStatsRowViewHolder(private val binding: DashboardRew
             .subscribe { setRewardMinimumText(it) }
     }
     @Throws(Exception::class)
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         val projectAndRewardStats = ObjectUtils.requireNonNull(data as Pair<Project, RewardStats>?)
         viewModel.inputs.projectAndRewardStats(projectAndRewardStats)
     }

@@ -20,7 +20,7 @@ class ProfileCardViewHolder(
     }
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         project = ObjectUtils.requireNonNull(data as Project?, Project::class.java)
     }
 

@@ -32,7 +32,7 @@ class SurveyViewHolder(private val binding: ActivitySurveyViewBinding) :
     }
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         val surveyResponse = ObjectUtils.requireNonNull(data as SurveyResponse?)
         viewModel.inputs.configureWith(surveyResponse)
     }

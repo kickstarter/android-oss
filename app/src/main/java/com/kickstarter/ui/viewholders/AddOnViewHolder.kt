@@ -91,7 +91,7 @@ class AddOnViewHolder(private val binding: ItemAddOnBinding) : KSViewHolder(bind
             .subscribe { binding.titleContainer.addOnTitleTextView.text = RewardViewUtils.styleTitleForAddOns(context(), it.first, it.second) }
     }
 
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         if (data is (Pair<*, *>)) {
             if (data.second is Reward) {
                 bindReward(data as Pair<ProjectData, Reward>)

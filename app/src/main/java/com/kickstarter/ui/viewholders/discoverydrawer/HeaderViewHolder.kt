@@ -8,7 +8,7 @@ class HeaderViewHolder(private val binding: DiscoveryDrawerHeaderBinding) : KSVi
     private var item: Int = 0
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         this.item = requireNonNull<Int>(data as? Int, Int::class.java)
         binding.discoveryDrawerHeaderTitle.setText(item)
     }

@@ -47,7 +47,7 @@ class CreatorDashboardReferrerStatsViewHolder(private val binding: DashboardRefe
     }
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         val projectAndReferrerStats = ObjectUtils.requireNonNull(data as Pair<Project, List<ReferrerStats>>?)
         viewModel.inputs.projectAndReferrerStatsInput(projectAndReferrerStats)
     }

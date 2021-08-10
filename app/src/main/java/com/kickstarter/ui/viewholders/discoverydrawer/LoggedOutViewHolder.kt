@@ -12,7 +12,7 @@ class LoggedOutViewHolder(private val binding: DiscoveryDrawerLoggedOutViewBindi
     }
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
     }
 
     override fun onBind() {

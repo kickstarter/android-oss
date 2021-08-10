@@ -19,7 +19,7 @@ class DeprecatedCommentViewHolder(private val binding: DeprecatedCommentCardView
     private var project: Project? = null
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         val projectAndComment = ObjectUtils.requireNonNull(data as? Pair<*, *>?)
         project = ObjectUtils.requireNonNull(projectAndComment.first as? Project, Project::class.java)
         comment = ObjectUtils.requireNonNull(projectAndComment.second as? DeprecatedComment, DeprecatedComment::class.java)

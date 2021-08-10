@@ -75,7 +75,7 @@ class RootCommentViewHolder(
             .subscribe { binding.commentsCardView.setCommentBadge(it) }
     }
 
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         if (data is CommentCardData) {
             this.vm.inputs.configureWith(data)
         }

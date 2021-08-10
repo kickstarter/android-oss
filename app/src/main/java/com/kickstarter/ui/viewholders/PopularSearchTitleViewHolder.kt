@@ -9,7 +9,7 @@ class PopularSearchTitleViewHolder(binding: SearchPopularTitleViewBinding) :
         binding.heading.setText(R.string.Popular_Projects)
     }
     @Throws(Exception::class)
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         // no data to bind, this ViewHolder is just a static title
     }
 }

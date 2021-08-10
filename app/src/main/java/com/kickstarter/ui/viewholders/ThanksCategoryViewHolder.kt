@@ -31,7 +31,7 @@ class ThanksCategoryViewHolder(
             .subscribe { category: Category? -> this.delegate.categoryViewHolderClicked(category) }
     }
     @Throws(Exception::class)
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         val category = ObjectUtils.requireNonNull(data as Category?, Category::class.java)
         viewModel.inputs.configureWith(category)
     }

@@ -48,7 +48,7 @@ class FeaturedSearchResultViewHolder(
     }
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         val projectAndIsFeatured = ObjectUtils.requireNonNull(data as Pair<Project, Boolean>?)
         viewModel.inputs.configureWith(projectAndIsFeatured)
     }

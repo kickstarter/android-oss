@@ -85,7 +85,7 @@ class RewardCardUnselectedViewHolder(val binding: ItemRewardUnselectedCardBindin
         }
     }
 
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         @Suppress("UNCHECKED_CAST")
         val cardAndProject = requireNotNull(data) as Pair<StoredCard, Project>
         this.viewModel.inputs.configureWith(cardAndProject)

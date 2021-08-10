@@ -9,7 +9,7 @@ class MessageCenterTimestampViewHolder(private val binding: MessageCenterTimesta
     KSViewHolder(binding.root) {
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         val dateTime = ObjectUtils.requireNonNull(data as? DateTime?)
         binding.messageCenterTimestampTextView.text = DateTimeUtils.longDate(dateTime)
     }

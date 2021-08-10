@@ -9,7 +9,7 @@ class SurveyHeaderViewHolder(private val binding: ActivitySurveyHeaderViewBindin
     private val ksString: KSString = environment().ksString()
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         val unansweredSurveyCount = ObjectUtils.requireNonNull(data as Int)
         if (unansweredSurveyCount > 0) {
             binding.activitySurveyHeaderTextView.text = ksString.format(

@@ -26,7 +26,7 @@ class ExpandableHeaderViewHolder(private val binding: ExpandableHeaderItemBindin
             }
     }
 
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         (data as? Pair<Project, Reward>)?.let {
             this.viewModel.configureWith(it)
         }

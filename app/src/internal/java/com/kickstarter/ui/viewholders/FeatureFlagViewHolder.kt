@@ -48,7 +48,7 @@ class FeatureFlagViewHolder(val binding: ItemFeatureFlagBinding, val delegate: D
         }
     }
 
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         @Suppress("UNCHECKED_CAST")
         val flag = data as FeatureFlagsModel
 

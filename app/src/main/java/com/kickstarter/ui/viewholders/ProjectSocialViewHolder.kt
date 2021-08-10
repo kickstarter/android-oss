@@ -9,7 +9,7 @@ import com.squareup.picasso.Picasso
 class ProjectSocialViewHolder(private val binding: ProjectSocialViewBinding) : KSViewHolder(binding.root) {
     private var user: User? = null
     @Throws(Exception::class)
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         user = ObjectUtils.requireNonNull(data as User?, User::class.java)
     }
 

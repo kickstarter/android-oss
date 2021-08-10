@@ -224,7 +224,7 @@ class ProjectCardViewHolder(
     }
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         val projectAndParams = ObjectUtils.requireNonNull(data as Pair<Project, DiscoveryParams>?)
         viewModel.inputs.configureWith(projectAndParams)
     }

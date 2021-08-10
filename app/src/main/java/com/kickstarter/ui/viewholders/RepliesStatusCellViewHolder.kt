@@ -45,7 +45,7 @@ class RepliesStatusCellViewHolder(
         }
     }
 
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         if (data is RepliesStatusCellType) {
             this.vm.inputs.configureWith(data)
         }

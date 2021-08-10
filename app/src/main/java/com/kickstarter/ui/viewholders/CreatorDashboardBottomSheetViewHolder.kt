@@ -22,7 +22,7 @@ class CreatorDashboardBottomSheetViewHolder(
     }
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         val project = ObjectUtils.requireNonNull(data as Project?)
         viewModel.inputs.projectInput(project)
         binding.creatorDashboardBottomSheetProjectView.setOnClickListener {

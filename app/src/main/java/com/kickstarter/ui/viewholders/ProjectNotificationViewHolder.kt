@@ -42,7 +42,7 @@ class ProjectNotificationViewHolder(binding: ProjectNotificationViewBinding) :
     }
 
     @Throws(Exception::class)
-    override fun bindData(data: Any?) {
+    override fun bindData(data: Any?, position: Int) {
         val projectNotification = ObjectUtils.requireNonNull(data as ProjectNotification?, ProjectNotification::class.java)
         viewModel.projectNotification(projectNotification)
     }

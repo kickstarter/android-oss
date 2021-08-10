@@ -255,11 +255,11 @@ class CommentsActivity :
         viewModel.inputs.onShowGuideLinesLinkClicked()
     }
 
-    override fun onCommentPostedSuccessFully(comment: Comment, position: Int) {
+    override fun onCommentPostedSuccessFully(comment: Comment) {
         viewModel.inputs.refreshComment(comment)
     }
 
-    override fun onCommentPostedFailed(comment: Comment, position: Int) {
+    override fun onCommentPostedFailed(comment: Comment) {
         viewModel.inputs.refreshCommentCardInCaseFailedPosted(comment)
     }
 

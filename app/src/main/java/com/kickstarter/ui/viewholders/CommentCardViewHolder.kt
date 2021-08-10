@@ -23,18 +23,15 @@ class CommentCardViewHolder(
         fun onFlagButtonClicked(comment: Comment)
         fun onCommentGuideLinesClicked(comment: Comment)
         fun onCommentRepliesClicked(comment: Comment)
-        fun onCommentPostedSuccessFully(comment: Comment, position: Int)
-        fun onCommentPostedFailed(comment: Comment, position: Int)
+        fun onCommentPostedSuccessFully(comment: Comment)
+        fun onCommentPostedFailed(comment: Comment)
         fun onShowCommentClicked(comment: Comment)
     }
 
     private val vm: CommentsViewHolderViewModel.ViewModel = CommentsViewHolderViewModel.ViewModel(environment())
     private val ksString = environment().ksString()
-    private var position: Int? = null
 
     init {
-
-        val pos = this.position?.let { it } ?: -1
 
         this.vm.outputs.isCommentReply()
             .compose(bindToLifecycle())
@@ -114,12 +111,12 @@ class CommentCardViewHolder(
         this.vm.outputs.isSuccessfullyPosted()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { this.delegate.onCommentPostedSuccessFully(it, pos) }
+            .subscribe { this.delegate.onCommentPostedSuccessFully(it) }
 
         this.vm.outputs.isFailedToPost()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { this.delegate.onCommentPostedFailed(it, pos) }
+            .subscribe { this.delegate.onCommentPostedFailed(it) }
 
         this.vm.outputs.authorBadge()
             .compose(bindToLifecycle())
@@ -172,7 +169,6 @@ class CommentCardViewHolder(
     }
 
     override fun bindData(data: Any?, position: Int) {
-        this.position = position
         this.vm.inputs.configureWith(data as CommentCardData)
     }
 }

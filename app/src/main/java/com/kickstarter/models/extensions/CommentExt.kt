@@ -57,6 +57,8 @@ fun Comment.assignAuthorBadge(user: User? = null): CommentCardBadge {
     return CommentCardBadge.NO_BADGE
 }
 
+fun Comment.isReply() = this.parentId() > 0
+
 /**
  * Update the internal persisted list of comments with the failed response
  * from calling the Post Mutation

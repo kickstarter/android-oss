@@ -151,6 +151,12 @@ android {
             applicationIdSuffix '.debug'
             signingConfig signingConfigs.debug
             testCoverageEnabled true
+            FirebasePerformance {
+                // Set this flag to 'false' to disable @AddTrace annotation processing and
+                // automatic monitoring of HTTP/S network requests
+                // for a specific build variant at compile time.
+                instrumentationEnabled false
+            }
         }
     }
 
@@ -162,7 +168,7 @@ android {
             applicationId "com.kickstarter.kickstarter.internal"
             versionCode internalPrivateVersion
             versionName internalPublicVersion
-            manifestPlaceholders = [performanceLogs: true]
+            manifestPlaceholders = [performanceLogs: false]
         }
         external {
             dimension "AUDIENCE"

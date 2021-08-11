@@ -4,7 +4,11 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.mock.factories.*
+import com.kickstarter.mock.factories.RewardFactory
+import com.kickstarter.mock.factories.ShippingRuleFactory
+import com.kickstarter.mock.factories.ShippingRulesEnvelopeFactory
+import com.kickstarter.mock.factories.ProjectDataFactory
+import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.data.ProjectData

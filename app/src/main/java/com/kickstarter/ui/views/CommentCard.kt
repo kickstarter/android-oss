@@ -168,7 +168,7 @@ class CommentCard @JvmOverloads constructor(
             cardCommentStatus == CommentCardStatus.RE_TRYING_TO_POST
 
         binding.postedButton.isVisible =
-            cardCommentStatus == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULLY
+            cardCommentStatus == CommentCardStatus.POSTING_COMMENT_COMPLETED_SUCCESSFULgLY
 
         val commentBodyTextColor = if (cardCommentStatus == CommentCardStatus.FAILED_TO_SEND_COMMENT ||
             cardCommentStatus == CommentCardStatus.RE_TRYING_TO_POST

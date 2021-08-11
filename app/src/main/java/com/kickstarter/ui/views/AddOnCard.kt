@@ -39,7 +39,7 @@ class AddOnCard @JvmOverloads constructor(
 
         binding.addOnStepper.outputs.display()
             .filter { it != null }
-            .subscribe{
+            .subscribe {
                 showStepper()
                 addButtonIsVisible.onNext(false)
             }
@@ -60,7 +60,6 @@ class AddOnCard @JvmOverloads constructor(
         override fun stepperQuantity(): Observable<Int> = binding.addOnStepper.outputs.display()
         override fun addButtonIsVisible(): Observable<Boolean> = addButtonIsVisible
     }
-
 
     private fun obtainStyledAttributes(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         context.withStyledAttributes(
@@ -148,7 +147,7 @@ class AddOnCard @JvmOverloads constructor(
         binding.titleContainer.addOnTitleTextView.text = title
     }
 
-    fun setAddOnMinimumText(minimum : String) {
+    fun setAddOnMinimumText(minimum: String) {
         binding.addOnMinimum.text = minimum
     }
 

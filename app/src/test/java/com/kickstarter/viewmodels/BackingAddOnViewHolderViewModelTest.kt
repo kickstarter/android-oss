@@ -243,7 +243,7 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun getShippingCost_whenDigitalReward_emitsEmptyString(){
+    fun getShippingCost_whenDigitalReward_emitsEmptyString() {
         setupEnvironment(environment())
         val addOn = RewardFactory.reward().toBuilder()
             .isAddOn(true)
@@ -264,7 +264,7 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun getShippingCost_whenShippingRulesNotNull_emitsFormattedShippingString(){
+    fun getShippingCost_whenShippingRulesNotNull_emitsFormattedShippingString() {
         setupEnvironment(environment())
         val shippingRule = ShippingRulesEnvelopeFactory.shippingRules()
 
@@ -286,9 +286,9 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
         this.shippingAmount.assertValue("$30")
     }
 
-    //quantity per id
-    //when id changes, emit quantity per id
-    //when quantity changes, emit quantity per id
+    // quantity per id
+    // when id changes, emit quantity per id
+    // when quantity changes, emit quantity per id
 
     @Test
     fun quantityPerId_whenCurrentQuantityChanges_emitToQuantityPerId() {

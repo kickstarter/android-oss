@@ -1,7 +1,7 @@
 base_job: &base_job
-  resource_class: xlarge
-  docker:
-    - image: circleci/android:api-30
+  executor:
+      name: android/android-machine
+      resource-class: xlarge
   working_directory: '~/project'
   environment:
     TERM: dumb
@@ -70,18 +70,27 @@ jobs:
       - attach_workspace:
             at: ~/project
       - android/create-avd:
-          avd-name: Pixel_3a_API_30
+          avd-name: Emulator
           system-image: system-images;android-30;google_apis;x86
           install: true
+      - run:
+          name: Configure screen size and dpi for Screenshot test
+          command: ./script/emulator/configure_dpi.sh
       - android/start-emulator:
-          avd-name: Pixel_3a_API_30
+          avd-name: Emulator
           additional-args: -skin 1080x2220
           post-emulator-launch-assemble-command: ""
           run-logcat: true
       - android/wait-for-emulator
-      - run: ./script/emulator/screenshot_config_emulator.sh
+      - run:
+          name: Config Emulator for Screenshot test
+          command: ./script/emulator/screenshot_config_emulator.sh
+      - run: ./gradlew internalDebugExecuteScreenshotTests
       - android/save-gradle-cache:
           cache-prefix: v1a
+      - store_artifacts:
+          path: app/build/reports/shot/verification/
+          destination: reports
 
   create_internal:
     <<: *base_job
@@ -175,9 +184,9 @@ workflows:
       - test:
           requires:
             - build
-      #- snapshot-test:
-      #    requires:
-      #      - build
+      - snapshot-test:
+          requires:
+            - build
       - create_internal:
           requires:
             - build

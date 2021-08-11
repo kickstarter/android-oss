@@ -70,6 +70,8 @@ interface CommentsViewModel {
 
         /** Display the bottom pagination Error Cell **/
         fun shouldShowPaginationErrorUI(): Observable<Boolean>
+        /** Display the initial Load Error Cell **/
+        fun shouldShowInitialLoadErrorUI(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
@@ -101,6 +103,7 @@ interface CommentsViewModel {
         private val insertNewCommentToList = PublishSubject.create<Pair<String, DateTime>>()
         private val isRefreshing = BehaviorSubject.create<Boolean>()
         private val setEmptyState = BehaviorSubject.create<Boolean>()
+        private val displayInitialError = BehaviorSubject.create<Boolean>()
         private val displayPaginationError = BehaviorSubject.create<Boolean>()
         private val commentToRefresh = PublishSubject.create<Comment>()
         private val startThreadActivity = BehaviorSubject.create<Pair<CommentCardData, Boolean>>()
@@ -224,6 +227,12 @@ interface CommentsViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.setEmptyState.onNext(it == 0)
+                }
+
+            this.initialError
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.displayInitialError.onNext(true)
                 }
 
             this.paginationError
@@ -396,6 +405,7 @@ interface CommentsViewModel {
                 commentableId = it.commentableId
                 // Remove Pagination errorFrom View
                 this.displayPaginationError.onNext(false)
+                this.displayInitialError.onNext(false)
             }
                 .doOnError {
                     this.internalError.onNext(it)
@@ -460,6 +470,7 @@ interface CommentsViewModel {
         override fun paginateCommentsError(): Observable<Throwable> = this.paginationError
         override fun pullToRefreshError(): Observable<Throwable> = this.pullToRefreshError
         override fun scrollToTop(): Observable<Boolean> = this.scrollToTop
+        override fun shouldShowInitialLoadErrorUI(): Observable<Boolean> = this.displayInitialError
         override fun shouldShowPaginationErrorUI(): Observable<Boolean> = this.displayPaginationError
 
         override fun setEmptyState(): Observable<Boolean> = setEmptyState

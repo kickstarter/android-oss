@@ -19,6 +19,7 @@ import com.kickstarter.libs.utils.extensions.showAlertDialog
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.adapters.CommentInitialErrorAdapter
 import com.kickstarter.ui.adapters.CommentPaginationErrorAdapter
 import com.kickstarter.ui.adapters.CommentsAdapter
 import com.kickstarter.ui.data.CommentCardData
@@ -38,6 +39,7 @@ class CommentsActivity :
     /** comments list and initial load error adapter **/
     private val commentsAdapter = CommentsAdapter(this)
     private val commentPaginationErrorAdapter = CommentPaginationErrorAdapter(this)
+    private val commentInitialErrorAdapter = CommentInitialErrorAdapter()
 
     private lateinit var recyclerViewPaginator: RecyclerViewPaginator
     private lateinit var swipeRefresher: SwipeRefresher
@@ -49,7 +51,7 @@ class CommentsActivity :
         setContentView(view)
         /** use ConcatAdapter to bind adapters to recycler view and replace the section issue **/
         binding.commentsRecyclerView.adapter =
-            ConcatAdapter(commentsAdapter, commentPaginationErrorAdapter)
+            ConcatAdapter(commentInitialErrorAdapter, commentsAdapter, commentPaginationErrorAdapter)
 
         binding.backButton.setOnClickListener {
             handleBackAction()
@@ -91,12 +93,12 @@ class CommentsActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::setEmptyState)
 
-        viewModel.outputs.initialLoadCommentsError()
+        viewModel.outputs.shouldShowInitialLoadErrorUI()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 setEmptyState(false)
-                commentsAdapter.insertPageError()
+                commentInitialErrorAdapter.insertPageError(it)
             }
 
         /*

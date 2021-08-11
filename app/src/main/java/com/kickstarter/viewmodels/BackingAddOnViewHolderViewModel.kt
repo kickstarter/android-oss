@@ -29,7 +29,7 @@ class BackingAddOnViewHolderViewModel {
         fun configureWith(projectDataAndAddOn: Triple<ProjectData, Reward, ShippingRule>)
 
         /** Emits if the increase button has been pressed */
-        fun addButtonPressed(clicked: Boolean)
+        fun addButtonIsVisible(isVisible: Boolean)
 
         /** Emits the current quantity displayed on the addons stepper */
         fun currentQuantity(quantity: Int)
@@ -84,9 +84,6 @@ class BackingAddOnViewHolderViewModel {
         /** Emits whether or not the reward items list is gone */
         fun rewardItemsAreGone(): Observable<Boolean>
 
-        /** Emits if the `Add` button should be hidden*/
-        fun addButtonIsGone(): Observable<Boolean>
-
         /** Emits quantity selected for which id*/
         fun quantityPerId(): PublishSubject<Pair<Int, Long>>
 
@@ -120,8 +117,7 @@ class BackingAddOnViewHolderViewModel {
         private val deadlineCountdown = PublishSubject.create<Reward>()
         private val deadlineCountdownIsGone = PublishSubject.create<Boolean>()
         private val rewardItemsAreGone = PublishSubject.create<Boolean>()
-        private val addButtonPressed = PublishSubject.create<Void>()
-        private val addButtonIsGone = PublishSubject.create<Boolean>()
+        private val addButtonIsVisible = PublishSubject.create<Boolean>()
         private val quantity = PublishSubject.create<Int>()
         private val quantityPerId = PublishSubject.create<Pair<Int, Long>>()
         private val maxQuantity = PublishSubject.create<Int>()
@@ -207,13 +203,13 @@ class BackingAddOnViewHolderViewModel {
                 .subscribe(this.shippingAmount)
 
             addOn
-                .map { it?.let { it.quantity() } ?: 0 }
+                .map { it?.quantity() ?: 0 }
                 .distinctUntilChanged()
                 .subscribe(this.quantity)
 
             addOn
                 .map { maximumLimit(it) }
-                .filter {ObjectUtils.isNotNull(it)}
+                .filter { ObjectUtils.isNotNull(it) }
                 .compose(bindToLifecycle())
                 .subscribe(this.maxQuantity)
 
@@ -266,10 +262,7 @@ class BackingAddOnViewHolderViewModel {
 
         // - Inputs
         override fun configureWith(projectDataAndAddOn: Triple<ProjectData, Reward, ShippingRule>) = this.projectDataAndAddOn.onNext(projectDataAndAddOn)
-        override fun addButtonPressed(clicked: Boolean) {
-            this.addButtonPressed.onNext(null)
-            this.addButtonIsGone.onNext(clicked)
-        }
+        override fun addButtonIsVisible(isVisible: Boolean) { this.addButtonIsVisible.onNext(isVisible) }
         override fun currentQuantity(quantity: Int) = this.quantity.onNext(quantity)
 
         // - Outputs
@@ -304,8 +297,6 @@ class BackingAddOnViewHolderViewModel {
         override fun deadlineCountdownIsGone(): PublishSubject<Boolean> = this.deadlineCountdownIsGone
 
         override fun rewardItemsAreGone(): PublishSubject<Boolean> = this.rewardItemsAreGone
-
-        override fun addButtonIsGone(): PublishSubject<Boolean> = this.addButtonIsGone
 
         override fun quantityPerId(): PublishSubject<Pair<Int, Long>> = this.quantityPerId
 

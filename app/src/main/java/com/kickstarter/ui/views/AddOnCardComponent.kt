@@ -21,18 +21,18 @@ class AddOnCardComponent @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : CardView(context, attrs, defStyleAttr) {
     private var binding = AddOnsCardBinding.inflate(LayoutInflater.from(context), this, true)
-    private var addButtonClicks = PublishSubject.create<Boolean>()
+    private var addButtonIsVisible = PublishSubject.create<Boolean>()
 
     interface Outputs {
         /**
-         * Observable that will emmit the current value on the stepper display every time it changes
+         * Observable that will emmit the current value on the stepper display every time it changes.
          */
-    fun stepperQuantity(): Observable<Int>
+        fun stepperQuantity(): Observable<Int>
 
         /**
-         * Observable that will emmit everytime the add button is clicked
+         * Observable that will emmit everytime the add button is clicked.
          */
-    fun addButtonClicks(): Observable<Boolean>
+        fun addButtonIsVisible(): Observable<Boolean>
     }
 
     init {
@@ -42,23 +42,24 @@ class AddOnCardComponent @JvmOverloads constructor(
             .filter { it != null }
             .subscribe{
                 showStepper()
+                addButtonIsVisible.onNext(false)
             }
 
         binding.addOnStepper.outputs.display()
             .filter { it == 0 }
             .subscribe {
                 hideStepper()
+                addButtonIsVisible.onNext(true)
             }
 
         binding.initialStateAddOn.setOnClickListener {
             binding.addOnStepper.inputs.setInitialValue(1)
-            addButtonClicks.onNext(true)
         }
     }
 
     val outputs: Outputs = object : Outputs {
         override fun stepperQuantity(): Observable<Int> = binding.addOnStepper.outputs.display()
-        override fun addButtonClicks(): Observable<Boolean> = addButtonClicks
+        override fun addButtonIsVisible(): Observable<Boolean> = addButtonIsVisible
     }
 
 

@@ -58,7 +58,6 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
                 binding.addOnCard.setAddonDescriptionVisibility(false)
             }
 
-
         this.viewModel.outputs.minimum()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
@@ -178,7 +177,6 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { viewModel.inputs.currentQuantity(it) }
-
     }
 
     private fun formattedExpirationString(@NonNull reward: Reward): String {

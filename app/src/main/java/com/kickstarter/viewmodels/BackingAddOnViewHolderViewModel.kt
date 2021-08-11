@@ -18,6 +18,7 @@ import com.kickstarter.ui.viewholders.BackingAddOnViewHolder
 import rx.Observable
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
+import kotlin.math.min
 
 class BackingAddOnViewHolderViewModel {
     interface Inputs {
@@ -279,8 +280,15 @@ class BackingAddOnViewHolderViewModel {
             else qPerAddOn.first == qPerAddOn.second.quantity()
 
         private fun maximumLimit(qPerAddOn: Pair<Int, Reward>): Int? {
+            val limit = qPerAddOn.second.limit()
+            val remaining = qPerAddOn.second.remaining()
             return if (qPerAddOn.second.isAvailable && RewardUtils.isValidTimeRange(qPerAddOn.second)) {
-                qPerAddOn.second.remaining() ?: qPerAddOn.second.limit()
+                when {
+                    remaining != null && limit != null -> min(remaining, limit)
+                    remaining != null -> remaining
+                    limit != null -> limit
+                    else -> null
+                }
             } else {
                 qPerAddOn.second.quantity()
             }

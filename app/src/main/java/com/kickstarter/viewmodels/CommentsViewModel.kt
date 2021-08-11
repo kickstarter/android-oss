@@ -344,13 +344,13 @@ interface CommentsViewModel {
                 ?.share()
                 ?.subscribe {
                     this.commentsList.onNext(it.first)
+                    // Remove Pagination errorFrom View
                     this.displayPaginationError.onNext(false)
                 }
 
             this.internalError
-                .compose(combineLatestPair(commentsList))
+                .map { Pair(it, commentsList.value) }
                 .filter {
-                    // it.first.second &&
                     it.second.isNullOrEmpty()
                 }
                 .compose(bindToLifecycle())

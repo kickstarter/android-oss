@@ -312,8 +312,8 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         // Comments should emit.
         commentsList.assertValueCount(0)
-        initialLoadError.assertValueCount(4)
-        shouldShowPaginatedCell.assertNoValues()
+        initialLoadError.assertValueCount(2)
+        shouldShowPaginatedCell.assertValue(false)
     }
 
     /*

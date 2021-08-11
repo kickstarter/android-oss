@@ -7,14 +7,13 @@ import android.view.View
 import androidx.cardview.widget.CardView
 import androidx.core.content.withStyledAttributes
 import androidx.recyclerview.widget.RecyclerView
-import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.databinding.AddOnsCardBinding
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.ui.adapters.RewardItemsAdapter
 import kotlinx.android.synthetic.main.add_on_items.view.*
 import rx.Observable
-import java.util.*
+import rx.subjects.PublishSubject
 
 class AddOnCardComponent @JvmOverloads constructor(
     context: Context,
@@ -22,13 +21,15 @@ class AddOnCardComponent @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : CardView(context, attrs, defStyleAttr) {
     private var binding = AddOnsCardBinding.inflate(LayoutInflater.from(context), this, true)
-    private var listener : AddonCardListener? = null
+    private var addButtonClicks = PublishSubject.create<Boolean>()
 
     interface Outputs {
         /**
          * Observable that will emmit every time the displays changes with the value present on the display
          */
     fun stepperQuantity(): Observable<Int>
+
+    fun addButtonClicks(): Observable<Boolean>
     }
 
     init {
@@ -48,16 +49,13 @@ class AddOnCardComponent @JvmOverloads constructor(
 
         binding.initialStateAddOn.setOnClickListener {
             binding.addOnStepper.inputs.setInitialValue(1)
-            listener?.addButtonClicks()
+            addButtonClicks.onNext(true)
         }
-
-//        binding.addOnStepper.outputs.display()
-//            .subscribe {listener?.displayChanges(it)}
     }
-
 
     val outputs: Outputs = object : Outputs {
         override fun stepperQuantity(): Observable<Int> = binding.addOnStepper.outputs.display()
+        override fun addButtonClicks(): Observable<Boolean> = addButtonClicks
     }
 
 
@@ -137,68 +135,30 @@ class AddOnCardComponent @JvmOverloads constructor(
         binding.addOnShippingAmount.text = shippingAmount
     }
 
-//    fun setDecreaseQuantityAddonEnabled(isEnabled: Boolean) {
-//        binding.decreaseQuantityAddOn.isEnabled = (isEnabled)
-//    }
-//
-//    fun setQuantityAddonText(quantity: String) {
-//        binding.quantityAddOn.text = quantity
-//    }
-//
-//    fun setIncreaseQuantityAddonEnabled(isEnabled: Boolean) {
-//        binding.increaseQuantityAddOn.isEnabled = isEnabled
-//    }
-
-    fun hideStepper() {
+    private fun hideStepper() {
         binding.initialStateAddOn.visibility = View.VISIBLE
         binding.addOnStepper.visibility = View.GONE
         binding.initialStateAddOn.isEnabled = true
         binding.addOnStepper.isEnabled = false
     }
 
-    fun showStepper() {
+    private fun showStepper() {
         binding.initialStateAddOn.visibility = View.GONE
         binding.addOnStepper.visibility = View.VISIBLE
         binding.initialStateAddOn.isEnabled = false
         binding.addOnStepper.isEnabled = true
     }
 
-    fun getAddButtonClickListener(): Observable<Void> {
-        binding.addOnStepper.inputs.setInitialValue(1)
-        return RxView.clicks(binding.initialStateAddOn)
-    }
-
     fun stepperDisplay(): Observable<Int> {
         return binding.addOnStepper.outputs.display()
     }
 
-    fun setStepperVariance(quantity: Int) {
-        binding.addOnStepper.inputs.setVariance(quantity)
-    }
     fun setStepperMax(quantity: Int) {
         binding.addOnStepper.inputs.setMaximum(quantity)
-    }
-    fun setStepperMin(quantity: Int) {
-        binding.addOnStepper.inputs.setMinimum(quantity)
     }
 
     fun setStepperInitialValue(quantity: Int) {
         binding.addOnStepper.inputs.setInitialValue(quantity)
-    }
-
-    fun setAddonCardListener(addonCardListener: AddonCardListener?) {
-        this.listener = addonCardListener
-    }
-
-//    fun getIncreaseQuantityClickListener(): rx.Observable<Void> {
-//        return RxView.clicks(binding.increaseQuantityAddOn)
-//    }
-//    fun getDecreaseQuantityClickListener(): rx.Observable<Void> {
-//        return RxView.clicks(binding.decreaseQuantityAddOn)
-//    }
-
-    fun setInitialState() {
-
     }
 
     fun setUpItemsAdapter(rewardItemsAdapter: RewardItemsAdapter, layoutManager: RecyclerView.LayoutManager) {
@@ -206,10 +166,5 @@ class AddOnCardComponent @JvmOverloads constructor(
             adapter = rewardItemsAdapter
         }
         binding.addOnCard.add_on_item_recycler_view.layoutManager = layoutManager
-    }
-
-    interface AddonCardListener {
-        fun addButtonClicks()
-//        fun displayChanges(display: Int)
     }
 }

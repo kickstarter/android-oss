@@ -24,6 +24,13 @@ class AddOnCardComponent @JvmOverloads constructor(
     private var binding = AddOnsCardBinding.inflate(LayoutInflater.from(context), this, true)
     private var listener : AddonCardListener? = null
 
+    interface Outputs {
+        /**
+         * Observable that will emmit every time the displays changes with the value present on the display
+         */
+    fun stepperQuantity(): Observable<Int>
+    }
+
     init {
         obtainStyledAttributes(context, attrs, defStyleAttr)
 
@@ -40,12 +47,19 @@ class AddOnCardComponent @JvmOverloads constructor(
             }
 
         binding.initialStateAddOn.setOnClickListener {
+            binding.addOnStepper.inputs.setInitialValue(1)
             listener?.addButtonClicks()
         }
 
 //        binding.addOnStepper.outputs.display()
 //            .subscribe {listener?.displayChanges(it)}
     }
+
+
+    val outputs: Outputs = object : Outputs {
+        override fun stepperQuantity(): Observable<Int> = binding.addOnStepper.outputs.display()
+    }
+
 
     private fun obtainStyledAttributes(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         context.withStyledAttributes(
@@ -61,6 +75,10 @@ class AddOnCardComponent @JvmOverloads constructor(
 
     fun setAddOnDescription(description: String) {
         binding.addOnDescription.text = description
+    }
+
+    fun setAddonDescriptionVisibility(isVisible: Boolean) {
+        binding.addOnDescription.visibility = isVisible.toVisibility()
     }
 
     fun setAddOnItemLayoutVisibility(isVisible: Boolean) {
@@ -146,6 +164,7 @@ class AddOnCardComponent @JvmOverloads constructor(
     }
 
     fun getAddButtonClickListener(): Observable<Void> {
+        binding.addOnStepper.inputs.setInitialValue(1)
         return RxView.clicks(binding.initialStateAddOn)
     }
 
@@ -167,10 +186,6 @@ class AddOnCardComponent @JvmOverloads constructor(
         binding.addOnStepper.inputs.setInitialValue(quantity)
     }
 
-    fun addbuttonpressed() {
-        binding.addOnStepper.inputs.setInitialValue(1)
-    }
-
     fun setAddonCardListener(addonCardListener: AddonCardListener?) {
         this.listener = addonCardListener
     }
@@ -181,6 +196,10 @@ class AddOnCardComponent @JvmOverloads constructor(
 //    fun getDecreaseQuantityClickListener(): rx.Observable<Void> {
 //        return RxView.clicks(binding.decreaseQuantityAddOn)
 //    }
+
+    fun setInitialState() {
+
+    }
 
     fun setUpItemsAdapter(rewardItemsAdapter: RewardItemsAdapter, layoutManager: RecyclerView.LayoutManager) {
         binding.addOnCard.add_on_item_recycler_view.apply {

@@ -64,8 +64,8 @@ public class KSApplication extends MultiDexApplication implements IKSApplication
     }
 
     if (FirebaseApp.getApps(getApplicationContext()).isEmpty()) {
-      FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
       FirebaseApp.initializeApp(getApplicationContext());
+      FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
       FirebaseAnalytics.getInstance(getApplicationContext()).setAnalyticsCollectionEnabled(true);
     }
 

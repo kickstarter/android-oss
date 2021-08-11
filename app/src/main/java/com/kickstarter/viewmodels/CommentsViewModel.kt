@@ -344,8 +344,6 @@ interface CommentsViewModel {
                 ?.share()
                 ?.subscribe {
                     this.commentsList.onNext(it.first)
-                    // Remove Pagination errorFrom View
-                    this.displayPaginationError.onNext(false)
                 }
 
             this.internalError
@@ -396,6 +394,8 @@ interface CommentsViewModel {
                 }
             }.doOnNext {
                 commentableId = it.commentableId
+                // Remove Pagination errorFrom View
+                this.displayPaginationError.onNext(false)
             }
                 .doOnError {
                     this.internalError.onNext(it)

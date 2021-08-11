@@ -98,6 +98,8 @@ class BackingAddOnViewHolderViewModel {
         fun disableIncreaseButton(): Observable<Boolean>
 
         fun currentQuantity(): Observable<Int>
+
+        fun maxQuantity(): Observable<Int>
     }
 
     /**
@@ -133,6 +135,7 @@ class BackingAddOnViewHolderViewModel {
         private val quantity = PublishSubject.create<Int>()
         private val disableIncreaseButton = PublishSubject.create<Boolean>()
         private val quantityPerId = PublishSubject.create<Pair<Int, Long>>()
+        private val maxQuantity = PublishSubject.create<Int>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -219,12 +222,12 @@ class BackingAddOnViewHolderViewModel {
                 .distinctUntilChanged()
                 .subscribe(this.quantity)
 //
-            this.quantity
-                .compose<Int>(takeWhen(this.addButtonPressed))
-                .map { increase(it) }
-                .subscribe(
-                    this.quantity
-                )
+//            this.quantity
+//                .compose<Int>(takeWhen(this.addButtonPressed))
+//                .map { increase(it) }
+//                .subscribe(
+//                    this.quantity
+//                )
 //
 //            this.quantity
 //                .compose<Int>(takeWhen(this.increaseButtonPressed))
@@ -242,11 +245,12 @@ class BackingAddOnViewHolderViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(this.addButtonIsGone)
 //
-//            this.quantity
-//                .compose<Pair<Int, Reward>>(combineLatestPair(addOn))
-//                .map { maxLimitReached(it) }
-//                .compose(bindToLifecycle())
-//                .subscribe(this.disableIncreaseButton)
+            this.quantity
+                .compose<Pair<Int, Reward>>(combineLatestPair(addOn))
+                .map { maximumLimit(it) }
+                .filter {ObjectUtils.isNotNull(it)}
+                .compose(bindToLifecycle())
+                .subscribe(this.maxQuantity)
 //
             this.quantity
                 .compose<Pair<Int, Reward>>(combineLatestPair(addOn))
@@ -273,6 +277,14 @@ class BackingAddOnViewHolderViewModel {
                 (qPerAddOn.second.remaining()?.let { qPerAddOn.first == it } ?: false) ||
                     (qPerAddOn.first == qPerAddOn.second.limit())
             else qPerAddOn.first == qPerAddOn.second.quantity()
+
+        private fun maximumLimit(qPerAddOn: Pair<Int, Reward>): Int? {
+            return if (qPerAddOn.second.isAvailable && RewardUtils.isValidTimeRange(qPerAddOn.second)) {
+                qPerAddOn.second.remaining() ?: qPerAddOn.second.limit()
+            } else {
+                qPerAddOn.second.quantity()
+            }
+        }
 
         private fun decrease(amount: Int) = amount - 1
         private fun increase(amount: Int) = amount + 1
@@ -338,5 +350,7 @@ class BackingAddOnViewHolderViewModel {
         override fun quantityPerId(): PublishSubject<Pair<Int, Long>> = this.quantityPerId
 
         override fun disableIncreaseButton(): Observable<Boolean> = this.disableIncreaseButton
+
+        override fun maxQuantity(): Observable<Int> = this.maxQuantity
     }
 }

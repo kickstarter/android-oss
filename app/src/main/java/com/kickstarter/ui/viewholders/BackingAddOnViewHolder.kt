@@ -15,6 +15,7 @@ import com.kickstarter.ui.adapters.RewardItemsAdapter
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.views.AddOnCardComponent
 import com.kickstarter.viewmodels.BackingAddOnViewHolderViewModel
+import org.jsoup.internal.StringUtil
 
 class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, private val viewListener: ViewListener) : KSViewHolder(binding.root), AddOnCardComponent.AddonCardListener {
 
@@ -65,6 +66,15 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
             .compose(Transformers.observeForUI())
             .subscribe { binding.addOnCard.setAddOnDescription(it) }
 
+        this.viewModel.outputs.description()
+            .filter { it.isNullOrEmpty() }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                binding.addOnCard.setAddonDescriptionVisibility(false)
+            }
+
+
         this.viewModel.outputs.minimum()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
@@ -81,7 +91,13 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                binding.addOnCard.setAddonConversionText(this.ksString.format(context().getString(R.string.About_reward_amount), "reward_amount", it.toString()))
+                binding.addOnCard.setAddonConversionText(
+                    this.ksString.format(
+                        context().getString(R.string.About_reward_amount),
+                        "reward_amount",
+                        it.toString()
+                    )
+                )
             }
 
         this.viewModel.outputs.backerLimitPillIsGone()
@@ -98,7 +114,13 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                binding.addOnCard.setBackerLimitText(this.ksString.format(context().getString(R.string.limit_limit_per_backer), "limit_per_backer", it))
+                binding.addOnCard.setBackerLimitText(
+                    this.ksString.format(
+                        context().getString(R.string.limit_limit_per_backer),
+                        "limit_per_backer",
+                        it
+                    )
+                )
             }
 
         this.viewModel.outputs.remainingQuantity()
@@ -106,7 +128,11 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
             .compose(Transformers.observeForUI())
             .subscribe {
                 binding.addOnCard.setAddonQuantityRemainingText(
-                    this.ksString.format(context().getString(R.string.rewards_info_time_left), "time", it)
+                    this.ksString.format(
+                        context().getString(R.string.rewards_info_time_left),
+                        "time",
+                        it
+                    )
                 )
             }
 
@@ -134,14 +160,26 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
             .compose(Transformers.observeForUI())
             .subscribe {
                 if (it.isNotEmpty()) {
-                    val rewardAndShippingString = context().getString(R.string.reward_amount_plus_shipping_cost_each)
+                    val rewardAndShippingString =
+                        context().getString(R.string.reward_amount_plus_shipping_cost_each)
                     val stringSections = rewardAndShippingString.split("+")
                     val shippingString = "+" + stringSections[1]
-                    binding.addOnCard.setAddonShippingAmountText(this.ksString.format(shippingString, "shipping_cost", it))
+                    binding.addOnCard.setAddonShippingAmountText(
+                        this.ksString.format(
+                            shippingString,
+                            "shipping_cost",
+                            it
+                        )
+                    )
                 }
             }
 
-        this.viewModel.outputs.backerLimit()
+        this.viewModel.outputs.maxQuantity()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                binding.addOnCard.setStepperMax(it)
+            }
 
         this.viewModel.outputs.addButtonIsGone()
             .compose(bindToLifecycle())
@@ -150,24 +188,17 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
                 if (addButtonIsGone) {
                     binding.addOnCard.showStepper()
                 } else {
-                   binding.addOnCard.hideStepper()
+                    binding.addOnCard.hideStepper()
                 }
             }
 
-        this.viewModel.outputs.currentQuantity()
+        this.viewModel.outputs.quantityPerId()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe {
-                binding.addOnCard.setStepperInitialValue(it)
-            }
-
-//        this.viewModel.outputs.quantityPerId()
-//            .compose(bindToLifecycle())
-//            .compose(Transformers.observeForUI())
-//            .subscribe { quantityPerId ->
-//                quantityPerId?.let { viewListener.quantityPerId(it) }
-//                val quantity = quantityPerId.first
-//                binding.addOnCard.setDecreaseQuantityAddonEnabled(quantity != 0)
+            .subscribe { quantityPerId ->
+                quantityPerId?.let { viewListener.quantityPerId(it) }
+                val quantity = quantityPerId.first
+                binding.addOnCard.setStepperInitialValue(quantity)
 //                binding.addOnCard.setQuantityAddonText(quantity.toString())
 //            }
 //
@@ -176,6 +207,7 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
 //            .compose(Transformers.observeForUI())
 //            .subscribe { binding.addOnCard.setIncreaseQuantityAddonEnabled(!it)
 //            }
+            }
     }
 
 //    private fun hideStepper() {
@@ -241,6 +273,7 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
 
     override fun addButtonClicks() {
         viewModel.inputs.addButtonPressed()
+
     }
 
 //    override fun displayChanges(display: Int) {

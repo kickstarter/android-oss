@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.kickstarter.ui.views.AddOnCardComponent
+<com.kickstarter.ui.views.AddOnCard
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/add_on_card"
@@ -9,4 +9,4 @@
     app:cardElevation="0dp"
     app:cardCornerRadius="@dimen/reward_card_radius">
 
-</com.kickstarter.ui.views.AddOnCardComponent>
+</com.kickstarter.ui.views.AddOnCard>

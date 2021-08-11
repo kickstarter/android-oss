@@ -21,7 +21,7 @@ class BackingAddOnsAdapter(private val viewListener: BackingAddOnViewHolder.View
     }
 
     override fun layout(sectionRow: SectionRow): Int = when (sectionRow.section()) {
-        SECTION_BACKING_ADD_ONS_CARD -> R.layout.add_ons_card
+        SECTION_BACKING_ADD_ONS_CARD -> R.layout.add_on_card
         SECTION_NO_ADD_ONS_AVAILABLE -> R.layout.item_empty_add_on
         else -> 0
     }
@@ -29,7 +29,7 @@ class BackingAddOnsAdapter(private val viewListener: BackingAddOnViewHolder.View
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
         return when (layout) {
             R.layout.item_empty_add_on -> EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
-            R.layout.add_ons_card -> BackingAddOnViewHolder(ItemAddOnPledgeBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), viewListener)
+            R.layout.add_on_card -> BackingAddOnViewHolder(ItemAddOnPledgeBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), viewListener)
             else -> EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
         }
     }

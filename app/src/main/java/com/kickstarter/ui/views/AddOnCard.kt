@@ -8,19 +8,18 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.withStyledAttributes
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
-import com.kickstarter.databinding.AddOnsCardBinding
+import com.kickstarter.databinding.AddOnCardBinding
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.ui.adapters.RewardItemsAdapter
-import kotlinx.android.synthetic.main.add_on_items.view.*
 import rx.Observable
 import rx.subjects.PublishSubject
 
-class AddOnCardComponent @JvmOverloads constructor(
+class AddOnCard @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : CardView(context, attrs, defStyleAttr) {
-    private var binding = AddOnsCardBinding.inflate(LayoutInflater.from(context), this, true)
+    private var binding = AddOnCardBinding.inflate(LayoutInflater.from(context), this, true)
     private var addButtonIsVisible = PublishSubject.create<Boolean>()
 
     interface Outputs {
@@ -220,7 +219,7 @@ class AddOnCardComponent @JvmOverloads constructor(
     }
 
     fun setUpItemsAdapter(rewardItemsAdapter: RewardItemsAdapter, layoutManager: RecyclerView.LayoutManager) {
-        binding.addOnCard.add_on_item_recycler_view.apply {
+        binding.itemsContainer.addOnItemRecyclerView.apply {
             adapter = rewardItemsAdapter
             this.layoutManager = layoutManager
         }

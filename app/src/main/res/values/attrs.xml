@@ -33,6 +33,26 @@
   </declare-styleable>
 
   <declare-styleable name="AddOnCardComponent">
+    <attr name="add_on_description_text" format="string"/>
+    <attr name="add_on_title_text" format="string"/>
+    <attr name="add_on_description_visibility" format="boolean"/>
+    <attr name="add_on_items_container_visibility" format="boolean"/>
+    <attr name="add_on_minimum_text" format="string"/>
+    <attr name="add_on_divider_visibility" format="string"/>
+    <attr name="add_on_shipping_amount_text" format="string"/>
+    <attr name="add_on_shipping_amount_visibility" format="boolean"/>
+    <attr name="add_on_conversion_text" format="string"/>
+    <attr name="add_on_conversion_visibility" format="boolean"/>
+    <attr name="add_on_time_left_text" format="string"/>
+    <attr name="add_on_time_left_visibility" format="boolean"/>
+    <attr name="pills_container_visibility" format="boolean"/>
+    <attr name="add_on_quantity_remaining_text" format="string"/>
+    <attr name="add_on_quantity_remaining_visibility" format="boolean"/>
+    <attr name="add_on_backer_limit_pill_text" format="string"/>
+    <attr name="add_on_backer_limit_pill_visibility" format="boolean"/>
+    <attr name="initial_state_add_on_visibility" format="boolean"/>
+    <attr name="add_on_stepper_initial_value" format="integer"/>
+    <attr name="add_on_stepper_max" format="integer"/>
   </declare-styleable>
 
 </resources>

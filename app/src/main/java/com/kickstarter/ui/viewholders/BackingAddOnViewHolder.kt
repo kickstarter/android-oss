@@ -63,7 +63,7 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                binding.addOnCard.setAddOnMinimum(it.toString())
+                binding.addOnCard.setAddOnMinimumText(it.toString())
             }
 
         this.viewModel.outputs.conversionIsGone()
@@ -130,7 +130,7 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
         this.viewModel.outputs.deadlineCountdown()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { binding.addOnCard.setAddonTimeLeftText(formattedExpirationString(it)) }
+            .subscribe { binding.addOnCard.setTimeLeftText(formattedExpirationString(it)) }
 
         this.viewModel.outputs.shippingAmountIsGone()
             .compose(bindToLifecycle())
@@ -148,7 +148,7 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
                         context().getString(R.string.reward_amount_plus_shipping_cost_each)
                     val stringSections = rewardAndShippingString.split("+")
                     val shippingString = "+" + stringSections[1]
-                    binding.addOnCard.setAddonShippingAmountText(
+                    binding.addOnCard.setShippingAmountText(
                         this.ksString.format(
                             shippingString,
                             "shipping_cost",

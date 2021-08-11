@@ -25,10 +25,13 @@ class AddOnCardComponent @JvmOverloads constructor(
 
     interface Outputs {
         /**
-         * Observable that will emmit every time the displays changes with the value present on the display
+         * Observable that will emmit the current value on the stepper display every time it changes
          */
     fun stepperQuantity(): Observable<Int>
 
+        /**
+         * Observable that will emmit everytime the add button is clicked
+         */
     fun addButtonClicks(): Observable<Boolean>
     }
 
@@ -65,9 +68,63 @@ class AddOnCardComponent @JvmOverloads constructor(
             attrs = R.styleable.AddOnCardComponent,
             defStyleAttr = defStyleAttr
         ) {
-//            getString(R.styleable.AddOnCardComponent_add_on_tag_text)?.also {
-//                setAddOnTagText(it)
-//            }
+            getString(R.styleable.AddOnCardComponent_add_on_description_text)?.also {
+                setAddOnDescription(it)
+            }
+            getBoolean(R.styleable.AddOnCardComponent_add_on_description_visibility, false).also {
+                setAddonDescriptionVisibility(it)
+            }
+            getBoolean(R.styleable.AddOnCardComponent_add_on_items_container_visibility, false).also {
+                setAddOnItemLayoutVisibility(it)
+            }
+            getBoolean(R.styleable.AddOnCardComponent_add_on_divider_visibility, false).also {
+                setDividerVisibility(it)
+            }
+            getString(R.styleable.AddOnCardComponent_add_on_title_text)?.also {
+                setAddOnTitleText(it)
+            }
+            getString(R.styleable.AddOnCardComponent_add_on_minimum_text)?.also {
+                setAddOnMinimumText(it)
+            }
+            getBoolean(R.styleable.AddOnCardComponent_add_on_conversion_visibility, false).also {
+                setAddonConversionVisibility(it)
+            }
+            getString(R.styleable.AddOnCardComponent_add_on_conversion_text)?.also {
+                setAddonConversionText(it)
+            }
+            getBoolean(R.styleable.AddOnCardComponent_add_on_backer_limit_pill_visibility, false).also {
+                setBackerLimitPillVisibility(it)
+            }
+            getString(R.styleable.AddOnCardComponent_add_on_backer_limit_pill_text)?.also {
+                setBackerLimitText(it)
+            }
+            getBoolean(R.styleable.AddOnCardComponent_add_on_quantity_remaining_visibility, false).also {
+                setAddonQuantityRemainingPillVisibility(it)
+            }
+            getString(R.styleable.AddOnCardComponent_add_on_quantity_remaining_text)?.also {
+                setAddonQuantityRemainingText(it)
+            }
+            getString(R.styleable.AddOnCardComponent_add_on_backer_limit_pill_text)?.also {
+                setBackerLimitText(it)
+            }
+            getBoolean(R.styleable.AddOnCardComponent_add_on_time_left_visibility, false).also {
+                setTimeLeftVisibility(it)
+            }
+            getString(R.styleable.AddOnCardComponent_add_on_time_left_text)?.also {
+                setTimeLeftText(it)
+            }
+            getBoolean(R.styleable.AddOnCardComponent_add_on_shipping_amount_visibility, false).also {
+                setShippingAmountVisibility(it)
+            }
+            getString(R.styleable.AddOnCardComponent_add_on_shipping_amount_text)?.also {
+                setShippingAmountText(it)
+            }
+            getInt(R.styleable.AddOnCardComponent_add_on_stepper_initial_value, 0).also {
+                setStepperInitialValue(it)
+            }
+            getInt(R.styleable.AddOnCardComponent_add_on_stepper_max, 10).also {
+                setStepperMax(it)
+            }
         }
     }
 
@@ -91,7 +148,7 @@ class AddOnCardComponent @JvmOverloads constructor(
         binding.titleContainer.addOnTitleTextView.text = title
     }
 
-    fun setAddOnMinimum(minimum : String) {
+    fun setAddOnMinimumText(minimum : String) {
         binding.addOnMinimum.text = minimum
     }
 
@@ -107,12 +164,12 @@ class AddOnCardComponent @JvmOverloads constructor(
         binding.addonBackerLimit.visibility = isVisible.toVisibility()
     }
 
-    fun setAddonQuantityRemainingPillVisibility(isVisible: Boolean) {
-        binding.addonQuantityRemaining.visibility = isVisible.toVisibility()
-    }
-
     fun setBackerLimitText(backerLimit: String) {
         binding.addonBackerLimit.setAddOnTagText(backerLimit)
+    }
+
+    fun setAddonQuantityRemainingPillVisibility(isVisible: Boolean) {
+        binding.addonQuantityRemaining.visibility = isVisible.toVisibility()
     }
 
     fun setAddonQuantityRemainingText(quantityRemaining: String) {
@@ -123,7 +180,7 @@ class AddOnCardComponent @JvmOverloads constructor(
         binding.addonTimeLeft.visibility = isVisible.toVisibility()
     }
 
-    fun setAddonTimeLeftText(timeLeft: String) {
+    fun setTimeLeftText(timeLeft: String) {
         binding.addonTimeLeft.setAddOnTagText(timeLeft)
     }
 
@@ -131,7 +188,7 @@ class AddOnCardComponent @JvmOverloads constructor(
         binding.addOnShippingAmount.visibility = isVisible.toVisibility()
     }
 
-    fun setAddonShippingAmountText(shippingAmount: String) {
+    fun setShippingAmountText(shippingAmount: String) {
         binding.addOnShippingAmount.text = shippingAmount
     }
 
@@ -164,7 +221,7 @@ class AddOnCardComponent @JvmOverloads constructor(
     fun setUpItemsAdapter(rewardItemsAdapter: RewardItemsAdapter, layoutManager: RecyclerView.LayoutManager) {
         binding.addOnCard.add_on_item_recycler_view.apply {
             adapter = rewardItemsAdapter
+            this.layoutManager = layoutManager
         }
-        binding.addOnCard.add_on_item_recycler_view.layoutManager = layoutManager
     }
 }

@@ -54,8 +54,7 @@ object RewardUtils {
      * Returns `true` if the reward has a valid expiration date on Starting date.
      */
     fun isTimeLimitedStart(reward: Reward): Boolean {
-        return reward.startsAt()?.let {
-            !DateTimeUtils.isEpoch(it) } ?: false
+        return reward.startsAt()?.let { !DateTimeUtils.isEpoch(it) } ?: false
     }
 
     /**

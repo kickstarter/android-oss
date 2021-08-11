@@ -192,10 +192,7 @@ class BackingAddOnViewHolderViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(this.deadlineCountdown)
 
-            addOn
-                .map {
-                    it.shippingRules()?.isEmpty()
-            }
+            addOn.map { it.shippingRules()?.isEmpty() }
                 .compose(bindToLifecycle())
                 .subscribe(this.shippingAmountIsGone)
 

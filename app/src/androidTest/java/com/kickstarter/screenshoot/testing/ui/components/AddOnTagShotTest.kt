@@ -2,7 +2,6 @@ package com.kickstarter.screenshoot.testing.ui.components
 
 import android.view.LayoutInflater
 import androidx.cardview.widget.CardView
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.test.platform.app.InstrumentationRegistry
 import com.karumi.shot.ScreenshotTest
 import com.kickstarter.ApplicationComponent

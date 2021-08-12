@@ -6,7 +6,6 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.models.Project
@@ -18,6 +17,7 @@ import com.kickstarter.ui.viewholders.BackingAddOnViewHolder
 import rx.Observable
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
+import kotlin.math.min
 
 class BackingAddOnViewHolderViewModel {
     interface Inputs {
@@ -28,14 +28,11 @@ class BackingAddOnViewHolderViewModel {
          */
         fun configureWith(projectDataAndAddOn: Triple<ProjectData, Reward, ShippingRule>)
 
-        /** Emits if the decrease button has been pressed */
-        fun decreaseButtonPressed()
-
         /** Emits if the increase button has been pressed */
-        fun increaseButtonPressed()
+        fun addButtonIsVisible(isVisible: Boolean)
 
-        /** Emits if the increase button has been pressed */
-        fun addButtonPressed()
+        /** Emits the current quantity displayed on the addons stepper */
+        fun currentQuantity(quantity: Int)
     }
 
     interface Outputs {
@@ -87,14 +84,11 @@ class BackingAddOnViewHolderViewModel {
         /** Emits whether or not the reward items list is gone */
         fun rewardItemsAreGone(): Observable<Boolean>
 
-        /** Emits if the `Add` button should be hide*/
-        fun addButtonIsGone(): Observable<Boolean>
-
         /** Emits quantity selected for which id*/
         fun quantityPerId(): PublishSubject<Pair<Int, Long>>
 
-        /** Emits if the amount selected reach the limit available*/
-        fun disableIncreaseButton(): Observable<Boolean>
+        /** Emits the maximum quantity for available addon*/
+        fun maxQuantity(): Observable<Int>
     }
 
     /**
@@ -123,13 +117,10 @@ class BackingAddOnViewHolderViewModel {
         private val deadlineCountdown = PublishSubject.create<Reward>()
         private val deadlineCountdownIsGone = PublishSubject.create<Boolean>()
         private val rewardItemsAreGone = PublishSubject.create<Boolean>()
-        private val increaseButtonPressed = PublishSubject.create<Void>()
-        private val decreaseButtonPressed = PublishSubject.create<Void>()
-        private val addButtonPressed = PublishSubject.create<Void>()
-        private val addButtonIsGone = PublishSubject.create<Boolean>()
+        private val addButtonIsVisible = PublishSubject.create<Boolean>()
         private val quantity = PublishSubject.create<Int>()
-        private val disableIncreaseButton = PublishSubject.create<Boolean>()
         private val quantityPerId = PublishSubject.create<Pair<Int, Long>>()
+        private val maxQuantity = PublishSubject.create<Int>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -212,36 +203,15 @@ class BackingAddOnViewHolderViewModel {
                 .subscribe(this.shippingAmount)
 
             addOn
-                .map { it?.let { it.quantity() } ?: 0 }
+                .map { it?.quantity() ?: 0 }
                 .distinctUntilChanged()
                 .subscribe(this.quantity)
 
-            this.quantity
-                .compose<Int>(takeWhen(this.addButtonPressed))
-                .map { increase(it) }
-                .subscribe(this.quantity)
-
-            this.quantity
-                .compose<Int>(takeWhen(this.increaseButtonPressed))
-                .map { increase(it) }
-                .subscribe(this.quantity)
-
-            this.quantity
-                .compose<Int>(takeWhen(this.decreaseButtonPressed))
-                .map { if (it > 0) decrease(it) else 0 }
-                .subscribe(this.quantity)
-
-            this.quantity
-                .filter { it != null }
-                .map { it > 0 }
+            addOn
+                .map { maximumLimit(it) }
+                .filter { ObjectUtils.isNotNull(it) }
                 .compose(bindToLifecycle())
-                .subscribe(this.addButtonIsGone)
-
-            this.quantity
-                .compose<Pair<Int, Reward>>(combineLatestPair(addOn))
-                .map { maxLimitReached(it) }
-                .compose(bindToLifecycle())
-                .subscribe(this.disableIncreaseButton)
+                .subscribe(this.maxQuantity)
 
             this.quantity
                 .compose<Pair<Int, Reward>>(combineLatestPair(addOn))
@@ -254,23 +224,29 @@ class BackingAddOnViewHolderViewModel {
         }
 
         /**
-         * If the addOns is available and within a valid time range
-         * maxLimit will be hitting either the limit or the remaining
-         * if the addOns is not available, maxLimit will be the current selected quantity
-         * allowing the user to modify the already backed amount just to decrease it.
+         * If the addOn is available and within a valid time range for the campaign, the
+         * maximumLimit will be the lowest of either the limit or the remaining
+         * if the addOns is not available or the campaign is over, the maxLimit will be
+         * the current selected quantity allowing the user to modify the already backed amount
+         * just to decrease it.
          *
-         * @param Pair(selectedQuantity, addOn)
-         * @return true -> limit for that addOn reached and addOns is in valid timeRange
-         *         false -> still available to choose more
+         * @param addOn: The current selected addon)
+         * @return maxmimum limit: remaining, limit, or quantity
          */
-        private fun maxLimitReached(qPerAddOn: Pair<Int, Reward>): Boolean =
-            if (qPerAddOn.second.isAvailable && RewardUtils.isValidTimeRange(qPerAddOn.second))
-                (qPerAddOn.second.remaining()?.let { qPerAddOn.first == it } ?: false) ||
-                    (qPerAddOn.first == qPerAddOn.second.limit())
-            else qPerAddOn.first == qPerAddOn.second.quantity()
-
-        private fun decrease(amount: Int) = amount - 1
-        private fun increase(amount: Int) = amount + 1
+        private fun maximumLimit(addOn: Reward): Int? {
+            val limit = addOn.limit()
+            val remaining = addOn.remaining()
+            return if (addOn.isAvailable && RewardUtils.isValidTimeRange(addOn)) {
+                when {
+                    remaining != null && limit != null -> min(remaining, limit)
+                    remaining != null -> remaining
+                    limit != null -> limit
+                    else -> null
+                }
+            } else {
+                addOn.quantity()
+            }
+        }
 
         private fun getShippingCost(shippingRules: List<ShippingRule>?, project: Project, selectedShippingRule: ShippingRule) =
             if (shippingRules.isNullOrEmpty()) ""
@@ -286,12 +262,8 @@ class BackingAddOnViewHolderViewModel {
 
         // - Inputs
         override fun configureWith(projectDataAndAddOn: Triple<ProjectData, Reward, ShippingRule>) = this.projectDataAndAddOn.onNext(projectDataAndAddOn)
-        override fun decreaseButtonPressed() = this.decreaseButtonPressed.onNext(null)
-        override fun increaseButtonPressed() = this.increaseButtonPressed.onNext(null)
-        override fun addButtonPressed() {
-            this.addButtonPressed.onNext(null)
-            this.addButtonIsGone.onNext(true)
-        }
+        override fun addButtonIsVisible(isVisible: Boolean) { this.addButtonIsVisible.onNext(isVisible) }
+        override fun currentQuantity(quantity: Int) = this.quantity.onNext(quantity)
 
         // - Outputs
         override fun titleForAddOn(): PublishSubject<String> = this.title
@@ -326,10 +298,8 @@ class BackingAddOnViewHolderViewModel {
 
         override fun rewardItemsAreGone(): PublishSubject<Boolean> = this.rewardItemsAreGone
 
-        override fun addButtonIsGone(): PublishSubject<Boolean> = this.addButtonIsGone
-
         override fun quantityPerId(): PublishSubject<Pair<Int, Long>> = this.quantityPerId
 
-        override fun disableIncreaseButton(): Observable<Boolean> = this.disableIncreaseButton
+        override fun maxQuantity(): Observable<Int> = this.maxQuantity
     }
 }

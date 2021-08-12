@@ -50,7 +50,7 @@ public abstract class KSViewHolder extends RecyclerView.ViewHolder implements Vi
   /**
    * Implementations of this should inspect `data` to set instance variables in the view holder that
    * `onBind` can then use without worrying about type safety.
-   *
+   * @param data dataModel to be bind to the viewHolder
    * @throws Exception Raised when binding is unsuccessful.
    */
   abstract public void bindData(final @Nullable Object data) throws Exception;

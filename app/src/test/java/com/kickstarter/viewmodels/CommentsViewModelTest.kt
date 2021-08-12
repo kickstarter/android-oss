@@ -36,6 +36,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     private val initialLoadError = TestSubscriber.create<Throwable>()
     private val paginationError = TestSubscriber.create<Throwable>()
     private val shouldShowPaginatedCell = TestSubscriber.create<Boolean>()
+    private val shouldShowInitialLoadErrorCell = TestSubscriber.create<Boolean>()
     private val openCommentGuideLines = TestSubscriber<Void>()
     private val startThreadActivity = BehaviorSubject.create<Pair<CommentCardData, Boolean>>()
     private val hasPendingComments = TestSubscriber<Pair<Boolean, Boolean>>()
@@ -303,6 +304,8 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         val vm = CommentsViewModel.ViewModel(env)
         vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
         vm.outputs.initialLoadCommentsError().subscribe(initialLoadError)
+        vm.outputs.shouldShowInitialLoadErrorUI().subscribe(shouldShowInitialLoadErrorCell)
+
         vm.outputs.paginateCommentsError().subscribe(paginationError)
         vm.outputs.shouldShowPaginationErrorUI().subscribe(shouldShowPaginatedCell)
 
@@ -312,7 +315,8 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         // Comments should emit.
         commentsList.assertValueCount(0)
-        initialLoadError.assertValueCount(4)
+        initialLoadError.assertValueCount(2)
+        shouldShowInitialLoadErrorCell.assertValues(true, true)
         shouldShowPaginatedCell.assertNoValues()
     }
 

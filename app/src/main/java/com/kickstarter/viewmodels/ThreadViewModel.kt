@@ -326,8 +326,10 @@ interface ThreadViewModel {
                 .compose(bindToLifecycle<Boolean>())
                 .subscribe(this.isFetchingReplies)
 
+            /** reversed replies **/
             apolloPaginate
                 .paginatedData()
+                ?.map { it.reversed() }
                 ?.compose(Transformers.combineLatestPair(this.hasPreviousElements))
                 ?.distinctUntilChanged()
                 ?.share()
@@ -352,9 +354,8 @@ interface ThreadViewModel {
                 }
         }
 
-        /** reversed replies **/
         private fun mapListToData(it: CommentEnvelope, project: Project) =
-            it.comments?.toCommentCardList(project)?.reversed()
+            it.comments?.toCommentCardList(project)
 
         private fun loadWithProjectReplies(
             comment: Observable<Comment>,

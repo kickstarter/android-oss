@@ -378,7 +378,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         }
 
         // - Check the status of the newly posted comment has been updated to "COMMENT_FOR_LOGIN_BACKED_USERS"
-        vm.inputs.refreshCommentCardInCaseSuccessPosted(newPostedComment)
+        vm.inputs.refreshCommentCardInCaseSuccessPosted(newPostedComment, 0)
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
         onReplies.assertValueCount(3)
@@ -484,7 +484,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         }
 
         // - Check the status of the newly posted comment has been updated to "FAILED_TO_SEND_COMMENT"
-        vm.inputs.refreshCommentCardInCaseFailedPosted(newPostedComment)
+        vm.inputs.refreshCommentCardInCaseFailedPosted(newPostedComment, 0)
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
         onReplies.assertValueCount(3)
@@ -502,7 +502,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         }
 
         // - Check the status of the newly posted comment has been updated to "COMMENT_FOR_LOGIN_BACKED_USERS"
-        vm.inputs.refreshCommentCardInCaseSuccessPosted(newPostedComment)
+        vm.inputs.refreshCommentCardInCaseSuccessPosted(newPostedComment, 0)
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
         vm.outputs.onCommentReplies().take(0).subscribe {
@@ -626,7 +626,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         this.hasPendingComments.assertValues(false, true)
 
         // - Check the status of the newly posted comment
-        vm.inputs.refreshCommentCardInCaseFailedPosted(newPostedComment)
+        vm.inputs.refreshCommentCardInCaseFailedPosted(newPostedComment, 0)
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
         onReplies.assertValueCount(3)

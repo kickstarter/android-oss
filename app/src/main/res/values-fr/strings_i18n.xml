@@ -713,6 +713,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="Yes_continue" formatted="false">Oui, continuer</string>
   <string name="Yes_remove" formatted="false">Oui, supprimer</string>
   <string name="Yes_turn_off" formatted="false">Oui, désactiver</string>
+  <string name="You" formatted="false">Vous</string>
   <string name="You_Launched" formatted="false">Projet lancé !</string>
   <string name="You_backed" formatted="false">Projet soutenu</string>
   <string name="You_backed_this_project" formatted="false">Vous avez soutenu ce projet.</string>

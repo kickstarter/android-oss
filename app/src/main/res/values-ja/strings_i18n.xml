@@ -711,6 +711,7 @@
   <string name="Yes_continue" formatted="false">はい、続行します</string>
   <string name="Yes_remove" formatted="false">はい、削除します</string>
   <string name="Yes_turn_off" formatted="false">はい、オフにします</string>
+  <string name="You" formatted="false">You</string>
   <string name="You_Launched" formatted="false">発表されました！</string>
   <string name="You_backed" formatted="false">あなたがバックしたプロジェクト</string>
   <string name="You_backed_this_project" formatted="false">バック済</string>

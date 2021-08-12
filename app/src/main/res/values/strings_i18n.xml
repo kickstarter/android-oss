@@ -716,6 +716,7 @@ Please try again later.</string>
   <string name="Yes_continue" formatted="false">Yes, continue</string>
   <string name="Yes_remove" formatted="false">Yes, remove</string>
   <string name="Yes_turn_off" formatted="false">Yes, turn off</string>
+  <string name="You" formatted="false">You</string>
   <string name="You_Launched" formatted="false">You Launched!</string>
   <string name="You_backed" formatted="false">You backed</string>
   <string name="You_backed_this_project" formatted="false">You backed this project.</string>

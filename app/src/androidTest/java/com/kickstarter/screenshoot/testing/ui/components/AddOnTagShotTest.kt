@@ -1,7 +1,7 @@
 package com.kickstarter.screenshoot.testing.ui.components
 
 import android.view.LayoutInflater
-import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.cardview.widget.CardView
 import androidx.test.platform.app.InstrumentationRegistry
 import com.karumi.shot.ScreenshotTest
 import com.kickstarter.ApplicationComponent
@@ -29,7 +29,7 @@ class AddOnTagShotTest : ScreenshotTest {
                 LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext)
                     .inflate(
                         R.layout.item_add_on_pledge, null
-                    ) as CoordinatorLayout
+                    ) as CardView
                 )
                 .findViewById(R.id.addon_quantity_remaining)
     }

@@ -9,11 +9,11 @@ import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectUtils
-import com.kickstarter.libs.utils.extensions.isReply
 import com.kickstarter.models.Comment
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.assignAuthorBadge
+import com.kickstarter.models.extensions.isReply
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.data.CommentCardData

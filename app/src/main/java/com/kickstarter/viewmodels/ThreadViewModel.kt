@@ -35,8 +35,8 @@ interface ThreadViewModel {
         fun reloadRepliesPage()
         fun insertNewReplyToList(comment: String, createdAt: DateTime)
         fun onShowGuideLinesLinkClicked()
-        fun refreshCommentCardInCaseFailedPosted(comment: Comment)
-        fun refreshCommentCardInCaseSuccessPosted(comment: Comment)
+        fun refreshCommentCardInCaseFailedPosted(comment: Comment, position: Int)
+        fun refreshCommentCardInCaseSuccessPosted(comment: Comment, position: Int)
         fun checkIfThereAnyPendingComments()
         fun backPressed()
         fun onShowCanceledPledgeComment(comment: Comment)
@@ -80,8 +80,8 @@ interface ThreadViewModel {
         private val onLoadingReplies = PublishSubject.create<Void>()
         private val insertNewReplyToList = PublishSubject.create<Pair<String, DateTime>>()
         private val onShowGuideLinesLinkClicked = PublishSubject.create<Void>()
-        private val failedCommentCardToRefresh = PublishSubject.create<Comment>()
-        private val successfullyPostedCommentCardToRefresh = PublishSubject.create<Comment>()
+        private val failedCommentCardToRefresh = PublishSubject.create<Pair<Comment, Int>>()
+        private val successfullyPostedCommentCardToRefresh = PublishSubject.create<Pair<Comment, Int>>()
         private val checkIfThereAnyPendingComments = PublishSubject.create<Void>()
         private val backPressed = PublishSubject.create<Void>()
         private val showCanceledPledgeComment = PublishSubject.create<Comment>()
@@ -242,7 +242,7 @@ interface ThreadViewModel {
             this.onCommentReplies
                 .compose(Transformers.combineLatestPair(this.failedCommentCardToRefresh))
                 .map {
-                    Pair(it.second.updateCommentFailedToPost(it.first.first), it.first.second)
+                    Pair(it.second.first.updateCommentFailedToPost(it.first.first, it.second.second), it.first.second)
                 }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
@@ -254,7 +254,7 @@ interface ThreadViewModel {
             this.onCommentReplies
                 .compose(Transformers.combineLatestPair(this.successfullyPostedCommentCardToRefresh))
                 .map {
-                    Pair(it.second.updateCommentAfterSuccessfulPost(it.first.first), it.first.second)
+                    Pair(it.second.first.updateCommentAfterSuccessfulPost(it.first.first, it.second.second), it.first.second)
                 }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
@@ -396,11 +396,11 @@ interface ThreadViewModel {
 
         override fun nextPage() = nextPage.onNext(null)
         override fun reloadRepliesPage() = onLoadingReplies.onNext(null)
-        override fun refreshCommentCardInCaseFailedPosted(comment: Comment) =
-            this.failedCommentCardToRefresh.onNext(comment)
+        override fun refreshCommentCardInCaseFailedPosted(comment: Comment, position: Int) =
+            this.failedCommentCardToRefresh.onNext(Pair(comment, position))
 
-        override fun refreshCommentCardInCaseSuccessPosted(comment: Comment) =
-            this.successfullyPostedCommentCardToRefresh.onNext(comment)
+        override fun refreshCommentCardInCaseSuccessPosted(comment: Comment, position: Int) =
+            this.successfullyPostedCommentCardToRefresh.onNext(Pair(comment, position))
 
         override fun getRootComment(): Observable<CommentCardData> = this.rootComment
         override fun onCommentReplies(): Observable<Pair<List<CommentCardData>, Boolean>> =

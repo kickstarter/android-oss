@@ -23,8 +23,8 @@ class CommentCardViewHolder(
         fun onFlagButtonClicked(comment: Comment)
         fun onCommentGuideLinesClicked(comment: Comment)
         fun onCommentRepliesClicked(comment: Comment)
-        fun onCommentPostedSuccessFully(comment: Comment)
-        fun onCommentPostedFailed(comment: Comment)
+        fun onCommentPostedSuccessFully(comment: Comment, position: Int)
+        fun onCommentPostedFailed(comment: Comment, position: Int)
         fun onShowCommentClicked(comment: Comment)
     }
 
@@ -111,12 +111,12 @@ class CommentCardViewHolder(
         this.vm.outputs.isSuccessfullyPosted()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { this.delegate.onCommentPostedSuccessFully(it) }
+            .subscribe { this.delegate.onCommentPostedSuccessFully(it, absoluteAdapterPosition) }
 
         this.vm.outputs.isFailedToPost()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { this.delegate.onCommentPostedFailed(it) }
+            .subscribe { this.delegate.onCommentPostedFailed(it, absoluteAdapterPosition) }
 
         this.vm.outputs.authorBadge()
             .compose(bindToLifecycle())

@@ -50,7 +50,7 @@
         android:paddingEnd="@dimen/grid_3_half"
         android:paddingBottom="@dimen/grid_1"
         android:paddingTop="@dimen/grid_1"
-        android:text="@string/you"
+        android:text="@string/You"
         android:textColor="@color/blue_darken_10"
         android:textStyle="bold"
         android:visibility="gone"

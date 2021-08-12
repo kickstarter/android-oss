@@ -712,6 +712,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="Yes_continue" formatted="false">Ja, weiter</string>
   <string name="Yes_remove" formatted="false">Ja, entfernen</string>
   <string name="Yes_turn_off" formatted="false">Ja, deaktivieren</string>
+  <string name="You" formatted="false">Du</string>
   <string name="You_Launched" formatted="false">Dein Projekt ist live!</string>
   <string name="You_backed" formatted="false">Deine unterstützten Projekte</string>
   <string name="You_backed_this_project" formatted="false">Du hast dieses Projekt unterstützt.</string>

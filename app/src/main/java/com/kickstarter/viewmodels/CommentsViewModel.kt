@@ -44,8 +44,8 @@ interface CommentsViewModel {
         fun checkIfThereAnyPendingComments(isBackAction: Boolean)
 
         /** Will be called with the successful response when calling the `postComment` Mutation **/
-        fun refreshComment(comment: Comment)
-        fun refreshCommentCardInCaseFailedPosted(comment: Comment)
+        fun refreshComment(comment: Comment, position: Int)
+        fun refreshCommentCardInCaseFailedPosted(comment: Comment, position: Int)
         fun onShowCanceledPledgeComment(comment: Comment)
     }
 
@@ -70,6 +70,8 @@ interface CommentsViewModel {
 
         /** Display the bottom pagination Error Cell **/
         fun shouldShowPaginationErrorUI(): Observable<Boolean>
+        /** Display the initial Load Error Cell **/
+        fun shouldShowInitialLoadErrorUI(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
@@ -85,7 +87,7 @@ interface CommentsViewModel {
         private val onShowGuideLinesLinkClicked = PublishSubject.create<Void>()
         private val onReplyClicked = PublishSubject.create<Pair<Comment, Boolean>>()
         private val checkIfThereAnyPendingComments = PublishSubject.create<Boolean>()
-        private val failedCommentCardToRefresh = PublishSubject.create<Comment>()
+        private val failedCommentCardToRefresh = PublishSubject.create<Pair<Comment, Int>>()
         private val showCanceledPledgeComment = PublishSubject.create<Comment>()
 
         private val closeCommentsPage = BehaviorSubject.create<Void>()
@@ -101,8 +103,9 @@ interface CommentsViewModel {
         private val insertNewCommentToList = PublishSubject.create<Pair<String, DateTime>>()
         private val isRefreshing = BehaviorSubject.create<Boolean>()
         private val setEmptyState = BehaviorSubject.create<Boolean>()
+        private val displayInitialError = BehaviorSubject.create<Boolean>()
         private val displayPaginationError = BehaviorSubject.create<Boolean>()
-        private val commentToRefresh = PublishSubject.create<Comment>()
+        private val commentToRefresh = PublishSubject.create<Pair<Comment, Int>>()
         private val startThreadActivity = BehaviorSubject.create<Pair<CommentCardData, Boolean>>()
         private val hasPendingComments = BehaviorSubject.create<Pair<Boolean, Boolean>>()
 
@@ -226,6 +229,12 @@ interface CommentsViewModel {
                     this.setEmptyState.onNext(it == 0)
                 }
 
+            this.initialError
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.displayInitialError.onNext(true)
+                }
+
             this.paginationError
                 .compose(bindToLifecycle())
                 .subscribe {
@@ -269,7 +278,7 @@ interface CommentsViewModel {
             this.commentsList
                 .compose(takePairWhen(this.commentToRefresh))
                 .map {
-                    it.second.updateCommentAfterSuccessfulPost(it.first)
+                    it.second.first.updateCommentAfterSuccessfulPost(it.first, it.second.second)
                 }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
@@ -288,7 +297,7 @@ interface CommentsViewModel {
             this.commentsList
                 .compose(takePairWhen(this.failedCommentCardToRefresh))
                 .map {
-                    it.second.updateCommentFailedToPost(it.first)
+                    it.second.first.updateCommentFailedToPost(it.first, it.second.second)
                 }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
@@ -337,17 +346,18 @@ interface CommentsViewModel {
                 .compose(bindToLifecycle<Boolean>())
                 .subscribe(this.isFetchingComments)
 
-            apolloPaginate.paginatedData()?.share()
-                ?.compose(Transformers.combineLatestPair(this.isFetchingComments))
+            apolloPaginate.paginatedData()
+                ?.compose(combineLatestPair(this.isFetchingComments))
                 ?.filter { !it.second }
+                ?.distinctUntilChanged()
+                ?.share()
                 ?.subscribe {
                     this.commentsList.onNext(it.first)
                 }
 
             this.internalError
-                .compose(combineLatestPair(commentsList))
+                .map { Pair(it, commentsList.value) }
                 .filter {
-                    // it.first.second &&
                     it.second.isNullOrEmpty()
                 }
                 .compose(bindToLifecycle())
@@ -355,14 +365,13 @@ interface CommentsViewModel {
                     this.initialError.onNext(it.first)
                 }
 
-            this.internalError
-                .compose(combineLatestPair(commentsList))
+            commentsList.compose(takePairWhen(this.internalError))
                 .filter {
-                    it.second.isNotEmpty()
+                    it.first.isNotEmpty()
                 }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.paginationError.onNext(it.first)
+                    this.paginationError.onNext(it.second)
                 }
 
             this.refresh
@@ -394,6 +403,9 @@ interface CommentsViewModel {
                 }
             }.doOnNext {
                 commentableId = it.commentableId
+                // Remove Pagination errorFrom View
+                this.displayPaginationError.onNext(false)
+                this.displayInitialError.onNext(false)
             }
                 .doOnError {
                     this.internalError.onNext(it)
@@ -439,11 +451,11 @@ interface CommentsViewModel {
         override fun nextPage() = nextPage.onNext(null)
         override fun insertNewCommentToList(comment: String, createdAt: DateTime) = insertNewCommentToList.onNext(Pair(comment, createdAt))
         override fun onShowGuideLinesLinkClicked() = onShowGuideLinesLinkClicked.onNext(null)
-        override fun refreshComment(comment: Comment) = this.commentToRefresh.onNext(comment)
+        override fun refreshComment(comment: Comment, position: Int) = this.commentToRefresh.onNext(Pair(comment, position))
         override fun onReplyClicked(comment: Comment, openKeyboard: Boolean) = onReplyClicked.onNext(Pair(comment, openKeyboard))
         override fun checkIfThereAnyPendingComments(isBackAction: Boolean) = checkIfThereAnyPendingComments.onNext(isBackAction)
-        override fun refreshCommentCardInCaseFailedPosted(comment: Comment) =
-            this.failedCommentCardToRefresh.onNext(comment)
+        override fun refreshCommentCardInCaseFailedPosted(comment: Comment, position: Int) =
+            this.failedCommentCardToRefresh.onNext(Pair(comment, position))
         override fun onShowCanceledPledgeComment(comment: Comment) =
             this.showCanceledPledgeComment.onNext(comment)
         // - Outputs
@@ -458,6 +470,7 @@ interface CommentsViewModel {
         override fun paginateCommentsError(): Observable<Throwable> = this.paginationError
         override fun pullToRefreshError(): Observable<Throwable> = this.pullToRefreshError
         override fun scrollToTop(): Observable<Boolean> = this.scrollToTop
+        override fun shouldShowInitialLoadErrorUI(): Observable<Boolean> = this.displayInitialError
         override fun shouldShowPaginationErrorUI(): Observable<Boolean> = this.displayPaginationError
 
         override fun setEmptyState(): Observable<Boolean> = setEmptyState

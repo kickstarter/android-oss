@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Pair
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.ConcatAdapter
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityCommentsLayoutBinding
 import com.kickstarter.libs.BaseActivity
@@ -18,10 +19,11 @@ import com.kickstarter.libs.utils.extensions.showAlertDialog
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Comment
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.adapters.CommentInitialErrorAdapter
+import com.kickstarter.ui.adapters.CommentPaginationErrorAdapter
 import com.kickstarter.ui.adapters.CommentsAdapter
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.extensions.hideKeyboard
-import com.kickstarter.ui.viewholders.EmptyCommentsViewHolder
 import com.kickstarter.ui.views.OnCommentComposerViewClickedListener
 import com.kickstarter.viewmodels.CommentsViewModel
 import org.joda.time.DateTime
@@ -31,9 +33,13 @@ import java.util.concurrent.TimeUnit
 @RequiresActivityViewModel(CommentsViewModel.ViewModel::class)
 class CommentsActivity :
     BaseActivity<CommentsViewModel.ViewModel>(),
-    CommentsAdapter.Delegate {
+    CommentsAdapter.Delegate,
+    CommentPaginationErrorAdapter.Delegate {
     private lateinit var binding: ActivityCommentsLayoutBinding
-    private val adapter = CommentsAdapter(this)
+    /** comments list and initial load error adapter **/
+    private val commentsAdapter = CommentsAdapter(this)
+    private val commentPaginationErrorAdapter = CommentPaginationErrorAdapter(this)
+    private val commentInitialErrorAdapter = CommentInitialErrorAdapter()
 
     private lateinit var recyclerViewPaginator: RecyclerViewPaginator
     private lateinit var swipeRefresher: SwipeRefresher
@@ -43,7 +49,9 @@ class CommentsActivity :
         binding = ActivityCommentsLayoutBinding.inflate(layoutInflater)
         val view: View = binding.root
         setContentView(view)
-        binding.commentsRecyclerView.adapter = adapter
+        /** use ConcatAdapter to bind adapters to recycler view and replace the section issue **/
+        binding.commentsRecyclerView.adapter =
+            ConcatAdapter(commentInitialErrorAdapter, commentsAdapter, commentPaginationErrorAdapter)
 
         binding.backButton.setOnClickListener {
             handleBackAction()
@@ -56,7 +64,7 @@ class CommentsActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 comments ->
-                adapter.takeData(comments)
+                commentsAdapter.takeData(comments)
             }
 
         viewModel.outputs.currentUserAvatar()
@@ -85,12 +93,12 @@ class CommentsActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::setEmptyState)
 
-        viewModel.outputs.initialLoadCommentsError()
+        viewModel.outputs.shouldShowInitialLoadErrorUI()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 setEmptyState(false)
-                adapter.insertPageError()
+                commentInitialErrorAdapter.insertPageError(it)
             }
 
         /*
@@ -117,7 +125,7 @@ class CommentsActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                adapter.addErrorPaginationCell(it)
+                commentPaginationErrorAdapter.addErrorPaginationCell(it)
             }
 
         binding.commentComposer.setCommentComposerActionClickListener(object : OnCommentComposerViewClickedListener {
@@ -238,9 +246,6 @@ class CommentsActivity :
         recyclerViewPaginator.reload()
     }
 
-    override fun emptyCommentsLoginClicked(viewHolder: EmptyCommentsViewHolder?) {
-    }
-
     override fun onRetryViewClicked(comment: Comment) {
     }
 
@@ -255,12 +260,12 @@ class CommentsActivity :
         viewModel.inputs.onShowGuideLinesLinkClicked()
     }
 
-    override fun onCommentPostedSuccessFully(comment: Comment) {
-        viewModel.inputs.refreshComment(comment)
+    override fun onCommentPostedSuccessFully(comment: Comment, position: Int) {
+        viewModel.inputs.refreshComment(comment, position)
     }
 
-    override fun onCommentPostedFailed(comment: Comment) {
-        viewModel.inputs.refreshCommentCardInCaseFailedPosted(comment)
+    override fun onCommentPostedFailed(comment: Comment, position: Int) {
+        viewModel.inputs.refreshCommentCardInCaseFailedPosted(comment, position)
     }
 
     override fun onShowCommentClicked(comment: Comment) {

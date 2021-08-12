@@ -36,6 +36,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     private val initialLoadError = TestSubscriber.create<Throwable>()
     private val paginationError = TestSubscriber.create<Throwable>()
     private val shouldShowPaginatedCell = TestSubscriber.create<Boolean>()
+    private val shouldShowInitialLoadErrorCell = TestSubscriber.create<Boolean>()
     private val openCommentGuideLines = TestSubscriber<Void>()
     private val startThreadActivity = BehaviorSubject.create<Pair<CommentCardData, Boolean>>()
     private val hasPendingComments = TestSubscriber<Pair<Boolean, Boolean>>()
@@ -303,6 +304,8 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         val vm = CommentsViewModel.ViewModel(env)
         vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
         vm.outputs.initialLoadCommentsError().subscribe(initialLoadError)
+        vm.outputs.shouldShowInitialLoadErrorUI().subscribe(shouldShowInitialLoadErrorCell)
+
         vm.outputs.paginateCommentsError().subscribe(paginationError)
         vm.outputs.shouldShowPaginationErrorUI().subscribe(shouldShowPaginatedCell)
 
@@ -312,7 +315,8 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         // Comments should emit.
         commentsList.assertValueCount(0)
-        initialLoadError.assertValueCount(4)
+        initialLoadError.assertValueCount(2)
+        shouldShowInitialLoadErrorCell.assertValues(true, true)
         shouldShowPaginatedCell.assertNoValues()
     }
 
@@ -511,7 +515,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         }
 
         // - Check the status of the newly posted comment has been updated to "COMMENT_FOR_LOGIN_BACKED_USERS"
-        vm.inputs.refreshComment(newPostedComment)
+        vm.inputs.refreshComment(newPostedComment, 0)
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
         commentsList.assertValueCount(3)
@@ -612,7 +616,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         this.hasPendingComments.assertValues(Pair(false, false), Pair(true, false))
 
         // - Check the status of the newly posted comment
-        vm.inputs.refreshComment(newPostedComment)
+        vm.inputs.refreshComment(newPostedComment, 0)
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
         // - Check Pull to refresh
@@ -704,7 +708,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         this.hasPendingComments.assertValues(Pair(false, true), Pair(true, true))
 
         // - Check the status of the newly posted comment
-        vm.inputs.refreshComment(newPostedComment)
+        vm.inputs.refreshComment(newPostedComment, 0)
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
         // - Check Pull to refresh

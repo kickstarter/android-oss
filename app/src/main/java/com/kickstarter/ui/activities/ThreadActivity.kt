@@ -77,8 +77,7 @@ class ThreadActivity :
                 /** bind View more cell if the replies more than 7 or update after refresh initial error state **/
                 this.repliesStatusAdapter.addViewMoreCell(it.second)
                 if (it.first.isNotEmpty()) {
-                    /** bind replies list to adapter as reversed as the layout is reversed **/
-                    this.repliesAdapter.takeData(it.first.reversed())
+                    this.repliesAdapter.takeData(it.first)
                 }
             }
 

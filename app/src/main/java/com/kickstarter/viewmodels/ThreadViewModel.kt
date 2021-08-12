@@ -167,7 +167,8 @@ interface ThreadViewModel {
                 .withLatestFrom(this.onCommentReplies) { reply, pair ->
                     Pair(
                         pair.first.toMutableList().apply {
-                            add(reply)
+                            /** bind new reply at the top of list to as list is reversed  **/
+                            add(0, reply)
                         }.toList(),
                         pair.second
                     )
@@ -273,12 +274,13 @@ interface ThreadViewModel {
                     this.onCommentReplies.onNext(it)
                 }
 
-            this.onCommentReplies
-                .compose(Transformers.takePairWhen(checkIfThereAnyPendingComments))
-                .compose(bindToLifecycle())
+            checkIfThereAnyPendingComments
+                .withLatestFrom(this.onCommentReplies) { _, list ->
+                    list
+                }.compose(bindToLifecycle())
                 .subscribe { pair ->
                     this.hasPendingComments.onNext(
-                        pair.first.first.any {
+                        pair.first.any {
                             it.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus ||
                                 it.commentCardState == CommentCardStatus.FAILED_TO_SEND_COMMENT.commentCardStatus
                         }
@@ -350,8 +352,9 @@ interface ThreadViewModel {
                 }
         }
 
+        /** reversed replies **/
         private fun mapListToData(it: CommentEnvelope, project: Project) =
-            it.comments?.toCommentCardList(project)
+            it.comments?.toCommentCardList(project)?.reversed()
 
         private fun loadWithProjectReplies(
             comment: Observable<Comment>,

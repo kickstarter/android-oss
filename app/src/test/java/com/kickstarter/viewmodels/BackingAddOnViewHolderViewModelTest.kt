@@ -8,9 +8,11 @@ import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
+import com.kickstarter.mock.factories.ShippingRulesEnvelopeFactory
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.data.ProjectData
+import org.joda.time.DateTime
 import org.junit.Test
 import rx.observers.TestSubscriber
 
@@ -21,10 +23,10 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     private val remainingQuantityIsGone = TestSubscriber.create<Boolean>()
     private val countdownIsGone = TestSubscriber.create<Boolean>()
     private val shippingAmountIsGone = TestSubscriber.create<Boolean>()
+    private val shippingAmount = TestSubscriber.create<String>()
     private val rewardItemsAreGone = TestSubscriber.create<Boolean>()
     private val quantityPerId = TestSubscriber.create<Pair<Int, Long>>()
-    private val disableIncreaseButton = TestSubscriber.create<Boolean>()
-    private val addButtonGone = TestSubscriber.create<Boolean>()
+    private val maxQuantity = TestSubscriber.create<Int>()
 
     private fun setupEnvironment(@NonNull environment: Environment) {
         this.vm = BackingAddOnViewHolderViewModel.ViewModel(environment)
@@ -32,10 +34,10 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.remainingQuantityPillIsGone().subscribe(this.remainingQuantityIsGone)
         this.vm.outputs.deadlineCountdownIsGone().subscribe(this.countdownIsGone)
         this.vm.outputs.shippingAmountIsGone().subscribe(this.shippingAmountIsGone)
+        this.vm.outputs.shippingAmount().subscribe(this.shippingAmount)
         this.vm.outputs.rewardItemsAreGone().subscribe(this.rewardItemsAreGone)
         this.vm.outputs.quantityPerId().subscribe(this.quantityPerId)
-        this.vm.outputs.disableIncreaseButton().subscribe(this.disableIncreaseButton)
-        this.vm.outputs.addButtonIsGone().subscribe(this.addButtonGone)
+        this.vm.outputs.maxQuantity().subscribe(this.maxQuantity)
     }
 
     @Test
@@ -96,78 +98,13 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testAddButtonIsGone() {
+    fun maxLimit_whenAddonNotIsAvailableAndQuantityNotNull_shouldEmitQuantity() {
         setupEnvironment(environment())
-
-        val addOn = RewardFactory.reward().toBuilder().isAddOn(true).rewardsItems(emptyList()).build()
-
-        val shippingRule = ShippingRuleFactory.usShippingRule()
-        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
-
-        this.addButtonGone.assertValue(false)
-        this.quantityPerId.assertValue(Pair(0, addOn.id()))
-    }
-
-    @Test
-    fun testAddButtonIsGone_WhenPressing() {
-        setupEnvironment(environment())
-
-        val addOn = RewardFactory.reward().toBuilder().isAddOn(true).rewardsItems(emptyList()).build()
-
-        val shippingRule = ShippingRuleFactory.usShippingRule()
-        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
-
-        this.vm.inputs.increaseButtonPressed()
-        this.addButtonGone.assertValues(false, true)
-        this.quantityPerId.assertValues(Pair(0, addOn.id()), Pair(1, addOn.id()))
-    }
-
-    @Test
-    fun increaseStepper() {
-        setupEnvironment(environment())
-
-        val addOn = RewardFactory.reward().toBuilder().isAddOn(true).rewardsItems(emptyList()).build()
-
-        val shippingRule = ShippingRuleFactory.usShippingRule()
-        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
-
-        this.vm.inputs.increaseButtonPressed()
-        this.vm.inputs.increaseButtonPressed()
-        this.vm.inputs.increaseButtonPressed()
-
-        this.addButtonGone.assertValues(false, true, true, true)
-        this.quantityPerId.assertValues(Pair(0, addOn.id()), Pair(1, addOn.id()), Pair(2, addOn.id()), Pair(3, addOn.id()))
-    }
-
-    @Test
-    fun increaseStepperDisable_WhenLimitPerRewardReached() {
-        setupEnvironment(environment())
-
-        val addOn = RewardFactory.reward().toBuilder()
-            .isAddOn(true)
-            .isAvailable(true)
-            .remaining(3)
-            .rewardsItems(emptyList()).build()
-
-        val shippingRule = ShippingRuleFactory.usShippingRule()
-        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
-
-        this.vm.inputs.increaseButtonPressed()
-        this.vm.inputs.increaseButtonPressed()
-        this.vm.inputs.increaseButtonPressed()
-
-        this.addButtonGone.assertValues(false, true, true, true)
-        this.quantityPerId.assertValues(Pair(0, addOn.id()), Pair(1, addOn.id()), Pair(2, addOn.id()), Pair(3, addOn.id()))
-        this.disableIncreaseButton.assertValues(false, false, false, true)
-    }
-
-    @Test
-    fun increaseStepperDisable_WhenAddOnUnavailable() {
-        setupEnvironment(environment())
-
         val addOn = RewardFactory.reward().toBuilder()
             .isAddOn(true)
             .isAvailable(false)
+            .startsAt(DateTime.now())
+            .limit(8)
             .remaining(3)
             .quantity(2)
             .rewardsItems(emptyList()).build()
@@ -175,95 +112,242 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
         val shippingRule = ShippingRuleFactory.usShippingRule()
         this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
 
-        this.quantityPerId.assertValue(Pair(2, addOn.id()))
-
-        this.disableIncreaseButton.assertValues(true)
+        this.maxQuantity.assertValue(2)
     }
 
     @Test
-    fun increaseStepperDisable_WhenLimitPerBackingReached() {
+    fun maxLimit_whenNoTimeRemainingAndQuantityNotNull_shouldEmitQuantity() {
         setupEnvironment(environment())
-
         val addOn = RewardFactory.reward().toBuilder()
-            .isAvailable(true)
             .isAddOn(true)
+            .isAvailable(true)
+            .startsAt(DateTime.now().minusDays(5))
+            .endsAt(DateTime.now().minusDays(2))
+            .remaining(3)
+            .quantity(2)
+            .rewardsItems(emptyList()).build()
+
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
+
+        this.maxQuantity.assertValue(2)
+    }
+
+    @Test
+    fun maxLimit_whenNoTimeRemainingAndQuantityNull_shouldNotEmit() {
+        setupEnvironment(environment())
+        val addOn = RewardFactory.reward().toBuilder()
+            .isAddOn(true)
+            .isAvailable(true)
+            .startsAt(DateTime.now().minusDays(5))
+            .endsAt(DateTime.now().minusDays(2))
+            .remaining(3)
+            .quantity(null)
+            .rewardsItems(emptyList()).build()
+
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
+
+        this.maxQuantity.assertNoValues()
+    }
+
+    @Test
+    fun maxLimit_whenTimeRemainingAndAvailableAndRemainingNull_shouldEmitLimit() {
+        setupEnvironment(environment())
+        val addOn = RewardFactory.reward().toBuilder()
+            .isAddOn(true)
+            .isAvailable(true)
+            .startsAt(DateTime.now().minusDays(5))
+            .endsAt(DateTime.now().plusDays(5))
+            .remaining(null)
+            .quantity(null)
             .limit(10)
             .rewardsItems(emptyList()).build()
 
         val shippingRule = ShippingRuleFactory.usShippingRule()
         this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
 
-        this.vm.inputs.increaseButtonPressed()
-        this.vm.inputs.increaseButtonPressed()
-        this.vm.inputs.increaseButtonPressed()
-        this.vm.inputs.increaseButtonPressed()
-        this.vm.inputs.increaseButtonPressed()
-        this.vm.inputs.increaseButtonPressed()
-        this.vm.inputs.increaseButtonPressed()
-        this.vm.inputs.increaseButtonPressed()
-        this.vm.inputs.increaseButtonPressed()
-        this.vm.inputs.increaseButtonPressed()
+        this.maxQuantity.assertValue(10)
+    }
 
-        this.addButtonGone.assertValues(false, true, true, true, true, true, true, true, true, true, true)
+    @Test
+    fun maxLimit_whenTimeRemainingAndAvailableAndLimitNull_shouldEmitRemaining() {
+        setupEnvironment(environment())
+        val addOn = RewardFactory.reward().toBuilder()
+            .isAddOn(true)
+            .isAvailable(true)
+            .startsAt(DateTime.now().minusDays(5))
+            .endsAt(DateTime.now().plusDays(5))
+            .remaining(9)
+            .quantity(null)
+            .limit(null)
+            .rewardsItems(emptyList()).build()
+
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
+
+        this.maxQuantity.assertValue(9)
+    }
+
+    @Test
+    fun maxLimit_whenAddonValidAndRemainingAndLimitNull_shouldNotEmit() {
+        setupEnvironment(environment())
+        val addOn = RewardFactory.reward().toBuilder()
+            .isAddOn(true)
+            .isAvailable(true)
+            .startsAt(DateTime.now().minusDays(5))
+            .endsAt(DateTime.now().plusDays(5))
+            .remaining(null)
+            .quantity(null)
+            .limit(null)
+            .rewardsItems(emptyList()).build()
+
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
+
+        this.maxQuantity.assertNoValues()
+    }
+
+    @Test
+    fun maxLimit_whenAddonValidAndRemainingLessThanLimit_shouldEmitRemaining() {
+        setupEnvironment(environment())
+        val addOn = RewardFactory.reward().toBuilder()
+            .isAddOn(true)
+            .isAvailable(true)
+            .startsAt(DateTime.now().minusDays(5))
+            .endsAt(DateTime.now().plusDays(5))
+            .remaining(3)
+            .quantity(null)
+            .limit(7)
+            .rewardsItems(emptyList()).build()
+
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
+
+        this.maxQuantity.assertValue(3)
+    }
+
+    @Test
+    fun maxLimit_whenAddonValidAndRemainingMoreThanLimit_shouldEmitLimit() {
+        setupEnvironment(environment())
+        val addOn = RewardFactory.reward().toBuilder()
+            .isAddOn(true)
+            .isAvailable(true)
+            .startsAt(DateTime.now().minusDays(5))
+            .endsAt(DateTime.now().plusDays(5))
+            .remaining(8)
+            .quantity(null)
+            .limit(4)
+            .rewardsItems(emptyList()).build()
+
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
+
+        this.maxQuantity.assertValue(4)
+    }
+
+    @Test
+    fun getShippingCost_whenDigitalReward_emitsEmptyString() {
+        setupEnvironment(environment())
+        val addOn = RewardFactory.reward().toBuilder()
+            .isAddOn(true)
+            .isAvailable(true)
+            .shippingRules(null)
+            .startsAt(DateTime.now().minusDays(5))
+            .endsAt(DateTime.now().plusDays(5))
+            .remaining(8)
+            .quantity(null)
+            .limit(4)
+            .rewardsItems(emptyList()).build()
+
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
+
+        this.shippingAmount.assertValue("")
+    }
+
+    @Test
+    fun getShippingCost_whenShippingRulesNotNull_emitsFormattedShippingString() {
+        setupEnvironment(environment())
+        val shippingRule = ShippingRulesEnvelopeFactory.shippingRules()
+
+        val addOn = RewardFactory.reward().toBuilder()
+            .isAddOn(true)
+            .isAvailable(true)
+            .shippingRules(shippingRule.shippingRules())
+            .startsAt(DateTime.now().minusDays(5))
+            .endsAt(DateTime.now().plusDays(5))
+            .remaining(8)
+            .quantity(null)
+            .limit(4)
+            .rewardsItems(emptyList()).build()
+
+        val usShippingRule = ShippingRuleFactory.usShippingRule()
+
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, usShippingRule))
+
+        this.shippingAmount.assertValue("$30")
+    }
+
+    // quantity per id
+    // when id changes, emit quantity per id
+    // when quantity changes, emit quantity per id
+
+    @Test
+    fun quantityPerId_whenCurrentQuantityChanges_emitToQuantityPerId() {
+        setupEnvironment(environment())
+
+        val addOn = RewardFactory.reward().toBuilder()
+            .isAddOn(true)
+            .isAvailable(true)
+            .remaining(3)
+            .rewardsItems(emptyList()).build()
+
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
+
+        quantityPerId.assertValue(Pair(0, addOn.id()))
+
+        this.vm.inputs.currentQuantity(2)
+        this.vm.inputs.currentQuantity(3)
+        this.vm.inputs.currentQuantity(4)
+
+        this.quantityPerId.assertValues(Pair(0, addOn.id()), Pair(2, addOn.id()), Pair(3, addOn.id()), Pair(4, addOn.id()))
+
+        this.vm.inputs.currentQuantity(3)
+        this.vm.inputs.currentQuantity(2)
+
         this.quantityPerId.assertValues(
             Pair(0, addOn.id()),
-            Pair(1, addOn.id()),
             Pair(2, addOn.id()),
             Pair(3, addOn.id()),
             Pair(4, addOn.id()),
-            Pair(5, addOn.id()),
-            Pair(6, addOn.id()),
-            Pair(7, addOn.id()),
-            Pair(8, addOn.id()),
-            Pair(9, addOn.id()),
-            Pair(10, addOn.id())
-        )
-        this.disableIncreaseButton.assertValues(false, false, false, false, false, false, false, false, false, false, true)
-    }
-
-    @Test
-    fun decreaseStepper() {
-        setupEnvironment(environment())
-
-        val addOn = RewardFactory.reward().toBuilder().isAddOn(true).rewardsItems(emptyList()).build()
-
-        val shippingRule = ShippingRuleFactory.usShippingRule()
-        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
-
-        this.vm.inputs.increaseButtonPressed()
-        this.vm.inputs.increaseButtonPressed()
-        this.vm.inputs.increaseButtonPressed()
-        this.vm.inputs.decreaseButtonPressed()
-
-        this.addButtonGone.assertValues(false, true, true, true, true)
-        this.quantityPerId.assertValues(Pair(0, addOn.id()), Pair(1, addOn.id()), Pair(2, addOn.id()), Pair(3, addOn.id()), Pair(2, addOn.id()))
-    }
-
-    @Test
-    fun decreaseUntilAddButtonShown() {
-        setupEnvironment(environment())
-
-        val addOn = RewardFactory.reward().toBuilder().isAddOn(true).rewardsItems(emptyList()).build()
-
-        val shippingRule = ShippingRuleFactory.usShippingRule()
-        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
-
-        this.vm.inputs.increaseButtonPressed()
-        this.vm.inputs.increaseButtonPressed()
-        this.vm.inputs.increaseButtonPressed()
-        this.vm.inputs.decreaseButtonPressed()
-        this.vm.inputs.decreaseButtonPressed()
-        this.vm.inputs.decreaseButtonPressed()
-
-        this.addButtonGone.assertValues(false, true, true, true, true, true, false)
-        this.quantityPerId.assertValues(
-            Pair(0, addOn.id()),
-            Pair(1, addOn.id()),
-            Pair(2, addOn.id()),
             Pair(3, addOn.id()),
-            Pair(2, addOn.id()),
-            Pair(1, addOn.id()),
-            Pair(0, addOn.id())
+            Pair(2, addOn.id())
         )
+    }
+
+    @Test
+    fun quantityPerId_whenAddonQuantityNotNull_shouldStartAtQuantity() {
+        setupEnvironment(environment())
+
+        val addOn = RewardFactory.reward().toBuilder()
+            .isAddOn(true)
+            .isAvailable(true)
+            .remaining(3)
+            .quantity(2)
+            .rewardsItems(emptyList()).build()
+
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
+
+        this.quantityPerId.assertValues(Pair(2, addOn.id()))
+
+        this.vm.inputs.currentQuantity(3)
+        this.vm.inputs.currentQuantity(4)
+        this.vm.inputs.currentQuantity(5)
+
+        this.quantityPerId.assertValues(Pair(2, addOn.id()), Pair(3, addOn.id()), Pair(4, addOn.id()), Pair(5, addOn.id()))
     }
 }

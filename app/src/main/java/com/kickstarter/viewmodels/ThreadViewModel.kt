@@ -167,7 +167,8 @@ interface ThreadViewModel {
                 .withLatestFrom(this.onCommentReplies) { reply, pair ->
                     Pair(
                         pair.first.toMutableList().apply {
-                            add(reply)
+                            /** bind new reply at the top of list to as list is reversed  **/
+                            add(0, reply)
                         }.toList(),
                         pair.second
                     )
@@ -273,12 +274,13 @@ interface ThreadViewModel {
                     this.onCommentReplies.onNext(it)
                 }
 
-            this.onCommentReplies
-                .compose(Transformers.takePairWhen(checkIfThereAnyPendingComments))
-                .compose(bindToLifecycle())
+            checkIfThereAnyPendingComments
+                .withLatestFrom(this.onCommentReplies) { _, list ->
+                    list
+                }.compose(bindToLifecycle())
                 .subscribe { pair ->
                     this.hasPendingComments.onNext(
-                        pair.first.first.any {
+                        pair.first.any {
                             it.commentCardState == CommentCardStatus.TRYING_TO_POST.commentCardStatus ||
                                 it.commentCardState == CommentCardStatus.FAILED_TO_SEND_COMMENT.commentCardStatus
                         }
@@ -324,8 +326,10 @@ interface ThreadViewModel {
                 .compose(bindToLifecycle<Boolean>())
                 .subscribe(this.isFetchingReplies)
 
+            /** reversed replies **/
             apolloPaginate
                 .paginatedData()
+                ?.map { it.reversed() }
                 ?.compose(Transformers.combineLatestPair(this.hasPreviousElements))
                 ?.distinctUntilChanged()
                 ?.share()

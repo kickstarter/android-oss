@@ -713,6 +713,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="Yes_continue" formatted="false">Sí, continuar</string>
   <string name="Yes_remove" formatted="false">Sí, eliminar</string>
   <string name="Yes_turn_off" formatted="false">Sí, desactivar</string>
+  <string name="You" formatted="false">Tú</string>
   <string name="You_Launched" formatted="false">¡Tu proyecto fue publicado!</string>
   <string name="You_backed" formatted="false">Patrocinaste</string>
   <string name="You_backed_this_project" formatted="false">Patrocinaste este proyecto.</string>

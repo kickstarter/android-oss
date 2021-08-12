@@ -13,10 +13,9 @@ abstract class KSArrayAdapter<T>(val ctx: Context, private val resourceId: Int, 
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val viewBinding = getViewBinding(resourceId, parent)
-        val view = convertView ?: viewBinding.root
         val viewHolder = viewHolder(viewBinding)
         viewHolder?.bindData(getItem(position))
-        return view
+        return viewBinding.root
     }
 
     /**

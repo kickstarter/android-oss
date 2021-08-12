@@ -70,6 +70,8 @@ interface CommentsViewModel {
 
         /** Display the bottom pagination Error Cell **/
         fun shouldShowPaginationErrorUI(): Observable<Boolean>
+        /** Display the initial Load Error Cell **/
+        fun shouldShowInitialLoadErrorUI(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
@@ -101,6 +103,7 @@ interface CommentsViewModel {
         private val insertNewCommentToList = PublishSubject.create<Pair<String, DateTime>>()
         private val isRefreshing = BehaviorSubject.create<Boolean>()
         private val setEmptyState = BehaviorSubject.create<Boolean>()
+        private val displayInitialError = BehaviorSubject.create<Boolean>()
         private val displayPaginationError = BehaviorSubject.create<Boolean>()
         private val commentToRefresh = PublishSubject.create<Comment>()
         private val startThreadActivity = BehaviorSubject.create<Pair<CommentCardData, Boolean>>()
@@ -226,6 +229,12 @@ interface CommentsViewModel {
                     this.setEmptyState.onNext(it == 0)
                 }
 
+            this.initialError
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.displayInitialError.onNext(true)
+                }
+
             this.paginationError
                 .compose(bindToLifecycle())
                 .subscribe {
@@ -337,17 +346,18 @@ interface CommentsViewModel {
                 .compose(bindToLifecycle<Boolean>())
                 .subscribe(this.isFetchingComments)
 
-            apolloPaginate.paginatedData()?.share()
-                ?.compose(Transformers.combineLatestPair(this.isFetchingComments))
+            apolloPaginate.paginatedData()
+                ?.compose(combineLatestPair(this.isFetchingComments))
                 ?.filter { !it.second }
+                ?.distinctUntilChanged()
+                ?.share()
                 ?.subscribe {
                     this.commentsList.onNext(it.first)
                 }
 
             this.internalError
-                .compose(combineLatestPair(commentsList))
+                .map { Pair(it, commentsList.value) }
                 .filter {
-                    // it.first.second &&
                     it.second.isNullOrEmpty()
                 }
                 .compose(bindToLifecycle())
@@ -355,14 +365,13 @@ interface CommentsViewModel {
                     this.initialError.onNext(it.first)
                 }
 
-            this.internalError
-                .compose(combineLatestPair(commentsList))
+            commentsList.compose(takePairWhen(this.internalError))
                 .filter {
-                    it.second.isNotEmpty()
+                    it.first.isNotEmpty()
                 }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.paginationError.onNext(it.first)
+                    this.paginationError.onNext(it.second)
                 }
 
             this.refresh
@@ -394,6 +403,9 @@ interface CommentsViewModel {
                 }
             }.doOnNext {
                 commentableId = it.commentableId
+                // Remove Pagination errorFrom View
+                this.displayPaginationError.onNext(false)
+                this.displayInitialError.onNext(false)
             }
                 .doOnError {
                     this.internalError.onNext(it)
@@ -458,6 +470,7 @@ interface CommentsViewModel {
         override fun paginateCommentsError(): Observable<Throwable> = this.paginationError
         override fun pullToRefreshError(): Observable<Throwable> = this.pullToRefreshError
         override fun scrollToTop(): Observable<Boolean> = this.scrollToTop
+        override fun shouldShowInitialLoadErrorUI(): Observable<Boolean> = this.displayInitialError
         override fun shouldShowPaginationErrorUI(): Observable<Boolean> = this.displayPaginationError
 
         override fun setEmptyState(): Observable<Boolean> = setEmptyState

@@ -418,7 +418,7 @@ interface CommentsViewModel {
                     .commentCardState(comment.cardStatus())
                     .commentableId(it.first.commentableId)
                     .build()
-            }?: emptyList()
+            } ?: emptyList()
 
         private fun buildCommentBody(it: Pair<User, Pair<String, DateTime>>): Comment {
             return Comment.builder()

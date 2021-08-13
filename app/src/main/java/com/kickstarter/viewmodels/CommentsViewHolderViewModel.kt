@@ -174,7 +174,7 @@ interface CommentsViewHolderViewModel {
 
             this.internalError
                 .distinctUntilChanged()
-                .withLatestFrom(commentData) { error, data -> Pair(error, data)}
+                .withLatestFrom(commentData) { error, data -> Pair(error, data) }
                 .compose(bindToLifecycle())
                 .delay(1, TimeUnit.SECONDS, environment.scheduler())
                 .subscribe {

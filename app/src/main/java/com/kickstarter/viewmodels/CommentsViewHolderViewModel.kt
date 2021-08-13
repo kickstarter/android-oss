@@ -173,8 +173,8 @@ interface CommentsViewHolderViewModel {
             postComment(commentData, internalError, environment)
 
             this.internalError
+                .compose(combineLatestPair(commentData))
                 .distinctUntilChanged()
-                .withLatestFrom(commentData) { error, data -> Pair(error, data) }
                 .compose(bindToLifecycle())
                 .delay(1, TimeUnit.SECONDS, environment.scheduler())
                 .subscribe {

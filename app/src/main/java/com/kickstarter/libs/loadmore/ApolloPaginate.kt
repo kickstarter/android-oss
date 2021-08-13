@@ -225,6 +225,7 @@ class ApolloPaginate<Data, Envelope : ApolloEnvelope, Params>(
             .map(this.pageTransformation)
             .takeUntil { data: List<Data> -> data.isEmpty() }
             .doOnSubscribe { _isFetching.onNext(true) }
+            //.doOnUnsubscribe { _isFetching.onNext(false) }
             .doAfterTerminate {
                 _isFetching.onNext(false)
             }

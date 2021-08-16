@@ -56,30 +56,12 @@ open class SegmentTrackingClient(
             }
 
         this.currentUser.observable()
-            .distinctUntilChanged { prevUser, newUser ->
-                updateUserAndCheckTraits(prevUser, newUser)
-            }
             .filter { ObjectUtils.isNotNull(it) }
             .map { requireNotNull(it) }
             .subscribe {
+                this.loggedInUser = it
                 identify(it)
             }
-    }
-
-    /**
-     * Takes the new user and the previous user emitted to the observable.
-     * - updates the current logged in user with the new user
-     * - and compares just the traits we send with the identify call, not the entire user object
-     *
-     * @param prevUser
-     * @param newUser
-     *
-     * @return true in case traits remain the same
-     *         false in case traits changed
-     */
-    private fun updateUserAndCheckTraits(prevUser: User?, newUser: User?): Boolean {
-        this.loggedInUser = newUser
-        return prevUser?.getTraits() == newUser?.getTraits()
     }
 
     override fun initialize() {
@@ -141,10 +123,6 @@ open class SegmentTrackingClient(
             )
 
             this.isInitialized = true
-
-            loggedInUser?.let {
-                identify(it)
-            }
 
             if (build.isDebug) {
                 Timber.d("${type().tag} client:$segmentClient isInitialized:$isInitialized")

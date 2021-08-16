@@ -145,13 +145,14 @@ interface CommentsViewHolderViewModel {
 
         init {
 
-            val comment = Observable.merge(this.commentInput.map { it.comment }, postedSuccessfully)
+            val comment = Observable.merge(this.commentInput.distinctUntilChanged().map { it.comment }, postedSuccessfully)
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
 
             configureCommentCardWithComment(comment)
 
             val commentCardStatus = this.commentInput
+                .distinctUntilChanged()
                 .filter { ObjectUtils.isNotNull(it) }
                 .map {
                     val commentCardState = cardStatus(it)
@@ -173,6 +174,7 @@ interface CommentsViewHolderViewModel {
 
             this.internalError
                 .compose(combineLatestPair(commentData))
+                .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .delay(1, TimeUnit.SECONDS, environment.scheduler())
                 .subscribe {

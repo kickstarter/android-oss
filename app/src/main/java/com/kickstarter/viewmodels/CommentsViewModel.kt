@@ -339,7 +339,7 @@ interface CommentsViewModel {
                     .loadWithParams {
                         loadWithProjectOrUpdateComments(Observable.just(it.first), it.second)
                     }
-                    .clearWhenStartingOver(true)
+                    .clearWhenStartingOver(false)
                     .build()
 
             apolloPaginate.isFetching()
@@ -347,12 +347,9 @@ interface CommentsViewModel {
                 .subscribe(this.isFetchingComments)
 
             apolloPaginate.paginatedData()
-                ?.compose(combineLatestPair(this.isFetchingComments))
-                ?.filter { !it.second }
-                ?.distinctUntilChanged()
                 ?.share()
                 ?.subscribe {
-                    this.commentsList.onNext(it.first)
+                    this.commentsList.onNext(it)
                 }
 
             this.internalError
@@ -421,7 +418,7 @@ interface CommentsViewModel {
                     .commentCardState(comment.cardStatus())
                     .commentableId(it.first.commentableId)
                     .build()
-            }
+            } ?: emptyList()
 
         private fun buildCommentBody(it: Pair<User, Pair<String, DateTime>>): Comment {
             return Comment.builder()

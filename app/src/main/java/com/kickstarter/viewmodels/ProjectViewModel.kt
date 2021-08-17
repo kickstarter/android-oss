@@ -217,9 +217,6 @@ interface ProjectViewModel {
         /** Emits when we should start the campaign [com.kickstarter.ui.activities.CampaignDetailsActivity].  */
         fun startCampaignWebViewActivity(): Observable<ProjectData>
 
-        /** Emits when we should start [com.kickstarter.ui.activities.DeprecatedCommentsActivity].  */
-        fun startCommentsActivity(): Observable<Pair<Project, ProjectData>>
-
         /** Emits when we should start [com.kickstarter.ui.activities.RootCommentsActivity]. */
         fun startRootCommentsActivity(): Observable<Pair<Project, ProjectData>>
 
@@ -493,18 +490,10 @@ interface ProjectViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(this.startCreatorBioWebViewActivity)
 
-            currentProject
-                .filter { !optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_THREADING) }
-                .compose<Project>(takeWhen(this.commentsTextViewClicked))
-                .compose<Pair<Project, ProjectData>>(combineLatestPair(projectData))
-                .compose(bindToLifecycle())
-                .subscribe(this.startCommentsActivity)
-
             val latestProjectAndProjectData = currentProject.compose<Pair<Project, ProjectData>>(combineLatestPair(projectData))
 
             this.commentsTextViewClicked
                 .withLatestFrom(latestProjectAndProjectData) { _, project -> project }
-                .filter { optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_THREADING) }
                 .compose(bindToLifecycle())
                 .subscribe(this.startRootCommentsActivity)
 
@@ -1085,9 +1074,6 @@ interface ProjectViewModel {
 
         @NonNull
         override fun startCampaignWebViewActivity(): Observable<ProjectData> = this.startCampaignWebViewActivity
-
-        @NonNull
-        override fun startCommentsActivity(): Observable<Pair<Project, ProjectData>> = this.startCommentsActivity
 
         @NonNull
         override fun startRootCommentsActivity(): Observable<Pair<Project, ProjectData>> = this.startRootCommentsActivity

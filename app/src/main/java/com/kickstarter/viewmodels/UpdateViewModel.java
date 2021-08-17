@@ -55,9 +55,6 @@ public interface UpdateViewModel {
     Observable<Pair<Update, String>> startShareIntent();
 
     /** Emits an update to start the comments activity with. */
-    Observable<Update> startCommentsActivity();
-
-    /** Emits an update to start the comments activity with. */
     Observable<Update> startRootCommentsActivity();
 
     /** Emits a Uri and a ref tag to start the project activity with. */
@@ -114,13 +111,6 @@ public interface UpdateViewModel {
         .subscribe(this.startShareIntent::onNext);
 
       currentUpdate
-        .filter(__ -> !this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_THREADING))
-        .compose(takeWhen(this.goToCommentsRequest))
-        .compose(bindToLifecycle())
-        .subscribe(this.startCommentsActivity::onNext);
-
-      currentUpdate
-        .filter(__ -> this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_THREADING))
         .compose(takeWhen(this.goToCommentsRequest))
         .compose(bindToLifecycle())
         .subscribe(this.startRootCommentsActivity::onNext);
@@ -200,9 +190,6 @@ public interface UpdateViewModel {
     }
     @Override public Observable<Pair<Update, String>> startShareIntent() {
       return this.startShareIntent;
-    }
-    @Override public @NonNull Observable<Update> startCommentsActivity() {
-      return this.startCommentsActivity;
     }
     @Override public @NonNull Observable<Update> startRootCommentsActivity() {
       return this.startRootCommentsActivity;

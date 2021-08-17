@@ -207,8 +207,7 @@ interface CommentsViewHolderViewModel {
                     this.isReplyButtonVisible.onNext(
                         shouldReplyButtonBeVisible(
                             it.first,
-                            it.second,
-                            optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_ENABLE_THREADS)
+                            it.second
                         )
                     )
                 }
@@ -401,11 +400,10 @@ interface CommentsViewHolderViewModel {
          */
         private fun shouldReplyButtonBeVisible(
             commentCardData: CommentCardData,
-            user: User?,
-            featureFlagActive: Boolean
+            user: User?
         ) =
             commentCardData.project?.let {
-                (it.isBacking || ProjectUtils.userIsCreator(it, user)) && featureFlagActive &&
+                (it.isBacking || ProjectUtils.userIsCreator(it, user)) &&
                     (
                         commentCardData.commentCardState == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus ||
                             commentCardData.commentCardState == CommentCardStatus.COMMENT_WITH_REPLIES.commentCardStatus

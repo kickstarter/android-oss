@@ -87,6 +87,9 @@ interface CommentsViewHolderViewModel {
         /** Emits the current [Comment] when view replies clicked.. */
         fun viewCommentReplies(): Observable<Comment>
 
+        /** Emits the current [OptimizelyFeature.Key.COMMENT_ENABLE_THREADS] status to the CommentCard UI*/
+        fun isCommentEnableThreads(): Observable<Boolean>
+
         /** Emits if the comment is a reply to root comment */
         fun isCommentReply(): Observable<Void>
 
@@ -125,6 +128,7 @@ interface CommentsViewHolderViewModel {
         private val replyToComment = PublishSubject.create<Comment>()
         private val flagComment = PublishSubject.create<Comment>()
         private val viewCommentReplies = PublishSubject.create<Comment>()
+        private val isCommentEnableThreads = PublishSubject.create<Boolean>()
         private val internalError = BehaviorSubject.create<Throwable>()
         private val postedSuccessfully = BehaviorSubject.create<Comment>()
         private val failedToPosted = BehaviorSubject.create<Comment>()
@@ -225,9 +229,10 @@ interface CommentsViewHolderViewModel {
 
             comment
                 .map { it.repliesCount() }
+                .compose(combineLatestPair(this.isCommentEnableThreads))
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.commentRepliesCount.onNext(it)
+                    this.commentRepliesCount.onNext(it.first)
                 }
 
             comment
@@ -419,6 +424,8 @@ interface CommentsViewHolderViewModel {
             else -> CommentCardStatus.values().firstOrNull {
                 it.commentCardStatus == commentCardData.commentCardState
             }
+        }.also {
+            this.isCommentEnableThreads.onNext(true)
         }
 
         private fun checkCanceledPledgeCommentStatus(commentCardData: CommentCardData): CommentCardStatus =
@@ -466,6 +473,8 @@ interface CommentsViewHolderViewModel {
         override fun flagComment(): Observable<Comment> = flagComment
 
         override fun viewCommentReplies(): Observable<Comment> = this.viewCommentReplies
+
+        override fun isCommentEnableThreads(): Observable<Boolean> = this.isCommentEnableThreads
 
         override fun isCommentReply(): Observable<Void> = this.isCommentReply
 

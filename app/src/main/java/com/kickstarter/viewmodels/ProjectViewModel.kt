@@ -14,7 +14,6 @@ import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.OptimizelyExperiment
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues

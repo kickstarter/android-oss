@@ -7,7 +7,6 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.UrlUtils;

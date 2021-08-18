@@ -17,7 +17,9 @@ import com.kickstarter.libs.utils.extensions.isProjectUpdateUri
 import com.kickstarter.libs.utils.extensions.isProjectUpdatesUri
 import com.kickstarter.libs.utils.extensions.isProjectUri
 import com.kickstarter.libs.utils.extensions.isSettingsUrl
+import com.kickstarter.libs.utils.extensions.isSignupUri
 import com.kickstarter.libs.utils.extensions.isUserSurveyUri
+import com.kickstarter.libs.utils.extensions.isVerificationEmailUrl
 import com.kickstarter.libs.utils.extensions.isWebViewUri
 import org.junit.Test
 
@@ -36,6 +38,8 @@ class UriExtTest : KSRobolectricTestCase() {
     private val discoverPlacesUri = Uri.parse("https://www.ksr.com/discover/places/newest")
     private val newGuestCheckoutUri = Uri.parse("https://www.ksr.com/checkouts/1/guest/new")
     private val projectUri = Uri.parse("https://www.ksr.com/projects/creator/project")
+    private val signUpUri = Uri.parse("https://www.ksr.com/signup")
+    private val verificationEmail = Uri.parse("https://www.ksr.com/profile/verify_email")
     private val projectPreviewUri =
         Uri.parse("https://www.ksr.com/projects/creator/project?token=token")
     private val projectSurveyUri =
@@ -159,5 +163,17 @@ class UriExtTest : KSRobolectricTestCase() {
     fun testUri_isUserSurveyUri() {
         assertTrue(userSurveyUri.isUserSurveyUri(webEndpoint))
         assertFalse(projectSurveyUri.isUserSurveyUri(webEndpoint))
+    }
+
+    @Test
+    fun testUri_isSignupUri() {
+        assertFalse(projectUri.isSignupUri(webEndpoint))
+        assertTrue(signUpUri.isSignupUri(webEndpoint))
+    }
+
+    @Test
+    fun testUri_isVerificationEmailUrl() {
+        assertFalse(projectUri.isVerificationEmailUrl())
+        assertTrue(verificationEmail.isVerificationEmailUrl())
     }
 }

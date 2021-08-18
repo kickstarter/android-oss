@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
-import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.AvatarFactory
 import com.kickstarter.mock.factories.CommentFactory
 import com.kickstarter.mock.factories.ProjectFactory

@@ -19,7 +19,7 @@ object ExperimentUtils {
             Pair("distinct_id", getInstanceId(optimizelyEnvironment)),
             Pair("session_app_release_version", appVersion),
             Pair("session_app_release_version_number", appVersion.replace(".", "").toInt()),
-            Pair("session_app_release_version_code", versionCode),
+            Pair("app_build_number", versionCode),
             Pair("session_os_version", String.format("Android %s", OSVersion)),
             Pair("session_ref_tag", experimentData.intentRefTag?.tag()),
             Pair("session_referrer_credit", experimentData.cookieRefTag?.tag()),

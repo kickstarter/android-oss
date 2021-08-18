@@ -53,16 +53,16 @@ fun Uri.isCheckoutUri(webEndpoint: String): Boolean {
 }
 
 fun Uri.isDiscoverCategoriesPath(): Boolean {
-    return DISCOVER_CATEGORIES_PATTERN.matcher(this.path).matches()
+    return DISCOVER_CATEGORIES_PATTERN.matcher(path()).matches()
 }
 
 fun Uri.isDiscoverScopePath(scope: String): Boolean {
-    val matcher = DISCOVER_SCOPE_PATTERN.matcher(this.path)
+    val matcher = DISCOVER_SCOPE_PATTERN.matcher(path())
     return matcher.matches() && scope == matcher.group(1)
 }
 
 fun Uri.isDiscoverPlacesPath(): Boolean {
-    return DISCOVER_PLACES_PATTERN.matcher(this.path).matches()
+    return DISCOVER_PLACES_PATTERN.matcher(path()).matches()
 }
 
 fun Uri.isHivequeenUri(webEndpoint: String): Boolean {
@@ -70,7 +70,7 @@ fun Uri.isHivequeenUri(webEndpoint: String): Boolean {
 }
 
 fun Uri.isKickstarterUri(webEndpoint: String): Boolean {
-    return host() == Uri.parse(webEndpoint).host
+    return host() == Uri.parse(webEndpoint).host()
 }
 
 fun Uri.isKSFavIcon(webEndpoint: String): Boolean {
@@ -101,9 +101,7 @@ fun Uri.isSignupUri(webEndpoint: String): Boolean {
 }
 
 fun Uri.isStagingUri(webEndpoint: String): Boolean {
-    return isKickstarterUri(
-        webEndpoint
-    ) && Secrets.RegExpPattern.STAGING.matcher(host()).matches()
+    return isKickstarterUri(webEndpoint) && Secrets.RegExpPattern.STAGING.matcher(host()).matches()
 }
 
 fun Uri.isCheckoutThanksUri(webEndpoint: String): Boolean {

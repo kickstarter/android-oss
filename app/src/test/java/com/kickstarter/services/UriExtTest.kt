@@ -1,6 +1,7 @@
 package com.kickstarter.services
 
 import android.net.Uri
+import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.utils.extensions.isCheckoutUri
 import com.kickstarter.libs.utils.extensions.isDiscoverCategoriesPath
 import com.kickstarter.libs.utils.extensions.isDiscoverPlacesPath
@@ -18,10 +19,9 @@ import com.kickstarter.libs.utils.extensions.isProjectUri
 import com.kickstarter.libs.utils.extensions.isSettingsUrl
 import com.kickstarter.libs.utils.extensions.isUserSurveyUri
 import com.kickstarter.libs.utils.extensions.isWebViewUri
-import junit.framework.TestCase
 import org.junit.Test
 
-class UriExtTest : TestCase() {
+class UriExtTest : KSRobolectricTestCase() {
     private val checkoutUri = Uri.parse("https://www.ksr.com/projects/creator/project/pledge")
     private val deepLinkMarketingHttps =
         Uri.parse("https://www.kickstarter.com/settings/notify_mobile_of_marketing_update/true")

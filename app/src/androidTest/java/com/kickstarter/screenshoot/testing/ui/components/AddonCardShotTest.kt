@@ -31,37 +31,7 @@ class AddonCardShotTest : ScreenshotTest {
     }
 
     @Test
-    fun descriptionInvisible() {
-        addonCard = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
-            R.layout.item_add_on_pledge, null) as CardView)
-            .findViewById(R.id.add_on_card)
-
-        stepper = addonCard.findViewById(R.id.add_on_stepper) as Stepper
-
-        addonCard.setAddonDescriptionVisibility(false)
-        addonCard.setAddOnItemLayoutVisibility(true)
-        addonCard.setDividerVisibility(true)
-        addonCard.setAddOnTitleText("Title Text")
-        addonCard.setAddOnMinimumText("5")
-        addonCard.setAddonConversionVisibility(true)
-        addonCard.setAddonConversionText("Conversion")
-        addonCard.setBackerLimitPillVisibility(true)
-        addonCard.setBackerLimitText("Backer limit")
-        addonCard.setAddonQuantityRemainingPillVisibility(true)
-        addonCard.setAddonQuantityRemainingText("Quantity remaining")
-        addonCard.setTimeLeftVisibility(true)
-        addonCard.setTimeLeftText("Time left")
-        addonCard.setShippingAmountText("Shipping amount")
-        addonCard.setShippingAmountVisibility(true)
-        stepper.inputs.setInitialValue(0)
-        stepper.inputs.setMinimum(0)
-        stepper.inputs.setMaximum(10)
-
-        compareScreenshot(addonCard)
-    }
-
-    @Test
-    fun descriptionVisible() {
+    fun allViewsVisible() {
         addonCard = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
             R.layout.item_add_on_pledge, null) as CardView)
             .findViewById(R.id.add_on_card)
@@ -116,6 +86,8 @@ class AddonCardShotTest : ScreenshotTest {
         addonCard.setTimeLeftText("Time left")
         addonCard.setShippingAmountText("Shipping amount")
         addonCard.setShippingAmountVisibility(true)
+        addonCard.setUpItemsAdapter(itemsAdapter, LinearLayoutManager(InstrumentationRegistry.getInstrumentation().targetContext))
+        itemsAdapter.rewardsItems(listOf(RewardsItemFactory.rewardsItem()))
         stepper.inputs.setInitialValue(0)
         stepper.inputs.setMinimum(0)
         stepper.inputs.setMaximum(10)
@@ -124,7 +96,205 @@ class AddonCardShotTest : ScreenshotTest {
     }
 
     @Test
-    fun descriptionVisible() {
+    fun dividerInvisible() {
+        addonCard = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+            R.layout.item_add_on_pledge, null) as CardView)
+            .findViewById(R.id.add_on_card)
+
+        stepper = addonCard.findViewById(R.id.add_on_stepper) as Stepper
+
+        addonCard.setAddonDescriptionVisibility(true)
+        addonCard.setAddOnDescription("Description")
+        addonCard.setAddOnItemLayoutVisibility(true)
+        addonCard.setDividerVisibility(false)
+        addonCard.setAddOnTitleText("Title Text")
+        addonCard.setAddOnMinimumText("5")
+        addonCard.setAddonConversionVisibility(true)
+        addonCard.setAddonConversionText("Conversion")
+        addonCard.setBackerLimitPillVisibility(true)
+        addonCard.setBackerLimitText("Backer limit")
+        addonCard.setAddonQuantityRemainingPillVisibility(true)
+        addonCard.setAddonQuantityRemainingText("Quantity remaining")
+        addonCard.setTimeLeftVisibility(true)
+        addonCard.setTimeLeftText("Time left")
+        addonCard.setShippingAmountText("Shipping amount")
+        addonCard.setShippingAmountVisibility(true)
+        addonCard.setUpItemsAdapter(itemsAdapter, LinearLayoutManager(InstrumentationRegistry.getInstrumentation().targetContext))
+        itemsAdapter.rewardsItems(listOf(RewardsItemFactory.rewardsItem()))
+        stepper.inputs.setInitialValue(0)
+        stepper.inputs.setMinimum(0)
+        stepper.inputs.setMaximum(10)
+
+        compareScreenshot(addonCard)
+    }
+
+    @Test
+    fun conversionInvisible() {
+        addonCard = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+            R.layout.item_add_on_pledge, null) as CardView)
+            .findViewById(R.id.add_on_card)
+
+        stepper = addonCard.findViewById(R.id.add_on_stepper) as Stepper
+
+        addonCard.setAddonDescriptionVisibility(true)
+        addonCard.setAddOnDescription("Description")
+        addonCard.setAddOnItemLayoutVisibility(true)
+        addonCard.setDividerVisibility(true)
+        addonCard.setAddOnTitleText("Title Text")
+        addonCard.setAddOnMinimumText("5")
+        addonCard.setAddonConversionVisibility(false)
+        addonCard.setAddonConversionText("Conversion")
+        addonCard.setBackerLimitPillVisibility(true)
+        addonCard.setBackerLimitText("Backer limit")
+        addonCard.setAddonQuantityRemainingPillVisibility(true)
+        addonCard.setAddonQuantityRemainingText("Quantity remaining")
+        addonCard.setTimeLeftVisibility(true)
+        addonCard.setTimeLeftText("Time left")
+        addonCard.setShippingAmountText("Shipping amount")
+        addonCard.setShippingAmountVisibility(true)
+        addonCard.setUpItemsAdapter(itemsAdapter, LinearLayoutManager(InstrumentationRegistry.getInstrumentation().targetContext))
+        itemsAdapter.rewardsItems(listOf(RewardsItemFactory.rewardsItem()))
+        stepper.inputs.setInitialValue(0)
+        stepper.inputs.setMinimum(0)
+        stepper.inputs.setMaximum(10)
+
+        compareScreenshot(addonCard)
+    }
+
+    @Test
+    fun backerLimitInvisible() {
+        addonCard = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+            R.layout.item_add_on_pledge, null) as CardView)
+            .findViewById(R.id.add_on_card)
+
+        stepper = addonCard.findViewById(R.id.add_on_stepper) as Stepper
+
+        addonCard.setAddonDescriptionVisibility(true)
+        addonCard.setAddOnDescription("Description")
+        addonCard.setAddOnItemLayoutVisibility(true)
+        addonCard.setDividerVisibility(true)
+        addonCard.setAddOnTitleText("Title Text")
+        addonCard.setAddOnMinimumText("5")
+        addonCard.setAddonConversionVisibility(true)
+        addonCard.setAddonConversionText("Conversion")
+        addonCard.setBackerLimitPillVisibility(false)
+        addonCard.setBackerLimitText("Backer limit")
+        addonCard.setAddonQuantityRemainingPillVisibility(true)
+        addonCard.setAddonQuantityRemainingText("Quantity remaining")
+        addonCard.setTimeLeftVisibility(true)
+        addonCard.setTimeLeftText("Time left")
+        addonCard.setShippingAmountText("Shipping amount")
+        addonCard.setShippingAmountVisibility(true)
+        addonCard.setUpItemsAdapter(itemsAdapter, LinearLayoutManager(InstrumentationRegistry.getInstrumentation().targetContext))
+        itemsAdapter.rewardsItems(listOf(RewardsItemFactory.rewardsItem()))
+        stepper.inputs.setInitialValue(0)
+        stepper.inputs.setMinimum(0)
+        stepper.inputs.setMaximum(10)
+
+        compareScreenshot(addonCard)
+    }
+
+    @Test
+    fun quantityRemainingInvisible() {
+        addonCard = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+            R.layout.item_add_on_pledge, null) as CardView)
+            .findViewById(R.id.add_on_card)
+
+        stepper = addonCard.findViewById(R.id.add_on_stepper) as Stepper
+
+        addonCard.setAddonDescriptionVisibility(true)
+        addonCard.setAddOnDescription("Description")
+        addonCard.setAddOnItemLayoutVisibility(true)
+        addonCard.setDividerVisibility(true)
+        addonCard.setAddOnTitleText("Title Text")
+        addonCard.setAddOnMinimumText("5")
+        addonCard.setAddonConversionVisibility(true)
+        addonCard.setAddonConversionText("Conversion")
+        addonCard.setBackerLimitPillVisibility(true)
+        addonCard.setBackerLimitText("Backer limit")
+        addonCard.setAddonQuantityRemainingPillVisibility(false)
+        addonCard.setAddonQuantityRemainingText("Quantity remaining")
+        addonCard.setTimeLeftVisibility(true)
+        addonCard.setTimeLeftText("Time left")
+        addonCard.setShippingAmountText("Shipping amount")
+        addonCard.setShippingAmountVisibility(true)
+        addonCard.setUpItemsAdapter(itemsAdapter, LinearLayoutManager(InstrumentationRegistry.getInstrumentation().targetContext))
+        itemsAdapter.rewardsItems(listOf(RewardsItemFactory.rewardsItem()))
+        stepper.inputs.setInitialValue(0)
+        stepper.inputs.setMinimum(0)
+        stepper.inputs.setMaximum(10)
+
+        compareScreenshot(addonCard)
+    }
+
+    @Test
+    fun timeLeftInvisible() {
+        addonCard = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+            R.layout.item_add_on_pledge, null) as CardView)
+            .findViewById(R.id.add_on_card)
+
+        stepper = addonCard.findViewById(R.id.add_on_stepper) as Stepper
+
+        addonCard.setAddonDescriptionVisibility(true)
+        addonCard.setAddOnDescription("Description")
+        addonCard.setAddOnItemLayoutVisibility(true)
+        addonCard.setDividerVisibility(true)
+        addonCard.setAddOnTitleText("Title Text")
+        addonCard.setAddOnMinimumText("5")
+        addonCard.setAddonConversionVisibility(true)
+        addonCard.setAddonConversionText("Conversion")
+        addonCard.setBackerLimitPillVisibility(true)
+        addonCard.setBackerLimitText("Backer limit")
+        addonCard.setAddonQuantityRemainingPillVisibility(true)
+        addonCard.setAddonQuantityRemainingText("Quantity remaining")
+        addonCard.setTimeLeftVisibility(false)
+        addonCard.setTimeLeftText("Time left")
+        addonCard.setShippingAmountText("Shipping amount")
+        addonCard.setShippingAmountVisibility(true)
+        addonCard.setUpItemsAdapter(itemsAdapter, LinearLayoutManager(InstrumentationRegistry.getInstrumentation().targetContext))
+        itemsAdapter.rewardsItems(listOf(RewardsItemFactory.rewardsItem()))
+        stepper.inputs.setInitialValue(0)
+        stepper.inputs.setMinimum(0)
+        stepper.inputs.setMaximum(10)
+
+        compareScreenshot(addonCard)
+    }
+
+    @Test
+    fun shippingAmountInvisible() {
+        addonCard = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+            R.layout.item_add_on_pledge, null) as CardView)
+            .findViewById(R.id.add_on_card)
+
+        stepper = addonCard.findViewById(R.id.add_on_stepper) as Stepper
+
+        addonCard.setAddonDescriptionVisibility(true)
+        addonCard.setAddOnDescription("Description")
+        addonCard.setAddOnItemLayoutVisibility(true)
+        addonCard.setDividerVisibility(true)
+        addonCard.setAddOnTitleText("Title Text")
+        addonCard.setAddOnMinimumText("5")
+        addonCard.setAddonConversionVisibility(true)
+        addonCard.setAddonConversionText("Conversion")
+        addonCard.setBackerLimitPillVisibility(true)
+        addonCard.setBackerLimitText("Backer limit")
+        addonCard.setAddonQuantityRemainingPillVisibility(true)
+        addonCard.setAddonQuantityRemainingText("Quantity remaining")
+        addonCard.setTimeLeftVisibility(true)
+        addonCard.setTimeLeftText("Time left")
+        addonCard.setShippingAmountText("Shipping amount")
+        addonCard.setShippingAmountVisibility(false)
+        addonCard.setUpItemsAdapter(itemsAdapter, LinearLayoutManager(InstrumentationRegistry.getInstrumentation().targetContext))
+        itemsAdapter.rewardsItems(listOf(RewardsItemFactory.rewardsItem()))
+        stepper.inputs.setInitialValue(0)
+        stepper.inputs.setMinimum(0)
+        stepper.inputs.setMaximum(10)
+
+        compareScreenshot(addonCard)
+    }
+
+    @Test
+    fun stepperVisible() {
         addonCard = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
             R.layout.item_add_on_pledge, null) as CardView)
             .findViewById(R.id.add_on_card)
@@ -147,6 +317,41 @@ class AddonCardShotTest : ScreenshotTest {
         addonCard.setTimeLeftText("Time left")
         addonCard.setShippingAmountText("Shipping amount")
         addonCard.setShippingAmountVisibility(true)
+        addonCard.setUpItemsAdapter(itemsAdapter, LinearLayoutManager(InstrumentationRegistry.getInstrumentation().targetContext))
+        itemsAdapter.rewardsItems(listOf(RewardsItemFactory.rewardsItem()))
+        stepper.inputs.setInitialValue(1)
+        stepper.inputs.setMinimum(0)
+        stepper.inputs.setMaximum(10)
+
+        compareScreenshot(addonCard)
+    }
+
+    @Test
+    fun itemListInvisible() {
+        addonCard = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+            R.layout.item_add_on_pledge, null) as CardView)
+            .findViewById(R.id.add_on_card)
+
+        stepper = addonCard.findViewById(R.id.add_on_stepper) as Stepper
+
+        addonCard.setAddonDescriptionVisibility(true)
+        addonCard.setAddOnDescription("Description")
+        addonCard.setAddOnItemLayoutVisibility(true)
+        addonCard.setDividerVisibility(true)
+        addonCard.setAddOnTitleText("Title Text")
+        addonCard.setAddOnMinimumText("5")
+        addonCard.setAddonConversionVisibility(true)
+        addonCard.setAddonConversionText("Conversion")
+        addonCard.setBackerLimitPillVisibility(true)
+        addonCard.setBackerLimitText("Backer limit")
+        addonCard.setAddonQuantityRemainingPillVisibility(true)
+        addonCard.setAddonQuantityRemainingText("Quantity remaining")
+        addonCard.setTimeLeftVisibility(true)
+        addonCard.setTimeLeftText("Time left")
+        addonCard.setShippingAmountText("Shipping amount")
+        addonCard.setShippingAmountVisibility(true)
+        addonCard.setUpItemsAdapter(itemsAdapter, LinearLayoutManager(InstrumentationRegistry.getInstrumentation().targetContext))
+        itemsAdapter.rewardsItems(emptyList())
         stepper.inputs.setInitialValue(0)
         stepper.inputs.setMinimum(0)
         stepper.inputs.setMaximum(10)

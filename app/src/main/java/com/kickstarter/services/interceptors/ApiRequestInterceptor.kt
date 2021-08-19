@@ -7,7 +7,6 @@ import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.perimeterx.PerimeterXClientType
 import com.kickstarter.libs.utils.WebUtils.userAgent
 import com.kickstarter.libs.utils.extensions.isApiUri
-
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Builder
 import okhttp3.Interceptor

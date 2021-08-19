@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.4.20'
+    ext.kotlin_version = '1.5.21'
     ext.jacoco_version = '0.8.5'
 
     repositories {
@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.2'
+        classpath 'com.android.tools.build:gradle:7.0.0'
         classpath 'com.google.gms:google-services:4.3.5'
         classpath "org.jacoco:org.jacoco.core:$jacoco_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -21,20 +21,16 @@ allprojects {
         google()
         mavenCentral()
         maven { url 'https://s3-us-west-2.amazonaws.com/si-mobile-sdks/android/' }
-        maven { url 'http://appboy.github.io/appboy-android-sdk/sdk' }
-        maven { url 'http://appboy.github.io/appboy-segment-android/sdk' }
+        maven {
+            url 'http://appboy.github.io/appboy-android-sdk/sdk'
+            allowInsecureProtocol = true
+        }
+        maven {
+            url 'http://appboy.github.io/appboy-segment-android/sdk'
+            allowInsecureProtocol = true
+        }
         maven { url 'https://perimeterx.jfrog.io/artifactory/px-Android-SDK/' }
     }
 }
 
 project.ext.preDexLibs = !project.hasProperty('disablePreDex')
-
-subprojects {
-    project.plugins.whenPluginAdded { plugin ->
-        if ("com.android.build.gradle.AppPlugin" == plugin.class.name) {
-            project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
-        } else if ("com.android.build.gradle.LibraryPlugin" == plugin.class.name) {
-            project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
-        }
-    }
-}

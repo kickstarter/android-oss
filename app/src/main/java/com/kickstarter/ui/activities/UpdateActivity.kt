@@ -64,13 +64,6 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
                 openProjectExternally(projectUrl)
             }
 
-        viewModel.outputs.startCommentsActivity()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
-            .subscribe { update ->
-                startCommentsActivity(update)
-            }
-
         viewModel.outputs.startRootCommentsActivity()
             .compose(bindToLifecycle())
             .compose(observeForUI())
@@ -145,12 +138,6 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
 
     private fun openProjectExternally(projectUrl: String) {
         ApplicationUtils.openUrlExternally(this, projectUrl)
-    }
-
-    private fun startCommentsActivity(update: Update) {
-        val intent = Intent(this, DeprecatedCommentsActivity::class.java)
-            .putExtra(IntentKey.UPDATE, update)
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun startRootCommentsActivity(update: Update) {

@@ -7,7 +7,6 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.UrlUtils;
@@ -53,9 +52,6 @@ public interface UpdateViewModel {
 
     /** Emits when we should start the share intent to show the share sheet. */
     Observable<Pair<Update, String>> startShareIntent();
-
-    /** Emits an update to start the comments activity with. */
-    Observable<Update> startCommentsActivity();
 
     /** Emits an update to start the comments activity with. */
     Observable<Update> startRootCommentsActivity();
@@ -114,13 +110,6 @@ public interface UpdateViewModel {
         .subscribe(this.startShareIntent::onNext);
 
       currentUpdate
-        .filter(__ -> !this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_THREADING))
-        .compose(takeWhen(this.goToCommentsRequest))
-        .compose(bindToLifecycle())
-        .subscribe(this.startCommentsActivity::onNext);
-
-      currentUpdate
-        .filter(__ -> this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.COMMENT_THREADING))
         .compose(takeWhen(this.goToCommentsRequest))
         .compose(bindToLifecycle())
         .subscribe(this.startRootCommentsActivity::onNext);
@@ -200,9 +189,6 @@ public interface UpdateViewModel {
     }
     @Override public Observable<Pair<Update, String>> startShareIntent() {
       return this.startShareIntent;
-    }
-    @Override public @NonNull Observable<Update> startCommentsActivity() {
-      return this.startCommentsActivity;
     }
     @Override public @NonNull Observable<Update> startRootCommentsActivity() {
       return this.startRootCommentsActivity;

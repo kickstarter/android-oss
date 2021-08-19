@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import com.kickstarter.libs.Config;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
-import com.kickstarter.models.DeprecatedComment;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
@@ -16,7 +15,6 @@ import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
-import com.kickstarter.services.apiresponses.DeprecatedCommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.EmailVerificationEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
@@ -69,12 +67,6 @@ public interface ApiClientType {
 
   @NonNull Observable<Backing> fetchProjectBacking(final @NonNull Project project, final @NonNull User user);
 
-  @NonNull Observable<DeprecatedCommentsEnvelope> fetchComments(final @NonNull Project project);
-
-  @NonNull Observable<DeprecatedCommentsEnvelope> fetchComments(final @NonNull String paginationPath);
-
-  @NonNull Observable<DeprecatedCommentsEnvelope> fetchComments(final @NonNull Update update);
-
   @NonNull Observable<MessageThreadEnvelope> fetchMessagesForBacking(final @NonNull Backing backing);
 
   @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull MessageThread messageThread);
@@ -106,10 +98,6 @@ public interface ApiClientType {
   @NonNull Observable<MessageThread> markAsRead(final @NonNull MessageThread messageThread);
 
   @NonNull Observable<Backing> postBacking(final @NonNull Project project, final @NonNull Backing backing, final boolean checked);
-
-  @NonNull Observable<DeprecatedComment> postComment(final @NonNull Project project, final @NonNull String body);
-
-  @NonNull Observable<DeprecatedComment> postComment(final @NonNull Update update, final @NonNull String body);
 
   @NonNull Observable<JsonObject> registerPushToken(final @NonNull String token);
 

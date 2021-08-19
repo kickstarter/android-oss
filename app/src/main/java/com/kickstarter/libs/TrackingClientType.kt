@@ -43,12 +43,6 @@ abstract class TrackingClientType {
     abstract fun reset()
 
     /**
-     * Will determine if a concrete TrackingClient
-     * is enabled to send data
-     */
-    abstract fun isEnabled(): Boolean
-
-    /**
      * Will call initialize for the clients, method useful
      * if the initialization needs to be tied to some concrete moment
      * on the Application lifecycle and not by the Dagger injection

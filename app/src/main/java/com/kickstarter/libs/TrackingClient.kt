@@ -12,11 +12,9 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.kickstarter.BuildConfig
 import com.kickstarter.R
 import com.kickstarter.libs.qualifiers.ApplicationContext
-import com.kickstarter.libs.utils.ConfigFeatureFlagName.SEGMENT_ENABLED
 import com.kickstarter.libs.utils.WebUtils
 import com.kickstarter.libs.utils.extensions.currentVariants
 import com.kickstarter.libs.utils.extensions.enabledFeatureFlags
-import com.kickstarter.libs.utils.extensions.isFeatureFlagEnabled
 import com.kickstarter.models.User
 import org.json.JSONArray
 import org.json.JSONException
@@ -32,44 +30,40 @@ abstract class TrackingClient(
 ) : TrackingClientType() {
 
     override val isGooglePlayServicesAvailable: Boolean
-        get() = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this.context) == ConnectionResult.SUCCESS
+        get() = GoogleApiAvailability.getInstance()
+            .isGooglePlayServicesAvailable(this.context) == ConnectionResult.SUCCESS
 
     override val isTalkBackOn: Boolean
         get() {
-            val am = this.context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
+            val am =
+                this.context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
             return am?.isTouchExplorationEnabled ?: false
         }
 
     override fun track(eventName: String, additionalProperties: Map<String, Any>) {
-        if (isEnabled()) {
-            try {
-                trackingData(eventName, combinedProperties(additionalProperties))
+        try {
+            trackingData(eventName, combinedProperties(additionalProperties))
 
-                if (this.build.isDebug) {
-                    val dataForLogs = combinedProperties(additionalProperties).toString()
-                    Timber.d("Queued ${type().tag} $eventName event: $dataForLogs")
-                }
-            } catch (e: JSONException) {
-                if (this.build.isDebug) {
-                    Timber.e("Failed to encode ${type().tag} event: $eventName")
-                }
-                FirebaseCrashlytics.getInstance().log("E/${TrackingClient::class.java.simpleName}: Failed to encode ${type().tag} event: $eventName")
+            if (this.build.isDebug) {
+                val dataForLogs = combinedProperties(additionalProperties).toString()
+                Timber.d("Queued ${type().tag} $eventName event: $dataForLogs")
             }
+        } catch (e: JSONException) {
+            if (this.build.isDebug) {
+                Timber.e("Failed to encode ${type().tag} event: $eventName")
+            }
+            FirebaseCrashlytics.getInstance()
+                .log("E/${TrackingClient::class.java.simpleName}: Failed to encode ${type().tag} event: $eventName")
         }
-    }
 
-    override fun isEnabled(): Boolean {
-        return if (type() == Type.SEGMENT) {
-            this.config?.isFeatureFlagEnabled(SEGMENT_ENABLED.featureFlag) ?: false
-        } else true
     }
 
     override fun reset() {
-        if (isEnabled()) this.loggedInUser = null
+        this.loggedInUser = null
     }
 
     override fun identify(user: User) {
-        if (isEnabled()) this.loggedInUser = user
+        this.loggedInUser = user
     }
 
     override fun optimizely(): ExperimentsClientType = this.optimizely
@@ -127,7 +121,8 @@ abstract class TrackingClient(
 
     override fun userAgent(): String = WebUtils.userAgent(this.build)
 
-    override fun userCountry(user: User): String = user.location()?.country() ?: this.config?.countryCode() ?: ""
+    override fun userCountry(user: User): String =
+        user.location()?.country() ?: this.config?.countryCode() ?: ""
 
     override fun sessionCountry(): String = this.config?.countryCode() ?: ""
 

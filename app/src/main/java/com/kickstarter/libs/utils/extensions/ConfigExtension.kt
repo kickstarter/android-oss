@@ -67,10 +67,6 @@ fun Config.syncUserFeatureFlagsFromPref(featuresFlagPreference: StringPreference
     val featuresFlagsMap = Gson().fromJson<Map<String?, Boolean?>>(
         featuresFlagPreference.get(), object : TypeToken<HashMap<String?, Boolean?>>() {}.type
     )
-
-    featuresFlagsMap[ConfigFeatureFlagName.SEGMENT_ENABLED.featureFlag]?.let {
-        this.features()?.put(ConfigFeatureFlagName.SEGMENT_ENABLED.featureFlag, it)
-    }
 }
 
 /**

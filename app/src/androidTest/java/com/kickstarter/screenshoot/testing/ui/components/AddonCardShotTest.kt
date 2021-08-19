@@ -32,8 +32,11 @@ class AddonCardShotTest : ScreenshotTest {
 
     @Test
     fun allViewsVisible() {
-        addonCard = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
-            R.layout.item_add_on_pledge, null) as CardView)
+        addonCard = (
+            LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+                R.layout.item_add_on_pledge, null
+            ) as CardView
+            )
             .findViewById(R.id.add_on_card)
 
         stepper = addonCard.findViewById(R.id.add_on_stepper) as Stepper
@@ -65,8 +68,11 @@ class AddonCardShotTest : ScreenshotTest {
 
     @Test
     fun descriptionInvisible() {
-        addonCard = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
-            R.layout.item_add_on_pledge, null) as CardView)
+        addonCard = (
+            LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+                R.layout.item_add_on_pledge, null
+            ) as CardView
+            )
             .findViewById(R.id.add_on_card)
 
         stepper = addonCard.findViewById(R.id.add_on_stepper) as Stepper
@@ -97,8 +103,11 @@ class AddonCardShotTest : ScreenshotTest {
 
     @Test
     fun dividerInvisible() {
-        addonCard = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
-            R.layout.item_add_on_pledge, null) as CardView)
+        addonCard = (
+            LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+                R.layout.item_add_on_pledge, null
+            ) as CardView
+            )
             .findViewById(R.id.add_on_card)
 
         stepper = addonCard.findViewById(R.id.add_on_stepper) as Stepper
@@ -130,8 +139,11 @@ class AddonCardShotTest : ScreenshotTest {
 
     @Test
     fun conversionInvisible() {
-        addonCard = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
-            R.layout.item_add_on_pledge, null) as CardView)
+        addonCard = (
+            LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+                R.layout.item_add_on_pledge, null
+            ) as CardView
+            )
             .findViewById(R.id.add_on_card)
 
         stepper = addonCard.findViewById(R.id.add_on_stepper) as Stepper
@@ -163,8 +175,11 @@ class AddonCardShotTest : ScreenshotTest {
 
     @Test
     fun backerLimitInvisible() {
-        addonCard = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
-            R.layout.item_add_on_pledge, null) as CardView)
+        addonCard = (
+            LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+                R.layout.item_add_on_pledge, null
+            ) as CardView
+            )
             .findViewById(R.id.add_on_card)
 
         stepper = addonCard.findViewById(R.id.add_on_stepper) as Stepper
@@ -196,8 +211,11 @@ class AddonCardShotTest : ScreenshotTest {
 
     @Test
     fun quantityRemainingInvisible() {
-        addonCard = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
-            R.layout.item_add_on_pledge, null) as CardView)
+        addonCard = (
+            LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+                R.layout.item_add_on_pledge, null
+            ) as CardView
+            )
             .findViewById(R.id.add_on_card)
 
         stepper = addonCard.findViewById(R.id.add_on_stepper) as Stepper
@@ -229,8 +247,11 @@ class AddonCardShotTest : ScreenshotTest {
 
     @Test
     fun timeLeftInvisible() {
-        addonCard = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
-            R.layout.item_add_on_pledge, null) as CardView)
+        addonCard = (
+            LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+                R.layout.item_add_on_pledge, null
+            ) as CardView
+            )
             .findViewById(R.id.add_on_card)
 
         stepper = addonCard.findViewById(R.id.add_on_stepper) as Stepper
@@ -262,8 +283,11 @@ class AddonCardShotTest : ScreenshotTest {
 
     @Test
     fun shippingAmountInvisible() {
-        addonCard = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
-            R.layout.item_add_on_pledge, null) as CardView)
+        addonCard = (
+            LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+                R.layout.item_add_on_pledge, null
+            ) as CardView
+            )
             .findViewById(R.id.add_on_card)
 
         stepper = addonCard.findViewById(R.id.add_on_stepper) as Stepper
@@ -295,8 +319,11 @@ class AddonCardShotTest : ScreenshotTest {
 
     @Test
     fun stepperVisible() {
-        addonCard = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
-            R.layout.item_add_on_pledge, null) as CardView)
+        addonCard = (
+            LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+                R.layout.item_add_on_pledge, null
+            ) as CardView
+            )
             .findViewById(R.id.add_on_card)
 
         stepper = addonCard.findViewById(R.id.add_on_stepper) as Stepper
@@ -328,8 +355,11 @@ class AddonCardShotTest : ScreenshotTest {
 
     @Test
     fun itemListInvisible() {
-        addonCard = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
-            R.layout.item_add_on_pledge, null) as CardView)
+        addonCard = (
+            LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+                R.layout.item_add_on_pledge, null
+            ) as CardView
+            )
             .findViewById(R.id.add_on_card)
 
         stepper = addonCard.findViewById(R.id.add_on_stepper) as Stepper

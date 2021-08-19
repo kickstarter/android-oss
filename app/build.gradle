@@ -67,7 +67,6 @@ android.applicationVariants.all { variant ->
                          '**/*Module_*Factory.class',
                          '**/KSApplication.*',
                          '**/ApplicationModule.*',
-                         '**/libs/*.*',
                          '**/*Activity*.*',
                          '**/*Fragment*.*',
                          '**/*ViewHolder*.*',
@@ -117,8 +116,8 @@ android {
 
         // Enable Multidex to support over 65K methods
         multiDexEnabled true
-        resConfigs 'de', 'es', 'en', 'fr', 'ja'
 
+        resConfigs "de", "es", "en", "fr", "ja"
 
         def fabricProps = new Properties()
         file("fabric.properties").withInputStream { fabricProps.load(it) }

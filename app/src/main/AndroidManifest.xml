@@ -43,6 +43,7 @@
         <activity
             android:name=".ui.activities.ChangeEmailActivity"
             android:theme="@style/SettingsActivity" />
+        <activity android:name=".ui.activities.CreatorBioActivity" />
         <activity
             android:name=".ui.activities.ChangePasswordActivity"
             android:theme="@style/SettingsActivity" />
@@ -55,11 +56,6 @@
         <activity
             android:name=".ui.activities.EditProfileActivity"
             android:theme="@style/SettingsActivity" />
-        <activity
-            android:name=".ui.activities.DeprecatedCommentsActivity"
-            android:parentActivityName=".ui.activities.ProjectActivity"
-            android:theme="@style/WhiteActivity" />
-        <activity android:name=".ui.activities.CreatorBioActivity" />
         <activity
             android:name=".ui.activities.CreatePasswordActivity"
             android:theme="@style/SettingsActivity" />

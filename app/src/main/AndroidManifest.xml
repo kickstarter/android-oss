@@ -70,6 +70,7 @@
         <activity
             android:name=".ui.activities.DiscoveryActivity"
             android:label="@string/app_name"
+            android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/DiscoveryActivity">
             <intent-filter android:autoVerify="true">
@@ -188,6 +189,7 @@
             android:name=".ui.activities.ProjectActivity"
             android:parentActivityName=".ui.activities.DiscoveryActivity"
             android:theme="@style/ProjectActivity"
+            android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -260,7 +262,10 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activities.DeepLinkActivity" android:theme="@style/Theme.AppCompat.Translucent">
+        <activity
+            android:name=".ui.activities.DeepLinkActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 

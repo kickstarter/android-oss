@@ -107,7 +107,6 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
         this.vm.outputs.projectData().map { pD -> pD.project().isStarred }.subscribe(this.savedTest)
         this.vm.outputs.startCampaignWebViewActivity().subscribe(this.startCampaignWebViewActivity)
-        this.vm.outputs.startCommentsActivity().subscribe(this.startCommentsActivity)
         this.vm.outputs.startRootCommentsActivity().subscribe(this.startRootCommentsActivityivity)
         this.vm.outputs.startCreatorBioWebViewActivity().subscribe(this.startCreatorBioWebViewActivity)
         this.vm.outputs.startCreatorDashboardActivity().subscribe(this.startCreatorDashboardActivity)
@@ -578,83 +577,18 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testStartCommentsActivity_FeatureFlagOff() {
+    fun testStartCommentsActivity() {
         val project = ProjectFactory.project()
         val projectData = ProjectDataFactory.project(project)
         val projectAndData = Pair.create(project, projectData)
 
-        setUpEnvironment(
-            environment().toBuilder()
-                .optimizely(MockExperimentsClientType(false))
-                .build()
-        )
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.vm.inputs.commentsTextViewClicked()
-        this.startCommentsActivity.assertValues(projectAndData)
-        this.startRootCommentsActivityivity.assertNoValues()
-    }
-
-    @Test
-    fun testStartCommentsActivity_FeatureFlagOn() {
-        val project = ProjectFactory.project()
-        val projectData = ProjectDataFactory.project(project)
-        val projectAndData = Pair.create(project, projectData)
-
-        setUpEnvironment(
-            environment().toBuilder()
-                .optimizely(MockExperimentsClientType(true))
-                .build()
-        )
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.vm.inputs.commentsTextViewClicked()
-        this.startCommentsActivity.assertNoValues()
-        this.startRootCommentsActivityivity.assertValues(projectAndData)
-    }
-
-    @Test
-    fun testStartCommentsThreadedActivity_FeatureFlagOn() {
-        val project = ProjectFactory.project()
-        val projectData = ProjectDataFactory.project(project)
-        val projectAndData = Pair.create(project, projectData)
-
-        setUpEnvironment(
-            environment().toBuilder()
-                .optimizely(MockExperimentsClientType(true))
-                .build()
-        )
+        setUpEnvironment(environment())
 
         // Start the view model with a project.
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
         this.vm.inputs.commentsTextViewClicked()
         this.startRootCommentsActivityivity.assertValues(projectAndData)
-        this.startCommentsActivity.assertNoValues()
-    }
-
-    @Test
-    fun testStartCommentsThreadedActivity_FeatureFlagOff() {
-        val project = ProjectFactory.project()
-        val projectData = ProjectDataFactory.project(project)
-        val projectAndData = Pair.create(project, projectData)
-
-        setUpEnvironment(
-            environment().toBuilder()
-                .optimizely(MockExperimentsClientType(false))
-                .build()
-        )
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.vm.inputs.commentsTextViewClicked()
-        this.startRootCommentsActivityivity.assertNoValues()
-        this.startCommentsActivity.assertValues(projectAndData)
     }
 
     @Test

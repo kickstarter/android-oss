@@ -43,6 +43,7 @@
         <activity
             android:name=".ui.activities.ChangeEmailActivity"
             android:theme="@style/SettingsActivity" />
+        <activity android:name=".ui.activities.CreatorBioActivity" />
         <activity
             android:name=".ui.activities.ChangePasswordActivity"
             android:theme="@style/SettingsActivity" />

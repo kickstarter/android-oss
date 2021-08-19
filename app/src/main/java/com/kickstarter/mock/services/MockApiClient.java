@@ -8,8 +8,6 @@ import com.kickstarter.mock.factories.ActivityEnvelopeFactory;
 import com.kickstarter.mock.factories.ActivityFactory;
 import com.kickstarter.mock.factories.BackingFactory;
 import com.kickstarter.mock.factories.CategoryFactory;
-import com.kickstarter.mock.factories.DeprecatedCommentFactory;
-import com.kickstarter.mock.factories.DeprecatedCommentsEnvelopeFactory;
 import com.kickstarter.mock.factories.LocationFactory;
 import com.kickstarter.mock.factories.MessageThreadEnvelopeFactory;
 import com.kickstarter.mock.factories.MessageThreadsEnvelopeFactory;
@@ -20,7 +18,6 @@ import com.kickstarter.mock.factories.UpdateFactory;
 import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
-import com.kickstarter.models.DeprecatedComment;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
@@ -34,7 +31,6 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
-import com.kickstarter.services.apiresponses.DeprecatedCommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.EmailVerificationEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
@@ -174,21 +170,6 @@ public class MockApiClient implements ApiClientType {
   @Override
   public @NonNull Observable<ProjectStatsEnvelope> fetchProjectStats(final @NonNull Project project) {
     return Observable.empty();
-  }
-
-  @Override
-  public @NonNull Observable<DeprecatedCommentsEnvelope> fetchComments(final @NonNull Project project) {
-    return Observable.just(DeprecatedCommentsEnvelopeFactory.commentsEnvelope());
-  }
-
-  @Override
-  public @NonNull Observable<DeprecatedCommentsEnvelope> fetchComments(final @NonNull Update update) {
-    return Observable.just(DeprecatedCommentsEnvelopeFactory.commentsEnvelope());
-  }
-
-  @Override
-  public @NonNull Observable<DeprecatedCommentsEnvelope> fetchComments(final @NonNull String paginationPath) {
-    return Observable.just(DeprecatedCommentsEnvelopeFactory.commentsEnvelope());
   }
 
   @Override
@@ -365,16 +346,6 @@ public class MockApiClient implements ApiClientType {
   @Override
   public @NonNull Observable<Backing> postBacking(final @NonNull Project project, final @NonNull Backing backing, final boolean checked) {
     return Observable.just(BackingFactory.backing());
-  }
-
-  @Override
-  public @NonNull Observable<DeprecatedComment> postComment(final @NonNull Project project, final @NonNull String body) {
-    return Observable.just(DeprecatedCommentFactory.comment().toBuilder().body(body).build());
-  }
-
-  @Override
-  public @NonNull Observable<DeprecatedComment> postComment(final @NonNull Update update, final @NonNull String body) {
-    return Observable.just(DeprecatedCommentFactory.comment().toBuilder().body(body).build());
   }
 
   @Override

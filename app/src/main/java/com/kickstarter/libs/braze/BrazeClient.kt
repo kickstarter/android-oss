@@ -6,9 +6,9 @@ import android.util.Log
 import com.appboy.Appboy
 import com.appboy.AppboyFirebaseMessagingService
 import com.appboy.AppboyLifecycleCallbackListener
-import com.appboy.configuration.AppboyConfig
 import com.appboy.support.AppboyLogger
 import com.appboy.ui.inappmessage.AppboyInAppMessageManager
+import com.braze.configuration.BrazeConfig
 import com.google.firebase.messaging.RemoteMessage
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
@@ -83,9 +83,13 @@ open class BrazeClient(
     override val isInitialized: Boolean
         get() = initialized
 
+    init {
+        init()
+    }
+
     override fun init() {
         if (isSDKEnabled() && !this.initialized) {
-            val appBoyConfig = AppboyConfig.Builder()
+            val appBoyConfig = BrazeConfig.Builder()
                 .setIsFirebaseCloudMessagingRegistrationEnabled(true)
                 .setFirebaseCloudMessagingSenderIdKey(getIdSender())
                 // .setDefaultNotificationChannelName("General") --> TODO: Define notification channels for the new push notifications types

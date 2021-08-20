@@ -10,10 +10,10 @@ import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.UrlUtils;
+import com.kickstarter.libs.utils.extensions.UriExt;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.services.ApiClientType;
-import com.kickstarter.services.KSUri;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.UpdateActivity;
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper;
@@ -121,15 +121,15 @@ public interface UpdateViewModel {
 
       this.goToProjectRequest
         .map(request -> Uri.parse(request.url().uri().toString()))
-        .filter(uri -> KSUri.isProjectUri(uri, Secrets.WebEndpoint.PRODUCTION))
-        .filter(uri -> !KSUri.isProjectPreviewUri(uri, Secrets.WebEndpoint.PRODUCTION))
+        .filter(uri -> UriExt.isProjectUri(uri, Secrets.WebEndpoint.PRODUCTION))
+        .filter(uri -> !UriExt.isProjectPreviewUri(uri, Secrets.WebEndpoint.PRODUCTION))
         .compose(bindToLifecycle())
         .subscribe(uri -> this.startProjectActivity.onNext(Pair.create(uri, RefTag.update())));
 
       this.goToProjectRequest
         .map(request -> Uri.parse(request.url().uri().toString()))
-        .filter(uri -> KSUri.isProjectUri(uri, Secrets.WebEndpoint.PRODUCTION))
-        .filter(uri -> KSUri.isProjectPreviewUri(uri, Secrets.WebEndpoint.PRODUCTION))
+        .filter(uri -> UriExt.isProjectUri(uri, Secrets.WebEndpoint.PRODUCTION))
+        .filter(uri -> UriExt.isProjectPreviewUri(uri, Secrets.WebEndpoint.PRODUCTION))
         .map(Uri::toString)
         .map(uriString -> UrlUtils.INSTANCE.refTag(uriString) == null
           ? UrlUtils.INSTANCE.appendRefTag(uriString, RefTag.update().tag())

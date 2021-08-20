@@ -7,8 +7,10 @@ import com.kickstarter.libs.InternalToolsType
 import com.kickstarter.libs.perimeterx.PerimeterXClientType
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.WebUtils.userAgent
+import com.kickstarter.libs.utils.extensions.isHivequeenUri
+import com.kickstarter.libs.utils.extensions.isStagingUri
+import com.kickstarter.libs.utils.extensions.isWebUri
 import com.kickstarter.models.User
-import com.kickstarter.services.KSUri
 import okhttp3.Credentials
 import okhttp3.Interceptor
 import okhttp3.Interceptor.Chain
@@ -71,13 +73,13 @@ class WebRequestInterceptor(
         return requestBuilder.build()
     }
 
-    private fun shouldIntercept(request: Request) = KSUri.isWebUri(Uri.parse(request.url.toString()), endpoint)
+    private fun shouldIntercept(request: Request) = Uri.parse(request.url.toString()).isWebUri(endpoint)
 
     private fun shouldAddBasicAuthorizationHeader(request: Request) =
         if (loggedInUser == null) {
-            KSUri.isHivequeenUri(Uri.parse(request.url.toString()), endpoint)
+            Uri.parse(request.url.toString()).isHivequeenUri(endpoint)
         } else false
 
     private fun isStaging(request: Request): Boolean =
-        KSUri.isStagingUri(Uri.parse(request.url.toString()), endpoint)
+        Uri.parse(request.url.toString()).isStagingUri(endpoint)
 }

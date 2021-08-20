@@ -15,8 +15,10 @@ import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.extensions.isProjectUpdateCommentsUri
+import com.kickstarter.libs.utils.extensions.isProjectUpdateUri
+import com.kickstarter.libs.utils.extensions.isProjectUri
 import com.kickstarter.models.Update
-import com.kickstarter.services.KSUri
 import com.kickstarter.services.RequestHandler
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.views.KSWebView
@@ -39,17 +41,15 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
         binding.updateWebView.registerRequestHandlers(
             listOf(
                 RequestHandler({ uri: Uri?, webEndpoint: String ->
-                    KSUri.isProjectUpdateUri(uri?.let { it } ?: Uri.EMPTY, webEndpoint)
+                    (uri?.let { it } ?: Uri.EMPTY).isProjectUpdateUri(webEndpoint)
                 }) { request: Request, _ -> handleProjectUpdateUriRequest(request) },
                 RequestHandler({ uri: Uri?, webEndpoint: String ->
-                    KSUri.isProjectUpdateCommentsUri(
-                        uri?.let { it }
-                            ?: Uri.EMPTY,
+                    (uri?.let { it } ?: Uri.EMPTY).isProjectUpdateCommentsUri(
                         webEndpoint
                     )
                 }) { request: Request, _ -> handleProjectUpdateCommentsUriRequest(request) },
                 RequestHandler({ uri: Uri?, webEndpoint: String ->
-                    KSUri.isProjectUri(uri?.let { it } ?: Uri.EMPTY, webEndpoint)
+                    (uri?.let { it } ?: Uri.EMPTY).isProjectUri(webEndpoint)
                 }) { request: Request, webView: WebView -> handleProjectUriRequest(request, webView) }
             )
         )

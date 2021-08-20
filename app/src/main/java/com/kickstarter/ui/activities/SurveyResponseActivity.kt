@@ -10,7 +10,8 @@ import com.kickstarter.databinding.SurveyResponseLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.services.KSUri
+import com.kickstarter.libs.utils.extensions.isProjectSurveyUri
+import com.kickstarter.libs.utils.extensions.isProjectUri
 import com.kickstarter.services.RequestHandler
 import com.kickstarter.viewmodels.SurveyResponseViewModel
 import okhttp3.Request
@@ -39,12 +40,12 @@ class SurveyResponseActivity : BaseActivity<SurveyResponseViewModel.ViewModel>()
             Arrays.asList(
                 RequestHandler(
                     { uri: Uri, webEndpoint: String ->
-                        KSUri.isProjectSurveyUri(uri, webEndpoint)
+                        uri.isProjectSurveyUri(webEndpoint)
                     }) { request: Request, webView: WebView ->
                     handleProjectSurveyUriRequest(request, webView)
                 },
                 RequestHandler({ uri: Uri, webEndpoint: String ->
-                    KSUri.isProjectUri(uri, webEndpoint)
+                    uri.isProjectUri(webEndpoint)
                 }) { request: Request, webView: WebView ->
                     handleProjectUriRequest(request, webView)
                 }

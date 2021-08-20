@@ -13,9 +13,12 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.UrlUtils.appendRefTag
 import com.kickstarter.libs.utils.UrlUtils.refTag
+import com.kickstarter.libs.utils.extensions.isCheckoutUri
+import com.kickstarter.libs.utils.extensions.isProjectPreviewUri
+import com.kickstarter.libs.utils.extensions.isProjectUri
+import com.kickstarter.libs.utils.extensions.isSettingsUrl
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
-import com.kickstarter.services.KSUri
 import com.kickstarter.ui.activities.DeepLinkActivity
 import rx.Notification
 import rx.Observable
@@ -68,13 +71,13 @@ interface DeepLinkViewModel {
             uriFromIntent
                 .filter { ObjectUtils.isNotNull(it) }
                 .filter {
-                    KSUri.isProjectUri(it, Secrets.WebEndpoint.PRODUCTION)
+                    it.isProjectUri(Secrets.WebEndpoint.PRODUCTION)
                 }
                 .filter {
-                    !KSUri.isCheckoutUri(it, Secrets.WebEndpoint.PRODUCTION)
+                    !it.isCheckoutUri(Secrets.WebEndpoint.PRODUCTION)
                 }
                 .filter {
-                    !KSUri.isProjectPreviewUri(it, Secrets.WebEndpoint.PRODUCTION)
+                    !it.isProjectPreviewUri(Secrets.WebEndpoint.PRODUCTION)
                 }
                 .map { appendRefTagIfNone(it) }
                 .compose(bindToLifecycle())
@@ -84,7 +87,7 @@ interface DeepLinkViewModel {
 
             uriFromIntent
                 .filter { ObjectUtils.isNotNull(it) }
-                .map { KSUri.isSettingsUrl(it) }
+                .map { it.isSettingsUrl() }
                 .compose(bindToLifecycle())
                 .subscribe {
                     updateUserPreferences.onNext(it)
@@ -107,7 +110,7 @@ interface DeepLinkViewModel {
 
             uriFromIntent
                 .filter { ObjectUtils.isNotNull(it) }
-                .filter { KSUri.isCheckoutUri(it, Secrets.WebEndpoint.PRODUCTION) }
+                .filter { it.isCheckoutUri(Secrets.WebEndpoint.PRODUCTION) }
                 .map { appendRefTagIfNone(it) }
                 .compose(bindToLifecycle())
                 .subscribe {
@@ -116,13 +119,13 @@ interface DeepLinkViewModel {
 
             val projectPreview = uriFromIntent
                 .filter { ObjectUtils.isNotNull(it) }
-                .filter { KSUri.isProjectPreviewUri(it, Secrets.WebEndpoint.PRODUCTION) }
+                .filter { it.isProjectPreviewUri(Secrets.WebEndpoint.PRODUCTION) }
 
             val unsupportedDeepLink = uriFromIntent
                 .filter { !lastPathSegmentIsProjects(it) }
-                .filter { !KSUri.isSettingsUrl(it) }
-                .filter { !KSUri.isCheckoutUri(it, Secrets.WebEndpoint.PRODUCTION) }
-                .filter { !KSUri.isProjectUri(it, Secrets.WebEndpoint.PRODUCTION) }
+                .filter { !it.isSettingsUrl() }
+                .filter { !it.isCheckoutUri(Secrets.WebEndpoint.PRODUCTION) }
+                .filter { !it.isProjectUri(Secrets.WebEndpoint.PRODUCTION) }
 
             Observable.merge(projectPreview, unsupportedDeepLink)
                 .map { obj: Uri -> obj.toString() }

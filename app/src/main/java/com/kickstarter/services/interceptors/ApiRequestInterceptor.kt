@@ -6,7 +6,7 @@ import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.perimeterx.PerimeterXClientType
 import com.kickstarter.libs.utils.WebUtils.userAgent
-import com.kickstarter.services.KSUri
+import com.kickstarter.libs.utils.extensions.isApiUri
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Builder
 import okhttp3.Interceptor
@@ -61,6 +61,6 @@ class ApiRequestInterceptor(
     }
 
     private fun shouldIntercept(request: Request): Boolean {
-        return KSUri.isApiUri(Uri.parse(request.url.toString()), endpoint)
+        return Uri.parse(request.url.toString()).isApiUri(endpoint)
     }
 }

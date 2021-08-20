@@ -48,14 +48,9 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
         this.viewModel.outputs.description()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { binding.addOnCard.setAddOnDescription(it) }
-
-        this.viewModel.outputs.description()
-            .filter { it.isNullOrEmpty() }
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
             .subscribe {
-                binding.addOnCard.setAddonDescriptionVisibility(false)
+                binding.addOnCard.setAddOnDescription(it)
+                binding.addOnCard.setAddonDescriptionVisibility(!it.isNullOrEmpty())
             }
 
         this.viewModel.outputs.minimum()

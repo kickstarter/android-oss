@@ -31,7 +31,6 @@ interface FeatureFlagsViewModel {
 
         private val configFeatures = BehaviorSubject.create<List<FeatureFlagsModel>>()
         private val optimizelyFeatures = BehaviorSubject.create<List<FeatureFlagsModel>>()
-        private val updateSegmentFlag = BehaviorSubject.create<Pair<Boolean, StringPreferenceType?>>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -45,6 +44,15 @@ interface FeatureFlagsViewModel {
             currentConfig.subscribe { c ->
                 this.config = c
             }
+
+            currentConfig
+                .map { it.features() }
+                .map { it?.entries?.toList() ?: listOf<Map.Entry<String, Boolean>>() }
+                .map { it.filter { entry -> entry.key.startsWith("android_") } }
+                .map { it.sortedBy { entry -> entry.key } }
+                .map { it.map { entry -> FeatureFlagsModel(entry.key, entry.value, entry.key.equals("")) }.toList() }
+                .compose(bindToLifecycle())
+                .subscribe(this.configFeatures)
 
             this.currentUser
                 .observable()

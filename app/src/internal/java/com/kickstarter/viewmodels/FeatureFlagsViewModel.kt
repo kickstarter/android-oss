@@ -14,7 +14,7 @@ import rx.Observable
 import rx.subjects.BehaviorSubject
 
 interface FeatureFlagsViewModel {
-    interface Inputs {}
+    interface Inputs
     interface Outputs {
         /** Emits "android_" prefixed feature flags from the [Config]. */
         fun configFeatures(): Observable<List<FeatureFlagsModel>>

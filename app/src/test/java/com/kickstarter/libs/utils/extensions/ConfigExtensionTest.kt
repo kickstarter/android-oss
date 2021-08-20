@@ -1,12 +1,31 @@
 package com.kickstarter.libs.utils.extensions
 
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.R
 import com.kickstarter.mock.factories.ConfigFactory
 import org.json.JSONArray
 import org.junit.Test
 import java.util.Collections
 
 class ConfigExtensionTest : KSRobolectricTestCase() {
+
+    @Test
+    fun isFeatureFlagEnabled_whenFeatureFlagTrue_returnTrue() {
+        val config = ConfigFactory.configWithFeaturesEnabled(mapOf(Pair(R.string.kickstarter_icon.toString(), true)))
+        assertTrue(config.isFeatureFlagEnabled(R.string.kickstarter_icon.toString()))
+    }
+
+    @Test
+    fun isFeatureFlagEnabled_whenFeatureFlagFalse_returnFalse() {
+        val config = ConfigFactory.configWithFeaturesEnabled(mapOf(Pair(R.string.kickstarter_icon.toString(), false)))
+        assertFalse(config.isFeatureFlagEnabled(R.string.kickstarter_icon.toString()))
+    }
+
+    @Test
+    fun isEnabledFeature_whenFeatureFlagEmpty_returnFalse() {
+        val config = ConfigFactory.configWithFeaturesEnabled(mapOf(Pair("", true)))
+        assertFalse(config.isFeatureFlagEnabled(R.string.kickstarter_icon.toString()))
+    }
 
     @Test
     fun testAbExperiments() {

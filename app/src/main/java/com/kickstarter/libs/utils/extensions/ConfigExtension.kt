@@ -5,7 +5,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.kickstarter.libs.Config
 import com.kickstarter.libs.preferences.StringPreferenceType
-import com.kickstarter.libs.utils.ConfigFeatureFlagName
 import org.json.JSONArray
 
 /**

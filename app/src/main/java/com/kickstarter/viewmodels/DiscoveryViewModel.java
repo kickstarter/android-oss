@@ -26,7 +26,6 @@ import com.kickstarter.models.QualtricsResult;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.services.KSUri;
 import com.kickstarter.services.WebClientType;
 import com.kickstarter.services.apiresponses.EmailVerificationEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
@@ -207,7 +206,7 @@ public interface DiscoveryViewModel {
       final Observable<Uri> uriFromVerification = intent()
         .map(Intent::getData)
         .ofType(Uri.class)
-        .filter(KSUri::isVerificationEmailUrl);
+        .filter(UriExt::isVerificationEmailUrl);
 
       final Observable<Notification<EmailVerificationEnvelope>> verification = uriFromVerification
               .map(UriExt::getTokenFromQueryParams)

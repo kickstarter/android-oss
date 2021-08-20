@@ -9,6 +9,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.extensions.UriExt;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Project;
@@ -137,39 +138,39 @@ public abstract class DiscoveryParams implements Parcelable {
   public static @NonNull DiscoveryParams fromUri(final @NonNull Uri uri) {
     Builder builder = DiscoveryParams.builder();
 
-    if (KSUri.isDiscoverCategoriesPath(uri.getPath())) {
+    if (UriExt.isDiscoverCategoriesPath(uri)) {
       builder = builder.categoryParam(uri.getLastPathSegment());
     }
 
-    if (KSUri.isDiscoverPlacesPath(uri.getPath())) {
+    if (UriExt.isDiscoverPlacesPath(uri)) {
       builder = builder.locationParam(uri.getLastPathSegment());
     }
 
-    if (KSUri.isDiscoverScopePath(uri.getPath(), "ending-soon")) {
+    if (UriExt.isDiscoverScopePath(uri, "ending-soon")) {
       builder = builder.sort(Sort.ENDING_SOON);
     }
 
-    if (KSUri.isDiscoverScopePath(uri.getPath(), "newest")) {
+    if (UriExt.isDiscoverScopePath(uri, "newest")) {
       builder = builder.sort(Sort.NEWEST).staffPicks(true);
     }
 
-    if (KSUri.isDiscoverScopePath(uri.getPath(), "popular")) {
+    if (UriExt.isDiscoverScopePath(uri, "popular")) {
       builder = builder.sort(Sort.POPULAR);
     }
 
-    if (KSUri.isDiscoverScopePath(uri.getPath(), "recently-launched")) {
+    if (UriExt.isDiscoverScopePath(uri, "recently-launched")) {
       builder = builder.sort(Sort.NEWEST);
     }
 
-    if (KSUri.isDiscoverScopePath(uri.getPath(), "small-projects")) {
+    if (UriExt.isDiscoverScopePath(uri, "small-projects")) {
       builder = builder.pledged(0);
     }
 
-    if (KSUri.isDiscoverScopePath(uri.getPath(), "social")) {
+    if (UriExt.isDiscoverScopePath(uri, "social")) {
       builder = builder.social(0);
     }
 
-    if (KSUri.isDiscoverScopePath(uri.getPath(), "successful")) {
+    if (UriExt.isDiscoverScopePath(uri, "successful")) {
       builder = builder.sort(Sort.ENDING_SOON).state(State.SUCCESSFUL);
     }
 

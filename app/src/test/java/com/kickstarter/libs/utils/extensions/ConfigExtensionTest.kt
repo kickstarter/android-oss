@@ -1,31 +1,12 @@
 package com.kickstarter.libs.utils.extensions
 
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.utils.ConfigFeatureFlagName.SEGMENT_ENABLED
 import com.kickstarter.mock.factories.ConfigFactory
 import org.json.JSONArray
 import org.junit.Test
 import java.util.Collections
 
 class ConfigExtensionTest : KSRobolectricTestCase() {
-
-    @Test
-    fun isFeatureFlagEnabled_whenFeatureFlagTrue_returnTrue() {
-        val config = ConfigFactory.configWithFeaturesEnabled(mapOf(Pair(SEGMENT_ENABLED.featureFlag, true)))
-        assertTrue(config.isFeatureFlagEnabled(SEGMENT_ENABLED.featureFlag))
-    }
-
-    @Test
-    fun isFeatureFlagEnabled_whenFeatureFlagFalse_returnFalse() {
-        val config = ConfigFactory.configWithFeaturesEnabled(mapOf(Pair(SEGMENT_ENABLED.featureFlag, false)))
-        assertFalse(config.isFeatureFlagEnabled(SEGMENT_ENABLED.featureFlag))
-    }
-
-    @Test
-    fun isEnabledFeature_whenFeatureFlagEmpty_returnFalse() {
-        val config = ConfigFactory.configWithFeaturesEnabled(mapOf(Pair("", true)))
-        assertFalse(config.isFeatureFlagEnabled(SEGMENT_ENABLED.featureFlag))
-    }
 
     @Test
     fun testAbExperiments() {

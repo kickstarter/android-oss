@@ -7,7 +7,6 @@ import com.kickstarter.libs.CurrentConfigType
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ExperimentsClientType
-import com.kickstarter.libs.preferences.StringPreferenceType
 import com.kickstarter.model.FeatureFlagsModel
 import com.kickstarter.ui.activities.FeatureFlagsActivity
 import rx.Observable

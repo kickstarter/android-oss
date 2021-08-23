@@ -52,7 +52,6 @@ import org.joda.time.DateTime
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
-import rx.subjects.BehaviorSubject
 import java.math.RoundingMode
 import java.net.CookieManager
 import java.util.Collections
@@ -124,7 +123,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val bonusSectionIsGone = TestSubscriber<Boolean>()
     private val bonusSummaryIsGone = TestSubscriber<Boolean>()
     private val shippingRule = TestSubscriber<ShippingRule>()
-
 
     private fun setUpEnvironment(
         environment: Environment,

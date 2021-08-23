@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels
 
 import android.content.SharedPreferences
 import android.text.SpannableString
-import android.util.Log
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R
@@ -52,7 +51,7 @@ import rx.subjects.PublishSubject
 import type.CreditCardPaymentType
 import java.math.RoundingMode
 import java.net.CookieManager
-import kotlin.math.max
+ import kotlin.math.max
 
 interface PledgeFragmentViewModel {
     interface Inputs {
@@ -567,8 +566,7 @@ interface PledgeFragmentViewModel {
 
             val pledgeAmountHeader = this.rewardAndAddOns
                 .filter { !RewardUtils.isNoReward(it.first()) }
-                .map {
-                    getPledgeAmount(it) }
+                .map { getPledgeAmount(it) }
 
             pledgeAmountHeader
                 .compose<Pair<Double, Project>>(combineLatestPair(project))
@@ -844,8 +842,9 @@ interface PledgeFragmentViewModel {
                 .filter { RewardUtils.isDigital(it) }
 
             // - Calculate total for Reward || Rewards + AddOns with Shipping location
-            val totalWShipping = Observable.combineLatest(isRewardWithShipping, pledgeAmountHeader, shippingAmount, this.bonusAmount) {
-                _, pAmount, shippingAmount, bAmount -> return@combineLatest getAmount(pAmount, shippingAmount, bAmount)
+            val totalWShipping = Observable.combineLatest(isRewardWithShipping, pledgeAmountHeader, shippingAmount, this.bonusAmount, pledgeReason) {
+                    _, pAmount, shippingAmount, bAmount, pReason ->
+                return@combineLatest getAmount(pAmount, shippingAmount, bAmount, pReason)
             }
                 .distinctUntilChanged()
 
@@ -1045,8 +1044,6 @@ interface PledgeFragmentViewModel {
                 .compose<Pair<Double, Pair<Double, Double>>>(combineLatestPair(minAndMaxPledge))
                 .map { it.first in it.second.first..it.second.second }
                 .distinctUntilChanged()
-
-//            val totalIsValid = Observable.just(true)
 
             val validChange = shippingOrAmountChanged
                 .compose<Pair<Boolean, Boolean>>(combineLatestPair(totalIsValid))
@@ -1603,9 +1600,7 @@ interface PledgeFragmentViewModel {
             return joinedList.toList()
         }
 
-        private fun getAmount(pAmount: Double, shippingAmount: Double, bAmount: String): Double {
-            return pAmount + shippingAmount + NumberUtils.parse(bAmount)
-        }
+        private fun getAmount(pAmount: Double, shippingAmount: Double, bAmount: String, pReason: PledgeReason) = pAmount + shippingAmount + NumberUtils.parse(bAmount)
 
         private fun checkoutData(shippingAmount: Double, total: Double, bonusAmount: Double?, checkout: Checkout?): CheckoutData {
             return CheckoutData.builder()

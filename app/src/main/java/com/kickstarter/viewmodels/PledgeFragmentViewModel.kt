@@ -51,7 +51,7 @@ import rx.subjects.PublishSubject
 import type.CreditCardPaymentType
 import java.math.RoundingMode
 import java.net.CookieManager
- import kotlin.math.max
+import kotlin.math.max
 
 interface PledgeFragmentViewModel {
     interface Inputs {
@@ -494,11 +494,11 @@ interface PledgeFragmentViewModel {
 
             val backingWhenPledgeReasonUpdatePayment = backing
                 .compose<Pair<Backing, PledgeReason>>(combineLatestPair(pledgeReason))
-                .filter{ PledgeReason.UPDATE_PAYMENT == it.second }
+                .filter { PledgeReason.UPDATE_PAYMENT == it.second }
                 .map { it.first }
 
             val backingShippingRuleUpdatePayment = backingWhenPledgeReasonUpdatePayment
-                .filter{ it.reward()?.let { reward -> !RewardUtils.isNoReward(reward) } }
+                .filter { it.reward()?.let { reward -> !RewardUtils.isNoReward(reward) } }
                 .compose<Pair<Backing, PledgeData>>(combineLatestPair(pledgeData))
                 .map { requireNotNull(it.first.locationId()) }
                 .compose<Pair<Long, List<ShippingRule>>>(combineLatestPair(shippingRules))
@@ -843,7 +843,7 @@ interface PledgeFragmentViewModel {
 
             // - Calculate total for Reward || Rewards + AddOns with Shipping location
             val totalWShipping = Observable.combineLatest(isRewardWithShipping, pledgeAmountHeader, shippingAmount, this.bonusAmount, pledgeReason) {
-                    _, pAmount, shippingAmount, bAmount, pReason ->
+                _, pAmount, shippingAmount, bAmount, pReason ->
                 return@combineLatest getAmount(pAmount, shippingAmount, bAmount, pReason)
             }
                 .distinctUntilChanged()

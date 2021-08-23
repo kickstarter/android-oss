@@ -204,6 +204,9 @@ interface PledgeFragmentViewModel {
         /** Emits the shipping amount of the selected shipping rule. */
         fun shippingAmount(): Observable<CharSequence>
 
+        /** Emits the shipping rule. */
+        fun shippingRule(): Observable<ShippingRule>
+
         /** Emits a pair of list of shipping rules to be selected and the project. */
         fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>>
 
@@ -498,7 +501,7 @@ interface PledgeFragmentViewModel {
                 .map { it.first }
 
             val backingShippingRuleUpdatePayment = backingWhenPledgeReasonUpdatePayment
-                .filter { it.reward()?.let { reward -> !RewardUtils.isNoReward(reward) } }
+                .filter { it.reward()?.let { reward -> !RewardUtils.isNoReward(reward) } ?: false }
                 .compose<Pair<Backing, PledgeData>>(combineLatestPair(pledgeData))
                 .map { requireNotNull(it.first.locationId()) }
                 .compose<Pair<Long, List<ShippingRule>>>(combineLatestPair(shippingRules))
@@ -1876,5 +1879,8 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun pledgeAmountHeader(): Observable<CharSequence> = this.pledgeAmountHeader
+
+        @NonNull
+        override fun shippingRule(): Observable<ShippingRule> = this.shippingRule
     }
 }

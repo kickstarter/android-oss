@@ -52,6 +52,7 @@ import org.joda.time.DateTime
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
+import rx.subjects.BehaviorSubject
 import java.math.RoundingMode
 import java.net.CookieManager
 import java.util.Collections
@@ -122,6 +123,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val shippingRuleStaticIsGone = TestSubscriber<Boolean>()
     private val bonusSectionIsGone = TestSubscriber<Boolean>()
     private val bonusSummaryIsGone = TestSubscriber<Boolean>()
+    private val shippingRule = TestSubscriber<ShippingRule>()
+
 
     private fun setUpEnvironment(
         environment: Environment,
@@ -193,6 +196,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.shippingRuleStaticIsGone().subscribe(this.shippingRuleStaticIsGone)
         this.vm.outputs.isBonusSupportSectionGone().subscribe(this.bonusSectionIsGone)
         this.vm.outputs.bonusSummaryIsGone().subscribe(this.bonusSummaryIsGone)
+        this.vm.outputs.shippingRule().subscribe(this.shippingRule)
 
         val projectData = project.backing()?.let {
             return@let ProjectData.builder()
@@ -1197,6 +1201,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val backing = BackingFactory.backing()
             .toBuilder()
             .amount(30.0)
+            .locationId(ShippingRuleFactory.usShippingRule().location().id())
             .shippingAmount(10f)
             .reward(reward)
             .rewardId(reward.id())
@@ -1210,6 +1215,51 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
         this.shippingSummaryAmount.assertValue(expectedCurrency(environment, backedProject, 10.0))
+    }
+
+    @Test
+    fun testUpdatePayment_whenAddonsWithRewardAndShipping_shouldEmitShippingRule() {
+        val reward = RewardFactory.rewardWithShipping()
+        val backing = BackingFactory.backing()
+            .toBuilder()
+            .addOns(listOf(RewardFactory.addOnMultiple()))
+            .amount(30.0)
+            .locationId(ShippingRuleFactory.usShippingRule().location().id())
+            .shippingAmount(10f)
+            .reward(reward)
+            .rewardId(reward.id())
+            .build()
+        val backedProject = ProjectFactory.backedProject()
+            .toBuilder()
+            .backing(backing)
+            .build()
+
+        val environment = environment()
+        setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PAYMENT)
+
+        this.shippingRule.assertValue(ShippingRuleFactory.usShippingRule())
+    }
+
+    @Test
+    fun testUpdatePayment_whenNoReward_shouldNotEmitShippingRule() {
+        val reward = RewardFactory.noReward()
+        val backing = BackingFactory.backing()
+            .toBuilder()
+            .amount(30.0)
+            .locationId(ShippingRuleFactory.usShippingRule().location().id())
+            .shippingAmount(10f)
+            .reward(RewardFactory.noReward())
+            .rewardId(0)
+            .build()
+        val backedProject = ProjectFactory.backedProject()
+            .toBuilder()
+            .backing(backing)
+            .build()
+
+        val environment = environment()
+        setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PAYMENT)
+
+        this.shippingRule.assertNoValues()
     }
 
     @Test
@@ -1316,7 +1366,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowNewCardFragment_whenUpdatingPaymentMethod() {
-        val backedProject = ProjectFactory.backedProject()
+        val backedProject = ProjectFactory.backedProjectWithNoReward()
         setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), RewardFactory.noReward(), backedProject, PledgeReason.UPDATE_PAYMENT)
 
         this.vm.inputs.newCardButtonClicked()

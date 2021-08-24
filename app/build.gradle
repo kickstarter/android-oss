@@ -213,15 +213,6 @@ android {
     testOptions {
         unitTests {
             includeAndroidResources = true
-            returnDefaultValues = true
-        }
-
-        unitTests.all {
-            // set heap size for the test JVM(s)
-            minHeapSize = "1024m"
-            maxHeapSize = "4096m"
-            maxParallelForks = Runtime.runtime.availableProcessors()
-            forkEvery = 100
         }
     }
 

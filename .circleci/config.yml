@@ -49,7 +49,7 @@ jobs:
       - run: ./gradlew ktlint
       - run: ./gradlew lintExternalRelease
       - run: ./gradlew testExternalRelease -PdisablePreDex
-      - run: ./gradlew jacocoInternalRelease
+      - run: ./gradlew clean jacocoInternalRelease
       - codecov/upload:
           file:  app/build/reports/jacoco/jacocoInternalReleaseReport/jacocoInternalReleaseReport.xml
       - store_artifacts:

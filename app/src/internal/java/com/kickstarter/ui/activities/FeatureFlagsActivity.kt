@@ -7,7 +7,6 @@ import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.preferences.StringPreferenceType
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
-import com.kickstarter.libs.utils.ConfigFeatureFlagName.SEGMENT_ENABLED
 import com.kickstarter.ui.adapters.FeatureFlagsAdapter
 import com.kickstarter.ui.itemdecorations.TableItemDecoration
 import com.kickstarter.ui.viewholders.FeatureFlagViewHolder
@@ -51,10 +50,6 @@ class FeatureFlagsActivity : BaseActivity<FeatureFlagsViewModel.ViewModel>(), Fe
 
     override fun featureOptionToggle(featureName: String, isEnabled: Boolean) {
 
-        when (featureName) {
-            SEGMENT_ENABLED.featureFlag -> {
-                this.viewModel.inputs.updateSegmentFlag(isEnabled, featuresFlagPreference)
-            }
-        }
+        when (featureName) {}
     }
 }

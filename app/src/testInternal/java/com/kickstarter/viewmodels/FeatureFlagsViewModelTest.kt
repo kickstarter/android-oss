@@ -1,8 +1,6 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.preferences.MockStringPreference
-import com.kickstarter.libs.utils.ConfigFeatureFlagName.SEGMENT_ENABLED
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.ConfigFactory
@@ -70,32 +68,5 @@ class FeatureFlagsViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(null, listOf("android_optimizely_feature"))
 
         this.optimizelyFeatures.assertValue(listOf(FeatureFlagsModel("android_optimizely_feature", true)))
-    }
-
-    @Test
-    fun testSegmentFeatureFlagValueChanged() {
-        var segmentFlagValue = true
-        val features = hashMapOf(
-            Pair(SEGMENT_ENABLED.featureFlag, segmentFlagValue)
-        )
-
-        setUpEnvironment(features, emptyList())
-
-        this.configFeatures.assertValue(
-            listOf(
-                FeatureFlagsModel(SEGMENT_ENABLED.featureFlag, segmentFlagValue, true)
-            )
-        )
-
-        mockConfig.observable().subscribe {
-            segmentFlagValue = it.features()?.get(SEGMENT_ENABLED.featureFlag)!!
-        }
-
-        val featuresFlagPreference = MockStringPreference()
-        this.vm.inputs.updateSegmentFlag(false, featuresFlagPreference)
-        assertEquals(segmentFlagValue, false)
-
-        this.vm.inputs.updateSegmentFlag(true, featuresFlagPreference)
-        assertEquals(segmentFlagValue, true)
     }
 }

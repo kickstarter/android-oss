@@ -12,11 +12,9 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.kickstarter.BuildConfig
 import com.kickstarter.R
 import com.kickstarter.libs.qualifiers.ApplicationContext
-import com.kickstarter.libs.utils.ConfigFeatureFlagName.SEGMENT_ENABLED
 import com.kickstarter.libs.utils.WebUtils
 import com.kickstarter.libs.utils.extensions.currentVariants
 import com.kickstarter.libs.utils.extensions.enabledFeatureFlags
-import com.kickstarter.libs.utils.extensions.isFeatureFlagEnabled
 import com.kickstarter.models.User
 import org.json.JSONArray
 import org.json.JSONException
@@ -58,11 +56,7 @@ abstract class TrackingClient(
         }
     }
 
-    override fun isEnabled(): Boolean {
-        return if (type() == Type.SEGMENT) {
-            this.config?.isFeatureFlagEnabled(SEGMENT_ENABLED.featureFlag) ?: false
-        } else true
-    }
+    override fun isEnabled(): Boolean = true
 
     override fun reset() {
         if (isEnabled()) this.loggedInUser = null

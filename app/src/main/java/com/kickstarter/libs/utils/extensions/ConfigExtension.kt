@@ -5,7 +5,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.kickstarter.libs.Config
 import com.kickstarter.libs.preferences.StringPreferenceType
-import com.kickstarter.libs.utils.ConfigFeatureFlagName
 import org.json.JSONArray
 
 /**
@@ -67,10 +66,6 @@ fun Config.syncUserFeatureFlagsFromPref(featuresFlagPreference: StringPreference
     val featuresFlagsMap = Gson().fromJson<Map<String?, Boolean?>>(
         featuresFlagPreference.get(), object : TypeToken<HashMap<String?, Boolean?>>() {}.type
     )
-
-    featuresFlagsMap[ConfigFeatureFlagName.SEGMENT_ENABLED.featureFlag]?.let {
-        this.features()?.put(ConfigFeatureFlagName.SEGMENT_ENABLED.featureFlag, it)
-    }
 }
 
 /**

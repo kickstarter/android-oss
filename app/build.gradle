@@ -213,6 +213,15 @@ android {
     testOptions {
         unitTests {
             includeAndroidResources = true
+            returnDefaultValues = true
+        }
+
+        unitTests.all {
+            // set heap size for the test JVM(s)
+            minHeapSize = "1024m"
+            maxHeapSize = "4096m"
+            maxParallelForks = Runtime.runtime.availableProcessors()
+            forkEvery = 100
         }
     }
 
@@ -319,7 +328,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-inappmessaging-display'
 
     // Testing
-    testImplementation "junit:junit:4.13.2"
+    testImplementation "junit:junit:4.12"
     testImplementation "org.mockito:mockito-core:3.6.0"
     testImplementation "org.robolectric:robolectric:4.4"
     testImplementation "org.robolectric:shadows-multidex:4.4"

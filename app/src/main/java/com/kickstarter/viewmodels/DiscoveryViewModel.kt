@@ -55,7 +55,7 @@ interface DiscoveryViewModel {
         fun qualtricsConfirmClicked()
 
         /** Call when the users dismisses the Qualtrics prompt.  */
-        fun qualtricsDismissClicked()g
+        fun qualtricsDismissClicked()
 
         /** Call when you receive a [com.qualtrics.digital.TargetingResult] from Qualtrics.  */
         fun qualtricsResult(qualtricsResult: QualtricsResult)

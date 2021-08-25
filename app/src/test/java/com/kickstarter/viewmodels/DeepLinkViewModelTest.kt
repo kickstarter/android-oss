@@ -15,6 +15,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     private val startDiscoveryActivity = TestSubscriber<Void>()
     private val startProjectActivity = TestSubscriber<Uri>()
     private val startProjectActivityForCheckout = TestSubscriber<Uri>()
+    private val startProjectActivityForComment = TestSubscriber<Uri>()
     private val finishDeeplinkActivity = TestSubscriber<Void>()
 
     fun setUpEnvironment() {
@@ -23,6 +24,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         vm.outputs.startDiscoveryActivity().subscribe(startDiscoveryActivity)
         vm.outputs.startProjectActivity().subscribe(startProjectActivity)
         vm.outputs.startProjectActivityForCheckout().subscribe(startProjectActivityForCheckout)
+        vm.outputs.startProjectActivityForComment().subscribe(startProjectActivityForComment)
         vm.outputs.finishDeeplinkActivity().subscribe(finishDeeplinkActivity)
     }
 
@@ -32,6 +34,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         vm.outputs.startDiscoveryActivity().subscribe(startDiscoveryActivity)
         vm.outputs.startProjectActivity().subscribe(startProjectActivity)
         vm.outputs.startProjectActivityForCheckout().subscribe(startProjectActivityForCheckout)
+        vm.outputs.startProjectActivityForComment().subscribe(startProjectActivityForComment)
         vm.outputs.finishDeeplinkActivity().subscribe(finishDeeplinkActivity)
     }
 
@@ -39,12 +42,13 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     fun testNonDeepLink_startsBrowser() {
         setUpEnvironment()
         val url =
-            "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap/comments"
+            "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap/comment"
         vm.intent(intentWithData(url))
         startBrowser.assertValue(url)
         startDiscoveryActivity.assertNoValues()
         startProjectActivity.assertNoValues()
         startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
     }
 
     @Test
@@ -57,6 +61,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startDiscoveryActivity.assertNoValues()
         startProjectActivity.assertNoValues()
         startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
     }
 
     @Test
@@ -68,7 +73,21 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivity.assertNoValues()
         startBrowser.assertNoValues()
         startDiscoveryActivity.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
         startProjectActivityForCheckout.assertValue(Uri.parse(url))
+    }
+
+    @Test
+    fun testCheckoutDeepLinkWithRefTag_startsProjectActivityForComments() {
+        setUpEnvironment()
+        val url =
+            " https://www.kickstarter.com/projects/fjorden/fjorden-iphone-photography-reinvented/comments?ref=discovery"
+        vm.intent(intentWithData(url))
+        startProjectActivity.assertNoValues()
+        startBrowser.assertNoValues()
+        startDiscoveryActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertValue(Uri.parse(url))
     }
 
     @Test
@@ -82,6 +101,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivity.assertNoValues()
         startBrowser.assertNoValues()
         startDiscoveryActivity.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
         startProjectActivityForCheckout.assertValue(Uri.parse(expectedUrl))
     }
 
@@ -94,6 +114,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivity.assertValue(Uri.parse(url))
         startBrowser.assertNoValues()
         startDiscoveryActivity.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
         startProjectActivityForCheckout.assertNoValues()
     }
 
@@ -108,6 +129,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivity.assertValue(Uri.parse(expectedUrl))
         startBrowser.assertNoValues()
         startDiscoveryActivity.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
         startProjectActivityForCheckout.assertNoValues()
     }
 
@@ -119,6 +141,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startDiscoveryActivity.assertValueCount(1)
         startBrowser.assertNoValues()
         startProjectActivity.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
         startProjectActivityForCheckout.assertNoValues()
     }
 

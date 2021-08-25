@@ -1,44 +1,47 @@
 package com.kickstarter.viewmodels
 
-import com.kickstarter.libs.utils.extensions.isPresent
+import android.content.Intent
+import android.net.Uri
+import android.util.Pair
+import com.kickstarter.R
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.ActivityViewModel
+import com.kickstarter.libs.BuildCheck
+import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.CurrentConfigType
+import com.kickstarter.libs.preferences.BooleanPreferenceType
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.BooleanUtils
+import com.kickstarter.libs.utils.DiscoveryDrawerUtils
+import com.kickstarter.libs.utils.DiscoveryUtils
+import com.kickstarter.libs.utils.IntegerUtils
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.UrlUtils.appendQueryParameter
+import com.kickstarter.libs.utils.extensions.getTokenFromQueryParams
+import com.kickstarter.libs.utils.extensions.isPresent
+import com.kickstarter.libs.utils.extensions.isVerificationEmailUrl
+import com.kickstarter.models.Category
+import com.kickstarter.models.QualtricsIntercept
+import com.kickstarter.models.QualtricsResult
+import com.kickstarter.models.User
+import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.services.WebClientType
+import com.kickstarter.services.apiresponses.ErrorEnvelope
+import com.kickstarter.services.apiresponses.InternalBuildEnvelope
+import com.kickstarter.ui.activities.DiscoveryActivity
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter
 import com.kickstarter.ui.adapters.DiscoveryPagerAdapter
-import com.kickstarter.services.apiresponses.InternalBuildEnvelope
-import com.kickstarter.models.QualtricsResult
-import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.adapters.data.NavigationDrawerData
-import com.kickstarter.models.QualtricsIntercept
-import com.kickstarter.ui.activities.DiscoveryActivity
-import com.kickstarter.services.ApiClientType
-import com.kickstarter.libs.preferences.BooleanPreferenceType
-import com.kickstarter.services.WebClientType
-import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.R
-import com.kickstarter.libs.utils.IntegerUtils
+import com.kickstarter.ui.intentmappers.DiscoveryIntentMapper
 import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder
 import com.kickstarter.ui.viewholders.discoverydrawer.LoggedInViewHolder
 import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder
 import com.kickstarter.ui.viewholders.discoverydrawer.ParentFilterViewHolder
 import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder
-import com.kickstarter.libs.rx.transformers.Transformers
-import android.content.Intent
-import android.net.Uri
-import android.util.Pair
-import com.kickstarter.libs.*
-import com.kickstarter.services.apiresponses.ErrorEnvelope
-import com.kickstarter.ui.intentmappers.DiscoveryIntentMapper
-import com.kickstarter.libs.utils.DiscoveryUtils
-import com.kickstarter.libs.utils.DiscoveryDrawerUtils
-import com.kickstarter.libs.utils.BooleanUtils
-import com.kickstarter.libs.utils.extensions.getTokenFromQueryParams
-import com.kickstarter.libs.utils.extensions.isVerificationEmailUrl
-import com.kickstarter.models.Category
-import com.kickstarter.models.User
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
-import java.util.*
 
 interface DiscoveryViewModel {
     interface Inputs : DiscoveryDrawerAdapter.Delegate, DiscoveryPagerAdapter.Delegate {
@@ -242,7 +245,7 @@ interface DiscoveryViewModel {
 
             val verification = uriFromVerification
                 .map { it.getTokenFromQueryParams() }
-                .filter{ObjectUtils.isNotNull(it)}
+                .filter { ObjectUtils.isNotNull(it) }
                 .switchMap { apiClient.verifyEmail(it) }
                 .materialize()
                 .share()
@@ -258,7 +261,7 @@ interface DiscoveryViewModel {
                 .compose(Transformers.errors())
                 .map { ErrorEnvelope.fromThrowable(it) }
                 .map { it?.errorMessage() }
-                .filter{ObjectUtils.isNotNull(it)}
+                .filter { ObjectUtils.isNotNull(it) }
                 .compose(bindToLifecycle())
                 .subscribe(messageError)
 
@@ -267,7 +270,7 @@ interface DiscoveryViewModel {
 
             val drawerParamsClicked = childFilterRowClick
                 .mergeWith(topFilterRowClick)
-                .map{ it.params() }
+                .map { it.params() }
 
             // Merge various param data sources.
             val params = Observable.merge(
@@ -281,7 +284,7 @@ interface DiscoveryViewModel {
             // Combine params with the selected sort position.
             val paramsWithSort = Observable.combineLatest(
                 params,
-                pagerSelectedPage.map {  DiscoveryUtils.sortFromPosition(it) }
+                pagerSelectedPage.map { DiscoveryUtils.sortFromPosition(it) }
             ) { p, s -> p.toBuilder().sort(s).build() }
 
             paramsWithSort
@@ -315,10 +318,11 @@ interface DiscoveryViewModel {
             // Combine root categories with the selected sort position.
             Observable.combineLatest<List<Category>?, Int, Pair<List<Category>, Int>>(
                 categories
-                    .flatMapIterable{ it }
+                    .flatMapIterable { it }
                     .filter { it.isRoot }
                     .toList(),
-                pagerSelectedPage) { c, psp -> Pair.create(c, psp) }
+                pagerSelectedPage
+            ) { c, psp -> Pair.create(c, psp) }
                 .compose(bindToLifecycle())
                 .subscribe(rootCategoriesAndPosition)
 
@@ -329,12 +333,15 @@ interface DiscoveryViewModel {
                 topFilterRowClick.map { null },
                 drawerClickedParentCategory
             )
-                .scan(null, { previous: Category?, next: Category? ->
-                    if (previous != null && next != null && previous == next) {
-                        return@scan null
+                .scan(
+                    null,
+                    { previous: Category?, next: Category? ->
+                        if (previous != null && next != null && previous == next) {
+                            return@scan null
+                        }
+                        next
                     }
-                    next
-                })
+                )
 
             // Accumulate a list of pages to clear when the params or user changes,
             // to avoid displaying old data.

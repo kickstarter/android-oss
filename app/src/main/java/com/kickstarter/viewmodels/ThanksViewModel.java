@@ -255,7 +255,7 @@ public interface ThanksViewModel {
         .retry(2)
         .map(DiscoverEnvelope::projects)
         .map(ListUtils::shuffle)
-        .flatMap(Observable::from)
+        .flatMap(iterable -> Observable.from(iterable))
         .take(3);
 
       final Observable<Project> similarToProjects = client.fetchProjects(similarToParams)

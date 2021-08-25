@@ -51,6 +51,7 @@ import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
 import java.net.CookieManager
+import java.util.concurrent.TimeUnit
 
 interface ProjectViewModel {
     interface Inputs {
@@ -307,7 +308,6 @@ interface ProjectViewModel {
         private val showUpdatePledge = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showUpdatePledgeSuccess = PublishSubject.create<Void>()
         private val startCampaignWebViewActivity = PublishSubject.create<ProjectData>()
-        private val startCommentsActivity = PublishSubject.create<Pair<Project, ProjectData>>()
         private val startRootCommentsActivity = PublishSubject.create<Pair<Project, ProjectData>>()
         private val startCreatorBioWebViewActivity = PublishSubject.create<Project>()
         private val startCreatorDashboardActivity = PublishSubject.create<Project>()
@@ -492,9 +492,27 @@ interface ProjectViewModel {
             val latestProjectAndProjectData = currentProject.compose<Pair<Project, ProjectData>>(combineLatestPair(projectData))
 
             this.commentsTextViewClicked
-                .withLatestFrom(latestProjectAndProjectData) { _, project -> project }
+                .withLatestFrom(latestProjectAndProjectData) { _, project ->
+                    project
+                }
                 .compose(bindToLifecycle())
-                .subscribe(this.startRootCommentsActivity)
+                .subscribe {
+                    this.startRootCommentsActivity.onNext(it)
+                }
+
+            intent()
+                .take(1)
+                .delay(1, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
+                .filter {
+                    it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_COMMENT, false)
+                }
+                .withLatestFrom(latestProjectAndProjectData) { _, project ->
+                    project
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.startRootCommentsActivity.onNext(it)
+                }
 
             currentProject
                 .compose<Project>(takeWhen(this.creatorDashboardButtonClicked))

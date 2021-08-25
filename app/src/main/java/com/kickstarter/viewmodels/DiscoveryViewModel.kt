@@ -4,11 +4,11 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Pair
 import com.kickstarter.R
-import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.BuildCheck
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.CurrentConfigType
+import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.BooleanUtils
@@ -55,7 +55,7 @@ interface DiscoveryViewModel {
         fun qualtricsConfirmClicked()
 
         /** Call when the users dismisses the Qualtrics prompt.  */
-        fun qualtricsDismissClicked()
+        fun qualtricsDismissClicked()g
 
         /** Call when you receive a [com.qualtrics.digital.TargetingResult] from Qualtrics.  */
         fun qualtricsResult(qualtricsResult: QualtricsResult)

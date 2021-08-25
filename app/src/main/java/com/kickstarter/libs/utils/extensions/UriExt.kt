@@ -117,6 +117,11 @@ fun Uri.isProjectSurveyUri(webEndpoint: String): Boolean {
     return isKickstarterUri(webEndpoint) && PROJECT_SURVEY.matcher(path()).matches()
 }
 
+fun Uri.isProjectCommentUri(webEndpoint: String): Boolean {
+    return isKickstarterUri(webEndpoint) && PROJECT_COMMENTS_PATTERN.matcher(path())
+        .matches()
+}
+
 fun Uri.isProjectUpdateCommentsUri(webEndpoint: String): Boolean {
     return isKickstarterUri(webEndpoint) && PROJECT_UPDATE_COMMENTS_PATTERN.matcher(path()).matches()
 }
@@ -174,6 +179,11 @@ private val PROJECT_PATTERN = Pattern.compile(
 //  /projects/:creator_param/:project_param/surveys/:survey_param
 private val PROJECT_SURVEY = Pattern.compile(
     "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/surveys\\/[a-zA-Z0-9-_]+\\z"
+)
+
+// /projects/:creator_param/:project_param/comments
+private val PROJECT_COMMENTS_PATTERN = Pattern.compile(
+    "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/comments\\z"
 )
 
 // /projects/:creator_param/:project_param/posts/:update_param/comments

@@ -600,15 +600,17 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         val projectAndData = Pair.create(project, projectData)
         val testScheduler = TestScheduler()
 
-        setUpEnvironment(environment().toBuilder()
-            .scheduler(testScheduler).build())
+        setUpEnvironment(
+            environment().toBuilder()
+                .scheduler(testScheduler).build()
+        )
 
         // Start the view model with a project.
         val intent = Intent().apply {
             putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_COMMENT, true)
             putExtra(IntentKey.PROJECT, project)
         }
-        
+
         this.vm.intent(intent)
 
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)

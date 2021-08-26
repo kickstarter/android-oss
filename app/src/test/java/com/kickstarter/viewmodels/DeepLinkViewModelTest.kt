@@ -78,15 +78,31 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCheckoutDeepLinkWithRefTag_startsProjectActivityForComments() {
+    fun testCommentsDeepLinkWithRefTag_startsProjectActivityForComments() {
         setUpEnvironment()
         val url =
-            " https://www.kickstarter.com/projects/fjorden/fjorden-iphone-photography-reinvented/comments?ref=discovery"
+            "https://www.kickstarter.com/projects/fjorden/fjorden-iphone-photography-reinvented/comments?ref=discovery"
         vm.intent(intentWithData(url))
         startProjectActivity.assertNoValues()
         startBrowser.assertNoValues()
         startDiscoveryActivity.assertNoValues()
         startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertValue(Uri.parse(url))
+    }
+
+    @Test
+    fun testCommentsDeepLinkWithRefTag_startsProjectActivityForComments_KSR_schema() {
+        val user =
+            UserFactory.allTraitsTrue().toBuilder().notifyMobileOfMarketingUpdate(false).build()
+        val mockUser = MockCurrentUser(user)
+        val environment = environment().toBuilder()
+            .currentUser(mockUser)
+            .build()
+        setUpEnvironment(environment)
+        val url = "ksr://www.kickstarter.com/projects/fjorden/fjorden-iphone-photography-reinvented/comments?ref=discovery"
+        vm.intent(intentWithData(url))
+        startBrowser.assertNoValues()
+        finishDeeplinkActivity.assertValueCount(1)
         startProjectActivityForComment.assertValue(Uri.parse(url))
     }
 

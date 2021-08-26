@@ -264,9 +264,14 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="www.kickstarter.com"
+                    android:host="*.kickstarter.com"
                     android:pathPrefix="/projects"
                     android:scheme="https" />
+                <data
+                    android:host="*.kickstarter.com"
+                    android:pathPrefix="/projects"
+                    android:scheme="ksr" />
+
                 <data
                     android:host="*.kickstarter.com"
                     android:pathPrefix="/settings/"

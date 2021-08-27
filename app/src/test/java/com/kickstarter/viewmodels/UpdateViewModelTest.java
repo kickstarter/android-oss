@@ -212,4 +212,33 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     // Initial update index url emits.
     webViewUrl.assertValues(update.urls().web().update());
   }
+
+  @Test
+  public void testUpdateViewModel_DeepLinkPost() {
+    final String postId = "3254626";
+    final Update update = UpdateFactory.update().toBuilder().sequence(2).build();
+
+
+    final ApiClientType apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<Update> fetchUpdate(final @NonNull String projectParam, final @NonNull String updateParam) {
+        return Observable.just(update);
+      }
+    };
+
+    final Environment environment = environment().toBuilder().apiClient(apiClient).build();
+    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment);
+
+    final TestSubscriber<String> webViewUrl = new TestSubscriber<>();
+    vm.outputs.webViewUrl().subscribe(webViewUrl);
+
+    // Start the intent with a project and update.
+    vm.intent(new Intent()
+            .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+            .putExtra(IntentKey.UPDATE_POST_ID, postId)
+    );
+
+    // Initial update index url emits.
+    webViewUrl.assertValues(update.urls().web().update());
+  }
 }

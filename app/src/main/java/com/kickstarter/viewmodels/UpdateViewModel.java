@@ -106,7 +106,7 @@ public interface UpdateViewModel {
       final Observable<String> deepLinkUrl = deepLinkUpdate
               .map(u -> u.urls().web().update());
 
-      Observable.merge(initialUpdateUrl, anotherUpdateUrl,deepLinkUrl)
+      Observable.merge(initialUpdateUrl, anotherUpdateUrl, deepLinkUrl)
         .distinctUntilChanged()
         .compose(bindToLifecycle())
         .subscribe(this.webViewUrl::onNext);
@@ -116,7 +116,7 @@ public interface UpdateViewModel {
         .switchMap(pu -> this.client.fetchUpdate(pu.first, pu.second).compose(neverError()))
         .share();
 
-      final Observable<Update> currentUpdate = Observable.merge(initialUpdate, anotherUpdate,deepLinkUpdate);
+      final Observable<Update> currentUpdate = Observable.merge(initialUpdate, anotherUpdate, deepLinkUpdate);
 
       currentUpdate
         .compose(takeWhen(this.shareButtonClicked))

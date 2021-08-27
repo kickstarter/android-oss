@@ -67,8 +67,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val showUpdatePledge = TestSubscriber<Pair<PledgeData, PledgeReason>>()
     private val showUpdatePledgeSuccess = TestSubscriber<Void>()
     private val startCampaignWebViewActivity = TestSubscriber<ProjectData>()
-    private val startCommentsActivity = TestSubscriber<Pair<Project, ProjectData>>()
     private val startRootCommentsActivityivity = TestSubscriber<Pair<Project, ProjectData>>()
+    private val startProjectUpdateActivity = TestSubscriber<Pair<String, Pair<Project, ProjectData>>>()
     private val startCreatorBioWebViewActivity = TestSubscriber<Project>()
     private val startCreatorDashboardActivity = TestSubscriber<Project>()
     private val startLoginToutActivity = TestSubscriber<Void>()
@@ -110,6 +110,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.projectData().map { pD -> pD.project().isStarred }.subscribe(this.savedTest)
         this.vm.outputs.startCampaignWebViewActivity().subscribe(this.startCampaignWebViewActivity)
         this.vm.outputs.startRootCommentsActivity().subscribe(this.startRootCommentsActivityivity)
+        this.vm.outputs.startProjectUpdateActivity().subscribe(this.startProjectUpdateActivity)
         this.vm.outputs.startCreatorBioWebViewActivity().subscribe(this.startCreatorBioWebViewActivity)
         this.vm.outputs.startCreatorDashboardActivity().subscribe(this.startCreatorDashboardActivity)
         this.vm.outputs.startMessagesActivity().subscribe(this.startMessagesActivity)
@@ -616,6 +617,33 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
         this.startRootCommentsActivityivity.assertValues(projectAndData)
+    }
+
+    @Test
+    fun testStartUpdateActivityFromDeepLink() {
+        val project = ProjectFactory.project()
+        val projectData = ProjectDataFactory.project(project)
+        val projectAndData = Pair.create(project, projectData)
+        val postId = "3254626"
+        val updateProjectAndData = Pair.create(postId, projectAndData)
+        val testScheduler = TestScheduler()
+
+        setUpEnvironment(
+            environment().toBuilder()
+                .scheduler(testScheduler).build()
+        )
+
+        // Start the view model with a project.
+        val intent = Intent().apply {
+            putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE, postId)
+            putExtra(IntentKey.PROJECT, project)
+        }
+
+        this.vm.intent(intent)
+
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+
+        this.startProjectUpdateActivity.assertValues(updateProjectAndData)
     }
 
     @Test

@@ -246,6 +246,13 @@ class ProjectActivity :
                 this.startRootCommentsActivity(it)
             }
 
+        this.viewModel.outputs.startProjectUpdateActivity()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                this.startProjectUpdateActivity(it)
+            }
+
         this.viewModel.outputs.startCreatorBioWebViewActivity()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
@@ -645,6 +652,13 @@ class ProjectActivity :
         val intent = Intent(this, ProjectUpdatesActivity::class.java)
             .putExtra(IntentKey.PROJECT, projectAndData.first)
             .putExtra(IntentKey.PROJECT_DATA, projectAndData.second)
+        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+    }
+
+    private fun startProjectUpdateActivity(projectAndData: Pair<String, Pair<Project, ProjectData>>) {
+        val intent = Intent(this, UpdateActivity::class.java)
+            .putExtra(IntentKey.PROJECT, projectAndData.second.first)
+            .putExtra(IntentKey.UPDATE_POST_ID, projectAndData.first)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 

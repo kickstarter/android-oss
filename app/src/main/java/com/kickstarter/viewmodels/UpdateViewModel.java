@@ -8,6 +8,7 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.UrlUtils;
 import com.kickstarter.libs.utils.extensions.UriExt;
@@ -84,6 +85,7 @@ public interface UpdateViewModel {
 
       final Observable<String> updatePostId = intent()
               .map(i -> i.getStringExtra(IntentKey.UPDATE_POST_ID))
+              .filter(ObjectUtils::isNotNull)
               .take(1);
 
       final Observable<Project> project = intent()

@@ -8,6 +8,7 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.UrlUtils;
 import com.kickstarter.libs.utils.extensions.UriExt;
@@ -24,6 +25,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
@@ -81,17 +83,32 @@ public interface UpdateViewModel {
         .ofType(Update.class)
         .take(1);
 
+      final Observable<String> updatePostId = intent()
+              .map(i -> i.getStringExtra(IntentKey.UPDATE_POST_ID))
+              .filter(ObjectUtils::isNotNull)
+              .take(1);
+
       final Observable<Project> project = intent()
-        .flatMap(i -> ProjectIntentMapper.project(i, this.client).compose(neverError()))
+        .flatMap(i ->
+                ProjectIntentMapper.project(i, this.client).compose(neverError()))
         .share();
+
 
       final Observable<String> initialUpdateUrl = initialUpdate
         .map(u -> u.urls().web().update());
 
+      final Observable<Update> deepLinkUpdate = updatePostId
+              .compose(combineLatestPair(project))
+              .switchMap(pu -> this.client.fetchUpdate(pu.second.slug(), pu.first).compose(neverError()))
+              .share();
+
       final Observable<String> anotherUpdateUrl = this.goToUpdateRequest
         .map(request -> request.url().toString());
 
-      Observable.merge(initialUpdateUrl, anotherUpdateUrl)
+      final Observable<String> deepLinkUrl = deepLinkUpdate
+              .map(u -> u.urls().web().update());
+
+      Observable.merge(initialUpdateUrl, anotherUpdateUrl, deepLinkUrl)
         .distinctUntilChanged()
         .compose(bindToLifecycle())
         .subscribe(this.webViewUrl::onNext);
@@ -101,7 +118,7 @@ public interface UpdateViewModel {
         .switchMap(pu -> this.client.fetchUpdate(pu.first, pu.second).compose(neverError()))
         .share();
 
-      final Observable<Update> currentUpdate = Observable.merge(initialUpdate, anotherUpdate);
+      final Observable<Update> currentUpdate = Observable.merge(initialUpdate, anotherUpdate, deepLinkUpdate);
 
       currentUpdate
         .compose(takeWhen(this.shareButtonClicked))

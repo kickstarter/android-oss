@@ -40,6 +40,11 @@ class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
             .compose(Transformers.observeForUI())
             .subscribe { startProjectActivityForComment(it) }
 
+        viewModel.outputs.startProjectActivityForUpdate()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { startProjectActivityForUpdate(it) }
+
         viewModel.outputs.startProjectActivityForCheckout()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
@@ -78,6 +83,13 @@ class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
     private fun startProjectActivityForComment(uri: Uri) {
         val projectIntent = projectIntent(uri)
             .putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_COMMENT, true)
+        startActivity(projectIntent)
+        finish()
+    }
+
+    private fun startProjectActivityForUpdate(uri: Uri) {
+        val projectIntent = projectIntent(uri)
+            .putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE, uri.lastPathSegment)
         startActivity(projectIntent)
         finish()
     }

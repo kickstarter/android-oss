@@ -235,6 +235,9 @@ interface ProjectViewModel {
         /** Emits when we should start [com.kickstarter.ui.activities.ProjectUpdatesActivity].  */
         fun startProjectUpdatesActivity(): Observable<Pair<Project, ProjectData>>
 
+        /** Emits when we should start [com.kickstarter.ui.activities.UpdateActivity].  */
+        fun startProjectUpdateActivity(): Observable< Pair<String, Pair<Project, ProjectData>>>
+
         /** Emits when we the pledge was successful and should start the [com.kickstarter.ui.activities.ThanksActivity]. */
         fun startThanksActivity(): Observable<Pair<CheckoutData, PledgeData>>
 
@@ -314,6 +317,7 @@ interface ProjectViewModel {
         private val startLoginToutActivity = PublishSubject.create<Void>()
         private val startMessagesActivity = PublishSubject.create<Project>()
         private val startProjectUpdatesActivity = PublishSubject.create<Pair<Project, ProjectData>>()
+        private val startProjectUpdateActivity = PublishSubject.create<Pair<String, Pair<Project, ProjectData>>>()
         private val startThanksActivity = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
         private val startVideoActivity = PublishSubject.create<Project>()
         private val updateFragments = BehaviorSubject.create<ProjectData>()
@@ -512,6 +516,20 @@ interface ProjectViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.startRootCommentsActivity.onNext(it)
+                }
+
+            intent()
+                .take(1)
+                .delay(1, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
+                .filter {
+                    it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)?.isNotEmpty() ?: false
+                }.map { requireNotNull(it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)) }
+                .withLatestFrom(latestProjectAndProjectData) { updateId, project ->
+                    Pair(updateId, project)
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.startProjectUpdateActivity.onNext(it)
                 }
 
             currentProject
@@ -1112,6 +1130,9 @@ interface ProjectViewModel {
 
         @NonNull
         override fun startProjectUpdatesActivity(): Observable<Pair<Project, ProjectData>> = this.startProjectUpdatesActivity
+
+        @NonNull
+        override fun startProjectUpdateActivity(): Observable<Pair<String, Pair<Project, ProjectData>>> = this.startProjectUpdateActivity
 
         @NonNull
         override fun startVideoActivity(): Observable<Project> = this.startVideoActivity

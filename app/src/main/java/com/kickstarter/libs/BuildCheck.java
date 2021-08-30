@@ -15,5 +15,5 @@ public interface BuildCheck {
     .filter(InternalBuildEnvelope::newerBuildAvailable)
     .compose(viewModel.bindToLifecycle())
     .observeOn(AndroidSchedulers.mainThread())
-    .subscribe(viewModel.inputs::newerBuildIsAvailable, e -> Timber.e(e.toString()));
+    .subscribe(viewModel.getInputs()::newerBuildIsAvailable, e -> Timber.e(e.toString()));
 }

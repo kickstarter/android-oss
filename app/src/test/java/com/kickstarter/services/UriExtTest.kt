@@ -10,6 +10,7 @@ import com.kickstarter.libs.utils.extensions.isKSFavIcon
 import com.kickstarter.libs.utils.extensions.isKickstarterUri
 import com.kickstarter.libs.utils.extensions.isModalUri
 import com.kickstarter.libs.utils.extensions.isNewGuestCheckoutUri
+import com.kickstarter.libs.utils.extensions.isProjectCommentUri
 import com.kickstarter.libs.utils.extensions.isProjectPreviewUri
 import com.kickstarter.libs.utils.extensions.isProjectSurveyUri
 import com.kickstarter.libs.utils.extensions.isProjectUpdateCommentsUri
@@ -132,6 +133,12 @@ class UriExtTest : KSRobolectricTestCase() {
         val updateCommentsUri = Uri.parse("https://www.ksr.com/projects/creator/project/posts/id/comments")
         assertTrue(updateCommentsUri.isProjectUpdateCommentsUri(webEndpoint))
         assertFalse(updatesUri.isProjectUpdateCommentsUri(webEndpoint))
+    }
+
+    @Test
+    fun testUri_isProjectCommentsUri() {
+        val commentsUri = Uri.parse("https://www.ksr.com/projects/creator/project/comments")
+        assertTrue(commentsUri.isProjectCommentUri(webEndpoint))
     }
 
     @Test

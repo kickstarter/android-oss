@@ -33,7 +33,9 @@ import com.kickstarter.ui.data.ProjectData
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
+import rx.schedulers.TestScheduler
 import java.math.RoundingMode
+import java.util.concurrent.TimeUnit
 
 class ProjectViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: ProjectViewModel.ViewModel
@@ -588,6 +590,31 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
         this.vm.inputs.commentsTextViewClicked()
+        this.startRootCommentsActivityivity.assertValues(projectAndData)
+    }
+
+    @Test
+    fun testStartCommentsActivityFromDeepLink() {
+        val project = ProjectFactory.project()
+        val projectData = ProjectDataFactory.project(project)
+        val projectAndData = Pair.create(project, projectData)
+        val testScheduler = TestScheduler()
+
+        setUpEnvironment(
+            environment().toBuilder()
+                .scheduler(testScheduler).build()
+        )
+
+        // Start the view model with a project.
+        val intent = Intent().apply {
+            putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_COMMENT, true)
+            putExtra(IntentKey.PROJECT, project)
+        }
+
+        this.vm.intent(intent)
+
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+
         this.startRootCommentsActivityivity.assertValues(projectAndData)
     }
 

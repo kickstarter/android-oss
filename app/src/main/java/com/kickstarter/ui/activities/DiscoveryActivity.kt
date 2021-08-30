@@ -201,7 +201,7 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
         viewModel.outputs.showErrorMessage()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { this@DiscoveryActivity.showErrorSnackBar(binding.discoveryAnchorView, it) }
+            .subscribe { this@DiscoveryActivity.showErrorSnackBar(binding.discoveryAnchorView, it ?: "") }
 
         binding.qualtricsPromptLayout.qualtricsConfirm.setOnClickListener {
             qualtricsConfirmClicked()

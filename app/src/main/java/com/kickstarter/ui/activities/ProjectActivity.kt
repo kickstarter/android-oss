@@ -242,7 +242,9 @@ class ProjectActivity :
         this.viewModel.outputs.startRootCommentsActivity()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { this.startRootCommentsActivity(it) }
+            .subscribe {
+                this.startRootCommentsActivity(it)
+            }
 
         this.viewModel.outputs.startCreatorBioWebViewActivity()
             .compose(bindToLifecycle())

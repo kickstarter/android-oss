@@ -27,10 +27,17 @@ import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.EmailVerificationEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
+import com.kickstarter.ui.adapters.DiscoveryPagerAdapter;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
+import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder;
+import com.kickstarter.ui.viewholders.discoverydrawer.LoggedInViewHolder;
+import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder;
+import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
+import org.mockito.Mockito;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -76,13 +83,13 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.vm = new DiscoveryViewModel.ViewModel(environment());
     final InternalBuildEnvelope buildEnvelope = InternalBuildEnvelopeFactory.newerBuildAvailable();
 
-    this.vm.outputs.showBuildCheckAlert().subscribe(this.showBuildCheckAlert);
+    this.vm.getOutputs().showBuildCheckAlert().subscribe(this.showBuildCheckAlert);
 
     // Build check should not be shown.
     this.showBuildCheckAlert.assertNoValues();
 
     // Build check should be shown when newer build is available.
-    this.vm.inputs.newerBuildIsAvailable(buildEnvelope);
+    this.vm.getInputs().newerBuildIsAvailable(buildEnvelope);
     this.showBuildCheckAlert.assertValue(buildEnvelope);
   }
 
@@ -92,15 +99,15 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     final Environment env = environment().toBuilder().currentUser(currentUser).build();
     this.vm = new DiscoveryViewModel.ViewModel(env);
 
-    this.vm.outputs.navigationDrawerData().compose(Transformers.ignoreValues()).subscribe(this.navigationDrawerDataEmitted);
-    this.vm.outputs.drawerIsOpen().subscribe(this.drawerIsOpen);
+    this.vm.getOutputs().navigationDrawerData().compose(Transformers.ignoreValues()).subscribe(this.navigationDrawerDataEmitted);
+    this.vm.getOutputs().drawerIsOpen().subscribe(this.drawerIsOpen);
 
     // Initialize activity.
     final Intent intent = new Intent(Intent.ACTION_MAIN);
     this.vm.intent(intent);
 
     // Initial MAGIC page selected.
-    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
+    this.vm.getInputs().discoveryPagerAdapterSetPrimaryPage(Mockito.mock(DiscoveryPagerAdapter.class), 0);
 
     // Drawer data should emit. Drawer should be closed.
     this.navigationDrawerDataEmitted.assertValueCount(1);
@@ -108,8 +115,8 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.segmentTrack.assertNoValues();
 
     // Open drawer and click the top PWL filter.
-    this.vm.inputs.openDrawer(true);
-    this.vm.inputs.topFilterViewHolderRowClick(null, NavigationDrawerData.Section.Row
+    this.vm.getInputs().openDrawer(true);
+    this.vm.getInputs().topFilterViewHolderRowClick(Mockito.mock(TopFilterViewHolder.class), NavigationDrawerData.Section.Row
       .builder()
       .params(DiscoveryParams.builder().staffPicks(true).build())
       .build()
@@ -121,8 +128,8 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.segmentTrack.assertValue(EventName.CTA_CLICKED.getEventName());
 
     // Open drawer and click a child filter.
-    this.vm.inputs.openDrawer(true);
-    this.vm.inputs.childFilterViewHolderRowClick(null, NavigationDrawerData.Section.Row
+    this.vm.getInputs().openDrawer(true);
+    this.vm.getInputs().childFilterViewHolderRowClick(Mockito.mock(ChildFilterViewHolder.class), NavigationDrawerData.Section.Row
       .builder()
       .params(DiscoveryParams
         .builder()
@@ -142,15 +149,15 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   public void testUpdateInterfaceElementsWithParams() {
     this.vm = new DiscoveryViewModel.ViewModel(environment());
 
-    this.vm.outputs.updateToolbarWithParams().subscribe(this.updateToolbarWithParams);
-    this.vm.outputs.expandSortTabLayout().subscribe(this.expandSortTabLayout);
+    this.vm.getOutputs().updateToolbarWithParams().subscribe(this.updateToolbarWithParams);
+    this.vm.getOutputs().expandSortTabLayout().subscribe(this.expandSortTabLayout);
 
     // Initialize activity.
     final Intent intent = new Intent(Intent.ACTION_MAIN);
     this.vm.intent(intent);
 
     // Initial MAGIC page selected.
-    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
+    this.vm.getInputs().discoveryPagerAdapterSetPrimaryPage(Mockito.mock(DiscoveryPagerAdapter.class), 0);
 
     // Sort tab should be expanded.
     this.expandSortTabLayout.assertValues(true);
@@ -159,8 +166,8 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.updateToolbarWithParams.assertValues(DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build());
 
     // Select POPULAR sort.
-    this.vm.inputs.sortClicked(1);
-    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
+    this.vm.getInputs().sortClicked(1);
+    this.vm.getInputs().discoveryPagerAdapterSetPrimaryPage(Mockito.mock(DiscoveryPagerAdapter.class), 1);
 
     this.segmentTrack.assertValue(EventName.CTA_CLICKED.getEventName());
 
@@ -171,7 +178,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.updateToolbarWithParams.assertValues(DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build());
 
     // Select ALL PROJECTS filter from drawer.
-    this.vm.inputs.topFilterViewHolderRowClick(null,
+    this.vm.getInputs().topFilterViewHolderRowClick(Mockito.mock(TopFilterViewHolder.class),
       NavigationDrawerData.Section.Row.builder().params(DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build()).build()
     );
 
@@ -180,7 +187,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.segmentTrack.assertValues(EventName.CTA_CLICKED.getEventName(), EventName.CTA_CLICKED.getEventName());
 
     // Select ART category from drawer.
-    this.vm.inputs.childFilterViewHolderRowClick(null,
+    this.vm.getInputs().childFilterViewHolderRowClick(Mockito.mock(ChildFilterViewHolder.class),
       NavigationDrawerData.Section.Row.builder()
         .params(DiscoveryParams.builder().category(CategoryFactory.artCategory()).sort(DiscoveryParams.Sort.POPULAR).build())
         .build()
@@ -190,12 +197,12 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.expandSortTabLayout.assertValues(true, true, true, true);
     this.segmentTrack.assertValues(EventName.CTA_CLICKED.getEventName(), EventName.CTA_CLICKED.getEventName(), EventName.CTA_CLICKED.getEventName());
 
-    // Simulate rotating the device and hitting initial inputs again.
-    this.vm.outputs.updateToolbarWithParams().subscribe(this.rotatedUpdateToolbarWithParams);
-    this.vm.outputs.expandSortTabLayout().subscribe(this.rotatedExpandSortTabLayout);
+    // Simulate rotating the device and hitting initial getInputs() again.
+    this.vm.getOutputs().updateToolbarWithParams().subscribe(this.rotatedUpdateToolbarWithParams);
+    this.vm.getOutputs().expandSortTabLayout().subscribe(this.rotatedExpandSortTabLayout);
 
     // Simulate recreating and setting POPULAR fragment, the previous position before rotation.
-    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
+    this.vm.getInputs().discoveryPagerAdapterSetPrimaryPage(Mockito.mock(DiscoveryPagerAdapter.class), 1);
 
     // Sort tab and toolbar params should emit again with same params.
     this.rotatedExpandSortTabLayout.assertValues(true);
@@ -208,14 +215,14 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   public void testClickingInterfaceElements() {
     this.vm = new DiscoveryViewModel.ViewModel(environment());
 
-    this.vm.outputs.showActivityFeed().subscribe(this.showActivityFeed);
-    this.vm.outputs.showCreatorDashboard().subscribe(this.showCreatorDashboard);
-    this.vm.outputs.showHelp().subscribe(this.showHelp);
-    this.vm.outputs.showInternalTools().subscribe(this.showInternalTools);
-    this.vm.outputs.showLoginTout().subscribe(this.showLoginTout);
-    this.vm.outputs.showMessages().subscribe(this.showMessages);
-    this.vm.outputs.showProfile().subscribe(this.showProfile);
-    this.vm.outputs.showSettings().subscribe(this.showSettings);
+    this.vm.getOutputs().showActivityFeed().subscribe(this.showActivityFeed);
+    this.vm.getOutputs().showCreatorDashboard().subscribe(this.showCreatorDashboard);
+    this.vm.getOutputs().showHelp().subscribe(this.showHelp);
+    this.vm.getOutputs().showInternalTools().subscribe(this.showInternalTools);
+    this.vm.getOutputs().showLoginTout().subscribe(this.showLoginTout);
+    this.vm.getOutputs().showMessages().subscribe(this.showMessages);
+    this.vm.getOutputs().showProfile().subscribe(this.showProfile);
+    this.vm.getOutputs().showSettings().subscribe(this.showSettings);
 
     this.showActivityFeed.assertNoValues();
     this.showCreatorDashboard.assertNoValues();
@@ -226,15 +233,15 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.showProfile.assertNoValues();
     this.showSettings.assertNoValues();
 
-    this.vm.inputs.loggedInViewHolderActivityClick(null);
-    this.vm.inputs.loggedOutViewHolderActivityClick(null);
-    this.vm.inputs.loggedInViewHolderDashboardClick(null);
-    this.vm.inputs.loggedOutViewHolderHelpClick(null);
-    this.vm.inputs.loggedInViewHolderInternalToolsClick(null);
-    this.vm.inputs.loggedOutViewHolderLoginToutClick(null);
-    this.vm.inputs.loggedInViewHolderMessagesClick(null);
-    this.vm.inputs.loggedInViewHolderProfileClick(null, UserFactory.user());
-    this.vm.inputs.loggedInViewHolderSettingsClick(null, UserFactory.user());
+    this.vm.getInputs().loggedInViewHolderActivityClick(Mockito.mock(LoggedInViewHolder.class));
+    this.vm.getInputs().loggedOutViewHolderActivityClick(Mockito.mock(LoggedOutViewHolder.class));
+    this.vm.getInputs().loggedInViewHolderDashboardClick(Mockito.mock(LoggedInViewHolder.class));
+    this.vm.getInputs().loggedOutViewHolderHelpClick(Mockito.mock(LoggedOutViewHolder.class));
+    this.vm.getInputs().loggedInViewHolderInternalToolsClick(Mockito.mock(LoggedInViewHolder.class));
+    this.vm.getInputs().loggedOutViewHolderLoginToutClick(Mockito.mock(LoggedOutViewHolder.class));
+    this.vm.getInputs().loggedInViewHolderMessagesClick(Mockito.mock(LoggedInViewHolder.class));
+    this.vm.getInputs().loggedInViewHolderProfileClick(Mockito.mock(LoggedInViewHolder.class), UserFactory.user());
+    this.vm.getInputs().loggedInViewHolderSettingsClick(Mockito.mock(LoggedInViewHolder.class), UserFactory.user());
 
     this.showActivityFeed.assertValueCount(2);
     this.showCreatorDashboard.assertValueCount(1);
@@ -250,15 +257,15 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   public void testInteractionBetweenParamsAndPageAdapter() {
     this.vm = new DiscoveryViewModel.ViewModel(environment());
 
-    this.vm.outputs.updateParamsForPage().subscribe(this.updateParams);
-    this.vm.outputs.updateParamsForPage().map(params -> DiscoveryUtils.positionFromSort(params.sort())).subscribe(this.updatePage);
+    this.vm.getOutputs().updateParamsForPage().subscribe(this.updateParams);
+    this.vm.getOutputs().updateParamsForPage().map(params -> DiscoveryUtils.positionFromSort(params.sort())).subscribe(this.updatePage);
 
     // Start initial activity.
     final Intent intent = new Intent(Intent.ACTION_MAIN);
     this.vm.intent(intent);
 
     // Initial MAGIC page selected.
-    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
+    this.vm.getInputs().discoveryPagerAdapterSetPrimaryPage(Mockito.mock(DiscoveryPagerAdapter.class), 0);
 
     // Initial params should emit. Page should not be updated yet.
     this.updateParams.assertValues(
@@ -267,7 +274,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.updatePage.assertValues(0);
 
     // Select POPULAR sort position.
-    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
+    this.vm.getInputs().discoveryPagerAdapterSetPrimaryPage(Mockito.mock(DiscoveryPagerAdapter.class), 1);
 
     // Params and page should update with new POPULAR sort values.
     this.updateParams.assertValues(
@@ -277,7 +284,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.updatePage.assertValues(0, 1);
 
     // Select ART category from the drawer.
-    this.vm.inputs.childFilterViewHolderRowClick(null,
+    this.vm.getInputs().childFilterViewHolderRowClick(Mockito.mock(ChildFilterViewHolder.class),
       NavigationDrawerData.Section.Row.builder()
         .params(DiscoveryParams.builder().category(CategoryFactory.artCategory()).build())
         .build()
@@ -292,7 +299,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.updatePage.assertValues(0, 1, 1);
 
     // Select MAGIC sort position.
-    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
+    this.vm.getInputs().discoveryPagerAdapterSetPrimaryPage(Mockito.mock(DiscoveryPagerAdapter.class), 0);
 
     // Params and page should update with new MAGIC sort value.
     this.updateParams.assertValues(
@@ -303,9 +310,9 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     );
     this.updatePage.assertValues(0, 1, 1, 0);
 
-    // Simulate rotating the device and hitting initial inputs again.
-    this.vm.outputs.updateParamsForPage().subscribe(this.rotatedUpdateParams);
-    this.vm.outputs.updateParamsForPage().map(params -> DiscoveryUtils.positionFromSort(params.sort())).subscribe(this.rotatedUpdatePage);
+    // Simulate rotating the device and hitting initial getInputs() again.
+    this.vm.getOutputs().updateParamsForPage().subscribe(this.rotatedUpdateParams);
+    this.vm.getOutputs().updateParamsForPage().map(params -> DiscoveryUtils.positionFromSort(params.sort())).subscribe(this.rotatedUpdatePage);
 
     // Should emit again with same params.
     this.rotatedUpdateParams.assertValues(
@@ -345,7 +352,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   public void testClearingPages() {
     this.vm = new DiscoveryViewModel.ViewModel(environment());
 
-    this.vm.outputs.clearPages().subscribe(this.clearPages);
+    this.vm.getOutputs().clearPages().subscribe(this.clearPages);
 
     // Start initial activity.
     final Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -353,16 +360,16 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     this.clearPages.assertNoValues();
 
-    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
+    this.vm.getInputs().discoveryPagerAdapterSetPrimaryPage(Mockito.mock(DiscoveryPagerAdapter.class), 1);
 
     this.clearPages.assertNoValues();
 
-    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 3);
+    this.vm.getInputs().discoveryPagerAdapterSetPrimaryPage(Mockito.mock(DiscoveryPagerAdapter.class), 3);
 
     this.clearPages.assertNoValues();
 
     // Select ART category from the drawer.
-    this.vm.inputs.childFilterViewHolderRowClick(null,
+    this.vm.getInputs().childFilterViewHolderRowClick(Mockito.mock(ChildFilterViewHolder.class),
       NavigationDrawerData.Section.Row.builder()
         .params(DiscoveryParams.builder().category(CategoryFactory.artCategory()).build())
         .build()
@@ -370,10 +377,10 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     this.clearPages.assertValues(Arrays.asList(0, 1, 2));
 
-    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
+    this.vm.getInputs().discoveryPagerAdapterSetPrimaryPage(Mockito.mock(DiscoveryPagerAdapter.class), 1);
 
     // Select MUSIC category from the drawer.
-    this.vm.inputs.childFilterViewHolderRowClick(null,
+    this.vm.getInputs().childFilterViewHolderRowClick(Mockito.mock(ChildFilterViewHolder.class),
       NavigationDrawerData.Section.Row.builder()
         .params(DiscoveryParams.builder().category(CategoryFactory.musicCategory()).build())
         .build()
@@ -385,7 +392,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testSetUpQualtrics_whenFirstSessionIsNull() {
     this.vm = new DiscoveryViewModel.ViewModel(environment());
-    this.vm.outputs.setUpQualtrics().subscribe(this.setUpQualtrics);
+    this.vm.getOutputs().setUpQualtrics().subscribe(this.setUpQualtrics);
 
     this.setUpQualtrics.assertValue(true);
   }
@@ -395,7 +402,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.vm = new DiscoveryViewModel.ViewModel(environment().toBuilder()
       .firstSessionPreference(new MockBooleanPreference(true))
     .build());
-    this.vm.outputs.setUpQualtrics().subscribe(this.setUpQualtrics);
+    this.vm.getOutputs().setUpQualtrics().subscribe(this.setUpQualtrics);
 
     this.setUpQualtrics.assertValue(false);
   }
@@ -404,7 +411,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   public void testQualtricsPromptIsGone_whenTargetingResultFailed() {
     this.vm = new DiscoveryViewModel.ViewModel(environment());
 
-    this.vm.outputs.qualtricsPromptIsGone().subscribe(this.qualtricsPromptIsGone);
+    this.vm.getOutputs().qualtricsPromptIsGone().subscribe(this.qualtricsPromptIsGone);
 
     this.vm.qualtricsResult(new QualtricsResult() {
       @Override
@@ -420,7 +427,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   public void testQualtricsPromptIsGone_whenTargetingResultPassed() {
     this.vm = new DiscoveryViewModel.ViewModel(environment());
 
-    this.vm.outputs.qualtricsPromptIsGone().subscribe(this.qualtricsPromptIsGone);
+    this.vm.getOutputs().qualtricsPromptIsGone().subscribe(this.qualtricsPromptIsGone);
 
     this.vm.qualtricsResult(new QualtricsResult() {
       @Override
@@ -436,7 +443,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   public void testQualtricsPromptIsGone_whenPromptConfirmed() {
     this.vm = new DiscoveryViewModel.ViewModel(environment());
 
-    this.vm.outputs.qualtricsPromptIsGone().subscribe(this.qualtricsPromptIsGone);
+    this.vm.getOutputs().qualtricsPromptIsGone().subscribe(this.qualtricsPromptIsGone);
 
     this.vm.qualtricsConfirmClicked();
 
@@ -447,7 +454,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   public void testQualtricsPromptIsGone_whenPromptDismissed() {
     this.vm = new DiscoveryViewModel.ViewModel(environment());
 
-    this.vm.outputs.qualtricsPromptIsGone().subscribe(this.qualtricsPromptIsGone);
+    this.vm.getOutputs().qualtricsPromptIsGone().subscribe(this.qualtricsPromptIsGone);
 
     this.vm.qualtricsDismissClicked();
 
@@ -458,28 +465,28 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   public void testRootCategoriesEmitWithPosition() {
     this.vm = new DiscoveryViewModel.ViewModel(environment());
 
-    this.vm.outputs.rootCategoriesAndPosition().map(cp -> cp.first).subscribe(this.rootCategories);
-    this.vm.outputs.rootCategoriesAndPosition().map(cp -> cp.second).subscribe(this.position);
+    this.vm.getOutputs().rootCategoriesAndPosition().map(cp -> cp.first).subscribe(this.rootCategories);
+    this.vm.getOutputs().rootCategoriesAndPosition().map(cp -> cp.second).subscribe(this.position);
 
     // Start initial activity.
     this.vm.intent(new Intent(Intent.ACTION_MAIN));
 
     // Initial MAGIC page selected.
-    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
+    this.vm.getInputs().discoveryPagerAdapterSetPrimaryPage(Mockito.mock(DiscoveryPagerAdapter.class), 0);
 
     // Root categories should emit for the initial MAGIC sort this.position.
     this.rootCategories.assertValueCount(1);
     this.position.assertValues(0);
 
     // Select POPULAR sort position.
-    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
+    this.vm.getInputs().discoveryPagerAdapterSetPrimaryPage(Mockito.mock(DiscoveryPagerAdapter.class), 1);
 
     // Root categories should emit for the POPULAR sort position.
     this.rootCategories.assertValueCount(2);
     this.position.assertValues(0, 1);
 
     // Select ART category from the drawer.
-    this.vm.inputs.childFilterViewHolderRowClick(null,
+    this.vm.getInputs().childFilterViewHolderRowClick(Mockito.mock(ChildFilterViewHolder.class),
       NavigationDrawerData.Section.Row.builder()
         .params(DiscoveryParams.builder().category(CategoryFactory.artCategory()).build())
         .build()
@@ -494,7 +501,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   public void testDrawerMenuIcon_whenLoggedOut() {
     this.vm = new DiscoveryViewModel.ViewModel(environment());
 
-    this.vm.outputs.drawerMenuIcon().subscribe(this.drawerMenuIcon);
+    this.vm.getOutputs().drawerMenuIcon().subscribe(this.drawerMenuIcon);
 
     this.drawerMenuIcon.assertValue(R.drawable.ic_menu);
   }
@@ -504,7 +511,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     final MockCurrentUser currentUser = new MockCurrentUser();
 
     this.vm = new DiscoveryViewModel.ViewModel(environment().toBuilder().currentUser(currentUser).build());
-    this.vm.outputs.drawerMenuIcon().subscribe(this.drawerMenuIcon);
+    this.vm.getOutputs().drawerMenuIcon().subscribe(this.drawerMenuIcon);
 
     this.drawerMenuIcon.assertValue(R.drawable.ic_menu);
 
@@ -530,7 +537,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
       .currentUser(currentUser)
       .build());
 
-    this.vm.outputs.drawerMenuIcon().subscribe(this.drawerMenuIcon);
+    this.vm.getOutputs().drawerMenuIcon().subscribe(this.drawerMenuIcon);
 
     this.drawerMenuIcon.assertValue(R.drawable.ic_menu);
   }
@@ -544,7 +551,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
       .build();
     this.vm = new DiscoveryViewModel.ViewModel(environment);
 
-    this.vm.outputs.showQualtricsSurvey().subscribe(this.showQualtricsSurvey);
+    this.vm.getOutputs().showQualtricsSurvey().subscribe(this.showQualtricsSurvey);
     final String surveyUrl = "http://www.survey.cool";
 
     this.vm.qualtricsResult(qualtricsResult(surveyUrl, true));
@@ -567,7 +574,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
       .build();
     this.vm = new DiscoveryViewModel.ViewModel(environment);
 
-    this.vm.outputs.showQualtricsSurvey().subscribe(this.showQualtricsSurvey);
+    this.vm.getOutputs().showQualtricsSurvey().subscribe(this.showQualtricsSurvey);
     final String surveyUrl = "http://www.survey.cool";
 
     this.vm.qualtricsResult(qualtricsResult(surveyUrl, true));
@@ -581,7 +588,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   public void testShowQualtricsSurvey_whenUserConfirmsPromptAndSurveyUrlIsNotPresent() {
     this.vm = new DiscoveryViewModel.ViewModel(environment());
 
-    this.vm.outputs.showQualtricsSurvey().subscribe(this.showQualtricsSurvey);
+    this.vm.getOutputs().showQualtricsSurvey().subscribe(this.showQualtricsSurvey);
     final String surveyUrl = "http://www.survey.cool";
 
     this.vm.qualtricsResult(qualtricsResult(surveyUrl, true));
@@ -595,7 +602,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   public void testShowQualtricsSurvey_whenUserDismissesPrompt() {
     this.vm = new DiscoveryViewModel.ViewModel(environment());
 
-    this.vm.outputs.showQualtricsSurvey().subscribe(this.showQualtricsSurvey);
+    this.vm.getOutputs().showQualtricsSurvey().subscribe(this.showQualtricsSurvey);
     final String surveyUrl = "http://www.survey.cool";
 
     this.vm.qualtricsResult(qualtricsResult(surveyUrl, true));
@@ -609,7 +616,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   public void testUpdateImpressionCount() {
     this.vm = new DiscoveryViewModel.ViewModel(environment());
 
-    this.vm.outputs.updateImpressionCount().subscribe(this.updateImpressionCount);
+    this.vm.getOutputs().updateImpressionCount().subscribe(this.updateImpressionCount);
     final String surveyUrl = "http://www.survey.cool";
 
     this.vm.qualtricsResult(qualtricsResult(surveyUrl, false));
@@ -642,8 +649,8 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
             .build();
 
     this.vm = new DiscoveryViewModel.ViewModel(mockedClientEnvironment);
-    this.vm.outputs.showSuccessMessage().subscribe(this.showSuccessMessage);
-    this.vm.outputs.showErrorMessage().subscribe(this.showErrorMessage);
+    this.vm.getOutputs().showSuccessMessage().subscribe(this.showSuccessMessage);
+    this.vm.getOutputs().showErrorMessage().subscribe(this.showErrorMessage);
 
     this.vm.intent(intentWithUrl);
 
@@ -673,8 +680,8 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
             .build();
 
     this.vm = new DiscoveryViewModel.ViewModel(mockedClientEnvironment);
-    this.vm.outputs.showSuccessMessage().subscribe(this.showSuccessMessage);
-    this.vm.outputs.showErrorMessage().subscribe(this.showErrorMessage);
+    this.vm.getOutputs().showSuccessMessage().subscribe(this.showSuccessMessage);
+    this.vm.getOutputs().showErrorMessage().subscribe(this.showErrorMessage);
 
     this.vm.intent(intentWithUrl);
 
@@ -706,13 +713,13 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     }
 
     this.vm = new DiscoveryViewModel.ViewModel(environmentBuilder.build());
-    this.vm.outputs.updateParamsForPage().subscribe(this.updateParams);
+    this.vm.getOutputs().updateParamsForPage().subscribe(this.updateParams);
 
     // Start initial activity.
     final Intent intent = new Intent(Intent.ACTION_MAIN);
     this.vm.intent(intent);
 
     // Initial MAGIC page selected.
-    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
+    this.vm.getInputs().discoveryPagerAdapterSetPrimaryPage(Mockito.mock(DiscoveryPagerAdapter.class), 0);
   }
 }

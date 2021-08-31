@@ -185,7 +185,7 @@ class LoginToutActivity : BaseActivity<LoginToutViewModel.ViewModel>() {
     fun startTwoFactorFacebookChallenge() {
         val intent = Intent(this, TwoFactorActivity::class.java)
             .putExtra(IntentKey.FACEBOOK_LOGIN, true)
-            .putExtra(IntentKey.FACEBOOK_TOKEN, AccessToken.getCurrentAccessToken().token)
+            .putExtra(IntentKey.FACEBOOK_TOKEN, AccessToken.getCurrentAccessToken()?.token)
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
         TransitionUtils.transition(this, TransitionUtils.fadeIn())
     }

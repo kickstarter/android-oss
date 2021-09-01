@@ -22,6 +22,7 @@ import okhttp3.Request
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 
 interface UpdateViewModel {
     interface Inputs {
@@ -39,6 +40,9 @@ interface UpdateViewModel {
 
         /** Call when the share button is clicked.  */
         fun shareIconButtonClicked()
+
+        /** Call when a project update comments deep link*/
+        fun goToCommentsActivity()
     }
 
     interface Outputs {
@@ -59,6 +63,8 @@ interface UpdateViewModel {
 
         /** Emits a url to load in the web view.  */
         fun webViewUrl(): Observable<String>
+
+        fun hasCommentsDeepLinks(): Observable<Boolean>
     }
 
     class ViewModel(environment: Environment) : ActivityViewModel<UpdateActivity?>(environment), Inputs, Outputs {
@@ -69,6 +75,8 @@ interface UpdateViewModel {
         private val goToProjectRequest = PublishSubject.create<Request>()
         private val goToUpdateRequest = PublishSubject.create<Request>()
         private val shareButtonClicked = PublishSubject.create<Void?>()
+        private val goToCommentsActivity = PublishSubject.create<Void?>()
+
         private val openProjectExternally = PublishSubject.create<String>()
         private val startShareIntent = PublishSubject.create<Pair<Update, String>>()
         private val startRootCommentsActivity = PublishSubject.create<Update>()
@@ -86,6 +94,14 @@ interface UpdateViewModel {
         init {
             val initialUpdate = intent()
                 .map { it.getParcelableExtra(IntentKey.UPDATE) as? Update? }
+
+            intent()
+                .map {
+                    it.getBooleanExtra(IntentKey.IS_UPDATE_COMMENT, false)
+                }
+                .subscribe {
+                    this.deedLinkToRootComment.onNext(it)
+                }
 
             val project = intent()
                 .flatMap {
@@ -153,21 +169,13 @@ interface UpdateViewModel {
                 .compose(bindToLifecycle())
                 .subscribe { startShareIntent.onNext(it) }
 
-            intent()
-                .map {
-                    it.getBooleanExtra(IntentKey.IS_UPDATE_COMMENT, false)
-                }
-                .subscribe {
-                    deedLinkToRootComment.onNext(it)
-                }
-
             currentUpdate
-                .withLatestFrom(deedLinkToRootComment) { update, isDeeplinkForComment -> Pair(update, isDeeplinkForComment) }
-                .filter { it.second }
+                .delay(2, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
+                .withLatestFrom(goToCommentsActivity) { update, _ -> update }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe {
-                    startRootCommentsActivity.onNext(it.first)
+                    startRootCommentsActivity.onNext(it)
                     deedLinkToRootComment.onNext(false)
                 }
 
@@ -233,6 +241,8 @@ interface UpdateViewModel {
 
         override fun shareIconButtonClicked() = shareButtonClicked.onNext(null)
 
+        override fun goToCommentsActivity() = goToCommentsActivity.onNext(null)
+
         override fun openProjectExternally(): Observable<String> = openProjectExternally
 
         override fun startShareIntent(): Observable<Pair<Update, String>> = startShareIntent
@@ -244,5 +254,7 @@ interface UpdateViewModel {
         override fun updateSequence(): Observable<String> = updateSequence
 
         override fun webViewUrl(): Observable<String> = webViewUrl
+
+        override fun hasCommentsDeepLinks(): Observable<Boolean> = deedLinkToRootComment
     }
 }

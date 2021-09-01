@@ -66,6 +66,14 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
                 openProjectExternally(projectUrl)
             }
 
+        viewModel.outputs.hasCommentsDeepLinks()
+            .filter { it == true }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                viewModel.inputs.goToCommentsActivity()
+            }
+
         viewModel.outputs.startRootCommentsActivity()
             .compose(bindToLifecycle())
             .compose(observeForUI())

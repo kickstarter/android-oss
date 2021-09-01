@@ -20,9 +20,13 @@ import com.kickstarter.ui.IntentKey;
 import org.junit.Test;
 
 import androidx.annotation.NonNull;
+
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.Request;
 import rx.Observable;
 import rx.observers.TestSubscriber;
+import rx.schedulers.TestScheduler;
 
 public final class UpdateViewModelTest extends KSRobolectricTestCase {
   private final Intent defaultIntent = new Intent()
@@ -245,8 +249,7 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testUpdateViewModel_DeepLinkComment() {
     final String postId = "3254626";
-    final Update update = UpdateFactory.update().toBuilder().sequence(2).build();
-
+    final Update update = UpdateFactory.update();
 
     final ApiClientType apiClient = new MockApiClient() {
       @Override
@@ -255,7 +258,9 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
       }
     };
 
-    final Environment environment = environment().toBuilder().apiClient(apiClient).build();
+    TestScheduler testScheduler = new TestScheduler();
+
+    final Environment environment = environment().toBuilder().apiClient(apiClient).scheduler(testScheduler).build();
 
     final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment);
 
@@ -264,6 +269,9 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
 
     final TestSubscriber<String> webViewUrl = new TestSubscriber<>();
     vm.outputs.webViewUrl().subscribe(webViewUrl);
+
+    final TestSubscriber<Boolean> deedLinkToRootComment = new TestSubscriber<>();
+    vm.hasCommentsDeepLinks().subscribe(deedLinkToRootComment);
 
     // Start the intent with a project and update.
     vm.intent(new Intent()
@@ -274,6 +282,14 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
 
     // Initial update index url emits.
     webViewUrl.assertValues(update.urls().web().update());
+    deedLinkToRootComment.assertValue(true);
+
+    vm.inputs.goToCommentsActivity();
+
+
+    testScheduler.advanceTimeBy(2, TimeUnit.SECONDS);
+
+
     startRootCommentsActivity.assertValue(update);
     startRootCommentsActivity.assertValueCount(1);
   }

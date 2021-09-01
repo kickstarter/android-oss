@@ -47,7 +47,9 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
                     (uri?.let { it } ?: Uri.EMPTY).isProjectUpdateCommentsUri(
                         webEndpoint
                     )
-                }) { request: Request, _ -> handleProjectUpdateCommentsUriRequest(request) },
+                }) { request: Request, _ ->
+                    handleProjectUpdateCommentsUriRequest(request)
+                },
                 RequestHandler({ uri: Uri?, webEndpoint: String ->
                     (uri?.let { it } ?: Uri.EMPTY).isProjectUri(webEndpoint)
                 }) { request: Request, webView: WebView -> handleProjectUriRequest(request, webView) }

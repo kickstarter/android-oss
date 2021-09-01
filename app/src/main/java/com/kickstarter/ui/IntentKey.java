@@ -36,6 +36,7 @@ public final class IntentKey {
   public static final String TRACKING_CLIENT_TYPE_TAG = "com.kickstarter.kickstarter.intent_tracking_client_tag";
   public static final String UPDATE = "com.kickstarter.kickstarter.intent_update";
   public static final String UPDATE_POST_ID = "com.kickstarter.kickstarter.intent_update_post_id";
+  public static final String IS_UPDATE_COMMENT = "com.kickstarter.kickstarter.intent_is_update_comment";
   public static final String URL = "com.kickstarter.kickstarter.intent_url";
   public static final String PUSH_NOTIFICATION_ENVELOPE = "com.kickstarter.kickstarter.push_notification_envelope";
   public static final String COMMENT = "com.kickstarter.kickstarter.intent_comment";
@@ -43,4 +44,5 @@ public final class IntentKey {
   public static final String REPLY_EXPAND = "com.kickstarter.kickstarter.intent_reply_expand";
   public static final String DEEP_LINK_SCREEN_PROJECT_COMMENT = "com.kickstarter.kickstarter.deep_link_screen_project_comment";
   public static final String DEEP_LINK_SCREEN_PROJECT_UPDATE = "com.kickstarter.kickstarter.deep_link_screen_project_update";
+  public static final String DEEP_LINK_SCREEN_PROJECT_UPDATE_COMMENT = "com.kickstarter.kickstarter.deep_link_screen_project_update_comment";
 }

@@ -169,9 +169,9 @@ interface UpdateViewModel {
                 .compose(bindToLifecycle())
                 .subscribe { startShareIntent.onNext(it) }
 
-            currentUpdate
+            goToCommentsActivity
                 .delay(2, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
-                .withLatestFrom(goToCommentsActivity) { update, _ -> update }
+                .withLatestFrom(currentUpdate) { _, update -> update }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe {

@@ -258,7 +258,7 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
       }
     };
 
-    TestScheduler testScheduler = new TestScheduler();
+    final TestScheduler testScheduler = new TestScheduler();
 
     final Environment environment = environment().toBuilder().apiClient(apiClient).scheduler(testScheduler).build();
 

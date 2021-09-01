@@ -16,6 +16,7 @@ import com.kickstarter.libs.utils.UrlUtils.refTag
 import com.kickstarter.libs.utils.extensions.isCheckoutUri
 import com.kickstarter.libs.utils.extensions.isProjectCommentUri
 import com.kickstarter.libs.utils.extensions.isProjectPreviewUri
+import com.kickstarter.libs.utils.extensions.isProjectUpdateCommentsUri
 import com.kickstarter.libs.utils.extensions.isProjectUpdateUri
 import com.kickstarter.libs.utils.extensions.isProjectUri
 import com.kickstarter.libs.utils.extensions.isSettingsUrl
@@ -43,6 +44,9 @@ interface DeepLinkViewModel {
         /** Emits when we should start the [com.kickstarter.ui.activities.ProjectActivity].  */
         fun startProjectActivityForUpdate(): Observable<Uri>
 
+        /** Emits when we should start the [com.kickstarter.ui.activities.ProjectActivity].  */
+        fun startProjectActivityForCommentToUpdate(): Observable<Uri>
+
         /** Emits when we should start the [com.kickstarter.ui.activities.ProjectActivity] with pledge sheet expanded.  */
         fun startProjectActivityForCheckout(): Observable<Uri>
 
@@ -58,6 +62,7 @@ interface DeepLinkViewModel {
         private val startProjectActivity = BehaviorSubject.create<Uri>()
         private val startProjectActivityForComment = BehaviorSubject.create<Uri>()
         private val startProjectActivityForUpdate = BehaviorSubject.create<Uri>()
+        private val startProjectActivityForCommentToUpdate = BehaviorSubject.create<Uri>()
         private val startProjectActivityWithCheckout = BehaviorSubject.create<Uri>()
         private val updateUserPreferences = BehaviorSubject.create<Boolean>()
         private val finishDeeplinkActivity = BehaviorSubject.create<Void?>()
@@ -95,6 +100,9 @@ interface DeepLinkViewModel {
                 .filter {
                     !it.isProjectUpdateUri(Secrets.WebEndpoint.PRODUCTION)
                 }
+                .filter {
+                    !it.isProjectUpdateCommentsUri(Secrets.WebEndpoint.PRODUCTION)
+                }
                 .map { appendRefTagIfNone(it) }
                 .compose(bindToLifecycle())
                 .subscribe {
@@ -117,10 +125,24 @@ interface DeepLinkViewModel {
                 .filter {
                     it.isProjectUpdateUri(Secrets.WebEndpoint.PRODUCTION)
                 }
+                .filter {
+                    !it.isProjectUpdateCommentsUri(Secrets.WebEndpoint.PRODUCTION)
+                }
                 .map { appendRefTagIfNone(it) }
                 .compose(bindToLifecycle())
                 .subscribe {
                     startProjectActivityForUpdate.onNext(it)
+                }
+
+            uriFromIntent
+                .filter { ObjectUtils.isNotNull(it) }
+                .filter {
+                    it.isProjectUpdateCommentsUri(Secrets.WebEndpoint.PRODUCTION)
+                }
+                .map { appendRefTagIfNone(it) }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    startProjectActivityForCommentToUpdate.onNext(it)
                 }
 
             uriFromIntent
@@ -166,6 +188,7 @@ interface DeepLinkViewModel {
                 .filter { !it.isProjectUri(Secrets.WebEndpoint.PRODUCTION) }
                 .filter { !it.isProjectCommentUri(Secrets.WebEndpoint.PRODUCTION) }
                 .filter { !it.isProjectUpdateUri(Secrets.WebEndpoint.PRODUCTION) }
+                .filter { !it.isProjectUpdateCommentsUri(Secrets.WebEndpoint.PRODUCTION) }
 
             Observable.merge(projectPreview, unsupportedDeepLink)
                 .map { obj: Uri -> obj.toString() }
@@ -210,6 +233,8 @@ interface DeepLinkViewModel {
         override fun startProjectActivityForComment(): Observable<Uri> = startProjectActivityForComment
 
         override fun startProjectActivityForUpdate(): Observable<Uri> = startProjectActivityForUpdate
+
+        override fun startProjectActivityForCommentToUpdate(): Observable<Uri> = startProjectActivityForCommentToUpdate
 
         override fun startProjectActivity(): Observable<Uri> = startProjectActivity
 

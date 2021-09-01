@@ -68,7 +68,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val showUpdatePledgeSuccess = TestSubscriber<Void>()
     private val startCampaignWebViewActivity = TestSubscriber<ProjectData>()
     private val startRootCommentsActivityivity = TestSubscriber<Pair<Project, ProjectData>>()
-    private val startProjectUpdateActivity = TestSubscriber<Pair<String, Pair<Project, ProjectData>>>()
+    private val startProjectUpdateActivity = TestSubscriber< Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>()
     private val startCreatorBioWebViewActivity = TestSubscriber<Project>()
     private val startCreatorDashboardActivity = TestSubscriber<Project>()
     private val startLoginToutActivity = TestSubscriber<Void>()
@@ -625,7 +625,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         val projectData = ProjectDataFactory.project(project)
         val projectAndData = Pair.create(project, projectData)
         val postId = "3254626"
-        val updateProjectAndData = Pair.create(postId, projectAndData)
+        val updateProjectAndData = Pair.create(Pair(postId, false), projectAndData)
         val testScheduler = TestScheduler()
 
         setUpEnvironment(
@@ -636,6 +636,34 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         // Start the view model with a project.
         val intent = Intent().apply {
             putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE, postId)
+            putExtra(IntentKey.PROJECT, project)
+        }
+
+        this.vm.intent(intent)
+
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+
+        this.startProjectUpdateActivity.assertValues(updateProjectAndData)
+    }
+
+    @Test
+    fun testStartUpdateActivityToCommentFromDeepLink() {
+        val project = ProjectFactory.project()
+        val projectData = ProjectDataFactory.project(project)
+        val projectAndData = Pair.create(project, projectData)
+        val postId = "3254626"
+        val updateProjectAndData = Pair.create(Pair(postId, true), projectAndData)
+        val testScheduler = TestScheduler()
+
+        setUpEnvironment(
+            environment().toBuilder()
+                .scheduler(testScheduler).build()
+        )
+
+        // Start the view model with a project.
+        val intent = Intent().apply {
+            putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE, postId)
+            putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE_COMMENT, true)
             putExtra(IntentKey.PROJECT, project)
         }
 

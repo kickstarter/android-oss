@@ -236,7 +236,7 @@ interface ProjectViewModel {
         fun startProjectUpdatesActivity(): Observable<Pair<Project, ProjectData>>
 
         /** Emits when we should start [com.kickstarter.ui.activities.UpdateActivity].  */
-        fun startProjectUpdateActivity(): Observable< Pair<String, Pair<Project, ProjectData>>>
+        fun startProjectUpdateActivity(): Observable< Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>
 
         /** Emits when we the pledge was successful and should start the [com.kickstarter.ui.activities.ThanksActivity]. */
         fun startThanksActivity(): Observable<Pair<CheckoutData, PledgeData>>
@@ -317,7 +317,7 @@ interface ProjectViewModel {
         private val startLoginToutActivity = PublishSubject.create<Void>()
         private val startMessagesActivity = PublishSubject.create<Project>()
         private val startProjectUpdatesActivity = PublishSubject.create<Pair<Project, ProjectData>>()
-        private val startProjectUpdateActivity = PublishSubject.create<Pair<String, Pair<Project, ProjectData>>>()
+        private val startProjectUpdateActivity = PublishSubject.create< Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>()
         private val startThanksActivity = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
         private val startVideoActivity = PublishSubject.create<Project>()
         private val updateFragments = BehaviorSubject.create<ProjectData>()
@@ -523,7 +523,12 @@ interface ProjectViewModel {
                 .delay(1, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
                 .filter {
                     it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)?.isNotEmpty() ?: false
-                }.map { requireNotNull(it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)) }
+                }.map {
+                    Pair(
+                        requireNotNull(it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)),
+                        it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE_COMMENT, false)
+                    )
+                }
                 .withLatestFrom(latestProjectAndProjectData) { updateId, project ->
                     Pair(updateId, project)
                 }
@@ -1132,7 +1137,7 @@ interface ProjectViewModel {
         override fun startProjectUpdatesActivity(): Observable<Pair<Project, ProjectData>> = this.startProjectUpdatesActivity
 
         @NonNull
-        override fun startProjectUpdateActivity(): Observable<Pair<String, Pair<Project, ProjectData>>> = this.startProjectUpdateActivity
+        override fun startProjectUpdateActivity(): Observable<Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>> = this.startProjectUpdateActivity
 
         @NonNull
         override fun startVideoActivity(): Observable<Project> = this.startVideoActivity

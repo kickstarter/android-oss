@@ -655,10 +655,11 @@ class ProjectActivity :
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
-    private fun startProjectUpdateActivity(projectAndData: Pair<String, Pair<Project, ProjectData>>) {
+    private fun startProjectUpdateActivity(projectAndData: Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>) {
         val intent = Intent(this, UpdateActivity::class.java)
             .putExtra(IntentKey.PROJECT, projectAndData.second.first)
-            .putExtra(IntentKey.UPDATE_POST_ID, projectAndData.first)
+            .putExtra(IntentKey.UPDATE_POST_ID, projectAndData.first.first)
+            .putExtra(IntentKey.IS_UPDATE_COMMENT, projectAndData.first.second)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 

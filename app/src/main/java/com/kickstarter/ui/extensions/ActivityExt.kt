@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import com.google.android.play.core.review.ReviewInfo
+import com.google.android.play.core.review.ReviewManager
 import com.kickstarter.R
 
 fun Activity.hideKeyboard() {
@@ -32,4 +34,20 @@ fun Activity.showErrorSnackBar(anchor: View, message: String) {
     val backgroundColor = this.resources.getColor(R.color.kds_alert, this.theme)
     val textColor = this.resources.getColor(R.color.kds_white, this.theme)
     showSnackbarWithColor(anchor, message, backgroundColor, textColor)
+}
+
+fun Activity.showRatingDialog(manager: ReviewManager) {
+    val requestReviewTask = manager.requestReviewFlow()
+    requestReviewTask.addOnCompleteListener { request ->
+        if (request.isSuccessful) {
+            // Request succeeded and a ReviewInfo instance was received
+            val reviewInfo: ReviewInfo = request.result
+            val flow = manager.launchReviewFlow(this, reviewInfo)
+            flow.addOnCompleteListener { _ ->
+                // The flow has finished.
+            }
+        } else {
+            // Request failed
+        }
+    }
 }

@@ -272,6 +272,7 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
     implementation 'com.apollographql.apollo:apollo-runtime:2.3.0'
     implementation 'com.facebook.android:facebook-android-sdk:11.2.0'
+    implementation 'com.google.android.play:core-ktx:1.8.1'
     final auto_parcel_version = "0.3.1"
     implementation "com.github.frankiesardo:auto-parcel:$auto_parcel_version"
     kapt "com.github.frankiesardo:auto-parcel-processor:$auto_parcel_version"

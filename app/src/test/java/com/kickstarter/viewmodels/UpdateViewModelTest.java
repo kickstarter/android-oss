@@ -332,7 +332,7 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
 
     // Initial update index url emits.
     webViewUrl.assertValues(update.urls().web().update());
-    deedLinkToThreadActivity.assertValue(Pair.create(commentableId,true));
+    deedLinkToThreadActivity.assertValue(Pair.create(commentableId, true));
 
     vm.inputs.goToCommentsActivityToDeepLinkThreadActivity(commentableId);
 
@@ -340,7 +340,7 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     testScheduler.advanceTimeBy(2, TimeUnit.SECONDS);
 
 
-    startRootCommentsActivityToDeepLinkThreadActivity.assertValue(Pair.create(commentableId,update));
+    startRootCommentsActivityToDeepLinkThreadActivity.assertValue(Pair.create(commentableId, update));
     startRootCommentsActivityToDeepLinkThreadActivity.assertValueCount(1);
   }
 }

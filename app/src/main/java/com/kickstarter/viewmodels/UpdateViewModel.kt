@@ -115,7 +115,7 @@ interface UpdateViewModel {
                 }
 
             intent()
-                .filter { it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty() }
+                .filter { it.hasExtra(IntentKey.COMMENT) && it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty() ?: false }
                 .map {
                     Pair(
                         requireNotNull(it.getStringExtra(IntentKey.COMMENT)),

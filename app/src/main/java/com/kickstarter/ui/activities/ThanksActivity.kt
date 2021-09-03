@@ -7,7 +7,6 @@ import android.util.Pair
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.play.core.review.ReviewManagerFactory
 import com.kickstarter.R
 import com.kickstarter.databinding.ThanksLayoutBinding
 import com.kickstarter.libs.BaseActivity
@@ -19,7 +18,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ThanksAdapter
-import com.kickstarter.ui.extensions.showRatingDialog
+import com.kickstarter.ui.extensions.showRatingDialogWidget
 import com.kickstarter.viewmodels.ThanksViewModel
 import java.util.concurrent.TimeUnit
 
@@ -121,7 +120,7 @@ class ThanksActivity : BaseActivity<ThanksViewModel.ViewModel>() {
         builder.show()
     }
 
-    private fun showRatingDialog() = showRatingDialog(ReviewManagerFactory.create(this))
+    private fun showRatingDialog() = showRatingDialogWidget()
 
     private fun startDiscoveryActivity(params: DiscoveryParams) {
         val intent = Intent(this, DiscoveryActivity::class.java)

@@ -5,8 +5,9 @@ import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.google.android.play.core.review.ReviewInfo
-import com.google.android.play.core.review.ReviewManager
+import com.google.android.play.core.review.ReviewManagerFactory
 import com.kickstarter.R
+import timber.log.Timber
 
 fun Activity.hideKeyboard() {
     val inputManager = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -36,18 +37,32 @@ fun Activity.showErrorSnackBar(anchor: View, message: String) {
     showSnackbarWithColor(anchor, message, backgroundColor, textColor)
 }
 
-fun Activity.showRatingDialog(manager: ReviewManager) {
+fun Activity.showRatingDialogWidget() {
+    val manager = ReviewManagerFactory.create(this)
     val requestReviewTask = manager.requestReviewFlow()
+
     requestReviewTask.addOnCompleteListener { request ->
         if (request.isSuccessful) {
+            Timber.v("${this.localClassName } : showRatingDialogWidget request: ${request.isSuccessful} ")
             // Request succeeded and a ReviewInfo instance was received
             val reviewInfo: ReviewInfo = request.result
+
+            // Start the review flow UI
             val flow = manager.launchReviewFlow(this, reviewInfo)
-            flow.addOnCompleteListener { _ ->
-                // The flow has finished.
+
+            flow.addOnSuccessListener {
+                Timber.v("${this.localClassName } : showRatingDialogWidget launchReviewFlow: Success")
+            }
+
+            flow.addOnFailureListener {
+                Timber.v("${this.localClassName } : showRatingDialogWidget launchReviewFlow: Failure")
+            }
+
+            flow.addOnCompleteListener {
+                Timber.v("${this.localClassName } : showRatingDialogWidget launchReviewFlow: Complete")
             }
         } else {
-            // Request failed
+            Timber.v("${this.localClassName } : showRatingDialogWidget request: ${request.isSuccessful} ")
         }
     }
 }

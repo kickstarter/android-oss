@@ -107,7 +107,7 @@ interface UpdateViewModel {
                 .map { it.getParcelableExtra(IntentKey.UPDATE) as? Update? }
 
             intent()
-                .filter { it.hasExtra(IntentKey.IS_UPDATE_COMMENT) && !it.hasExtra(IntentKey.IS_UPDATE_COMMENT) }
+                .filter { it.hasExtra(IntentKey.IS_UPDATE_COMMENT) && !it.hasExtra(IntentKey.COMMENT) }
                 .map {
                     it.getBooleanExtra(IntentKey.IS_UPDATE_COMMENT, false)
                 }

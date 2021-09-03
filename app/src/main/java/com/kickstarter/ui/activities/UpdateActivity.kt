@@ -74,11 +74,27 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
                 viewModel.inputs.goToCommentsActivity()
             }
 
+        viewModel.outputs.deedLinkToThreadActivity()
+            .filter { it.second == true }
+            .map { it.first }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                viewModel.inputs.goToCommentsActivityToDeepLinkThreadActivity(it)
+            }
+
         viewModel.outputs.startRootCommentsActivity()
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe { update ->
                 startRootCommentsActivity(update)
+            }
+
+        viewModel.outputs.startRootCommentsActivityToDeepLinkThreadActivity()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                startRootCommentsActivityToDeepLinkThreadActivity(it)
             }
 
         viewModel.outputs.startProjectActivity()
@@ -153,6 +169,14 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
     private fun startRootCommentsActivity(update: Update) {
         val intent = Intent(this, CommentsActivity::class.java)
             .putExtra(IntentKey.UPDATE, update)
+        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+    }
+
+    private fun startRootCommentsActivityToDeepLinkThreadActivity(data: Pair<String, Update>) {
+        val intent = Intent(this, CommentsActivity::class.java)
+            .putExtra(IntentKey.UPDATE, data.first)
+            .putExtra(IntentKey.COMMENT, data.second)
+
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 

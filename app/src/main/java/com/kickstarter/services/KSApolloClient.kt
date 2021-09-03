@@ -311,6 +311,32 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }.subscribeOn(Schedulers.io())
     }
 
+    override fun getComment(commentableId: String): Observable<Comment> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Comment>()
+            this.service.query(
+                GetCommentQuery.builder()
+                    .commentableId(commentableId)
+                    .build()
+            ).enqueue(object : ApolloCall.Callback<GetCommentQuery.Data>() {
+                override fun onFailure(e: ApolloException) {
+                    ps.onError(e)
+                }
+
+                override fun onResponse(response: Response<GetCommentQuery.Data>) {
+                    response.data?.let { responseData ->
+                        Observable.just(mapGetCommentQueryResponseToComment(responseData))
+                            .subscribe {
+                                ps.onNext(it)
+                                ps.onCompleted()
+                            }
+                    }
+                }
+            })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
+    }
+
     override fun createComment(comment: PostCommentData): Observable<Comment> {
         return Observable.defer {
             val ps = PublishSubject.create<Comment>()
@@ -851,6 +877,11 @@ private fun createCommentEnvelop(responseData: GetRepliesForCommentQuery.Data): 
         .pageInfoEnvelope(pageInfo)
         .totalCount(totalCount)
         .build()
+}
+
+private fun mapGetCommentQueryResponseToComment(responseData: GetCommentQuery.Data): Comment {
+    val commentFragment = (responseData.commentable() as? GetCommentQuery.AsComment)?.fragments()?.comment()
+    return createCommentObject(commentFragment)
 }
 
 private fun createBackingObject(backingGr: fragment.Backing?): Backing {

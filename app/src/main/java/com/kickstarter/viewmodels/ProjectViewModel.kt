@@ -220,6 +220,8 @@ interface ProjectViewModel {
         /** Emits when we should start [com.kickstarter.ui.activities.RootCommentsActivity]. */
         fun startRootCommentsActivity(): Observable<Pair<Project, ProjectData>>
 
+        fun startRootCommentsForCommentsThreadActivity(): Observable<Pair<String, Pair<Project, ProjectData>>>
+
         /** Emits when we should start the creator bio [com.kickstarter.ui.activities.CreatorBioActivity].  */
         fun startCreatorBioWebViewActivity(): Observable<Project>
 
@@ -237,6 +239,9 @@ interface ProjectViewModel {
 
         /** Emits when we should start [com.kickstarter.ui.activities.UpdateActivity].  */
         fun startProjectUpdateActivity(): Observable< Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>
+
+        /** Emits when we should start [com.kickstarter.ui.activities.UpdateActivity].  */
+        fun startProjectUpdateToRepliesDeepLinkActivity(): Observable< Pair<Pair<String, String>, Pair<Project, ProjectData>>>
 
         /** Emits when we the pledge was successful and should start the [com.kickstarter.ui.activities.ThanksActivity]. */
         fun startThanksActivity(): Observable<Pair<CheckoutData, PledgeData>>
@@ -312,12 +317,14 @@ interface ProjectViewModel {
         private val showUpdatePledgeSuccess = PublishSubject.create<Void>()
         private val startCampaignWebViewActivity = PublishSubject.create<ProjectData>()
         private val startRootCommentsActivity = PublishSubject.create<Pair<Project, ProjectData>>()
+        private val startRootCommentsForCommentsThreadActivity = PublishSubject.create<Pair<String, Pair<Project, ProjectData>>>()
         private val startCreatorBioWebViewActivity = PublishSubject.create<Project>()
         private val startCreatorDashboardActivity = PublishSubject.create<Project>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
         private val startMessagesActivity = PublishSubject.create<Project>()
         private val startProjectUpdatesActivity = PublishSubject.create<Pair<Project, ProjectData>>()
         private val startProjectUpdateActivity = PublishSubject.create< Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>()
+        private val startProjectUpdateToRepliesDeepLinkActivity = PublishSubject.create< Pair<Pair<String, String>, Pair<Project, ProjectData>>>()
         private val startThanksActivity = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
         private val startVideoActivity = PublishSubject.create<Project>()
         private val updateFragments = BehaviorSubject.create<ProjectData>()
@@ -508,7 +515,8 @@ interface ProjectViewModel {
                 .take(1)
                 .delay(1, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
                 .filter {
-                    it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_COMMENT, false)
+                    it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_COMMENT, false) &&
+                        it.getStringExtra(IntentKey.COMMENT)?.isEmpty() ?: true
                 }
                 .withLatestFrom(latestProjectAndProjectData) { _, project ->
                     project
@@ -522,7 +530,23 @@ interface ProjectViewModel {
                 .take(1)
                 .delay(1, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
                 .filter {
-                    it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)?.isNotEmpty() ?: false
+                    it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_COMMENT, false) &&
+                        it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty() ?: false
+                }
+                .withLatestFrom(latestProjectAndProjectData) { intent, project ->
+                    Pair(intent.getStringExtra(IntentKey.COMMENT) ?: "", project)
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.startRootCommentsForCommentsThreadActivity.onNext(it)
+                }
+
+            intent()
+                .take(1)
+                .delay(1, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
+                .filter {
+                    it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)?.isNotEmpty() ?: false &&
+                        it.getStringExtra(IntentKey.COMMENT)?.isEmpty() ?: true
                 }.map {
                     Pair(
                         requireNotNull(it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)),
@@ -535,6 +559,26 @@ interface ProjectViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.startProjectUpdateActivity.onNext(it)
+                }
+
+            intent()
+                .take(1)
+                .delay(1, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
+                .filter {
+                    it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)?.isNotEmpty() ?: false &&
+                        it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty() ?: false
+                }.map {
+                    Pair(
+                        requireNotNull(it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)),
+                        it.getStringExtra(IntentKey.COMMENT) ?: ""
+                    )
+                }
+                .withLatestFrom(latestProjectAndProjectData) { updateId, project ->
+                    Pair(updateId, project)
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.startProjectUpdateToRepliesDeepLinkActivity.onNext(it)
                 }
 
             currentProject
@@ -1119,6 +1163,10 @@ interface ProjectViewModel {
         override fun startRootCommentsActivity(): Observable<Pair<Project, ProjectData>> = this.startRootCommentsActivity
 
         @NonNull
+        override fun startRootCommentsForCommentsThreadActivity(): Observable<Pair<String, Pair<Project, ProjectData>>> =
+            this.startRootCommentsForCommentsThreadActivity
+
+        @NonNull
         override fun startCreatorBioWebViewActivity(): Observable<Project> = this.startCreatorBioWebViewActivity
 
         @NonNull
@@ -1138,6 +1186,10 @@ interface ProjectViewModel {
 
         @NonNull
         override fun startProjectUpdateActivity(): Observable<Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>> = this.startProjectUpdateActivity
+
+        @NonNull
+        override fun startProjectUpdateToRepliesDeepLinkActivity(): Observable<Pair<Pair<String, String>, Pair<Project, ProjectData>>> =
+            this.startProjectUpdateToRepliesDeepLinkActivity
 
         @NonNull
         override fun startVideoActivity(): Observable<Project> = this.startVideoActivity

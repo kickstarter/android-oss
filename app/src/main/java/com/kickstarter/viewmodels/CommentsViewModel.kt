@@ -181,6 +181,31 @@ interface CommentsViewModel {
 
             loadCommentListFromProjectOrUpdate(projectOrUpdateComment)
 
+            val deepLinkCommentableId =
+                intent().filter { it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty() }
+                    .map { requireNotNull(it.getStringExtra(IntentKey.COMMENT)) }
+
+            deepLinkCommentableId.switchMap {
+                return@switchMap apolloClient.getComment(it)
+            }.compose(Transformers.neverError())
+                .compose(combineLatestPair(deepLinkCommentableId))
+                .map {
+                    CommentCardData.builder()
+                        .comment(it.first)
+                        .project(this.project)
+                        .commentCardState(it.first.cardStatus())
+                        .commentableId(it.second)
+                        .build()
+                }.compose(bindToLifecycle())
+                .subscribe {
+                    this.startThreadActivity.onNext(
+                        Pair(
+                            it,
+                            false
+                        )
+                    )
+                }
+
             this.insertNewCommentToList
                 .distinctUntilChanged()
                 .withLatestFrom(this.currentUser.loggedInUser()) {

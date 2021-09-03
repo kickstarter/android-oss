@@ -12,6 +12,7 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UpdateFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.models.Comment
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.CommentCardData
@@ -767,6 +768,40 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             val newList = it
             assertTrue(newList[0].comment?.body() == commentCardData2.comment?.body())
             assertTrue(newList[0].commentCardState == commentCardData2.commentCardState)
+        }
+    }
+
+    @Test
+    fun testCommentsViewModel_deepLink_to_ThreadActivity() {
+        val commentableId = "Q29tbWVudC0zMzU2MTY4Ng"
+
+        val currentUser = UserFactory.user()
+            .toBuilder()
+            .id(1)
+            .avatar(AvatarFactory.avatar())
+            .build()
+
+        val comment1 = CommentFactory.commentToPostWithUser(currentUser).toBuilder().id(1).body("comment1").build()
+
+        val testScheduler = TestScheduler()
+
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun getComment(commentableId: String): Observable<Comment> {
+                return Observable.just(comment1)
+            }
+        }).currentUser(MockCurrentUser(currentUser))
+            .scheduler(testScheduler)
+            .build()
+
+        val vm = CommentsViewModel.ViewModel(env)
+        // Start the view model with a project.
+
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        vm.intent(Intent().putExtra(IntentKey.COMMENT, commentableId))
+
+        vm.outputs.startThreadActivity().take(0).subscribe {
+            assertEquals(it.first.commentableId, commentableId)
+            assertFalse(it.second)
         }
     }
 }

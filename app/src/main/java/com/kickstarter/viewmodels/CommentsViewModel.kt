@@ -202,11 +202,7 @@ interface CommentsViewModel {
                         .commentableId(it.second)
                         .build()
                 }.compose(bindToLifecycle())
-                .subscribe {
-                    this.startThreadActivityFromDeepLink.onNext(
-                        it
-                    )
-                }
+                .subscribe { this.startThreadActivityFromDeepLink.onNext(it) }
 
             this.insertNewCommentToList
                 .distinctUntilChanged()

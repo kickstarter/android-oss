@@ -247,9 +247,7 @@ interface ThreadViewModel {
                 }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
-                .subscribe {
-                    this.onCommentReplies.onNext(it)
-                }
+                .subscribe { this.onCommentReplies.onNext(it) }
 
             // - Update internal mutable list with the latest state after successful response
             this.onCommentReplies

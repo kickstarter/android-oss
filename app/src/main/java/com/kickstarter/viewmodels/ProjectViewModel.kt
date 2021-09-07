@@ -577,9 +577,7 @@ interface ProjectViewModel {
                     Pair(updateId, project)
                 }
                 .compose(bindToLifecycle())
-                .subscribe {
-                    this.startProjectUpdateToRepliesDeepLinkActivity.onNext(it)
-                }
+                .subscribe { this.startProjectUpdateToRepliesDeepLinkActivity.onNext(it) }
 
             currentProject
                 .compose<Project>(takeWhen(this.creatorDashboardButtonClicked))

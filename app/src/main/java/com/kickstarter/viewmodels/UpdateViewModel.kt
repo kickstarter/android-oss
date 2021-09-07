@@ -111,9 +111,7 @@ interface UpdateViewModel {
                 .map {
                     it.getBooleanExtra(IntentKey.IS_UPDATE_COMMENT, false)
                 }
-                .subscribe {
-                    this.deepLinkToRootComment.onNext(it)
-                }
+                .subscribe { this.deepLinkToRootComment.onNext(it) }
 
             intent()
                 .filter { it.hasExtra(IntentKey.COMMENT) && it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty() ?: false }

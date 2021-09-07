@@ -270,8 +270,8 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<String> webViewUrl = new TestSubscriber<>();
     vm.outputs.webViewUrl().subscribe(webViewUrl);
 
-    final TestSubscriber<Boolean> deedLinkToRootComment = new TestSubscriber<>();
-    vm.hasCommentsDeepLinks().subscribe(deedLinkToRootComment);
+    final TestSubscriber<Boolean> deepLinkToRootComment = new TestSubscriber<>();
+    vm.hasCommentsDeepLinks().subscribe(deepLinkToRootComment);
 
     // Start the intent with a project and update.
     vm.intent(new Intent()
@@ -282,7 +282,7 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
 
     // Initial update index url emits.
     webViewUrl.assertValues(update.urls().web().update());
-    deedLinkToRootComment.assertValue(true);
+    deepLinkToRootComment.assertValue(true);
 
     vm.inputs.goToCommentsActivity();
 
@@ -292,5 +292,55 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
 
     startRootCommentsActivity.assertValue(update);
     startRootCommentsActivity.assertValueCount(1);
+  }
+
+  @Test
+  public void testUpdateViewModel_DeepLinkCommentThread() {
+    final String postId = "3254626";
+    final String commentableId = "Q29tbWVudC0zMzU2MTY4Ng";
+    final Update update = UpdateFactory.update();
+
+    final ApiClientType apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<Update> fetchUpdate(final @NonNull String projectParam, final @NonNull String updateParam) {
+        return Observable.just(update);
+      }
+    };
+
+    final TestScheduler testScheduler = new TestScheduler();
+
+    final Environment environment = environment().toBuilder().apiClient(apiClient).scheduler(testScheduler).build();
+
+    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment);
+
+    final TestSubscriber<Pair<String, Update>> startRootCommentsActivityToDeepLinkThreadActivity = new TestSubscriber<>();
+    vm.outputs.startRootCommentsActivityToDeepLinkThreadActivity().subscribe(startRootCommentsActivityToDeepLinkThreadActivity);
+
+    final TestSubscriber<String> webViewUrl = new TestSubscriber<>();
+    vm.outputs.webViewUrl().subscribe(webViewUrl);
+
+    final TestSubscriber<Pair<String, Boolean>> deepLinkToThreadActivity = new TestSubscriber<>();
+    vm.deepLinkToThreadActivity().subscribe(deepLinkToThreadActivity);
+
+    // Start the intent with a project and update.
+    vm.intent(new Intent()
+            .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+            .putExtra(IntentKey.UPDATE_POST_ID, postId)
+            .putExtra(IntentKey.IS_UPDATE_COMMENT, true)
+            .putExtra(IntentKey.COMMENT, commentableId)
+    );
+
+    // Initial update index url emits.
+    webViewUrl.assertValues(update.urls().web().update());
+    deepLinkToThreadActivity.assertValue(Pair.create(commentableId, true));
+
+    vm.inputs.goToCommentsActivityToDeepLinkThreadActivity(commentableId);
+
+
+    testScheduler.advanceTimeBy(2, TimeUnit.SECONDS);
+
+
+    startRootCommentsActivityToDeepLinkThreadActivity.assertValue(Pair.create(commentableId, update));
+    startRootCommentsActivityToDeepLinkThreadActivity.assertValueCount(1);
   }
 }

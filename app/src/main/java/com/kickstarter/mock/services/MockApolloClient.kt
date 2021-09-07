@@ -92,6 +92,10 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(CommentEnvelopeFactory.emptyCommentsEnvelope())
     }
 
+    override fun getComment(commentableId: String): Observable<Comment> {
+        return Observable.just(CommentFactory.comment())
+    }
+
     override fun createComment(comment: PostCommentData): Observable<Comment> {
         return Observable.just(CommentFactory.comment())
     }

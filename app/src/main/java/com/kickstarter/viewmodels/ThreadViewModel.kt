@@ -247,9 +247,7 @@ interface ThreadViewModel {
                 }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
-                .subscribe {
-                    this.onCommentReplies.onNext(it)
-                }
+                .subscribe { this.onCommentReplies.onNext(it) }
 
             // - Update internal mutable list with the latest state after successful response
             this.onCommentReplies
@@ -290,6 +288,16 @@ interface ThreadViewModel {
             this.backPressed
                 .compose(bindToLifecycle())
                 .subscribe { this.closeThreadActivity.onNext(it) }
+
+            intent()
+                .map { it.getBooleanExtra(IntentKey.REPLY_SCROLL_BOTTOM, false) }
+                .filter { it }
+                .compose(Transformers.takeWhen(this.onCommentReplies))
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe {
+                    scrollToBottom.onNext(null)
+                }
         }
 
         private fun loadCommentListFromProjectOrUpdate(comment: Observable<Comment>) {

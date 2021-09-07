@@ -8,6 +8,7 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
+import com.kickstarter.libs.utils.UrlUtils.commentId
 import com.kickstarter.libs.utils.UrlUtils.refTag
 import com.kickstarter.libs.utils.extensions.path
 import com.kickstarter.ui.IntentKey
@@ -89,6 +90,11 @@ class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
     private fun startProjectActivityForComment(uri: Uri) {
         val projectIntent = projectIntent(uri)
             .putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_COMMENT, true)
+
+        commentId(uri.toString())?.let {
+            projectIntent.putExtra(IntentKey.COMMENT, it)
+        }
+
         startActivity(projectIntent)
         finish()
     }
@@ -99,6 +105,11 @@ class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
         val projectIntent = projectIntent(uri)
             .putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE, path[path.lastIndex - 1])
             .putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE_COMMENT, true)
+
+        commentId(uri.toString())?.let {
+            projectIntent.putExtra(IntentKey.COMMENT, it)
+        }
+
         startActivity(projectIntent)
         finish()
     }

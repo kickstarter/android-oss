@@ -59,7 +59,7 @@ interface UpdateViewModel {
         fun startRootCommentsActivity(): Observable<Update>
 
         /** Emits an update to start the comments activity with.  */
-        fun deedLinkToThreadActivity(): Observable<Pair<String, Boolean>>
+        fun deepLinkToThreadActivity(): Observable<Pair<String, Boolean>>
 
         /** Emits a Uri and a ref tag to start the project activity with.  */
         fun startProjectActivity(): Observable<Pair<Uri, RefTag>>
@@ -93,8 +93,8 @@ interface UpdateViewModel {
         private val startProjectActivity = PublishSubject.create<Pair<Uri, RefTag>>()
         private val updateSequence = BehaviorSubject.create<String>()
         private val webViewUrl = BehaviorSubject.create<String>()
-        private val deedLinkToRootComment = BehaviorSubject.create<Boolean>()
-        private val deedLinkToThreadActivity = BehaviorSubject.create<Pair<String, Boolean>>()
+        private val deepLinkToRootComment = BehaviorSubject.create<Boolean>()
+        private val deepLinkToThreadActivity = BehaviorSubject.create<Pair<String, Boolean>>()
 
         @JvmField
         val inputs: Inputs = this
@@ -112,7 +112,7 @@ interface UpdateViewModel {
                     it.getBooleanExtra(IntentKey.IS_UPDATE_COMMENT, false)
                 }
                 .subscribe {
-                    this.deedLinkToRootComment.onNext(it)
+                    this.deepLinkToRootComment.onNext(it)
                 }
 
             intent()
@@ -124,7 +124,7 @@ interface UpdateViewModel {
                     )
                 }
                 .subscribe {
-                    this.deedLinkToThreadActivity.onNext(it)
+                    this.deepLinkToThreadActivity.onNext(it)
                 }
 
             val project = intent()
@@ -200,7 +200,7 @@ interface UpdateViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     startRootCommentsActivity.onNext(it)
-                    deedLinkToRootComment.onNext(false)
+                    deepLinkToRootComment.onNext(false)
                 }
 
             goToCommentsActivityToDeepLinkThreadActivity
@@ -212,7 +212,7 @@ interface UpdateViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     startRootCommentsActivityToDeepLinkThreadActivity.onNext(it)
-                    deedLinkToThreadActivity.onNext(Pair(it.first, false))
+                    deepLinkToThreadActivity.onNext(Pair(it.first, false))
                 }
 
             currentUpdate
@@ -287,7 +287,7 @@ interface UpdateViewModel {
 
         override fun startRootCommentsActivity(): Observable<Update> = startRootCommentsActivity
 
-        override fun deedLinkToThreadActivity(): Observable<Pair<String, Boolean>> = deedLinkToThreadActivity
+        override fun deepLinkToThreadActivity(): Observable<Pair<String, Boolean>> = deepLinkToThreadActivity
 
         override fun startProjectActivity(): Observable<Pair<Uri, RefTag>> = startProjectActivity
 
@@ -297,6 +297,6 @@ interface UpdateViewModel {
 
         override fun webViewUrl(): Observable<String> = webViewUrl
 
-        override fun hasCommentsDeepLinks(): Observable<Boolean> = deedLinkToRootComment
+        override fun hasCommentsDeepLinks(): Observable<Boolean> = deepLinkToRootComment
     }
 }

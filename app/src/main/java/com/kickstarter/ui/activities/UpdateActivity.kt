@@ -74,7 +74,7 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
                 viewModel.inputs.goToCommentsActivity()
             }
 
-        viewModel.outputs.deedLinkToThreadActivity()
+        viewModel.outputs.deepLinkToThreadActivity()
             .filter { it.second == true }
             .map { it.first }
             .compose(bindToLifecycle())

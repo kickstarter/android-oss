@@ -270,8 +270,8 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<String> webViewUrl = new TestSubscriber<>();
     vm.outputs.webViewUrl().subscribe(webViewUrl);
 
-    final TestSubscriber<Boolean> deedLinkToRootComment = new TestSubscriber<>();
-    vm.hasCommentsDeepLinks().subscribe(deedLinkToRootComment);
+    final TestSubscriber<Boolean> deepLinkToRootComment = new TestSubscriber<>();
+    vm.hasCommentsDeepLinks().subscribe(deepLinkToRootComment);
 
     // Start the intent with a project and update.
     vm.intent(new Intent()
@@ -282,7 +282,7 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
 
     // Initial update index url emits.
     webViewUrl.assertValues(update.urls().web().update());
-    deedLinkToRootComment.assertValue(true);
+    deepLinkToRootComment.assertValue(true);
 
     vm.inputs.goToCommentsActivity();
 
@@ -319,8 +319,8 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<String> webViewUrl = new TestSubscriber<>();
     vm.outputs.webViewUrl().subscribe(webViewUrl);
 
-    final TestSubscriber<Pair<String, Boolean>> deedLinkToThreadActivity = new TestSubscriber<>();
-    vm.deedLinkToThreadActivity().subscribe(deedLinkToThreadActivity);
+    final TestSubscriber<Pair<String, Boolean>> deepLinkToThreadActivity = new TestSubscriber<>();
+    vm.deepLinkToThreadActivity().subscribe(deepLinkToThreadActivity);
 
     // Start the intent with a project and update.
     vm.intent(new Intent()
@@ -332,7 +332,7 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
 
     // Initial update index url emits.
     webViewUrl.assertValues(update.urls().web().update());
-    deedLinkToThreadActivity.assertValue(Pair.create(commentableId, true));
+    deepLinkToThreadActivity.assertValue(Pair.create(commentableId, true));
 
     vm.inputs.goToCommentsActivityToDeepLinkThreadActivity(commentableId);
 

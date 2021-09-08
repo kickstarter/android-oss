@@ -28,7 +28,6 @@ import androidx.annotation.Nullable;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiCapabilities;
-import com.kickstarter.ui.views.AppRatingDialog;
 import com.kickstarter.ui.views.ConfirmDialog;
 
 import rx.functions.Action1;
@@ -118,10 +117,6 @@ public final class ViewUtils {
   public static void showDialog(final @NonNull Context context, final @Nullable String title,
     final @NonNull String message, final @NonNull String buttonMessage) {
     new ConfirmDialog(context, title, message, buttonMessage).show();
-  }
-
-  public static void showRatingDialog(final @NonNull Context context) {
-    new AppRatingDialog(context).show();
   }
 
   /**

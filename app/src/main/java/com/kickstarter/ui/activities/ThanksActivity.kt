@@ -14,11 +14,11 @@ import com.kickstarter.libs.KSString
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ThanksAdapter
+import com.kickstarter.ui.extensions.showRatingDialogWidget
 import com.kickstarter.viewmodels.ThanksViewModel
 import java.util.concurrent.TimeUnit
 
@@ -120,7 +120,7 @@ class ThanksActivity : BaseActivity<ThanksViewModel.ViewModel>() {
         builder.show()
     }
 
-    private fun showRatingDialog() = ViewUtils.showRatingDialog(this)
+    private fun showRatingDialog() = showRatingDialogWidget()
 
     private fun startDiscoveryActivity(params: DiscoveryParams) {
         val intent = Intent(this, DiscoveryActivity::class.java)

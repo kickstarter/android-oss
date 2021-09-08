@@ -9,6 +9,7 @@ import com.kickstarter.R
 object UrlUtils {
 
     private const val KEY_REF = "ref"
+    private const val KEY_COMMENT = "comment"
 
     fun appendPath(baseUrl: String, path: String): String {
         val uriBuilder = Uri.parse(baseUrl).buildUpon()
@@ -39,5 +40,9 @@ object UrlUtils {
 
     fun refTag(url: String): String? {
         return Uri.parse(url).getQueryParameter(KEY_REF)
+    }
+
+    fun commentId(url: String): String? {
+        return Uri.parse(url).getQueryParameter(KEY_COMMENT)
     }
 }

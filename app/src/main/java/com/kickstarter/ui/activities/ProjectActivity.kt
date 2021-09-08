@@ -246,11 +246,25 @@ class ProjectActivity :
                 this.startRootCommentsActivity(it)
             }
 
+        this.viewModel.outputs.startRootCommentsForCommentsThreadActivity()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                this.startRootCommentsForCommentsThreadActivity(it)
+            }
+
         this.viewModel.outputs.startProjectUpdateActivity()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 this.startProjectUpdateActivity(it)
+            }
+
+        this.viewModel.outputs.startProjectUpdateToRepliesDeepLinkActivity()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                this.startProjectUpdateToRepliesDeepLinkActivity(it)
             }
 
         this.viewModel.outputs.startCreatorBioWebViewActivity()
@@ -663,11 +677,33 @@ class ProjectActivity :
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
+    private fun startProjectUpdateToRepliesDeepLinkActivity(projectAndData: Pair<Pair<String, String>, Pair<Project, ProjectData>>) {
+        val intent = Intent(this, UpdateActivity::class.java)
+            .putExtra(IntentKey.PROJECT, projectAndData.second.first)
+            .putExtra(IntentKey.UPDATE_POST_ID, projectAndData.first.first)
+            .putExtra(IntentKey.IS_UPDATE_COMMENT, projectAndData.first.second.isNotEmpty())
+            .putExtra(IntentKey.COMMENT, projectAndData.first.second)
+        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+    }
+
     private fun startRootCommentsActivity(projectAndData: Pair<Project, ProjectData>) {
         startActivity(
             Intent(this, CommentsActivity::class.java)
                 .putExtra(IntentKey.PROJECT, projectAndData.first)
                 .putExtra(IntentKey.PROJECT_DATA, projectAndData.second)
+        )
+
+        this.let {
+            TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
+        }
+    }
+
+    private fun startRootCommentsForCommentsThreadActivity(pair: Pair<String, Pair<Project, ProjectData>>) {
+        startActivity(
+            Intent(this, CommentsActivity::class.java)
+                .putExtra(IntentKey.PROJECT, pair.second.first)
+                .putExtra(IntentKey.PROJECT_DATA, pair.second.second)
+                .putExtra(IntentKey.COMMENT, pair.first)
         )
 
         this.let {

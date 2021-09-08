@@ -221,6 +221,13 @@ class CommentsActivity :
             .subscribe {
                 startThreadActivity(it.first, it.second)
             }
+
+        viewModel.outputs.startThreadActivityFromDeepLink()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                startThreadActivityFromDeepLink(it)
+            }
     }
 
     fun postComment(comment: String) {
@@ -290,6 +297,19 @@ class CommentsActivity :
         val threadIntent = Intent(this, ThreadActivity::class.java).apply {
             putExtra(IntentKey.COMMENT_CARD_DATA, commentData)
             putExtra(IntentKey.REPLY_EXPAND, openKeyboard)
+        }
+
+        startActivity(threadIntent)
+        this.let {
+            TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
+        }
+    }
+
+    private fun startThreadActivityFromDeepLink(commentData: CommentCardData) {
+        val threadIntent = Intent(this, ThreadActivity::class.java).apply {
+            putExtra(IntentKey.COMMENT_CARD_DATA, commentData)
+            putExtra(IntentKey.REPLY_EXPAND, false)
+            putExtra(IntentKey.REPLY_SCROLL_BOTTOM, true)
         }
 
         startActivity(threadIntent)

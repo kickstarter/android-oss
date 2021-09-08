@@ -43,6 +43,9 @@ interface UpdateViewModel {
 
         /** Call when a project update comments deep link*/
         fun goToCommentsActivity()
+
+        /** Call when a project update comments deep link*/
+        fun goToCommentsActivityToDeepLinkThreadActivity(commentableID: String)
     }
 
     interface Outputs {
@@ -55,8 +58,13 @@ interface UpdateViewModel {
         /** Emits an update to start the comments activity with.  */
         fun startRootCommentsActivity(): Observable<Update>
 
+        /** Emits an update to start the comments activity with.  */
+        fun deepLinkToThreadActivity(): Observable<Pair<String, Boolean>>
+
         /** Emits a Uri and a ref tag to start the project activity with.  */
         fun startProjectActivity(): Observable<Pair<Uri, RefTag>>
+
+        fun startRootCommentsActivityToDeepLinkThreadActivity(): Observable<Pair<String, Update>>
 
         /** Emits a string to display in the toolbar title.  */
         fun updateSequence(): Observable<String>
@@ -74,16 +82,19 @@ interface UpdateViewModel {
         private val goToCommentsRequest = PublishSubject.create<Request>()
         private val goToProjectRequest = PublishSubject.create<Request>()
         private val goToUpdateRequest = PublishSubject.create<Request>()
-        private val shareButtonClicked = PublishSubject.create<Void?>()
-        private val goToCommentsActivity = PublishSubject.create<Void?>()
+        private val shareButtonClicked = PublishSubject.create<Void>()
+        private val goToCommentsActivity = PublishSubject.create<Void>()
+        private val goToCommentsActivityToDeepLinkThreadActivity = PublishSubject.create<String>()
 
         private val openProjectExternally = PublishSubject.create<String>()
         private val startShareIntent = PublishSubject.create<Pair<Update, String>>()
         private val startRootCommentsActivity = PublishSubject.create<Update>()
+        private val startRootCommentsActivityToDeepLinkThreadActivity = PublishSubject.create<Pair<String, Update>>()
         private val startProjectActivity = PublishSubject.create<Pair<Uri, RefTag>>()
         private val updateSequence = BehaviorSubject.create<String>()
         private val webViewUrl = BehaviorSubject.create<String>()
-        private val deedLinkToRootComment = BehaviorSubject.create<Boolean>()
+        private val deepLinkToRootComment = BehaviorSubject.create<Boolean>()
+        private val deepLinkToThreadActivity = BehaviorSubject.create<Pair<String, Boolean>>()
 
         @JvmField
         val inputs: Inputs = this
@@ -96,11 +107,22 @@ interface UpdateViewModel {
                 .map { it.getParcelableExtra(IntentKey.UPDATE) as? Update? }
 
             intent()
+                .filter { it.hasExtra(IntentKey.IS_UPDATE_COMMENT) && !it.hasExtra(IntentKey.COMMENT) }
                 .map {
                     it.getBooleanExtra(IntentKey.IS_UPDATE_COMMENT, false)
                 }
+                .subscribe { this.deepLinkToRootComment.onNext(it) }
+
+            intent()
+                .filter { it.hasExtra(IntentKey.COMMENT) && it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty() ?: false }
+                .map {
+                    Pair(
+                        requireNotNull(it.getStringExtra(IntentKey.COMMENT)),
+                        it.getBooleanExtra(IntentKey.IS_UPDATE_COMMENT, false)
+                    )
+                }
                 .subscribe {
-                    this.deedLinkToRootComment.onNext(it)
+                    this.deepLinkToThreadActivity.onNext(it)
                 }
 
             val project = intent()
@@ -176,7 +198,19 @@ interface UpdateViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     startRootCommentsActivity.onNext(it)
-                    deedLinkToRootComment.onNext(false)
+                    deepLinkToRootComment.onNext(false)
+                }
+
+            goToCommentsActivityToDeepLinkThreadActivity
+                .delay(2, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
+                .withLatestFrom(currentUpdate) { commentableId, update ->
+                    Pair(commentableId, requireNotNull(update))
+                }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe {
+                    startRootCommentsActivityToDeepLinkThreadActivity.onNext(it)
+                    deepLinkToThreadActivity.onNext(Pair(it.first, false))
                 }
 
             currentUpdate
@@ -243,18 +277,24 @@ interface UpdateViewModel {
 
         override fun goToCommentsActivity() = goToCommentsActivity.onNext(null)
 
+        override fun goToCommentsActivityToDeepLinkThreadActivity(commentableID: String) = goToCommentsActivityToDeepLinkThreadActivity.onNext(commentableID)
+
         override fun openProjectExternally(): Observable<String> = openProjectExternally
 
         override fun startShareIntent(): Observable<Pair<Update, String>> = startShareIntent
 
         override fun startRootCommentsActivity(): Observable<Update> = startRootCommentsActivity
 
+        override fun deepLinkToThreadActivity(): Observable<Pair<String, Boolean>> = deepLinkToThreadActivity
+
         override fun startProjectActivity(): Observable<Pair<Uri, RefTag>> = startProjectActivity
+
+        override fun startRootCommentsActivityToDeepLinkThreadActivity(): Observable<Pair<String, Update>> = startRootCommentsActivityToDeepLinkThreadActivity
 
         override fun updateSequence(): Observable<String> = updateSequence
 
         override fun webViewUrl(): Observable<String> = webViewUrl
 
-        override fun hasCommentsDeepLinks(): Observable<Boolean> = deedLinkToRootComment
+        override fun hasCommentsDeepLinks(): Observable<Boolean> = deepLinkToRootComment
     }
 }

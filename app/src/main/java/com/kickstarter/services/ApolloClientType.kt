@@ -40,6 +40,8 @@ interface ApolloClientType {
 
     fun getRepliesForComment(comment: Comment, cursor: String? = null, pageSize: Int = REPLIES_PAGE_SIZE): Observable<CommentEnvelope>
 
+    fun getComment(commentableId: String): Observable<Comment>
+
     fun createComment(comment: PostCommentData): Observable<Comment>
 
     fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data>

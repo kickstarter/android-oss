@@ -67,8 +67,10 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val showUpdatePledge = TestSubscriber<Pair<PledgeData, PledgeReason>>()
     private val showUpdatePledgeSuccess = TestSubscriber<Void>()
     private val startCampaignWebViewActivity = TestSubscriber<ProjectData>()
-    private val startRootCommentsActivityivity = TestSubscriber<Pair<Project, ProjectData>>()
+    private val startRootCommentsActivity = TestSubscriber<Pair<Project, ProjectData>>()
+    private val startRootCommentsForCommentsThreadActivity = TestSubscriber<Pair<String, Pair<Project, ProjectData>>>()
     private val startProjectUpdateActivity = TestSubscriber< Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>()
+    private val startProjectUpdateToRepliesDeepLinkActivity = TestSubscriber<Pair<Pair<String, String>, Pair<Project, ProjectData>>>()
     private val startCreatorBioWebViewActivity = TestSubscriber<Project>()
     private val startCreatorDashboardActivity = TestSubscriber<Project>()
     private val startLoginToutActivity = TestSubscriber<Void>()
@@ -109,7 +111,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
         this.vm.outputs.projectData().map { pD -> pD.project().isStarred }.subscribe(this.savedTest)
         this.vm.outputs.startCampaignWebViewActivity().subscribe(this.startCampaignWebViewActivity)
-        this.vm.outputs.startRootCommentsActivity().subscribe(this.startRootCommentsActivityivity)
+        this.vm.outputs.startRootCommentsActivity().subscribe(this.startRootCommentsActivity)
         this.vm.outputs.startProjectUpdateActivity().subscribe(this.startProjectUpdateActivity)
         this.vm.outputs.startCreatorBioWebViewActivity().subscribe(this.startCreatorBioWebViewActivity)
         this.vm.outputs.startCreatorDashboardActivity().subscribe(this.startCreatorDashboardActivity)
@@ -118,6 +120,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startThanksActivity().subscribe(this.startThanksActivity)
         this.vm.outputs.startVideoActivity().subscribe(this.startVideoActivity)
         this.vm.outputs.updateFragments().subscribe(this.updateFragments)
+        this.vm.outputs.startRootCommentsForCommentsThreadActivity().subscribe(this.startRootCommentsForCommentsThreadActivity)
+        this.vm.outputs.startProjectUpdateToRepliesDeepLinkActivity().subscribe(this.startProjectUpdateToRepliesDeepLinkActivity)
     }
 
     @Test
@@ -591,7 +595,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
         this.vm.inputs.commentsTextViewClicked()
-        this.startRootCommentsActivityivity.assertValues(projectAndData)
+        this.startRootCommentsActivity.assertValues(projectAndData)
     }
 
     @Test
@@ -616,7 +620,35 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
-        this.startRootCommentsActivityivity.assertValues(projectAndData)
+        this.startRootCommentsActivity.assertValues(projectAndData)
+    }
+
+    @Test
+    fun testStartCommentsThreadActivityFromDeepLink() {
+        val commentableId = "Q29tbWVudC0zMzU2MTY4Ng"
+        val project = ProjectFactory.project()
+        val projectData = ProjectDataFactory.project(project)
+        val projectAndData = Pair.create(project, projectData)
+        val deepLinkDate = Pair.create(commentableId, projectAndData)
+        val testScheduler = TestScheduler()
+
+        setUpEnvironment(
+            environment().toBuilder()
+                .scheduler(testScheduler).build()
+        )
+
+        // Start the view model with a project.
+        val intent = Intent().apply {
+            putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_COMMENT, true)
+            putExtra(IntentKey.PROJECT, project)
+            putExtra(IntentKey.COMMENT, commentableId)
+        }
+
+        this.vm.intent(intent)
+
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+
+        this.startRootCommentsForCommentsThreadActivity.assertValues(deepLinkDate)
     }
 
     @Test
@@ -644,6 +676,35 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
         this.startProjectUpdateActivity.assertValues(updateProjectAndData)
+    }
+
+    @Test
+    fun testStartUpdateActivityFromDeepLinkToThreadActivity() {
+        val commentableId = "Q29tbWVudC0zMzU2MTY4Ng"
+        val project = ProjectFactory.project()
+        val projectData = ProjectDataFactory.project(project)
+        val projectAndData = Pair.create(project, projectData)
+        val postId = "3254626"
+        val updateProjectAndData = Pair.create(Pair(postId, commentableId), projectAndData)
+        val testScheduler = TestScheduler()
+
+        setUpEnvironment(
+            environment().toBuilder()
+                .scheduler(testScheduler).build()
+        )
+
+        // Start the view model with a project.
+        val intent = Intent().apply {
+            putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE, postId)
+            putExtra(IntentKey.PROJECT, project)
+            putExtra(IntentKey.COMMENT, commentableId)
+        }
+
+        this.vm.intent(intent)
+
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+
+        this.startProjectUpdateToRepliesDeepLinkActivity.assertValues(updateProjectAndData)
     }
 
     @Test
@@ -690,8 +751,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
         this.vm.inputs.commentsTextViewClicked()
-        this.startRootCommentsActivityivity.assertValues(projectAndData)
-        this.startRootCommentsActivityivity.assertValueCount(1)
+        this.startRootCommentsActivity.assertValues(projectAndData)
+        this.startRootCommentsActivity.assertValueCount(1)
         this.startThanksActivity.assertNoValues()
 
         val checkoutData = CheckoutDataFactory.checkoutData(3L, 20.0, 30.0)
@@ -699,7 +760,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.pledgeSuccessfullyCreated(Pair(checkoutData, pledgeData))
 
         this.startThanksActivity.assertValue(Pair(checkoutData, pledgeData))
-        this.startRootCommentsActivityivity.assertValueCount(1)
+        this.startRootCommentsActivity.assertValueCount(1)
     }
 
     @Test

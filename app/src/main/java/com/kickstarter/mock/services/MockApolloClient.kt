@@ -16,6 +16,7 @@ import com.kickstarter.mock.factories.ErroredBackingFactory
 import com.kickstarter.mock.factories.PageInfoEnvelopeFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.StoredCardFactory
+import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.Comment
@@ -40,6 +41,10 @@ open class MockApolloClient : ApolloClientType {
 
     override fun getProjectBacking(slug: String): Observable<Backing> {
         return Observable.just(BackingFactory.backing())
+    }
+
+    override fun getProject(slug: String): Observable<Project> {
+        return Observable.just(ProjectFactory.project())
     }
 
     override fun getProjectAddOns(slug: String, location: Location): Observable<List<Reward>> {

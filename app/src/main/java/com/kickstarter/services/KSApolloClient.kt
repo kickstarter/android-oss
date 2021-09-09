@@ -23,6 +23,7 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Avatar
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
@@ -300,6 +301,32 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                 override fun onResponse(response: Response<GetRepliesForCommentQuery.Data>) {
                     response.data?.let { responseData ->
                         Observable.just(createCommentEnvelop(responseData))
+                            .subscribe {
+                                ps.onNext(it)
+                                ps.onCompleted()
+                            }
+                    }
+                }
+            })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
+    }
+
+    override fun getProject(slug: String): Observable<Project> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Project>()
+            this.service.query(
+                FetchProjectQuery.builder()
+                    .slug(slug)
+                    .build()
+            ).enqueue(object : ApolloCall.Callback<FetchProjectQuery.Data>() {
+                override fun onFailure(e: ApolloException) {
+                    ps.onError(e)
+                }
+
+                override fun onResponse(response: Response<FetchProjectQuery.Data>) {
+                    response.data?.let { responseData ->
+                        Observable.just(ProjectFactory.project())
                             .subscribe {
                                 ps.onNext(it)
                                 ps.onCompleted()

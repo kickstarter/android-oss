@@ -6,14 +6,12 @@ import com.kickstarter.services.firebase.MessageService;
 import com.kickstarter.services.firebase.RegisterTokenWorker;
 import com.kickstarter.services.firebase.ResetDeviceIdWorker;
 import com.kickstarter.services.firebase.UnregisterTokenWorker;
-import com.kickstarter.ui.views.AppRatingDialog;
 import com.kickstarter.ui.views.IconTextView;
 import com.kickstarter.ui.views.KSWebView;
 
 public interface ApplicationGraph {
   Environment environment();
   void inject(ApplicationLifecycleUtil __);
-  void inject(AppRatingDialog __);
   void inject(IconTextView __);
   void inject(KSWebView __);
   void inject(KSApplication __);

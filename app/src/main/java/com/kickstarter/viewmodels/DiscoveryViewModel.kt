@@ -39,7 +39,6 @@ import com.kickstarter.ui.viewholders.discoverydrawer.LoggedInViewHolder
 import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder
 import com.kickstarter.ui.viewholders.discoverydrawer.ParentFilterViewHolder
 import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder
-import java.util.concurrent.TimeUnit
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -283,7 +282,7 @@ interface DiscoveryViewModel {
             val pagerSelectedPage = pagerSetPrimaryPage.distinctUntilChanged()
 
             val sortToTabOpen = Observable.merge(
-                pagerSelectedPage.map{ DiscoveryUtils.sortFromPosition(it)},
+                pagerSelectedPage.map { DiscoveryUtils.sortFromPosition(it) },
                 params.map { it.sort() }
             )
 

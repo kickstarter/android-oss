@@ -46,6 +46,18 @@ public final class ApplicationUtils {
   }
 
   /**
+   * Starts the discovery activity with a uri at the top of a task stack, clearing all previous activities.
+   */
+  public static void startNewDiscoveryActivityWithUri(final @NonNull Context context, Uri uri) {
+    final Intent intent = new Intent(context, DiscoveryActivity.class)
+            .setData(uri)
+            .setAction(Intent.ACTION_MAIN)
+            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+    context.startActivity(intent);
+  }
+
+  /**
    * Clears all activities from the task stack except discovery.
    */
   public static void resumeDiscoveryActivity(final @NonNull Context context) {

@@ -97,6 +97,9 @@ interface PledgeFragmentViewModel {
         /** Call when user clicks the pledge button. */
         fun pledgeButtonClicked()
 
+        /** Call when user clicks the pledge button. */
+        fun pledgeButtonClickedToShowRiskMessage()
+
         /** Call when user selects a shipping location. */
         fun shippingRuleSelected(shippingRule: ShippingRule)
 
@@ -311,6 +314,8 @@ interface PledgeFragmentViewModel {
 
         /** Emits the total pledgeAmount for Rewards + AddOns **/
         fun pledgeAmountHeader(): Observable<CharSequence>
+
+        fun showCheckoutRiskMessageBottomSheet(): Observable<Void>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
@@ -325,6 +330,7 @@ interface PledgeFragmentViewModel {
         private val miniRewardClicked = PublishSubject.create<Void>()
         private val newCardButtonClicked = PublishSubject.create<Void>()
         private val pledgeButtonClicked = PublishSubject.create<Void>()
+        private val pledgeButtonClickedToShowRiskMessage = PublishSubject.create<Void>()
         private val pledgeInput = PublishSubject.create<String>()
         private val shippingRule = BehaviorSubject.create<ShippingRule>()
         private val stripeSetupResultSuccessful = PublishSubject.create<Int>()
@@ -337,6 +343,7 @@ interface PledgeFragmentViewModel {
         private val additionalPledgeAmount = BehaviorSubject.create<String>()
         private val additionalPledgeAmountIsGone = BehaviorSubject.create<Boolean>()
         private val baseUrlForTerms = BehaviorSubject.create<String>()
+        private val showCheckoutRiskMessageBottomSheet = BehaviorSubject.create<Void>()
         private val cardsAndProject = BehaviorSubject.create<Pair<List<StoredCard>, Project>>()
         private val continueButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val continueButtonIsGone = BehaviorSubject.create<Boolean>()
@@ -1151,6 +1158,12 @@ interface PledgeFragmentViewModel {
                     this.pledgeButtonIsEnabled.onNext(it)
                 }
 
+            this.pledgeButtonClickedToShowRiskMessage
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.showCheckoutRiskMessageBottomSheet.onNext(it)
+                }
+
             val pledgeButtonClicked = userIsLoggedIn
                 .compose<Pair<Boolean, PledgeReason>>(combineLatestPair(pledgeReason))
                 .filter { it.first && it.second == PledgeReason.PLEDGE }
@@ -1670,6 +1683,8 @@ interface PledgeFragmentViewModel {
 
         override fun pledgeButtonClicked() = this.pledgeButtonClicked.onNext(null)
 
+        override fun pledgeButtonClickedToShowRiskMessage() = this.pledgeButtonClickedToShowRiskMessage.onNext(null)
+
         override fun shippingRuleSelected(shippingRule: ShippingRule) = this.shippingRule.onNext(shippingRule)
 
         override fun stripeSetupResultSuccessful(@StripeIntentResult.Outcome outcome: Int) = this.stripeSetupResultSuccessful.onNext(outcome)
@@ -1882,5 +1897,8 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun shippingRule(): Observable<ShippingRule> = this.shippingRule
+
+        @NonNull
+        override fun showCheckoutRiskMessageBottomSheet(): Observable<Void> = this.showCheckoutRiskMessageBottomSheet
     }
 }

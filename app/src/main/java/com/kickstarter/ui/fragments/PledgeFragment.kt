@@ -601,7 +601,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         binding?.pledgeSectionFooter?.pledgeFooterPledgeButton?.let {
             RxView.clicks(it)
                 .compose(bindToLifecycle())
-                .subscribe { this.viewModel.inputs.pledgeButtonClicked() }
+                .subscribe { this.viewModel.inputs.pledgeButtonClickedToShowRiskMessage() }
         }
 
         binding?.pledgeSectionFooter?.pledgeFooterContinueButton?.let {
@@ -609,6 +609,18 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.continueButtonClicked() }
         }
+
+        this.viewModel.outputs.showCheckoutRiskMessageBottomSheet()
+            .compose(observeForUI())
+            .compose(bindToLifecycle())
+            .subscribe {
+                showRiskMessageDialog()
+            }
+    }
+
+    private fun showRiskMessageDialog() {
+        val fragment = CheckoutRiskMessageFragment.newInstance()
+        activity?.supportFragmentManager?.let { it1 -> fragment.show(it1, "") }
     }
 
     private fun populateHeaderItems(selectedItems: List<Pair<Project, Reward>>) {

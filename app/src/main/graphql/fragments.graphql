@@ -29,6 +29,7 @@ fragment fullProject on Project {
     goal {
         ... amount
     }
+    id
     isWatched
     launchedAt
     location {
@@ -39,7 +40,12 @@ fragment fullProject on Project {
     pledged {
         ... amount
     }
-    ...photo
+    #...ed
+    ...full
+    #...little
+    #...med
+    #...small
+    #...thumb
     prelaunchActivated
     ...tagsCreative
     ...tagsDiscovery
@@ -100,27 +106,53 @@ fragment backing on Backing {
     }
 }
 
-fragment video on Video {
-    id
-    status
-    previewImageUrl
-    tracks {
-        nodes {
-            id
-        }
+fragment full on Project {
+    image {
+        url(width: 1024)
     }
+}
+
+#fragment ed on Project {
+#    image {
+#        url(width: 325)
+#    }
+#}
+
+#fragment med on Project {
+#    image {
+#        url(width: 272)
+#    }
+#}
+
+#fragment little on Project {
+#    image {
+#        url(width: 208)
+#    }
+#}
+
+#fragment small on Project {
+#    image{
+#        url(width: 160)
+#    }
+#}
+
+#fragment thumb on Project {
+#    image {
+#        url(width: 48)
+#    }
+#}
+
+fragment video on Video {
+    previewImageUrl
     videoSources {
         base {
             src
-            type
         }
         high {
             src
-            type
         }
         hls {
             src
-            type
         }
     }
 }
@@ -144,12 +176,6 @@ fragment updates on PostConnection {
     totalCount
 }
 
-fragment photo on Project {
-    image {
-        id
-        url(width: 1024)
-    }
-}
 
 fragment category on Category {
     id

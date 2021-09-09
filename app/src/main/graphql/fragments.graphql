@@ -1,4 +1,4 @@
-fragment projectComplete on Project {
+fragment fullProject on Project {
     availableCardTypes
     backersCount
     description

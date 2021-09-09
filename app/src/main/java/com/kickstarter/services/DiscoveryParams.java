@@ -8,7 +8,6 @@ import android.os.Parcelable;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.qualifiers.AutoGson;
-import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.extensions.UriExt;
 import com.kickstarter.models.Category;
@@ -207,9 +206,8 @@ public abstract class DiscoveryParams implements Parcelable {
 
     final Boolean recommended = uri.getBooleanQueryParameter("recommended", false);
     if (recommended) {
-    builder = builder.recommended(recommended);
+      builder = builder.recommended(recommended);
     }
-
 
     final Integer social = ObjectUtils.toInteger(uri.getQueryParameter("social"));
     if (social != null) {

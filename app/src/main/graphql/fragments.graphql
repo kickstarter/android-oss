@@ -1,3 +1,67 @@
+fragment projectComplete on Project {
+    availableCardTypes
+    backersCount
+    description
+    backing {
+        ... backing
+    }
+    category {
+        ...category
+    }
+    commentsCount
+    country {
+        ...country
+    }
+    createdAt
+    creator {
+        ... user
+    }
+    currency
+    prelaunchActivated
+    projectOfTheDayAt
+    friends {
+        nodes {
+            ... user
+        }
+    }
+    fxRate
+    deadlineAt
+    goal {
+        ... amount
+    }
+    isWatched
+    launchedAt
+    location {
+        ... location
+    }
+    name
+    collaboratorPermissions
+    pledged {
+        ... amount
+    }
+    ...photo
+    prelaunchActivated
+    ...tagsCreative
+    ...tagsDiscovery
+    rewards {
+        nodes {
+            ... reward
+        }
+    }
+    slug
+    isProjectWeLove
+    state
+    stateChangedAt
+    usdExchangeRate
+    posts {
+        ...updates
+    }
+    url
+    video {
+        ...video
+    }
+}
+
 fragment backing on Backing {
     id
     status
@@ -34,6 +98,71 @@ fragment backing on Backing {
             ... reward
         }
     }
+}
+
+fragment video on Video {
+    id
+    status
+    previewImageUrl
+    tracks {
+        nodes {
+            id
+        }
+    }
+    videoSources {
+        base {
+            src
+            type
+        }
+        high {
+            src
+            type
+        }
+        hls {
+            src
+            type
+        }
+    }
+}
+
+fragment tagsDiscovery on Project {
+    tags(scope: CREATIVE_PROMPT) {
+        id
+    }
+}
+
+fragment tagsCreative on Project {
+    tags(scope: CREATIVE_PROMPT) {
+        id
+    }
+}
+
+fragment updates on PostConnection {
+    nodes {
+        updatedAt
+    }
+    totalCount
+}
+
+fragment photo on Project {
+    image {
+        id
+        url(width: 1024)
+    }
+}
+
+fragment category on Category {
+    id
+    name
+    parentCategory {
+        id
+        name
+    }
+}
+
+fragment country on Country {
+    code
+    name
 }
 
 fragment checkoutBacking on Backing {
@@ -115,11 +244,10 @@ fragment user on User {
     isCreator
 }
 
-
-
 fragment amount on Money {
     amount
     currency
+    symbol
 }
 
 fragment location on Location {

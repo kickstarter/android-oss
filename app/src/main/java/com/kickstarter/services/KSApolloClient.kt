@@ -1055,7 +1055,9 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
     val currencySymbol = projectFragment?.goal()?.fragments()?.amount()?.symbol()
     val prelaunchActivted = projectFragment?.prelaunchActivated()
     val featuredAt = projectFragment?.projectOfTheDayAt()
-    val friends = projectFragment?.friends()?.nodes()?.map { userTransformer(it.fragments().user()) } ?: emptyList()
+    val friends =
+        projectFragment?.friends()?.nodes()?.map { userTransformer(it.fragments().user()) }
+            ?: emptyList()
     val fxRate = projectFragment?.fxRate()?.toFloat()
     val deadline = projectFragment?.deadlineAt()
     val goal = projectFragment?.goal()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0
@@ -1089,7 +1091,8 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
     val tags = mutableListOf<String>()
     projectFragment?.fragments()?.tagsCreative()?.tags()?.map { tags.add(it.id()) }
     projectFragment?.fragments()?.tagsDiscovery()?.tags()?.map { tags.add(it.id()) }
-    val rewards = projectFragment?.rewards()?.nodes()?.map { rewardTransformer(it.fragments().reward()) }
+    val rewards =
+        projectFragment?.rewards()?.nodes()?.map { rewardTransformer(it.fragments().reward()) }
     val slug = projectFragment?.slug()
     val staffPicked = projectFragment?.isProjectWeLove ?: false
     val state = projectFragment?.state()?.name
@@ -1100,9 +1103,12 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
     val url = projectFragment?.url()
     val urlsWeb = Project.Urls.Web.builder()
         .project(url)
+        .rewards("$url/rewards")
         .build()
     val urls = Project.Urls.builder().web(urlsWeb).build()
-    val video = videoTransformer(projectFragment?.video()?.fragments()?.video())
+    val video = if (projectFragment?.video()?.fragments()?.video() != null) {
+        videoTransformer(projectFragment?.video()?.fragments()?.video())
+    } else null
 
     return Project.builder()
         .availableCardTypes(availableCards.map { it.name })
@@ -1116,6 +1122,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         .creator(creator)
         .currency(currency)
         .currencySymbol(currencySymbol)
+        // .currentCurrency() TODO: selected currency can be fetched form the User Object
         // .currencyTrailingCode()   TODO: This field is available on V1 Configuration Object
         .displayPrelaunch(prelaunchActivted)
         .featuredAt(featuredAt)

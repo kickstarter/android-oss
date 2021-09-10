@@ -1195,6 +1195,7 @@ private fun categoryTransformer(categoryFragment: fragment.Category?): Category 
     } else null
 
     return Category.builder()
+        .analyticsName(name)
         .id(id)
         .name(name)
         .slug(slug)

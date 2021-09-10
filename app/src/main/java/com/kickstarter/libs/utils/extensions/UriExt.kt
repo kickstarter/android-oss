@@ -144,6 +144,11 @@ fun Uri.isWebUri(webEndpoint: String): Boolean {
     return isKickstarterUri(webEndpoint) && !isApiUri(webEndpoint)
 }
 
+fun Uri.isDiscoverSortParam(): Boolean {
+    return DISCOVER_SORT_PATTERN.matcher(path()).matches() &&
+        ObjectUtils.isNotNull(getQueryParameter("sort"))
+}
+
 private const val VERIFICATION = "/profile/verify_email"
 
 // /projects/:creator_param/:project_param/checkouts/1/thanks
@@ -160,6 +165,9 @@ private val DISCOVER_SCOPE_PATTERN = Pattern.compile("\\A\\/discover\\/([a-zA-Z0
 // /discover/places/param
 private val DISCOVER_PLACES_PATTERN =
     Pattern.compile("\\A\\/discover\\/places\\/[a-zA-Z0-9-_]+\\z")
+
+// /discover/advanced?sort=param
+private val DISCOVER_SORT_PATTERN = Pattern.compile("\\A\\/discover\\/advanced.*")
 
 //  /projects/:creator_param/:project_param/pledge
 private val NATIVE_CHECKOUT_PATTERN = Pattern.compile(

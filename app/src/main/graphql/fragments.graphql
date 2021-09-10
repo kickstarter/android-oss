@@ -40,12 +40,7 @@ fragment fullProject on Project {
     pledged {
         ... amount
     }
-    #...ed
     ...full
-    #...little
-    #...med
-    #...small
-    #...thumb
     prelaunchActivated
     ...tagsCreative
     ...tagsDiscovery
@@ -111,36 +106,6 @@ fragment full on Project {
         url(width: 1024)
     }
 }
-
-#fragment ed on Project {
-#    image {
-#        url(width: 325)
-#    }
-#}
-
-#fragment med on Project {
-#    image {
-#        url(width: 272)
-#    }
-#}
-
-#fragment little on Project {
-#    image {
-#        url(width: 208)
-#    }
-#}
-
-#fragment small on Project {
-#    image{
-#        url(width: 160)
-#    }
-#}
-
-#fragment thumb on Project {
-#    image {
-#        url(width: 48)
-#    }
-#}
 
 fragment video on Video {
     previewImageUrl

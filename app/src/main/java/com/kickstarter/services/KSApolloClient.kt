@@ -1053,7 +1053,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
     val creator = userTransformer(projectFragment?.creator()?.fragments()?.user())
     val currency = projectFragment?.currency()?.name ?: ""
     val currencySymbol = projectFragment?.goal()?.fragments()?.amount()?.symbol()
-    val prelaunchActivted = projectFragment?.prelaunchActivated()
+    val prelaunchActivated = projectFragment?.prelaunchActivated()
     val featuredAt = projectFragment?.projectOfTheDayAt()
     val friends =
         projectFragment?.friends()?.nodes()?.map { userTransformer(it.fragments().user()) }
@@ -1125,7 +1125,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         .currencySymbol(currencySymbol)
         .currentCurrency(currency) //TODO: selected currency can be fetched form the User Object
         .currencyTrailingCode(false) //TODO: This field is available on V1 Configuration Object
-        .displayPrelaunch(prelaunchActivted)
+        .displayPrelaunch(prelaunchActivated)
         .featuredAt(featuredAt)
         .friends(friends)
         .fxRate(fxRate)
@@ -1141,7 +1141,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         .permissions(permission)
         .pledged(pledged)
         .photo(photo) // TODO: now we get the full size for everything same as iOS, but V1 provided several image sizes
-        .prelaunchActivated(prelaunchActivted)
+        .prelaunchActivated(prelaunchActivated)
         .tags(tags)
         .rewards(rewards)
         .slug(slug)

@@ -154,6 +154,10 @@ public abstract class DiscoveryParams implements Parcelable {
       builder = builder.sort(Sort.NEWEST).staffPicks(true);
     }
 
+    if (UriExt.isDiscoverSortParam(uri)) {
+      builder = builder.sort(Sort.fromString(uri.getQueryParameter("sort")));
+    }
+
     if (UriExt.isDiscoverScopePath(uri, "popular")) {
       builder = builder.sort(Sort.POPULAR);
     }

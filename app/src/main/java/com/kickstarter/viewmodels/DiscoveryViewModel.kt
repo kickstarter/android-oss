@@ -281,10 +281,15 @@ interface DiscoveryViewModel {
 
             val pagerSelectedPage = pagerSetPrimaryPage.distinctUntilChanged()
 
+            val sortToTabOpen = Observable.merge(
+                pagerSelectedPage.map { DiscoveryUtils.sortFromPosition(it) },
+                params.map { it.sort() }
+            )
+
             // Combine params with the selected sort position.
             val paramsWithSort = Observable.combineLatest(
                 params,
-                pagerSelectedPage.map { DiscoveryUtils.sortFromPosition(it) }
+                sortToTabOpen
             ) { p, s -> p.toBuilder().sort(s).build() }
 
             paramsWithSort

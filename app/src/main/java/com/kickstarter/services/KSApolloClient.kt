@@ -1159,6 +1159,11 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         .build()
 }
 
+/**
+ * Transform the Video GraphQL data structure into our own Video data model
+ * @param fragment.Video video
+ * @return Project
+ */
 private fun videoTransformer(video: fragment.Video?): Video {
     val frame = video?.previewImageUrl()
     val base = video?.videoSources()?.base()?.src()
@@ -1173,6 +1178,11 @@ private fun videoTransformer(video: fragment.Video?): Video {
         .build()
 }
 
+/**
+ * Transform the User GraphQL data structure into our own User data model
+ * @param fragment.User user
+ * @return Project
+ */
 private fun userTransformer(user: fragment.User?): User {
 
     val id = decodeRelayId(user?.id()) ?: -1
@@ -1188,6 +1198,11 @@ private fun userTransformer(user: fragment.User?): User {
         .build()
 }
 
+/**
+ * Transform the Category GraphQL data structure into our own Categroy data model
+ * @param fragment.Category category
+ * @return Project
+ */
 private fun categoryTransformer(categoryFragment: fragment.Category?): Category {
     val name = categoryFragment?.name() ?: ""
     val id = decodeRelayId(categoryFragment?.id()) ?: -1

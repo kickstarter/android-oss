@@ -1080,7 +1080,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
     }
     val pledged = projectFragment?.pledged()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0
     val photoUrl = projectFragment?.fragments()?.full()?.image()?.url()
-    val photo = Photo.builder() // TODO: get the other photoUrl's
+    val photo = Photo.builder()
         .ed(photoUrl)
         .full(photoUrl)
         .little(photoUrl)
@@ -1100,6 +1100,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
     val staticUSDRate = projectFragment?.usdExchangeRate()?.toFloat()
     val usdExchangeRate = projectFragment?.usdExchangeRate()?.toFloat()
     val updatedAt = projectFragment?.posts()?.fragments()?.updates()?.nodes()?.first()?.updatedAt()
+    val updatesCount = projectFragment?.posts()?.fragments()?.updates()?.nodes()?.size
     val url = projectFragment?.url()
     val urlsWeb = Project.Urls.Web.builder()
         .project(url)
@@ -1123,7 +1124,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         .currency(currency)
         .currencySymbol(currencySymbol)
         // .currentCurrency() TODO: selected currency can be fetched form the User Object
-        // .currencyTrailingCode()   TODO: This field is available on V1 Configuration Object
+        // .currencyTrailingCode() TODO: This field is available on V1 Configuration Object
         .displayPrelaunch(prelaunchActivted)
         .featuredAt(featuredAt)
         .friends(friends)
@@ -1139,7 +1140,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         .name(name)
         .permissions(permission)
         .pledged(pledged)
-        .photo(photo)
+        .photo(photo) // TODO: now we get the full size for everything same as iOS, but V1 provided several image sizes
         .prelaunchActivated(prelaunchActivted)
         .tags(tags)
         .rewards(rewards)
@@ -1150,6 +1151,9 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         .staticUsdRate(staticUSDRate)
         .usdExchangeRate(usdExchangeRate)
         .updatedAt(updatedAt)
+        // .unreadMessagesCount() TODO: unread messages can be fetched form the User Object
+        // .unseenActivityCount() TODO: unseen activity can be fetched form the User Object
+        .updatesCount(updatesCount)
         .urls(urls)
         .video(video)
         .build()

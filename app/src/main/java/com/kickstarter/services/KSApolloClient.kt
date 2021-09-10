@@ -956,6 +956,7 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
         .name(nameBacker)
         .avatar(avatar)
         .build()
+    val status = backingGr?.status()?.rawValue() ?: ""
 
     return Backing.builder()
         .amount(backingGr?.amount()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0)
@@ -975,7 +976,7 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
         .projectId(projectId)
         .sequence(backingGr?.sequence()?.toLong() ?: 0)
         .shippingAmount(shippingAmount?.amount()?.amount()?.toFloat() ?: 0f)
-        .status(backingGr?.status()?.rawValue())
+        .status(status)
         .cancelable(backingGr?.cancelable() ?: false)
         .completedByBacker(completedByBacker)
         .build()
@@ -1040,8 +1041,12 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
     val availableCards = projectFragment?.availableCardTypes() ?: emptyList()
     val backersCount = projectFragment?.backersCount() ?: 0
     val blurb = projectFragment?.description() ?: ""
-    val backing = createBackingObject(projectFragment?.backing()?.fragments()?.backing())
-    val category = categoryTransformer(projectFragment?.category()?.fragments()?.category())
+    val backing = if (projectFragment?.backing()?.fragments()?.backing() != null) {
+        createBackingObject(projectFragment?.backing()?.fragments()?.backing())
+    } else null
+    val category = if (projectFragment?.category()?.fragments()?.category() != null) {
+        categoryTransformer(projectFragment?.category()?.fragments()?.category())
+    } else null
     val commentsCount = projectFragment?.commentsCount() ?: 0
     val country = projectFragment?.country()?.fragments()?.country()?.name() ?: ""
     val createdAt = projectFragment?.createdAt()
@@ -1143,13 +1148,6 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         .build()
 }
 
-/*
-private fun photoTransformer(photo: fragment.Photo?): Photo {
-
-    return Photo.builder()
-        .build()
-}*/
-
 private fun videoTransformer(video: fragment.Video?): Video {
     val frame = video?.previewImageUrl()
     val base = video?.videoSources()?.base()?.src()
@@ -1180,19 +1178,26 @@ private fun userTransformer(user: fragment.User?): User {
 }
 
 private fun categoryTransformer(categoryFragment: fragment.Category?): Category {
-    val name = categoryFragment?.name()
+    val name = categoryFragment?.name() ?: ""
     val id = decodeRelayId(categoryFragment?.id()) ?: -1
+    val slug = categoryFragment?.slug()
     val parentId = decodeRelayId(categoryFragment?.parentCategory()?.id()) ?: -1
     val parentName = categoryFragment?.parentCategory()?.name()
-    val parentCategory = Category.builder()
-        .analyticsName(name)
-        .id(parentId)
-        .name(categoryFragment?.parentCategory()?.name())
-        .build()
+    val parentSlug = categoryFragment?.parentCategory()?.slug()
+
+    val parentCategory = if(parentId > 0) {
+        Category.builder()
+            .slug(parentSlug)
+            .analyticsName(parentName)
+            .id(parentId)
+            .name(parentName)
+            .build()
+    } else null
 
     return Category.builder()
         .id(id)
         .name(name)
+        .slug(slug)
         .parent(parentCategory) // TODO: seems we can skip the entire parent category structure
         .parentId(parentId)
         .parentName(parentName)

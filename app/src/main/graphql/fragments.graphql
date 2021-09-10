@@ -180,9 +180,11 @@ fragment updates on PostConnection {
 fragment category on Category {
     id
     name
+    slug
     parentCategory {
         id
         name
+        slug
     }
 }
 

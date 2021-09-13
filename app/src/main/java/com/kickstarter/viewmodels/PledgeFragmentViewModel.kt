@@ -108,6 +108,8 @@ interface PledgeFragmentViewModel {
 
         /** Call when Stripe SCA is unsuccessful. */
         fun stripeSetupResultUnsuccessful(exception: Exception)
+
+        fun onRiskMessageDismissed()
     }
 
     interface Outputs {
@@ -315,7 +317,7 @@ interface PledgeFragmentViewModel {
         /** Emits the total pledgeAmount for Rewards + AddOns **/
         fun pledgeAmountHeader(): Observable<CharSequence>
 
-        fun showCheckoutRiskMessageBottomSheet(): Observable<Void>
+        fun changeCheckoutRiskMessageBottomSheetStatus(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
@@ -338,12 +340,13 @@ interface PledgeFragmentViewModel {
         private val decreaseBonusButtonClicked = PublishSubject.create<Void>()
         private val increaseBonusButtonClicked = PublishSubject.create<Void>()
         private val bonusInput = PublishSubject.create<String>()
+        private val onRiskMessageDismissed = PublishSubject.create<Void>()
 
         private val addedCard = BehaviorSubject.create<Pair<StoredCard, Project>>()
         private val additionalPledgeAmount = BehaviorSubject.create<String>()
         private val additionalPledgeAmountIsGone = BehaviorSubject.create<Boolean>()
         private val baseUrlForTerms = BehaviorSubject.create<String>()
-        private val showCheckoutRiskMessageBottomSheet = BehaviorSubject.create<Void>()
+        private val changeCheckoutRiskMessageBottomSheetStatus = BehaviorSubject.create<Boolean>()
         private val cardsAndProject = BehaviorSubject.create<Pair<List<StoredCard>, Project>>()
         private val continueButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val continueButtonIsGone = BehaviorSubject.create<Boolean>()
@@ -1161,7 +1164,9 @@ interface PledgeFragmentViewModel {
             this.pledgeButtonClickedToShowRiskMessage
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.showCheckoutRiskMessageBottomSheet.onNext(it)
+                    this.changeCheckoutRiskMessageBottomSheetStatus.onNext(true)
+                    // To disable reopen on change orianataion landscape
+                    this.changeCheckoutRiskMessageBottomSheetStatus.onNext(false)
                 }
 
             val pledgeButtonClicked = userIsLoggedIn
@@ -1673,6 +1678,8 @@ interface PledgeFragmentViewModel {
 
         override fun increaseBonusButtonClicked() = this.increaseBonusButtonClicked.onNext(null)
 
+        override fun onRiskMessageDismissed() = this.onRiskMessageDismissed.onNext(null)
+
         override fun linkClicked(url: String) = this.linkClicked.onNext(url)
 
         override fun miniRewardClicked() = this.miniRewardClicked.onNext(null)
@@ -1899,6 +1906,7 @@ interface PledgeFragmentViewModel {
         override fun shippingRule(): Observable<ShippingRule> = this.shippingRule
 
         @NonNull
-        override fun showCheckoutRiskMessageBottomSheet(): Observable<Void> = this.showCheckoutRiskMessageBottomSheet
+        override fun changeCheckoutRiskMessageBottomSheetStatus(): Observable<Boolean> = this
+            .changeCheckoutRiskMessageBottomSheetStatus
     }
 }

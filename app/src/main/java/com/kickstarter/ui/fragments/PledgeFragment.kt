@@ -610,7 +610,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .subscribe { this.viewModel.inputs.continueButtonClicked() }
         }
 
-        this.viewModel.outputs.showCheckoutRiskMessageBottomSheet()
+        this.viewModel.outputs.changeCheckoutRiskMessageBottomSheetStatus()
+            .filter { it }
             .compose(observeForUI())
             .compose(bindToLifecycle())
             .subscribe {

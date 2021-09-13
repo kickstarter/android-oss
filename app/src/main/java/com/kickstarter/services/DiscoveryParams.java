@@ -208,8 +208,8 @@ public abstract class DiscoveryParams implements Parcelable {
       builder = builder.pledged(pledged);
     }
 
-    final Boolean recommended = ObjectUtils.toBoolean(uri.getQueryParameter("recommended"));
-    if (recommended != null) {
+    final Boolean recommended = uri.getBooleanQueryParameter("recommended", false);
+    if (recommended) {
       builder = builder.recommended(recommended);
     }
 
@@ -218,8 +218,8 @@ public abstract class DiscoveryParams implements Parcelable {
       builder = builder.social(social);
     }
 
-    final Boolean staffPicks = ObjectUtils.toBoolean(uri.getQueryParameter("staff_picks"));
-    if (staffPicks != null) {
+    final Boolean staffPicks = uri.getBooleanQueryParameter("staff_picks", false);
+    if (staffPicks) {
       builder = builder.staffPicks(staffPicks);
     }
 

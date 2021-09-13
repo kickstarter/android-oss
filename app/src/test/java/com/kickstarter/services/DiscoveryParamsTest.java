@@ -75,6 +75,29 @@ public final class DiscoveryParamsTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testFromUri_collections() {
+    final DiscoveryParams staffPicksParams = DiscoveryParams.builder().staffPicks(true).build();
+
+    final Uri staffPicksUri = Uri.parse("https://www.kickstarter.com/discover/advanced?staff_picks=1");
+    assertEquals(staffPicksParams, DiscoveryParams.fromUri(staffPicksUri));
+
+    final DiscoveryParams recommendedParams = DiscoveryParams.builder().recommended(true).build();
+
+    final Uri recommendedUri = Uri.parse("https://www.kickstarter.com/discover/advanced?recommended=1");
+    assertEquals(recommendedParams, DiscoveryParams.fromUri(recommendedUri));
+
+    final DiscoveryParams starredParams = DiscoveryParams.builder().starred(1).build();
+
+    final Uri starredUri = Uri.parse("https://www.kickstarter.com/discover/advanced?starred=1");
+    assertEquals(starredParams, DiscoveryParams.fromUri(starredUri));
+
+    final DiscoveryParams socialParams = DiscoveryParams.builder().social(1).build();
+
+    final Uri socialUri = Uri.parse("https://www.kickstarter.com/discover/advanced?social=1");
+    assertEquals(socialParams, DiscoveryParams.fromUri(socialUri));
+  }
+
+  @Test
   public void testFromUri_customScopes() {
     final DiscoveryParams endingSoonParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.ENDING_SOON).build();
     final Uri endingSoonUri = Uri.parse("https://www.kickstarter.com/discover/ending-soon");

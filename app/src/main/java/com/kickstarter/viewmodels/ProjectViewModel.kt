@@ -31,6 +31,7 @@ import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
+import com.kickstarter.libs.utils.extensions.updateProjectWith
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -261,6 +262,7 @@ interface ProjectViewModel {
         private val optimizely: ExperimentsClientType = environment.optimizely()
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
         private val apolloClient = environment.apolloClient()
+        private val currentConfig = environment.currentConfig()
 
         private val blurbTextViewClicked = PublishSubject.create<Void>()
         private val blurbVariantClicked = PublishSubject.create<Void>()
@@ -346,13 +348,7 @@ interface ProjectViewModel {
                     ProjectIntentMapper.projectFromIntent(it)?.slug() ?: ""
                 }
                 .switchMap {
-                    this.apolloClient.getProject(it)
-                        .doOnSubscribe {
-                            progressBarIsGone.onNext(false)
-                        }
-                        .doAfterTerminate {
-                            progressBarIsGone.onNext(true)
-                        }
+                    getProjectObservable(it, progressBarIsGone)
                         .materialize()
                 }
                 .share()
@@ -432,13 +428,7 @@ interface ProjectViewModel {
                 .compose(takeWhen<Project, Void>(refreshProjectEvent))
                 .switchMap {
                     it.slug()?.let { slug ->
-                        this.client.fetchProject(slug)
-                            .doOnSubscribe {
-                                progressBarIsGone.onNext(false)
-                            }
-                            .doAfterTerminate {
-                                progressBarIsGone.onNext(true)
-                            }
+                        getProjectObservable(slug, progressBarIsGone)
                             .materialize()
                     }
                 }
@@ -889,6 +879,20 @@ interface ProjectViewModel {
                     this.analyticEvents.trackCreatorDetailsCTA(it)
                 }
         }
+
+        private fun getProjectObservable(
+            it: String,
+            progressBarIsGone: PublishSubject<Boolean>
+        ) = this.apolloClient.getProject(it)
+            .doOnSubscribe {
+                progressBarIsGone.onNext(false)
+            }
+            .doAfterTerminate {
+                progressBarIsGone.onNext(true)
+            }
+            .withLatestFrom(currentConfig.observable(), currentUser.observable() ) { project, config, user ->
+                return@withLatestFrom project.updateProjectWith(config, user)
+            }
 
         private fun isPledgeCTA(projectActionButtonStringRes: Int): Boolean {
             return when (projectActionButtonStringRes) {

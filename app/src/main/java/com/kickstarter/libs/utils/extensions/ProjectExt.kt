@@ -21,10 +21,9 @@ fun Project.updateProjectWith(config: Config, user: User?): Project {
         it.name().equals(config.countryCode())
     }
 
-    // - And user can select different currency to the country currently located
     val currentCurrency = user?.let {
         it.chosenCurrency()
-    }?: currentCountry?.currencyCode() ?: currency()
+    } ?: currentCountry?.currencyCode() ?: currency()
 
     val countryOfCurrency = config.launchedCountries().first { it.currencyCode() == currentCurrency }
     val currencySymbol = countryOfCurrency.currencySymbol()

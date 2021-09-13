@@ -890,7 +890,7 @@ interface ProjectViewModel {
             .doAfterTerminate {
                 progressBarIsGone.onNext(true)
             }
-            .withLatestFrom(currentConfig.observable(), currentUser.observable() ) { project, config, user ->
+            .withLatestFrom(currentConfig.observable(), currentUser.observable()) { project, config, user ->
                 return@withLatestFrom project.updateProjectWith(config, user)
             }
 

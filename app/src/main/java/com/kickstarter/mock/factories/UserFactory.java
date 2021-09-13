@@ -54,6 +54,13 @@ public final class UserFactory {
       .build();
   }
 
+  public static User canadianUser() {
+    return user()
+            .toBuilder()
+            .location(LocationFactory.germany())
+            .build();
+  }
+
   public static User mexicanUser() {
     return user()
             .toBuilder()

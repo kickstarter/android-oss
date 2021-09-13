@@ -1123,8 +1123,8 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         .creator(creator)
         .currency(currency)
         .currencySymbol(currencySymbol)
-        //.currentCurrency(currency) // TODO: selected currency can be fetched form the User/Configuration Object
-        //.currencyTrailingCode(false) // TODO: This field is available on V1 Configuration Object
+        .currentCurrency(currency) // TODO: selected currency can be fetched form the User/Configuration Object
+        .currencyTrailingCode(false) // TODO: This field is available on V1 Configuration Object
         .displayPrelaunch(prelaunchActivated)
         .featuredAt(featuredAt)
         .friends(friends)

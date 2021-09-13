@@ -342,8 +342,11 @@ interface ProjectViewModel {
                 intent()
                     .compose(takeWhen<Intent, Void>(this.reloadProjectContainerClicked))
             )
-                .flatMap {
-                    ProjectIntentMapper.project(it, this.client)
+                .map {
+                    ProjectIntentMapper.projectFromIntent(it)?.slug() ?: ""
+                }
+                .switchMap {
+                    this.apolloClient.getProject(it)
                         .doOnSubscribe {
                             progressBarIsGone.onNext(false)
                         }

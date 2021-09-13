@@ -6,6 +6,7 @@ import com.kickstarter.libs.utils.extensions.isCheckoutUri
 import com.kickstarter.libs.utils.extensions.isDiscoverCategoriesPath
 import com.kickstarter.libs.utils.extensions.isDiscoverPlacesPath
 import com.kickstarter.libs.utils.extensions.isDiscoverScopePath
+import com.kickstarter.libs.utils.extensions.isDiscoverSortParam
 import com.kickstarter.libs.utils.extensions.isKSFavIcon
 import com.kickstarter.libs.utils.extensions.isKickstarterUri
 import com.kickstarter.libs.utils.extensions.isModalUri
@@ -49,6 +50,7 @@ class UriExtTest : KSRobolectricTestCase() {
     private val updateUri = Uri.parse("https://www.ksr.com/projects/creator/project/posts/id")
     private val userSurveyUri = Uri.parse("https://www.ksr.com/users/user-param/surveys/survey-id")
     private val webEndpoint = "https://www.ksr.com"
+    private val discoverSortUri = Uri.parse("https://www.kickstarter.com/discover/advanced?sort=ending-soon")
 
     @Test
     fun testUri_isCheckoutUri() {
@@ -182,5 +184,10 @@ class UriExtTest : KSRobolectricTestCase() {
     fun testUri_isVerificationEmailUrl() {
         assertFalse(projectUri.isVerificationEmailUrl())
         assertTrue(verificationEmail.isVerificationEmailUrl())
+    }
+
+    @Test
+    fun testUri_isDiscoverySortUri() {
+        assertTrue(discoverSortUri.isDiscoverSortParam())
     }
 }

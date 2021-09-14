@@ -292,14 +292,14 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.halfWayProject()))
 
         this.savedTest.assertValues(false)
-        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline)
+        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline)
 
         // Try starring while logged out
         this.vm.inputs.heartButtonClicked()
 
         // The project shouldn't be saved, and a login prompt should be shown.
         this.savedTest.assertValues(false)
-        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline)
+        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline)
         this.showSavedPromptTest.assertValueCount(0)
         this.startLoginToutActivity.assertValueCount(1)
 
@@ -310,7 +310,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         // The project should be saved, and a star prompt should be shown.
         this.savedTest.assertValues(false, true)
-        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline, R.drawable.icon__heart)
+        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart)
         this.showSavedPromptTest.assertValueCount(1)
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
@@ -340,7 +340,11 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.shareButtonClicked()
         val expectedName = "Best Project 2K19"
         val expectedShareUrl = "https://www.kck.str/projects/" + creator.id().toString() + "/" + slug + "?ref=android_project_share"
-        this.showShareSheet.assertValues(Pair(expectedName, expectedShareUrl))
+
+        this.vm.outputs.showShareSheet().subscribe {
+            assertTrue(it.first == expectedName)
+            assertTrue(it.second == expectedShareUrl)
+        }
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
@@ -368,7 +372,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         // The project should be saved, and a save prompt should NOT be shown.
         this.savedTest.assertValues(false, true)
-        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline, R.drawable.icon__heart)
+        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart)
         this.showSavedPromptTest.assertValueCount(0)
     }
 
@@ -393,7 +397,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         // The project should be saved, and a save prompt should NOT be shown.
         this.savedTest.assertValues(false, true)
-        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline, R.drawable.icon__heart)
+        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart)
         this.showSavedPromptTest.assertValueCount(0)
     }
 

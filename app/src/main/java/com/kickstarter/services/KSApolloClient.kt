@@ -1099,7 +1099,10 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
     val stateChangedAt = projectFragment?.stateChangedAt()
     val staticUSDRate = projectFragment?.usdExchangeRate()?.toFloat()
     val usdExchangeRate = projectFragment?.usdExchangeRate()?.toFloat()
-    val updatedAt = projectFragment?.posts()?.fragments()?.updates()?.nodes()?.first()?.updatedAt()
+    val updatedAt = projectFragment?.posts()?.fragments()?.updates()?.nodes()?.let {
+        if(it.isNotEmpty())  return@let it.first()?.updatedAt()
+        else null
+    }
     val updatesCount = projectFragment?.posts()?.fragments()?.updates()?.nodes()?.size
     val url = projectFragment?.url()
     val urlsWeb = Project.Urls.Web.builder()

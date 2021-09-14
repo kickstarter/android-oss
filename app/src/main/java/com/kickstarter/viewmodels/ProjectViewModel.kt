@@ -890,9 +890,9 @@ interface ProjectViewModel {
             .doAfterTerminate {
                 progressBarIsGone.onNext(true)
             }
-            .withLatestFrom(currentConfig.observable(), currentUser.observable()) { project, config, user ->
-                return@withLatestFrom project.updateProjectWith(config, user)
-            }
+            .compose(combineLatestPair(currentConfig.observable()))
+            .compose(combineLatestPair(currentUser.observable()))
+            .map { it.first.first.updateProjectWith(it.first.second, it.second) }
 
         private fun isPledgeCTA(projectActionButtonStringRes: Int): Boolean {
             return when (projectActionButtonStringRes) {

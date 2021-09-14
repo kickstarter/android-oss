@@ -123,6 +123,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val bonusSectionIsGone = TestSubscriber<Boolean>()
     private val bonusSummaryIsGone = TestSubscriber<Boolean>()
     private val shippingRule = TestSubscriber<ShippingRule>()
+    private val changeCheckoutRiskMessageBottomSheetStatus = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(
         environment: Environment,
@@ -195,6 +196,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.isBonusSupportSectionGone().subscribe(this.bonusSectionIsGone)
         this.vm.outputs.bonusSummaryIsGone().subscribe(this.bonusSummaryIsGone)
         this.vm.outputs.shippingRule().subscribe(this.shippingRule)
+        this.vm.outputs.changeCheckoutRiskMessageBottomSheetStatus().subscribe(this.changeCheckoutRiskMessageBottomSheetStatus)
 
         val projectData = project.backing()?.let {
             return@let ProjectData.builder()
@@ -1470,6 +1472,19 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeButtonIsEnabled.assertValues(true, false)
         this.pledgeProgressIsGone.assertValues(false)
         this.showUpdatePaymentSuccess.assertValueCount(1)
+    }
+
+    @Test
+    fun testShowCheckoutRiskMessageBottomSheet_whenPledgeClicked() {
+        val environment = environment()
+            .toBuilder()
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.inputs.pledgeButtonClickedToShowRiskMessage()
+
+        this.changeCheckoutRiskMessageBottomSheetStatus.assertValueCount(2)
     }
 
     @Test

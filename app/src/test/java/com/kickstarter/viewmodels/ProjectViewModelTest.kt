@@ -20,7 +20,6 @@ import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.UserFactory
-import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
@@ -155,8 +154,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         val environment = environment()
             .toBuilder()
-            .apiClient(object : MockApiClient() {
-                override fun fetchProject(project: Project): Observable<Project> {
+            .apolloClient(object : MockApolloClient() {
+                override fun getProject(project: Project): Observable<Project> {
                     val observable = when {
                         error -> Observable.error(Throwable("boop"))
                         else -> {
@@ -222,8 +221,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         val environment = environment()
             .toBuilder()
-            .apiClient(object : MockApiClient() {
-                override fun fetchProject(param: String): Observable<Project> {
+            .apolloClient(object : MockApolloClient() {
+                override fun getProject(slug: String): Observable<Project> {
                     val observable = when {
                         error -> Observable.error(Throwable("boop"))
                         else -> Observable.just(refreshedProject)
@@ -292,14 +291,14 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.halfWayProject()))
 
         this.savedTest.assertValues(false)
-        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline)
+        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline)
 
         // Try starring while logged out
         this.vm.inputs.heartButtonClicked()
 
         // The project shouldn't be saved, and a login prompt should be shown.
         this.savedTest.assertValues(false)
-        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline)
+        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline)
         this.showSavedPromptTest.assertValueCount(0)
         this.startLoginToutActivity.assertValueCount(1)
 
@@ -310,7 +309,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         // The project should be saved, and a star prompt should be shown.
         this.savedTest.assertValues(false, true)
-        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart)
+        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline, R.drawable.icon__heart)
         this.showSavedPromptTest.assertValueCount(1)
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
@@ -372,7 +371,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         // The project should be saved, and a save prompt should NOT be shown.
         this.savedTest.assertValues(false, true)
-        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart)
+        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline, R.drawable.icon__heart)
         this.showSavedPromptTest.assertValueCount(0)
     }
 
@@ -397,7 +396,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         // The project should be saved, and a save prompt should NOT be shown.
         this.savedTest.assertValues(false, true)
-        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart)
+        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline, R.drawable.icon__heart)
         this.showSavedPromptTest.assertValueCount(0)
     }
 

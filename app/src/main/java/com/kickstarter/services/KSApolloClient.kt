@@ -319,6 +319,10 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }.subscribeOn(Schedulers.io())
     }
 
+    override fun getProject(project: Project): Observable<Project> {
+        return getProject(project.slug() ?: "")
+    }
+
     override fun getProject(slug: String): Observable<Project> {
         return Observable.defer {
             val ps = PublishSubject.create<Project>()

@@ -344,11 +344,17 @@ interface ProjectViewModel {
                 intent()
                     .compose(takeWhen<Intent, Void>(this.reloadProjectContainerClicked))
             )
-                .map {
-                    ProjectIntentMapper.projectFromIntent(it)?.slug() ?: ""
-                }
-                .switchMap {
-                    getProjectObservable(it, progressBarIsGone)
+                .flatMap {
+                    ProjectIntentMapper.project(it, this.apolloClient)
+                        .doOnSubscribe {
+                            progressBarIsGone.onNext(false)
+                        }
+                        .doAfterTerminate {
+                            progressBarIsGone.onNext(true)
+                        }
+                        .withLatestFrom(currentConfig.observable(), currentUser.observable()) { project, config, user ->
+                            return@withLatestFrom project.updateProjectWith(config, user)
+                        }
                         .materialize()
                 }
                 .share()

@@ -12,13 +12,13 @@ import auto.parcel.AutoParcel;
 @AutoGson
 public abstract class Category implements Parcelable, Comparable<Category> {
   public abstract String analyticsName();
-  public abstract int color();
+  public abstract @Nullable int color();
   public abstract long id();
   public abstract String name();
   public abstract @Nullable Category parent();
   public abstract @Nullable Long parentId();
   public abstract @Nullable String parentName();
-  public abstract int position();
+  public abstract @Nullable int position();
   public abstract @Nullable Integer projectsCount();
   public abstract String slug();
 

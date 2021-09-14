@@ -274,6 +274,7 @@ interface RewardViewHolderViewModel {
 
             reward
                 .filter { RewardUtils.isLimited(it) }
+                .filter { ObjectUtils.isNotNull(it.remaining()) }
                 .map { it.remaining() }
                 .map { remaining -> remaining?.let { NumberUtils.format(it) } }
                 .compose(bindToLifecycle())

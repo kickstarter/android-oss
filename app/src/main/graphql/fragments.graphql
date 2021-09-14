@@ -3,6 +3,7 @@ fragment fullProject on Project {
     backersCount
     description
     minPledge
+    isLaunched
     backing {
         ... backing
     }

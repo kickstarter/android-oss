@@ -23,6 +23,7 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.libs.Permission
+import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Avatar
@@ -1121,6 +1122,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
     val video = if (projectFragment?.video()?.fragments()?.video() != null) {
         videoTransformer(projectFragment?.video()?.fragments()?.video())
     } else null
+    val displayPrelaunch = BooleanUtils.negate(projectFragment?.isLaunched ?: false)
 
     return Project.builder()
         .availableCardTypes(availableCards.map { it.name })
@@ -1136,7 +1138,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         .currencySymbol(currencySymbol)
         .currentCurrency(currency) // TODO: selected currency can be fetched form the User/Configuration Object
         .currencyTrailingCode(false) // TODO: This field is available on V1 Configuration Object
-        .displayPrelaunch(false)
+        .displayPrelaunch(displayPrelaunch)
         .featuredAt(featuredAt)
         .friends(friends)
         .fxRate(fxRate)

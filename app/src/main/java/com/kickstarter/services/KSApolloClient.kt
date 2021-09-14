@@ -1109,7 +1109,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
     val staticUSDRate = projectFragment?.usdExchangeRate()?.toFloat()
     val usdExchangeRate = projectFragment?.usdExchangeRate()?.toFloat()
     val updatedAt = projectFragment?.posts()?.fragments()?.updates()?.nodes()?.let {
-        if(it.isNotEmpty())  return@let it.first()?.updatedAt()
+        if (it.isNotEmpty()) return@let it.first()?.updatedAt()
         else null
     }
     val updatesCount = projectFragment?.posts()?.fragments()?.updates()?.nodes()?.size

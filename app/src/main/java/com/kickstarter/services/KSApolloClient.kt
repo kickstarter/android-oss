@@ -1095,7 +1095,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         projectFragment?.rewards()?.nodes()?.map { rewardTransformer(it.fragments().reward()) }
     val slug = projectFragment?.slug()
     val staffPicked = projectFragment?.isProjectWeLove ?: false
-    val state = projectFragment?.state()?.name
+    val state = projectFragment?.state()?.name?.lowercase()
     val stateChangedAt = projectFragment?.stateChangedAt()
     val staticUSDRate = projectFragment?.usdExchangeRate()?.toFloat()
     val usdExchangeRate = projectFragment?.usdExchangeRate()?.toFloat()

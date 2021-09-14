@@ -2,6 +2,7 @@ fragment fullProject on Project {
     availableCardTypes
     backersCount
     description
+    minPledge
     backing {
         ... backing
     }

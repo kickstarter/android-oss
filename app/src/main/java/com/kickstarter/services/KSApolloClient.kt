@@ -24,6 +24,7 @@ import com.apollographql.apollo.exception.ApolloException
 import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.libs.Permission
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Avatar
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Category
@@ -1091,8 +1092,15 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
     val tags = mutableListOf<String>()
     projectFragment?.fragments()?.tagsCreative()?.tags()?.map { tags.add(it.id()) }
     projectFragment?.fragments()?.tagsDiscovery()?.tags()?.map { tags.add(it.id()) }
+    val minPledge = projectFragment?.minPledge()?.toDouble() ?: 1.0
     val rewards =
         projectFragment?.rewards()?.nodes()?.map { rewardTransformer(it.fragments().reward()) }
+
+    // - GraphQL does not provide the Reward no reward, we need to add it first
+    val modifiedRewards = rewards?.toMutableList()
+    modifiedRewards?.add(0, RewardFactory.noReward().toBuilder().minimum(minPledge).build())
+    modifiedRewards?.toList()
+
     val slug = projectFragment?.slug()
     val staffPicked = projectFragment?.isProjectWeLove ?: false
     val state = projectFragment?.state()?.name?.lowercase()
@@ -1146,7 +1154,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         .photo(photo) // TODO: now we get the full size for everything same as iOS, but V1 provided several image sizes
         .prelaunchActivated(prelaunchActivated)
         .tags(tags)
-        .rewards(rewards)
+        .rewards(modifiedRewards)
         .slug(slug)
         .staffPick(staffPicked)
         .state(state)

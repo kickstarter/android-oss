@@ -162,6 +162,8 @@ object RewardUtils {
         }
 
         return when (shippingType) {
+            Reward.ShippingPreference.UNRESTRICTED.name.lowercase() -> Pair.create(R.string.Ships_worldwide, null)
+            Reward.ShippingPreference.RESTRICTED.name.lowercase() -> Pair.create(R.string.Limited_shipping, "")
             Reward.SHIPPING_TYPE_ANYWHERE -> Pair.create(R.string.Ships_worldwide, null)
             Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS -> Pair.create(R.string.Limited_shipping, null)
             Reward.SHIPPING_TYPE_SINGLE_LOCATION -> {

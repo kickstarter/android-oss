@@ -1129,7 +1129,6 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
     } else null
     val displayPrelaunch = BooleanUtils.negate(projectFragment?.isLaunched ?: false)
 
-
     return Project.builder()
         .availableCardTypes(availableCards.map { it.name })
         .backersCount(backersCount)

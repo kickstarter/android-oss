@@ -1270,6 +1270,7 @@ private fun rewardTransformer(rewardGr: fragment.Reward, shippingRulesExpanded: 
     val rewardId = decodeRelayId(rewardGr.id()) ?: -1
     val available = rewardGr.available()
     val isAddOn = rewardGr.rewardType() == RewardType.ADDON
+    val isReward = rewardGr.rewardType() == RewardType.BASE
     val backersCount = rewardGr.backersCount()
     val shippingPreference = when (rewardGr.shippingPreference()) {
         ShippingPreference.NONE -> Reward.ShippingPreference.NONE
@@ -1287,11 +1288,15 @@ private fun rewardTransformer(rewardGr: fragment.Reward, shippingRulesExpanded: 
         }
     } else emptyList()
 
-    val rewardItems = if (!isAddOn) {
+    val rewardItems = if (isReward) {
         rewardGr.items()?.let {
             rewardItemsTransformer(it)
         }
     } else emptyList()
+
+    val hasAddons = if (isReward) {
+        rewardGr.allowedAddons().edges()?.isNotEmpty() ?: false
+    } else false
 
     val shippingRules = shippingRulesExpanded.map {
         shippingRuleTransformer(it)
@@ -1309,11 +1314,12 @@ private fun rewardTransformer(rewardGr: fragment.Reward, shippingRulesExpanded: 
         .estimatedDeliveryOn(estimatedDelivery)
         .isAddOn(isAddOn)
         .addOnsItems(addonItems)
+        .hasAddons(hasAddons)
         .rewardsItems(rewardItems)
         .id(rewardId)
-        .shippingPreference(shippingPreference.name)
+        .shippingPreference(shippingPreference.name.lowercase())
         .shippingPreferenceType(shippingPreference)
-        .shippingType(shippingPreference.name)
+        .shippingType(shippingPreference.name.lowercase())
         .shippingRules(shippingRules)
         .isAvailable(available)
         .backersCount(backersCount)

@@ -180,6 +180,13 @@ fragment reward on Reward {
     description
     estimatedDeliveryOn
     available
+    allowedAddons {
+        edges {
+            node {
+                id
+            }
+        }
+    }
     items {
         edges {
             quantity

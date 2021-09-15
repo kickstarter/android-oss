@@ -1281,9 +1281,17 @@ private fun rewardTransformer(rewardGr: fragment.Reward, shippingRulesExpanded: 
     val limit = if (isAddOn) chooseLimit(rewardGr.limit(), rewardGr.limitPerBacker())
     else rewardGr.limit()
 
-    val items = rewardGr.items()?.let {
-        rewardItemsTransformer(it)
-    }
+    val addonItems = if (isAddOn) {
+        rewardGr.items()?.let {
+            rewardItemsTransformer(it)
+        }
+    } else emptyList()
+
+    val rewardItems = if (!isAddOn) {
+        rewardGr.items()?.let {
+            rewardItemsTransformer(it)
+        }
+    } else emptyList()
 
     val shippingRules = shippingRulesExpanded.map {
         shippingRuleTransformer(it)
@@ -1300,7 +1308,8 @@ private fun rewardTransformer(rewardGr: fragment.Reward, shippingRulesExpanded: 
         .description(desc)
         .estimatedDeliveryOn(estimatedDelivery)
         .isAddOn(isAddOn)
-        .addOnsItems(items)
+        .addOnsItems(addonItems)
+        .rewardsItems(rewardItems)
         .id(rewardId)
         .shippingPreference(shippingPreference.name)
         .shippingPreferenceType(shippingPreference)

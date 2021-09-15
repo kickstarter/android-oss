@@ -1,7 +1,6 @@
 package com.kickstarter.ui.viewholders
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.util.Pair
 import android.view.View
 import androidx.annotation.NonNull
@@ -17,13 +16,8 @@ import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
 import com.kickstarter.libs.utils.RewardItemDecorator
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardViewUtils
-import com.kickstarter.libs.utils.TransitionUtils.slideInFromRight
-import com.kickstarter.libs.utils.TransitionUtils.transition
-import com.kickstarter.libs.utils.ViewUtils
-import com.kickstarter.models.Project
+import com.kickstarter.libs.utils.extensions.setGone
 import com.kickstarter.models.Reward
-import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.activities.BackingActivity
 import com.kickstarter.ui.adapters.RewardItemsAdapter
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.RewardViewHolderViewModel
@@ -47,7 +41,7 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
         this.viewModel.outputs.conversionIsGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe(ViewUtils.setGone(this.binding.rewardConversionTextView))
+            .subscribe(this.binding.rewardConversionTextView.setGone())
 
         this.viewModel.outputs.conversion()
             .compose(bindToLifecycle())
@@ -67,7 +61,7 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
         this.viewModel.outputs.descriptionIsGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { ViewUtils.setGone(this.binding.rewardDescriptionContainer, it) }
+            .subscribe { this.binding.rewardDescriptionContainer.setGone(it) }
 
         this.viewModel.outputs.buttonIsEnabled()
             .compose(bindToLifecycle())
@@ -77,13 +71,13 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
         this.viewModel.outputs.remainingIsGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe(ViewUtils.setGone(this.binding.rewardRemainingTextView))
+            .subscribe(this.binding.rewardRemainingTextView.setGone())
 
         this.viewModel.outputs.limitContainerIsGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {
-                ViewUtils.setGone(this.binding.rewardLimitContainer, it)
+                this.binding.rewardLimitContainer.setGone(it)
             }
 
         this.viewModel.outputs.remaining()
@@ -104,7 +98,7 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
         this.viewModel.outputs.shippingSummaryIsGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { ViewUtils.setGone(this.binding.rewardShippingSummary, it) }
+            .subscribe { this.binding.rewardShippingSummary.setGone(it) }
 
         this.viewModel.outputs.minimumAmountTitle()
             .compose(bindToLifecycle())
@@ -119,7 +113,7 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
         this.viewModel.outputs.endDateSectionIsGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { ViewUtils.setGone(this.binding.rewardEndingTextView, it) }
+            .subscribe { this.binding.rewardEndingTextView.setGone(it) }
 
         this.viewModel.outputs.rewardItems()
             .compose(bindToLifecycle())
@@ -129,7 +123,7 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
         this.viewModel.outputs.rewardItemsAreGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe(ViewUtils.setGone(this.binding.rewardsItemSection))
+            .subscribe(this.binding.rewardsItemSection.setGone())
 
         this.viewModel.outputs.titleForNoReward()
             .compose(bindToLifecycle())
@@ -144,7 +138,7 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
         this.viewModel.outputs.titleIsGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { ViewUtils.setGone(this.binding.rewardTitleTextView, it) }
+            .subscribe { this.binding.rewardTitleTextView.setGone(it) }
 
         this.viewModel.outputs.showFragment()
             .compose(bindToLifecycle())
@@ -164,7 +158,7 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
         this.viewModel.outputs.backersCountIsGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { ViewUtils.setGone(this.binding.rewardBackersCount, it) }
+            .subscribe { this.binding.rewardBackersCount.setGone(it) }
 
         this.viewModel.outputs.estimatedDelivery()
             .compose(bindToLifecycle())
@@ -174,26 +168,26 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
         this.viewModel.outputs.estimatedDeliveryIsGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { ViewUtils.setGone(this.binding.rewardEstimatedDeliverySection, it) }
+            .subscribe { this.binding.rewardEstimatedDeliverySection.setGone(it) }
 
         this.viewModel.outputs.isMinimumPledgeAmountGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {
-                ViewUtils.setGone(this.binding.rewardConversionTextView, it)
-                ViewUtils.setGone(this.binding.rewardMinimumTextView, it)
+                this.binding.rewardConversionTextView.setGone(it)
+                this.binding.rewardMinimumTextView.setGone(it)
             }
 
         RxView.clicks(this.binding.rewardPledgeButton)
             .compose(bindToLifecycle())
-            .subscribe { this.viewModel.inputs.rewardClicked(this.adapterPosition) }
+            .subscribe { this.viewModel.inputs.rewardClicked(this.bindingAdapterPosition) }
 
         this.viewModel.outputs.hasAddOnsAvailable()
             .filter { ObjectUtils.isNotNull(it) }
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {
-                ViewUtils.setGone(this.binding.rewardAddOnsAvailable, !it)
+                this.binding.rewardAddOnsAvailable.setGone(!it)
             }
 
         this.viewModel.outputs.selectedRewardTagIsGone()
@@ -201,7 +195,7 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
             .compose(observeForUI())
             .subscribe { isGone ->
                 if (!isGone) this.binding.rewardSelectedRewardTag.visibility = View.VISIBLE
-                else ViewUtils.setGone(this.binding.rewardSelectedRewardTag, true)
+                else this.binding.rewardSelectedRewardTag.setGone(true)
             }
     }
 
@@ -237,13 +231,13 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
 
     private fun setPledgeButtonVisibility(gone: Boolean) {
         if (BooleanUtils.isTrue(this.inset)) {
-            ViewUtils.setGone(this.binding.rewardButtonContainer, true)
-            ViewUtils.setGone(this.binding.rewardButtonPlaceholder, true)
+            this.binding.rewardButtonContainer.setGone(true)
+            this.binding.rewardButtonPlaceholder.setGone(true)
         } else {
-            ViewUtils.setGone(this.binding.rewardButtonContainer, gone)
+            this.binding.rewardButtonContainer.setGone(gone)
             when {
-                gone -> ViewUtils.setGone(this.binding.rewardButtonPlaceholder, true)
-                else -> ViewUtils.setInvisible(this.binding.rewardButtonPlaceholder, true)
+                gone -> this.binding.rewardButtonPlaceholder.setGone(true)
+                else -> this.binding.rewardButtonPlaceholder.setGone(true)
             }
         }
     }
@@ -269,14 +263,5 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
             itemRecyclerView.addItemDecoration(RewardItemDecorator(it))
         }
         return rewardItemAdapter
-    }
-
-    private fun startBackingActivity(@NonNull project: Project) {
-        val context = context()
-        val intent = Intent(context, BackingActivity::class.java)
-            .putExtra(IntentKey.PROJECT, project)
-
-        context.startActivity(intent)
-        transition(context, slideInFromRight())
     }
 }

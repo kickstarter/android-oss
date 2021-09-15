@@ -145,10 +145,12 @@ fragment updates on PostConnection {
 
 
 fragment category on Category {
+    analyticsName
     id
     name
     slug
     parentCategory {
+        analyticsName
         id
         name
         slug

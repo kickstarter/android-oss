@@ -1097,6 +1097,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
     val tags = mutableListOf<String>()
     projectFragment?.fragments()?.tagsCreative()?.tags()?.map { tags.add(it.id()) }
     projectFragment?.fragments()?.tagsDiscovery()?.tags()?.map { tags.add(it.id()) }
+
     val minPledge = projectFragment?.minPledge()?.toDouble() ?: 1.0
     val rewards =
         projectFragment?.rewards()?.nodes()?.map { rewardTransformer(it.fragments().reward()) }
@@ -1127,6 +1128,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         videoTransformer(projectFragment?.video()?.fragments()?.video())
     } else null
     val displayPrelaunch = BooleanUtils.negate(projectFragment?.isLaunched ?: false)
+
 
     return Project.builder()
         .availableCardTypes(availableCards.map { it.name })

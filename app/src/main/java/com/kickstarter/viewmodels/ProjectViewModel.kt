@@ -434,7 +434,16 @@ interface ProjectViewModel {
                 .compose(takeWhen<Project, Void>(refreshProjectEvent))
                 .switchMap {
                     it.slug()?.let { slug ->
-                        getProjectObservable(slug, progressBarIsGone)
+                        this.apolloClient.getProject(slug)
+                            .doOnSubscribe {
+                                progressBarIsGone.onNext(false)
+                            }
+                            .doAfterTerminate {
+                                progressBarIsGone.onNext(true)
+                            }
+                            .withLatestFrom(currentConfig.observable(), currentUser.observable()) { project, config, user ->
+                                return@withLatestFrom project.updateProjectWith(config, user)
+                            }
                             .materialize()
                     }
                 }
@@ -885,20 +894,6 @@ interface ProjectViewModel {
                     this.analyticEvents.trackCreatorDetailsCTA(it)
                 }
         }
-
-        private fun getProjectObservable(
-            it: String,
-            progressBarIsGone: PublishSubject<Boolean>
-        ) = this.apolloClient.getProject(it)
-            .doOnSubscribe {
-                progressBarIsGone.onNext(false)
-            }
-            .doAfterTerminate {
-                progressBarIsGone.onNext(true)
-            }
-            .compose(combineLatestPair(currentConfig.observable()))
-            .compose(combineLatestPair(currentUser.observable()))
-            .map { it.first.first.updateProjectWith(it.first.second, it.second) }
 
         private fun isPledgeCTA(projectActionButtonStringRes: Int): Boolean {
             return when (projectActionButtonStringRes) {

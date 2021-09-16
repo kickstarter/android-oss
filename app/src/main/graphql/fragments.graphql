@@ -2,6 +2,8 @@ fragment fullProject on Project {
     availableCardTypes
     backersCount
     description
+    minPledge
+    isLaunched
     backing {
         ... backing
     }
@@ -235,6 +237,7 @@ fragment user on User {
     id
     imageUrl(blur: false, width: 54),
     isCreator
+    chosenCurrency
 }
 
 fragment amount on Money {

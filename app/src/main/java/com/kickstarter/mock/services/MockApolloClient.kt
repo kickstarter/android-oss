@@ -43,8 +43,17 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(BackingFactory.backing())
     }
 
+    override fun getProject(project: Project): Observable<Project> {
+        return return Observable.just(project)
+    }
+
     override fun getProject(slug: String): Observable<Project> {
-        return Observable.just(ProjectFactory.project())
+        return return Observable.just(
+            ProjectFactory.project()
+                .toBuilder()
+                .slug(slug)
+                .build()
+        )
     }
 
     override fun getProjectAddOns(slug: String, location: Location): Observable<List<Reward>> {

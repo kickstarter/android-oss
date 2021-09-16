@@ -297,9 +297,9 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).category(CategoryFactory.artCategory()).build(),
-      DiscoveryParams.builder().category(CategoryFactory.artCategory()).build()
+      DiscoveryParams.builder().category(CategoryFactory.artCategory()).sort(DiscoveryParams.Sort.POPULAR).build()
     );
-    this.updatePage.assertValues(0, 0, 1, 1, 0);
+    this.updatePage.assertValues(0, 0, 1, 1, 1);
 
     // Select MAGIC sort position.
     this.vm.getInputs().discoveryPagerAdapterSetPrimaryPage(Mockito.mock(DiscoveryPagerAdapter.class), 0);
@@ -310,10 +310,10 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).category(CategoryFactory.artCategory()).build(),
-      DiscoveryParams.builder().category(CategoryFactory.artCategory()).build(),
+      DiscoveryParams.builder().category(CategoryFactory.artCategory()).sort(DiscoveryParams.Sort.POPULAR).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).category(CategoryFactory.artCategory()).build()
     );
-    this.updatePage.assertValues(0, 0, 1, 1, 0, 0);
+    this.updatePage.assertValues(0, 0, 1, 1, 1, 0);
 
     // Simulate rotating the device and hitting initial getInputs() again.
     this.vm.getOutputs().updateParamsForPage().subscribe(this.rotatedUpdateParams);

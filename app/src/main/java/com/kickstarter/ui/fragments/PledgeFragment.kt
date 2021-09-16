@@ -63,7 +63,12 @@ import com.stripe.android.ApiResultCallback
 import com.stripe.android.SetupIntentResult
 
 @RequiresFragmentViewModel(PledgeFragmentViewModel.ViewModel::class)
-class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), RewardCardAdapter.Delegate, ShippingRulesAdapter.Delegate {
+class PledgeFragment :
+    BaseFragment<PledgeFragmentViewModel.ViewModel>(),
+    RewardCardAdapter
+    .Delegate,
+    ShippingRulesAdapter.Delegate,
+    CheckoutRiskMessageFragment.Delegate {
 
     interface PledgeDelegate {
         fun pledgePaymentSuccessfullyUpdated()
@@ -598,10 +603,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
         binding?.pledgeSectionBonusSupport?.increaseBonus?.setOnClickListener { this.viewModel.inputs.increaseBonusButtonClicked() }
 
-        binding?.pledgeSectionFooter?.pledgeFooterPledgeButton?.let {
-            RxView.clicks(it)
-                .compose(bindToLifecycle())
-                .subscribe { this.viewModel.inputs.pledgeButtonClickedToShowRiskMessage() }
+        binding?.pledgeSectionFooter?.pledgeFooterPledgeButton?.setOnClickListener {
+            this.viewModel.inputs.pledgeButtonClicked()
         }
 
         binding?.pledgeSectionFooter?.pledgeFooterContinueButton?.let {
@@ -611,7 +614,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         }
 
         this.viewModel.outputs.changeCheckoutRiskMessageBottomSheetStatus()
-            .filter { it }
+            .filter {
+                it
+            }
             .compose(observeForUI())
             .compose(bindToLifecycle())
             .subscribe {
@@ -620,8 +625,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     private fun showRiskMessageDialog() {
-        val fragment = CheckoutRiskMessageFragment.newInstance()
-        activity?.supportFragmentManager?.let { it1 -> fragment.show(it1, "") }
+        activity?.supportFragmentManager?.let {
+            CheckoutRiskMessageFragment.newInstance(this).show(it.beginTransaction(), "CheckoutRiskMessageFragment")
+        }
     }
 
     private fun populateHeaderItems(selectedItems: List<Pair<Project, Reward>>) {
@@ -906,6 +912,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         } else {
             rewardCardAdapter?.resetSelectedPosition()
         }
+    }
+
+    override fun onDialogConfirmButtonClicked() {
+        viewModel.inputs.onRiskManagementConfirmed()
     }
 
     companion object {

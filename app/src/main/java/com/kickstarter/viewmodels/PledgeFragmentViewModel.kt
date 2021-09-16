@@ -15,6 +15,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
 import com.kickstarter.libs.rx.transformers.Transformers.neverError
+import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.rx.transformers.Transformers.zipPair
@@ -97,8 +98,8 @@ interface PledgeFragmentViewModel {
         /** Call when user clicks the pledge button. */
         fun pledgeButtonClicked()
 
-        /** Call when user clicks the pledge button. */
-        fun pledgeButtonClickedToShowRiskMessage()
+        /** Call when Bottom sheet dialog clicks the understand button. */
+        fun onRiskManagementConfirmed()
 
         /** Call when user selects a shipping location. */
         fun shippingRuleSelected(shippingRule: ShippingRule)
@@ -332,7 +333,7 @@ interface PledgeFragmentViewModel {
         private val miniRewardClicked = PublishSubject.create<Void>()
         private val newCardButtonClicked = PublishSubject.create<Void>()
         private val pledgeButtonClicked = PublishSubject.create<Void>()
-        private val pledgeButtonClickedToShowRiskMessage = PublishSubject.create<Void>()
+        private val onRiskManagementConfirmed = PublishSubject.create<Void>()
         private val pledgeInput = PublishSubject.create<String>()
         private val shippingRule = BehaviorSubject.create<ShippingRule>()
         private val stripeSetupResultSuccessful = PublishSubject.create<Int>()
@@ -434,6 +435,8 @@ interface PledgeFragmentViewModel {
         private val shouldLoadDefaultLocation = PublishSubject.create<Boolean>()
         private val pledgeAmountHeader = BehaviorSubject.create<CharSequence>()
         private val stepperAmount = 1
+
+        private var riskConfirmationFlag = BehaviorSubject.create(false)
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -1161,7 +1164,20 @@ interface PledgeFragmentViewModel {
                     this.pledgeButtonIsEnabled.onNext(it)
                 }
 
-            this.pledgeButtonClickedToShowRiskMessage
+            this.onRiskManagementConfirmed
+                .compose<Pair<Void, PledgeReason>>(combineLatestPair(pledgeReason))
+                .filter {
+                    it.second == PledgeReason.PLEDGE
+                }
+                .subscribe {
+                    riskConfirmationFlag.onNext(true)
+                }
+
+            this.pledgeButtonClicked
+                .withLatestFrom(riskConfirmationFlag) { _, flag -> flag }
+                .filter { !it }
+                .compose(combineLatestPair(pledgeReason))
+                .filter { it.second == PledgeReason.PLEDGE }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.changeCheckoutRiskMessageBottomSheetStatus.onNext(true)
@@ -1170,9 +1186,11 @@ interface PledgeFragmentViewModel {
                 }
 
             val pledgeButtonClicked = userIsLoggedIn
-                .compose<Pair<Boolean, PledgeReason>>(combineLatestPair(pledgeReason))
-                .filter { it.first && it.second == PledgeReason.PLEDGE }
-                .compose<Pair<Boolean, PledgeReason>>(takeWhen(this.pledgeButtonClicked))
+                .compose(takePairWhen(this.riskConfirmationFlag))
+                .compose(combineLatestPair(pledgeReason))
+                .filter {
+                    it.first.first && it.second == PledgeReason.PLEDGE && it.first.second
+                }
                 .compose(ignoreValues())
 
             // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
@@ -1690,7 +1708,7 @@ interface PledgeFragmentViewModel {
 
         override fun pledgeButtonClicked() = this.pledgeButtonClicked.onNext(null)
 
-        override fun pledgeButtonClickedToShowRiskMessage() = this.pledgeButtonClickedToShowRiskMessage.onNext(null)
+        override fun onRiskManagementConfirmed() = this.onRiskManagementConfirmed.onNext(null)
 
         override fun shippingRuleSelected(shippingRule: ShippingRule) = this.shippingRule.onNext(shippingRule)
 

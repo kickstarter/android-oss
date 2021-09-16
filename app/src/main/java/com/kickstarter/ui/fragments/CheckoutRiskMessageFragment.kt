@@ -1,7 +1,5 @@
 package com.kickstarter.ui.fragments
 
-import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -47,11 +45,6 @@ class CheckoutRiskMessageFragment : BaseBottomSheetDialogFragment <CheckoutRiskM
         super.onCreateView(inflater, container, savedInstanceState)
         binding = FragmentCheckoutRiskMessageBinding.inflate(inflater, container, false)
         return binding?.root
-    }
-
-    @SuppressLint("RestrictedApi")
-    override fun setupDialog(dialog: Dialog, style: Int) {
-        super.setupDialog(dialog, style)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

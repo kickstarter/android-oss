@@ -90,24 +90,25 @@ class CheckoutRiskMessageFragment : BaseBottomSheetDialogFragment <CheckoutRiskM
             }
 
         (dialog as? BottomSheetDialog)?.let {
-                it.findViewById<FrameLayout>(
-                    com.google.android.material.R.id
-                        .design_bottom_sheet
-                )?.let { bottomSheet ->
-                    val bottomSheetBehavior: BottomSheetBehavior<*> = BottomSheetBehavior.from(bottomSheet)
-                    bottomSheetBehavior.addBottomSheetCallback(object :
-                            BottomSheetBehavior.BottomSheetCallback() {
-                            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                            }
+            it.findViewById<FrameLayout>(
+                com.google.android.material.R.id
+                    .design_bottom_sheet
+            )?.let { bottomSheet ->
+                val bottomSheetBehavior: BottomSheetBehavior<*> = BottomSheetBehavior.from(bottomSheet)
+                bottomSheetBehavior.addBottomSheetCallback(object :
+                        BottomSheetBehavior.BottomSheetCallback() {
+                        override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                        }
 
-                            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                                if (newState == BottomSheetBehavior.STATE_COLLAPSED || newState ==
-                                    BottomSheetBehavior.STATE_HIDDEN) {
-                                    dismissDialog()
-                                }
+                        override fun onStateChanged(bottomSheet: View, newState: Int) {
+                            if (newState == BottomSheetBehavior.STATE_COLLAPSED || newState ==
+                                BottomSheetBehavior.STATE_HIDDEN
+                            ) {
+                                dismissDialog()
                             }
-                        })
-                }
+                        }
+                    })
+            }
         }
     }
 

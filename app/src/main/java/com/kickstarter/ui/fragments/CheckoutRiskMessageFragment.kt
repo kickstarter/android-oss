@@ -1,12 +1,16 @@
 package com.kickstarter.ui.fragments
 
+import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentCheckoutRiskMessageBinding
 import com.kickstarter.libs.BaseBottomSheetDialogFragment
@@ -17,13 +21,24 @@ import rx.android.schedulers.AndroidSchedulers
 
 @RequiresFragmentViewModel(CheckoutRiskMessageFragmentViewModel.ViewModel::class)
 class CheckoutRiskMessageFragment : BaseBottomSheetDialogFragment <CheckoutRiskMessageFragmentViewModel.ViewModel>() {
-    companion object {
 
-        fun newInstance(): CheckoutRiskMessageFragment =
-            CheckoutRiskMessageFragment()
+    interface Delegate {
+        fun onDialogConfirmButtonClicked()
+    }
+
+    companion object {
+        fun newInstance(delegate: Delegate):
+            CheckoutRiskMessageFragment {
+                val fragment = CheckoutRiskMessageFragment().apply {
+                    this.delegate = delegate
+                }
+                return fragment
+            }
     }
 
     private var binding: FragmentCheckoutRiskMessageBinding? = null
+    private var delegate: Delegate? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.BottomSheetDialogStyle)
@@ -32,6 +47,11 @@ class CheckoutRiskMessageFragment : BaseBottomSheetDialogFragment <CheckoutRiskM
         super.onCreateView(inflater, container, savedInstanceState)
         binding = FragmentCheckoutRiskMessageBinding.inflate(inflater, container, false)
         return binding?.root
+    }
+
+    @SuppressLint("RestrictedApi")
+    override fun setupDialog(dialog: Dialog, style: Int) {
+        super.setupDialog(dialog, style)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,6 +75,11 @@ class CheckoutRiskMessageFragment : BaseBottomSheetDialogFragment <CheckoutRiskM
             this.viewModel.inputs.onLearnMoreAboutAccountabilityLinkClicked()
         }
 
+        binding?.confirm?.setOnClickListener {
+            delegate?.onDialogConfirmButtonClicked()
+            dismissDialog()
+        }
+
         viewModel.outputs.openLearnMoreAboutAccountabilityLink()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
@@ -63,8 +88,32 @@ class CheckoutRiskMessageFragment : BaseBottomSheetDialogFragment <CheckoutRiskM
                     ApplicationUtils.openUrlExternally(context, it)
                 }
             }
+
+        (dialog as? BottomSheetDialog)?.let {
+                it.findViewById<FrameLayout>(
+                    com.google.android.material.R.id
+                        .design_bottom_sheet
+                )?.let { bottomSheet ->
+                    val bottomSheetBehavior: BottomSheetBehavior<*> = BottomSheetBehavior.from(bottomSheet)
+                    bottomSheetBehavior.addBottomSheetCallback(object :
+                            BottomSheetBehavior.BottomSheetCallback() {
+                            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                            }
+
+                            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                                if (newState == BottomSheetBehavior.STATE_COLLAPSED || newState ==
+                                    BottomSheetBehavior.STATE_HIDDEN) {
+                                    dismissDialog()
+                                }
+                            }
+                        })
+                }
+        }
     }
 
+    fun dismissDialog() {
+        dismiss()
+    }
     override fun onStart() {
         super.onStart()
         // this forces the sheet to appear at max height even on landscape

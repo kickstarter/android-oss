@@ -1482,7 +1482,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment)
 
-        this.vm.inputs.pledgeButtonClickedToShowRiskMessage()
+        this.vm.inputs.onRiskManagementConfirmed()
 
         this.changeCheckoutRiskMessageBottomSheetStatus.assertValueCount(2)
     }

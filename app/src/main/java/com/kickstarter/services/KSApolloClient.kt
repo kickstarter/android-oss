@@ -1129,8 +1129,8 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         videoTransformer(projectFragment?.video()?.fragments()?.video())
     } else null
     val displayPrelaunch = BooleanUtils.negate(projectFragment?.isLaunched ?: false)
-    val faqs = projectFragment?.faqs()?.nodes()?.map {
-        projectFaqTransformer(it.fragments().faq())
+    val faqs = projectFragment?.faqs()?.nodes()?.map { node ->
+        projectFaqTransformer(node.fragments().faq())
     } ?: emptyList()
 
     return Project.builder()
@@ -1145,8 +1145,8 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         .creator(creator)
         .currency(currency)
         .currencySymbol(currencySymbol)
-        .currentCurrency(currency) // TODO: selected currency can be fetched form the User/Configuration Object
-        .currencyTrailingCode(false) // TODO: This field is available on V1 Configuration Object
+        .currentCurrency(currency) // - selected currency can be fetched form the User/Configuration Object
+        .currencyTrailingCode(false) // - This field is available on V1 Configuration Object
         .displayPrelaunch(displayPrelaunch)
         .featuredAt(featuredAt)
         .friends(friends)
@@ -1162,7 +1162,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         .name(name)
         .permissions(permission)
         .pledged(pledged)
-        .photo(photo) // TODO: now we get the full size for everything same as iOS, but V1 provided several image sizes
+        .photo(photo) // - now we get the full size for field from GraphQL, but V1 provided several image sizes
         .prelaunchActivated(prelaunchActivated)
         .tags(tags)
         .rewards(modifiedRewards)
@@ -1173,8 +1173,8 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         .staticUsdRate(staticUSDRate)
         .usdExchangeRate(usdExchangeRate)
         .updatedAt(updatedAt)
-        // .unreadMessagesCount() TODO: unread messages can be fetched form the User Object
-        // .unseenActivityCount() TODO: unseen activity can be fetched form the User Object
+        // .unreadMessagesCount() unread messages can be fetched form the User Object
+        // .unseenActivityCount() unseen activity can be fetched form the User Object
         .updatesCount(updatesCount)
         .urls(urls)
         .video(video)

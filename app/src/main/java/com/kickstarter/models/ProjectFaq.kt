@@ -4,6 +4,9 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import org.joda.time.DateTime
 
+/**
+ * Frequently Asked Questions Data Structure
+ */
 @Parcelize
 class ProjectFaq private constructor(
     val id: Long,

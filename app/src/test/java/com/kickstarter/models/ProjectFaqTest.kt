@@ -73,4 +73,20 @@ class ProjectFaqTest : KSRobolectricTestCase() {
         assertFalse(faq1 == faq3)
         assertFalse(faq1 == faq5)
     }
+
+    @Test
+    fun testProjectFaq_EqualTrue() {
+        val faq1 = ProjectFaq.builder()
+            .question("q")
+            .answer("q")
+            .id(2L)
+            .createdAt(DateTime.now())
+            .build()
+
+        val faq2 = faq1.toBuilder()
+            .question("q")
+            .build()
+
+        assertTrue(faq1 == faq2)
+    }
 }

@@ -63,6 +63,13 @@ fragment fullProject on Project {
     video {
         ...video
     }
+
+    # - Frequently asked questions
+    faqs {
+        nodes {
+            ... faq
+        }
+    }
 }
 
 fragment backing on Backing {
@@ -214,6 +221,13 @@ fragment reward on Reward {
     startsAt
     endsAt
     rewardType
+}
+
+fragment faq on ProjectFaq {
+    id
+    answer
+    createdAt
+    question
 }
 
 fragment comment on Comment {

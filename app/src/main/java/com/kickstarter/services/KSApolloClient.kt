@@ -50,6 +50,7 @@ import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
+import com.kickstarter.services.transformers.projectFaqTransformer
 import fragment.FullProject
 import org.joda.time.DateTime
 import rx.Observable
@@ -1128,6 +1129,9 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         videoTransformer(projectFragment?.video()?.fragments()?.video())
     } else null
     val displayPrelaunch = BooleanUtils.negate(projectFragment?.isLaunched ?: false)
+    val faqs = projectFragment?.faqs()?.nodes()?.map {
+        projectFaqTransformer(it.fragments().faq())
+    } ?: emptyList()
 
     return Project.builder()
         .availableCardTypes(availableCards.map { it.name })
@@ -1174,6 +1178,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         .updatesCount(updatesCount)
         .urls(urls)
         .video(video)
+        .projectFaqs(faqs)
         .build()
 }
 

@@ -92,8 +92,11 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
             .putExtra(Intent.EXTRA_SUBJECT, "[Android] " + getString(this.supportEmailSubject))
             .putExtra(Intent.EXTRA_TEXT, body)
             .putExtra(Intent.EXTRA_EMAIL, arrayOf<String>(getString(this.supportEmail)))
-        if (intent.resolveActivity(packageManager) != null) {
-            startActivity(Intent.createChooser(intent, getString(R.string.support_email_chooser)))
+
+        val emailIntent = Intent.createChooser(intent, getString(R.string.support_email_chooser))
+
+        if (emailIntent.resolveActivity(packageManager) != null) {
+            startActivity(emailIntent)
         }
     }
 

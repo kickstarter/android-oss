@@ -1224,17 +1224,19 @@ private fun userTransformer(user: fragment.User?): User {
  * @return Project
  */
 private fun categoryTransformer(categoryFragment: fragment.Category?): Category {
+    val analyticsName = categoryFragment?.analyticsName() ?: ""
     val name = categoryFragment?.name() ?: ""
     val id = decodeRelayId(categoryFragment?.id()) ?: -1
     val slug = categoryFragment?.slug()
     val parentId = decodeRelayId(categoryFragment?.parentCategory()?.id()) ?: -1
     val parentName = categoryFragment?.parentCategory()?.name()
     val parentSlug = categoryFragment?.parentCategory()?.slug()
+    val parentAnalyticName = categoryFragment?.parentCategory()?.analyticsName() ?: ""
 
     val parentCategory = if (parentId > 0) {
         Category.builder()
             .slug(parentSlug)
-            .analyticsName(parentName)
+            .analyticsName(parentAnalyticName)
             .id(parentId)
             .name(parentName)
             .build()
@@ -1245,7 +1247,7 @@ private fun categoryTransformer(categoryFragment: fragment.Category?): Category 
         .id(id)
         .name(name)
         .slug(slug)
-        .parent(parentCategory) // TODO: seems we can skip the entire parent category structure
+        .parent(parentCategory)
         .parentId(parentId)
         .parentName(parentName)
         .build()
@@ -1262,14 +1264,14 @@ private fun rewardTransformer(rewardGr: fragment.Reward, shippingRulesExpanded: 
     val desc = rewardGr.description()
     val title = rewardGr.name()
     val estimatedDelivery = rewardGr.estimatedDeliveryOn()?.let { DateTime(it) }
-    val limit = chooseLimit(rewardGr.limit(), rewardGr.limitPerBacker())
     val remaining = rewardGr.remainingQuantity()
     val endsAt = rewardGr.endsAt()?.let { DateTime(it) }
     val startsAt = rewardGr.startsAt()?.let { DateTime(it) }
     val rewardId = decodeRelayId(rewardGr.id()) ?: -1
     val available = rewardGr.available()
     val isAddOn = rewardGr.rewardType() == RewardType.ADDON
-
+    val isReward = rewardGr.rewardType() == RewardType.BASE
+    val backersCount = rewardGr.backersCount()
     val shippingPreference = when (rewardGr.shippingPreference()) {
         ShippingPreference.NONE -> Reward.ShippingPreference.NONE
         ShippingPreference.RESTRICTED -> Reward.ShippingPreference.RESTRICTED
@@ -1277,9 +1279,24 @@ private fun rewardTransformer(rewardGr: fragment.Reward, shippingRulesExpanded: 
         else -> Reward.ShippingPreference.UNKNOWN
     }
 
-    val items = rewardGr.items()?.let {
-        rewardItemsTransformer(it)
-    }
+    val limit = if (isAddOn) chooseLimit(rewardGr.limit(), rewardGr.limitPerBacker())
+    else rewardGr.limit()
+
+    val addonItems = if (isAddOn) {
+        rewardGr.items()?.let {
+            rewardItemsTransformer(it)
+        }
+    } else emptyList()
+
+    val rewardItems = if (isReward) {
+        rewardGr.items()?.let {
+            rewardItemsTransformer(it)
+        }
+    } else emptyList()
+
+    val hasAddons = if (isReward) {
+        rewardGr.allowedAddons().edges()?.isNotEmpty() ?: false
+    } else false
 
     val shippingRules = shippingRulesExpanded.map {
         shippingRuleTransformer(it)
@@ -1296,13 +1313,16 @@ private fun rewardTransformer(rewardGr: fragment.Reward, shippingRulesExpanded: 
         .description(desc)
         .estimatedDeliveryOn(estimatedDelivery)
         .isAddOn(isAddOn)
-        .addOnsItems(items)
+        .addOnsItems(addonItems)
+        .hasAddons(hasAddons)
+        .rewardsItems(rewardItems)
         .id(rewardId)
-        .shippingPreference(shippingPreference.name)
+        .shippingPreference(shippingPreference.name.lowercase())
         .shippingPreferenceType(shippingPreference)
-        .shippingType(shippingPreference.name)
+        .shippingType(shippingPreference.name.lowercase())
         .shippingRules(shippingRules)
         .isAvailable(available)
+        .backersCount(backersCount)
         .build()
 }
 

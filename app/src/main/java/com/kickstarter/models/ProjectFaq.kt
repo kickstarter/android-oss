@@ -6,10 +6,10 @@ import org.joda.time.DateTime
 
 @Parcelize
 class ProjectFaq private constructor(
-    private val id: Long,
-    private val answer: String,
-    private val createdAt: DateTime?,
-    private val question: String
+    val id: Long,
+    val answer: String,
+    val createdAt: DateTime? = null,
+    val question: String
 ): Parcelable {
 
     @Parcelize
@@ -21,7 +21,7 @@ class ProjectFaq private constructor(
     ) : Parcelable {
         fun id(id: Long) = apply { this.id = id }
         fun answer(answer: String) = apply { this.answer = answer }
-        fun createdAt(createdAt: DateTime?) = apply { createdAt?.let { this.createdAt = it } }
+        fun createdAt(createdAt: DateTime?) = apply { this.createdAt = createdAt }
         fun question(question: String) = apply { this.question = question }
         fun build() = ProjectFaq(id = id, answer = answer, createdAt = createdAt, question = question)
     }

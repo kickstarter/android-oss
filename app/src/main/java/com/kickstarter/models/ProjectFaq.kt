@@ -10,7 +10,7 @@ class ProjectFaq private constructor(
     val answer: String,
     val createdAt: DateTime? = null,
     val question: String
-): Parcelable {
+) : Parcelable {
 
     @Parcelize
     data class Builder(
@@ -35,6 +35,6 @@ class ProjectFaq private constructor(
     override fun equals(other: Any?): Boolean =
         if (other is ProjectFaq) {
             other.id == this.id && other.answer == this.answer &&
-            other.createdAt == this.createdAt && other.question == this.question
+                other.createdAt == this.createdAt && other.question == this.question
         } else false
 }

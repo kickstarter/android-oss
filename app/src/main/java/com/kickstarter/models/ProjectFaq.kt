@@ -6,6 +6,10 @@ import org.joda.time.DateTime
 
 /**
  * Frequently Asked Questions Data Structure
+ *
+ * Note: This data model is written in kotlin and using kotlin
+ * parcelize because it's meant to be used only with GraphQL
+ * networking client.
  */
 @Parcelize
 class ProjectFaq private constructor(

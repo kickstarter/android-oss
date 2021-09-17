@@ -120,6 +120,20 @@ jobs:
           name: push to release branch
           command: make release
 
+  create_regression:
+    <<: *base_job
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+            - v5-android-
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: push to regression branch
+          command: make regression
+
   internal:
     <<: *base_job
     steps:
@@ -201,6 +215,13 @@ workflows:
           filters:
             branches:
               only: /release-.*/
+      - create_regression:
+          requires:
+            - build
+            - test
+          filters:
+            branches:
+              only: /regression-.*/
       - internal:
           requires:
             - build
@@ -208,6 +229,24 @@ workflows:
           filters:
             branches:
               only: internal
+
+  regression:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: external
+      - test:
+          requires:
+            - build
+      - regression:
+          requires:
+            - build
+            - test
+          filters:
+            branches:
+              only: regression
+              
   release:
     jobs:
       - build:

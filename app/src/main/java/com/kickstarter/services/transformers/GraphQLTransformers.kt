@@ -1,6 +1,7 @@
 package com.kickstarter.services.transformers
 
 import com.google.android.gms.common.util.Base64Utils
+import com.kickstarter.models.EnvironmentalCommitment
 import com.kickstarter.models.ProjectFaq
 import com.kickstarter.models.Relay
 import java.nio.charset.Charset
@@ -44,5 +45,23 @@ fun projectFaqTransformer(faq: fragment.Faq): ProjectFaq {
         .answer(answer)
         .createdAt(createdAt)
         .question(question)
+        .build()
+}
+
+/**
+ * Transform the EnvironmentalCommitment GraphQL data structure into our own EnvironmentalCommitment data model
+ * @param fragment.EnvironmentalCommitment
+ * @return EnvironmentalCommitment
+ */
+fun environmentalCommitmentTransformer(envCommit: fragment.EnvironmentalCommitment): EnvironmentalCommitment {
+
+    val id = decodeRelayId(envCommit.id()) ?: -1
+    val category = envCommit.commitmentCategory().name
+    val description = envCommit.description()
+
+    return EnvironmentalCommitment.builder()
+        .id(id = id)
+        .category(category = category)
+        .description(description = description)
         .build()
 }

@@ -69,6 +69,7 @@ public abstract class Project implements Parcelable, Relay {
   public abstract Urls urls();
   public abstract @Nullable Video video();
   public abstract @Nullable List<ProjectFaq> projectFaqs();
+  public abstract @Nullable List<EnvironmentalCommitment> envCommitments();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -117,6 +118,7 @@ public abstract class Project implements Parcelable, Relay {
     public abstract Builder urls(Urls __);
     public abstract Builder video(Video __);
     public abstract Builder projectFaqs(List<ProjectFaq> __);
+    public abstract Builder envCommitments(List<EnvironmentalCommitment> __);
     public abstract Project build();
   }
 

@@ -70,6 +70,10 @@ fragment fullProject on Project {
             ... faq
         }
     }
+
+    environmentalCommitments {
+        ... environmentalCommitment
+    }
 }
 
 fragment backing on Backing {
@@ -221,6 +225,12 @@ fragment reward on Reward {
     startsAt
     endsAt
     rewardType
+}
+
+fragment environmentalCommitment on EnvironmentalCommitment {
+    commitmentCategory
+    description
+    id
 }
 
 fragment faq on ProjectFaq {

@@ -21,7 +21,6 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
-import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.libs.Permission
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.ObjectUtils
@@ -37,7 +36,6 @@ import com.kickstarter.models.Item
 import com.kickstarter.models.Location
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
-import com.kickstarter.models.Relay
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
 import com.kickstarter.models.ShippingRule
@@ -50,6 +48,9 @@ import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
+import com.kickstarter.services.transformers.decodeRelayId
+import com.kickstarter.services.transformers.encodeRelayId
+import com.kickstarter.services.transformers.environmentalCommitmentTransformer
 import com.kickstarter.services.transformers.projectFaqTransformer
 import fragment.FullProject
 import org.joda.time.DateTime
@@ -63,8 +64,6 @@ import type.CurrencyCode
 import type.PaymentTypes
 import type.RewardType
 import type.ShippingPreference
-import java.nio.charset.Charset
-import kotlin.math.absoluteValue
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
@@ -989,23 +988,6 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
         .build()
 }
 
-fun decodeRelayId(encodedRelayId: String?): Long? {
-    return try {
-        String(Base64Utils.decode(encodedRelayId), Charset.defaultCharset())
-            .replaceBeforeLast("-", "", "")
-            .toLong()
-            .absoluteValue
-    } catch (e: Exception) {
-        null
-    }
-}
-
-fun <T : Relay> encodeRelayId(relay: T): String {
-    val classSimpleName = relay.javaClass.simpleName.replaceFirst("AutoParcel_", "")
-    val id = relay.id()
-    return Base64Utils.encodeUrlSafe(("$classSimpleName-$id").toByteArray(Charset.defaultCharset()))
-}
-
 private fun <T : Any?> handleResponse(it: T, ps: PublishSubject<T>) {
     when {
         ObjectUtils.isNull(it) -> {
@@ -1132,6 +1114,9 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
     val faqs = projectFragment?.faqs()?.nodes()?.map { node ->
         projectFaqTransformer(node.fragments().faq())
     } ?: emptyList()
+    val eCommitment = projectFragment?.environmentalCommitments()?.map {
+        environmentalCommitmentTransformer(it.fragments().environmentalCommitment())
+    } ?: emptyList()
 
     return Project.builder()
         .availableCardTypes(availableCards.map { it.name })
@@ -1179,6 +1164,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         .urls(urls)
         .video(video)
         .projectFaqs(faqs)
+        .envCommitments(eCommitment)
         .build()
 }
 

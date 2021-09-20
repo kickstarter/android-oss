@@ -682,7 +682,6 @@ interface ProjectViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
 
-
             // - Update fragments with the backing data
             projectData
                 .filter { it.project().hasRewards() }

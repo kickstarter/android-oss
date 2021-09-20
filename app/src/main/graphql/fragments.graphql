@@ -2,6 +2,8 @@ fragment fullProject on Project {
     availableCardTypes
     backersCount
     description
+    minPledge
+    isLaunched
     backing {
         ... backing
     }
@@ -60,6 +62,17 @@ fragment fullProject on Project {
     url
     video {
         ...video
+    }
+
+    # - Frequently asked questions
+    faqs {
+        nodes {
+            ... faq
+        }
+    }
+
+    environmentalCommitments {
+        ... environmentalCommitment
     }
 }
 
@@ -143,10 +156,12 @@ fragment updates on PostConnection {
 
 
 fragment category on Category {
+    analyticsName
     id
     name
     slug
     parentCategory {
+        analyticsName
         id
         name
         slug
@@ -176,6 +191,13 @@ fragment reward on Reward {
     description
     estimatedDeliveryOn
     available
+    allowedAddons {
+        edges {
+            node {
+                id
+            }
+        }
+    }
     items {
         edges {
             quantity
@@ -203,6 +225,19 @@ fragment reward on Reward {
     startsAt
     endsAt
     rewardType
+}
+
+fragment environmentalCommitment on EnvironmentalCommitment {
+    commitmentCategory
+    description
+    id
+}
+
+fragment faq on ProjectFaq {
+    id
+    answer
+    createdAt
+    question
 }
 
 fragment comment on Comment {
@@ -235,6 +270,7 @@ fragment user on User {
     id
     imageUrl(blur: false, width: 54),
     isCreator
+    chosenCurrency
 }
 
 fragment amount on Money {

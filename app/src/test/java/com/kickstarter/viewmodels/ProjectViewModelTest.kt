@@ -20,7 +20,7 @@ import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.UserFactory
-import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
@@ -130,7 +130,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         val refreshedProject = ProjectFactory.project()
         val environment = environment()
             .toBuilder()
-            .apiClient(apiClientWithSuccessFetchingProject(refreshedProject))
+            .apolloClient(apiClientWithSuccessFetchingProject(refreshedProject))
             .build()
 
         setUpEnvironment(environment)
@@ -154,8 +154,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         val environment = environment()
             .toBuilder()
-            .apiClient(object : MockApiClient() {
-                override fun fetchProject(project: Project): Observable<Project> {
+            .apolloClient(object : MockApolloClient() {
+                override fun getProject(project: Project): Observable<Project> {
                     val observable = when {
                         error -> Observable.error(Throwable("boop"))
                         else -> {
@@ -199,8 +199,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         val environment = environment()
             .toBuilder()
-            .apiClient(object : MockApiClient() {
-                override fun fetchProject(param: String): Observable<Project> {
+            .apolloClient(object : MockApolloClient() {
+                override fun getProject(param: String): Observable<Project> {
                     return Observable.just(project)
                 }
             })
@@ -225,8 +225,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         val environment = environment()
             .toBuilder()
-            .apiClient(object : MockApiClient() {
-                override fun fetchProject(param: String): Observable<Project> {
+            .apolloClient(object : MockApolloClient() {
+                override fun getProject(slug: String): Observable<Project> {
                     val observable = when {
                         error -> Observable.error(Throwable("boop"))
                         else -> Observable.just(refreshedProject)
@@ -265,8 +265,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         val environment = environment()
             .toBuilder()
-            .apiClient(object : MockApiClient() {
-                override fun fetchProject(param: String): Observable<Project> {
+            .apolloClient(object : MockApolloClient() {
+                override fun getProject(param: String): Observable<Project> {
                     return Observable.just(project)
                 }
             })
@@ -347,7 +347,11 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.shareButtonClicked()
         val expectedName = "Best Project 2K19"
         val expectedShareUrl = "https://www.kck.str/projects/" + creator.id().toString() + "/" + slug + "?ref=android_project_share"
-        this.showShareSheet.assertValues(Pair(expectedName, expectedShareUrl))
+
+        this.vm.outputs.showShareSheet().subscribe {
+            assertTrue(it.first == expectedName)
+            assertTrue(it.second == expectedShareUrl)
+        }
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
@@ -1588,7 +1592,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         val refreshedProject = ProjectFactory.backedProject()
         val environment = environment()
             .toBuilder()
-            .apiClient(apiClientWithSuccessFetchingProjectFromSlug(refreshedProject))
+            .apolloClient(apiClientWithSuccessFetchingProjectFromSlug(refreshedProject))
             .build()
         setUpEnvironment(environment)
 
@@ -1618,7 +1622,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         val refreshedProject = ProjectFactory.backedProject()
         val environment = environment()
             .toBuilder()
-            .apiClient(apiClientWithSuccessFetchingProjectFromSlug(refreshedProject))
+            .apolloClient(apiClientWithSuccessFetchingProjectFromSlug(refreshedProject))
             .build()
         setUpEnvironment(environment)
 
@@ -1673,17 +1677,17 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.projectData.assertValueCount(2)
     }
 
-    private fun apiClientWithSuccessFetchingProject(refreshedProject: Project): MockApiClient {
-        return object : MockApiClient() {
-            override fun fetchProject(project: Project): Observable<Project> {
+    private fun apiClientWithSuccessFetchingProject(refreshedProject: Project): MockApolloClient {
+        return object : MockApolloClient() {
+            override fun getProject(project: Project): Observable<Project> {
                 return Observable.just(refreshedProject)
             }
         }
     }
 
-    private fun apiClientWithSuccessFetchingProjectFromSlug(refreshedProject: Project): MockApiClient {
-        return object : MockApiClient() {
-            override fun fetchProject(slug: String): Observable<Project> {
+    private fun apiClientWithSuccessFetchingProjectFromSlug(refreshedProject: Project): MockApolloClient {
+        return object : MockApolloClient() {
+            override fun getProject(slug: String): Observable<Project> {
                 return Observable.just(refreshedProject)
             }
         }

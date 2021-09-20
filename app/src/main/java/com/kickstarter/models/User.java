@@ -33,6 +33,7 @@ public abstract class User implements Parcelable, Relay {
   public abstract @Nullable Boolean inventNewsletter();
   public abstract @Nullable Boolean isAdmin();
   public abstract @Nullable Boolean isEmailVerified();
+  public abstract @Nullable String chosenCurrency();
   public abstract @Nullable Location location();
   public abstract @Nullable Integer memberProjectsCount();
   public abstract @Nullable Boolean musicNewsletter();
@@ -81,6 +82,7 @@ public abstract class User implements Parcelable, Relay {
     public abstract Builder id(long __);
     public abstract Builder isAdmin(Boolean __);
     public abstract Builder isEmailVerified(Boolean __);
+    public abstract Builder chosenCurrency(String __);
     public abstract Builder inventNewsletter(Boolean __);
     public abstract Builder location(Location __);
     public abstract Builder memberProjectsCount(Integer __);

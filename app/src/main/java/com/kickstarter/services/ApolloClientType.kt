@@ -36,6 +36,8 @@ interface ApolloClientType {
 
     fun getProject(slug: String): Observable<Project>
 
+    fun getProject(project: Project): Observable<Project>
+
     fun getProjectComments(slug: String, cursor: String?, limit: Int = PAGE_SIZE): Observable<CommentEnvelope>
 
     fun getProjectUpdateComments(updateId: String, cursor: String?, limit: Int = PAGE_SIZE): Observable<CommentEnvelope>

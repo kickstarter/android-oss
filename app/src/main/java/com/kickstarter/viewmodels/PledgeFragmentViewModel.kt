@@ -1164,15 +1164,6 @@ interface PledgeFragmentViewModel {
                     this.pledgeButtonIsEnabled.onNext(it)
                 }
 
-            this.onRiskManagementConfirmed
-                .compose<Pair<Void, PledgeReason>>(combineLatestPair(pledgeReason))
-                .filter {
-                    it.second == PledgeReason.PLEDGE
-                }
-                .subscribe {
-                    riskConfirmationFlag.onNext(true)
-                }
-
             this.pledgeButtonClicked
                 .withLatestFrom(riskConfirmationFlag) { _, flag -> flag }
                 .filter { !it }
@@ -1390,6 +1381,18 @@ interface PledgeFragmentViewModel {
                     this.bonusAmount
                 ) { s, t, b -> checkoutData(s, t, NumberUtils.parse(b), null) }
                     .compose<Pair<CheckoutData, PledgeData>>(combineLatestPair(pledgeData))
+
+            this.onRiskManagementConfirmed
+                .compose<Pair<Void, PledgeReason>>(combineLatestPair(pledgeReason))
+                .filter {
+                    it.second == PledgeReason.PLEDGE
+                }
+                .compose(combineLatestPair(checkoutAndPledgeData))
+                .filter { it.second.second.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }
+                .subscribe {
+                    this.analyticEvents.trackPledgeConfirmCTA(it.second.first, it.second.second)
+                    riskConfirmationFlag.onNext(true)
+                }
 
             checkoutAndPledgeData
                 .take(1)

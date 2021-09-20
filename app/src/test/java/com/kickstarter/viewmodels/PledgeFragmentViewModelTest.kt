@@ -2114,7 +2114,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeError.assertValueCount(1)
         this.showSCAFlow.assertNoValues()
 
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValues(
+            EventName.PAGE_VIEWED.eventName,
+            EventName.CTA_CLICKED
+                .eventName,
+            EventName.CTA_CLICKED.eventName
+        )
     }
 
     @Test
@@ -2148,7 +2153,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeError.assertNoValues()
         this.showSCAFlow.assertValueCount(1)
 
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, EventName.CTA_CLICKED.eventName)
 
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.SUCCEEDED)
 
@@ -2196,7 +2201,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertValueCount(1)
 
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -2238,7 +2243,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertValueCount(1)
 
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test

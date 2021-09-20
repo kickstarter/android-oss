@@ -33,10 +33,18 @@ public final class ConfigFactory {
       .trailingCode(true)
       .build();
 
+
+    final Config.LaunchedCountry JP = Config.LaunchedCountry.builder()
+            .name("JP")
+            .currencyCode("JPY")
+            .currencySymbol("¥")
+            .trailingCode(false)
+            .build();
+
     return Config.builder()
       .countryCode("US")
       .features(Collections.emptyMap())
-      .launchedCountries(Arrays.asList(US, GB, CA))
+      .launchedCountries(Arrays.asList(US, GB, CA, JP))
       .build();
   }
 
@@ -44,7 +52,13 @@ public final class ConfigFactory {
     return config();
   }
 
-  public static @NonNull Config configForCAUser() {
+  public static @NonNull Config configFor() {
+    return config().toBuilder()
+            .countryCode("CA")
+            .build();
+  }
+
+  public static @NonNull Config configForCA() {
     return config().toBuilder()
       .countryCode("CA")
       .build();

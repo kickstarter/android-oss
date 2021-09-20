@@ -2,6 +2,8 @@ fragment fullProject on Project {
     availableCardTypes
     backersCount
     description
+    minPledge
+    isLaunched
     backing {
         ... backing
     }
@@ -143,10 +145,12 @@ fragment updates on PostConnection {
 
 
 fragment category on Category {
+    analyticsName
     id
     name
     slug
     parentCategory {
+        analyticsName
         id
         name
         slug
@@ -176,6 +180,13 @@ fragment reward on Reward {
     description
     estimatedDeliveryOn
     available
+    allowedAddons {
+        edges {
+            node {
+                id
+            }
+        }
+    }
     items {
         edges {
             quantity
@@ -235,6 +246,7 @@ fragment user on User {
     id
     imageUrl(blur: false, width: 54),
     isCreator
+    chosenCurrency
 }
 
 fragment amount on Money {

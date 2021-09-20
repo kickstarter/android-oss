@@ -23,7 +23,9 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.libs.Permission
+import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Avatar
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Category
@@ -315,6 +317,10 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             })
             return@defer ps
         }.subscribeOn(Schedulers.io())
+    }
+
+    override fun getProject(project: Project): Observable<Project> {
+        return getProject(project.slug() ?: "")
     }
 
     override fun getProject(slug: String): Observable<Project> {
@@ -1091,15 +1097,26 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
     val tags = mutableListOf<String>()
     projectFragment?.fragments()?.tagsCreative()?.tags()?.map { tags.add(it.id()) }
     projectFragment?.fragments()?.tagsDiscovery()?.tags()?.map { tags.add(it.id()) }
+
+    val minPledge = projectFragment?.minPledge()?.toDouble() ?: 1.0
     val rewards =
         projectFragment?.rewards()?.nodes()?.map { rewardTransformer(it.fragments().reward()) }
+
+    // - GraphQL does not provide the Reward no reward, we need to add it first
+    val modifiedRewards = rewards?.toMutableList()
+    modifiedRewards?.add(0, RewardFactory.noReward().toBuilder().minimum(minPledge).build())
+    modifiedRewards?.toList()
+
     val slug = projectFragment?.slug()
     val staffPicked = projectFragment?.isProjectWeLove ?: false
-    val state = projectFragment?.state()?.name
+    val state = projectFragment?.state()?.name?.lowercase()
     val stateChangedAt = projectFragment?.stateChangedAt()
     val staticUSDRate = projectFragment?.usdExchangeRate()?.toFloat()
     val usdExchangeRate = projectFragment?.usdExchangeRate()?.toFloat()
-    val updatedAt = projectFragment?.posts()?.fragments()?.updates()?.nodes()?.first()?.updatedAt()
+    val updatedAt = projectFragment?.posts()?.fragments()?.updates()?.nodes()?.let {
+        if (it.isNotEmpty()) return@let it.first()?.updatedAt()
+        else null
+    }
     val updatesCount = projectFragment?.posts()?.fragments()?.updates()?.nodes()?.size
     val url = projectFragment?.url()
     val urlsWeb = Project.Urls.Web.builder()
@@ -1110,6 +1127,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
     val video = if (projectFragment?.video()?.fragments()?.video() != null) {
         videoTransformer(projectFragment?.video()?.fragments()?.video())
     } else null
+    val displayPrelaunch = BooleanUtils.negate(projectFragment?.isLaunched ?: false)
 
     return Project.builder()
         .availableCardTypes(availableCards.map { it.name })
@@ -1123,9 +1141,9 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         .creator(creator)
         .currency(currency)
         .currencySymbol(currencySymbol)
-        .currentCurrency(currency) // TODO: selected currency can be fetched form the User Object
+        .currentCurrency(currency) // TODO: selected currency can be fetched form the User/Configuration Object
         .currencyTrailingCode(false) // TODO: This field is available on V1 Configuration Object
-        .displayPrelaunch(prelaunchActivated)
+        .displayPrelaunch(displayPrelaunch)
         .featuredAt(featuredAt)
         .friends(friends)
         .fxRate(fxRate)
@@ -1143,7 +1161,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         .photo(photo) // TODO: now we get the full size for everything same as iOS, but V1 provided several image sizes
         .prelaunchActivated(prelaunchActivated)
         .tags(tags)
-        .rewards(rewards)
+        .rewards(modifiedRewards)
         .slug(slug)
         .staffPick(staffPicked)
         .state(state)
@@ -1190,11 +1208,13 @@ private fun userTransformer(user: fragment.User?): User {
     val avatar = Avatar.builder()
         .medium(user?.imageUrl())
         .build()
+    val chosenCurrency = user?.chosenCurrency()
 
     return User.builder()
         .id(id)
         .name(name)
         .avatar(avatar)
+        .chosenCurrency(chosenCurrency)
         .build()
 }
 
@@ -1204,17 +1224,19 @@ private fun userTransformer(user: fragment.User?): User {
  * @return Project
  */
 private fun categoryTransformer(categoryFragment: fragment.Category?): Category {
+    val analyticsName = categoryFragment?.analyticsName() ?: ""
     val name = categoryFragment?.name() ?: ""
     val id = decodeRelayId(categoryFragment?.id()) ?: -1
     val slug = categoryFragment?.slug()
     val parentId = decodeRelayId(categoryFragment?.parentCategory()?.id()) ?: -1
     val parentName = categoryFragment?.parentCategory()?.name()
     val parentSlug = categoryFragment?.parentCategory()?.slug()
+    val parentAnalyticName = categoryFragment?.parentCategory()?.analyticsName() ?: ""
 
     val parentCategory = if (parentId > 0) {
         Category.builder()
             .slug(parentSlug)
-            .analyticsName(parentName)
+            .analyticsName(parentAnalyticName)
             .id(parentId)
             .name(parentName)
             .build()
@@ -1225,7 +1247,7 @@ private fun categoryTransformer(categoryFragment: fragment.Category?): Category 
         .id(id)
         .name(name)
         .slug(slug)
-        .parent(parentCategory) // TODO: seems we can skip the entire parent category structure
+        .parent(parentCategory)
         .parentId(parentId)
         .parentName(parentName)
         .build()
@@ -1242,14 +1264,14 @@ private fun rewardTransformer(rewardGr: fragment.Reward, shippingRulesExpanded: 
     val desc = rewardGr.description()
     val title = rewardGr.name()
     val estimatedDelivery = rewardGr.estimatedDeliveryOn()?.let { DateTime(it) }
-    val limit = chooseLimit(rewardGr.limit(), rewardGr.limitPerBacker())
     val remaining = rewardGr.remainingQuantity()
     val endsAt = rewardGr.endsAt()?.let { DateTime(it) }
     val startsAt = rewardGr.startsAt()?.let { DateTime(it) }
     val rewardId = decodeRelayId(rewardGr.id()) ?: -1
     val available = rewardGr.available()
     val isAddOn = rewardGr.rewardType() == RewardType.ADDON
-
+    val isReward = rewardGr.rewardType() == RewardType.BASE
+    val backersCount = rewardGr.backersCount()
     val shippingPreference = when (rewardGr.shippingPreference()) {
         ShippingPreference.NONE -> Reward.ShippingPreference.NONE
         ShippingPreference.RESTRICTED -> Reward.ShippingPreference.RESTRICTED
@@ -1257,9 +1279,24 @@ private fun rewardTransformer(rewardGr: fragment.Reward, shippingRulesExpanded: 
         else -> Reward.ShippingPreference.UNKNOWN
     }
 
-    val items = rewardGr.items()?.let {
-        rewardItemsTransformer(it)
-    }
+    val limit = if (isAddOn) chooseLimit(rewardGr.limit(), rewardGr.limitPerBacker())
+    else rewardGr.limit()
+
+    val addonItems = if (isAddOn) {
+        rewardGr.items()?.let {
+            rewardItemsTransformer(it)
+        }
+    } else emptyList()
+
+    val rewardItems = if (isReward) {
+        rewardGr.items()?.let {
+            rewardItemsTransformer(it)
+        }
+    } else emptyList()
+
+    val hasAddons = if (isReward) {
+        rewardGr.allowedAddons().edges()?.isNotEmpty() ?: false
+    } else false
 
     val shippingRules = shippingRulesExpanded.map {
         shippingRuleTransformer(it)
@@ -1276,13 +1313,16 @@ private fun rewardTransformer(rewardGr: fragment.Reward, shippingRulesExpanded: 
         .description(desc)
         .estimatedDeliveryOn(estimatedDelivery)
         .isAddOn(isAddOn)
-        .addOnsItems(items)
+        .addOnsItems(addonItems)
+        .hasAddons(hasAddons)
+        .rewardsItems(rewardItems)
         .id(rewardId)
-        .shippingPreference(shippingPreference.name)
+        .shippingPreference(shippingPreference.name.lowercase())
         .shippingPreferenceType(shippingPreference)
-        .shippingType(shippingPreference.name)
+        .shippingType(shippingPreference.name.lowercase())
         .shippingRules(shippingRules)
         .isAvailable(available)
+        .backersCount(backersCount)
         .build()
 }
 

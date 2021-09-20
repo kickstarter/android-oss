@@ -95,6 +95,15 @@ public final class ProjectFactory {
             .build();
   }
 
+  public static @NonNull Project britishProject() {
+    return project()
+            .toBuilder()
+            .country("GB")
+            .currency("GBP")
+            .currencySymbol("£")
+            .build();
+  }
+
   public static @NonNull Project backedProject() {
     final Project project = project();
 

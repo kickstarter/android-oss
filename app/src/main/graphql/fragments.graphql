@@ -63,6 +63,17 @@ fragment fullProject on Project {
     video {
         ...video
     }
+
+    # - Frequently asked questions
+    faqs {
+        nodes {
+            ... faq
+        }
+    }
+
+    environmentalCommitments {
+        ... environmentalCommitment
+    }
 }
 
 fragment backing on Backing {
@@ -214,6 +225,19 @@ fragment reward on Reward {
     startsAt
     endsAt
     rewardType
+}
+
+fragment environmentalCommitment on EnvironmentalCommitment {
+    commitmentCategory
+    description
+    id
+}
+
+fragment faq on ProjectFaq {
+    id
+    answer
+    createdAt
+    question
 }
 
 fragment comment on Comment {

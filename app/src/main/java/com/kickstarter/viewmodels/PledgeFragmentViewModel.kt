@@ -1164,7 +1164,11 @@ interface PledgeFragmentViewModel {
                     this.pledgeButtonIsEnabled.onNext(it)
                 }
 
+            val experimentData = Observable.combineLatest(this.currentUser.observable(), projectData) {u, p -> ExperimentData(u, p.refTagFromIntent(), p.refTagFromCookie()) }
+
             this.pledgeButtonClicked
+                .compose(combineLatestPair(experimentData))
+                .filter { this.optimizely.variant(OptimizelyExperiment.Key.NATIVE_RISK_MESSAGING, it.second) != OptimizelyExperiment.Variant.CONTROL }
                 .withLatestFrom(riskConfirmationFlag) { _, flag -> flag }
                 .filter { !it }
                 .compose(combineLatestPair(pledgeReason))

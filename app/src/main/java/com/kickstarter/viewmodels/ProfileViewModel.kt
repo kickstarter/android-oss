@@ -74,7 +74,7 @@ interface ProfileViewModel {
         /** Emits when we should start the [com.kickstarter.ui.activities.MessageThreadsActivity].  */
         fun startMessageThreadsActivity(): Observable<Void>
 
-        /** Emits when we should start the [com.kickstarter.ui.activities.ProjectActivity].  */
+        /** Emits when we should start the [com.kickstarter.ui.activities.DeprecatedProjectActivity].  */
         fun startProjectActivity(): Observable<Project>
 
         /** Emits the user name to be displayed.  */

@@ -54,7 +54,7 @@ import com.stripe.android.view.CardInputWidget
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(ProjectViewModel.ViewModel::class)
-class DeprecatedProjectActivity :
+class ProjectActivity :
     BaseActivity<ProjectViewModel.ViewModel>(),
     CancelPledgeFragment.CancelPledgeDelegate,
     NewCardFragment.OnCardSavedListener,
@@ -81,7 +81,7 @@ class DeprecatedProjectActivity :
         if (viewTreeObserver.isAlive) {
             viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    this@DeprecatedProjectActivity.viewModel.inputs.onGlobalLayout()
+                    this@ProjectActivity.viewModel.inputs.onGlobalLayout()
                     binding.pledgeContainerLayout.pledgeContainerRoot.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
             })

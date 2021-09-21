@@ -1,10 +1,17 @@
 package com.kickstarter.ui.activities
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Pair
 import android.view.View
+import com.kickstarter.R
 import com.kickstarter.databinding.PlaygroundLayoutBinding
 import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.models.Project
+import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.PlaygroundViewModel
 import rx.android.schedulers.AndroidSchedulers
@@ -21,6 +28,7 @@ class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
         setContentView(view)
 
         setStepper()
+        setProjectActivityButtonClicks()
     }
 
     /**
@@ -38,5 +46,17 @@ class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
             .subscribe {
                 showSnackbar(binding.stepper, "The updated value on the display is: $it")
             }
+    }
+
+    private fun setProjectActivityButtonClicks() {
+        binding.newProjectActivity.setOnClickListener { startProjectActivity(Pair(ProjectFactory.project(), RefTag.searchFeatured())) }
+    }
+
+    private fun startProjectActivity(projectAndRefTag: Pair<Project, RefTag>) {
+        val intent = Intent(this, ProjectActivity::class.java)
+            .putExtra(IntentKey.PROJECT, projectAndRefTag.first)
+            .putExtra(IntentKey.REF_TAG, projectAndRefTag.second)
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 }

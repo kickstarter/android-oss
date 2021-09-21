@@ -35,7 +35,7 @@ public interface DiscoveryFragmentViewModelOutputs {
   Observable<Boolean> shouldShowOnboardingView();
 
   /**
-   * Emits a Project and RefTag pair when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}.
+   * Emits a Project and RefTag pair when we should start the {@link com.kickstarter.ui.activities.DeprecatedProjectActivity}.
    */
   Observable<Pair<Project, RefTag>> startProjectActivity();
 

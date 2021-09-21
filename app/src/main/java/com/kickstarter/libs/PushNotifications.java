@@ -34,7 +34,7 @@ import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.MessagesActivity;
-import com.kickstarter.ui.activities.ProjectActivity;
+import com.kickstarter.ui.activities.DeprecatedProjectActivity;
 import com.kickstarter.ui.activities.SurveyResponseActivity;
 import com.kickstarter.ui.activities.UpdateActivity;
 import com.squareup.picasso.Picasso;
@@ -377,7 +377,7 @@ public final class PushNotifications {
   private @NonNull PendingIntent projectUpdateContentIntent(final @NonNull PushNotificationEnvelope envelope,
     final @NonNull Update update, final @NonNull String projectParam) {
 
-    final Intent projectIntent = new Intent(this.context, ProjectActivity.class)
+    final Intent projectIntent = new Intent(this.context, DeprecatedProjectActivity.class)
       .putExtra(IntentKey.PROJECT_PARAM, projectParam)
       .putExtra(IntentKey.REF_TAG, RefTag.push());
 
@@ -489,7 +489,7 @@ public final class PushNotifications {
   }
 
   private @NonNull Intent projectIntent(final @NonNull PushNotificationEnvelope envelope, final @NonNull String projectParam) {
-    return new Intent(this.context, ProjectActivity.class)
+    return new Intent(this.context, DeprecatedProjectActivity.class)
       .putExtra(IntentKey.PROJECT_PARAM, projectParam)
       .putExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE, envelope)
       .putExtra(IntentKey.REF_TAG, RefTag.push());

@@ -12,7 +12,7 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.MessageThreadsActivity
-import com.kickstarter.ui.activities.ProjectActivity
+import com.kickstarter.ui.activities.DeprecatedProjectActivity
 import com.kickstarter.ui.adapters.data.ProjectDashboardData
 import com.kickstarter.viewmodels.CreatorDashboardHeaderHolderViewModel
 
@@ -125,7 +125,7 @@ class CreatorDashboardHeaderViewHolder(
     }
 
     private fun startProjectActivity(project: Project, refTag: RefTag) {
-        val intent = Intent(context(), ProjectActivity::class.java)
+        val intent = Intent(context(), DeprecatedProjectActivity::class.java)
             .putExtra(IntentKey.PROJECT, project)
             .putExtra(IntentKey.REF_TAG, refTag)
         context().startActivity(intent)

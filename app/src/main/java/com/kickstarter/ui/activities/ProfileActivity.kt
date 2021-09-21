@@ -161,7 +161,7 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
     }
 
     private fun startProjectActivity(project: Project) {
-        val intent = Intent(this, ProjectActivity::class.java)
+        val intent = Intent(this, DeprecatedProjectActivity::class.java)
             .putExtra(IntentKey.PROJECT, project)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }

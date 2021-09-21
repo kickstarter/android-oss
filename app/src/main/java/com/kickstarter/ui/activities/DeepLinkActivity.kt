@@ -68,7 +68,7 @@ class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
     }
 
     private fun projectIntent(uri: Uri): Intent {
-        val projectIntent = Intent(this, ProjectActivity::class.java)
+        val projectIntent = Intent(this, DeprecatedProjectActivity::class.java)
             .setData(uri)
         val ref = refTag(uri.toString())
         if (ref != null) {

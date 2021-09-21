@@ -1164,7 +1164,7 @@ interface PledgeFragmentViewModel {
                     this.pledgeButtonIsEnabled.onNext(it)
                 }
 
-            val experimentData = Observable.combineLatest(this.currentUser.observable(), projectData) {u, p -> ExperimentData(u, p.refTagFromIntent(), p.refTagFromCookie()) }
+            val experimentData = Observable.combineLatest(this.currentUser.observable(), projectData) { u, p -> ExperimentData(u, p.refTagFromIntent(), p.refTagFromCookie()) }
 
             this.pledgeButtonClicked
                 .compose(combineLatestPair(experimentData))
@@ -1179,6 +1179,16 @@ interface PledgeFragmentViewModel {
                     // To disable reopen on change orianataion landscape
                     this.changeCheckoutRiskMessageBottomSheetStatus.onNext(false)
                 }
+
+            this.pledgeButtonClicked
+                .compose(combineLatestPair(experimentData))
+                .filter { this.optimizely.variant(OptimizelyExperiment.Key.NATIVE_RISK_MESSAGING, it.second) == OptimizelyExperiment.Variant.CONTROL }
+                .withLatestFrom(riskConfirmationFlag) { _, flag -> flag }
+                .filter { !it }
+                .compose(combineLatestPair(pledgeReason))
+                .filter { it.second == PledgeReason.PLEDGE }
+                .compose(bindToLifecycle())
+                .subscribe { this.riskConfirmationFlag.onNext(true) }
 
             val pledgeButtonClicked = userIsLoggedIn
                 .compose(takePairWhen(this.riskConfirmationFlag))

@@ -10,7 +10,6 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.NumberOptions
 import com.kickstarter.libs.models.Country
-import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
@@ -20,7 +19,6 @@ import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.rx.transformers.Transformers.zipPair
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectUtils
@@ -495,14 +493,15 @@ interface PledgeFragmentViewModel {
                     selectedShippingRule(shippingInfo)
                 }
 
-            val backingWhenPledgeReasonUpdatePayment = backing
+            val backingWhenPledgeReasonUpdate = backing
                 .compose<Pair<Backing, PledgeReason>>(combineLatestPair(pledgeReason))
-                .filter { PledgeReason.UPDATE_PAYMENT == it.second }
+                .filter { PledgeReason.UPDATE_PAYMENT == it.second || PledgeReason.UPDATE_PLEDGE == it.second }
                 .map { it.first }
 
-            val backingShippingRuleUpdatePayment = backingWhenPledgeReasonUpdatePayment
+            val backingShippingRuleUpdate = backingWhenPledgeReasonUpdate
                 .filter { it.reward()?.let { reward -> !RewardUtils.isNoReward(reward) } ?: false }
                 .compose<Pair<Backing, PledgeData>>(combineLatestPair(pledgeData))
+                .filter { ObjectUtils.isNotNull(it.first.locationId()) }
                 .map { requireNotNull(it.first.locationId()) }
                 .compose<Pair<Long, List<ShippingRule>>>(combineLatestPair(shippingRules))
                 .map { shippingInfo ->
@@ -519,7 +518,7 @@ interface PledgeFragmentViewModel {
                 .map { it.shippingRule() == null && RewardUtils.isShippable(it.reward()) }
                 .subscribe { this.shouldLoadDefaultLocation.onNext(it) }
 
-            val preSelectedShippingRule = Observable.merge(initShippingRule, backingShippingRule, backingShippingRuleUpdatePayment)
+            val preSelectedShippingRule = Observable.merge(initShippingRule, backingShippingRule, backingShippingRuleUpdate)
                 .distinctUntilChanged()
 
             preSelectedShippingRule

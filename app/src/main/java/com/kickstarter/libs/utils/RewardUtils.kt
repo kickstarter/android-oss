@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import org.joda.time.DateTime

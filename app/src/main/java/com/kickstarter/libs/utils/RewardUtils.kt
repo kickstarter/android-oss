@@ -197,28 +197,4 @@ object RewardUtils {
             else -> floor(seconds / 60.0 / 60.0 / 24.0).toInt()
         }
     }
-
-    /**
-     * Returns the amount value for each variant, being Control the original value, and the minimum
-     * the minPledge defined by country
-     *
-     * @param variant the variant for which you want to get the value
-     * @param reward in case no known variant as save return use the current reward.minimum amount
-     * @param minPledge defined by country
-     *
-     * @return Double with the amount
-     */
-    fun rewardAmountByVariant(variant: OptimizelyExperiment.Variant?, reward: Reward, minPledge: Int): Double {
-        val value =
-            if (isNoReward(reward)) {
-                when (variant) {
-                    OptimizelyExperiment.Variant.CONTROL -> 1.0
-                    OptimizelyExperiment.Variant.VARIANT_2 -> 10.0
-                    OptimizelyExperiment.Variant.VARIANT_3 -> 20.0
-                    OptimizelyExperiment.Variant.VARIANT_4 -> 50.0
-                    else -> reward.minimum()
-                }
-            } else reward.minimum()
-        return if (value < minPledge) minPledge.toDouble() else value
-    }
 }

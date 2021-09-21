@@ -344,7 +344,7 @@ interface ProjectViewModel {
                 intent()
                     .compose(takeWhen<Intent, Void>(this.reloadProjectContainerClicked))
             )
-                .flatMap {
+                .switchMap {
                     ProjectIntentMapper.project(it, this.apolloClient)
                         .doOnSubscribe {
                             progressBarIsGone.onNext(false)
@@ -678,20 +678,9 @@ interface ProjectViewModel {
                 .filter { it.isBacking }
 
             val backing = backedProject
-                .switchMap {
-                    this.apolloClient.getProjectBacking(it.slug() ?: "")
-                        .doOnSubscribe {
-                            progressBarIsGone.onNext(false)
-                        }
-                        .doAfterTerminate {
-                            progressBarIsGone.onNext(true)
-                        }
-                        .materialize()
-                }
-                .compose(neverError())
-                .compose(values())
+                .map { it.backing() }
                 .filter { ObjectUtils.isNotNull(it) }
-                .share()
+                .map { requireNotNull(it) }
 
             // - Update fragments with the backing data
             projectData

@@ -32,6 +32,7 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.IntentKey
@@ -144,7 +145,7 @@ class ProjectPageActivity :
         this.viewModel.outputs.pledgeActionButtonContainerIsGone()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { ViewUtils.setGone(binding.pledgeContainerLayout.pledgeActionButtonsLayout, it) }
+            .subscribe { binding.pledgeContainerLayout.pledgeActionButtonsLayout.visibility = it.toVisibility() }
 
         this.viewModel.outputs.pledgeActionButtonText()
             .compose(bindToLifecycle())
@@ -174,12 +175,12 @@ class ProjectPageActivity :
         this.viewModel.outputs.reloadProjectContainerIsGone()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { ViewUtils.setGone(binding.pledgeContainerLayout.projectRetryLayout.pledgeSheetRetryContainer, it) }
+            .subscribe { binding.pledgeContainerLayout.projectRetryLayout.pledgeSheetRetryContainer.visibility = it.toVisibility() }
 
         this.viewModel.outputs.reloadProgressBarIsGone()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { ViewUtils.setGone(binding.pledgeContainerLayout.projectRetryLayout.pledgeSheetProgressBar, it) }
+            .subscribe { binding.pledgeContainerLayout.projectRetryLayout.pledgeSheetProgressBar.visibility = it.toVisibility() }
 
         this.viewModel.outputs.scrimIsVisible()
             .compose(bindToLifecycle())
@@ -384,13 +385,13 @@ class ProjectPageActivity :
 
                     override fun onAnimationEnd(animation: Animator?) {
                         if (!show) {
-                            ViewUtils.setGone(binding.pledgeContainerLayout.scrim, true)
+                            binding.pledgeContainerLayout.scrim.visibility = true.toVisibility()
                         }
                     }
 
                     override fun onAnimationStart(animation: Animator?) {
                         if (show) {
-                            ViewUtils.setGone(binding.pledgeContainerLayout.scrim, false)
+                            binding.pledgeContainerLayout.scrim.visibility = false.toVisibility()
                         }
                     }
                 })

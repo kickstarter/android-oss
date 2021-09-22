@@ -53,7 +53,7 @@ class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
     }
 
     private fun startProjectActivity(projectAndRefTag: Pair<Project, RefTag>) {
-        val intent = Intent(this, ProjectActivity::class.java)
+        val intent = Intent(this, ProjectPageActivity::class.java)
             .putExtra(IntentKey.PROJECT, projectAndRefTag.first)
             .putExtra(IntentKey.REF_TAG, projectAndRefTag.second)
         startActivity(intent)

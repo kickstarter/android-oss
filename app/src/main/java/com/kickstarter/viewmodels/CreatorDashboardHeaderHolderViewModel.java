@@ -64,7 +64,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
     /** Emits when we should start the {@link com.kickstarter.ui.activities.MessageThreadsActivity}. */
     Observable<Pair<Project, RefTag>> startMessageThreadsActivity();
 
-    /** Emits when we should start the {@link com.kickstarter.ui.activities.DeprecatedProjectActivity}. */
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
 
     /** Emits the time remaining for current project with no units. */

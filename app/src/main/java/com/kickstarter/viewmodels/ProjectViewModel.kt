@@ -38,7 +38,7 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.activities.DeprecatedProjectActivity
+import com.kickstarter.ui.activities.ProjectActivity
 import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
@@ -254,7 +254,7 @@ interface ProjectViewModel {
         fun updateFragments(): Observable<ProjectData>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<DeprecatedProjectActivity>(environment), ProjectAdapter.Delegate, Inputs, Outputs {
+    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ProjectActivity>(environment), ProjectAdapter.Delegate, Inputs, Outputs {
         private val client: ApiClientType = environment.apiClient()
         private val cookieManager: CookieManager = environment.cookieManager()
         private val currentUser: CurrentUserType = environment.currentUser()

@@ -49,18 +49,17 @@ import com.kickstarter.ui.fragments.CancelPledgeFragment
 import com.kickstarter.ui.fragments.NewCardFragment
 import com.kickstarter.ui.fragments.PledgeFragment
 import com.kickstarter.ui.fragments.RewardsFragment
-import com.kickstarter.viewmodels.ProjectViewModel
+import com.kickstarter.viewmodels.ProjectPageViewModel
 import com.stripe.android.view.CardInputWidget
 import rx.android.schedulers.AndroidSchedulers
 
-@RequiresActivityViewModel(ProjectViewModel.ViewModel::class)
+@RequiresActivityViewModel(ProjectPageViewModel.ViewModel::class)
 class ProjectPageActivity :
-    BaseActivity<ProjectViewModel.ViewModel>(),
+    BaseActivity<ProjectPageViewModel.ViewModel>(),
     CancelPledgeFragment.CancelPledgeDelegate,
     NewCardFragment.OnCardSavedListener,
     PledgeFragment.PledgeDelegate,
     BackingFragment.BackingDelegate {
-    private lateinit var adapter: ProjectAdapter
     private lateinit var ksString: KSString
 
     private val projectShareLabelString = R.string.project_accessibility_button_share_label
@@ -99,8 +98,6 @@ class ProjectPageActivity :
                 }
             }
         }
-
-        this.adapter = ProjectAdapter(this.viewModel)
 
         this.viewModel.outputs.backingDetailsSubtitle()
             .compose(bindToLifecycle())
@@ -167,10 +164,10 @@ class ProjectPageActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { openProjectAndFinish(it) }
 
-        this.viewModel.outputs.projectData()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { renderProject(it) }
+//        this.viewModel.outputs.projectData()
+//            .compose(bindToLifecycle())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe { renderProject(it) }
 
         this.viewModel.outputs.reloadProjectContainerIsGone()
             .compose(bindToLifecycle())
@@ -484,10 +481,10 @@ class ProjectPageActivity :
 
     private fun pledgeFragment() = supportFragmentManager
         .findFragmentByTag(PledgeFragment::class.java.simpleName) as PledgeFragment?
-
-    private fun renderProject(projectData: ProjectData) {
-        this.adapter.takeProject(projectData)
-    }
+//
+//    private fun renderProject(projectData: ProjectData) {
+//        this.adapter.takeProject(projectData)
+//    }
 
     private fun renderProject(backingFragment: BackingFragment, rewardsFragment: RewardsFragment, projectData: ProjectData) {
         rewardsFragment.configureWith(projectData)

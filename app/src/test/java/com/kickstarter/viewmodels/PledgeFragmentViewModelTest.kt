@@ -10,11 +10,13 @@ import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockSharedPreferences
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.Country
+import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.extensions.trimAllWhitespace
 import com.kickstarter.mock.MockCurrentConfig
+import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.CheckoutFactory
 import com.kickstarter.mock.factories.ConfigFactory
@@ -1475,16 +1477,30 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShowCheckoutRiskMessageBottomSheet_whenPledgeClicked() {
+    fun testShowCheckoutRiskMessageBottomSheet_whenPledgeClickedAndInExperiment_shouldEmitBottomSheetStatus() {
         val environment = environment()
             .toBuilder()
+            .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1))
             .build()
-
         setUpEnvironment(environment)
 
         this.vm.inputs.pledgeButtonClicked()
 
         this.changeCheckoutRiskMessageBottomSheetStatus.assertValueCount(2)
+        this.changeCheckoutRiskMessageBottomSheetStatus.assertValues(true, false)
+    }
+
+    @Test
+    fun testShowCheckoutRiskMessageBottomSheet_whenPledgeClickedAndInControl_shouldNotEmitBottomSheetStatus() {
+        val environment = environment()
+            .toBuilder()
+            .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.CONTROL))
+            .build()
+        setUpEnvironment(environment)
+
+        this.vm.inputs.pledgeButtonClicked()
+
+        this.changeCheckoutRiskMessageBottomSheetStatus.assertNoValues()
     }
 
     @Test
@@ -2026,7 +2042,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testShowPledgeSuccess_whenNoReward() {
         val project = ProjectFactory.project()
-        setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), RewardFactory.noReward(), project)
+        setUpEnvironment(environmentForLoggedInUser(UserFactory.user()).toBuilder().optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1)).build(), RewardFactory.noReward(), project)
 
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
@@ -2045,7 +2061,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     fun testShowPledgeSuccess_whenDigitalReward() {
         val project = ProjectFactory.project()
         val reward = RewardFactory.reward()
-        setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), reward, project)
+        setUpEnvironment(environmentForLoggedInUser(UserFactory.user()).toBuilder().optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1)).build(), reward, project)
 
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
@@ -2066,6 +2082,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val reward = RewardFactory.rewardWithShipping()
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
             .toBuilder()
+            .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1))
             .currentUser(MockCurrentUser(UserFactory.user()))
             .build()
         setUpEnvironment(environment, reward, project)
@@ -2088,6 +2105,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         val environment = environmentForLoggedInUser(UserFactory.user())
             .toBuilder()
+            .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1))
             .apolloClient(object : MockApolloClient() {
                 override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
                     return Observable.error(Throwable("error"))
@@ -2127,6 +2145,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         val environment = environmentForLoggedInUser(UserFactory.user())
             .toBuilder()
+            .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1))
             .apolloClient(object : MockApolloClient() {
                 override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
                     return Observable.just(CheckoutFactory.requiresAction(true))
@@ -2166,6 +2185,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         val environment = environmentForLoggedInUser(UserFactory.user())
             .toBuilder()
+            .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1))
             .apolloClient(object : MockApolloClient() {
                 override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
                     return Observable.just(CheckoutFactory.requiresAction(true))
@@ -2209,6 +2229,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         val environment = environmentForLoggedInUser(UserFactory.user())
             .toBuilder()
+            .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1))
             .apolloClient(object : MockApolloClient() {
                 override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
                     return Observable.just(CheckoutFactory.requiresAction(true))

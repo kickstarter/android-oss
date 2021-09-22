@@ -18,7 +18,6 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityProjectBinding
@@ -101,8 +100,6 @@ class ProjectPageActivity :
         }
 
         this.adapter = ProjectAdapter(this.viewModel)
-        binding.projectRecyclerView.adapter = this.adapter
-        binding.projectRecyclerView.layoutManager = LinearLayoutManager(this)
 
         this.viewModel.outputs.backingDetailsSubtitle()
             .compose(bindToLifecycle())
@@ -373,7 +370,6 @@ class ProjectPageActivity :
 
     override fun onDestroy() {
         super.onDestroy()
-        binding.projectRecyclerView.adapter = null
     }
 
     private fun animateScrimVisibility(show: Boolean) {
@@ -440,12 +436,10 @@ class ProjectPageActivity :
                     setFragmentsState(expand)
                     if (expand) {
                         binding.pledgeContainerLayout.pledgeActionButtonsLayout.visibility = View.GONE
-                        binding.projectRecyclerView.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                         binding.projectActivityToolbar.toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                         binding.pledgeContainerLayout.pledgeToolbar.requestFocus()
                     } else {
                         binding.pledgeContainerLayout.pledgeContainer.visibility = View.GONE
-                        binding.projectRecyclerView.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
                         binding.projectActivityToolbar.toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
                         if (animate) {
                             binding.projectActivityToolbar.toolbar.requestFocus()
@@ -492,7 +486,6 @@ class ProjectPageActivity :
 
     private fun renderProject(projectData: ProjectData) {
         this.adapter.takeProject(projectData)
-        binding.projectRecyclerView.setPadding(0, 0, 0, rewardsSheetGuideline())
     }
 
     private fun renderProject(backingFragment: BackingFragment, rewardsFragment: RewardsFragment, projectData: ProjectData) {

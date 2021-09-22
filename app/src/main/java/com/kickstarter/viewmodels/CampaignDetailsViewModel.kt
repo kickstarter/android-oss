@@ -24,7 +24,7 @@ interface CampaignDetailsViewModel {
     }
 
     interface Outputs {
-        /** Emits when we should return to the [com.kickstarter.ui.activities.DeprecatedProjectActivity] with the rewards visible. */
+        /** Emits when we should return to the [com.kickstarter.ui.activities.ProjectActivity] with the rewards visible. */
         fun goBackToProject(): Observable<Void>
 
         /** Emits a boolean determining if the faux pledge container is visible. */

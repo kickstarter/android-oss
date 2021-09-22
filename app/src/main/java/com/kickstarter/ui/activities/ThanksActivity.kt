@@ -130,7 +130,7 @@ class ThanksActivity : BaseActivity<ThanksViewModel.ViewModel>() {
     }
 
     private fun startProjectActivity(projectAndRefTag: Pair<Project, RefTag>) {
-        val intent = Intent(this, DeprecatedProjectActivity::class.java)
+        val intent = Intent(this, ProjectActivity::class.java)
             .putExtra(IntentKey.PROJECT, projectAndRefTag.first)
             .putExtra(IntentKey.REF_TAG, projectAndRefTag.second)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)

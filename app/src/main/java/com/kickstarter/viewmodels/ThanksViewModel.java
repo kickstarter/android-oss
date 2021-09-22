@@ -74,7 +74,7 @@ public interface ThanksViewModel {
     /** Emits when we should start the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
     Observable<DiscoveryParams> startDiscoveryActivity();
 
-    /** Emits when we should start the {@link com.kickstarter.ui.activities.DeprecatedProjectActivity}. */
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
   }
 

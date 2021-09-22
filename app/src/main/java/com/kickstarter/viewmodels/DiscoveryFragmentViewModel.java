@@ -106,7 +106,7 @@ public interface DiscoveryFragmentViewModel {
     /** Emits an Editorial when we should start the {@link com.kickstarter.ui.activities.EditorialActivity}. */
     Observable<Editorial> startEditorialActivity();
 
-    /** Emits a Project and RefTag pair when we should start the {@link com.kickstarter.ui.activities.DeprecatedProjectActivity}. */
+    /** Emits a Project and RefTag pair when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
 
     /** Emits an activity when we should start the {@link com.kickstarter.ui.activities.UpdateActivity}. */

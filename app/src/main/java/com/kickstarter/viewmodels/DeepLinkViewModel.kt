@@ -35,19 +35,19 @@ interface DeepLinkViewModel {
         /** Emits when we should start the [com.kickstarter.ui.activities.DiscoveryActivity].  */
         fun startDiscoveryActivity(): Observable<Void>
 
-        /** Emits when we should start the [com.kickstarter.ui.activities.DeprecatedProjectActivity].  */
+        /** Emits when we should start the [com.kickstarter.ui.activities.ProjectActivity].  */
         fun startProjectActivity(): Observable<Uri>
 
-        /** Emits when we should start the [com.kickstarter.ui.activities.DeprecatedProjectActivity].  */
+        /** Emits when we should start the [com.kickstarter.ui.activities.ProjectActivity].  */
         fun startProjectActivityForComment(): Observable<Uri>
 
-        /** Emits when we should start the [com.kickstarter.ui.activities.DeprecatedProjectActivity].  */
+        /** Emits when we should start the [com.kickstarter.ui.activities.ProjectActivity].  */
         fun startProjectActivityForUpdate(): Observable<Uri>
 
-        /** Emits when we should start the [com.kickstarter.ui.activities.DeprecatedProjectActivity].  */
+        /** Emits when we should start the [com.kickstarter.ui.activities.ProjectActivity].  */
         fun startProjectActivityForCommentToUpdate(): Observable<Uri>
 
-        /** Emits when we should start the [com.kickstarter.ui.activities.DeprecatedProjectActivity] with pledge sheet expanded.  */
+        /** Emits when we should start the [com.kickstarter.ui.activities.ProjectActivity] with pledge sheet expanded.  */
         fun startProjectActivityForCheckout(): Observable<Uri>
 
         /** Emits when we should finish the current activity  */

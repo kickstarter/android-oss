@@ -39,7 +39,7 @@
             android:theme="@style/ActivityFeedActivity" />
         <activity
             android:name=".ui.activities.CampaignDetailsActivity"
-            android:parentActivityName=".ui.activities.DeprecatedProjectActivity" />
+            android:parentActivityName=".ui.activities.ProjectActivity" />
         <activity
             android:name=".ui.activities.ChangeEmailActivity"
             android:theme="@style/SettingsActivity" />
@@ -177,7 +177,7 @@
             android:name=".ui.activities.PrivacyActivity"
             android:theme="@style/SettingsActivity" />
         <activity
-            android:name=".ui.activities.ProjectActivity"
+            android:name=".ui.activities.ProjectPageActivity"
             android:theme="@style/ProjectActivity"
             android:parentActivityName=".ui.activities.PlaygroundActivity" />
         <activity
@@ -185,7 +185,7 @@
             android:parentActivityName=".ui.activities.SettingsActivity"
             android:theme="@style/SettingsActivity" />
         <activity
-            android:name=".ui.activities.DeprecatedProjectActivity"
+            android:name=".ui.activities.ProjectActivity"
             android:parentActivityName=".ui.activities.DiscoveryActivity"
             android:theme="@style/ProjectActivity"
             android:windowSoftInputMode="adjustResize">
@@ -203,10 +203,10 @@
         </activity>
         <activity
             android:name=".ui.activities.ProjectSocialActivity"
-            android:parentActivityName=".ui.activities.DeprecatedProjectActivity" />
+            android:parentActivityName=".ui.activities.ProjectActivity" />
         <activity
             android:name=".ui.activities.ProjectUpdatesActivity"
-            android:parentActivityName=".ui.activities.DeprecatedProjectActivity" />
+            android:parentActivityName=".ui.activities.ProjectActivity" />
         <activity android:name="com.qualtrics.digital.QualtricsSurveyActivity" />
         <activity
             android:name=".ui.activities.SearchActivity"
@@ -237,12 +237,12 @@
         <activity
             android:name=".ui.activities.VideoActivity"
             android:configChanges="keyboardHidden|screenSize"
-            android:parentActivityName=".ui.activities.DeprecatedProjectActivity"
+            android:parentActivityName=".ui.activities.ProjectActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/VideoPlayerActivity" />
         <activity
             android:name=".ui.activities.BackingActivity"
-            android:parentActivityName=".ui.activities.DeprecatedProjectActivity"
+            android:parentActivityName=".ui.activities.ProjectActivity"
             android:theme="@style/BackingActivity" />
         <activity
             android:name="com.facebook.FacebookActivity"

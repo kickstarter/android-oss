@@ -150,7 +150,7 @@ class ActivityFeedActivity : BaseActivity<ActivityFeedViewModel.ViewModel>() {
     }
 
     private fun startFixPledge(projectSlug: String) {
-        val intent = Intent(this, DeprecatedProjectActivity::class.java)
+        val intent = Intent(this, ProjectActivity::class.java)
             .putExtra(IntentKey.PROJECT_PARAM, projectSlug)
             .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, true)
             .putExtra(IntentKey.REF_TAG, RefTag.activity())
@@ -158,7 +158,7 @@ class ActivityFeedActivity : BaseActivity<ActivityFeedViewModel.ViewModel>() {
     }
 
     private fun startProjectActivity(project: Project) {
-        val intent = Intent(this, DeprecatedProjectActivity::class.java)
+        val intent = Intent(this, ProjectActivity::class.java)
             .putExtra(IntentKey.PROJECT, project)
             .putExtra(IntentKey.REF_TAG, RefTag.activity())
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)

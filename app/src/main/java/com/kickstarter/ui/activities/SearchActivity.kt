@@ -60,7 +60,7 @@ class SearchActivity : BaseActivity<SearchViewModel.ViewModel>(), SearchAdapter.
     }
 
     private fun startProjectActivity(projectAndRefTag: Pair<Project, RefTag>) {
-        val intent = Intent(this, DeprecatedProjectActivity::class.java)
+        val intent = Intent(this, ProjectActivity::class.java)
             .putExtra(IntentKey.PROJECT, projectAndRefTag.first)
             .putExtra(IntentKey.REF_TAG, projectAndRefTag.second)
         startActivity(intent)

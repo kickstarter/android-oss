@@ -690,7 +690,8 @@ interface PledgeFragmentViewModel {
 
             val backingAmount = Observable.merge(backingAmountNR, backingAmountRW)
 
-            val pledgeInput = Observable.merge(initialAmount, this.pledgeInput.map { NumberUtils.parse(it) }, backingAmount)
+            val pledgeInput = Observable.merge(initialAmount, this.pledgeInput.map { it.toDouble() }, backingAmount)
+                .map { it }
                 .distinctUntilChanged()
 
             pledgeInput
@@ -729,7 +730,7 @@ interface PledgeFragmentViewModel {
             val bonusMinimum = Observable.just(0.0)
             val bonusStepAmount = Observable.just(1.0)
 
-            val bonusInput = Observable.merge(bonusMinimum, this.bonusInput.map { NumberUtils.parse(it) })
+            val bonusInput = Observable.merge(bonusMinimum, this.bonusInput.map { it.toDouble() })
 
             bonusMinimum
                 .map { NumberUtils.format(it.toInt()) }
@@ -1345,7 +1346,9 @@ interface PledgeFragmentViewModel {
                     shippingAmountSelectedRw,
                     total,
                     this.bonusAmount
-                ) { s, t, b -> checkoutData(s, t, NumberUtils.parse(b), null) }
+                ) { s, t, b ->
+                    checkoutData(s, t, b.toDouble(), null)
+                }
                     .compose<Pair<CheckoutData, PledgeData>>(combineLatestPair(pledgeData))
 
             checkoutAndPledgeData

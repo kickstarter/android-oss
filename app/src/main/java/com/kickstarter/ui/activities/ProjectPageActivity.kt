@@ -145,7 +145,7 @@ class ProjectPageActivity :
         this.viewModel.outputs.pledgeActionButtonContainerIsGone()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding.pledgeContainerLayout.pledgeActionButtonsLayout.visibility = it.toVisibility() }
+            .subscribe { binding.pledgeContainerLayout.pledgeActionButtonsLayout.visibility = (!it).toVisibility() }
 
         this.viewModel.outputs.pledgeActionButtonText()
             .compose(bindToLifecycle())
@@ -175,12 +175,12 @@ class ProjectPageActivity :
         this.viewModel.outputs.reloadProjectContainerIsGone()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding.pledgeContainerLayout.projectRetryLayout.pledgeSheetRetryContainer.visibility = it.toVisibility() }
+            .subscribe { binding.pledgeContainerLayout.projectRetryLayout.pledgeSheetRetryContainer.visibility = (!it).toVisibility() }
 
         this.viewModel.outputs.reloadProgressBarIsGone()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding.pledgeContainerLayout.projectRetryLayout.pledgeSheetProgressBar.visibility = it.toVisibility() }
+            .subscribe { binding.pledgeContainerLayout.projectRetryLayout.pledgeSheetProgressBar.visibility = (!it).toVisibility() }
 
         this.viewModel.outputs.scrimIsVisible()
             .compose(bindToLifecycle())
@@ -385,13 +385,13 @@ class ProjectPageActivity :
 
                     override fun onAnimationEnd(animation: Animator?) {
                         if (!show) {
-                            binding.pledgeContainerLayout.scrim.visibility = true.toVisibility()
+                            binding.pledgeContainerLayout.scrim.visibility =  View.GONE
                         }
                     }
 
                     override fun onAnimationStart(animation: Animator?) {
                         if (show) {
-                            binding.pledgeContainerLayout.scrim.visibility = false.toVisibility()
+                            binding.pledgeContainerLayout.scrim.visibility = View.VISIBLE
                         }
                     }
                 })

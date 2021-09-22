@@ -385,7 +385,7 @@ class ProjectPageActivity :
 
                     override fun onAnimationEnd(animation: Animator?) {
                         if (!show) {
-                            binding.pledgeContainerLayout.scrim.visibility =  View.GONE
+                            binding.pledgeContainerLayout.scrim.visibility = View.GONE
                         }
                     }
 

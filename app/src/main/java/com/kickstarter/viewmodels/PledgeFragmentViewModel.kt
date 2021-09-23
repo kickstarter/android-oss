@@ -25,6 +25,7 @@ import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.extensions.toDouble
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.Project
@@ -690,7 +691,7 @@ interface PledgeFragmentViewModel {
 
             val backingAmount = Observable.merge(backingAmountNR, backingAmountRW)
 
-            val pledgeInput = Observable.merge(initialAmount, this.pledgeInput.map { it?.toDouble() ?: 0.0 }, backingAmount)
+            val pledgeInput = Observable.merge(initialAmount, this.pledgeInput.map { it.toDouble() }, backingAmount)
                 .map { it }
                 .distinctUntilChanged()
 
@@ -730,7 +731,7 @@ interface PledgeFragmentViewModel {
             val bonusMinimum = Observable.just(0.0)
             val bonusStepAmount = Observable.just(1.0)
 
-            val bonusInput = Observable.merge(bonusMinimum, this.bonusInput.map { it?.toDouble() ?: 0.0 })
+            val bonusInput = Observable.merge(bonusMinimum, this.bonusInput.map { it.toDouble() })
 
             bonusMinimum
                 .map { NumberUtils.format(it.toInt()) }
@@ -1347,7 +1348,7 @@ interface PledgeFragmentViewModel {
                     total,
                     this.bonusAmount
                 ) { s, t, b ->
-                    checkoutData(s, t, b.replace(",", ".").toDouble(), null)
+                    checkoutData(s, t, b.toDouble(), null)
                 }
                     .compose<Pair<CheckoutData, PledgeData>>(combineLatestPair(pledgeData))
 

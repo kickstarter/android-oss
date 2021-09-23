@@ -58,3 +58,13 @@ fun String.wrapInParentheses() = "($this)"
 fun String.parseHtmlTag(): String {
     return Jsoup.parse(this).text()
 }
+
+/**
+ * Takes an optional String and returns a Double
+ * NOTE: NumberUtils.parse(String, Locale)
+ * - In case the string is null or cannot be converted to double
+ * it will return 0.0
+ */
+fun String?.toDouble(): Double {
+    return this?.toDoubleOrNull() ?: 0.0
+}

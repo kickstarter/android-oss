@@ -1333,15 +1333,6 @@ interface PledgeFragmentViewModel {
                 .compose(bindToLifecycle())
                 .subscribe { this.pledgeButtonCTA.onNext(it) }
 
-            // Tracking
-            val projectAndTotal = project
-                .compose<Pair<Project, Double>>(combineLatestPair(total))
-
-            val projectAndTotalForInitialPledges = pledgeReason
-                .filter { it == PledgeReason.PLEDGE }
-                .compose<Pair<PledgeReason, Pair<Project, Double>>>(combineLatestPair(projectAndTotal))
-                .map { it.second }
-
             val checkoutAndPledgeData =
                 Observable.combineLatest<Double, Double, String, CheckoutData>(
                     shippingAmountSelectedRw,

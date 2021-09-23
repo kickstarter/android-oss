@@ -113,10 +113,10 @@ public final class NumberUtils {
     return parse(input, Locale.getDefault());
   }
 
-  @Deprecated
   /**
-   * Use instead @link com.kickstarter.libs.utils.extensions.StringExt#toDouble(java.lang.String)
+   * @deprecated Use instead com.kickstarter.libs.utils.extensions.StringExt#parseToDouble(java.lang.String)
    */
+  @Deprecated
   public static double parse(final @NonNull String input, final @NonNull Locale locale) {
     try {
       return NumberFormat.getNumberInstance(locale).parse(input).doubleValue();

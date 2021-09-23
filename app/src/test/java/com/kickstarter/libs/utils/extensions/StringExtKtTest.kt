@@ -123,31 +123,30 @@ class StringExtKtTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun optionalStringToDouble() {
+    fun parseStringToDouble() {
         val number = "90"
         val smallNumber = "0.3"
 
-        assertTrue(number.toDouble() == 90.0)
-        assertTrue(smallNumber.toDouble() == 0.3)
+        assertTrue(number.parseToDouble() == 90.0)
+        assertTrue(smallNumber.parseToDouble() == 0.3)
 
         val notNumber: String? = null
-        assertTrue(notNumber.toDouble() == 0.0)
+        assertTrue(notNumber.parseToDouble() == 0.0)
 
         val alsoNotNumber = "Hola 9"
-        assertTrue(alsoNotNumber.toDouble() == 0.0)
-    }
+        assertTrue(alsoNotNumber.parseToDouble() == 0.0)
 
-    @Test
-    fun parseStringToDouble() {
-        assertEquals("".toDouble(), 0.0)
-        assertEquals("1".toDouble(), 1.0)
-        assertEquals("1,5".toDouble(), 1.5)
-        assertEquals("100".toDouble(), 100.0)
-        assertEquals("100,50".toDouble(), 100.5)
-        assertEquals("1000.0".toDouble(), 1.000)
-        assertEquals("1.000,50".toDouble(), 1000.5)
-        assertEquals("10.000".toDouble(), 10000.0)
-        assertEquals("10.000,50".toDouble(), 10000.5)
+        assertEquals(0.0, "".parseToDouble())
+        assertEquals(1.0, "1".parseToDouble())
+        assertEquals(10.0, "10.0".parseToDouble())
+        assertEquals(1.5, "1,5".parseToDouble())
+        assertEquals(100.0, "100".parseToDouble())
+        assertEquals(100.5, "100,50".parseToDouble())
+        assertEquals(1000.0, "1000.0".parseToDouble())
+        assertEquals(1000.0, "1.000".parseToDouble())
+        assertEquals(1000.5, "1.000,50".parseToDouble())
+        assertEquals(10000.0, "10.000".parseToDouble())
+        assertEquals(10000.5, "10.000,50".parseToDouble())
     }
 
     companion object {

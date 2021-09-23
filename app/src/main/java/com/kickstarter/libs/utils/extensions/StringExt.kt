@@ -62,9 +62,25 @@ fun String.parseHtmlTag(): String {
 /**
  * Takes an optional String and returns a Double
  * NOTE: NumberUtils.parse(String, Locale)
- * - In case the string is null or cannot be converted to double
- * it will return 0.0
+ * - Depending on the Locale the decimal separator 0.99 or 0,99
+ * - Depending on the Locale the Character used for thousand separator can change 9.999 or 9,999
+ *
+ * We've compiled several Regex to account for use cases as not all the languages are listed as Default Locale
+ * as example Spanish or Polish, take a look at
+ * @see <a href="https://github.com/frohoff/jdk8u-jdk/blob/da0da73ab82ed714dc5be94acd2f0d00fbdfe2e9/src/share/classes/java/util/Locale.java#L484">Locale.java</a>
+ *
+ * The Strings will be modified to use "." as a decimal separator, and "" as the thousand separator
+ *
+ * - In case something wrong, it will return 0.0
  */
-fun String?.toDouble(): Double {
-    return this?.toDoubleOrNull() ?: 0.0
+fun String?.parseToDouble(): Double {
+    val numToParse = this?.let { numToParse ->
+        return@let when {
+            "[0-9]+,[0-9]+".toRegex().matches(numToParse) -> numToParse.replace(",", ".")
+            "[0-9]+.[0-9]{3}".toRegex().matches(numToParse) -> numToParse.replace(".", "")
+            "[0-9]+.[0-9]{3},[0-9]+".toRegex().matches(numToParse) -> numToParse.replace(".", "").replace(",", ".")
+            else -> numToParse
+        }
+    }
+    return numToParse?.toDoubleOrNull() ?: 0.0
 }

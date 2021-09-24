@@ -20,7 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
-import com.kickstarter.databinding.ActivityProjectBinding
+import com.kickstarter.databinding.ActivityProjectPageBinding
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.BaseFragment
@@ -36,7 +36,6 @@ import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.data.PledgeData
@@ -49,13 +48,13 @@ import com.kickstarter.ui.fragments.CancelPledgeFragment
 import com.kickstarter.ui.fragments.NewCardFragment
 import com.kickstarter.ui.fragments.PledgeFragment
 import com.kickstarter.ui.fragments.RewardsFragment
-import com.kickstarter.viewmodels.ProjectPageViewModel
+import com.kickstarter.viewmodels.ProjectViewModel
 import com.stripe.android.view.CardInputWidget
 import rx.android.schedulers.AndroidSchedulers
 
-@RequiresActivityViewModel(ProjectPageViewModel.ViewModel::class)
+@RequiresActivityViewModel(ProjectViewModel.ViewModel::class)
 class ProjectPageActivity :
-    BaseActivity<ProjectPageViewModel.ViewModel>(),
+    BaseActivity<ProjectViewModel.ViewModel>(),
     CancelPledgeFragment.CancelPledgeDelegate,
     NewCardFragment.OnCardSavedListener,
     PledgeFragment.PledgeDelegate,
@@ -67,11 +66,11 @@ class ProjectPageActivity :
     private val projectStarConfirmationString = R.string.project_star_confirmation
 
     private val animDuration = 200L
-    private lateinit var binding: ActivityProjectBinding
+    private lateinit var binding: ActivityProjectPageBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityProjectBinding.inflate(layoutInflater)
+        binding = ActivityProjectPageBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
         this.ksString = environment().ksString()
@@ -163,11 +162,6 @@ class ProjectPageActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { openProjectAndFinish(it) }
-
-//        this.viewModel.outputs.projectData()
-//            .compose(bindToLifecycle())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe { renderProject(it) }
 
         this.viewModel.outputs.reloadProjectContainerIsGone()
             .compose(bindToLifecycle())
@@ -481,10 +475,6 @@ class ProjectPageActivity :
 
     private fun pledgeFragment() = supportFragmentManager
         .findFragmentByTag(PledgeFragment::class.java.simpleName) as PledgeFragment?
-//
-//    private fun renderProject(projectData: ProjectData) {
-//        this.adapter.takeProject(projectData)
-//    }
 
     private fun renderProject(backingFragment: BackingFragment, rewardsFragment: RewardsFragment, projectData: ProjectData) {
         rewardsFragment.configureWith(projectData)

@@ -291,6 +291,7 @@ interface DiscoveryViewModel {
                 pagerSelectedPage.map { DiscoveryUtils.sortFromPosition(it) },
                 params.map { it.sort() }
             )
+                .filter { ObjectUtils.isNotNull(it) }
 
             // Combine params with the selected sort position.
             val paramsWithSort = Observable.combineLatest(

@@ -535,6 +535,12 @@
     <item name="android:textSize">@dimen/headline</item>
   </style>
 
+  <style name="HeadlineMedium" parent="HeadlineNormal">
+    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
+    <item name="android:letterSpacing">0.01</item>
+    <item name="android:lineSpacingExtra">@dimen/caption_line_spacing_extra</item>
+  </style>
+
   <style name="Title2" parent="TextPrimary">
     <item name="android:textSize">@dimen/title_2</item>
   </style>

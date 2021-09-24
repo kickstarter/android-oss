@@ -55,4 +55,10 @@
     <attr name="add_on_stepper_max" format="integer"/>
   </declare-styleable>
 
+  <declare-styleable name="FrequentlyAskedQuestionCard">
+    <attr name="frequently_asked_question_text" format="reference|string" />
+    <attr name="frequently_asked_answer_text" format="reference|string" />
+    <attr name="frequently_asked_question_update_date_text" format="reference|string" />
+  </declare-styleable>
+
 </resources>

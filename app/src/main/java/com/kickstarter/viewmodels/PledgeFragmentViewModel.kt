@@ -25,6 +25,7 @@ import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.Project
@@ -690,7 +691,8 @@ interface PledgeFragmentViewModel {
 
             val backingAmount = Observable.merge(backingAmountNR, backingAmountRW)
 
-            val pledgeInput = Observable.merge(initialAmount, this.pledgeInput.map { NumberUtils.parse(it) }, backingAmount)
+            val pledgeInput = Observable.merge(initialAmount, this.pledgeInput.map { it.parseToDouble() }, backingAmount)
+                .map { it }
                 .distinctUntilChanged()
 
             pledgeInput
@@ -729,7 +731,7 @@ interface PledgeFragmentViewModel {
             val bonusMinimum = Observable.just(0.0)
             val bonusStepAmount = Observable.just(1.0)
 
-            val bonusInput = Observable.merge(bonusMinimum, this.bonusInput.map { NumberUtils.parse(it) })
+            val bonusInput = Observable.merge(bonusMinimum, this.bonusInput.map { it.parseToDouble() })
 
             bonusMinimum
                 .map { NumberUtils.format(it.toInt()) }
@@ -1331,21 +1333,14 @@ interface PledgeFragmentViewModel {
                 .compose(bindToLifecycle())
                 .subscribe { this.pledgeButtonCTA.onNext(it) }
 
-            // Tracking
-            val projectAndTotal = project
-                .compose<Pair<Project, Double>>(combineLatestPair(total))
-
-            val projectAndTotalForInitialPledges = pledgeReason
-                .filter { it == PledgeReason.PLEDGE }
-                .compose<Pair<PledgeReason, Pair<Project, Double>>>(combineLatestPair(projectAndTotal))
-                .map { it.second }
-
             val checkoutAndPledgeData =
                 Observable.combineLatest<Double, Double, String, CheckoutData>(
                     shippingAmountSelectedRw,
                     total,
                     this.bonusAmount
-                ) { s, t, b -> checkoutData(s, t, NumberUtils.parse(b), null) }
+                ) { s, t, b ->
+                    checkoutData(s, t, b.parseToDouble(), null)
+                }
                     .compose<Pair<CheckoutData, PledgeData>>(combineLatestPair(pledgeData))
 
             checkoutAndPledgeData

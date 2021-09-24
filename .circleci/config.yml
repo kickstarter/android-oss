@@ -263,14 +263,10 @@ workflows:
       - build:
           filters:
             branches:
-              only: external
-      - test:
-          requires:
-            - build
+              only: regression
       - regression:
           requires:
             - build
-            - test
           filters:
             branches:
               only: regression

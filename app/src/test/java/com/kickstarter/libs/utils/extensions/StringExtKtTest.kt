@@ -122,6 +122,33 @@ class StringExtKtTest : KSRobolectricTestCase() {
         assertEquals(EMPTY_STRING.wrapInParentheses(), "()")
     }
 
+    @Test
+    fun parseStringToDouble() {
+        val number = "90"
+        val smallNumber = "0.3"
+
+        assertTrue(number.parseToDouble() == 90.0)
+        assertTrue(smallNumber.parseToDouble() == 0.3)
+
+        val notNumber: String? = null
+        assertTrue(notNumber.parseToDouble() == 0.0)
+
+        val alsoNotNumber = "Hola 9"
+        assertTrue(alsoNotNumber.parseToDouble() == 0.0)
+
+        assertEquals(0.0, "".parseToDouble())
+        assertEquals(1.0, "1".parseToDouble())
+        assertEquals(10.0, "10.0".parseToDouble())
+        assertEquals(1.5, "1,5".parseToDouble())
+        assertEquals(100.0, "100".parseToDouble())
+        assertEquals(100.5, "100,50".parseToDouble())
+        assertEquals(1000.0, "1000.0".parseToDouble())
+        assertEquals(1000.0, "1.000".parseToDouble())
+        assertEquals(1000.5, "1.000,50".parseToDouble())
+        assertEquals(10000.0, "10.000".parseToDouble())
+        assertEquals(10000.5, "10.000,50".parseToDouble())
+    }
+
     companion object {
         private const val VALID_EMAIL = "hello@kickstarter.com"
         private const val INVALID_EMAIL = "hello@kickstarer"

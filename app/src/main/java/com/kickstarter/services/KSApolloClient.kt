@@ -1094,8 +1094,8 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
     val staffPicked = projectFragment?.isProjectWeLove ?: false
     val state = projectFragment?.state()?.name?.lowercase()
     val stateChangedAt = projectFragment?.stateChangedAt()
-    val staticUSDRate = projectFragment?.usdExchangeRate()?.toFloat()
-    val usdExchangeRate = projectFragment?.usdExchangeRate()?.toFloat()
+    val staticUSDRate = projectFragment?.usdExchangeRate()?.toFloat() ?: 1f
+    val usdExchangeRate = projectFragment?.usdExchangeRate()?.toFloat() ?: 1f
     val updatedAt = projectFragment?.posts()?.fragments()?.updates()?.nodes()?.let {
         if (it.isNotEmpty()) return@let it.first()?.updatedAt()
         else null

@@ -10,7 +10,6 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.NumberOptions
 import com.kickstarter.libs.models.Country
-import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
@@ -20,13 +19,13 @@ import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.rx.transformers.Transformers.zipPair
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.Project
@@ -409,7 +408,7 @@ interface PledgeFragmentViewModel {
         private val currentUser = environment.currentUser()
         private val ksCurrency = environment.ksCurrency()
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
-        private val variantSuggestedAmount = BehaviorSubject.create<Double>()
+        private val minPledgeByCountry = BehaviorSubject.create<Double>()
         private val shippingRuleUpdated = BehaviorSubject.create<Boolean>(false)
         private val selectedReward = BehaviorSubject.create<Reward>()
         private val rewardAndAddOns = BehaviorSubject.create<List<Reward>>()
@@ -495,14 +494,15 @@ interface PledgeFragmentViewModel {
                     selectedShippingRule(shippingInfo)
                 }
 
-            val backingWhenPledgeReasonUpdatePayment = backing
+            val backingWhenPledgeReasonUpdate = backing
                 .compose<Pair<Backing, PledgeReason>>(combineLatestPair(pledgeReason))
-                .filter { PledgeReason.UPDATE_PAYMENT == it.second }
+                .filter { PledgeReason.UPDATE_PAYMENT == it.second || PledgeReason.UPDATE_PLEDGE == it.second }
                 .map { it.first }
 
-            val backingShippingRuleUpdatePayment = backingWhenPledgeReasonUpdatePayment
+            val backingShippingRuleUpdate = backingWhenPledgeReasonUpdate
                 .filter { it.reward()?.let { reward -> !RewardUtils.isNoReward(reward) } ?: false }
                 .compose<Pair<Backing, PledgeData>>(combineLatestPair(pledgeData))
+                .filter { ObjectUtils.isNotNull(it.first.locationId()) }
                 .map { requireNotNull(it.first.locationId()) }
                 .compose<Pair<Long, List<ShippingRule>>>(combineLatestPair(shippingRules))
                 .map { shippingInfo ->
@@ -519,7 +519,7 @@ interface PledgeFragmentViewModel {
                 .map { it.shippingRule() == null && RewardUtils.isShippable(it.reward()) }
                 .subscribe { this.shouldLoadDefaultLocation.onNext(it) }
 
-            val preSelectedShippingRule = Observable.merge(initShippingRule, backingShippingRule, backingShippingRuleUpdatePayment)
+            val preSelectedShippingRule = Observable.merge(initShippingRule, backingShippingRule, backingShippingRuleUpdate)
                 .distinctUntilChanged()
 
             preSelectedShippingRule
@@ -586,22 +586,16 @@ interface PledgeFragmentViewModel {
                 .distinctUntilChanged()
                 .ofType(Country::class.java)
 
-            Observable.combineLatest(projectDataAndReward, this.currentUser.observable(), country) { data, user, c ->
-                val experimentData = ExperimentData(user, data.first.refTagFromIntent(), data.first.refTagFromCookie())
-                val variant = this.optimizely.variant(OptimizelyExperiment.Key.SUGGESTED_NO_REWARD_AMOUNT, experimentData)
-                RewardUtils.rewardAmountByVariant(variant, data.second, c.minPledge)
-            }
+            country
+                .map { it.minPledge.toDouble() }
                 .compose<Pair<Double, Reward>>(combineLatestPair(this.selectedReward))
                 .filter { RewardUtils.isNoReward(it.second) }
                 .map { it.first }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe {
-                    variantSuggestedAmount.onNext(it)
+                    minPledgeByCountry.onNext(it)
                 }
-
-            val fullProjectDataAndPledgeData = projectData
-                .compose<Pair<ProjectData, PledgeData>>(combineLatestPair(pledgeData))
 
             projectAndReward
                 .map { rewardTitle(it.first, it.second) }
@@ -627,7 +621,7 @@ interface PledgeFragmentViewModel {
                 .map { it.minimum() }
                 .distinctUntilChanged()
 
-            val rewardMinimum = Observable.merge(minRw, variantSuggestedAmount)
+            val rewardMinimum = Observable.merge(minRw, minPledgeByCountry)
 
             rewardMinimum
                 .map { NumberUtils.format(it.toInt()) }
@@ -697,7 +691,8 @@ interface PledgeFragmentViewModel {
 
             val backingAmount = Observable.merge(backingAmountNR, backingAmountRW)
 
-            val pledgeInput = Observable.merge(initialAmount, this.pledgeInput.map { NumberUtils.parse(it) }, backingAmount)
+            val pledgeInput = Observable.merge(initialAmount, this.pledgeInput.map { it.parseToDouble() }, backingAmount)
+                .map { it }
                 .distinctUntilChanged()
 
             pledgeInput
@@ -715,13 +710,13 @@ interface PledgeFragmentViewModel {
                 .subscribe(this.pledgeInput)
 
             pledgeInput
-                .compose<Pair<Double, Double>>(combineLatestPair(variantSuggestedAmount))
+                .compose<Pair<Double, Double>>(combineLatestPair(minPledgeByCountry))
                 .map { it.first - it.second }
                 .compose(bindToLifecycle())
                 .subscribe { additionalPledgeAmount.onNext(it) }
 
             pledgeInput
-                .compose<Pair<Double, Double>>(combineLatestPair(variantSuggestedAmount))
+                .compose<Pair<Double, Double>>(combineLatestPair(minPledgeByCountry))
                 .map { max(it.first, it.second) > it.second }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
@@ -736,7 +731,7 @@ interface PledgeFragmentViewModel {
             val bonusMinimum = Observable.just(0.0)
             val bonusStepAmount = Observable.just(1.0)
 
-            val bonusInput = Observable.merge(bonusMinimum, this.bonusInput.map { NumberUtils.parse(it) })
+            val bonusInput = Observable.merge(bonusMinimum, this.bonusInput.map { it.parseToDouble() })
 
             bonusMinimum
                 .map { NumberUtils.format(it.toInt()) }
@@ -910,7 +905,7 @@ interface PledgeFragmentViewModel {
                 .map { it.first + it.second }
                 .distinctUntilChanged()
 
-            val selectedPledgeAmount = Observable.merge(pledgeAmountHeader, threshold, variantSuggestedAmount)
+            val selectedPledgeAmount = Observable.merge(pledgeAmountHeader, threshold, minPledgeByCountry)
 
             val bonusSupportMaximum = currencyMaximum
                 .compose<Pair<Double, Double>>(combineLatestPair(selectedPledgeAmount))
@@ -1338,21 +1333,14 @@ interface PledgeFragmentViewModel {
                 .compose(bindToLifecycle())
                 .subscribe { this.pledgeButtonCTA.onNext(it) }
 
-            // Tracking
-            val projectAndTotal = project
-                .compose<Pair<Project, Double>>(combineLatestPair(total))
-
-            val projectAndTotalForInitialPledges = pledgeReason
-                .filter { it == PledgeReason.PLEDGE }
-                .compose<Pair<PledgeReason, Pair<Project, Double>>>(combineLatestPair(projectAndTotal))
-                .map { it.second }
-
             val checkoutAndPledgeData =
                 Observable.combineLatest<Double, Double, String, CheckoutData>(
                     shippingAmountSelectedRw,
                     total,
                     this.bonusAmount
-                ) { s, t, b -> checkoutData(s, t, NumberUtils.parse(b), null) }
+                ) { s, t, b ->
+                    checkoutData(s, t, b.parseToDouble(), null)
+                }
                     .compose<Pair<CheckoutData, PledgeData>>(combineLatestPair(pledgeData))
 
             checkoutAndPledgeData

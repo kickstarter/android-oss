@@ -67,7 +67,7 @@ public interface ActivityFeedViewModel {
     /** Emits a project when it should be shown. */
     Observable<Project> goToProject();
 
-    /** Emits a project when it should be shown. */
+    /** Emits a project when the project page should be shown. */
     Observable<Project> goToProjectPage();
 
     /** Emits a SurveyResponse when it should be shown. */
@@ -84,6 +84,9 @@ public interface ActivityFeedViewModel {
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<String> startFixPledge();
+
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectPageActivity}. */
+    Observable<String> startFixPledgeProjectPage();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.UpdateActivity}. */
     Observable<Activity> startUpdateActivity();
@@ -201,12 +204,16 @@ public interface ActivityFeedViewModel {
         .subscribe(this.loggedOutEmptyStateIsVisible);
 
       this.managePledgeClicked
+        .compose(combineLatestPair(isProjectPageEnabled))
+        .filter(it -> it.second)
         .compose(bindToLifecycle())
-        .subscribe(this.startFixPledge::onNext);
+        .subscribe(it -> this.startFixPledge.onNext(it.first));
 
       this.managePledgeClicked
+        .compose(combineLatestPair(isProjectPageEnabled))
+        .filter(it -> !it.second)
         .compose(bindToLifecycle())
-        .subscribe(this.startFixPledge::onNext);
+        .subscribe(it -> this.startFixPledge.onNext(it.first));
 
       this.currentUser.observable()
         .compose(takePairWhen(this.activityList))
@@ -255,6 +262,7 @@ public interface ActivityFeedViewModel {
     private final BehaviorSubject<Boolean> loggedInEmptyStateIsVisible = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> loggedOutEmptyStateIsVisible = BehaviorSubject.create();
     private final PublishSubject<String> startFixPledge = PublishSubject.create();
+    private final PublishSubject<String> startFixPledgeProjectPage = PublishSubject.create();
     private final Observable<Activity> startUpdateActivity;
     private final BehaviorSubject<List<SurveyResponse>> surveys = BehaviorSubject.create();
 
@@ -332,6 +340,9 @@ public interface ActivityFeedViewModel {
     }
     @Override public @NonNull Observable<String> startFixPledge() {
       return this.startFixPledge;
+    }
+    @Override public @NonNull Observable<String> startFixPledgeProjectPage() {
+      return this.startFixPledgeProjectPage;
     }
     @Override public @NonNull Observable<Activity> startUpdateActivity() {
       return this.startUpdateActivity;

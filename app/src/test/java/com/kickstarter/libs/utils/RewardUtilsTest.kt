@@ -5,7 +5,6 @@ import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.utils.RewardUtils.deadlineCountdownDetail
 import com.kickstarter.libs.utils.RewardUtils.deadlineCountdownUnit
 import com.kickstarter.libs.utils.RewardUtils.deadlineCountdownValue
@@ -22,7 +21,6 @@ import com.kickstarter.libs.utils.RewardUtils.isShippable
 import com.kickstarter.libs.utils.RewardUtils.isTimeLimitedEnd
 import com.kickstarter.libs.utils.RewardUtils.isTimeLimitedStart
 import com.kickstarter.libs.utils.RewardUtils.isValidTimeRange
-import com.kickstarter.libs.utils.RewardUtils.rewardAmountByVariant
 import com.kickstarter.libs.utils.RewardUtils.shippingSummary
 import com.kickstarter.libs.utils.RewardUtils.timeInSecondsUntilDeadline
 import com.kickstarter.mock.factories.LocationFactory
@@ -413,16 +411,6 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     @Test
     fun isValidTimeRage_whenStartNotLimited_returnsTrue() {
         assertEquals(true, isValidTimeRange(rewardWithAddons))
-    }
-
-    @Test
-    fun minimumRewardAmountByVariant() {
-        assertEquals(1.0, rewardAmountByVariant(OptimizelyExperiment.Variant.CONTROL, noReward, 1))
-        assertEquals(10.0, rewardAmountByVariant(OptimizelyExperiment.Variant.VARIANT_2, noReward, 1))
-        assertEquals(20.0, rewardAmountByVariant(OptimizelyExperiment.Variant.VARIANT_3, noReward, 1))
-        assertEquals(50.0, rewardAmountByVariant(OptimizelyExperiment.Variant.VARIANT_4, noReward, 1))
-        assertEquals(10.0, rewardAmountByVariant(OptimizelyExperiment.Variant.CONTROL, noReward, 10))
-        assertEquals(100.0, rewardAmountByVariant(OptimizelyExperiment.Variant.VARIANT_4, noReward, 100))
     }
 
     @Test

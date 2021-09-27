@@ -268,9 +268,17 @@ interface DiscoveryViewModel {
             val paramsFromIntent = intent()
                 .flatMap { DiscoveryIntentMapper.params(it, apiClient) }
 
+            val pagerSelectedPage = pagerSetPrimaryPage.distinctUntilChanged()
+
             val drawerParamsClicked = childFilterRowClick
                 .mergeWith(topFilterRowClick)
-                .map { it.params() }
+                .withLatestFrom(
+                    pagerSelectedPage.map { DiscoveryUtils.sortFromPosition(it) }
+                ) { drawerClickParams, currentParams ->
+                    if (drawerClickParams.params().sort() == null)
+                        drawerClickParams.params().toBuilder().sort(currentParams).build()
+                    else drawerClickParams.params()
+                }
 
             // Merge various param data sources.
             val params = Observable.merge(
@@ -279,12 +287,11 @@ interface DiscoveryViewModel {
                 drawerParamsClicked
             )
 
-            val pagerSelectedPage = pagerSetPrimaryPage.distinctUntilChanged()
-
             val sortToTabOpen = Observable.merge(
                 pagerSelectedPage.map { DiscoveryUtils.sortFromPosition(it) },
                 params.map { it.sort() }
             )
+                .filter { ObjectUtils.isNotNull(it) }
 
             // Combine params with the selected sort position.
             val paramsWithSort = Observable.combineLatest(

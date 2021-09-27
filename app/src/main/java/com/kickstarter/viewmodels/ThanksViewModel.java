@@ -104,7 +104,7 @@ public interface ThanksViewModel {
         .take(1)
         .compose(bindToLifecycle());
 
-      final Observable<Category> rootCategory = project.flatMap(p -> rootCategory(p, this.apiClient));
+      final Observable<Category> rootCategory = project.switchMap(p -> rootCategory(p, this.apiClient));
 
       final Observable<Boolean> isGamesCategory = rootCategory
         .map(c -> "games".equals(c.slug()));
@@ -136,7 +136,7 @@ public interface ThanksViewModel {
       Observable.combineLatest(
         project,
         rootCategory,
-        project.flatMap(p -> this.relatedProjects(p, this.apiClient)),
+        project.switchMap(p -> this.relatedProjects(p, this.apiClient)),
         ThanksData::new
       )
         .compose(bindToLifecycle())

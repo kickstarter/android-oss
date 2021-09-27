@@ -31,6 +31,7 @@ import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
+import com.kickstarter.libs.utils.extensions.updateProjectWith
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -261,6 +262,7 @@ interface ProjectViewModel {
         private val optimizely: ExperimentsClientType = environment.optimizely()
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
         private val apolloClient = environment.apolloClient()
+        private val currentConfig = environment.currentConfig()
 
         private val blurbTextViewClicked = PublishSubject.create<Void>()
         private val blurbVariantClicked = PublishSubject.create<Void>()
@@ -342,13 +344,16 @@ interface ProjectViewModel {
                 intent()
                     .compose(takeWhen<Intent, Void>(this.reloadProjectContainerClicked))
             )
-                .flatMap {
-                    ProjectIntentMapper.project(it, this.client)
+                .switchMap {
+                    ProjectIntentMapper.project(it, this.apolloClient)
                         .doOnSubscribe {
                             progressBarIsGone.onNext(false)
                         }
                         .doAfterTerminate {
                             progressBarIsGone.onNext(true)
+                        }
+                        .withLatestFrom(currentConfig.observable(), currentUser.observable()) { project, config, user ->
+                            return@withLatestFrom project.updateProjectWith(config, user)
                         }
                         .materialize()
                 }
@@ -429,12 +434,15 @@ interface ProjectViewModel {
                 .compose(takeWhen<Project, Void>(refreshProjectEvent))
                 .switchMap {
                     it.slug()?.let { slug ->
-                        this.client.fetchProject(slug)
+                        this.apolloClient.getProject(slug)
                             .doOnSubscribe {
                                 progressBarIsGone.onNext(false)
                             }
                             .doAfterTerminate {
                                 progressBarIsGone.onNext(true)
+                            }
+                            .withLatestFrom(currentConfig.observable(), currentUser.observable()) { project, config, user ->
+                                return@withLatestFrom project.updateProjectWith(config, user)
                             }
                             .materialize()
                     }
@@ -670,20 +678,9 @@ interface ProjectViewModel {
                 .filter { it.isBacking }
 
             val backing = backedProject
-                .switchMap {
-                    this.apolloClient.getProjectBacking(it.slug() ?: "")
-                        .doOnSubscribe {
-                            progressBarIsGone.onNext(false)
-                        }
-                        .doAfterTerminate {
-                            progressBarIsGone.onNext(true)
-                        }
-                        .materialize()
-                }
-                .compose(neverError())
-                .compose(values())
+                .map { it.backing() }
                 .filter { ObjectUtils.isNotNull(it) }
-                .share()
+                .map { requireNotNull(it) }
 
             // - Update fragments with the backing data
             projectData

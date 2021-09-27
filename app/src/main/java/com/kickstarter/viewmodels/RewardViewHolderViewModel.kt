@@ -8,12 +8,10 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
-import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils
@@ -166,7 +164,6 @@ interface RewardViewHolderViewModel {
         private val titleForReward = BehaviorSubject.create<String?>()
         private val titleIsGone = BehaviorSubject.create<Boolean>()
         private val addOnsAvailable = BehaviorSubject.create<Boolean>()
-        private val variantSuggestedAmount = BehaviorSubject.create<Int?>()
         private val isMinimumPledgeAmountGone = BehaviorSubject.create<Boolean>()
         private val selectedRewardTagIsGone = PublishSubject.create<Boolean>()
 
@@ -175,20 +172,9 @@ interface RewardViewHolderViewModel {
 
         init {
 
-            Observable.combineLatest(this.projectDataAndReward, this.currentUser.observable()) { data, user ->
-                val experimentData = ExperimentData(user, data.first.refTagFromIntent(), data.first.refTagFromCookie())
-                val variant = this.optimizely.variant(OptimizelyExperiment.Key.SUGGESTED_NO_REWARD_AMOUNT, experimentData)
-                rewardAmountByVariant(variant)
-            }
-                .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(variantSuggestedAmount)
-
             val reward = this.projectDataAndReward
                 .map { it.second }
-                .compose<Pair<Reward, Int?>>(combineLatestPair(variantSuggestedAmount))
                 .distinctUntilChanged()
-                .map { updateReward(it) }
 
             val project = this.projectDataAndReward
                 .map { it.first.project() }
@@ -425,14 +411,6 @@ interface RewardViewHolderViewModel {
 
         private fun isUpdatingSameRewardWithBackedAddOns(hasAddOns: Boolean, project: Project, selectingOtherRw: Boolean, rw: Reward) =
             hasAddOns && hasBackedAddOns(project) && !selectingOtherRw && RewardUtils.hasStarted(rw) && project.isLive
-
-        private fun rewardAmountByVariant(variant: OptimizelyExperiment.Variant?): Int? = when (variant) {
-            OptimizelyExperiment.Variant.CONTROL -> 1
-            OptimizelyExperiment.Variant.VARIANT_2 -> 10
-            OptimizelyExperiment.Variant.VARIANT_3 -> 20
-            OptimizelyExperiment.Variant.VARIANT_4 -> 50
-            else -> null
-        }
 
         /**
          * In case the `suggested_no_reward_amount` is active and the selected reward is no reward

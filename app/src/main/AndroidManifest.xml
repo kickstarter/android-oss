@@ -177,6 +177,10 @@
             android:name=".ui.activities.PrivacyActivity"
             android:theme="@style/SettingsActivity" />
         <activity
+            android:name=".ui.activities.ProjectPageActivity"
+            android:theme="@style/ProjectActivity"
+            android:parentActivityName=".ui.activities.PlaygroundActivity" />
+        <activity
             android:name=".ui.activities.ProjectNotificationSettingsActivity"
             android:parentActivityName=".ui.activities.SettingsActivity"
             android:theme="@style/SettingsActivity" />

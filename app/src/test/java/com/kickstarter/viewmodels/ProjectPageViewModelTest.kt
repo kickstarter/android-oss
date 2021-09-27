@@ -52,7 +52,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val pledgeToolbarNavigationIcon = TestSubscriber<Int>()
     private val pledgeToolbarTitle = TestSubscriber<Int>()
     private val prelaunchUrl = TestSubscriber<String>()
-    private val projectData = TestSubscriber<ProjectData>()
     private val reloadProjectContainerIsGone = TestSubscriber<Boolean>()
     private val reloadProgressBarIsGone = TestSubscriber<Boolean>()
     private val revealRewardsFragment = TestSubscriber<Void>()
@@ -95,7 +94,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.pledgeToolbarNavigationIcon().subscribe(this.pledgeToolbarNavigationIcon)
         this.vm.outputs.pledgeToolbarTitle().subscribe(this.pledgeToolbarTitle)
         this.vm.outputs.prelaunchUrl().subscribe(this.prelaunchUrl)
-        this.vm.outputs.projectData().subscribe(this.projectData)
         this.vm.outputs.reloadProgressBarIsGone().subscribe(this.reloadProgressBarIsGone)
         this.vm.outputs.reloadProjectContainerIsGone().subscribe(this.reloadProjectContainerIsGone)
         this.vm.outputs.revealRewardsFragment().subscribe(this.revealRewardsFragment)
@@ -109,7 +107,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.showUpdatePledge().subscribe(this.showUpdatePledge)
         this.vm.outputs.showUpdatePledgeSuccess().subscribe(this.showUpdatePledgeSuccess)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
-        this.vm.outputs.projectData().map { pD -> pD.project().isStarred }.subscribe(this.savedTest)
         this.vm.outputs.startCampaignWebViewActivity().subscribe(this.startCampaignWebViewActivity)
         this.vm.outputs.startRootCommentsActivity().subscribe(this.startRootCommentsActivity)
         this.vm.outputs.startProjectUpdateActivity().subscribe(this.startProjectUpdateActivity)
@@ -139,7 +136,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.pledgeActionButtonContainerIsGone.assertValues(true, false)
         this.prelaunchUrl.assertNoValues()
-        this.projectData.assertValues(ProjectDataFactory.project(refreshedProject))
         this.reloadProjectContainerIsGone.assertValue(true)
         this.reloadProgressBarIsGone.assertValues(false, true)
         this.updateFragments.assertValue(ProjectDataFactory.project(refreshedProject))
@@ -172,7 +168,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.pledgeActionButtonContainerIsGone.assertValues(true)
         this.prelaunchUrl.assertNoValues()
-        this.projectData.assertValues(ProjectDataFactory.project(initialProject))
         this.reloadProjectContainerIsGone.assertValue(false)
         this.reloadProgressBarIsGone.assertValues(false, true)
         this.updateFragments.assertNoValues()
@@ -182,11 +177,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.pledgeActionButtonContainerIsGone.assertValues(true, false)
         this.prelaunchUrl.assertNoValues()
-        this.projectData.assertValues(
-            ProjectDataFactory.project(initialProject),
-            ProjectDataFactory.project(initialProject),
-            ProjectDataFactory.project(refreshedProject)
-        )
+
         this.reloadProjectContainerIsGone.assertValues(false, true, true)
         this.reloadProgressBarIsGone.assertValues(false, true, false, true)
         this.updateFragments.assertValue(ProjectDataFactory.project(refreshedProject))
@@ -212,7 +203,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.pledgeActionButtonContainerIsGone.assertValues(true, false)
         this.prelaunchUrl.assertNoValues()
-        this.projectData.assertValue(ProjectDataFactory.project(project))
         this.reloadProgressBarIsGone.assertValues(false, true)
         this.updateFragments.assertValue(ProjectDataFactory.project(project))
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
@@ -241,7 +231,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.pledgeActionButtonContainerIsGone.assertNoValues()
         this.prelaunchUrl.assertNoValues()
-        this.projectData.assertNoValues()
         this.reloadProgressBarIsGone.assertValues(false, true)
         this.reloadProjectContainerIsGone.assertValue(false)
         this.updateFragments.assertNoValues()
@@ -251,7 +240,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.pledgeActionButtonContainerIsGone.assertValues(true, false)
         this.prelaunchUrl.assertNoValues()
-        this.projectData.assertValue(ProjectDataFactory.project(refreshedProject))
         this.reloadProgressBarIsGone.assertValues(false, true, false, true)
         this.reloadProjectContainerIsGone.assertValues(false, true, true)
         this.updateFragments.assertValue(ProjectDataFactory.project(refreshedProject))
@@ -278,7 +266,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.pledgeActionButtonContainerIsGone.assertNoValues()
         this.prelaunchUrl.assertValue(url)
-        this.projectData.assertNoValues()
         this.reloadProgressBarIsGone.assertValues(false, true)
         this.reloadProjectContainerIsGone.assertNoValues()
         this.updateFragments.assertNoValues()
@@ -1273,12 +1260,9 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         // Start the view model with a backed project
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
 
-        this.projectData.assertValueCount(1)
-
         this.vm.inputs.pledgeSuccessfullyCancelled()
         this.expandPledgeSheet.assertValue(Pair(false, false))
         this.showCancelPledgeSuccess.assertValueCount(1)
-        this.projectData.assertValueCount(2)
     }
 
     @Test
@@ -1599,15 +1583,10 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         // Start the view model with a backed project
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialBackedProject))
 
-        this.projectData.assertValues(ProjectDataFactory.project(initialBackedProject))
         this.showUpdatePledgeSuccess.assertNoValues()
         this.updateFragments.assertValue(ProjectDataFactory.project(initialBackedProject))
 
         this.vm.inputs.pledgePaymentSuccessfullyUpdated()
-        this.projectData.assertValues(
-            ProjectDataFactory.project(initialBackedProject),
-            ProjectDataFactory.project(refreshedProject)
-        )
         this.showUpdatePledgeSuccess.assertValueCount(1)
         this.updateFragments.assertValues(
             ProjectDataFactory.project(initialBackedProject),
@@ -1629,15 +1608,10 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         // Start the view model with a backed project
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialBackedProject))
 
-        this.projectData.assertValues(ProjectDataFactory.project(initialBackedProject))
         this.showUpdatePledgeSuccess.assertNoValues()
         this.updateFragments.assertValue(ProjectDataFactory.project(initialBackedProject))
 
         this.vm.inputs.pledgeSuccessfullyUpdated()
-        this.projectData.assertValues(
-            ProjectDataFactory.project(initialBackedProject),
-            ProjectDataFactory.project(refreshedProject)
-        )
         this.showUpdatePledgeSuccess.assertValueCount(1)
         this.updateFragments.assertValues(
             ProjectDataFactory.project(initialBackedProject),
@@ -1654,27 +1628,11 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
-        this.projectData.assertValueCount(1)
-
         val checkoutData = CheckoutDataFactory.checkoutData(3L, 20.0, 30.0)
         val pledgeData = PledgeData.with(PledgeFlowContext.NEW_PLEDGE, ProjectDataFactory.project(project), RewardFactory.reward())
         this.vm.inputs.pledgeSuccessfullyCreated(Pair(checkoutData, pledgeData))
         this.expandPledgeSheet.assertValue(Pair(false, false))
         this.startThanksActivity.assertValue(Pair(checkoutData, pledgeData))
-        this.projectData.assertValueCount(2)
-    }
-
-    @Test
-    fun testProjectData_whenRefreshProjectIsCalled() {
-        setUpEnvironment(environment())
-
-        // Start the view model with a backed project
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
-
-        this.projectData.assertValueCount(1)
-
-        this.vm.inputs.refreshProject()
-        this.projectData.assertValueCount(2)
     }
 
     private fun apiClientWithSuccessFetchingProject(refreshedProject: Project): MockApolloClient {

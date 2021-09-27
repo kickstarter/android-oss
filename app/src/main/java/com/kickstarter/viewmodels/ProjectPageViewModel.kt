@@ -174,10 +174,6 @@ interface ProjectPageViewModel {
         /** Emits the url of a prelaunch activated project to open in the browser. */
         fun prelaunchUrl(): Observable<String>
 
-        /** Emits [ProjectData]. If the view model is created with a full project
-         * model, this observable will emit that project immediately, and then again when it has updated from the api. */
-        fun projectData(): Observable<ProjectData>
-
         /** Emits a boolean that determines if the reload project container should be visible. */
         fun reloadProjectContainerIsGone(): Observable<Boolean>
 
@@ -1078,9 +1074,6 @@ interface ProjectPageViewModel {
 
         @NonNull
         override fun prelaunchUrl(): Observable<String> = this.prelaunchUrl
-
-        @NonNull
-        override fun projectData(): Observable<ProjectData> = this.projectData
 
         @NonNull
         override fun reloadProjectContainerIsGone(): Observable<Boolean> = this.reloadProjectContainerIsGone

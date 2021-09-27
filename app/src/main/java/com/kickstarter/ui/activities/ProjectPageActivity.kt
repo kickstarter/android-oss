@@ -18,6 +18,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityProjectPageBinding
@@ -36,6 +37,7 @@ import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.adapters.ProjectPagerAdapter
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.data.PledgeData
@@ -52,6 +54,11 @@ import com.kickstarter.viewmodels.ProjectPageViewModel
 import com.stripe.android.view.CardInputWidget
 import rx.android.schedulers.AndroidSchedulers
 
+val fragmentsArray = arrayOf(
+    "Overview",
+    "Faq",
+)
+
 @RequiresActivityViewModel(ProjectPageViewModel.ViewModel::class)
 class ProjectPageActivity :
     BaseActivity<ProjectPageViewModel.ViewModel>(),
@@ -67,13 +74,15 @@ class ProjectPageActivity :
 
     private val animDuration = 200L
     private lateinit var binding: ActivityProjectPageBinding
+    private var pagerAdapter = ProjectPagerAdapter(supportFragmentManager, lifecycle)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProjectPageBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
         this.ksString = environment().ksString()
+
+        configurePager()
 
         val viewTreeObserver = binding.pledgeContainerLayout.pledgeContainerRoot.viewTreeObserver
         if (viewTreeObserver.isAlive) {
@@ -292,6 +301,19 @@ class ProjectPageActivity :
             .subscribe { this.startVideoActivity(it) }
 
         setClickListeners()
+    }
+
+    private fun configurePager() {
+        val viewPager = binding.projectPager
+        val tabLayout = binding.projectDetailTabs
+
+        pagerAdapter = ProjectPagerAdapter(supportFragmentManager, lifecycle)
+
+        viewPager.adapter = pagerAdapter
+
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            tab.text = fragmentsArray[position]
+        }.attach()
     }
 
     override fun onResume() {

@@ -21,7 +21,6 @@
                 layout="@layout/project_toolbar" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
-
     <ProgressBar
         android:id="@+id/project_progress_bar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -32,6 +31,34 @@
         android:indeterminate="true"
         android:visibility="gone"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/project_detail_tabs"
+        android:layout_marginTop="@dimen/ks_toolbar_height"
+        android:clipToPadding="false"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabMode="scrollable"
+        app:tabSelectedTextColor="@color/primary"
+        app:tabTextColor="@color/kds_support_700"
+        android:layout_gravity="top">
+        <com.google.android.material.tabs.TabItem
+            android:text="@string/Overview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:text="@string/Faq"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:layout_marginTop="@dimen/ks_toolbar_height"
+        android:id="@+id/project_pager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"/>
 
     <include
         android:id="@+id/pledge_container_layout"

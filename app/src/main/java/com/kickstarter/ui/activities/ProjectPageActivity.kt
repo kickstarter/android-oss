@@ -48,13 +48,13 @@ import com.kickstarter.ui.fragments.CancelPledgeFragment
 import com.kickstarter.ui.fragments.NewCardFragment
 import com.kickstarter.ui.fragments.PledgeFragment
 import com.kickstarter.ui.fragments.RewardsFragment
-import com.kickstarter.viewmodels.ProjectViewModel
+import com.kickstarter.viewmodels.ProjectPageViewModel
 import com.stripe.android.view.CardInputWidget
 import rx.android.schedulers.AndroidSchedulers
 
-@RequiresActivityViewModel(ProjectViewModel.ViewModel::class)
+@RequiresActivityViewModel(ProjectPageViewModel.ViewModel::class)
 class ProjectPageActivity :
-    BaseActivity<ProjectViewModel.ViewModel>(),
+    BaseActivity<ProjectPageViewModel.ViewModel>(),
     CancelPledgeFragment.CancelPledgeDelegate,
     NewCardFragment.OnCardSavedListener,
     PledgeFragment.PledgeDelegate,

@@ -4,7 +4,10 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.ExperimentsClientType;
+import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.utils.EventContextValues;
+import com.kickstarter.libs.utils.ExperimentData;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.ErroredBacking;
@@ -29,6 +32,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.incrementalCount;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
@@ -63,6 +67,9 @@ public interface ActivityFeedViewModel {
     /** Emits a project when it should be shown. */
     Observable<Project> goToProject();
 
+    /** Emits a project when it should be shown. */
+    Observable<Project> goToProjectPage();
+
     /** Emits a SurveyResponse when it should be shown. */
     Observable<SurveyResponse> goToSurvey();
 
@@ -89,6 +96,7 @@ public interface ActivityFeedViewModel {
     private final ApiClientType apiClient;
     private final ApolloClientType apolloClient;
     private final CurrentUserType currentUser;
+    private final ExperimentsClientType optimizely;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
@@ -96,10 +104,15 @@ public interface ActivityFeedViewModel {
       this.apiClient = environment.apiClient();
       this.apolloClient = environment.apolloClient();
       this.currentUser = environment.currentUser();
+      this.optimizely = environment.optimizely();
 
       this.goToDiscovery = this.discoverProjectsClick;
       this.goToLogin = this.loginClick;
       this.goToSurvey = this.surveyClick;
+
+      final  Observable<Boolean> isProjectPageEnabled =
+              currentUser.observable()
+              .map(user -> this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2, new ExperimentData(user, null, null)));
 
       this.goToProject = Observable.merge(
         this.friendBackingClick,
@@ -107,9 +120,25 @@ public interface ActivityFeedViewModel {
         this.projectStateChangedPositiveClick,
         this.projectUpdateProjectClick
       )
-        .map(Activity::project);
+        .compose(combineLatestPair(isProjectPageEnabled))
+        .filter(it -> !it.second)
+        .map(it -> it.first.project());
 
-      this.goToProject
+      this.goToProjectPage = Observable.merge(
+        this.friendBackingClick,
+        this.projectStateChangedClick,
+        this.projectStateChangedPositiveClick,
+        this.projectUpdateProjectClick
+      )
+        .compose(combineLatestPair(isProjectPageEnabled))
+        .filter(it -> it.second)
+        .map(it -> it.first.project());
+
+
+      Observable.merge(
+              this.goToProject,
+              this.goToProjectPage
+      )
               .compose(bindToLifecycle())
               .subscribe(p ->
                       this.analyticEvents.trackProjectCardClicked(
@@ -175,6 +204,10 @@ public interface ActivityFeedViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.startFixPledge::onNext);
 
+      this.managePledgeClicked
+        .compose(bindToLifecycle())
+        .subscribe(this.startFixPledge::onNext);
+
       this.currentUser.observable()
         .compose(takePairWhen(this.activityList))
         .map(ua -> ua.first != null && ua.second.size() == 0)
@@ -216,6 +249,7 @@ public interface ActivityFeedViewModel {
     private final Observable<Void> goToDiscovery;
     private final Observable<Void> goToLogin;
     private final Observable<Project> goToProject;
+    private final Observable<Project> goToProjectPage;
     private final Observable<SurveyResponse> goToSurvey;
     private final BehaviorSubject<Boolean> isFetchingActivities= BehaviorSubject.create();
     private final BehaviorSubject<Boolean> loggedInEmptyStateIsVisible = BehaviorSubject.create();
@@ -279,6 +313,10 @@ public interface ActivityFeedViewModel {
     }
     @Override public @NonNull Observable<Project> goToProject() {
       return this.goToProject;
+    }
+
+    @Override public @NonNull Observable<Project> goToProjectPage() {
+      return this.goToProjectPage;
     }
     @Override public @NonNull Observable<SurveyResponse> goToSurvey() {
       return this.goToSurvey;

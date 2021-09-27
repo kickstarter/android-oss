@@ -69,6 +69,7 @@ patrocinadores</string>
   <string name="Backers_count_separator_backers_zero" formatted="false">%{backers_count}\n
 patrocinadores</string>
   <string name="Backers_have_signed_up_to_help_kickstarter_creators_bring_their_ideas_to_life" formatted="false">Patrocinadores se han registrado para ayudar a los creadores de Kickstarter a hacer realidad sus ideas.</string>
+  <string name="Backing_means_supporting" formatted="false">Patrocinar un proyecto significa apoyar una idea creativa, independientemente del resultado.</string>
   <string name="Become_a_backer_to_leave_a_comment" formatted="false">Conviértete en patrocinador y deja un comentario.</string>
   <string name="Big_Kickstarter_news_and_events_near_you" formatted="false">Unas cuantas veces al año: Noticias sobresalientes de Kickstarter y eventos cerca de ti.</string>
   <string name="Big_Kickstarter_news_plus_occasional_projects_and_events_chosen_just_for_you" formatted="false">Importantes novedades de Kickstarter, además de proyectos y eventos ocasionales elegidos especialmente para ti.</string>
@@ -78,6 +79,7 @@ patrocinadores</string>
   <string name="Bookmarks" formatted="false">Marcadores</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Dale vida a proyectos creativos.</string>
   <string name="By_creating_an_account_you_agree_to_Kickstarters_Terms_of_Use_and_Privacy_Policy" formatted="false">Si creas una cuenta, aceptas los &lt;a href="%{terms_of_use_link}">Términos de uso&lt;/a> y la &lt;a href="%{privacy_policy_link}">Política de privacidad&lt;/a> de Kickstarter.</string>
+  <string name="By_pledging_you_acknowledge" formatted="false">Al hacer la contribución, reconoces que las recompensas o los reembolsos no están garantizados por Kickstarter o el creador.</string>
   <string name="By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">Al contribuir, aceptas las &lt;a href="%{terms_of_use_link}">Condiciones de uso&lt;/a>, &lt;a href="%{privacy_policy_link}">Política de privacidad&lt;/a> y &lt;a href="%{cookie_policy_link}">Política de cookies&lt;/a> de Kickstarter.</string>
   <string name="By_signing_up_you_agree_to_our_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">Al registrarte, aceptas nuestros Términos de uso, Política de privacidad y Política de cookies. Nuestras políticas explican cómo utilizamos tus datos para entregar, mejorar y promocionar nuestro servicio y nuestro sitio, y cómo puedes ejercer tus derechos para controlar dicho uso.</string>
   <string name="By_signing_up_youll_log_in_to_Kickstarter_using_your_Facebook_account" formatted="false">Si te registras, deberás iniciar sesión en Kickstarter con tu cuenta de Facebook. Si prefieres no usar Facebook, vuelve a abrir la aplicación y elige otra opción.</string>
@@ -287,6 +289,7 @@ Toca para intentar de nuevo.</string>
   <string name="Hide_password" formatted="false">Ocultar contraseña</string>
   <string name="Home" formatted="false">Inicio</string>
   <string name="How_backers_found_your_project" formatted="false">Cómo encontraron tu proyecto los patrocinadores</string>
+  <string name="I_understand" formatted="false">Entiendo</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Sólo quiero apoyar este proyecto.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">Si el proyecto alcanza su meta de financiamiento, se te cobrará el %{project_deadline}.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" formatted="false">Si el proyecto alcanza su meta de financiamiento, se te cobrará el monto de %{total} el %{project_deadline}.</string>
@@ -509,6 +512,7 @@ Toca para intentar de nuevo.</string>
   <string name="Reward_received" formatted="false">Recompensa recibida</string>
   <string name="Reward_selected" formatted="false">Recompensa seleccionada</string>
   <string name="Reward_surveys" formatted="false">Cuestionarios sobre recompensas</string>
+  <string name="Rewards_arent_guaranteed" formatted="false">Las recompensas no están garantizadas.</string>
   <string name="Rewards_count_rewards_colon_few" formatted="false">%{rewards_count} recompensas:</string>
   <string name="Rewards_count_rewards_colon_many" formatted="false">%{rewards_count} recompensas:</string>
   <string name="Rewards_count_rewards_colon_one" formatted="false">%{rewards_count} recompensa:</string>

@@ -69,6 +69,7 @@ backers</string>
   <string name="Backers_count_separator_backers_zero" formatted="false">%{backers_count}\n
 backers</string>
   <string name="Backers_have_signed_up_to_help_kickstarter_creators_bring_their_ideas_to_life" formatted="false">Backers have signed up to help Kickstarter creators bring their ideas to life.</string>
+  <string name="Backing_means_supporting" formatted="false">Backing means supporting a creative project, regardless of the outcome.</string>
   <string name="Become_a_backer_to_leave_a_comment" formatted="false">Become a backer to leave a comment.</string>
   <string name="Big_Kickstarter_news_and_events_near_you" formatted="false">Big Kickstarter news and events near you, delivered just a few times a year.</string>
   <string name="Big_Kickstarter_news_plus_occasional_projects_and_events_chosen_just_for_you" formatted="false">Big Kickstarter news, plus occasional projects and events chosen just for you.</string>
@@ -78,6 +79,7 @@ backers</string>
   <string name="Bookmarks" formatted="false">Bookmarks</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Bring creative projects to life.</string>
   <string name="By_creating_an_account_you_agree_to_Kickstarters_Terms_of_Use_and_Privacy_Policy" formatted="false">By creating an account, you agree to Kickstarter’s &lt;a href="%{terms_of_use_link}">Terms of Use&lt;/a> and &lt;a href="%{privacy_policy_link}">Privacy Policy&lt;/a>.</string>
+  <string name="By_pledging_you_acknowledge" formatted="false">By pledging, you acknowledge that rewards or reimbursements aren’t guaranteed by either Kickstarter or the creator.</string>
   <string name="By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">By pledging you agree to Kickstarter\'s &lt;a href="%{terms_of_use_link}">Terms of Use&lt;/a>, &lt;a href="%{privacy_policy_link}">Privacy Policy&lt;/a> and &lt;a href="%{cookie_policy_link}">Cookie Policy&lt;/a>.</string>
   <string name="By_signing_up_you_agree_to_our_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">By signing up, you agree to our Terms of Use, Privacy Policy, and Cookie Policy. Our policies explain how we use your data to deliver, improve, and promote our service and our site, and how you can exercise your rights to control that use.</string>
   <string name="By_signing_up_youll_log_in_to_Kickstarter_using_your_Facebook_account" formatted="false">By signing up, you’ll log in to Kickstarter using your Facebook account. If you prefer not to use Facebook, restart this app and choose another option.</string>
@@ -287,6 +289,7 @@ Tap to retry</string>
   <string name="Hide_password" formatted="false">Hide password</string>
   <string name="Home" formatted="false">Home</string>
   <string name="How_backers_found_your_project" formatted="false">How backers found your project</string>
+  <string name="I_understand" formatted="false">I understand</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">I’d just like to support the project.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">If the project reaches its funding goal, you will be charged on %{project_deadline}.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" formatted="false">If the project reaches its funding goal, you will be charged %{total} on %{project_deadline}.</string>
@@ -511,6 +514,7 @@ daring ideas.</string>
   <string name="Reward_received" formatted="false">Reward received</string>
   <string name="Reward_selected" formatted="false">Reward selected</string>
   <string name="Reward_surveys" formatted="false">Reward surveys</string>
+  <string name="Rewards_arent_guaranteed" formatted="false">Rewards aren\'t guaranteed.</string>
   <string name="Rewards_count_rewards_colon_few" formatted="false">%{rewards_count} rewards:</string>
   <string name="Rewards_count_rewards_colon_many" formatted="false">%{rewards_count} rewards:</string>
   <string name="Rewards_count_rewards_colon_one" formatted="false">%{rewards_count} reward:</string>

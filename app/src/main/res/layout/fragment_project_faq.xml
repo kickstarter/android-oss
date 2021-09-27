@@ -12,6 +12,7 @@
         app:layout_constraintGuide_percent="0.5"/>
 
     <TextView
+        android:id="@+id/placeholder"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"

@@ -6,12 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import com.kickstarter.databinding.FragmentProjectFaqBinding
 import com.kickstarter.libs.BaseFragment
+import com.kickstarter.libs.Configure
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
+import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.ui.ArgumentsKey
+import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.ProjectFaqViewModel
 
 @RequiresFragmentViewModel(ProjectFaqViewModel.ViewModel::class)
-class ProjectFaqFragment : BaseFragment<ProjectFaqViewModel.ViewModel>() {
+class ProjectFaqFragment : BaseFragment<ProjectFaqViewModel.ViewModel>(), Configure {
     private var binding: FragmentProjectFaqBinding? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -20,8 +23,20 @@ class ProjectFaqFragment : BaseFragment<ProjectFaqViewModel.ViewModel>() {
         return binding?.root
     }
 
+    override fun configureWith(projectData: ProjectData) {
+        this.viewModel?.inputs?.configureWith(projectData)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // TODO: FAQ's ready for complete https://kickstarter.atlassian.net/browse/NTV-209
+        this.viewModel.outputs.projectFaqs()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                binding?.placeholder?.text = it.toString()
+            }
     }
 
     companion object {

@@ -6,12 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import com.kickstarter.databinding.FragmentProjectOverviewBinding
 import com.kickstarter.libs.BaseFragment
+import com.kickstarter.libs.Configure
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.ui.ArgumentsKey
+import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.ProjectOverviewViewModel
 
 @RequiresFragmentViewModel(ProjectOverviewViewModel.ViewModel::class)
-class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>() {
+class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>(), Configure {
 
     private var binding: FragmentProjectOverviewBinding? = null
 
@@ -23,6 +25,10 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun configureWith(projectData: ProjectData) {
+        this.viewModel?.inputs?.configureWith(projectData)
     }
 
     companion object {

@@ -18,6 +18,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
@@ -106,6 +107,13 @@ class ProjectPageActivity :
                 }
             }
         }
+
+        this.viewModel.outputs.projectData()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                pagerAdapter.updatedWithProjectData(it)
+            }
 
         this.viewModel.outputs.backingDetailsSubtitle()
             .compose(bindToLifecycle())
@@ -314,6 +322,21 @@ class ProjectPageActivity :
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = fragmentsArray[position]
         }.attach()
+
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                viewModel.inputs.tabSelected()
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+                // Handle tab reselect
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+                // Handle tab unselect
+            }
+        })
     }
 
     override fun onResume() {

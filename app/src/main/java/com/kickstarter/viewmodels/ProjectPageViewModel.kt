@@ -45,7 +45,6 @@ import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
-import com.kickstarter.ui.viewholders.ProjectViewHolder
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -523,7 +522,7 @@ interface ProjectPageViewModel {
                 .delay(1, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
                 .filter {
                     it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_COMMENT, false) &&
-                            it.getStringExtra(IntentKey.COMMENT)?.isEmpty() ?: true
+                        it.getStringExtra(IntentKey.COMMENT)?.isEmpty() ?: true
                 }
                 .withLatestFrom(latestProjectAndProjectData) { _, project ->
                     project
@@ -538,7 +537,7 @@ interface ProjectPageViewModel {
                 .delay(1, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
                 .filter {
                     it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_COMMENT, false) &&
-                            it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty() ?: false
+                        it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty() ?: false
                 }
                 .withLatestFrom(latestProjectAndProjectData) { intent, project ->
                     Pair(intent.getStringExtra(IntentKey.COMMENT) ?: "", project)
@@ -553,7 +552,7 @@ interface ProjectPageViewModel {
                 .delay(1, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
                 .filter {
                     it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)?.isNotEmpty() ?: false &&
-                            it.getStringExtra(IntentKey.COMMENT)?.isEmpty() ?: true
+                        it.getStringExtra(IntentKey.COMMENT)?.isEmpty() ?: true
                 }.map {
                     Pair(
                         requireNotNull(it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)),
@@ -573,7 +572,7 @@ interface ProjectPageViewModel {
                 .delay(1, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
                 .filter {
                     it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)?.isNotEmpty() ?: false &&
-                            it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty() ?: false
+                        it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty() ?: false
                 }.map {
                     Pair(
                         requireNotNull(it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)),
@@ -1187,4 +1186,3 @@ interface ProjectPageViewModel {
         }
     }
 }
-

@@ -35,7 +35,9 @@ class ProjectFaqFragment : BaseFragment<ProjectFaqViewModel.ViewModel>(), Config
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                binding?.placeholder?.text = it.toString()
+                var faq = ""
+                it.map { faq += "***QUESTION: ${it.question} \n ***ANSWER:${it.answer} \n" }
+                binding?.placeholder?.text = faq
             }
     }
 

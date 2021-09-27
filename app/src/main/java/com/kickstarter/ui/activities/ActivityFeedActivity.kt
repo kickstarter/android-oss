@@ -90,6 +90,11 @@ class ActivityFeedActivity : BaseActivity<ActivityFeedViewModel.ViewModel>() {
             .compose(Transformers.observeForUI())
             .subscribe { startProjectActivity(it) }
 
+        viewModel.outputs.goToProjectPage()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { startProjectPageActivity(it) }
+
         viewModel.outputs.startFixPledge()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
@@ -159,6 +164,13 @@ class ActivityFeedActivity : BaseActivity<ActivityFeedViewModel.ViewModel>() {
 
     private fun startProjectActivity(project: Project) {
         val intent = Intent(this, ProjectActivity::class.java)
+            .putExtra(IntentKey.PROJECT, project)
+            .putExtra(IntentKey.REF_TAG, RefTag.activity())
+        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+    }
+
+    private fun startProjectPageActivity(project: Project) {
+        val intent = Intent(this, ProjectPageActivity::class.java)
             .putExtra(IntentKey.PROJECT, project)
             .putExtra(IntentKey.REF_TAG, RefTag.activity())
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)

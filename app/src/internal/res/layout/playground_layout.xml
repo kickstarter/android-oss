@@ -36,6 +36,7 @@
     </com.kickstarter.ui.toolbars.KSToolbar>
   </com.google.android.material.appbar.AppBarLayout>
   <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@id/stepper_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_margin="@dimen/grid_8"
@@ -47,4 +48,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
   </androidx.constraintlayout.widget.ConstraintLayout>
+
+  <Button
+      android:id="@+id/new_project_activity"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/Project_activity"
+      android:layout_marginStart="@dimen/grid_2"
+      android:layout_marginEnd="@dimen/grid_2"
+      android:layout_marginTop="@dimen/grid_4"
+      app:layout_constraintTop_toBottomOf="@id/stepper_container"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

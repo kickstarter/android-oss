@@ -79,10 +79,4 @@
 
   <string name="estimated_delivery_data" formatted="false">%{title} %{estimated_delivery_data}</string>
   <string name="you" formatted="false">You</string>
-
-  <string name="Rewards_arent_guaranteed" formatted="false">Rewards aren\'t guaranteed.</string>
-  <string name="learn_more_about_accountability"><u>Learn more about accountability</u></string>
-  <string name="fpo_by_pledging_you_acknowledge_that_rewards_or_reimbursements_aren_t_guaranteed_by_either_kickstarter_or_the_creator">FPO: By pledging, you acknowledge that rewards or reimbursements aren’t guaranteed by either Kickstarter or the creator.</string>
-  <string name="fpo_i_understand">FPO: I understand</string>
-  <string name="backing_means_supporting_a_creative_project_regardless_of_the_outcome">Backing means supporting a creative project, regardless of the outcome.</string>
 </resources>

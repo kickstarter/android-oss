@@ -106,12 +106,13 @@ class CheckoutRiskMessageFragment : BaseBottomSheetDialogFragment <CheckoutRiskM
         binding?.learnMoreAboutAccountabilityTv?.parseHtmlTag()
         context?.resources?.getString(R.string.Learn_more_about_accountability)?.let {
             val args = Pair(
-              it,
+                it,
                 View.OnClickListener {
                     this.viewModel.inputs.onLearnMoreAboutAccountabilityLinkClicked()
                 },
             )
-            binding?.learnMoreAboutAccountabilityTv?.makeLinks(args,
+            binding?.learnMoreAboutAccountabilityTv?.makeLinks(
+                args,
                 linkColor = R.color.text_primary,
                 isUnderlineText = true
             )

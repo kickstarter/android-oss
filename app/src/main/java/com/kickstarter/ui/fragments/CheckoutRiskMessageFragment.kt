@@ -14,6 +14,9 @@ import com.kickstarter.databinding.FragmentCheckoutRiskMessageBinding
 import com.kickstarter.libs.BaseBottomSheetDialogFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.utils.ApplicationUtils
+import com.kickstarter.libs.utils.extensions.parseHtmlTag
+import com.kickstarter.ui.extensions.makeLinks
+import com.kickstarter.ui.extensions.parseHtmlTag
 import com.kickstarter.viewmodels.CheckoutRiskMessageFragmentViewModel
 import rx.android.schedulers.AndroidSchedulers
 
@@ -64,10 +67,6 @@ class CheckoutRiskMessageFragment : BaseBottomSheetDialogFragment <CheckoutRiskM
             parent.layoutParams = layoutParams
         }
 
-        binding?.learnMoreAboutAccountabilityTv?.setOnClickListener {
-            this.viewModel.inputs.onLearnMoreAboutAccountabilityLinkClicked()
-        }
-
         binding?.confirm?.setOnClickListener {
             delegate?.onDialogConfirmButtonClicked()
             dismissDialog()
@@ -102,6 +101,20 @@ class CheckoutRiskMessageFragment : BaseBottomSheetDialogFragment <CheckoutRiskM
                         }
                     })
             }
+        }
+
+        binding?.learnMoreAboutAccountabilityTv?.parseHtmlTag()
+        context?.resources?.getString(R.string.Learn_more_about_accountability)?.let {
+            val args = Pair(
+              it,
+                View.OnClickListener {
+                    this.viewModel.inputs.onLearnMoreAboutAccountabilityLinkClicked()
+                },
+            )
+            binding?.learnMoreAboutAccountabilityTv?.makeLinks(args,
+                linkColor = R.color.text_primary,
+                isUnderlineText = true
+            )
         }
     }
 

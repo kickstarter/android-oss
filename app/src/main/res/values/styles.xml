@@ -668,6 +668,13 @@
     <item name="android:background">@drawable/rect_coral_alpha_6</item>
   </style>
 
+  <!-- Project Page TabLayout theme -->
+  <style name="TabLayout_Theme">
+    <item name="android:singleLine">true</item>
+    <item name="tabSelectedTextColor">@color/primary</item>
+    <item name="tabTextColor">@color/kds_support_700</item>
+  </style>
+
   <!-- Creator Dashboard -->
   <style name="CreatorDashboardTableRowContainer">
     <item name="android:layout_width">match_parent</item>

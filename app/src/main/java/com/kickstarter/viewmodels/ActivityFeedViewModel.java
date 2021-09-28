@@ -65,10 +65,7 @@ public interface ActivityFeedViewModel {
     Observable<Void> goToLogin();
 
     /** Emits a project when it should be shown. */
-    Observable<Project> goToProject();
-
-    /** Emits a project when the project page should be shown. */
-    Observable<Project> goToProjectPage();
+    Observable<Pair<Project, Boolean>> goToProject();
 
     /** Emits a SurveyResponse when it should be shown. */
     Observable<SurveyResponse> goToSurvey();
@@ -83,10 +80,7 @@ public interface ActivityFeedViewModel {
     Observable<Boolean> loggedInEmptyStateIsVisible();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
-    Observable<String> startFixPledge();
-
-    /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectPageActivity}. */
-    Observable<String> startFixPledgeProjectPage();
+    Observable<Pair<String, Boolean>> startFixPledge();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.UpdateActivity}. */
     Observable<Activity> startUpdateActivity();
@@ -122,29 +116,15 @@ public interface ActivityFeedViewModel {
         this.projectStateChangedPositiveClick,
         this.projectUpdateProjectClick
       )
-        .withLatestFrom(isProjectPageEnabled, Pair::create)
-        .filter(it -> !it.second)
-        .map(it -> it.first.project());
+        .map(Activity::project)
+        .withLatestFrom(isProjectPageEnabled, Pair::create);
 
-      this.goToProjectPage = Observable.merge(
-        this.friendBackingClick,
-        this.projectStateChangedClick,
-        this.projectStateChangedPositiveClick,
-        this.projectUpdateProjectClick
-      )
-        .withLatestFrom(isProjectPageEnabled, Pair::create)
-        .filter(it -> it.second)
-        .map(it -> it.first.project());
-
-      Observable.merge(
-              this.goToProject,
-              this.goToProjectPage
-      )
-              .compose(bindToLifecycle())
-              .subscribe(p ->
-                      this.analyticEvents.trackProjectCardClicked(
-                              p,
-                              EventContextValues.ContextPageName.ACTIVITY_FEED.getContextName()));
+      this.goToProject
+        .compose(bindToLifecycle())
+        .subscribe(p ->
+          this.analyticEvents.trackProjectCardClicked(
+            p.first,
+            EventContextValues.ContextPageName.ACTIVITY_FEED.getContextName()));
 
       this.startUpdateActivity = this.projectUpdateClick;
 
@@ -203,15 +183,8 @@ public interface ActivityFeedViewModel {
 
       this.managePledgeClicked
         .withLatestFrom(isProjectPageEnabled, Pair::create)
-        .filter(it -> it.second)
         .compose(bindToLifecycle())
-        .subscribe(it -> this.startFixPledgeProjectPage.onNext(it.first));
-
-      this.managePledgeClicked
-        .withLatestFrom(isProjectPageEnabled, Pair::create)
-        .filter(it -> !it.second)
-        .compose(bindToLifecycle())
-        .subscribe(it -> this.startFixPledge.onNext(it.first));
+        .subscribe(this.startFixPledge::onNext);
 
       this.currentUser.observable()
         .compose(takePairWhen(this.activityList))
@@ -253,14 +226,12 @@ public interface ActivityFeedViewModel {
     private final BehaviorSubject<List<ErroredBacking>> erroredBackings = BehaviorSubject.create();
     private final Observable<Void> goToDiscovery;
     private final Observable<Void> goToLogin;
-    private final Observable<Project> goToProject;
-    private final Observable<Project> goToProjectPage;
+    private final Observable<Pair<Project, Boolean>> goToProject;
     private final Observable<SurveyResponse> goToSurvey;
     private final BehaviorSubject<Boolean> isFetchingActivities= BehaviorSubject.create();
     private final BehaviorSubject<Boolean> loggedInEmptyStateIsVisible = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> loggedOutEmptyStateIsVisible = BehaviorSubject.create();
-    private final PublishSubject<String> startFixPledge = PublishSubject.create();
-    private final PublishSubject<String> startFixPledgeProjectPage = PublishSubject.create();
+    private final PublishSubject<Pair<String, Boolean>> startFixPledge = PublishSubject.create();
     private final Observable<Activity> startUpdateActivity;
     private final BehaviorSubject<List<SurveyResponse>> surveys = BehaviorSubject.create();
 
@@ -317,13 +288,10 @@ public interface ActivityFeedViewModel {
     @Override public @NonNull Observable<Void> goToLogin() {
       return this.goToLogin;
     }
-    @Override public @NonNull Observable<Project> goToProject() {
+    @Override public @NonNull Observable<Pair<Project, Boolean>> goToProject() {
       return this.goToProject;
     }
 
-    @Override public @NonNull Observable<Project> goToProjectPage() {
-      return this.goToProjectPage;
-    }
     @Override public @NonNull Observable<SurveyResponse> goToSurvey() {
       return this.goToSurvey;
     }
@@ -336,11 +304,8 @@ public interface ActivityFeedViewModel {
     @Override public @NonNull Observable<Boolean> loggedOutEmptyStateIsVisible() {
       return this.loggedOutEmptyStateIsVisible;
     }
-    @Override public @NonNull Observable<String> startFixPledge() {
+    @Override public @NonNull Observable<Pair<String, Boolean>> startFixPledge() {
       return this.startFixPledge;
-    }
-    @Override public @NonNull Observable<String> startFixPledgeProjectPage() {
-      return this.startFixPledgeProjectPage;
     }
     @Override public @NonNull Observable<Activity> startUpdateActivity() {
       return this.startUpdateActivity;

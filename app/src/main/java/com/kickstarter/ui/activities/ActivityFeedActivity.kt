@@ -15,6 +15,7 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.projectPageFeatureFlag
 import com.kickstarter.models.Activity
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Project
@@ -88,22 +89,12 @@ class ActivityFeedActivity : BaseActivity<ActivityFeedViewModel.ViewModel>() {
         viewModel.outputs.goToProject()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { startProjectActivity(it) }
-
-        viewModel.outputs.goToProjectPage()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { startProjectPageActivity(it) }
+            .subscribe { startProjectActivity(it.first, it.second) }
 
         viewModel.outputs.startFixPledge()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { startFixPledge(it) }
-
-        viewModel.outputs.startFixPledgeProjectPage()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { startFixPledgeProjectPage(it) }
+            .subscribe { startFixPledge(it.first, it.second) }
 
         viewModel.outputs.startUpdateActivity()
             .compose(bindToLifecycle())
@@ -159,31 +150,16 @@ class ActivityFeedActivity : BaseActivity<ActivityFeedViewModel.ViewModel>() {
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
     }
 
-    private fun startFixPledge(projectSlug: String) {
-        val intent = Intent(this, ProjectActivity::class.java)
+    private fun startFixPledge(projectSlug: String, isProjectPageEnabled: Boolean) {
+        val intent = Intent().projectPageFeatureFlag(this, isProjectPageEnabled)
             .putExtra(IntentKey.PROJECT_PARAM, projectSlug)
             .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, true)
             .putExtra(IntentKey.REF_TAG, RefTag.activity())
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
-    private fun startFixPledgeProjectPage(projectSlug: String) {
-        val intent = Intent(this, ProjectPageActivity::class.java)
-            .putExtra(IntentKey.PROJECT_PARAM, projectSlug)
-            .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, true)
-            .putExtra(IntentKey.REF_TAG, RefTag.activity())
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
-    }
-
-    private fun startProjectActivity(project: Project) {
-        val intent = Intent(this, ProjectActivity::class.java)
-            .putExtra(IntentKey.PROJECT, project)
-            .putExtra(IntentKey.REF_TAG, RefTag.activity())
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
-    }
-
-    private fun startProjectPageActivity(project: Project) {
-        val intent = Intent(this, ProjectPageActivity::class.java)
+    private fun startProjectActivity(project: Project, isProjectPageEnabled: Boolean) {
+        val intent = Intent().projectPageFeatureFlag(this, isProjectPageEnabled)
             .putExtra(IntentKey.PROJECT, project)
             .putExtra(IntentKey.REF_TAG, RefTag.activity())
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)

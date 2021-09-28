@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
@@ -32,8 +33,7 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
     private val projectList = TestSubscriber<List<Project>>()
     private val resumeDiscoveryActivity = TestSubscriber<Void>()
     private val startMessageThreadsActivity = TestSubscriber<Void>()
-    private val startProjectActivity = TestSubscriber<Project>()
-    private val startProjectPageActivity = TestSubscriber<Project>()
+    private val startProjectActivity = TestSubscriber<Pair<Project, Boolean>>()
     private val userNameTextViewText = TestSubscriber<String>()
 
     private fun setUpEnvironment(environment: Environment) {
@@ -51,7 +51,6 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.resumeDiscoveryActivity().subscribe(this.resumeDiscoveryActivity)
         this.vm.outputs.startMessageThreadsActivity().subscribe(this.startMessageThreadsActivity)
         this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity)
-        this.vm.outputs.startProjectPageActivity().subscribe(this.startProjectPageActivity)
         this.vm.outputs.userNameTextViewText().subscribe(this.userNameTextViewText)
     }
 
@@ -192,8 +191,11 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
     fun testProfileViewModel_StartProjectActivity() {
         setUpEnvironment(environment())
 
-        this.vm.inputs.projectCardClicked(ProjectFactory.project())
+        val project = ProjectFactory.project()
+        this.vm.inputs.projectCardClicked(project)
         this.startProjectActivity.assertValueCount(1)
+        assertEquals(this.startProjectActivity.onNextEvents[0].first, project)
+        assertFalse(this.startProjectActivity.onNextEvents[0].second)
         this.segmentTrack.assertValue(EventName.CARD_CLICKED.eventName)
     }
 
@@ -214,9 +216,11 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment)
 
-        this.vm.inputs.projectCardClicked(ProjectFactory.project())
-        this.startProjectActivity.assertNoValues()
-        this.startProjectPageActivity.assertValueCount(1)
+        val project = ProjectFactory.project()
+        this.vm.inputs.projectCardClicked(project)
+        this.startProjectActivity.assertValueCount(1)
+        assertEquals(this.startProjectActivity.onNextEvents[0].first, project)
+        assertTrue(this.startProjectActivity.onNextEvents[0].second)
         this.segmentTrack.assertValue(EventName.CARD_CLICKED.eventName)
     }
 }

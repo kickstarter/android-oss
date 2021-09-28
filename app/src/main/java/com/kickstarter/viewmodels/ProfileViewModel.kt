@@ -77,10 +77,7 @@ interface ProfileViewModel {
         fun startMessageThreadsActivity(): Observable<Void>
 
         /** Emits when we should start the [com.kickstarter.ui.activities.ProjectActivity].  */
-        fun startProjectActivity(): Observable<Project>
-
-        /** Emits when we should start the [com.kickstarter.ui.activities.ProjectPageActivity].  */
-        fun startProjectPageActivity(): Observable<Project>
+        fun startProjectActivity(): Observable<Pair<Project, Boolean>>
 
         /** Emits the user name to be displayed.  */
         fun userNameTextViewText(): Observable<String>
@@ -107,8 +104,7 @@ interface ProfileViewModel {
         private val isFetchingProjects = BehaviorSubject.create<Boolean>()
         private val projectList: Observable<List<Project>>
         private val resumeDiscoveryActivity: Observable<Void>
-        private val startProjectActivity: Observable<Project>
-        private val startProjectPageActivity: Observable<Project>
+        private val startProjectActivity: Observable<Pair<Project, Boolean>>
         private val startMessageThreadsActivity: Observable<Void>
         private val userNameTextViewText: Observable<String>
 
@@ -177,14 +173,6 @@ interface ProfileViewModel {
             this.startProjectActivity =
                 this.projectCardClicked
                     .withLatestFrom(isProfilePageEnabled) { projectAndRef, isEnabled -> Pair(projectAndRef, isEnabled) }
-                    .filter { !it.second }
-                    .map { it.first }
-
-            this.startProjectPageActivity =
-                this.projectCardClicked
-                    .withLatestFrom(isProfilePageEnabled) { projectAndRef, isEnabled -> Pair(projectAndRef, isEnabled) }
-                    .filter { it.second }
-                    .map { it.first }
 
             this.startMessageThreadsActivity = this.messagesButtonClicked
             this.userNameTextViewText = loggedInUser.map { it.name() }
@@ -229,8 +217,6 @@ interface ProfileViewModel {
         override fun resumeDiscoveryActivity() = this.resumeDiscoveryActivity
 
         override fun startProjectActivity() = this.startProjectActivity
-
-        override fun startProjectPageActivity() = this.startProjectPageActivity
 
         override fun startMessageThreadsActivity() = this.startMessageThreadsActivity
 

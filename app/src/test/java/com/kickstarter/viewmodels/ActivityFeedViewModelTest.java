@@ -1,5 +1,7 @@
 package com.kickstarter.viewmodels;
 
+import android.util.Pair;
+
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
@@ -35,13 +37,11 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<List<ErroredBacking>> erroredBackings = new TestSubscriber<>();
   private final TestSubscriber<Void> goToDiscovery = new TestSubscriber<>();
   private final TestSubscriber<Void> goToLogin = new TestSubscriber<>();
-  private final TestSubscriber<Project> goToProject = new TestSubscriber<>();
-  private final TestSubscriber<Project> goToProjectPage = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Project, Boolean>> goToProject = new TestSubscriber<>();
   private final TestSubscriber<SurveyResponse> goToSurvey = new TestSubscriber<>();
   private final TestSubscriber<Boolean> loggedOutEmptyStateIsVisible = new TestSubscriber<>();
   private final TestSubscriber<Boolean> loggedInEmptyStateIsVisible = new TestSubscriber<>();
-  private final TestSubscriber<String> startFixPledge = new TestSubscriber<>();
-  private final TestSubscriber<String> startFixPledgeProjectPage = new TestSubscriber<>();
+  private final TestSubscriber<Pair<String, Boolean>> startFixPledge = new TestSubscriber<>();
   private final TestSubscriber<Activity> startUpdateActivity = new TestSubscriber<>();
   private final TestSubscriber<List<SurveyResponse>> surveys = new TestSubscriber<>();
   private final TestSubscriber<User> user = new TestSubscriber<>();
@@ -53,12 +53,10 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.goToDiscovery().subscribe(this.goToDiscovery);
     this.vm.outputs.goToLogin().subscribe(this.goToLogin);
     this.vm.outputs.goToProject().subscribe(this.goToProject);
-    this.vm.outputs.goToProjectPage().subscribe(this.goToProjectPage);
     this.vm.outputs.goToSurvey().subscribe(this.goToSurvey);
     this.vm.outputs.loggedOutEmptyStateIsVisible().subscribe(this.loggedOutEmptyStateIsVisible);
     this.vm.outputs.loggedInEmptyStateIsVisible().subscribe(this.loggedInEmptyStateIsVisible);
     this.vm.outputs.startFixPledge().subscribe(this.startFixPledge);
-    this.vm.outputs.startFixPledgeProjectPage().subscribe(this.startFixPledgeProjectPage);
     this.vm.outputs.startUpdateActivity().subscribe(this.startUpdateActivity);
     this.vm.outputs.surveys().subscribe(this.surveys);
   }
@@ -135,7 +133,6 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
     this.goToDiscovery.assertNoValues();
     this.goToLogin.assertNoValues();
-    this.goToProjectPage.assertNoValues();
     this.goToProject.assertNoValues();
     this.startUpdateActivity.assertNoValues();
 
@@ -151,8 +148,8 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectStateChangedPositiveClicked(null, ActivityFactory.projectStateChangedPositiveActivity());
     this.vm.inputs.projectUpdateProjectClicked(null, ActivityFactory.updateActivity());
 
-    this.goToProjectPage.assertValueCount(4);
-    this.goToProject.assertNoValues();
+    this.goToProject.assertValueCount(4);
+    assertTrue(this.goToProject.getOnNextEvents().get(0).second);
 
     this.vm.inputs.projectUpdateClicked(null, ActivityFactory.activity());
 
@@ -264,7 +261,8 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
     final String projectSlug = "slug";
     this.vm.inputs.managePledgeClicked(projectSlug);
-    this.startFixPledge.assertValue(projectSlug);
+    assertFalse(this.startFixPledge.getOnNextEvents().get(0).second);
+    assertEquals(this.startFixPledge.getOnNextEvents().get(0).first, projectSlug);
   }
 
   @Test
@@ -285,8 +283,8 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
     final String projectSlug = "slug";
     this.vm.inputs.managePledgeClicked(projectSlug);
-    this.startFixPledge.assertNoValues();
-    this.startFixPledgeProjectPage.assertValue(projectSlug);
+    this.startFixPledge.assertValueCount(1);
+    assertTrue(this.startFixPledge.getOnNextEvents().get(0).second);
   }
 
   @Test

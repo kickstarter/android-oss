@@ -2,7 +2,11 @@ package com.kickstarter.viewmodels;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.models.OptimizelyFeature;
+import com.kickstarter.libs.utils.ExperimentData;
+import com.kickstarter.mock.MockExperimentsClientType;
 import com.kickstarter.mock.factories.DiscoverEnvelopeFactory;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.services.MockApiClient;
@@ -11,6 +15,7 @@ import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.libs.utils.EventName;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -25,6 +30,7 @@ import rx.schedulers.TestScheduler;
 public class SearchViewModelTest extends KSRobolectricTestCase {
   private SearchViewModel.ViewModel vm;
   private final TestSubscriber<Project> goToProject = new TestSubscriber<>();
+  private final TestSubscriber<Project> goToProjectPage = new TestSubscriber<>();
   private final TestSubscriber<RefTag> goToRefTag = new TestSubscriber<>();
   private final TestSubscriber<List<Project>> popularProjects = new TestSubscriber<>();
   private final TestSubscriber<Boolean> popularProjectsPresent = new TestSubscriber<>();
@@ -35,6 +41,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     this.vm = new SearchViewModel.ViewModel(environment);
 
     this.vm.outputs.startProjectActivity().map(p -> p.first).subscribe(this.goToProject);
+    this.vm.outputs.startProjectPageActivity().map(p -> p.first).subscribe(this.goToProjectPage);
     this.vm.outputs.startProjectActivity().map(p -> p.second).subscribe(this.goToRefTag);
     this.vm.outputs.popularProjects().subscribe(this.popularProjects);
     this.vm.outputs.searchProjects().subscribe(this.searchProjects);
@@ -246,6 +253,47 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     this.goToRefTag.assertValues(RefTag.searchPopular());
     this.goToProject.assertValues(projects.get(2));
+  }
+
+  @Test
+  public void testProjectPage_whenFeatureFlagOn_shouldEmitProjectPage() {
+    final MockCurrentUser user = new MockCurrentUser();
+    final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
+      @Override
+      public boolean isFeatureEnabled(final @NotNull OptimizelyFeature.Key feature) {
+        return true;
+      }
+    };
+    final TestScheduler scheduler = new TestScheduler();
+
+    final List<Project> projects = Arrays.asList(
+      ProjectFactory.allTheWayProject(),
+      ProjectFactory.almostCompletedProject(),
+      ProjectFactory.backedProject()
+    );
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
+        return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects));
+      }
+    };
+
+    final Environment env = environment().toBuilder()
+            .currentUser(user)
+            .optimizely(mockExperimentsClientType)
+            .scheduler(scheduler)
+      .apiClient(apiClient)
+      .build();
+
+    setUpEnvironment(env);
+
+    // populate search and overcome debounce
+    this.vm.inputs.search("");
+    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
+    this.vm.inputs.projectClicked(projects.get(2));
+
+    this.goToProjectPage.assertValues(projects.get(2));
+    this.goToProject.assertNoValues();
   }
 
   @Test

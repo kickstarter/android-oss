@@ -57,10 +57,23 @@ class SearchActivity : BaseActivity<SearchViewModel.ViewModel>(), SearchAdapter.
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startProjectActivity(it) }
+
+        viewModel.outputs.startProjectPageActivity()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { startProjectPageActivity(it) }
     }
 
     private fun startProjectActivity(projectAndRefTag: Pair<Project, RefTag>) {
         val intent = Intent(this, ProjectActivity::class.java)
+            .putExtra(IntentKey.PROJECT, projectAndRefTag.first)
+            .putExtra(IntentKey.REF_TAG, projectAndRefTag.second)
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+    }
+
+    private fun startProjectPageActivity(projectAndRefTag: Pair<Project, RefTag>) {
+        val intent = Intent(this, ProjectPageActivity::class.java)
             .putExtra(IntentKey.PROJECT, projectAndRefTag.first)
             .putExtra(IntentKey.REF_TAG, projectAndRefTag.second)
         startActivity(intent)

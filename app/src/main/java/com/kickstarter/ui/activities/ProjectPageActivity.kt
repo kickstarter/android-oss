@@ -29,6 +29,7 @@ import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.MessagePreviousScreenType
+import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
@@ -54,14 +55,6 @@ import com.kickstarter.ui.fragments.RewardsFragment
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import com.stripe.android.view.CardInputWidget
 import rx.android.schedulers.AndroidSchedulers
-
-// TODO: remove, get the String via the position on the projectpager tabs enum
-val fragmentsArray = arrayOf(
-    "Overview",
-    "Campaign",
-    "Faqs",
-    "Environmental Commitment",
-)
 
 @RequiresActivityViewModel(ProjectPageViewModel.ViewModel::class)
 class ProjectPageActivity :
@@ -323,7 +316,7 @@ class ProjectPageActivity :
         viewPager.adapter = pagerAdapter
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = fragmentsArray[position]
+            tab.text = getTabTitle(position)
         }.attach()
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -412,6 +405,14 @@ class ProjectPageActivity :
 
     override fun onDestroy() {
         super.onDestroy()
+    }
+
+    private fun getTabTitle(position: Int) = when (position) {
+        ProjectPagerTabs.OVERVIEW.ordinal -> getString(R.string.Overview)
+        ProjectPagerTabs.FAQS.ordinal -> getString(R.string.Faq)
+        ProjectPagerTabs.CAMPAIGN.ordinal -> getString(R.string.Campaign)
+        ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal -> getString(R.string.Environmental_commitment)
+        else -> ""
     }
 
     private fun animateScrimVisibility(show: Boolean) {

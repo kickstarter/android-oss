@@ -7,7 +7,6 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.utils.EventContextValues;
-import com.kickstarter.libs.utils.ExperimentData;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.ErroredBacking;

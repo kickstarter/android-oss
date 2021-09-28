@@ -118,6 +118,11 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
             .compose(observeForUI())
             .subscribe { this.startProjectActivity(it) }
 
+        this.viewModel.outputs.startProjectPageActivity()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { this.startProjectPageActivity(it) }
+
         this.viewModel.outputs.userNameTextViewText()
             .compose(bindToLifecycle())
             .compose(observeForUI())
@@ -162,6 +167,12 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
 
     private fun startProjectActivity(project: Project) {
         val intent = Intent(this, ProjectActivity::class.java)
+            .putExtra(IntentKey.PROJECT, project)
+        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+    }
+
+    private fun startProjectPageActivity(project: Project) {
+        val intent = Intent(this, ProjectPageActivity::class.java)
             .putExtra(IntentKey.PROJECT, project)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }

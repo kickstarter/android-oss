@@ -145,7 +145,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
          .map(u -> this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2, new ExperimentData(u, null, null)));
 
       this.startProjectActivity = this.currentProject
-        .compose(combineLatestPair(isProjectPageEnabled))
+        .withLatestFrom(isProjectPageEnabled, Pair::create)
         .filter(it -> !it.second)
         .map(it -> it.first)
         .compose(takeWhen(this.projectButtonClicked))
@@ -153,7 +153,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
         .compose(bindToLifecycle());
 
       this.startProjectPageActivity = this.currentProject
-        .compose(combineLatestPair(isProjectPageEnabled))
+        .withLatestFrom(isProjectPageEnabled, Pair::create)
         .filter(it -> it.second)
         .map(it -> it.first)
         .compose(takeWhen(this.projectButtonClicked))

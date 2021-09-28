@@ -6,7 +6,7 @@ import org.joda.time.DateTime
 class ProjectFaqFactory private constructor() {
     companion object {
         fun getFaqs(): List<ProjectFaq> {
-            return listOf(getFaq(), getFaq(), getFaq())
+            return listOf(getFaq(), getFaq(), getFaq(), getFaq(), getFaq(), getFaq())
         }
 
         private fun getFaq() = ProjectFaq.builder()

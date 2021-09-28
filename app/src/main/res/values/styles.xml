@@ -535,6 +535,12 @@
     <item name="android:textSize">@dimen/headline</item>
   </style>
 
+  <style name="HeadlineMedium" parent="HeadlineNormal">
+    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
+    <item name="android:letterSpacing">0.01</item>
+    <item name="android:lineSpacingExtra">@dimen/caption_line_spacing_extra</item>
+  </style>
+
   <style name="Title2" parent="TextPrimary">
     <item name="android:textSize">@dimen/title_2</item>
   </style>
@@ -982,4 +988,10 @@
   <style name="bottomSheetBackground" parent="Widget.Design.BottomSheet.Modal">
     <item name="android:background">@drawable/rect_bottom_sheet_white_rounded</item>
   </style>
+
+  <style name="answerStyle" parent="SubheadlineSanSerif">
+    <item name="android:lineSpacingExtra">2sp</item>
+    <item name="android:letterSpacing">-0.02</item>
+  </style>
+
 </resources>

@@ -22,6 +22,7 @@ import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.AnimationUtils.crossFadeAndReverse
 import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.extensions.projectPageFeatureFlag
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Category
 import com.kickstarter.models.Project
@@ -125,12 +126,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.startProjectActivity()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { startProjectActivity(it.first, it.second) }
-
-        this.viewModel.outputs.startProjectPageActivity()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { startProjectPageActivity(it.first, it.second) }
+            .subscribe { startProjectActivity(it.first, it.second, it.third) }
 
         this.viewModel.outputs.showLoginTout()
             .compose(bindToLifecycle())
@@ -216,22 +212,12 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         }
     }
 
-    private fun startProjectActivity(project: Project, refTag: RefTag) {
-        val intent = Intent(activity, ProjectActivity::class.java)
-            .putExtra(IntentKey.PROJECT, project)
-            .putExtra(IntentKey.REF_TAG, refTag)
-        startActivity(intent)
+    private fun startProjectActivity(project: Project, refTag: RefTag, isEnabled: Boolean) {
         context?.let {
-            TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
-        }
-    }
-
-    private fun startProjectPageActivity(project: Project, refTag: RefTag) {
-        val intent = Intent(activity, ProjectPageActivity::class.java)
-            .putExtra(IntentKey.PROJECT, project)
-            .putExtra(IntentKey.REF_TAG, refTag)
-        startActivity(intent)
-        context?.let {
+            val intent = Intent().projectPageFeatureFlag(it, isEnabled)
+                .putExtra(IntentKey.PROJECT, project)
+                .putExtra(IntentKey.REF_TAG, refTag)
+            startActivity(intent)
             TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
         }
     }

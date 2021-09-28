@@ -21,10 +21,7 @@ class ProjectFaqViewModel {
         fun projectFaqs(): Observable<List<ProjectFaq>>
     }
 
-    class ViewModel(@NonNull val environment: Environment) :
-        FragmentViewModel<ProjectFaqFragment>(environment),
-        Inputs,
-        Outputs {
+    class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<ProjectFaqFragment>(environment), Inputs, Outputs {
         val inputs: Inputs = this
         val outputs: Outputs = this
 

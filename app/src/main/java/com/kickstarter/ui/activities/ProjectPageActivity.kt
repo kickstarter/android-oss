@@ -19,6 +19,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityProjectPageBinding
@@ -54,9 +55,12 @@ import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import com.stripe.android.view.CardInputWidget
 import rx.android.schedulers.AndroidSchedulers
 
+// TODO: remove, get the String via the position on the projectpager tabs enum
 val fragmentsArray = arrayOf(
     "Overview",
-    "Faq",
+    "Campaign",
+    "Faqs",
+    "Environmental Commitment",
 )
 
 @RequiresActivityViewModel(ProjectPageViewModel.ViewModel::class)
@@ -318,9 +322,9 @@ class ProjectPageActivity :
 
         viewPager.adapter = pagerAdapter
 
-        /*TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = fragmentsArray[position]
-        }.attach()*/
+        }.attach()
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
 

@@ -231,9 +231,9 @@ interface UpdateViewModel {
             val isProjectPageEnabled = Observable.just(environment.optimizely().isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2))
 
             goToProjectRequest
-                .withLatestFrom(isProjectPageEnabled) {click, isEnabled -> Pair(click, isEnabled)}
-                .filter{ !it.second }
-                .map{ it.first }
+                .withLatestFrom(isProjectPageEnabled) { click, isEnabled -> Pair(click, isEnabled) }
+                .filter { !it.second }
+                .map { it.first }
                 .map { Uri.parse(it.url.toUri().toString()) }
                 .filter { it.isProjectUri(Secrets.WebEndpoint.PRODUCTION) }
                 .filter { !it.isProjectPreviewUri(Secrets.WebEndpoint.PRODUCTION) }
@@ -248,9 +248,9 @@ interface UpdateViewModel {
                 }
 
             goToProjectRequest
-                .withLatestFrom(isProjectPageEnabled) {click, isEnabled -> Pair(click, isEnabled)}
-                .filter{ it.second }
-                .map{ it.first }
+                .withLatestFrom(isProjectPageEnabled) { click, isEnabled -> Pair(click, isEnabled) }
+                .filter { it.second }
+                .map { it.first }
                 .map { Uri.parse(it.url.toUri().toString()) }
                 .filter { it.isProjectUri(Secrets.WebEndpoint.PRODUCTION) }
                 .filter { !it.isProjectPreviewUri(Secrets.WebEndpoint.PRODUCTION) }

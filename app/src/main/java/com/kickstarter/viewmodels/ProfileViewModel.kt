@@ -6,12 +6,9 @@ import com.kickstarter.libs.ApiPaginator
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ExperimentsClientType
-import com.kickstarter.libs.OptimizelyExperimentsClient
 import com.kickstarter.libs.models.OptimizelyFeature
-import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.neverError
 import com.kickstarter.libs.utils.EventContextValues
-import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.models.Project
@@ -179,14 +176,14 @@ interface ProfileViewModel {
 
             this.startProjectActivity =
                 this.projectCardClicked
-                    .withLatestFrom(isProfilePageEnabled) {projectAndRef, isEnabled -> Pair(projectAndRef, isEnabled)}
-                    .filter{ !it.second }
+                    .withLatestFrom(isProfilePageEnabled) { projectAndRef, isEnabled -> Pair(projectAndRef, isEnabled) }
+                    .filter { !it.second }
                     .map { it.first }
 
             this.startProjectPageActivity =
                 this.projectCardClicked
-                    .withLatestFrom(isProfilePageEnabled) {projectAndRef, isEnabled -> Pair(projectAndRef, isEnabled)}
-                    .filter{ it.second }
+                    .withLatestFrom(isProfilePageEnabled) { projectAndRef, isEnabled -> Pair(projectAndRef, isEnabled) }
+                    .filter { it.second }
                     .map { it.first }
 
             this.startMessageThreadsActivity = this.messagesButtonClicked

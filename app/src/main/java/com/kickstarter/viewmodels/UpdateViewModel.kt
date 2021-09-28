@@ -63,10 +63,7 @@ interface UpdateViewModel {
         fun deepLinkToThreadActivity(): Observable<Pair<String, Boolean>>
 
         /** Emits a Uri and a ref tag to start the project activity with.  */
-        fun startProjectActivity(): Observable<Pair<Uri, RefTag>>
-
-        /** Emits a Uri and a ref tag to start the project activity with.  */
-        fun startProjectPageActivity(): Observable<Pair<Uri, RefTag>>
+        fun startProjectActivity(): Observable<Triple<Uri, RefTag, Boolean>>
 
         fun startRootCommentsActivityToDeepLinkThreadActivity(): Observable<Pair<String, Update>>
 
@@ -94,8 +91,7 @@ interface UpdateViewModel {
         private val startShareIntent = PublishSubject.create<Pair<Update, String>>()
         private val startRootCommentsActivity = PublishSubject.create<Update>()
         private val startRootCommentsActivityToDeepLinkThreadActivity = PublishSubject.create<Pair<String, Update>>()
-        private val startProjectActivity = PublishSubject.create<Pair<Uri, RefTag>>()
-        private val startProjectPageActivity = PublishSubject.create<Pair<Uri, RefTag>>()
+        private val startProjectActivity = PublishSubject.create<Triple<Uri, RefTag, Boolean>>()
         private val updateSequence = BehaviorSubject.create<String>()
         private val webViewUrl = BehaviorSubject.create<String>()
         private val deepLinkToRootComment = BehaviorSubject.create<Boolean>()
@@ -231,35 +227,16 @@ interface UpdateViewModel {
             val isProjectPageEnabled = Observable.just(environment.optimizely().isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2))
 
             goToProjectRequest
-                .withLatestFrom(isProjectPageEnabled) { click, isEnabled -> Pair(click, isEnabled) }
-                .filter { !it.second }
-                .map { it.first }
-                .map { Uri.parse(it.url.toUri().toString()) }
-                .filter { it.isProjectUri(Secrets.WebEndpoint.PRODUCTION) }
-                .filter { !it.isProjectPreviewUri(Secrets.WebEndpoint.PRODUCTION) }
+                .withLatestFrom(isProjectPageEnabled) { request, isEnabled -> Pair(Uri.parse(request.url.toUri().toString()), isEnabled) }
+                .filter { it.first.isProjectUri(Secrets.WebEndpoint.PRODUCTION) }
+                .filter { !it.first.isProjectPreviewUri(Secrets.WebEndpoint.PRODUCTION) }
                 .compose(bindToLifecycle())
                 .subscribe {
                     startProjectActivity.onNext(
-                        Pair.create(
-                            it,
-                            RefTag.update()
-                        )
-                    )
-                }
-
-            goToProjectRequest
-                .withLatestFrom(isProjectPageEnabled) { click, isEnabled -> Pair(click, isEnabled) }
-                .filter { it.second }
-                .map { it.first }
-                .map { Uri.parse(it.url.toUri().toString()) }
-                .filter { it.isProjectUri(Secrets.WebEndpoint.PRODUCTION) }
-                .filter { !it.isProjectPreviewUri(Secrets.WebEndpoint.PRODUCTION) }
-                .compose(bindToLifecycle())
-                .subscribe {
-                    startProjectPageActivity.onNext(
-                        Pair.create(
-                            it,
-                            RefTag.update()
+                        Triple(
+                            it.first,
+                            RefTag.update(),
+                            it.second
                         )
                     )
                 }
@@ -314,9 +291,7 @@ interface UpdateViewModel {
 
         override fun deepLinkToThreadActivity(): Observable<Pair<String, Boolean>> = deepLinkToThreadActivity
 
-        override fun startProjectActivity(): Observable<Pair<Uri, RefTag>> = startProjectActivity
-
-        override fun startProjectPageActivity(): Observable<Pair<Uri, RefTag>> = startProjectPageActivity
+        override fun startProjectActivity(): Observable<Triple<Uri, RefTag, Boolean>> = startProjectActivity
 
         override fun startRootCommentsActivityToDeepLinkThreadActivity(): Observable<Pair<String, Update>> = startRootCommentsActivityToDeepLinkThreadActivity
 

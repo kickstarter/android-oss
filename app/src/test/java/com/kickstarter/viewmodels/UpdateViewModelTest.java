@@ -7,8 +7,10 @@ import android.util.Pair;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.extensions.UriExt;
 import com.kickstarter.mock.MockExperimentsClientType;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.UpdateFactory;
@@ -25,8 +27,10 @@ import org.junit.Test;
 
 import androidx.annotation.NonNull;
 
+import java.sql.Ref;
 import java.util.concurrent.TimeUnit;
 
+import kotlin.Triple;
 import okhttp3.Request;
 import rx.Observable;
 import rx.observers.TestSubscriber;
@@ -114,7 +118,7 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment);
 
     final TestSubscriber<Uri> startProjectActivity = new TestSubscriber<>();
-    vm.outputs.startProjectActivity().map(uriAndRefTag -> uriAndRefTag.first).subscribe(startProjectActivity);
+    vm.outputs.startProjectActivity().map(uriAndRefTag -> uriAndRefTag.getFirst()).subscribe(startProjectActivity);
 
     // Start the intent with a project and update.
     vm.intent(this.defaultIntent);
@@ -146,10 +150,8 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
 
     final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment);
 
-    final TestSubscriber<Uri> startProjectActivity = new TestSubscriber<>();
-    final TestSubscriber<Uri> startProjectPageActivity = new TestSubscriber<>();
-    vm.outputs.startProjectActivity().map(uriAndRefTag -> uriAndRefTag.first).subscribe(startProjectActivity);
-    vm.outputs.startProjectPageActivity().map(uriAndRefTag -> uriAndRefTag.first).subscribe(startProjectPageActivity);
+    final TestSubscriber<Triple<Uri, RefTag, Boolean>> startProjectActivity = new TestSubscriber<>();
+    vm.outputs.startProjectActivity().subscribe(startProjectActivity);
 
     // Start the intent with a project and update.
     vm.intent(this.defaultIntent);
@@ -161,8 +163,10 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
 
     vm.inputs.goToProjectRequest(projectRequest);
 
-    startProjectActivity.assertNoValues();
-    startProjectPageActivity.assertValues(Uri.parse(url));
+    startProjectActivity.assertValueCount(1);
+    assertTrue(startProjectActivity.getOnNextEvents().get(0).getThird());
+    assertEquals(startProjectActivity.getOnNextEvents().get(0).getFirst(), Uri.parse(url));
+    assertEquals(startProjectActivity.getOnNextEvents().get(0).getSecond(), RefTag.update());
   }
 
   @Test

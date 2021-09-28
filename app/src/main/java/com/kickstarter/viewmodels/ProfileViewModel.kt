@@ -174,7 +174,8 @@ interface ProfileViewModel {
             this.projectList = paginator.paginatedData()
             this.resumeDiscoveryActivity = this.exploreProjectsButtonClicked
 
-            val isProfilePageEnabled = Observable.just(this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2))
+            val isProfilePageEnabled =
+                Observable.just(this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2))
 
             this.startProjectActivity =
                 this.projectCardClicked

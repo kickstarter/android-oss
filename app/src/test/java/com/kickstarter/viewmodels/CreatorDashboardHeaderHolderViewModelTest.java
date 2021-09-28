@@ -8,9 +8,11 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
+import com.kickstarter.mock.MockExperimentsClientType;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.ProjectStatsEnvelopeFactory;
 import com.kickstarter.mock.factories.UserFactory;
@@ -19,6 +21,7 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.adapters.data.ProjectDashboardData;
 
+import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
 import org.junit.Test;
@@ -38,6 +41,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   private final TestSubscriber<Integer> progressBarBackground = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, RefTag>> startMessageThreadsActivity = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, RefTag>> startProjectActivity = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Project, RefTag>> startProjectPageActivity = new TestSubscriber<>();
   private final TestSubscriber<Boolean> viewProjectButtonIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> timeRemainingText = new TestSubscriber<>();
 
@@ -52,6 +56,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     this.vm.outputs.progressBarBackground().subscribe(this.progressBarBackground);
     this.vm.outputs.startMessageThreadsActivity().subscribe(this.startMessageThreadsActivity);
     this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
+    this.vm.outputs.startProjectPageActivity().subscribe(this.startProjectPageActivity);
     this.vm.outputs.timeRemainingText().subscribe(this.timeRemainingText);
     this.vm.outputs.viewProjectButtonIsGone().subscribe(this.viewProjectButtonIsGone);
   }
@@ -231,6 +236,26 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     this.vm.inputs.configureWith(new ProjectDashboardData(project, projectStatsEnvelope, false));
     this.vm.inputs.projectButtonClicked();
     this.startProjectActivity.assertValue(Pair.create(project, RefTag.dashboard()));
+  }
+
+  @Test
+  public void testStartProjectActivity_whenFeatureFlagOn_shouldEmitProjectPage() {
+    final Project project = ProjectFactory.project();
+    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
+    final CurrentUserType currentUser = new MockCurrentUser();
+    final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
+      @Override
+      public boolean isFeatureEnabled(final @NotNull OptimizelyFeature.Key feature) {
+        return true;
+      }
+    };
+
+    this.setUpEnvironment(environment().toBuilder().currentUser(currentUser).optimizely(mockExperimentsClientType).build());
+
+    this.vm.inputs.configureWith(new ProjectDashboardData(project, projectStatsEnvelope, false));
+    this.vm.inputs.projectButtonClicked();
+    this.startProjectActivity.assertNoValues();
+    this.startProjectPageActivity.assertValue(Pair.create(project, RefTag.dashboard()));
   }
 
   @Test

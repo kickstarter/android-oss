@@ -141,8 +141,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
         .compose(bindToLifecycle());
 
       final  Observable<Boolean> isProjectPageEnabled =
-        user
-         .map(u -> this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2, new ExperimentData(u, null, null)));
+        Observable.just(this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2));
 
       this.startProjectActivity = this.currentProject
         .withLatestFrom(isProjectPageEnabled, Pair::create)

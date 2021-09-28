@@ -8,7 +8,6 @@ import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.models.OptimizelyFeature;
-import com.kickstarter.libs.utils.ExperimentData;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -152,7 +151,7 @@ public interface SearchViewModel {
               });
 
       final  Observable<Boolean> isProjectPageEnabled =
-              Observable.just(environment.optimizely().isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2));
+        Observable.just(environment.optimizely().isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2));
 
       this.startProjectActivity = Observable.combineLatest(this.search, projects, Pair::create)
         .compose(takePairWhen(this.projectClicked))

@@ -118,16 +118,21 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testClickingInterfaceElements_whenInExperiment_shouldEmitProjectPage() {
+  public void testClickingInterfaceElements_whenFeatueFlagOn_shouldEmitProjectPage() {
     final CurrentUserType currentUser = new MockCurrentUser();
     final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
       @Override
-      public boolean isFeatureEnabled(final @NotNull OptimizelyFeature.Key feature, final @NotNull ExperimentData experimentData) {
+      public boolean isFeatureEnabled(final @NotNull OptimizelyFeature.Key feature) {
         return true;
       }
     };
 
-    this.setUpEnvironment(this.environment().toBuilder().currentUser(currentUser).optimizely(mockExperimentsClientType).build());
+    this.setUpEnvironment(
+      this.environment()
+        .toBuilder()
+        .currentUser(currentUser)
+        .optimizely(mockExperimentsClientType)
+        .build());
 
     this.goToDiscovery.assertNoValues();
     this.goToLogin.assertNoValues();
@@ -268,12 +273,16 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     final CurrentUserType currentUser = new MockCurrentUser();
     final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
       @Override
-      public boolean isFeatureEnabled(final @NotNull OptimizelyFeature.Key feature, final @NotNull ExperimentData experimentData) {
+      public boolean isFeatureEnabled(final @NotNull OptimizelyFeature.Key feature) {
         return true;
       }
     };
 
-    this.setUpEnvironment(this.environment().toBuilder().currentUser(currentUser).optimizely(mockExperimentsClientType).build());
+    this.setUpEnvironment(
+      this.environment()
+        .toBuilder()
+        .currentUser(currentUser)
+        .optimizely(mockExperimentsClientType).build());
 
     final String projectSlug = "slug";
     this.vm.inputs.managePledgeClicked(projectSlug);

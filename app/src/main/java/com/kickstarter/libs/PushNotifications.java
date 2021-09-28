@@ -81,7 +81,7 @@ public final class PushNotifications {
   @VisibleForTesting
   public  Intent messageThreadIntent;
 
-  public PushNotifications(final @ApplicationContext @NonNull Context context, final @NonNull ApiClientType client, ExperimentsClientType experimentsClientType) {
+  public PushNotifications(final @ApplicationContext @NonNull Context context, final @NonNull ApiClientType client, final @NonNull ExperimentsClientType experimentsClientType) {
     this.context = context;
     this.client = client;
     this.experimentsClientType = experimentsClientType;
@@ -381,7 +381,7 @@ public final class PushNotifications {
   private @NonNull PendingIntent projectUpdateContentIntent(final @NonNull PushNotificationEnvelope envelope,
     final @NonNull Update update, final @NonNull String projectParam) {
 
-    final Intent projectIntent = new Intent(this.context, experimentsClientType.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2) ? ProjectPageActivity.class : ProjectActivity.class)
+    final Intent projectIntent = new Intent(this.context, this.experimentsClientType.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2) ? ProjectPageActivity.class : ProjectActivity.class)
       .putExtra(IntentKey.PROJECT_PARAM, projectParam)
       .putExtra(IntentKey.REF_TAG, RefTag.push());
 
@@ -493,7 +493,7 @@ public final class PushNotifications {
   }
 
   private @NonNull Intent projectIntent(final @NonNull PushNotificationEnvelope envelope, final @NonNull String projectParam) {
-    final Intent intent = new Intent(this.context, experimentsClientType.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2) ? ProjectPageActivity.class : ProjectActivity.class);
+    final Intent intent = new Intent(this.context, this.experimentsClientType.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2) ? ProjectPageActivity.class : ProjectActivity.class);
     return intent
       .putExtra(IntentKey.PROJECT_PARAM, projectParam)
       .putExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE, envelope)

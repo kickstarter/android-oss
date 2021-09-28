@@ -326,7 +326,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     final MockCurrentUser user = new MockCurrentUser();
     final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
       @Override
-      public boolean isFeatureEnabled(final @NotNull OptimizelyFeature.Key feature, final @NotNull ExperimentData experimentData) {
+      public boolean isFeatureEnabled(final @NotNull OptimizelyFeature.Key feature) {
         return true;
       }
     };

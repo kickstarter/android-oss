@@ -43,9 +43,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import io.reactivex.functions.BiFunction;
 import rx.Observable;
-import rx.functions.Func2;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
@@ -218,8 +216,7 @@ public interface DiscoveryFragmentViewModel {
       this.showLoginTout = this.discoveryOnboardingLoginToutClick;
 
       final  Observable<Boolean> isProjectPageEnabled =
-              currentUser.observable()
-                      .map(user -> this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2, new ExperimentData(user, null, null)));
+        Observable.just(this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2));
 
       this.startProjectActivity = Observable.merge(
         activitySampleProjectClick,

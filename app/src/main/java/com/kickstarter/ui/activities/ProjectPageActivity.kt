@@ -108,6 +108,8 @@ class ProjectPageActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
+                // - Every time the ProjectData gets updated
+                // - the fragments on the viewPager are updated as well
                 pagerAdapter.updatedWithProjectData(it)
             }
 

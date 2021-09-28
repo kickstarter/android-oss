@@ -60,6 +60,7 @@ public final class ProjectFactory {
       .staticUsdRate(1.0f)
       .usdExchangeRate(1.0f)
       .slug(slug)
+      .projectFaqs(ProjectFaqFactory.Companion.getFaqs())
       .updatedAt(DateTime.now())
       .urls(Project.Urls.builder().web(web).build())
       .video(VideoFactory.video())

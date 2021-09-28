@@ -131,6 +131,9 @@ interface ProjectPageViewModel {
 
         /** Call when the view rewards option is clicked.  */
         fun viewRewardsClicked()
+
+        /** Call when some tab on the Tablayout has been pressed  */
+        fun tabSelected()
     }
 
     interface Outputs {
@@ -328,7 +331,7 @@ interface ProjectPageViewModel {
         private val startThanksActivity = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
         private val startVideoActivity = PublishSubject.create<Project>()
         private val updateFragments = BehaviorSubject.create<ProjectData>()
-        private val updatedProject = PublishSubject.create<Project>()
+        private val tabSelected = PublishSubject.create<Any>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -480,7 +483,9 @@ interface ProjectPageViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(this.showSavedPrompt)
 
-            val currentProjectData = Observable.combineLatest<RefTag, RefTag, Project, ProjectData>(refTag, cookieRefTag, currentProject) { refTagFromIntent, refTagFromCookie, project -> projectData(refTagFromIntent, refTagFromCookie, project) }
+            val currentProjectData = Observable.combineLatest<RefTag, RefTag, Project, ProjectData>(refTag, cookieRefTag, currentProject) { refTagFromIntent, refTagFromCookie, project ->
+                projectData(refTagFromIntent, refTagFromCookie, project)
+            }
 
             currentProjectData
                 .compose(bindToLifecycle())
@@ -671,6 +676,10 @@ interface ProjectPageViewModel {
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(this.managePledgeMenu)
+
+            projectData
+                .compose(takeWhen(this.tabSelected))
+                .subscribe(this.projectData)
 
             val backedProject = currentProject
                 .filter { it.isBacking }
@@ -933,6 +942,10 @@ interface ProjectPageViewModel {
                 .toBuilder()
                 .refTagFromCookie(RefTagUtils.storedCookieRefTagForProject(data.project(), cookieManager, sharedPreferences))
                 .build()
+        }
+
+        override fun tabSelected() {
+            this.tabSelected.onNext(null)
         }
 
         override fun blurbTextViewClicked() {

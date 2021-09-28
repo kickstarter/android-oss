@@ -10,11 +10,13 @@ import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockSharedPreferences
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.Country
+import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.extensions.trimAllWhitespace
 import com.kickstarter.mock.MockCurrentConfig
+import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.CheckoutFactory
 import com.kickstarter.mock.factories.ConfigFactory
@@ -123,6 +125,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val bonusSectionIsGone = TestSubscriber<Boolean>()
     private val bonusSummaryIsGone = TestSubscriber<Boolean>()
     private val shippingRule = TestSubscriber<ShippingRule>()
+    private val changeCheckoutRiskMessageBottomSheetStatus = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(
         environment: Environment,
@@ -195,6 +198,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.isBonusSupportSectionGone().subscribe(this.bonusSectionIsGone)
         this.vm.outputs.bonusSummaryIsGone().subscribe(this.bonusSummaryIsGone)
         this.vm.outputs.shippingRule().subscribe(this.shippingRule)
+        this.vm.outputs.changeCheckoutRiskMessageBottomSheetStatus().subscribe(this.changeCheckoutRiskMessageBottomSheetStatus)
 
         val projectData = project.backing()?.let {
             return@let ProjectData.builder()
@@ -1473,6 +1477,33 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testShowCheckoutRiskMessageBottomSheet_whenPledgeClickedAndInExperiment_shouldEmitBottomSheetStatus() {
+        val environment = environment()
+            .toBuilder()
+            .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1))
+            .build()
+        setUpEnvironment(environment)
+
+        this.vm.inputs.pledgeButtonClicked()
+
+        this.changeCheckoutRiskMessageBottomSheetStatus.assertValueCount(2)
+        this.changeCheckoutRiskMessageBottomSheetStatus.assertValues(true, false)
+    }
+
+    @Test
+    fun testShowCheckoutRiskMessageBottomSheet_whenPledgeClickedAndInControl_shouldNotEmitBottomSheetStatus() {
+        val environment = environment()
+            .toBuilder()
+            .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.CONTROL))
+            .build()
+        setUpEnvironment(environment)
+
+        this.vm.inputs.pledgeButtonClicked()
+
+        this.changeCheckoutRiskMessageBottomSheetStatus.assertNoValues()
+    }
+
+    @Test
     fun testShowUpdatePaymentSuccess_whenFixingPaymentMethod() {
         val testData = setUpBackedNoRewardTestData()
         val backedProject = testData.project
@@ -2011,17 +2042,16 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testShowPledgeSuccess_whenNoReward() {
         val project = ProjectFactory.project()
-        setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), RewardFactory.noReward(), project)
+        setUpEnvironment(environmentForLoggedInUser(UserFactory.user()).toBuilder().optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1)).build(), RewardFactory.noReward(), project)
 
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
         this.vm.inputs.pledgeButtonClicked()
 
         // Successfully pledging with a valid amount should show the thanks page
-        this.pledgeButtonIsEnabled.assertValues(true, false)
-        this.pledgeProgressIsGone.assertValues(false)
+        this.pledgeButtonIsEnabled.assertValues(true)
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
-        this.showPledgeSuccess.assertValueCount(1)
+        this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertNoValues()
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
@@ -2031,17 +2061,16 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     fun testShowPledgeSuccess_whenDigitalReward() {
         val project = ProjectFactory.project()
         val reward = RewardFactory.reward()
-        setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), reward, project)
+        setUpEnvironment(environmentForLoggedInUser(UserFactory.user()).toBuilder().optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1)).build(), reward, project)
 
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
         this.vm.inputs.pledgeButtonClicked()
 
         // Successfully pledging with a valid amount should show the thanks page
-        this.pledgeButtonIsEnabled.assertValues(true, false)
-        this.pledgeProgressIsGone.assertValues(false)
+        this.pledgeButtonIsEnabled.assertValues(true)
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
-        this.showPledgeSuccess.assertValueCount(1)
+        this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertNoValues()
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
@@ -2053,6 +2082,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val reward = RewardFactory.rewardWithShipping()
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
             .toBuilder()
+            .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1))
             .currentUser(MockCurrentUser(UserFactory.user()))
             .build()
         setUpEnvironment(environment, reward, project)
@@ -2062,10 +2092,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.pledgeButtonClicked()
 
         // Successfully pledging with a valid amount should show the thanks page
-        this.pledgeButtonIsEnabled.assertValues(true, false)
-        this.pledgeProgressIsGone.assertValues(false)
+        this.pledgeButtonIsEnabled.assertValues(true)
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
-        this.showPledgeSuccess.assertValueCount(1)
+        this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertNoValues()
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
@@ -2076,6 +2105,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         val environment = environmentForLoggedInUser(UserFactory.user())
             .toBuilder()
+            .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1))
             .apolloClient(object : MockApolloClient() {
                 override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
                     return Observable.error(Throwable("error"))
@@ -2088,6 +2118,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.pledgeButtonClicked()
 
+        this.pledgeButtonIsEnabled.assertValues(true)
+        this.pledgeProgressIsGone.assertNoValues()
+        this.showPledgeSuccess.assertNoValues()
+        this.showPledgeError.assertNoValues()
+
+        this.vm.inputs.onRiskManagementConfirmed()
+
         this.pledgeButtonIsEnabled.assertValues(true, false, true)
         this.pledgeProgressIsGone.assertValues(false, true)
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
@@ -2095,7 +2132,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeError.assertValueCount(1)
         this.showSCAFlow.assertNoValues()
 
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValues(
+            EventName.PAGE_VIEWED.eventName,
+            EventName.CTA_CLICKED
+                .eventName,
+            EventName.CTA_CLICKED.eventName
+        )
     }
 
     @Test
@@ -2103,6 +2145,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         val environment = environmentForLoggedInUser(UserFactory.user())
             .toBuilder()
+            .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1))
             .apolloClient(object : MockApolloClient() {
                 override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
                     return Observable.just(CheckoutFactory.requiresAction(true))
@@ -2115,6 +2158,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.pledgeButtonClicked()
 
+        this.pledgeButtonIsEnabled.assertValues(true)
+        this.pledgeProgressIsGone.assertNoValues()
+        this.showPledgeSuccess.assertNoValues()
+        this.showPledgeError.assertNoValues()
+
+        this.vm.inputs.onRiskManagementConfirmed()
+
         this.pledgeButtonIsEnabled.assertValues(true, false)
         this.pledgeProgressIsGone.assertValue(false)
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
@@ -2122,7 +2172,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeError.assertNoValues()
         this.showSCAFlow.assertValueCount(1)
 
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, EventName.CTA_CLICKED.eventName)
 
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.SUCCEEDED)
 
@@ -2135,6 +2185,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         val environment = environmentForLoggedInUser(UserFactory.user())
             .toBuilder()
+            .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1))
             .apolloClient(object : MockApolloClient() {
                 override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
                     return Observable.just(CheckoutFactory.requiresAction(true))
@@ -2147,6 +2198,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeButtonIsEnabled.assertValues(true)
 
         this.vm.inputs.pledgeButtonClicked()
+
+        this.pledgeButtonIsEnabled.assertValues(true)
+        this.pledgeProgressIsGone.assertNoValues()
+        this.showPledgeSuccess.assertNoValues()
+        this.showPledgeError.assertNoValues()
+
+        this.vm.inputs.onRiskManagementConfirmed()
 
         this.pledgeButtonIsEnabled.assertValues(true, false)
         this.pledgeProgressIsGone.assertValue(false)
@@ -2163,7 +2221,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertValueCount(1)
 
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -2171,6 +2229,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         val environment = environmentForLoggedInUser(UserFactory.user())
             .toBuilder()
+            .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1))
             .apolloClient(object : MockApolloClient() {
                 override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
                     return Observable.just(CheckoutFactory.requiresAction(true))
@@ -2182,6 +2241,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
         this.vm.inputs.pledgeButtonClicked()
+
+        this.pledgeButtonIsEnabled.assertValues(true)
+        this.pledgeProgressIsGone.assertNoValues()
+        this.showPledgeSuccess.assertNoValues()
+        this.showPledgeError.assertNoValues()
+
+        this.vm.inputs.onRiskManagementConfirmed()
 
         this.pledgeButtonIsEnabled.assertValues(true, false)
         this.pledgeProgressIsGone.assertValues(false)
@@ -2198,7 +2264,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertValueCount(1)
 
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test

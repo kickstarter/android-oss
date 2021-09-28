@@ -975,4 +975,11 @@
     <item name="android:textColor">@color/kds_support_400</item>
   </style>
 
+  <style name="BottomSheetDialogStyle" parent="Theme.Design.Light.BottomSheetDialog">
+    <item name="bottomSheetStyle">@style/bottomSheetBackground</item>
+  </style>
+
+  <style name="bottomSheetBackground" parent="Widget.Design.BottomSheet.Modal">
+    <item name="android:background">@drawable/rect_bottom_sheet_white_rounded</item>
+  </style>
 </resources>

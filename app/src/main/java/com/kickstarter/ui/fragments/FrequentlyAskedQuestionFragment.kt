@@ -42,6 +42,14 @@ class FrequentlyAskedQuestionFragment : BaseFragment<FrequentlyAskedQuestionView
                 binding?.fqaRecyclerView?.isGone = it.isEmpty()
                 fqaAdapter.takeData(it)
             }
+
+        this.viewModel.outputs.bindEmptyState()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                binding?.answerEmptyStateTv?.isVisible = true
+                binding?.fqaRecyclerView?.isGone = true
+            }
     }
 
     private fun setupRecyclerView() {

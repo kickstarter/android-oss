@@ -16,6 +16,7 @@ interface FrequentlyAskedQuestionViewModel {
     interface Outputs {
         /** Emits the current list [ProjectFaq]. */
         fun projectFaqList(): Observable<List<ProjectFaq>>
+        fun bindEmptyState(): Observable<Void>
     }
 
     class ViewModel(@NonNull val environment: Environment) :
@@ -25,17 +26,27 @@ interface FrequentlyAskedQuestionViewModel {
         val outputs: Outputs = this
 
         private val projectFaqList = BehaviorSubject.create<List<ProjectFaq>>()
+        private val bindEmptyState = BehaviorSubject.create<Void>()
 
         init {
-            arguments()
+           val projectFaqList = arguments()
                 .map { it.getParcelableArrayList<ProjectFaq>(ArgumentsKey.PROJECT_QUESTIONS_ANSWERS) }
                 .map { it?.toList() }
                 .map { requireNotNull(it) }
+
+            projectFaqList
+                .filter { it.isNotEmpty() }
                 .compose(bindToLifecycle())
                 .subscribe { this.projectFaqList.onNext(it) }
+            projectFaqList
+                .filter { it.isNullOrEmpty() }
+               .compose(bindToLifecycle())
+                .subscribe { this.bindEmptyState.onNext(null) }
         }
 
         @NonNull
         override fun projectFaqList(): Observable<List<ProjectFaq>> = this.projectFaqList
+        @NonNull
+        override fun bindEmptyState(): Observable<Void> = this.bindEmptyState
     }
 }

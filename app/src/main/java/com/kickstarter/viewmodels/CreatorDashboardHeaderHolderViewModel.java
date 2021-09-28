@@ -7,7 +7,10 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.models.OptimizelyFeature;
+import com.kickstarter.libs.utils.ExperimentData;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
@@ -67,6 +70,9 @@ public interface CreatorDashboardHeaderHolderViewModel {
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
 
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectPageActivity}. */
+    Observable<Pair<Project, RefTag>> startProjectPageActivity();
+
     /** Emits the time remaining for current project with no units. */
     Observable<String> timeRemainingText();
 
@@ -76,11 +82,13 @@ public interface CreatorDashboardHeaderHolderViewModel {
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardHeaderViewHolder> implements Inputs, Outputs {
     private final CurrentUserType currentUser;
+    private final ExperimentsClientType optimizely;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       this.currentUser = environment.currentUser();
+      this.optimizely = environment.optimizely();
 
       final Observable<User> user = this.currentUser.observable();
 
@@ -132,7 +140,22 @@ public interface CreatorDashboardHeaderHolderViewModel {
         .map(p -> Pair.create(p, RefTag.dashboard()))
         .compose(bindToLifecycle());
 
+      final  Observable<Boolean> isProjectPageEnabled =
+        user
+         .map(u -> this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2, new ExperimentData(u, null, null)));
+
       this.startProjectActivity = this.currentProject
+        .compose(combineLatestPair(isProjectPageEnabled))
+        .filter(it -> !it.second)
+        .map(it -> it.first)
+        .compose(takeWhen(this.projectButtonClicked))
+        .map(p -> Pair.create(p, RefTag.dashboard()))
+        .compose(bindToLifecycle());
+
+      this.startProjectPageActivity = this.currentProject
+        .compose(combineLatestPair(isProjectPageEnabled))
+        .filter(it -> it.second)
+        .map(it -> it.first)
         .compose(takeWhen(this.projectButtonClicked))
         .map(p -> Pair.create(p, RefTag.dashboard()))
         .compose(bindToLifecycle());
@@ -163,6 +186,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
     private final Observable<String> projectNameTextViewText;
     private final Observable<Pair<Project, RefTag>> startMessageThreadsActivity;
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
+    private final Observable<Pair<Project, RefTag>> startProjectPageActivity;
     private final Observable<String> timeRemainingText;
     private final Observable<Boolean> viewProjectButtonIsGone;
 
@@ -205,6 +229,9 @@ public interface CreatorDashboardHeaderHolderViewModel {
     }
     @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
       return this.startProjectActivity;
+
+    }    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectPageActivity() {
+      return this.startProjectPageActivity;
     }
     @Override public @NonNull Observable<String> timeRemainingText() {
       return this.timeRemainingText;

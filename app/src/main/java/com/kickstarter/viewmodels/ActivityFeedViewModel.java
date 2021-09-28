@@ -207,7 +207,7 @@ public interface ActivityFeedViewModel {
         .compose(combineLatestPair(isProjectPageEnabled))
         .filter(it -> it.second)
         .compose(bindToLifecycle())
-        .subscribe(it -> this.startFixPledge.onNext(it.first));
+        .subscribe(it -> this.startFixPledgeProjectPage.onNext(it.first));
 
       this.managePledgeClicked
         .compose(combineLatestPair(isProjectPageEnabled))

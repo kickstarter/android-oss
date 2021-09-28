@@ -32,6 +32,7 @@ import com.kickstarter.ui.activities.ActivityFeedActivity
 import com.kickstarter.ui.activities.EditorialActivity
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.activities.ProjectActivity
+import com.kickstarter.ui.activities.ProjectPageActivity
 import com.kickstarter.ui.activities.UpdateActivity
 import com.kickstarter.ui.adapters.DiscoveryAdapter
 import com.kickstarter.ui.data.Editorial
@@ -126,6 +127,11 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
             .compose(Transformers.observeForUI())
             .subscribe { startProjectActivity(it.first, it.second) }
 
+        this.viewModel.outputs.startProjectPageActivity()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { startProjectPageActivity(it.first, it.second) }
+
         this.viewModel.outputs.showLoginTout()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
@@ -212,6 +218,16 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
 
     private fun startProjectActivity(project: Project, refTag: RefTag) {
         val intent = Intent(activity, ProjectActivity::class.java)
+            .putExtra(IntentKey.PROJECT, project)
+            .putExtra(IntentKey.REF_TAG, refTag)
+        startActivity(intent)
+        context?.let {
+            TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
+        }
+    }
+
+    private fun startProjectPageActivity(project: Project, refTag: RefTag) {
+        val intent = Intent(activity, ProjectPageActivity::class.java)
             .putExtra(IntentKey.PROJECT, project)
             .putExtra(IntentKey.REF_TAG, refTag)
         startActivity(intent)

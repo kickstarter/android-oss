@@ -1,4 +1,4 @@
-package com.kickstarter.viewmodels
+package com.kickstarter.viewmodels.projectpage
 
 import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
@@ -6,7 +6,7 @@ import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.ProjectFaq
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.fragments.ProjectFaqFragment
+import com.kickstarter.ui.fragments.projectpage.ProjectFaqFragment
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -21,7 +21,10 @@ class ProjectFaqViewModel {
         fun projectFaqs(): Observable<List<ProjectFaq>>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<ProjectFaqFragment>(environment), Inputs, Outputs {
+    class ViewModel(@NonNull val environment: Environment) :
+        FragmentViewModel<ProjectFaqFragment>(environment),
+        Inputs,
+        Outputs {
         val inputs: Inputs = this
         val outputs: Outputs = this
 

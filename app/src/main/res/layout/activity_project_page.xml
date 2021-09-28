@@ -48,8 +48,14 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
+
             <com.google.android.material.tabs.TabItem
                 android:text="@string/Overview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <com.google.android.material.tabs.TabItem
+                android:text="@string/Campaign"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -57,6 +63,12 @@
                 android:text="@string/Faq"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
+
+            <com.google.android.material.tabs.TabItem
+                android:text="@string/Environmental_commitment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
         </com.google.android.material.tabs.TabLayout>
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/project_pager"

@@ -30,6 +30,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber

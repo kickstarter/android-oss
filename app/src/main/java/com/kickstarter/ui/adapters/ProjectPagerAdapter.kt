@@ -5,9 +5,12 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.kickstarter.libs.Configure
+import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.fragments.ProjectFaqFragment
-import com.kickstarter.ui.fragments.ProjectOverviewFragment
+import com.kickstarter.ui.fragments.projectpage.ProjectCampaignFragment
+import com.kickstarter.ui.fragments.projectpage.ProjectEnvironmentalCommitmentsFragment
+import com.kickstarter.ui.fragments.projectpage.ProjectFaqFragment
+import com.kickstarter.ui.fragments.projectpage.ProjectOverviewFragment
 
 class ProjectPagerAdapter(
     private val fragmentManager: FragmentManager,
@@ -15,22 +18,28 @@ class ProjectPagerAdapter(
 ) :
     FragmentStateAdapter(fragmentManager, lifecycle) {
 
-    override fun getItemCount(): Int = 2
+    override fun getItemCount(): Int = ProjectPagerTabs.values().size
 
-    // TODO: improve when with an enum type
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> return ProjectOverviewFragment.newInstance(position)
-            1 -> return ProjectFaqFragment.newInstance(position)
+            ProjectPagerTabs.OVERVIEW.ordinal -> return ProjectOverviewFragment.newInstance(position)
+            ProjectPagerTabs.FAQS.ordinal -> return ProjectFaqFragment.newInstance(position)
+            ProjectPagerTabs.CAMPAIGN.ordinal -> return ProjectCampaignFragment.newInstance(position)
+            ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal -> return ProjectEnvironmentalCommitmentsFragment.newInstance(position)
             else -> ProjectOverviewFragment.newInstance(position)
         }
     }
 
+    /**
+     * Will update all the fragments in tha ViewPager with the given ProjectData
+     *
+     * @param projectData
+     */
     fun updatedWithProjectData(projectData: ProjectData) {
-        fragmentManager.fragments.forEach { fragment ->
-            // - fragmentManager.fragments will iterate over all fragments added, but only the ones on the
-            // - projectTabLayout implement the Configure interface
-            if (fragment is Configure) fragment.configureWith(projectData)
+        // - fragmentManager.fragments will iterate over all fragments, we are just interested
+        // here in those who implement the Configure interface
+        fragmentManager.fragments.filter { fragment -> fragment is Configure }.forEach { fragment ->
+            (fragment as Configure).configureWith(projectData)
         }
     }
 }

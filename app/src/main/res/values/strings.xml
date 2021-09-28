@@ -81,4 +81,6 @@
   <string name="you" formatted="false">You</string>
     <string name="Overview">Oververview</string>
   <string name="Faq">Faq</string>
+    <string name="Campaign">Campaign</string>
+  <string name="Environmental_commitment">EnvironmentalCommitment</string>
 </resources>

@@ -59,7 +59,7 @@
 
             <TextView
                 android:id="@+id/answer_tv"
-                style="@style/BodyPrimary"
+                style="@style/answerStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/grid_3"

@@ -17,6 +17,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/answer_empty_state_tv"
+        style="@style/answerStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start|center_vertical"
+        android:layout_marginTop="@dimen/grid_4"
+        android:layout_marginBottom="@dimen/grid_7"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@+id/question_tv"
+        tools:text="FPO: No questions yet FPO" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fqa_RecyclerView"
@@ -29,5 +42,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/question_tv"
         tools:itemCount="4"
+        android:visibility="gone"
         tools:listitem="@layout/item_frequently_asked_question_card" />
 </androidx.constraintlayout.widget.ConstraintLayout>

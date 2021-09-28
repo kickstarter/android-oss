@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import com.kickstarter.databinding.FragmentFrequentlyAskedQuestionBinding
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
@@ -35,7 +37,11 @@ class FrequentlyAskedQuestionFragment : BaseFragment<FrequentlyAskedQuestionView
         this.viewModel.outputs.projectFaqList()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { fqaAdapter.takeData(it) }
+            .subscribe {
+                binding?.answerEmptyStateTv?.isVisible = it.isEmpty()
+                binding?.fqaRecyclerView?.isGone = it.isEmpty()
+                fqaAdapter.takeData(it)
+            }
     }
 
     private fun setupRecyclerView() {

@@ -53,6 +53,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> showLoginTout = new TestSubscriber<>();
   private final TestSubscriber<Editorial> startEditorialActivity = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, RefTag>> startProjectActivity = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Project, RefTag>> startProjectPageActivity = new TestSubscriber<>();
   private final TestSubscriber<Activity> startUpdateActivity = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
@@ -67,6 +68,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.showLoginTout().subscribe(this.showLoginTout);
     this.vm.outputs.startEditorialActivity().subscribe(this.startEditorialActivity);
     this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
+    this.vm.outputs.startProjectPageActivity().subscribe(this.startProjectPageActivity);
     this.vm.outputs.startUpdateActivity().subscribe(this.startUpdateActivity);
   }
 
@@ -425,6 +427,35 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testStartProjectActivity_whenViewingFeatureFlagOn_shouldEmitProjectPageActivity() {
+    final CurrentUserType currentUser = new MockCurrentUser();
+    final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
+      @Override
+      public boolean isFeatureEnabled(final @NotNull OptimizelyFeature.Key feature, final @NotNull ExperimentData experimentData) {
+        return true;
+      }
+    };
+
+    this.setUpEnvironment(this.environment().toBuilder().currentUser(currentUser).optimizely(mockExperimentsClientType).build());
+
+    // Load editorial params and root categories from activity.
+    final DiscoveryParams editorialParams = DiscoveryParams.builder()
+            .tagId(Editorial.GO_REWARDLESS.getTagId())
+            .sort(DiscoveryParams.Sort.MAGIC)
+            .build();
+    this.vm.inputs.paramsFromActivity(editorialParams);
+    this.vm.inputs.rootCategories(CategoryFactory.rootCategories());
+
+    // Click on project
+    final Project project = ProjectFactory.project();
+    this.vm.inputs.projectCardViewHolderClicked(project);
+
+    this.startProjectActivity.assertNoValues();
+    this.startProjectPageActivity.assertValue(Pair.create(project, RefTag.collection(518)));
+    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CARD_CLICKED.getEventName(), EventName.CTA_CLICKED.getEventName());
+  }
+
+  @Test
   public void testStartProjectActivity_whenViewingAllProjects() {
     setUpEnvironment(environment());
 
@@ -436,6 +467,30 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectCardViewHolderClicked(project);
 
     this.startProjectActivity.assertValue(Pair.create(project, RefTag.discovery()));
+    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CARD_CLICKED.getEventName(), EventName.CTA_CLICKED.getEventName());
+  }
+
+  @Test
+  public void testStartProjectActivity_whenFeatureFlagEnabled_shouldEmitProjectPageActivity() {
+    final CurrentUserType currentUser = new MockCurrentUser();
+    final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
+      @Override
+      public boolean isFeatureEnabled(final @NotNull OptimizelyFeature.Key feature, final @NotNull ExperimentData experimentData) {
+        return true;
+      }
+    };
+
+    this.setUpEnvironment(this.environment().toBuilder().currentUser(currentUser).optimizely(mockExperimentsClientType).build());
+
+    // Load initial params and root categories from activity.
+    setUpInitialHomeAllProjectsParams();
+
+    // Click on project
+    final Project project = ProjectFactory.project();
+    this.vm.inputs.projectCardViewHolderClicked(project);
+
+    this.startProjectActivity.assertNoValues();
+    this.startProjectPageActivity.assertValue(Pair.create(project, RefTag.discovery()));
     this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CARD_CLICKED.getEventName(), EventName.CTA_CLICKED.getEventName());
   }
 

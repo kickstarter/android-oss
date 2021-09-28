@@ -109,6 +109,9 @@ public interface DiscoveryFragmentViewModel {
     /** Emits a Project and RefTag pair when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
 
+    /** Emits a Project and RefTag pair when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
+    Observable<Pair<Project, RefTag>> startProjectPageActivity();
+
     /** Emits an activity when we should start the {@link com.kickstarter.ui.activities.UpdateActivity}. */
     Observable<Activity> startUpdateActivity();
   }
@@ -211,10 +214,26 @@ public interface DiscoveryFragmentViewModel {
       this.startUpdateActivity = this.activityUpdateClick;
       this.showLoginTout = this.discoveryOnboardingLoginToutClick;
 
+      final  Observable<Boolean> isProjectPageEnabled =
+              currentUser.observable()
+                      .map(user -> this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2, new ExperimentData(user, null, null)));
+
+
       this.startProjectActivity = Observable.merge(
         activitySampleProjectClick,
         projectCardClick
-      );
+      )
+        .compose(combineLatestPair(isProjectPageEnabled))
+        .filter(it -> !it.second)
+        .map(it -> it.first);
+
+      this.startProjectPageActivity = Observable.merge(
+        activitySampleProjectClick,
+        projectCardClick
+      )
+        .compose(combineLatestPair(isProjectPageEnabled))
+        .filter(it -> it.second)
+        .map(it -> it.first);
 
       this.clearPage
         .compose(bindToLifecycle())
@@ -358,6 +377,7 @@ public interface DiscoveryFragmentViewModel {
     private final BehaviorSubject<Boolean> shouldShowOnboardingView = BehaviorSubject.create();
     private final PublishSubject<Editorial> startEditorialActivity = PublishSubject.create();
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
+    private final Observable<Pair<Project, RefTag>> startProjectPageActivity;
     private final Observable<Activity> startUpdateActivity;
     private final BehaviorSubject<Void> startHeartAnimation = BehaviorSubject.create();
 
@@ -442,6 +462,9 @@ public interface DiscoveryFragmentViewModel {
     }
     @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
       return this.startProjectActivity;
+    }
+    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectPageActivity() {
+      return this.startProjectPageActivity;
     }
     @Override public @NonNull Observable<Boolean> shouldShowOnboardingView() {
       return this.shouldShowOnboardingView;

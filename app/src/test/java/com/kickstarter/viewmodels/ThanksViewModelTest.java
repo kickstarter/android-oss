@@ -11,7 +11,6 @@ import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.preferences.MockBooleanPreference;
 import com.kickstarter.libs.utils.EventName;
-import com.kickstarter.libs.utils.ExperimentData;
 import com.kickstarter.mock.MockExperimentsClientType;
 import com.kickstarter.mock.factories.CategoryFactory;
 import com.kickstarter.mock.factories.CheckoutDataFactory;

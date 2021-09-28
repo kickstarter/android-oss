@@ -38,7 +38,7 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.activities.ProjectActivity
+import com.kickstarter.ui.activities.ProjectPageActivity
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
@@ -131,6 +131,9 @@ interface ProjectPageViewModel {
 
         /** Call when the view rewards option is clicked.  */
         fun viewRewardsClicked()
+
+        /** Call when some tab on the Tablayout has been pressed  */
+        fun tabSelected()
     }
 
     interface Outputs {
@@ -252,7 +255,7 @@ interface ProjectPageViewModel {
         fun updateFragments(): Observable<ProjectData>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ProjectActivity>(environment), Inputs, Outputs {
+    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ProjectPageActivity>(environment), Inputs, Outputs {
         private val client: ApiClientType = environment.apiClient()
         private val cookieManager: CookieManager = environment.cookieManager()
         private val currentUser: CurrentUserType = environment.currentUser()
@@ -328,7 +331,7 @@ interface ProjectPageViewModel {
         private val startThanksActivity = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
         private val startVideoActivity = PublishSubject.create<Project>()
         private val updateFragments = BehaviorSubject.create<ProjectData>()
-        private val updatedProject = PublishSubject.create<Project>()
+        private val tabSelected = PublishSubject.create<Any>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -480,7 +483,9 @@ interface ProjectPageViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(this.showSavedPrompt)
 
-            val currentProjectData = Observable.combineLatest<RefTag, RefTag, Project, ProjectData>(refTag, cookieRefTag, currentProject) { refTagFromIntent, refTagFromCookie, project -> projectData(refTagFromIntent, refTagFromCookie, project) }
+            val currentProjectData = Observable.combineLatest<RefTag, RefTag, Project, ProjectData>(refTag, cookieRefTag, currentProject) { refTagFromIntent, refTagFromCookie, project ->
+                projectData(refTagFromIntent, refTagFromCookie, project)
+            }
 
             currentProjectData
                 .compose(bindToLifecycle())
@@ -671,6 +676,10 @@ interface ProjectPageViewModel {
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(this.managePledgeMenu)
+
+            projectData
+                .compose(takeWhen(this.tabSelected))
+                .subscribe(this.projectData)
 
             val backedProject = currentProject
                 .filter { it.isBacking }
@@ -933,6 +942,10 @@ interface ProjectPageViewModel {
                 .toBuilder()
                 .refTagFromCookie(RefTagUtils.storedCookieRefTagForProject(data.project(), cookieManager, sharedPreferences))
                 .build()
+        }
+
+        override fun tabSelected() {
+            this.tabSelected.onNext(null)
         }
 
         override fun blurbTextViewClicked() {

@@ -87,7 +87,7 @@ public interface SearchViewModel {
 
       final Observable<DiscoveryParams> popularParams = this.search
         .filter(ObjectUtils::isNotNull)
-        .filter(StringExt::isTrimmedEmpty)
+        .filter($this$isTrimmedEmpty -> StringExt.isTrimmedEmpty($this$isTrimmedEmpty))
         .map(__ -> defaultParams)
         .startWith(defaultParams);
 

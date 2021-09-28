@@ -24,6 +24,7 @@ import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.transformations.CropSquareTransformation;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.extensions.IntentExtKt;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.Update;
@@ -381,7 +382,7 @@ public final class PushNotifications {
   private @NonNull PendingIntent projectUpdateContentIntent(final @NonNull PushNotificationEnvelope envelope,
     final @NonNull Update update, final @NonNull String projectParam) {
 
-    final Intent projectIntent = new Intent(this.context, this.experimentsClientType.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2) ? ProjectPageActivity.class : ProjectActivity.class)
+    final Intent projectIntent = IntentExtKt.projectPageFeatureFlag(new Intent(), this.context, this.experimentsClientType.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2))
       .putExtra(IntentKey.PROJECT_PARAM, projectParam)
       .putExtra(IntentKey.REF_TAG, RefTag.push());
 

@@ -923,6 +923,39 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testCheckoutProperties_whenConfirmPledge() {
+        val project = project()
+        val user = user()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val segment = AnalyticEvents(listOf(client))
+
+        val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
+
+        segment.trackPledgeConfirmCTA(
+            CheckoutDataFactory.checkoutData(20.0, 30.0),
+            PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward(), listOfAddons())
+        )
+
+        assertSessionProperties(user)
+        assertProjectProperties(project)
+        assertContextProperties()
+        assertPledgeProperties()
+        assertCheckoutProperties()
+        assertUserProperties(false)
+
+        val expectedProperties = this.propertiesTest.value
+        assertNull(expectedProperties["checkout_id"])
+        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
+        assertEquals(false, expectedProperties["project_user_has_watched"])
+        assertEquals(false, expectedProperties["project_user_is_backer"])
+        assertEquals(false, expectedProperties["project_user_is_project_creator"])
+
+        this.segmentTrack.assertValues(CTA_CLICKED.eventName)
+    }
+
+    @Test
     fun testManagePledgePageViewed() {
         val project = ProjectFactory.backedProject()
             .toBuilder()

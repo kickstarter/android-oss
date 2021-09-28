@@ -63,7 +63,12 @@ import com.stripe.android.ApiResultCallback
 import com.stripe.android.SetupIntentResult
 
 @RequiresFragmentViewModel(PledgeFragmentViewModel.ViewModel::class)
-class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), RewardCardAdapter.Delegate, ShippingRulesAdapter.Delegate {
+class PledgeFragment :
+    BaseFragment<PledgeFragmentViewModel.ViewModel>(),
+    RewardCardAdapter
+    .Delegate,
+    ShippingRulesAdapter.Delegate,
+    CheckoutRiskMessageFragment.Delegate {
 
     interface PledgeDelegate {
         fun pledgePaymentSuccessfullyUpdated()
@@ -598,16 +603,30 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
         binding?.pledgeSectionBonusSupport?.increaseBonus?.setOnClickListener { this.viewModel.inputs.increaseBonusButtonClicked() }
 
-        binding?.pledgeSectionFooter?.pledgeFooterPledgeButton?.let {
-            RxView.clicks(it)
-                .compose(bindToLifecycle())
-                .subscribe { this.viewModel.inputs.pledgeButtonClicked() }
+        binding?.pledgeSectionFooter?.pledgeFooterPledgeButton?.setOnClickListener {
+            this.viewModel.inputs.pledgeButtonClicked()
         }
 
         binding?.pledgeSectionFooter?.pledgeFooterContinueButton?.let {
             RxView.clicks(it)
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.continueButtonClicked() }
+        }
+
+        this.viewModel.outputs.changeCheckoutRiskMessageBottomSheetStatus()
+            .filter {
+                it
+            }
+            .compose(observeForUI())
+            .compose(bindToLifecycle())
+            .subscribe {
+                showRiskMessageDialog()
+            }
+    }
+
+    private fun showRiskMessageDialog() {
+        activity?.supportFragmentManager?.let {
+            CheckoutRiskMessageFragment.newInstance(this).show(it.beginTransaction(), "CheckoutRiskMessageFragment")
         }
     }
 
@@ -893,6 +912,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         } else {
             rewardCardAdapter?.resetSelectedPosition()
         }
+    }
+
+    override fun onDialogConfirmButtonClicked() {
+        viewModel.inputs.onRiskManagementConfirmed()
     }
 
     companion object {

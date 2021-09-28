@@ -67,6 +67,7 @@
 バッカー</string>
   <string name="Backers_count_separator_backers_zero" formatted="false">%{backers_count} バッカー</string>
   <string name="Backers_have_signed_up_to_help_kickstarter_creators_bring_their_ideas_to_life" formatted="false">ものバッカーが Kickstarter クリエイター達のアイデア実現を支援すべく Kickstarter にサインアップしています。</string>
+  <string name="Backing_means_supporting" formatted="false">「バックすること」とは、クリエイティブなプロジェクトを、その結果に関係なく支援することを意味します。</string>
   <string name="Become_a_backer_to_leave_a_comment" formatted="false">コメントを残すためにバッカーになる。</string>
   <string name="Big_Kickstarter_news_and_events_near_you" formatted="false">Kickstarter に関するビッグニュースやお近くのイベントについて、年に数回お届け。</string>
   <string name="Big_Kickstarter_news_plus_occasional_projects_and_events_chosen_just_for_you" formatted="false">Kickstarter のニュースに加え、あなたにピッタリのおすすめプロジェクトやイベントを随時お送りします.</string>
@@ -76,6 +77,7 @@
   <string name="Bookmarks" formatted="false">ブックマーク</string>
   <string name="Bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトに生命を。</string>
   <string name="By_creating_an_account_you_agree_to_Kickstarters_Terms_of_Use_and_Privacy_Policy" formatted="false">アカウントを作成することで、Kickstarter の &lt;a href="%{terms_of_use_link}">利用規約&lt;/a> と&lt;a href="%{privacy_policy_link}">プライバシーポリシー&lt;/a>に同意したことになります。</string>
+  <string name="By_pledging_you_acknowledge" formatted="false">プレッジすると、リワードや払い戻しが Kickstarter またはクリエイターによって保証されていないことを理解したものとみなされます。</string>
   <string name="By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">プレッジをすることにより、Kickstarter の &lt;a href="%{terms_of_use_link}">利用規約&lt;/a>、&lt;a href="%{privacy_policy_link}">プライバシーポリシー&lt;/a>、&lt;a href="%{cookie_policy_link}">Cookie ポリシー&lt;/a>に同意したとみなされます。</string>
   <string name="By_signing_up_you_agree_to_our_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">サインアップすることで、Kickstarter の利用規約、プライバシーポリシー、Cookie ポリシーに同意するものとみなされます。当社のポリシーでは、Kickstarter のサービスとサイトを配信、改善、促進するために、同社がお客様のデータをどのように使用しているか、そしてそのようなデータ使用を管理するためのお客様の権利について説明しています。</string>
   <string name="By_signing_up_youll_log_in_to_Kickstarter_using_your_Facebook_account" formatted="false">サインアップすることで、Kickstarter に Facebook アカウントを使ってログインすることになります。Facebook を使用したくない場合は、このアプリを再起動して別のオプションをお選びください。</string>
@@ -285,6 +287,7 @@
   <string name="Hide_password" formatted="false">パスワードを非表示にする</string>
   <string name="Home" formatted="false">ホーム</string>
   <string name="How_backers_found_your_project" formatted="false">バッカ―があなたのプロジェクトを見つけた経緯</string>
+  <string name="I_understand" formatted="false">理解しました</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">プロジェクトをサポートしたい</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">プロジェクトがファンディングゴールに到達すると、%{project_deadline} に請求されます。</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" formatted="false">プロジェクトがファンディングゴールに到達すると、%{project_deadline} に %{total} の請求が行われます。</string>
@@ -507,6 +510,7 @@
   <string name="Reward_received" formatted="false">リワードを受け取りました</string>
   <string name="Reward_selected" formatted="false">選択中のリワード</string>
   <string name="Reward_surveys" formatted="false">リワードのサーベイ</string>
+  <string name="Rewards_arent_guaranteed" formatted="false">リワードは保証されていません。</string>
   <string name="Rewards_count_rewards_colon_few" formatted="false">%{rewards_count} 種類のリワード</string>
   <string name="Rewards_count_rewards_colon_many" formatted="false">%{rewards_count} 種類のリワード</string>
   <string name="Rewards_count_rewards_colon_one" formatted="false">%{rewards_count} 種類のリワード</string>
@@ -711,7 +715,7 @@
   <string name="Yes_continue" formatted="false">はい、続行します</string>
   <string name="Yes_remove" formatted="false">はい、削除します</string>
   <string name="Yes_turn_off" formatted="false">はい、オフにします</string>
-  <string name="You" formatted="false">You</string>
+  <string name="You" formatted="false">あなた</string>
   <string name="You_Launched" formatted="false">発表されました！</string>
   <string name="You_backed" formatted="false">あなたがバックしたプロジェクト</string>
   <string name="You_backed_this_project" formatted="false">バック済</string>

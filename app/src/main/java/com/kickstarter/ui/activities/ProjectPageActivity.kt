@@ -18,10 +18,9 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
-import com.kickstarter.databinding.ActivityProjectBinding
+import com.kickstarter.databinding.ActivityProjectPageBinding
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.BaseFragment
@@ -33,10 +32,10 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.data.PledgeData
@@ -49,18 +48,17 @@ import com.kickstarter.ui.fragments.CancelPledgeFragment
 import com.kickstarter.ui.fragments.NewCardFragment
 import com.kickstarter.ui.fragments.PledgeFragment
 import com.kickstarter.ui.fragments.RewardsFragment
-import com.kickstarter.viewmodels.ProjectViewModel
+import com.kickstarter.viewmodels.ProjectPageViewModel
 import com.stripe.android.view.CardInputWidget
 import rx.android.schedulers.AndroidSchedulers
 
-@RequiresActivityViewModel(ProjectViewModel.ViewModel::class)
-class ProjectActivity :
-    BaseActivity<ProjectViewModel.ViewModel>(),
+@RequiresActivityViewModel(ProjectPageViewModel.ViewModel::class)
+class ProjectPageActivity :
+    BaseActivity<ProjectPageViewModel.ViewModel>(),
     CancelPledgeFragment.CancelPledgeDelegate,
     NewCardFragment.OnCardSavedListener,
     PledgeFragment.PledgeDelegate,
     BackingFragment.BackingDelegate {
-    private lateinit var adapter: ProjectAdapter
     private lateinit var ksString: KSString
 
     private val projectShareLabelString = R.string.project_accessibility_button_share_label
@@ -68,11 +66,11 @@ class ProjectActivity :
     private val projectStarConfirmationString = R.string.project_star_confirmation
 
     private val animDuration = 200L
-    private lateinit var binding: ActivityProjectBinding
+    private lateinit var binding: ActivityProjectPageBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityProjectBinding.inflate(layoutInflater)
+        binding = ActivityProjectPageBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
         this.ksString = environment().ksString()
@@ -81,7 +79,7 @@ class ProjectActivity :
         if (viewTreeObserver.isAlive) {
             viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    this@ProjectActivity.viewModel.inputs.onGlobalLayout()
+                    this@ProjectPageActivity.viewModel.inputs.onGlobalLayout()
                     binding.pledgeContainerLayout.pledgeContainerRoot.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
             })
@@ -99,10 +97,6 @@ class ProjectActivity :
                 }
             }
         }
-
-        this.adapter = ProjectAdapter(this.viewModel)
-        binding.projectRecyclerView.adapter = this.adapter
-        binding.projectRecyclerView.layoutManager = LinearLayoutManager(this)
 
         this.viewModel.outputs.backingDetailsSubtitle()
             .compose(bindToLifecycle())
@@ -147,7 +141,7 @@ class ProjectActivity :
         this.viewModel.outputs.pledgeActionButtonContainerIsGone()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { ViewUtils.setGone(binding.pledgeContainerLayout.pledgeActionButtonsLayout, it) }
+            .subscribe { binding.pledgeContainerLayout.pledgeActionButtonsLayout.visibility = (!it).toVisibility() }
 
         this.viewModel.outputs.pledgeActionButtonText()
             .compose(bindToLifecycle())
@@ -169,20 +163,15 @@ class ProjectActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { openProjectAndFinish(it) }
 
-        this.viewModel.outputs.projectData()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { renderProject(it) }
-
         this.viewModel.outputs.reloadProjectContainerIsGone()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { ViewUtils.setGone(binding.pledgeContainerLayout.projectRetryLayout.pledgeSheetRetryContainer, it) }
+            .subscribe { binding.pledgeContainerLayout.projectRetryLayout.pledgeSheetRetryContainer.visibility = (!it).toVisibility() }
 
         this.viewModel.outputs.reloadProgressBarIsGone()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { ViewUtils.setGone(binding.pledgeContainerLayout.projectRetryLayout.pledgeSheetProgressBar, it) }
+            .subscribe { binding.pledgeContainerLayout.projectRetryLayout.pledgeSheetProgressBar.visibility = (!it).toVisibility() }
 
         this.viewModel.outputs.scrimIsVisible()
             .compose(bindToLifecycle())
@@ -373,7 +362,6 @@ class ProjectActivity :
 
     override fun onDestroy() {
         super.onDestroy()
-        binding.projectRecyclerView.adapter = null
     }
 
     private fun animateScrimVisibility(show: Boolean) {
@@ -388,13 +376,13 @@ class ProjectActivity :
 
                     override fun onAnimationEnd(animation: Animator?) {
                         if (!show) {
-                            ViewUtils.setGone(binding.pledgeContainerLayout.scrim, true)
+                            binding.pledgeContainerLayout.scrim.visibility = View.GONE
                         }
                     }
 
                     override fun onAnimationStart(animation: Animator?) {
                         if (show) {
-                            ViewUtils.setGone(binding.pledgeContainerLayout.scrim, false)
+                            binding.pledgeContainerLayout.scrim.visibility = View.VISIBLE
                         }
                     }
                 })
@@ -440,12 +428,10 @@ class ProjectActivity :
                     setFragmentsState(expand)
                     if (expand) {
                         binding.pledgeContainerLayout.pledgeActionButtonsLayout.visibility = View.GONE
-                        binding.projectRecyclerView.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                         binding.projectActivityToolbar.toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                         binding.pledgeContainerLayout.pledgeToolbar.requestFocus()
                     } else {
                         binding.pledgeContainerLayout.pledgeContainer.visibility = View.GONE
-                        binding.projectRecyclerView.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
                         binding.projectActivityToolbar.toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
                         if (animate) {
                             binding.projectActivityToolbar.toolbar.requestFocus()
@@ -468,9 +454,7 @@ class ProjectActivity :
 
     private fun setFragmentsState(expand: Boolean) {
         supportFragmentManager.fragments.map { fragment ->
-            if (fragment is BaseFragment<*>) {
-                fragment.setState(expand && fragment.isVisible)
-            }
+            (fragment as BaseFragment<*>).setState(expand && fragment.isVisible)
         }
     }
 
@@ -491,11 +475,6 @@ class ProjectActivity :
 
     private fun pledgeFragment() = supportFragmentManager
         .findFragmentByTag(PledgeFragment::class.java.simpleName) as PledgeFragment?
-
-    private fun renderProject(projectData: ProjectData) {
-        this.adapter.takeProject(projectData)
-        binding.projectRecyclerView.setPadding(0, 0, 0, rewardsSheetGuideline())
-    }
 
     private fun renderProject(backingFragment: BackingFragment, rewardsFragment: RewardsFragment, projectData: ProjectData) {
         rewardsFragment.configureWith(projectData)

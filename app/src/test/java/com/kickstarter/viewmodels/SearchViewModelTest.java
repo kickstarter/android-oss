@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
+
+import kotlin.Triple;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 import rx.schedulers.TestScheduler;
@@ -29,8 +31,8 @@ import rx.schedulers.TestScheduler;
 public class SearchViewModelTest extends KSRobolectricTestCase {
   private SearchViewModel.ViewModel vm;
   private final TestSubscriber<Project> goToProject = new TestSubscriber<>();
-  private final TestSubscriber<Project> goToProjectPage = new TestSubscriber<>();
   private final TestSubscriber<RefTag> goToRefTag = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> isEnabled = new TestSubscriber<>();
   private final TestSubscriber<List<Project>> popularProjects = new TestSubscriber<>();
   private final TestSubscriber<Boolean> popularProjectsPresent = new TestSubscriber<>();
   private final TestSubscriber<List<Project>> searchProjects = new TestSubscriber<>();
@@ -39,9 +41,9 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new SearchViewModel.ViewModel(environment);
 
-    this.vm.outputs.startProjectActivity().map(p -> p.first).subscribe(this.goToProject);
-    this.vm.outputs.startProjectPageActivity().map(p -> p.first).subscribe(this.goToProjectPage);
-    this.vm.outputs.startProjectActivity().map(p -> p.second).subscribe(this.goToRefTag);
+    this.vm.outputs.startProjectActivity().map(Triple::getFirst).subscribe(this.goToProject);
+    this.vm.outputs.startProjectActivity().map(Triple::getSecond).subscribe(this.goToRefTag);
+    this.vm.outputs.startProjectActivity().map(Triple::getThird).subscribe(this.isEnabled);
     this.vm.outputs.popularProjects().subscribe(this.popularProjects);
     this.vm.outputs.searchProjects().subscribe(this.searchProjects);
     this.vm.outputs.popularProjects().map(ps -> ps.size() > 0).subscribe(this.popularProjectsPresent);
@@ -156,6 +158,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     this.goToRefTag.assertValues(RefTag.searchFeatured());
     this.goToProject.assertValues(projects.get(0));
+    this.isEnabled.assertValues(false);
   }
 
   @Test
@@ -188,6 +191,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     this.goToRefTag.assertValues(RefTag.search());
     this.goToProject.assertValues(projects.get(1));
+    this.isEnabled.assertValues(false);
   }
 
   @Test
@@ -220,6 +224,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     this.goToRefTag.assertValues(RefTag.searchPopularFeatured());
     this.goToProject.assertValues(projects.get(0));
+    this.isEnabled.assertValues(false);
   }
 
   @Test
@@ -252,6 +257,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     this.goToRefTag.assertValues(RefTag.searchPopular());
     this.goToProject.assertValues(projects.get(2));
+    this.isEnabled.assertValues(false);
   }
 
   @Test
@@ -291,8 +297,8 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
     this.vm.inputs.projectClicked(projects.get(2));
 
-    this.goToProjectPage.assertValues(projects.get(2));
-    this.goToProject.assertNoValues();
+    this.goToProject.assertValues(projects.get(2));
+    this.isEnabled.assertValues(true);
   }
 
   @Test

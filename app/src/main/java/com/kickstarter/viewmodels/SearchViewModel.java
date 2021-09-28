@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 
+import kotlin.Triple;
 import rx.Observable;
 import rx.Scheduler;
 import rx.subjects.BehaviorSubject;
@@ -58,10 +59,7 @@ public interface SearchViewModel {
     Observable<List<Project>> searchProjects();
 
     /** Emits a project and ref tag when we should start a project activity. */
-    Observable<Pair<Project, RefTag>> startProjectActivity();
-
-    /** Emits a project and ref tag when we should start a project page activity. */
-    Observable<Pair<Project, RefTag>> startProjectPageActivity();
+    Observable<Triple<Project, RefTag, Boolean>> startProjectActivity();
   }
 
   final class ViewModel extends ActivityViewModel<SearchActivity> implements Inputs, Outputs {
@@ -155,29 +153,14 @@ public interface SearchViewModel {
 
       this.startProjectActivity = Observable.combineLatest(this.search, projects, Pair::create)
         .compose(takePairWhen(this.projectClicked))
-        .withLatestFrom(isProjectPageEnabled, Pair::create)
-        .filter(it -> !it.second)
-        .map(it -> it.first)
         .map(searchTermAndProjectsAndProjectClicked -> {
           final String searchTerm = searchTermAndProjectsAndProjectClicked.first.first;
           final List<Project> currentProjects = searchTermAndProjectsAndProjectClicked.first.second;
           final Project projectClicked = searchTermAndProjectsAndProjectClicked.second;
 
           return this.projectAndRefTag(searchTerm, currentProjects, projectClicked);
-        });
-
-      this.startProjectPageActivity = Observable.combineLatest(this.search, projects, Pair::create)
-        .compose(takePairWhen(this.projectClicked))
-        .withLatestFrom(isProjectPageEnabled, Pair::create)
-        .filter(it -> it.second)
-        .map(it -> it.first)
-        .map(searchTermAndProjectsAndProjectClicked -> {
-          final String searchTerm = searchTermAndProjectsAndProjectClicked.first.first;
-          final List<Project> currentProjects = searchTermAndProjectsAndProjectClicked.first.second;
-          final Project projectClicked = searchTermAndProjectsAndProjectClicked.second;
-
-          return this.projectAndRefTag(searchTerm, currentProjects, projectClicked);
-        });
+        })
+        .withLatestFrom(isProjectPageEnabled, (Pair<Project, RefTag> a, Boolean b) -> new Triple<>(a.first, a.second, b));
 
       params
           .compose(takePairWhen(this.discoverEnvelope))
@@ -229,8 +212,7 @@ public interface SearchViewModel {
     private final BehaviorSubject<Boolean> isFetchingProjects = BehaviorSubject.create();
     private final BehaviorSubject<List<Project>> popularProjects = BehaviorSubject.create();
     private final BehaviorSubject<List<Project>> searchProjects = BehaviorSubject.create();
-    private final Observable<Pair<Project, RefTag>> startProjectActivity;
-    private final Observable<Pair<Project, RefTag>> startProjectPageActivity;
+    private final Observable<Triple<Project, RefTag, Boolean>> startProjectActivity;
 
     public final SearchViewModel.Inputs inputs = this;
     public final SearchViewModel.Outputs outputs = this;
@@ -245,12 +227,8 @@ public interface SearchViewModel {
       this.search.onNext(s);
     }
 
-    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
+    @Override public @NonNull Observable<Triple<Project, RefTag, Boolean>> startProjectActivity() {
       return this.startProjectActivity;
-    }
-
-    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectPageActivity() {
-      return this.startProjectPageActivity;
     }
     @Override public @NonNull Observable<Boolean> isFetchingProjects() {
       return this.isFetchingProjects;

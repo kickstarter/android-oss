@@ -13,6 +13,7 @@ import com.kickstarter.libs.RecyclerViewPaginator
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.InputUtils
+import com.kickstarter.libs.utils.extensions.projectPageFeatureFlag
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.SearchAdapter
@@ -57,25 +58,12 @@ class SearchActivity : BaseActivity<SearchViewModel.ViewModel>(), SearchAdapter.
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startProjectActivity(it) }
-
-        viewModel.outputs.startProjectPageActivity()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { startProjectPageActivity(it) }
     }
 
-    private fun startProjectActivity(projectAndRefTag: Pair<Project, RefTag>) {
-        val intent = Intent(this, ProjectActivity::class.java)
-            .putExtra(IntentKey.PROJECT, projectAndRefTag.first)
-            .putExtra(IntentKey.REF_TAG, projectAndRefTag.second)
-        startActivity(intent)
-        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
-    }
-
-    private fun startProjectPageActivity(projectAndRefTag: Pair<Project, RefTag>) {
-        val intent = Intent(this, ProjectPageActivity::class.java)
-            .putExtra(IntentKey.PROJECT, projectAndRefTag.first)
-            .putExtra(IntentKey.REF_TAG, projectAndRefTag.second)
+    private fun startProjectActivity(projectAndRefTagAndIsEnabled: Triple<Project, RefTag, Boolean>) {
+        val intent = Intent().projectPageFeatureFlag(this, projectAndRefTagAndIsEnabled.third)
+            .putExtra(IntentKey.PROJECT, projectAndRefTagAndIsEnabled.first)
+            .putExtra(IntentKey.REF_TAG, projectAndRefTagAndIsEnabled.second)
         startActivity(intent)
         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }

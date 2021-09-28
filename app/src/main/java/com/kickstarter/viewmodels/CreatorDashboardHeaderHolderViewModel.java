@@ -20,6 +20,8 @@ import com.kickstarter.ui.adapters.data.ProjectDashboardData;
 import com.kickstarter.ui.viewholders.CreatorDashboardHeaderViewHolder;
 
 import androidx.annotation.NonNull;
+
+import kotlin.Triple;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -67,10 +69,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
     Observable<Pair<Project, RefTag>> startMessageThreadsActivity();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
-    Observable<Pair<Project, RefTag>> startProjectActivity();
-
-    /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectPageActivity}. */
-    Observable<Pair<Project, RefTag>> startProjectPageActivity();
+    Observable<Triple<Project, RefTag, Boolean>> startProjectActivity();
 
     /** Emits the time remaining for current project with no units. */
     Observable<String> timeRemainingText();
@@ -144,18 +143,8 @@ public interface CreatorDashboardHeaderHolderViewModel {
 
       this.startProjectActivity = this.currentProject
         .withLatestFrom(isProjectPageEnabled, Pair::create)
-        .filter(it -> !it.second)
-        .map(it -> it.first)
         .compose(takeWhen(this.projectButtonClicked))
-        .map(p -> Pair.create(p, RefTag.dashboard()))
-        .compose(bindToLifecycle());
-
-      this.startProjectPageActivity = this.currentProject
-        .withLatestFrom(isProjectPageEnabled, Pair::create)
-        .filter(it -> it.second)
-        .map(it -> it.first)
-        .compose(takeWhen(this.projectButtonClicked))
-        .map(p -> Pair.create(p, RefTag.dashboard()))
+        .map(p -> new Triple<>(p.first, RefTag.dashboard(), p.second))
         .compose(bindToLifecycle());
 
       this.timeRemainingText = this.currentProject
@@ -183,8 +172,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
     private final Observable<String> projectBackersCountText;
     private final Observable<String> projectNameTextViewText;
     private final Observable<Pair<Project, RefTag>> startMessageThreadsActivity;
-    private final Observable<Pair<Project, RefTag>> startProjectActivity;
-    private final Observable<Pair<Project, RefTag>> startProjectPageActivity;
+    private final Observable<Triple<Project, RefTag, Boolean>> startProjectActivity;
     private final Observable<String> timeRemainingText;
     private final Observable<Boolean> viewProjectButtonIsGone;
 
@@ -225,11 +213,8 @@ public interface CreatorDashboardHeaderHolderViewModel {
     @Override public @NonNull Observable<Pair<Project, RefTag>> startMessageThreadsActivity() {
       return this.startMessageThreadsActivity;
     }
-    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
+    @Override public @NonNull Observable<Triple<Project, RefTag, Boolean>> startProjectActivity() {
       return this.startProjectActivity;
-
-    }    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectPageActivity() {
-      return this.startProjectPageActivity;
     }
     @Override public @NonNull Observable<String> timeRemainingText() {
       return this.timeRemainingText;

@@ -2,8 +2,6 @@ package com.kickstarter.libs.utils.extensions
 
 import android.content.Context
 import android.content.Intent
-import com.kickstarter.models.Project
-import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ProjectActivity
 import com.kickstarter.ui.activities.ProjectPageActivity
 

@@ -9,6 +9,7 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.projectPageFeatureFlag
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.MessageThreadsActivity
@@ -73,11 +74,7 @@ class CreatorDashboardHeaderViewHolder(
         viewModel.outputs.startProjectActivity()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { startProjectActivity(it.first, it.second) }
-        viewModel.outputs.startProjectPageActivity()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { startProjectPageActivity(it.first, it.second) }
+            .subscribe { startProjectActivity(it.first, it.second, it.third) }
         viewModel.outputs.viewProjectButtonIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
@@ -129,14 +126,8 @@ class CreatorDashboardHeaderViewHolder(
         context().startActivity(intent)
     }
 
-    private fun startProjectActivity(project: Project, refTag: RefTag) {
-        val intent = Intent(context(), ProjectActivity::class.java)
-            .putExtra(IntentKey.PROJECT, project)
-            .putExtra(IntentKey.REF_TAG, refTag)
-        context().startActivity(intent)
-    }
-    private fun startProjectPageActivity(project: Project, refTag: RefTag) {
-        val intent = Intent(context(), ProjectPageActivity::class.java)
+    private fun startProjectActivity(project: Project, refTag: RefTag, isEnabled: Boolean) {
+        val intent = Intent().projectPageFeatureFlag(context(), isEnabled)
             .putExtra(IntentKey.PROJECT, project)
             .putExtra(IntentKey.REF_TAG, refTag)
         context().startActivity(intent)

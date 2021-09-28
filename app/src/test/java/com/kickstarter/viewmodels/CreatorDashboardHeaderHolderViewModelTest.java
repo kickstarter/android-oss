@@ -27,6 +27,8 @@ import org.joda.time.DateTimeUtils;
 import org.junit.Test;
 
 import androidx.annotation.NonNull;
+
+import kotlin.Triple;
 import rx.observers.TestSubscriber;
 
 public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTestCase {
@@ -40,8 +42,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Integer> progressBarBackground = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, RefTag>> startMessageThreadsActivity = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Project, RefTag>> startProjectActivity = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Project, RefTag>> startProjectPageActivity = new TestSubscriber<>();
+  private final TestSubscriber<Triple<Project, RefTag, Boolean>> startProjectActivity = new TestSubscriber<>();
   private final TestSubscriber<Boolean> viewProjectButtonIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> timeRemainingText = new TestSubscriber<>();
 
@@ -56,7 +57,6 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     this.vm.outputs.progressBarBackground().subscribe(this.progressBarBackground);
     this.vm.outputs.startMessageThreadsActivity().subscribe(this.startMessageThreadsActivity);
     this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
-    this.vm.outputs.startProjectPageActivity().subscribe(this.startProjectPageActivity);
     this.vm.outputs.timeRemainingText().subscribe(this.timeRemainingText);
     this.vm.outputs.viewProjectButtonIsGone().subscribe(this.viewProjectButtonIsGone);
   }
@@ -235,7 +235,11 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     setUpEnvironment(environment());
     this.vm.inputs.configureWith(new ProjectDashboardData(project, projectStatsEnvelope, false));
     this.vm.inputs.projectButtonClicked();
-    this.startProjectActivity.assertValue(Pair.create(project, RefTag.dashboard()));
+
+    this.startProjectActivity.assertValueCount(1);
+    assertFalse(this.startProjectActivity.getOnNextEvents().get(0).getThird());
+    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).getFirst(), project);
+    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).getSecond(), RefTag.dashboard());
   }
 
   @Test
@@ -254,8 +258,11 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
 
     this.vm.inputs.configureWith(new ProjectDashboardData(project, projectStatsEnvelope, false));
     this.vm.inputs.projectButtonClicked();
-    this.startProjectActivity.assertNoValues();
-    this.startProjectPageActivity.assertValue(Pair.create(project, RefTag.dashboard()));
+
+    this.startProjectActivity.assertValueCount(1);
+    assertTrue(this.startProjectActivity.getOnNextEvents().get(0).getThird());
+    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).getFirst(), project);
+    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).getSecond(), RefTag.dashboard());
   }
 
   @Test

@@ -6,7 +6,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.kickstarter.libs.Configure
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.fragments.ProjectFaqFragment
+import com.kickstarter.ui.fragments.FrequentlyAskedQuestionFragment
 import com.kickstarter.ui.fragments.ProjectOverviewFragment
 
 class ProjectPagerAdapter(
@@ -21,7 +21,7 @@ class ProjectPagerAdapter(
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             0 -> return ProjectOverviewFragment.newInstance(position)
-            1 -> return ProjectFaqFragment.newInstance(position)
+            1 -> return FrequentlyAskedQuestionFragment.newInstance(position)
             else -> ProjectOverviewFragment.newInstance(position)
         }
     }

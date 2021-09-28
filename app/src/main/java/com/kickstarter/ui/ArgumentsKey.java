@@ -9,5 +9,4 @@ public final class ArgumentsKey {
   public static final String PLEDGE_PLEDGE_DATA= "com.kickstarter.ui.fragments.PledgeFragment.pledge_data";
   public static final String PLEDGE_PLEDGE_REASON = "com.kickstarter.ui.fragments.PledgeFragment.pledge_reason";
   public static final String PROJECT_PAGER_POSITION = "com.kickstarter.ui.fragments.position";
-  public static final String PROJECT_QUESTIONS_ANSWERS= "com.kickstarter.ui.fragments.FrequentlyAskedQuestionFragment.question_answers";
 }

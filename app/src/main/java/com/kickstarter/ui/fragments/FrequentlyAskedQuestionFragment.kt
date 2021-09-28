@@ -8,15 +8,18 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.kickstarter.databinding.FragmentFrequentlyAskedQuestionBinding
 import com.kickstarter.libs.BaseFragment
+import com.kickstarter.libs.Configure
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.models.ProjectFaq
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.adapters.FrequentlyAskedQuestionsAdapter
+import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.FrequentlyAskedQuestionViewModel
 
 @RequiresFragmentViewModel(FrequentlyAskedQuestionViewModel.ViewModel::class)
-class FrequentlyAskedQuestionFragment : BaseFragment<FrequentlyAskedQuestionViewModel.ViewModel>() {
+class FrequentlyAskedQuestionFragment :
+    BaseFragment<FrequentlyAskedQuestionViewModel.ViewModel>(),
+    Configure {
     private var binding: FragmentFrequentlyAskedQuestionBinding? = null
     private var fqaAdapter = FrequentlyAskedQuestionsAdapter()
 
@@ -57,13 +60,17 @@ class FrequentlyAskedQuestionFragment : BaseFragment<FrequentlyAskedQuestionView
     }
 
     companion object {
-        fun newInstance(projectFaqList: ArrayList<ProjectFaq>):
-            FrequentlyAskedQuestionFragment {
-                val fragment = FrequentlyAskedQuestionFragment()
-                val argument = Bundle()
-                argument.putParcelableArrayList(ArgumentsKey.PROJECT_QUESTIONS_ANSWERS, projectFaqList)
-                fragment.arguments = argument
-                return fragment
-            }
+        @JvmStatic
+        fun newInstance(position: Int): FrequentlyAskedQuestionFragment {
+            val fragment = FrequentlyAskedQuestionFragment()
+            val bundle = Bundle()
+            bundle.putInt(ArgumentsKey.PROJECT_PAGER_POSITION, position)
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
+
+    override fun configureWith(projectData: ProjectData) {
+        this.viewModel?.inputs?.configureWith(projectData.project().projectFaqs())
     }
 }

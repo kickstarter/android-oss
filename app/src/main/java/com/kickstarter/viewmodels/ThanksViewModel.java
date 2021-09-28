@@ -8,7 +8,9 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
+import com.kickstarter.libs.utils.ExperimentData;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.RefTagUtils;
@@ -76,6 +78,9 @@ public interface ThanksViewModel {
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
+
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectPageActivity}. */
+    Observable<Pair<Project, RefTag>> startProjectPageActivity();
   }
 
   final class ViewModel extends ActivityViewModel<ThanksActivity> implements Inputs, Outputs {
@@ -129,9 +134,23 @@ public interface ThanksViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.finish);
 
+      final  Observable<Boolean> isProjectPageEnabled =
+              currentUser.observable()
+                      .map(user -> this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2, new ExperimentData(user, null, null)));
+
       this.projectCardViewHolderClicked
+        .withLatestFrom(isProjectPageEnabled, Pair::create)
+        .filter(it -> !it.second)
+        .map(it -> it.first)
         .compose(bindToLifecycle())
         .subscribe(p -> this.startProjectActivity.onNext(Pair.create(p, RefTag.thanks())));
+
+      this.projectCardViewHolderClicked
+        .withLatestFrom(isProjectPageEnabled, Pair::create)
+        .filter(it -> it.second)
+        .map(it -> it.first)
+        .compose(bindToLifecycle())
+        .subscribe(p -> this.startProjectPageActivity.onNext(Pair.create(p, RefTag.thanks())));
 
       Observable.combineLatest(
         project,
@@ -294,6 +313,7 @@ public interface ThanksViewModel {
     private final PublishSubject<User> signedUpToGamesNewsletter = PublishSubject.create();
     private final PublishSubject<DiscoveryParams> startDiscoveryActivity = PublishSubject.create();
     private final PublishSubject<Pair<Project, RefTag>> startProjectActivity = PublishSubject.create();
+    private final PublishSubject<Pair<Project, RefTag>> startProjectPageActivity = PublishSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -331,6 +351,9 @@ public interface ThanksViewModel {
     }
     @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
       return this.startProjectActivity;
+    }
+    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectPageActivity() {
+      return this.startProjectPageActivity;
     }
   }
 }

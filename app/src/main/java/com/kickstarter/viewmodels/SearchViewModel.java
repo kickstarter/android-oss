@@ -7,6 +7,8 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.models.OptimizelyFeature;
+import com.kickstarter.libs.utils.ExperimentData;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -58,6 +60,9 @@ public interface SearchViewModel {
 
     /** Emits a project and ref tag when we should start a project activity. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
+
+    /** Emits a project and ref tag when we should start a project page activity. */
+    Observable<Pair<Project, RefTag>> startProjectPageActivity();
   }
 
   final class ViewModel extends ActivityViewModel<SearchActivity> implements Inputs, Outputs {
@@ -146,8 +151,27 @@ public interface SearchViewModel {
                 analyticEvents.trackDiscoverSearchResultProjectCATClicked(projectDiscoveryParamsPair.first.first, projectData, projectDiscoveryParamsPair.second, defaultSort);
               });
 
+      final  Observable<Boolean> isProjectPageEnabled =
+              Observable.just(environment.optimizely().isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2));
+
       this.startProjectActivity = Observable.combineLatest(this.search, projects, Pair::create)
         .compose(takePairWhen(this.projectClicked))
+        .withLatestFrom(isProjectPageEnabled, Pair::create)
+        .filter(it -> !it.second)
+        .map(it -> it.first)
+        .map(searchTermAndProjectsAndProjectClicked -> {
+          final String searchTerm = searchTermAndProjectsAndProjectClicked.first.first;
+          final List<Project> currentProjects = searchTermAndProjectsAndProjectClicked.first.second;
+          final Project projectClicked = searchTermAndProjectsAndProjectClicked.second;
+
+          return this.projectAndRefTag(searchTerm, currentProjects, projectClicked);
+        });
+
+      this.startProjectPageActivity = Observable.combineLatest(this.search, projects, Pair::create)
+        .compose(takePairWhen(this.projectClicked))
+        .withLatestFrom(isProjectPageEnabled, Pair::create)
+        .filter(it -> it.second)
+        .map(it -> it.first)
         .map(searchTermAndProjectsAndProjectClicked -> {
           final String searchTerm = searchTermAndProjectsAndProjectClicked.first.first;
           final List<Project> currentProjects = searchTermAndProjectsAndProjectClicked.first.second;
@@ -207,6 +231,7 @@ public interface SearchViewModel {
     private final BehaviorSubject<List<Project>> popularProjects = BehaviorSubject.create();
     private final BehaviorSubject<List<Project>> searchProjects = BehaviorSubject.create();
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
+    private final Observable<Pair<Project, RefTag>> startProjectPageActivity;
 
     public final SearchViewModel.Inputs inputs = this;
     public final SearchViewModel.Outputs outputs = this;
@@ -223,6 +248,10 @@ public interface SearchViewModel {
 
     @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
       return this.startProjectActivity;
+    }
+
+    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectPageActivity() {
+      return this.startProjectPageActivity;
     }
     @Override public @NonNull Observable<Boolean> isFetchingProjects() {
       return this.isFetchingProjects;

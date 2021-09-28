@@ -38,7 +38,7 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.activities.ProjectActivity
+import com.kickstarter.ui.activities.ProjectPageActivity
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
@@ -252,7 +252,7 @@ interface ProjectPageViewModel {
         fun updateFragments(): Observable<ProjectData>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ProjectActivity>(environment), Inputs, Outputs {
+    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ProjectPageActivity>(environment), Inputs, Outputs {
         private val client: ApiClientType = environment.apiClient()
         private val cookieManager: CookieManager = environment.cookieManager()
         private val currentUser: CurrentUserType = environment.currentUser()

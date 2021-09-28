@@ -45,6 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/TabLayout_Theme"
+            app:tabIndicatorColor="@color/kds_trust_500"
             app:tabMode="scrollable"
             app:tabMaxWidth="0dp"
             app:layout_constraintTop_toTopOf="parent"
@@ -70,7 +71,6 @@
                 android:text="@string/Environmental_commitment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-
         </com.google.android.material.tabs.TabLayout>
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/project_pager"

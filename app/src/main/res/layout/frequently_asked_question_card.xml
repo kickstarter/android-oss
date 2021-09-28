@@ -35,14 +35,24 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="@string/Tap_the_heart_on_each_project_page_to_save_it" />
 
+            <View
+                android:id="@+id/dropdownButtonBg"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/border_rounded_soft_grey_100"
+                app:layout_constraintEnd_toEndOf="@+id/dropdownButton"
+                app:layout_constraintStart_toStartOf="@+id/dropdownButton"
+                app:layout_constraintTop_toTopOf="@+id/dropdownButton"
+                app:layout_constraintBottom_toBottomOf="@+id/dropdownButton" />
+
             <ImageButton
                 android:id="@+id/dropdownButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/border_rounded_soft_grey_100"
                 android:contentDescription="@null"
                 android:paddingHorizontal="@dimen/grid_3_half"
                 android:paddingVertical="@dimen/grid_1"
+                android:background="@null"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_arrow_down" />

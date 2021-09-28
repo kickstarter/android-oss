@@ -12,8 +12,6 @@ class FrequentlyAskedQuestionsViewHolder(
     private val viewModel: FrequentlyAskedQuestionsViewHolderViewModel.ViewModel =
         FrequentlyAskedQuestionsViewHolderViewModel.ViewModel(environment())
 
-    private val ksString = environment().ksString()
-
     init {
         viewModel.outputs.question()
             .compose(bindToLifecycle())

@@ -36,6 +36,7 @@
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/grid_10"
         android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/reward_fragment_guideline_constraint_end"
         android:layout_below="@id/project_progress_bar">
 
         <com.google.android.material.tabs.TabLayout
@@ -74,7 +75,7 @@
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/project_pager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:orientation="horizontal"
             app:layout_constraintTop_toBottomOf="@+id/project_detail_tabs"
             app:layout_constraintBottom_toBottomOf="parent"

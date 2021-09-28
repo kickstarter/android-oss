@@ -9,8 +9,8 @@ import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.projectpage.ProjectCampaignFragment
 import com.kickstarter.ui.fragments.projectpage.ProjectEnvironmentalCommitmentsFragment
-import com.kickstarter.ui.fragments.projectpage.ProjectFaqFragment
 import com.kickstarter.ui.fragments.projectpage.ProjectOverviewFragment
+import com.kickstarter.ui.fragments.projectpage.FrequentlyAskedQuestionFragment
 
 class ProjectPagerAdapter(
     private val fragmentManager: FragmentManager,
@@ -23,7 +23,7 @@ class ProjectPagerAdapter(
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             ProjectPagerTabs.OVERVIEW.ordinal -> return ProjectOverviewFragment.newInstance(position)
-            ProjectPagerTabs.FAQS.ordinal -> return ProjectFaqFragment.newInstance(position)
+            ProjectPagerTabs.FAQS.ordinal -> return FrequentlyAskedQuestionFragment.newInstance(position)
             ProjectPagerTabs.CAMPAIGN.ordinal -> return ProjectCampaignFragment.newInstance(position)
             ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal -> return ProjectEnvironmentalCommitmentsFragment.newInstance(position)
             else -> ProjectOverviewFragment.newInstance(position)

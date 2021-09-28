@@ -32,7 +32,6 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.incrementalCount;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
@@ -115,9 +114,8 @@ public interface ActivityFeedViewModel {
       this.goToLogin = this.loginClick;
       this.goToSurvey = this.surveyClick;
 
-      final  Observable<Boolean> isProjectPageEnabled =
-              currentUser.observable()
-              .map(user -> this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2, new ExperimentData(user, null, null)));
+      final Observable<Boolean> isProjectPageEnabled =
+        Observable.just(this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2));
 
       this.goToProject = Observable.merge(
         this.friendBackingClick,

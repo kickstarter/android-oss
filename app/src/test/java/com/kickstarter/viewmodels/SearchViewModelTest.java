@@ -5,7 +5,6 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.models.OptimizelyFeature;
-import com.kickstarter.libs.utils.ExperimentData;
 import com.kickstarter.mock.MockExperimentsClientType;
 import com.kickstarter.mock.factories.DiscoverEnvelopeFactory;
 import com.kickstarter.mock.factories.ProjectFactory;

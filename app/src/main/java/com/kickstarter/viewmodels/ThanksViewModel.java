@@ -135,8 +135,7 @@ public interface ThanksViewModel {
         .subscribe(this.finish);
 
       final  Observable<Boolean> isProjectPageEnabled =
-              currentUser.observable()
-                      .map(user -> this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2, new ExperimentData(user, null, null)));
+              Observable.just(this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2));
 
       this.projectCardViewHolderClicked
         .withLatestFrom(isProjectPageEnabled, Pair::create)

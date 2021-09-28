@@ -5,8 +5,13 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.ApiPaginator
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.ExperimentsClientType
+import com.kickstarter.libs.OptimizelyExperimentsClient
+import com.kickstarter.libs.models.OptimizelyFeature
+import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.neverError
 import com.kickstarter.libs.utils.EventContextValues
+import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.models.Project
@@ -77,6 +82,9 @@ interface ProfileViewModel {
         /** Emits when we should start the [com.kickstarter.ui.activities.ProjectActivity].  */
         fun startProjectActivity(): Observable<Project>
 
+        /** Emits when we should start the [com.kickstarter.ui.activities.ProjectPageActivity].  */
+        fun startProjectPageActivity(): Observable<Project>
+
         /** Emits the user name to be displayed.  */
         fun userNameTextViewText(): Observable<String>
     }
@@ -84,6 +92,7 @@ interface ProfileViewModel {
     class ViewModel(environment: Environment) : ActivityViewModel<ProfileActivity>(environment), ProfileAdapter.Delegate, Inputs, Outputs {
         private val client: ApiClientType = environment.apiClient()
         private val currentUser: CurrentUserType = environment.currentUser()
+        private val optimizely: ExperimentsClientType = environment.optimizely()
 
         private val exploreProjectsButtonClicked = PublishSubject.create<Void>()
         private val messagesButtonClicked = PublishSubject.create<Void>()
@@ -102,6 +111,7 @@ interface ProfileViewModel {
         private val projectList: Observable<List<Project>>
         private val resumeDiscoveryActivity: Observable<Void>
         private val startProjectActivity: Observable<Project>
+        private val startProjectPageActivity: Observable<Project>
         private val startMessageThreadsActivity: Observable<Void>
         private val userNameTextViewText: Observable<String>
 
@@ -163,7 +173,21 @@ interface ProfileViewModel {
 
             this.projectList = paginator.paginatedData()
             this.resumeDiscoveryActivity = this.exploreProjectsButtonClicked
-            this.startProjectActivity = this.projectCardClicked
+
+            val isProfilePageEnabled = Observable.just(this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2))
+
+            this.startProjectActivity =
+                this.projectCardClicked
+                    .withLatestFrom(isProfilePageEnabled) {projectAndRef, isEnabled -> Pair(projectAndRef, isEnabled)}
+                    .filter{ !it.second }
+                    .map { it.first }
+
+            this.startProjectPageActivity =
+                this.projectCardClicked
+                    .withLatestFrom(isProfilePageEnabled) {projectAndRef, isEnabled -> Pair(projectAndRef, isEnabled)}
+                    .filter{ it.second }
+                    .map { it.first }
+
             this.startMessageThreadsActivity = this.messagesButtonClicked
             this.userNameTextViewText = loggedInUser.map { it.name() }
 
@@ -207,6 +231,8 @@ interface ProfileViewModel {
         override fun resumeDiscoveryActivity() = this.resumeDiscoveryActivity
 
         override fun startProjectActivity() = this.startProjectActivity
+
+        override fun startProjectPageActivity() = this.startProjectPageActivity
 
         override fun startMessageThreadsActivity() = this.startMessageThreadsActivity
 

@@ -38,6 +38,8 @@ import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
+import android.util.Pair;
+
 public interface ActivityFeedViewModel {
 
   interface Inputs extends ActivityFeedAdapter.Delegate {
@@ -123,7 +125,7 @@ public interface ActivityFeedViewModel {
         this.projectStateChangedPositiveClick,
         this.projectUpdateProjectClick
       )
-        .compose(combineLatestPair(isProjectPageEnabled))
+        .withLatestFrom(isProjectPageEnabled, Pair::create)
         .filter(it -> !it.second)
         .map(it -> it.first.project());
 
@@ -133,10 +135,9 @@ public interface ActivityFeedViewModel {
         this.projectStateChangedPositiveClick,
         this.projectUpdateProjectClick
       )
-        .compose(combineLatestPair(isProjectPageEnabled))
+        .withLatestFrom(isProjectPageEnabled, Pair::create)
         .filter(it -> it.second)
         .map(it -> it.first.project());
-
 
       Observable.merge(
               this.goToProject,
@@ -204,13 +205,13 @@ public interface ActivityFeedViewModel {
         .subscribe(this.loggedOutEmptyStateIsVisible);
 
       this.managePledgeClicked
-        .compose(combineLatestPair(isProjectPageEnabled))
+        .withLatestFrom(isProjectPageEnabled, Pair::create)
         .filter(it -> it.second)
         .compose(bindToLifecycle())
         .subscribe(it -> this.startFixPledgeProjectPage.onNext(it.first));
 
       this.managePledgeClicked
-        .compose(combineLatestPair(isProjectPageEnabled))
+        .withLatestFrom(isProjectPageEnabled, Pair::create)
         .filter(it -> !it.second)
         .compose(bindToLifecycle())
         .subscribe(it -> this.startFixPledge.onNext(it.first));

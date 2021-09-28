@@ -42,7 +42,10 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import io.reactivex.functions.BiFunction;
 import rx.Observable;
+import rx.functions.Func2;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
@@ -218,12 +221,11 @@ public interface DiscoveryFragmentViewModel {
               currentUser.observable()
                       .map(user -> this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2, new ExperimentData(user, null, null)));
 
-
       this.startProjectActivity = Observable.merge(
         activitySampleProjectClick,
         projectCardClick
       )
-        .compose(combineLatestPair(isProjectPageEnabled))
+        .withLatestFrom(isProjectPageEnabled, Pair::create)
         .filter(it -> !it.second)
         .map(it -> it.first);
 
@@ -231,7 +233,7 @@ public interface DiscoveryFragmentViewModel {
         activitySampleProjectClick,
         projectCardClick
       )
-        .compose(combineLatestPair(isProjectPageEnabled))
+        .withLatestFrom(isProjectPageEnabled, Pair::create)
         .filter(it -> it.second)
         .map(it -> it.first);
 

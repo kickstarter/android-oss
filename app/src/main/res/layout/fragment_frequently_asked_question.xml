@@ -15,6 +15,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/grid_7_half"
+            android:layout_marginHorizontal="@dimen/grid_3"
             android:gravity="start|center_vertical"
             android:text="@string/profile_settings_about_faq"
             android:textStyle="bold"
@@ -32,6 +33,7 @@
             android:gravity="start|center_vertical"
             android:orientation="vertical"
             android:visibility="gone"
+            android:layout_marginHorizontal="@dimen/grid_3"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@+id/question_tv"
             tools:text="FPO: No questions yet FPO" />

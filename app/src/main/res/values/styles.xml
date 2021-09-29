@@ -677,7 +677,7 @@
   <!-- Project Page TabLayout theme -->
   <style name="TabLayout_Theme">
     <item name="android:singleLine">true</item>
-    <item name="android:elevation">@dimen/card_elevation</item>
+    <item name="android:elevation">@dimen/ks_toolbar_elevation</item>
     <item name="tabSelectedTextColor">@color/kds_trust_500</item>
     <item name="tabTextColor">@color/kds_trust_500</item>
   </style>

@@ -10,7 +10,6 @@ import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.utils.NumberUtils;
-import com.kickstarter.libs.utils.extensions.UriExt;
 import com.kickstarter.mock.MockExperimentsClientType;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.UpdateFactory;
@@ -27,7 +26,6 @@ import org.junit.Test;
 
 import androidx.annotation.NonNull;
 
-import java.sql.Ref;
 import java.util.concurrent.TimeUnit;
 
 import kotlin.Triple;

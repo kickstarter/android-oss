@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.models.ProjectFaq
+import com.kickstarter.viewmodels.projectpage.FrequentlyAskedQuestionViewModel
 import org.junit.Test
 import rx.observers.TestSubscriber
 

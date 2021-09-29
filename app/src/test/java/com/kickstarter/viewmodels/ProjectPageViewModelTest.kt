@@ -30,6 +30,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -1675,6 +1676,22 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.refreshProject()
         this.projectData.assertValueCount(2)
+    }
+
+    @Test
+    fun testProjectData_whenTabSelected() {
+        setUpEnvironment(environment())
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        this.projectData.assertValueCount(1)
+
+        // - the tab of the viewpager on position 1 has been pressed
+        this.vm.inputs.tabSelected(1)
+        this.projectData.assertValueCount(2)
+
+        // - the tab of the viewpager on position 0 has been pressed
+        this.vm.inputs.tabSelected(0)
+        this.projectData.assertValueCount(3)
     }
 
     private fun apiClientWithSuccessFetchingProject(refreshedProject: Project): MockApolloClient {

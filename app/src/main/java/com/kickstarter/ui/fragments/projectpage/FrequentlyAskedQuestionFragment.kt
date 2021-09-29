@@ -1,4 +1,4 @@
-package com.kickstarter.ui.fragments
+package com.kickstarter.ui.fragments.projectpage
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,7 +14,7 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.adapters.FrequentlyAskedQuestionsAdapter
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.viewmodels.FrequentlyAskedQuestionViewModel
+import com.kickstarter.viewmodels.projectpage.FrequentlyAskedQuestionViewModel
 
 @RequiresFragmentViewModel(FrequentlyAskedQuestionViewModel.ViewModel::class)
 class FrequentlyAskedQuestionFragment :

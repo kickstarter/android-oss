@@ -9,12 +9,10 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ViewUtils
-import com.kickstarter.libs.utils.extensions.projectPageFeatureFlag
+import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.MessageThreadsActivity
-import com.kickstarter.ui.activities.ProjectActivity
-import com.kickstarter.ui.activities.ProjectPageActivity
 import com.kickstarter.ui.adapters.data.ProjectDashboardData
 import com.kickstarter.viewmodels.CreatorDashboardHeaderHolderViewModel
 
@@ -127,7 +125,7 @@ class CreatorDashboardHeaderViewHolder(
     }
 
     private fun startProjectActivity(project: Project, refTag: RefTag, isEnabled: Boolean) {
-        val intent = Intent().projectPageFeatureFlag(context(), isEnabled)
+        val intent = Intent().getProjectIntent(context(), isEnabled)
             .putExtra(IntentKey.PROJECT, project)
             .putExtra(IntentKey.REF_TAG, refTag)
         context().startActivity(intent)

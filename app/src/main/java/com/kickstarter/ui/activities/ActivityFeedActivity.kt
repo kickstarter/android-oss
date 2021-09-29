@@ -15,7 +15,7 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.extensions.projectPageFeatureFlag
+import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.models.Activity
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Project
@@ -151,7 +151,7 @@ class ActivityFeedActivity : BaseActivity<ActivityFeedViewModel.ViewModel>() {
     }
 
     private fun startFixPledge(projectSlug: String, isProjectPageEnabled: Boolean) {
-        val intent = Intent().projectPageFeatureFlag(this, isProjectPageEnabled)
+        val intent = Intent().getProjectIntent(this, isProjectPageEnabled)
             .putExtra(IntentKey.PROJECT_PARAM, projectSlug)
             .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, true)
             .putExtra(IntentKey.REF_TAG, RefTag.activity())
@@ -159,7 +159,7 @@ class ActivityFeedActivity : BaseActivity<ActivityFeedViewModel.ViewModel>() {
     }
 
     private fun startProjectActivity(project: Project, isProjectPageEnabled: Boolean) {
-        val intent = Intent().projectPageFeatureFlag(this, isProjectPageEnabled)
+        val intent = Intent().getProjectIntent(this, isProjectPageEnabled)
             .putExtra(IntentKey.PROJECT, project)
             .putExtra(IntentKey.REF_TAG, RefTag.activity())
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)

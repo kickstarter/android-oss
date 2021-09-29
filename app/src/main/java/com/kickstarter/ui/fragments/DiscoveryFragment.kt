@@ -22,7 +22,7 @@ import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.AnimationUtils.crossFadeAndReverse
 import com.kickstarter.libs.utils.TransitionUtils
-import com.kickstarter.libs.utils.extensions.projectPageFeatureFlag
+import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Category
 import com.kickstarter.models.Project
@@ -32,8 +32,6 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ActivityFeedActivity
 import com.kickstarter.ui.activities.EditorialActivity
 import com.kickstarter.ui.activities.LoginToutActivity
-import com.kickstarter.ui.activities.ProjectActivity
-import com.kickstarter.ui.activities.ProjectPageActivity
 import com.kickstarter.ui.activities.UpdateActivity
 import com.kickstarter.ui.adapters.DiscoveryAdapter
 import com.kickstarter.ui.data.Editorial
@@ -214,7 +212,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
 
     private fun startProjectActivity(project: Project, refTag: RefTag, isEnabled: Boolean) {
         context?.let {
-            val intent = Intent().projectPageFeatureFlag(it, isEnabled)
+            val intent = Intent().getProjectIntent(it, isEnabled)
                 .putExtra(IntentKey.PROJECT, project)
                 .putExtra(IntentKey.REF_TAG, refTag)
             startActivity(intent)

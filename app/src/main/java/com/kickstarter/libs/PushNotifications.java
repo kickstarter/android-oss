@@ -382,7 +382,7 @@ public final class PushNotifications {
   private @NonNull PendingIntent projectUpdateContentIntent(final @NonNull PushNotificationEnvelope envelope,
     final @NonNull Update update, final @NonNull String projectParam) {
 
-    final Intent projectIntent = IntentExtKt.projectPageFeatureFlag(new Intent(), this.context, this.experimentsClientType.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2))
+    final Intent projectIntent = IntentExtKt.getProjectIntent(new Intent(), this.context, this.experimentsClientType.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2))
       .putExtra(IntentKey.PROJECT_PARAM, projectParam)
       .putExtra(IntentKey.REF_TAG, RefTag.push());
 

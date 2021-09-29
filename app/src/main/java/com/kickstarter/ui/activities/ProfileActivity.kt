@@ -14,7 +14,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ViewUtils
-import com.kickstarter.libs.utils.extensions.projectPageFeatureFlag
+import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProfileAdapter
@@ -162,7 +162,7 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
     }
 
     private fun startProjectActivity(project: Project, projectPageIsEnabled : Boolean) {
-        val intent = Intent().projectPageFeatureFlag(this, projectPageIsEnabled)
+        val intent = Intent().getProjectIntent(this, projectPageIsEnabled)
             .putExtra(IntentKey.PROJECT, project)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }

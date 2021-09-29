@@ -2,7 +2,6 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Pair
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding.support.v7.widget.RecyclerViewScrollEvent
 import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView
@@ -13,7 +12,7 @@ import com.kickstarter.libs.RecyclerViewPaginator
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.InputUtils
-import com.kickstarter.libs.utils.extensions.projectPageFeatureFlag
+import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.SearchAdapter
@@ -61,7 +60,7 @@ class SearchActivity : BaseActivity<SearchViewModel.ViewModel>(), SearchAdapter.
     }
 
     private fun startProjectActivity(projectAndRefTagAndIsEnabled: Triple<Project, RefTag, Boolean>) {
-        val intent = Intent().projectPageFeatureFlag(this, projectAndRefTagAndIsEnabled.third)
+        val intent = Intent().getProjectIntent(this, projectAndRefTagAndIsEnabled.third)
             .putExtra(IntentKey.PROJECT, projectAndRefTagAndIsEnabled.first)
             .putExtra(IntentKey.REF_TAG, projectAndRefTagAndIsEnabled.second)
         startActivity(intent)

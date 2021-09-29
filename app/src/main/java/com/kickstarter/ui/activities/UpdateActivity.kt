@@ -18,7 +18,7 @@ import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.extensions.isProjectUpdateCommentsUri
 import com.kickstarter.libs.utils.extensions.isProjectUpdateUri
 import com.kickstarter.libs.utils.extensions.isProjectUri
-import com.kickstarter.libs.utils.extensions.projectPageFeatureFlag
+import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.models.Update
 import com.kickstarter.services.RequestHandler
 import com.kickstarter.ui.IntentKey
@@ -182,7 +182,7 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
     }
 
     private fun startProjectActivity(uri: Uri, refTag: RefTag, isEnabled: Boolean) {
-        val intent = Intent().projectPageFeatureFlag(this, isEnabled)
+        val intent = Intent().getProjectIntent(this, isEnabled)
             .setData(uri)
             .putExtra(IntentKey.REF_TAG, refTag)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)

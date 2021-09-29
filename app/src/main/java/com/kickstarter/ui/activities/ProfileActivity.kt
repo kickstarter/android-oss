@@ -161,7 +161,7 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
-    private fun startProjectActivity(project: Project, isProjectPageEnabled : Boolean) {
+    private fun startProjectActivity(project: Project, isProjectPageEnabled: Boolean) {
         val intent = Intent().getProjectIntent(this, isProjectPageEnabled)
             .putExtra(IntentKey.PROJECT, project)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)

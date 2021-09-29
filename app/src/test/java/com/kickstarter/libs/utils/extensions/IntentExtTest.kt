@@ -8,11 +8,11 @@ class IntentExtTest : KSRobolectricTestCase() {
 
     @Test
     fun testGetProjectIntent_whenFeatureFlagTrue_shouldReturnProjectPageActivity() {
-        assertEquals(Intent().getProjectIntent(context(), true).component?.className , "com.kickstarter.ui.activities.ProjectPageActivity" )
+        assertEquals(Intent().getProjectIntent(context(), true).component?.className, "com.kickstarter.ui.activities.ProjectPageActivity")
     }
 
     @Test
     fun testGetProjectIntent_whenFeatureFlagFalse_shouldReturnProjectActivity() {
-        assertEquals(Intent().getProjectIntent(context(), false).component?.className , "com.kickstarter.ui.activities.ProjectActivity" )
+        assertEquals(Intent().getProjectIntent(context(), false).component?.className, "com.kickstarter.ui.activities.ProjectActivity")
     }
 }

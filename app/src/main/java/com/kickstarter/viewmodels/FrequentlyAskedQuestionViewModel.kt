@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.ProjectFaq
 import com.kickstarter.ui.fragments.FrequentlyAskedQuestionFragment
 import rx.Observable
@@ -34,6 +35,7 @@ interface FrequentlyAskedQuestionViewModel {
 
         init {
             val projectFaqList = projectFaqListInput
+                .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
 
             projectFaqList

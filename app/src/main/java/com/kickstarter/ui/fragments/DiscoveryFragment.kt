@@ -210,9 +210,9 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         }
     }
 
-    private fun startProjectActivity(project: Project, refTag: RefTag, isEnabled: Boolean) {
+    private fun startProjectActivity(project: Project, refTag: RefTag, isProjectPageEnabled: Boolean) {
         context?.let {
-            val intent = Intent().getProjectIntent(it, isEnabled)
+            val intent = Intent().getProjectIntent(it, isProjectPageEnabled)
                 .putExtra(IntentKey.PROJECT, project)
                 .putExtra(IntentKey.REF_TAG, refTag)
             startActivity(intent)

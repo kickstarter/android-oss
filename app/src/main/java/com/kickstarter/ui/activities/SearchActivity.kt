@@ -59,10 +59,10 @@ class SearchActivity : BaseActivity<SearchViewModel.ViewModel>(), SearchAdapter.
             .subscribe { startProjectActivity(it) }
     }
 
-    private fun startProjectActivity(projectAndRefTagAndIsEnabled: Triple<Project, RefTag, Boolean>) {
-        val intent = Intent().getProjectIntent(this, projectAndRefTagAndIsEnabled.third)
-            .putExtra(IntentKey.PROJECT, projectAndRefTagAndIsEnabled.first)
-            .putExtra(IntentKey.REF_TAG, projectAndRefTagAndIsEnabled.second)
+    private fun startProjectActivity(projectAndRefTagAndIsFfEnabled: Triple<Project, RefTag, Boolean>) {
+        val intent = Intent().getProjectIntent(this, projectAndRefTagAndIsFfEnabled.third)
+            .putExtra(IntentKey.PROJECT, projectAndRefTagAndIsFfEnabled.first)
+            .putExtra(IntentKey.REF_TAG, projectAndRefTagAndIsFfEnabled.second)
         startActivity(intent)
         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }

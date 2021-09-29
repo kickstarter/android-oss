@@ -181,8 +181,8 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
-    private fun startProjectActivity(uri: Uri, refTag: RefTag, isEnabled: Boolean) {
-        val intent = Intent().getProjectIntent(this, isEnabled)
+    private fun startProjectActivity(uri: Uri, refTag: RefTag, isProjectPageEnabled: Boolean) {
+        val intent = Intent().getProjectIntent(this, isProjectPageEnabled)
             .setData(uri)
             .putExtra(IntentKey.REF_TAG, refTag)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)

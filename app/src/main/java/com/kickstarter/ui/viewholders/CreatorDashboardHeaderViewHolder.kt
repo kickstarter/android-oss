@@ -124,8 +124,8 @@ class CreatorDashboardHeaderViewHolder(
         context().startActivity(intent)
     }
 
-    private fun startProjectActivity(project: Project, refTag: RefTag, isEnabled: Boolean) {
-        val intent = Intent().getProjectIntent(context(), isEnabled)
+    private fun startProjectActivity(project: Project, refTag: RefTag, isProjectPageEnabled: Boolean) {
+        val intent = Intent().getProjectIntent(context(), isProjectPageEnabled)
             .putExtra(IntentKey.PROJECT, project)
             .putExtra(IntentKey.REF_TAG, refTag)
         context().startActivity(intent)

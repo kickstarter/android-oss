@@ -14,6 +14,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProfileAdapter
@@ -116,7 +117,7 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
         this.viewModel.outputs.startProjectActivity()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { this.startProjectActivity(it) }
+            .subscribe { this.startProjectActivity(it.first, it.second) }
 
         this.viewModel.outputs.userNameTextViewText()
             .compose(bindToLifecycle())
@@ -160,8 +161,8 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
-    private fun startProjectActivity(project: Project) {
-        val intent = Intent(this, ProjectActivity::class.java)
+    private fun startProjectActivity(project: Project, isProjectPageEnabled: Boolean) {
+        val intent = Intent().getProjectIntent(this, isProjectPageEnabled)
             .putExtra(IntentKey.PROJECT, project)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }

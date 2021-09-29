@@ -6,7 +6,11 @@ import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.MockCurrentUser;
+import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.mock.MockExperimentsClientType;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.UpdateFactory;
 import com.kickstarter.mock.factories.UserFactory;
@@ -17,12 +21,14 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.IntentKey;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import androidx.annotation.NonNull;
 
 import java.util.concurrent.TimeUnit;
 
+import kotlin.Triple;
 import okhttp3.Request;
 import rx.Observable;
 import rx.observers.TestSubscriber;
@@ -110,7 +116,7 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment);
 
     final TestSubscriber<Uri> startProjectActivity = new TestSubscriber<>();
-    vm.outputs.startProjectActivity().map(uriAndRefTag -> uriAndRefTag.first).subscribe(startProjectActivity);
+    vm.outputs.startProjectActivity().map(uriAndRefTag -> uriAndRefTag.getFirst()).subscribe(startProjectActivity);
 
     // Start the intent with a project and update.
     vm.intent(this.defaultIntent);
@@ -123,6 +129,42 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     vm.inputs.goToProjectRequest(projectRequest);
 
     startProjectActivity.assertValues(Uri.parse(url));
+  }
+
+  @Test
+  public void testUpdateViewModel_whenFeatureFlagOn_shouldEmitProjectPage() {
+    final MockCurrentUser user = new MockCurrentUser();
+    final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
+      @Override
+      public boolean isFeatureEnabled(final @NotNull OptimizelyFeature.Key feature) {
+        return true;
+      }
+    };
+
+    final Environment environment = environment().toBuilder()
+            .currentUser(user)
+            .optimizely(mockExperimentsClientType)
+            .build();
+
+    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment);
+
+    final TestSubscriber<Triple<Uri, RefTag, Boolean>> startProjectActivity = new TestSubscriber<>();
+    vm.outputs.startProjectActivity().subscribe(startProjectActivity);
+
+    // Start the intent with a project and update.
+    vm.intent(this.defaultIntent);
+
+    final String url = "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap";
+    final Request projectRequest = new Request.Builder()
+            .url(url)
+            .build();
+
+    vm.inputs.goToProjectRequest(projectRequest);
+
+    startProjectActivity.assertValueCount(1);
+    assertTrue(startProjectActivity.getOnNextEvents().get(0).getThird());
+    assertEquals(startProjectActivity.getOnNextEvents().get(0).getFirst(), Uri.parse(url));
+    assertEquals(startProjectActivity.getOnNextEvents().get(0).getSecond(), RefTag.update());
   }
 
   @Test

@@ -3,7 +3,6 @@ package com.kickstarter.ui.activities
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.util.Pair
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +13,7 @@ import com.kickstarter.libs.KSString
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.IntentKey
@@ -129,10 +129,10 @@ class ThanksActivity : BaseActivity<ThanksViewModel.ViewModel>() {
         startActivity(intent)
     }
 
-    private fun startProjectActivity(projectAndRefTag: Pair<Project, RefTag>) {
-        val intent = Intent(this, ProjectActivity::class.java)
-            .putExtra(IntentKey.PROJECT, projectAndRefTag.first)
-            .putExtra(IntentKey.REF_TAG, projectAndRefTag.second)
+    private fun startProjectActivity(projectAndRefTagAndIsFfEnabled: Triple<Project, RefTag, Boolean>) {
+        val intent = Intent().getProjectIntent(this, projectAndRefTagAndIsFfEnabled.third)
+            .putExtra(IntentKey.PROJECT, projectAndRefTagAndIsFfEnabled.first)
+            .putExtra(IntentKey.REF_TAG, projectAndRefTagAndIsFfEnabled.second)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 }

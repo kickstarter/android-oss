@@ -177,6 +177,11 @@
             android:name=".ui.activities.PrivacyActivity"
             android:theme="@style/SettingsActivity" />
         <activity
+            android:name=".ui.activities.ProjectPageActivity"
+            android:parentActivityName=".ui.activities.DiscoveryActivity"
+            android:theme="@style/ProjectActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".ui.activities.ProjectNotificationSettingsActivity"
             android:parentActivityName=".ui.activities.SettingsActivity"
             android:theme="@style/SettingsActivity" />

@@ -1,4 +1,4 @@
-package com.kickstarter.viewmodels
+package com.kickstarter.viewmodels.projectpage
 
 import android.content.Intent
 import android.content.SharedPreferences
@@ -132,8 +132,8 @@ interface ProjectPageViewModel {
         /** Call when the view rewards option is clicked.  */
         fun viewRewardsClicked()
 
-        /** Call when some tab on the Tablayout has been pressed  */
-        fun tabSelected()
+        /** Call when some tab on the Tablayout has been pressed, with the position  */
+        fun tabSelected(position: Int)
     }
 
     interface Outputs {
@@ -255,7 +255,10 @@ interface ProjectPageViewModel {
         fun updateFragments(): Observable<ProjectData>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ProjectPageActivity>(environment), Inputs, Outputs {
+    class ViewModel(@NonNull val environment: Environment) :
+        ActivityViewModel<ProjectPageActivity>(environment),
+        Inputs,
+        Outputs {
         private val client: ApiClientType = environment.apiClient()
         private val cookieManager: CookieManager = environment.cookieManager()
         private val currentUser: CurrentUserType = environment.currentUser()
@@ -331,7 +334,7 @@ interface ProjectPageViewModel {
         private val startThanksActivity = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
         private val startVideoActivity = PublishSubject.create<Project>()
         private val updateFragments = BehaviorSubject.create<ProjectData>()
-        private val tabSelected = PublishSubject.create<Any>()
+        private val tabSelected = PublishSubject.create<Int>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -944,8 +947,8 @@ interface ProjectPageViewModel {
                 .build()
         }
 
-        override fun tabSelected() {
-            this.tabSelected.onNext(null)
+        override fun tabSelected(position: Int) {
+            this.tabSelected.onNext(position)
         }
 
         override fun blurbTextViewClicked() {

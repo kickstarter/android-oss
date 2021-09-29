@@ -29,6 +29,7 @@ import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.MessagePreviousScreenType
+import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
@@ -51,14 +52,9 @@ import com.kickstarter.ui.fragments.CancelPledgeFragment
 import com.kickstarter.ui.fragments.NewCardFragment
 import com.kickstarter.ui.fragments.PledgeFragment
 import com.kickstarter.ui.fragments.RewardsFragment
-import com.kickstarter.viewmodels.ProjectPageViewModel
+import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import com.stripe.android.view.CardInputWidget
 import rx.android.schedulers.AndroidSchedulers
-
-val fragmentsArray = arrayOf(
-    "Overview",
-    "Faq",
-)
 
 @RequiresActivityViewModel(ProjectPageViewModel.ViewModel::class)
 class ProjectPageActivity :
@@ -112,6 +108,8 @@ class ProjectPageActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
+                // - Every time the ProjectData gets updated
+                // - the fragments on the viewPager are updated as well
                 pagerAdapter.updatedWithProjectData(it)
             }
 
@@ -320,13 +318,15 @@ class ProjectPageActivity :
         viewPager.adapter = pagerAdapter
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = fragmentsArray[position]
+            tab.text = getTabTitle(position)
         }.attach()
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                viewModel.inputs.tabSelected()
+                tab?.let {
+                    viewModel.inputs.tabSelected(tab.position)
+                }
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
@@ -407,6 +407,14 @@ class ProjectPageActivity :
 
     override fun onDestroy() {
         super.onDestroy()
+    }
+
+    private fun getTabTitle(position: Int) = when (position) {
+        ProjectPagerTabs.OVERVIEW.ordinal -> getString(R.string.Overview)
+        ProjectPagerTabs.FAQS.ordinal -> getString(R.string.Faq)
+        ProjectPagerTabs.CAMPAIGN.ordinal -> getString(R.string.Campaign)
+        ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal -> getString(R.string.Environmental_commitment)
+        else -> ""
     }
 
     private fun animateScrimVisibility(show: Boolean) {

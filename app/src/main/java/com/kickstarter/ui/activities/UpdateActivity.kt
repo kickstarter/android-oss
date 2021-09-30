@@ -15,6 +15,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.isProjectUpdateCommentsUri
 import com.kickstarter.libs.utils.extensions.isProjectUpdateUri
 import com.kickstarter.libs.utils.extensions.isProjectUri
@@ -101,7 +102,7 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe { uriAndRefTag ->
-                startProjectActivity(uriAndRefTag.first, uriAndRefTag.second)
+                startProjectActivity(uriAndRefTag.first, uriAndRefTag.second, uriAndRefTag.third)
             }
 
         viewModel.outputs.startShareIntent()
@@ -180,8 +181,8 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
-    private fun startProjectActivity(uri: Uri, refTag: RefTag) {
-        val intent = Intent(this, ProjectActivity::class.java)
+    private fun startProjectActivity(uri: Uri, refTag: RefTag, isProjectPageEnabled: Boolean) {
+        val intent = Intent().getProjectIntent(this, isProjectPageEnabled)
             .setData(uri)
             .putExtra(IntentKey.REF_TAG, refTag)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)

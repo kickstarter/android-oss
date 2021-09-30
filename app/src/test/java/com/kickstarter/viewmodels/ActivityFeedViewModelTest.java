@@ -1,9 +1,13 @@
 package com.kickstarter.viewmodels;
 
+import android.util.Pair;
+
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
+import com.kickstarter.libs.models.OptimizelyFeature;
+import com.kickstarter.mock.MockExperimentsClientType;
 import com.kickstarter.mock.factories.ActivityFactory;
 import com.kickstarter.mock.factories.SurveyResponseFactory;
 import com.kickstarter.mock.factories.UserFactory;
@@ -17,6 +21,7 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.viewmodels.ActivityFeedViewModel.ViewModel;
 import com.kickstarter.libs.utils.EventName;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -32,11 +37,11 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<List<ErroredBacking>> erroredBackings = new TestSubscriber<>();
   private final TestSubscriber<Void> goToDiscovery = new TestSubscriber<>();
   private final TestSubscriber<Void> goToLogin = new TestSubscriber<>();
-  private final TestSubscriber<Project> goToProject = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Project, Boolean>> goToProject = new TestSubscriber<>();
   private final TestSubscriber<SurveyResponse> goToSurvey = new TestSubscriber<>();
   private final TestSubscriber<Boolean> loggedOutEmptyStateIsVisible = new TestSubscriber<>();
   private final TestSubscriber<Boolean> loggedInEmptyStateIsVisible = new TestSubscriber<>();
-  private final TestSubscriber<String> startFixPledge = new TestSubscriber<>();
+  private final TestSubscriber<Pair<String, Boolean>> startFixPledge = new TestSubscriber<>();
   private final TestSubscriber<Activity> startUpdateActivity = new TestSubscriber<>();
   private final TestSubscriber<List<SurveyResponse>> surveys = new TestSubscriber<>();
   private final TestSubscriber<User> user = new TestSubscriber<>();
@@ -95,6 +100,56 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectUpdateProjectClicked(null, ActivityFactory.updateActivity());
 
     this.goToProject.assertValueCount(4);
+
+    this.vm.inputs.projectUpdateClicked(null, ActivityFactory.activity());
+
+    this.startUpdateActivity.assertValueCount(1);
+
+    this.segmentTrack.assertValues(
+            EventName.PAGE_VIEWED.getEventName(),
+            EventName.CTA_CLICKED.getEventName(),
+            EventName.CARD_CLICKED.getEventName(),
+            EventName.CARD_CLICKED.getEventName(),
+            EventName.CARD_CLICKED.getEventName(),
+            EventName.CARD_CLICKED.getEventName());
+  }
+
+  @Test
+  public void testClickingInterfaceElements_whenFeatueFlagOn_shouldEmitProjectPage() {
+    final CurrentUserType currentUser = new MockCurrentUser();
+    final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
+      @Override
+      public boolean isFeatureEnabled(final @NotNull OptimizelyFeature.Key feature) {
+        return true;
+      }
+    };
+
+    this.setUpEnvironment(
+      this.environment()
+        .toBuilder()
+        .currentUser(currentUser)
+        .optimizely(mockExperimentsClientType)
+        .build());
+
+    this.goToDiscovery.assertNoValues();
+    this.goToLogin.assertNoValues();
+    this.goToProject.assertNoValues();
+    this.startUpdateActivity.assertNoValues();
+
+    // Empty activity feed clicks do not trigger events yet.
+    this.vm.inputs.emptyActivityFeedDiscoverProjectsClicked(null);
+    this.goToDiscovery.assertValueCount(1);
+
+    this.vm.inputs.emptyActivityFeedLoginClicked(null);
+    this.goToLogin.assertValueCount(1);
+
+    this.vm.inputs.friendBackingClicked(null, ActivityFactory.friendBackingActivity());
+    this.vm.inputs.projectStateChangedClicked(null, ActivityFactory.projectStateChangedActivity());
+    this.vm.inputs.projectStateChangedPositiveClicked(null, ActivityFactory.projectStateChangedPositiveActivity());
+    this.vm.inputs.projectUpdateProjectClicked(null, ActivityFactory.updateActivity());
+
+    this.goToProject.assertValueCount(4);
+    assertTrue(this.goToProject.getOnNextEvents().get(0).second);
 
     this.vm.inputs.projectUpdateClicked(null, ActivityFactory.activity());
 
@@ -206,7 +261,30 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
     final String projectSlug = "slug";
     this.vm.inputs.managePledgeClicked(projectSlug);
-    this.startFixPledge.assertValue(projectSlug);
+    assertFalse(this.startFixPledge.getOnNextEvents().get(0).second);
+    assertEquals(this.startFixPledge.getOnNextEvents().get(0).first, projectSlug);
+  }
+
+  @Test
+  public void testStartFixPledge_whenProjectPageFeatureFlagOn_shouldEmitToFixPledgeProjectPage() {
+    final CurrentUserType currentUser = new MockCurrentUser();
+    final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
+      @Override
+      public boolean isFeatureEnabled(final @NotNull OptimizelyFeature.Key feature) {
+        return true;
+      }
+    };
+
+    this.setUpEnvironment(
+      this.environment()
+        .toBuilder()
+        .currentUser(currentUser)
+        .optimizely(mockExperimentsClientType).build());
+
+    final String projectSlug = "slug";
+    this.vm.inputs.managePledgeClicked(projectSlug);
+    this.startFixPledge.assertValueCount(1);
+    assertTrue(this.startFixPledge.getOnNextEvents().get(0).second);
   }
 
   @Test

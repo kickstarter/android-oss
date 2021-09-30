@@ -7,7 +7,9 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
@@ -18,6 +20,8 @@ import com.kickstarter.ui.adapters.data.ProjectDashboardData;
 import com.kickstarter.ui.viewholders.CreatorDashboardHeaderViewHolder;
 
 import androidx.annotation.NonNull;
+
+import kotlin.Triple;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -65,7 +69,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
     Observable<Pair<Project, RefTag>> startMessageThreadsActivity();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
-    Observable<Pair<Project, RefTag>> startProjectActivity();
+    Observable<Triple<Project, RefTag, Boolean>> startProjectActivity();
 
     /** Emits the time remaining for current project with no units. */
     Observable<String> timeRemainingText();
@@ -76,11 +80,13 @@ public interface CreatorDashboardHeaderHolderViewModel {
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardHeaderViewHolder> implements Inputs, Outputs {
     private final CurrentUserType currentUser;
+    private final ExperimentsClientType optimizely;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       this.currentUser = environment.currentUser();
+      this.optimizely = environment.optimizely();
 
       final Observable<User> user = this.currentUser.observable();
 
@@ -132,9 +138,13 @@ public interface CreatorDashboardHeaderHolderViewModel {
         .map(p -> Pair.create(p, RefTag.dashboard()))
         .compose(bindToLifecycle());
 
+      final  Observable<Boolean> isProjectPageEnabled =
+        Observable.just(this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2));
+
       this.startProjectActivity = this.currentProject
+        .withLatestFrom(isProjectPageEnabled, Pair::create)
         .compose(takeWhen(this.projectButtonClicked))
-        .map(p -> Pair.create(p, RefTag.dashboard()))
+        .map(p -> new Triple<>(p.first, RefTag.dashboard(), p.second))
         .compose(bindToLifecycle());
 
       this.timeRemainingText = this.currentProject
@@ -162,7 +172,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
     private final Observable<String> projectBackersCountText;
     private final Observable<String> projectNameTextViewText;
     private final Observable<Pair<Project, RefTag>> startMessageThreadsActivity;
-    private final Observable<Pair<Project, RefTag>> startProjectActivity;
+    private final Observable<Triple<Project, RefTag, Boolean>> startProjectActivity;
     private final Observable<String> timeRemainingText;
     private final Observable<Boolean> viewProjectButtonIsGone;
 
@@ -203,7 +213,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
     @Override public @NonNull Observable<Pair<Project, RefTag>> startMessageThreadsActivity() {
       return this.startMessageThreadsActivity;
     }
-    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
+    @Override public @NonNull Observable<Triple<Project, RefTag, Boolean>> startProjectActivity() {
       return this.startProjectActivity;
     }
     @Override public @NonNull Observable<String> timeRemainingText() {

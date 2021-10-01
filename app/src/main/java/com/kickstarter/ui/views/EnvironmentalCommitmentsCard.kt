@@ -3,6 +3,7 @@ package com.kickstarter.ui.views
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import androidx.annotation.StringRes
 import androidx.cardview.widget.CardView
 import androidx.core.content.withStyledAttributes
 import com.kickstarter.R
@@ -42,6 +43,9 @@ class EnvironmentalCommitmentsCard @JvmOverloads constructor(
         binding.sectionHeader.text = categoryTitle
     }
 
+    fun setCategoryTitle(@StringRes categoryTitle: Int) {
+        binding.sectionHeader.setText(categoryTitle)
+    }
     fun setDescription(description: String) {
         binding.sectionDescription.text = description
     }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,6 +13,7 @@
             android:id="@+id/question_tv"
             style="@style/PledgeCurrency"
             android:layout_width="0dp"
+            android:layout_marginTop="@dimen/grid_3"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/grid_7_half"
             android:layout_marginHorizontal="@dimen/grid_3"
@@ -42,7 +43,7 @@
             android:id="@+id/fqa_RecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_4"
+            android:layout_marginTop="@dimen/grid_3_half"
             android:layout_marginBottom="@dimen/grid_7"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -50,4 +51,4 @@
             tools:itemCount="4"
             tools:listitem="@layout/item_frequently_asked_question_card" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView >

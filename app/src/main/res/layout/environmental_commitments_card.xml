@@ -35,7 +35,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/section_header"
-            tools:text="@string/To_read_this_project_update_you_must_be_a_backer" />
+            tools:text="@string/We_were_unable_to_load_the_shipping_destinations" />
 
         <View
             android:id="@+id/separtor"

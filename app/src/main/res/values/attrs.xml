@@ -61,4 +61,9 @@
     <attr name="frequently_asked_question_update_date_text" format="reference|string" />
   </declare-styleable>
 
+  <declare-styleable name="EnvironmentalCommitmentsCard">
+    <attr name="category_title" format="reference|string" />
+    <attr name="description" format="reference|string" />
+  </declare-styleable>
+
 </resources>

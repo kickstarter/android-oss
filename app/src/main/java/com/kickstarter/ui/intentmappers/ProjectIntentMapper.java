@@ -29,18 +29,10 @@ public final class ProjectIntentMapper {
   public static @NonNull Observable<Project> project(final @NonNull Intent intent, final @NonNull ApolloClientType apolloClient) {
 
     final Project intentProject = projectFromIntent(intent);
-    final Observable<Project> projectFromParceledProject = intentProject == null ? Observable.empty() : Observable.just(intentProject)
-            .flatMap(apolloClient::getProject)
-            .startWith(intentProject)
-            .retry(3);
 
-    final Observable<Project> projectFromParceledParam = Observable.just(paramFromIntent(intent))
-            .filter(ObjectUtils::isNotNull)
-            .flatMap(apolloClient::getProject)
-            .retry(3);
+    final String projectSlug = intentProject != null ? intentProject.slug() : paramFromIntent(intent);
 
-    return projectFromParceledProject
-            .mergeWith(projectFromParceledParam);
+    return apolloClient.getProject(projectSlug).retry(3);
   }
 
   /**

@@ -51,7 +51,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ksString = this.viewModel.outputs.getKSString()
+        ksString = viewModel.kSString
 
         viewModel.outputs.avatarPhotoUrl()
             .compose(bindToLifecycle())
@@ -417,7 +417,6 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         }
     }
 
-
     private fun setAvatar(url: String) {
         val avatarImageView = if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             binding.projectMediaHeaderLayout.avatar
@@ -642,35 +641,27 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
     }
 
     private fun blurbOnClick() {
-
     }
 
     private fun blurbVariantOnClick() {
-
     }
 
     private fun commentsOnClick() {
-
     }
 
     private fun creatorNameOnClick() {
-
     }
 
     private fun creatorInfoVariantOnClick() {
-
     }
 
     private fun creatorDashboardOnClick() {
-
     }
 
     private fun playButtonOnClick() {
-
     }
 
     private fun updatesOnClick() {
-
     }
 
     override fun configureWith(projectData: ProjectData) {

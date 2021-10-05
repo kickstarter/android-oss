@@ -28,7 +28,7 @@ import rx.Observable
 import rx.observers.TestSubscriber
 import java.util.*
 
-class ProjectOverviewViewModelTest: KSRobolectricTestCase() {
+class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: ProjectOverviewViewModel.ViewModel
 

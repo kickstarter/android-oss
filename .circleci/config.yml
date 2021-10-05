@@ -81,6 +81,8 @@ jobs:
           additional-args: -skin 1080x2220
           post-emulator-launch-assemble-command: ""
           run-logcat: true
+          no-window: true
+          restore-gradle-cache-prefix: v1a
       - android/wait-for-emulator
       - run:
           name: Config Emulator for Screenshot test

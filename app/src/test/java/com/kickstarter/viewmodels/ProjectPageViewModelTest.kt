@@ -171,9 +171,9 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
-        this.pledgeActionButtonContainerIsGone.assertValues(true)
+        this.pledgeActionButtonContainerIsGone.assertNoValues()
         this.prelaunchUrl.assertNoValues()
-        this.projectData.assertValues(ProjectDataFactory.project(initialProject))
+        this.projectData.assertNoValues()
         this.reloadProjectContainerIsGone.assertValue(false)
         this.reloadProgressBarIsGone.assertValues(false, true)
         this.updateFragments.assertNoValues()
@@ -184,8 +184,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.pledgeActionButtonContainerIsGone.assertValues(true, false)
         this.prelaunchUrl.assertNoValues()
         this.projectData.assertValues(
-            ProjectDataFactory.project(initialProject),
-            ProjectDataFactory.project(initialProject),
             ProjectDataFactory.project(refreshedProject)
         )
         this.reloadProjectContainerIsGone.assertValues(false, true, true)
@@ -380,7 +378,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         // The project should be saved, and a save prompt should NOT be shown.
         this.savedTest.assertValues(false, true)
-        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline, R.drawable.icon__heart)
+        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart)
         this.showSavedPromptTest.assertValueCount(0)
     }
 
@@ -405,7 +403,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         // The project should be saved, and a save prompt should NOT be shown.
         this.savedTest.assertValues(false, true)
-        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline, R.drawable.icon__heart)
+        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart)
         this.showSavedPromptTest.assertValueCount(0)
     }
 

@@ -17,6 +17,7 @@ import androidx.annotation.MenuRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -71,7 +72,14 @@ class ProjectPageActivity :
 
     private val animDuration = 200L
     private lateinit var binding: ActivityProjectPageBinding
-    private var pagerAdapter = ProjectPagerAdapter(supportFragmentManager, lifecycle)
+    private var pagerAdapterMap = mutableMapOf(
+        ProjectPagerTabs.OVERVIEW to true,
+        ProjectPagerTabs.FAQS to true,
+        ProjectPagerTabs.CAMPAIGN to true,
+        ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT to false)
+
+    private var pagerAdapter = ProjectPagerAdapter(supportFragmentManager, pagerAdapterMap,
+        lifecycle)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,6 +119,18 @@ class ProjectPageActivity :
                 // - Every time the ProjectData gets updated
                 // - the fragments on the viewPager are updated as well
                 pagerAdapter.updatedWithProjectData(it)
+            }
+
+        this.viewModel.outputs.updateEnvCommitmentsTabVisibility()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { isGone ->
+                binding.projectDetailTabs.getTabAt(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT
+                    .ordinal)?.view?.isGone = isGone
+                if (!isGone) {
+                    pagerAdapterMap[ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT] = !isGone
+                    configurePager()
+                }
             }
 
         this.viewModel.outputs.backingDetailsSubtitle()
@@ -313,7 +333,7 @@ class ProjectPageActivity :
         val viewPager = binding.projectPager
         val tabLayout = binding.projectDetailTabs
 
-        pagerAdapter = ProjectPagerAdapter(supportFragmentManager, lifecycle)
+        pagerAdapter = ProjectPagerAdapter(supportFragmentManager, pagerAdapterMap, lifecycle)
 
         viewPager.adapter = pagerAdapter
 
@@ -403,10 +423,6 @@ class ProjectPageActivity :
 
     override fun exitTransition(): Pair<Int, Int>? {
         return Pair.create(R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     private fun getTabTitle(position: Int) = when (position) {
@@ -543,10 +559,6 @@ class ProjectPageActivity :
                 .addToBackStack(RewardsFragment::class.java.simpleName)
                 .commit()
         }
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
     }
 
     private fun rewardsFragment() = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment?

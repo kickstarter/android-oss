@@ -14,18 +14,23 @@ import com.kickstarter.ui.fragments.projectpage.ProjectOverviewFragment
 
 class ProjectPagerAdapter(
     private val fragmentManager: FragmentManager,
+    private val pagerAdapterMap: MutableMap<ProjectPagerTabs, Boolean>,
     lifecycle: Lifecycle
 ) :
     FragmentStateAdapter(fragmentManager, lifecycle) {
 
-    override fun getItemCount(): Int = ProjectPagerTabs.values().size
+    override fun getItemCount(): Int = pagerAdapterMap.count { it.value }
 
     override fun createFragment(position: Int): Fragment {
-        return when (position) {
-            ProjectPagerTabs.OVERVIEW.ordinal -> return ProjectOverviewFragment.newInstance(position)
-            ProjectPagerTabs.FAQS.ordinal -> return FrequentlyAskedQuestionFragment.newInstance(position)
-            ProjectPagerTabs.CAMPAIGN.ordinal -> return ProjectCampaignFragment.newInstance(position)
-            ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal -> return ProjectEnvironmentalCommitmentsFragment.newInstance(position)
+        return when {
+            position == ProjectPagerTabs.OVERVIEW.ordinal && pagerAdapterMap[ProjectPagerTabs.OVERVIEW] == true ->  
+                ProjectOverviewFragment.newInstance(position)
+            position == ProjectPagerTabs.FAQS.ordinal && pagerAdapterMap[ProjectPagerTabs.FAQS] == true -> 
+                FrequentlyAskedQuestionFragment.newInstance(position)
+            position == ProjectPagerTabs.CAMPAIGN.ordinal && pagerAdapterMap[ProjectPagerTabs.CAMPAIGN] == true -> 
+                ProjectCampaignFragment.newInstance(position)
+            position == ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal && pagerAdapterMap[ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT] == true ->  
+                ProjectEnvironmentalCommitmentsFragment.newInstance(position)
             else -> ProjectOverviewFragment.newInstance(position)
         }
     }

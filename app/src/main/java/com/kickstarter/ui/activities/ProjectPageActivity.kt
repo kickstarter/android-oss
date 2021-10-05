@@ -76,10 +76,13 @@ class ProjectPageActivity :
         ProjectPagerTabs.OVERVIEW to true,
         ProjectPagerTabs.FAQS to true,
         ProjectPagerTabs.CAMPAIGN to true,
-        ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT to false)
+        ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT to false
+    )
 
-    private var pagerAdapter = ProjectPagerAdapter(supportFragmentManager, pagerAdapterMap,
-        lifecycle)
+    private var pagerAdapter = ProjectPagerAdapter(
+        supportFragmentManager, pagerAdapterMap,
+        lifecycle
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -125,8 +128,10 @@ class ProjectPageActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { isGone ->
-                binding.projectDetailTabs.getTabAt(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT
-                    .ordinal)?.view?.isGone = isGone
+                binding.projectDetailTabs.getTabAt(
+                    ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT
+                        .ordinal
+                )?.view?.isGone = isGone
                 if (!isGone) {
                     pagerAdapterMap[ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT] = !isGone
                     configurePager()

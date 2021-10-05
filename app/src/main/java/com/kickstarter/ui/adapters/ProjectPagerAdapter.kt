@@ -23,13 +23,13 @@ class ProjectPagerAdapter(
 
     override fun createFragment(position: Int): Fragment {
         return when {
-            position == ProjectPagerTabs.OVERVIEW.ordinal && pagerAdapterMap[ProjectPagerTabs.OVERVIEW] == true ->  
+            position == ProjectPagerTabs.OVERVIEW.ordinal && pagerAdapterMap[ProjectPagerTabs.OVERVIEW] == true ->
                 ProjectOverviewFragment.newInstance(position)
-            position == ProjectPagerTabs.FAQS.ordinal && pagerAdapterMap[ProjectPagerTabs.FAQS] == true -> 
+            position == ProjectPagerTabs.FAQS.ordinal && pagerAdapterMap[ProjectPagerTabs.FAQS] == true ->
                 FrequentlyAskedQuestionFragment.newInstance(position)
-            position == ProjectPagerTabs.CAMPAIGN.ordinal && pagerAdapterMap[ProjectPagerTabs.CAMPAIGN] == true -> 
+            position == ProjectPagerTabs.CAMPAIGN.ordinal && pagerAdapterMap[ProjectPagerTabs.CAMPAIGN] == true ->
                 ProjectCampaignFragment.newInstance(position)
-            position == ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal && pagerAdapterMap[ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT] == true ->  
+            position == ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal && pagerAdapterMap[ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT] == true ->
                 ProjectEnvironmentalCommitmentsFragment.newInstance(position)
             else -> ProjectOverviewFragment.newInstance(position)
         }

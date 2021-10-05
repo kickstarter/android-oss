@@ -151,8 +151,10 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testUIOutputs_whenFetchProjectWithoutEnVCommitment() {
-        val initialProject = ProjectFactory.initialProject().toBuilder().envCommitments(emptyList
-            ()).build()
+        val initialProject = ProjectFactory.initialProject().toBuilder().envCommitments(
+            emptyList
+            ()
+        ).build()
 
         setUpEnvironment(environment())
 

@@ -283,14 +283,17 @@ class ProjectViewHolder(
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe { setAvatar(it) }
+
         viewModel.outputs.backersCountTextViewText()
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe(binding.statsView.backersCount::setText)
+
         viewModel.outputs.backingViewGroupIsGone()
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe(ViewUtils.setGone(binding.projectMediaHeaderLayout.projectMetadataLayout.backingGroup))
+
         viewModel.outputs.blurbTextViewText()
             .compose(bindToLifecycle())
             .compose(observeForUI())

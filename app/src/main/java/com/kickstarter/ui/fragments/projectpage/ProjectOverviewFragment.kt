@@ -44,8 +44,6 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
     private lateinit var binding: FragmentProjectOverviewBinding
     private lateinit var ksString: KSString
 
-    private fun context() = this.requireContext()
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         binding = FragmentProjectOverviewBinding.inflate(inflater, container, false)
@@ -86,12 +84,14 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                val categoryTextView = if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    binding.projectMediaHeaderLayout.category
-                } else {
-                    binding.category
+                context?.let { currentContext ->
+                    val categoryTextView = if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                        binding.projectMediaHeaderLayout.category
+                    } else {
+                        binding.category
+                    }
+                    categoryTextView?.text = it
                 }
-                categoryTextView?.text = it
             }
 
         viewModel.outputs.commentsCountTextViewText()
@@ -108,12 +108,14 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                val creatorInfoLoadingContainer = if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    binding.projectMediaHeaderLayout.loadingPlaceholderCreatorInfoLayout?.creatorInfoLoadingContainer
-                } else {
-                    binding.loadingPlaceholderCreatorInfoLayout?.creatorInfoLoadingContainer
+                context?.let { currentContext ->
+                    val creatorInfoLoadingContainer = if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                        binding.projectMediaHeaderLayout.loadingPlaceholderCreatorInfoLayout?.creatorInfoLoadingContainer
+                    } else {
+                        binding.loadingPlaceholderCreatorInfoLayout?.creatorInfoLoadingContainer
+                    }
+                    creatorInfoLoadingContainer?.let { loadingContainer -> ViewUtils.setGone(loadingContainer, !it) }
                 }
-                creatorInfoLoadingContainer?.let { loadingContainer -> ViewUtils.setGone(loadingContainer, !it) }
             }
 
         viewModel.outputs.creatorDetailsVariantIsVisible()
@@ -125,24 +127,29 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                val creatorNameTextView = if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    binding.projectMediaHeaderLayout.creatorName
-                } else {
-                    binding.creatorName
+                context?.let { currentContext ->
+                    val creatorNameTextView = if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                        binding.projectMediaHeaderLayout.creatorName
+                    } else {
+                        binding.creatorName
+                    }
+                    creatorNameTextView?.text = it
                 }
-                creatorNameTextView?.text = it
             }
 
         viewModel.outputs.creatorNameTextViewText()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                val creatorNameVariantTextView = if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    binding.projectMediaHeaderLayout.creatorNameVariant
-                } else {
-                    binding.creatorNameVariant
+                context?.let { currentContext ->
+                    val creatorNameVariantTextView =
+                        if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                            binding.projectMediaHeaderLayout.creatorNameVariant
+                        } else {
+                            binding.creatorNameVariant
+                        }
+                    creatorNameVariantTextView?.text = it
                 }
-                creatorNameVariantTextView?.text = it
             }
 
         viewModel.outputs.deadlineCountdownTextViewText()
@@ -154,8 +161,16 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                binding.projectMediaHeaderLayout.projectMetadataLayout.featured.text =
-                    (ksString.format(context().getString(R.string.discovery_baseball_card_metadata_featured_project), "category_name", it))
+                context?.let { currentContext ->
+                    binding.projectMediaHeaderLayout.projectMetadataLayout.featured.text =
+                        (
+                            ksString.format(
+                                currentContext.getString(R.string.discovery_baseball_card_metadata_featured_project),
+                                "category_name",
+                                it
+                            )
+                            )
+                }
             }
 
         viewModel.outputs.featuredViewGroupIsGone()
@@ -172,19 +187,24 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                val locationTextView = if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    binding.projectMediaHeaderLayout.location
-                } else {
-                    binding.location
+                context?.let { currentContext ->
+                    val locationTextView =
+                        if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                            binding.projectMediaHeaderLayout.location
+                        } else {
+                            binding.location
+                        }
+                    locationTextView?.text = it
                 }
-                locationTextView?.text = it
             }
 
         viewModel.outputs.projectOutput()
             .subscribe {
-                // todo: break down these helpers
-                setLandscapeOverlayText(it)
-                binding.statsView.deadlineCountdownUnitTextView.text = ProjectUtils.deadlineCountdownDetail(it, context(), ksString)
+                context?.let { currentContext ->
+                    setLandscapeOverlayText(it)
+                    binding.statsView.deadlineCountdownUnitTextView.text =
+                        ProjectUtils.deadlineCountdownDetail(it, currentContext, ksString)
+                }
             }
         viewModel.outputs.percentageFundedProgress()
             .compose(bindToLifecycle())
@@ -200,10 +220,6 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe(ViewUtils.setGone(binding.projectMediaHeaderLayout.playButtonOverlay))
-
-        binding.projectMediaHeaderLayout.playButtonOverlay.setOnClickListener {
-            playButtonOnClick()
-        }
 
         viewModel.outputs.pledgedTextViewText()
             .compose(bindToLifecycle())
@@ -252,7 +268,12 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         viewModel.outputs.projectMetadataViewGroupBackgroundDrawableInt()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { binding.projectMediaHeaderLayout.projectMetadataLayout.projectMetadataViewGroup.background = ContextCompat.getDrawable(context(), it) }
+            .subscribe {
+                context?.let { currentContext ->
+                    binding.projectMediaHeaderLayout.projectMetadataLayout.projectMetadataViewGroup.background =
+                        ContextCompat.getDrawable(currentContext, it)
+                }
+            }
 
         viewModel.outputs.projectMetadataViewGroupIsGone()
             .compose(bindToLifecycle())
@@ -263,12 +284,15 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                val projectNameTextView = if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    binding.projectMediaHeaderLayout.projectName
-                } else {
-                    binding.projectName
+                context?.let { currentContext ->
+                    val projectNameTextView =
+                        if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                            binding.projectMediaHeaderLayout.projectName
+                        } else {
+                            binding.projectName
+                        }
+                    projectNameTextView?.text = it
                 }
-                projectNameTextView?.text = it
             }
 
         viewModel.outputs.projectPhoto()
@@ -279,7 +303,12 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         viewModel.outputs.projectSocialTextViewFriends()
             .compose(bindToLifecycle())
             .compose<List<User?>>(Transformers.observeForUI())
-            .subscribe { binding.projectSocialText.text = SocialUtils.projectCardFriendNamepile(context(), it, ksString) }
+            .subscribe {
+                context?.let { currentContext ->
+                    binding.projectSocialText.text =
+                        SocialUtils.projectCardFriendNamepile(currentContext, it, ksString)
+                }
+            }
 
         viewModel.outputs.projectSocialImageViewIsGone()
             .compose(bindToLifecycle())
@@ -297,6 +326,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
                         .into(binding.projectSocialImage)
                 }
             }
+
         viewModel.outputs.projectSocialViewGroupIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
@@ -305,7 +335,16 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         viewModel.outputs.projectStateViewGroupBackgroundColorInt()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { binding.projectStateViewGroup.setBackgroundColor(ContextCompat.getColor(context(), it)) }
+            .subscribe {
+                context?.let { currentContext ->
+                    binding.projectStateViewGroup.setBackgroundColor(
+                        ContextCompat.getColor(
+                            currentContext,
+                            it
+                        )
+                    )
+                }
+            }
 
         viewModel.outputs.projectStateViewGroupIsGone()
             .compose(bindToLifecycle())
@@ -362,23 +401,54 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(Transformers.observeForUI())
             .subscribe(ViewUtils.setGone(binding.usdConversionTextView))
 
-        if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            binding.projectMediaHeaderLayout.readMore
-        } else {
-            binding.readMore
-        }?.let { readMoreButton ->
-            readMoreButton.setOnClickListener {
-                blurbVariantOnClick()
+        context?.let { currentContext ->
+            if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                binding.projectMediaHeaderLayout.readMore
+            } else {
+                binding.readMore
+            }?.let { readMoreButton ->
+                readMoreButton.setOnClickListener {
+                    blurbVariantOnClick()
+                }
             }
-        }
 
-        if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            binding.projectMediaHeaderLayout.readMore
-        } else {
-            binding.readMore
-        }?.let { readMoreButton ->
-            readMoreButton.setOnClickListener {
-                blurbVariantOnClick()
+            if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                binding.projectMediaHeaderLayout.readMore
+            } else {
+                binding.readMore
+            }?.let { readMoreButton ->
+                readMoreButton.setOnClickListener {
+                    blurbVariantOnClick()
+                }
+            }
+
+            if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                binding.projectMediaHeaderLayout.blurbView
+            } else {
+                binding.blurbView
+            }?.let { blurbView ->
+                blurbView.setOnClickListener {
+                    blurbOnClick()
+                }
+            }
+            if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                binding.projectMediaHeaderLayout.creatorInfo
+            } else {
+                binding.creatorInfo
+            }?.let { creatorInfo ->
+                creatorInfo.setOnClickListener {
+                    creatorNameOnClick()
+                }
+            }
+
+            if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                binding.projectMediaHeaderLayout.creatorInfoVariant
+            } else {
+                binding.creatorInfoVariant
+            }?.let { creatorInfoVariant ->
+                creatorInfoVariant.setOnClickListener {
+                    creatorInfoVariantOnClick()
+                }
             }
         }
 
@@ -391,117 +461,119 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         binding.projectCreatorInfoLayout.updates.setOnClickListener {
             updatesOnClick()
         }
-        if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            binding.projectMediaHeaderLayout.blurbView
-        } else {
-            binding.blurbView
-        }?.let { blurbView ->
-            blurbView.setOnClickListener {
-                blurbOnClick()
-            }
-        }
-        if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            binding.projectMediaHeaderLayout.creatorInfo
-        } else {
-            binding.creatorInfo
-        }?.let { creatorInfo ->
-            creatorInfo.setOnClickListener {
-                creatorNameOnClick()
-            }
-        }
-
-        if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            binding.projectMediaHeaderLayout.creatorInfoVariant
-        } else {
-            binding.creatorInfoVariant
-        }?.let { creatorInfoVariant ->
-            creatorInfoVariant.setOnClickListener {
-                creatorInfoVariantOnClick()
-            }
-        }
     }
 
     private fun setAvatar(url: String) {
-        val avatarImageView = if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            binding.projectMediaHeaderLayout.avatar
-        } else {
-            binding.avatar
-        }
-        Picasso.get()
-            .load(url)
-            .transform(CircleTransformation())
-            .into(avatarImageView)
+        context?.let { currentContext ->
+            val avatarImageView =
+                if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    binding.projectMediaHeaderLayout.avatar
+                } else {
+                    binding.avatar
+                }
+            Picasso.get()
+                .load(url)
+                .transform(CircleTransformation())
+                .into(avatarImageView)
 
-        val avatarVariantImageView = if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            binding.projectMediaHeaderLayout.creatorAvatarVerified?.avatarVariant
-        } else {
-            binding.creatorAvatarVerified?.avatarVariant
+            val avatarVariantImageView =
+                if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    binding.projectMediaHeaderLayout.creatorAvatarVerified?.avatarVariant
+                } else {
+                    binding.creatorAvatarVerified?.avatarVariant
+                }
+            Picasso.get()
+                .load(url)
+                .transform(CircleTransformation())
+                .into(avatarVariantImageView)
         }
-        Picasso.get()
-            .load(url)
-            .transform(CircleTransformation())
-            .into(avatarVariantImageView)
     }
 
     private fun setConvertedCurrencyView(pledgedAndGoal: Pair<String, String>) {
-        binding.usdConversionTextView.text = ksString.format(
-            context().getString(R.string.discovery_baseball_card_stats_convert_from_pledged_of_goal), "pledged", pledgedAndGoal.first, "goal", pledgedAndGoal.second
-        )
+        context?.let { currentContext ->
+            binding.usdConversionTextView.text = ksString.format(
+                currentContext.getString(R.string.discovery_baseball_card_stats_convert_from_pledged_of_goal),
+                "pledged",
+                pledgedAndGoal.first,
+                "goal",
+                pledgedAndGoal.second
+            )
+        }
     }
 
     private fun setCreatorDetailsTextView(backedAndLaunchedProjectsCount: Pair<Int, Int>) {
-        val creatorDetailsTextView = if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            binding.projectMediaHeaderLayout.creatorDetails
-        } else {
-            binding.creatorDetails
+        context?.let { currentContext ->
+            val creatorDetailsTextView =
+                if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    binding.projectMediaHeaderLayout.creatorDetails
+                } else {
+                    binding.creatorDetails
+                }
+            creatorDetailsTextView?.text = ksString.format(
+                currentContext.getString(R.string.projects_launched_count_created_projects_backed_count_backed),
+                "projects_backed_count", NumberUtils.format(backedAndLaunchedProjectsCount.first),
+                "projects_launched_count", NumberUtils.format(backedAndLaunchedProjectsCount.second)
+            )
         }
-        creatorDetailsTextView?.text = ksString.format(
-            context().getString(R.string.projects_launched_count_created_projects_backed_count_backed),
-            "projects_backed_count", NumberUtils.format(backedAndLaunchedProjectsCount.first),
-            "projects_launched_count", NumberUtils.format(backedAndLaunchedProjectsCount.second)
-        )
     }
 
     private fun setCreatorDetailsVariantVisibility(visible: Boolean) {
-        if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            binding.projectMediaHeaderLayout.creatorInfoVariant
-        } else {
-            binding.creatorInfoVariant
-        }?.let { creatorInfoVariantContainer ->
-            ViewUtils.setGone(creatorInfoVariantContainer, !visible)
-        }
+        context?.let { currentContext ->
+            if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                binding.projectMediaHeaderLayout.creatorInfoVariant
+            } else {
+                binding.creatorInfoVariant
+            }?.let { creatorInfoVariantContainer ->
+                ViewUtils.setGone(creatorInfoVariantContainer, !visible)
+            }
 
-        if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            binding.projectMediaHeaderLayout.creatorInfo
-        } else {
-            binding.creatorInfo
-        }?.let { creatorInfoContainer ->
-            ViewUtils.setGone(creatorInfoContainer, visible)
+            if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                binding.projectMediaHeaderLayout.creatorInfo
+            } else {
+                binding.creatorInfo
+            }?.let { creatorInfoContainer ->
+                ViewUtils.setGone(creatorInfoContainer, visible)
+            }
         }
     }
 
     private fun setGoalTextView(goalString: String) {
-        val goalText = if (ViewUtils.isFontScaleLarge(context()))
-            ksString.format(context().getString(R.string.discovery_baseball_card_stats_pledged_of_goal_short), "goal", goalString)
-        else
-            ksString.format(context().getString(R.string.discovery_baseball_card_stats_pledged_of_goal), "goal", goalString)
+        context?.let { currentContext ->
+            val goalText = if (ViewUtils.isFontScaleLarge(currentContext))
+                ksString.format(
+                    currentContext.getString(R.string.discovery_baseball_card_stats_pledged_of_goal_short),
+                    "goal",
+                    goalString
+                )
+            else
+                ksString.format(
+                    currentContext.getString(R.string.discovery_baseball_card_stats_pledged_of_goal),
+                    "goal",
+                    goalString
+                )
 
-        binding.statsView.goal.text = goalText
+            binding.statsView.goal.text = goalText
+        }
     }
 
     private fun setProjectPhoto(photo: Photo) {
-        // Account for the grid2 start and end margins.
-        val targetImageWidth = (ViewUtils.getScreenWidthDp(context()) * ViewUtils.getScreenDensity(context())).toInt() - context().resources.getDimension(R.dimen.grid_2).toInt() * 2
-        val targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth)
-        binding.projectMediaHeaderLayout.projectPhoto.maxHeight = targetImageHeight
+        context?.let { currentContext ->
+            // Account for the grid2 start and end margins.
+            val targetImageWidth =
+                (ViewUtils.getScreenWidthDp(currentContext) * ViewUtils.getScreenDensity(currentContext)).toInt() - currentContext.resources.getDimension(
+                    R.dimen.grid_2
+                ).toInt() * 2
+            val targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth)
+            binding.projectMediaHeaderLayout.projectPhoto.maxHeight = targetImageHeight
 
-        ResourcesCompat.getDrawable(context().resources, R.drawable.gray_gradient, null)?.let {
-            Picasso.get()
-                .load(photo.full())
-                .resize(targetImageWidth, targetImageHeight)
-                .centerCrop()
-                .placeholder(it)
-                .into(binding.projectMediaHeaderLayout.projectPhoto)
+            ResourcesCompat.getDrawable(currentContext.resources, R.drawable.gray_gradient, null)?.let {
+                Picasso.get()
+                    .load(photo.full())
+                    .resize(targetImageWidth, targetImageHeight)
+                    .centerCrop()
+                    .placeholder(it)
+                    .into(binding.projectMediaHeaderLayout.projectPhoto)
+            }
         }
     }
 
@@ -511,81 +583,104 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
     }
 
     private fun setBlurbTextViews(blurb: String) {
-        val blurbHtml = Html.fromHtml(TextUtils.htmlEncode(blurb))
-        if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            binding.projectMediaHeaderLayout.blurb
-        } else {
-            binding.blurb
-        }?.let { blurbTextView ->
-            blurbTextView.text = blurbHtml
-        }
+        context?.let { currentContext ->
+            val blurbHtml = Html.fromHtml(TextUtils.htmlEncode(blurb))
+            if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                binding.projectMediaHeaderLayout.blurb
+            } else {
+                binding.blurb
+            }?.let { blurbTextView ->
+                blurbTextView.text = blurbHtml
+            }
 
-        if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            binding.projectMediaHeaderLayout.blurbVariant
-        } else {
-            binding.blurbVariant
-        }?.let { blurbVariantTextView ->
-            blurbVariantTextView.text = blurbHtml
+            if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                binding.projectMediaHeaderLayout.blurbVariant
+            } else {
+                binding.blurbVariant
+            }?.let { blurbVariantTextView ->
+                blurbVariantTextView.text = blurbHtml
+            }
         }
     }
 
     private fun setBlurbVariantVisibility(blurbVariantVisible: Boolean) {
-        if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            binding.projectMediaHeaderLayout.blurbView
-        } else {
-            binding.blurbView
-        }?.let { blurbViewGroup ->
-            ViewUtils.setGone(blurbViewGroup, blurbVariantVisible)
-        }
+        context?.let { currentContext ->
+            if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                binding.projectMediaHeaderLayout.blurbView
+            } else {
+                binding.blurbView
+            }?.let { blurbViewGroup ->
+                ViewUtils.setGone(blurbViewGroup, blurbVariantVisible)
+            }
 
-        if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            binding.projectMediaHeaderLayout.blurbViewVariant
-        } else {
-            binding.blurbViewVariant
-        }?.let { blurbVariantViewGroup ->
-            ViewUtils.setGone(blurbVariantViewGroup, !blurbVariantVisible)
+            if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                binding.projectMediaHeaderLayout.blurbViewVariant
+            } else {
+                binding.blurbViewVariant
+            }?.let { blurbVariantViewGroup ->
+                ViewUtils.setGone(blurbVariantViewGroup, !blurbVariantVisible)
+            }
         }
     }
 
     private fun setProjectDisclaimerGoalReachedString(deadline: DateTime) {
-        binding.projectCreatorInfoLayout.projectDisclaimerTextView.text = ksString.format(
-            context().getString(R.string.project_disclaimer_goal_reached),
-            "deadline",
-            DateTimeUtils.mediumDateShortTime(deadline)
-        )
+        context?.let { currentContext ->
+            binding.projectCreatorInfoLayout.projectDisclaimerTextView.text = ksString.format(
+                currentContext.getString(R.string.project_disclaimer_goal_reached),
+                "deadline",
+                DateTimeUtils.mediumDateShortTime(deadline)
+            )
+        }
     }
 
     private fun setProjectDisclaimerGoalNotReachedString(goalAndDeadline: Pair<String, DateTime>) {
-        binding.projectCreatorInfoLayout.projectDisclaimerTextView.text = ksString.format(
-            context().getString(R.string.project_disclaimer_goal_not_reached),
-            "goal_currency",
-            goalAndDeadline.first,
-            "deadline",
-            DateTimeUtils.mediumDateShortTime(goalAndDeadline.second)
-        )
+        context?.let { currentContext ->
+            binding.projectCreatorInfoLayout.projectDisclaimerTextView.text = ksString.format(
+                currentContext.getString(R.string.project_disclaimer_goal_not_reached),
+                "goal_currency",
+                goalAndDeadline.first,
+                "deadline",
+                DateTimeUtils.mediumDateShortTime(goalAndDeadline.second)
+            )
+        }
     }
 
     private fun setProjectLaunchDateString(launchDate: String) {
-        val launchedDateSpannableString = SpannableString(
-            ksString.format(
-                context().getString(R.string.You_launched_this_project_on_launch_date),
-                "launch_date",
-                launchDate
+        context?.let { currentContext ->
+            val launchedDateSpannableString = SpannableString(
+                ksString.format(
+                    currentContext.getString(R.string.You_launched_this_project_on_launch_date),
+                    "launch_date",
+                    launchDate
+                )
             )
-        )
-        ViewUtils.addBoldSpan(launchedDateSpannableString, launchDate)
-        binding.projectCreatorDashboardHeader.projectLaunchDate.text = launchedDateSpannableString
+            ViewUtils.addBoldSpan(launchedDateSpannableString, launchDate)
+            binding.projectCreatorDashboardHeader.projectLaunchDate.text =
+                launchedDateSpannableString
+        }
     }
 
     private fun setProjectSocialClickListener() {
-        binding.projectSocialView.background = ResourcesCompat.getDrawable(context().resources, R.drawable.click_indicator_light_masked, null)
-        binding.projectSocialView.setOnClickListener { viewModel.inputs.projectSocialViewGroupClicked() }
+        context?.let { currentContext ->
+            binding.projectSocialView.background = ResourcesCompat.getDrawable(
+                currentContext.resources,
+                R.drawable.click_indicator_light_masked,
+                null
+            )
+            binding.projectSocialView.setOnClickListener { viewModel.inputs.projectSocialViewGroupClicked() }
+        }
     }
 
     private fun setSuccessfulProjectStateView(stateChangedAt: DateTime) {
-        binding.projectStateHeaderTextView.setText(R.string.project_status_funded)
-        binding.projectStateSubheadTextView.text =
-            ksString.format(context().getString(R.string.project_status_project_was_successfully_funded_on_deadline), "deadline", DateTimeUtils.mediumDate(stateChangedAt))
+        context?.let { currentContext ->
+            binding.projectStateHeaderTextView.setText(R.string.project_status_funded)
+            binding.projectStateSubheadTextView.text =
+                ksString.format(
+                    currentContext.getString(R.string.project_status_project_was_successfully_funded_on_deadline),
+                    "deadline",
+                    DateTimeUtils.mediumDate(stateChangedAt)
+                )
+        }
     }
 
     private fun setSuspendedProjectStateView() {
@@ -594,52 +689,85 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
     }
 
     private fun setUnsuccessfulProjectStateView(stateChangedAt: DateTime) {
-        binding.projectStateHeaderTextView.text = context().getString(R.string.project_status_funding_unsuccessful)
-        binding.projectStateSubheadTextView.text = ksString.format(context().getString(R.string.project_status_project_funding_goal_not_reached), "deadline", DateTimeUtils.mediumDate(stateChangedAt))
+        context?.let { currentContext ->
+            binding.projectStateHeaderTextView.text =
+                currentContext.getString(R.string.project_status_funding_unsuccessful)
+            binding.projectStateSubheadTextView.text = ksString.format(
+                currentContext.getString(R.string.project_status_project_funding_goal_not_reached),
+                "deadline",
+                DateTimeUtils.mediumDate(stateChangedAt)
+            )
+        }
     }
 
     private fun setStatsMargins(shouldSetDefaultMargins: Boolean) {
-        (binding.projectStatsView as? LinearLayout)?.let { projectStatsView ->
-            if (shouldSetDefaultMargins) {
-                ViewUtils.setLinearViewGroupMargins(
-                    projectStatsView,
-                    0, context().resources.getDimension(R.dimen.grid_3).toInt(),
-                    0, context().resources.getDimension(R.dimen.grid_2).toInt()
-                )
-            } else {
-                ViewUtils.setLinearViewGroupMargins(
-                    projectStatsView,
-                    0, context().resources.getDimension(R.dimen.grid_3).toInt(),
-                    0, context().resources.getDimension(R.dimen.grid_4).toInt()
-                )
+        context?.let { currentContext ->
+            (binding.projectStatsView as? LinearLayout)?.let { projectStatsView ->
+                if (shouldSetDefaultMargins) {
+                    ViewUtils.setLinearViewGroupMargins(
+                        projectStatsView,
+                        0, currentContext.resources.getDimension(R.dimen.grid_3).toInt(),
+                        0, currentContext.resources.getDimension(R.dimen.grid_2).toInt()
+                    )
+                } else {
+                    ViewUtils.setLinearViewGroupMargins(
+                        projectStatsView,
+                        0, currentContext.resources.getDimension(R.dimen.grid_3).toInt(),
+                        0, currentContext.resources.getDimension(R.dimen.grid_4).toInt()
+                    )
+                }
             }
         }
     }
 
     private fun startProjectSocialActivity(project: Project) {
-        val activity = context() as BaseActivity<*>
-        val intent = Intent(context(), ProjectSocialActivity::class.java)
-            .putExtra(IntentKey.PROJECT, project)
-        activity.startActivity(intent)
-        activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+        context?.let { currentContext ->
+            val activity = currentContext as BaseActivity<*>
+            val intent = Intent(currentContext, ProjectSocialActivity::class.java)
+                .putExtra(IntentKey.PROJECT, project)
+            activity.startActivity(intent)
+            activity.overridePendingTransition(
+                R.anim.slide_in_right,
+                R.anim.fade_out_slide_out_left
+            )
+        }
     }
 
     /**
      * Set top margin of overlay text based on landscape screen height, scaled by screen density.
      */
     private fun setLandscapeOverlayText(project: Project) {
-        if (binding.projectMediaHeaderLayout.landOverlayText != null && binding.projectMediaHeaderLayout.nameCreatorView != null) {
-            val screenHeight = ViewUtils.getScreenHeightDp(context())
-            val densityOffset = context().resources.displayMetrics.density
-            val topMargin = screenHeight / 3f * 2 * densityOffset - context().resources.getDimension(R.dimen.grid_10).toInt()
-            ViewUtils.setRelativeViewGroupMargins(
-                binding.projectMediaHeaderLayout.landOverlayText!!, context().resources.getDimension(R.dimen.grid_4).toInt(),
-                topMargin.toInt(), context().resources.getDimension(R.dimen.grid_4).toInt(), 0
-            )
-            if (!project.hasVideo()) {
-                ViewUtils.setRelativeViewGroupMargins(binding.projectMediaHeaderLayout.nameCreatorView!!, 0, 0, 0, context().resources.getDimension(R.dimen.grid_2).toInt())
-            } else {
-                ViewUtils.setRelativeViewGroupMargins(binding.projectMediaHeaderLayout.nameCreatorView!!, 0, 0, 0, context().resources.getDimension(R.dimen.grid_1).toInt())
+        context?.let { currentContext ->
+            if (binding.projectMediaHeaderLayout.landOverlayText != null && binding.projectMediaHeaderLayout.nameCreatorView != null) {
+                val screenHeight = ViewUtils.getScreenHeightDp(currentContext)
+                val densityOffset = currentContext.resources.displayMetrics.density
+                val topMargin =
+                    screenHeight / 3f * 2 * densityOffset - currentContext.resources.getDimension(R.dimen.grid_10)
+                        .toInt()
+                ViewUtils.setRelativeViewGroupMargins(
+                    binding.projectMediaHeaderLayout.landOverlayText!!,
+                    currentContext.resources.getDimension(R.dimen.grid_4).toInt(),
+                    topMargin.toInt(),
+                    currentContext.resources.getDimension(R.dimen.grid_4).toInt(),
+                    0
+                )
+                if (!project.hasVideo()) {
+                    ViewUtils.setRelativeViewGroupMargins(
+                        binding.projectMediaHeaderLayout.nameCreatorView!!,
+                        0,
+                        0,
+                        0,
+                        currentContext.resources.getDimension(R.dimen.grid_2).toInt()
+                    )
+                } else {
+                    ViewUtils.setRelativeViewGroupMargins(
+                        binding.projectMediaHeaderLayout.nameCreatorView!!,
+                        0,
+                        0,
+                        0,
+                        currentContext.resources.getDimension(R.dimen.grid_1).toInt()
+                    )
+                }
             }
         }
     }

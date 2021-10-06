@@ -449,6 +449,7 @@ interface ProjectOverviewViewModel {
 
         init {
             val project = projectData
+                .distinctUntilChanged()
                 .map { it.project() }
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }

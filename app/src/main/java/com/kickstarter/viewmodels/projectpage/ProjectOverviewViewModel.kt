@@ -18,9 +18,6 @@ import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProgressBarUtils
 import com.kickstarter.libs.utils.ProjectUtils
-import com.kickstarter.models.Category
-import com.kickstarter.models.CreatorDetails
-import com.kickstarter.models.Location
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -187,13 +184,14 @@ interface ProjectOverviewViewModel {
         fun updatesCountTextViewText(): Observable<String>
     }
 
-    class ViewModel(environment: Environment) :
-        FragmentViewModel<ProjectOverviewFragment?>(environment), Inputs, Outputs {
-        private val apolloClient: ApolloClientType
-        private val currentUser: CurrentUserType
-        private val ksCurrency: KSCurrency
-        private val optimizely: ExperimentsClientType
-        val kSString: KSString
+    class ViewModel(environment: Environment) : FragmentViewModel<ProjectOverviewFragment?>(environment), Inputs, Outputs {
+
+        private val apolloClient: ApolloClientType = environment.apolloClient()
+        private val currentUser: CurrentUserType = environment.currentUser()
+        private val ksCurrency: KSCurrency = environment.ksCurrency()
+        private val optimizely: ExperimentsClientType = environment.optimizely()
+        val kSString: KSString = environment.ksString()
+
         private val projectData = PublishSubject.create<ProjectData>()
         private val projectSocialViewGroupClicked = PublishSubject.create<Void?>()
         private val avatarPhotoUrl: Observable<String>
@@ -245,8 +243,10 @@ interface ProjectOverviewViewModel {
         private val shouldSetDefaultStatsMargins: Observable<Boolean>
         private val updatesContainerIsClickable = BehaviorSubject.create<Boolean>()
         private val updatesCountTextViewText: Observable<String>
+
         val inputs: Inputs = this
         val outputs: Outputs = this
+
         override fun configureWith(projectData: ProjectData) {
             this.projectData.onNext(projectData)
         }
@@ -448,112 +448,109 @@ interface ProjectOverviewViewModel {
         }
 
         init {
-            apolloClient = environment.apolloClient()
-            currentUser = environment.currentUser()
-            ksCurrency = environment.ksCurrency()
-            optimizely = environment.optimizely()
-            kSString = environment.ksString()
             val project = projectData
-                .map { obj: ProjectData -> obj.project() }
+                .map { it.project() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+
             val projectMetadata = project
-                .map { project: Project? ->
-                    ProjectUtils.metadataForProject(
-                        project!!
-                    )
-                }
-            avatarPhotoUrl = project.map { p: Project -> p.creator().avatar().medium() }
-            backersCountTextViewText = project.map { obj: Project -> obj.backersCount() }
-                .map { value: Int? ->
-                    NumberUtils.format(
-                        value!!
-                    )
-                }
-            backingViewGroupIsGone = projectMetadata
-                .map { other: ProjectUtils.Metadata? -> ProjectUtils.Metadata.BACKING.equals(other) }
-                .map { bool: Boolean? ->
-                    BooleanUtils.negate(
-                        bool!!
-                    )
-                }
-            blurbTextViewText = project.map { obj: Project -> obj.blurb() }
+                .map { ProjectUtils.metadataForProject(it) }
+
+            avatarPhotoUrl = project
+                .map { it.creator().avatar().medium() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+
+            backersCountTextViewText = project
+                .map { NumberUtils.format(it.backersCount()) }
+
+            backingViewGroupIsGone = project
+                .map { it.isBacking }
+
+            blurbTextViewText = project
+                .map { it.blurb() }
+
             val projectDataAndCurrentUser = projectData
                 .compose(Transformers.combineLatestPair(currentUser.observable()))
+
             projectDataAndCurrentUser
-                .map { projectDataAndUser: Pair<ProjectData, User> ->
+                .map { projectDataAndUser ->
                     ExperimentData(
                         projectDataAndUser.second,
-                        projectDataAndUser.first
-                            .refTagFromIntent(),
+                        projectDataAndUser.first.refTagFromIntent(),
                         projectDataAndUser.first.refTagFromCookie()
                     )
                 }
-                .map { experimentData: ExperimentData? ->
+                .map { experimentData ->
                     optimizely.variant(
                         OptimizelyExperiment.Key.CAMPAIGN_DETAILS,
-                        experimentData!!
+                        experimentData
                     )
                 }
-                .map { variant: OptimizelyExperiment.Variant? -> variant !== OptimizelyExperiment.Variant.CONTROL }
+                .map { variant -> variant !== OptimizelyExperiment.Variant.CONTROL }
                 .compose(bindToLifecycle())
-                .subscribe { v: Boolean -> blurbVariantIsVisible.onNext(v) }
-            categoryTextViewText = project.map { obj: Project -> obj.category() }
-                .filter { `object`: Category? -> ObjectUtils.isNotNull(`object`) }
-                .map { obj: Category? -> obj!!.name() }
+                .subscribe { blurbVariantIsVisible.onNext(it) }
+
+            categoryTextViewText = project
+                .map { it.category() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { it?.name() ?: "" }
+
             commentsCountTextViewText = project
-                .map { obj: Project -> obj.commentsCount() }
-                .filter { `object`: Int? -> ObjectUtils.isNotNull(`object`) }
-                .map { value: Int? ->
-                    NumberUtils.format(
-                        value!!
-                    )
-                }
+                .map { it.commentsCount() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .map { NumberUtils.format(it) }
+
             conversionTextViewIsGone = project
-                .map { pc: Project -> pc.currency() != pc.currentCurrency() }
-                .map { bool: Boolean? ->
-                    BooleanUtils.negate(
-                        bool!!
-                    )
-                }
+                .map { it.currency() != it.currentCurrency() }
+                .map { BooleanUtils.negate(it) }
+
             conversionPledgedAndGoalText = project
-                .map { p: Project ->
-                    val pledged = ksCurrency.format(p.pledged(), p)
-                    val goal = ksCurrency.format(p.goal(), p)
+                .map { proj ->
+                    val pledged = ksCurrency.format(proj.pledged(), proj)
+                    val goal = ksCurrency.format(proj.goal(), proj)
                     Pair.create(pledged, goal)
                 }
-            creatorNameTextViewText = project.map { p: Project -> p.creator().name() }
+
+            creatorNameTextViewText = project
+                .map { it.creator().name() }
+
             val creatorDetailsNotification = project
                 .take(1)
                 .distinctUntilChanged()
-                .map { obj: Project -> obj.slug() }
-                .switchMap { slug: String? ->
-                    apolloClient.creatorDetails(
-                        slug!!
-                    )
+                .map { it.slug() }
+                .switchMap { slug ->
+                    apolloClient.creatorDetails(slug ?: "")
                         .doOnSubscribe { creatorDetailsLoadingContainerIsVisible.onNext(true) }
                         .doAfterTerminate { creatorDetailsLoadingContainerIsVisible.onNext(false) }
                         .materialize()
                 }
                 .share()
+
             creatorDetailsNotification
                 .compose(Transformers.errors())
                 .map { _: Throwable? -> false }
                 .compose(bindToLifecycle())
-                .subscribe { v: Boolean -> creatorDetailsVariantIsVisible.onNext(v) }
+                .subscribe { creatorDetailsVariantIsVisible.onNext(it) }
+
             val creatorDetails = creatorDetailsNotification
                 .compose(Transformers.values())
+
             creatorDetails
-                .map { details: CreatorDetails ->
+                .map { details ->
                     Pair.create(
                         details.backingsCount(),
                         details.launchedProjectsCount()
                     )
                 }
                 .compose(bindToLifecycle())
-                .subscribe { v: Pair<Int, Int> -> creatorBackedAndLaunchedProjectsCount.onNext(v) }
+                .subscribe { creatorBackedAndLaunchedProjectsCount.onNext(it) }
+
             creatorDetails
                 .compose(Transformers.combineLatestPair(projectDataAndCurrentUser))
                 .take(1)
-                .map { cosa: Pair<CreatorDetails, Pair<ProjectData, User>> -> cosa.second }
+                .map { it.second }
                 .map { projectDataAndUser: Pair<ProjectData, User> ->
                     ExperimentData(
                         projectDataAndUser.second,
@@ -568,164 +565,174 @@ interface ProjectOverviewViewModel {
                         experimentData!!
                     )
                 }
-                .map { variant: OptimizelyExperiment.Variant? -> variant !== OptimizelyExperiment.Variant.CONTROL }
+                .map { variant -> variant !== OptimizelyExperiment.Variant.CONTROL }
                 .compose(bindToLifecycle())
-                .subscribe { v: Boolean -> creatorDetailsVariantIsVisible.onNext(v) }
-            deadlineCountdownTextViewText = project.map { project: Project? ->
-                ProjectUtils.deadlineCountdownValue(
-                    project!!
-                )
-            }.map { value: Int? ->
-                NumberUtils.format(
-                    value!!
-                )
-            }
+                .subscribe { creatorDetailsVariantIsVisible.onNext(it) }
+
+            deadlineCountdownTextViewText = project
+                .map { proj -> ProjectUtils.deadlineCountdownValue(proj) }
+                .map { NumberUtils.format(it) }
+
             featuredViewGroupIsGone = projectMetadata
-                .map { other: ProjectUtils.Metadata? ->
-                    ProjectUtils.Metadata.CATEGORY_FEATURED.equals(
-                        other
-                    )
-                }
-                .map { bool: Boolean? ->
-                    BooleanUtils.negate(
-                        bool!!
-                    )
-                }
+                .map { ProjectUtils.Metadata.CATEGORY_FEATURED == it }
+                .map { BooleanUtils.negate(it) }
+
             featuredTextViewRootCategory = featuredViewGroupIsGone
-                .filter { bool: Boolean? -> BooleanUtils.isFalse(bool) }
+                .filter { BooleanUtils.isFalse(it) }
                 .compose(Transformers.combineLatestPair(project))
-                .map { bp: Pair<Boolean?, Project> -> bp.second.category() }
-                .filter { `object`: Category? -> ObjectUtils.isNotNull(`object`) }
-                .map { obj: Category? -> obj!!.root() }
-                .filter { `object`: Category? -> ObjectUtils.isNotNull(`object`) }
-                .map { obj: Category -> obj.name() }
+                .map { it.second.category() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .map { it.root() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { it.name() }
+
             goalStringForTextView = project
                 .map { p: Project -> ksCurrency.formatWithUserPreference(p.goal(), p) }
+
             locationTextViewText = project
-                .map { obj: Project -> obj.location() }
-                .filter { `object`: Location? -> ObjectUtils.isNotNull(`object`) }
-                .map { obj: Location? -> obj!!.displayableName() }
-            percentageFundedProgress = project.map { obj: Project -> obj.percentageFunded() }
-                .map { value: Float? -> ProgressBarUtils.progress(value!!) }
+                .map { it.location() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { it?.displayableName() ?: "" }
+
+            percentageFundedProgress = project
+                .map { it.percentageFunded() }
+                .map { ProgressBarUtils.progress(it) }
+
             percentageFundedProgressBarIsGone = project
                 .map { p: Project -> p.isSuccessful || p.isCanceled || p.isFailed || p.isSuspended }
-            playButtonIsGone = project.map { obj: Project -> obj.hasVideo() }
-                .map { bool: Boolean? ->
-                    BooleanUtils.negate(
-                        bool!!
-                    )
-                }
+
+            // TODO to delete, no video on the overview
+            playButtonIsGone = Observable.just(true)
+
             pledgedTextViewText = project
                 .map { p: Project -> ksCurrency.formatWithUserPreference(p.pledged(), p) }
+
             val userIsCreatorOfProject = project
-                .map { obj: Project -> obj.creator() }
+                .map { it.creator() }
                 .compose(Transformers.combineLatestPair(currentUser.observable()))
                 .map { creatorAndCurrentUser: Pair<User, User> ->
                     ObjectUtils.isNotNull(
                         creatorAndCurrentUser.second
                     ) && creatorAndCurrentUser.first.id() == creatorAndCurrentUser.second.id()
                 }
+
             projectDashboardButtonText = project
                 .map { obj: Project -> obj.isLive }
                 .map { live: Boolean -> if (live) R.string.View_progress else R.string.View_dashboard }
                 .compose(Transformers.combineLatestPair(userIsCreatorOfProject))
                 .filter { buttonTextAndIsCreator: Pair<Int, Boolean?> -> buttonTextAndIsCreator.second }
                 .map { buttonTextAndIsCreator: Pair<Int, Boolean?> -> buttonTextAndIsCreator.first }
+
             projectDashboardContainerIsGone = userIsCreatorOfProject
-                .map { bool: Boolean? ->
-                    BooleanUtils.negate(
-                        bool!!
-                    )
-                }
+                .map { BooleanUtils.negate(it) }
+
             projectDisclaimerGoalReachedDateTime = project
                 .filter { obj: Project -> obj.isFunded }
                 .map { obj: Project -> obj.deadline() }
+
             projectDisclaimerGoalNotReachedString = project
                 .filter { p: Project -> p.deadline() != null && p.isLive && !p.isFunded }
                 .map { p: Project -> Pair.create(ksCurrency.format(p.goal(), p), p.deadline()) }
+
             projectDisclaimerTextViewIsGone =
                 project.map { p: Project -> p.deadline() == null || !p.isLive }
+
             projectLaunchDate = project
-                .map { obj: Project -> obj.launchedAt() }
-                .filter { `object`: DateTime? -> ObjectUtils.isNotNull(`object`) }
-                .map { dateTime: DateTime? ->
-                    DateTimeUtils.longDate(
-                        dateTime!!
-                    )
-                }
+                .map { it.launchedAt() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .map { DateTimeUtils.longDate(it) }
+
             projectLaunchDateIsGone = project
-                .map { obj: Project -> obj.launchedAt() }
+                .map { it.launchedAt() }
                 .compose(Transformers.combineLatestPair(userIsCreatorOfProject))
                 .map { launchDateAndIsCreator: Pair<DateTime?, Boolean?> ->
                     ObjectUtils.isNotNull(
                         launchDateAndIsCreator.first
                     ) && BooleanUtils.isTrue(launchDateAndIsCreator.second)
                 }
-                .map { bool: Boolean? ->
-                    BooleanUtils.negate(
-                        bool!!
-                    )
-                }
+                .map { BooleanUtils.negate(it) }
+
             projectMetadataViewGroupBackgroundDrawableInt = projectMetadata
-                .filter { other: ProjectUtils.Metadata? ->
-                    ProjectUtils.Metadata.BACKING.equals(
-                        other
-                    )
-                }
+                .filter { ProjectUtils.Metadata.BACKING == it }
                 .map { pm: ProjectUtils.Metadata? -> R.drawable.rect_green_grey_stroke }
+
             projectMetadataViewGroupIsGone = projectMetadata
-                .map { m: ProjectUtils.Metadata? -> m != ProjectUtils.Metadata.CATEGORY_FEATURED && m != ProjectUtils.Metadata.BACKING }
-            projectNameTextViewText = project.map { obj: Project -> obj.name() }
-            projectOutput = project
-            projectPhoto = project.map { obj: Project -> obj.photo() }
-            projectSocialImageViewUrl = project
-                .filter { obj: Project -> obj.isFriendBacking }
-                .map { obj: Project -> obj.friends() }
-                .map { xs: List<User> -> ListUtils.first(xs) }
-                .map { f: User? -> f!!.avatar().small() }
-            projectSocialTextViewFriends = project
-                .filter { obj: Project -> obj.isFriendBacking }
-                .map { obj: Project -> obj.friends() }
-            projectSocialViewGroupIsGone = project.map { obj: Project -> obj.isFriendBacking }
-                .map { bool: Boolean? ->
-                    BooleanUtils.negate(
-                        bool!!
-                    )
+                .map { m: ProjectUtils.Metadata? ->
+                    m != ProjectUtils.Metadata.CATEGORY_FEATURED && m != ProjectUtils.Metadata.BACKING
                 }
+
+            projectNameTextViewText = project
+                .map { it.name() }
+
+            projectOutput = project
+
+            projectPhoto = project
+                .map { it.photo() }
+
+            projectSocialImageViewUrl = project
+                .filter { it.isFriendBacking }
+                .map { it.friends() }
+                .map { ListUtils.first(it) }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .map { it.avatar().small() }
+
+            projectSocialTextViewFriends = project
+                .filter { it.isFriendBacking }
+                .map { it.friends() }
+
+            projectSocialViewGroupIsGone = project
+                .map { it.isFriendBacking }
+                .map { BooleanUtils.negate(it) }
+
             projectStateViewGroupBackgroundColorInt = project
                 .filter { p: Project -> !p.isLive }
-                .map { p: Project -> if (p.state() == Project.STATE_SUCCESSFUL) R.color.green_alpha_50 else R.color.kds_support_300 }
-            projectStateViewGroupIsGone = project.map { obj: Project -> obj.isLive }
+                .map { p: Project ->
+                    if (p.state() == Project.STATE_SUCCESSFUL) R.color.green_alpha_50
+                    else R.color.kds_support_300
+                }
+
+            projectStateViewGroupIsGone = project
+                .map { it.isLive }
+
             projectSocialImageViewIsGone = projectSocialViewGroupIsGone
             shouldSetDefaultStatsMargins = projectSocialViewGroupIsGone
-            setCanceledProjectStateView = project.filter { obj: Project -> obj.isCanceled }
+
+            setCanceledProjectStateView = project
+                .filter { it.isCanceled }
                 .compose(Transformers.ignoreValues())
+
             setProjectSocialClickListener = project
-                .filter { obj: Project -> obj.isFriendBacking }
-                .map { obj: Project -> obj.friends() }
-                .filter { fs: List<User>? -> fs!!.size > 2 }
+                .filter { it.isFriendBacking }
+                .map { it.friends() }
+                .filter { it.size > 2 }
                 .compose(Transformers.ignoreValues())
+
             setSuccessfulProjectStateView = project
-                .filter { obj: Project -> obj.isSuccessful }
-                .map { p: Project -> ObjectUtils.coalesce(p.stateChangedAt(), DateTime()) }
-            setSuspendedProjectStateView = project.filter { obj: Project -> obj.isSuspended }
+                .filter { it.isSuccessful }
+                .map { ObjectUtils.coalesce(it.stateChangedAt(), DateTime()) }
+
+            setSuspendedProjectStateView = project
+                .filter { it.isSuspended }
                 .compose(Transformers.ignoreValues())
+
             setUnsuccessfulProjectStateView = project
-                .filter { obj: Project -> obj.isFailed }
-                .map { p: Project -> ObjectUtils.coalesce(p.stateChangedAt(), DateTime()) }
+                .filter { it.isFailed }
+                .map { ObjectUtils.coalesce(it.stateChangedAt(), DateTime()) }
+
             startProjectSocialActivity = project.compose(
                 Transformers.takeWhen(
                     projectSocialViewGroupClicked
                 )
             )
+
             updatesCountTextViewText = project
-                .map { obj: Project -> obj.updatesCount() }
-                .filter { `object`: Int? -> ObjectUtils.isNotNull(`object`) }
-                .map { value: Int? ->
-                    NumberUtils.format(
-                        value!!
-                    )
-                }
+                .map { it.updatesCount() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .map { NumberUtils.format(it) }
         }
     }
 }

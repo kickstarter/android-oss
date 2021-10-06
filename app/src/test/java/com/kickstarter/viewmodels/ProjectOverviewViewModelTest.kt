@@ -30,7 +30,7 @@ import org.joda.time.DateTimeUtils
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
-import java.util.*
+import java.util.Arrays
 
 class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
 

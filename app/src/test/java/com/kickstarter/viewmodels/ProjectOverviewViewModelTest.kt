@@ -293,12 +293,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPlayButton_Visible() {
-        setUpEnvironment(environment(), project(ProjectFactory.project()))
-        playButtonIsGone.assertValues(false)
-    }
-
-    @Test
     fun testProgressBar_Visible() {
         val project = ProjectFactory.project()
             .toBuilder()

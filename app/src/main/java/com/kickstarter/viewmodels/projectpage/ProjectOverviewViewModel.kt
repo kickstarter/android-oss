@@ -465,7 +465,7 @@ interface ProjectOverviewViewModel {
                 .map { NumberUtils.format(it.backersCount()) }
 
             backingViewGroupIsGone = project
-                .map { it.isBacking }
+                .map { !it.isBacking }
 
             blurbTextViewText = project
                 .map { it.blurb() }

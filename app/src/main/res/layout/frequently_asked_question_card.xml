@@ -6,18 +6,17 @@
     android:id="@+id/questionAnswerCardLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="@dimen/grid_3"
     card_view:cardElevation="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
+        android:layout_marginVertical="@dimen/grid_5_half"
         android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/questionLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -64,6 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
+            android:layout_marginTop="@dimen/grid_3"
             app:layout_constraintTop_toBottomOf="@+id/questionLayout"
             tools:visibility="visible">
 
@@ -72,7 +72,6 @@
                 style="@style/answerStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/grid_3"
                 android:layout_marginEnd="@dimen/grid_7"
                 android:gravity="start|center_vertical"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -89,22 +88,12 @@
                 android:background="@drawable/border_rounded_soft_grey_100"
                 android:gravity="start|center_vertical"
                 android:paddingVertical="@dimen/grid_0"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:paddingHorizontal="@dimen/grid_3_half"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/answer_tv"
                 tools:text="@string/social_update_number" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <View
-            android:id="@+id/separtor"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="@dimen/grid_5"
-            android:background="@color/kds_support_300"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/answerLayout"
-            app:layout_goneMarginTop="@dimen/grid_3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

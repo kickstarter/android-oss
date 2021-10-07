@@ -134,8 +134,8 @@ class ProjectPageActivity :
                 )?.view?.isGone = isGone
                 if (!isGone) {
                     pagerAdapterMap[ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT] = !isGone
-                    configurePager()
                 }
+                configurePager()
             }
 
         this.viewModel.outputs.backingDetailsSubtitle()

@@ -1,7 +1,6 @@
 package com.kickstarter.ui.fragments.projectpage
 
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Html
 import android.text.SpannableString
@@ -27,7 +26,7 @@ import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.SocialUtils
 import com.kickstarter.libs.utils.ViewUtils
-import com.kickstarter.models.Photo
+import com.kickstarter.libs.utils.extensions.setGone
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.ui.ArgumentsKey
@@ -65,11 +64,6 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(Transformers.observeForUI())
             .subscribe(binding.statsView.backersCount::setText)
 
-        viewModel.outputs.backingViewGroupIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectMediaHeaderLayout.projectMetadataLayout.backingGroup))
-
         viewModel.outputs.blurbTextViewText()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
@@ -84,14 +78,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                context?.let { currentContext ->
-                    val categoryTextView = if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                        binding.projectMediaHeaderLayout.category
-                    } else {
-                        binding.category
-                    }
-                    categoryTextView?.text = it
-                }
+                binding.category.text = it
             }
 
         viewModel.outputs.commentsCountTextViewText()
@@ -108,14 +95,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                context?.let { currentContext ->
-                    val creatorInfoLoadingContainer = if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                        binding.projectMediaHeaderLayout.loadingPlaceholderCreatorInfoLayout?.creatorInfoLoadingContainer
-                    } else {
-                        binding.loadingPlaceholderCreatorInfoLayout?.creatorInfoLoadingContainer
-                    }
-                    creatorInfoLoadingContainer?.let { loadingContainer -> ViewUtils.setGone(loadingContainer, !it) }
-                }
+                binding.loadingPlaceholderCreatorInfoLayout.creatorInfoLoadingContainer.setGone(!it)
             }
 
         viewModel.outputs.creatorDetailsVariantIsVisible()
@@ -127,56 +107,20 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                context?.let { currentContext ->
-                    val creatorNameTextView = if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                        binding.projectMediaHeaderLayout.creatorName
-                    } else {
-                        binding.creatorName
-                    }
-                    creatorNameTextView?.text = it
-                }
+                binding.creatorName.text = it
             }
 
         viewModel.outputs.creatorNameTextViewText()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                context?.let { currentContext ->
-                    val creatorNameVariantTextView =
-                        if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                            binding.projectMediaHeaderLayout.creatorNameVariant
-                        } else {
-                            binding.creatorNameVariant
-                        }
-                    creatorNameVariantTextView?.text = it
-                }
+                binding.creatorNameVariant.text = it
             }
 
         viewModel.outputs.deadlineCountdownTextViewText()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe(binding.statsView.deadlineCountdownTextView::setText)
-
-        viewModel.outputs.featuredTextViewRootCategory()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe {
-                context?.let { currentContext ->
-                    binding.projectMediaHeaderLayout.projectMetadataLayout.featured.text =
-                        (
-                            ksString.format(
-                                currentContext.getString(R.string.discovery_baseball_card_metadata_featured_project),
-                                "category_name",
-                                it
-                            )
-                            )
-                }
-            }
-
-        viewModel.outputs.featuredViewGroupIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectMediaHeaderLayout.projectMetadataLayout.featuredGroup))
 
         viewModel.outputs.goalStringForTextView()
             .compose(bindToLifecycle())
@@ -187,25 +131,18 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                context?.let { currentContext ->
-                    val locationTextView =
-                        if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                            binding.projectMediaHeaderLayout.location
-                        } else {
-                            binding.location
-                        }
-                    locationTextView?.text = it
-                }
+                binding.location.text = it
             }
 
         viewModel.outputs.projectOutput()
             .subscribe {
                 context?.let { currentContext ->
-                    setLandscapeOverlayText(it)
+                    // setLandscapeOverlayText(it)
                     binding.statsView.deadlineCountdownUnitTextView.text =
                         ProjectUtils.deadlineCountdownDetail(it, currentContext, ksString)
                 }
             }
+
         viewModel.outputs.percentageFundedProgress()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
@@ -214,12 +151,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         viewModel.outputs.percentageFundedProgressBarIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.percentageFunded))
-
-        viewModel.outputs.playButtonIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectMediaHeaderLayout.playButtonOverlay))
+            .subscribe(binding.percentageFunded::setGone)
 
         viewModel.outputs.pledgedTextViewText()
             .compose(bindToLifecycle())
@@ -238,7 +170,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         viewModel.outputs.projectDashboardContainerIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectCreatorDashboardHeader.projectDashboardContainer))
+            .subscribe(binding.projectCreatorDashboardHeader.projectDashboardContainer::setGone)
 
         viewModel.outputs.projectDisclaimerGoalNotReachedString()
             .compose(bindToLifecycle())
@@ -253,7 +185,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         viewModel.outputs.projectDisclaimerTextViewIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectCreatorInfoLayout.projectDisclaimerTextView))
+            .subscribe(binding.projectCreatorInfoLayout.projectDisclaimerTextView::setGone)
 
         viewModel.outputs.projectLaunchDate()
             .compose(bindToLifecycle())
@@ -263,42 +195,14 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         viewModel.outputs.projectLaunchDateIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectCreatorDashboardHeader.projectLaunchDate))
-
-        viewModel.outputs.projectMetadataViewGroupBackgroundDrawableInt()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe {
-                context?.let { currentContext ->
-                    binding.projectMediaHeaderLayout.projectMetadataLayout.projectMetadataViewGroup.background =
-                        ContextCompat.getDrawable(currentContext, it)
-                }
-            }
-
-        viewModel.outputs.projectMetadataViewGroupIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectMediaHeaderLayout.projectMetadataLayout.projectMetadataViewGroup))
+            .subscribe(binding.projectCreatorDashboardHeader.projectLaunchDate.setGone())
 
         viewModel.outputs.projectNameTextViewText()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                context?.let { currentContext ->
-                    val projectNameTextView =
-                        if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                            binding.projectMediaHeaderLayout.projectName
-                        } else {
-                            binding.projectName
-                        }
-                    projectNameTextView?.text = it
-                }
+                binding.projectName.text = it
             }
-
-        viewModel.outputs.projectPhoto()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { setProjectPhoto(it) }
 
         viewModel.outputs.projectSocialTextViewFriends()
             .compose(bindToLifecycle())
@@ -313,7 +217,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         viewModel.outputs.projectSocialImageViewIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectSocialImage))
+            .subscribe(binding.projectSocialImage.setGone())
 
         viewModel.outputs.projectSocialImageViewUrl()
             .compose(bindToLifecycle())
@@ -330,7 +234,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         viewModel.outputs.projectSocialViewGroupIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectSocialView))
+            .subscribe(binding.projectSocialView::setGone)
 
         viewModel.outputs.projectStateViewGroupBackgroundColorInt()
             .compose(bindToLifecycle())
@@ -349,7 +253,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         viewModel.outputs.projectStateViewGroupIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.projectStateViewGroup))
+            .subscribe(binding.projectStateViewGroup::setGone)
 
         viewModel.outputs.setCanceledProjectStateView()
             .compose(bindToLifecycle())
@@ -399,57 +303,22 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         viewModel.outputs.conversionTextViewIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.usdConversionTextView))
+            .subscribe(binding.usdConversionTextView.setGone())
 
-        context?.let { currentContext ->
-            if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                binding.projectMediaHeaderLayout.readMore
-            } else {
-                binding.readMore
-            }?.let { readMoreButton ->
-                readMoreButton.setOnClickListener {
-                    blurbVariantOnClick()
-                }
-            }
+        binding.readMore.setOnClickListener {
+            blurbVariantOnClick()
+        }
 
-            if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                binding.projectMediaHeaderLayout.readMore
-            } else {
-                binding.readMore
-            }?.let { readMoreButton ->
-                readMoreButton.setOnClickListener {
-                    blurbVariantOnClick()
-                }
-            }
+        binding.blurbView.setOnClickListener {
+            blurbOnClick()
+        }
 
-            if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                binding.projectMediaHeaderLayout.blurbView
-            } else {
-                binding.blurbView
-            }?.let { blurbView ->
-                blurbView.setOnClickListener {
-                    blurbOnClick()
-                }
-            }
-            if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                binding.projectMediaHeaderLayout.creatorInfo
-            } else {
-                binding.creatorInfo
-            }?.let { creatorInfo ->
-                creatorInfo.setOnClickListener {
-                    creatorNameOnClick()
-                }
-            }
+        binding.creatorInfo.setOnClickListener {
+            creatorNameOnClick()
+        }
 
-            if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                binding.projectMediaHeaderLayout.creatorInfoVariant
-            } else {
-                binding.creatorInfoVariant
-            }?.let { creatorInfoVariant ->
-                creatorInfoVariant.setOnClickListener {
-                    creatorInfoVariantOnClick()
-                }
-            }
+        binding.creatorInfoVariant.setOnClickListener {
+            creatorInfoVariantOnClick()
         }
 
         binding.projectCreatorInfoLayout.campaign.setOnClickListener {
@@ -464,29 +333,15 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
     }
 
     private fun setAvatar(url: String) {
-        context?.let { currentContext ->
-            val avatarImageView =
-                if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    binding.projectMediaHeaderLayout.avatar
-                } else {
-                    binding.avatar
-                }
-            Picasso.get()
-                .load(url)
-                .transform(CircleTransformation())
-                .into(avatarImageView)
+        Picasso.get()
+            .load(url)
+            .transform(CircleTransformation())
+            .into(binding.avatar)
 
-            val avatarVariantImageView =
-                if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    binding.projectMediaHeaderLayout.creatorAvatarVerified?.avatarVariant
-                } else {
-                    binding.creatorAvatarVerified?.avatarVariant
-                }
-            Picasso.get()
-                .load(url)
-                .transform(CircleTransformation())
-                .into(avatarVariantImageView)
-        }
+        Picasso.get()
+            .load(url)
+            .transform(CircleTransformation())
+            .into(binding.creatorAvatarVerified.avatarVariant)
     }
 
     private fun setConvertedCurrencyView(pledgedAndGoal: Pair<String, String>) {
@@ -503,13 +358,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
 
     private fun setCreatorDetailsTextView(backedAndLaunchedProjectsCount: Pair<Int, Int>) {
         context?.let { currentContext ->
-            val creatorDetailsTextView =
-                if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    binding.projectMediaHeaderLayout.creatorDetails
-                } else {
-                    binding.creatorDetails
-                }
-            creatorDetailsTextView?.text = ksString.format(
+            binding.creatorDetails.text = ksString.format(
                 currentContext.getString(R.string.projects_launched_count_created_projects_backed_count_backed),
                 "projects_backed_count", NumberUtils.format(backedAndLaunchedProjectsCount.first),
                 "projects_launched_count", NumberUtils.format(backedAndLaunchedProjectsCount.second)
@@ -518,23 +367,8 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
     }
 
     private fun setCreatorDetailsVariantVisibility(visible: Boolean) {
-        context?.let { currentContext ->
-            if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                binding.projectMediaHeaderLayout.creatorInfoVariant
-            } else {
-                binding.creatorInfoVariant
-            }?.let { creatorInfoVariantContainer ->
-                ViewUtils.setGone(creatorInfoVariantContainer, !visible)
-            }
-
-            if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                binding.projectMediaHeaderLayout.creatorInfo
-            } else {
-                binding.creatorInfo
-            }?.let { creatorInfoContainer ->
-                ViewUtils.setGone(creatorInfoContainer, visible)
-            }
-        }
+        binding.creatorInfoVariant.setGone(!visible)
+        binding.creatorInfo.setGone(visible)
     }
 
     private fun setGoalTextView(goalString: String) {
@@ -556,71 +390,20 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         }
     }
 
-    private fun setProjectPhoto(photo: Photo) {
-        context?.let { currentContext ->
-            // Account for the grid2 start and end margins.
-            val targetImageWidth =
-                (ViewUtils.getScreenWidthDp(currentContext) * ViewUtils.getScreenDensity(currentContext)).toInt() - currentContext.resources.getDimension(
-                    R.dimen.grid_2
-                ).toInt() * 2
-            val targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth)
-            binding.projectMediaHeaderLayout.projectPhoto.maxHeight = targetImageHeight
-
-            ResourcesCompat.getDrawable(currentContext.resources, R.drawable.gray_gradient, null)?.let {
-                Picasso.get()
-                    .load(photo.full())
-                    .resize(targetImageWidth, targetImageHeight)
-                    .centerCrop()
-                    .placeholder(it)
-                    .into(binding.projectMediaHeaderLayout.projectPhoto)
-            }
-        }
-    }
-
     private fun setCanceledProjectStateView() {
         binding.projectStateHeaderTextView.setText(R.string.project_status_funded)
         binding.projectStateSubheadTextView.setText(R.string.project_status_funding_project_canceled_by_creator)
     }
 
     private fun setBlurbTextViews(blurb: String) {
-        context?.let { currentContext ->
-            val blurbHtml = Html.fromHtml(TextUtils.htmlEncode(blurb))
-            if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                binding.projectMediaHeaderLayout.blurb
-            } else {
-                binding.blurb
-            }?.let { blurbTextView ->
-                blurbTextView.text = blurbHtml
-            }
-
-            if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                binding.projectMediaHeaderLayout.blurbVariant
-            } else {
-                binding.blurbVariant
-            }?.let { blurbVariantTextView ->
-                blurbVariantTextView.text = blurbHtml
-            }
-        }
+        val blurbHtml = Html.fromHtml(TextUtils.htmlEncode(blurb))
+        binding.blurb.text = blurbHtml
+        binding.blurbVariant.text = blurbHtml
     }
 
     private fun setBlurbVariantVisibility(blurbVariantVisible: Boolean) {
-        context?.let { currentContext ->
-            if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                binding.projectMediaHeaderLayout.blurbView
-            } else {
-                binding.blurbView
-            }?.let { blurbViewGroup ->
-                ViewUtils.setGone(blurbViewGroup, blurbVariantVisible)
-            }
-
-            if (currentContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                binding.projectMediaHeaderLayout.blurbViewVariant
-            } else {
-                binding.blurbViewVariant
-            }?.let { blurbVariantViewGroup ->
-                ViewUtils.setGone(blurbVariantViewGroup, !blurbVariantVisible)
-            }
-        }
+        binding.blurbView.setGone(blurbVariantVisible)
+        binding.blurbViewVariant.setGone(!blurbVariantVisible)
     }
 
     private fun setProjectDisclaimerGoalReachedString(deadline: DateTime) {
@@ -730,45 +513,6 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
                 R.anim.slide_in_right,
                 R.anim.fade_out_slide_out_left
             )
-        }
-    }
-
-    /**
-     * Set top margin of overlay text based on landscape screen height, scaled by screen density.
-     */
-    private fun setLandscapeOverlayText(project: Project) {
-        context?.let { currentContext ->
-            if (binding.projectMediaHeaderLayout.landOverlayText != null && binding.projectMediaHeaderLayout.nameCreatorView != null) {
-                val screenHeight = ViewUtils.getScreenHeightDp(currentContext)
-                val densityOffset = currentContext.resources.displayMetrics.density
-                val topMargin =
-                    screenHeight / 3f * 2 * densityOffset - currentContext.resources.getDimension(R.dimen.grid_10)
-                        .toInt()
-                ViewUtils.setRelativeViewGroupMargins(
-                    binding.projectMediaHeaderLayout.landOverlayText!!,
-                    currentContext.resources.getDimension(R.dimen.grid_4).toInt(),
-                    topMargin.toInt(),
-                    currentContext.resources.getDimension(R.dimen.grid_4).toInt(),
-                    0
-                )
-                if (!project.hasVideo()) {
-                    ViewUtils.setRelativeViewGroupMargins(
-                        binding.projectMediaHeaderLayout.nameCreatorView!!,
-                        0,
-                        0,
-                        0,
-                        currentContext.resources.getDimension(R.dimen.grid_2).toInt()
-                    )
-                } else {
-                    ViewUtils.setRelativeViewGroupMargins(
-                        binding.projectMediaHeaderLayout.nameCreatorView!!,
-                        0,
-                        0,
-                        0,
-                        currentContext.resources.getDimension(R.dimen.grid_1).toInt()
-                    )
-                }
-            }
         }
     }
 

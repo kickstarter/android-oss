@@ -18,7 +18,6 @@ import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProgressBarUtils
 import com.kickstarter.libs.utils.ProjectUtils
-import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.ApolloClientType
@@ -44,9 +43,6 @@ interface ProjectOverviewViewModel {
 
         /** Emits the backers count string for display.  */
         fun backersCountTextViewText(): Observable<String>
-
-        /** Emits when the backing view group should be gone.  */
-        fun backingViewGroupIsGone(): Observable<Boolean>
 
         /** Emits the project blurb for display.  */
         fun blurbTextViewText(): Observable<String>
@@ -81,9 +77,6 @@ interface ProjectOverviewViewModel {
         /** Emits the deadline countdown text for display.  */
         fun deadlineCountdownTextViewText(): Observable<String>
 
-        /** Emits root category to display in the featured metadata.  */
-        fun featuredTextViewRootCategory(): Observable<String>
-
         /** Emits the featured view group should be gone.  */
         fun featuredViewGroupIsGone(): Observable<Boolean>
 
@@ -98,9 +91,6 @@ interface ProjectOverviewViewModel {
 
         /** Emits when the progress bar should be gone.  */
         fun percentageFundedProgressBarIsGone(): Observable<Boolean>
-
-        /** Emits when the play button should be gone.  */
-        fun playButtonIsGone(): Observable<Boolean>
 
         /** Emits the pledged amount for display.  */
         fun pledgedTextViewText(): Observable<String>
@@ -126,20 +116,11 @@ interface ProjectOverviewViewModel {
         /** Emits when the launch date view should be gone.  */
         fun projectLaunchDateIsGone(): Observable<Boolean>
 
-        /** Emits the background drawable for the metadata view group.  */
-        fun projectMetadataViewGroupBackgroundDrawableInt(): Observable<Int>
-
-        /** Emits when the metadata view group should be gone.  */
-        fun projectMetadataViewGroupIsGone(): Observable<Boolean>
-
         /** Emits the project name for display.  */
         fun projectNameTextViewText(): Observable<String>
 
         /** Emits the project for display.  */
         fun projectOutput(): Observable<Project>
-
-        /** Emits the project photo for display.  */
-        fun projectPhoto(): Observable<Photo>
 
         /** Emits when the social image view should be gone.  */
         fun projectSocialImageViewIsGone(): Observable<Boolean>
@@ -196,7 +177,6 @@ interface ProjectOverviewViewModel {
         private val projectSocialViewGroupClicked = PublishSubject.create<Void?>()
         private val avatarPhotoUrl: Observable<String>
         private val backersCountTextViewText: Observable<String>
-        private val backingViewGroupIsGone: Observable<Boolean>
         private val blurbTextViewText: Observable<String>
         private val blurbVariantIsVisible = BehaviorSubject.create<Boolean>()
         private val categoryTextViewText: Observable<String>
@@ -208,13 +188,11 @@ interface ProjectOverviewViewModel {
         private val creatorDetailsVariantIsVisible = BehaviorSubject.create<Boolean>()
         private val creatorNameTextViewText: Observable<String>
         private val deadlineCountdownTextViewText: Observable<String>
-        private val featuredTextViewRootCategory: Observable<String>
         private val featuredViewGroupIsGone: Observable<Boolean>
         private val goalStringForTextView: Observable<String>
         private val locationTextViewText: Observable<String>
         private val percentageFundedProgress: Observable<Int>
         private val percentageFundedProgressBarIsGone: Observable<Boolean>
-        private val playButtonIsGone: Observable<Boolean>
         private val pledgedTextViewText: Observable<String>
         private val projectDashboardButtonText: Observable<Int>
         private val projectDashboardContainerIsGone: Observable<Boolean>
@@ -223,11 +201,8 @@ interface ProjectOverviewViewModel {
         private val projectDisclaimerTextViewIsGone: Observable<Boolean>
         private val projectLaunchDate: Observable<String>
         private val projectLaunchDateIsGone: Observable<Boolean>
-        private val projectMetadataViewGroupBackgroundDrawableInt: Observable<Int>
-        private val projectMetadataViewGroupIsGone: Observable<Boolean>
         private val projectNameTextViewText: Observable<String>
         private val projectOutput: Observable<Project>
-        private val projectPhoto: Observable<Photo>
         private val projectSocialImageViewIsGone: Observable<Boolean>
         private val projectSocialImageViewUrl: Observable<String>
         private val projectSocialTextViewFriends: Observable<List<User>>
@@ -241,7 +216,6 @@ interface ProjectOverviewViewModel {
         private val setUnsuccessfulProjectStateView: Observable<DateTime>
         private val startProjectSocialActivity: Observable<Project>
         private val shouldSetDefaultStatsMargins: Observable<Boolean>
-        private val updatesContainerIsClickable = BehaviorSubject.create<Boolean>()
         private val updatesCountTextViewText: Observable<String>
 
         val inputs: Inputs = this
@@ -257,10 +231,6 @@ interface ProjectOverviewViewModel {
 
         override fun avatarPhotoUrl(): Observable<String> {
             return avatarPhotoUrl
-        }
-
-        override fun backingViewGroupIsGone(): Observable<Boolean> {
-            return backingViewGroupIsGone
         }
 
         override fun backersCountTextViewText(): Observable<String> {
@@ -311,10 +281,6 @@ interface ProjectOverviewViewModel {
             return deadlineCountdownTextViewText
         }
 
-        override fun featuredTextViewRootCategory(): Observable<String> {
-            return featuredTextViewRootCategory
-        }
-
         override fun featuredViewGroupIsGone(): Observable<Boolean> {
             return featuredViewGroupIsGone
         }
@@ -333,10 +299,6 @@ interface ProjectOverviewViewModel {
 
         override fun percentageFundedProgressBarIsGone(): Observable<Boolean> {
             return percentageFundedProgressBarIsGone
-        }
-
-        override fun playButtonIsGone(): Observable<Boolean> {
-            return playButtonIsGone
         }
 
         override fun pledgedTextViewText(): Observable<String> {
@@ -371,24 +333,12 @@ interface ProjectOverviewViewModel {
             return projectLaunchDateIsGone
         }
 
-        override fun projectMetadataViewGroupBackgroundDrawableInt(): Observable<Int> {
-            return projectMetadataViewGroupBackgroundDrawableInt
-        }
-
-        override fun projectMetadataViewGroupIsGone(): Observable<Boolean> {
-            return projectMetadataViewGroupIsGone
-        }
-
         override fun projectNameTextViewText(): Observable<String> {
             return projectNameTextViewText
         }
 
         override fun projectOutput(): Observable<Project> {
             return projectOutput
-        }
-
-        override fun projectPhoto(): Observable<Photo> {
-            return projectPhoto
         }
 
         override fun projectSocialImageViewIsGone(): Observable<Boolean> {
@@ -464,9 +414,6 @@ interface ProjectOverviewViewModel {
 
             backersCountTextViewText = project
                 .map { NumberUtils.format(it.backersCount()) }
-
-            backingViewGroupIsGone = project
-                .map { !it.isBacking }
 
             blurbTextViewText = project
                 .map { it.blurb() }
@@ -578,16 +525,6 @@ interface ProjectOverviewViewModel {
                 .map { ProjectUtils.Metadata.CATEGORY_FEATURED == it }
                 .map { BooleanUtils.negate(it) }
 
-            featuredTextViewRootCategory = featuredViewGroupIsGone
-                .filter { BooleanUtils.isFalse(it) }
-                .compose(Transformers.combineLatestPair(project))
-                .map { it.second.category() }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
-                .map { it.root() }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { it.name() }
-
             goalStringForTextView = project
                 .map { p: Project -> ksCurrency.formatWithUserPreference(p.goal(), p) }
 
@@ -602,9 +539,6 @@ interface ProjectOverviewViewModel {
 
             percentageFundedProgressBarIsGone = project
                 .map { p: Project -> p.isSuccessful || p.isCanceled || p.isFailed || p.isSuspended }
-
-            // TODO to delete, no video on the overview
-            playButtonIsGone = Observable.just(true)
 
             pledgedTextViewText = project
                 .map { p: Project -> ksCurrency.formatWithUserPreference(p.pledged(), p) }
@@ -655,22 +589,10 @@ interface ProjectOverviewViewModel {
                 }
                 .map { BooleanUtils.negate(it) }
 
-            projectMetadataViewGroupBackgroundDrawableInt = projectMetadata
-                .filter { ProjectUtils.Metadata.BACKING == it }
-                .map { pm: ProjectUtils.Metadata? -> R.drawable.rect_green_grey_stroke }
-
-            projectMetadataViewGroupIsGone = projectMetadata
-                .map { m: ProjectUtils.Metadata? ->
-                    m != ProjectUtils.Metadata.CATEGORY_FEATURED && m != ProjectUtils.Metadata.BACKING
-                }
-
             projectNameTextViewText = project
                 .map { it.name() }
 
             projectOutput = project
-
-            projectPhoto = project
-                .map { it.photo() }
 
             projectSocialImageViewUrl = project
                 .filter { it.isFriendBacking }

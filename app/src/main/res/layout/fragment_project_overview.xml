@@ -15,16 +15,6 @@
         android:id="@+id/project_creator_dashboard_header"
         layout="@layout/project_creator_dashboard_header" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <include
-            android:id="@+id/project_media_header_layout"
-            layout="@layout/project_media_header" />
-
-    </FrameLayout>
-
     <LinearLayout
         android:id="@+id/project_info"
         android:layout_width="match_parent"

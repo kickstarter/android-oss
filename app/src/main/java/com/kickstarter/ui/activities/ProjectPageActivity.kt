@@ -90,8 +90,6 @@ class ProjectPageActivity :
         setContentView(binding.root)
         this.ksString = environment().ksString()
 
-        configurePager()
-
         val viewTreeObserver = binding.pledgeContainerLayout.pledgeContainerRoot.viewTreeObserver
         if (viewTreeObserver.isAlive) {
             viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -134,8 +132,8 @@ class ProjectPageActivity :
                 )?.view?.isGone = isGone
                 if (!isGone) {
                     pagerAdapterMap[ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT] = !isGone
-                    configurePager()
                 }
+                configurePager()
             }
 
         this.viewModel.outputs.backingDetailsSubtitle()

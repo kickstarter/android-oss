@@ -77,9 +77,6 @@ interface ProjectOverviewViewModel {
         /** Emits the deadline countdown text for display.  */
         fun deadlineCountdownTextViewText(): Observable<String>
 
-        /** Emits the featured view group should be gone.  */
-        fun featuredViewGroupIsGone(): Observable<Boolean>
-
         /** Emits the goal string for display.  */
         fun goalStringForTextView(): Observable<String>
 
@@ -188,7 +185,6 @@ interface ProjectOverviewViewModel {
         private val creatorDetailsVariantIsVisible = BehaviorSubject.create<Boolean>()
         private val creatorNameTextViewText: Observable<String>
         private val deadlineCountdownTextViewText: Observable<String>
-        private val featuredViewGroupIsGone: Observable<Boolean>
         private val goalStringForTextView: Observable<String>
         private val locationTextViewText: Observable<String>
         private val percentageFundedProgress: Observable<Int>
@@ -279,10 +275,6 @@ interface ProjectOverviewViewModel {
 
         override fun deadlineCountdownTextViewText(): Observable<String> {
             return deadlineCountdownTextViewText
-        }
-
-        override fun featuredViewGroupIsGone(): Observable<Boolean> {
-            return featuredViewGroupIsGone
         }
 
         override fun goalStringForTextView(): Observable<String> {
@@ -520,10 +512,6 @@ interface ProjectOverviewViewModel {
             deadlineCountdownTextViewText = project
                 .map { proj -> ProjectUtils.deadlineCountdownValue(proj) }
                 .map { NumberUtils.format(it) }
-
-            featuredViewGroupIsGone = projectMetadata
-                .map { ProjectUtils.Metadata.CATEGORY_FEATURED == it }
-                .map { BooleanUtils.negate(it) }
 
             goalStringForTextView = project
                 .map { p: Project -> ksCurrency.formatWithUserPreference(p.goal(), p) }

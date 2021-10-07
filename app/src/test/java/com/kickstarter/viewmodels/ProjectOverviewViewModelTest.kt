@@ -38,7 +38,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
 
     private val avatarPhotoUrl = TestSubscriber<String>()
     private val backersCountTextViewText = TestSubscriber<String>()
-    private val backingViewGroupIsGone = TestSubscriber<Boolean>()
     private val blurbTextViewText = TestSubscriber<String>()
     private val blurbVariantIsVisible = TestSubscriber<Boolean>()
     private val categoryTextViewText = TestSubscriber<String>()
@@ -50,13 +49,10 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private val creatorDetailsVariantIsVisible = TestSubscriber<Boolean>()
     private val creatorNameTextViewText = TestSubscriber<String>()
     private val deadlineCountdownTextViewText = TestSubscriber<String>()
-    private val featuredTextViewRootCategory = TestSubscriber<String>()
-    private val featuredViewGroupIsGone = TestSubscriber<Boolean>()
     private val goalStringForTextView = TestSubscriber<String>()
     private val locationTextViewText = TestSubscriber<String>()
     private val percentageFundedProgress = TestSubscriber<Int>()
     private val percentageFundedProgressBarIsGone = TestSubscriber<Boolean>()
-    private val playButtonIsGone = TestSubscriber<Boolean>()
     private val pledgedTextViewText = TestSubscriber<String>()
     private val projectDashboardButtonText = TestSubscriber<Int>()
     private val projectDashboardContainerIsGone = TestSubscriber<Boolean>()
@@ -65,11 +61,8 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private val projectDisclaimerTextViewIsGone = TestSubscriber<Boolean>()
     private val projectLaunchDate = TestSubscriber<String>()
     private val projectLaunchDateIsGone = TestSubscriber<Boolean>()
-    private val projectMetadataViewGroupBackgroundDrawableInt = TestSubscriber<Int>()
-    private val projectMetadataViewGroupIsGone = TestSubscriber<Boolean>()
     private val projectNameTextViewText = TestSubscriber<String>()
     private val projectOutput = TestSubscriber<Project>()
-    private val projectPhoto = TestSubscriber<Photo>()
     private val projectSocialImageViewIsGone = TestSubscriber<Boolean>()
     private val projectSocialImageViewUrl = TestSubscriber<String>()
     private val projectSocialTextViewFriends = TestSubscriber<List<User>>()
@@ -89,7 +82,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         vm = ProjectOverviewViewModel.ViewModel(environment)
         vm.outputs.avatarPhotoUrl().subscribe(avatarPhotoUrl)
         vm.outputs.backersCountTextViewText().subscribe(backersCountTextViewText)
-        vm.outputs.backingViewGroupIsGone().subscribe(backingViewGroupIsGone)
         vm.outputs.blurbTextViewText().subscribe(blurbTextViewText)
         vm.outputs.blurbVariantIsVisible().subscribe(blurbVariantIsVisible)
         vm.outputs.categoryTextViewText().subscribe(categoryTextViewText)
@@ -105,13 +97,10 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         vm.outputs.creatorDetailsVariantIsVisible().subscribe(creatorDetailsVariantIsVisible)
         vm.outputs.creatorNameTextViewText().subscribe(creatorNameTextViewText)
         vm.outputs.deadlineCountdownTextViewText().subscribe(deadlineCountdownTextViewText)
-        vm.outputs.featuredTextViewRootCategory().subscribe(featuredTextViewRootCategory)
-        vm.outputs.featuredViewGroupIsGone().subscribe(featuredViewGroupIsGone)
         vm.outputs.goalStringForTextView().subscribe(goalStringForTextView)
         vm.outputs.locationTextViewText().subscribe(locationTextViewText)
         vm.outputs.percentageFundedProgress().subscribe(percentageFundedProgress)
         vm.outputs.percentageFundedProgressBarIsGone().subscribe(percentageFundedProgressBarIsGone)
-        vm.outputs.playButtonIsGone().subscribe(playButtonIsGone)
         vm.outputs.pledgedTextViewText().subscribe(pledgedTextViewText)
         vm.outputs.projectDashboardButtonText().subscribe(projectDashboardButtonText)
         vm.outputs.projectDashboardContainerIsGone().subscribe(projectDashboardContainerIsGone)
@@ -123,13 +112,8 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         vm.outputs.projectDisclaimerTextViewIsGone().subscribe(projectDisclaimerTextViewIsGone)
         vm.outputs.projectLaunchDate().subscribe(projectLaunchDate)
         vm.outputs.projectLaunchDateIsGone().subscribe(projectLaunchDateIsGone)
-        vm.outputs.projectMetadataViewGroupBackgroundDrawableInt().subscribe(
-            projectMetadataViewGroupBackgroundDrawableInt
-        )
-        vm.outputs.projectMetadataViewGroupIsGone().subscribe(projectMetadataViewGroupIsGone)
         vm.outputs.projectNameTextViewText().subscribe(projectNameTextViewText)
         vm.outputs.projectOutput().subscribe(projectOutput)
-        vm.outputs.projectPhoto().subscribe(projectPhoto)
         vm.outputs.projectSocialImageViewIsGone().subscribe(projectSocialImageViewIsGone)
         vm.outputs.projectSocialImageViewUrl().subscribe(projectSocialImageViewUrl)
         vm.outputs.projectSocialTextViewFriends().subscribe(projectSocialTextViewFriends)
@@ -236,63 +220,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testMetadata_Backing() {
-        setUpEnvironment(environment(), project(ProjectFactory.backedProject()))
-        backingViewGroupIsGone.assertValues(false)
-        featuredViewGroupIsGone.assertValues(true)
-        projectMetadataViewGroupBackgroundDrawableInt.assertValues(R.drawable.rect_green_grey_stroke)
-    }
-
-    @Test
-    fun testMetadata_Backing_Featured() {
-        val project = ProjectFactory.featured()
-            .toBuilder()
-            .isBacking(true)
-            .featuredAt(DateTime.now())
-            .build()
-        setUpEnvironment(environment(), project(project))
-        backingViewGroupIsGone.assertValues(false)
-        featuredTextViewRootCategory.assertNoValues()
-        featuredViewGroupIsGone.assertValues(true)
-        projectMetadataViewGroupBackgroundDrawableInt.assertValues(R.drawable.rect_green_grey_stroke)
-    }
-
-    @Test
-    fun testMetadata_Featured() {
-        val category = CategoryFactory.textilesCategory()
-        val project = ProjectFactory.project()
-            .toBuilder()
-            .category(category)
-            .featuredAt(DateTime.now())
-            .build()
-        setUpEnvironment(environment(), project(project))
-        backingViewGroupIsGone.assertValues(true)
-        featuredTextViewRootCategory.assertValues(category.root().name())
-        featuredViewGroupIsGone.assertValues(false)
-        projectMetadataViewGroupBackgroundDrawableInt.assertNoValues()
-    }
-
-    @Test
-    fun testMetadata_NoMetadata() {
-        setUpEnvironment(environment(), project(ProjectFactory.project()))
-        backingViewGroupIsGone.assertValues(true)
-        featuredTextViewRootCategory.assertNoValues()
-        featuredViewGroupIsGone.assertValues(true)
-        projectMetadataViewGroupBackgroundDrawableInt.assertNoValues()
-        projectMetadataViewGroupIsGone.assertValues(true)
-    }
-
-    @Test
-    fun testPlayButton_Gone() {
-        val project = ProjectFactory.project()
-            .toBuilder()
-            .video(null)
-            .build()
-        setUpEnvironment(environment(), project(project))
-        playButtonIsGone.assertValues(true)
-    }
-
-    @Test
     fun testProgressBar_Visible() {
         val project = ProjectFactory.project()
             .toBuilder()
@@ -386,7 +313,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         pledgedTextViewText.assertValueCount(1)
         projectNameTextViewText.assertValues(project.name())
         projectOutput.assertValues(project)
-        projectPhoto.assertValues(project.photo())
         updatesCountTextViewText.assertValues("10")
     }
 

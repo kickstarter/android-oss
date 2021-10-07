@@ -43,10 +43,9 @@ fun Intent.getRootCommentsActivityIntent(
  * @param context
  * @param projectAndData
  */
-fun Intent.getCreatorDashboardActivityIntent(context: Context, projectAndData: Pair<Project, ProjectData>): Intent {
+fun Intent.getCreatorDashboardActivityIntent(context: Context, project: Project): Intent {
     return this.setClass(context, CreatorDashboardActivity::class.java)
-        .putExtra(IntentKey.PROJECT, projectAndData.first)
-        .putExtra(IntentKey.PROJECT_DATA, projectAndData.second)
+        .putExtra(IntentKey.PROJECT, project)
 }
 
 /**

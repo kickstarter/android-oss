@@ -92,8 +92,8 @@ fun Activity.startRootCommentsActivity(projectAndData: Pair<Project, ProjectData
     }
 }
 
-fun Activity.startCreatorDashboardActivity(projectAndData: Pair<Project, ProjectData>) {
-    startActivity(Intent().getCreatorDashboardActivityIntent(this, projectAndData))
+fun Activity.startCreatorDashboardActivity(project: Project) {
+    startActivity(Intent().getCreatorDashboardActivityIntent(this, project))
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
 }
 

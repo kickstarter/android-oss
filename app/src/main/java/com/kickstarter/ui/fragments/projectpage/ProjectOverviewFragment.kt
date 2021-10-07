@@ -330,7 +330,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                activity?.startCreatorDashboardActivity(Pair(it.project(), it))
+                activity?.startCreatorDashboardActivity(it.project())
             }
 
         binding.projectCreatorDashboardHeader.projectDashboardButton.setOnClickListener {

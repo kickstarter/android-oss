@@ -1,11 +1,11 @@
 package com.kickstarter.ui.fragments.projectpage
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.kickstarter.R
@@ -107,10 +107,9 @@ class FrequentlyAskedQuestionFragment :
         )
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     private fun setupRecyclerView() {
         binding?.fqaRecyclerView?.adapter = fqaAdapter
-        requireContext().getDrawable(R.drawable.divider_grey_300_horizontal)?.let {
+        ResourcesCompat.getDrawable(resources, R.drawable.divider_grey_300_horizontal, null)?.let {
             binding?.fqaRecyclerView?.addItemDecoration(SimpleDividerItemDecoration(it))
         }
     }

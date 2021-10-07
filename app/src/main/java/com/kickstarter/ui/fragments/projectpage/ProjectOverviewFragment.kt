@@ -33,6 +33,7 @@ import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ProjectSocialActivity
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.extensions.startRootCommentsActivity
 import com.kickstarter.viewmodels.projectpage.ProjectOverviewViewModel
 import com.squareup.picasso.Picasso
 import org.joda.time.DateTime
@@ -305,22 +306,29 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(Transformers.observeForUI())
             .subscribe(binding.usdConversionTextView.setGone())
 
+        viewModel.outputs.startCommentsView()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                activity?.startRootCommentsActivity(Pair(it.project(), it))
+            }
+
         binding.creatorInfo.setOnClickListener {
-            this.viewModel.inputs.openCreatorActivity()
+            this.viewModel.inputs.creatorInfoButtonClicked()
         }
 
         binding.creatorInfoVariant.setOnClickListener {
-            this.viewModel.inputs.openCreatorActivity()
+            this.viewModel.inputs.creatorInfoButtonClicked()
         }
 
         binding.projectCreatorInfoLayout.campaign.setOnClickListener {
-            this.viewModel.inputs.openCampaignActivity()
+            this.viewModel.inputs.campaignButtonClicked()
         }
         binding.projectCreatorInfoLayout.comments.setOnClickListener {
-            this.viewModel.inputs.openCommentsActivity()
+            this.viewModel.inputs.commentsButtonClicked()
         }
         binding.projectCreatorInfoLayout.updates.setOnClickListener {
-            this.viewModel.inputs.openUpdatesActivity()
+            this.viewModel.inputs.updatesButtonClicked()
         }
     }
 

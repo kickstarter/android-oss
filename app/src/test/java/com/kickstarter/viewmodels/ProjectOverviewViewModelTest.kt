@@ -76,6 +76,10 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private val setUnsuccessfulProjectStateView = TestSubscriber<DateTime>()
     private val startProjectSocialActivity = TestSubscriber<Project>()
     private val updatesCountTextViewText = TestSubscriber<String>()
+    private val startCreatorView = TestSubscriber<ProjectData>()
+    private val startCommentsView = TestSubscriber<ProjectData>()
+    private val startUpdatesView = TestSubscriber<ProjectData>()
+    private val startCampaignView = TestSubscriber<ProjectData>()
 
     private fun setUpEnvironment(environment: Environment, projectData: ProjectData) {
         vm = ProjectOverviewViewModel.ViewModel(environment)
@@ -129,7 +133,47 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         vm.outputs.setUnsuccessfulProjectStateView().subscribe(setUnsuccessfulProjectStateView)
         vm.outputs.startProjectSocialActivity().subscribe(startProjectSocialActivity)
         vm.outputs.updatesCountTextViewText().subscribe(updatesCountTextViewText)
+        vm.outputs.startUpdatesView().subscribe(startUpdatesView)
+        vm.outputs.startCampaignView().subscribe(startCampaignView)
+        vm.outputs.startCommentsView().subscribe(startCommentsView)
+        vm.outputs.startCreatorView().subscribe(startCreatorView)
         vm.inputs.configureWith(projectData)
+    }
+
+    @Test
+    fun testCreatorDetailsClicked() {
+        val projectData = project(ProjectFactory.project())
+        setUpEnvironment(environment(), projectData)
+
+        this.vm.inputs.creatorInfoButtonClicked()
+        startCreatorView.assertValue(projectData)
+    }
+
+    @Test
+    fun testUpdatesClicked() {
+        val projectData = project(ProjectFactory.project())
+        setUpEnvironment(environment(), projectData)
+
+        this.vm.inputs.updatesButtonClicked()
+        startUpdatesView.assertValue(projectData)
+    }
+
+    @Test
+    fun testCommentsClicked() {
+        val projectData = project(ProjectFactory.project())
+        setUpEnvironment(environment(), projectData)
+
+        this.vm.inputs.commentsButtonClicked()
+        startCommentsView.assertValue(projectData)
+    }
+
+    @Test
+    fun testCampaignClicked() {
+        val projectData = project(ProjectFactory.project())
+        setUpEnvironment(environment(), projectData)
+
+        this.vm.inputs.campaignButtonClicked()
+        startCampaignView.assertValue(projectData)
     }
 
     @Test

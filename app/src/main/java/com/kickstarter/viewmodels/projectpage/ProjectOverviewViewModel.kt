@@ -35,21 +35,18 @@ interface ProjectOverviewViewModel {
 
         /** Call when the project social view group is clicked.  */
         fun projectSocialViewGroupClicked()
-        fun openCreatorActivity() {
-            TODO("Not yet implemented")
-        }
 
-        fun openCampaignActivity() {
-            TODO("Not yet implemented")
-        }
+        /** Call when the creator button is clicked  */
+        fun creatorInfoButtonClicked()
 
-        fun openCommentsActivity() {
-            TODO("Not yet implemented")
-        }
+        /** Call when the campaign clicked  */
+        fun campaignButtonClicked()
 
-        fun openUpdatesActivity() {
-            TODO("Not yet implemented")
-        }
+        /** Call when the comments clicked  */
+        fun commentsButtonClicked()
+
+        /** Call when the updates clicked  */
+        fun updatesButtonClicked()
     }
 
     interface Outputs {
@@ -175,6 +172,11 @@ interface ProjectOverviewViewModel {
 
         /** Emits the updates count for display.  */
         fun updatesCountTextViewText(): Observable<String>
+
+        fun startCreatorView(): Observable<ProjectData>
+        fun startCommentsView(): Observable<ProjectData>
+        fun startUpdatesView(): Observable<ProjectData>
+        fun startCampaignView(): Observable<ProjectData>
     }
 
     class ViewModel(environment: Environment) : FragmentViewModel<ProjectOverviewFragment?>(environment), Inputs, Outputs {
@@ -185,8 +187,15 @@ interface ProjectOverviewViewModel {
         private val optimizely: ExperimentsClientType = environment.optimizely()
         val kSString: KSString = environment.ksString()
 
+        // Inputs
         private val projectData = PublishSubject.create<ProjectData>()
-        private val projectSocialViewGroupClicked = PublishSubject.create<Void?>()
+        private val projectSocialViewGroupClicked = PublishSubject.create<Void>()
+        private val creatorInfoClicked = PublishSubject.create<Void>()
+        private val campaignClicked = PublishSubject.create<Void>()
+        private val commentsClicked = PublishSubject.create<Void>()
+        private val updatesClicked = PublishSubject.create<Void>()
+
+        // Outputs
         private val avatarPhotoUrl: Observable<String>
         private val backersCountTextViewText: Observable<String>
         private val blurbTextViewText: Observable<String>
@@ -228,18 +237,28 @@ interface ProjectOverviewViewModel {
         private val startProjectSocialActivity: Observable<Project>
         private val shouldSetDefaultStatsMargins: Observable<Boolean>
         private val updatesCountTextViewText: Observable<String>
+        private val startCreatorView: Observable<ProjectData>
+        private val startCommentsView: Observable<ProjectData>
+        private val startUpdatesView: Observable<ProjectData>
+        private val startCampaignView: Observable<ProjectData>
 
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        override fun configureWith(projectData: ProjectData) {
-            this.projectData.onNext(projectData)
-        }
+        // - Inputs
+        override fun configureWith(projectData: ProjectData) = this.projectData.onNext(projectData)
 
-        override fun projectSocialViewGroupClicked() {
-            projectSocialViewGroupClicked.onNext(null)
-        }
+        override fun projectSocialViewGroupClicked() = projectSocialViewGroupClicked.onNext(null)
 
+        override fun creatorInfoButtonClicked() = this.creatorInfoClicked.onNext(null)
+
+        override fun campaignButtonClicked() = this.campaignClicked.onNext(null)
+
+        override fun commentsButtonClicked() = this.commentsClicked.onNext(null)
+
+        override fun updatesButtonClicked() = this.updatesClicked.onNext(null)
+
+        // - Outputs
         override fun avatarPhotoUrl(): Observable<String> {
             return avatarPhotoUrl
         }
@@ -404,6 +423,22 @@ interface ProjectOverviewViewModel {
             return updatesCountTextViewText
         }
 
+        override fun startCreatorView(): Observable<ProjectData> {
+            return this.startCreatorView
+        }
+
+        override fun startCommentsView(): Observable<ProjectData> {
+            return this.startCommentsView
+        }
+
+        override fun startCampaignView(): Observable<ProjectData> {
+            return this.startCampaignView
+        }
+
+        override fun startUpdatesView(): Observable<ProjectData> {
+            return this.startUpdatesView
+        }
+
         init {
             val project = projectData
                 .distinctUntilChanged()
@@ -565,6 +600,7 @@ interface ProjectOverviewViewModel {
             projectDisclaimerGoalReachedDateTime = project
                 .filter { obj: Project -> obj.isFunded }
                 .map { obj: Project -> obj.deadline() }
+                .compose(bindToLifecycle())
 
             projectDisclaimerGoalNotReachedString = project
                 .filter { p: Project -> p.deadline() != null && p.isLive && !p.isFunded }
@@ -656,6 +692,22 @@ interface ProjectOverviewViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
                 .map { NumberUtils.format(it) }
+
+            startCreatorView = projectData
+                .compose(Transformers.takePairWhen(creatorInfoClicked))
+                .map { it.first }
+
+            startCommentsView = projectData
+                .compose(Transformers.takePairWhen(commentsClicked))
+                .map { it.first }
+
+            startUpdatesView = projectData
+                .compose(Transformers.takePairWhen(updatesClicked))
+                .map { it.first }
+
+            startCampaignView = projectData
+                .compose(Transformers.takePairWhen(campaignClicked))
+                .map { it.first }
         }
     }
 }

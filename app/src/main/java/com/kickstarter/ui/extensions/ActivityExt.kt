@@ -2,11 +2,17 @@ package com.kickstarter.ui.extensions
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.kickstarter.R
+import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.models.Project
+import com.kickstarter.ui.data.ProjectData
+import android.util.Pair
+import com.kickstarter.libs.utils.extensions.getRootCommentsActivityIntent
 import timber.log.Timber
 
 fun Activity.hideKeyboard() {
@@ -64,5 +70,15 @@ fun Activity.showRatingDialogWidget() {
         } else {
             Timber.v("${this.localClassName } : showRatingDialogWidget request: ${request.isSuccessful} ")
         }
+    }
+}
+
+fun Activity.startRootCommentsActivity(projectAndData: Pair<Project, ProjectData>) {
+    startActivity(
+        Intent().getRootCommentsActivityIntent(this, projectAndData)
+    )
+
+    this.let {
+        TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
     }
 }

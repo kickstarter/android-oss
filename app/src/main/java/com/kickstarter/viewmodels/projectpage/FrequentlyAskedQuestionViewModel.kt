@@ -26,6 +26,9 @@ interface FrequentlyAskedQuestionViewModel {
     }
 
     interface Outputs {
+        /** Emits the current list [ProjectFaq]. */
+        fun projectFaqList(): Observable<List<ProjectFaq>>
+        fun bindEmptyState(): Observable<Void>
         /** Emits a boolean that determines if the message icon should be shown. */
         fun askQuestionButtonIsGone(): Observable<Boolean>
 
@@ -34,10 +37,6 @@ interface FrequentlyAskedQuestionViewModel {
 
         /** Emits when we should start the creator bio [com.kickstarter.ui.activities.MessagesActivity]. */
         fun startMessagesActivity(): Observable<Project>
-
-        /** Emits the current list [ProjectFaq]. */
-        fun projectFaqList(): Observable<List<ProjectFaq>>
-        fun bindEmptyState(): Observable<Void>
     }
 
     class ViewModel(@NonNull val environment: Environment) :

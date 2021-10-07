@@ -90,8 +90,6 @@ class ProjectPageActivity :
         setContentView(binding.root)
         this.ksString = environment().ksString()
 
-        configurePager()
-
         val viewTreeObserver = binding.pledgeContainerLayout.pledgeContainerRoot.viewTreeObserver
         if (viewTreeObserver.isAlive) {
             viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {

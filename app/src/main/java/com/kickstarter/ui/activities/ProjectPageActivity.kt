@@ -47,7 +47,10 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.extensions.showSnackbar
+import com.kickstarter.ui.extensions.startCreatorDashboardActivity
+import com.kickstarter.ui.extensions.startProjectUpdatesActivity
 import com.kickstarter.ui.extensions.startRootCommentsActivity
+import com.kickstarter.ui.extensions.startUpdatesActivity
 import com.kickstarter.ui.fragments.BackingFragment
 import com.kickstarter.ui.fragments.CancelPledgeFragment
 import com.kickstarter.ui.fragments.NewCardFragment
@@ -266,6 +269,7 @@ class ProjectPageActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { this.startCampaignWebViewActivity(it) }
 
+        // TODO: Can be deleted, no longer a delegate call, the ProjectOverviewFragment handles it
         this.viewModel.outputs.startRootCommentsActivity()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
@@ -280,6 +284,7 @@ class ProjectPageActivity :
                 startRootCommentsActivity(it.second, it.first)
             }
 
+        // TODO: delete this is now on the Overview
         this.viewModel.outputs.startProjectUpdateActivity()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
@@ -294,16 +299,19 @@ class ProjectPageActivity :
                 this.startProjectUpdateToRepliesDeepLinkActivity(it)
             }
 
+        // TODO: delete this is now on the Overview
         this.viewModel.outputs.startCreatorBioWebViewActivity()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { this.startCreatorBioWebViewActivity(it) }
+            .subscribe { startCreatorBioWebViewActivity(it) }
 
+        // TODO: delete this is now on the Overview
         this.viewModel.outputs.startCreatorDashboardActivity()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { this.startCreatorDashboardActivity(it) }
 
+        // TODO: delete this is now on the Overview
         this.viewModel.outputs.startProjectUpdatesActivity()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
@@ -702,13 +710,6 @@ class ProjectPageActivity :
         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
-    private fun startCreatorBioWebViewActivity(project: Project) {
-        val intent = Intent(this, CreatorBioActivity::class.java)
-            .putExtra(IntentKey.PROJECT, project)
-            .putExtra(IntentKey.URL, project.creatorBioUrl())
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
-    }
-
     private fun startCreatorDashboardActivity(project: Project) {
         val intent = Intent(this, CreatorDashboardActivity::class.java)
             .putExtra(IntentKey.PROJECT, project)
@@ -723,20 +724,16 @@ class ProjectPageActivity :
     }
 
     private fun startProjectUpdateActivity(projectAndData: Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>) {
-        val intent = Intent(this, UpdateActivity::class.java)
-            .putExtra(IntentKey.PROJECT, projectAndData.second.first)
-            .putExtra(IntentKey.UPDATE_POST_ID, projectAndData.first.first)
-            .putExtra(IntentKey.IS_UPDATE_COMMENT, projectAndData.first.second)
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+        startUpdatesActivity(projectAndData.second.first, projectAndData.first.first, projectAndData.first.second)
     }
 
     private fun startProjectUpdateToRepliesDeepLinkActivity(projectAndData: Pair<Pair<String, String>, Pair<Project, ProjectData>>) {
-        val intent = Intent(this, UpdateActivity::class.java)
-            .putExtra(IntentKey.PROJECT, projectAndData.second.first)
-            .putExtra(IntentKey.UPDATE_POST_ID, projectAndData.first.first)
-            .putExtra(IntentKey.IS_UPDATE_COMMENT, projectAndData.first.second.isNotEmpty())
-            .putExtra(IntentKey.COMMENT, projectAndData.first.second)
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+        startUpdatesActivity(
+            projectAndData.second.first,
+            projectAndData.first.first,
+            projectAndData.first.second.isNotEmpty(),
+            projectAndData.first.second
+        )
     }
 
     private fun startShareIntent(projectNameAndShareUrl: Pair<String, String>) {

@@ -38,4 +38,36 @@ class IntentExtTest : KSRobolectricTestCase() {
         assertEquals(intent.extras?.get(IntentKey.PROJECT_DATA), projectData)
         assertEquals(intent.extras?.get(IntentKey.COMMENT), comment)
     }
+
+    @Test
+    fun testGetUpdatesActivityIntent() {
+        val project = ProjectFactory.project()
+        val intent = Intent().getUpdatesActivityIntent(context(), project)
+        assertEquals(intent.extras?.get(IntentKey.PROJECT), project)
+        assertNull(intent.extras?.get(IntentKey.UPDATE_POST_ID))
+        assertNull(intent.extras?.get(IntentKey.IS_UPDATE_COMMENT))
+    }
+
+    @Test
+    fun testGetUpdatesActivityIntent_forDeepLinkPostIdUpdate() {
+        val project = ProjectFactory.project()
+        val postId = "Some post id"
+        val intent = Intent().getUpdatesActivityIntent(context(), project, postId)
+        assertEquals(intent.extras?.get(IntentKey.PROJECT), project)
+        assertEquals(intent.extras?.get(IntentKey.UPDATE_POST_ID), postId)
+        assertNull(intent.extras?.get(IntentKey.IS_UPDATE_COMMENT))
+    }
+
+    @Test
+    fun testGetUpdatesActivityIntent_forDeepLinkPostIdUpdateComment() {
+        val project = ProjectFactory.project()
+        val postId = "Some post id"
+        val comment = "SomeCommentId"
+        val isCommentForUpdate = true
+        val intent = Intent().getUpdatesActivityIntent(context(), project, postId, isCommentForUpdate, comment)
+        assertEquals(intent.extras?.get(IntentKey.PROJECT), project)
+        assertEquals(intent.extras?.get(IntentKey.UPDATE_POST_ID), postId)
+        assertEquals(intent.extras?.get(IntentKey.IS_UPDATE_COMMENT), isCommentForUpdate)
+        assertEquals(intent.extras?.get(IntentKey.COMMENT), comment)
+    }
 }

@@ -33,6 +33,9 @@ import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ProjectSocialActivity
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
+import com.kickstarter.ui.extensions.startCreatorDashboardActivity
+import com.kickstarter.ui.extensions.startProjectUpdatesActivity
 import com.kickstarter.ui.extensions.startRootCommentsActivity
 import com.kickstarter.viewmodels.projectpage.ProjectOverviewViewModel
 import com.squareup.picasso.Picasso
@@ -163,10 +166,6 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe(binding.projectCreatorDashboardHeader.projectDashboardButton::setText)
-
-        binding.projectCreatorDashboardHeader.projectDashboardButton.setOnClickListener {
-            creatorDashboardOnClick()
-        }
 
         viewModel.outputs.projectDashboardContainerIsGone()
             .compose(bindToLifecycle())
@@ -312,6 +311,31 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .subscribe {
                 activity?.startRootCommentsActivity(Pair(it.project(), it))
             }
+
+        viewModel.outputs.startUpdatesView()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                activity?.startProjectUpdatesActivity(Pair(it.project(), it))
+            }
+
+        viewModel.outputs.startCreatorView()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                activity?.startCreatorBioWebViewActivity(it.project())
+            }
+
+        viewModel.outputs.startCreatorDashboardView()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                activity?.startCreatorDashboardActivity(Pair(it.project(), it))
+            }
+
+        binding.projectCreatorDashboardHeader.projectDashboardButton.setOnClickListener {
+            this.viewModel.inputs.creatorDashboardClicked()
+        }
 
         binding.creatorInfo.setOnClickListener {
             this.viewModel.inputs.creatorInfoButtonClicked()
@@ -512,30 +536,6 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
                 R.anim.fade_out_slide_out_left
             )
         }
-    }
-
-    private fun blurbOnClick() {
-    }
-
-    private fun blurbVariantOnClick() {
-    }
-
-    private fun commentsOnClick() {
-    }
-
-    private fun creatorNameOnClick() {
-    }
-
-    private fun creatorInfoVariantOnClick() {
-    }
-
-    private fun creatorDashboardOnClick() {
-    }
-
-    private fun playButtonOnClick() {
-    }
-
-    private fun updatesOnClick() {
     }
 
     override fun configureWith(projectData: ProjectData) {

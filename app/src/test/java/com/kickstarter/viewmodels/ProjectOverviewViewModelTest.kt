@@ -80,6 +80,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private val startCommentsView = TestSubscriber<ProjectData>()
     private val startUpdatesView = TestSubscriber<ProjectData>()
     private val startCampaignView = TestSubscriber<ProjectData>()
+    private val startCreatorDashboard = TestSubscriber<ProjectData>()
 
     private fun setUpEnvironment(environment: Environment, projectData: ProjectData) {
         vm = ProjectOverviewViewModel.ViewModel(environment)
@@ -137,6 +138,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         vm.outputs.startCampaignView().subscribe(startCampaignView)
         vm.outputs.startCommentsView().subscribe(startCommentsView)
         vm.outputs.startCreatorView().subscribe(startCreatorView)
+        vm.outputs.startCreatorDashboardView().subscribe(startCreatorDashboard)
         vm.inputs.configureWith(projectData)
     }
 
@@ -174,6 +176,15 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.campaignButtonClicked()
         startCampaignView.assertValue(projectData)
+    }
+
+    @Test
+    fun testCreatorDashboardClicked() {
+        val projectData = project(ProjectFactory.project())
+        setUpEnvironment(environment(), projectData)
+
+        this.vm.inputs.creatorDashboardClicked()
+        startCreatorDashboard.assertValue(projectData)
     }
 
     @Test

@@ -10,7 +10,11 @@ import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.kickstarter.R
 import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.extensions.getCreatorBioWebViewActivityIntent
+import com.kickstarter.libs.utils.extensions.getCreatorDashboardActivityIntent
+import com.kickstarter.libs.utils.extensions.getProjectUpdatesActivityIntent
 import com.kickstarter.libs.utils.extensions.getRootCommentsActivityIntent
+import com.kickstarter.libs.utils.extensions.getUpdatesActivityIntent
 import com.kickstarter.models.Project
 import com.kickstarter.ui.data.ProjectData
 import timber.log.Timber
@@ -86,4 +90,42 @@ fun Activity.startRootCommentsActivity(projectAndData: Pair<Project, ProjectData
     this.let {
         TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
     }
+}
+
+fun Activity.startCreatorDashboardActivity(projectAndData: Pair<Project, ProjectData>) {
+    startActivity(Intent().getCreatorDashboardActivityIntent(this, projectAndData))
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+}
+
+fun Activity.startCreatorBioWebViewActivity(project: Project) {
+    startActivity(Intent().getCreatorBioWebViewActivityIntent(this, project))
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+}
+
+/**
+ * This function starts the General Updates activity with Transition animation included
+ * the Transition occurs slide_in_right -> fade_out_slide_out_left
+ * @param project
+ * @param updatePostId -> for deeplink to an specific post update
+ * @param isUpdateComment -> for deeplink navigation into a comment for a concrete post
+ * @param comment -> to open the comments activity to a specific thread
+ */
+fun Activity.startUpdatesActivity(
+    project: Project,
+    updatePostId: String? = null,
+    isUpdateComment: Boolean? = null,
+    comment: String? = null
+) {
+    startActivity(Intent().getUpdatesActivityIntent(this, project, updatePostId, isUpdateComment, comment))
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+}
+
+/**
+ * This function starts the Project Updates activity with Transition animation included
+ * the Transition occurs slide_in_right -> fade_out_slide_out_left
+ * @param projectAndData
+ */
+fun Activity.startProjectUpdatesActivity(projectAndData: Pair<Project, ProjectData>) {
+    startActivity(Intent().getProjectUpdatesActivityIntent(this, projectAndData))
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
 }

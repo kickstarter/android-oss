@@ -34,7 +34,6 @@ import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
-import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
@@ -48,6 +47,7 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.extensions.showSnackbar
+import com.kickstarter.ui.extensions.startRootCommentsActivity
 import com.kickstarter.ui.fragments.BackingFragment
 import com.kickstarter.ui.fragments.CancelPledgeFragment
 import com.kickstarter.ui.fragments.NewCardFragment
@@ -270,14 +270,14 @@ class ProjectPageActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                this.startRootCommentsActivity(it)
+                startRootCommentsActivity(it)
             }
 
         this.viewModel.outputs.startRootCommentsForCommentsThreadActivity()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                this.startRootCommentsForCommentsThreadActivity(it)
+                startRootCommentsActivity(it.second, it.first)
             }
 
         this.viewModel.outputs.startProjectUpdateActivity()
@@ -737,31 +737,6 @@ class ProjectPageActivity :
             .putExtra(IntentKey.IS_UPDATE_COMMENT, projectAndData.first.second.isNotEmpty())
             .putExtra(IntentKey.COMMENT, projectAndData.first.second)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
-    }
-
-    private fun startRootCommentsActivity(projectAndData: Pair<Project, ProjectData>) {
-        startActivity(
-            Intent(this, CommentsActivity::class.java)
-                .putExtra(IntentKey.PROJECT, projectAndData.first)
-                .putExtra(IntentKey.PROJECT_DATA, projectAndData.second)
-        )
-
-        this.let {
-            TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
-        }
-    }
-
-    private fun startRootCommentsForCommentsThreadActivity(pair: Pair<String, Pair<Project, ProjectData>>) {
-        startActivity(
-            Intent(this, CommentsActivity::class.java)
-                .putExtra(IntentKey.PROJECT, pair.second.first)
-                .putExtra(IntentKey.PROJECT_DATA, pair.second.second)
-                .putExtra(IntentKey.COMMENT, pair.first)
-        )
-
-        this.let {
-            TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
-        }
     }
 
     private fun startShareIntent(projectNameAndShareUrl: Pair<String, String>) {

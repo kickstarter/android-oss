@@ -3,16 +3,16 @@ package com.kickstarter.ui.extensions
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.util.Pair
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.kickstarter.R
 import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.extensions.getRootCommentsActivityIntent
 import com.kickstarter.models.Project
 import com.kickstarter.ui.data.ProjectData
-import android.util.Pair
-import com.kickstarter.libs.utils.extensions.getRootCommentsActivityIntent
 import timber.log.Timber
 
 fun Activity.hideKeyboard() {
@@ -73,9 +73,14 @@ fun Activity.showRatingDialogWidget() {
     }
 }
 
-fun Activity.startRootCommentsActivity(projectAndData: Pair<Project, ProjectData>) {
+/**
+ * This function starts the RootCommentActivity with Transition animation included
+ * @param projectAndData
+ * @param commentableId -> specific for deeplinking to a concrete thread
+ */
+fun Activity.startRootCommentsActivity(projectAndData: Pair<Project, ProjectData>, commentableId: String? = null) {
     startActivity(
-        Intent().getRootCommentsActivityIntent(this, projectAndData)
+        Intent().getRootCommentsActivityIntent(this, projectAndData, commentableId)
     )
 
     this.let {

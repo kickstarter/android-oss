@@ -20,7 +20,6 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.CreatorDetails
-import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.ui.data.ProjectData

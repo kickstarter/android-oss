@@ -305,10 +305,6 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(Transformers.observeForUI())
             .subscribe(binding.usdConversionTextView.setGone())
 
-        binding.readMore.setOnClickListener {
-            blurbVariantOnClick()
-        }
-
         binding.blurbView.setOnClickListener {
             blurbOnClick()
         }
@@ -398,12 +394,10 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
     private fun setBlurbTextViews(blurb: String) {
         val blurbHtml = Html.fromHtml(TextUtils.htmlEncode(blurb))
         binding.blurb.text = blurbHtml
-        binding.blurbVariant.text = blurbHtml
     }
 
     private fun setBlurbVariantVisibility(blurbVariantVisible: Boolean) {
         binding.blurbView.setGone(blurbVariantVisible)
-        binding.blurbViewVariant.setGone(!blurbVariantVisible)
     }
 
     private fun setProjectDisclaimerGoalReachedString(deadline: DateTime) {

@@ -159,57 +159,6 @@
                 tools:ignore="InconsistentLayout"
                 tools:text="Description about this project." />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/grid_3"
-                android:layout_marginBottom="@dimen/grid_3"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/BodyPrimaryMedium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/grid_1"
-                    android:text="@string/Read_more_about_the_campaign" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_arrow_right"
-                    tools:ignore="ContentDescription" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/blurb_view_variant"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone"
-            tools:ignore="InconsistentLayout"
-            tools:visibility="visible">
-
-            <TextView
-                android:id="@+id/blurb_variant"
-                style="@style/Subheadline"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/kds_support_700"
-                tools:ignore="InconsistentLayout"
-                tools:text="Description about this project." />
-
-            <Button
-                android:id="@+id/read_more"
-                style="@style/TertiaryButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/grid_3"
-                android:layout_marginBottom="@dimen/grid_3"
-                android:text="@string/Read_more_about_the_campaign" />
-
         </LinearLayout>
 
         <LinearLayout

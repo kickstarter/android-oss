@@ -396,9 +396,6 @@ interface ProjectOverviewViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
 
-            val projectMetadata = project
-                .map { ProjectUtils.metadataForProject(it) }
-
             avatarPhotoUrl = project
                 .map { it.creator().avatar().medium() }
                 .filter { ObjectUtils.isNotNull(it) }

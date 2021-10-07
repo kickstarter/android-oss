@@ -305,26 +305,22 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(Transformers.observeForUI())
             .subscribe(binding.usdConversionTextView.setGone())
 
-        binding.blurbView.setOnClickListener {
-            blurbOnClick()
-        }
-
         binding.creatorInfo.setOnClickListener {
-            creatorNameOnClick()
+            this.viewModel.inputs.openCreatorActivity()
         }
 
         binding.creatorInfoVariant.setOnClickListener {
-            creatorInfoVariantOnClick()
+            this.viewModel.inputs.openCreatorActivity()
         }
 
         binding.projectCreatorInfoLayout.campaign.setOnClickListener {
-            blurbOnClick()
+            this.viewModel.inputs.openCampaignActivity()
         }
         binding.projectCreatorInfoLayout.comments.setOnClickListener {
-            commentsOnClick()
+            this.viewModel.inputs.openCommentsActivity()
         }
         binding.projectCreatorInfoLayout.updates.setOnClickListener {
-            updatesOnClick()
+            this.viewModel.inputs.openUpdatesActivity()
         }
     }
 

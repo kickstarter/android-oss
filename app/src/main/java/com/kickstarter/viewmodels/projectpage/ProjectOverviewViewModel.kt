@@ -35,6 +35,21 @@ interface ProjectOverviewViewModel {
 
         /** Call when the project social view group is clicked.  */
         fun projectSocialViewGroupClicked()
+        fun openCreatorActivity() {
+            TODO("Not yet implemented")
+        }
+
+        fun openCampaignActivity() {
+            TODO("Not yet implemented")
+        }
+
+        fun openCommentsActivity() {
+            TODO("Not yet implemented")
+        }
+
+        fun openUpdatesActivity() {
+            TODO("Not yet implemented")
+        }
     }
 
     interface Outputs {

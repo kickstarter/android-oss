@@ -80,6 +80,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val startThanksActivity = TestSubscriber<Pair<CheckoutData, PledgeData>>()
     private val startVideoActivity = TestSubscriber<Project>()
     private val updateFragments = TestSubscriber<ProjectData>()
+    private val updateEnvCommitmentsTabVisibility = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = ProjectPageViewModel.ViewModel(environment)
@@ -123,6 +124,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.updateFragments().subscribe(this.updateFragments)
         this.vm.outputs.startRootCommentsForCommentsThreadActivity().subscribe(this.startRootCommentsForCommentsThreadActivity)
         this.vm.outputs.startProjectUpdateToRepliesDeepLinkActivity().subscribe(this.startProjectUpdateToRepliesDeepLinkActivity)
+        this.vm.outputs.updateEnvCommitmentsTabVisibility().subscribe(this.updateEnvCommitmentsTabVisibility)
     }
 
     @Test
@@ -147,6 +149,35 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
     }
 
+    @Test
+    fun testUIOutputs_whenFetchProjectWithoutEnVCommitment() {
+        val initialProject = ProjectFactory.initialProject().toBuilder().envCommitments(
+            emptyList
+            ()
+        ).build()
+
+        setUpEnvironment(environment())
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+
+        this.updateEnvCommitmentsTabVisibility.assertValues(true)
+    }
+
+    @Test
+    fun testUIOutputs_whenFetchProjectWithEnvCommitment() {
+        val initialProject = ProjectFactory.project()
+        val refreshedProject = ProjectFactory.project()
+        val environment = environment()
+            .toBuilder()
+            .apolloClient(apiClientWithSuccessFetchingProject(refreshedProject))
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+
+        this.updateEnvCommitmentsTabVisibility.assertValues(false)
+    }
     @Test
     fun testUIOutputs_whenFetchProjectFromIntent_isUnsuccessful() {
         var error = true

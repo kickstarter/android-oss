@@ -85,4 +85,20 @@
   <string name="Faq">FPO Faqs</string>
   <string name="Campaign">FPO Campaign</string>
   <string name="Environmental_commitment">FPO Environmental Commitment</string>
+
+  <string name="long_lasting_design">Long-lasting design</string>
+  <string name="sustainable_materials">Sustainable materials</string>
+  <string name="environmentally_friendly_factories">Environmentally friendly factories</string>
+  <string name="sustainable_distribution">Sustainable Distribution</string>
+  <string name="reusability_and_recyclability">Reusability and recyclability</string>
+  <string name="something_else">Something else</string>
+  <string name="environmental_commitments">Environmental Commitments</string>
+  <string name="visit_our_environmental_resources_center">Visit our Environmental Resources
+    Center </string>
+  <string name="visit_our_environmental_resources_center_to_learn_how">Visit our Environmental
+    Resources Center to learn how Kickstarter encourages sustainable practices.</string>
+    <string name="Look_like_there_arent_any_frequently_asked_questions_yet">Looks like there aren\'t any frequently asked questions yet. Ask the project creator directly.</string>
+    <string name="ask_a_question">Ask a question</string>
+    <string name="please_log_in_to_ask_a_question">Looks like there aren\'t any frequently asked
+      questions yet. Log in to ask the project creator directly.</string>
 </resources>

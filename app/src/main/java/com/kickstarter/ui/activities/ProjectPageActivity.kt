@@ -17,6 +17,7 @@ import androidx.annotation.MenuRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -33,7 +34,6 @@ import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
-import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
@@ -47,6 +47,11 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.extensions.showSnackbar
+import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
+import com.kickstarter.ui.extensions.startCreatorDashboardActivity
+import com.kickstarter.ui.extensions.startProjectUpdatesActivity
+import com.kickstarter.ui.extensions.startRootCommentsActivity
+import com.kickstarter.ui.extensions.startUpdatesActivity
 import com.kickstarter.ui.fragments.BackingFragment
 import com.kickstarter.ui.fragments.CancelPledgeFragment
 import com.kickstarter.ui.fragments.NewCardFragment
@@ -71,7 +76,17 @@ class ProjectPageActivity :
 
     private val animDuration = 200L
     private lateinit var binding: ActivityProjectPageBinding
-    private var pagerAdapter = ProjectPagerAdapter(supportFragmentManager, lifecycle)
+    private var pagerAdapterMap = mutableMapOf(
+        ProjectPagerTabs.OVERVIEW to true,
+        ProjectPagerTabs.FAQS to true,
+        ProjectPagerTabs.CAMPAIGN to true,
+        ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT to false
+    )
+
+    private var pagerAdapter = ProjectPagerAdapter(
+        supportFragmentManager, pagerAdapterMap,
+        lifecycle
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,6 +94,7 @@ class ProjectPageActivity :
         setContentView(binding.root)
         this.ksString = environment().ksString()
 
+        // - Configure pager on load, otherwise the first fragment on the pager gets no data
         configurePager()
 
         val viewTreeObserver = binding.pledgeContainerLayout.pledgeContainerRoot.viewTreeObserver
@@ -111,6 +127,20 @@ class ProjectPageActivity :
                 // - Every time the ProjectData gets updated
                 // - the fragments on the viewPager are updated as well
                 pagerAdapter.updatedWithProjectData(it)
+            }
+
+        this.viewModel.outputs.updateEnvCommitmentsTabVisibility()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { isGone ->
+                binding.projectDetailTabs.getTabAt(
+                    ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT
+                        .ordinal
+                )?.view?.isGone = isGone
+                if (!isGone) {
+                    pagerAdapterMap[ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT] = !isGone
+                }
+                configurePager()
             }
 
         this.viewModel.outputs.backingDetailsSubtitle()
@@ -243,48 +273,57 @@ class ProjectPageActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { this.startCampaignWebViewActivity(it) }
 
+        // TODO: delete this is now on view ProjectPageViewModel it lives on the Overview now
         this.viewModel.outputs.startRootCommentsActivity()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                this.startRootCommentsActivity(it)
+                startRootCommentsActivity(it)
             }
 
         this.viewModel.outputs.startRootCommentsForCommentsThreadActivity()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                this.startRootCommentsForCommentsThreadActivity(it)
+                startRootCommentsActivity(it.second, it.first)
             }
 
         this.viewModel.outputs.startProjectUpdateActivity()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                this.startProjectUpdateActivity(it)
+                startUpdatesActivity(it.second.first, it.first.first, it.first.second)
             }
 
         this.viewModel.outputs.startProjectUpdateToRepliesDeepLinkActivity()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                this.startProjectUpdateToRepliesDeepLinkActivity(it)
+                startUpdatesActivity(
+                    it.second.first,
+                    it.first.first,
+                    it.first.second.isNotEmpty(),
+                    it.first.second
+                )
             }
 
+        // TODO: delete this is now on view ProjectPageViewModel it lives on the Overview now
         this.viewModel.outputs.startCreatorBioWebViewActivity()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { this.startCreatorBioWebViewActivity(it) }
+            .subscribe { startCreatorBioWebViewActivity(it) }
 
+        // TODO: delete this is now on view ProjectPageViewModel it lives on the Overview now
         this.viewModel.outputs.startCreatorDashboardActivity()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { this.startCreatorDashboardActivity(it) }
+            .subscribe { startCreatorDashboardActivity(it) }
 
+        // TODO: delete this is now on view ProjectPageViewModel it lives on the Overview now
         this.viewModel.outputs.startProjectUpdatesActivity()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { this.startProjectUpdatesActivity(it) }
+            .subscribe { startProjectUpdatesActivity(it) }
 
         this.viewModel.outputs.startLoginToutActivity()
             .compose(bindToLifecycle())
@@ -313,7 +352,7 @@ class ProjectPageActivity :
         val viewPager = binding.projectPager
         val tabLayout = binding.projectDetailTabs
 
-        pagerAdapter = ProjectPagerAdapter(supportFragmentManager, lifecycle)
+        pagerAdapter = ProjectPagerAdapter(supportFragmentManager, pagerAdapterMap, lifecycle)
 
         viewPager.adapter = pagerAdapter
 
@@ -403,10 +442,6 @@ class ProjectPageActivity :
 
     override fun exitTransition(): Pair<Int, Int>? {
         return Pair.create(R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     private fun getTabTitle(position: Int) = when (position) {
@@ -545,10 +580,6 @@ class ProjectPageActivity :
         }
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
-
     private fun rewardsFragment() = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment?
 
     private fun rewardsSheetGuideline(): Int = resources.getDimensionPixelSize(R.dimen.reward_fragment_guideline_constraint_end)
@@ -685,68 +716,6 @@ class ProjectPageActivity :
             .putExtra(IntentKey.PROJECT_DATA, projectData)
         startActivityForResult(intent, ActivityRequestCodes.SHOW_REWARDS)
         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
-    }
-
-    private fun startCreatorBioWebViewActivity(project: Project) {
-        val intent = Intent(this, CreatorBioActivity::class.java)
-            .putExtra(IntentKey.PROJECT, project)
-            .putExtra(IntentKey.URL, project.creatorBioUrl())
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
-    }
-
-    private fun startCreatorDashboardActivity(project: Project) {
-        val intent = Intent(this, CreatorDashboardActivity::class.java)
-            .putExtra(IntentKey.PROJECT, project)
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
-    }
-
-    private fun startProjectUpdatesActivity(projectAndData: Pair<Project, ProjectData>) {
-        val intent = Intent(this, ProjectUpdatesActivity::class.java)
-            .putExtra(IntentKey.PROJECT, projectAndData.first)
-            .putExtra(IntentKey.PROJECT_DATA, projectAndData.second)
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
-    }
-
-    private fun startProjectUpdateActivity(projectAndData: Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>) {
-        val intent = Intent(this, UpdateActivity::class.java)
-            .putExtra(IntentKey.PROJECT, projectAndData.second.first)
-            .putExtra(IntentKey.UPDATE_POST_ID, projectAndData.first.first)
-            .putExtra(IntentKey.IS_UPDATE_COMMENT, projectAndData.first.second)
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
-    }
-
-    private fun startProjectUpdateToRepliesDeepLinkActivity(projectAndData: Pair<Pair<String, String>, Pair<Project, ProjectData>>) {
-        val intent = Intent(this, UpdateActivity::class.java)
-            .putExtra(IntentKey.PROJECT, projectAndData.second.first)
-            .putExtra(IntentKey.UPDATE_POST_ID, projectAndData.first.first)
-            .putExtra(IntentKey.IS_UPDATE_COMMENT, projectAndData.first.second.isNotEmpty())
-            .putExtra(IntentKey.COMMENT, projectAndData.first.second)
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
-    }
-
-    private fun startRootCommentsActivity(projectAndData: Pair<Project, ProjectData>) {
-        startActivity(
-            Intent(this, CommentsActivity::class.java)
-                .putExtra(IntentKey.PROJECT, projectAndData.first)
-                .putExtra(IntentKey.PROJECT_DATA, projectAndData.second)
-        )
-
-        this.let {
-            TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
-        }
-    }
-
-    private fun startRootCommentsForCommentsThreadActivity(pair: Pair<String, Pair<Project, ProjectData>>) {
-        startActivity(
-            Intent(this, CommentsActivity::class.java)
-                .putExtra(IntentKey.PROJECT, pair.second.first)
-                .putExtra(IntentKey.PROJECT_DATA, pair.second.second)
-                .putExtra(IntentKey.COMMENT, pair.first)
-        )
-
-        this.let {
-            TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
-        }
     }
 
     private fun startShareIntent(projectNameAndShareUrl: Pair<String, String>) {

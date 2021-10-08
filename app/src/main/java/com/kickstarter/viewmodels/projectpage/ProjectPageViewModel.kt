@@ -253,6 +253,8 @@ interface ProjectPageViewModel {
 
         /** Emits when we should update the [com.kickstarter.ui.fragments.BackingFragment] and [com.kickstarter.ui.fragments.RewardsFragment].  */
         fun updateFragments(): Observable<ProjectData>
+
+        fun updateEnvCommitmentsTabVisibility(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) :
@@ -335,6 +337,7 @@ interface ProjectPageViewModel {
         private val startVideoActivity = PublishSubject.create<Project>()
         private val updateFragments = BehaviorSubject.create<ProjectData>()
         private val tabSelected = PublishSubject.create<Int>()
+        private val updateEnvCommitmentsTabVisibility = PublishSubject.create<Boolean>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -492,7 +495,10 @@ interface ProjectPageViewModel {
 
             currentProjectData
                 .compose(bindToLifecycle())
-                .subscribe(this.projectData)
+                .subscribe {
+                    this.projectData.onNext(it)
+                    this.updateEnvCommitmentsTabVisibility.onNext(it.project().envCommitments()?.isNullOrEmpty())
+                }
 
             currentProject
                 .compose<Project>(takeWhen(this.shareButtonClicked))
@@ -1170,6 +1176,10 @@ interface ProjectPageViewModel {
 
         @NonNull
         override fun startVideoActivity(): Observable<Project> = this.startVideoActivity
+
+        @NonNull
+        override fun updateEnvCommitmentsTabVisibility(): Observable<Boolean> = this
+            .updateEnvCommitmentsTabVisibility
 
         @NonNull
         override fun updateFragments(): Observable<ProjectData> = this.updateFragments

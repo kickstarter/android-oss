@@ -15,7 +15,7 @@ import com.kickstarter.ui.activities.UpdateActivity
 import com.kickstarter.ui.data.ProjectData
 
 fun Intent.getProjectIntent(context: Context, isFfEnabled: Boolean): Intent {
-    return this.setClass(context, if (isFfEnabled) ProjectPageActivity::class.java else ProjectActivity::class.java)
+    return this.setClass(context, if (true) ProjectPageActivity::class.java else ProjectActivity::class.java)
 }
 
 /**
@@ -29,13 +29,13 @@ fun Intent.getRootCommentsActivityIntent(
     projectAndData: Pair<Project, ProjectData>,
     commentableId: String? = null
 ): Intent {
-    val theIntent = this.setClass(context, CommentsActivity::class.java)
+    this.setClass(context, CommentsActivity::class.java)
         .putExtra(IntentKey.PROJECT, projectAndData.first)
         .putExtra(IntentKey.PROJECT_DATA, projectAndData.second)
 
-    commentableId?.let { theIntent.putExtra(IntentKey.COMMENT, it) }
+    commentableId?.let { this.putExtra(IntentKey.COMMENT, it) }
 
-    return theIntent
+    return this
 }
 
 /**
@@ -87,20 +87,20 @@ fun Intent.getUpdatesActivityIntent(
     comment: String? = null
 ): Intent {
 
-    val theIntent = this.setClass(context, UpdateActivity::class.java)
+    this.setClass(context, UpdateActivity::class.java)
         .putExtra(IntentKey.PROJECT, project)
 
     updatePostId?.let {
-        theIntent.putExtra(IntentKey.UPDATE_POST_ID, it)
+        this.putExtra(IntentKey.UPDATE_POST_ID, it)
     }
 
     isUpdateComment?.let {
-        theIntent.putExtra(IntentKey.IS_UPDATE_COMMENT, it)
+        this.putExtra(IntentKey.IS_UPDATE_COMMENT, it)
     }
 
     comment?.let {
-        theIntent.putExtra(IntentKey.COMMENT, it)
+        this.putExtra(IntentKey.COMMENT, it)
     }
 
-    return theIntent
+    return this
 }

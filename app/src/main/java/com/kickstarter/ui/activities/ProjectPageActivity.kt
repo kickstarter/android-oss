@@ -94,6 +94,9 @@ class ProjectPageActivity :
         setContentView(binding.root)
         this.ksString = environment().ksString()
 
+        // - Configure pager on load, otherwise the first fragment on the pager gets no data
+        configurePager()
+
         val viewTreeObserver = binding.pledgeContainerLayout.pledgeContainerRoot.viewTreeObserver
         if (viewTreeObserver.isAlive) {
             viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {

@@ -13,7 +13,6 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ExperimentData
-import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProgressBarUtils
@@ -642,17 +641,16 @@ interface ProjectOverviewViewModel {
 
             projectOutput = project
 
-            projectSocialImageViewUrl = project
-                .filter { it.isFriendBacking }
-                .map { it.friends() }
-                .map { ListUtils.first(it) }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
-                .map { it.avatar().small() }
-
             projectSocialTextViewFriends = project
                 .filter { it.isFriendBacking }
                 .map { it.friends() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+
+            projectSocialImageViewUrl = projectSocialTextViewFriends
+                .map { it.first() }
+                .map { requireNotNull(it) }
+                .map { it.avatar().medium() }
 
             projectSocialViewGroupIsGone = project
                 .map { it.isFriendBacking }

@@ -106,6 +106,9 @@ interface DeepLinkViewModel {
                 .filter {
                     !it.isProjectUpdateCommentsUri(Secrets.WebEndpoint.PRODUCTION)
                 }
+                .filter {
+                    !it.isRewardFulfilledDl()
+                }
                 .map { appendRefTagIfNone(it) }
                 .compose(bindToLifecycle())
                 .subscribe {
@@ -212,6 +215,7 @@ interface DeepLinkViewModel {
                 .filter { !it.isProjectCommentUri(Secrets.WebEndpoint.PRODUCTION) }
                 .filter { !it.isProjectUpdateUri(Secrets.WebEndpoint.PRODUCTION) }
                 .filter { !it.isProjectUpdateCommentsUri(Secrets.WebEndpoint.PRODUCTION) }
+                .filter { !it.isRewardFulfilledDl() }
 
             Observable.merge(projectPreview, unsupportedDeepLink)
                 .map { obj: Uri -> obj.toString() }

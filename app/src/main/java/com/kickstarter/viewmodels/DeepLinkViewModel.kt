@@ -19,10 +19,12 @@ import com.kickstarter.libs.utils.extensions.isProjectPreviewUri
 import com.kickstarter.libs.utils.extensions.isProjectUpdateCommentsUri
 import com.kickstarter.libs.utils.extensions.isProjectUpdateUri
 import com.kickstarter.libs.utils.extensions.isProjectUri
+import com.kickstarter.libs.utils.extensions.isRewardFulfilledDl
 import com.kickstarter.libs.utils.extensions.isSettingsUrl
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.DeepLinkActivity
+import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import rx.Notification
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -69,6 +71,7 @@ interface DeepLinkViewModel {
         val outputs: Outputs = this
 
         init {
+            val apolloClient = environment.apolloClient()
             val apiClientType = environment.apiClient()
             val currentUser = environment.currentUser()
             val uriFromIntent = intent()
@@ -147,10 +150,10 @@ interface DeepLinkViewModel {
 
             uriFromIntent
                 .filter { ObjectUtils.isNotNull(it) }
-                .map { it.isSettingsUrl() }
+                .filter { it.isSettingsUrl() }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    updateUserPreferences.onNext(it)
+                    updateUserPreferences.onNext(true)
                 }
 
             currentUser.observable()
@@ -166,6 +169,26 @@ interface DeepLinkViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     refreshUserAndFinishActivity(it, currentUser)
+                }
+
+            uriFromIntent
+                .filter { it.isRewardFulfilledDl() }
+                .map { ProjectIntentMapper.paramFromUri(it) }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .switchMap {
+                    apolloClient.getProject(it).materialize()
+                        .doOnError { finishDeeplinkActivity.onNext(null) }
+                }
+                .compose(Transformers.values())
+                .filter { it.isBacking }
+                .switchMap {
+                    apiClientType.postBacking(it, requireNotNull(it.backing()), true).materialize()
+                        .doOnError { finishDeeplinkActivity }
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    startDiscoveryActivity.onNext(null)
                 }
 
             uriFromIntent

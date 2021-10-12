@@ -108,7 +108,6 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         val url = "ksr://www.kickstarter.com/projects/fjorden/fjorden-iphone-photography-reinvented/comments?ref=discovery"
         vm.intent(intentWithData(url))
         startBrowser.assertNoValues()
-        finishDeeplinkActivity.assertValueCount(1)
         startProjectActivityForComment.assertValue(Uri.parse(url))
     }
 
@@ -139,7 +138,6 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         vm.intent(intentWithData(url))
         startBrowser.assertNoValues()
         startProjectActivityForUpdate.assertValue(Uri.parse(url))
-        finishDeeplinkActivity.assertValueCount(1)
     }
 
     @Test
@@ -170,7 +168,6 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startBrowser.assertNoValues()
         startProjectActivityForUpdate.assertNoValues()
         startProjectActivityForCommentToUpdate.assertValue(Uri.parse(url))
-        finishDeeplinkActivity.assertValueCount(1)
     }
 
     @Test

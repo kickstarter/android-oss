@@ -39,6 +39,61 @@
         android:layout_marginBottom="@dimen/reward_fragment_guideline_constraint_end"
         android:layout_below="@id/project_progress_bar">
 
+        <com.kickstarter.ui.views.MediaHeader
+            android:id="@+id/media_header_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/project_detail_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/backing_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="green_background, backer_check_mark, backer_text_view"/>
+
+        <View
+            android:id="@+id/green_background"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="@dimen/grid_10"
+            android:background="@color/primary"
+            app:layout_constraintTop_toTopOf="@id/backer_check_mark"
+            app:layout_constraintBottom_toBottomOf="@id/backer_check_mark"
+            app:layout_constraintEnd_toEndOf="@id/backer_text_view"
+            app:layout_constraintStart_toStartOf="@id/backer_check_mark"
+            android:importantForAccessibility="no" />
+
+        <ImageView
+            android:id="@+id/backer_check_mark"
+            android:src="@drawable/icon__check"
+            app:tint="@color/kds_white"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            android:layout_marginEnd="@dimen/grid_1_half"
+            app:layout_constraintEnd_toStartOf="@id/backer_text_view"
+            app:layout_constraintTop_toTopOf="@id/media_header_layout"
+            app:layout_constraintBottom_toBottomOf="@id/media_header_layout"
+            app:layout_constraintStart_toStartOf="@id/media_header_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:importantForAccessibility="no"/>
+
+        <TextView
+            android:id="@+id/backer_text_view"
+            style="@style/Caption1PrimaryMedium"
+            android:includeFontPadding="false"
+            android:textColor="@color/kds_white"
+            app:layout_constraintStart_toEndOf="@id/backer_check_mark"
+            app:layout_constraintTop_toTopOf="@id/media_header_layout"
+            app:layout_constraintBottom_toBottomOf="@id/media_header_layout"
+            app:layout_constraintEnd_toEndOf="@id/media_header_layout"
+            android:text="@string/discovery_baseball_card_metadata_backer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/project_detail_tabs"
             android:clipToPadding="false"
@@ -48,7 +103,7 @@
             app:tabIndicatorColor="@color/kds_trust_500"
             app:tabMode="scrollable"
             app:tabMaxWidth="0dp"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/media_header_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 

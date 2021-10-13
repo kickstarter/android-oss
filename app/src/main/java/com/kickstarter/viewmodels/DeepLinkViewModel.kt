@@ -12,6 +12,7 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.UrlUtils.appendRefTag
 import com.kickstarter.libs.utils.UrlUtils.refTag
+import com.kickstarter.libs.utils.extensions.canUpdateFulfillment
 import com.kickstarter.libs.utils.extensions.isCheckoutUri
 import com.kickstarter.libs.utils.extensions.isProjectCommentUri
 import com.kickstarter.libs.utils.extensions.isProjectPreviewUri
@@ -20,6 +21,7 @@ import com.kickstarter.libs.utils.extensions.isProjectUpdateUri
 import com.kickstarter.libs.utils.extensions.isProjectUri
 import com.kickstarter.libs.utils.extensions.isRewardFulfilledDl
 import com.kickstarter.libs.utils.extensions.isSettingsUrl
+import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.DeepLinkActivity
@@ -67,13 +69,14 @@ interface DeepLinkViewModel {
         private val startProjectActivityWithCheckout = BehaviorSubject.create<Uri>()
         private val updateUserPreferences = BehaviorSubject.create<Boolean>()
         private val finishDeeplinkActivity = BehaviorSubject.create<Void?>()
+        private val apolloClient = environment.apolloClient()
+        private val apiClientType = environment.apiClient()
+        private val currentUser = environment.currentUser()
+        private val webEndpoint = environment.webEndpoint()
+        private val projectObservable: Observable<Project>
         val outputs: Outputs = this
 
         init {
-            val apolloClient = environment.apolloClient()
-            val apiClientType = environment.apiClient()
-            val currentUser = environment.currentUser()
-            val webEndpoint = environment.webEndpoint()
 
             val uriFromIntent = intent()
                 .map { obj: Intent -> obj.data }
@@ -175,20 +178,34 @@ interface DeepLinkViewModel {
                     refreshUserAndFinishActivity(it, currentUser)
                 }
 
-            uriFromIntent
+            projectObservable = uriFromIntent
                 .filter { it.isRewardFulfilledDl() }
                 .map { ProjectIntentMapper.paramFromUri(it) }
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
                 .switchMap {
-                    apolloClient.getProject(it).materialize()
-                        .doOnError { finishDeeplinkActivity.onNext(null) }
+                    getProject(it)
+                        .doOnError {
+                            finishDeeplinkActivity.onNext(null)
+                        }
                 }
-                .compose(Transformers.values())
-                .filter { it.isBacking && it.hasEnded() && it.isFunded }
+                .filter { ObjectUtils.isNotNull(it.value) }
+                .map { it.value }
+
+            projectObservable
+                .filter { it.backing() == null || !it.canUpdateFulfillment() }
+                .subscribe {
+                    finishDeeplinkActivity.onNext(null)
+                }
+
+            projectObservable
+                .filter { it.canUpdateFulfillment() }
                 .switchMap {
-                    apiClientType.postBacking(it, requireNotNull(it.backing()), true).materialize()
-                        .doOnError { finishDeeplinkActivity.onNext(null) }
+                    postBacking(it)
+                        .doOnError {
+                            finishDeeplinkActivity.onNext(null)
+                        }
+                        .distinctUntilChanged()
                 }
                 .compose(bindToLifecycle())
                 .subscribe {
@@ -226,6 +243,16 @@ interface DeepLinkViewModel {
                     startBrowser.onNext(it)
                 }
         }
+
+        private fun postBacking(it: Project) =
+            apiClientType.postBacking(it, requireNotNull(it.backing()), true)
+                .compose(Transformers.neverError())
+                .distinctUntilChanged()
+
+        private fun getProject(it: String) = apolloClient.getProject(it)
+            .materialize()
+            .share()
+            .distinctUntilChanged()
 
         private fun refreshUserAndFinishActivity(user: User, currentUser: CurrentUserType) {
             currentUser.refresh(user)

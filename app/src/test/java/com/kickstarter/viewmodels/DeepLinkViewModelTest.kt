@@ -286,9 +286,57 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
             .apiClient(mockApiSetBacking(backing, true))
             .currentUser(mockUser)
             .build()
-
         setUpEnvironment(environment)
+
         val url = "https://staging.kickstarter.com/projects/polymernai/baby-spirits-plush-collection/mark_reward_fulfilled/true"
+        vm.intent(intentWithData(url))
+
+        startBrowser.assertNoValues()
+        startDiscoveryActivity.assertNoValues()
+        startProjectActivity.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityForCommentToUpdate.assertNoValues()
+        startProjectActivityForUpdate.assertNoValues()
+        finishDeeplinkActivity.assertValueCount(1)
+    }
+
+    @Test
+    fun testRewardFulfilledDeepLink_KsrSchema_UserIsBacker() {
+        val mockUser = MockCurrentUser()
+        val project = ProjectFactory.backedProject().toBuilder().deadline(DateTime.now().plusDays(2)).build()
+        val backing = requireNotNull(project.backing())
+
+        val environment = environment().toBuilder()
+            .apolloClient(mockApolloClientForBacking(project))
+            .apiClient(mockApiSetBacking(backing, true))
+            .currentUser(mockUser)
+            .build()
+        setUpEnvironment(environment)
+
+        val url = "ksr://staging.kickstarter.com/projects/polymernai/baby-spirits-plush-collection/mark_reward_fulfilled/true"
+        vm.intent(intentWithData(url))
+
+        startBrowser.assertNoValues()
+        startDiscoveryActivity.assertNoValues()
+        startProjectActivity.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityForCommentToUpdate.assertNoValues()
+        startProjectActivityForUpdate.assertNoValues()
+        finishDeeplinkActivity.assertValueCount(1)
+    }
+
+    @Test
+    fun testRewardFulfilledDeepLink_KsrSchema_UserNotBacker() {
+        val mockUser = MockCurrentUser()
+        val project = ProjectFactory.project()
+
+        val environment = environment().toBuilder()
+            .apolloClient(mockApolloClientForBacking(project))
+            .currentUser(mockUser)
+            .build()
+        setUpEnvironment(environment)
+
+        val url = "ksr://staging.kickstarter.com/projects/polymernai/baby-spirits-plush-collection/mark_reward_fulfilled/true"
         vm.intent(intentWithData(url))
 
         startBrowser.assertNoValues()
@@ -330,7 +378,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     private fun mockApolloClientForBacking(project: Project): MockApolloClient {
         return object : MockApolloClient() {
             override fun getProject(slug: String): Observable<Project> {
-                return Observable.just(project)
+                return Observable.just(project.toBuilder().state("successful").build())
             }
         }
     }

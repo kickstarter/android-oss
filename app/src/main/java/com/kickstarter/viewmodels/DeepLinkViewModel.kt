@@ -185,14 +185,14 @@ interface DeepLinkViewModel {
                         .doOnError { finishDeeplinkActivity.onNext(null) }
                 }
                 .compose(Transformers.values())
-                .filter { it.isBacking }
+                .filter { it.isBacking && it.hasEnded() && it.isFunded }
                 .switchMap {
                     apiClientType.postBacking(it, requireNotNull(it.backing()), true).materialize()
-                        .doOnError { finishDeeplinkActivity }
+                        .doOnError { finishDeeplinkActivity.onNext(null) }
                 }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    startDiscoveryActivity.onNext(null)
+                    finishDeeplinkActivity.onNext(null)
                 }
 
             uriFromIntent

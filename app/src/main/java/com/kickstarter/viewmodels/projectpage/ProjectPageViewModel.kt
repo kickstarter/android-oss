@@ -857,6 +857,7 @@ interface ProjectPageViewModel {
 
             currentProject
                 .map { it.photo()?.full() }
+                .filter { ObjectUtils.isNotNull(it) }
                 .subscribe(this.projectPhoto)
 
             currentProject

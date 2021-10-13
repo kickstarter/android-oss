@@ -80,6 +80,9 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val startThanksActivity = TestSubscriber<Pair<CheckoutData, PledgeData>>()
     private val startVideoActivity = TestSubscriber<Project>()
     private val updateFragments = TestSubscriber<ProjectData>()
+    private val projectPhoto = TestSubscriber<String>()
+    private val playButtonIsVisible = TestSubscriber<Boolean>()
+    private val backingViewGroupIsVisible = TestSubscriber<Boolean>()
     private val updateEnvCommitmentsTabVisibility = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(environment: Environment) {
@@ -125,6 +128,118 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startRootCommentsForCommentsThreadActivity().subscribe(this.startRootCommentsForCommentsThreadActivity)
         this.vm.outputs.startProjectUpdateToRepliesDeepLinkActivity().subscribe(this.startProjectUpdateToRepliesDeepLinkActivity)
         this.vm.outputs.updateEnvCommitmentsTabVisibility().subscribe(this.updateEnvCommitmentsTabVisibility)
+        this.vm.outputs.projectPhoto().subscribe(this.projectPhoto)
+        this.vm.outputs.playButtonIsVisible().subscribe(this.playButtonIsVisible)
+        this.vm.outputs.backingViewGroupIsVisible().subscribe(this.backingViewGroupIsVisible)
+    }
+
+    @Test
+    fun testProjectPhoto_whenPhotoNull_shouldNotEmit() {
+        val project = ProjectFactory.initialProject().toBuilder().photo(null).build()
+        val currentUser = MockCurrentUser()
+        val environment = environment()
+            .toBuilder()
+            .currentUser(currentUser)
+            .build()
+
+        environment.currentConfig().config(ConfigFactory.config())
+
+        setUpEnvironment(environment)
+
+        // Start the view model with an almost completed project
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        projectPhoto.assertNoValues()
+    }
+
+    @Test
+    fun testProjectPhoto_whenNotNull_shouldEmitPhoto() {
+        val project = ProjectFactory.initialProject()
+        val currentUser = MockCurrentUser()
+        val environment = environment()
+            .toBuilder()
+            .currentUser(currentUser)
+            .build()
+
+        environment.currentConfig().config(ConfigFactory.config())
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        projectPhoto.assertValues("https://ksr-ugc.imgix.net/assets/012/032/069/46817a8c099133d5bf8b64aad282a696_original.png?crop=faces&w=1552&h=873&fit=crop&v=1463725702&auto=format&q=92&s=72501d155e4a5e399276632687c77959", "https://ksr-ugc.imgix.net/assets/012/032/069/46817a8c099133d5bf8b64aad282a696_original.png?crop=faces&w=1552&h=873&fit=crop&v=1463725702&auto=format&q=92&s=72501d155e4a5e399276632687c77959")
+    }
+
+    @Test
+    fun testMediaPlayButton_whenHasVideoFalse_shouldEmitFalse() {
+        val project = ProjectFactory.initialProject().toBuilder().video(null).build()
+        val currentUser = MockCurrentUser()
+        val environment = environment()
+            .toBuilder()
+            .currentUser(currentUser)
+            .build()
+
+        environment.currentConfig().config(ConfigFactory.config())
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        playButtonIsVisible.assertValues(false, false)
+    }
+
+    @Test
+    fun testMediaPlayButton_whenHasVideoTrue_shouldEmitTrue() {
+        val project = ProjectFactory.initialProject()
+        val currentUser = MockCurrentUser()
+        val environment = environment()
+            .toBuilder()
+            .currentUser(currentUser)
+            .build()
+
+        environment.currentConfig().config(ConfigFactory.config())
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        playButtonIsVisible.assertValues(true, true)
+    }
+
+    @Test
+    fun testBackingViewGroup_whenBacking_shouldEmitTrue() {
+        val project = ProjectFactory.initialProject().toBuilder().isBacking(true).build()
+        val currentUser = MockCurrentUser()
+        val environment = environment()
+            .toBuilder()
+            .currentUser(currentUser)
+            .build()
+
+        environment.currentConfig().config(ConfigFactory.config())
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        backingViewGroupIsVisible.assertValues(true, true)
+    }
+
+    @Test
+    fun testBackingViewGroup_whenNotBacking_shouldEmitFalse() {
+        val project = ProjectFactory.initialProject().toBuilder().isBacking(false).build()
+        val currentUser = MockCurrentUser()
+        val environment = environment()
+            .toBuilder()
+            .currentUser(currentUser)
+            .build()
+
+        environment.currentConfig().config(ConfigFactory.config())
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        backingViewGroupIsVisible.assertValues(false, false)
     }
 
     @Test

@@ -10,7 +10,6 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.UrlUtils.appendRefTag
 import com.kickstarter.libs.utils.UrlUtils.refTag
 import com.kickstarter.libs.utils.extensions.isCheckoutUri
@@ -74,6 +73,8 @@ interface DeepLinkViewModel {
             val apolloClient = environment.apolloClient()
             val apiClientType = environment.apiClient()
             val currentUser = environment.currentUser()
+            val webEndpoint = environment.webEndpoint()
+
             val uriFromIntent = intent()
                 .map { obj: Intent -> obj.data }
                 .ofType(Uri::class.java)
@@ -89,22 +90,22 @@ interface DeepLinkViewModel {
             uriFromIntent
                 .filter { ObjectUtils.isNotNull(it) }
                 .filter {
-                    it.isProjectUri(Secrets.WebEndpoint.PRODUCTION)
+                    it.isProjectUri(webEndpoint)
                 }
                 .filter {
-                    !it.isCheckoutUri(Secrets.WebEndpoint.PRODUCTION)
+                    !it.isCheckoutUri(webEndpoint)
                 }
                 .filter {
-                    !it.isProjectPreviewUri(Secrets.WebEndpoint.PRODUCTION)
+                    !it.isProjectPreviewUri(webEndpoint)
                 }
                 .filter {
-                    !it.isProjectCommentUri(Secrets.WebEndpoint.PRODUCTION)
+                    !it.isProjectCommentUri(webEndpoint)
                 }
                 .filter {
-                    !it.isProjectUpdateUri(Secrets.WebEndpoint.PRODUCTION)
+                    !it.isProjectUpdateUri(webEndpoint)
                 }
                 .filter {
-                    !it.isProjectUpdateCommentsUri(Secrets.WebEndpoint.PRODUCTION)
+                    !it.isProjectUpdateCommentsUri(webEndpoint)
                 }
                 .filter {
                     !it.isRewardFulfilledDl()
@@ -118,7 +119,7 @@ interface DeepLinkViewModel {
             uriFromIntent
                 .filter { ObjectUtils.isNotNull(it) }
                 .filter {
-                    it.isProjectCommentUri(Secrets.WebEndpoint.PRODUCTION)
+                    it.isProjectCommentUri(webEndpoint)
                 }
                 .map { appendRefTagIfNone(it) }
                 .compose(bindToLifecycle())
@@ -129,10 +130,10 @@ interface DeepLinkViewModel {
             uriFromIntent
                 .filter { ObjectUtils.isNotNull(it) }
                 .filter {
-                    it.isProjectUpdateUri(Secrets.WebEndpoint.PRODUCTION)
+                    it.isProjectUpdateUri(webEndpoint)
                 }
                 .filter {
-                    !it.isProjectUpdateCommentsUri(Secrets.WebEndpoint.PRODUCTION)
+                    !it.isProjectUpdateCommentsUri(webEndpoint)
                 }
                 .map { appendRefTagIfNone(it) }
                 .compose(bindToLifecycle())
@@ -143,7 +144,7 @@ interface DeepLinkViewModel {
             uriFromIntent
                 .filter { ObjectUtils.isNotNull(it) }
                 .filter {
-                    it.isProjectUpdateCommentsUri(Secrets.WebEndpoint.PRODUCTION)
+                    it.isProjectUpdateCommentsUri(webEndpoint)
                 }
                 .map { appendRefTagIfNone(it) }
                 .compose(bindToLifecycle())
@@ -196,7 +197,7 @@ interface DeepLinkViewModel {
 
             uriFromIntent
                 .filter { ObjectUtils.isNotNull(it) }
-                .filter { it.isCheckoutUri(Secrets.WebEndpoint.PRODUCTION) }
+                .filter { it.isCheckoutUri(webEndpoint) }
                 .map { appendRefTagIfNone(it) }
                 .compose(bindToLifecycle())
                 .subscribe {
@@ -205,16 +206,16 @@ interface DeepLinkViewModel {
 
             val projectPreview = uriFromIntent
                 .filter { ObjectUtils.isNotNull(it) }
-                .filter { it.isProjectPreviewUri(Secrets.WebEndpoint.PRODUCTION) }
+                .filter { it.isProjectPreviewUri(webEndpoint) }
 
             val unsupportedDeepLink = uriFromIntent
                 .filter { !lastPathSegmentIsProjects(it) }
                 .filter { !it.isSettingsUrl() }
-                .filter { !it.isCheckoutUri(Secrets.WebEndpoint.PRODUCTION) }
-                .filter { !it.isProjectUri(Secrets.WebEndpoint.PRODUCTION) }
-                .filter { !it.isProjectCommentUri(Secrets.WebEndpoint.PRODUCTION) }
-                .filter { !it.isProjectUpdateUri(Secrets.WebEndpoint.PRODUCTION) }
-                .filter { !it.isProjectUpdateCommentsUri(Secrets.WebEndpoint.PRODUCTION) }
+                .filter { !it.isCheckoutUri(webEndpoint) }
+                .filter { !it.isProjectUri(webEndpoint) }
+                .filter { !it.isProjectCommentUri(webEndpoint) }
+                .filter { !it.isProjectUpdateUri(webEndpoint) }
+                .filter { !it.isProjectUpdateCommentsUri(webEndpoint) }
                 .filter { !it.isRewardFulfilledDl() }
 
             Observable.merge(projectPreview, unsupportedDeepLink)

@@ -25,8 +25,7 @@ class MediaHeaderShotTest : ScreenshotTest {
         component = app.component()
 
         mediaHeader = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
-            R.layout.media_header, null) as ConstraintLayout)
-            .findViewById(R.id.media_header)
+            R.layout.media_header, null) as MediaHeader)
 
         mediaHeader.inputs.setProjectPhoto(url)
     }

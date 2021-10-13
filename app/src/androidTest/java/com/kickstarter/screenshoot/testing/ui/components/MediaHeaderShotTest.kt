@@ -1,6 +1,7 @@
 package com.kickstarter.screenshoot.testing.ui.components
 
 import android.view.LayoutInflater
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.test.platform.app.InstrumentationRegistry
 import com.karumi.shot.ScreenshotTest
 import com.kickstarter.ApplicationComponent
@@ -25,11 +26,11 @@ class MediaHeaderShotTest : ScreenshotTest {
 
         mediaHeader = (
             LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
-                R.layout.media_header, null
-            ) as MediaHeader
-            )
+                R.layout.item_media_header, null
+            ) as ConstraintLayout
+            ).findViewById(R.id.media_header)
 
-        mediaHeader.inputs.setProjectPhoto(url)
+        mediaHeader.inputs.setProjectPhoto(null)
     }
 
     @Test

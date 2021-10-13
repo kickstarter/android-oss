@@ -18,7 +18,7 @@ class MediaHeader @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : ConstraintLayout (context, attrs, defStyleAttr) {
+) : ConstraintLayout(context, attrs, defStyleAttr) {
     private var binding: MediaHeaderBinding = MediaHeaderBinding.inflate(LayoutInflater.from(context), this, true)
     private var playButtonClicks = PublishSubject.create<Void>()
 
@@ -46,7 +46,8 @@ class MediaHeader @JvmOverloads constructor(
 
         override fun setProjectPhoto(photo: String) {
             val targetImageWidth = (ViewUtils.getScreenWidthDp(context) * ViewUtils.getScreenDensity(context)).toInt() - context.resources.getDimension(
-                R.dimen.grid_2).toInt() * 2
+                R.dimen.grid_2
+            ).toInt() * 2
             val targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth)
             binding.videoProjectPhoto.maxHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth)
 

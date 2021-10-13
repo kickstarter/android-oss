@@ -348,22 +348,22 @@ class ProjectPageActivity :
         this.viewModel.outputs.projectPhoto()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe{binding.mediaHeaderLayout.inputs.setProjectPhoto(it)}
+            .subscribe { binding.mediaHeaderLayout.inputs.setProjectPhoto(it) }
 
         viewModel.outputs.playButtonIsVisible()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe{binding.mediaHeaderLayout.inputs.setPlayButtonVisibility(it)}
+            .subscribe { binding.mediaHeaderLayout.inputs.setPlayButtonVisibility(it) }
 
         binding.mediaHeaderLayout.outputs.playButtonClicks()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe{viewModel.inputs.playVideoButtonClicked()}
+            .subscribe { viewModel.inputs.playVideoButtonClicked() }
 
         viewModel.outputs.backingViewGroupIsVisible()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe{binding.backingGroup.visibility = it.toVisibility()}
+            .subscribe { binding.backingGroup.visibility = it.toVisibility() }
 
         setClickListeners()
     }

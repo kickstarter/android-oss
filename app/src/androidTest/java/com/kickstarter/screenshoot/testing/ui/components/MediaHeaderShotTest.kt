@@ -1,7 +1,6 @@
 package com.kickstarter.screenshoot.testing.ui.components
 
 import android.view.LayoutInflater
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.test.platform.app.InstrumentationRegistry
 import com.karumi.shot.ScreenshotTest
 import com.kickstarter.ApplicationComponent
@@ -24,21 +23,24 @@ class MediaHeaderShotTest : ScreenshotTest {
         // - Test Dagger component for injecting on environment Mock Objects
         component = app.component()
 
-        mediaHeader = (LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
-            R.layout.media_header, null) as MediaHeader)
+        mediaHeader = (
+            LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+                R.layout.media_header, null
+            ) as MediaHeader
+            )
 
         mediaHeader.inputs.setProjectPhoto(url)
     }
 
     @Test
-    fun playButton_whenVisibilityFalse_isGone(){
+    fun playButton_whenVisibilityFalse_isGone() {
         mediaHeader.inputs.setPlayButtonVisibility(false)
 
         compareScreenshot(mediaHeader)
     }
 
     @Test
-    fun playButton_whenVisibilityTrue_isVisible(){
+    fun playButton_whenVisibilityTrue_isVisible() {
         mediaHeader.inputs.setPlayButtonVisibility(true)
 
         compareScreenshot(mediaHeader)

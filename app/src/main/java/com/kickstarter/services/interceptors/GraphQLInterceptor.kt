@@ -1,8 +1,8 @@
 package com.kickstarter.services.interceptors
 
-import com.google.firebase.iid.FirebaseInstanceId
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.FirebaseHelper
 import com.kickstarter.libs.perimeterx.PerimeterXClientType
 import com.kickstarter.libs.utils.WebUtils
 import okhttp3.Interceptor
@@ -30,7 +30,7 @@ class GraphQLInterceptor(
 
         builder.addHeader("User-Agent", WebUtils.userAgent(this.build))
             .addHeader("X-KICKSTARTER-CLIENT", this.clientId)
-            .addHeader("Kickstarter-Android-App-UUID", FirebaseInstanceId.getInstance().id)
+            .addHeader("Kickstarter-Android-App-UUID", FirebaseHelper.identifier)
 
         pxManager.addHeaderTo(builder)
 

@@ -1,6 +1,6 @@
 package com.kickstarter.libs.utils
 
-import com.google.firebase.iid.FirebaseInstanceId
+import com.kickstarter.libs.FirebaseHelper
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.models.User
@@ -32,7 +32,7 @@ object ExperimentUtils {
     private fun getInstanceId(environment: OptimizelyEnvironment) = when (environment) {
         OptimizelyEnvironment.DEVELOPMENT -> ""
         OptimizelyEnvironment.PRODUCTION -> null
-        OptimizelyEnvironment.STAGING -> FirebaseInstanceId.getInstance().id
+        OptimizelyEnvironment.STAGING -> FirebaseHelper.identifier
     }
 }
 

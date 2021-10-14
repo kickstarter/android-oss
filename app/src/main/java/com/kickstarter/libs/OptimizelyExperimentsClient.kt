@@ -1,7 +1,6 @@
 package com.kickstarter.libs
 
 import android.os.Build
-import com.google.firebase.iid.FirebaseInstanceId
 import com.kickstarter.BuildConfig
 import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.libs.models.OptimizelyExperiment
@@ -22,7 +21,7 @@ class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManag
         optimizelyClient().track(eventKey, userId(), attributes(experimentData, this.optimizelyEnvironment))
     }
 
-    override fun userId(): String = FirebaseInstanceId.getInstance().id
+    override fun userId(): String = FirebaseHelper.identifier
 
     override fun enabledFeatures(user: User?): List<String> {
         return this.optimizelyClient().getEnabledFeatures(

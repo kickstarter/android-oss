@@ -1,9 +1,9 @@
 package com.kickstarter.services.interceptors
 
 import android.net.Uri
-import com.google.firebase.iid.FirebaseInstanceId
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.FirebaseHelper
 import com.kickstarter.libs.perimeterx.PerimeterXClientType
 import com.kickstarter.libs.utils.WebUtils.userAgent
 import com.kickstarter.libs.utils.extensions.isApiUri
@@ -38,7 +38,7 @@ class ApiRequestInterceptor(
 
         val builder: Request.Builder = initialRequest.newBuilder()
             .addHeader("Accept", "application/json")
-            .addHeader("Kickstarter-Android-App-UUID", FirebaseInstanceId.getInstance().id)
+            .addHeader("Kickstarter-Android-App-UUID", FirebaseHelper.identifier)
             .addHeader("User-Agent", userAgent(build))
 
         pxManager.addHeaderTo(builder)

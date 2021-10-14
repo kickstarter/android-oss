@@ -1,12 +1,8 @@
 package com.kickstarter;
 
 import android.text.TextUtils;
-
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.kickstarter.libs.ApiEndpoint;
+import com.kickstarter.libs.FirebaseHelper;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.SegmentTrackingClient;
 import com.kickstarter.libs.braze.RemotePushClientType;
@@ -26,6 +22,8 @@ import javax.inject.Inject;
 import androidx.annotation.CallSuper;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
+
+import kotlin.jvm.functions.Function0;
 import timber.log.Timber;
 
 public class KSApplication extends MultiDexApplication implements IKSApplicationComponent {
@@ -63,12 +61,11 @@ public class KSApplication extends MultiDexApplication implements IKSApplication
       Timber.plant(new Timber.DebugTree());
     }
 
-    if (FirebaseApp.getApps(getApplicationContext()).isEmpty()) {
-      FirebaseApp.initializeApp(getApplicationContext());
-      FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
-      FirebaseAnalytics.getInstance(getApplicationContext()).setAnalyticsCollectionEnabled(true);
-    }
+    FirebaseHelper.initialize(getApplicationContext(), (Function0<Boolean>) () -> initializeDependencies());
+  }
 
+  //- Returns Boolean because incompatible Java "void" type with kotlin "Void" type for the lambda declaration
+  private boolean initializeDependencies() {
     setVisitorCookie();
     this.pushNotifications.initialize();
 
@@ -83,6 +80,8 @@ public class KSApplication extends MultiDexApplication implements IKSApplication
 
     // - Register lifecycle callback for Braze
     this.remotePushClientType.registerActivityLifecycleCallbacks(this);
+
+    return true;
   }
 
   public ApplicationComponent component() {
@@ -97,7 +96,7 @@ public class KSApplication extends MultiDexApplication implements IKSApplication
   }
 
   private void setVisitorCookie() {
-    final String deviceId = FirebaseInstanceId.getInstance().getId();
+    final String deviceId = FirebaseHelper.getIdentifier();
     final String uniqueIdentifier = TextUtils.isEmpty(deviceId) ? UUID.randomUUID().toString() : deviceId;
     final HttpCookie cookie = new HttpCookie("vis", uniqueIdentifier);
     cookie.setMaxAge(DateTime.now().plusYears(100).getMillis());

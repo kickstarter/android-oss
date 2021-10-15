@@ -1380,7 +1380,6 @@ fun rewardItemsTransformer(items: fragment.Reward.Items): List<RewardsItem> {
     val rewardItems = items.edges()?.map { edge ->
         val quantity = edge.quantity()
         val description = edge.node()?.name()
-        val hasBackers = edge.node()?.hasBackers() ?: false
         val id = decodeRelayId(edge.node()?.id()) ?: -1
         val projectId = decodeRelayId(edge.node()?.project()?.id()) ?: -1
         val name = edge.node()?.name() ?: ""
@@ -1397,7 +1396,6 @@ fun rewardItemsTransformer(items: fragment.Reward.Items): List<RewardsItem> {
             .itemId(item.id())
             .item(item)
             .rewardId(0) // - Discrepancy between V1 and Graph, the Graph object do not have the rewardID
-            .hasBackers(hasBackers)
             .quantity(quantity)
             .build()
     } ?: emptyList()

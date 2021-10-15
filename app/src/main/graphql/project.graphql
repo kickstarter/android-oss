@@ -34,6 +34,9 @@ query GetProjectAddOns($slug: String!, $locationId: ID!) {
           }
         }
         ... reward
+        items {
+          ... complexItems
+        }
       }
     }
   }

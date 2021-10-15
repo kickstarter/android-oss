@@ -192,10 +192,8 @@ fragment reward on Reward {
     estimatedDeliveryOn
     available
     allowedAddons {
-        edges {
-            node {
-                id
-            }
+        pageInfo {
+            startCursor
         }
     }
     items {
@@ -205,10 +203,8 @@ fragment reward on Reward {
                 project{
                     id
                 }
-                hasBackers
                 id
                 name
-                rewardsCount
             }
         }
     }

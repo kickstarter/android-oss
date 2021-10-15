@@ -1286,7 +1286,7 @@ private fun rewardTransformer(rewardGr: fragment.Reward, shippingRulesExpanded: 
     } else emptyList()
 
     val hasAddons = if (isReward) {
-        rewardGr.allowedAddons().edges()?.isNotEmpty() ?: false
+        rewardGr.allowedAddons().pageInfo().startCursor()?.isNotBlank() ?: false
     } else false
 
     val shippingRules = shippingRulesExpanded.map {

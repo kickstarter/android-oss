@@ -32,7 +32,6 @@ import com.kickstarter.models.Checkout
 import com.kickstarter.models.Comment
 import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.ErroredBacking
-import com.kickstarter.models.Item
 import com.kickstarter.models.Location
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
@@ -48,6 +47,7 @@ import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
+import com.kickstarter.services.transformers.complexRewardItemsTransformer
 import com.kickstarter.services.transformers.decodeRelayId
 import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.services.transformers.environmentalCommitmentTransformer
@@ -596,7 +596,11 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
     private fun getAddOnsFromProject(addOnsGr: GetProjectAddOnsQuery.AddOns): List<Reward> {
         return addOnsGr.nodes()?.map { node ->
             val shippingRulesGr = node.shippingRulesExpanded()?.nodes()?.map { it.fragments().shippingRule() } ?: emptyList()
-            rewardTransformer(node.fragments().reward(), shippingRulesGr)
+            rewardTransformer(
+                node.fragments().reward(),
+                shippingRulesGr,
+                addOnItems = complexRewardItemsTransformer(node.items()?.fragments()?.rewardItems())
+            )
         }?.toList() ?: emptyList()
     }
 
@@ -944,9 +948,12 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
     val locationId = decodeRelayId(location?.id())
     val projectId = decodeRelayId(backingGr?.project()?.fragments()?.project()?.id()) ?: -1
     val shippingAmount = backingGr?.shippingAmount()?.fragments()
-
+    val items = backingGr?.reward()?.items()
     val reward = backingGr?.reward()?.fragments()?.reward()?.let { reward ->
-        return@let rewardTransformer(reward)
+        return@let rewardTransformer(
+            reward,
+            rewardItems = complexRewardItemsTransformer(items?.fragments()?.rewardItems())
+        )
     }
 
     val backerData = backingGr?.backer()?.fragments()?.user()
@@ -1083,7 +1090,13 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
 
     val minPledge = projectFragment?.minPledge()?.toDouble() ?: 1.0
     val rewards =
-        projectFragment?.rewards()?.nodes()?.map { rewardTransformer(it.fragments().reward()) }
+        projectFragment?.rewards()?.nodes()?.map {
+            rewardTransformer(
+                it.fragments().reward(),
+                allowedAddons = it.allowedAddons().pageInfo().startCursor()?.isNotEmpty() ?: false,
+                rewardItems = complexRewardItemsTransformer(it.items()?.fragments()?.rewardItems())
+            )
+        }
 
     // - GraphQL does not provide the Reward no reward, we need to add it first
     val modifiedRewards = rewards?.toMutableList()
@@ -1249,7 +1262,13 @@ private fun categoryTransformer(categoryFragment: fragment.Category?): Category 
  * @param fragment.reward rewardGr
  * @return Reward
  */
-private fun rewardTransformer(rewardGr: fragment.Reward, shippingRulesExpanded: List<fragment.ShippingRule> = emptyList()): Reward {
+private fun rewardTransformer(
+    rewardGr: fragment.Reward,
+    shippingRulesExpanded: List<fragment.ShippingRule> = emptyList(),
+    allowedAddons: Boolean = false,
+    rewardItems: List<RewardsItem> = emptyList(),
+    addOnItems: List<RewardsItem> = emptyList()
+): Reward {
     val amount = rewardGr.amount().fragments().amount().amount()?.toDouble() ?: 0.0
     val convertedAmount = rewardGr.convertedAmount().fragments().amount().amount()?.toDouble() ?: 0.0
     val desc = rewardGr.description()
@@ -1273,22 +1292,6 @@ private fun rewardTransformer(rewardGr: fragment.Reward, shippingRulesExpanded: 
     val limit = if (isAddOn) chooseLimit(rewardGr.limit(), rewardGr.limitPerBacker())
     else rewardGr.limit()
 
-    val addonItems = if (isAddOn) {
-        rewardGr.items()?.let {
-            rewardItemsTransformer(it)
-        }
-    } else emptyList()
-
-    val rewardItems = if (isReward) {
-        rewardGr.items()?.let {
-            rewardItemsTransformer(it)
-        }
-    } else emptyList()
-
-    val hasAddons = if (isReward) {
-        rewardGr.allowedAddons().edges()?.isNotEmpty() ?: false
-    } else false
-
     val shippingRules = shippingRulesExpanded.map {
         shippingRuleTransformer(it)
     }
@@ -1304,8 +1307,8 @@ private fun rewardTransformer(rewardGr: fragment.Reward, shippingRulesExpanded: 
         .description(desc)
         .estimatedDeliveryOn(estimatedDelivery)
         .isAddOn(isAddOn)
-        .addOnsItems(addonItems)
-        .hasAddons(hasAddons)
+        .addOnsItems(addOnItems)
+        .hasAddons(allowedAddons)
         .rewardsItems(rewardItems)
         .id(rewardId)
         .shippingPreference(shippingPreference.name.lowercase())
@@ -1369,37 +1372,4 @@ fun locationTransformer(locationGR: fragment.Location?): Location {
         .displayableName(displayName)
         .name(name)
         .build()
-}
-
-/**
- * Transform the Reward.Items GraphQL data structure into our own RewardsItems data model
- * @param fragment.Reward.items
- * @return List<RewardItem>
- */
-fun rewardItemsTransformer(items: fragment.Reward.Items): List<RewardsItem> {
-    val rewardItems = items.edges()?.map { edge ->
-        val quantity = edge.quantity()
-        val description = edge.node()?.name()
-        val hasBackers = edge.node()?.hasBackers() ?: false
-        val id = decodeRelayId(edge.node()?.id()) ?: -1
-        val projectId = decodeRelayId(edge.node()?.project()?.id()) ?: -1
-        val name = edge.node()?.name() ?: ""
-
-        val item = Item.builder()
-            .name(name)
-            .description(description)
-            .id(id)
-            .projectId(projectId)
-            .build()
-
-        return@map RewardsItem.builder()
-            .id(id)
-            .itemId(item.id())
-            .item(item)
-            .rewardId(0) // - Discrepancy between V1 and Graph, the Graph object do not have the rewardID
-            .hasBackers(hasBackers)
-            .quantity(quantity)
-            .build()
-    } ?: emptyList()
-    return rewardItems.toList()
 }

@@ -14,8 +14,8 @@ public abstract class RewardsItem implements Parcelable {
   public abstract long id();
   public abstract Item item();
   public abstract long itemId();
-  public abstract int quantity();
-  public abstract long rewardId();
+  public abstract @Nullable int quantity();
+  public abstract @Nullable long rewardId();
   public abstract @Nullable boolean hasBackers();
 
   @AutoParcel.Builder

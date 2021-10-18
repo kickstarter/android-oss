@@ -10,7 +10,7 @@ import com.kickstarter.libs.utils.extensions.isKSApplication
 class FirebaseHelper(context: Context, callback: () -> Boolean) {
 
     companion object {
-        @JvmStatic lateinit var identifier: String
+        @JvmStatic var identifier: String = ""
         // - Should be called just one time
         @JvmStatic fun initialize(context: Context, callback: () -> Boolean): FirebaseHelper {
             return FirebaseHelper(context, callback)

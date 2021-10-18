@@ -52,7 +52,6 @@ import com.kickstarter.services.transformers.decodeRelayId
 import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.services.transformers.environmentalCommitmentTransformer
 import com.kickstarter.services.transformers.projectFaqTransformer
-import com.kickstarter.services.transformers.simpleRewardItemsTransformer
 import fragment.FullProject
 import org.joda.time.DateTime
 import rx.Observable
@@ -600,7 +599,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             rewardTransformer(
                 node.fragments().reward(),
                 shippingRulesGr,
-                addOnItems = complexRewardItemsTransformer(node.items()?.fragments()?.complexItems())
+                addOnItems = complexRewardItemsTransformer(node.items()?.fragments()?.rewardItems())
             )
         }?.toList() ?: emptyList()
     }
@@ -953,7 +952,7 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
     val reward = backingGr?.reward()?.fragments()?.reward()?.let { reward ->
         return@let rewardTransformer(
             reward,
-            rewardItems = complexRewardItemsTransformer(items?.fragments()?.complexItems())
+            rewardItems = complexRewardItemsTransformer(items?.fragments()?.rewardItems())
         )
     }
 
@@ -1095,7 +1094,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
             rewardTransformer(
                 it.fragments().reward(),
                 allowedAddons = it.allowedAddons().pageInfo().startCursor()?.isNotEmpty() ?: false,
-                rewardItems = simpleRewardItemsTransformer(it.items()?.fragments()?.simpleItems())
+                rewardItems = complexRewardItemsTransformer(it.items()?.fragments()?.rewardItems())
             )
         }
 

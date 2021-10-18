@@ -73,19 +73,17 @@ fun environmentalCommitmentTransformer(envCommit: fragment.EnvironmentalCommitme
  * @param fragment.Reward.items
  * @return List<RewardItem>
  */
-fun complexRewardItemsTransformer(items: fragment.ComplexItems?): List<RewardsItem> {
+fun complexRewardItemsTransformer(items: fragment.RewardItems?): List<RewardsItem> {
     val rewardItems = items?.edges()?.map { edge ->
         val quantity = edge.quantity()
         val description = edge.node()?.name()
         val id = decodeRelayId(edge.node()?.id()) ?: -1
-        val projectId = decodeRelayId(edge.node()?.project()?.id()) ?: -1
         val name = edge.node()?.name() ?: ""
 
         val item = Item.builder()
             .name(name)
             .description(description)
             .id(id)
-            .projectId(projectId)
             .build()
 
         return@map RewardsItem.builder()
@@ -97,24 +95,4 @@ fun complexRewardItemsTransformer(items: fragment.ComplexItems?): List<RewardsIt
             .build()
     } ?: emptyList<RewardsItem>()
     return rewardItems.toList()
-}
-
-fun simpleRewardItemsTransformer(items: fragment.SimpleItems?): List<RewardsItem> {
-    val rewardsItem = items?.nodes()?.map {
-        val id = decodeRelayId(it.id()) ?: -1
-        val name = it.name() ?: ""
-
-        val item = Item.builder()
-            .name(name)
-            .id(id)
-            .build()
-
-        return@map RewardsItem.builder()
-            .id(id)
-            .itemId(item.id())
-            .item(item)
-            .build()
-    } ?: emptyList<RewardsItem>()
-
-    return rewardsItem.toList()
 }

@@ -55,7 +55,7 @@ fragment fullProject on Project {
                 }
             }
             items {
-                ... simpleItems
+                ... rewardItems
             }
 
         }
@@ -113,7 +113,7 @@ fragment backing on Backing {
     reward {
         ... reward
         items {
-            ... complexItems
+            ... rewardItems
         }
     }
     backer {
@@ -123,26 +123,16 @@ fragment backing on Backing {
         nodes {
             ... reward
             items {
-                ... complexItems
+                ... rewardItems
             }
         }
     }
 }
 
-fragment simpleItems on RewardItemsConnection {
-    nodes {
-        id
-        name
-    }
-}
-
-fragment complexItems on RewardItemsConnection {
+fragment rewardItems on RewardItemsConnection {
     edges {
         quantity
         node {
-            project{
-                id
-            }
             id
             name
         }

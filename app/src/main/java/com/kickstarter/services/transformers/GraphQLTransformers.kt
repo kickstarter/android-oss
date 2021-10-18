@@ -2,8 +2,10 @@ package com.kickstarter.services.transformers
 
 import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.models.EnvironmentalCommitment
+import com.kickstarter.models.Item
 import com.kickstarter.models.ProjectFaq
 import com.kickstarter.models.Relay
+import com.kickstarter.models.RewardsItem
 import java.nio.charset.Charset
 import kotlin.math.absoluteValue
 
@@ -64,4 +66,33 @@ fun environmentalCommitmentTransformer(envCommit: fragment.EnvironmentalCommitme
         .category(category = category)
         .description(description = description)
         .build()
+}
+
+/**
+ * Transform the Reward.Items GraphQL data structure into our own RewardsItems data model
+ * @param fragment.Reward.items
+ * @return List<RewardItem>
+ */
+fun complexRewardItemsTransformer(items: fragment.RewardItems?): List<RewardsItem> {
+    val rewardItems = items?.edges()?.map { edge ->
+        val quantity = edge.quantity()
+        val description = edge.node()?.name()
+        val id = decodeRelayId(edge.node()?.id()) ?: -1
+        val name = edge.node()?.name() ?: ""
+
+        val item = Item.builder()
+            .name(name)
+            .description(description)
+            .id(id)
+            .build()
+
+        return@map RewardsItem.builder()
+            .id(id)
+            .itemId(item.id())
+            .item(item)
+            .rewardId(0) // - Discrepancy between V1 and Graph, the Graph object do not have the rewardID
+            .quantity(quantity)
+            .build()
+    } ?: emptyList<RewardsItem>()
+    return rewardItems.toList()
 }

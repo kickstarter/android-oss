@@ -49,6 +49,15 @@ fragment fullProject on Project {
     rewards {
         nodes {
             ... reward
+            allowedAddons {
+                pageInfo {
+                    startCursor
+                }
+            }
+            items {
+                ... rewardItems
+            }
+
         }
     }
     slug
@@ -103,6 +112,9 @@ fragment backing on Backing {
     }
     reward {
         ... reward
+        items {
+            ... rewardItems
+        }
     }
     backer {
         ... user
@@ -110,6 +122,19 @@ fragment backing on Backing {
     addOns {
         nodes {
             ... reward
+            items {
+                ... rewardItems
+            }
+        }
+    }
+}
+
+fragment rewardItems on RewardItemsConnection {
+    edges {
+        quantity
+        node {
+            id
+            name
         }
     }
 }
@@ -191,27 +216,6 @@ fragment reward on Reward {
     description
     estimatedDeliveryOn
     available
-    allowedAddons {
-        edges {
-            node {
-                id
-            }
-        }
-    }
-    items {
-        edges {
-            quantity
-            node {
-                project{
-                    id
-                }
-                hasBackers
-                id
-                name
-                rewardsCount
-            }
-        }
-    }
     amount {
         ... amount
     }

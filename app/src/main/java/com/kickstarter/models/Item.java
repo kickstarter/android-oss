@@ -14,7 +14,7 @@ public abstract class Item implements Parcelable {
   public abstract @Nullable String description();
   public abstract long id();
   public abstract String name();
-  public abstract long projectId();
+  public abstract @Nullable long projectId();
   public abstract @Nullable Boolean taxable();
 
   @AutoParcel.Builder

@@ -236,7 +236,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.apollographql.apollo:apollo-gradle-plugin:2.3.0'
+        classpath 'com.apollographql.apollo:apollo-gradle-plugin:2.5.10'
         classpath 'com.karumi:shot:5.11.0'
     }
 }
@@ -270,7 +270,7 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.work:work-runtime-ktx:2.6.0-beta01'
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
-    implementation 'com.apollographql.apollo:apollo-runtime:2.3.0'
+    implementation 'com.apollographql.apollo:apollo-runtime:2.5.10'
     implementation 'com.facebook.android:facebook-android-sdk:11.2.0'
     implementation 'com.google.android.play:core-ktx:1.8.1'
     final auto_parcel_version = "0.3.1"

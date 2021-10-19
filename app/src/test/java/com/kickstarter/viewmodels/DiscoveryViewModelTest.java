@@ -9,7 +9,6 @@ import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.R;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
-import com.kickstarter.libs.preferences.MockBooleanPreference;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.EventName;
@@ -19,8 +18,6 @@ import com.kickstarter.mock.factories.InternalBuildEnvelopeFactory;
 import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.models.Category;
-import com.kickstarter.models.QualtricsIntercept;
-import com.kickstarter.models.QualtricsResult;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiException;
 import com.kickstarter.services.DiscoveryParams;
@@ -34,7 +31,6 @@ import com.kickstarter.ui.viewholders.discoverydrawer.LoggedInViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -54,13 +50,11 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> expandSortTabLayout = new TestSubscriber<>();
   private final TestSubscriber<Void> navigationDrawerDataEmitted = new TestSubscriber<>();
   private final TestSubscriber<Integer> position = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> qualtricsPromptIsGone = new TestSubscriber<>();
   private final TestSubscriber<List<Category>> rootCategories = new TestSubscriber<>();
   private final TestSubscriber<Boolean> rotatedExpandSortTabLayout = new TestSubscriber<>();
   private final TestSubscriber<Integer> rotatedUpdatePage = new TestSubscriber<>();
   private final TestSubscriber<DiscoveryParams> rotatedUpdateParams= new TestSubscriber<>();
   private final TestSubscriber<DiscoveryParams> rotatedUpdateToolbarWithParams = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> setUpQualtrics = new TestSubscriber<>();
   private final TestSubscriber<Void> showActivityFeed = new TestSubscriber<>();
   private final TestSubscriber<InternalBuildEnvelope> showBuildCheckAlert = new TestSubscriber<>();
   private final TestSubscriber<Void> showCreatorDashboard = new TestSubscriber<>();
@@ -69,9 +63,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Void> showLoginTout = new TestSubscriber<>();
   private final TestSubscriber<Void> showMessages = new TestSubscriber<>();
   private final TestSubscriber<Void> showProfile = new TestSubscriber<>();
-  private final TestSubscriber<String> showQualtricsSurvey = new TestSubscriber<>();
   private final TestSubscriber<Void> showSettings = new TestSubscriber<>();
-  private final TestSubscriber<QualtricsIntercept> updateImpressionCount = new TestSubscriber<>();
   private final TestSubscriber<Integer> updatePage = new TestSubscriber<>();
   private final TestSubscriber<DiscoveryParams> updateParams= new TestSubscriber<>();
   private final TestSubscriber<DiscoveryParams> updateToolbarWithParams = new TestSubscriber<>();
@@ -398,78 +390,6 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testSetUpQualtrics_whenFirstSessionIsNull() {
-    this.vm = new DiscoveryViewModel.ViewModel(environment());
-    this.vm.getOutputs().setUpQualtrics().subscribe(this.setUpQualtrics);
-
-    this.setUpQualtrics.assertValue(true);
-  }
-
-  @Test
-  public void testSetUpQualtrics_whenFirstSessionIsSet() {
-    this.vm = new DiscoveryViewModel.ViewModel(environment().toBuilder()
-      .firstSessionPreference(new MockBooleanPreference(true))
-    .build());
-    this.vm.getOutputs().setUpQualtrics().subscribe(this.setUpQualtrics);
-
-    this.setUpQualtrics.assertValue(false);
-  }
-
-  @Test
-  public void testQualtricsPromptIsGone_whenTargetingResultFailed() {
-    this.vm = new DiscoveryViewModel.ViewModel(environment());
-
-    this.vm.getOutputs().qualtricsPromptIsGone().subscribe(this.qualtricsPromptIsGone);
-
-    this.vm.qualtricsResult(new QualtricsResult() {
-      @Override
-      public boolean resultPassed() {
-        return false;
-      }
-    });
-
-    this.qualtricsPromptIsGone.assertValue(true);
-  }
-
-  @Test
-  public void testQualtricsPromptIsGone_whenTargetingResultPassed() {
-    this.vm = new DiscoveryViewModel.ViewModel(environment());
-
-    this.vm.getOutputs().qualtricsPromptIsGone().subscribe(this.qualtricsPromptIsGone);
-
-    this.vm.qualtricsResult(new QualtricsResult() {
-      @Override
-      public boolean resultPassed() {
-        return true;
-      }
-    });
-
-    this.qualtricsPromptIsGone.assertValue(false);
-  }
-
-  @Test
-  public void testQualtricsPromptIsGone_whenPromptConfirmed() {
-    this.vm = new DiscoveryViewModel.ViewModel(environment());
-
-    this.vm.getOutputs().qualtricsPromptIsGone().subscribe(this.qualtricsPromptIsGone);
-
-    this.vm.qualtricsConfirmClicked();
-
-    this.qualtricsPromptIsGone.assertValue(true);
-  }
-
-  @Test
-  public void testQualtricsPromptIsGone_whenPromptDismissed() {
-    this.vm = new DiscoveryViewModel.ViewModel(environment());
-
-    this.vm.getOutputs().qualtricsPromptIsGone().subscribe(this.qualtricsPromptIsGone);
-
-    this.vm.qualtricsDismissClicked();
-
-    this.qualtricsPromptIsGone.assertValue(true);
-  }
-
-  @Test
   public void testRootCategoriesEmitWithPosition() {
     this.vm = new DiscoveryViewModel.ViewModel(environment());
 
@@ -551,92 +471,6 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testShowQualtricsSurvey_whenLoggedInUserConfirmsPromptAndSurveyUrlIsPresent() {
-    final MockCurrentUser mockCurrentUser = new MockCurrentUser();
-    final Environment environment = environment()
-      .toBuilder()
-      .currentUser(mockCurrentUser)
-      .build();
-    this.vm = new DiscoveryViewModel.ViewModel(environment);
-
-    this.vm.getOutputs().showQualtricsSurvey().subscribe(this.showQualtricsSurvey);
-    final String surveyUrl = "http://www.survey.cool";
-
-    this.vm.qualtricsResult(qualtricsResult(surveyUrl, true));
-
-    this.vm.qualtricsConfirmClicked();
-
-    this.showQualtricsSurvey.assertValue(surveyUrl + "?logged_in=false");
-  }
-
-  @Test
-  public void testShowQualtricsSurvey_whenLoggedOutUserConfirmsPromptAndSurveyUrlIsPresent() {
-    final User user = UserFactory.user()
-      .toBuilder()
-      .id(15L)
-      .build();
-    final MockCurrentUser mockCurrentUser = new MockCurrentUser(user);
-    final Environment environment = environment()
-      .toBuilder()
-      .currentUser(mockCurrentUser)
-      .build();
-    this.vm = new DiscoveryViewModel.ViewModel(environment);
-
-    this.vm.getOutputs().showQualtricsSurvey().subscribe(this.showQualtricsSurvey);
-    final String surveyUrl = "http://www.survey.cool";
-
-    this.vm.qualtricsResult(qualtricsResult(surveyUrl, true));
-
-    this.vm.qualtricsConfirmClicked();
-
-    this.showQualtricsSurvey.assertValue(surveyUrl + "?logged_in=true&user_uid=15");
-  }
-
-  @Test
-  public void testShowQualtricsSurvey_whenUserConfirmsPromptAndSurveyUrlIsNotPresent() {
-    this.vm = new DiscoveryViewModel.ViewModel(environment());
-
-    this.vm.getOutputs().showQualtricsSurvey().subscribe(this.showQualtricsSurvey);
-    final String surveyUrl = "http://www.survey.cool";
-
-    this.vm.qualtricsResult(qualtricsResult(surveyUrl, true));
-
-    this.vm.qualtricsDismissClicked();
-
-    this.showQualtricsSurvey.assertNoValues();
-  }
-
-  @Test
-  public void testShowQualtricsSurvey_whenUserDismissesPrompt() {
-    this.vm = new DiscoveryViewModel.ViewModel(environment());
-
-    this.vm.getOutputs().showQualtricsSurvey().subscribe(this.showQualtricsSurvey);
-    final String surveyUrl = "http://www.survey.cool";
-
-    this.vm.qualtricsResult(qualtricsResult(surveyUrl, true));
-
-    this.vm.qualtricsDismissClicked();
-
-    this.showQualtricsSurvey.assertNoValues();
-  }
-
-  @Test
-  public void testUpdateImpressionCount() {
-    this.vm = new DiscoveryViewModel.ViewModel(environment());
-
-    this.vm.getOutputs().updateImpressionCount().subscribe(this.updateImpressionCount);
-    final String surveyUrl = "http://www.survey.cool";
-
-    this.vm.qualtricsResult(qualtricsResult(surveyUrl, false));
-
-    this.updateImpressionCount.assertNoValues();
-
-    this.vm.qualtricsResult(qualtricsResult(surveyUrl, true));
-
-    this.updateImpressionCount.assertValueCount(1);
-  }
-
-  @Test
   public void testShowSnackBar_whenIntentFromDeepLinkSuccessResponse_showSuccessMessage() {
     final String url = "https://*.kickstarter.com/profile/verify_email";
     final Intent intentWithUrl = new Intent().setData(Uri.parse(url));
@@ -708,21 +542,6 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(intentWithUrl);
 
     this.updateParams.assertValue(DiscoveryParams.builder().sort(DiscoveryParams.Sort.ENDING_SOON).build());
-  }
-
-  private QualtricsResult qualtricsResult(final String surveyUrl, final boolean success) {
-    return new QualtricsResult() {
-      @Override
-      public boolean resultPassed() {
-        return success;
-      }
-
-      @NotNull
-      @Override
-      public String surveyUrl() {
-        return surveyUrl;
-      }
-    };
   }
 
   private void setUpDefaultParamsTest(final @Nullable User user) {

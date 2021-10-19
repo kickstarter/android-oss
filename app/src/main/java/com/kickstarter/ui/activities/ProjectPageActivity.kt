@@ -128,6 +128,7 @@ class ProjectPageActivity :
             }
 
         this.viewModel.outputs.updateEnvCommitmentsTabVisibility()
+            .distinctUntilChanged()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { isGone ->

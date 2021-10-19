@@ -72,8 +72,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val startRootCommentsForCommentsThreadActivity = TestSubscriber<Pair<String, Pair<Project, ProjectData>>>()
     private val startProjectUpdateActivity = TestSubscriber< Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>()
     private val startProjectUpdateToRepliesDeepLinkActivity = TestSubscriber<Pair<Pair<String, String>, Pair<Project, ProjectData>>>()
-    private val startCreatorBioWebViewActivity = TestSubscriber<Project>()
-    private val startCreatorDashboardActivity = TestSubscriber<Project>()
     private val startLoginToutActivity = TestSubscriber<Void>()
     private val startMessagesActivity = TestSubscriber<Project>()
     private val startProjectUpdatesActivity = TestSubscriber<Pair<Project, ProjectData>>()
@@ -115,13 +113,9 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.showUpdatePledgeSuccess().subscribe(this.showUpdatePledgeSuccess)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
         this.vm.outputs.projectData().map { pD -> pD.project().isStarred }.subscribe(this.savedTest)
-        this.vm.outputs.startCampaignWebViewActivity().subscribe(this.startCampaignWebViewActivity)
         this.vm.outputs.startRootCommentsActivity().subscribe(this.startRootCommentsActivity)
         this.vm.outputs.startProjectUpdateActivity().subscribe(this.startProjectUpdateActivity)
-        this.vm.outputs.startCreatorBioWebViewActivity().subscribe(this.startCreatorBioWebViewActivity)
-        this.vm.outputs.startCreatorDashboardActivity().subscribe(this.startCreatorDashboardActivity)
         this.vm.outputs.startMessagesActivity().subscribe(this.startMessagesActivity)
-        this.vm.outputs.startProjectUpdatesActivity().subscribe(this.startProjectUpdatesActivity)
         this.vm.outputs.startThanksActivity().subscribe(this.startThanksActivity)
         this.vm.outputs.startVideoActivity().subscribe(this.startVideoActivity)
         this.vm.outputs.updateFragments().subscribe(this.updateFragments)
@@ -554,200 +548,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testStartCampaignWebViewActivity_whenBlurbClicked_liveNotBackedProject() {
-        val project = ProjectFactory.project()
-        setUpEnvironment(environment())
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.vm.inputs.blurbTextViewClicked()
-        this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
-    }
-
-    @Test
-    fun testStartCampaignWebViewActivity_whenBlurbClicked_backedProject() {
-        val project = ProjectFactory.backedProject()
-        setUpEnvironment(environment())
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.vm.inputs.blurbTextViewClicked()
-        this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
-
-        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-    }
-
-    @Test
-    fun testStartCampaignWebViewActivity_whenBlurbClicked_endedProject() {
-        val project = ProjectFactory.successfulProject()
-        setUpEnvironment(environment())
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.vm.inputs.blurbTextViewClicked()
-        this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
-
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
-    }
-
-    @Test
-    fun testStartCampaignWebViewActivity_whenBlurbVariantClicked_liveNotBackedProject() {
-        val project = ProjectFactory.project()
-        setUpEnvironment(environment())
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.vm.inputs.blurbVariantClicked()
-        this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
-
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
-    }
-
-    @Test
-    fun testStartCampaignWebViewActivity_whenBlurbVariantClicked_backedProject() {
-        val project = ProjectFactory.backedProject()
-        setUpEnvironment(environment())
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.vm.inputs.blurbVariantClicked()
-        this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
-
-        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-    }
-
-    @Test
-    fun testStartCampaignWebViewActivity_whenBlurbVariantClicked_endedProject() {
-        val project = ProjectFactory.successfulProject()
-        setUpEnvironment(environment())
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.vm.inputs.blurbVariantClicked()
-        this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
-
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
-    }
-
-    @Test
-    fun testStartCreatorBioWebViewActivity_whenClickingControlCreatorDetails_liveNotBackedProject() {
-        val project = ProjectFactory.project()
-        setUpEnvironment(environment())
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.vm.inputs.creatorNameTextViewClicked()
-        this.startCreatorBioWebViewActivity.assertValues(project)
-
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
-    }
-
-    @Test
-    fun testStartCreatorBioWebViewActivity_whenClickingControlCreatorDetails_backedProject() {
-        val project = ProjectFactory.backedProject()
-        setUpEnvironment(environment())
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.vm.inputs.creatorNameTextViewClicked()
-        this.startCreatorBioWebViewActivity.assertValues(project)
-
-        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-    }
-
-    @Test
-    fun testStartCreatorBioWebViewActivity_whenClickingControlCreatorDetails_endedProject() {
-        val project = ProjectFactory.successfulProject()
-        setUpEnvironment(environment())
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.vm.inputs.creatorNameTextViewClicked()
-        this.startCreatorBioWebViewActivity.assertValues(project)
-
-        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-    }
-
-    @Test
-    fun testStartCreatorBioWebViewActivity_whenClickingVariantCreatorDetails_liveNotBackedProject() {
-        val project = ProjectFactory.project()
-        setUpEnvironment(environment())
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.vm.inputs.creatorInfoVariantClicked()
-        this.startCreatorBioWebViewActivity.assertValues(project)
-
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
-    }
-
-    @Test
-    fun testStartCreatorBioWebViewActivity_whenClickingVariantCreatorDetails_backedProject() {
-        val project = ProjectFactory.backedProject()
-        setUpEnvironment(environment())
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.vm.inputs.creatorInfoVariantClicked()
-        this.startCreatorBioWebViewActivity.assertValues(project)
-
-        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-    }
-
-    @Test
-    fun testStartCreatorBioWebViewActivity_whenClickingVariantCreatorDetails_endedProject() {
-        val project = ProjectFactory.successfulProject()
-        setUpEnvironment(environment())
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.vm.inputs.creatorInfoVariantClicked()
-        this.startCreatorBioWebViewActivity.assertValues(project)
-
-        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-    }
-
-    @Test
-    fun testStartCreatorDashboardActivity() {
-        val project = ProjectFactory.project()
-        setUpEnvironment(environment())
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.vm.inputs.creatorDashboardButtonClicked()
-        this.startCreatorDashboardActivity.assertValues(project)
-    }
-
-    @Test
-    fun testStartCommentsActivity() {
-        val project = ProjectFactory.project()
-        val projectData = ProjectDataFactory.project(project)
-        val projectAndData = Pair.create(project, projectData)
-
-        setUpEnvironment(environment())
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.vm.inputs.commentsTextViewClicked()
-        this.startRootCommentsActivity.assertValues(projectAndData)
-    }
-
-    @Test
     fun testStartCommentsActivityFromDeepLink() {
         val project = ProjectFactory.project()
         val projectData = ProjectDataFactory.project(project)
@@ -882,73 +682,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
         this.startProjectUpdateActivity.assertValues(updateProjectAndData)
-    }
-
-    @Test
-    fun testCommentsActivity_whenCommentsOpenedAndThenCheckoutCompleted_shouldOnlyEmitOnce() {
-        val project = ProjectFactory.project()
-        val projectData = ProjectDataFactory.project(project)
-        val projectAndData = Pair.create(project, projectData)
-
-        setUpEnvironment(
-            environment().toBuilder()
-                .optimizely(MockExperimentsClientType(true))
-                .build()
-        )
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.vm.inputs.commentsTextViewClicked()
-        this.startRootCommentsActivity.assertValues(projectAndData)
-        this.startRootCommentsActivity.assertValueCount(1)
-        this.startThanksActivity.assertNoValues()
-
-        val checkoutData = CheckoutDataFactory.checkoutData(3L, 20.0, 30.0)
-        val pledgeData = PledgeData.with(PledgeFlowContext.NEW_PLEDGE, ProjectDataFactory.project(project), RewardFactory.reward())
-        this.vm.inputs.pledgeSuccessfullyCreated(Pair(checkoutData, pledgeData))
-
-        this.startThanksActivity.assertValue(Pair(checkoutData, pledgeData))
-        this.startRootCommentsActivity.assertValueCount(1)
-    }
-
-    @Test
-    fun testStartProjectUpdatesActivity() {
-        val project = ProjectFactory.project()
-        val projectData = ProjectDataFactory.project(project)
-        val projectAndData = Pair.create(project, projectData)
-        setUpEnvironment(environment())
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        // Click on Updates button.
-        this.vm.inputs.updatesTextViewClicked()
-        this.startProjectUpdatesActivity.assertValues(projectAndData)
-    }
-
-    @Test
-    fun testUpdateActivity_whenUpdatesOpenedAndThenCheckoutCompleted_shouldOnlyEmitOnce() {
-        val project = ProjectFactory.project()
-        val projectData = ProjectDataFactory.project(project)
-        val projectAndData = Pair.create(project, projectData)
-        setUpEnvironment(environment())
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        // Click on Updates button.
-        this.vm.inputs.updatesTextViewClicked()
-        this.startProjectUpdatesActivity.assertValues(projectAndData)
-        this.startProjectUpdatesActivity.assertValueCount(1)
-        this.startThanksActivity.assertNoValues()
-
-        val checkoutData = CheckoutDataFactory.checkoutData(3L, 20.0, 30.0)
-        val pledgeData = PledgeData.with(PledgeFlowContext.NEW_PLEDGE, ProjectDataFactory.project(project), RewardFactory.reward())
-        this.vm.inputs.pledgeSuccessfullyCreated(Pair(checkoutData, pledgeData))
-
-        this.startThanksActivity.assertValue(Pair(checkoutData, pledgeData))
-        this.startProjectUpdatesActivity.assertValueCount(1)
     }
 
     @Test

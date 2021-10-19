@@ -177,7 +177,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.campaignButtonClicked()
         startCampaignView.assertValue(projectData)
-        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -187,7 +187,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.creatorDashboardClicked()
         startCreatorDashboard.assertValue(projectData)
-        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
 
     @Test

@@ -723,14 +723,18 @@ interface ProjectOverviewViewModel {
                 .compose(Transformers.takePairWhen(creatorDashboardClicked))
                 .map { it.first }
 
-            startCampaignView
+            projectData
+                .compose(Transformers.takePairWhen(campaignClicked))
+                .map { it.first }
                 .filter { it.project().isLive && !it.project().isBacking }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.analyticEvents.trackCampaignDetailsCTAClicked(it)
                 }
 
-            startCreatorView
+            projectData
+                .compose(Transformers.takePairWhen(creatorDashboardClicked))
+                .map { it.first }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.analyticEvents.trackCreatorDetailsCTA(it)

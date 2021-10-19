@@ -252,14 +252,9 @@ interface ProjectPageViewModel {
         private val apolloClient = environment.apolloClient()
         private val currentConfig = environment.currentConfig()
 
-        private val blurbTextViewClicked = PublishSubject.create<Void>()
-        private val blurbVariantClicked = PublishSubject.create<Void>()
         private val cancelPledgeClicked = PublishSubject.create<Void>()
         private val commentsTextViewClicked = PublishSubject.create<Void>()
         private val contactCreatorClicked = PublishSubject.create<Void>()
-        private val creatorDashboardButtonClicked = PublishSubject.create<Void>()
-        private val creatorInfoVariantClicked = PublishSubject.create<Void>()
-        private val creatorNameTextViewClicked = PublishSubject.create<Void>()
         private val fixPaymentMethodButtonClicked = PublishSubject.create<Void>()
         private val fragmentStackCount = PublishSubject.create<Int>()
         private val heartButtonClicked = PublishSubject.create<Void>()
@@ -391,9 +386,6 @@ interface ProjectPageViewModel {
 
             val refTag = intent()
                 .flatMap { ProjectIntentMapper.refTag(it) }
-
-            val pushNotificationEnvelope = intent()
-                .flatMap { ProjectIntentMapper.pushNotificationEnvelope(it) }
 
             val loggedInUserOnHeartClick = this.currentUser.observable()
                 .compose<User>(takeWhen(this.heartButtonClicked))
@@ -839,17 +831,6 @@ interface ProjectPageViewModel {
                 .map { ProjectUtils.Metadata.BACKING == it }
                 .compose(bindToLifecycle())
                 .subscribe(backingViewGroupIsVisible)
-        }
-
-        private fun isPledgeCTA(projectActionButtonStringRes: Int): Boolean {
-            return when (projectActionButtonStringRes) {
-                R.string.Back_this_project -> true
-                R.string.View_the_rewards -> true
-                R.string.See_the_rewards -> true
-                R.string.Manage -> false
-                R.string.View_your_pledge -> false
-                else -> false
-            }
         }
 
         private fun managePledgeMenu(projectAndFragmentStackCount: Pair<Project, Int>): Int? {

@@ -18,6 +18,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
 import com.kickstarter.libs.rx.transformers.Transformers.neverError
+import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.BooleanUtils
@@ -698,8 +699,13 @@ interface ProjectPageViewModel {
                 .subscribe(this.managePledgeMenu)
 
             projectData
-                .compose(takeWhen(this.tabSelected))
-                .subscribe(this.projectData)
+                .compose(takePairWhen(this.tabSelected))
+                .distinctUntilChanged()
+                .delay(150, TimeUnit.MILLISECONDS, environment.scheduler()) // add delay to wait
+                // until fragment subscribed to viewmodel
+                .subscribe {
+                    this.projectData.onNext(it.first)
+                }
 
             val backedProject = currentProject
                 .filter { it.isBacking }

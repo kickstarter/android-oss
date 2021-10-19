@@ -254,6 +254,14 @@ interface ProjectPageViewModel {
         /** Emits when we should update the [com.kickstarter.ui.fragments.BackingFragment] and [com.kickstarter.ui.fragments.RewardsFragment].  */
         fun updateFragments(): Observable<ProjectData>
 
+        fun projectPhoto(): Observable<String>
+
+        /** Emits when the play button should be gone.  */
+        fun playButtonIsVisible(): Observable<Boolean>
+
+        /** Emits when the backing view group should be gone. */
+        fun backingViewGroupIsVisible(): Observable<Boolean>
+
         fun updateEnvCommitmentsTabVisibility(): Observable<Boolean>
     }
 
@@ -337,6 +345,9 @@ interface ProjectPageViewModel {
         private val startVideoActivity = PublishSubject.create<Project>()
         private val updateFragments = BehaviorSubject.create<ProjectData>()
         private val tabSelected = PublishSubject.create<Int>()
+        private val projectPhoto = PublishSubject.create<String>()
+        private val playButtonIsVisible = PublishSubject.create<Boolean>()
+        private val backingViewGroupIsVisible = PublishSubject.create<Boolean>()
         private val updateEnvCommitmentsTabVisibility = PublishSubject.create<Boolean>()
 
         val inputs: Inputs = this
@@ -610,7 +621,7 @@ interface ProjectPageViewModel {
                 .subscribe(this.startProjectUpdatesActivity)
 
             currentProject
-                .compose<Project>(takeWhen(this.playVideoButtonClicked))
+                .compose(takeWhen(this.playVideoButtonClicked))
                 .compose(bindToLifecycle())
                 .subscribe(this.startVideoActivity)
 
@@ -626,7 +637,7 @@ interface ProjectPageViewModel {
             val fragmentStackCount = this.fragmentStackCount.startWith(0)
 
             fragmentStackCount
-                .compose<Int>(takeWhen(this.pledgeToolbarNavigationClicked))
+                .compose(takeWhen(this.pledgeToolbarNavigationClicked))
                 .filter { it <= 0 }
                 .map { Pair(false, true) }
                 .compose(bindToLifecycle())
@@ -844,6 +855,15 @@ interface ProjectPageViewModel {
                 .map { p -> if (p.isStarred) R.drawable.icon__heart else R.drawable.icon__heart_outline }
                 .subscribe(this.heartDrawableId)
 
+            currentProject
+                .map { it.photo()?.full() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .subscribe(this.projectPhoto)
+
+            currentProject
+                .map { it.hasVideo() }
+                .subscribe(this.playButtonIsVisible)
+
             // Tracking
             val currentFullProjectData = currentProjectData
                 .filter { it.project().hasRewards() }
@@ -898,6 +918,12 @@ interface ProjectPageViewModel {
                 .subscribe {
                     this.analyticEvents.trackCreatorDetailsCTA(it)
                 }
+
+            currentProject
+                .map { ProjectUtils.metadataForProject(it) }
+                .map { ProjectUtils.Metadata.BACKING == it }
+                .compose(bindToLifecycle())
+                .subscribe(backingViewGroupIsVisible)
         }
 
         private fun isPledgeCTA(projectActionButtonStringRes: Int): Boolean {
@@ -1183,6 +1209,15 @@ interface ProjectPageViewModel {
 
         @NonNull
         override fun updateFragments(): Observable<ProjectData> = this.updateFragments
+
+        @NonNull
+        override fun projectPhoto(): Observable<String> = this.projectPhoto
+
+        @NonNull
+        override fun playButtonIsVisible(): Observable<Boolean> = this.playButtonIsVisible
+
+        @NonNull
+        override fun backingViewGroupIsVisible(): Observable<Boolean> = this.backingViewGroupIsVisible
 
         private fun backingDetailsSubtitle(project: Project): Either<String, Int>? {
             return project.backing()?.let { backing ->

@@ -7,6 +7,7 @@ import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.PushNotificationEnvelopeFactory;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.mock.services.MockApolloClient;
 import com.kickstarter.models.Project;
 import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
@@ -30,6 +31,17 @@ public final class ProjectIntentMapperTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testProject_emitsFromProjectParamExtraApollo() {
+    final Intent intent = new Intent().putExtra(IntentKey.PROJECT_PARAM, "skull-graphic-tee");
+
+    final TestSubscriber<Project> resultTest = TestSubscriber.create();
+    ProjectIntentMapper.project(intent, new MockApolloClient())
+            .subscribe(resultTest);
+
+    resultTest.assertValueCount(1);
+  }
+
+  @Test
   public void testProject_emitsTwiceFromProjectExtra() {
     final Project project = ProjectFactory.project();
     final Intent intent = new Intent().putExtra(IntentKey.PROJECT, project);
@@ -39,6 +51,18 @@ public final class ProjectIntentMapperTest extends KSRobolectricTestCase {
       .subscribe(resultTest);
 
     resultTest.assertValueCount(2);
+  }
+
+  @Test
+  public void testProject_emitsTwiceFromProjectExtraApollo() {
+    final Project project = ProjectFactory.project();
+    final Intent intent = new Intent().putExtra(IntentKey.PROJECT, project);
+
+    final TestSubscriber<Project> resultTest = TestSubscriber.create();
+    ProjectIntentMapper.project(intent, new MockApolloClient())
+            .subscribe(resultTest);
+
+    resultTest.assertValueCount(1);
   }
 
   @Test
@@ -54,6 +78,18 @@ public final class ProjectIntentMapperTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testProject_emitsFromKsrProjectUriApollo() {
+    final Uri uri = Uri.parse("ksr://www.kickstarter.com/projects/1186238668/skull-graphic-tee");
+    final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+
+    final TestSubscriber<Project> resultTest = TestSubscriber.create();
+    ProjectIntentMapper.project(intent, new MockApolloClient())
+            .subscribe(resultTest);
+
+    resultTest.assertValueCount(1);
+  }
+
+  @Test
   public void testProject_emitsFromHttpsProjectUri() {
     final Uri uri = Uri.parse("https://www.kickstarter.com/projects/1186238668/skull-graphic-tee");
     final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
@@ -61,6 +97,18 @@ public final class ProjectIntentMapperTest extends KSRobolectricTestCase {
     final TestSubscriber<Project> resultTest = TestSubscriber.create();
     ProjectIntentMapper.project(intent, new MockApiClient())
       .subscribe(resultTest);
+
+    resultTest.assertValueCount(1);
+  }
+
+  @Test
+  public void testProject_emitsFromHttpsProjectUriApollo() {
+    final Uri uri = Uri.parse("https://www.kickstarter.com/projects/1186238668/skull-graphic-tee");
+    final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+
+    final TestSubscriber<Project> resultTest = TestSubscriber.create();
+    ProjectIntentMapper.project(intent, new MockApolloClient())
+            .subscribe(resultTest);
 
     resultTest.assertValueCount(1);
   }

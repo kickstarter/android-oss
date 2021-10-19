@@ -35,8 +35,8 @@ public abstract class Project implements Parcelable, Relay {
   public abstract User creator();
   public abstract String currency(); // e.g.: USD
   public abstract String currencySymbol(); // e.g.: $
-  public abstract String currentCurrency(); // e.g.: User's Preferred currency USD
-  public abstract boolean currencyTrailingCode();
+  public abstract @Nullable String currentCurrency(); // e.g.: User's Preferred currency USD
+  public abstract @Nullable boolean currencyTrailingCode();
   public abstract @Nullable Boolean displayPrelaunch();
   public abstract @Nullable DateTime featuredAt();
   public abstract @Nullable List<User> friends();
@@ -68,6 +68,8 @@ public abstract class Project implements Parcelable, Relay {
   public abstract @Nullable DateTime updatedAt();
   public abstract Urls urls();
   public abstract @Nullable Video video();
+  public abstract @Nullable List<ProjectFaq> projectFaqs();
+  public abstract @Nullable List<EnvironmentalCommitment> envCommitments();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -115,6 +117,8 @@ public abstract class Project implements Parcelable, Relay {
     public abstract Builder updatesCount(Integer __);
     public abstract Builder urls(Urls __);
     public abstract Builder video(Video __);
+    public abstract Builder projectFaqs(List<ProjectFaq> __);
+    public abstract Builder envCommitments(List<EnvironmentalCommitment> __);
     public abstract Project build();
   }
 
@@ -184,7 +188,7 @@ public abstract class Project implements Parcelable, Relay {
     public abstract static class Web implements Parcelable {
       public abstract String project();
       public abstract @Nullable String projectShort();
-      public abstract String rewards();
+      public abstract @Nullable String rewards();
       public abstract @Nullable String updates();
 
       @AutoParcel.Builder

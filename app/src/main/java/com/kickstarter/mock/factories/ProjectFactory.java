@@ -21,7 +21,7 @@ public final class ProjectFactory {
   public static @NonNull Project project() {
     final User creator = UserFactory.creator();
     final String slug = "slug-1";
-    final String projectUrl = "https://www.kickstarter.com/projects/" + String.valueOf(creator.id()) + "/" + slug;
+    final String projectUrl = "https://www.kickstarter.com/projects/" + creator.id() + "/" + slug;
 
     final Project.Urls.Web web = Project.Urls.Web.builder()
       .project(projectUrl)
@@ -60,6 +60,8 @@ public final class ProjectFactory {
       .staticUsdRate(1.0f)
       .usdExchangeRate(1.0f)
       .slug(slug)
+      .projectFaqs(ProjectFaqFactory.Companion.getFaqs())
+      .envCommitments(ProjectEnvironmentalCommitmentFactory.Companion.getEnvironmentalCommitments())
       .updatedAt(DateTime.now())
       .urls(Project.Urls.builder().web(web).build())
       .video(VideoFactory.video())
@@ -92,6 +94,15 @@ public final class ProjectFactory {
             .toBuilder()
             .backing(backing)
             .isBacking(true)
+            .build();
+  }
+
+  public static @NonNull Project britishProject() {
+    return project()
+            .toBuilder()
+            .country("GB")
+            .currency("GBP")
+            .currencySymbol("£")
             .build();
   }
 

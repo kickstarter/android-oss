@@ -31,6 +31,7 @@ import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
+import com.kickstarter.libs.utils.extensions.updateProjectWith
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -51,6 +52,7 @@ import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
 import java.net.CookieManager
+import java.util.concurrent.TimeUnit
 
 interface ProjectViewModel {
     interface Inputs {
@@ -219,6 +221,8 @@ interface ProjectViewModel {
         /** Emits when we should start [com.kickstarter.ui.activities.RootCommentsActivity]. */
         fun startRootCommentsActivity(): Observable<Pair<Project, ProjectData>>
 
+        fun startRootCommentsForCommentsThreadActivity(): Observable<Pair<String, Pair<Project, ProjectData>>>
+
         /** Emits when we should start the creator bio [com.kickstarter.ui.activities.CreatorBioActivity].  */
         fun startCreatorBioWebViewActivity(): Observable<Project>
 
@@ -233,6 +237,12 @@ interface ProjectViewModel {
 
         /** Emits when we should start [com.kickstarter.ui.activities.ProjectUpdatesActivity].  */
         fun startProjectUpdatesActivity(): Observable<Pair<Project, ProjectData>>
+
+        /** Emits when we should start [com.kickstarter.ui.activities.UpdateActivity].  */
+        fun startProjectUpdateActivity(): Observable< Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>
+
+        /** Emits when we should start [com.kickstarter.ui.activities.UpdateActivity].  */
+        fun startProjectUpdateToRepliesDeepLinkActivity(): Observable< Pair<Pair<String, String>, Pair<Project, ProjectData>>>
 
         /** Emits when we the pledge was successful and should start the [com.kickstarter.ui.activities.ThanksActivity]. */
         fun startThanksActivity(): Observable<Pair<CheckoutData, PledgeData>>
@@ -252,6 +262,7 @@ interface ProjectViewModel {
         private val optimizely: ExperimentsClientType = environment.optimizely()
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
         private val apolloClient = environment.apolloClient()
+        private val currentConfig = environment.currentConfig()
 
         private val blurbTextViewClicked = PublishSubject.create<Void>()
         private val blurbVariantClicked = PublishSubject.create<Void>()
@@ -307,13 +318,15 @@ interface ProjectViewModel {
         private val showUpdatePledge = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showUpdatePledgeSuccess = PublishSubject.create<Void>()
         private val startCampaignWebViewActivity = PublishSubject.create<ProjectData>()
-        private val startCommentsActivity = PublishSubject.create<Pair<Project, ProjectData>>()
         private val startRootCommentsActivity = PublishSubject.create<Pair<Project, ProjectData>>()
+        private val startRootCommentsForCommentsThreadActivity = PublishSubject.create<Pair<String, Pair<Project, ProjectData>>>()
         private val startCreatorBioWebViewActivity = PublishSubject.create<Project>()
         private val startCreatorDashboardActivity = PublishSubject.create<Project>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
         private val startMessagesActivity = PublishSubject.create<Project>()
         private val startProjectUpdatesActivity = PublishSubject.create<Pair<Project, ProjectData>>()
+        private val startProjectUpdateActivity = PublishSubject.create< Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>()
+        private val startProjectUpdateToRepliesDeepLinkActivity = PublishSubject.create< Pair<Pair<String, String>, Pair<Project, ProjectData>>>()
         private val startThanksActivity = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
         private val startVideoActivity = PublishSubject.create<Project>()
         private val updateFragments = BehaviorSubject.create<ProjectData>()
@@ -331,13 +344,16 @@ interface ProjectViewModel {
                 intent()
                     .compose(takeWhen<Intent, Void>(this.reloadProjectContainerClicked))
             )
-                .flatMap {
-                    ProjectIntentMapper.project(it, this.client)
+                .switchMap {
+                    ProjectIntentMapper.project(it, this.apolloClient)
                         .doOnSubscribe {
                             progressBarIsGone.onNext(false)
                         }
                         .doAfterTerminate {
                             progressBarIsGone.onNext(true)
+                        }
+                        .withLatestFrom(currentConfig.observable(), currentUser.observable()) { project, config, user ->
+                            return@withLatestFrom project.updateProjectWith(config, user)
                         }
                         .materialize()
                 }
@@ -418,12 +434,15 @@ interface ProjectViewModel {
                 .compose(takeWhen<Project, Void>(refreshProjectEvent))
                 .switchMap {
                     it.slug()?.let { slug ->
-                        this.client.fetchProject(slug)
+                        this.apolloClient.getProject(slug)
                             .doOnSubscribe {
                                 progressBarIsGone.onNext(false)
                             }
                             .doAfterTerminate {
                                 progressBarIsGone.onNext(true)
+                            }
+                            .withLatestFrom(currentConfig.observable(), currentUser.observable()) { project, config, user ->
+                                return@withLatestFrom project.updateProjectWith(config, user)
                             }
                             .materialize()
                     }
@@ -492,9 +511,81 @@ interface ProjectViewModel {
             val latestProjectAndProjectData = currentProject.compose<Pair<Project, ProjectData>>(combineLatestPair(projectData))
 
             this.commentsTextViewClicked
-                .withLatestFrom(latestProjectAndProjectData) { _, project -> project }
+                .withLatestFrom(latestProjectAndProjectData) { _, project ->
+                    project
+                }
                 .compose(bindToLifecycle())
-                .subscribe(this.startRootCommentsActivity)
+                .subscribe {
+                    this.startRootCommentsActivity.onNext(it)
+                }
+
+            intent()
+                .take(1)
+                .delay(1, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
+                .filter {
+                    it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_COMMENT, false) &&
+                        it.getStringExtra(IntentKey.COMMENT)?.isEmpty() ?: true
+                }
+                .withLatestFrom(latestProjectAndProjectData) { _, project ->
+                    project
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.startRootCommentsActivity.onNext(it)
+                }
+
+            intent()
+                .take(1)
+                .delay(1, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
+                .filter {
+                    it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_COMMENT, false) &&
+                        it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty() ?: false
+                }
+                .withLatestFrom(latestProjectAndProjectData) { intent, project ->
+                    Pair(intent.getStringExtra(IntentKey.COMMENT) ?: "", project)
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.startRootCommentsForCommentsThreadActivity.onNext(it)
+                }
+
+            intent()
+                .take(1)
+                .delay(1, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
+                .filter {
+                    it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)?.isNotEmpty() ?: false &&
+                        it.getStringExtra(IntentKey.COMMENT)?.isEmpty() ?: true
+                }.map {
+                    Pair(
+                        requireNotNull(it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)),
+                        it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE_COMMENT, false)
+                    )
+                }
+                .withLatestFrom(latestProjectAndProjectData) { updateId, project ->
+                    Pair(updateId, project)
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.startProjectUpdateActivity.onNext(it)
+                }
+
+            intent()
+                .take(1)
+                .delay(1, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
+                .filter {
+                    it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)?.isNotEmpty() ?: false &&
+                        it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty() ?: false
+                }.map {
+                    Pair(
+                        requireNotNull(it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)),
+                        it.getStringExtra(IntentKey.COMMENT) ?: ""
+                    )
+                }
+                .withLatestFrom(latestProjectAndProjectData) { updateId, project ->
+                    Pair(updateId, project)
+                }
+                .compose(bindToLifecycle())
+                .subscribe { this.startProjectUpdateToRepliesDeepLinkActivity.onNext(it) }
 
             currentProject
                 .compose<Project>(takeWhen(this.creatorDashboardButtonClicked))
@@ -587,20 +678,9 @@ interface ProjectViewModel {
                 .filter { it.isBacking }
 
             val backing = backedProject
-                .switchMap {
-                    this.apolloClient.getProjectBacking(it.slug() ?: "")
-                        .doOnSubscribe {
-                            progressBarIsGone.onNext(false)
-                        }
-                        .doAfterTerminate {
-                            progressBarIsGone.onNext(true)
-                        }
-                        .materialize()
-                }
-                .compose(neverError())
-                .compose(values())
+                .map { it.backing() }
                 .filter { ObjectUtils.isNotNull(it) }
-                .share()
+                .map { requireNotNull(it) }
 
             // - Update fragments with the backing data
             projectData
@@ -1078,6 +1158,10 @@ interface ProjectViewModel {
         override fun startRootCommentsActivity(): Observable<Pair<Project, ProjectData>> = this.startRootCommentsActivity
 
         @NonNull
+        override fun startRootCommentsForCommentsThreadActivity(): Observable<Pair<String, Pair<Project, ProjectData>>> =
+            this.startRootCommentsForCommentsThreadActivity
+
+        @NonNull
         override fun startCreatorBioWebViewActivity(): Observable<Project> = this.startCreatorBioWebViewActivity
 
         @NonNull
@@ -1094,6 +1178,13 @@ interface ProjectViewModel {
 
         @NonNull
         override fun startProjectUpdatesActivity(): Observable<Pair<Project, ProjectData>> = this.startProjectUpdatesActivity
+
+        @NonNull
+        override fun startProjectUpdateActivity(): Observable<Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>> = this.startProjectUpdateActivity
+
+        @NonNull
+        override fun startProjectUpdateToRepliesDeepLinkActivity(): Observable<Pair<Pair<String, String>, Pair<Project, ProjectData>>> =
+            this.startProjectUpdateToRepliesDeepLinkActivity
 
         @NonNull
         override fun startVideoActivity(): Observable<Project> = this.startVideoActivity

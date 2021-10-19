@@ -7,6 +7,7 @@ import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
+import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.IntentKey;
 
@@ -24,6 +25,23 @@ public final class ProjectIntentMapper {
 
   // /projects/param-1/param-2*
   final static Pattern PROJECT_PATTERN = Pattern.compile("\\A\\/projects\\/([a-zA-Z0-9_-]+)(\\/([a-zA-Z0-9_-]+)).*");
+
+  public static @NonNull Observable<Project> project(final @NonNull Intent intent, final @NonNull ApolloClientType apolloClient) {
+
+    final Project intentProject = projectFromIntent(intent);
+    final Observable<Project> projectFromParceledProject = intentProject == null ? Observable.empty() : Observable.just(intentProject)
+            .switchMap(apolloClient::getProject)
+            .startWith(intentProject)
+            .retry(3);
+
+    final Observable<Project> projectFromParceledParam = Observable.just(paramFromIntent(intent))
+            .filter(ObjectUtils::isNotNull)
+            .switchMap(apolloClient::getProject)
+            .retry(3);
+
+    return projectFromParceledProject
+            .mergeWith(projectFromParceledParam).last();
+  }
 
   /**
    * Returns an observable of projects retrieved from intent data. May hit the API if the intent only contains a project
@@ -65,7 +83,7 @@ public final class ProjectIntentMapper {
   /**
    * Gets a parceled project from the intent data, may return `null`.
    */
-  private static @Nullable Project projectFromIntent(final @NonNull Intent intent) {
+  public static @Nullable Project projectFromIntent(final @NonNull Intent intent) {
     return intent.getParcelableExtra(IntentKey.PROJECT);
   }
 

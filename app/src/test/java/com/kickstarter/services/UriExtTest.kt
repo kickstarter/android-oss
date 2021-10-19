@@ -6,10 +6,12 @@ import com.kickstarter.libs.utils.extensions.isCheckoutUri
 import com.kickstarter.libs.utils.extensions.isDiscoverCategoriesPath
 import com.kickstarter.libs.utils.extensions.isDiscoverPlacesPath
 import com.kickstarter.libs.utils.extensions.isDiscoverScopePath
+import com.kickstarter.libs.utils.extensions.isDiscoverSortParam
 import com.kickstarter.libs.utils.extensions.isKSFavIcon
 import com.kickstarter.libs.utils.extensions.isKickstarterUri
 import com.kickstarter.libs.utils.extensions.isModalUri
 import com.kickstarter.libs.utils.extensions.isNewGuestCheckoutUri
+import com.kickstarter.libs.utils.extensions.isProjectCommentUri
 import com.kickstarter.libs.utils.extensions.isProjectPreviewUri
 import com.kickstarter.libs.utils.extensions.isProjectSurveyUri
 import com.kickstarter.libs.utils.extensions.isProjectUpdateCommentsUri
@@ -48,6 +50,7 @@ class UriExtTest : KSRobolectricTestCase() {
     private val updateUri = Uri.parse("https://www.ksr.com/projects/creator/project/posts/id")
     private val userSurveyUri = Uri.parse("https://www.ksr.com/users/user-param/surveys/survey-id")
     private val webEndpoint = "https://www.ksr.com"
+    private val discoverSortUri = Uri.parse("https://www.kickstarter.com/discover/advanced?sort=ending-soon")
 
     @Test
     fun testUri_isCheckoutUri() {
@@ -135,6 +138,12 @@ class UriExtTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testUri_isProjectCommentsUri() {
+        val commentsUri = Uri.parse("https://www.ksr.com/projects/creator/project/comments")
+        assertTrue(commentsUri.isProjectCommentUri(webEndpoint))
+    }
+
+    @Test
     fun testUri_isProjectUpdateUri() {
         assertTrue(updateUri.isProjectUpdateUri(webEndpoint))
         assertFalse(updatesUri.isProjectUpdateUri(webEndpoint))
@@ -175,5 +184,10 @@ class UriExtTest : KSRobolectricTestCase() {
     fun testUri_isVerificationEmailUrl() {
         assertFalse(projectUri.isVerificationEmailUrl())
         assertTrue(verificationEmail.isVerificationEmailUrl())
+    }
+
+    @Test
+    fun testUri_isDiscoverySortUri() {
+        assertTrue(discoverSortUri.isDiscoverSortParam())
     }
 }

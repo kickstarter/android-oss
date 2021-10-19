@@ -8,8 +8,10 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.preferences.MockBooleanPreference;
 import com.kickstarter.libs.utils.EventName;
+import com.kickstarter.mock.MockExperimentsClientType;
 import com.kickstarter.mock.factories.CategoryFactory;
 import com.kickstarter.mock.factories.CheckoutDataFactory;
 import com.kickstarter.mock.factories.LocationFactory;
@@ -28,12 +30,15 @@ import com.kickstarter.ui.data.CheckoutData;
 import com.kickstarter.ui.data.PledgeData;
 import com.kickstarter.ui.data.PledgeFlowContext;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 
 import androidx.annotation.NonNull;
+
+import kotlin.Triple;
 import rx.observers.TestSubscriber;
 
 public final class ThanksViewModelTest extends KSRobolectricTestCase {
@@ -44,7 +49,8 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Void> showRatingDialogTest = new TestSubscriber<>();
   private final TestSubscriber<Void> showConfirmGamesNewsletterDialogTest = TestSubscriber.create();
   private final TestSubscriber<DiscoveryParams> startDiscoveryTest = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Project, RefTag>> startProjectTest = new TestSubscriber<>();
+  private final TestSubscriber<Triple<Project, RefTag, Boolean>> startProjectTest = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Project, RefTag>> startProjectPageTest = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new ThanksViewModel.ViewModel(environment);
@@ -310,7 +316,49 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.projectCardViewHolderClicked(project);
 
-    this.startProjectTest.assertValues(Pair.create(project, RefTag.thanks()));
+    final Triple<Project, RefTag, Boolean> projectPageParams= this.startProjectTest.getOnNextEvents().get(0);
+    assertEquals(projectPageParams.getFirst(), project);
+    assertEquals(projectPageParams.getSecond(), RefTag.thanks());
+    assertFalse(projectPageParams.getThird());
+
+    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CTA_CLICKED.getEventName());
+  }
+
+  @Test
+  public void testThanksViewModel_whenFeatureFlagOn_shouldEmitProjectPage() {
+    final MockCurrentUser user = new MockCurrentUser();
+    final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
+      @Override
+      public boolean isFeatureEnabled(final @NotNull OptimizelyFeature.Key feature) {
+        return true;
+      }
+    };
+
+    final Environment environment = environment().toBuilder()
+            .currentUser(user)
+            .optimizely(mockExperimentsClientType)
+            .build();
+
+    setUpEnvironment(environment);
+
+    final Project project = ProjectFactory.project();
+    final CheckoutData checkoutData = CheckoutDataFactory.Companion.checkoutData(3L,
+            20.0, 30.0);
+    final PledgeData pledgeData = PledgeData.Companion.with(PledgeFlowContext.NEW_PLEDGE,
+            ProjectDataFactory.Companion.project(project), RewardFactory.reward(), Collections.emptyList(), null);
+    final Intent intent = new Intent()
+            .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
+            .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
+            .putExtra(IntentKey.PROJECT, project);
+
+    this.vm.intent(intent);
+
+    this.vm.inputs.projectCardViewHolderClicked(project);
+
+    final Triple<Project, RefTag, Boolean> projectPageParams= this.startProjectTest.getOnNextEvents().get(0);
+    assertEquals(projectPageParams.getFirst(), project);
+    assertEquals(projectPageParams.getSecond(), RefTag.thanks());
+    assertTrue(projectPageParams.getThird());
 
     this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CTA_CLICKED.getEventName());
   }

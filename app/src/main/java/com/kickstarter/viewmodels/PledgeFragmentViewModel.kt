@@ -15,6 +15,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
 import com.kickstarter.libs.rx.transformers.Transformers.neverError
+import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.rx.transformers.Transformers.zipPair
@@ -27,6 +28,7 @@ import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.Project
@@ -97,6 +99,9 @@ interface PledgeFragmentViewModel {
         /** Call when user clicks the pledge button. */
         fun pledgeButtonClicked()
 
+        /** Call when Bottom sheet dialog clicks the understand button. */
+        fun onRiskManagementConfirmed()
+
         /** Call when user selects a shipping location. */
         fun shippingRuleSelected(shippingRule: ShippingRule)
 
@@ -105,6 +110,8 @@ interface PledgeFragmentViewModel {
 
         /** Call when Stripe SCA is unsuccessful. */
         fun stripeSetupResultUnsuccessful(exception: Exception)
+
+        fun onRiskMessageDismissed()
     }
 
     interface Outputs {
@@ -311,6 +318,8 @@ interface PledgeFragmentViewModel {
 
         /** Emits the total pledgeAmount for Rewards + AddOns **/
         fun pledgeAmountHeader(): Observable<CharSequence>
+
+        fun changeCheckoutRiskMessageBottomSheetStatus(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
@@ -325,6 +334,7 @@ interface PledgeFragmentViewModel {
         private val miniRewardClicked = PublishSubject.create<Void>()
         private val newCardButtonClicked = PublishSubject.create<Void>()
         private val pledgeButtonClicked = PublishSubject.create<Void>()
+        private val onRiskManagementConfirmed = PublishSubject.create<Void>()
         private val pledgeInput = PublishSubject.create<String>()
         private val shippingRule = BehaviorSubject.create<ShippingRule>()
         private val stripeSetupResultSuccessful = PublishSubject.create<Int>()
@@ -332,11 +342,13 @@ interface PledgeFragmentViewModel {
         private val decreaseBonusButtonClicked = PublishSubject.create<Void>()
         private val increaseBonusButtonClicked = PublishSubject.create<Void>()
         private val bonusInput = PublishSubject.create<String>()
+        private val onRiskMessageDismissed = PublishSubject.create<Void>()
 
         private val addedCard = BehaviorSubject.create<Pair<StoredCard, Project>>()
         private val additionalPledgeAmount = BehaviorSubject.create<String>()
         private val additionalPledgeAmountIsGone = BehaviorSubject.create<Boolean>()
         private val baseUrlForTerms = BehaviorSubject.create<String>()
+        private val changeCheckoutRiskMessageBottomSheetStatus = BehaviorSubject.create<Boolean>()
         private val cardsAndProject = BehaviorSubject.create<Pair<List<StoredCard>, Project>>()
         private val continueButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val continueButtonIsGone = BehaviorSubject.create<Boolean>()
@@ -409,7 +421,7 @@ interface PledgeFragmentViewModel {
         private val currentUser = environment.currentUser()
         private val ksCurrency = environment.ksCurrency()
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
-        private val variantSuggestedAmount = BehaviorSubject.create<Double>()
+        private val minPledgeByCountry = BehaviorSubject.create<Double>()
         private val shippingRuleUpdated = BehaviorSubject.create<Boolean>(false)
         private val selectedReward = BehaviorSubject.create<Reward>()
         private val rewardAndAddOns = BehaviorSubject.create<List<Reward>>()
@@ -424,6 +436,8 @@ interface PledgeFragmentViewModel {
         private val shouldLoadDefaultLocation = PublishSubject.create<Boolean>()
         private val pledgeAmountHeader = BehaviorSubject.create<CharSequence>()
         private val stepperAmount = 1
+
+        private var riskConfirmationFlag = BehaviorSubject.create(false)
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -495,14 +509,15 @@ interface PledgeFragmentViewModel {
                     selectedShippingRule(shippingInfo)
                 }
 
-            val backingWhenPledgeReasonUpdatePayment = backing
+            val backingWhenPledgeReasonUpdate = backing
                 .compose<Pair<Backing, PledgeReason>>(combineLatestPair(pledgeReason))
-                .filter { PledgeReason.UPDATE_PAYMENT == it.second }
+                .filter { PledgeReason.UPDATE_PAYMENT == it.second || PledgeReason.UPDATE_PLEDGE == it.second }
                 .map { it.first }
 
-            val backingShippingRuleUpdatePayment = backingWhenPledgeReasonUpdatePayment
+            val backingShippingRuleUpdate = backingWhenPledgeReasonUpdate
                 .filter { it.reward()?.let { reward -> !RewardUtils.isNoReward(reward) } ?: false }
                 .compose<Pair<Backing, PledgeData>>(combineLatestPair(pledgeData))
+                .filter { ObjectUtils.isNotNull(it.first.locationId()) }
                 .map { requireNotNull(it.first.locationId()) }
                 .compose<Pair<Long, List<ShippingRule>>>(combineLatestPair(shippingRules))
                 .map { shippingInfo ->
@@ -519,7 +534,7 @@ interface PledgeFragmentViewModel {
                 .map { it.shippingRule() == null && RewardUtils.isShippable(it.reward()) }
                 .subscribe { this.shouldLoadDefaultLocation.onNext(it) }
 
-            val preSelectedShippingRule = Observable.merge(initShippingRule, backingShippingRule, backingShippingRuleUpdatePayment)
+            val preSelectedShippingRule = Observable.merge(initShippingRule, backingShippingRule, backingShippingRuleUpdate)
                 .distinctUntilChanged()
 
             preSelectedShippingRule
@@ -586,22 +601,16 @@ interface PledgeFragmentViewModel {
                 .distinctUntilChanged()
                 .ofType(Country::class.java)
 
-            Observable.combineLatest(projectDataAndReward, this.currentUser.observable(), country) { data, user, c ->
-                val experimentData = ExperimentData(user, data.first.refTagFromIntent(), data.first.refTagFromCookie())
-                val variant = this.optimizely.variant(OptimizelyExperiment.Key.SUGGESTED_NO_REWARD_AMOUNT, experimentData)
-                RewardUtils.rewardAmountByVariant(variant, data.second, c.minPledge)
-            }
+            country
+                .map { it.minPledge.toDouble() }
                 .compose<Pair<Double, Reward>>(combineLatestPair(this.selectedReward))
                 .filter { RewardUtils.isNoReward(it.second) }
                 .map { it.first }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe {
-                    variantSuggestedAmount.onNext(it)
+                    minPledgeByCountry.onNext(it)
                 }
-
-            val fullProjectDataAndPledgeData = projectData
-                .compose<Pair<ProjectData, PledgeData>>(combineLatestPair(pledgeData))
 
             projectAndReward
                 .map { rewardTitle(it.first, it.second) }
@@ -627,7 +636,7 @@ interface PledgeFragmentViewModel {
                 .map { it.minimum() }
                 .distinctUntilChanged()
 
-            val rewardMinimum = Observable.merge(minRw, variantSuggestedAmount)
+            val rewardMinimum = Observable.merge(minRw, minPledgeByCountry)
 
             rewardMinimum
                 .map { NumberUtils.format(it.toInt()) }
@@ -697,7 +706,8 @@ interface PledgeFragmentViewModel {
 
             val backingAmount = Observable.merge(backingAmountNR, backingAmountRW)
 
-            val pledgeInput = Observable.merge(initialAmount, this.pledgeInput.map { NumberUtils.parse(it) }, backingAmount)
+            val pledgeInput = Observable.merge(initialAmount, this.pledgeInput.map { it.parseToDouble() }, backingAmount)
+                .map { it }
                 .distinctUntilChanged()
 
             pledgeInput
@@ -715,13 +725,13 @@ interface PledgeFragmentViewModel {
                 .subscribe(this.pledgeInput)
 
             pledgeInput
-                .compose<Pair<Double, Double>>(combineLatestPair(variantSuggestedAmount))
+                .compose<Pair<Double, Double>>(combineLatestPair(minPledgeByCountry))
                 .map { it.first - it.second }
                 .compose(bindToLifecycle())
                 .subscribe { additionalPledgeAmount.onNext(it) }
 
             pledgeInput
-                .compose<Pair<Double, Double>>(combineLatestPair(variantSuggestedAmount))
+                .compose<Pair<Double, Double>>(combineLatestPair(minPledgeByCountry))
                 .map { max(it.first, it.second) > it.second }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
@@ -736,7 +746,7 @@ interface PledgeFragmentViewModel {
             val bonusMinimum = Observable.just(0.0)
             val bonusStepAmount = Observable.just(1.0)
 
-            val bonusInput = Observable.merge(bonusMinimum, this.bonusInput.map { NumberUtils.parse(it) })
+            val bonusInput = Observable.merge(bonusMinimum, this.bonusInput.map { it.parseToDouble() })
 
             bonusMinimum
                 .map { NumberUtils.format(it.toInt()) }
@@ -910,7 +920,7 @@ interface PledgeFragmentViewModel {
                 .map { it.first + it.second }
                 .distinctUntilChanged()
 
-            val selectedPledgeAmount = Observable.merge(pledgeAmountHeader, threshold, variantSuggestedAmount)
+            val selectedPledgeAmount = Observable.merge(pledgeAmountHeader, threshold, minPledgeByCountry)
 
             val bonusSupportMaximum = currencyMaximum
                 .compose<Pair<Double, Double>>(combineLatestPair(selectedPledgeAmount))
@@ -1151,10 +1161,38 @@ interface PledgeFragmentViewModel {
                     this.pledgeButtonIsEnabled.onNext(it)
                 }
 
+            val experimentData = Observable.combineLatest(this.currentUser.observable(), projectData) { u, p -> ExperimentData(u, p.refTagFromIntent(), p.refTagFromCookie()) }
+
+            this.pledgeButtonClicked
+                .compose(combineLatestPair(experimentData))
+                .filter { this.optimizely.variant(OptimizelyExperiment.Key.NATIVE_RISK_MESSAGING, it.second) != OptimizelyExperiment.Variant.CONTROL }
+                .withLatestFrom(riskConfirmationFlag) { _, flag -> flag }
+                .filter { !it }
+                .compose(combineLatestPair(pledgeReason))
+                .filter { it.second == PledgeReason.PLEDGE }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.changeCheckoutRiskMessageBottomSheetStatus.onNext(true)
+                    // To disable reopen on change orianataion landscape
+                    this.changeCheckoutRiskMessageBottomSheetStatus.onNext(false)
+                }
+
+            this.pledgeButtonClicked
+                .compose(combineLatestPair(experimentData))
+                .filter { this.optimizely.variant(OptimizelyExperiment.Key.NATIVE_RISK_MESSAGING, it.second) == OptimizelyExperiment.Variant.CONTROL }
+                .withLatestFrom(riskConfirmationFlag) { _, flag -> flag }
+                .filter { !it }
+                .compose(combineLatestPair(pledgeReason))
+                .filter { it.second == PledgeReason.PLEDGE }
+                .compose(bindToLifecycle())
+                .subscribe { this.riskConfirmationFlag.onNext(true) }
+
             val pledgeButtonClicked = userIsLoggedIn
-                .compose<Pair<Boolean, PledgeReason>>(combineLatestPair(pledgeReason))
-                .filter { it.first && it.second == PledgeReason.PLEDGE }
-                .compose<Pair<Boolean, PledgeReason>>(takeWhen(this.pledgeButtonClicked))
+                .compose(takePairWhen(this.riskConfirmationFlag))
+                .compose(combineLatestPair(pledgeReason))
+                .filter {
+                    it.first.first && it.second == PledgeReason.PLEDGE && it.first.second
+                }
                 .compose(ignoreValues())
 
             // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
@@ -1338,22 +1376,27 @@ interface PledgeFragmentViewModel {
                 .compose(bindToLifecycle())
                 .subscribe { this.pledgeButtonCTA.onNext(it) }
 
-            // Tracking
-            val projectAndTotal = project
-                .compose<Pair<Project, Double>>(combineLatestPair(total))
-
-            val projectAndTotalForInitialPledges = pledgeReason
-                .filter { it == PledgeReason.PLEDGE }
-                .compose<Pair<PledgeReason, Pair<Project, Double>>>(combineLatestPair(projectAndTotal))
-                .map { it.second }
-
             val checkoutAndPledgeData =
                 Observable.combineLatest<Double, Double, String, CheckoutData>(
                     shippingAmountSelectedRw,
                     total,
                     this.bonusAmount
-                ) { s, t, b -> checkoutData(s, t, NumberUtils.parse(b), null) }
+                ) { s, t, b ->
+                    checkoutData(s, t, b.parseToDouble(), null)
+                }
                     .compose<Pair<CheckoutData, PledgeData>>(combineLatestPair(pledgeData))
+
+            this.onRiskManagementConfirmed
+                .compose<Pair<Void, PledgeReason>>(combineLatestPair(pledgeReason))
+                .filter {
+                    it.second == PledgeReason.PLEDGE
+                }
+                .compose(combineLatestPair(checkoutAndPledgeData))
+                .filter { it.second.second.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }
+                .subscribe {
+                    this.analyticEvents.trackPledgeConfirmCTA(it.second.first, it.second.second)
+                    riskConfirmationFlag.onNext(true)
+                }
 
             checkoutAndPledgeData
                 .take(1)
@@ -1660,6 +1703,8 @@ interface PledgeFragmentViewModel {
 
         override fun increaseBonusButtonClicked() = this.increaseBonusButtonClicked.onNext(null)
 
+        override fun onRiskMessageDismissed() = this.onRiskMessageDismissed.onNext(null)
+
         override fun linkClicked(url: String) = this.linkClicked.onNext(url)
 
         override fun miniRewardClicked() = this.miniRewardClicked.onNext(null)
@@ -1669,6 +1714,8 @@ interface PledgeFragmentViewModel {
         override fun pledgeInput(amount: String) = this.pledgeInput.onNext(amount)
 
         override fun pledgeButtonClicked() = this.pledgeButtonClicked.onNext(null)
+
+        override fun onRiskManagementConfirmed() = this.onRiskManagementConfirmed.onNext(null)
 
         override fun shippingRuleSelected(shippingRule: ShippingRule) = this.shippingRule.onNext(shippingRule)
 
@@ -1882,5 +1929,9 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun shippingRule(): Observable<ShippingRule> = this.shippingRule
+
+        @NonNull
+        override fun changeCheckoutRiskMessageBottomSheetStatus(): Observable<Boolean> = this
+            .changeCheckoutRiskMessageBottomSheetStatus
     }
 }

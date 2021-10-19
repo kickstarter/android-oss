@@ -6,7 +6,11 @@ import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.MockCurrentUser;
+import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.mock.MockExperimentsClientType;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.UpdateFactory;
 import com.kickstarter.mock.factories.UserFactory;
@@ -17,12 +21,18 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.IntentKey;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import androidx.annotation.NonNull;
+
+import java.util.concurrent.TimeUnit;
+
+import kotlin.Triple;
 import okhttp3.Request;
 import rx.Observable;
 import rx.observers.TestSubscriber;
+import rx.schedulers.TestScheduler;
 
 public final class UpdateViewModelTest extends KSRobolectricTestCase {
   private final Intent defaultIntent = new Intent()
@@ -106,7 +116,7 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment);
 
     final TestSubscriber<Uri> startProjectActivity = new TestSubscriber<>();
-    vm.outputs.startProjectActivity().map(uriAndRefTag -> uriAndRefTag.first).subscribe(startProjectActivity);
+    vm.outputs.startProjectActivity().map(uriAndRefTag -> uriAndRefTag.getFirst()).subscribe(startProjectActivity);
 
     // Start the intent with a project and update.
     vm.intent(this.defaultIntent);
@@ -119,6 +129,42 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     vm.inputs.goToProjectRequest(projectRequest);
 
     startProjectActivity.assertValues(Uri.parse(url));
+  }
+
+  @Test
+  public void testUpdateViewModel_whenFeatureFlagOn_shouldEmitProjectPage() {
+    final MockCurrentUser user = new MockCurrentUser();
+    final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
+      @Override
+      public boolean isFeatureEnabled(final @NotNull OptimizelyFeature.Key feature) {
+        return true;
+      }
+    };
+
+    final Environment environment = environment().toBuilder()
+            .currentUser(user)
+            .optimizely(mockExperimentsClientType)
+            .build();
+
+    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment);
+
+    final TestSubscriber<Triple<Uri, RefTag, Boolean>> startProjectActivity = new TestSubscriber<>();
+    vm.outputs.startProjectActivity().subscribe(startProjectActivity);
+
+    // Start the intent with a project and update.
+    vm.intent(this.defaultIntent);
+
+    final String url = "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap";
+    final Request projectRequest = new Request.Builder()
+            .url(url)
+            .build();
+
+    vm.inputs.goToProjectRequest(projectRequest);
+
+    startProjectActivity.assertValueCount(1);
+    assertTrue(startProjectActivity.getOnNextEvents().get(0).getThird());
+    assertEquals(startProjectActivity.getOnNextEvents().get(0).getFirst(), Uri.parse(url));
+    assertEquals(startProjectActivity.getOnNextEvents().get(0).getSecond(), RefTag.update());
   }
 
   @Test
@@ -211,5 +257,132 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
 
     // Initial update index url emits.
     webViewUrl.assertValues(update.urls().web().update());
+  }
+
+  @Test
+  public void testUpdateViewModel_DeepLinkPost() {
+    final String postId = "3254626";
+    final Update update = UpdateFactory.update().toBuilder().sequence(2).build();
+
+
+    final ApiClientType apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<Update> fetchUpdate(final @NonNull String projectParam, final @NonNull String updateParam) {
+        return Observable.just(update);
+      }
+    };
+
+    final Environment environment = environment().toBuilder().apiClient(apiClient).build();
+    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment);
+
+    final TestSubscriber<String> webViewUrl = new TestSubscriber<>();
+    vm.outputs.webViewUrl().subscribe(webViewUrl);
+
+    // Start the intent with a project and update.
+    vm.intent(new Intent()
+            .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+            .putExtra(IntentKey.UPDATE_POST_ID, postId)
+    );
+
+    // Initial update index url emits.
+    webViewUrl.assertValues(update.urls().web().update());
+  }
+
+  @Test
+  public void testUpdateViewModel_DeepLinkComment() {
+    final String postId = "3254626";
+    final Update update = UpdateFactory.update();
+
+    final ApiClientType apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<Update> fetchUpdate(final @NonNull String projectParam, final @NonNull String updateParam) {
+        return Observable.just(update);
+      }
+    };
+
+    final TestScheduler testScheduler = new TestScheduler();
+
+    final Environment environment = environment().toBuilder().apiClient(apiClient).scheduler(testScheduler).build();
+
+    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment);
+
+    final TestSubscriber<Update> startRootCommentsActivity = new TestSubscriber<>();
+    vm.outputs.startRootCommentsActivity().subscribe(startRootCommentsActivity);
+
+    final TestSubscriber<String> webViewUrl = new TestSubscriber<>();
+    vm.outputs.webViewUrl().subscribe(webViewUrl);
+
+    final TestSubscriber<Boolean> deepLinkToRootComment = new TestSubscriber<>();
+    vm.hasCommentsDeepLinks().subscribe(deepLinkToRootComment);
+
+    // Start the intent with a project and update.
+    vm.intent(new Intent()
+            .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+            .putExtra(IntentKey.UPDATE_POST_ID, postId)
+            .putExtra(IntentKey.IS_UPDATE_COMMENT, true)
+    );
+
+    // Initial update index url emits.
+    webViewUrl.assertValues(update.urls().web().update());
+    deepLinkToRootComment.assertValue(true);
+
+    vm.inputs.goToCommentsActivity();
+
+
+    testScheduler.advanceTimeBy(2, TimeUnit.SECONDS);
+
+
+    startRootCommentsActivity.assertValue(update);
+    startRootCommentsActivity.assertValueCount(1);
+  }
+
+  @Test
+  public void testUpdateViewModel_DeepLinkCommentThread() {
+    final String postId = "3254626";
+    final String commentableId = "Q29tbWVudC0zMzU2MTY4Ng";
+    final Update update = UpdateFactory.update();
+
+    final ApiClientType apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<Update> fetchUpdate(final @NonNull String projectParam, final @NonNull String updateParam) {
+        return Observable.just(update);
+      }
+    };
+
+    final TestScheduler testScheduler = new TestScheduler();
+
+    final Environment environment = environment().toBuilder().apiClient(apiClient).scheduler(testScheduler).build();
+
+    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment);
+
+    final TestSubscriber<Pair<String, Update>> startRootCommentsActivityToDeepLinkThreadActivity = new TestSubscriber<>();
+    vm.outputs.startRootCommentsActivityToDeepLinkThreadActivity().subscribe(startRootCommentsActivityToDeepLinkThreadActivity);
+
+    final TestSubscriber<String> webViewUrl = new TestSubscriber<>();
+    vm.outputs.webViewUrl().subscribe(webViewUrl);
+
+    final TestSubscriber<Pair<String, Boolean>> deepLinkToThreadActivity = new TestSubscriber<>();
+    vm.deepLinkToThreadActivity().subscribe(deepLinkToThreadActivity);
+
+    // Start the intent with a project and update.
+    vm.intent(new Intent()
+            .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+            .putExtra(IntentKey.UPDATE_POST_ID, postId)
+            .putExtra(IntentKey.IS_UPDATE_COMMENT, true)
+            .putExtra(IntentKey.COMMENT, commentableId)
+    );
+
+    // Initial update index url emits.
+    webViewUrl.assertValues(update.urls().web().update());
+    deepLinkToThreadActivity.assertValue(Pair.create(commentableId, true));
+
+    vm.inputs.goToCommentsActivityToDeepLinkThreadActivity(commentableId);
+
+
+    testScheduler.advanceTimeBy(2, TimeUnit.SECONDS);
+
+
+    startRootCommentsActivityToDeepLinkThreadActivity.assertValue(Pair.create(commentableId, update));
+    startRootCommentsActivityToDeepLinkThreadActivity.assertValueCount(1);
   }
 }

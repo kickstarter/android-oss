@@ -8,7 +8,9 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
+import com.kickstarter.libs.utils.UrlUtils.commentId
 import com.kickstarter.libs.utils.UrlUtils.refTag
+import com.kickstarter.libs.utils.extensions.path
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.viewmodels.DeepLinkViewModel
 
@@ -34,6 +36,21 @@ class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { uri: Uri -> startProjectActivity(uri) }
+
+        viewModel.outputs.startProjectActivityForComment()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { startProjectActivityForComment(it) }
+
+        viewModel.outputs.startProjectActivityForUpdate()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { startProjectActivityForUpdate(it) }
+
+        viewModel.outputs.startProjectActivityForCommentToUpdate()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { startProjectActivityForCommentToUpdate(it) }
 
         viewModel.outputs.startProjectActivityForCheckout()
             .compose(bindToLifecycle())
@@ -67,6 +84,40 @@ class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
 
     private fun startProjectActivity(uri: Uri) {
         startActivity(projectIntent(uri))
+        finish()
+    }
+
+    private fun startProjectActivityForComment(uri: Uri) {
+        val projectIntent = projectIntent(uri)
+            .putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_COMMENT, true)
+
+        commentId(uri.toString())?.let {
+            projectIntent.putExtra(IntentKey.COMMENT, it)
+        }
+
+        startActivity(projectIntent)
+        finish()
+    }
+
+    private fun startProjectActivityForCommentToUpdate(uri: Uri) {
+        val path = uri.path().split("/")
+
+        val projectIntent = projectIntent(uri)
+            .putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE, path[path.lastIndex - 1])
+            .putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE_COMMENT, true)
+
+        commentId(uri.toString())?.let {
+            projectIntent.putExtra(IntentKey.COMMENT, it)
+        }
+
+        startActivity(projectIntent)
+        finish()
+    }
+
+    private fun startProjectActivityForUpdate(uri: Uri) {
+        val projectIntent = projectIntent(uri)
+            .putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE, uri.lastPathSegment)
+        startActivity(projectIntent)
         finish()
     }
 

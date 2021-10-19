@@ -28,6 +28,7 @@ class EventContextValues {
         ADD_ONS_CONTINUE("add_ons_continue"),
         PLEDGE_INITIATE("pledge_initiate"),
         PLEDGE_SUBMIT("pledge_submit"),
+        PLEDGE_CONFIRM("pledge_confirm"),
         REWARD_CONTINUE("reward_continue"),
         DISCOVER_SORT("discover_sort"),
         DISCOVER_FILTER("discover_filter"),

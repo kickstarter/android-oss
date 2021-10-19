@@ -34,11 +34,17 @@ interface ApolloClientType {
 
     fun clearUnseenActivity(): Observable<Int>
 
+    fun getProject(slug: String): Observable<Project>
+
+    fun getProject(project: Project): Observable<Project>
+
     fun getProjectComments(slug: String, cursor: String?, limit: Int = PAGE_SIZE): Observable<CommentEnvelope>
 
     fun getProjectUpdateComments(updateId: String, cursor: String?, limit: Int = PAGE_SIZE): Observable<CommentEnvelope>
 
     fun getRepliesForComment(comment: Comment, cursor: String? = null, pageSize: Int = REPLIES_PAGE_SIZE): Observable<CommentEnvelope>
+
+    fun getComment(commentableId: String): Observable<Comment>
 
     fun createComment(comment: PostCommentData): Observable<Comment>
 

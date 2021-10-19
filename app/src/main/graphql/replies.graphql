@@ -14,3 +14,12 @@ query GetRepliesForComment($commentableId: ID!, $cursor: String, $pageSize: Int)
         }
     }
 }
+
+query GetComment($commentableId: ID!) {
+    commentable: node(id: $commentableId) {
+        ... on Comment {
+            ...comment
+
+        }
+    }
+}

@@ -1,3 +1,9 @@
+query FetchProject($slug: String!) {
+  project(slug: $slug) {
+    ... fullProject
+  }
+}
+
 query ProjectCreatorDetails($slug: String!) {
   project(slug: $slug) {
     creator {
@@ -28,6 +34,9 @@ query GetProjectAddOns($slug: String!, $locationId: ID!) {
           }
         }
         ... reward
+        items {
+          ... rewardItems
+        }
       }
     }
   }

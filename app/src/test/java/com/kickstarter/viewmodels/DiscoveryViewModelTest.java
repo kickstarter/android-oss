@@ -160,7 +160,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.vm.getInputs().discoveryPagerAdapterSetPrimaryPage(Mockito.mock(DiscoveryPagerAdapter.class), 0);
 
     // Sort tab should be expanded.
-    this.expandSortTabLayout.assertValues(true);
+    this.expandSortTabLayout.assertValues(true, true);
 
     // Toolbar params should be loaded with initial params.
     this.updateToolbarWithParams.assertValues(DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build());
@@ -172,7 +172,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.segmentTrack.assertValue(EventName.CTA_CLICKED.getEventName());
 
     // Sort tab should be expanded.
-    this.expandSortTabLayout.assertValues(true, true);
+    this.expandSortTabLayout.assertValues(true, true, true);
 
     // Unchanged toolbar params should not emit.
     this.updateToolbarWithParams.assertValues(DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build());
@@ -183,7 +183,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     );
 
     // Sort tab should be expanded.
-    this.expandSortTabLayout.assertValues(true, true, true);
+    this.expandSortTabLayout.assertValues(true, true, true, true, true);
     this.segmentTrack.assertValues(EventName.CTA_CLICKED.getEventName(), EventName.CTA_CLICKED.getEventName());
 
     // Select ART category from drawer.
@@ -194,7 +194,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     );
 
     // Sort tab should be expanded.
-    this.expandSortTabLayout.assertValues(true, true, true, true);
+    this.expandSortTabLayout.assertValues(true, true, true, true, true, true, true);
     this.segmentTrack.assertValues(EventName.CTA_CLICKED.getEventName(), EventName.CTA_CLICKED.getEventName(), EventName.CTA_CLICKED.getEventName());
 
     // Simulate rotating the device and hitting initial getInputs() again.
@@ -269,9 +269,9 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     // Initial params should emit. Page should not be updated yet.
     this.updateParams.assertValues(
-      DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build()
+      DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build(), DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build()
     );
-    this.updatePage.assertValues(0);
+    this.updatePage.assertValues(0, 0);
 
     // Select POPULAR sort position.
     this.vm.getInputs().discoveryPagerAdapterSetPrimaryPage(Mockito.mock(DiscoveryPagerAdapter.class), 1);
@@ -279,9 +279,10 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     // Params and page should update with new POPULAR sort values.
     this.updateParams.assertValues(
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build(),
+      DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build()
     );
-    this.updatePage.assertValues(0, 1);
+    this.updatePage.assertValues(0, 0, 1);
 
     // Select ART category from the drawer.
     this.vm.getInputs().childFilterViewHolderRowClick(Mockito.mock(ChildFilterViewHolder.class),
@@ -293,10 +294,12 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     // Params should update with new category; page should remain the same.
     this.updateParams.assertValues(
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build(),
+      DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build(),
-      DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).category(CategoryFactory.artCategory()).build()
+      DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).category(CategoryFactory.artCategory()).build(),
+      DiscoveryParams.builder().category(CategoryFactory.artCategory()).sort(DiscoveryParams.Sort.POPULAR).build()
     );
-    this.updatePage.assertValues(0, 1, 1);
+    this.updatePage.assertValues(0, 0, 1, 1, 1);
 
     // Select MAGIC sort position.
     this.vm.getInputs().discoveryPagerAdapterSetPrimaryPage(Mockito.mock(DiscoveryPagerAdapter.class), 0);
@@ -304,11 +307,13 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     // Params and page should update with new MAGIC sort value.
     this.updateParams.assertValues(
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build(),
+      DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).category(CategoryFactory.artCategory()).build(),
+      DiscoveryParams.builder().category(CategoryFactory.artCategory()).sort(DiscoveryParams.Sort.POPULAR).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).category(CategoryFactory.artCategory()).build()
     );
-    this.updatePage.assertValues(0, 1, 1, 0);
+    this.updatePage.assertValues(0, 0, 1, 1, 1, 0);
 
     // Simulate rotating the device and hitting initial getInputs() again.
     this.vm.getOutputs().updateParamsForPage().subscribe(this.rotatedUpdateParams);
@@ -326,6 +331,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     setUpDefaultParamsTest(null);
 
     this.updateParams.assertValues(
+      DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build()
     );
   }
@@ -335,6 +341,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     setUpDefaultParamsTest(UserFactory.user());
 
     this.updateParams.assertValues(
+      DiscoveryParams.builder().recommended(true).backed(-1).sort(DiscoveryParams.Sort.MAGIC).build(),
       DiscoveryParams.builder().recommended(true).backed(-1).sort(DiscoveryParams.Sort.MAGIC).build()
     );
   }
@@ -344,6 +351,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     setUpDefaultParamsTest(UserFactory.noRecommendations());
 
     this.updateParams.assertValues(
+      DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build()
     );
   }
@@ -687,6 +695,19 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     this.showSuccessMessage.assertNoValues();
     this.showErrorMessage.assertValue("expired");
+  }
+
+  @Test
+  public void testIntentWithUri_whenGivenSort_shouldEmitSort() {
+    final String url = "https://www.kickstarter.com/discover/advanced?sort=end_date";
+    final Intent intentWithUrl = new Intent().setData(Uri.parse(url));
+
+    this.vm = new DiscoveryViewModel.ViewModel(environment());
+    this.vm.getOutputs().updateParamsForPage().subscribe(this.updateParams);
+
+    this.vm.intent(intentWithUrl);
+
+    this.updateParams.assertValue(DiscoveryParams.builder().sort(DiscoveryParams.Sort.ENDING_SOON).build());
   }
 
   private QualtricsResult qualtricsResult(final String surveyUrl, final boolean success) {

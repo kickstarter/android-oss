@@ -8,7 +8,6 @@ import android.view.accessibility.AccessibilityManager
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.firebase.iid.FirebaseInstanceId
 import com.kickstarter.BuildConfig
 import com.kickstarter.R
 import com.kickstarter.libs.qualifiers.ApplicationContext
@@ -83,7 +82,7 @@ abstract class TrackingClient(
 
     override fun currentVariants(): Array<String>? = this.config?.currentVariants()
 
-    override fun deviceDistinctId(): String = FirebaseInstanceId.getInstance().id
+    override fun deviceDistinctId(): String = FirebaseHelper.identifier
 
     override fun deviceFormat(): String =
         if (this.context.resources.getBoolean(R.bool.isTablet)) "tablet"

@@ -20,6 +20,7 @@ import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.InternalToolsType
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.DiscoveryUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.TransitionUtils
@@ -93,7 +94,10 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
         viewModel.outputs.updateParamsForPage()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { pagerAdapter.takeParams(it) }
+            .subscribe {
+                binding.discoveryViewPager.setCurrentItem(DiscoveryUtils.positionFromSort(it.sort()))
+                pagerAdapter.takeParams(it)
+            }
 
         viewModel.outputs.clearPages()
             .compose(bindToLifecycle())

@@ -1603,6 +1603,18 @@
               "deprecationReason": null
             },
             {
+              "name": "fulfillmentStatus",
+              "description": "The fulfillment status of a backing.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "FulfillmentStatusSelectOptions",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "id",
               "description": "",
               "args": [],
@@ -1614,6 +1626,18 @@
                   "name": "ID",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "latestSetupIntent",
+              "description": "If present, the most recent setup_intent data from Stripe.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SetupIntent",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -2172,6 +2196,63 @@
               "deprecationReason": null
             },
             {
+              "name": "allowedRewards",
+              "description": "Base rewards which can be combined with this addon.\nUses creator preferences and shipping rules to determine allow-ability.\nInclusion in this list does not necessarily indicate that the reward is available for backing.",
+              "args": [
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "RewardConnection",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "amount",
               "description": "Amount for claiming this reward.",
               "args": [],
@@ -2426,6 +2507,22 @@
                 "kind": "SCALAR",
                 "name": "Int",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "maxPledgedInSingleBacking",
+              "description": "The maximum amount of this add-on in a single pledge selected by any pledged backer.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -3218,6 +3315,22 @@
           "description": "A reward item.",
           "fields": [
             {
+              "name": "addOnsCount",
+              "description": "The numer of add-ons that the item is included in.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "hasBackers",
               "description": "Whether backers have backed rewards this item belongs to",
               "args": [],
@@ -3365,11 +3478,31 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "forLocation",
+                  "description": "Filters available add ons by given location",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "last",
                   "description": "Returns the last _n_ elements from the list.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "sort",
+                  "description": "Enables/disables add-ons sort by cost and title, with sorting enabled by default",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -3925,6 +4058,22 @@
                 "ofType": {
                   "kind": "ENUM",
                   "name": "CurrencyCode",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "defaultPledge",
+              "description": "The default no reward pledge amount based on the project's currency.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
                   "ofType": null
                 }
               },
@@ -4891,6 +5040,22 @@
             {
               "name": "showCtaToLiveProjects",
               "description": "Whether or not to show ended to live cta",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "showRisksTab",
+              "description": "Whether to show risks under it's own tab instead of campaign tab",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -7034,18 +7199,6 @@
               "deprecationReason": null
             },
             {
-              "name": "optedIntoAddOnBetaTest",
-              "description": "Has the user opted into the add on beta test",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "optedOutOfRecommendations",
               "description": "Is the user opted out from receiving recommendations",
               "args": [],
@@ -7876,6 +8029,54 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "projectsWithUpdatableSurveyResponses",
+              "description": "The title of projects with updatable survey responses",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "projectsWithoutUpdatableSurveyResponses",
+              "description": "The title of projects with non updatable survey responses",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -10526,6 +10727,12 @@
               "deprecationReason": null
             },
             {
+              "name": "IBAN_flexibility",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "PL",
               "description": "",
               "isDeprecated": false,
@@ -10544,37 +10751,19 @@
               "deprecationReason": null
             },
             {
-              "name": "add_on_creator_beta_test",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "addons_in_build",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "admin_checkout_debugger",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "android_creator_view",
+              "name": "android_braze",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "android_go_rewardless_2",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "android_native_checkout",
+              "name": "android_segment",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -10586,19 +10775,25 @@
               "deprecationReason": null
             },
             {
-              "name": "budget_viz_arts",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "budget_viz_fashion",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "ch_currency_selector",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "creator_demographics_survey",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "creator_onboarding_flow_2021",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ct_2021_migration_tool",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -10706,7 +10901,25 @@
               "deprecationReason": null
             },
             {
+              "name": "ios_braze",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "ios_crashlytics",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ios_email_verification_flow",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ios_email_verification_skip",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -10791,6 +11004,12 @@
             },
             {
               "name": "ios_scroll_output_observe_for_ui",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ios_segment",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -10982,6 +11201,12 @@
               "deprecationReason": null
             },
             {
+              "name": "segment_tracking_events",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "show_posts_feed",
               "description": "",
               "isDeprecated": false,
@@ -10994,13 +11219,43 @@
               "deprecationReason": null
             },
             {
+              "name": "stripe_connect_onboarding_only_for_kyc",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "stripe_connect_onboarding_skeleton_poc",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "track_define_namespace",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
+              "name": "uk_shipping_rule_tip",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "updated_risks_flow",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "user_menu_draft_project",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "web_error_on_retry_of_failed_3ds_backing",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -12007,18 +12262,6 @@
               "deprecationReason": null
             },
             {
-              "name": "campus_digest",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "campus_posts",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "comment_replies",
               "description": "",
               "isDeprecated": false,
@@ -12068,12 +12311,6 @@
             },
             {
               "name": "messages",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "post_likes",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -14947,6 +15184,22 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "showExternalSurvey",
+              "description": "Whether or not the external survey should be displayed",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,
@@ -15109,6 +15362,22 @@
           "name": "Category",
           "description": "A project category.",
           "fields": [
+            {
+              "name": "analyticsName",
+              "description": "Category name in English for analytics use.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "id",
               "description": "",
@@ -22882,6 +23151,277 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "FulfillmentStatusSelectOptions",
+          "description": "Values for backing fulfillment status",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "delayed",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "in_progress",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "not_started",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "shipped",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SetupIntent",
+          "description": "Selected fields on a SetupIntent from Stripe for a given backing.",
+          "fields": [
+            {
+              "name": "id",
+              "description": "Stripe ID of the SetupIntent.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "lastSetupError",
+              "description": "The error encountered in the previous SetupIntent confirmation.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SetupIntentError",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "status",
+              "description": "Status of the SetupIntent.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "SetupIntentStatus",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SetupIntentError",
+          "description": "",
+          "fields": [
+            {
+              "name": "code",
+              "description": "For some errors that could be handled programmatically, a short string\nindicating the error code reported. https://stripe.com/docs/error-codes",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "declineCode",
+              "description": "A short string indicating the card issuer’s reason for the decline if they provide one.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "message",
+              "description": "A human-readable message providing more details about the error. For card\nerrors, these messages can be shown to your users.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "The type of error returned.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "SetupIntentErrorType",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "SetupIntentErrorType",
+          "description": "",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "API_CONNECTION_ERROR",
+              "description": "Failure to connect to Stripe's API.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "API_ERROR",
+              "description": "API errors cover any other type of problem (e.g., a temporary problem with Stripe's servers), and are extremely uncommon.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "AUTHENTICATION_ERROR",
+              "description": "Failure to properly authenticate in the request.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CARD_ERROR",
+              "description": "Card errors are very common and they result when the user enters a card that can't be charged for some reason.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "IDEMPOTENCY_ERROR",
+              "description": "Idempotency errors occur when an Idempotency-Key is re-used on a request that\ndoes not match the first request's API endpoint and parameters.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "INVALID_REQUEST_ERROR",
+              "description": "Invalid request errors arise when your request has invalid parameters eg., 3DS authentication failed.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "RATE_LIMIT_ERROR",
+              "description": "Too many requests hit the Stripe API too quickly.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "VALIDATION_ERROR",
+              "description": "Errors triggered by Stripe's client-side libraries when failing to validate\nfields (e.g., when a card number or expiration date is invalid or incomplete).",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "SetupIntentStatus",
+          "description": "",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "CANCELED",
+              "description": "SetupIntent can be canceled at any point before it is processing or succeeded.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PROCESSING",
+              "description": "Once required actions are handled, the SetupIntent moves to this status, which\ncan be brief or take a few days depending on the payment method.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "REQUIRES_ACTION",
+              "description": "If the setup requires additional actions, such as authenticating with 3D Secure",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "REQUIRES_CONFIRMATION",
+              "description": "After the customer provides their payment method information, the SetupIntent is ready to be confirmed.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "REQUIRES_PAYMENT_METHOD",
+              "description": "When the SetupIntent is created, it has this status until a payment method is\nattached. If a SetupIntent fails, it will revert to this status.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SUCCEEDED",
+              "description": "Setup of payment source was successful.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "UNION",
           "name": "PaymentSource",
           "description": "Payment sources",
@@ -29835,6 +30375,33 @@
               "deprecationReason": null
             },
             {
+              "name": "migrateToFulfillmentStatus",
+              "description": "Migrate's a project's eligible backings to new fulfillment status tool.",
+              "args": [
+                {
+                  "name": "input",
+                  "description": "",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "MigrateToFulfillmentStatusInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MigrateToFulfillmentStatusPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "paymentSourceDelete",
               "description": "Delete a user's payment source",
               "args": [
@@ -30126,6 +30693,33 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "SendSubmissionMessagePayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "setBackingFulfillmentStatuses",
+              "description": "Sets the fulfillment status of multiple backings at once.",
+              "args": [
+                {
+                  "name": "input",
+                  "description": "",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "SetBackingFulfillmentStatusesInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SetBackingFulfillmentStatusesPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -34945,13 +35539,9 @@
               "name": "description",
               "description": "",
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "defaultValue": null
             },
@@ -38524,6 +39114,80 @@
         },
         {
           "kind": "INPUT_OBJECT",
+          "name": "MigrateToFulfillmentStatusInput",
+          "description": "Autogenerated input type of MigrateToFulfillmentStatus",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "projectId",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "MigrateToFulfillmentStatusPayload",
+          "description": "Autogenerated return type of MigrateToFulfillmentStatus",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "success",
+              "description": "Succeeds if backings are being updated in backend.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
           "name": "PaymentSourceDeleteInput",
           "description": "Autogenerated input type of PaymentSourceDelete",
           "fields": null,
@@ -39380,6 +40044,124 @@
                 "kind": "OBJECT",
                 "name": "Message",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "SetBackingFulfillmentStatusesInput",
+          "description": "Autogenerated input type of SetBackingFulfillmentStatuses",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "backingIds",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "projectId",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "status",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "FulfillmentStatusSelectOptions",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SetBackingFulfillmentStatusesPayload",
+          "description": "Autogenerated return type of SetBackingFulfillmentStatuses",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "updatedBackingIds",
+              "description": "Lists the ids of all successfully updated backings.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  }
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -43380,12 +44162,6 @@
             },
             {
               "name": "opt_in_ksr_research",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "opted_into_add_on_beta_test",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null

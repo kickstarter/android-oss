@@ -117,6 +117,11 @@ fun Uri.isProjectSurveyUri(webEndpoint: String): Boolean {
     return isKickstarterUri(webEndpoint) && PROJECT_SURVEY.matcher(path()).matches()
 }
 
+fun Uri.isProjectCommentUri(webEndpoint: String): Boolean {
+    return isKickstarterUri(webEndpoint) && PROJECT_COMMENTS_PATTERN.matcher(path())
+        .matches()
+}
+
 fun Uri.isProjectUpdateCommentsUri(webEndpoint: String): Boolean {
     return isKickstarterUri(webEndpoint) && PROJECT_UPDATE_COMMENTS_PATTERN.matcher(path()).matches()
 }
@@ -139,6 +144,11 @@ fun Uri.isWebUri(webEndpoint: String): Boolean {
     return isKickstarterUri(webEndpoint) && !isApiUri(webEndpoint)
 }
 
+fun Uri.isDiscoverSortParam(): Boolean {
+    return DISCOVER_SORT_PATTERN.matcher(path()).matches() &&
+        ObjectUtils.isNotNull(getQueryParameter("sort"))
+}
+
 private const val VERIFICATION = "/profile/verify_email"
 
 // /projects/:creator_param/:project_param/checkouts/1/thanks
@@ -155,6 +165,9 @@ private val DISCOVER_SCOPE_PATTERN = Pattern.compile("\\A\\/discover\\/([a-zA-Z0
 // /discover/places/param
 private val DISCOVER_PLACES_PATTERN =
     Pattern.compile("\\A\\/discover\\/places\\/[a-zA-Z0-9-_]+\\z")
+
+// /discover/advanced?sort=param
+private val DISCOVER_SORT_PATTERN = Pattern.compile("\\A\\/discover\\/advanced.*")
 
 //  /projects/:creator_param/:project_param/pledge
 private val NATIVE_CHECKOUT_PATTERN = Pattern.compile(
@@ -174,6 +187,11 @@ private val PROJECT_PATTERN = Pattern.compile(
 //  /projects/:creator_param/:project_param/surveys/:survey_param
 private val PROJECT_SURVEY = Pattern.compile(
     "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/surveys\\/[a-zA-Z0-9-_]+\\z"
+)
+
+// /projects/:creator_param/:project_param/comments
+private val PROJECT_COMMENTS_PATTERN = Pattern.compile(
+    "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/comments\\z"
 )
 
 // /projects/:creator_param/:project_param/posts/:update_param/comments

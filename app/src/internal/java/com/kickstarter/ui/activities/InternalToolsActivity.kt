@@ -16,7 +16,6 @@ import androidx.work.BackoffPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import com.google.firebase.iid.FirebaseInstanceId
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.kickstarter.KSApplication
 import com.kickstarter.R
@@ -24,6 +23,7 @@ import com.kickstarter.databinding.InternalToolsLayoutBinding
 import com.kickstarter.libs.ApiEndpoint
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Build
+import com.kickstarter.libs.FirebaseHelper
 import com.kickstarter.libs.Logout
 import com.kickstarter.libs.preferences.StringPreferenceType
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference
@@ -217,7 +217,7 @@ class InternalToolsActivity : BaseActivity<InternalToolsViewModel>() {
         binding.apiEndpoint.text = apiEndpointPreference?.get()
         binding.buildDate.text = build?.buildDate()?.toString(DateTimeFormat.forPattern("MMM dd, yyyy h:mm:ss aa zzz"))
         binding.commitSha.text = build?.sha()
-        binding.deviceId.text = FirebaseInstanceId.getInstance().id
+        binding.deviceId.text = FirebaseHelper.identifier
         binding.variant.text = build?.variant()
         binding.versionCode.text = build?.versionCode().toString()
         binding.versionName.text = build?.versionName()

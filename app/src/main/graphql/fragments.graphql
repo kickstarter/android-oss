@@ -1,3 +1,90 @@
+fragment fullProject on Project {
+    availableCardTypes
+    backersCount
+    description
+    minPledge
+    isLaunched
+    backing {
+        ... backing
+    }
+    category {
+        ...category
+    }
+    commentsCount
+    country {
+        ...country
+    }
+    createdAt
+    creator {
+        ... user
+    }
+    currency
+    prelaunchActivated
+    projectOfTheDayAt
+    friends {
+        nodes {
+            ... user
+        }
+    }
+    fxRate
+    deadlineAt
+    goal {
+        ... amount
+    }
+    id
+    isWatched
+    launchedAt
+    location {
+        ... location
+    }
+    name
+    collaboratorPermissions
+    pledged {
+        ... amount
+    }
+    ...full
+    prelaunchActivated
+    ...tagsCreative
+    ...tagsDiscovery
+    rewards {
+        nodes {
+            ... reward
+            allowedAddons {
+                pageInfo {
+                    startCursor
+                }
+            }
+            items {
+                ... rewardItems
+            }
+
+        }
+    }
+    slug
+    isProjectWeLove
+    state
+    stateChangedAt
+    usdExchangeRate
+    posts {
+        ...updates
+    }
+    url
+    video {
+        ...video
+    }
+
+    # - Frequently asked questions
+    faqs {
+        nodes {
+            ... faq
+        }
+    }
+
+    environmentalCommitments {
+        ... environmentalCommitment
+    }
+}
+
 fragment backing on Backing {
     id
     status
@@ -25,6 +112,9 @@ fragment backing on Backing {
     }
     reward {
         ... reward
+        items {
+            ... rewardItems
+        }
     }
     backer {
         ... user
@@ -32,8 +122,80 @@ fragment backing on Backing {
     addOns {
         nodes {
             ... reward
+            items {
+                ... rewardItems
+            }
         }
     }
+}
+
+fragment rewardItems on RewardItemsConnection {
+    edges {
+        quantity
+        node {
+            id
+            name
+        }
+    }
+}
+
+fragment full on Project {
+    image {
+        url(width: 1024)
+    }
+}
+
+fragment video on Video {
+    previewImageUrl
+    videoSources {
+        base {
+            src
+        }
+        high {
+            src
+        }
+        hls {
+            src
+        }
+    }
+}
+
+fragment tagsDiscovery on Project {
+    tags(scope: CREATIVE_PROMPT) {
+        id
+    }
+}
+
+fragment tagsCreative on Project {
+    tags(scope: CREATIVE_PROMPT) {
+        id
+    }
+}
+
+fragment updates on PostConnection {
+    nodes {
+        updatedAt
+    }
+    totalCount
+}
+
+
+fragment category on Category {
+    analyticsName
+    id
+    name
+    slug
+    parentCategory {
+        analyticsName
+        id
+        name
+        slug
+    }
+}
+
+fragment country on Country {
+    code
+    name
 }
 
 fragment checkoutBacking on Backing {
@@ -54,20 +216,6 @@ fragment reward on Reward {
     description
     estimatedDeliveryOn
     available
-    items {
-        edges {
-            quantity
-            node {
-                project{
-                    id
-                }
-                hasBackers
-                id
-                name
-                rewardsCount
-            }
-        }
-    }
     amount {
         ... amount
     }
@@ -81,6 +229,19 @@ fragment reward on Reward {
     startsAt
     endsAt
     rewardType
+}
+
+fragment environmentalCommitment on EnvironmentalCommitment {
+    commitmentCategory
+    description
+    id
+}
+
+fragment faq on ProjectFaq {
+    id
+    answer
+    createdAt
+    question
 }
 
 fragment comment on Comment {
@@ -113,13 +274,13 @@ fragment user on User {
     id
     imageUrl(blur: false, width: 54),
     isCreator
+    chosenCurrency
 }
-
-
 
 fragment amount on Money {
     amount
     currency
+    symbol
 }
 
 fragment location on Location {

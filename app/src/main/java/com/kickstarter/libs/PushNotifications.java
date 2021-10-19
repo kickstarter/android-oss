@@ -19,10 +19,12 @@ import androidx.core.app.TaskStackBuilder;
 import androidx.core.content.ContextCompat;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.transformations.CropSquareTransformation;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.extensions.IntentExtKt;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.Update;
@@ -35,6 +37,7 @@ import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.MessagesActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
+import com.kickstarter.ui.activities.ProjectPageActivity;
 import com.kickstarter.ui.activities.SurveyResponseActivity;
 import com.kickstarter.ui.activities.UpdateActivity;
 import com.squareup.picasso.Picasso;
@@ -71,6 +74,7 @@ public final class PushNotifications {
 
   private final @ApplicationContext Context context;
   private final ApiClientType client;
+  private final ExperimentsClientType experimentsClientType;
 
   private final PublishSubject<PushNotificationEnvelope> notifications = PublishSubject.create();
   private final CompositeSubscription subscriptions = new CompositeSubscription();
@@ -78,9 +82,10 @@ public final class PushNotifications {
   @VisibleForTesting
   public  Intent messageThreadIntent;
 
-  public PushNotifications(final @ApplicationContext @NonNull Context context, final @NonNull ApiClientType client) {
+  public PushNotifications(final @ApplicationContext @NonNull Context context, final @NonNull ApiClientType client, final @NonNull ExperimentsClientType experimentsClientType) {
     this.context = context;
     this.client = client;
+    this.experimentsClientType = experimentsClientType;
   }
 
   public void initialize() {
@@ -377,7 +382,7 @@ public final class PushNotifications {
   private @NonNull PendingIntent projectUpdateContentIntent(final @NonNull PushNotificationEnvelope envelope,
     final @NonNull Update update, final @NonNull String projectParam) {
 
-    final Intent projectIntent = new Intent(this.context, ProjectActivity.class)
+    final Intent projectIntent = IntentExtKt.getProjectIntent(new Intent(), this.context, this.experimentsClientType.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2))
       .putExtra(IntentKey.PROJECT_PARAM, projectParam)
       .putExtra(IntentKey.REF_TAG, RefTag.push());
 
@@ -489,7 +494,8 @@ public final class PushNotifications {
   }
 
   private @NonNull Intent projectIntent(final @NonNull PushNotificationEnvelope envelope, final @NonNull String projectParam) {
-    return new Intent(this.context, ProjectActivity.class)
+    final Intent intent = new Intent(this.context, this.experimentsClientType.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2) ? ProjectPageActivity.class : ProjectActivity.class);
+    return intent
       .putExtra(IntentKey.PROJECT_PARAM, projectParam)
       .putExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE, envelope)
       .putExtra(IntentKey.REF_TAG, RefTag.push());

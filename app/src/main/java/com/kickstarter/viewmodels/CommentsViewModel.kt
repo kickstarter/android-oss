@@ -63,6 +63,7 @@ interface CommentsViewModel {
         fun paginateCommentsError(): Observable<Throwable>
         fun pullToRefreshError(): Observable<Throwable>
         fun startThreadActivity(): Observable<Pair<CommentCardData, Boolean>>
+        fun startThreadActivityFromDeepLink(): Observable<CommentCardData>
         fun hasPendingComments(): Observable<Pair<Boolean, Boolean>>
 
         /** Emits a boolean indicating whether comments are being fetched from the API.  */
@@ -107,6 +108,7 @@ interface CommentsViewModel {
         private val displayPaginationError = BehaviorSubject.create<Boolean>()
         private val commentToRefresh = PublishSubject.create<Pair<Comment, Int>>()
         private val startThreadActivity = BehaviorSubject.create<Pair<CommentCardData, Boolean>>()
+        private val startThreadActivityFromDeepLink = BehaviorSubject.create<CommentCardData>()
         private val hasPendingComments = BehaviorSubject.create<Pair<Boolean, Boolean>>()
 
         // - Error observables to handle the 3 different use cases
@@ -180,6 +182,27 @@ interface CommentsViewModel {
                 }
 
             loadCommentListFromProjectOrUpdate(projectOrUpdateComment)
+
+            val deepLinkCommentableId =
+                intent().filter {
+                    it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty()
+                }.map { requireNotNull(it.getStringExtra(IntentKey.COMMENT)) }
+
+            deepLinkCommentableId
+                .compose(Transformers.takeWhen(projectOrUpdateComment))
+                .switchMap {
+                    return@switchMap apolloClient.getComment(it)
+                }.compose(Transformers.neverError())
+                .compose(combineLatestPair(deepLinkCommentableId))
+                .map {
+                    CommentCardData.builder()
+                        .comment(it.first)
+                        .project(this.project)
+                        .commentCardState(it.first.cardStatus())
+                        .commentableId(it.second)
+                        .build()
+                }.compose(bindToLifecycle())
+                .subscribe { this.startThreadActivityFromDeepLink.onNext(it) }
 
             this.insertNewCommentToList
                 .distinctUntilChanged()
@@ -473,6 +496,8 @@ interface CommentsViewModel {
         override fun setEmptyState(): Observable<Boolean> = setEmptyState
 
         override fun startThreadActivity(): Observable<Pair<CommentCardData, Boolean>> = this.startThreadActivity
+        override fun startThreadActivityFromDeepLink(): Observable<CommentCardData> = this.startThreadActivityFromDeepLink
+
         override fun isFetchingComments(): Observable<Boolean> = this.isFetchingComments
 
         override fun hasPendingComments(): Observable<Pair<Boolean, Boolean>> = this.hasPendingComments

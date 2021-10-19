@@ -8,6 +8,7 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -33,6 +34,8 @@ import java.net.CookieManager;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+
+import kotlin.Triple;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
@@ -75,7 +78,7 @@ public interface ThanksViewModel {
     Observable<DiscoveryParams> startDiscoveryActivity();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
-    Observable<Pair<Project, RefTag>> startProjectActivity();
+    Observable<Triple<Project, RefTag, Boolean>> startProjectActivity();
   }
 
   final class ViewModel extends ActivityViewModel<ThanksActivity> implements Inputs, Outputs {
@@ -104,7 +107,7 @@ public interface ThanksViewModel {
         .take(1)
         .compose(bindToLifecycle());
 
-      final Observable<Category> rootCategory = project.flatMap(p -> rootCategory(p, this.apiClient));
+      final Observable<Category> rootCategory = project.switchMap(p -> rootCategory(p, this.apiClient));
 
       final Observable<Boolean> isGamesCategory = rootCategory
         .map(c -> "games".equals(c.slug()));
@@ -129,14 +132,18 @@ public interface ThanksViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.finish);
 
+      final  Observable<Boolean> isProjectPageEnabled =
+              Observable.just(this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2));
+
       this.projectCardViewHolderClicked
+        .withLatestFrom(isProjectPageEnabled, Pair::create)
         .compose(bindToLifecycle())
-        .subscribe(p -> this.startProjectActivity.onNext(Pair.create(p, RefTag.thanks())));
+        .subscribe(p -> this.startProjectActivity.onNext(new Triple<>(p.first, RefTag.thanks(), p.second)));
 
       Observable.combineLatest(
         project,
         rootCategory,
-        project.flatMap(p -> this.relatedProjects(p, this.apiClient)),
+        project.switchMap(p -> this.relatedProjects(p, this.apiClient)),
         ThanksData::new
       )
         .compose(bindToLifecycle())
@@ -293,7 +300,7 @@ public interface ThanksViewModel {
     private final PublishSubject<Void> showRatingDialog = PublishSubject.create();
     private final PublishSubject<User> signedUpToGamesNewsletter = PublishSubject.create();
     private final PublishSubject<DiscoveryParams> startDiscoveryActivity = PublishSubject.create();
-    private final PublishSubject<Pair<Project, RefTag>> startProjectActivity = PublishSubject.create();
+    private final PublishSubject<Triple<Project, RefTag, Boolean>> startProjectActivity = PublishSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -329,7 +336,7 @@ public interface ThanksViewModel {
     @Override public @NonNull Observable<DiscoveryParams> startDiscoveryActivity() {
       return this.startDiscoveryActivity;
     }
-    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
+    @Override public @NonNull Observable<Triple<Project, RefTag, Boolean>> startProjectActivity() {
       return this.startProjectActivity;
     }
   }

@@ -237,7 +237,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.apollographql.apollo:apollo-gradle-plugin:2.5.10'
-        classpath 'com.karumi:shot:5.11.0'
+        classpath 'com.karumi:shot:5.11.2'
     }
 }
 
@@ -289,7 +289,7 @@ dependencies {
     implementation "com.jakewharton.rxbinding:rxbinding-recyclerview-v7:$rx_binding_version"
     implementation "com.jakewharton.rxbinding:rxbinding-support-v4:$rx_binding_version"
     implementation "com.jakewharton.timber:timber:4.7.1"
-    implementation 'com.optimizely.ab:android-sdk:3.10.1'
+    implementation 'com.optimizely.ab:android-sdk:3.11.1'
     implementation 'com.qualtrics:digital:1.3'
     implementation "com.stripe:stripe-android:16.10.0"
     final okhttp_version = "4.8.+"

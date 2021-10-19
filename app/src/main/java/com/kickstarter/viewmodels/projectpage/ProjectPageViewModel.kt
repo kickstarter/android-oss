@@ -690,8 +690,8 @@ interface ProjectPageViewModel {
             projectData
                 .compose(takePairWhen(this.tabSelected))
                 .distinctUntilChanged()
-                .delay(200, TimeUnit.MILLISECONDS, environment.scheduler()) // add delay to wait until 
-                // activity subscribed to viewmodel
+                .delay(150, TimeUnit.MILLISECONDS, environment.scheduler()) // add delay to wait
+                // until fragment subscribed to viewmodel
                 .subscribe {
                     this.projectData.onNext(it.first)
                 }

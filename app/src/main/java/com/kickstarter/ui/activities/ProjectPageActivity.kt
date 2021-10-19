@@ -47,9 +47,6 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.extensions.showSnackbar
-import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
-import com.kickstarter.ui.extensions.startCreatorDashboardActivity
-import com.kickstarter.ui.extensions.startProjectUpdatesActivity
 import com.kickstarter.ui.extensions.startRootCommentsActivity
 import com.kickstarter.ui.extensions.startUpdatesActivity
 import com.kickstarter.ui.fragments.BackingFragment
@@ -268,12 +265,7 @@ class ProjectPageActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showPledgeFragment(it) }
 
-        this.viewModel.outputs.startCampaignWebViewActivity()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { this.startCampaignWebViewActivity(it) }
 
-        // TODO: delete this is now on view ProjectPageViewModel it lives on the Overview now
         this.viewModel.outputs.startRootCommentsActivity()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
@@ -306,24 +298,6 @@ class ProjectPageActivity :
                     it.first.second
                 )
             }
-
-        // TODO: delete this is now on view ProjectPageViewModel it lives on the Overview now
-        this.viewModel.outputs.startCreatorBioWebViewActivity()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { startCreatorBioWebViewActivity(it) }
-
-        // TODO: delete this is now on view ProjectPageViewModel it lives on the Overview now
-        this.viewModel.outputs.startCreatorDashboardActivity()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { startCreatorDashboardActivity(it) }
-
-        // TODO: delete this is now on view ProjectPageViewModel it lives on the Overview now
-        this.viewModel.outputs.startProjectUpdatesActivity()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { startProjectUpdatesActivity(it) }
 
         this.viewModel.outputs.startLoginToutActivity()
             .compose(bindToLifecycle())
@@ -729,13 +703,6 @@ class ProjectPageActivity :
     private fun showUpdatePledgeSuccess() {
         clearFragmentBackStack()
         backingFragment()?.pledgeSuccessfullyUpdated()
-    }
-
-    private fun startCampaignWebViewActivity(projectData: ProjectData) {
-        val intent = Intent(this, CampaignDetailsActivity::class.java)
-            .putExtra(IntentKey.PROJECT_DATA, projectData)
-        startActivityForResult(intent, ActivityRequestCodes.SHOW_REWARDS)
-        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun startShareIntent(projectNameAndShareUrl: Pair<String, String>) {

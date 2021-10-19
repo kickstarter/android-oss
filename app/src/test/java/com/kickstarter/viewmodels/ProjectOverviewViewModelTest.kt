@@ -7,6 +7,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.models.OptimizelyExperiment
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ProgressBarUtils
 import com.kickstarter.libs.utils.ProjectUtils
@@ -176,6 +177,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.campaignButtonClicked()
         startCampaignView.assertValue(projectData)
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -185,6 +187,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.creatorDashboardClicked()
         startCreatorDashboard.assertValue(projectData)
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test

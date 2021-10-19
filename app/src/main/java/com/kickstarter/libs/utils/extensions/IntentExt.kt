@@ -5,17 +5,11 @@ import android.content.Intent
 import android.util.Pair
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.activities.CommentsActivity
-import com.kickstarter.ui.activities.CreatorBioActivity
-import com.kickstarter.ui.activities.CreatorDashboardActivity
-import com.kickstarter.ui.activities.ProjectActivity
-import com.kickstarter.ui.activities.ProjectPageActivity
-import com.kickstarter.ui.activities.ProjectUpdatesActivity
-import com.kickstarter.ui.activities.UpdateActivity
+import com.kickstarter.ui.activities.*
 import com.kickstarter.ui.data.ProjectData
 
 fun Intent.getProjectIntent(context: Context, isFfEnabled: Boolean): Intent {
-    return this.setClass(context, if (isFfEnabled) ProjectPageActivity::class.java else ProjectActivity::class.java)
+    return this.setClass(context, if (true) ProjectPageActivity::class.java else ProjectActivity::class.java)
 }
 
 /**
@@ -46,6 +40,11 @@ fun Intent.getRootCommentsActivityIntent(
 fun Intent.getCreatorDashboardActivityIntent(context: Context, project: Project): Intent {
     return this.setClass(context, CreatorDashboardActivity::class.java)
         .putExtra(IntentKey.PROJECT, project)
+}
+
+fun Intent.getCampaignDetailsActivityIntent(context: Context, projectData: ProjectData): Intent {
+    return this.setClass(context,CampaignDetailsActivity::class.java)
+        .putExtra(IntentKey.PROJECT_DATA, projectData)
 }
 
 /**

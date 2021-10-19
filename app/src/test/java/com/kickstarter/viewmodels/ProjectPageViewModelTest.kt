@@ -1709,17 +1709,24 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testProjectData_whenTabSelected() {
-        setUpEnvironment(environment())
+        val testScheduler = TestScheduler()
+
+        setUpEnvironment(
+            environment().toBuilder()
+                .scheduler(testScheduler).build()
+        )
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
         this.projectData.assertValueCount(1)
 
         // - the tab of the viewpager on position 1 has been pressed
         this.vm.inputs.tabSelected(1)
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
         this.projectData.assertValueCount(2)
 
         // - the tab of the viewpager on position 0 has been pressed
         this.vm.inputs.tabSelected(0)
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
         this.projectData.assertValueCount(3)
     }
 

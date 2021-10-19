@@ -17,7 +17,7 @@ class FirebaseHelper(context: Context, callback: () -> Boolean) {
             return FirebaseHelper(context, callback)
         }
 
-        @JvmStatic fun delete() =  FirebaseInstallations.getInstance().delete()
+        @JvmStatic fun delete() = FirebaseInstallations.getInstance().delete()
     }
 
     init {

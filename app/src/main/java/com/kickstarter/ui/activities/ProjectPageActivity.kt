@@ -130,6 +130,7 @@ class ProjectPageActivity :
             }
 
         this.viewModel.outputs.updateEnvCommitmentsTabVisibility()
+            .distinctUntilChanged()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { isGone ->
@@ -344,6 +345,26 @@ class ProjectPageActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { this.startVideoActivity(it) }
+
+        this.viewModel.outputs.projectPhoto()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding.mediaHeaderLayout.inputs.setProjectPhoto(it) }
+
+        viewModel.outputs.playButtonIsVisible()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.mediaHeaderLayout.inputs.setPlayButtonVisibility(it) }
+
+        binding.mediaHeaderLayout.outputs.playButtonClicks()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { viewModel.inputs.playVideoButtonClicked() }
+
+        viewModel.outputs.backingViewGroupIsVisible()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.backingGroup.visibility = it.toVisibility() }
 
         setClickListeners()
     }

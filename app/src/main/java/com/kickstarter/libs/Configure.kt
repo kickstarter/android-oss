@@ -21,7 +21,7 @@ interface Configure {
  */
 enum class ProjectPagerTabs {
     OVERVIEW, // - Types.OVERVIEW.ordinal == 0 & position == 0
-    CAMPAIGN, // - Types.CAMPAIGN.ordinal == 1 & position == 1
+    //CAMPAIGN, // - Types.CAMPAIGN.ordinal == 1 & position == 1 // TODO bring back CAMPAIGN, on second place once the HTML parser is in place
     FAQS, // - Types.FAQS.ordinal == 2 & position == 2
     ENVIRONMENTAL_COMMITMENT, // - Types.ENVIRONMENTAL_COMMITMENT.ordinal == 3 & position == 3
 }

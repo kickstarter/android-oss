@@ -33,7 +33,11 @@ import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ProjectSocialActivity
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.extensions.*
+import com.kickstarter.ui.extensions.startCampaignWebViewActivity
+import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
+import com.kickstarter.ui.extensions.startCreatorDashboardActivity
+import com.kickstarter.ui.extensions.startProjectUpdatesActivity
+import com.kickstarter.ui.extensions.startRootCommentsActivity
 import com.kickstarter.viewmodels.projectpage.ProjectOverviewViewModel
 import com.squareup.picasso.Picasso
 import org.joda.time.DateTime

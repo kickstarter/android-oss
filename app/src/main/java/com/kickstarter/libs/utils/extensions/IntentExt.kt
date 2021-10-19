@@ -5,7 +5,14 @@ import android.content.Intent
 import android.util.Pair
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.activities.*
+import com.kickstarter.ui.activities.CampaignDetailsActivity
+import com.kickstarter.ui.activities.CommentsActivity
+import com.kickstarter.ui.activities.CreatorBioActivity
+import com.kickstarter.ui.activities.CreatorDashboardActivity
+import com.kickstarter.ui.activities.ProjectActivity
+import com.kickstarter.ui.activities.ProjectPageActivity
+import com.kickstarter.ui.activities.ProjectUpdatesActivity
+import com.kickstarter.ui.activities.UpdateActivity
 import com.kickstarter.ui.data.ProjectData
 
 fun Intent.getProjectIntent(context: Context, isFfEnabled: Boolean): Intent {
@@ -43,7 +50,7 @@ fun Intent.getCreatorDashboardActivityIntent(context: Context, project: Project)
 }
 
 fun Intent.getCampaignDetailsActivityIntent(context: Context, projectData: ProjectData): Intent {
-    return this.setClass(context,CampaignDetailsActivity::class.java)
+    return this.setClass(context, CampaignDetailsActivity::class.java)
         .putExtra(IntentKey.PROJECT_DATA, projectData)
 }
 

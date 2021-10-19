@@ -834,7 +834,6 @@ interface ProjectPageViewModel {
                     this.analyticEvents.trackPledgeInitiateCTA(it.first)
                 }
 
-
             currentProject
                 .map { ProjectUtils.metadataForProject(it) }
                 .map { ProjectUtils.Metadata.BACKING == it }

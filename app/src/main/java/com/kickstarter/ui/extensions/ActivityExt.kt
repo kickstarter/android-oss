@@ -10,7 +10,11 @@ import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.kickstarter.R
 import com.kickstarter.libs.utils.TransitionUtils
-import com.kickstarter.libs.utils.extensions.*
+import com.kickstarter.libs.utils.extensions.getCreatorBioWebViewActivityIntent
+import com.kickstarter.libs.utils.extensions.getCreatorDashboardActivityIntent
+import com.kickstarter.libs.utils.extensions.getProjectUpdatesActivityIntent
+import com.kickstarter.libs.utils.extensions.getRootCommentsActivityIntent
+import com.kickstarter.libs.utils.extensions.getUpdatesActivityIntent
 import com.kickstarter.models.Project
 import com.kickstarter.ui.data.ProjectData
 import timber.log.Timber
@@ -86,11 +90,6 @@ fun Activity.startRootCommentsActivity(projectAndData: Pair<Project, ProjectData
     this.let {
         TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
     }
-}
-
-fun Activity.startCampaignWebViewActivity(projectData: ProjectData) {
-    startActivity(Intent().getCampaignDetailsActivityIntent(this, projectData = projectData))
-    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
 }
 
 fun Activity.startCreatorDashboardActivity(project: Project) {

@@ -262,7 +262,7 @@ repositories {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.annotation:annotation:1.2.0'
-    implementation 'androidx.appcompat:appcompat:1.3.0'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'androidx.browser:browser:1.3.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.preference:preference-ktx:1.1.1'
@@ -277,7 +277,7 @@ dependencies {
     implementation "com.github.frankiesardo:auto-parcel:$auto_parcel_version"
     kapt "com.github.frankiesardo:auto-parcel-processor:$auto_parcel_version"
     implementation "com.google.android.gms:play-services-wallet:18.1.3"
-    implementation "com.google.android.exoplayer:exoplayer:2.14.1"
+    implementation "com.google.android.exoplayer:exoplayer:2.15.1"
     implementation 'com.google.android:flexbox:1.1.0'
     implementation 'com.google.android.material:material:1.5.0-alpha01'
     final dagger_version = "2.37"
@@ -315,8 +315,11 @@ dependencies {
     // Security
     implementation 'com.perimeterx.sdk:msdk:1.13.1'
 
+    // Picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:26.7.0')
+    implementation platform('com.google.firebase:firebase-bom:28.4.2')
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-perf-ktx'
@@ -328,7 +331,7 @@ dependencies {
     testImplementation "org.mockito:mockito-core:3.6.0"
     testImplementation "org.robolectric:robolectric:4.4"
     testImplementation "org.robolectric:shadows-multidex:4.4"
-    testImplementation "androidx.test:core:1.3.0"
+    testImplementation "androidx.test:core:1.4.0"
     androidTestImplementation 'androidx.annotation:annotation:1.2.0'
 
     def espresso = '3.2.0'
@@ -337,8 +340,8 @@ dependencies {
     }
     androidTestImplementation 'androidx.test.espresso:espresso-core:' + espresso
     androidTestImplementation 'androidx.test.espresso:espresso-intents:' + espresso
-    androidTestImplementation "androidx.test.ext:junit:1.1.2"
-    androidTestImplementation 'androidx.test:rules:1.3.0'
+    androidTestImplementation "androidx.test.ext:junit:1.1.3"
+    androidTestImplementation 'androidx.test:rules:1.4.0'
 }
 
 // SHA and timestamp caching courtesy of https://github.com/gdg-x/frisbee/blob/develop/app/build.gradle#L193-L218

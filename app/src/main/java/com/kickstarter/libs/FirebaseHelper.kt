@@ -6,6 +6,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.installations.FirebaseInstallations
 import com.kickstarter.libs.utils.extensions.isKSApplication
+import java.nio.file.Files.delete
 
 class FirebaseHelper(context: Context, callback: () -> Boolean) {
 
@@ -15,6 +16,8 @@ class FirebaseHelper(context: Context, callback: () -> Boolean) {
         @JvmStatic fun initialize(context: Context, callback: () -> Boolean): FirebaseHelper {
             return FirebaseHelper(context, callback)
         }
+
+        @JvmStatic fun delete() =  FirebaseInstallations.getInstance().delete()
     }
 
     init {

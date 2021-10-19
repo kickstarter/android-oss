@@ -54,11 +54,6 @@ import java.util.concurrent.TimeUnit
 
 interface ProjectPageViewModel {
     interface Inputs {
-        /** Call when the blurb view is clicked.  */
-        fun blurbTextViewClicked()
-
-        /** Call when the blurb variant view is clicked.  */
-        fun blurbVariantClicked()
 
         /** Call when the cancel pledge option is clicked.  */
         fun cancelPledgeClicked()
@@ -68,15 +63,6 @@ interface ProjectPageViewModel {
 
         /** Call when the contact creator option is clicked.  */
         fun contactCreatorClicked()
-
-        /** Call when the creator dashboard button is clicked.  */
-        fun creatorDashboardButtonClicked()
-
-        /** Call when the creator info variant is clicked.  */
-        fun creatorInfoVariantClicked()
-
-        /** Call when the creator name is clicked.  */
-        fun creatorNameTextViewClicked()
 
         /** Call when the fix payment method is clicked.  */
         fun fixPaymentMethodButtonClicked()
@@ -216,28 +202,16 @@ interface ProjectPageViewModel {
         /** Emits when the backing has successfully been updated. */
         fun showUpdatePledgeSuccess(): Observable<Void>
 
-        /** Emits when we should start the campaign [com.kickstarter.ui.activities.CampaignDetailsActivity].  */
-        fun startCampaignWebViewActivity(): Observable<ProjectData>
-
         /** Emits when we should start [com.kickstarter.ui.activities.RootCommentsActivity]. */
         fun startRootCommentsActivity(): Observable<Pair<Project, ProjectData>>
 
         fun startRootCommentsForCommentsThreadActivity(): Observable<Pair<String, Pair<Project, ProjectData>>>
-
-        /** Emits when we should start the creator bio [com.kickstarter.ui.activities.CreatorBioActivity].  */
-        fun startCreatorBioWebViewActivity(): Observable<Project>
-
-        /** Emits when we should start the creator dashboard [com.kickstarter.ui.activities.CreatorDashboardActivity].  */
-        fun startCreatorDashboardActivity(): Observable<Project>
 
         /** Emits when we should start [com.kickstarter.ui.activities.LoginToutActivity].  */
         fun startLoginToutActivity(): Observable<Void>
 
         /** Emits when we should show the [com.kickstarter.ui.activities.MessagesActivity]. */
         fun startMessagesActivity(): Observable<Project>
-
-        /** Emits when we should start [com.kickstarter.ui.activities.ProjectUpdatesActivity].  */
-        fun startProjectUpdatesActivity(): Observable<Pair<Project, ProjectData>>
 
         /** Emits when we should start [com.kickstarter.ui.activities.UpdateActivity].  */
         fun startProjectUpdateActivity(): Observable< Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>
@@ -331,14 +305,10 @@ interface ProjectPageViewModel {
         private val showSavedPrompt = PublishSubject.create<Void>()
         private val showUpdatePledge = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showUpdatePledgeSuccess = PublishSubject.create<Void>()
-        private val startCampaignWebViewActivity = PublishSubject.create<ProjectData>()
         private val startRootCommentsActivity = PublishSubject.create<Pair<Project, ProjectData>>()
         private val startRootCommentsForCommentsThreadActivity = PublishSubject.create<Pair<String, Pair<Project, ProjectData>>>()
-        private val startCreatorBioWebViewActivity = PublishSubject.create<Project>()
-        private val startCreatorDashboardActivity = PublishSubject.create<Project>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
         private val startMessagesActivity = PublishSubject.create<Project>()
-        private val startProjectUpdatesActivity = PublishSubject.create<Pair<Project, ProjectData>>()
         private val startProjectUpdateActivity = PublishSubject.create< Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>()
         private val startProjectUpdateToRepliesDeepLinkActivity = PublishSubject.create< Pair<Pair<String, String>, Pair<Project, ProjectData>>>()
         private val startThanksActivity = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
@@ -517,30 +487,7 @@ interface ProjectPageViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(this.showShareSheet)
 
-            val blurbClicked = Observable.merge(this.blurbTextViewClicked, this.blurbVariantClicked)
-
-            currentProjectData
-                .compose<ProjectData>(takeWhen(blurbClicked))
-                .compose(bindToLifecycle())
-                .subscribe(this.startCampaignWebViewActivity)
-
-            val creatorInfoClicked = Observable.merge(this.creatorNameTextViewClicked, this.creatorInfoVariantClicked)
-
-            currentProject
-                .compose<Project>(takeWhen(creatorInfoClicked))
-                .compose(bindToLifecycle())
-                .subscribe(this.startCreatorBioWebViewActivity)
-
             val latestProjectAndProjectData = currentProject.compose<Pair<Project, ProjectData>>(combineLatestPair(projectData))
-
-            this.commentsTextViewClicked
-                .withLatestFrom(latestProjectAndProjectData) { _, project ->
-                    project
-                }
-                .compose(bindToLifecycle())
-                .subscribe {
-                    this.startRootCommentsActivity.onNext(it)
-                }
 
             intent()
                 .take(1)
@@ -609,16 +556,6 @@ interface ProjectPageViewModel {
                 }
                 .compose(bindToLifecycle())
                 .subscribe { this.startProjectUpdateToRepliesDeepLinkActivity.onNext(it) }
-
-            currentProject
-                .compose<Project>(takeWhen(this.creatorDashboardButtonClicked))
-                .compose(bindToLifecycle())
-                .subscribe(this.startCreatorDashboardActivity)
-
-            this.updatesTextViewClicked
-                .withLatestFrom(latestProjectAndProjectData) { _, project -> project }
-                .compose(bindToLifecycle())
-                .subscribe(this.startProjectUpdatesActivity)
 
             currentProject
                 .compose(takeWhen(this.playVideoButtonClicked))
@@ -897,27 +834,6 @@ interface ProjectPageViewModel {
                     this.analyticEvents.trackPledgeInitiateCTA(it.first)
                 }
 
-            fullProjectDataAndPledgeFlowContext
-                .map { it.first }
-                .compose<ProjectData>(takeWhen(blurbClicked))
-                .filter { it.project().isLive && !it.project().isBacking }
-                .compose(bindToLifecycle())
-                .subscribe {
-                    this.analyticEvents.trackCampaignDetailsCTAClicked(it)
-                }
-
-            val shouldTrackCTAClickedEvent = this.pledgeActionButtonText
-                .map { isPledgeCTA(it) }
-                .compose<Boolean>(takeWhen(this.nativeProjectActionButtonClicked))
-
-            fullProjectDataAndCurrentUser
-                .map { it.first }
-                .compose<ProjectData>(takeWhen(creatorInfoClicked))
-                .filter { it.project().isLive && !it.project().isBacking }
-                .compose(bindToLifecycle())
-                .subscribe {
-                    this.analyticEvents.trackCreatorDetailsCTA(it)
-                }
 
             currentProject
                 .map { ProjectUtils.metadataForProject(it) }
@@ -983,14 +899,6 @@ interface ProjectPageViewModel {
             this.tabSelected.onNext(position)
         }
 
-        override fun blurbTextViewClicked() {
-            this.blurbTextViewClicked.onNext(null)
-        }
-
-        override fun blurbVariantClicked() {
-            this.blurbVariantClicked.onNext(null)
-        }
-
         override fun cancelPledgeClicked() {
             this.cancelPledgeClicked.onNext(null)
         }
@@ -1001,18 +909,6 @@ interface ProjectPageViewModel {
 
         override fun contactCreatorClicked() {
             this.contactCreatorClicked.onNext(null)
-        }
-
-        override fun creatorDashboardButtonClicked() {
-            this.creatorDashboardButtonClicked.onNext(null)
-        }
-
-        override fun creatorInfoVariantClicked() {
-            this.creatorInfoVariantClicked.onNext(null)
-        }
-
-        override fun creatorNameTextViewClicked() {
-            this.creatorNameTextViewClicked.onNext(null)
         }
 
         override fun fixPaymentMethodButtonClicked() {
@@ -1166,20 +1062,11 @@ interface ProjectPageViewModel {
         override fun showUpdatePledgeSuccess(): Observable<Void> = this.showUpdatePledgeSuccess
 
         @NonNull
-        override fun startCampaignWebViewActivity(): Observable<ProjectData> = this.startCampaignWebViewActivity
-
-        @NonNull
         override fun startRootCommentsActivity(): Observable<Pair<Project, ProjectData>> = this.startRootCommentsActivity
 
         @NonNull
         override fun startRootCommentsForCommentsThreadActivity(): Observable<Pair<String, Pair<Project, ProjectData>>> =
             this.startRootCommentsForCommentsThreadActivity
-
-        @NonNull
-        override fun startCreatorBioWebViewActivity(): Observable<Project> = this.startCreatorBioWebViewActivity
-
-        @NonNull
-        override fun startCreatorDashboardActivity(): Observable<Project> = this.startCreatorDashboardActivity
 
         @NonNull
         override fun startLoginToutActivity(): Observable<Void> = this.startLoginToutActivity
@@ -1189,9 +1076,6 @@ interface ProjectPageViewModel {
 
         @NonNull
         override fun startThanksActivity(): Observable<Pair<CheckoutData, PledgeData>> = this.startThanksActivity
-
-        @NonNull
-        override fun startProjectUpdatesActivity(): Observable<Pair<Project, ProjectData>> = this.startProjectUpdatesActivity
 
         @NonNull
         override fun startProjectUpdateActivity(): Observable<Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>> = this.startProjectUpdateActivity

@@ -4,7 +4,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.drawable.Animatable
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -179,12 +178,6 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
 
     fun discoveryLayout(): DrawerLayout {
         return binding.discoveryDrawerLayout
-    }
-
-    override fun onNetworkConnectionChanged(isConnected: Boolean) {
-        if (binding.qualtricsPromptLayout.qualtricsPrompt.visibility != View.VISIBLE) {
-            super.onNetworkConnectionChanged(isConnected)
-        }
     }
 
     private fun addTabSelectedListenerToTabLayout() {

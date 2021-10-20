@@ -59,10 +59,6 @@
 
             </com.google.android.material.appbar.AppBarLayout>
 
-            <include
-                android:id="@+id/qualtrics_prompt_layout"
-                layout="@layout/qualtrics_prompt" />
-
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     </RelativeLayout>

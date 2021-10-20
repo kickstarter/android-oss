@@ -103,7 +103,7 @@ public final class ProjectIntentMapper {
    * Extract the project param from a uri. e.g.: A uri like `ksr://www.kickstarter.com/projects/1186238668/skull-graphic-tee`
    * returns `skull-graphic-tee`.
    */
-  private static @Nullable String paramFromUri(final @Nullable Uri uri) {
+  public static @Nullable String paramFromUri(final @Nullable Uri uri) {
     if (uri == null) {
       return null;
     }

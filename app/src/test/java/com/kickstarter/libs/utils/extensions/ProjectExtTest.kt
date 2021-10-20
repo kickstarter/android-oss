@@ -52,4 +52,13 @@ class ProjectExtTest : TestCase() {
         assertFalse(updatedProject.currencyTrailingCode())
         assertTrue(updatedProject.currencySymbol() == "¥")
     }
+
+    @Test
+    fun testUserCanUpdateRewardFulfilled() {
+        val projectReady = ProjectFactory.backedProject().toBuilder().state("successful").build()
+        assertTrue(projectReady.canUpdateFulfillment())
+
+        val project = ProjectFactory.project()
+        assertFalse(project.canUpdateFulfillment())
+    }
 }

@@ -22,10 +22,9 @@ fun Uri.query(): String {
     return this.query ?: ""
 }
 
-/**
- * Get token from Uri query params
- * From "at={TOKEN}&ref=ksr_email_user_email_verification" to "{TOKEN}"
- */
+const val SCHEME_KSR = "ksr"
+const val SCHEME_HTTPS = "https"
+
 /**
  * Get token from Uri query params
  * From "at={TOKEN}&ref=ksr_email_user_email_verification" to "{TOKEN}"
@@ -36,6 +35,20 @@ fun Uri.getTokenFromQueryParams(): String {
 
 fun Uri.isSettingsUrl(): Boolean {
     return this.toString().contains("/settings/notify_mobile_of_marketing_update/true")
+}
+
+/**
+ * Identify valid SCHEMAS "https:" or "ksr:"
+ */
+fun Uri.isKSScheme(): Boolean {
+    return (scheme == SCHEME_KSR || scheme == SCHEME_HTTPS)
+}
+
+/**
+ * Identify the Reward Fulfilled Deeplink
+ */
+fun Uri.isRewardFulfilledDl(): Boolean {
+    return isKSScheme() && isKickstarterUri(this.toString()) && PROJECT_REWARD_FULFILLMENT.matcher(path()).matches()
 }
 
 fun Uri.isVerificationEmailUrl(): Boolean {
@@ -187,6 +200,11 @@ private val PROJECT_PATTERN = Pattern.compile(
 //  /projects/:creator_param/:project_param/surveys/:survey_param
 private val PROJECT_SURVEY = Pattern.compile(
     "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/surveys\\/[a-zA-Z0-9-_]+\\z"
+)
+
+//  /projects/:creator_param/:project_param/mark_reward_fulfilled/true
+private val PROJECT_REWARD_FULFILLMENT = Pattern.compile(
+    "\\A/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/mark_reward_fulfilled/true+\\z"
 )
 
 // /projects/:creator_param/:project_param/comments

@@ -308,7 +308,7 @@ dependencies {
     implementation "org.jsoup:jsoup:1.14.3"
 
     // Analytics Segment-Braze
-    implementation 'com.segment.analytics.android:analytics:4.9.4'
+    implementation 'com.segment.analytics.android:analytics:4.10.0'
     implementation 'com.appboy:appboy-segment-integration:9.0.0'
 
     // Security

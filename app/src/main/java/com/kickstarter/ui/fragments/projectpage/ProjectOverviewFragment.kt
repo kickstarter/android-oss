@@ -33,6 +33,7 @@ import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ProjectSocialActivity
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.extensions.startCampaignWebViewActivity
 import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
 import com.kickstarter.ui.extensions.startCreatorDashboardActivity
 import com.kickstarter.ui.extensions.startProjectUpdatesActivity
@@ -331,6 +332,13 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(Transformers.observeForUI())
             .subscribe {
                 activity?.startCreatorDashboardActivity(it.project())
+            }
+
+        viewModel.outputs.startCampaignView()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                activity?.startCampaignWebViewActivity(it)
             }
 
         binding.projectCreatorDashboardHeader.projectDashboardButton.setOnClickListener {

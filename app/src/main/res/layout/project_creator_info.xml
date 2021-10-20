@@ -129,6 +129,6 @@
     android:layout_height="1dp"
     android:layout_marginTop="@dimen/grid_5"
     android:layout_marginBottom="@dimen/grid_4"
-    android:background="@color/kds_support_400" />
+    android:background="@color/kds_white" />
 
 </LinearLayout>

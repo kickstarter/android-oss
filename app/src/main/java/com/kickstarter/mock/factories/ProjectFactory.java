@@ -67,6 +67,7 @@ public final class ProjectFactory {
       .video(VideoFactory.video())
       .launchedAt(new DateTime(DateTimeZone.UTC).minusDays(10))
       .deadline(new DateTime(DateTimeZone.UTC).plusDays(10))
+        .risks("Risks and challenges")
       .build();
   }
 

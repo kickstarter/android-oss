@@ -83,6 +83,7 @@
   <!-- FPO String for new Project Pager -->
   <string name="Overview">FPO Oververview</string>
   <string name="Faq">FPO Faqs</string>
+  <string name="Risks">FPO Risks</string>
   <string name="Campaign">FPO Campaign</string>
   <string name="Environmental_commitment">FPO Environmental Commitment</string>
 
@@ -101,4 +102,6 @@
     <string name="ask_a_question">Ask a question</string>
     <string name="please_log_in_to_ask_a_question">Looks like there aren\'t any frequently asked
       questions yet. Log in to ask the project creator directly.</string>
+  <string name="risks_and_challenges">Risks and challenges</string>
+  <string name="learn_about_accountability_on_kickstarter">Learn about accountability on Kickstarter</string>
 </resources>

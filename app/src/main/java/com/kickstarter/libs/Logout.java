@@ -1,7 +1,6 @@
 package com.kickstarter.libs;
 
 import com.facebook.login.LoginManager;
-import com.qualtrics.digital.Qualtrics;
 
 import java.net.CookieManager;
 
@@ -19,8 +18,6 @@ public final class Logout {
   public void execute() {
     this.currentUser.logout();
     this.cookieManager.getCookieStore().removeAll();
-    Qualtrics.instance().resetTimer();
-    Qualtrics.instance().resetViewCounter();
     LoginManager.getInstance().logOut();
   }
 }

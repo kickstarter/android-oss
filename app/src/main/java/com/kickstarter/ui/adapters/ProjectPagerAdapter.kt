@@ -8,6 +8,7 @@ import com.kickstarter.libs.Configure
 import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.projectpage.FrequentlyAskedQuestionFragment
+import com.kickstarter.ui.fragments.projectpage.ProjectCampaignFragment
 import com.kickstarter.ui.fragments.projectpage.ProjectEnvironmentalCommitmentsFragment
 import com.kickstarter.ui.fragments.projectpage.ProjectOverviewFragment
 
@@ -26,8 +27,8 @@ class ProjectPagerAdapter(
                 ProjectOverviewFragment.newInstance(position)
             position == ProjectPagerTabs.FAQS.ordinal && pagerAdapterMap[ProjectPagerTabs.FAQS] == true ->
                 FrequentlyAskedQuestionFragment.newInstance(position)
-            /*position == ProjectPagerTabs.CAMPAIGN.ordinal && pagerAdapterMap[ProjectPagerTabs.CAMPAIGN] == true ->
-                ProjectCampaignFragment.newInstance(position) */ // TODO bring back ProjectCampaignFragment.newInstance(position), on second place once the HTML parser is in place
+            position == ProjectPagerTabs.CAMPAIGN.ordinal && pagerAdapterMap[ProjectPagerTabs.CAMPAIGN] == true ->
+                ProjectCampaignFragment.newInstance(position)
             position == ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal && pagerAdapterMap[ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT] == true ->
                 ProjectEnvironmentalCommitmentsFragment.newInstance(position)
             else -> ProjectOverviewFragment.newInstance(position)

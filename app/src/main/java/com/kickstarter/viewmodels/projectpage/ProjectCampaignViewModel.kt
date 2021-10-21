@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels.projectpage
 import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
+import com.kickstarter.libs.HTMLParser
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.projectpage.ProjectOverviewFragment
@@ -20,6 +21,7 @@ class ProjectCampaignViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
+        private val htmlParser = HTMLParser()
         private val projectDataInput = BehaviorSubject.create<ProjectData>()
 
         init {

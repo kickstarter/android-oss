@@ -1,7 +1,5 @@
 package com.kickstarter.libs.rx.transformers;
 
-import android.os.Looper;
-
 import com.kickstarter.KSRobolectricTestCase;
 
 import org.junit.After;
@@ -12,7 +10,6 @@ import org.robolectric.shadows.ShadowLooper;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import rx.Observable;
-import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -32,7 +29,6 @@ public final class ObserveForUITransformerTest extends KSRobolectricTestCase {
 
   @Test
   public void test() {
-    final Scheduler scheduler = AndroidSchedulers.from(Looper.getMainLooper());
     final AtomicInteger x = new AtomicInteger();
 
     Observable.just(1)

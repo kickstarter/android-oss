@@ -18,6 +18,7 @@ import com.kickstarter.libs.utils.extensions.isProjectUpdateCommentsUri
 import com.kickstarter.libs.utils.extensions.isProjectUpdateUri
 import com.kickstarter.libs.utils.extensions.isProjectUpdatesUri
 import com.kickstarter.libs.utils.extensions.isProjectUri
+import com.kickstarter.libs.utils.extensions.isRewardFulfilledDl
 import com.kickstarter.libs.utils.extensions.isSettingsUrl
 import com.kickstarter.libs.utils.extensions.isSignupUri
 import com.kickstarter.libs.utils.extensions.isUserSurveyUri
@@ -35,6 +36,14 @@ class UriExtTest : KSRobolectricTestCase() {
         Uri.parse("ksr://www.kickstarter.com/settings/notify_mobile_of_marketing_update/true")
     private val deepLinkMarketingKsrStaging =
         Uri.parse("ksr://staging.kickstarter.com/settings/notify_mobile_of_marketing_update/true")
+    private val rewardFulfilledKsr =
+        Uri.parse("ksr://www.kickstarter.com/projects/1186238668/skull-graphic-tee/mark_reward_fulfilled/true")
+    private val rewardFulfilledStagingKsr =
+        Uri.parse("ksr://staging.kickstarter.com/projects/1186238668/skull-graphic-tee/mark_reward_fulfilled/true")
+    private val rewardFulfilledHttps =
+        Uri.parse("https://www.kickstarter.com/projects/1186238668/skull-graphic-tee/mark_reward_fulfilled/true")
+    private val rewardFulfilledStagingHttps =
+        Uri.parse("https://staging.kickstarter.com/projects/1186238668/skull-graphic-tee/mark_reward_fulfilled/true")
     private val discoverCategoriesUri = Uri.parse("https://www.ksr.com/discover/categories/art")
     private val discoverScopeUri = Uri.parse("https://www.kickstarter.com/discover/ending-soon")
     private val discoverPlacesUri = Uri.parse("https://www.ksr.com/discover/places/newest")
@@ -63,6 +72,14 @@ class UriExtTest : KSRobolectricTestCase() {
         assertTrue(deepLinkMarketingKsr.isSettingsUrl())
         assertTrue(deepLinkMarketingHttpsStaging.isSettingsUrl())
         assertTrue(deepLinkMarketingKsrStaging.isSettingsUrl())
+    }
+
+    @Test
+    fun testUri_isRewardFulfilledDeepLink() {
+        assertTrue(rewardFulfilledHttps.isRewardFulfilledDl())
+        assertTrue(rewardFulfilledStagingHttps.isRewardFulfilledDl())
+        assertTrue(rewardFulfilledKsr.isRewardFulfilledDl())
+        assertTrue(rewardFulfilledStagingKsr.isRewardFulfilledDl())
     }
 
     @Test

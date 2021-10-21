@@ -313,7 +313,7 @@ public abstract class Project implements Parcelable, Relay {
 
     return deadline().isBefore(new DateTime().plusDays(2));
   }
-
+  
   public float percentageFunded() {
     if (goal() > 0.0f) {
       return ((float) pledged() / (float) goal()) * 100.0f;

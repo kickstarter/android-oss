@@ -16,13 +16,9 @@ import com.kickstarter.libs.utils.DiscoveryDrawerUtils
 import com.kickstarter.libs.utils.DiscoveryUtils
 import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.UrlUtils.appendQueryParameter
 import com.kickstarter.libs.utils.extensions.getTokenFromQueryParams
-import com.kickstarter.libs.utils.extensions.isPresent
 import com.kickstarter.libs.utils.extensions.isVerificationEmailUrl
 import com.kickstarter.models.Category
-import com.kickstarter.models.QualtricsIntercept
-import com.kickstarter.models.QualtricsResult
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.DiscoveryParams
@@ -51,15 +47,6 @@ interface DiscoveryViewModel {
         /** Call when you want to open or close the drawer.  */
         fun openDrawer(open: Boolean)
 
-        /** Call when the users confirms they want to take the Qualtrics survey.  */
-        fun qualtricsConfirmClicked()
-
-        /** Call when the users dismisses the Qualtrics prompt.  */
-        fun qualtricsDismissClicked()
-
-        /** Call when you receive a [com.qualtrics.digital.TargetingResult] from Qualtrics.  */
-        fun qualtricsResult(qualtricsResult: QualtricsResult)
-
         /** Call when the user selects a sort tab.  */
         fun sortClicked(sortPosition: Int)
     }
@@ -73,9 +60,6 @@ interface DiscoveryViewModel {
 
         /** Emits a boolean that determines if the sort tab layout should be expanded/collapsed.  */
         fun expandSortTabLayout(): Observable<Boolean>
-
-        /** Emits a boolean that determines if the Qualtrics prompt should be visible.  */
-        fun qualtricsPromptIsGone(): Observable<Boolean>
 
         /** Emits when params change so that the tool bar can adjust accordingly.  */
         fun updateToolbarWithParams(): Observable<DiscoveryParams>
@@ -91,9 +75,6 @@ interface DiscoveryViewModel {
 
         /** Emits a list of pages that should be cleared of all their content.  */
         fun clearPages(): Observable<List<Int>>
-
-        /** Emits when we should set up [com.qualtrics.digital.Qualtrics] with first app session boolean.  */
-        fun setUpQualtrics(): Observable<Boolean>
 
         /** Emits when a newer build is available and an alert should be shown.  */
         fun showBuildCheckAlert(): Observable<InternalBuildEnvelope>
@@ -119,14 +100,8 @@ interface DiscoveryViewModel {
         /** Start profile activity.  */
         fun showProfile(): Observable<Void?>
 
-        /** Start the [com.qualtrics.digital.QualtricsSurveyActivity] with the survey url.  */
-        fun showQualtricsSurvey(): Observable<String>
-
         /** Start settings activity.  */
         fun showSettings(): Observable<Void?>
-
-        /** Emits a [QualtricsIntercept] whose impression count property should be incremented.  */
-        fun updateImpressionCount(): Observable<QualtricsIntercept>
 
         /** Emits the success message from verify endpoint  */
         fun showSuccessMessage(): Observable<String>
@@ -174,9 +149,6 @@ interface DiscoveryViewModel {
         private val pagerSetPrimaryPage = PublishSubject.create<Int>()
         private val parentFilterRowClick = PublishSubject.create<NavigationDrawerData.Section.Row>()
         private val profileClick = PublishSubject.create<Void?>()
-        private val qualtricsConfirmClicked = PublishSubject.create<Void?>()
-        private val qualtricsDismissClicked = PublishSubject.create<Void?>()
-        private val qualtricsResult = PublishSubject.create<QualtricsResult>()
         private val settingsClick = PublishSubject.create<Void?>()
         private val sortClicked = PublishSubject.create<Int>()
         private val topFilterRowClick = PublishSubject.create<NavigationDrawerData.Section.Row?>()
@@ -185,9 +157,7 @@ interface DiscoveryViewModel {
         private val drawerMenuIcon = BehaviorSubject.create<Int>()
         private val expandSortTabLayout = BehaviorSubject.create<Boolean>()
         private val navigationDrawerData = BehaviorSubject.create<NavigationDrawerData>()
-        private val qualtricsPromptIsGone = BehaviorSubject.create<Boolean>()
         private val rootCategoriesAndPosition = BehaviorSubject.create<Pair<List<Category>, Int>>()
-        private val setUpQualtrics = BehaviorSubject.create<Boolean>()
         private val showActivityFeed: Observable<Void?>
         private val showBuildCheckAlert: Observable<InternalBuildEnvelope>
         private val showCreatorDashboard: Observable<Void?>
@@ -196,9 +166,7 @@ interface DiscoveryViewModel {
         private val showLoginTout: Observable<Void?>
         private val showMessages: Observable<Void?>
         private val showProfile: Observable<Void?>
-        private val showQualtricsSurvey = PublishSubject.create<String>()
         private val showSettings: Observable<Void?>
-        private val updateImpressionCount = PublishSubject.create<QualtricsIntercept>()
         private val updateParamsForPage = BehaviorSubject.create<DiscoveryParams>()
         private val updateToolbarWithParams = BehaviorSubject.create<DiscoveryParams>()
         private val successMessage = PublishSubject.create<String>()
@@ -417,70 +385,6 @@ interface DiscoveryViewModel {
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe { drawerMenuIcon.onNext(it) }
-
-            Observable.just(firstSessionPreference)
-                .map {
-                    it.set(!it.isSet)
-                    it.get()
-                }
-                .compose(bindToLifecycle())
-                .subscribe { setUpQualtrics.onNext(it) }
-
-            qualtricsResult
-                .map { it.resultPassed() }
-                .map { BooleanUtils.negate(it) }
-                .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(qualtricsPromptIsGone)
-
-            Observable.merge(qualtricsConfirmClicked, qualtricsDismissClicked)
-                .map { true }
-                .compose(bindToLifecycle())
-                .subscribe(qualtricsPromptIsGone)
-
-            val passedQualtricsResult = qualtricsResult
-                .filter { it.resultPassed() }
-                .distinctUntilChanged()
-
-            passedQualtricsResult
-                .map { QualtricsIntercept.NATIVE_APP_FEEDBACK }
-                .compose(bindToLifecycle())
-                .subscribe(updateImpressionCount)
-
-            passedQualtricsResult
-                .map {
-                    it.recordImpression()
-                    it
-                }
-                .compose(Transformers.combineLatestPair(currentUser))
-                .compose(Transformers.takeWhen(qualtricsConfirmClicked))
-                .map {
-                    val qualtricsResult = it.first
-                    qualtricsResult.recordClick()
-                    Pair.create(qualtricsResult.surveyUrl(), it.second)
-                }
-                .filter { ObjectUtils.isNotNull(it.first) }
-                .filter { it.first.isPresent() }
-                .map {
-                    val surveyUrl = it.first
-                    val user = it.second
-                    val userLoggedIn = user != null
-                    var url = appendQueryParameter(
-                        surveyUrl,
-                        "logged_in",
-                        userLoggedIn.toString()
-                    )
-                    if (userLoggedIn) {
-                        url = appendQueryParameter(
-                            url,
-                            "user_uid",
-                            user.id().toString()
-                        )
-                    }
-                    url
-                }
-                .compose(bindToLifecycle())
-                .subscribe(showQualtricsSurvey)
         }
 
         override fun childFilterViewHolderRowClick(viewHolder: ChildFilterViewHolder, row: NavigationDrawerData.Section.Row) {
@@ -509,9 +413,6 @@ interface DiscoveryViewModel {
         override fun parentFilterViewHolderRowClick(viewHolder: ParentFilterViewHolder, row: NavigationDrawerData.Section.Row) {
             parentFilterRowClick.onNext(row)
         }
-        override fun qualtricsConfirmClicked() { qualtricsConfirmClicked.onNext(null) }
-        override fun qualtricsDismissClicked() { qualtricsDismissClicked.onNext(null) }
-        override fun qualtricsResult(qualtricsResult: QualtricsResult) { this.qualtricsResult.onNext(qualtricsResult) }
         override fun sortClicked(sortPosition: Int) { sortClicked.onNext(sortPosition) }
 
         // - Outputs
@@ -520,9 +421,7 @@ interface DiscoveryViewModel {
         override fun drawerMenuIcon(): Observable<Int> { return drawerMenuIcon }
         override fun expandSortTabLayout(): Observable<Boolean> { return expandSortTabLayout }
         override fun navigationDrawerData(): Observable<NavigationDrawerData> { return navigationDrawerData }
-        override fun qualtricsPromptIsGone(): Observable<Boolean> { return qualtricsPromptIsGone }
         override fun rootCategoriesAndPosition(): Observable<Pair<List<Category>, Int>> { return rootCategoriesAndPosition }
-        override fun setUpQualtrics(): Observable<Boolean> { return setUpQualtrics }
         override fun showActivityFeed(): Observable<Void?> { return showActivityFeed }
         override fun showBuildCheckAlert(): Observable<InternalBuildEnvelope> { return showBuildCheckAlert }
         override fun showCreatorDashboard(): Observable<Void?> { return showCreatorDashboard }
@@ -531,9 +430,7 @@ interface DiscoveryViewModel {
         override fun showLoginTout(): Observable<Void?> { return showLoginTout }
         override fun showMessages(): Observable<Void?> { return showMessages }
         override fun showProfile(): Observable<Void?> { return showProfile }
-        override fun showQualtricsSurvey(): Observable<String> { return showQualtricsSurvey }
         override fun showSettings(): Observable<Void?> { return showSettings }
-        override fun updateImpressionCount(): Observable<QualtricsIntercept> { return updateImpressionCount }
         override fun updateParamsForPage(): Observable<DiscoveryParams> { return updateParamsForPage }
         override fun updateToolbarWithParams(): Observable<DiscoveryParams> { return updateToolbarWithParams }
         override fun showSuccessMessage(): Observable<String> { return successMessage }

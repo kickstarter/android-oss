@@ -35,3 +35,9 @@ fun Project.updateProjectWith(config: Config, user: User?): Project {
         .currencySymbol(currencySymbol)
         .build()
 }
+
+/**
+ * In order to update the fulfillment state for a project
+ * the the user needs to be a backer, and the project successful
+ */
+fun Project.canUpdateFulfillment() = isBacking && isSuccessful

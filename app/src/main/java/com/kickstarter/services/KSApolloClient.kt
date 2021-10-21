@@ -1038,10 +1038,10 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
     val backersCount = projectFragment?.backersCount() ?: 0
     val blurb = projectFragment?.description() ?: ""
     val backing = if (projectFragment?.backing()?.fragments()?.backing() != null) {
-        createBackingObject(projectFragment?.backing()?.fragments()?.backing())
+        createBackingObject(projectFragment.backing()?.fragments()?.backing())
     } else null
     val category = if (projectFragment?.category()?.fragments()?.category() != null) {
-        categoryTransformer(projectFragment?.category()?.fragments()?.category())
+        categoryTransformer(projectFragment.category()?.fragments()?.category())
     } else null
     val commentsCount = projectFragment?.commentsCount() ?: 0
     val country = projectFragment?.country()?.fragments()?.country()?.name() ?: ""
@@ -1121,7 +1121,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         .build()
     val urls = Project.Urls.builder().web(urlsWeb).build()
     val video = if (projectFragment?.video()?.fragments()?.video() != null) {
-        videoTransformer(projectFragment?.video()?.fragments()?.video())
+        videoTransformer(projectFragment.video()?.fragments()?.video())
     } else null
     val displayPrelaunch = BooleanUtils.negate(projectFragment?.isLaunched ?: false)
     val faqs = projectFragment?.faqs()?.nodes()?.map { node ->
@@ -1130,6 +1130,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
     val eCommitment = projectFragment?.environmentalCommitments()?.map {
         environmentalCommitmentTransformer(it.fragments().environmentalCommitment())
     } ?: emptyList()
+    val risks = projectFragment?.risks()
 
     return Project.builder()
         .availableCardTypes(availableCards.map { it.name })
@@ -1178,6 +1179,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         .video(video)
         .projectFaqs(faqs)
         .envCommitments(eCommitment)
+        .risks(risks)
         .build()
 }
 

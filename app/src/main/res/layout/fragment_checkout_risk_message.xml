@@ -68,7 +68,7 @@
         android:layout_marginTop="@dimen/grid_4"
         android:backgroundTint="@color/kds_support_700"
         android:text="@string/I_understand"
-        android:textColor="@color/white"
+        android:textColor="@color/kds_white"
         app:layout_constraintEnd_toEndOf="@+id/risk_message_green_iv"
         app:layout_constraintStart_toStartOf="@+id/risk_message_green_iv"
         app:layout_constraintTop_toBottomOf="@+id/risk_message_fpo_tv" />

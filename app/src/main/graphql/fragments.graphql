@@ -60,6 +60,7 @@ fragment fullProject on Project {
 
         }
     }
+    risks
     slug
     isProjectWeLove
     state

@@ -59,7 +59,7 @@ class ProjectEnvironmentalCommitmentsViewModel {
                         UrlUtils
                             .appendPath(
                                 environment.webEndpoint(),
-                                CheckoutRiskMessageFragmentViewModel.TRUST
+                                ENVIROMENT
                             )
                     )
                 }

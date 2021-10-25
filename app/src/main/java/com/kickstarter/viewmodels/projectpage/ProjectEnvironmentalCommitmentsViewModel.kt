@@ -8,7 +8,6 @@ import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.models.EnvironmentalCommitment
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.projectpage.ProjectEnvironmentalCommitmentsFragment
-import com.kickstarter.viewmodels.CheckoutRiskMessageFragmentViewModel
 import rx.Observable
 import rx.subjects.BehaviorSubject
 

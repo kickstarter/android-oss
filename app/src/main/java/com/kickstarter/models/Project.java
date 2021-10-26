@@ -71,6 +71,7 @@ public abstract class Project implements Parcelable, Relay {
   public abstract @Nullable List<ProjectFaq> projectFaqs();
   public abstract @Nullable List<EnvironmentalCommitment> envCommitments();
   public abstract @Nullable String risks();
+  public abstract @Nullable String story();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -121,6 +122,7 @@ public abstract class Project implements Parcelable, Relay {
     public abstract Builder projectFaqs(List<ProjectFaq> __);
     public abstract Builder envCommitments(List<EnvironmentalCommitment> __);
     public abstract Builder risks(String __);
+    public abstract Builder story(String __);
     public abstract Project build();
   }
 

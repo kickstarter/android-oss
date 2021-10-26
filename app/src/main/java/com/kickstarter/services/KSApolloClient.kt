@@ -1131,6 +1131,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         environmentalCommitmentTransformer(it.fragments().environmentalCommitment())
     } ?: emptyList()
     val risks = projectFragment?.risks()
+    val story = projectFragment?.story()?.toString() ?: ""
 
     return Project.builder()
         .availableCardTypes(availableCards.map { it.name })
@@ -1180,6 +1181,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         .projectFaqs(faqs)
         .envCommitments(eCommitment)
         .risks(risks)
+        .story(story)
         .build()
 }
 

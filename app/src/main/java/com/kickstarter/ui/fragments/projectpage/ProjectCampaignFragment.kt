@@ -8,6 +8,7 @@ import com.kickstarter.databinding.FragmentProjectCampaignBinding
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Configure
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
+import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.projectpage.ProjectCampaignViewModel
@@ -25,6 +26,13 @@ class ProjectCampaignFragment : BaseFragment<ProjectCampaignViewModel.ViewModel>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        this.viewModel.outputs.storyViewElements()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                binding?.textView?.text = it.toString()
+            }
     }
 
     override fun configureWith(projectData: ProjectData) {

@@ -7,36 +7,34 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.models.EnvironmentalCommitment
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.fragments.projectpage.ProjectEnvironmentalCommitmentsFragment
+import com.kickstarter.ui.fragments.projectpage.ProjectRiskFragment
 import rx.Observable
 import rx.subjects.BehaviorSubject
 
-class ProjectEnvironmentalCommitmentsViewModel {
+interface ProjectRiskViewModel {
     interface Inputs {
         /** Configure with current [ProjectData]. */
         fun configureWith(projectData: ProjectData)
-        fun onVisitOurEnvironmentalResourcesCenterClicked()
+        fun onLearnAboutAccountabilityOnKickstarterClicked()
     }
 
     interface Outputs {
-        /** Emits the current list [EnvironmentalCommitment]. */
-        fun projectEnvironmentalCommitment(): Observable<List<EnvironmentalCommitment>>
 
-        fun openVisitOurEnvironmentalResourcesCenter(): Observable<String>
+        /** Emits the current list [EnvironmentalCommitment]. */
+        fun projectRisks(): Observable<String>
+
+        fun openLearnAboutAccountabilityOnKickstarter(): Observable<String>
     }
 
     class ViewModel(@NonNull val environment: Environment) :
-        FragmentViewModel<ProjectEnvironmentalCommitmentsFragment>(environment),
-        Inputs,
-        Outputs {
+        FragmentViewModel<ProjectRiskFragment>(environment), Inputs, Outputs {
         val inputs: Inputs = this
         val outputs: Outputs = this
-
         private val projectDataInput = BehaviorSubject.create<ProjectData>()
-        private val onVisitOurEnvironmentalResourcesCenterClicked = BehaviorSubject.create<Void>()
+        private val onLearnAboutAccountabilityOnKickstarterClicked = BehaviorSubject.create<Void>()
 
-        private val projectEnvironmentalCommitment = BehaviorSubject.create<List<EnvironmentalCommitment>>()
-        private val openVisitOurEnvironmentalResourcesCenter = BehaviorSubject.create<String>()
+        private val projectRisks = BehaviorSubject.create<String>()
+        private val openLearnAboutAccountabilityOnKickstarter = BehaviorSubject.create<String>()
 
         init {
             val project = projectDataInput
@@ -45,20 +43,22 @@ class ProjectEnvironmentalCommitmentsViewModel {
                 .map { requireNotNull(it) }
 
             project.map { project ->
-                project.envCommitments()?.sortedBy { it.id }
+                project.risks()
             }.filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
                 .compose(bindToLifecycle())
-                .subscribe { this.projectEnvironmentalCommitment.onNext(it) }
+                .subscribe {
+                    projectRisks.onNext(it)
+                }
 
-            onVisitOurEnvironmentalResourcesCenterClicked
+            onLearnAboutAccountabilityOnKickstarterClicked
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.openVisitOurEnvironmentalResourcesCenter.onNext(
+                    this.openLearnAboutAccountabilityOnKickstarter.onNext(
                         UrlUtils
                             .appendPath(
                                 environment.webEndpoint(),
-                                ENVIROMENT
+                                ACCOUNTABILITY
                             )
                     )
                 }
@@ -67,16 +67,16 @@ class ProjectEnvironmentalCommitmentsViewModel {
         override fun configureWith(projectData: ProjectData) =
             this.projectDataInput.onNext(projectData)
 
-        override fun onVisitOurEnvironmentalResourcesCenterClicked() =
-            this.onVisitOurEnvironmentalResourcesCenterClicked.onNext(null)
+        override fun onLearnAboutAccountabilityOnKickstarterClicked() =
+            this.onLearnAboutAccountabilityOnKickstarterClicked.onNext(null)
 
         @NonNull
-        override fun projectEnvironmentalCommitment(): Observable<List<EnvironmentalCommitment>> = this.projectEnvironmentalCommitment
+        override fun projectRisks(): Observable<String> = this.projectRisks
         @NonNull
-        override fun openVisitOurEnvironmentalResourcesCenter(): Observable<String> = this.openVisitOurEnvironmentalResourcesCenter
+        override fun openLearnAboutAccountabilityOnKickstarter(): Observable<String> = this.openLearnAboutAccountabilityOnKickstarter
     }
 
     companion object {
-        const val ENVIROMENT = "environment"
+        const val ACCOUNTABILITY = "help/hc/sections/115001107133"
     }
 }

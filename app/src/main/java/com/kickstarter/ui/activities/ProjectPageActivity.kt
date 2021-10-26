@@ -78,6 +78,7 @@ class ProjectPageActivity :
         ProjectPagerTabs.OVERVIEW to true,
         ProjectPagerTabs.CAMPAIGN to true,
         ProjectPagerTabs.FAQS to true,
+        ProjectPagerTabs.RISKS to true,
         ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT to false
     )
 
@@ -443,6 +444,7 @@ class ProjectPageActivity :
         ProjectPagerTabs.OVERVIEW.ordinal -> getString(R.string.Overview)
         ProjectPagerTabs.CAMPAIGN.ordinal -> getString(R.string.Campaign)
         ProjectPagerTabs.FAQS.ordinal -> getString(R.string.Faq)
+        ProjectPagerTabs.RISKS.ordinal -> getString(R.string.Risks)
         ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal -> getString(R.string.Environmental_commitment)
         else -> ""
     }

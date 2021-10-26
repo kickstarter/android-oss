@@ -11,6 +11,7 @@ import com.kickstarter.ui.fragments.projectpage.FrequentlyAskedQuestionFragment
 import com.kickstarter.ui.fragments.projectpage.ProjectCampaignFragment
 import com.kickstarter.ui.fragments.projectpage.ProjectEnvironmentalCommitmentsFragment
 import com.kickstarter.ui.fragments.projectpage.ProjectOverviewFragment
+import com.kickstarter.ui.fragments.projectpage.ProjectRiskFragment
 
 class ProjectPagerAdapter(
     private val fragmentManager: FragmentManager,
@@ -29,6 +30,8 @@ class ProjectPagerAdapter(
                 FrequentlyAskedQuestionFragment.newInstance(position)
             position == ProjectPagerTabs.CAMPAIGN.ordinal && pagerAdapterMap[ProjectPagerTabs.CAMPAIGN] == true ->
                 ProjectCampaignFragment.newInstance(position)
+            position == ProjectPagerTabs.RISKS.ordinal && pagerAdapterMap[ProjectPagerTabs.RISKS] == true ->
+                ProjectRiskFragment.newInstance(position)
             position == ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal && pagerAdapterMap[ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT] == true ->
                 ProjectEnvironmentalCommitmentsFragment.newInstance(position)
             else -> ProjectOverviewFragment.newInstance(position)

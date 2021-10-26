@@ -44,6 +44,7 @@
             android:layout_marginHorizontal="@dimen/grid_3"
             android:layout_marginTop="@dimen/grid_3"
             android:gravity="start"
+            android:paddingBottom="@dimen/grid_5"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/environmentalCommitments_RecyclerView"

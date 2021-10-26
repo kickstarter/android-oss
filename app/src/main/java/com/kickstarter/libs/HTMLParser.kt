@@ -4,8 +4,6 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.TextNode
 import org.jsoup.select.Elements
-import timber.log.Timber
-import java.text.ParseException
 
 interface ViewElement
 
@@ -84,60 +82,55 @@ class HTMLParser {
 
     fun parse(html: String): List<ViewElement> {
         val doc = Jsoup.parse(html)
-
         val viewElements = mutableListOf<ViewElement>()
         doc.children().forEach {
             viewElements.addAll(parse(it.children()))
         }
-        return viewElements.toList()
+
+        return viewElements
     }
 
-    private fun parse(children: Elements?): MutableList<ViewElement> {
+    private fun parse(children: Elements?): List<ViewElement> {
         val viewElements = mutableListOf<ViewElement>()
 
-        try {
-            children?.forEach { element ->
-                when (ViewElementType.initialize(element)) {
-                    ViewElementType.IMAGE -> {
-                        element.dataset()["src"]?.let { sourceUrl ->
-                            viewElements.add(ImageViewElement(sourceUrl))
-                        }
+        children?.forEach { element ->
+            when (ViewElementType.initialize(element)) {
+                ViewElementType.IMAGE -> {
+                    element.attributes()["src"].apply {
+                        viewElements.add(ImageViewElement(this))
                     }
-                    ViewElementType.TEXT -> {
-                        viewElements.add(TextViewElement(parseTextElement(element, mutableListOf(), mutableListOf())))
-                        return@forEach
-                    }
-                    ViewElementType.VIDEO -> {
-                        val sourceUrls = element.children().mapNotNull { it.attr("src") }
-                        val videoViewElement = VideoViewElement(ArrayList(sourceUrls))
-                        viewElements.add(videoViewElement)
-                    }
-                    ViewElementType.EMBEDDED_LINK -> {
-                        val caption = element.getElementsByTag("figcaption").firstOrNull()?.text()
-                        (element.attributes().firstOrNull { it.key == "href" })?.value?.let { href ->
-                            val imageElements = element.getElementsByTag("img")
-                            for (imageElement in imageElements) {
-                                imageElement.dataset()["src"]?.let { sourceUrl ->
-                                    viewElements.add(EmbeddedLinkViewElement(href, sourceUrl, caption))
-                                }
+                }
+                ViewElementType.TEXT -> {
+                    viewElements.add(TextViewElement(parseTextElement(element, mutableListOf(), mutableListOf())))
+                    return@forEach
+                }
+                ViewElementType.VIDEO -> {
+                    val sourceUrls = element.children().mapNotNull { it.attr("src") }
+                    val videoViewElement = VideoViewElement(ArrayList(sourceUrls))
+                    viewElements.add(videoViewElement)
+                }
+                ViewElementType.EMBEDDED_LINK -> {
+                    val caption = element.getElementsByTag("figcaption").firstOrNull()?.text()
+                    (element.attributes().firstOrNull { it.key == "href" })?.value?.let { href ->
+                        val imageElements = element.getElementsByTag("img")
+                        for (imageElement in imageElements) {
+                            imageElement.dataset()["src"]?.let { sourceUrl ->
+                                viewElements.add(EmbeddedLinkViewElement(href, sourceUrl, caption))
                             }
                         }
                     }
-                    ViewElementType.OEMBED -> {
-                        val sourceUrls = element.attributes().mapNotNull { if (it.key == "data-href") it.value else null }
-                        val videoViewElement = VideoViewElement(ArrayList(sourceUrls))
-                        viewElements.add(videoViewElement)
-                    }
-                    ViewElementType.UNKNOWN -> {
-                        print("UNKNOWN ELEMENT")
-                    }
                 }
-                viewElements.addAll(parse(element.children()))
+                ViewElementType.OEMBED -> {
+                    val sourceUrls = element.attributes().mapNotNull { if (it.key == "data-href") it.value else null }
+                    val videoViewElement = VideoViewElement(ArrayList(sourceUrls))
+                    viewElements.add(videoViewElement)
+                }
+                ViewElementType.UNKNOWN -> {
+                    print("UNKNOWN ELEMENT")
+                }
             }
-        } catch (exception: ParseException) {
-            Timber.e(exception)
+            viewElements.addAll(parse(element.children()))
         }
-
         return viewElements
     }
 
@@ -145,21 +138,21 @@ class HTMLParser {
         element: Element,
         tags: MutableList<String>,
         textComponents: MutableList<TextComponent>
-    ): MutableList<TextComponent> {
+    ): List<TextComponent> {
         tags.add(element.tag().name)
 
         for (node in element.childNodes()) {
             (node as? TextNode)?.let {
                 val href = (element.attributes().firstOrNull { it.key == "href" })?.value
                 val textStyleList = tags.map { tag -> TextStyleType.initialize(tag) }
-                textComponents.add(TextComponent(it.text(), href, textStyleList))
+                textComponents.add(TextComponent(it.text(), href, ArrayList(textStyleList)))
             }
             (node as? Element)?.let {
                 // TODO: Out of memory exception when nesting text components on some projects, improve the parsing of childs for nested texts
                 // TODO: ej: https://www.kickstarter.com/projects/ww3/yall-means-all-the-emerging-voices-queering-appalachia
-                // textComponents.addAll(parseTextElement(it, tags, textComponents))
+                textComponents.addAll(parseTextElement(it, tags, textComponents))
             }
         }
-        return textComponents
+        return textComponents.toList()
     }
 }

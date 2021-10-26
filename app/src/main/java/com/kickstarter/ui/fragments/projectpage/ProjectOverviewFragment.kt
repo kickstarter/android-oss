@@ -353,6 +353,10 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             this.viewModel.inputs.creatorInfoButtonClicked()
         }
 
+        binding.blurbView.setOnClickListener {
+            this.viewModel.inputs.campaignButtonClicked()
+        }
+
         binding.projectCreatorInfoLayout.campaign.setOnClickListener {
             this.viewModel.inputs.campaignButtonClicked()
         }

@@ -1,24 +1,25 @@
-package com.kickstarter.ui.adapters
+package com.kickstarter.ui.adapters.projectcampaign
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.databinding.EmptyViewBinding
 import com.kickstarter.databinding.ViewElementImageFromHtmlBinding
 import com.kickstarter.databinding.ViewElementTextFromHtmlBinding
-import com.kickstarter.libs.EmbeddedLinkViewElement
-import com.kickstarter.libs.ImageViewElement
-import com.kickstarter.libs.TextViewElement
-import com.kickstarter.libs.VideoViewElement
-import com.kickstarter.libs.ViewElement
-import com.kickstarter.ui.extensions.loadImage
+import com.kickstarter.libs.htmlparser.EmbeddedLinkViewElement
+import com.kickstarter.libs.htmlparser.ImageViewElement
+import com.kickstarter.libs.htmlparser.TextViewElement
+import com.kickstarter.libs.htmlparser.VideoViewElement
+import com.kickstarter.libs.htmlparser.ViewElement
 import com.kickstarter.ui.viewholders.EmptyViewHolder
-import com.kickstarter.ui.viewholders.KSViewHolder
+import com.kickstarter.ui.viewholders.projectcampaign.ImageElementViewHolder
+import com.kickstarter.ui.viewholders.projectcampaign.TextElementViewHolder
 
+/**
+ * Adapter Specific to hold a list of ViewElements from the HTML Parser
+ */
 class ViewElementAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val diffCallback = object : DiffUtil.ItemCallback<ViewElement>() {
@@ -116,58 +117,23 @@ class ViewElementAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val element = elements.currentList[position]
 
-        (element as? TextViewElement)?.let { element ->
+        (element as? TextViewElement)?.let { textElement ->
             (viewHolder as? TextElementViewHolder)?.let { viewHolder ->
-                viewHolder.bindData(element)
+                viewHolder.bindData(textElement)
             }
         }
 
-        (element as? ImageViewElement)?.let {
+        (element as? ImageViewElement)?.let { imageElement ->
             (viewHolder as? ImageElementViewHolder)?.let {
-                viewHolder.bindData(element)
+                viewHolder.bindData(imageElement)
             }
         }
     }
-}
 
-// ViewHolders
-class TextElementViewHolder(
-    val binding: ViewElementTextFromHtmlBinding
-) : KSViewHolder(binding.root) {
-    // TODO: attach ViewModel if necessary
-    private val textView: TextView = binding.textView
-
-    fun configure(element: TextViewElement) {
-        textView.text = element.attributedText
+    private enum class ElementViewHolderType {
+        TEXT,
+        IMAGE,
+        VIDEO,
+        EMBEDDED,
     }
-
-    override fun bindData(data: Any?) {
-        (data as? TextViewElement).apply {
-            this?.let { configure(it) }
-        }
-    }
-}
-
-class ImageElementViewHolder(
-    val binding: ViewElementImageFromHtmlBinding
-) : KSViewHolder(binding.root) {
-    // TODO: attach ViewModel if necessary
-    private val imageView: ImageView = binding.imageView
-
-    private fun configure(element: ImageViewElement) {
-        imageView.loadImage(element.src, context())
-    }
-
-    override fun bindData(data: Any?) {
-        (data as? ImageViewElement).apply {
-            this?.let { configure(it) }
-        }
-    }
-}
-
-enum class ElementViewHolderType {
-    TEXT,
-    IMAGE,
-    VIDEO,
-    EMBEDDED,
 }

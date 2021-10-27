@@ -3,8 +3,8 @@ package com.kickstarter.viewmodels.projectpage
 import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
-import com.kickstarter.libs.HTMLParser
-import com.kickstarter.libs.ViewElement
+import com.kickstarter.libs.htmlparser.HTMLParser
+import com.kickstarter.libs.htmlparser.ViewElement
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.projectpage.ProjectOverviewFragment
@@ -37,11 +37,11 @@ class ProjectCampaignViewModel {
                 .map { requireNotNull(it) }
 
             storyViewElementsList = project
+                .distinctUntilChanged()
                 .filter { ObjectUtils.isNotNull(it.story()) }
                 .map { requireNotNull(it.story()) }
-                .map { htmlParser.parse(it) }
-                .doOnError {
-                    // TODO: emmit parser error state
+                .map {
+                    htmlParser.parse(it)
                 }
         }
 

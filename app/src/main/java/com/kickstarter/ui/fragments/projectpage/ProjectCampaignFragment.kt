@@ -11,7 +11,7 @@ import com.kickstarter.libs.Configure
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.ui.ArgumentsKey
-import com.kickstarter.ui.adapters.ViewElementAdapter
+import com.kickstarter.ui.adapters.projectcampaign.ViewElementAdapter
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.projectpage.ProjectCampaignViewModel
 

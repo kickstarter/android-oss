@@ -12,6 +12,7 @@ import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.KSCurrency
+import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
@@ -22,7 +23,10 @@ import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.BooleanUtils
+import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.ENVIRONMENT
+import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.FAQS
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.OVERVIEW
+import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.RISKS
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.libs.utils.ObjectUtils
@@ -825,6 +829,16 @@ interface ProjectPageViewModel {
                 }
 
             fullProjectDataAndPledgeFlowContext
+                .map { it.first }
+                .take(1)
+                .compose(takePairWhen(this.tabSelected))
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.analyticEvents.trackProjectPageTabChanged(it.first, getSelectedTabContextName(it.second))
+                }
+
+            fullProjectDataAndPledgeFlowContext
                 .compose<Pair<ProjectData, PledgeFlowContext?>>(takeWhen(this.nativeProjectActionButtonClicked))
                 .filter { it.first.project().isLive && !it.first.project().isBacking }
                 .compose(bindToLifecycle())
@@ -837,6 +851,15 @@ interface ProjectPageViewModel {
                 .map { ProjectUtils.Metadata.BACKING == it }
                 .compose(bindToLifecycle())
                 .subscribe(backingViewGroupIsVisible)
+        }
+
+        private fun getSelectedTabContextName(selectedTabIndex: Int): String = when (selectedTabIndex) {
+            ProjectPagerTabs.OVERVIEW.ordinal -> OVERVIEW.contextName
+            // ProjectPagerTabs.CAMPAIGN.ordinal -> STORY.contextName
+            ProjectPagerTabs.FAQS.ordinal -> FAQS.contextName
+            ProjectPagerTabs.RISKS.ordinal -> RISKS.contextName
+            ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal -> ENVIRONMENT.contextName
+            else -> OVERVIEW.contextName
         }
 
         private fun managePledgeMenu(projectAndFragmentStackCount: Pair<Project, Int>): Int? {

@@ -3,7 +3,6 @@ package com.kickstarter.ui.viewholders.projectcampaign
 import android.os.Build
 import android.text.Html
 import android.text.Html.FROM_HTML_MODE_COMPACT
-import android.text.Html.FROM_HTML_OPTION_USE_CSS_COLORS
 import android.widget.TextView
 import com.kickstarter.databinding.ViewElementTextFromHtmlBinding
 import com.kickstarter.libs.htmlparser.TextViewElement

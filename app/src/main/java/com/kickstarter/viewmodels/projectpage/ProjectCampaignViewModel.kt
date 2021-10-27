@@ -40,9 +40,7 @@ class ProjectCampaignViewModel {
                 .distinctUntilChanged()
                 .filter { ObjectUtils.isNotNull(it.story()) }
                 .map { requireNotNull(it.story()) }
-                .map {
-                    htmlParser.parse(it)
-                }
+                .map { htmlParser.parse(it) }
         }
 
         // - Inputs

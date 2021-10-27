@@ -6,18 +6,19 @@ interface ViewElement
 
 data class VideoViewElement(val sourceUrls: List<String>) : ViewElement
 data class TextViewElement(var components: List<TextComponent>) : ViewElement {
-    // TODO: this should probably be a spannableString
     val attributedText: String
         get() {
             var string = ""
-            for (component in components) {
-                string += component.text
-            }
+            // - TODO: distinct will avoid duplicated, but is a workaround should be fixed on the parser
+            components.distinct()
+                .map {
+                    string += it.text
+                }
             return string
         }
 }
 
-data class TextComponent(val text: String, val link: String?, val styles: List<TextStyleType>) {
+data class TextComponent(val text: String, val link: String?) {
     enum class TextStyleType(val tag: String?) {
         PARAGRAPH("p"),
         HEADER1("h1"),

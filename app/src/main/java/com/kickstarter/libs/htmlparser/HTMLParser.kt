@@ -71,8 +71,7 @@ class HTMLParser {
         for (node in element.childNodes()) {
             (node as? TextNode)?.let {
                 val href = (element.attributes().firstOrNull { it.key == "href" })?.value
-                val textStyleList = tags.map { tag -> TextComponent.TextStyleType.initialize(tag) }
-                textComponents.add(TextComponent(it.text(), href, ArrayList(textStyleList)))
+                textComponents.add(TextComponent(element.toString(), href))
             }
             (node as? Element)?.let {
                 // TODO: Out of memory exception when nesting text components on some projects, improve the parsing of childs for nested texts

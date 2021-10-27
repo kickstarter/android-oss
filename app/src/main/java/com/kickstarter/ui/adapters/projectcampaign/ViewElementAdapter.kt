@@ -32,20 +32,29 @@ class ViewElementAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
 
         private fun areTheSame(oldItem: ViewElement, newItem: ViewElement): Boolean {
+            // TODO refactor, can be moved to equals operator in each ViewElement class
             (oldItem as? TextViewElement)?.let {
-                return newItem is TextViewElement
+                val isSameType = newItem is TextViewElement
+                return if (isSameType) newItem == oldItem
+                else false
             }
 
             (oldItem as? ImageViewElement)?.let {
-                return newItem is ImageViewElement
+                val isSameType = newItem is ImageViewElement
+                return if (isSameType) newItem == oldItem
+                else false
             }
 
             (oldItem as? VideoViewElement)?.let {
-                return newItem is VideoViewElement
+                val isSameType = newItem is VideoViewElement
+                return if (isSameType) newItem == oldItem
+                else false
             }
 
             (oldItem as? EmbeddedLinkViewElement)?.let {
-                return newItem is EmbeddedLinkViewElement
+                val isSameType = newItem is EmbeddedLinkViewElement
+                return if (isSameType) newItem == oldItem
+                else false
             }
 
             return false

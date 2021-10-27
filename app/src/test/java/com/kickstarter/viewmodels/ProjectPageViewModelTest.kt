@@ -1571,11 +1571,18 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.tabSelected(1)
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
         this.projectData.assertValueCount(2)
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.PAGE_VIEWED.eventName)
 
         // - the tab of the viewpager on position 0 has been pressed
         this.vm.inputs.tabSelected(0)
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
         this.projectData.assertValueCount(3)
+        this.segmentTrack.assertValues(
+            EventName.PAGE_VIEWED.eventName,
+            EventName.PAGE_VIEWED
+                .eventName,
+            EventName.PAGE_VIEWED.eventName
+        )
     }
 
     private fun apiClientWithSuccessFetchingProject(refreshedProject: Project): MockApolloClient {

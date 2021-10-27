@@ -1,21 +1,22 @@
 package com.kickstarter.ui.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.kickstarter.R
 import com.kickstarter.databinding.EmptyViewBinding
+import com.kickstarter.databinding.ViewElementImageFromHtmlBinding
+import com.kickstarter.databinding.ViewElementTextFromHtmlBinding
 import com.kickstarter.libs.EmbeddedLinkViewElement
 import com.kickstarter.libs.ImageViewElement
 import com.kickstarter.libs.TextViewElement
 import com.kickstarter.libs.VideoViewElement
 import com.kickstarter.libs.ViewElement
 import com.kickstarter.ui.viewholders.EmptyViewHolder
+import com.kickstarter.ui.viewholders.KSViewHolder
 import com.squareup.picasso.Picasso
 
 class ViewElementAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -85,61 +86,82 @@ class ViewElementAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             ElementViewHolderType.TEXT.ordinal -> {
-                val view = LayoutInflater.from(viewGroup.context)
-                    .inflate(R.layout.view_element_text_from_html, viewGroup, false)
-                return TextElementViewHolder(view)
+                return TextElementViewHolder(
+                    ViewElementTextFromHtmlBinding.inflate(
+                        LayoutInflater.from(
+                            viewGroup
+                                .context
+                        ),
+                        viewGroup,
+                        false
+                    )
+                )
             }
             ElementViewHolderType.IMAGE.ordinal -> {
-                val view = LayoutInflater.from(viewGroup.context)
-                    .inflate(R.layout.view_element_image_from_html, viewGroup, false)
-                return ImageElementViewHolder(view)
+                return ImageElementViewHolder(
+                    ViewElementImageFromHtmlBinding.inflate(
+                        LayoutInflater.from(
+                            viewGroup
+                                .context
+                        ),
+                        viewGroup,
+                        false
+                    )
+                )
             }
-//            ElementViewHolderType.VIDEO.ordinal -> {
-//                val view = LayoutInflater.from(viewGroup.context)
-//                    .inflate(R.layout.video_row_item, viewGroup, false)
-//                return ImageElementViewHolder(view)
-//            }
-//            ElementViewHolderType.EMBEDDED.ordinal -> {
-//                val view = LayoutInflater.from(viewGroup.context)
-//                    .inflate(R.layout.embedded_row_item, viewGroup, false)
-//                return ImageElementViewHolder(view)
-//            }
             else -> EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
         }
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val element = elements.currentList[position]
 
         (element as? TextViewElement)?.let { element ->
             (viewHolder as? TextElementViewHolder)?.let { viewHolder ->
-                viewHolder.configure(element)
+                viewHolder.bindData(element)
             }
         }
 
         (element as? ImageViewElement)?.let {
             (viewHolder as? ImageElementViewHolder)?.let {
-                viewHolder.configure(element)
+                viewHolder.bindData(element)
             }
         }
     }
 }
 
 // ViewHolders
-class TextElementViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    private val textView: TextView = view.findViewById(R.id.text_view)
+class TextElementViewHolder(
+    val binding: ViewElementTextFromHtmlBinding
+) : KSViewHolder(binding.root) {
+    // TODO: attach ViewModel if necessary
+    private val textView: TextView = binding.textView
 
     fun configure(element: TextViewElement) {
         textView.text = element.attributedText
     }
+
+    override fun bindData(data: Any?) {
+        (data as? TextViewElement).apply {
+            textView.text = this?.attributedText ?: ""
+        }
+    }
 }
 
-class ImageElementViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    private val imageView: ImageView = view.findViewById(R.id.image_view)
+class ImageElementViewHolder(
+    val binding: ViewElementImageFromHtmlBinding
+) : KSViewHolder(binding.root) {
+    // TODO: attach ViewModel if necessary
+    private val imageView: ImageView = binding.imageView
 
-    fun configure(element: ImageViewElement) {
+    private fun configure(element: ImageViewElement) {
         Picasso.get().load(element.src).into(imageView)
+    }
+
+    override fun bindData(data: Any?) {
+        (data as? ImageViewElement).apply {
+            this?.let { configure(it) }
+        }
     }
 }
 

@@ -25,7 +25,7 @@ data class TextComponent(val text: String, val link: String?, val styles: List<T
 data class EmbeddedLinkViewElement(
     val href: String,
     override val src: String,
-    val caption: String?,
+    val caption: String?
 ) : ImageViewElement(src)
 
 open class ImageViewElement(open val src: String) : ViewElement
@@ -114,7 +114,7 @@ class HTMLParser {
                     (element.attributes().firstOrNull { it.key == "href" })?.value?.let { href ->
                         val imageElements = element.getElementsByTag("img")
                         for (imageElement in imageElements) {
-                            imageElement.dataset()["src"]?.let { sourceUrl ->
+                            imageElement.attributes()["src"]?.let { sourceUrl ->
                                 viewElements.add(EmbeddedLinkViewElement(href, sourceUrl, caption))
                             }
                         }

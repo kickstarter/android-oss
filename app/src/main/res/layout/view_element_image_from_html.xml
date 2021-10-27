@@ -12,6 +12,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@null"
-        android:src="@drawable/bg_risk_message_green"/>
+        android:contentDescription="@null" />
 </androidx.constraintlayout.widget.ConstraintLayout>

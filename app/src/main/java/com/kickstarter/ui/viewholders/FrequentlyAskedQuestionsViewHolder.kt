@@ -6,7 +6,7 @@ import com.kickstarter.models.ProjectFaq
 import com.kickstarter.viewmodels.FrequentlyAskedQuestionsViewHolderViewModel
 
 class FrequentlyAskedQuestionsViewHolder(
-    val binding: ItemFrequentlyAskedQuestionCardBinding,
+    val binding: ItemFrequentlyAskedQuestionCardBinding
 ) : KSViewHolder(binding.root) {
 
     private val viewModel: FrequentlyAskedQuestionsViewHolderViewModel.ViewModel =

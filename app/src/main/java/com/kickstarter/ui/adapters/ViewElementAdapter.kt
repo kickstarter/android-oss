@@ -15,9 +15,9 @@ import com.kickstarter.libs.ImageViewElement
 import com.kickstarter.libs.TextViewElement
 import com.kickstarter.libs.VideoViewElement
 import com.kickstarter.libs.ViewElement
+import com.kickstarter.ui.extensions.loadImage
 import com.kickstarter.ui.viewholders.EmptyViewHolder
 import com.kickstarter.ui.viewholders.KSViewHolder
-import com.squareup.picasso.Picasso
 
 class ViewElementAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -143,7 +143,7 @@ class TextElementViewHolder(
 
     override fun bindData(data: Any?) {
         (data as? TextViewElement).apply {
-            textView.text = this?.attributedText ?: ""
+            this?.let { configure(it) }
         }
     }
 }
@@ -155,7 +155,7 @@ class ImageElementViewHolder(
     private val imageView: ImageView = binding.imageView
 
     private fun configure(element: ImageViewElement) {
-        Picasso.get().load(element.src).into(imageView)
+        imageView.loadImage(element.src, context())
     }
 
     override fun bindData(data: Any?) {

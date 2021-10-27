@@ -523,6 +523,20 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     /**
+     * Sends data to the client when the selected project tabs  changed.
+     *
+     * @param pledgeData: The selected pledge data for project.
+     */
+
+    fun trackProjectPageTabChanged(projectData: ProjectData, pageSectionContext: String) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to PROJECT.contextName)
+        props[CONTEXT_SECTION.contextName] = pageSectionContext
+        props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
+        props.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
+    /**
      * Sends data to the client when the login button is clicked.
      */
     fun trackLogInButtonCtaClicked() {

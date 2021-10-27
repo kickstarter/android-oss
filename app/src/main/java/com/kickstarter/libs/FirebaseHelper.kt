@@ -26,10 +26,10 @@ class FirebaseHelper(context: Context, callback: () -> Boolean) {
                 FirebaseApp.initializeApp(context)
                 FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
                 FirebaseAnalytics.getInstance(context).setAnalyticsCollectionEnabled(true)
-                FirebaseInstallations.getInstance().id.addOnSuccessListener { s: String ->
-                    identifier = s
-                    callback()
-                }
+            }
+            FirebaseInstallations.getInstance().id.addOnSuccessListener { s: String ->
+                identifier = s
+                callback()
             }
         } else {
             identifier = "Test Id"

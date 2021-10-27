@@ -97,7 +97,11 @@ class EventContextValues {
         CAMPAIGN("campaign"),
         COMMENTS("comments"),
         OVERVIEW("overview"),
-        UPDATES("updates")
+        UPDATES("updates"),
+        RISKS("risks"),
+        STORY("campaign"),
+        FAQS("faq"),
+        ENVIRONMENT("environment"),
     }
 
     /**

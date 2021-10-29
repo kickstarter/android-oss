@@ -90,12 +90,11 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCommentsViewModel_whenUserIsCreator_shouldShowEnabledComposer() {
+    fun testCommentsViewModel_whenUser_can_comment_shouldShowEnabledComposer() {
         val currentUser = UserFactory.user().toBuilder().id(1234).build()
         val project = ProjectFactory.project()
             .toBuilder()
-            .creator(currentUser)
-            .isBacking(false)
+            .canComment(true)
             .build()
         val vm = CommentsViewModel.ViewModel(
             environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
@@ -110,6 +109,28 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // The comment composer enabled to write comments for creator
         showCommentComposer.assertValues(true, true)
         commentComposerStatus.assertValues(CommentComposerStatus.ENABLED)
+    }
+
+    @Test
+    fun testCommentsViewModel_whenUser_cant_comment_shouldShowEnabledComposer() {
+        val currentUser = UserFactory.user().toBuilder().id(1234).build()
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .canComment(false)
+            .build()
+        val vm = CommentsViewModel.ViewModel(
+            environment().toBuilder().currentUser(MockCurrentUser(currentUser)).build()
+        )
+
+        vm.outputs.commentComposerStatus().subscribe(commentComposerStatus)
+        vm.outputs.showCommentComposer().subscribe(showCommentComposer)
+
+        // Start the view model with a project.
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        // The comment composer enabled to write comments for creator
+        showCommentComposer.assertValues(true, true)
+        commentComposerStatus.assertValues(CommentComposerStatus.DISABLED)
     }
 
     @Test

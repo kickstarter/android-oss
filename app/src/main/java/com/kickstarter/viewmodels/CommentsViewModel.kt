@@ -10,7 +10,6 @@ import com.kickstarter.libs.loadmore.ApolloPaginate
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
-import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.models.Comment
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
@@ -461,7 +460,7 @@ interface CommentsViewModel {
         private fun getCommentComposerStatus(projectAndUser: Pair<Project, User?>) =
             when {
                 projectAndUser.second == null -> CommentComposerStatus.GONE
-                projectAndUser.first.isBacking || ProjectUtils.userIsCreator(projectAndUser.first, projectAndUser.second) -> CommentComposerStatus.ENABLED
+                projectAndUser.first.canComment() ?: false -> CommentComposerStatus.ENABLED
                 else -> CommentComposerStatus.DISABLED
             }
 

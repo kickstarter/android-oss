@@ -1132,11 +1132,13 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
     } ?: emptyList()
     val risks = projectFragment?.risks()
     val story = projectFragment?.story()?.toString() ?: ""
+    val userCanComment = projectFragment?.canComment() ?: false
 
     return Project.builder()
         .availableCardTypes(availableCards.map { it.name })
         .backersCount(backersCount)
         .blurb(blurb)
+        .canComment(userCanComment)
         .backing(backing)
         .category(category)
         .commentsCount(commentsCount)

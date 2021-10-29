@@ -34,6 +34,7 @@ import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
@@ -129,6 +130,8 @@ class ProjectPageActivity :
             }
 
         this.viewModel.outputs.updateEnvCommitmentsTabVisibility()
+            .filter { ObjectUtils.isNotNull(it) }
+            .map { requireNotNull(it) }
             .distinctUntilChanged()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())

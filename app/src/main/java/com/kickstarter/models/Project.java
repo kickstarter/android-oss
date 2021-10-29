@@ -58,6 +58,7 @@ public abstract class Project implements Parcelable, Relay {
   public abstract @Nullable List<Reward> rewards();
   public abstract @Nullable String slug();
   public abstract @Nullable Boolean staffPick();
+  public abstract @Nullable Boolean canComment();
   public abstract @State String state();
   public abstract @Nullable DateTime stateChangedAt();
   public abstract Float staticUsdRate();
@@ -89,6 +90,7 @@ public abstract class Project implements Parcelable, Relay {
     public abstract Builder currentCurrency(String __);
     public abstract Builder currencyTrailingCode(boolean __);
     public abstract Builder displayPrelaunch(Boolean __);
+    public abstract Builder canComment(Boolean __);
     public abstract Builder deadline(DateTime __);
     public abstract Builder featuredAt(DateTime __);
     public abstract Builder friends(List<User> __);
@@ -130,6 +132,7 @@ public abstract class Project implements Parcelable, Relay {
     return new AutoParcel_Project.Builder()
       .isBacking(false)
       .isStarred(false)
+      .canComment(false)
       .rewards(Collections.emptyList());
   }
 

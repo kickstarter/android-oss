@@ -76,7 +76,7 @@ class ProjectPageActivity :
 
     private var pagerAdapterMap = mutableMapOf(
         ProjectPagerTabs.OVERVIEW to true,
-        // ProjectPagerTabs.CAMPAIGN to true, // TODO bring back ProjectPagerTabs.CAMPAIGN to true, on second place once the HTML parser is in place
+        ProjectPagerTabs.CAMPAIGN to true,
         ProjectPagerTabs.FAQS to true,
         ProjectPagerTabs.RISKS to true,
         ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT to false
@@ -442,7 +442,7 @@ class ProjectPageActivity :
 
     private fun getTabTitle(position: Int) = when (position) {
         ProjectPagerTabs.OVERVIEW.ordinal -> getString(R.string.Overview)
-        // ProjectPagerTabs.CAMPAIGN.ordinal -> getString(R.string.Campaign) // TODO bring back CAMPAIGN, on second place once the HTML parser is in place
+        ProjectPagerTabs.CAMPAIGN.ordinal -> getString(R.string.Campaign)
         ProjectPagerTabs.FAQS.ordinal -> getString(R.string.Faq)
         ProjectPagerTabs.RISKS.ordinal -> getString(R.string.Risks)
         ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal -> getString(R.string.Environmental_commitment)

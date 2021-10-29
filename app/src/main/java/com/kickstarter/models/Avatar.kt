@@ -25,8 +25,8 @@ class Avatar private constructor(
         private var small: String = "",
         private var thumb: String = ""
     ) : Parcelable {
-        fun medium(med: String?) = apply { med?.let { this.medium = it }}
-        fun small(sma: String?) = apply { sma?.let { this.small = it }}
+        fun medium(med: String?) = apply { med?.let { this.medium = it } }
+        fun small(sma: String?) = apply { sma?.let { this.small = it } }
         fun thumb(thu: String?) = apply { thu?.let { this.thumb = it } }
         fun build() = Avatar(medium = medium, small = small, thumb = thumb)
     }
@@ -41,6 +41,6 @@ class Avatar private constructor(
     override fun equals(other: Any?): Boolean =
         if (other is Avatar) {
             other.medium == this.medium && other.small == this.small &&
-                    other.thumb == this.thumb
+                other.thumb == this.thumb
         } else false
 }

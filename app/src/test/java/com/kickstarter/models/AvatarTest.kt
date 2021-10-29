@@ -3,7 +3,7 @@ package com.kickstarter.models
 import com.kickstarter.mock.factories.AvatarFactory
 import junit.framework.TestCase
 
-class AvatarTest: TestCase() {
+class AvatarTest : TestCase() {
 
     fun testEquals_whenSecondAvatarDifferent_returnFalse() {
         val avatarA = AvatarFactory.avatar()

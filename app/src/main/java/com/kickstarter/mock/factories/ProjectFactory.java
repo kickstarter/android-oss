@@ -129,6 +129,7 @@ public final class ProjectFactory {
 
     return project
       .toBuilder()
+      .canComment(true)
       .backing(backing)
       .isBacking(true)
       .build();

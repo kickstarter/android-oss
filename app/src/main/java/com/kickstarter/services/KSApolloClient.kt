@@ -1131,11 +1131,13 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         environmentalCommitmentTransformer(it.fragments().environmentalCommitment())
     } ?: emptyList()
     val risks = projectFragment?.risks()
+    val userCanComment = projectFragment?.canComment() ?: false
 
     return Project.builder()
         .availableCardTypes(availableCards.map { it.name })
         .backersCount(backersCount)
         .blurb(blurb)
+        .canComment(userCanComment)
         .backing(backing)
         .category(category)
         .commentsCount(commentsCount)

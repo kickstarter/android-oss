@@ -19,6 +19,7 @@ fragment fullProject on Project {
         ... user
     }
     currency
+    canComment
     prelaunchActivated
     projectOfTheDayAt
     friends {

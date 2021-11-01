@@ -28,7 +28,6 @@
             android:id="@+id/environmentalCommitments_RecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_3_half"
             android:layout_marginBottom="@dimen/grid_7"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

@@ -7,6 +7,7 @@ public final class AvatarFactory {
 
   public static Avatar avatar() {
     final String baseUrl = "https://www.kickstarter.com/avatars/12345678/";
+
     return Avatar.builder()
       .medium(baseUrl + "medium.jpg")
       .small(baseUrl + "small.jpg")

@@ -10,7 +10,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/environmentalCommitments_tv"
+            android:id="@+id/risk_tv"
             style="@style/PledgeCurrency"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -29,10 +29,10 @@
             style="@style/answerStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_2"
+            android:layout_marginTop="@dimen/grid_3"
             android:gravity="start|center_vertical"
             android:layout_marginHorizontal="@dimen/grid_3"
-            app:layout_constraintTop_toBottomOf="@+id/environmentalCommitments_tv"
+            app:layout_constraintTop_toBottomOf="@+id/risk_tv"
             tools:text="@string/We_were_unable_to_load_the_shipping_destinations" />
 
         <View

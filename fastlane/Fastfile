@@ -69,6 +69,7 @@ lane :internal do
   Milkrun::S3Package.new(version_code: version_code, file_path: path_to_apk).upload
 
   changelog = Milkrun::Changelog.new(audience: audience, build_type: build_type, version_code: version_code)
+  branch_name = git_branch
   commit_message = last_git_commit[:message]
   changelog.instance_variable_set(:@changelog, commit_message)
   changelog.publish
@@ -76,7 +77,7 @@ lane :internal do
   firebase_app_distribution(
     app: Milkrun::FirebaseCredentialsExtractor.new.internal_release,
     groups: "android-testers, dev",
-    release_notes: commit_message
+    release_notes: "BRANCH:" + branch_name + "\n COMMIT:" + commit_message
   )
 
   slack(

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
     android:layout_width="match_parent"
@@ -9,18 +8,107 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/project_app_bar_layout"
         android:layout_width="match_parent"
+        android:fitsSystemWindows="true"
+        app:layout_collapseMode="pin"
         android:layout_height="wrap_content">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="enterAlways">
+            android:fitsSystemWindows="true"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <include
-                android:id="@+id/project_activity_toolbar"
-                layout="@layout/project_toolbar" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/project_activity_toolbar"
+                    layout="@layout/project_toolbar"
+                    app:layout_constraintBottom_toTopOf="@id/media_header_layout" />
+
+                <androidx.constraintlayout.motion.widget.MotionLayout
+                    android:id="@+id/media_header_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    app:layoutDescription="@xml/activity_project_page_scene"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/project_activity_toolbar">
+
+                    <com.kickstarter.ui.views.MediaHeader
+                        android:id="@+id/media_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toTopOf="@id/project_detail_tabs"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <!--            <Button-->
+                    <!--                android:id="@+id/transition_button"-->
+                    <!--                android:layout_width="wrap_content"-->
+                    <!--                android:layout_height="wrap_content"-->
+                    <!--                android:text="Transition"-->
+                    <!--                app:layout_constraintTop_toBottomOf="@id/media_header"-->
+                    <!--                app:layout_constraintStart_toStartOf="parent"-->
+                    <!--                app:layout_constraintEnd_toEndOf="parent"-->
+                    <!--                app:layout_constraintBottom_toTopOf="@id/project_detail_tabs"/>-->
+
+                    <androidx.constraintlayout.widget.Group
+                        android:id="@+id/backing_group"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:constraint_referenced_ids="green_background, backer_check_mark, backer_text_view" />
+
+                    <View
+                        android:id="@+id/green_background"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="@drawable/rect_green_grey_stroke"
+                        android:importantForAccessibility="no"
+                        app:layout_constraintBottom_toBottomOf="@id/backer_text_view"
+                        app:layout_constraintEnd_toEndOf="@id/backer_text_view"
+                        app:layout_constraintStart_toStartOf="@id/backer_check_mark"
+                        app:layout_constraintTop_toTopOf="@id/backer_text_view" />
+
+                    <ImageView
+                        android:id="@+id/backer_check_mark"
+                        android:layout_width="@dimen/grid_7_half"
+                        android:layout_height="@dimen/grid_7_half"
+                        android:layout_marginEnd="@dimen/grid_1_half"
+                        android:importantForAccessibility="no"
+                        android:paddingStart="@dimen/grid_1"
+                        android:src="@drawable/icon__check"
+                        app:layout_constraintBottom_toBottomOf="@id/media_header"
+                        app:layout_constraintEnd_toStartOf="@id/backer_text_view"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toStartOf="@id/media_header"
+                        app:layout_constraintTop_toTopOf="@id/media_header"
+                        app:tint="@color/kds_white" />
+
+                    <TextView
+                        android:id="@+id/backer_text_view"
+                        style="@style/Caption1PrimaryMedium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/grid_1"
+                        android:paddingEnd="@dimen/grid_1"
+                        android:paddingBottom="@dimen/grid_1"
+                        android:text="@string/discovery_baseball_card_metadata_backer"
+                        android:textColor="@color/kds_white"
+                        app:layout_constraintBottom_toBottomOf="@id/media_header"
+                        app:layout_constraintEnd_toEndOf="@id/media_header"
+                        app:layout_constraintStart_toEndOf="@id/backer_check_mark"
+                        app:layout_constraintTop_toTopOf="@id/media_header" />
+                </androidx.constraintlayout.motion.widget.MotionLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
+
     <ProgressBar
         android:id="@+id/project_progress_bar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -35,109 +123,53 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        android:layout_below="@id/project_progress_bar"
         android:layout_marginBottom="@dimen/reward_fragment_guideline_constraint_end"
-        android:layout_below="@id/project_progress_bar">
-
-        <com.kickstarter.ui.views.MediaHeader
-            android:id="@+id/media_header_layout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/project_detail_tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/backing_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:constraint_referenced_ids="green_background, backer_check_mark, backer_text_view"/>
-
-        <View
-            android:id="@+id/green_background"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@drawable/rect_green_grey_stroke"
-            app:layout_constraintTop_toTopOf="@id/backer_text_view"
-            app:layout_constraintBottom_toBottomOf="@id/backer_text_view"
-            app:layout_constraintEnd_toEndOf="@id/backer_text_view"
-            app:layout_constraintStart_toStartOf="@id/backer_check_mark"
-            android:importantForAccessibility="no" />
-
-        <ImageView
-            android:id="@+id/backer_check_mark"
-            android:src="@drawable/icon__check"
-            app:tint="@color/kds_white"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            android:paddingStart="@dimen/grid_1"
-            android:layout_marginEnd="@dimen/grid_1_half"
-            app:layout_constraintEnd_toStartOf="@id/backer_text_view"
-            app:layout_constraintTop_toTopOf="@id/media_header_layout"
-            app:layout_constraintBottom_toBottomOf="@id/media_header_layout"
-            app:layout_constraintStart_toStartOf="@id/media_header_layout"
-            android:layout_width="@dimen/grid_7_half"
-            android:layout_height="@dimen/grid_7_half"
-            android:importantForAccessibility="no"/>
-
-        <TextView
-            android:id="@+id/backer_text_view"
-            style="@style/Caption1PrimaryMedium"
-            android:paddingEnd="@dimen/grid_1"
-            android:textColor="@color/kds_white"
-            android:paddingTop="@dimen/grid_1"
-            android:paddingBottom="@dimen/grid_1"
-            app:layout_constraintStart_toEndOf="@id/backer_check_mark"
-            app:layout_constraintTop_toTopOf="@id/media_header_layout"
-            app:layout_constraintBottom_toBottomOf="@id/media_header_layout"
-            app:layout_constraintEnd_toEndOf="@id/media_header_layout"
-            android:text="@string/discovery_baseball_card_metadata_backer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/project_detail_tabs"
-            android:clipToPadding="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipToPadding="false"
             android:theme="@style/TabLayout_Theme"
-            app:tabIndicatorColor="@color/kds_trust_500"
-            app:tabMode="scrollable"
-            app:tabMaxWidth="0dp"
-            app:layout_constraintTop_toBottomOf="@id/media_header_layout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tabIndicatorColor="@color/kds_trust_500"
+            app:tabMaxWidth="0dp"
+            app:tabMode="scrollable">
 
             <com.google.android.material.tabs.TabItem
-                android:text="@string/Overview"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="@string/Overview" />
 
             <com.google.android.material.tabs.TabItem
-                android:text="@string/Campaign"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="@string/Campaign" />
 
             <com.google.android.material.tabs.TabItem
-                android:text="@string/Faq"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="@string/Faq" />
 
             <com.google.android.material.tabs.TabItem
-                android:text="@string/Environmental_commitment"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="@string/Environmental_commitment" />
         </com.google.android.material.tabs.TabLayout>
+
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/project_pager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@+id/project_detail_tabs"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/project_detail_tabs" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
@@ -149,5 +181,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/reward_fragment_guideline_constraint_end" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

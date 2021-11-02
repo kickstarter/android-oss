@@ -242,6 +242,8 @@ interface ProjectPageViewModel {
         fun backingViewGroupIsVisible(): Observable<Boolean>
 
         fun updateEnvCommitmentsTabVisibility(): Observable<Boolean>
+
+        fun hideVideoPlayer(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) :
@@ -314,6 +316,7 @@ interface ProjectPageViewModel {
         private val startThanksActivity = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
         private val startVideoActivity = PublishSubject.create<Project>()
         private val updateFragments = BehaviorSubject.create<ProjectData>()
+        private val hideVideoPlayer = BehaviorSubject.create<Boolean>()
         private val tabSelected = PublishSubject.create<Int>()
         private val projectPhoto = PublishSubject.create<String>()
         private val playButtonIsVisible = PublishSubject.create<Boolean>()
@@ -639,6 +642,11 @@ interface ProjectPageViewModel {
                 .subscribe {
                     this.projectData.onNext(it.first)
                 }
+
+            tabSelected
+                .map{ it != 0 }
+                .compose(bindToLifecycle())
+                .subscribe{this.hideVideoPlayer.onNext(it)}
 
             val backedProject = currentProject
                 .filter { it.isBacking }
@@ -1099,6 +1107,9 @@ interface ProjectPageViewModel {
         @NonNull
         override fun updateEnvCommitmentsTabVisibility(): Observable<Boolean> = this
             .updateEnvCommitmentsTabVisibility
+
+        @NonNull
+        override fun hideVideoPlayer(): Observable<Boolean> = this.hideVideoPlayer
 
         @NonNull
         override fun updateFragments(): Observable<ProjectData> = this.updateFragments

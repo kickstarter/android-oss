@@ -10,6 +10,7 @@
   android:background="@color/kds_white"
   android:focusable="true"
   android:focusableInTouchMode="true"
+    app:layout_collapseMode="parallax"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
   android:elevation="@dimen/ks_toolbar_elevation">

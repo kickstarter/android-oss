@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.util.Pair
 import android.view.MotionEvent
 import android.view.View
@@ -19,6 +20,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -327,14 +329,14 @@ class ProjectPageActivity :
         this.viewModel.outputs.projectPhoto()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding.mediaHeaderLayout.inputs.setProjectPhoto(it) }
+            .subscribe { binding.mediaHeader.inputs.setProjectPhoto(it) }
 
         viewModel.outputs.playButtonIsVisible()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { binding.mediaHeaderLayout.inputs.setPlayButtonVisibility(it) }
+            .subscribe { binding.mediaHeader.inputs.setPlayButtonVisibility(it) }
 
-        binding.mediaHeaderLayout.outputs.playButtonClicks()
+        binding.mediaHeader.outputs.playButtonClicks()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { viewModel.inputs.playVideoButtonClicked() }
@@ -343,6 +345,11 @@ class ProjectPageActivity :
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { binding.backingGroup.visibility = it.toVisibility() }
+
+        viewModel.outputs.hideVideoPlayer()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { if(it) binding.mediaHeaderLayout.transitionToEnd() else binding.mediaHeaderLayout.transitionToStart()}
 
         setClickListeners()
     }
@@ -359,6 +366,11 @@ class ProjectPageActivity :
             tab.text = getTabTitle(position)
         }.attach()
 
+        viewPager.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            Log.d(
+                "Leigh scroll position",
+                scrollX.toString()
+            ) }
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
 
             override fun onTabSelected(tab: TabLayout.Tab?) {

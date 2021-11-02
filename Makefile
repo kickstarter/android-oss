@@ -64,6 +64,18 @@ sync_private_to_oss:
 
 	@echo "private and oss remotes are now synced!"
 
+regression:
+	@echo "Adding remotes..."
+	@git remote add private https://github.com/kickstarter/android-private
+
+	@echo "Deploying private/internal"
+
+	@git branch -f regression
+	@git push -f private regression
+	@git branch -d regression
+
+	@echo "Deploy has been kicked off to CircleCI!"
+
 internal:
 	@echo "Adding remotes..."
 	@git remote add private https://github.com/kickstarter/android-private

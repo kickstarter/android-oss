@@ -250,6 +250,7 @@ apollo {
 repositories {
     // This is the only reference we cannot remove yet as it has not been migrated to mavenCentral() or google()
     // see - https://github.com/google/flexbox-layout/issues/566
+    jcenter()
     maven {
         url 'https://maven.google.com'
     }

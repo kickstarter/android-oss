@@ -77,7 +77,6 @@ interface CommentsViewModel {
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
 
         private val currentUser: CurrentUserType = environment.currentUser()
-        private val client: ApiClientType = environment.apiClient()
         private val apolloClient: ApolloClientType = environment.apolloClient()
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -155,7 +154,7 @@ interface CommentsViewModel {
             }.flatMap {
                 it?.either<Observable<Project?>>(
                     { value: Project? -> Observable.just(value) },
-                    { u: Update? -> client.fetchProject(u?.projectId().toString()).compose(Transformers.neverError()) }
+                    { u: Update? -> apolloClient.getProject(u?.projectId().toString()).compose(Transformers.neverError()) }
                 )
             }.map {
                 requireNotNull(it)

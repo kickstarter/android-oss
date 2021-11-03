@@ -41,7 +41,7 @@ class HTMLParser {
                     (element.attributes().firstOrNull { it.key == "href" })?.value?.let { href ->
                         val imageElements = element.getElementsByTag("img")
                         for (imageElement in imageElements) {
-                            imageElement.attributes()["src"]?.let { sourceUrl ->
+                            imageElement.attributes()["src"].let { sourceUrl ->
                                 viewElements.add(EmbeddedLinkViewElement(href, sourceUrl, caption))
                             }
                         }
@@ -51,6 +51,11 @@ class HTMLParser {
                     val sourceUrls = element.attributes().mapNotNull { if (it.key == "data-href") it.value else null }
                     val videoViewElement = VideoViewElement(ArrayList(sourceUrls))
                     viewElements.add(videoViewElement)
+                }
+                ViewElementType.EXTERNAL_SOURCES -> {
+                    val sourceUrls = element.html()
+                    val externalSourceViewElement = ExternalSourceViewElement(sourceUrls)
+                    viewElements.add(externalSourceViewElement)
                 }
                 ViewElementType.UNKNOWN -> {
                     print("UNKNOWN ELEMENT")

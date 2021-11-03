@@ -45,10 +45,15 @@ data class EmbeddedLinkViewElement(
 
 open class ImageViewElement(open val src: String) : ViewElement
 
+data class ExternalSourceViewElement(
+    val htmlContent: String
+) : ViewElement
+
 enum class ViewElementType(val tag: String?) {
     IMAGE("img"),
     TEXT(null),
     VIDEO("video"),
+    EXTERNAL_SOURCES("iframe"),
     EMBEDDED_LINK(null),
     OEMBED(null),
     UNKNOWN(null);
@@ -57,8 +62,12 @@ enum class ViewElementType(val tag: String?) {
         fun initialize(element: Element): ViewElementType {
             val tag = element.tag().name
             if (tag == "div") {
+
                 for (attribute in element.attributes()) {
                     if (attribute.key == "class" && attribute.value == "template oembed") {
+                        if (element.children()[0].tag().name == EXTERNAL_SOURCES.tag) {
+                            return EXTERNAL_SOURCES
+                        }
                         return OEMBED
                     }
                 }

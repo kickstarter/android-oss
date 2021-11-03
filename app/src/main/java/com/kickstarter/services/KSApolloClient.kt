@@ -64,7 +64,6 @@ import type.CurrencyCode
 import type.PaymentTypes
 import type.RewardType
 import type.ShippingPreference
-import java.util.Locale
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
@@ -1106,7 +1105,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
 
     val slug = projectFragment?.slug()
     val staffPicked = projectFragment?.isProjectWeLove ?: false
-    val state = projectFragment?.state()?.name?.toLowerCase(Locale.getDefault())
+    val state = projectFragment?.state()?.name?.lowercase()
     val stateChangedAt = projectFragment?.stateChangedAt()
     val staticUSDRate = projectFragment?.usdExchangeRate()?.toFloat() ?: 1f
     val usdExchangeRate = projectFragment?.usdExchangeRate()?.toFloat() ?: 1f
@@ -1316,9 +1315,9 @@ private fun rewardTransformer(
         .hasAddons(allowedAddons)
         .rewardsItems(rewardItems)
         .id(rewardId)
-        .shippingPreference(shippingPreference.name.toLowerCase(Locale.getDefault()))
+        .shippingPreference(shippingPreference.name.lowercase())
         .shippingPreferenceType(shippingPreference)
-        .shippingType(shippingPreference.name.toLowerCase(Locale.getDefault()))
+        .shippingType(shippingPreference.name.lowercase())
         .shippingRules(shippingRules)
         .isAvailable(available)
         .backersCount(backersCount)

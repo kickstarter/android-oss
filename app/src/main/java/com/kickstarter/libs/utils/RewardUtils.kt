@@ -8,7 +8,6 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import org.joda.time.DateTime
 import org.joda.time.Duration
-import java.util.Locale
 import kotlin.math.floor
 import kotlin.math.max
 
@@ -162,16 +161,8 @@ object RewardUtils {
         }
 
         return when (shippingType) {
-            Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase(Locale.getDefault()) -> Pair.create(
-                R.string
-                    .Ships_worldwide,
-                null
-            )
-            Reward.ShippingPreference.RESTRICTED.name.toLowerCase(Locale.getDefault()) -> Pair.create(
-                R.string
-                    .Limited_shipping,
-                ""
-            )
+            Reward.ShippingPreference.UNRESTRICTED.name.lowercase() -> Pair.create(R.string.Ships_worldwide, null)
+            Reward.ShippingPreference.RESTRICTED.name.lowercase() -> Pair.create(R.string.Limited_shipping, "")
             Reward.SHIPPING_TYPE_ANYWHERE -> Pair.create(R.string.Ships_worldwide, null)
             Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS -> Pair.create(R.string.Limited_shipping, null)
             Reward.SHIPPING_TYPE_SINGLE_LOCATION -> {

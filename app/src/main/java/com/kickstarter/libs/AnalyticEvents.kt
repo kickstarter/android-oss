@@ -244,7 +244,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      */
     fun trackDiscoveryPageViewed(discoveryParams: DiscoveryParams) {
         val props = AnalyticEventsUtils.discoveryParamsProperties(discoveryParams).toMutableMap()
-        props[DISCOVER_SORT.contextName] = discoveryParams.sort()?.name?.toLowerCase(Locale.ROOT) ?: ""
+        props[DISCOVER_SORT.contextName] = discoveryParams.sort()?.name?.lowercase(Locale.ROOT) ?: ""
         props[CONTEXT_PAGE.contextName] = DISCOVER.contextName
         client.track(PAGE_VIEWED.eventName, props)
     }

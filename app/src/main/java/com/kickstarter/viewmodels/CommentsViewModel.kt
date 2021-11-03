@@ -18,6 +18,7 @@ import com.kickstarter.models.extensions.cardStatus
 import com.kickstarter.models.extensions.updateCanceledPledgeComment
 import com.kickstarter.models.extensions.updateCommentAfterSuccessfulPost
 import com.kickstarter.models.extensions.updateCommentFailedToPost
+import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.ui.IntentKey
@@ -76,6 +77,7 @@ interface CommentsViewModel {
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
 
         private val currentUser: CurrentUserType = environment.currentUser()
+        private val client: ApiClientType = environment.apiClient()
         private val apolloClient: ApolloClientType = environment.apolloClient()
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -153,7 +155,7 @@ interface CommentsViewModel {
             }.flatMap {
                 it?.either<Observable<Project?>>(
                     { value: Project? -> Observable.just(value) },
-                    { u: Update? -> apolloClient.getProject(u?.projectId().toString()).compose(Transformers.neverError()) }
+                    { u: Update? -> client.fetchProject(u?.projectId().toString()).compose(Transformers.neverError()) }
                 )
             }.map {
                 requireNotNull(it)
@@ -459,6 +461,7 @@ interface CommentsViewModel {
             when {
                 projectAndUser.second == null -> CommentComposerStatus.GONE
                 projectAndUser.first.canComment() ?: false -> CommentComposerStatus.ENABLED
+                projectAndUser.first.isBacking -> CommentComposerStatus.ENABLED
                 else -> CommentComposerStatus.DISABLED
             }
 

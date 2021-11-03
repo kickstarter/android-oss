@@ -62,6 +62,9 @@ enum class ViewElementType(val tag: String?) {
         fun initialize(element: Element): ViewElementType {
             val tag = element.tag().name
             if (tag == "div") {
+                if (element.children()[0].tag().name == EXTERNAL_SOURCES.tag) {
+                    return EXTERNAL_SOURCES
+                }
                 for (attribute in element.attributes()) {
                     if (attribute.key == "class" && attribute.value == "template oembed") {
                         return OEMBED
@@ -75,8 +78,6 @@ enum class ViewElementType(val tag: String?) {
                 return IMAGE
             } else if (tag == VIDEO.tag) {
                 return VIDEO
-            } else if (tag == EXTERNAL_SOURCES.tag) {
-                return EXTERNAL_SOURCES
             }
             return UNKNOWN
         }

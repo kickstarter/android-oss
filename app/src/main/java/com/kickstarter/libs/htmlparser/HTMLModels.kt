@@ -45,10 +45,15 @@ data class EmbeddedLinkViewElement(
 
 open class ImageViewElement(open val src: String) : ViewElement
 
+data class ExternalSourceViewElement(
+    val htmlContent: String
+) : ViewElement
+
 enum class ViewElementType(val tag: String?) {
     IMAGE("img"),
     TEXT(null),
     VIDEO("video"),
+    EXTERNAL_SOURCES("iframe"),
     EMBEDDED_LINK(null),
     OEMBED(null),
     UNKNOWN(null);
@@ -70,6 +75,8 @@ enum class ViewElementType(val tag: String?) {
                 return IMAGE
             } else if (tag == VIDEO.tag) {
                 return VIDEO
+            } else if (tag == EXTERNAL_SOURCES.tag) {
+                return EXTERNAL_SOURCES
             }
             return UNKNOWN
         }

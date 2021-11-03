@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.databinding.EmptyViewBinding
 import com.kickstarter.databinding.ViewElementImageFromHtmlBinding
 import com.kickstarter.databinding.ViewElementTextFromHtmlBinding
-import com.kickstarter.libs.htmlparser.EmbeddedLinkViewElement
+import com.kickstarter.libs.htmlparser.ExternalSourceViewElement
 import com.kickstarter.libs.htmlparser.ImageViewElement
 import com.kickstarter.libs.htmlparser.TextViewElement
 import com.kickstarter.libs.htmlparser.VideoViewElement
@@ -51,8 +51,8 @@ class ViewElementAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 else false
             }
 
-            (oldItem as? EmbeddedLinkViewElement)?.let {
-                val isSameType = newItem is EmbeddedLinkViewElement
+            (oldItem as? ExternalSourceViewElement)?.let {
+                val isSameType = newItem is ExternalSourceViewElement
                 return if (isSameType) newItem == oldItem
                 else false
             }
@@ -86,7 +86,7 @@ class ViewElementAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             return ElementViewHolderType.VIDEO.ordinal
         }
 
-        (element as? EmbeddedLinkViewElement)?.let {
+        (element as? ExternalSourceViewElement)?.let {
             return ElementViewHolderType.EMBEDDED.ordinal
         }
 

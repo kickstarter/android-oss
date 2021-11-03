@@ -41,7 +41,7 @@ class HTMLParser {
                     (element.attributes().firstOrNull { it.key == "href" })?.value?.let { href ->
                         val imageElements = element.getElementsByTag("img")
                         for (imageElement in imageElements) {
-                            imageElement.attributes()["src"]?.let { sourceUrl ->
+                            imageElement.attributes()["src"].let { sourceUrl ->
                                 viewElements.add(EmbeddedLinkViewElement(href, sourceUrl, caption))
                             }
                         }
@@ -53,7 +53,6 @@ class HTMLParser {
                     viewElements.add(videoViewElement)
                 }
                 ViewElementType.EXTERNAL_SOURCES -> {
-
                     val sourceUrls = element.html()
                     val externalSourceViewElement = ExternalSourceViewElement(sourceUrls)
                     viewElements.add(externalSourceViewElement)

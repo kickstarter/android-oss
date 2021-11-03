@@ -461,6 +461,7 @@ interface CommentsViewModel {
             when {
                 projectAndUser.second == null -> CommentComposerStatus.GONE
                 projectAndUser.first.canComment() ?: false -> CommentComposerStatus.ENABLED
+                projectAndUser.first.isBacking -> CommentComposerStatus.ENABLED
                 else -> CommentComposerStatus.DISABLED
             }
 

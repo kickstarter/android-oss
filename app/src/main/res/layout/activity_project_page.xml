@@ -19,6 +19,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:background="@color/kds_white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
@@ -45,16 +46,6 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
-
-                    <!--            <Button-->
-                    <!--                android:id="@+id/transition_button"-->
-                    <!--                android:layout_width="wrap_content"-->
-                    <!--                android:layout_height="wrap_content"-->
-                    <!--                android:text="Transition"-->
-                    <!--                app:layout_constraintTop_toBottomOf="@id/media_header"-->
-                    <!--                app:layout_constraintStart_toStartOf="parent"-->
-                    <!--                app:layout_constraintEnd_toEndOf="parent"-->
-                    <!--                app:layout_constraintBottom_toTopOf="@id/project_detail_tabs"/>-->
 
                     <androidx.constraintlayout.widget.Group
                         android:id="@+id/backing_group"

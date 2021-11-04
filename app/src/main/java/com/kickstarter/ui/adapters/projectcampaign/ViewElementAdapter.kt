@@ -6,14 +6,17 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.databinding.EmptyViewBinding
+import com.kickstarter.databinding.ViewElementExternalSourceFromHtmlBinding
 import com.kickstarter.databinding.ViewElementImageFromHtmlBinding
 import com.kickstarter.databinding.ViewElementTextFromHtmlBinding
 import com.kickstarter.libs.htmlparser.EmbeddedLinkViewElement
+import com.kickstarter.libs.htmlparser.ExternalSourceViewElement
 import com.kickstarter.libs.htmlparser.ImageViewElement
 import com.kickstarter.libs.htmlparser.TextViewElement
 import com.kickstarter.libs.htmlparser.VideoViewElement
 import com.kickstarter.libs.htmlparser.ViewElement
 import com.kickstarter.ui.viewholders.EmptyViewHolder
+import com.kickstarter.ui.viewholders.projectcampaign.ExternalViewViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.ImageElementViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.TextElementViewHolder
 
@@ -57,6 +60,12 @@ class ViewElementAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 else false
             }
 
+            (oldItem as? ExternalSourceViewElement)?.let {
+                val isSameType = newItem is ExternalSourceViewElement
+                return if (isSameType) newItem == oldItem
+                else false
+            }
+
             return false
         }
     }
@@ -90,6 +99,10 @@ class ViewElementAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             return ElementViewHolderType.EMBEDDED.ordinal
         }
 
+        (element as? ExternalSourceViewElement)?.let {
+            return ElementViewHolderType.EXTERNAL_SOURCES.ordinal
+        }
+
         return 0
     }
 
@@ -119,6 +132,18 @@ class ViewElementAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     )
                 )
             }
+            ElementViewHolderType.EXTERNAL_SOURCES.ordinal -> {
+                return ExternalViewViewHolder(
+                    ViewElementExternalSourceFromHtmlBinding.inflate(
+                        LayoutInflater.from(
+                            viewGroup
+                                .context
+                        ),
+                        viewGroup,
+                        false
+                    )
+                )
+            }
             else -> EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
         }
     }
@@ -137,6 +162,12 @@ class ViewElementAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 viewHolder.bindData(imageElement)
             }
         }
+
+        (element as? ExternalSourceViewElement)?.let { externalSourceViewElement ->
+            (viewHolder as? ExternalViewViewHolder)?.let {
+                viewHolder.bindData(externalSourceViewElement)
+            }
+        }
     }
 
     private enum class ElementViewHolderType {
@@ -144,5 +175,6 @@ class ViewElementAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         IMAGE,
         VIDEO,
         EMBEDDED,
+        EXTERNAL_SOURCES
     }
 }

@@ -1,8 +1,10 @@
 package com.kickstarter.ui.fragments.projectpage
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.Html
+import android.text.Html.FROM_HTML_MODE_LEGACY
 import android.text.SpannableString
 import android.text.TextUtils
 import android.util.Pair
@@ -432,7 +434,11 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
     }
 
     private fun setBlurbTextViews(blurb: String) {
-        val blurbHtml = Html.fromHtml(TextUtils.htmlEncode(blurb))
+        val blurbHtml = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.fromHtml(TextUtils.htmlEncode(blurb), FROM_HTML_MODE_LEGACY)
+        } else {
+            Html.fromHtml(TextUtils.htmlEncode(blurb))
+        }
         binding.blurb.text = blurbHtml
     }
 

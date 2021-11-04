@@ -125,8 +125,6 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
 
   @Override
   public void onActivityPaused(final @NonNull Activity activity) {
-    // Facebook: logs 'app deactivate' App Event.
-    AppEventsLogger.deactivateApp(activity);
   }
 
   @Override

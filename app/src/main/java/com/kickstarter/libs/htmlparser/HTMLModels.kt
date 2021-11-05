@@ -65,7 +65,7 @@ enum class ViewElementType(val tag: String?) {
 
                 for (attribute in element.attributes()) {
                     if (attribute.key == "class" && attribute.value == "template oembed") {
-                        if (element.children()[0].tag().name == EXTERNAL_SOURCES.tag) {
+                        if (element.children().getOrNull(0)?.tag()?.name == EXTERNAL_SOURCES.tag) {
                             return EXTERNAL_SOURCES
                         }
                         return OEMBED

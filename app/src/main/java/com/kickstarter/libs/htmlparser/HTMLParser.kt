@@ -53,7 +53,7 @@ class HTMLParser {
                     viewElements.add(videoViewElement)
                 }
                 ViewElementType.EXTERNAL_SOURCES -> {
-                    val sourceUrls = element.html()
+                    val sourceUrls = element.children()[0].toString()
                     val externalSourceViewElement = ExternalSourceViewElement(sourceUrls)
                     viewElements.add(externalSourceViewElement)
                 }

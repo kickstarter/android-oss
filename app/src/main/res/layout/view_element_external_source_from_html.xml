@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   android:id="@+id/external_source_web_view_cl"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/kds_black"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <WebView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/external_source_web_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+</androidx.constraintlayout.widget.ConstraintLayout>

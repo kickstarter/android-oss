@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:motion="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
 
     <Transition
         motion:constraintSetEnd="@id/end"
-        app:constraintSetStart="@+id/start"
-        app:duration="200"
-        app:motionInterpolator="linear">
+        motion:constraintSetStart="@+id/start"
+        motion:duration="200"
+        motion:motionInterpolator="linear">
     </Transition>
 
     <ConstraintSet android:id="@+id/start">
         <Constraint
             android:id="@+id/media_header"
-            app:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/project_detail_tabs"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintBottom_toTopOf="@id/project_detail_tabs"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
             android:visibility="visible" />
 
         <Constraint android:id="@+id/backer_check_mark">
@@ -38,11 +37,11 @@
     <ConstraintSet android:id="@+id/end">
         <Constraint
             android:id="@+id/media_header"
-            app:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintBottom_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
             />
         <Constraint android:id="@+id/backer_check_mark">
             <PropertySet motion:visibilityMode="ignore" />

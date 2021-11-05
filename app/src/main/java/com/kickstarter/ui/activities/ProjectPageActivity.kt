@@ -366,11 +366,6 @@ class ProjectPageActivity :
             tab.text = getTabTitle(position)
         }.attach()
 
-        viewPager.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-            Log.d(
-                "Leigh scroll position",
-                scrollX.toString()
-            ) }
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
 
             override fun onTabSelected(tab: TabLayout.Tab?) {

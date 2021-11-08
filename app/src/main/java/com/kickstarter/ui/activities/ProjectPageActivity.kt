@@ -7,7 +7,6 @@ import android.animation.ObjectAnimator
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.util.Pair
 import android.view.MotionEvent
 import android.view.View
@@ -20,7 +19,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.fragment.app.FragmentManager
-import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -349,7 +347,7 @@ class ProjectPageActivity :
         viewModel.outputs.hideVideoPlayer()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { if(it) binding.mediaHeaderLayout.transitionToEnd() else binding.mediaHeaderLayout.transitionToStart()}
+            .subscribe { if (it) binding.mediaHeaderLayout.transitionToEnd() else binding.mediaHeaderLayout.transitionToStart() }
 
         setClickListeners()
     }

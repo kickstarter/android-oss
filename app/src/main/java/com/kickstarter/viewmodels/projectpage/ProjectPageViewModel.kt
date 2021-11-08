@@ -644,9 +644,9 @@ interface ProjectPageViewModel {
                 }
 
             tabSelected
-                .map{ it != 0 }
+                .map { it != 0 }
                 .compose(bindToLifecycle())
-                .subscribe{this.hideVideoPlayer.onNext(it)}
+                .subscribe { this.hideVideoPlayer.onNext(it) }
 
             val backedProject = currentProject
                 .filter { it.isBacking }

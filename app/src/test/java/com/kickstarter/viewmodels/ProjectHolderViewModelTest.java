@@ -12,6 +12,7 @@ import com.kickstarter.libs.models.OptimizelyExperiment;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
+import com.kickstarter.libs.utils.extensions.ProjectExt;
 import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.mock.MockExperimentsClientType;
 import com.kickstarter.mock.factories.CategoryFactory;
@@ -660,7 +661,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
     this.backersCountTextViewText.assertValues(NumberUtils.format(project.backersCount()));
-    this.deadlineCountdownTextViewText.assertValues(NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)));
+    this.deadlineCountdownTextViewText.assertValues(NumberUtils.format(ProjectExt.deadlineCountdownValue(project)));
   }
 
   @Test

@@ -8,6 +8,7 @@ import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
+import com.kickstarter.libs.utils.extensions.ProjectExt;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
 
@@ -53,7 +54,7 @@ public interface ProjectSearchResultHolderViewModel {
       super(environment);
 
       this.deadlineCountdownValueTextViewText = this.projectAndIsFeatured
-        .map(pb -> NumberUtils.format(ProjectUtils.deadlineCountdownValue(pb.first)));
+        .map(pb -> NumberUtils.format(ProjectExt.deadlineCountdownValue(pb.first)));
 
       this.percentFundedTextViewText = this.projectAndIsFeatured
         .map(pb -> NumberUtils.flooredPercentage(pb.first.percentageFunded()));

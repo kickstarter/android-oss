@@ -9,6 +9,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.libs.utils.ProjectUtils
+import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
 import com.kickstarter.ui.viewholders.UpdateCardViewHolder
@@ -88,7 +89,7 @@ interface UpdateCardViewHolderViewModel {
 
             val isCreator = Observable.combineLatest(this.currentUser.observable(), project) { user, project ->
                 Pair(user, project)
-            }.map { ProjectUtils.userIsCreator(it.second, it.first) }
+            }.map { it.second.userIsCreator(it.first) }
 
             this.projectAndUpdate
                 .compose<Pair<Pair<Project, Update>, Boolean>>(Transformers.combineLatestPair(isCreator))

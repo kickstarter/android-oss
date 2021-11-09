@@ -28,6 +28,7 @@ import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.SocialUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.setGone
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -146,7 +147,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
                 context?.let { currentContext ->
                     // setLandscapeOverlayText(it)
                     binding.statsView.deadlineCountdownUnitTextView.text =
-                        ProjectUtils.deadlineCountdownDetail(it, currentContext, ksString)
+                        it.deadlineCountdownDetail(currentContext, ksString)
                 }
             }
 

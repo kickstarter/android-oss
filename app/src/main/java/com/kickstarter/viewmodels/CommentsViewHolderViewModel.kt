@@ -9,6 +9,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectUtils
+import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Comment
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -403,7 +404,7 @@ interface CommentsViewHolderViewModel {
             user: User?
         ) =
             commentCardData.project?.let {
-                (it.isBacking || ProjectUtils.userIsCreator(it, user)) &&
+                (it.isBacking || it.userIsCreator(user)) &&
                     (
                         commentCardData.commentCardState == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus ||
                             commentCardData.commentCardState == CommentCardStatus.COMMENT_WITH_REPLIES.commentCardStatus

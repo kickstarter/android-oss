@@ -6,6 +6,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.ProjectUtils
+import com.kickstarter.libs.utils.extensions.acceptedCardType
 import com.kickstarter.models.StoredCard
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -53,7 +54,7 @@ interface RewardCardUnselectedViewHolderViewModel : BaseRewardCardViewHolderView
         init {
 
             val allowedCardType = this.cardAndProject
-                .map { ProjectUtils.acceptedCardType(it.first.type(), it.second) }
+                .map { it.second.acceptedCardType(it.first.type()) }
 
             allowedCardType
                 .compose(bindToLifecycle())

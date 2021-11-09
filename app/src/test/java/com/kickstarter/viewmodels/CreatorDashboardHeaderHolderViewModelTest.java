@@ -12,6 +12,7 @@ import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
+import com.kickstarter.libs.utils.extensions.ProjectExt;
 import com.kickstarter.mock.MockExperimentsClientType;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.ProjectStatsEnvelopeFactory;
@@ -271,7 +272,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     DateTimeUtils.setCurrentMillisFixed(new DateTime().getMillis());
     final Project project = ProjectFactory.project().toBuilder().deadline(new DateTime().plusDays(10)).build();
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
-    final int deadlineVal = ProjectUtils.deadlineCountdownValue(project);
+    final int deadlineVal = ProjectExt.deadlineCountdownValue(project);
 
     this.vm.inputs.configureWith(new ProjectDashboardData(project, projectStatsEnvelope, false));
     this.timeRemainingText.assertValue(NumberUtils.format(deadlineVal));

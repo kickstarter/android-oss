@@ -10,6 +10,7 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.extensions.toCommentCardList
+import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Comment
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -395,10 +396,7 @@ interface ThreadViewModel {
         private fun getCommentComposerStatus(projectAndUser: Pair<Project, User?>) =
             when {
                 projectAndUser.second == null -> CommentComposerStatus.GONE
-                projectAndUser.first.isBacking || ProjectUtils.userIsCreator(
-                    projectAndUser.first,
-                    projectAndUser.second
-                ) -> CommentComposerStatus.ENABLED
+                projectAndUser.first.isBacking || projectAndUser.first.userIsCreator(projectAndUser.second) -> CommentComposerStatus.ENABLED
                 else -> CommentComposerStatus.DISABLED
             }
 

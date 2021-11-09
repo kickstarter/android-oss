@@ -3,6 +3,8 @@ package com.kickstarter.libs.utils;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.libs.utils.extensions.ProjectExt;
+import com.kickstarter.libs.utils.extensions.ProjectMetadata;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.models.Project;
@@ -19,27 +21,27 @@ public final class ProjectUtilsTest extends KSRobolectricTestCase {
   public void testCombineProjectsAndParams() {
     final Project project = ProjectFactory.project();
     final DiscoveryParams discoveryParams = DiscoveryParams.builder().build();
-    assertEquals(ProjectUtils.combineProjectsAndParams(Collections.singletonList(project), discoveryParams),
+    assertEquals(ProjectExt.combineProjectsAndParams(Collections.singletonList(project), discoveryParams),
       Collections.singletonList(Pair.create(project, discoveryParams)));
   }
 
   @Test
   public void testIsCompleted() {
-    assertTrue(ProjectUtils.isCompleted(ProjectFactory.successfulProject()));
-    assertFalse(ProjectUtils.isCompleted(ProjectFactory.project()));
+    assertTrue(ProjectExt.isCompleted(ProjectFactory.successfulProject()));
+    assertFalse(ProjectExt.isCompleted(ProjectFactory.project()));
   }
 
   @Test
   public void testIsUsUserViewingNonUsProject() {
-    assertTrue(ProjectUtils.isUSUserViewingNonUSProject(
+    assertTrue(ProjectExt.isUSUserViewingNonUSProject(
       UserFactory.user().location().country(),
       ProjectFactory.ukProject().country())
     );
-    assertFalse(ProjectUtils.isUSUserViewingNonUSProject(
+    assertFalse(ProjectExt.isUSUserViewingNonUSProject(
       UserFactory.user().location().country(),
       ProjectFactory.project().country())
     );
-    assertFalse(ProjectUtils.isUSUserViewingNonUSProject(
+    assertFalse(ProjectExt.isUSUserViewingNonUSProject(
       UserFactory.germanUser().location().country(),
       ProjectFactory.caProject().country())
     );
@@ -47,22 +49,22 @@ public final class ProjectUtilsTest extends KSRobolectricTestCase {
 
   @Test
   public void testMetadataForProject() {
-    assertEquals(null, ProjectUtils.metadataForProject(ProjectFactory.project()));
-    assertEquals(ProjectUtils.Metadata.BACKING, ProjectUtils.metadataForProject(ProjectFactory.backedProject()));
-    assertEquals(ProjectUtils.Metadata.CATEGORY_FEATURED, ProjectUtils.metadataForProject(ProjectFactory.featured()));
-    assertEquals(ProjectUtils.Metadata.SAVING, ProjectUtils.metadataForProject(ProjectFactory.saved()));
+    assertEquals(null, ProjectExt.metadataForProject(ProjectFactory.project()));
+    assertEquals(ProjectMetadata.BACKING, ProjectExt.metadataForProject(ProjectFactory.backedProject()));
+    assertEquals(ProjectMetadata.CATEGORY_FEATURED, ProjectExt.metadataForProject(ProjectFactory.featured()));
+    assertEquals(ProjectMetadata.SAVING, ProjectExt.metadataForProject(ProjectFactory.saved()));
     final Project savedAndBacked = ProjectFactory.backedProject().toBuilder().isStarred(true).build();
-    assertEquals(ProjectUtils.Metadata.BACKING, ProjectUtils.metadataForProject(savedAndBacked));
+    assertEquals(ProjectMetadata.BACKING, ProjectExt.metadataForProject(savedAndBacked));
     final DateTime now = new DateTime();
     final Project savedAndFeatured = ProjectFactory.saved().toBuilder().featuredAt(now).build();
-    assertEquals(ProjectUtils.Metadata.SAVING, ProjectUtils.metadataForProject(savedAndFeatured));
+    assertEquals(ProjectMetadata.SAVING, ProjectExt.metadataForProject(savedAndFeatured));
     final Project savedBackedFeatured = ProjectFactory.backedProject().toBuilder().featuredAt(now).isStarred(true).build();
-    assertEquals(ProjectUtils.Metadata.BACKING, ProjectUtils.metadataForProject(savedBackedFeatured));
+    assertEquals(ProjectMetadata.BACKING, ProjectExt.metadataForProject(savedBackedFeatured));
   }
 
   @Test
   public void testPhotoHeightFromWidthRatio() {
-    assertEquals(360, ProjectUtils.photoHeightFromWidthRatio(640));
-    assertEquals(576, ProjectUtils.photoHeightFromWidthRatio(1024));
+    assertEquals(360, ProjectExt.photoHeightFromWidthRatio(640));
+    assertEquals(576, ProjectExt.photoHeightFromWidthRatio(1024));
   }
 }

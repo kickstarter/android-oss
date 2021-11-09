@@ -32,6 +32,7 @@ import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.libs.utils.extensions.updateProjectWith
+import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -914,7 +915,7 @@ interface ProjectViewModel {
 
         private fun pledgeFlowContext(project: Project, currentUser: User?): PledgeFlowContext? {
             return when {
-                ProjectUtils.userIsCreator(project, currentUser) -> null
+                project.userIsCreator(currentUser) -> null
                 project.isLive && !project.isBacking -> PledgeFlowContext.NEW_PLEDGE
                 !project.isLive && project.backing()?.isErrored() ?: false -> PledgeFlowContext.FIX_ERRORED_PLEDGE
                 else -> null

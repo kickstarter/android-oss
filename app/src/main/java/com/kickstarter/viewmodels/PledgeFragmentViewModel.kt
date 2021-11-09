@@ -28,6 +28,7 @@ import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.extensions.acceptedCardType
 import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
@@ -1659,7 +1660,7 @@ interface PledgeFragmentViewModel {
         }
 
         private fun initialCardSelection(storedCards: List<StoredCard>, project: Project): Pair<StoredCard, Int>? {
-            val defaultIndex = storedCards.indexOfFirst { ProjectUtils.acceptedCardType(it.type(), project) }
+            val defaultIndex = storedCards.indexOfFirst { project.acceptedCardType(it.type()) }
             val backingPaymentSourceIndex = storedCards.indexOfFirst { it.id() == project.backing()?.paymentSource()?.id() }
             return when {
                 backingPaymentSourceIndex != -1 -> Pair(storedCards[backingPaymentSourceIndex], backingPaymentSourceIndex)

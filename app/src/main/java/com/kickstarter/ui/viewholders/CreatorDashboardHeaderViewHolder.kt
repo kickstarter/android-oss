@@ -9,6 +9,7 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
@@ -114,7 +115,7 @@ class CreatorDashboardHeaderViewHolder(
     }
 
     private fun setTimeRemainingTextTextView(currentProject: Project) {
-        binding.creatorDashboardTimeRemainingText.text = ProjectUtils.deadlineCountdownDetail(currentProject, context(), ksString)
+        binding.creatorDashboardTimeRemainingText.text = currentProject.deadlineCountdownDetail(context(), ksString)
     }
 
     private fun startMessageThreadsActivity(project: Project, refTag: RefTag) {

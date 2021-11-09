@@ -52,7 +52,6 @@ enum class ViewElementType(val tag: String?) {
     TEXT(null),
     VIDEO("video"),
     EXTERNAL_SOURCES("iframe"),
-    EMBEDDED_LINK(null),
     UNKNOWN(null);
 
     companion object {
@@ -86,7 +85,7 @@ private fun divUnWrapper(element: Element): ViewElementType {
             type = ViewElementType.IMAGE
         }
     } else if (element.isIframeStructure()) {
-        if (element.children().getOrNull(0)?.children()?.getOrNull(0)?.tag()?.name == ViewElementType.EXTERNAL_SOURCES.tag) {
+        if (element.children().getOrNull(0)?.tag()?.name == ViewElementType.EXTERNAL_SOURCES.tag) {
             type = ViewElementType.EXTERNAL_SOURCES
         }
     }

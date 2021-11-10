@@ -66,7 +66,7 @@ fun Project.acceptedCardType(cardType: CreditCardTypes) = this.availableCardType
 fun combineProjectsAndParams(projects: List<Project>, params: DiscoveryParams): ArrayList<Pair<Project, DiscoveryParams>> {
     val projectAndParams = arrayListOf<Pair<Project, DiscoveryParams>>()
     projects.forEach {
-        projectAndParams.add(Pair(it, params))
+        projectAndParams.add(Pair.create(it, params))
     }
     return projectAndParams
 }

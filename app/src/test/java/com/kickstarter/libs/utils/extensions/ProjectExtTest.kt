@@ -1,28 +1,23 @@
 package com.kickstarter.libs.utils.extensions
 
 import android.content.Context
+import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
-import junit.framework.TestCase
 import org.joda.time.DateTime
-import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import type.CreditCardTypes
 import java.util.Locale
 
-class ProjectExtTest : TestCase() {
+class ProjectExtTest : KSRobolectricTestCase() {
 
     var context: Context = mock(Context::class.java)
-
-    @Before
-    fun setup() {
-    }
 
     @Test
     fun testBritishProject_WhenNoUserAndCanadaConfig() {
@@ -105,10 +100,10 @@ class ProjectExtTest : TestCase() {
 
         val projectsAndParams = combineProjectsAndParams(projectList, discoveryParams)
         assertEquals(projectsAndParams.size, 2)
-        assertEquals("First", projectsAndParams[0].first)
-        assertEquals(projectsAndParams[0].second, DiscoveryParams.Sort.MAGIC)
-        assertEquals(projectsAndParams[1].first, "Second")
-        assertEquals(projectsAndParams[1].second, DiscoveryParams.Sort.MAGIC)
+        assertEquals("First", projectsAndParams[0].first.name())
+        assertEquals(projectsAndParams[0].second.sort(), DiscoveryParams.Sort.MAGIC)
+        assertEquals(projectsAndParams[1].first.name(), "Second")
+        assertEquals(projectsAndParams[1].second.sort(), DiscoveryParams.Sort.MAGIC)
     }
 
     @Test
@@ -120,7 +115,7 @@ class ProjectExtTest : TestCase() {
 
         val project: Project = ProjectFactory.project().toBuilder().deadline(DateTime.now().plusDays(2)).build()
 
-        assertEquals("47 hours", project.deadlineCountdown(context))
+        assertEquals("48 hours", project.deadlineCountdown(context))
     }
 
     @Test
@@ -132,7 +127,7 @@ class ProjectExtTest : TestCase() {
 
         val project: Project = ProjectFactory.project().toBuilder().deadline(DateTime(DateTime.now().plusDays(5))).build()
 
-        assertEquals("4 days", project.deadlineCountdown(context))
+        assertEquals("5 days", project.deadlineCountdown(context))
     }
 
     @Test
@@ -158,7 +153,7 @@ class ProjectExtTest : TestCase() {
     @Test
     fun testDeadlineCountdownValue_testAllCases_shouldReturnCorrectValueOfTime() {
         var project: Project = ProjectFactory.project().toBuilder().deadline(DateTime(DateTime.now().plusDays(2))).build()
-        assertEquals(47, project.deadlineCountdownValue())
+        assertEquals(48, project.deadlineCountdownValue())
 
         project = project.toBuilder().deadline(DateTime(DateTime.now().plusMinutes(10))).build()
         assertEquals(10, project.deadlineCountdownValue())
@@ -257,7 +252,7 @@ class ProjectExtTest : TestCase() {
     fun testTimeInSecondsUntilDeadline_whenProjectNotFinished_shouldReturnDuration() {
         val project = ProjectFactory.project().toBuilder().deadline(DateTime.now().plusDays(2)).build()
 
-        assertEquals(172799, project.timeInSecondsUntilDeadline())
+        assertEquals(172800, project.timeInSecondsUntilDeadline())
     }
 
     @Test

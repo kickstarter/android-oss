@@ -37,13 +37,11 @@ data class TextComponent(val text: String, val link: String?) {
     }
 }
 
-data class EmbeddedLinkViewElement(
-    val href: String,
-    override val src: String,
-    val caption: String?
-) : ImageViewElement(src)
-
-open class ImageViewElement(open val src: String) : ViewElement
+data class ImageViewElement(
+    val src: String,
+    val href: String? = null,
+    val caption: String? = null
+) : ViewElement
 
 data class ExternalSourceViewElement(
     val htmlContent: String
@@ -54,31 +52,25 @@ enum class ViewElementType(val tag: String?) {
     TEXT(null),
     VIDEO("video"),
     EXTERNAL_SOURCES("iframe"),
-    EMBEDDED_LINK(null),
-    OEMBED(null),
     UNKNOWN(null);
 
     companion object {
         fun initialize(element: Element): ViewElementType {
             val tag = element.tag().name
-            if (tag == "div") {
-
-                for (attribute in element.attributes()) {
-                    if (attribute.key == "class" && attribute.value == "template oembed") {
-                        if (element.children().getOrNull(0)?.tag()?.name == EXTERNAL_SOURCES.tag) {
-                            return EXTERNAL_SOURCES
-                        }
-                        return OEMBED
-                    }
+            when {
+                tag == "a" -> {
+                    element.children().find { it.tagName() == "div" }?.let { return@let it.extractViewElementTypeFromDiv() }
+                    // TODO: Return text element in case is only a link not an image/video wrapped in a link
                 }
-            } else if (TextComponent.TextStyleType.initialize(tag) == TextComponent.TextStyleType.LINK && !element.getElementsByTag("img").isEmpty()) {
-                return EMBEDDED_LINK
-            } else if (TextComponent.TextStyleType.values().map { it.tag }.contains(tag)) {
-                return TEXT
-            } else if (tag == IMAGE.tag) {
-                return IMAGE
-            } else if (tag == VIDEO.tag) {
-                return VIDEO
+                tag == "div" -> {
+                    return element.extractViewElementTypeFromDiv()
+                }
+                TextComponent.TextStyleType.values().map { it.tag }.contains(tag) -> {
+                    return TEXT
+                }
+                tag == VIDEO.tag -> {
+                    return VIDEO
+                }
             }
             return UNKNOWN
         }

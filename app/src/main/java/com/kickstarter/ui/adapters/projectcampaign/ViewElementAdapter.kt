@@ -9,7 +9,6 @@ import com.kickstarter.databinding.EmptyViewBinding
 import com.kickstarter.databinding.ViewElementExternalSourceFromHtmlBinding
 import com.kickstarter.databinding.ViewElementImageFromHtmlBinding
 import com.kickstarter.databinding.ViewElementTextFromHtmlBinding
-import com.kickstarter.libs.htmlparser.EmbeddedLinkViewElement
 import com.kickstarter.libs.htmlparser.ExternalSourceViewElement
 import com.kickstarter.libs.htmlparser.ImageViewElement
 import com.kickstarter.libs.htmlparser.TextViewElement
@@ -54,12 +53,6 @@ class ViewElementAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 else false
             }
 
-            (oldItem as? EmbeddedLinkViewElement)?.let {
-                val isSameType = newItem is EmbeddedLinkViewElement
-                return if (isSameType) newItem == oldItem
-                else false
-            }
-
             (oldItem as? ExternalSourceViewElement)?.let {
                 val isSameType = newItem is ExternalSourceViewElement
                 return if (isSameType) newItem == oldItem
@@ -93,10 +86,6 @@ class ViewElementAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         (element as? VideoViewElement)?.let {
             return ElementViewHolderType.VIDEO.ordinal
-        }
-
-        (element as? EmbeddedLinkViewElement)?.let {
-            return ElementViewHolderType.EMBEDDED.ordinal
         }
 
         (element as? ExternalSourceViewElement)?.let {

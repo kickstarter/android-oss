@@ -42,4 +42,78 @@ class HTMLParserTest {
             )
         }
     }
+
+    @Test
+    fun parseImageWithoutCaptionOrLink() {
+        val src = "https://ksr-qa-ugc.imgix.net/assets/035/272/957/f885374b7b855bd5a135dec24232a059_original.png?ixlib=rb-4.0.2&w=700&fit=max&v=1635378787&auto=format&gif-q=50&lossless=true&s=02a9283693d143fe7ba04c1a0d52fa4c"
+        val onlyImageHtml = "<div class=\"template asset\" contenteditable=\"false\" data-alt-text=\"\" data-caption=\"\" data-id=\"35272957\">\\n " +
+            "<figure>\\n " + "" +
+            "<img alt=\"\" class=\"fit\" src=\"$src\">\\n " +
+            "</figure>\\n\\n</div>"
+
+        val listOfElements = HTMLParser().parse(onlyImageHtml)
+        val imageView: ImageViewElement = listOfElements.first() as ImageViewElement
+        assert(listOfElements.size == 1)
+        assert(imageView.caption == "")
+        assert(imageView.href == null)
+        assert(imageView.src == src)
+    }
+
+    @Test
+    fun parseImageWithCaptionWithoutLink() {
+        val src = "https://ksr-qa-ugc.imgix.net/assets/035/272/957/f885374b7b855bd5a135dec24232a059_original.png?ixlib=rb-4.0.2&w=700&fit=max&v=1635378787&auto=format&gif-q=50&lossless=true&s=02a9283693d143fe7ba04c1a0d52fa4c"
+        val onlyImageHtml = "<div class=\"template asset\" contenteditable=\"false\" data-alt-text=\"\" data-caption=\"This is Coach Beard with a caption\" data-id=\"35272957\">\\n " +
+            "<figure>\\n " + "" +
+            "<img alt=\"\" class=\"fit\" src=\"$src\">\\n " +
+            "</figure>\\n\\n</div>"
+
+        val listOfElements = HTMLParser().parse(onlyImageHtml)
+        val imageView: ImageViewElement = listOfElements.first() as ImageViewElement
+        assert(listOfElements.size == 1)
+        assert(imageView.caption == "This is Coach Beard with a caption")
+        assert(imageView.href == null)
+        assert(imageView.src == src)
+    }
+
+    @Test
+    fun parseImageWithCaptionAndLink() {
+        val src = "https://ksr-qa-ugc.imgix.net/assets/035/272/957/f885374b7b855bd5a135dec24232a059_original.png?ixlib=rb-4.0.2&w=700&fit=max&v=1635378787&auto=format&gif-q=50&lossless=true&s=02a9283693d143fe7ba04c1a0d52fa4c"
+        val href = "http://record.pt/"
+        val onlyImageHtml = "<a href=$href target=\"_blank\" rel=\"noopener\">" +
+            "<div class=\"template asset\" contenteditable=\"false\" data-alt-text=\"\" data-caption=\"This is an Android with a caption and a link\" data-id=\"35272959\">\n" +
+            "<figure>" +
+            "\n<img alt=\"\" class=\"fit\" src=$src>\n" +
+            "<figcaption class=\"px2\">This is an Android with a caption and a link</figcaption>" +
+            "</figure>" +
+            "\n\n</div>\n" +
+            "</a>"
+
+        val listOfElements = HTMLParser().parse(onlyImageHtml)
+        val imageView: ImageViewElement = listOfElements.first() as ImageViewElement
+        assert(listOfElements.size == 1)
+        assert(imageView.caption == "This is an Android with a caption and a link")
+        assert(imageView.href == href)
+        assert(imageView.src == src)
+    }
+
+    @Test
+    fun parseGifWithCaptionAndLink() {
+        val src = "https://ksr-qa-ugc.imgix.net/assets/035/272/962/ad1848184f8254f017730e6978565521_original.gif?ixlib=rb-4.0.2&w=700&fit=max&v=1635378954&auto=format&frame=1&q=92&s=fae855ae1e9f3919c1631c074419cd43"
+        val href = "https://twitter.com/TedLasso"
+        val onlyImageHtml = "<a href=\"https://twitter.com/TedLasso\" target=\"_blank\" rel=\"noopener\">" +
+            "<div class=\"template asset\" contenteditable=\"false\" data-alt-text=\"\" data-caption=\"This is Ted having the time of his life with a caption and a link\" data-id=\"35272962\">\n" +
+            "<figure>" +
+            "\n<img alt=\"\" class=\"fit js-lazy-image\" data-src=$src src=$src>\n" +
+            "<figcaption class=\"px2\">This is Ted having the time of his life with a caption and a link</figcaption>" +
+            "</figure>" +
+            "\n\n</div>\n" +
+            "</a>"
+
+        val listOfElements = HTMLParser().parse(onlyImageHtml)
+        val imageView: ImageViewElement = listOfElements.first() as ImageViewElement
+        assert(listOfElements.size == 1)
+        assert(imageView.caption == "This is Ted having the time of his life with a caption and a link")
+        assert(imageView.href == href)
+        assert(imageView.src == src)
+    }
 }

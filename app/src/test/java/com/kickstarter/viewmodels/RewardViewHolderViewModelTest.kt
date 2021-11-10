@@ -157,6 +157,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.noReward())
         this.buttonIsGone.assertValue(false)
+        this.buttonIsEnabled.assertValue(true)
         this.buttonCTA.assertValuesAndClear(R.string.Select)
     }
 
@@ -166,6 +167,72 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.limitReached())
         this.buttonIsGone.assertValue(false)
+        this.buttonIsEnabled.assertValue(false)
+        this.buttonCTA.assertValue(R.string.No_longer_available)
+    }
+
+    @Test
+    fun testButtonUIOutputs_whenProjectIsLiveAndBacked_soldOutReward_bakedAddOns() {
+        setUpEnvironment(environment())
+
+        val rw = RewardFactory.limitReached()
+            .toBuilder()
+            .hasAddons(true)
+            .build()
+
+        val addOn = RewardFactory.addOn()
+
+        val backing = BackingFactory.backing()
+            .toBuilder()
+            .rewardId(rw.id())
+            .reward(rw)
+            .addOns(listOf(addOn))
+            .build()
+
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .backing(backing)
+            .build()
+
+        val projectData = ProjectDataFactory.project(project)
+            .toBuilder()
+            .backing(backing)
+            .build()
+
+        this.vm.inputs.configureWith(projectData, rw)
+        this.buttonIsGone.assertValue(false)
+        this.buttonIsEnabled.assertValues(true)
+        this.buttonCTA.assertValue(R.string.Continue)
+    }
+
+    @Test
+    fun testButtonUIOutputs_whenProjectIsLiveAndBacked_soldOutReward_NoBakedAddOns() {
+        setUpEnvironment(environment())
+
+        val rw = RewardFactory.limitReached()
+            .toBuilder()
+            .hasAddons(true)
+            .build()
+
+        val backing = BackingFactory.backing()
+            .toBuilder()
+            .rewardId(rw.id())
+            .reward(rw)
+            .build()
+
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .backing(backing)
+            .build()
+
+        val projectData = ProjectDataFactory.project(project)
+            .toBuilder()
+            .backing(backing)
+            .build()
+
+        this.vm.inputs.configureWith(projectData, rw)
+        this.buttonIsGone.assertValue(false)
+        this.buttonIsEnabled.assertValues(false)
         this.buttonCTA.assertValue(R.string.No_longer_available)
     }
 

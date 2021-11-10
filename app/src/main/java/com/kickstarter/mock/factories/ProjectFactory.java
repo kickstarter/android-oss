@@ -208,7 +208,7 @@ public final class ProjectFactory {
   public static @NonNull Project backedProjectRewardAvailableAddOnsNotBackedAddOns() {
     final Project project = project();
 
-    final Reward reward = RewardFactory.reward().toBuilder().hasAddons(true).build();
+    final Reward reward = RewardFactory.reward().toBuilder().hasAddons(true).isAvailable(true).build();
 
     final Backing backing = Backing.builder()
             .amount(10.0f)

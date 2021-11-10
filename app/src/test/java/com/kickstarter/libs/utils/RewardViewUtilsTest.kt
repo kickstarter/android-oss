@@ -33,7 +33,7 @@ class RewardViewUtilsTest : KSRobolectricTestCase() {
     /**
      * Given a backedProject the backed reward has available addOns
      * when not backed addOns
-     * Then the text for the button should be R.string.Continue
+     * Then the text for the button should be R.string.Continue if the reward is available
      */
     @Test
     fun rewardBackedHasAvailableAddOns_whenNotBackedAddOns_textContinue() {

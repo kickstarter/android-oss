@@ -36,6 +36,7 @@ object RewardViewUtils {
             when {
                 !reward.hasAddons() -> R.string.Selected
                 hasAddOnsSelected -> R.string.Continue
+                !hasAddOnsSelected && RewardUtils.isAvailable(project, reward) -> R.string.Continue
                 else -> R.string.No_longer_available
             }
         } else {

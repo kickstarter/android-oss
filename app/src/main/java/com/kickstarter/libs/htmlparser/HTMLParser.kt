@@ -23,9 +23,7 @@ class HTMLParser {
         children?.forEach { element ->
             when (ViewElementType.initialize(element)) {
                 ViewElementType.IMAGE -> {
-                    element.attributes()["src"].apply {
-                        viewElements.add(ImageViewElement(this))
-                    }
+                    viewElements.add(element.parseImageElement())
                 }
                 ViewElementType.TEXT -> {
                     viewElements.add(TextViewElement(parseTextElement(element, mutableListOf(), mutableListOf())))
@@ -36,32 +34,13 @@ class HTMLParser {
                     val videoViewElement = VideoViewElement(ArrayList(sourceUrls))
                     viewElements.add(videoViewElement)
                 }
-                ViewElementType.EMBEDDED_LINK -> {
-                    val caption = element.getElementsByTag("figcaption").firstOrNull()?.text()
-                    (element.attributes().firstOrNull { it.key == "href" })?.value?.let { href ->
-                        val imageElements = element.getElementsByTag("img")
-                        for (imageElement in imageElements) {
-                            imageElement.attributes()["src"].let { sourceUrl ->
-                                viewElements.add(EmbeddedLinkViewElement(href, sourceUrl, caption))
-                            }
-                        }
-                    }
-                }
-                ViewElementType.OEMBED -> {
-                    val sourceUrls = element.attributes().mapNotNull { if (it.key == "data-href") it.value else null }
-                    val videoViewElement = VideoViewElement(ArrayList(sourceUrls))
-                    viewElements.add(videoViewElement)
-                }
                 ViewElementType.EXTERNAL_SOURCES -> {
-                    val sourceUrls = element.children()[0].toString()
-                    val externalSourceViewElement = ExternalSourceViewElement(sourceUrls)
-                    viewElements.add(externalSourceViewElement)
+                    viewElements.add(element.parseExternalElement())
                 }
-                ViewElementType.UNKNOWN -> {
-                    print("UNKNOWN ELEMENT")
+                else -> {
+                    viewElements.addAll(parse(element.children()))
                 }
             }
-            viewElements.addAll(parse(element.children()))
         }
         return viewElements
     }

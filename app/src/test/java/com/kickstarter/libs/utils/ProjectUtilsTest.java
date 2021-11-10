@@ -1,8 +1,10 @@
 package com.kickstarter.libs.utils;
 
+import android.content.Context;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.R;
 import com.kickstarter.libs.utils.extensions.ProjectExt;
 import com.kickstarter.libs.utils.extensions.ProjectMetadata;
 import com.kickstarter.mock.factories.ProjectFactory;
@@ -12,6 +14,7 @@ import com.kickstarter.services.DiscoveryParams;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.Collections;
 
@@ -29,6 +32,31 @@ public final class ProjectUtilsTest extends KSRobolectricTestCase {
   public void testIsCompleted() {
     assertTrue(ProjectExt.isCompleted(ProjectFactory.successfulProject()));
     assertFalse(ProjectExt.isCompleted(ProjectFactory.project()));
+  }
+
+  @Test
+  public void testing123(){
+    final Context context = Mockito.mock(Context.class);
+    Mockito.when(context.getString(R.string.discovery_baseball_card_deadline_units_secs)).thenReturn("secs");
+        Mockito.when(context.getString(R.string.discovery_baseball_card_deadline_units_mins)).thenReturn("mins");
+        Mockito.when(context.getString(R.string.discovery_baseball_card_deadline_units_hours)).thenReturn("hours");
+        Mockito.when(context.getString(R.string.discovery_baseball_card_deadline_units_days)).thenReturn("days");
+
+        Project project = ProjectFactory.project().toBuilder().deadline(new DateTime((DateTime.now().plusDays(1)))).build();
+//    assertEquals("hours", ProjectUtils.deadlineCountdownUnit(project, context));
+//
+//    project = ProjectFactory.project().toBuilder().deadline(new DateTime((DateTime.now().plusMinutes(10)))).build();
+//    assertEquals("mins", ProjectUtils.deadlineCountdownUnit(project, context));
+//
+//    project = ProjectFactory.project().toBuilder().deadline(new DateTime((DateTime.now().plusSeconds(25)))).build();
+//    assertEquals("secs", ProjectUtils.deadlineCountdownUnit(project, context));
+//
+//    project = ProjectFactory.project().toBuilder().deadline(new DateTime((DateTime.now().plusDays(10)))).build();
+//    assertEquals("days", ProjectUtils.deadlineCountdownUnit(project, context));
+
+    project = ProjectFactory.project().toBuilder().deadline(new DateTime(DateTime.now().plusDays(2))).build();
+
+    assertEquals("47 hours", ProjectUtils.deadlineCountdown(project, context));
   }
 
   @Test

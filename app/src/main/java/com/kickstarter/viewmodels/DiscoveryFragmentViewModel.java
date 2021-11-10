@@ -208,7 +208,9 @@ public interface DiscoveryFragmentViewModel {
         selectedParams.distinctUntilChanged(),
         ProjectExt::combineProjectsAndParams)
         .compose(bindToLifecycle())
-        .subscribe(this.projectList);
+        .subscribe(
+                this.projectList
+        );
 
       this.showActivityFeed = this.activityClick;
       this.startUpdateActivity = this.activityUpdateClick;

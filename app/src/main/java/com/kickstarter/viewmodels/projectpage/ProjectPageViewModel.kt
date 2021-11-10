@@ -30,7 +30,6 @@ import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.RISKS
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.UrlUtils

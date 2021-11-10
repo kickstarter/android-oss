@@ -7,7 +7,6 @@ import com.kickstarter.databinding.DashboardFundingViewBinding
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.getProjectIntent

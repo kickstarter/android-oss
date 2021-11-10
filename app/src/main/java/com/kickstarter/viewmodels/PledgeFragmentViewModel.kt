@@ -24,7 +24,6 @@ import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.RewardUtils

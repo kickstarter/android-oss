@@ -6,7 +6,6 @@ import com.kickstarter.R
 import com.kickstarter.databinding.ProjectSearchResultViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.models.Project
 import com.kickstarter.viewmodels.ProjectSearchResultHolderViewModel

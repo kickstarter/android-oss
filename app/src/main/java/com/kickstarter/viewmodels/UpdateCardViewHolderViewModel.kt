@@ -8,7 +8,6 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.IntegerUtils
-import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update

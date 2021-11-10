@@ -8,7 +8,6 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.loadmore.ApolloPaginate
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.extensions.toCommentCardList
 import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Comment

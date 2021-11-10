@@ -7,7 +7,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import com.kickstarter.R
 import com.kickstarter.databinding.MediaHeaderBinding
-import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.photoHeightFromWidthRatio
 import com.kickstarter.libs.utils.extensions.toVisibility

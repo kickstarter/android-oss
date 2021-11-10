@@ -5,7 +5,6 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.utils.BooleanUtils
-import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.extensions.acceptedCardType
 import com.kickstarter.models.StoredCard
 import rx.Observable

@@ -1,27 +1,24 @@
 package com.kickstarter.libs.utils.extensions
 
 import android.content.Context
-import com.appboy.enums.CardType
 import com.kickstarter.R
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
-import java.util.*
 import junit.framework.TestCase
 import org.joda.time.DateTime
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import type.CreditCardTypes
+import java.util.*
 
 class ProjectExtTest : TestCase() {
 
-    var context : Context = mock(Context::class.java)
+    var context: Context = mock(Context::class.java)
 
     @Before
     fun setup() {
@@ -83,27 +80,27 @@ class ProjectExtTest : TestCase() {
 
     @Test
     fun testAcceptedCardTypes_whenCardNotInList_shouldReturnFalse() {
-        val acceptedCardTypes : List<String> = listOf(CreditCardTypes.AMEX.toString(), CreditCardTypes.DISCOVER.toString())
-        val project : Project = ProjectFactory.project().toBuilder().availableCardTypes(acceptedCardTypes).build()
+        val acceptedCardTypes: List<String> = listOf(CreditCardTypes.AMEX.toString(), CreditCardTypes.DISCOVER.toString())
+        val project: Project = ProjectFactory.project().toBuilder().availableCardTypes(acceptedCardTypes).build()
         assertFalse(project.acceptedCardType(CreditCardTypes.MASTERCARD))
     }
 
     @Test
     fun testAcceptedCardTypes_whenCardListNull_shouldReturnFalse() {
-        val project : Project = ProjectFactory.project().toBuilder().availableCardTypes(null).build()
+        val project: Project = ProjectFactory.project().toBuilder().availableCardTypes(null).build()
         assertFalse(project.acceptedCardType(CreditCardTypes.MASTERCARD))
     }
 
     @Test
     fun testAcceptedCardTypes_whenCardInList_shouldReturnTrue() {
-        val acceptedCardTypes : List<String> = listOf(CreditCardTypes.AMEX.toString(), CreditCardTypes.DISCOVER.toString())
-        val project : Project = ProjectFactory.project().toBuilder().availableCardTypes(acceptedCardTypes).build()
+        val acceptedCardTypes: List<String> = listOf(CreditCardTypes.AMEX.toString(), CreditCardTypes.DISCOVER.toString())
+        val project: Project = ProjectFactory.project().toBuilder().availableCardTypes(acceptedCardTypes).build()
         assertTrue(project.acceptedCardType(CreditCardTypes.AMEX))
     }
 
     @Test
     fun testCombineProjectsAndParams_shouldReturnCorrectList() {
-        val projectList : List<Project> = listOf(ProjectFactory.project().toBuilder().name("First").build(), ProjectFactory.project().toBuilder().name("Second").build())
+        val projectList: List<Project> = listOf(ProjectFactory.project().toBuilder().name("First").build(), ProjectFactory.project().toBuilder().name("Second").build())
         val discoveryParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build()
 
         val projectsAndParams = combineProjectsAndParams(projectList, discoveryParams)
@@ -121,7 +118,7 @@ class ProjectExtTest : TestCase() {
         `when`(context.getString(R.string.discovery_baseball_card_deadline_units_hours)).thenReturn("hours")
         `when`(context.getString(R.string.discovery_baseball_card_deadline_units_days)).thenReturn("days")
 
-        val project : Project = ProjectFactory.project().toBuilder().deadline(DateTime.now().plusDays(2)).build()
+        val project: Project = ProjectFactory.project().toBuilder().deadline(DateTime.now().plusDays(2)).build()
 
         assertEquals("47 hours", project.deadlineCountdown(context))
     }
@@ -133,7 +130,7 @@ class ProjectExtTest : TestCase() {
         `when`(context.getString(R.string.discovery_baseball_card_deadline_units_hours)).thenReturn("hours")
         `when`(context.getString(R.string.discovery_baseball_card_deadline_units_days)).thenReturn("days")
 
-        val project : Project = ProjectFactory.project().toBuilder().deadline(DateTime(DateTime.now().plusDays(5))).build()
+        val project: Project = ProjectFactory.project().toBuilder().deadline(DateTime(DateTime.now().plusDays(5))).build()
 
         assertEquals("4 days", project.deadlineCountdown(context))
     }
@@ -145,7 +142,7 @@ class ProjectExtTest : TestCase() {
         `when`(context.getString(R.string.discovery_baseball_card_deadline_units_hours)).thenReturn("hours")
         `when`(context.getString(R.string.discovery_baseball_card_deadline_units_days)).thenReturn("days")
 
-        var project : Project = ProjectFactory.project().toBuilder().deadline(DateTime(DateTime.now().plusDays(1))).build()
+        var project: Project = ProjectFactory.project().toBuilder().deadline(DateTime(DateTime.now().plusDays(1))).build()
         assertEquals("hours", project.deadlineCountdownUnit(context))
 
         project = project.toBuilder().deadline(DateTime(DateTime.now().plusMinutes(10))).build()
@@ -160,7 +157,7 @@ class ProjectExtTest : TestCase() {
 
     @Test
     fun testDeadlineCountdownValue_testAllCases_shouldReturnCorrectValueOfTime() {
-        var project : Project = ProjectFactory.project().toBuilder().deadline(DateTime(DateTime.now().plusDays(2))).build()
+        var project: Project = ProjectFactory.project().toBuilder().deadline(DateTime(DateTime.now().plusDays(2))).build()
         assertEquals(47, project.deadlineCountdownValue())
 
         project = project.toBuilder().deadline(DateTime(DateTime.now().plusMinutes(10))).build()
@@ -175,7 +172,7 @@ class ProjectExtTest : TestCase() {
 
     @Test
     fun testIsCompleted_whenStateCompleted_shouldReturnTrue() {
-        var project : Project = ProjectFactory.project().toBuilder().state(Project.STATE_CANCELED).build()
+        var project: Project = ProjectFactory.project().toBuilder().state(Project.STATE_CANCELED).build()
         assertEquals(true, project.isCompleted())
 
         project = ProjectFactory.project().toBuilder().state(Project.STATE_FAILED).build()

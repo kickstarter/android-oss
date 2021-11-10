@@ -16,7 +16,6 @@ import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProgressBarUtils
-import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
 import com.kickstarter.models.Project
 import com.kickstarter.models.User

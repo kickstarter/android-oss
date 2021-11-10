@@ -103,7 +103,7 @@ class HTMLParserTest {
         val onlyImageHtml = "<a href=\"https://twitter.com/TedLasso\" target=\"_blank\" rel=\"noopener\">" +
             "<div class=\"template asset\" contenteditable=\"false\" data-alt-text=\"\" data-caption=\"This is Ted having the time of his life with a caption and a link\" data-id=\"35272962\">\n" +
             "<figure>" +
-            "\n<img alt=\"\" class=\"fit js-lazy-image\" data-src=$src src=$src>\n" +
+            "\n<img alt=\"\" class=\"fit js-lazy-image\" data-src=$src src=\\\"https://ksr-qa-ugc.imgix.net/assets/035/272/962/ad1848184f8254f017730e6978565521_original.gif?ixlib=rb-4.0.2&amp;w=700&amp;fit=max&amp;v=1635378954&amp;auto=format&amp;frame=1&amp;q=92&amp;s=fae855ae1e9f3919c1631c074419cd43\\\">\n" +
             "<figcaption class=\"px2\">This is Ted having the time of his life with a caption and a link</figcaption>" +
             "</figure>" +
             "\n\n</div>\n" +

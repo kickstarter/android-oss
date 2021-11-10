@@ -46,6 +46,11 @@ fun Element.parseImageElement(): ImageViewElement {
     caption = this.attr("data-caption")
     src = this.children().getOrNull(0)?.children()?.getOrNull(0)?.attr("src").toString()
 
+    // - it's a gif collect attribute data-src instead
+    if (src.contains(".gif")) {
+        src = this.children().getOrNull(0)?.children()?.getOrNull(0)?.attr("data-src").toString()
+    }
+
     return ImageViewElement(src = src, href = href, caption = caption)
 }
 

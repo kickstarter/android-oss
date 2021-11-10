@@ -17,7 +17,6 @@ import com.kickstarter.libs.utils.EventContextValues;
 import com.kickstarter.libs.utils.ExperimentData;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.RefTagUtils;
 import com.kickstarter.libs.utils.extensions.ProjectExt;
 import com.kickstarter.models.Activity;

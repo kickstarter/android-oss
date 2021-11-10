@@ -16,7 +16,6 @@ import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
-import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.extensions.ProjectExt;
 import com.kickstarter.libs.utils.extensions.ProjectMetadata;
 import com.kickstarter.models.Category;

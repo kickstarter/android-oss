@@ -7,7 +7,6 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.PairUtils;
-import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.extensions.ProjectExt;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;

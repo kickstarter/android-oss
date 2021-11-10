@@ -11,7 +11,6 @@ import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.models.OptimizelyExperiment;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
-import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.extensions.ProjectExt;
 import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.mock.MockExperimentsClientType;

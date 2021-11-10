@@ -35,15 +35,12 @@ class HTMLParser {
                     viewElements.add(videoViewElement)
                 }
                 ViewElementType.EXTERNAL_SOURCES -> {
-                    val sourceUrls = element.children()[0].toString()
-                    val externalSourceViewElement = ExternalSourceViewElement(sourceUrls)
-                    viewElements.add(externalSourceViewElement)
+                    viewElements.add(element.parseExternalElement())
                 }
-                ViewElementType.UNKNOWN -> {
-                    print("UNKNOWN ELEMENT")
+                else -> {
+                    viewElements.addAll(parse(element.children()))
                 }
             }
-            viewElements.addAll(parse(element.children()))
         }
         return viewElements
     }

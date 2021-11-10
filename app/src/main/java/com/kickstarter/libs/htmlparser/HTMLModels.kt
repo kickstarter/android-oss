@@ -59,11 +59,11 @@ enum class ViewElementType(val tag: String?) {
             val tag = element.tag().name
             when {
                 tag == "a" -> {
-                    element.children().find { it.tagName() == "div" }?.let { return@let divUnWrapper(it) }
+                    element.children().find { it.tagName() == "div" }?.let { return@let it.extractViewElementTypeFromDiv() }
                     // TODO: Return text element in case is only a link not an image/video wrapped in a link
                 }
                 tag == "div" -> {
-                    return divUnWrapper(element)
+                    return element.extractViewElementTypeFromDiv()
                 }
                 TextComponent.TextStyleType.values().map { it.tag }.contains(tag) -> {
                     return TEXT
@@ -75,64 +75,4 @@ enum class ViewElementType(val tag: String?) {
             return UNKNOWN
         }
     }
-}
-
-private fun divUnWrapper(element: Element): ViewElementType {
-    var type: ViewElementType = ViewElementType.UNKNOWN
-
-    if (element.isImageStructure()) {
-        if (element.children().getOrNull(0)?.children()?.getOrNull(0)?.tag()?.name == ViewElementType.IMAGE.tag) {
-            type = ViewElementType.IMAGE
-        }
-    } else if (element.isIframeStructure()) {
-        if (element.children().getOrNull(0)?.tag()?.name == ViewElementType.EXTERNAL_SOURCES.tag) {
-            type = ViewElementType.EXTERNAL_SOURCES
-        }
-    }
-
-    return type
-}
-
-fun Element.isIframeStructure(): Boolean {
-    val isTemplateDiv = this.attributes().filter {
-        it.key == "class" && it.value == "template oembed"
-    }
-
-    return !isTemplateDiv.isNullOrEmpty()
-}
-
-fun Element.isImageStructure(): Boolean {
-    val isTemplateDiv = this.attributes().filter {
-        it.key == "class" && it.value == "template asset"
-    }
-
-    return !isTemplateDiv.isNullOrEmpty()
-}
-
-fun Element.parseImageElement(): ImageViewElement {
-    var src: String = ""
-    var caption: String? = null
-    var href: String? = null
-
-    if (this.tagName() == "a") {
-        href = this.attr("href")
-    } else {
-        val pair = this.extractSourceAndCaption()
-        src = pair.first
-        caption = pair.second
-    }
-
-    return ImageViewElement(src = src, href = href, caption = caption)
-}
-
-fun Element.extractSourceAndCaption(): Pair<String, String?> {
-    var caption: String? = null
-    var src: String = ""
-
-    if (this.tagName() == "div") {
-        caption = this.attr("data-caption")
-        src = this.children().getOrNull(0)?.children()?.getOrNull(0)?.attr("src").toString()
-    }
-
-    return Pair(src, caption)
 }

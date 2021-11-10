@@ -13,7 +13,6 @@ import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
-import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.extensions.ProjectExt;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;

@@ -7,6 +7,7 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
+import java.util.Locale
 import junit.framework.TestCase
 import org.joda.time.DateTime
 import org.junit.Before
@@ -14,7 +15,6 @@ import org.junit.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import type.CreditCardTypes
-import java.util.*
 
 class ProjectExtTest : TestCase() {
 

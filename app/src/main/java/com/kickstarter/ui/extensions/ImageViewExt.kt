@@ -20,7 +20,7 @@ fun ImageView.loadImage(url: String?, context: Context) {
     if (context.applicationContext.isKSApplication()) {
         Picasso.get().load(url).into(this)
     } else {
-       this.setImageResource(R.drawable.image_placeholder)
+        this.setImageResource(R.drawable.image_placeholder)
     }
 }
 

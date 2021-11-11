@@ -23,7 +23,7 @@ class ImageElementViewHolder(
             }
         }
 
-        imageView.setImageWithCaptionClickedListener(object : OnImageWithCaptionClickedListener{
+        imageView.setImageWithCaptionClickedListener(object : OnImageWithCaptionClickedListener {
             override fun onImageWithCaptionClicked(view: View) {
                 element.href?.let { ApplicationUtils.openUrlExternally(context(), it) }
             }

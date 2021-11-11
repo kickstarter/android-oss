@@ -5,9 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
-import androidx.annotation.DrawableRes
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
 import com.kickstarter.R
 import com.kickstarter.databinding.ViewImageWithCaptionBinding
 import com.kickstarter.libs.utils.extensions.isGif

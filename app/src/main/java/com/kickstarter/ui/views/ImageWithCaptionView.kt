@@ -3,8 +3,9 @@ package com.kickstarter.ui.views
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
+import android.view.View.OnClickListener
 import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.kickstarter.R
@@ -19,6 +20,8 @@ class ImageWithCaptionView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : CardView(context, attrs, defStyleAttr) {
+    private var onImageWithCaptionClickedListener: OnImageWithCaptionClickedListener? = null
+
     private var binding: ViewImageWithCaptionBinding =
         ViewImageWithCaptionBinding.inflate(
             LayoutInflater.from(context),
@@ -33,10 +36,8 @@ class ImageWithCaptionView @JvmOverloads constructor(
         }
     }
 
-    fun setImage(@DrawableRes drawable: Int) {
-        ContextCompat.getDrawable(context, drawable)?.let {
-            binding.imageView.setImageDrawable(it)
-        }
+    fun setImageWithCaptionClickedListener(onImageWithCaptionClickedListener: OnImageWithCaptionClickedListener?) {
+        this.onImageWithCaptionClickedListener = onImageWithCaptionClickedListener
     }
 
     fun setCaption(caption: String, href: String? = null) {
@@ -46,16 +47,16 @@ class ImageWithCaptionView @JvmOverloads constructor(
                 Pair(
                     caption,
                     OnClickListener {
-                        // onCommentCardClickedListener?.onShowCommentClicked(it)
+                        onImageWithCaptionClickedListener?.onImageWithCaptionClicked(it)
                     }
                 ),
                 linkColor = R.color.kds_create_700,
-                isUnderlineText = false
+                isUnderlineText = true
             )
         }
     }
+}
 
-    fun setCaption(@StringRes caption: Int) {
-        binding.imageCaptionTextView.setText(caption)
-    }
+interface OnImageWithCaptionClickedListener {
+    fun onImageWithCaptionClicked(view: View)
 }

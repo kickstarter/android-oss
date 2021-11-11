@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/image_with_caption_layout"
     android:layout_width="match_parent"
+    android:layout_marginHorizontal="@dimen/grid_2"
     android:layout_height="match_parent">
 
     <ImageView
@@ -20,8 +21,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/image_caption_text_view"
-        android:layout_marginStart="@dimen/grid_2"
-        android:layout_marginTop="@dimen/grid_2"
+        android:layout_marginTop="@dimen/grid_1"
         android:textStyle="italic"
         android:textSize="@dimen/caption_1"
         android:textColor="@color/kds_support_400"

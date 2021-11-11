@@ -33,13 +33,14 @@ class ImageWithCaptionViewTest : ScreenshotTest {
                 ) as ConstraintLayout
             ).findViewById(R.id.image_view) as ImageWithCaptionView
 
-        imageWithCaptionView.setImage(R.drawable.image_placeholder)
+        imageWithCaptionView.setImage("http://record.pt/")
 
         compareScreenshot(imageWithCaptionView)
     }
 
     @Test
     fun imageWithCaptionInitializationByDefaultTest() {
+        val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
         val imageWithCaptionView = (
             LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext)
                 .inflate(
@@ -47,8 +48,8 @@ class ImageWithCaptionViewTest : ScreenshotTest {
                 ) as ConstraintLayout
             ).findViewById(R.id.image_view) as ImageWithCaptionView
 
-        imageWithCaptionView.setImage(R.drawable.image_placeholder)
-        imageWithCaptionView.setCaption(R.string.A_little_extra_to_help)
+        imageWithCaptionView.setImage("http://record.pt/")
+        imageWithCaptionView.setCaption(targetContext.getString(R.string.A_little_extra_to_help))
 
         compareScreenshot(imageWithCaptionView)
     }
@@ -62,7 +63,7 @@ class ImageWithCaptionViewTest : ScreenshotTest {
                 ) as ConstraintLayout
             ).findViewById(R.id.image_view) as ImageWithCaptionView
 
-        imageWithCaptionView.setImage(R.drawable.image_placeholder)
+        imageWithCaptionView.setImage("http://record.pt/")
         imageWithCaptionView.setCaption("This is an Android with a caption and a link", "http://record.pt/")
 
         compareScreenshot(imageWithCaptionView)

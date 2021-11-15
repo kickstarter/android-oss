@@ -1,5 +1,6 @@
 package com.kickstarter.ui.fragments.projectpage
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -43,6 +44,7 @@ class FrequentlyAskedQuestionFragment :
         return binding?.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
@@ -72,10 +74,17 @@ class FrequentlyAskedQuestionFragment :
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindToLifecycle())
             .subscribe {
-                if (it)
-                    binding?.answerEmptyStateTv?.setText(R.string.please_log_in_to_ask_a_question)
-                else
-                    binding?.answerEmptyStateTv?.setText(R.string.Look_like_there_arent_any_frequently_asked_questions_yet)
+                if (it) {
+                  getString(R.string.Log_in_to_ask_the_project_creator_directly)
+              } else {
+                  getString(R.string.Ask_the_project_creator_directly)
+              }.apply {
+                                binding?.answerEmptyStateTv?.text =
+                                    getString(R.string
+                                        .Looks_like_there_arent_any_frequently_asked_questions) +
+                                            " " + this
+                    }
+
                 binding?.answerEmptyStateSepartor?.isGone = it
                 binding?.askQuestionButton?.isGone = it
             }

@@ -18,7 +18,7 @@
             android:layout_marginTop="@dimen/grid_3"
             android:layout_marginEnd="@dimen/grid_7_half"
             android:gravity="start|center_vertical"
-            android:text="@string/risks_and_challenges"
+            android:text="@string/Risks_and_challenges"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -58,7 +58,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/separtor"
-            android:text="@string/learn_about_accountability_on_kickstarter" />
+            android:text="@string/Learn_about_accountability_on_Kickstarter" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

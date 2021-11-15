@@ -125,7 +125,7 @@
                 android:layout_height="wrap_content"/>
 
             <com.google.android.material.tabs.TabItem
-                android:text="@string/Environmental_commitment"
+                android:text="@string/Environmental_Commitments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </com.google.android.material.tabs.TabLayout>

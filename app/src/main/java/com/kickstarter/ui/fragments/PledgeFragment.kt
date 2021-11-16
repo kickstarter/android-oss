@@ -622,6 +622,13 @@ class PledgeFragment :
             .subscribe {
                 showRiskMessageDialog()
             }
+
+        this.viewModel.outputs.changePledgeSectionAccountabilityFragmentVisiablity()
+            .compose(observeForUI())
+            .compose(bindToLifecycle())
+            .subscribe {
+                binding?.pledgeSectionAccountability?.root?.isGone = it
+            }
     }
 
     private fun showRiskMessageDialog() {

@@ -35,7 +35,7 @@ object RewardViewUtils {
         return if (backing != null && backing.isBacked(reward)) {
             when {
                 !reward.hasAddons() -> R.string.Selected
-                hasAddOnsSelected || reward.hasAddons() -> R.string.Continue
+                reward.hasAddons() || hasAddOnsSelected -> R.string.Continue
                 else -> R.string.No_longer_available
             }
         } else {

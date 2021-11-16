@@ -13,7 +13,7 @@ import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
-import com.kickstarter.libs.utils.ProjectUtils;
+import com.kickstarter.libs.utils.extensions.ProjectExt;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.adapters.data.ProjectDashboardData;
@@ -148,7 +148,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
         .compose(bindToLifecycle());
 
       this.timeRemainingText = this.currentProject
-        .map(ProjectUtils::deadlineCountdownValue)
+        .map(ProjectExt::deadlineCountdownValue)
         .map(NumberUtils::format)
         .compose(bindToLifecycle());
 

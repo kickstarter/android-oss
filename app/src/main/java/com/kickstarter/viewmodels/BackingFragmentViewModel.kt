@@ -14,11 +14,11 @@ import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
+import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
@@ -205,7 +205,7 @@ interface BackingFragmentViewModel {
                 .subscribe(this.showUpdatePledgeSuccess)
 
             this.projectDataInput
-                .filter { it.project().isBacking || ProjectUtils.userIsCreator(it.project(), it.user()) }
+                .filter { it.project().isBacking || it.project().userIsCreator(it.user()) }
                 .map { projectData -> joinProjectDataAndReward(projectData) }
                 .compose(bindToLifecycle())
                 .subscribe(this.projectDataAndReward)
@@ -222,7 +222,7 @@ interface BackingFragmentViewModel {
             val isCreator = Observable.combineLatest(this.currentUser.observable(), backedProject) { user, project ->
                 Pair(user, project)
             }
-                .map { ProjectUtils.userIsCreator(it.second, it.first) }
+                .map { it.second.userIsCreator(it.first) }
 
             backing
                 .map { it.backerName() }
@@ -508,7 +508,7 @@ interface BackingFragmentViewModel {
 
             var statusStringRes: Int?
 
-            if (!ProjectUtils.userIsCreator(project, user)) {
+            if (!project.userIsCreator(user)) {
                 statusStringRes = when (project.state()) {
                     Project.STATE_CANCELED -> R.string.The_creator_canceled_this_project_so_your_payment_method_was_never_charged
                     Project.STATE_FAILED -> R.string.This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged

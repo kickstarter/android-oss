@@ -17,9 +17,10 @@ import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.SocialUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
+import com.kickstarter.libs.utils.extensions.photoHeightFromWidthRatio
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -125,7 +126,7 @@ class ProjectViewHolder(
     private fun setProjectPhoto(photo: Photo) {
         // Account for the grid2 start and end margins.
         val targetImageWidth = (ViewUtils.getScreenWidthDp(context()) * ViewUtils.getScreenDensity(context())).toInt() - context().resources.getDimension(R.dimen.grid_2).toInt() * 2
-        val targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth)
+        val targetImageHeight = photoHeightFromWidthRatio(targetImageWidth)
         binding.projectMediaHeaderLayout.projectPhoto.maxHeight = targetImageHeight
 
         ResourcesCompat.getDrawable(context().resources, R.drawable.gray_gradient, null)?.let {
@@ -406,7 +407,7 @@ class ProjectViewHolder(
             .subscribe {
                 // todo: break down these helpers
                 setLandscapeOverlayText(it)
-                binding.statsView.deadlineCountdownUnitTextView.text = ProjectUtils.deadlineCountdownDetail(it, context(), ksString)
+                binding.statsView.deadlineCountdownUnitTextView.text = it.deadlineCountdownDetail(context(), ksString)
             }
         viewModel.outputs.percentageFundedProgress()
             .compose(bindToLifecycle())

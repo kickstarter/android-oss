@@ -3,6 +3,7 @@ package com.kickstarter.libs.utils;
 import android.content.SharedPreferences;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.libs.utils.extensions.ProjectExt;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.libs.MockSharedPreferences;
 import com.kickstarter.libs.RefTag;
@@ -53,7 +54,7 @@ public final class RefTagUtilsTest extends KSRobolectricTestCase {
     final HttpCookie cookie = RefTagUtils.buildCookieWithRefTagAndProject(refTag, project);
 
     assertNotNull(cookie);
-    assertEquals(ProjectUtils.timeInSecondsUntilDeadline(project).longValue(), cookie.getMaxAge());
+    assertEquals(ProjectExt.timeInSecondsUntilDeadline(project), cookie.getMaxAge());
     assertEquals("www.kickstarter.com", cookie.getDomain());
   }
 

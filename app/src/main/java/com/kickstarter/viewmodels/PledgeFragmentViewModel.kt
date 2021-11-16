@@ -320,6 +320,8 @@ interface PledgeFragmentViewModel {
         fun pledgeAmountHeader(): Observable<CharSequence>
 
         fun changeCheckoutRiskMessageBottomSheetStatus(): Observable<Boolean>
+
+        fun changePledgeSectionAccountabilityFragmentVisiablity(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
@@ -349,6 +351,7 @@ interface PledgeFragmentViewModel {
         private val additionalPledgeAmountIsGone = BehaviorSubject.create<Boolean>()
         private val baseUrlForTerms = BehaviorSubject.create<String>()
         private val changeCheckoutRiskMessageBottomSheetStatus = BehaviorSubject.create<Boolean>()
+        private val changePledgeSectionAccountabilityFragmentVisiablity = BehaviorSubject.create<Boolean>()
         private val cardsAndProject = BehaviorSubject.create<Pair<List<StoredCard>, Project>>()
         private val continueButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val continueButtonIsGone = BehaviorSubject.create<Boolean>()
@@ -1177,6 +1180,15 @@ interface PledgeFragmentViewModel {
                     this.changeCheckoutRiskMessageBottomSheetStatus.onNext(false)
                 }
 
+            experimentData
+                .map { this.optimizely.variant(OptimizelyExperiment.Key.NATIVE_RISK_MESSAGING, it) != OptimizelyExperiment.Variant.CONTROL }
+                .compose(combineLatestPair(pledgeReason))
+                .filter { it.second == PledgeReason.PLEDGE }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    changePledgeSectionAccountabilityFragmentVisiablity.onNext(it.first)
+                }
+
             this.pledgeButtonClicked
                 .compose(combineLatestPair(experimentData))
                 .filter { this.optimizely.variant(OptimizelyExperiment.Key.NATIVE_RISK_MESSAGING, it.second) == OptimizelyExperiment.Variant.CONTROL }
@@ -1933,5 +1945,9 @@ interface PledgeFragmentViewModel {
         @NonNull
         override fun changeCheckoutRiskMessageBottomSheetStatus(): Observable<Boolean> = this
             .changeCheckoutRiskMessageBottomSheetStatus
+
+        @NonNull
+        override fun changePledgeSectionAccountabilityFragmentVisiablity(): Observable<Boolean> =
+            this.changePledgeSectionAccountabilityFragmentVisiablity
     }
 }

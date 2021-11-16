@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.kickstarter.ui.views.ImageWithCaptionView
         android:id="@+id/image_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

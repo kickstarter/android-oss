@@ -123,6 +123,16 @@ class StringExtKtTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun isGif_whenGivenLink_shouldReturnTrue() {
+        assertTrue(VALID_GIF_URL.isGif())
+    }
+
+    @Test
+    fun isGif_whenGivenLink_shouldReturnFalse() {
+        assertFalse(VALID_PNG_URL.isGif())
+    }
+
+    @Test
     fun parseStringToDouble() {
         val number = "90"
         val smallNumber = "0.3"
@@ -151,6 +161,8 @@ class StringExtKtTest : KSRobolectricTestCase() {
 
     companion object {
         private const val VALID_EMAIL = "hello@kickstarter.com"
+        private const val VALID_GIF_URL = "https://ksr-qa-ugc.imgix.net/assets/035/272/960/eae68383730822ffe949f3825600a80a_original.gif?gif-q=50&q=92&s=d0420b019010dc7c21de0454a47902e0"
+        private const val VALID_PNG_URL = "https://ksr-qa-ugc.imgix.net/assets/035/272/960/eae68383730822ffe949f3825600a80a_original.png?gif-q=50&q=92&s=d0420b019010dc7c21de0454a47902e0"
         private const val INVALID_EMAIL = "hello@kickstarer"
         private const val EMPTY_STRING = ""
         private const val EMPTY_SPACE = " "

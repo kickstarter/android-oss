@@ -38,8 +38,9 @@ fun String.isValidPassword(): Boolean {
  * Returns a string with only the first character capitalized.
  */
 fun String.sentenceCase(): String {
-    return if (this.length <= 1) this.toUpperCase(Locale.getDefault())
-    else this.substring(0, 1).toUpperCase(Locale.getDefault()) + this.substring(1).toLowerCase(Locale.getDefault())
+    return if (this.length <= 1) this.uppercase(Locale.getDefault())
+    else this.substring(0, 1).uppercase(Locale.getDefault()) + this.substring(1)
+        .lowercase(Locale.getDefault())
 }
 
 /**
@@ -83,4 +84,12 @@ fun String?.parseToDouble(): Double {
         }
     }
     return numToParse?.toDoubleOrNull() ?: 0.0
+}
+
+/**
+ * Returns a boolean that reflects if the string is an email address
+ */
+fun String.isGif(): Boolean {
+    val gifPattern = "(?:\\/\\/.*\\.(?:gif))"
+    return gifPattern.toRegex().find(this) != null
 }

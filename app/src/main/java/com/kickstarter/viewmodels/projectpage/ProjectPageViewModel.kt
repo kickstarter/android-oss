@@ -30,13 +30,15 @@ import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.RISKS
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.UrlUtils
+import com.kickstarter.libs.utils.extensions.ProjectMetadata
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
+import com.kickstarter.libs.utils.extensions.metadataForProject
 import com.kickstarter.libs.utils.extensions.updateProjectWith
+import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -847,8 +849,8 @@ interface ProjectPageViewModel {
                 }
 
             currentProject
-                .map { ProjectUtils.metadataForProject(it) }
-                .map { ProjectUtils.Metadata.BACKING == it }
+                .map { it.metadataForProject() }
+                .map { ProjectMetadata.BACKING == it }
                 .compose(bindToLifecycle())
                 .subscribe(backingViewGroupIsVisible)
         }
@@ -881,7 +883,7 @@ interface ProjectPageViewModel {
 
         private fun pledgeFlowContext(project: Project, currentUser: User?): PledgeFlowContext? {
             return when {
-                ProjectUtils.userIsCreator(project, currentUser) -> null
+                project.userIsCreator(currentUser) -> null
                 project.isLive && !project.isBacking -> PledgeFlowContext.NEW_PLEDGE
                 !project.isLive && project.backing()?.isErrored() ?: false -> PledgeFlowContext.FIX_ERRORED_PLEDGE
                 else -> null

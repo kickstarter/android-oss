@@ -24,10 +24,10 @@ import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.extensions.acceptedCardType
 import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
@@ -320,6 +320,8 @@ interface PledgeFragmentViewModel {
         fun pledgeAmountHeader(): Observable<CharSequence>
 
         fun changeCheckoutRiskMessageBottomSheetStatus(): Observable<Boolean>
+
+        fun changePledgeSectionAccountabilityFragmentVisiablity(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
@@ -349,6 +351,7 @@ interface PledgeFragmentViewModel {
         private val additionalPledgeAmountIsGone = BehaviorSubject.create<Boolean>()
         private val baseUrlForTerms = BehaviorSubject.create<String>()
         private val changeCheckoutRiskMessageBottomSheetStatus = BehaviorSubject.create<Boolean>()
+        private val changePledgeSectionAccountabilityFragmentVisiablity = BehaviorSubject.create<Boolean>()
         private val cardsAndProject = BehaviorSubject.create<Pair<List<StoredCard>, Project>>()
         private val continueButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val continueButtonIsGone = BehaviorSubject.create<Boolean>()
@@ -1177,6 +1180,15 @@ interface PledgeFragmentViewModel {
                     this.changeCheckoutRiskMessageBottomSheetStatus.onNext(false)
                 }
 
+            experimentData
+                .map { this.optimizely.variant(OptimizelyExperiment.Key.NATIVE_RISK_MESSAGING, it) != OptimizelyExperiment.Variant.CONTROL }
+                .compose(combineLatestPair(pledgeReason))
+                .filter { it.second == PledgeReason.PLEDGE }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    changePledgeSectionAccountabilityFragmentVisiablity.onNext(it.first)
+                }
+
             this.pledgeButtonClicked
                 .compose(combineLatestPair(experimentData))
                 .filter { this.optimizely.variant(OptimizelyExperiment.Key.NATIVE_RISK_MESSAGING, it.second) == OptimizelyExperiment.Variant.CONTROL }
@@ -1659,7 +1671,7 @@ interface PledgeFragmentViewModel {
         }
 
         private fun initialCardSelection(storedCards: List<StoredCard>, project: Project): Pair<StoredCard, Int>? {
-            val defaultIndex = storedCards.indexOfFirst { ProjectUtils.acceptedCardType(it.type(), project) }
+            val defaultIndex = storedCards.indexOfFirst { project.acceptedCardType(it.type()) }
             val backingPaymentSourceIndex = storedCards.indexOfFirst { it.id() == project.backing()?.paymentSource()?.id() }
             return when {
                 backingPaymentSourceIndex != -1 -> Pair(storedCards[backingPaymentSourceIndex], backingPaymentSourceIndex)
@@ -1933,5 +1945,9 @@ interface PledgeFragmentViewModel {
         @NonNull
         override fun changeCheckoutRiskMessageBottomSheetStatus(): Observable<Boolean> = this
             .changeCheckoutRiskMessageBottomSheetStatus
+
+        @NonNull
+        override fun changePledgeSectionAccountabilityFragmentVisiablity(): Observable<Boolean> =
+            this.changePledgeSectionAccountabilityFragmentVisiablity
     }
 }

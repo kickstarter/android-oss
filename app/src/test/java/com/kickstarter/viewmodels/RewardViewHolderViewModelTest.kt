@@ -232,8 +232,8 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.configureWith(projectData, rw)
         this.buttonIsGone.assertValue(false)
-        this.buttonIsEnabled.assertValues(false)
-        this.buttonCTA.assertValue(R.string.No_longer_available)
+        this.buttonIsEnabled.assertValues(true)
+        this.buttonCTA.assertValue(R.string.Continue)
     }
 
     @Test

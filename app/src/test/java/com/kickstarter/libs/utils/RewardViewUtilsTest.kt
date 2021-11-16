@@ -33,11 +33,25 @@ class RewardViewUtilsTest : KSRobolectricTestCase() {
     /**
      * Given a backedProject the backed reward has available addOns
      * when not backed addOns
-     * Then the text for the button should be R.string.Continue if the reward is available
+     * Then the text for the button should be R.string.Continue
      */
     @Test
     fun rewardBackedHasAvailableAddOns_whenNotBackedAddOns_textContinue() {
         val backedProjectRwHasAvailableNotBackedAddOns = ProjectFactory.backedProjectRewardAvailableAddOnsNotBackedAddOns()
+        val backedRwAvailableAddOns = requireNotNull(backedProjectRwHasAvailableNotBackedAddOns.backing()?.reward())
+        assertEquals(R.string.Continue, RewardViewUtils.pledgeButtonText(backedProjectRwHasAvailableNotBackedAddOns, backedRwAvailableAddOns))
+    }
+
+    /**
+     * Given a backedProject the backed reward
+     * has available addOns
+     * when not backed addOns
+     * when reward is not available
+     * Then the text for the button should be R.string.Continue
+     */
+    @Test
+    fun rewardBackedHasAvailableAddOns_whenNotBackedAddOnsAndRewardUnavailable_textContinue() {
+        val backedProjectRwHasAvailableNotBackedAddOns = ProjectFactory.backedProjectWithRewardLimitReached()
         val backedRwAvailableAddOns = requireNotNull(backedProjectRwHasAvailableNotBackedAddOns.backing()?.reward())
         assertEquals(R.string.Continue, RewardViewUtils.pledgeButtonText(backedProjectRwHasAvailableNotBackedAddOns, backedRwAvailableAddOns))
     }

@@ -296,7 +296,10 @@ public final class ProjectFactory {
   public static @NonNull Project backedProjectWithRewardLimitReached() {
     final Project project = project();
 
-    final Reward reward = RewardFactory.limitReached();
+    final Reward reward = RewardFactory.limitReached()
+            .toBuilder()
+            .hasAddons(true)
+            .build();
 
     final Backing backing = Backing.builder()
       .amount(10.0f)

@@ -75,15 +75,17 @@ class FrequentlyAskedQuestionFragment :
             .compose(bindToLifecycle())
             .subscribe {
                 if (it) {
-                  getString(R.string.Log_in_to_ask_the_project_creator_directly)
-              } else {
-                  getString(R.string.Ask_the_project_creator_directly)
-              }.apply {
-                                binding?.answerEmptyStateTv?.text =
-                                    getString(R.string
-                                        .Looks_like_there_arent_any_frequently_asked_questions) +
-                                            " " + this
-                    }
+                    getString(R.string.Log_in_to_ask_the_project_creator_directly)
+                } else {
+                    getString(R.string.Ask_the_project_creator_directly)
+                }.apply {
+                    binding?.answerEmptyStateTv?.text =
+                        getString(
+                        R.string
+                            .Looks_like_there_arent_any_frequently_asked_questions
+                    ) +
+                        " " + this
+                }
 
                 binding?.answerEmptyStateSepartor?.isGone = it
                 binding?.askQuestionButton?.isGone = it

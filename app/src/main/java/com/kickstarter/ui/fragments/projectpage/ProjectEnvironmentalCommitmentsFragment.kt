@@ -65,9 +65,11 @@ class ProjectEnvironmentalCommitmentsFragment :
     @SuppressLint("SetTextI18n")
     private fun setupVisitOurEnvironmentalResourcesCenter() {
         binding?.visitOurEnvironmentalResourcesCenterTv?.text =
-            getString(R.string.Visit_our_Environmental_Resources_Center) + " " + getString(R.string
-                .To_learn_how_Kickstarter_encourages_sustainable_practices)
-        
+            getString(R.string.Visit_our_Environmental_Resources_Center) + " " + getString(
+            R.string
+                .To_learn_how_Kickstarter_encourages_sustainable_practices
+        )
+
         binding?.visitOurEnvironmentalResourcesCenterTv?.parseHtmlTag()
         binding?.visitOurEnvironmentalResourcesCenterTv?.makeLinks(
             Pair(

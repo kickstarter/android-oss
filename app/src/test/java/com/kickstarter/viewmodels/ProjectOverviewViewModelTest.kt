@@ -10,7 +10,7 @@ import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ProgressBarUtils
-import com.kickstarter.libs.utils.ProjectUtils
+import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.CategoryFactory
@@ -594,9 +594,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         backersCountTextViewText.assertValues(NumberUtils.format(project.backersCount()))
         deadlineCountdownTextViewText.assertValues(
             NumberUtils.format(
-                ProjectUtils.deadlineCountdownValue(
-                    project
-                )
+                project.deadlineCountdownValue()
             )
         )
     }

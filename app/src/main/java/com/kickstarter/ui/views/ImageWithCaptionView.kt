@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.cardview.widget.CardView
+import androidx.core.view.isVisible
 import com.kickstarter.R
 import com.kickstarter.databinding.ViewImageWithCaptionBinding
 import com.kickstarter.libs.utils.extensions.isGif
@@ -39,18 +40,21 @@ class ImageWithCaptionView @JvmOverloads constructor(
     }
 
     fun setCaption(caption: String, href: String? = null) {
-        binding.imageCaptionTextView.text = caption
-        href?.let {
-            binding.imageCaptionTextView.makeLinks(
-                Pair(
-                    caption,
-                    OnClickListener {
-                        onImageWithCaptionClickedListener?.onImageWithCaptionClicked(it)
-                    }
-                ),
-                linkColor = R.color.kds_create_700,
-                isUnderlineText = true
-            )
+        if (caption.isNotEmpty()) {
+            binding.imageCaptionTextView.isVisible = true
+            binding.imageCaptionTextView.text = caption
+            href?.let {
+                binding.imageCaptionTextView.makeLinks(
+                    Pair(
+                        caption,
+                        OnClickListener {
+                            onImageWithCaptionClickedListener?.onImageWithCaptionClicked(it)
+                        }
+                    ),
+                    linkColor = R.color.kds_create_700,
+                    isUnderlineText = true
+                )
+            }
         }
     }
 }

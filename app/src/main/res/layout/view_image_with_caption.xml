@@ -3,15 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/image_with_caption_layout"
     android:layout_width="match_parent"
-    android:layout_marginHorizontal="@dimen/grid_2"
     android:layout_height="match_parent">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:adjustViewBounds= "true"
-        android:layout_marginTop="@dimen/grid_2"
+        android:adjustViewBounds="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -24,9 +22,10 @@
         android:layout_marginTop="@dimen/grid_1"
         android:textStyle="italic"
         android:textSize="@dimen/caption_1"
+        android:visibility="gone"
         android:textColor="@color/kds_support_400"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_view"/>
+        app:layout_constraintTop_toBottomOf="@+id/image_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

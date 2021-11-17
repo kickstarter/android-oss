@@ -26,15 +26,15 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom">
 
-            <com.kickstarter.ui.views.MediaHeader
-                android:id="@+id/media_header"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:fitsSystemWindows="true"
-                app:layout_collapseMode="parallax"/>
+                <com.kickstarter.ui.views.MediaHeader
+                    android:id="@+id/media_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:fitsSystemWindows="true"
+                    app:layout_collapseMode="parallax"/>
 
                 <androidx.constraintlayout.widget.Group
                     android:id="@+id/backing_group"
@@ -86,13 +86,15 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.appcompat.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/project_activity_toolbar"
-                app:contentInsetStartWithNavigation="0dp"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/ks_toolbar_height"
                 android:background="@android:color/transparent"
-                app:layout_collapseMode="pin" >
+                app:layout_collapseMode="pin"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp"
+                app:contentInsetStartWithNavigation="0dp">
 
             <com.kickstarter.ui.views.IconButton
                 android:layout_gravity="left"

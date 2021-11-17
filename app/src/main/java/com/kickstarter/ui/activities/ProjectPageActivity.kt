@@ -339,10 +339,12 @@ class ProjectPageActivity :
             .compose(Transformers.observeForUI())
             .subscribe { viewModel.inputs.playVideoButtonClicked() }
 
-       viewModel.outputs.backingViewGroupIsVisible()
+        viewModel.outputs.backingViewGroupIsVisible()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { binding.backingGroup.visibility = it.toVisibility() }
+            .subscribe {
+                binding.backingGroup.visibility = it.toVisibility()
+            }
 
         viewModel.outputs.hideVideoPlayer()
             .compose(bindToLifecycle())
@@ -352,6 +354,9 @@ class ProjectPageActivity :
                 else binding.projectAppBarLayout.setExpanded(true)
             }
 
+        binding.backIcon.setOnClickListener {
+            (this as BaseActivity<*>).back()
+        }
         setClickListeners()
     }
 

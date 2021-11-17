@@ -174,7 +174,7 @@ class ProjectPageActivity :
         this.viewModel.outputs.heartDrawableId()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { binding.projectActivityToolbar.heartIcon.setImageDrawable(ContextCompat.getDrawable(this, it)) }
+            .subscribe { binding.heartIcon.setImageDrawable(ContextCompat.getDrawable(this, it)) }
 
         this.viewModel.outputs.managePledgeMenu()
             .compose(bindToLifecycle())
@@ -339,7 +339,7 @@ class ProjectPageActivity :
             .compose(Transformers.observeForUI())
             .subscribe { viewModel.inputs.playVideoButtonClicked() }
 
-        viewModel.outputs.backingViewGroupIsVisible()
+       viewModel.outputs.backingViewGroupIsVisible()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { binding.backingGroup.visibility = it.toVisibility() }
@@ -347,7 +347,10 @@ class ProjectPageActivity :
         viewModel.outputs.hideVideoPlayer()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { if (it) binding.mediaHeaderLayout.transitionToEnd() else binding.mediaHeaderLayout.transitionToStart() }
+            .subscribe {
+                if (it) binding.projectAppBarLayout.setExpanded(false)
+                else binding.projectAppBarLayout.setExpanded(true)
+            }
 
         setClickListeners()
     }
@@ -521,13 +524,13 @@ class ProjectPageActivity :
                     setFragmentsState(expand)
                     if (expand) {
                         binding.pledgeContainerLayout.pledgeActionButtonsLayout.visibility = View.GONE
-                        binding.projectActivityToolbar.toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+                        binding.projectActivityToolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                         binding.pledgeContainerLayout.pledgeToolbar.requestFocus()
                     } else {
                         binding.pledgeContainerLayout.pledgeContainer.visibility = View.GONE
-                        binding.projectActivityToolbar.toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
+                        binding.projectActivityToolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
                         if (animate) {
-                            binding.projectActivityToolbar.toolbar.requestFocus()
+                            binding.projectActivityToolbar.requestFocus()
                         }
                     }
                 }
@@ -636,11 +639,11 @@ class ProjectPageActivity :
             this.viewModel.inputs.reloadProjectContainerClicked()
         }
 
-        binding.projectActivityToolbar.heartIcon.setOnClickListener {
+        binding.heartIcon.setOnClickListener {
             this.viewModel.inputs.heartButtonClicked()
         }
 
-        binding.projectActivityToolbar.shareIcon.setOnClickListener {
+        binding.shareIcon.setOnClickListener {
             this.viewModel.inputs.shareButtonClicked()
         }
     }

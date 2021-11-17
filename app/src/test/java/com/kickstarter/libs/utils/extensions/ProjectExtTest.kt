@@ -125,7 +125,7 @@ class ProjectExtTest : KSRobolectricTestCase() {
         `when`(context.getString(R.string.discovery_baseball_card_deadline_units_hours)).thenReturn("hours")
         `when`(context.getString(R.string.discovery_baseball_card_deadline_units_days)).thenReturn("days")
 
-        val project: Project = ProjectFactory.project().toBuilder().deadline(DateTime(DateTime.now().plusDays(5))).build()
+        val project: Project = ProjectFactory.project().toBuilder().deadline(DateTime.now().plusDays(5)).build()
 
         assertEquals("5 days", project.deadlineCountdown(context))
     }
@@ -137,31 +137,31 @@ class ProjectExtTest : KSRobolectricTestCase() {
         `when`(context.getString(R.string.discovery_baseball_card_deadline_units_hours)).thenReturn("hours")
         `when`(context.getString(R.string.discovery_baseball_card_deadline_units_days)).thenReturn("days")
 
-        var project: Project = ProjectFactory.project().toBuilder().deadline(DateTime(DateTime.now().plusDays(1))).build()
+        var project: Project = ProjectFactory.project().toBuilder().deadline(DateTime.now().plusDays(1)).build()
         assertEquals("hours", project.deadlineCountdownUnit(context))
 
-        project = project.toBuilder().deadline(DateTime(DateTime.now().plusMinutes(10))).build()
+        project = project.toBuilder().deadline(DateTime.now().plusMinutes(10)).build()
         assertEquals("mins", project.deadlineCountdownUnit(context))
 
-        project = project.toBuilder().deadline(DateTime(DateTime.now().plusSeconds(25))).build()
+        project = project.toBuilder().deadline(DateTime.now().plusSeconds(25)).build()
         assertEquals("secs", project.deadlineCountdownUnit(context))
 
-        project = project.toBuilder().deadline(DateTime(DateTime.now().plusDays(10))).build()
+        project = project.toBuilder().deadline(DateTime.now().plusDays(10)).build()
         assertEquals("days", project.deadlineCountdownUnit(context))
     }
 
     @Test
     fun testDeadlineCountdownValue_testAllCases_shouldReturnCorrectValueOfTime() {
-        var project: Project = ProjectFactory.project().toBuilder().deadline(DateTime(DateTime.now().plusDays(2))).build()
+        var project: Project = ProjectFactory.project().toBuilder().deadline(DateTime.now().plusDays(2)).build()
         assertEquals(48, project.deadlineCountdownValue())
 
-        project = project.toBuilder().deadline(DateTime(DateTime.now().plusMinutes(10))).build()
+        project = project.toBuilder().deadline(DateTime.now().plusMinutes(10)).build()
         assertEquals(10, project.deadlineCountdownValue())
 
-        project = project.toBuilder().deadline(DateTime(DateTime.now().plusSeconds(25))).build()
+        project = project.toBuilder().deadline(DateTime.now().plusSeconds(25)).build()
         assertEquals(25, project.deadlineCountdownValue())
 
-        project = project.toBuilder().deadline(DateTime(DateTime.now().plusDays(10))).build()
+        project = project.toBuilder().deadline(DateTime.now().plusDays(10)).build()
         assertEquals(10, project.deadlineCountdownValue())
     }
 

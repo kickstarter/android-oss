@@ -11,7 +11,8 @@ import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
-import com.kickstarter.libs.utils.ProjectUtils;
+import com.kickstarter.libs.utils.extensions.ProjectExt;
+import com.kickstarter.libs.utils.extensions.ProjectMetadata;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Project;
@@ -170,14 +171,14 @@ public interface ProjectCardHolderViewModel {
         .map(NumberUtils::format);
 
       this.backingViewGroupIsGone = this.project
-        .map(p -> ProjectUtils.metadataForProject(p) != ProjectUtils.Metadata.BACKING);
+        .map(p -> ProjectExt.metadataForProject(p) != ProjectMetadata.BACKING);
 
       this.deadlineCountdownText = this.project
-        .map(ProjectUtils::deadlineCountdownValue)
+        .map(ProjectExt::deadlineCountdownValue)
         .map(NumberUtils::format);
 
       this.featuredViewGroupIsGone = this.project
-        .map(p -> ProjectUtils.metadataForProject(p) != ProjectUtils.Metadata.CATEGORY_FEATURED);
+        .map(p -> ProjectExt.metadataForProject(p) != ProjectMetadata.CATEGORY_FEATURED);
 
       this.friendAvatarUrl1 = this.project
         .filter(Project::isFriendBacking)
@@ -245,7 +246,7 @@ public interface ProjectCardHolderViewModel {
         .subscribe(this.locationContainerIsGone::onNext);
 
       this.metadataViewGroupIsGone = this.project
-        .map(p -> ProjectUtils.metadataForProject(p) == null);
+        .map(p -> ProjectExt.metadataForProject(p) == null);
 
       this.metadataViewGroupBackground = this.backingViewGroupIsGone
         .map(gone -> gone ? R.drawable.rect_white_grey_stroke : R.drawable.rect_green_grey_stroke);
@@ -284,7 +285,7 @@ public interface ProjectCardHolderViewModel {
         .compose(coalesce(new DateTime()));
 
       this.projectStateViewGroupIsGone = this.project
-        .map(ProjectUtils::isCompleted)
+        .map(ProjectExt::isCompleted)
         .map(BooleanUtils::negate);
 
       final Observable<Category> projectCategory = this.project
@@ -329,7 +330,7 @@ public interface ProjectCardHolderViewModel {
         .map(Category::name);
 
       this.savedViewGroupIsGone = this.project
-        .map(p -> ProjectUtils.metadataForProject(p) != ProjectUtils.Metadata.SAVING);
+        .map(p -> ProjectExt.metadataForProject(p) != ProjectMetadata.SAVING);
 
       this.setDefaultTopPadding = this.metadataViewGroupIsGone;
     }

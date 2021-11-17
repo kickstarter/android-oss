@@ -12,9 +12,12 @@ import com.kickstarter.libs.utils.extensions.bonus
 import com.kickstarter.libs.utils.extensions.rewardCost
 import com.kickstarter.libs.utils.extensions.round
 import com.kickstarter.libs.utils.extensions.shippingAmount
+import com.kickstarter.libs.utils.extensions.timeInDaysOfDuration
+import com.kickstarter.libs.utils.extensions.timeInSecondsUntilDeadline
 import com.kickstarter.libs.utils.extensions.totalAmount
 import com.kickstarter.libs.utils.extensions.totalCountUnique
 import com.kickstarter.libs.utils.extensions.totalQuantity
+import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Category
 import com.kickstarter.models.Location
@@ -229,11 +232,11 @@ object AnalyticEventsUtils {
             project.deadline()?.let { deadline ->
                 put("deadline", deadline)
             }
-            put("duration", ProjectUtils.timeInDaysOfDuration(project).toFloat().roundToInt())
+            put("duration", project.timeInDaysOfDuration().toFloat().roundToInt())
             put("goal", project.goal())
             put("goal_usd", (project.goal() * project.usdExchangeRate()).round())
             put("has_video", project.video() != null)
-            put("hours_remaining", ceil((ProjectUtils.timeInSecondsUntilDeadline(project) / 60.0f / 60.0f).toDouble()).toInt())
+            put("hours_remaining", ceil((project.timeInSecondsUntilDeadline() / 60.0f / 60.0f).toDouble()).toInt())
             put("is_repeat_creator", IntegerUtils.intValueOrZero(project.creator().createdProjectsCount()) >= 2)
             project.launchedAt()?.let { launchedAt ->
                 put("launched_at", launchedAt)
@@ -253,7 +256,7 @@ object AnalyticEventsUtils {
             put("state", project.state())
             put("static_usd_rate", project.staticUsdRate())
             project.updatesCount()?.let { put("updates_count", it) }
-            put("user_is_project_creator", ProjectUtils.userIsCreator(project, loggedInUser))
+            put("user_is_project_creator", project.userIsCreator(loggedInUser))
             put("user_is_backer", project.isBacking)
             put("user_has_watched", project.isStarred)
 

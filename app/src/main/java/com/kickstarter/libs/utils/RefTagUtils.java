@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.util.Pair;
 
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.utils.extensions.ProjectExt;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
 
@@ -96,7 +97,7 @@ public final class RefTagUtils {
     // Cookie expires on the project deadline, or some days into the future if there is no deadline.
     final DateTime deadline = project.deadline();
     if (deadline != null) {
-      cookie.setMaxAge(ProjectUtils.timeInSecondsUntilDeadline(project));
+      cookie.setMaxAge(ProjectExt.timeInSecondsUntilDeadline(project));
     } else {
       cookie.setMaxAge(new DateTime().plusDays(10).getMillis() / 1000l);
     }

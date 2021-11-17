@@ -16,7 +16,8 @@ import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
-import com.kickstarter.libs.utils.ProjectUtils;
+import com.kickstarter.libs.utils.extensions.ProjectExt;
+import com.kickstarter.libs.utils.extensions.ProjectMetadata;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.CreatorDetails;
 import com.kickstarter.models.Location;
@@ -216,14 +217,14 @@ public interface ProjectHolderViewModel {
       final Observable<Project> project = this.projectData
         .map(ProjectData::project);
 
-      final Observable<ProjectUtils.Metadata> projectMetadata = project
-        .map(ProjectUtils::metadataForProject);
+      final Observable<ProjectMetadata> projectMetadata = project
+        .map(ProjectExt::metadataForProject);
 
       this.avatarPhotoUrl = project.map(p -> p.creator().avatar().medium());
       this.backersCountTextViewText = project.map(Project::backersCount).map(NumberUtils::format);
 
       this.backingViewGroupIsGone = projectMetadata
-        .map(ProjectUtils.Metadata.BACKING::equals)
+        .map(ProjectMetadata.BACKING::equals)
         .map(BooleanUtils::negate);
 
       this.blurbTextViewText = project.map(Project::blurb);
@@ -294,10 +295,10 @@ public interface ProjectHolderViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.creatorDetailsVariantIsVisible::onNext);
 
-      this.deadlineCountdownTextViewText = project.map(ProjectUtils::deadlineCountdownValue).map(NumberUtils::format);
+      this.deadlineCountdownTextViewText = project.map(ProjectExt::deadlineCountdownValue).map(NumberUtils::format);
 
       this.featuredViewGroupIsGone = projectMetadata
-        .map(ProjectUtils.Metadata.CATEGORY_FEATURED::equals)
+        .map(ProjectMetadata.CATEGORY_FEATURED::equals)
         .map(BooleanUtils::negate);
 
       this.featuredTextViewRootCategory = this.featuredViewGroupIsGone
@@ -364,11 +365,11 @@ public interface ProjectHolderViewModel {
         .map(BooleanUtils::negate);
 
       this.projectMetadataViewGroupBackgroundDrawableInt = projectMetadata
-        .filter(ProjectUtils.Metadata.BACKING::equals)
+        .filter(ProjectMetadata.BACKING::equals)
         .map(__ -> R.drawable.rect_green_grey_stroke);
 
       this.projectMetadataViewGroupIsGone = projectMetadata
-        .map(m -> m != ProjectUtils.Metadata.CATEGORY_FEATURED && m != ProjectUtils.Metadata.BACKING);
+        .map(m -> m != ProjectMetadata.CATEGORY_FEATURED && m != ProjectMetadata.BACKING);
 
       this.projectNameTextViewText = project.map(Project::name);
       this.projectOutput = project;

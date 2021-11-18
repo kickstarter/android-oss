@@ -350,8 +350,14 @@ class ProjectPageActivity :
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                if (it) binding.projectAppBarLayout.setExpanded(false)
-                else binding.projectAppBarLayout.setExpanded(true)
+                if (it) {
+                    binding.mediaHeaderLayout.transitionToEnd()
+                    binding.projectAppBarLayout.setExpanded(false)
+                }
+                else {
+                    binding.mediaHeaderLayout.transitionToStart()
+                    binding.projectAppBarLayout.setExpanded(true)
+                }
             }
 
         binding.backIcon.setOnClickListener {

@@ -40,7 +40,7 @@
             motion:layout_constraintEnd_toEndOf="parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            motion:layout_constraintBottom_toTopOf="parent"
+            motion:layout_constraintBottom_toTopOf="@id/project_app_bar_layout"
             motion:layout_constraintStart_toStartOf="parent"
             />
         <Constraint android:id="@+id/backer_check_mark">

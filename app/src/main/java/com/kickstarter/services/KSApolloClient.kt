@@ -1113,7 +1113,7 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
         if (it.isNotEmpty()) return@let it.first()?.updatedAt()
         else null
     }
-    val updatesCount = projectFragment?.posts()?.fragments()?.updates()?.nodes()?.size
+    val updatesCount = projectFragment?.posts()?.fragments()?.updates()?.totalCount()
     val url = projectFragment?.url()
     val urlsWeb = Project.Urls.Web.builder()
         .project(url)

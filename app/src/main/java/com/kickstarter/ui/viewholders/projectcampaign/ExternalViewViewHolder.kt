@@ -12,7 +12,8 @@ class ExternalViewViewHolder(
 
     fun configure(element: ExternalSourceViewElement) {
         setupWebView()
-        webView.loadData(element.htmlContent, "text/html", "utf-8")
+        val htmlContent = "<body style=\"margin: 0; padding: 0\">${element.htmlContent}</body>"
+        webView.loadData(htmlContent, "text/html", "utf-8")
     }
 
     @SuppressLint("SetJavaScriptEnabled")

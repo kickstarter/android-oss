@@ -55,6 +55,13 @@ fun Element.parseImageElement(): ImageViewElement {
 }
 
 fun Element.parseExternalElement(): ExternalSourceViewElement {
-    val sourceUrls = this.children().getOrNull(0)?.toString() ?: ""
+    val sourceUrls = this.children().getOrNull(0)?.apply {
+        this.attr("width", "100%")
+        val scr = this.attr("src")
+        if (scr.contains("youtube")) {
+            this.attr("src", "$scr&amp;fs=0")
+        }
+    }.toString()
+
     return ExternalSourceViewElement(sourceUrls)
 }

@@ -20,11 +20,12 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             android:fitsSystemWindows="true">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <androidx.constraintlayout.motion.widget.MotionLayout
                 android:id="@+id/media_header_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom">
+                android:layout_gravity="bottom"
+                app:layoutDescription="@xml/activity_project_page_scene">
 
                 <com.kickstarter.ui.views.MediaHeader
                     android:id="@+id/media_header"
@@ -84,7 +85,7 @@
                     app:layout_constraintStart_toEndOf="@id/backer_check_mark"
                     app:layout_constraintTop_toTopOf="@id/media_header" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.motion.widget.MotionLayout>
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/project_activity_toolbar"
@@ -97,26 +98,42 @@
                 app:contentInsetStartWithNavigation="0dp">
 
             <com.kickstarter.ui.views.IconButton
+                android:elevation="@dimen/grid_7"
+                android:layout_marginStart="@dimen/grid_2"
+                android:paddingStart="@dimen/grid_1"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 android:layout_gravity="left"
                 android:id="@+id/back_icon"
                 style="@style/ToolbarIconBackButton"
-                android:contentDescription="@string/Close_project" />
+                android:contentDescription="@string/Close_project"
+                android:background="@drawable/ic_toolbar_button_background"/>
 
             <ImageButton
+                android:elevation="@dimen/grid_7"
+                android:layout_marginEnd="@dimen/grid_2"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 android:layout_gravity="right"
                 style="@style/ToolbarVectorIcon"
                 android:id="@+id/share_icon"
                 android:layout_toStartOf="@+id/heart_icon"
                 android:contentDescription="@string/project_accessibility_button_share_label"
-                android:src="@drawable/icon__share"/>
+                android:src="@drawable/icon__share"
+                android:background="@drawable/ic_toolbar_button_background"/>
 
             <ImageButton
+                android:elevation="@dimen/grid_7"
+                android:layout_marginEnd="@dimen/grid_2"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 style="@style/ToolbarVectorIcon"
                 android:layout_gravity="right"
                 android:id="@+id/heart_icon"
                 android:contentDescription="@string/Save_this_project"
                 android:layout_alignParentEnd="true"
-                android:src="@drawable/icon__heart_outline" />
+                android:src="@drawable/icon__heart_outline"
+                android:background="@drawable/ic_toolbar_button_background"/>
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>

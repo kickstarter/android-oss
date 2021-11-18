@@ -354,10 +354,6 @@ class ProjectPageActivity :
                     binding.mediaHeaderLayout.transitionToEnd()
                     binding.projectAppBarLayout.setExpanded(false)
                 }
-                else {
-                    binding.mediaHeaderLayout.transitionToStart()
-                    binding.projectAppBarLayout.setExpanded(true)
-                }
             }
 
         binding.backIcon.setOnClickListener {

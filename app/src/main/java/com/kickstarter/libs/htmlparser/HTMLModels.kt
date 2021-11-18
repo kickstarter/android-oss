@@ -18,14 +18,25 @@ data class TextViewElement(var components: List<TextComponent>) : ViewElement {
         }
 }
 
-data class TextComponent(val text: String, val link: String?) {
-    enum class TextStyleType(val tag: String?) {
+data class TextComponent(val text: String, val link: String?, val styles: List<TextStyleType>, val html: String, val blockType: TextBlockType) {
+    // - Direct body childs for text allows only TextBlockTypes
+    enum class TextBlockType(val tag: String?) {
         PARAGRAPH("p"),
         HEADER1("h1"),
+        LIST("ul"),
+        UNKNOWN(null);
+
+        companion object {
+            fun initialize(tag: String): TextBlockType {
+                return (values().find { it.tag == tag }) ?: UNKNOWN
+            }
+        }
+    }
+
+    // - Styles to apply
+    enum class TextStyleType(val tag: String?) {
         BOLD("strong"),
-        LINK("a"),
         EMPHASIS("em"),
-        CAPTION("figcaption"),
         LIST("li"),
         UNKNOWN(null);
 
@@ -65,7 +76,7 @@ enum class ViewElementType(val tag: String?) {
                 tag == "div" -> {
                     return element.extractViewElementTypeFromDiv()
                 }
-                TextComponent.TextStyleType.values().map { it.tag }.contains(tag) -> {
+                TextComponent.TextBlockType.values().map { it.tag }.contains(tag) -> {
                     return TEXT
                 }
                 tag == VIDEO.tag -> {

@@ -26,7 +26,8 @@ class HTMLParser {
                     viewElements.add(element.parseImageElement())
                 }
                 ViewElementType.TEXT -> {
-                    viewElements.add(TextViewElement(parseTextElement(element, mutableListOf(), mutableListOf())))
+                    val textViewElement = TextViewElement(parseTextElement(element, mutableListOf(), mutableListOf()))
+                    viewElements.add(textViewElement)
                     return@forEach
                 }
                 ViewElementType.VIDEO -> {
@@ -53,17 +54,31 @@ class HTMLParser {
         tags.add(element.tag().name)
 
         for (node in element.childNodes()) {
-            (node as? TextNode)?.let {
-                val href = (element.attributes().firstOrNull { it.key == "href" })?.value
-                textComponents.add(TextComponent(element.toString(), href))
+            (node as? TextNode)?.let { textNode ->
+                if (textNode.text().trim().isNotEmpty()) {
+                    val textStyleList = tags.map { tag -> TextComponent.TextStyleType.initialize(tag) }.filter { it == TextComponent.TextStyleType.UNKNOWN }
+
+                    var blockType = if (element.parent()?.tagName() == "body" || element.parent()?.tagName() == "p")
+                        TextComponent.TextBlockType.initialize(element.tagName())
+                    else {
+                        TextComponent.TextBlockType.values().find { it.tag == element.tagName() } ?: TextComponent.TextBlockType.UNKNOWN
+                    }
+
+                    val href = (element.attributes().firstOrNull { it.key == "href" })?.value
+
+                    textComponents.add(
+                        TextComponent(
+                            textNode.text(),
+                            href,
+                            textStyleList,
+                            element.toString(),
+                            blockType
+                        )
+                    )
+                }
             }
             (node as? Element)?.let {
-                // TODO: Out of memory exception when nesting text components on some projects, improve the parsing of childs for nested texts
-                // TODO: ej: https://www.kickstarter.com/projects/ww3/yall-means-all-the-emerging-voices-queering-appalachia
-                // TODO: ej: https://staging.kickstarter.com/projects/334999551/shades-of-fear
-                // TODO: ej: https://staging.kickstarter.com/projects/thedreadmachine/mixtape-1986
-
-                textComponents.addAll(parseTextElement(it, tags, textComponents))
+                parseTextElement(it, tags, textComponents)
             }
         }
         return textComponents.toList()

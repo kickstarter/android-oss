@@ -15,9 +15,11 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.SocialUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
+import com.kickstarter.libs.utils.extensions.isProjectNamePunctuated
+import com.kickstarter.libs.utils.extensions.photoHeightFromWidthRatio
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
@@ -234,7 +236,7 @@ class ProjectCardViewHolder(
     }
 
     private fun setStyledNameAndBlurb(nameAndBlurb: Pair<String, String>) {
-        val nameString = if (ProjectUtils.isProjectNamePunctuated(nameAndBlurb.first)) nameAndBlurb.first.toString() + " " else nameAndBlurb.first.toString() + ": "
+        val nameString = if (isProjectNamePunctuated(nameAndBlurb.first)) nameAndBlurb.first.toString() + " " else nameAndBlurb.first.toString() + ": "
         val blurbString = nameAndBlurb.second
         val styledString = SpannableString(nameString + blurbString)
         styledString.setSpan(ForegroundColorSpan(context().getColor(R.color.kds_support_700)), 0, nameString.length, 0)
@@ -249,7 +251,7 @@ class ProjectCardViewHolder(
 
     private fun resizeProjectImage(avatarUrl: String?) {
         val targetImageWidth = (ViewUtils.getScreenWidthDp(context()) * ViewUtils.getScreenDensity(context()) - context().resources.getDimension(R.dimen.grid_4)).toInt()
-        val targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth)
+        val targetImageHeight = photoHeightFromWidthRatio(targetImageWidth)
 
         binding.projectCardPhoto.photo.maxHeight = targetImageHeight
         avatarUrl?.let {
@@ -265,7 +267,7 @@ class ProjectCardViewHolder(
     }
 
     private fun setDeadlineCountdownText(project: Project) {
-        binding.projectCardStats.deadlineCountdownUnit.text = ProjectUtils.deadlineCountdownDetail(project, context(), ksString)
+        binding.projectCardStats.deadlineCountdownUnit.text = project.deadlineCountdownDetail(context(), ksString)
     }
 
     private fun setFriendAvatarUrl(avatarUrl: String, imageView: ImageView) {

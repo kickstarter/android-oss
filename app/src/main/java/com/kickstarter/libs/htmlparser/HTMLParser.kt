@@ -27,7 +27,7 @@ class HTMLParser {
                     viewElements.add(element.parseImageElement())
                 }
                 ViewElementType.TEXT -> {
-                    val textViewElement = TextViewElement(parseTextElement(element, mutableListOf(), mutableListOf()))
+                    val textViewElement = TextViewElement(parseTextElement(element, mutableListOf()))
                     viewElements.add(textViewElement)
                     return@forEach
                 }
@@ -47,47 +47,54 @@ class HTMLParser {
         return viewElements
     }
 
-    private fun getTextBlockType(element: Element): TextComponent.TextBlockType? =
+    private fun getTextBlockType(
+        element: Element,
+        tags: MutableList<String>
+    ): TextComponent.TextBlockType? =
         if (TextComponent.TextBlockType.values().map { it.tag }
             .contains(element.tagName())
         ) {
             TextComponent.TextBlockType.initialize(element.tagName())
         } else {
+            tags.add(element.tagName())
+            if (element.tagName() == "a") {
+                // urls.add(element.attr("href"))
+            }
             element.parent()?.let {
-                getTextBlockType(it)
+                getTextBlockType(it, tags)
             }
         }
 
     private fun parseTextElement(
         element: Element,
-        tags: MutableList<String>,
         textComponents: MutableList<TextComponent>
     ): List<TextComponent> {
-        tags.add(element.tag().name)
 
         for (node in element.childNodes()) {
             (node as? TextNode)?.let { textNode ->
                 if (textNode.text().trim().isNotEmpty()) {
-                    val textStyleList = tags.map { tag -> TextComponent.TextStyleType.initialize(tag) }.filter { it == TextComponent.TextStyleType.UNKNOWN }
 
-                    val href = (element.attributes().firstOrNull { it.key == "href" })?.value
-                    val blockType = getTextBlockType(element)
+                    val href = (element.attributes().firstOrNull { it.key == "href" })?.value ?: ""
+                    val tagsOther = mutableListOf<String>()
+                    val blockType = getTextBlockType(element, tagsOther)
+                    val textStyleList = tagsOther.map { tag -> TextComponent.TextStyleType.initialize(tag) }.filter { it != TextComponent.TextStyleType.UNKNOWN }
 
-                    blockType?.let {
+                    blockType?.let { block ->
                         textComponents.add(
                             TextComponent(
                                 textNode.text(),
                                 href,
                                 textStyleList,
                                 element.toString(),
-                                it
+                                block,
+                                tagsOther
                             )
                         )
                     }
                 }
             }
             (node as? Element)?.let {
-                parseTextElement(it, tags, textComponents)
+                parseTextElement(it, textComponents)
             }
         }
         return textComponents.toList()

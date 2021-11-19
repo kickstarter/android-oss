@@ -18,7 +18,15 @@ data class TextViewElement(var components: List<TextComponent>) : ViewElement {
         }
 }
 
-data class TextComponent(val text: String, val link: String?, val styles: List<TextStyleType>, val html: String, val blockType: TextBlockType) {
+data class TextComponent(
+    val text: String,
+    val link: String?,
+    val styles: List<TextStyleType>,
+    val html: String,
+    val blockType: TextBlockType,
+    val tagsOther: MutableList<String>
+) {
+
     // - Direct body childs for text allows only TextBlockTypes
     enum class TextBlockType(val tag: String?) {
         PARAGRAPH("p"),

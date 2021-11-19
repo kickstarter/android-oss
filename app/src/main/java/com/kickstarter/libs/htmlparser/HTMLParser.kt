@@ -21,7 +21,8 @@ class HTMLParser {
         val viewElements = mutableListOf<ViewElement>()
 
         children?.forEach { element ->
-            when (ViewElementType.initialize(element)) {
+            val elementType = ViewElementType.initialize(element)
+            when (elementType) {
                 ViewElementType.IMAGE -> {
                     viewElements.add(element.parseImageElement())
                 }
@@ -53,16 +54,15 @@ class HTMLParser {
     ): List<TextComponent> {
         tags.add(element.tag().name)
 
+        val blockType = TextComponent.TextBlockType.values().map { it.tag }
+            .contains(element.tagName()).let {
+                TextComponent.TextBlockType.initialize(element.tagName())
+            }
+
         for (node in element.childNodes()) {
             (node as? TextNode)?.let { textNode ->
                 if (textNode.text().trim().isNotEmpty()) {
                     val textStyleList = tags.map { tag -> TextComponent.TextStyleType.initialize(tag) }.filter { it == TextComponent.TextStyleType.UNKNOWN }
-
-                    var blockType = if (element.parent()?.tagName() == "body" || element.parent()?.tagName() == "p")
-                        TextComponent.TextBlockType.initialize(element.tagName())
-                    else {
-                        TextComponent.TextBlockType.values().find { it.tag == element.tagName() } ?: TextComponent.TextBlockType.UNKNOWN
-                    }
 
                     val href = (element.attributes().firstOrNull { it.key == "href" })?.value
 

@@ -351,7 +351,6 @@ class ProjectPageActivity :
             .compose(Transformers.observeForUI())
             .subscribe {
                 if (it) {
-                    binding.mediaHeaderLayout.transitionToEnd()
                     binding.projectAppBarLayout.setExpanded(false)
                 }
             }

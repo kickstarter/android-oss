@@ -19,7 +19,6 @@ import com.kickstarter.viewmodels.projectpage.ProjectCampaignViewModel
 class ProjectCampaignFragment : BaseFragment<ProjectCampaignViewModel.ViewModel>(), Configure {
 
     private var binding: FragmentProjectCampaignBinding? = null
-    private var adapter = ViewElementAdapter()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -29,7 +28,7 @@ class ProjectCampaignFragment : BaseFragment<ProjectCampaignViewModel.ViewModel>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        var adapter = ViewElementAdapter(requireActivity())
         binding?.projectCampaignViewListItems?.layoutManager = LinearLayoutManager(context)
         binding?.projectCampaignViewListItems?.adapter = adapter
 

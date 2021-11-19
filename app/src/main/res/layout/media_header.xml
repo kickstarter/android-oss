@@ -17,7 +17,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:src="@drawable/rectangle_grey"
-        android:layout_margin="@dimen/grid_2"
         android:adjustViewBounds="true"
         android:background="@drawable/gray_gradient"
         android:scaleType="centerCrop"

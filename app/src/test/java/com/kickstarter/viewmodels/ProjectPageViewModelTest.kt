@@ -82,6 +82,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val playButtonIsVisible = TestSubscriber<Boolean>()
     private val backingViewGroupIsVisible = TestSubscriber<Boolean>()
     private val updateEnvCommitmentsTabVisibility = TestSubscriber<Boolean>()
+    private val hideVideoPlayer = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = ProjectPageViewModel.ViewModel(environment)
@@ -125,6 +126,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.projectPhoto().subscribe(this.projectPhoto)
         this.vm.outputs.playButtonIsVisible().subscribe(this.playButtonIsVisible)
         this.vm.outputs.backingViewGroupIsVisible().subscribe(this.backingViewGroupIsVisible)
+        this.vm.outputs.hideVideoPlayer().subscribe(this.hideVideoPlayer)
     }
 
     @Test
@@ -1583,6 +1585,40 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
                 .eventName,
             EventName.PAGE_VIEWED.eventName
         )
+    }
+
+    @Test
+    fun testHideVideoPlayer_whenOverviewSelected_returnFalse() {
+        val testScheduler = TestScheduler()
+
+        setUpEnvironment(
+            environment().toBuilder()
+                .scheduler(testScheduler).build()
+        )
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+
+        this.vm.inputs.tabSelected(0)
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+
+        this.hideVideoPlayer.assertValues(false)
+    }
+
+    @Test
+    fun testHideVideoPlayer_whenOverviewNotSelected_returnTrue() {
+        val testScheduler = TestScheduler()
+
+        setUpEnvironment(
+            environment().toBuilder()
+                .scheduler(testScheduler).build()
+        )
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+
+        this.vm.inputs.tabSelected(1)
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+
+        this.hideVideoPlayer.assertValues(true)
     }
 
     private fun apiClientWithSuccessFetchingProject(refreshedProject: Project): MockApolloClient {

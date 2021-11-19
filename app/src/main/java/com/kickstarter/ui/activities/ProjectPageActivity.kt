@@ -174,7 +174,7 @@ class ProjectPageActivity :
         this.viewModel.outputs.heartDrawableId()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { binding.projectActivityToolbar.heartIcon.setImageDrawable(ContextCompat.getDrawable(this, it)) }
+            .subscribe { binding.heartIcon.setImageDrawable(ContextCompat.getDrawable(this, it)) }
 
         this.viewModel.outputs.managePledgeMenu()
             .compose(bindToLifecycle())
@@ -327,14 +327,14 @@ class ProjectPageActivity :
         this.viewModel.outputs.projectPhoto()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding.mediaHeaderLayout.inputs.setProjectPhoto(it) }
+            .subscribe { binding.mediaHeader.inputs.setProjectPhoto(it) }
 
         viewModel.outputs.playButtonIsVisible()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { binding.mediaHeaderLayout.inputs.setPlayButtonVisibility(it) }
+            .subscribe { binding.mediaHeader.inputs.setPlayButtonVisibility(it) }
 
-        binding.mediaHeaderLayout.outputs.playButtonClicks()
+        binding.mediaHeader.outputs.playButtonClicks()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { viewModel.inputs.playVideoButtonClicked() }
@@ -342,8 +342,22 @@ class ProjectPageActivity :
         viewModel.outputs.backingViewGroupIsVisible()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { binding.backingGroup.visibility = it.toVisibility() }
+            .subscribe {
+                binding.backingGroup.visibility = it.toVisibility()
+            }
 
+        viewModel.outputs.hideVideoPlayer()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                if (it) {
+                    binding.projectAppBarLayout.setExpanded(false)
+                }
+            }
+
+        binding.backIcon.setOnClickListener {
+            (this as BaseActivity<*>).back()
+        }
         setClickListeners()
     }
 
@@ -516,13 +530,13 @@ class ProjectPageActivity :
                     setFragmentsState(expand)
                     if (expand) {
                         binding.pledgeContainerLayout.pledgeActionButtonsLayout.visibility = View.GONE
-                        binding.projectActivityToolbar.toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+                        binding.projectActivityToolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                         binding.pledgeContainerLayout.pledgeToolbar.requestFocus()
                     } else {
                         binding.pledgeContainerLayout.pledgeContainer.visibility = View.GONE
-                        binding.projectActivityToolbar.toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
+                        binding.projectActivityToolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
                         if (animate) {
-                            binding.projectActivityToolbar.toolbar.requestFocus()
+                            binding.projectActivityToolbar.requestFocus()
                         }
                     }
                 }
@@ -631,11 +645,11 @@ class ProjectPageActivity :
             this.viewModel.inputs.reloadProjectContainerClicked()
         }
 
-        binding.projectActivityToolbar.heartIcon.setOnClickListener {
+        binding.heartIcon.setOnClickListener {
             this.viewModel.inputs.heartButtonClicked()
         }
 
-        binding.projectActivityToolbar.shareIcon.setOnClickListener {
+        binding.shareIcon.setOnClickListener {
             this.viewModel.inputs.shareButtonClicked()
         }
     }

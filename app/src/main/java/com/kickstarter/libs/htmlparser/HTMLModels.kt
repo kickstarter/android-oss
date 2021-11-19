@@ -23,12 +23,11 @@ data class TextComponent(val text: String, val link: String?, val styles: List<T
     enum class TextBlockType(val tag: String?) {
         PARAGRAPH("p"),
         HEADER1("h1"),
-        LIST("ul"),
-        UNKNOWN(null);
+        LIST("ul");
 
         companion object {
-            fun initialize(tag: String): TextBlockType {
-                return (values().find { it.tag == tag }) ?: UNKNOWN
+            fun initialize(tag: String): TextBlockType? {
+                return values().firstOrNull { it.tag == tag }
             }
         }
     }

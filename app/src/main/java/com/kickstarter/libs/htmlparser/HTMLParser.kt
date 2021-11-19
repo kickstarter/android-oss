@@ -47,6 +47,17 @@ class HTMLParser {
         return viewElements
     }
 
+    private fun getTextBlockType(element: Element): TextComponent.TextBlockType? =
+        if (TextComponent.TextBlockType.values().map { it.tag }
+            .contains(element.tagName())
+        ) {
+            TextComponent.TextBlockType.initialize(element.tagName())
+        } else {
+            element.parent()?.let {
+                getTextBlockType(it)
+            }
+        }
+
     private fun parseTextElement(
         element: Element,
         tags: MutableList<String>,
@@ -54,27 +65,25 @@ class HTMLParser {
     ): List<TextComponent> {
         tags.add(element.tag().name)
 
-        val blockType = TextComponent.TextBlockType.values().map { it.tag }
-            .contains(element.tagName()).let {
-                TextComponent.TextBlockType.initialize(element.tagName())
-            }
-
         for (node in element.childNodes()) {
             (node as? TextNode)?.let { textNode ->
                 if (textNode.text().trim().isNotEmpty()) {
                     val textStyleList = tags.map { tag -> TextComponent.TextStyleType.initialize(tag) }.filter { it == TextComponent.TextStyleType.UNKNOWN }
 
                     val href = (element.attributes().firstOrNull { it.key == "href" })?.value
+                    val blockType = getTextBlockType(element)
 
-                    textComponents.add(
-                        TextComponent(
-                            textNode.text(),
-                            href,
-                            textStyleList,
-                            element.toString(),
-                            blockType
+                    blockType?.let {
+                        textComponents.add(
+                            TextComponent(
+                                textNode.text(),
+                                href,
+                                textStyleList,
+                                element.toString(),
+                                it
+                            )
                         )
-                    )
+                    }
                 }
             }
             (node as? Element)?.let {

@@ -81,23 +81,7 @@ class HTMLParser {
         for (node in element.childNodes()) {
             (node as? TextNode)?.let { textNode ->
                 if (textNode.text().trim().isNotEmpty()) {
-
-                    val tagsOther = mutableListOf<String>()
-                    val urls = mutableListOf<String>()
-                    val blockType = extractTextAttributes(element, tagsOther, urls)
-                    val textStyleList = tagsOther.map { tag -> TextComponent.TextStyleType.initialize(tag) }.filter { it != TextComponent.TextStyleType.UNKNOWN }
-                    val href = urls.firstOrNull() ?: ""
-
-                    blockType?.let { block ->
-                        textComponents.add(
-                            TextComponent(
-                                textNode.text(),
-                                href,
-                                textStyleList,
-                                block
-                            )
-                        )
-                    }
+                    textComponents.add(textNode.parseTextElement(element))
                 }
             }
             (node as? Element)?.let {

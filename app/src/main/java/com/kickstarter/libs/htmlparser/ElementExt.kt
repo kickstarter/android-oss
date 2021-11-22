@@ -70,19 +70,20 @@ fun Element.parseExternalElement(): ExternalSourceViewElement {
 /**
  * This function extract from the textNode a tag list from their ancestors
  * until it detects the parent blockType.
+ *
+ * Note: BlockTypes are direct childs of body HTML tag
  * @param tags - Populates the list of parent tags
  * @param urls - In case of any of the parents is a link(<a>) populates the urls list
- * Returns blockType
  */
 private fun extractTextAttributes(
     element: Element,
     tags: MutableList<String>,
     urls: MutableList<String>
-): TextComponent.TextBlockType? =
+) {
     if (TextComponent.TextBlockType.values().map { it.tag }
         .contains(element.tagName())
     ) {
-        TextComponent.TextBlockType.initialize(element.tagName())
+        // End recursive calls
     } else {
         tags.add(element.tagName())
         if (element.tagName() == "a") {
@@ -92,20 +93,18 @@ private fun extractTextAttributes(
             extractTextAttributes(it, tags, urls)
         }
     }
+}
 
-fun TextNode.parseTextElement(element: Element): TextComponent? {
+fun TextNode.parseTextElement(element: Element): TextComponent {
     val tagsOther = mutableListOf<String>()
     val urls = mutableListOf<String>()
-    val blockType = extractTextAttributes(element, tagsOther, urls)
+    extractTextAttributes(element, tagsOther, urls)
     val textStyleList = tagsOther.map { tag -> TextComponent.TextStyleType.initialize(tag) }.filter { it != TextComponent.TextStyleType.UNKNOWN }
     val href = urls.firstOrNull() ?: ""
 
-    return blockType?.let {
-        TextComponent(
-            this.text(),
-            href,
-            textStyleList,
-            it
-        )
-    }
+    return TextComponent(
+        this.text(),
+        href,
+        textStyleList
+    )
 }

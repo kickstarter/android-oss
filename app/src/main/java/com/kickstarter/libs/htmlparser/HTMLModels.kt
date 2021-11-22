@@ -21,8 +21,7 @@ data class TextViewElement(var components: List<TextComponent>) : ViewElement {
 data class TextComponent(
     val text: String,
     val link: String?,
-    val styles: List<TextStyleType>,
-    val blockType: TextBlockType
+    val styles: List<TextStyleType>
 ) {
 
     // - Direct body childs for text allows only TextBlockTypes

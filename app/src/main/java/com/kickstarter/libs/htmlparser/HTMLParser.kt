@@ -47,9 +47,17 @@ class HTMLParser {
         return viewElements
     }
 
-    private fun getTextBlockType(
+    /**
+     * This function extract from the textNode a tag list from their ancestors
+     * until it detects the parent blockType.
+     * @param tags - Populates the list of parent tags
+     * @param urls - In case of any of the parents is a link(<a>) populates the urls list
+     * Returns blockType
+     */
+    private fun extractTextAttributes(
         element: Element,
-        tags: MutableList<String>
+        tags: MutableList<String>,
+        urls: MutableList<String>
     ): TextComponent.TextBlockType? =
         if (TextComponent.TextBlockType.values().map { it.tag }
             .contains(element.tagName())
@@ -58,10 +66,10 @@ class HTMLParser {
         } else {
             tags.add(element.tagName())
             if (element.tagName() == "a") {
-                // urls.add(element.attr("href"))
+                urls.add(element.attr("href"))
             }
             element.parent()?.let {
-                getTextBlockType(it, tags)
+                extractTextAttributes(it, tags, urls)
             }
         }
 
@@ -74,10 +82,11 @@ class HTMLParser {
             (node as? TextNode)?.let { textNode ->
                 if (textNode.text().trim().isNotEmpty()) {
 
-                    val href = (element.attributes().firstOrNull { it.key == "href" })?.value ?: ""
                     val tagsOther = mutableListOf<String>()
-                    val blockType = getTextBlockType(element, tagsOther)
+                    val urls = mutableListOf<String>()
+                    val blockType = extractTextAttributes(element, tagsOther, urls)
                     val textStyleList = tagsOther.map { tag -> TextComponent.TextStyleType.initialize(tag) }.filter { it != TextComponent.TextStyleType.UNKNOWN }
+                    val href = urls.firstOrNull() ?: ""
 
                     blockType?.let { block ->
                         textComponents.add(
@@ -85,9 +94,7 @@ class HTMLParser {
                                 textNode.text(),
                                 href,
                                 textStyleList,
-                                element.toString(),
-                                block,
-                                tagsOther
+                                block
                             )
                         )
                     }

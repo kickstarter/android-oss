@@ -22,9 +22,7 @@ data class TextComponent(
     val text: String,
     val link: String?,
     val styles: List<TextStyleType>,
-    val html: String,
-    val blockType: TextBlockType,
-    val tagsOther: MutableList<String>
+    val blockType: TextBlockType
 ) {
 
     // - Direct body childs for text allows only TextBlockTypes
@@ -45,6 +43,7 @@ data class TextComponent(
         BOLD("strong"),
         EMPHASIS("em"),
         LIST("li"),
+        LINK("a"),
         UNKNOWN(null);
 
         companion object {

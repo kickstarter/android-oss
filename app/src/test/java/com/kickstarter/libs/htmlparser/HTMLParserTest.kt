@@ -152,4 +152,63 @@ class HTMLParserTest {
         assert(thirdComponent.styles.size == 1)
         assert(thirdComponent.styles[0] == TextComponent.TextStyleType.LIST)
     }
+
+    @Test
+    fun parseTextElementParagraphWithEmphasisAndBold() {
+        val html = "<p>This is a paragraph about bacon – Bacon ipsum dolor amet ham chuck short ribs, shank flank cupim frankfurter chicken. Sausage frankfurter chicken ball tip, drumstick brisket pork chop turkey. Andouille bacon ham hock, pastrami sausage pork chop corned beef frankfurter shank chislic short ribs. Hamburger bacon pork belly, drumstick pork chop capicola kielbasa pancetta buffalo pork. Meatball doner pancetta ham ribeye. Picanha ham venison ribeye short loin beef, tail pig ball tip buffalo salami shoulder ground round chicken. Porchetta capicola drumstick, tongue fatback pork pork belly cow sirloin ham hock flank venison beef ribs.<strong><em>Bold word Italic word</em></strong></p>"
+        val listOfElements = HTMLParser().parse(html)
+        val textElement: TextViewElement = listOfElements.first() as TextViewElement
+
+        assert(textElement.components.size == 2)
+
+        // First element
+        val firstTextComponent = textElement.components[0]
+        assert(firstTextComponent.link == "")
+        assert(firstTextComponent.text == "This is a paragraph about bacon – Bacon ipsum dolor amet ham chuck short ribs, shank flank cupim frankfurter chicken. Sausage frankfurter chicken ball tip, drumstick brisket pork chop turkey. Andouille bacon ham hock, pastrami sausage pork chop corned beef frankfurter shank chislic short ribs. Hamburger bacon pork belly, drumstick pork chop capicola kielbasa pancetta buffalo pork. Meatball doner pancetta ham ribeye. Picanha ham venison ribeye short loin beef, tail pig ball tip buffalo salami shoulder ground round chicken. Porchetta capicola drumstick, tongue fatback pork pork belly cow sirloin ham hock flank venison beef ribs.")
+        assert(firstTextComponent.styles.isEmpty())
+
+        // Second Element
+        val secondElement = textElement.components[1]
+        assert(secondElement.link == "")
+        assert(secondElement.text == "Bold word Italic word")
+        assert(secondElement.styles.size == 2)
+        assert(secondElement.styles[0] == TextComponent.TextStyleType.EMPHASIS)
+        assert(secondElement.styles[1] == TextComponent.TextStyleType.BOLD)
+    }
+
+    @Test
+    fun parseTwoTextElementsParagraphWithLinkAndNestedStyles() {
+        val url1 = "http://record.pt/"
+        val url2 = "http://recordblabla.pt/"
+        val html = "<p><a href=$url1 target=\"_blank\" rel=\"noopener\"><strong>What about a bold link to that same newspaper website?</strong></a></p>\n<p><a href=$url2 target=\"_blank\" rel=\"noopener\"><em>Maybe an italic one?</em></a></p>"
+
+        val listOfElements = HTMLParser().parse(html)
+        assert(listOfElements.size == 2)
+
+        val firstTextElement: TextViewElement = listOfElements.first() as TextViewElement
+        assert(firstTextElement.components.size == 1)
+        assert(firstTextElement.components[0].link == url1)
+        assert(firstTextElement.components[0].text == "What about a bold link to that same newspaper website?")
+        assert(firstTextElement.components[0].styles[0] == TextComponent.TextStyleType.BOLD)
+        assert(firstTextElement.components[0].styles[1] == TextComponent.TextStyleType.LINK)
+
+        val secondTextElement: TextViewElement = listOfElements.last() as TextViewElement
+        assert(secondTextElement.components.size == 1)
+        assert(secondTextElement.components[0].link == url2)
+        assert(secondTextElement.components[0].text == "Maybe an italic one?")
+        assert(secondTextElement.components[0].styles[0] == TextComponent.TextStyleType.EMPHASIS)
+        assert(secondTextElement.components[0].styles[1] == TextComponent.TextStyleType.LINK)
+    }
+
+    @Test
+    fun parseTextElementHeadline() {
+        val html = "<h1 id=\\\"h:this-is-a-headline\\\" class=\\\"page-anchor\\\">This is a headline</h1>"
+        val listOfElements = HTMLParser().parse(html)
+        assert(listOfElements.size == 1)
+
+        val textElement: TextViewElement = listOfElements.last() as TextViewElement
+        assert(textElement.components.size == 1)
+        assert(textElement.components[0].text == "This is a headline")
+        assert(textElement.components[0].styles[0] == TextComponent.TextStyleType.HEADER)
+    }
 }

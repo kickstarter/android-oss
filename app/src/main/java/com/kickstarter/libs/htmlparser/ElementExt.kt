@@ -80,12 +80,12 @@ private fun extractTextAttributes(
     tags: MutableList<String>,
     urls: MutableList<String>
 ) {
+    tags.add(element.tagName())
     if (TextComponent.TextBlockType.values().map { it.tag }
         .contains(element.tagName())
     ) {
         // End recursive calls
     } else {
-        tags.add(element.tagName())
         if (element.tagName() == "a") {
             urls.add(element.attr("href"))
         }

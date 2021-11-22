@@ -43,6 +43,7 @@ data class TextComponent(
         EMPHASIS("em"),
         LIST("li"),
         LINK("a"),
+        HEADER("h1"),
         UNKNOWN(null);
 
         companion object {

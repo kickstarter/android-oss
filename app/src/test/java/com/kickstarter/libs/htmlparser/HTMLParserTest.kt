@@ -116,4 +116,40 @@ class HTMLParserTest {
         assert(imageView.href == href)
         assert(imageView.src == src)
     }
+
+    @Test
+    fun parseTextElementListWithNestedLinks() {
+
+        val url = "https://www.meneame.net/"
+        val html = "<ul><li><a href=$url target=\\\"_blank\\\" rel=\\\"noopener\\\"><em><strong>Meneane</strong></em></a><a href=$url target=\\\"_blank\\\" rel=\\\"noopener\\\">Another URL in this list</a> and some text</li></ul>"
+        val listOfElements = HTMLParser().parse(html)
+        val textElement: TextViewElement = listOfElements.first() as TextViewElement
+
+        assert(textElement.components.size == 3)
+
+        // - First component
+        val firstTextComponent = textElement.components[0]
+        assert(firstTextComponent.link == url)
+        assert(firstTextComponent.text == "Meneane")
+        assert(firstTextComponent.styles.size == 4)
+        assert(firstTextComponent.styles[0] == TextComponent.TextStyleType.BOLD)
+        assert(firstTextComponent.styles[1] == TextComponent.TextStyleType.EMPHASIS)
+        assert(firstTextComponent.styles[2] == TextComponent.TextStyleType.LINK)
+        assert(firstTextComponent.styles[3] == TextComponent.TextStyleType.LIST)
+
+        // - Second Component
+        val secondComponent = textElement.components[1]
+        assert(secondComponent.link == url)
+        assert(secondComponent.text == "Another URL in this list")
+        assert(secondComponent.styles.size == 2)
+        assert(secondComponent.styles[0] == TextComponent.TextStyleType.LINK)
+        assert(secondComponent.styles[1] == TextComponent.TextStyleType.LIST)
+
+        // - Third Component
+        val thirdComponent = textElement.components[2]
+        assert(thirdComponent.link == "")
+        assert(thirdComponent.text == " and some text")
+        assert(thirdComponent.styles.size == 1)
+        assert(thirdComponent.styles[0] == TextComponent.TextStyleType.LIST)
+    }
 }

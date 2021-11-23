@@ -462,7 +462,7 @@ class ProjectPageActivity :
         // ProjectPagerTabs.CAMPAIGN.ordinal -> getString(R.string.Campaign) // TODO bring back CAMPAIGN, on second place once the HTML parser is in place
         ProjectPagerTabs.FAQS.ordinal -> getString(R.string.Faq)
         ProjectPagerTabs.RISKS.ordinal -> getString(R.string.Risks)
-        ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal -> getString(R.string.Environmental_commitment)
+        ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal -> getString(R.string.Environmental_Commitments)
         else -> ""
     }
 

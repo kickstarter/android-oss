@@ -54,7 +54,7 @@ class ProjectRiskFragment :
         binding?.learnAboutAccountabilityOnKickstarterTv?.parseHtmlTag()
         binding?.learnAboutAccountabilityOnKickstarterTv?.makeLinks(
             Pair(
-                getString(R.string.learn_about_accountability_on_kickstarter),
+                getString(R.string.Learn_about_accountability_on_Kickstarter),
                 View.OnClickListener {
                     viewModel.inputs.onLearnAboutAccountabilityOnKickstarterClicked()
                 }

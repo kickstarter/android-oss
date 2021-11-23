@@ -38,7 +38,7 @@
             android:layout_marginHorizontal="@dimen/grid_3"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@+id/question_tv"
-            tools:text="@string/Look_like_there_arent_any_frequently_asked_questions_yet" />
+            tools:text="@string/Looks_like_there_arent_any_frequently_asked_questions" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/fqa_RecyclerView"
@@ -76,7 +76,7 @@
             android:drawableStart="@drawable/ic_ask_question"
             android:drawablePadding="@dimen/grid_1"
             android:minHeight="@dimen/grid_8"
-            android:text="@string/ask_a_question"
+            android:text="@string/Ask_a_question"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/question_tv"

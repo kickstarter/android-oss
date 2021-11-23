@@ -46,7 +46,9 @@
   <string name="Are_you_sure_you_wish_to_cancel_your_amount_pledge_to_project_name" formatted="false">Are you sure you wish to cancel your %{amount} pledge to %{project_name}?</string>
   <string name="Are_you_sure_you_wish_to_remove_this_card" formatted="false">Are you sure you wish to remove this card from your payment method options?</string>
   <string name="As_of_pledge_date" formatted="false">As of %{pledge_date}</string>
+  <string name="Ask_a_question" formatted="false">Ask a question</string>
   <string name="Ask_me_anything" formatted="false">Ask me anything</string>
+  <string name="Ask_the_project_creator_directly" formatted="false">Ask the project creator directly.</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Available to watch for %{time} more %{units}</string>
   <string name="Back" formatted="false">Back</string>
   <string name="Back_it_because_you_believe_in_it" formatted="false">Back it because you believe in it.</string>
@@ -85,6 +87,7 @@ backers</string>
   <string name="By_signing_up_youll_log_in_to_Kickstarter_using_your_Facebook_account" formatted="false">By signing up, you’ll log in to Kickstarter using your Facebook account. If you prefer not to use Facebook, restart this app and choose another option.</string>
   <string name="By_submitting_your_pledge_you_agree_that_Stripe_may_charge_your_payment_method" formatted="false">By submitting your pledge, you agree that our payment processor, Stripe, may charge your payment method.</string>
   <string name="CVC" formatted="false">CVC</string>
+  <string name="Campaign" formatted="false">Campaign</string>
   <string name="Cancel" formatted="false">Cancel</string>
   <string name="Cancel_pledge" formatted="false">Cancel pledge</string>
   <string name="Cancel_your_pledge" formatted="false">Cancel your pledge</string>
@@ -201,6 +204,8 @@ Tap to retry</string>
   <string name="Ending_in_last_four" formatted="false">Ending in %{last_four}</string>
   <string name="Ending_soon" formatted="false">Ending Soon</string>
   <string name="Enter_an_amount_less_than_max_pledge" formatted="false">Enter an amount less than %{max_pledge}.</string>
+  <string name="Environmental_Commitments" formatted="false">Environmental Commitments</string>
+  <string name="Environmentally_friendly_factories" formatted="false">Environmentally friendly factories</string>
   <string name="Estimated_delivery" formatted="false">Estimated delivery</string>
   <string name="Estimated_delivery_colon" formatted="false">Estimated delivery:</string>
   <string name="Estimated_delivery_of" formatted="false">Estimated delivery of</string>
@@ -219,6 +224,7 @@ Tap to retry</string>
   <string name="Facebook_reconnect_description" formatted="false">Your account was disconnected for your security. By logging in with Facebook, we’ll import your name, profile photo and friend list.</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">Failed to retrieve live stream event details</string>
   <string name="Failed_to_update_subscription" formatted="false">Failed to update subscription</string>
+  <string name="Faq" formatted="false">FAQ</string>
   <string name="Filter_by_all_projects" formatted="false">Filter by all projects</string>
   <string name="Filter_by_category_name" formatted="false">Filter by %{category_name}</string>
   <string name="Filter_by_projects_backed_by_friends" formatted="false">Filter by projects backed by friends</string>
@@ -253,6 +259,7 @@ Tap to retry</string>
   <string name="Following_Disabled_Info" formatted="false">Following must be on to find Facebook friends. Change your account privacy settings to enable this feature.</string>
   <string name="Following_More_Info" formatted="false">Following More Info</string>
   <string name="Follows_friend_name" formatted="false">Follows %{friend_name}.</string>
+  <string name="Frequently_asked_questions" formatted="false">Frequently asked questions</string>
   <string name="Friend_backed_art_project" formatted="false">&lt;b>%{friend_name}&lt;/b> backed an &lt;i>Art&lt;/i> project.</string>
   <string name="Friend_backed_comics_project" formatted="false">&lt;b>%{friend_name}&lt;/b> backed a &lt;i>Comics&lt;/i> project.</string>
   <string name="Friend_backed_crafts_project" formatted="false">&lt;b>%{friend_name}&lt;/b> backed a &lt;i>Crafts&lt;/i> project.</string>
@@ -329,6 +336,7 @@ with friends.</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Kickstarter is not a store. It\'s a way to bring creative projects to life.&lt;br/>&lt;a href="%{trust_link}">Learn more about accountability&lt;/a></string>
   <string name="Kickstarter_on_Film" formatted="false">Kickstarter on Film</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Know when creators and backers message you by enabling notifications.</string>
+  <string name="Learn_about_accountability_on_Kickstarter" formatted="false">Learn about accountability on Kickstarter</string>
   <string name="Learn_more_about_accountability" formatted="false">Learn more about accountability</string>
   <string name="Learn_more_about_comment_guidelines" formatted="false">&lt;a href="%{community_link}">Learn more about comment guidelines&lt;/a></string>
   <string name="Leave_page" formatted="false">Leave page</string>
@@ -351,8 +359,11 @@ with friends.</string>
   <string name="Location" formatted="false">Location</string>
   <string name="Log_in_or_sign_up_to_save_this_project_and_we_ll_remind_you" formatted="false">Log in or sign up to save this project. We’ll remind you 48 hours before it ends.</string>
   <string name="Log_in_or_sign_up_to_subscribe" formatted="false">Log in or sign up to subscribe</string>
+  <string name="Log_in_to_ask_the_project_creator_directly" formatted="false">Log in to ask the project creator directly.</string>
   <string name="Log_in_to_leave_a_comment" formatted="false">Log in to leave a comment.</string>
   <string name="Log_out" formatted="false">Log out</string>
+  <string name="Long_lasting_design" formatted="false">Long-lasting design</string>
+  <string name="Looks_like_there_arent_any_frequently_asked_questions" formatted="false">Looks like there aren\'t any frequently asked questions yet.</string>
   <string name="Love_film_We_do_too" formatted="false">Love film? We do, too.</string>
   <string name="MMYY" formatted="false">MM/YY</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">Make a pledge without a reward</string>
@@ -419,6 +430,7 @@ from friends yet.</string>
   <string name="Or_select_a_different_reward_below_colon" formatted="false">Or select a different reward below:</string>
   <string name="Other_payment_methods" formatted="false">Other payment methods</string>
   <string name="Other_projects_you_might_like" formatted="false">Other projects you might like.</string>
+  <string name="Overview" formatted="false">Overview</string>
   <string name="Password_min_length_message" formatted="false">Your password must be at least 6 characters long.</string>
   <string name="Password_visibility" formatted="false">Password visibility</string>
   <string name="Passwords_matching_message" formatted="false">New passwords must match.</string>
@@ -503,6 +515,7 @@ daring ideas.</string>
   <string name="Resend_verification_email" formatted="false">Re-send verification email</string>
   <string name="Retry" formatted="false">Retry</string>
   <string name="Retry_or_select_another_method" formatted="false">Retry or select another method.</string>
+  <string name="Reusability_and_recyclability" formatted="false">Reusability and recyclability</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_Surveys_one" formatted="false">Reward Survey</string>
@@ -527,6 +540,8 @@ daring ideas.</string>
   <string name="Rewards_count_rewards_other" formatted="false">%{rewards_count} rewards</string>
   <string name="Rewards_count_rewards_two" formatted="false">%{rewards_count} rewards</string>
   <string name="Rewards_count_rewards_zero" formatted="false">%{rewards_count} rewards</string>
+  <string name="Risks" formatted="false">Risks</string>
+  <string name="Risks_and_challenges" formatted="false">Risks and challenges</string>
   <string name="Save" formatted="false">Save</string>
   <string name="Save_projects" formatted="false">Save projects</string>
   <string name="Save_this_project" formatted="false">Save this project</string>
@@ -584,6 +599,7 @@ daring ideas.</string>
   <string name="Social_friend_is_backer_zero" formatted="false">%{friend_name} is a backer</string>
   <string name="Something_catch_your_eye" formatted="false">Something\n
 catch your eye?</string>
+  <string name="Something_else" formatted="false">Something else</string>
   <string name="Something_went_wrong_and_we_were_unable_to_remove_your_payment_method_please_try_again" formatted="false">Something went wrong and we were unable to remove your payment method, please try again.</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Something went wrong, please try again.</string>
   <string name="Something_went_wrong_pull_to_refresh" formatted="false">Something went wrong—pull to refresh.</string>
@@ -603,6 +619,8 @@ catch your eye?</string>
   <string name="Support_creative_independence" formatted="false">Support creative independence</string>
   <string name="Support_creative_spaces_and_businesses_affected_by" formatted="false">Support creative spaces and businesses affected by COVID-19.</string>
   <string name="Survey" formatted="false">Survey</string>
+  <string name="Sustainable_distribution" formatted="false">Sustainable distribution</string>
+  <string name="Sustainable_materials" formatted="false">Sustainable materials</string>
   <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">Tap the heart icon on a project to get notified 48 hours before it ends.</string>
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Tap the heart on each project page to save it. We’ll remind you 48 hours before the project ends.</string>
   <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">Tap the star icon on a project to get notified 48 hours before it ends.</string>
@@ -639,6 +657,7 @@ catch your eye?</string>
   <string name="This_project_will_only_be_funded_on_if_at_least_amount_is_pledged_by_date" formatted="false">This project will only be funded on if at least %{amount} is pledged by %{date}.</string>
   <string name="Time_left_left" formatted="false">%{time_left} left</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">To access all your favorite categories, tap the explore dropdown at the top of the app.</string>
+  <string name="To_learn_how_Kickstarter_encourages_sustainable_practices" formatted="false">to learn how Kickstarter encourages sustainable practices.</string>
   <string name="To_read_this_project_update_you_must_be_a_backer" formatted="false">To read this project update, you must be a backer. Please log in or sign up to continue.</string>
   <string name="To_see_all_rewards_view_your_project" formatted="false">To see all rewards, view your project.</string>
   <string name="Toggle_saving_this_project" formatted="false">Toggle saving this project</string>
@@ -682,6 +701,8 @@ catch your eye?</string>
   <string name="View_your_pledge" formatted="false">View your pledge</string>
   <string name="View_your_reward" formatted="false">View your reward</string>
   <string name="View_your_rewards" formatted="false">View your rewards</string>
+  <string name="Visit_our_Environmental_Resources_Center" formatted="false">Visit our Environmental Resources Center</string>
+  <string name="Visit_our_Environmental_Resources_Center_Alternative" formatted="false">&lt;a href="%{environment_link}">Visit our Environmental Resources Center&lt;/a></string>
   <string name="Watch_live" formatted="false">Watch live</string>
   <string name="We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method" formatted="false">We can’t process this pledge because of a problem with the backer’s payment method.</string>
   <string name="We_cant_process_your_pledge" formatted="false">We can\'t process your pledge.</string>

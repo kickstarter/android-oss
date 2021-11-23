@@ -18,7 +18,7 @@
             android:layout_marginTop="@dimen/grid_3"
             android:layout_marginEnd="@dimen/grid_7_half"
             android:gravity="start|center_vertical"
-            android:text="@string/environmental_commitments"
+            android:text="@string/Environmental_Commitments"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +47,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/environmentalCommitments_RecyclerView"
-            android:text="@string/visit_our_environmental_resources_center_to_learn_how" />
+            android:text="@string/Visit_our_Environmental_Resources_Center" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

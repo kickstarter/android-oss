@@ -21,12 +21,14 @@ class HTMLParser {
         val viewElements = mutableListOf<ViewElement>()
 
         children?.forEach { element ->
-            when (ViewElementType.initialize(element)) {
+            val elementType = ViewElementType.initialize(element)
+            when (elementType) {
                 ViewElementType.IMAGE -> {
                     viewElements.add(element.parseImageElement())
                 }
                 ViewElementType.TEXT -> {
-                    viewElements.add(TextViewElement(parseTextElement(element, mutableListOf(), mutableListOf())))
+                    val textViewElement = TextViewElement(parseTextElement(element, mutableListOf()))
+                    viewElements.add(textViewElement)
                     return@forEach
                 }
                 ViewElementType.VIDEO -> {
@@ -45,25 +47,45 @@ class HTMLParser {
         return viewElements
     }
 
-    private fun parseTextElement(
+    /**
+     * This function extract from the textNode a tag list from their ancestors
+     * until it detects the parent blockType.
+     * @param tags - Populates the list of parent tags
+     * @param urls - In case of any of the parents is a link(<a>) populates the urls list
+     * Returns blockType
+     */
+    private fun extractTextAttributes(
         element: Element,
         tags: MutableList<String>,
+        urls: MutableList<String>
+    ): TextComponent.TextBlockType? =
+        if (TextComponent.TextBlockType.values().map { it.tag }
+            .contains(element.tagName())
+        ) {
+            TextComponent.TextBlockType.initialize(element.tagName())
+        } else {
+            tags.add(element.tagName())
+            if (element.tagName() == "a") {
+                urls.add(element.attr("href"))
+            }
+            element.parent()?.let {
+                extractTextAttributes(it, tags, urls)
+            }
+        }
+
+    private fun parseTextElement(
+        element: Element,
         textComponents: MutableList<TextComponent>
     ): List<TextComponent> {
-        tags.add(element.tag().name)
 
         for (node in element.childNodes()) {
-            (node as? TextNode)?.let {
-                val href = (element.attributes().firstOrNull { it.key == "href" })?.value
-                textComponents.add(TextComponent(element.toString(), href))
+            (node as? TextNode)?.let { textNode ->
+                if (textNode.text().trim().isNotEmpty()) {
+                    textComponents.add(textNode.parseTextElement(element))
+                }
             }
             (node as? Element)?.let {
-                // TODO: Out of memory exception when nesting text components on some projects, improve the parsing of childs for nested texts
-                // TODO: ej: https://www.kickstarter.com/projects/ww3/yall-means-all-the-emerging-voices-queering-appalachia
-                // TODO: ej: https://staging.kickstarter.com/projects/334999551/shades-of-fear
-                // TODO: ej: https://staging.kickstarter.com/projects/thedreadmachine/mixtape-1986
-
-                textComponents.addAll(parseTextElement(it, tags, textComponents))
+                parseTextElement(it, textComponents)
             }
         }
         return textComponents.toList()

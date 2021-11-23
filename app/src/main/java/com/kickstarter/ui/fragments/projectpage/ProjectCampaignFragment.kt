@@ -14,6 +14,7 @@ import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.adapters.projectcampaign.ViewElementAdapter
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.projectpage.ProjectCampaignViewModel
+import rx.schedulers.Schedulers
 
 @RequiresFragmentViewModel(ProjectCampaignViewModel.ViewModel::class)
 class ProjectCampaignFragment : BaseFragment<ProjectCampaignViewModel.ViewModel>(), Configure {
@@ -33,6 +34,7 @@ class ProjectCampaignFragment : BaseFragment<ProjectCampaignViewModel.ViewModel>
         binding?.projectCampaignViewListItems?.adapter = adapter
 
         this.viewModel.outputs.storyViewElements()
+            .subscribeOn(Schedulers.io())
             .distinctUntilChanged()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())

@@ -1,5 +1,6 @@
 package com.kickstarter.ui.fragments.projectpage
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -61,11 +62,18 @@ class ProjectEnvironmentalCommitmentsFragment :
         binding?.environmentalCommitmentsRecyclerView?.adapter = environmentalCommitmentsAdapter
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupVisitOurEnvironmentalResourcesCenter() {
+        binding?.visitOurEnvironmentalResourcesCenterTv?.text =
+            getString(R.string.Visit_our_Environmental_Resources_Center) + " " + getString(
+            R.string
+                .To_learn_how_Kickstarter_encourages_sustainable_practices
+        )
+
         binding?.visitOurEnvironmentalResourcesCenterTv?.parseHtmlTag()
         binding?.visitOurEnvironmentalResourcesCenterTv?.makeLinks(
             Pair(
-                getString(R.string.visit_our_environmental_resources_center),
+                getString(R.string.Visit_our_Environmental_Resources_Center),
                 View.OnClickListener {
                     viewModel.inputs.onVisitOurEnvironmentalResourcesCenterClicked()
                 }

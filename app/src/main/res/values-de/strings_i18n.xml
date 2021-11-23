@@ -46,7 +46,9 @@
   <string name="Are_you_sure_you_wish_to_cancel_your_amount_pledge_to_project_name" formatted="false">Bist du sicher, dass du deinen Beitrag von %{amount} für %{project_name} zurückziehen möchtest?</string>
   <string name="Are_you_sure_you_wish_to_remove_this_card" formatted="false">Bist du sicher, dass du diese Karte aus deinen Zahlungsmethoden entfernen möchtest?</string>
   <string name="As_of_pledge_date" formatted="false">Stand: %{pledge_date}</string>
+  <string name="Ask_a_question" formatted="false">Eine Frage stellen</string>
   <string name="Ask_me_anything" formatted="false">Frage stellen</string>
+  <string name="Ask_the_project_creator_directly" formatted="false">Wende dich bitte direkt an den Projektgründer.</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Kann noch %{time} %{units} angesehen werden</string>
   <string name="Back" formatted="false">Zurück</string>
   <string name="Back_it_because_you_believe_in_it" formatted="false">Du glaubst an dieses Projekt. Unterstütze es.</string>
@@ -85,6 +87,7 @@ Unterstützer</string>
   <string name="By_signing_up_youll_log_in_to_Kickstarter_using_your_Facebook_account" formatted="false">Mit deiner Registrierung wirst du auf Kickstarter mit deinem Facebook-Konto angemeldet. Wenn du Facebook dazu lieber nicht benutzen möchtest, starte die App bitte erneut und wähle eine andere Option.</string>
   <string name="By_submitting_your_pledge_you_agree_that_Stripe_may_charge_your_payment_method" formatted="false">Durch das Einsenden deines Finanzierungsbeitrags erklärst du dich mit einer Abbuchung von deiner Zahlungsweise durch unseren Zahlungsdienstleister Stripe einverstanden.</string>
   <string name="CVC" formatted="false">CVC</string>
+  <string name="Campaign" formatted="false">Kampagne</string>
   <string name="Cancel" formatted="false">Abbrechen</string>
   <string name="Cancel_pledge" formatted="false">Beitrag zurückziehen</string>
   <string name="Cancel_your_pledge" formatted="false">Deinen Beitrag zurückziehen</string>
@@ -201,6 +204,8 @@ Antippen und erneut versuchen</string>
   <string name="Ending_in_last_four" formatted="false">Endet auf %{last_four}</string>
   <string name="Ending_soon" formatted="false">Endet bald</string>
   <string name="Enter_an_amount_less_than_max_pledge" formatted="false">Gib einen Betrag unter %{max_pledge} ein.</string>
+  <string name="Environmental_Commitments" formatted="false">Verpflichtung zum Umweltschutz</string>
+  <string name="Environmentally_friendly_factories" formatted="false">Umweltfreundliche Fertigungsanlagen</string>
   <string name="Estimated_delivery" formatted="false">Voraussichtliche Lieferung:</string>
   <string name="Estimated_delivery_colon" formatted="false">Voraussichtliche Lieferung:</string>
   <string name="Estimated_delivery_of" formatted="false">Voraussichtliches Lieferdatum</string>
@@ -219,6 +224,7 @@ Antippen und erneut versuchen</string>
   <string name="Facebook_reconnect_description" formatted="false">Dein Konto wurde aus Versehen getrennt. Bitte verbinde es erneut, um Freunden folgen zu können.</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">Details zu Live-Stream-Event konnten nicht geladen werden</string>
   <string name="Failed_to_update_subscription" formatted="false">Abo konnte nicht aktualisiert werden</string>
+  <string name="Faq" formatted="false">FAQ</string>
   <string name="Filter_by_all_projects" formatted="false">Filter: Alle Projekte</string>
   <string name="Filter_by_category_name" formatted="false">Filter: %{category_name}</string>
   <string name="Filter_by_projects_backed_by_friends" formatted="false">Filter: Von Freunden unterstützte Projekte</string>
@@ -253,6 +259,7 @@ Antippen und erneut versuchen</string>
   <string name="Following_Disabled_Info" formatted="false">Die Funktion "Abonnieren" muss aktiviert sein, um Freunde auf Facebook zu finden. Gehe dazu zu Einstellungen > Datenschutz.</string>
   <string name="Following_More_Info" formatted="false">Mehr Info zu Folgen</string>
   <string name="Follows_friend_name" formatted="false">%{friend_name} folgen.</string>
+  <string name="Frequently_asked_questions" formatted="false">Häufige Fragen</string>
   <string name="Friend_backed_art_project" formatted="false">&lt;b>%{friend_name}&lt;/b> hat ein &lt;i>Kunst-Projekt&lt;/i> unterstützt.</string>
   <string name="Friend_backed_comics_project" formatted="false">&lt;b>%{friend_name}&lt;/b> hat ein &lt;i>Comics-Projekt&lt;/i> unterstützt.</string>
   <string name="Friend_backed_crafts_project" formatted="false">&lt;b>%{friend_name}&lt;/b> hat ein &lt;i>Kunsthandwerk-Projekt&lt;/i> unterstützt.</string>
@@ -328,6 +335,7 @@ Antippen und erneut versuchen</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Kickstarter ist kein Geschäft, sondern eine Plattform, um kreative Projekte zu verwirklichen. &lt;br/>&lt;a href="%{trust_link}">Hier findest du mehr Info zur Rechenschftspflicht&lt;/a></string>
   <string name="Kickstarter_on_Film" formatted="false">Kickstarter on Film</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Aktiviere Benachrichtigungen, damit du über eingehende Nachrichten von Projektgründern und Unterstützern Bescheid weißt.</string>
+  <string name="Learn_about_accountability_on_Kickstarter" formatted="false">Näheres zur Rechenschaftspflicht auf Kickstarter</string>
   <string name="Learn_more_about_accountability" formatted="false">Weitere Informationen zur Rechenschaftspflicht</string>
   <string name="Learn_more_about_comment_guidelines" formatted="false">&lt;a href="%{community_link}">Mehr Info zu Kommentar-Richtlinien&lt;/a></string>
   <string name="Leave_page" formatted="false">Seite verlassen</string>
@@ -350,8 +358,11 @@ Antippen und erneut versuchen</string>
   <string name="Location" formatted="false">Standort</string>
   <string name="Log_in_or_sign_up_to_save_this_project_and_we_ll_remind_you" formatted="false">Melde dich an, um dieses Projekt zu speichern. Wir senden dir 48 Stunden vor Ablauf eine Benachrichtigung.</string>
   <string name="Log_in_or_sign_up_to_subscribe" formatted="false">Bitte einloggen oder registrieren</string>
+  <string name="Log_in_to_ask_the_project_creator_directly" formatted="false">Melde dich an, um dich direkt an den Projektgründer zu wenden.</string>
   <string name="Log_in_to_leave_a_comment" formatted="false">Melde dich an, um einen Kommentar zu hinterlassen.</string>
   <string name="Log_out" formatted="false">Abmelden</string>
+  <string name="Long_lasting_design" formatted="false">Beständiges Design</string>
+  <string name="Looks_like_there_arent_any_frequently_asked_questions" formatted="false">Offenbar gibt es noch keine häufig gestellten Fragen für dieses Projekt.</string>
   <string name="Love_film_We_do_too" formatted="false">Du bist Kino-Fan? Wir auch.</string>
   <string name="MMYY" formatted="false">MM/JJ</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">Ohne Belohnung unterstützen</string>
@@ -417,6 +428,7 @@ Antippen und erneut versuchen</string>
   <string name="Or_select_a_different_reward_below_colon" formatted="false">Oder eine andere Belohnung wählen:</string>
   <string name="Other_payment_methods" formatted="false">Weitere Zahlungsmethoden</string>
   <string name="Other_projects_you_might_like" formatted="false">Ähnliche Projekte:</string>
+  <string name="Overview" formatted="false">Übersicht</string>
   <string name="Password_min_length_message" formatted="false">Dein Passwort muss mindestens 6 Zeichen lang sein.</string>
   <string name="Password_visibility" formatted="false">Passwort-Anzeige</string>
   <string name="Passwords_matching_message" formatted="false">Neues Passwort stimmt nicht überein.</string>
@@ -500,6 +512,7 @@ Antippen und erneut versuchen</string>
   <string name="Resend_verification_email" formatted="false">Verifizierungs-E-Mail erneut senden</string>
   <string name="Retry" formatted="false">Erneut versuchen</string>
   <string name="Retry_or_select_another_method" formatted="false">Versuche es erneut oder wähle eine andere Karte.</string>
+  <string name="Reusability_and_recyclability" formatted="false">Wiederverwertung und Recyclingfähigkeit</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} Befragungen</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} Befragungen</string>
   <string name="Reward_Surveys_one" formatted="false">Befragung</string>
@@ -524,6 +537,8 @@ Antippen und erneut versuchen</string>
   <string name="Rewards_count_rewards_other" formatted="false">%{rewards_count} Belohnungen</string>
   <string name="Rewards_count_rewards_two" formatted="false">%{rewards_count} Belohnungen</string>
   <string name="Rewards_count_rewards_zero" formatted="false">%{rewards_count} Belohnungen</string>
+  <string name="Risks" formatted="false">Risiken</string>
+  <string name="Risks_and_challenges" formatted="false">Risiken und Herausforderungen</string>
   <string name="Save" formatted="false">Speichern</string>
   <string name="Save_projects" formatted="false">Projekte speichern</string>
   <string name="Save_this_project" formatted="false">Dieses Projekt speichern</string>
@@ -580,6 +595,7 @@ Antippen und erneut versuchen</string>
   <string name="Social_friend_is_backer_two" formatted="false">%{friend_name} und %{remaining_count} weitere</string>
   <string name="Social_friend_is_backer_zero" formatted="false">%{friend_name} unterstützt dieses Projekt</string>
   <string name="Something_catch_your_eye" formatted="false">Etwas interessantes gefunden?</string>
+  <string name="Something_else" formatted="false">Etwas anderes</string>
   <string name="Something_went_wrong_and_we_were_unable_to_remove_your_payment_method_please_try_again" formatted="false">Hier ist etwas schiefgelaufen, deine Zahlungsweise konnte leider nicht entfernt werden. Bitte versuche es noch einmal.</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Da hat etwas nicht geklappt. Bitte versuche es später noch einmal.</string>
   <string name="Something_went_wrong_pull_to_refresh" formatted="false">Da hat etwas nicht geklappt, bitte nach unten streichen.</string>
@@ -599,6 +615,8 @@ Antippen und erneut versuchen</string>
   <string name="Support_creative_independence" formatted="false">Unterstütze kreative Unabhängigkeit</string>
   <string name="Support_creative_spaces_and_businesses_affected_by" formatted="false">Unterstütze kreative Lokale und Geschäfte, ddie von COVID-19 betroffen sind.</string>
   <string name="Survey" formatted="false">Befragung</string>
+  <string name="Sustainable_distribution" formatted="false">Nachhaltiger Versand</string>
+  <string name="Sustainable_materials" formatted="false">Nachhaltige Materialien</string>
   <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">Tippe auf das Herz neben einem Projekt und wir benachrichtigen dich 48 Stunden, bevor es abläuft.</string>
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Klicke einfach auf das Herz auf der Projektseite, um dieses Projekt zu speichern. Wir werden dir 48 Stunden vor Ablauf eine Benachrichtigung schicken.</string>
   <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">Tippe auf den Stern neben einem Projekt und wir benachrichtigen dich 48 Stunden, bevor es abläuft.</string>
@@ -635,6 +653,7 @@ Antippen und erneut versuchen</string>
   <string name="This_project_will_only_be_funded_on_if_at_least_amount_is_pledged_by_date" formatted="false">Dieses Projekt wird nur finanziert, wenn bis am %{date} Unterstützungsbeiträge von mindestens %{amount} geleistet werden.</string>
   <string name="Time_left_left" formatted="false">%{time_left} übrig</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">Für schnellen Zugriff auf deine meist besuchten Kategorien, tippe auf das Dropdown-Menü oben.</string>
+  <string name="To_learn_how_Kickstarter_encourages_sustainable_practices" formatted="false">um mehr über die von Kickstarter empfohlenen Umweltschutzmaßnahmen zu erfahren.</string>
   <string name="To_read_this_project_update_you_must_be_a_backer" formatted="false">Um diesen Update zum Projekt lesen zu können, musst du ein Unterstützer dieses Projekts sein. Bitte melde dich an oder registriere dich.</string>
   <string name="To_see_all_rewards_view_your_project" formatted="false">Um alle Belohnungen zu sehen, gehe zu deinem Projekt.</string>
   <string name="Toggle_saving_this_project" formatted="false">Umschalten zu Projekt speichern</string>
@@ -678,6 +697,8 @@ Antippen und erneut versuchen</string>
   <string name="View_your_pledge" formatted="false">Deinen Finanzierungsbeitrag ansehen</string>
   <string name="View_your_reward" formatted="false">Belohnung ansehen</string>
   <string name="View_your_rewards" formatted="false">Deine Belohnungen ansehen</string>
+  <string name="Visit_our_Environmental_Resources_Center" formatted="false">Ressourcen für den Umweltschutz</string>
+  <string name="Visit_our_Environmental_Resources_Center_Alternative" formatted="false">&lt;a href="%{environment_link}">Ressourcen für den Umweltschutz&lt;/a></string>
   <string name="Watch_live" formatted="false">Live ansehen</string>
   <string name="We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method" formatted="false">Dieser Finanzierungsbeitrag konnte aufgrund eines Problems mit der Zahlungsmethode des Unterstützers nicht bearbeitet werden.</string>
   <string name="We_cant_process_your_pledge" formatted="false">Wir können deine Zahlung leider nicht bearbeiten.</string>
@@ -1682,7 +1703,7 @@ gespeichert</string>
   <string name="rewards_info_item_quantity_title_other" formatted="false">(%{quantity}) %{title}</string>
   <string name="rewards_info_item_quantity_title_two" formatted="false">%{title} (x%{quantity})</string>
   <string name="rewards_info_item_quantity_title_zero" formatted="false">%{title} (x%{quantity})</string>
-  <string name="rewards_info_limited_rewards_remaining_left_of_reward_limit" formatted="false">Begrenzt (%{rewards_remaining} von %{reward_limit} übrig)</string>
+  <string name="rewards_info_limited_rewards_remaining_left_of_reward_limit" formatted="false">Limitiert (%{rewards_remaining} von %{reward_limit} übrig)</string>
   <string name="rewards_info_shipping" formatted="false">Versand</string>
   <string name="rewards_info_shipping_destinations" formatted="false">Versandziele</string>
   <string name="rewards_info_ships_to" formatted="false">Versandziel</string>

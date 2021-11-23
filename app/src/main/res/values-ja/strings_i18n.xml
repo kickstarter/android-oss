@@ -594,6 +594,7 @@
   <string name="Social_friend_is_backer_two" formatted="false">%{friend_name} さんと他%{remaining_count} 人</string>
   <string name="Social_friend_is_backer_zero" formatted="false">%{friend_name}さんがバッカーです</string>
   <string name="Something_catch_your_eye" formatted="false">何か目にとまるものはありましたか？</string>
+  <string name="Something_else" formatted="false">その他</string>
   <string name="Something_went_wrong_and_we_were_unable_to_remove_your_payment_method_please_try_again" formatted="false">何らかのエラーにより、お支払い方法を削除できませんでした。もう一度お試しください。</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">なにかが間違っています。もう一度お試しください。</string>
   <string name="Something_went_wrong_pull_to_refresh" formatted="false">何らかのエラーが発生しました。リフレッシュするにはプルダウンしてください。</string>
@@ -696,6 +697,7 @@
   <string name="View_your_reward" formatted="false">リワードをみる</string>
   <string name="View_your_rewards" formatted="false">リワードを見る</string>
   <string name="Visit_our_Environmental_Resources_Center" formatted="false">Kickstarter の環境リソースセンターにアクセス</string>
+  <string name="Visit_our_Environmental_Resources_Center_Alternative" formatted="false">&lt;a href="%{environment_link}">Kickstarter の環境リソースセンターにアクセス&lt;/a></string>
   <string name="Watch_live" formatted="false">ライブをみる</string>
   <string name="We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method" formatted="false">バッカーのお支払い方法で問題があったためこのプレッジを処理することができません。</string>
   <string name="We_cant_process_your_pledge" formatted="false">プレッジを処理することができません。</string>

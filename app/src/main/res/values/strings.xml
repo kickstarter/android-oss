@@ -78,6 +78,5 @@
   <string name="email_verification_interstitial" formatted="false">Email Verification Interstitial</string>
 
   <string name="estimated_delivery_data" formatted="false">%{title} %{estimated_delivery_data}</string>
-  <string name="something_else">Something else</string>
 
 </resources>

@@ -595,6 +595,7 @@ Antippen und erneut versuchen</string>
   <string name="Social_friend_is_backer_two" formatted="false">%{friend_name} und %{remaining_count} weitere</string>
   <string name="Social_friend_is_backer_zero" formatted="false">%{friend_name} unterstützt dieses Projekt</string>
   <string name="Something_catch_your_eye" formatted="false">Etwas interessantes gefunden?</string>
+  <string name="Something_else" formatted="false">Etwas anderes</string>
   <string name="Something_went_wrong_and_we_were_unable_to_remove_your_payment_method_please_try_again" formatted="false">Hier ist etwas schiefgelaufen, deine Zahlungsweise konnte leider nicht entfernt werden. Bitte versuche es noch einmal.</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Da hat etwas nicht geklappt. Bitte versuche es später noch einmal.</string>
   <string name="Something_went_wrong_pull_to_refresh" formatted="false">Da hat etwas nicht geklappt, bitte nach unten streichen.</string>
@@ -697,6 +698,7 @@ Antippen und erneut versuchen</string>
   <string name="View_your_reward" formatted="false">Belohnung ansehen</string>
   <string name="View_your_rewards" formatted="false">Deine Belohnungen ansehen</string>
   <string name="Visit_our_Environmental_Resources_Center" formatted="false">Ressourcen für den Umweltschutz</string>
+  <string name="Visit_our_Environmental_Resources_Center_Alternative" formatted="false">&lt;a href="%{environment_link}">Ressourcen für den Umweltschutz&lt;/a></string>
   <string name="Watch_live" formatted="false">Live ansehen</string>
   <string name="We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method" formatted="false">Dieser Finanzierungsbeitrag konnte aufgrund eines Problems mit der Zahlungsmethode des Unterstützers nicht bearbeitet werden.</string>
   <string name="We_cant_process_your_pledge" formatted="false">Wir können deine Zahlung leider nicht bearbeiten.</string>

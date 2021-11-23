@@ -599,6 +599,7 @@ daring ideas.</string>
   <string name="Social_friend_is_backer_zero" formatted="false">%{friend_name} is a backer</string>
   <string name="Something_catch_your_eye" formatted="false">Something\n
 catch your eye?</string>
+  <string name="Something_else" formatted="false">Something else</string>
   <string name="Something_went_wrong_and_we_were_unable_to_remove_your_payment_method_please_try_again" formatted="false">Something went wrong and we were unable to remove your payment method, please try again.</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Something went wrong, please try again.</string>
   <string name="Something_went_wrong_pull_to_refresh" formatted="false">Something went wrong—pull to refresh.</string>
@@ -701,6 +702,7 @@ catch your eye?</string>
   <string name="View_your_reward" formatted="false">View your reward</string>
   <string name="View_your_rewards" formatted="false">View your rewards</string>
   <string name="Visit_our_Environmental_Resources_Center" formatted="false">Visit our Environmental Resources Center</string>
+  <string name="Visit_our_Environmental_Resources_Center_Alternative" formatted="false">&lt;a href="%{environment_link}">Visit our Environmental Resources Center&lt;/a></string>
   <string name="Watch_live" formatted="false">Watch live</string>
   <string name="We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method" formatted="false">We can’t process this pledge because of a problem with the backer’s payment method.</string>
   <string name="We_cant_process_your_pledge" formatted="false">We can\'t process your pledge.</string>

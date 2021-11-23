@@ -596,6 +596,7 @@ Toca para intentar de nuevo.</string>
   <string name="Social_friend_is_backer_two" formatted="false">%{friend_name} y %{remaining_count} otros</string>
   <string name="Social_friend_is_backer_zero" formatted="false">%{friend_name} patrocina este proyecto</string>
   <string name="Something_catch_your_eye" formatted="false">¿Algo que te haya llamado la atención?</string>
+  <string name="Something_else" formatted="false">Algo más</string>
   <string name="Something_went_wrong_and_we_were_unable_to_remove_your_payment_method_please_try_again" formatted="false">Hubo un error y no pudimos eliminar tu método de pago. Inténtalo de nuevo.</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Ocurrió un error. Inténtalo nuevamente más tarde.</string>
   <string name="Something_went_wrong_pull_to_refresh" formatted="false">Ocurrió un error. Desliza para actualizar.</string>
@@ -698,6 +699,7 @@ Toca para intentar de nuevo.</string>
   <string name="View_your_reward" formatted="false">Mostrar recompensa</string>
   <string name="View_your_rewards" formatted="false">Ver tus recompensas</string>
   <string name="Visit_our_Environmental_Resources_Center" formatted="false">Visita nuestro Centro de recursos medioambientales</string>
+  <string name="Visit_our_Environmental_Resources_Center_Alternative" formatted="false">&lt;a href="%{environment_link}">Visita nuestro Centro de recursos medioambientales&lt;/a></string>
   <string name="Watch_live" formatted="false">Ver en vivo</string>
   <string name="We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method" formatted="false">No podemos procesar esta contribución por un problema con el método de pago del patrocinador.</string>
   <string name="We_cant_process_your_pledge" formatted="false">No podemos procesar tu contribución.</string>

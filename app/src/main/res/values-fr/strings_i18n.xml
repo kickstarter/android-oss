@@ -596,6 +596,7 @@ n\'ont rien soutenu.</string>
   <string name="Social_friend_is_backer_two" formatted="false">%{friend_name} et %{remaining_count} autre(s)</string>
   <string name="Social_friend_is_backer_zero" formatted="false">%{friend_name} est contributeur</string>
   <string name="Something_catch_your_eye" formatted="false">Quelque chose a retenu votre attention ?</string>
+  <string name="Something_else" formatted="false">Autre chose</string>
   <string name="Something_went_wrong_and_we_were_unable_to_remove_your_payment_method_please_try_again" formatted="false">Une erreur s\'est produite et la suppression de votre moyen de payement a échoué. Veuillez réessayer.</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Un problème est survenu. Veuillez réessayer.</string>
   <string name="Something_went_wrong_pull_to_refresh" formatted="false">Une erreur s\'est produite, faites glisser l\'écran vers le bas pour l\'actualiser.</string>
@@ -698,6 +699,7 @@ n\'ont rien soutenu.</string>
   <string name="View_your_reward" formatted="false">Afficher ma récompense</string>
   <string name="View_your_rewards" formatted="false">Afficher mes récompenses</string>
   <string name="Visit_our_Environmental_Resources_Center" formatted="false">Rendez-vous dans notre Centre de ressources pour l\'environnement</string>
+  <string name="Visit_our_Environmental_Resources_Center_Alternative" formatted="false">&lt;a href="%{environment_link}">Consultez notre Centre de ressources pour l\'environnement&lt;/a></string>
   <string name="Watch_live" formatted="false">Regarder en direct</string>
   <string name="We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method" formatted="false">Impossible de traiter cet engagement en raison d\'un problème survenu au niveau du moyen de paiement du contributeur.</string>
   <string name="We_cant_process_your_pledge" formatted="false">Impossible de traiter votre engagement.</string>

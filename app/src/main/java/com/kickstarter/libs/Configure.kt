@@ -38,5 +38,5 @@ enum class EnvironmentalCommitmentCategories(@StringRes val title: Int) {
     ENVIRONMENTALLY_FRIENDLY_FACTORIES(R.string.Environmentally_friendly_factories),
     SUSTAINABLE_DISTRIBUTION(R.string.Sustainable_distribution),
     REUSABILITY_AND_RECYCLABILITY(R.string.Reusability_and_recyclability),
-    SOMETHING_ELSE(R.string.something_else)
+    SOMETHING_ELSE(R.string.Something_else)
 }

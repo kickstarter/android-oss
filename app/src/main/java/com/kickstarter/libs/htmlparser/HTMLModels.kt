@@ -5,18 +5,7 @@ import org.jsoup.nodes.Element
 interface ViewElement
 
 data class VideoViewElement(val sourceUrls: List<String>) : ViewElement
-data class TextViewElement(var components: List<TextComponent>) : ViewElement {
-    val attributedText: String
-        get() {
-            var string = ""
-            // - TODO: distinct will avoid duplicated, but is a workaround should be fixed on the parser
-            components.distinct()
-                .map {
-                    string += it.text
-                }
-            return string
-        }
-}
+data class TextViewElement(var components: List<TextComponent>) : ViewElement
 
 data class TextComponent(
     val text: String,

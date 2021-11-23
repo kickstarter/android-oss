@@ -12,21 +12,14 @@ import com.kickstarter.ui.viewholders.KSViewHolder
 class TextElementViewHolder(
     val binding: ViewElementTextFromHtmlBinding
 ) : KSViewHolder(binding.root) {
-    // TODO: attach ViewModel if necessary
     private val textView: TextView = binding.textView
 
     fun configure(element: TextViewElement) {
 
-        // - TODO: Create a UI Reusable-Component that receives a TextElement
-        val text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Html.fromHtml(element.attributedText, FROM_HTML_MODE_COMPACT)
-        } else {
-            Html.fromHtml(element.attributedText)
-        }
+        // TODO: use spannable strings to get the result of iterate over each component and apply the correct style
+        val joinedText = element.components.joinToString { it.text }
 
-        // - TODO: distinct will avoid duplicated, but is a workaround should be fixed on the parser
-        val link = element.components.distinct()
-            .filter { !it.link.isNullOrEmpty() }
+        val link = element.components.filter { !it.link.isNullOrEmpty() }
 
         if (link.isNotEmpty()) {
             textView.setOnClickListener {
@@ -34,7 +27,7 @@ class TextElementViewHolder(
             }
         }
 
-        textView.text = text
+        textView.text = joinedText
     }
 
     override fun bindData(data: Any?) {

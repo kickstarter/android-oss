@@ -1,5 +1,9 @@
 package com.kickstarter.libs.htmlparser
 
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.TextNode
 
@@ -103,4 +107,25 @@ fun TextNode.parseTextElement(element: Element): TextComponent {
         href,
         textStyleList
     )
+}
+
+fun String.getBoldSpan(): Spannable {
+    val styledString = SpannableString(this)
+    val boldSpan = StyleSpan(Typeface.BOLD)
+    styledString.setSpan(boldSpan, 0, this.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    return styledString
+}
+
+fun String.getItalicSpan(): Spannable {
+    val styledString = SpannableString(this)
+    val boldSpan = StyleSpan(Typeface.ITALIC)
+    styledString.setSpan(boldSpan, 0, this.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    return styledString
+}
+
+fun String.getItalicBoldSpan(): Spannable {
+    val styledString = SpannableString(this)
+    val boldSpan = StyleSpan(Typeface.BOLD_ITALIC)
+    styledString.setSpan(boldSpan, 0, this.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    return styledString
 }

@@ -47,6 +47,13 @@
         android:id="@+id/stepper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <TextView
+        android:id="@+id/text"
+        app:layout_constraintTop_toBottomOf="@id/stepper"
+        android:text="testing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
   </androidx.constraintlayout.widget.ConstraintLayout>
 
   <Button

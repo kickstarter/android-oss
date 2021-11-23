@@ -1,14 +1,19 @@
 package com.kickstarter.ui.activities
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.text.SpannableString
 import android.util.Pair
 import android.view.View
+import androidx.annotation.RequiresApi
 import com.kickstarter.R
 import com.kickstarter.databinding.PlaygroundLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.htmlparser.*
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.utils.extensions.plus
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
@@ -21,11 +26,18 @@ class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
     private lateinit var binding: PlaygroundLayoutBinding
     private lateinit var view: View
 
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = PlaygroundLayoutBinding.inflate(layoutInflater)
         view = binding.root
         setContentView(view)
+
+        val html = "<p><strong>Meneame</strong></p>"
+        val listOfElements = HTMLParser().parse(html)
+        val textElement: TextViewElement = listOfElements.first() as TextViewElement
+        val textToEdit = textElement.components.first().text
+        binding.text.text = SpannableString("Meneame").plus(textToEdit.getBoldSpan()).plus(textToEdit.getItalicSpan()).plus(textToEdit.getItalicBoldSpan())
 
         setStepper()
         setProjectActivityButtonClicks()

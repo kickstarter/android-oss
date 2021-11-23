@@ -59,6 +59,7 @@ class ProjectEnvironmentalCommitmentsFragment :
     }
 
     private fun setupRecyclerView() {
+        binding?.environmentalCommitmentsRecyclerView?.overScrollMode = View.OVER_SCROLL_NEVER
         binding?.environmentalCommitmentsRecyclerView?.adapter = environmentalCommitmentsAdapter
     }
 

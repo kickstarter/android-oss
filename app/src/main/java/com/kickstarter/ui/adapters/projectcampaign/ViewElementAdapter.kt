@@ -2,6 +2,7 @@ package com.kickstarter.ui.adapters.projectcampaign
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -22,7 +23,9 @@ import com.kickstarter.ui.viewholders.projectcampaign.TextElementViewHolder
 /**
  * Adapter Specific to hold a list of ViewElements from the HTML Parser
  */
-class ViewElementAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ViewElementAdapter(val requireActivity: FragmentActivity) : RecyclerView
+.Adapter<RecyclerView
+    .ViewHolder>() {
 
     private val diffCallback = object : DiffUtil.ItemCallback<ViewElement>() {
         override fun areItemsTheSame(oldItem: ViewElement, newItem: ViewElement): Boolean {
@@ -130,7 +133,8 @@ class ViewElementAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                         ),
                         viewGroup,
                         false
-                    )
+                    ),
+                    requireActivity
                 )
             }
             else -> EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))

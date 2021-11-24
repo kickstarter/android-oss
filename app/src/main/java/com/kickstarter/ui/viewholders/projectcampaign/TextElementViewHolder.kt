@@ -1,5 +1,6 @@
 package com.kickstarter.ui.viewholders.projectcampaign
 
+import android.text.method.LinkMovementMethod
 import android.widget.TextView
 import com.kickstarter.databinding.ViewElementTextFromHtmlBinding
 import com.kickstarter.libs.htmlparser.TextViewElement
@@ -12,6 +13,10 @@ class TextElementViewHolder(
     private val textView: TextView = binding.textView
 
     fun configure(element: TextViewElement) {
+        // - Allow clickable spans
+        textView.linksClickable = true
+        textView.isClickable = true
+        textView.movementMethod = LinkMovementMethod.getInstance()
 
         // TODO: use spannable strings to get the result of iterate over each component and apply the correct style
         val joinedText = element.components.joinToString { it.text }

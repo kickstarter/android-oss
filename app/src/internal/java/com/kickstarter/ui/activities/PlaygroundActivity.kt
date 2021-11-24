@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
+import android.text.method.LinkMovementMethod
 import android.util.Pair
 import android.view.View
 import androidx.annotation.RequiresApi
@@ -11,13 +12,14 @@ import com.kickstarter.R
 import com.kickstarter.databinding.PlaygroundLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.RefTag
-import com.kickstarter.libs.htmlparser.HTMLParser
-import com.kickstarter.libs.htmlparser.TextViewElement
-import com.kickstarter.libs.htmlparser.getBoldSpan
-import com.kickstarter.libs.htmlparser.getItalicBoldSpan
-import com.kickstarter.libs.htmlparser.getItalicSpan
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.utils.extensions.plus
+import com.kickstarter.libs.utils.ApplicationUtils
+import com.kickstarter.libs.utils.extensions.boldStyle
+import com.kickstarter.libs.utils.extensions.bulletStyle
+import com.kickstarter.libs.utils.extensions.color
+import com.kickstarter.libs.utils.extensions.italicStyle
+import com.kickstarter.libs.utils.extensions.linkStyle
+import com.kickstarter.libs.utils.extensions.size
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
@@ -37,11 +39,26 @@ class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
         view = binding.root
         setContentView(view)
 
-        val html = "<p><strong>Meneame</strong></p>"
-        val listOfElements = HTMLParser().parse(html)
-        val textElement: TextViewElement = listOfElements.first() as TextViewElement
-        val textToEdit = textElement.components.first().text
-        binding.text.text = SpannableString("Meneame").plus(textToEdit.getBoldSpan()).plus(textToEdit.getItalicSpan()).plus(textToEdit.getItalicBoldSpan())
+        val context = this
+
+        // - Allow clickable spans
+        binding.text.linksClickable = true
+        binding.text.isClickable = true
+        binding.text.movementMethod = LinkMovementMethod.getInstance()
+
+        val headerSize = resources.getDimensionPixelSize(R.dimen.title_3)
+        val body = resources.getDimensionPixelSize(R.dimen.callout)
+        val styledString = SpannableString("Meneame")
+
+        styledString.size(body)
+        // styledString.size(headerSize)
+        styledString.color()
+        styledString.boldStyle()
+        styledString.italicStyle()
+        styledString.linkStyle { ApplicationUtils.openUrlExternally(context, "https://www.meneame.net/") }
+        styledString.bulletStyle()
+
+        binding.text.text = styledString
 
         setStepper()
         setProjectActivityButtonClicks()

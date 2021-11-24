@@ -119,6 +119,7 @@ class FrequentlyAskedQuestionFragment :
     }
 
     private fun setupRecyclerView() {
+        binding?.fqaRecyclerView?.overScrollMode = View.OVER_SCROLL_NEVER
         binding?.fqaRecyclerView?.adapter = fqaAdapter
         ResourcesCompat.getDrawable(resources, R.drawable.divider_grey_300_horizontal, null)?.let {
             binding?.fqaRecyclerView?.addItemDecoration(SimpleDividerItemDecoration(it))

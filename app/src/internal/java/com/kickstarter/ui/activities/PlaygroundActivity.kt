@@ -3,7 +3,6 @@ package com.kickstarter.ui.activities
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.util.Pair
 import android.view.View
@@ -16,13 +15,6 @@ import com.kickstarter.libs.htmlparser.HTMLParser
 import com.kickstarter.libs.htmlparser.TextViewElement
 import com.kickstarter.libs.htmlparser.getStyledComponents
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.utils.ApplicationUtils
-import com.kickstarter.libs.utils.extensions.boldStyle
-import com.kickstarter.libs.utils.extensions.bulletStyle
-import com.kickstarter.libs.utils.extensions.color
-import com.kickstarter.libs.utils.extensions.italicStyle
-import com.kickstarter.libs.utils.extensions.linkStyle
-import com.kickstarter.libs.utils.extensions.size
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
@@ -52,11 +44,11 @@ class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
         val headerSize = resources.getDimensionPixelSize(R.dimen.title_3)
         val body = resources.getDimensionPixelSize(R.dimen.callout)
         val html = "<ul>\n" +
-                "   <li>This</li>\n" +
-                "   <li><strong>is</strong></li>\n" +
-                "   <li><em>a</em></li>\n" +
-                "   <li><a href=\\\"http://record.pt\\\" target=\\\"_blank\\\" rel=\\\"noopener\\\">list</a></li>\n" +
-                "</ul>"
+            "   <li>This</li>\n" +
+            "   <li><strong>is</strong></li>\n" +
+            "   <li><em>a</em></li>\n" +
+            "   <li><a href=\\\"http://record.pt\\\" target=\\\"_blank\\\" rel=\\\"noopener\\\">list</a></li>\n" +
+            "</ul>"
 
         val listOfElements = HTMLParser().parse(html)
 

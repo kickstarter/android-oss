@@ -125,11 +125,11 @@ fun TextViewElement.getStyledComponents(
         var componentText = textItem.text
         val href = textItem.link ?: ""
 
-        //-  In order to correctly apply the list style we need to add the end line jump, otherwise it gets applied only to the first item
-        if(textItem.styles.contains(TextComponent.TextStyleType.LIST)) {
+        // -  In order to correctly apply the list style we need to add the end line jump, otherwise it gets applied only to the first item
+        if (textItem.styles.contains(TextComponent.TextStyleType.LIST)) {
             componentText += "\n"
         }
-        
+
         val spannable = SpannableString(componentText)
         spannable.color()
         spannable.size(bodySize)

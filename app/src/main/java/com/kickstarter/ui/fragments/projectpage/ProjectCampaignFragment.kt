@@ -37,7 +37,7 @@ class ProjectCampaignFragment : BaseFragment<ProjectCampaignViewModel.ViewModel>
         this.viewModel.outputs.storyViewElements()
             .subscribeOn(Schedulers.io())
             .distinctUntilChanged()
-            .delay(150, TimeUnit.MILLISECONDS)
+            .delay(170, TimeUnit.MILLISECONDS)
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {

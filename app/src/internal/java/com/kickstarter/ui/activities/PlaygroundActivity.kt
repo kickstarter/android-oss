@@ -11,7 +11,11 @@ import com.kickstarter.R
 import com.kickstarter.databinding.PlaygroundLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.RefTag
-import com.kickstarter.libs.htmlparser.*
+import com.kickstarter.libs.htmlparser.HTMLParser
+import com.kickstarter.libs.htmlparser.TextViewElement
+import com.kickstarter.libs.htmlparser.getBoldSpan
+import com.kickstarter.libs.htmlparser.getItalicBoldSpan
+import com.kickstarter.libs.htmlparser.getItalicSpan
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.extensions.plus
 import com.kickstarter.mock.factories.ProjectFactory

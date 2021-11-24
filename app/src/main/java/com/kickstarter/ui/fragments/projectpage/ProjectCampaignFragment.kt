@@ -15,6 +15,7 @@ import com.kickstarter.ui.adapters.projectcampaign.ViewElementAdapter
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.projectpage.ProjectCampaignViewModel
 import rx.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 @RequiresFragmentViewModel(ProjectCampaignViewModel.ViewModel::class)
 class ProjectCampaignFragment : BaseFragment<ProjectCampaignViewModel.ViewModel>(), Configure {
@@ -36,6 +37,7 @@ class ProjectCampaignFragment : BaseFragment<ProjectCampaignViewModel.ViewModel>
         this.viewModel.outputs.storyViewElements()
             .subscribeOn(Schedulers.io())
             .distinctUntilChanged()
+            .delay(200, TimeUnit.MILLISECONDS)
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {

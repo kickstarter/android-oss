@@ -109,5 +109,6 @@ class TextViewElementShotTest : ScreenshotTest {
         val element = listOfElements.first() as TextViewElement
 
         textView.text = element.getStyledComponents(body, headerSize, app)
+        compareScreenshot(textView)
     }
 }

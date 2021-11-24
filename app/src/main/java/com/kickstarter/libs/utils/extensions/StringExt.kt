@@ -1,12 +1,6 @@
 @file:JvmName("StringExt")
 package com.kickstarter.libs.utils.extensions
 
-import android.os.Build
-import android.text.Html
-import android.text.Html.FROM_HTML_MODE_COMPACT
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.Spanned
 import android.util.Patterns
 import org.jsoup.Jsoup
 import java.util.Locale
@@ -98,17 +92,4 @@ fun String?.parseToDouble(): Double {
 fun String.isGif(): Boolean {
     val gifPattern = "(?:\\/\\/.*\\.(?:gif))"
     return gifPattern.toRegex().find(this) != null
-}
-
-fun String.getHtmlStyles(): Spanned = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-    Html.fromHtml(this, FROM_HTML_MODE_COMPACT)
-} else {
-    Html.fromHtml(this)
-}
-
-/**
- * Concatenate Spannable
- */
-operator fun Spannable.plus(other: Spannable): Spannable {
-    return SpannableStringBuilder(this).append(other)
 }

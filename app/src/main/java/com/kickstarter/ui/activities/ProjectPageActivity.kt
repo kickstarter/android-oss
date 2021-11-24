@@ -507,11 +507,11 @@ class ProjectPageActivity :
         val hideRewardsFragmentAnimator = ObjectAnimator.ofFloat(targetToHide, View.ALPHA, 1f, 0f)
 
         val guideline = rewardsSheetGuideline()
-        val expandHeight = binding.root.height - binding.pledgeContainerLayout.pledgeContainerRoot.height
+        val retryPadding = resources.getDimensionPixelSize(R.dimen.grid_4) //pledge_sheet_retry_container padding
         val initialValue = (if (expand) binding.pledgeContainerLayout.pledgeContainerRoot.height - guideline else 0).toFloat()
-        val finalValue = (if (expand) if (expandHeight> 0)expandHeight else 0 else binding
+        val finalValue = (if (expand) if (retryPadding> 0)retryPadding else 0 else binding
             .pledgeContainerLayout
-            .pledgeContainerRoot.height - guideline + resources.getDimensionPixelSize(R.dimen.grid_4)).toFloat()
+            .pledgeContainerRoot.height - guideline + retryPadding).toFloat()
         val initialRadius = resources.getDimensionPixelSize(R.dimen.fab_radius).toFloat()
 
         val pledgeContainerYAnimator = ObjectAnimator.ofFloat(binding.pledgeContainerLayout.pledgeContainerRoot, View.Y, initialValue, finalValue).apply {

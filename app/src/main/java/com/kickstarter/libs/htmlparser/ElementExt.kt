@@ -1,5 +1,15 @@
 package com.kickstarter.libs.htmlparser
 
+import android.content.Context
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import com.kickstarter.libs.utils.ApplicationUtils
+import com.kickstarter.libs.utils.extensions.boldStyle
+import com.kickstarter.libs.utils.extensions.bulletStyle
+import com.kickstarter.libs.utils.extensions.color
+import com.kickstarter.libs.utils.extensions.italicStyle
+import com.kickstarter.libs.utils.extensions.linkStyle
+import com.kickstarter.libs.utils.extensions.size
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.TextNode
 
@@ -103,4 +113,40 @@ fun TextNode.parseTextElement(element: Element): TextComponent {
         href,
         textStyleList
     )
+}
+
+fun TextViewElement.getStyledComponents(
+    bodySize: Int,
+    headerSize: Int,
+    context: Context
+): SpannableStringBuilder {
+    val joinedSpanned = SpannableStringBuilder("")
+    this.components.forEach { textItem ->
+        val componentText = textItem.text
+        val href = textItem.link ?: ""
+
+        val spannable = SpannableString(componentText)
+        spannable.color()
+        spannable.size(bodySize)
+        textItem.styles.forEach { style ->
+            when (style) {
+                TextComponent.TextStyleType.BOLD -> spannable.boldStyle()
+                TextComponent.TextStyleType.EMPHASIS -> spannable.italicStyle()
+                TextComponent.TextStyleType.LINK -> spannable.linkStyle {
+                    ApplicationUtils.openUrlExternally(
+                        context,
+                        href
+                    )
+                }
+                TextComponent.TextStyleType.LIST -> spannable.bulletStyle()
+                TextComponent.TextStyleType.HEADER -> {
+                    spannable.size(headerSize)
+                    spannable.boldStyle()
+                }
+            }
+        }
+
+        joinedSpanned.append(spannable)
+    }
+    return joinedSpanned
 }

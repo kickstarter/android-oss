@@ -12,6 +12,9 @@ import com.kickstarter.R
 import com.kickstarter.databinding.PlaygroundLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.htmlparser.HTMLParser
+import com.kickstarter.libs.htmlparser.TextViewElement
+import com.kickstarter.libs.htmlparser.getStyledComponents
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.extensions.boldStyle
@@ -48,17 +51,18 @@ class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
 
         val headerSize = resources.getDimensionPixelSize(R.dimen.title_3)
         val body = resources.getDimensionPixelSize(R.dimen.callout)
-        val styledString = SpannableString("Meneame")
+        val html = "<ul>\n" +
+                "   <li>This</li>\n" +
+                "   <li><strong>is</strong></li>\n" +
+                "   <li><em>a</em></li>\n" +
+                "   <li><a href=\\\"http://record.pt\\\" target=\\\"_blank\\\" rel=\\\"noopener\\\">list</a></li>\n" +
+                "</ul>"
 
-        styledString.size(body)
-        // styledString.size(headerSize)
-        styledString.color()
-        styledString.boldStyle()
-        styledString.italicStyle()
-        styledString.linkStyle { ApplicationUtils.openUrlExternally(context, "https://www.meneame.net/") }
-        styledString.bulletStyle()
+        val listOfElements = HTMLParser().parse(html)
 
-        binding.text.text = styledString
+        val element = listOfElements.first() as TextViewElement
+
+        binding.text.text = element.getStyledComponents(body, headerSize, this)
 
         setStepper()
         setProjectActivityButtonClicks()

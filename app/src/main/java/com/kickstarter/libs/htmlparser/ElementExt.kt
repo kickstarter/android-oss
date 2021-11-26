@@ -118,20 +118,19 @@ fun TextNode.parseTextElement(element: Element): TextComponent {
         .toMutableList()
     val href = urls.firstOrNull() ?: ""
 
-    val currentIsLiElement = element.tagName().contains("li")
-    if (currentIsLiElement) {
-        textStyleList.add(TextComponent.TextStyleType.LIST)
-        textStyleList.add(TextComponent.TextStyleType.LIST_END)
-    }
-
-    // - Some we are a child of a li, but not the element itself
-    if (tagsOther.contains("li")) {
+    // - I am child of a li, but not the element itself
+    if (tagsOther.contains("ul")) {
         val list = mutableListOf<Element>()
         getLiElement(element, liElement = list)
         val liElement = list.firstOrNull()
 
+        if (liElement == element && liElement.childNodes()?.size == 1) {
+            textStyleList.add(TextComponent.TextStyleType.LIST)
+            textStyleList.add(TextComponent.TextStyleType.LIST_END)
+        }
+
         val parent = element.parent()
-        val grandFather = parent?.parent()
+
         // Am I the first child of the LI element?
         if (element == liElement?.childNodes()?.first()) {
             textStyleList.add(TextComponent.TextStyleType.LIST)
@@ -147,7 +146,6 @@ fun TextNode.parseTextElement(element: Element): TextComponent {
             textStyleList.add(TextComponent.TextStyleType.LIST_END)
         } else {
             // Is my parent the last child of the LI element?
-            val parent = element.parent()
             if (liElement?.childNodes()?.last() == parent) {
                 textStyleList.add(TextComponent.TextStyleType.LIST_END)
             }

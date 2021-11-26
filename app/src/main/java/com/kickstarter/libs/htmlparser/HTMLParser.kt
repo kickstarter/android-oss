@@ -21,8 +21,7 @@ class HTMLParser {
         val viewElements = mutableListOf<ViewElement>()
 
         children?.forEach { element ->
-            val elementType = ViewElementType.initialize(element)
-            when (elementType) {
+            when (ViewElementType.initialize(element)) {
                 ViewElementType.IMAGE -> {
                     viewElements.add(element.parseImageElement())
                 }

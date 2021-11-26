@@ -124,7 +124,12 @@ fun TextNode.parseTextElement(element: Element): TextComponent {
         getLiElement(element, liElement = list)
         val liElement = list.firstOrNull()
 
-        if (liElement == element && liElement.childNodes()?.size == 1) {
+        // Clean up the liElement, many times you get empty child TextNodes or only contain &nbsp
+        val liChildElements = liElement?.childNodes()?.filter {
+            !(it is TextNode && it.text().trim().isEmpty())
+        }
+
+        if (liElement == element && liChildElements?.size == 1) {
             textStyleList.add(TextComponent.TextStyleType.LIST)
             textStyleList.add(TextComponent.TextStyleType.LIST_END)
         }
@@ -132,21 +137,21 @@ fun TextNode.parseTextElement(element: Element): TextComponent {
         val parent = element.parent()
 
         // Am I the first child of the LI element?
-        if (element == liElement?.childNodes()?.first()) {
+        if (this == liChildElements?.first()) {
             textStyleList.add(TextComponent.TextStyleType.LIST)
         } else {
             // Is my parent the first child of the LI element?
-            if (liElement?.childNodes()?.first() == parent) {
+            if (liChildElements?.first() == parent) {
                 textStyleList.add(TextComponent.TextStyleType.LIST)
             }
         }
 
         // Am I the last child of the LI element?
-        if (element == liElement?.childNodes()?.last()) {
+        if (this == liChildElements?.last()) {
             textStyleList.add(TextComponent.TextStyleType.LIST_END)
         } else {
             // Is my parent the last child of the LI element?
-            if (liElement?.childNodes()?.last() == parent) {
+            if (liChildElements?.last() == parent) {
                 textStyleList.add(TextComponent.TextStyleType.LIST_END)
             }
         }

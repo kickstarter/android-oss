@@ -8,7 +8,7 @@ data class VideoViewElement(val sourceUrls: List<String>) : ViewElement
 data class TextViewElement(var components: List<TextComponent>) : ViewElement
 
 data class TextComponent(
-    val text: String,
+    var text: String,
     val link: String?,
     val styles: List<TextStyleType>
 ) {
@@ -31,6 +31,7 @@ data class TextComponent(
         BOLD("strong"),
         EMPHASIS("em"),
         LIST("li"),
+        LIST_END("</li>"),
         LINK("a"),
         HEADER("h1"),
         UNKNOWN(null);

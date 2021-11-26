@@ -101,17 +101,93 @@ private fun extractTextAttributes(
     }
 }
 
+private fun getLiElement(element: Element, liElement: MutableList<Element>) {
+    if (element.tagName().contains("li"))  {
+        liElement.add(element)
+    }
+    else element.parent()?.let{ getLiElement(it, liElement)}
+}
+
 fun TextNode.parseTextElement(element: Element): TextComponent {
     val tagsOther = mutableListOf<String>()
     val urls = mutableListOf<String>()
+
     extractTextAttributes(element, tagsOther, urls)
-    val textStyleList = tagsOther.map { tag -> TextComponent.TextStyleType.initialize(tag) }.filter { it != TextComponent.TextStyleType.UNKNOWN }
+    val textStyleList = tagsOther.map { tag -> TextComponent.TextStyleType.initialize(tag) }
+        .filter { it != TextComponent.TextStyleType.LIST}
+        .filter { it != TextComponent.TextStyleType.UNKNOWN }
+        .toMutableList()
     val href = urls.firstOrNull() ?: ""
+
+    /*val currentIsLiElement = element.tagName().contains("li")
+    if (currentIsLiElement) {
+        if (element.childNodes().first() == element && element.childNodes().last() == element) {
+            textStyleList.add(TextComponent.TextStyleType.LIST)
+            textStyleList.add(TextComponent.TextStyleType.LIST_END)
+        }
+
+    }*/
+
+    // - Some we are a child of a li, but not the element itself
+    if (tagsOther.contains("li")) {
+        val list = mutableListOf<Element>()
+        getLiElement(element, liElement = list)
+        val liElement = list.firstOrNull()
+
+        val parent = element.parent()
+        val grandFather = parent?.parent()
+        // Am I the first child of the LI element?
+        if (element == liElement?.childNodes()?.first()) {
+            textStyleList.add(TextComponent.TextStyleType.LIST)
+        } else {
+            // Is my parent the first child of the LI element?
+            if (liElement?.childNodes()?.first() == parent) {
+                textStyleList.add(TextComponent.TextStyleType.LIST)
+            }/* else {
+                if (liElement?.childNodes()?.first() == grandFather) {
+                    textStyleList.add(TextComponent.TextStyleType.LIST)
+                }
+            }*/
+        }
+
+        // Am I the last child of the LI element?
+        if (element == liElement?.childNodes()?.last()) {
+            textStyleList.add(TextComponent.TextStyleType.LIST_END)
+        }else {
+            // Is my parent the last child of the LI element?
+            val parent = element.parent()
+            if (liElement?.childNodes()?.last() == parent) {
+                textStyleList.add(TextComponent.TextStyleType.LIST_END)
+            }
+            /*else {
+                if (liElement?.childNodes()?.last() == grandFather) {
+                    textStyleList.add(TextComponent.TextStyleType.LIST_END)
+                }
+            }*/
+        }
+    }
+
+    /*element.parent()?.tagName()?.let { parentName ->
+        val parentBlockType = TextComponent.TextBlockType.initialize(parentName)
+        val parentStyle = TextComponent.TextStyleType.initialize(parentName)
+        //- it's my direct father is UL -> add list style
+        if (parentBlockType == TextComponent.TextBlockType.LIST ) {
+            textStyleList.add(TextComponent.TextStyleType.LIST)
+        }
+        // - My parent is a LI, and I'm the first child, not a sibling -> add list style
+        if (parentStyle == TextComponent.TextStyleType.LIST && this == element.childNodes().first()) {
+            textStyleList.add(TextComponent.TextStyleType.LIST)
+        }
+        // - My parent is a LI, and I'm the last child, apply style jump line
+        if (textStyleList.contains(TextComponent.TextStyleType.LIST) && this == element.childNodes().last()) {
+            textStyleList.add(TextComponent.TextStyleType.LIST_END)
+        }
+    }*/
 
     return TextComponent(
         this.text(),
         href,
-        textStyleList
+        textStyleList.distinct()
     )
 }
 
@@ -121,12 +197,12 @@ fun TextViewElement.getStyledComponents(
     context: Context
 ): SpannableStringBuilder {
     val joinedSpanned = SpannableStringBuilder("")
-    this.components.forEach { textItem ->
+    this.components.forEachIndexed { index, textItem ->
         var componentText = textItem.text
         val href = textItem.link ?: ""
 
-        // -  In order to correctly apply the list style we need to add the end line jump, otherwise it gets applied only to the first item
-        if (textItem.styles.contains(TextComponent.TextStyleType.LIST)) {
+        // -  In order to correctly apply the list style we need to add the end line jump, to the last child of the <li> element
+        if (textItem.styles.contains(TextComponent.TextStyleType.LIST_END)) {
             componentText += "\n"
         }
 

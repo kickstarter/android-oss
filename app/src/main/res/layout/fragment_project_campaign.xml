@@ -17,7 +17,7 @@
             android:layout_marginTop="@dimen/grid_3"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/grid_7_half"
-            android:layout_marginHorizontal="@dimen/grid_3"
+            android:layout_marginStart="@dimen/grid_7_half"
             android:gravity="start|center_vertical"
             android:text="@string/Story"
             android:textStyle="bold"
@@ -27,14 +27,14 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/project_campaign_view_list_items"
-            android:layout_marginTop="@dimen/grid_3"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/grid_7"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/story_title"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:itemCount="5"
-            tools:listitem="@layout/view_element_image_from_html"/>
-
+            tools:listitem="@layout/view_element_text_from_html"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

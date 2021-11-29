@@ -248,7 +248,7 @@ dependencies {
     implementation 'com.appboy:appboy-segment-integration:9.0.0'
 
     // Security
-    implementation 'com.perimeterx.sdk:msdk:1.16.2'
+    implementation 'com.perimeterx.sdk:msdk:1.16.4'
 
     // Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'

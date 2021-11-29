@@ -166,7 +166,7 @@ fun TextNode.parseTextElement(element: Element): TextComponent {
                 textStyleList.add(TextComponent.TextStyleType.LIST)
             }
 
-            // Is my gradFather the first child of the LI element?
+            // Is my gradFather the last child of the LI element?
             if (liChildElements?.last() == grandFather) {
                 textStyleList.add(TextComponent.TextStyleType.LIST_END)
             }

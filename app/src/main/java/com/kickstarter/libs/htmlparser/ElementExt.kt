@@ -133,15 +133,11 @@ fun TextNode.parseTextElement(element: Element): TextComponent {
         getLiElement(element, liElement = list)
         val liElement = list.firstOrNull()
         val parent = element.parent()
+        val grandFather = parent?.parent()
 
         // - Clean up the liElement, many times you get empty child TextNodes or TextNodes with &nbsp
         val liChildElements = liElement?.childNodes()?.filter {
             !(it is TextNode && it.text().trim().isEmpty())
-        }
-
-        if (liElement == element && liChildElements?.size == 1) {
-            textStyleList.add(TextComponent.TextStyleType.LIST)
-            textStyleList.add(TextComponent.TextStyleType.LIST_END)
         }
 
         // Am I the first child of the LI element?
@@ -160,6 +156,18 @@ fun TextNode.parseTextElement(element: Element): TextComponent {
         } else {
             // Is my parent the last child of the LI element?
             if (liChildElements?.last() == parent) {
+                textStyleList.add(TextComponent.TextStyleType.LIST_END)
+            }
+        }
+
+        if (textStyleList.size >= 3) {
+            // Is my gradFather the first child of the LI element?
+            if (liChildElements?.first() == grandFather) {
+                textStyleList.add(TextComponent.TextStyleType.LIST)
+            }
+
+            // Is my gradFather the first child of the LI element?
+            if (liChildElements?.last() == grandFather) {
                 textStyleList.add(TextComponent.TextStyleType.LIST_END)
             }
         }

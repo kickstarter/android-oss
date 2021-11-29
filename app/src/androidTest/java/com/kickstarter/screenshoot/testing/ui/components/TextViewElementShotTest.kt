@@ -120,8 +120,10 @@ class TextViewElementShotTest : ScreenshotTest {
             ) as ConstraintLayout
             ).findViewById(R.id.text_view) as AppCompatTextView
 
+        val url = "https://www.meneame.net/"
         val html = "<ul>\n" +
             "   <li>This</li>\n" +
+            "   <li>This and more text <a href=\\\"http://record.pt\\\" target=\\\"_blank\\\" rel=\\\"noopener\\\"><em><strong>lalalalalala</strong></em></a></li>\n" +
             "   <li>More text here <em><strong>lalalalalala</strong></em> and here </li>\n" +
             "   <li><strong>is</strong></li>\n" +
             "   <li>is <strong>is</strong> is</li>\n" +
@@ -130,7 +132,8 @@ class TextViewElementShotTest : ScreenshotTest {
             "   <li><a href=\\\"http://record.pt\\\" target=\\\"_blank\\\" rel=\\\"noopener\\\">link</a></li>\n" +
             "   <li>text with <a href=\\\"http://record.pt\\\" target=\\\"_blank\\\" rel=\\\"noopener\\\">link</a></li>\n" +
             "   <li>Hola <strong><em>que tal </em></strong> majete</li>\n" +
-            "</ul>"
+            "   <li><a href=$url target=\\\"_blank\\\" rel=\\\"noopener\\\"><em><strong>Meneane </strong></em></a><a href=$url target=\\\"_blank\\\" rel=\\\"noopener\\\">Another URL in this list</a> and some text</li>"
+        "</ul>"
 
         val listOfElements = HTMLParser().parse(html)
 

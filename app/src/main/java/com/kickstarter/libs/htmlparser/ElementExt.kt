@@ -123,8 +123,9 @@ fun TextNode.parseTextElement(element: Element): TextComponent {
         val list = mutableListOf<Element>()
         getLiElement(element, liElement = list)
         val liElement = list.firstOrNull()
+        val parent = element.parent()
 
-        // Clean up the liElement, many times you get empty child TextNodes or only contain &nbsp
+        // - Clean up the liElement, many times you get empty child TextNodes or TextNodes with &nbsp
         val liChildElements = liElement?.childNodes()?.filter {
             !(it is TextNode && it.text().trim().isEmpty())
         }
@@ -134,10 +135,8 @@ fun TextNode.parseTextElement(element: Element): TextComponent {
             textStyleList.add(TextComponent.TextStyleType.LIST_END)
         }
 
-        val parent = element.parent()
-
         // Am I the first child of the LI element?
-        if (this == liChildElements?.first()) {
+        if (this == liChildElements?.first() || element == liChildElements?.first()) {
             textStyleList.add(TextComponent.TextStyleType.LIST)
         } else {
             // Is my parent the first child of the LI element?
@@ -147,7 +146,7 @@ fun TextNode.parseTextElement(element: Element): TextComponent {
         }
 
         // Am I the last child of the LI element?
-        if (this == liChildElements?.last()) {
+        if (this == liChildElements?.last() || element == liChildElements?.last()) {
             textStyleList.add(TextComponent.TextStyleType.LIST_END)
         } else {
             // Is my parent the last child of the LI element?
@@ -174,7 +173,7 @@ fun TextViewElement.getStyledComponents(
         var componentText = textItem.text
         val href = textItem.link ?: ""
 
-        // -  In order to correctly apply the list style we need to add the end line jump, to the last child of the <li> element
+        // - The end list style will be applied only to the LAST child of the LI element
         if (textItem.styles.contains(TextComponent.TextStyleType.LIST_END)) {
             componentText += "\n"
         }
@@ -192,6 +191,7 @@ fun TextViewElement.getStyledComponents(
                         href
                     )
                 }
+                // - The bullet style will be applied only to the FIRST child of the LI element
                 TextComponent.TextStyleType.LIST -> spannable.bulletStyle()
                 TextComponent.TextStyleType.HEADER -> {
                     spannable.size(headerSize)

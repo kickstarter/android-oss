@@ -4,7 +4,7 @@ import org.jsoup.nodes.Element
 
 interface ViewElement
 
-data class VideoViewElement(val sourceUrls: List<String>) : ViewElement
+data class VideoViewElement(val sourceUrls: String) : ViewElement
 data class TextViewElement(var components: List<TextComponent>) : ViewElement {
     val attributedText: String
         get() {

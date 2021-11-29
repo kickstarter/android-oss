@@ -33,7 +33,10 @@ class HTMLParser {
                 }
                 ViewElementType.VIDEO -> {
                     val sourceUrls = element.children().mapNotNull { it.attr("src") }
-                    val videoViewElement = VideoViewElement(ArrayList(sourceUrls))
+
+                    val videoViewElement = VideoViewElement(
+                        sourceUrls.firstOrNull { it.contains("high") } ?: sourceUrls.first()
+                    )
                     viewElements.add(videoViewElement)
                 }
                 ViewElementType.EXTERNAL_SOURCES -> {

@@ -119,18 +119,6 @@ class ProjectExtTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testDeadlineCountdownDetail_shouldReturnFormatedString() {
-        `when`(context.getString(R.string.discovery_baseball_card_deadline_units_secs)).thenReturn("secs")
-        `when`(context.getString(R.string.discovery_baseball_card_deadline_units_mins)).thenReturn("mins")
-        `when`(context.getString(R.string.discovery_baseball_card_deadline_units_hours)).thenReturn("hours")
-        `when`(context.getString(R.string.discovery_baseball_card_deadline_units_days)).thenReturn("days")
-
-        val project: Project = ProjectFactory.project().toBuilder().deadline(DateTime.now().plusDays(5)).build()
-
-        assertEquals("5 days", project.deadlineCountdown(context))
-    }
-
-    @Test
     fun testDeadlineCountdownUnit_testAllCases_shouldReturnCorrectUnitOfTime() {
         `when`(context.getString(R.string.discovery_baseball_card_deadline_units_secs)).thenReturn("secs")
         `when`(context.getString(R.string.discovery_baseball_card_deadline_units_mins)).thenReturn("mins")

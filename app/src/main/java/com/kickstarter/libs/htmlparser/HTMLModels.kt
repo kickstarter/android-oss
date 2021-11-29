@@ -67,7 +67,6 @@ enum class ViewElementType(val tag: String?) {
             when {
                 tag == "a" -> {
                     element.children().find { it.tagName() == "div" }?.let { return@let it.extractViewElementTypeFromDiv() }
-                    // TODO: Return text element in case is only a link not an image/video wrapped in a link
                 }
                 tag == "div" -> {
                     return element.extractViewElementTypeFromDiv()

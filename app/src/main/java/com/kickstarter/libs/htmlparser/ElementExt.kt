@@ -107,15 +107,24 @@ private fun getLiElement(element: Element, liElement: MutableList<Element>) {
     } else element.parent()?.let { getLiElement(it, liElement) }
 }
 
+/**
+ * Each TextComponent will have:
+ * - it's own list of styles to apply
+ * - the url string in case the textComponent was a link
+ * - the text to display
+ */
 fun TextNode.parseTextElement(element: Element): TextComponent {
     val tagsOther = mutableListOf<String>()
     val urls = mutableListOf<String>()
 
     extractTextAttributes(element, tagsOther, urls)
+
+    // - Extract from the list of styles the 'UNKNOWN', and 'LIST', the list style is process separately
     val textStyleList = tagsOther.map { tag -> TextComponent.TextStyleType.initialize(tag) }
         .filter { it != TextComponent.TextStyleType.LIST }
         .filter { it != TextComponent.TextStyleType.UNKNOWN }
         .toMutableList()
+
     val href = urls.firstOrNull() ?: ""
 
     // - I am child of a li, but not the element itself
@@ -159,7 +168,7 @@ fun TextNode.parseTextElement(element: Element): TextComponent {
     return TextComponent(
         this.text(),
         href,
-        textStyleList.distinct()
+        textStyleList
     )
 }
 
@@ -169,7 +178,7 @@ fun TextViewElement.getStyledComponents(
     context: Context
 ): SpannableStringBuilder {
     val joinedSpanned = SpannableStringBuilder("")
-    this.components.forEachIndexed { index, textItem ->
+    this.components.forEach { textItem ->
         var componentText = textItem.text
         val href = textItem.link ?: ""
 

@@ -566,7 +566,8 @@ class ProjectPageActivity :
     }
 
     private fun handleNativeCheckoutBackPress() {
-        val pledgeSheetIsExpanded = binding.pledgeContainerLayout.pledgeContainerRoot.y == 0f
+        val retryPadding = resources.getDimensionPixelSize(R.dimen.grid_4) // pledge_sheet_retry_container padding
+        val pledgeSheetIsExpanded = binding.pledgeContainerLayout.pledgeContainerRoot.y <= retryPadding
 
         when {
             supportFragmentManager.backStackEntryCount > 0 -> supportFragmentManager.popBackStack()

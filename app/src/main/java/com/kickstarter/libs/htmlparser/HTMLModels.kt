@@ -4,22 +4,11 @@ import org.jsoup.nodes.Element
 
 interface ViewElement
 
-data class VideoViewElement(val sourceUrls: String) : ViewElement
-data class TextViewElement(var components: List<TextComponent>) : ViewElement {
-    val attributedText: String
-        get() {
-            var string = ""
-            // - TODO: distinct will avoid duplicated, but is a workaround should be fixed on the parser
-            components.distinct()
-                .map {
-                    string += it.text
-                }
-            return string
-        }
-}
+data class TextViewElement(var components: List<TextComponent>) : ViewElement
+data class VideoViewElement(val sourceUrl: String) : ViewElement
 
 data class TextComponent(
-    val text: String,
+    var text: String,
     val link: String?,
     val styles: List<TextStyleType>
 ) {
@@ -42,6 +31,7 @@ data class TextComponent(
         BOLD("strong"),
         EMPHASIS("em"),
         LIST("li"),
+        LIST_END("</li>"),
         LINK("a"),
         HEADER("h1"),
         UNKNOWN(null);
@@ -77,7 +67,6 @@ enum class ViewElementType(val tag: String?) {
             when {
                 tag == "a" -> {
                     element.children().find { it.tagName() == "div" }?.let { return@let it.extractViewElementTypeFromDiv() }
-                    // TODO: Return text element in case is only a link not an image/video wrapped in a link
                 }
                 tag == "div" -> {
                     return element.extractViewElementTypeFromDiv()

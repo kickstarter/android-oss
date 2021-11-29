@@ -226,7 +226,7 @@ class HTMLParserTest {
         assert(listOfElements.size == 1)
 
         val videoViewElement: VideoViewElement = listOfElements.last() as VideoViewElement
-        TestCase.assertEquals(videoViewElement.sourceUrls, highURL)
+        TestCase.assertEquals(videoViewElement.sourceUrl, highURL)
     }
 
     @Test
@@ -242,6 +242,6 @@ class HTMLParserTest {
         assert(listOfElements.size == 1)
 
         val videoViewElement: VideoViewElement = listOfElements.last() as VideoViewElement
-        TestCase.assertEquals(videoViewElement.sourceUrls, baseURL)
+        TestCase.assertEquals(videoViewElement.sourceUrl, baseURL)
     }
 }

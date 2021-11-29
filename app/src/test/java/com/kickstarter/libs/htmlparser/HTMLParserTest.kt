@@ -211,4 +211,38 @@ class HTMLParserTest {
         assert(textElement.components[0].text == "This is a headline")
         assert(textElement.components[0].styles[0] == TextComponent.TextStyleType.HEADER)
     }
+
+    @Test
+    fun parseVideoElement() {
+        val highURL = "https://v.kickstarter.com/1638357287_13f84af2b93199f2f08d64f29bb5849c4ccc9ae7/assets/034/747/335/b060e1907417e761401ac958a6df9cd7_h264_high.mp4"
+        val baseURL = "https://v.kickstarter" +
+            ".com/1638357287_13f84af2b93199f2f08d64f29bb5849c4ccc9ae7/assets/034/747/335/b060e1907417e761401ac958a6df9cd7_h264_base.mp4"
+
+        val html = "<video class=\"landscape\" preload=\"none\">\n" +
+            "<source src=$highURL type=\"video/mp4; codecs=&quot;avc1.64001E, mp4a.40.2&quot;\">\n" +
+            "<source src=$baseURL type=\"video/mp4; codecs=&quot;avc1.42E01E, mp4a.40.2&quot;\">\n" +
+            "You'll need an HTML5 capable browser to see this content.\n" +
+            "</video>"
+        val listOfElements = HTMLParser().parse(html)
+        assert(listOfElements.size == 1)
+
+        val videoViewElement: VideoViewElement = listOfElements.last() as VideoViewElement
+        TestCase.assertEquals(videoViewElement.sourceUrls, highURL)
+    }
+
+    @Test
+    fun parseVideoElementWithOneSource() {
+        val baseURL = "https://v.kickstarter" +
+            ".com/1638357287_13f84af2b93199f2f08d64f29bb5849c4ccc9ae7/assets/034/747/335/b060e1907417e761401ac958a6df9cd7_h264_base.mp4"
+
+        val html = "<video class=\"landscape\" preload=\"none\">\n" +
+            "<source src=$baseURL type=\"video/mp4; codecs=&quot;avc1.42E01E, mp4a.40.2&quot;\">\n" +
+            "You'll need an HTML5 capable browser to see this content.\n" +
+            "</video>"
+        val listOfElements = HTMLParser().parse(html)
+        assert(listOfElements.size == 1)
+
+        val videoViewElement: VideoViewElement = listOfElements.last() as VideoViewElement
+        TestCase.assertEquals(videoViewElement.sourceUrls, baseURL)
+    }
 }

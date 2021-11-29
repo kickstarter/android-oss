@@ -45,6 +45,11 @@ fun Element.isImageStructure(): Boolean {
     return !isTemplateDiv.isNullOrEmpty()
 }
 
+fun Element.parseVideoElement(): String {
+    val sourceUrls = this.children().mapNotNull { it.attr("src") }
+    return sourceUrls.firstOrNull { it.contains("high") } ?: sourceUrls.first()
+}
+
 fun Element.parseImageElement(): ImageViewElement {
     var src = ""
     var caption: String? = null

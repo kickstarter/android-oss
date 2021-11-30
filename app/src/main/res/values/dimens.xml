@@ -55,6 +55,7 @@
 
   <dimen name="caption_line_spacing_extra">2dp</dimen>
   <dimen name="body_line_spacing_extra">2dp</dimen>
+  <dimen name="callout_line_spacing_extra_story">3dp</dimen>
   <dimen name="callout_line_spacing_extra">4dp</dimen>
 
   <!-- Icon sizes -->

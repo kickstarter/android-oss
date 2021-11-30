@@ -11,6 +11,7 @@
         android:layout_marginEnd="@dimen/grid_7_half"
         android:layout_marginStart="@dimen/grid_7_half"
         android:layout_marginTop="@dimen/grid_3"
+        android:lineSpacingExtra="@dimen/callout_line_spacing_extra_story"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>

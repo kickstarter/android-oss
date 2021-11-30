@@ -141,16 +141,15 @@ class HTMLParserTest {
         val secondComponent = textElement.components[1]
         assert(secondComponent.link == url)
         assert(secondComponent.text == "Another URL in this list")
-        assert(secondComponent.styles.size == 2)
+        assert(secondComponent.styles.size == 1)
         assert(secondComponent.styles[0] == TextComponent.TextStyleType.LINK)
-        assert(secondComponent.styles[1] == TextComponent.TextStyleType.LIST)
 
         // - Third Component
         val thirdComponent = textElement.components[2]
         assert(thirdComponent.link == "")
         assert(thirdComponent.text == " and some text")
         assert(thirdComponent.styles.size == 1)
-        assert(thirdComponent.styles[0] == TextComponent.TextStyleType.LIST)
+        assert(thirdComponent.styles[0] == TextComponent.TextStyleType.LIST_END)
     }
 
     @Test
@@ -227,7 +226,7 @@ class HTMLParserTest {
         assert(listOfElements.size == 1)
 
         val videoViewElement: VideoViewElement = listOfElements.last() as VideoViewElement
-        TestCase.assertEquals(videoViewElement.sourceUrls, highURL)
+        TestCase.assertEquals(videoViewElement.sourceUrl, highURL)
     }
 
     @Test
@@ -243,6 +242,6 @@ class HTMLParserTest {
         assert(listOfElements.size == 1)
 
         val videoViewElement: VideoViewElement = listOfElements.last() as VideoViewElement
-        TestCase.assertEquals(videoViewElement.sourceUrls, baseURL)
+        TestCase.assertEquals(videoViewElement.sourceUrl, baseURL)
     }
 }

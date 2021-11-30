@@ -49,6 +49,9 @@ fun Element.parseVideoElement(): String {
     val sourceUrls = this.children().mapNotNull { it.attr("src") }
     return sourceUrls.firstOrNull { it.contains("high") } ?: sourceUrls.first()
 }
+fun Element.parseVideoElementThumbnailUrl(): String? {
+    return this.parent()?.attr("data-image")
+}
 
 fun Element.parseImageElement(): ImageViewElement {
     var src = ""

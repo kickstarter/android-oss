@@ -31,7 +31,11 @@ class HTMLParser {
                     return@forEach
                 }
                 ViewElementType.VIDEO -> {
-                    val videoViewElement = VideoViewElement(element.parseVideoElement())
+                    val videoViewElement = VideoViewElement(
+                        element.parseVideoElement(),
+                        element
+                            .parseVideoElementThumbnailUrl()
+                    )
                     viewElements.add(videoViewElement)
                 }
                 ViewElementType.EXTERNAL_SOURCES -> {

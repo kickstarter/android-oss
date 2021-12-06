@@ -10,6 +10,7 @@ import com.kickstarter.databinding.EmptyViewBinding
 import com.kickstarter.databinding.ViewElementExternalSourceFromHtmlBinding
 import com.kickstarter.databinding.ViewElementImageFromHtmlBinding
 import com.kickstarter.databinding.ViewElementTextFromHtmlBinding
+import com.kickstarter.databinding.ViewElementVideoFromHtmlBinding
 import com.kickstarter.libs.htmlparser.ExternalSourceViewElement
 import com.kickstarter.libs.htmlparser.ImageViewElement
 import com.kickstarter.libs.htmlparser.TextViewElement
@@ -19,6 +20,7 @@ import com.kickstarter.ui.viewholders.EmptyViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.ExternalViewViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.ImageElementViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.TextElementViewHolder
+import com.kickstarter.ui.viewholders.projectcampaign.VideoElementViewHolder
 
 /**
  * Adapter Specific to hold a list of ViewElements from the HTML Parser
@@ -124,6 +126,19 @@ class ViewElementAdapter(val requireActivity: FragmentActivity) : RecyclerView
                     )
                 )
             }
+            ElementViewHolderType.VIDEO.ordinal -> {
+                return VideoElementViewHolder(
+                    ViewElementVideoFromHtmlBinding.inflate(
+                        LayoutInflater.from(
+                            viewGroup
+                                .context
+                        ),
+                        viewGroup,
+                        false
+                    ),
+                    requireActivity
+                )
+            }
             ElementViewHolderType.EXTERNAL_SOURCES.ordinal -> {
                 return ExternalViewViewHolder(
                     ViewElementExternalSourceFromHtmlBinding.inflate(
@@ -153,6 +168,12 @@ class ViewElementAdapter(val requireActivity: FragmentActivity) : RecyclerView
         (element as? ImageViewElement)?.let { imageElement ->
             (viewHolder as? ImageElementViewHolder)?.let {
                 viewHolder.bindData(imageElement)
+            }
+        }
+
+        (element as? VideoViewElement)?.let { videoElement ->
+            (viewHolder as? VideoElementViewHolder)?.let {
+                viewHolder.bindData(videoElement)
             }
         }
 

@@ -113,8 +113,6 @@ class VideoElementViewHolder(
         playersMap[bindingAdapterPosition] = player
 
         videoPlayerView.apply {
-            controllerShowTimeoutMs = 0
-            controllerHideOnTouch = false
             // When changing track, retain the latest frame instead of showing a black screen
             this.setKeepContentOnPlayerReset(true)
             // We'll show the controller, change to true if want controllers as pause and start

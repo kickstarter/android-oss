@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/video_player_container"
     android:layout_width="match_parent"
-    android:layout_height="250dp"
+    android:layout_height="200dp"
     android:layout_marginTop="@dimen/grid_3"
     android:layout_marginHorizontal="@dimen/grid_2"
     android:clipToPadding="true">

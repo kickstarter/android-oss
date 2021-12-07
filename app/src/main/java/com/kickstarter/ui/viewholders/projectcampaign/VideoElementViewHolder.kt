@@ -8,15 +8,21 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
+import com.google.android.exoplayer2.util.Util
 import com.kickstarter.R
 import com.kickstarter.databinding.ViewElementVideoFromHtmlBinding
+import com.kickstarter.libs.Build
 import com.kickstarter.libs.htmlparser.VideoViewElement
+import com.kickstarter.libs.utils.WebUtils
 import com.kickstarter.ui.extensions.loadImage
 import com.kickstarter.ui.viewholders.KSViewHolder
 
@@ -26,7 +32,7 @@ class VideoElementViewHolder(
     val requireActivity: FragmentActivity
 ) : KSViewHolder(binding.root) {
 
-//    private lateinit var build: Build
+    private lateinit var build: Build
 
     private val thumbnail = binding.thumbnail
     private val loadingIndicator = binding.loadingIndicator
@@ -64,7 +70,7 @@ class VideoElementViewHolder(
     }
 
     fun configure(element: VideoViewElement) {
-        // build = environment().build()
+        build = environment().build()
         thumbnail.loadImage(element.thumbnailUrl, context())
         loadVideo(element.sourceUrl)
         fullscreenButton = videoPlayerView.findViewById(R.id.exo_fullscreen_icon)
@@ -91,12 +97,9 @@ class VideoElementViewHolder(
         trackSelector?.let { playerBuilder.setTrackSelector(it) }
 
         // Provide url to load the video from here
-        val mediaSource = ProgressiveMediaSource.Factory(DefaultHttpDataSourceFactory("Demo")).createMediaSource(
-            Uri.parse(url))
-
         val player = playerBuilder.build().also {
             it.playWhenReady = false
-            it.prepare(mediaSource)
+            it.prepare(getMediaSource(url))
         }
 
         // add player with its index to map
@@ -107,7 +110,6 @@ class VideoElementViewHolder(
                 if (it != 0L)
                     player.playWhenReady = true
             }
-            // playersMap.remove(item_index)
         }
         
         playersMap[bindingAdapterPosition] = player
@@ -116,13 +118,29 @@ class VideoElementViewHolder(
             controllerShowTimeoutMs = 0
             controllerHideOnTouch = false
             // When changing track, retain the latest frame instead of showing a black screen
-            setKeepContentOnPlayerReset(true)
+            this.setKeepContentOnPlayerReset(true)
             // We'll show the controller, change to true if want controllers as pause and start
             useController = true
             this.player = player
         }
 
         videoPlayerView.player?.addListener(eventListener)
+    }
+
+    private fun getMediaSource(videoUrl: String): MediaSource {
+        val dataSourceFactory = DefaultHttpDataSource.Factory().setUserAgent(
+            WebUtils.userAgent(
+                build
+            )
+        )
+        val videoUri = Uri.parse(videoUrl)
+        val fileType = Util.inferContentType(videoUri)
+
+        return if (fileType == C.TYPE_HLS) {
+            HlsMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri)
+        } else {
+            ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri)
+        }
     }
 
     private val mFullScreenDialog: Dialog =

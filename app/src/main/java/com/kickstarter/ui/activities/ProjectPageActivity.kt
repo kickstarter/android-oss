@@ -58,7 +58,6 @@ import com.kickstarter.ui.fragments.PledgeFragment
 import com.kickstarter.ui.fragments.RewardsFragment
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import com.stripe.android.view.CardInputWidget
-import com.trello.rxlifecycle.ActivityEvent
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(ProjectPageViewModel.ViewModel::class)
@@ -97,7 +96,7 @@ class ProjectPageActivity :
         this.ksString = environment().ksString()
 
         // Do not configure the pager at other lifecycle events apart from OnCreate
-        if (savedInstanceState == null){
+        if (savedInstanceState == null) {
             // - Configure pager on load, otherwise the first fragment on the pager gets no data
             configurePager()
         }
@@ -365,7 +364,7 @@ class ProjectPageActivity :
         }
         setClickListeners()
 
-        if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             binding.projectAppBarLayout.setExpanded(false)
         }
     }

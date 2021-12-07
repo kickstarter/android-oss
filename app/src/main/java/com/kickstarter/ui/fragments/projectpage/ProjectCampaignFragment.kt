@@ -38,10 +38,12 @@ class ProjectCampaignFragment : BaseFragment<ProjectCampaignViewModel.ViewModel>
         viewElementAdapter = ViewElementAdapter(requireActivity())
         val headerElementAdapter = HeaderElementAdapter()
         binding?.projectCampaignViewListItems?.layoutManager = LinearLayoutManager(context)
-        binding?.projectCampaignViewListItems?.adapter = ConcatAdapter(headerElementAdapter,
-            viewElementAdapter)
+        binding?.projectCampaignViewListItems?.adapter = ConcatAdapter(
+            headerElementAdapter,
+            viewElementAdapter
+        )
 
-       headerElementAdapter.updateTitle(resources.getString(R.string.Story))
+        headerElementAdapter.updateTitle(resources.getString(R.string.Story))
 
         this.viewModel.outputs.storyViewElements()
             .subscribeOn(Schedulers.io())

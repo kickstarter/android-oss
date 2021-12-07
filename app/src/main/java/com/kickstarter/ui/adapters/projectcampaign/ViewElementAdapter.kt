@@ -28,7 +28,7 @@ import com.kickstarter.ui.viewholders.projectcampaign.VideoElementViewHolder
  */
 class ViewElementAdapter(val requireActivity: FragmentActivity) : RecyclerView
 .Adapter<RecyclerView
-.ViewHolder>() {
+    .ViewHolder>() {
 
     private val diffCallback = object : DiffUtil.ItemCallback<ViewElement>() {
         override fun areItemsTheSame(oldItem: ViewElement, newItem: ViewElement): Boolean {

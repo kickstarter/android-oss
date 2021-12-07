@@ -45,12 +45,10 @@ class VideoElementViewHolder(
 
     private var originalOrientation = requireActivity.requestedOrientation
     private var originalSystemUiVisibility = requireActivity.window.decorView.systemUiVisibility
-    
-    private val eventListener = object : Player.EventListener {
 
-        override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-            super.onPlayerStateChanged(playWhenReady, playbackState)
-
+    private val listener = object : Player.Listener {
+        override fun onPlaybackStateChanged(playbackState: Int) {
+            super.onPlaybackStateChanged(playbackState)
             if (playbackState == Player.STATE_BUFFERING) {
 
                 // Buffering..
@@ -111,7 +109,7 @@ class VideoElementViewHolder(
                     player.playWhenReady = true
             }
         }
-        
+
         playersMap[bindingAdapterPosition] = player
 
         videoPlayerView.apply {
@@ -124,7 +122,7 @@ class VideoElementViewHolder(
             this.player = player
         }
 
-        videoPlayerView.player?.addListener(eventListener)
+        videoPlayerView.player?.addListener(listener)
     }
 
     private fun getMediaSource(videoUrl: String): MediaSource {
@@ -193,10 +191,10 @@ class VideoElementViewHolder(
     }
 
     fun releasePlayer(index: Int) {
-       playersMap[index]?.let {
-                it.removeListener(eventListener)
-                it.release()
-                trackSelector = null
-            }
+        playersMap[index]?.let {
+            it.removeListener(listener)
+            it.release()
+            trackSelector = null
+        }
     }
 }

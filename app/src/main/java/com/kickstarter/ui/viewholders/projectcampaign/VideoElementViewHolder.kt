@@ -10,55 +10,63 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.kickstarter.R
 import com.kickstarter.databinding.ViewElementVideoFromHtmlBinding
-import com.kickstarter.libs.Build
 import com.kickstarter.libs.htmlparser.VideoViewElement
-import com.kickstarter.libs.utils.WebUtils
 import com.kickstarter.ui.extensions.loadImage
 import com.kickstarter.ui.viewholders.KSViewHolder
 
 class VideoElementViewHolder(
     val binding: ViewElementVideoFromHtmlBinding,
+    private val playersMap: MutableMap<Int, SimpleExoPlayer?>,
     val requireActivity: FragmentActivity
 ) : KSViewHolder(binding.root) {
 
-    private lateinit var build: Build
-    private var player: SimpleExoPlayer? = null
-    private var playerPosition: Long? = null
+//    private lateinit var build: Build
+
     private val thumbnail = binding.thumbnail
     private val loadingIndicator = binding.loadingIndicator
     private val videoPlayerView = binding.videoPlayerView
+
     private var parentViewGroup: ViewGroup? = null
     private var fullscreenButton: ImageView? = null
+    private var mExoPlayerFullscreen = false
+    private var trackSelector: DefaultTrackSelector? = null
 
     private var originalOrientation = requireActivity.requestedOrientation
     private var originalSystemUiVisibility = requireActivity.window.decorView.systemUiVisibility
+    
+    private val eventListener = object : Player.EventListener {
+
+        override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+            super.onPlayerStateChanged(playWhenReady, playbackState)
+
+            if (playbackState == Player.STATE_BUFFERING) {
+
+                // Buffering..
+                // set progress bar visible here
+                // set thumbnail visible
+                thumbnail.visibility = View.VISIBLE
+                loadingIndicator.visibility = View.VISIBLE
+            }
+
+            if (playbackState == Player.STATE_READY) {
+                // [PlayerView] has fetched the video duration so this is the block to hide the buffering progress bar
+                loadingIndicator.visibility = View.GONE
+                // set thumbnail gone
+                thumbnail.visibility = View.GONE
+            }
+        }
+    }
 
     fun configure(element: VideoViewElement) {
-        build = environment().build()
+        // build = environment().build()
         thumbnail.loadImage(element.thumbnailUrl, context())
-        preparePlayer(element.sourceUrl)
-    }
-
-    private fun getMediaSource(videoUrl: String): MediaSource {
-        val dataSourceFactory = DefaultHttpDataSource.Factory().setUserAgent(
-            WebUtils.userAgent(
-                build
-            )
-        )
-        val videoUri = Uri.parse(videoUrl)
-        return ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri)
-    }
-
-    private fun preparePlayer(videoUrl: String) {
-
-        player = SimpleExoPlayer.Builder(context()).build()
-
+        loadVideo(element.sourceUrl)
         fullscreenButton = videoPlayerView.findViewById(R.id.exo_fullscreen_icon)
 
         fullscreenButton?.setOnClickListener {
@@ -66,40 +74,6 @@ class VideoElementViewHolder(
                 openFullscreenDialog()
             else
                 closeFullscreenDialog()
-        }
-
-        val playerIsResuming = (playerPosition != 0L)
-        player?.prepare(getMediaSource(videoUrl), playerIsResuming, false)
-
-        binding.videoPlayerView.player = player
-        binding.videoPlayerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-
-        player?.addListener(eventListener)
-    }
-
-    private val eventListener: Player.EventListener = object : Player.EventListener {
-        override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-            onStateChanged(playbackState)
-        }
-    }
-
-    private fun onStateChanged(playbackState: Int) {
-        if (playbackState == Player.STATE_BUFFERING) {
-            // Buffering..
-            // set progress bar visible here
-            // set thumbnail visible
-            thumbnail.visibility = View.VISIBLE
-            loadingIndicator.visibility = View.VISIBLE
-        }
-
-        if (playbackState == Player.STATE_READY) {
-
-            loadingIndicator.visibility = View.GONE
-            // set thumbnail gone
-            thumbnail.visibility = View.GONE
-        }
-
-        if (playbackState == Player.STATE_ENDED) {
         }
     }
 
@@ -109,12 +83,53 @@ class VideoElementViewHolder(
         }
     }
 
-    private var mExoPlayerFullscreen = false
+    private fun loadVideo(url: String) {
+        val adaptiveTrackSelectionFactory: AdaptiveTrackSelection.Factory = AdaptiveTrackSelection.Factory()
+        trackSelector = DefaultTrackSelector(context(), adaptiveTrackSelectionFactory)
+
+        val playerBuilder = SimpleExoPlayer.Builder(context())
+        trackSelector?.let { playerBuilder.setTrackSelector(it) }
+
+        // Provide url to load the video from here
+        val mediaSource = ProgressiveMediaSource.Factory(DefaultHttpDataSourceFactory("Demo")).createMediaSource(
+            Uri.parse(url))
+
+        val player = playerBuilder.build().also {
+            it.playWhenReady = false
+            it.prepare(mediaSource)
+        }
+
+        // add player with its index to map
+        if (playersMap.containsKey(bindingAdapterPosition)) {
+
+            playersMap[bindingAdapterPosition]?.currentPosition?.let {
+                player.seekTo(it)
+                if (it != 0L)
+                    player.playWhenReady = true
+            }
+            // playersMap.remove(item_index)
+        }
+        
+        playersMap[bindingAdapterPosition] = player
+
+        videoPlayerView.apply {
+            controllerShowTimeoutMs = 0
+            controllerHideOnTouch = false
+            // When changing track, retain the latest frame instead of showing a black screen
+            setKeepContentOnPlayerReset(true)
+            // We'll show the controller, change to true if want controllers as pause and start
+            useController = true
+            this.player = player
+        }
+
+        videoPlayerView.player?.addListener(eventListener)
+    }
 
     private val mFullScreenDialog: Dialog =
         object : Dialog(context(), android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
             override fun onBackPressed() {
-                if (mExoPlayerFullscreen) closeFullscreenDialog()
+                if (mExoPlayerFullscreen)
+                    closeFullscreenDialog()
                 super.onBackPressed()
             }
         }
@@ -157,5 +172,13 @@ class VideoElementViewHolder(
                 R.drawable.ic_fullscreen_open
             )
         )
+    }
+
+    fun releasePlayer(index: Int) {
+       playersMap[index]?.let {
+                it.removeListener(eventListener)
+                it.release()
+                trackSelector = null
+            }
     }
 }

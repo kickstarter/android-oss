@@ -28,7 +28,8 @@
         app:layout_constraintBottom_toBottomOf="@id/video_player_view"
         app:layout_constraintEnd_toEndOf="@id/video_player_view"
         app:layout_constraintStart_toStartOf="@id/video_player_view"
-        app:layout_constraintTop_toTopOf="@id/video_player_view" />
+        app:layout_constraintTop_toTopOf="@id/video_player_view"
+        android:contentDescription="@null" />
 
     <ProgressBar
         android:id="@+id/loading_indicator"

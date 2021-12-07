@@ -202,7 +202,6 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
-        android:clipToPadding="false"
         android:id="@+id/pledge_container_layout"
         layout="@layout/pledge_container" />
 

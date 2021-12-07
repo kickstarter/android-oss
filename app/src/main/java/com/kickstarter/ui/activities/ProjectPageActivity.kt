@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Pair
@@ -359,6 +360,10 @@ class ProjectPageActivity :
             (this as BaseActivity<*>).back()
         }
         setClickListeners()
+
+        if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
+            binding.projectAppBarLayout.setExpanded(false)
+        }
     }
 
     private fun configurePager() {

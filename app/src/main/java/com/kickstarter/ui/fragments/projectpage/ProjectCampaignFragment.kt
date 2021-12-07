@@ -69,6 +69,12 @@ class ProjectCampaignFragment : BaseFragment<ProjectCampaignViewModel.ViewModel>
         super.onDestroy()
         viewElementAdapter?.releaseAllPlayers()
     }
+
+    override fun onPause() {
+        super.onPause()
+        viewElementAdapter?.releasePlayersOnPause()
+    }
+
     override fun configureWith(projectData: ProjectData) {
         this.viewModel?.inputs?.configureWith(projectData)
     }

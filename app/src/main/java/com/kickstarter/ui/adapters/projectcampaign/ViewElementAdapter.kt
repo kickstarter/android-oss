@@ -232,6 +232,12 @@ class ViewElementAdapter(val requireActivity: FragmentActivity) : RecyclerView
         currentPlayingVideo = null
     }
 
+    fun releasePlayersOnPause() {
+        playersMap.forEach { item ->
+            item.value?.playWhenReady = false
+        }
+    }
+
     // call when scroll to pause any playing player
     private fun pauseCurrentPlayingVideo() {
         if (currentPlayingVideo != null) {

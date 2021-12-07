@@ -4,13 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/project_campaign"
     android:layout_width="match_parent"
-    android:layout_marginTop="@dimen/grid_3"
     android:layout_height="wrap_content">
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/project_campaign_view_list_items"
         android:layout_width="0dp"
+        android:paddingTop="@dimen/grid_3"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_7"
         app:layout_constraintBottom_toBottomOf="parent"

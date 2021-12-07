@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Pair
@@ -94,8 +95,11 @@ class ProjectPageActivity :
         setContentView(binding.root)
         this.ksString = environment().ksString()
 
-        // - Configure pager on load, otherwise the first fragment on the pager gets no data
-        configurePager()
+        // Do not configure the pager at other lifecycle events apart from OnCreate
+        if (savedInstanceState == null) {
+            // - Configure pager on load, otherwise the first fragment on the pager gets no data
+            configurePager()
+        }
 
         val viewTreeObserver = binding.pledgeContainerLayout.pledgeContainerRoot.viewTreeObserver
         if (viewTreeObserver.isAlive) {
@@ -359,6 +363,10 @@ class ProjectPageActivity :
             (this as BaseActivity<*>).back()
         }
         setClickListeners()
+
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            binding.projectAppBarLayout.setExpanded(false)
+        }
     }
 
     private fun configurePager() {

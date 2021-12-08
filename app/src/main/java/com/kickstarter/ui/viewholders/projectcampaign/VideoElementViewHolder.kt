@@ -28,7 +28,6 @@ import com.kickstarter.ui.viewholders.KSViewHolder
 
 class VideoElementViewHolder(
     val binding: ViewElementVideoFromHtmlBinding,
-    private val playersMap: MutableMap<Int, SimpleExoPlayer?>,
     val requireActivity: FragmentActivity
 ) : KSViewHolder(binding.root) {
 
@@ -193,6 +192,51 @@ class VideoElementViewHolder(
             it.removeListener(listener)
             it.release()
             trackSelector = null
+        }
+    }
+    
+    companion object {
+        // for hold all players generated
+        private var playersMap: MutableMap<Int, SimpleExoPlayer?> = mutableMapOf()
+
+        // for hold current player
+        private var currentPlayingVideo: Pair<Int, SimpleExoPlayer?>? = null
+
+        fun releaseAllPlayers() {
+            playersMap.onEachIndexed { index, item ->
+                item.value?.release()
+                playersMap[index] = null
+            }
+            playersMap.clear()
+            playersMap = mutableMapOf()
+            currentPlayingVideo?.second?.release()
+            currentPlayingVideo = null
+        }
+
+        fun releasePlayersOnPause() {
+            playersMap.forEach { item ->
+                item.value?.playWhenReady = false
+            }
+        }
+
+        // call when scroll to pause any playing player
+        private fun pauseCurrentPlayingVideo() {
+            if (currentPlayingVideo != null) {
+                currentPlayingVideo?.second?.playWhenReady = false
+            }
+        }
+
+        fun playIndexThenPausePreviousPlayer(index: Int) {
+            if (playersMap[index]?.playWhenReady == false) {
+                pauseCurrentPlayingVideo()
+                playersMap[index]?.currentPosition?.let {
+                    playersMap[index]?.isCurrentWindowSeekable
+                    if (it != 0L)
+                        playersMap[index]?.playWhenReady = true
+                }
+
+                currentPlayingVideo = Pair(index, playersMap[index])
+            }
         }
     }
 }

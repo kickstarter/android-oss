@@ -37,6 +37,7 @@ class ProjectCampaignFragment : BaseFragment<ProjectCampaignViewModel.ViewModel>
         super.onViewCreated(view, savedInstanceState)
         viewElementAdapter = ViewElementAdapter(requireActivity())
         val headerElementAdapter = HeaderElementAdapter()
+        binding?.projectCampaignViewListItems?.itemAnimator?.changeDuration = 0
         binding?.projectCampaignViewListItems?.layoutManager = LinearLayoutManager(context)
         binding?.projectCampaignViewListItems?.adapter = ConcatAdapter(
             headerElementAdapter,

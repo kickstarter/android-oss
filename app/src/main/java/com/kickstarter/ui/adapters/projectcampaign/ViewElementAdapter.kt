@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.kickstarter.databinding.EmptyViewBinding
 import com.kickstarter.databinding.ViewElementExternalSourceFromHtmlBinding
 import com.kickstarter.databinding.ViewElementImageFromHtmlBinding
@@ -138,7 +137,6 @@ class ViewElementAdapter(val requireActivity: FragmentActivity) : RecyclerView
                         viewGroup,
                         false
                     ),
-                    playersMap,
                     requireActivity
                 )
             }
@@ -194,7 +192,6 @@ class ViewElementAdapter(val requireActivity: FragmentActivity) : RecyclerView
     }
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
-
         (holder as? VideoElementViewHolder)?.let { videoElementViewHolder ->
             videoElementViewHolder.releasePlayer(index = videoElementViewHolder.bindingAdapterPosition)
         }
@@ -210,51 +207,15 @@ class ViewElementAdapter(val requireActivity: FragmentActivity) : RecyclerView
         EXTERNAL_SOURCES
     }
 
-    // for hold all players generated
-    private var playersMap: MutableMap<Int, SimpleExoPlayer?> = mutableMapOf()
-
-    // for hold current player
-    private var currentPlayingVideo: Pair<Int, SimpleExoPlayer?>? = null
-
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView)
-        releaseAllPlayers()
+    fun playIndexThenPausePreviousPlayer(index: Int) {
+        VideoElementViewHolder.playIndexThenPausePreviousPlayer(index)
     }
 
     fun releaseAllPlayers() {
-        playersMap.onEachIndexed { index, item ->
-            item.value?.release()
-            playersMap[index] = null
-        }
-        playersMap.clear()
-        playersMap = mutableMapOf()
-        currentPlayingVideo?.second?.release()
-        currentPlayingVideo = null
+        VideoElementViewHolder.releaseAllPlayers()
     }
 
     fun releasePlayersOnPause() {
-        playersMap.forEach { item ->
-            item.value?.playWhenReady = false
-        }
-    }
-
-    // call when scroll to pause any playing player
-    private fun pauseCurrentPlayingVideo() {
-        if (currentPlayingVideo != null) {
-            currentPlayingVideo?.second?.playWhenReady = false
-        }
-    }
-
-    fun playIndexThenPausePreviousPlayer(index: Int) {
-        if (playersMap[index]?.playWhenReady == false) {
-            pauseCurrentPlayingVideo()
-            playersMap[index]?.currentPosition?.let {
-                playersMap[index]?.isCurrentWindowSeekable
-                if (it != 0L)
-                    playersMap[index]?.playWhenReady = true
-            }
-
-            currentPlayingVideo = Pair(index, playersMap[index])
-        }
+        VideoElementViewHolder.releasePlayersOnPause()
     }
 }

@@ -140,16 +140,20 @@ class ProjectExtTest : KSRobolectricTestCase() {
 
     @Test
     fun testDeadlineCountdownValue_testAllCases_shouldReturnCorrectValueOfTime() {
-        var project: Project = ProjectFactory.project().toBuilder().deadline(DateTime.now().plusDays(2)).build()
+        // - Added milliseconds to allow processing times
+        var project: Project = ProjectFactory.project().toBuilder().deadline(DateTime.now().plusDays(2).plusMillis(300)).build()
         assertEquals(48, project.deadlineCountdownValue())
 
-        project = project.toBuilder().deadline(DateTime.now().plusMinutes(10)).build()
+        // - Added milliseconds to allow processing times
+        project = project.toBuilder().deadline(DateTime.now().plusMinutes(10).plusMillis(300)).build()
         assertEquals(10, project.deadlineCountdownValue())
 
-        project = project.toBuilder().deadline(DateTime.now().plusSeconds(25)).build()
+        // - Added milliseconds to allow processing times
+        project = project.toBuilder().deadline(DateTime.now().plusSeconds(25).plusMillis(300)).build()
         assertEquals(25, project.deadlineCountdownValue())
 
-        project = project.toBuilder().deadline(DateTime.now().plusDays(10)).build()
+        // - Added milliseconds to allow processing times
+        project = project.toBuilder().deadline(DateTime.now().plusDays(10).plusMillis(300)).build()
         assertEquals(10, project.deadlineCountdownValue())
     }
 

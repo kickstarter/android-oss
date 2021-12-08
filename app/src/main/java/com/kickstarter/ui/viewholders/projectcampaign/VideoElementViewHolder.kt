@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.Player
@@ -64,6 +65,11 @@ class VideoElementViewHolder(
                 thumbnail.visibility = View.GONE
             }
         }
+
+        override fun onIsLoadingChanged(isLoading: Boolean) {
+            super.onIsLoadingChanged(isLoading)
+            loadingIndicator.isVisible = isLoading
+        }
     }
 
     fun configure(element: VideoViewElement) {
@@ -101,7 +107,6 @@ class VideoElementViewHolder(
 
         // add player with its index to map
         if (playersMap.containsKey(bindingAdapterPosition)) {
-
             playersMap[bindingAdapterPosition]?.currentPosition?.let {
                 player.seekTo(it)
                 if (it != 0L)
@@ -117,9 +122,8 @@ class VideoElementViewHolder(
             // We'll show the controller, change to true if want controllers as pause and start
             useController = true
             this.player = player
+            this.player?.addListener(listener)
         }
-
-        videoPlayerView.player?.addListener(listener)
     }
 
     private fun getMediaSource(videoUrl: String): MediaSource {
@@ -189,7 +193,7 @@ class VideoElementViewHolder(
 
     fun releasePlayer(index: Int) {
         playersMap[index]?.let {
-            it.removeListener(listener)
+         //   it.removeListener(listener)
             it.release()
             trackSelector = null
         }
@@ -231,8 +235,9 @@ class VideoElementViewHolder(
                 pauseCurrentPlayingVideo()
                 playersMap[index]?.currentPosition?.let {
                     playersMap[index]?.isCurrentWindowSeekable
-                    if (it != 0L)
+                    if (it != 0L) {
                         playersMap[index]?.playWhenReady = true
+                    }
                 }
 
                 currentPlayingVideo = Pair(index, playersMap[index])

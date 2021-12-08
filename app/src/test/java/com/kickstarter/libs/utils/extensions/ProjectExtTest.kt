@@ -113,7 +113,8 @@ class ProjectExtTest : KSRobolectricTestCase() {
         `when`(context.getString(R.string.discovery_baseball_card_deadline_units_hours)).thenReturn("hours")
         `when`(context.getString(R.string.discovery_baseball_card_deadline_units_days)).thenReturn("days")
 
-        val project: Project = ProjectFactory.project().toBuilder().deadline(DateTime.now().plusDays(2)).build()
+        // - Added milliseconds to allow processing times
+        val project: Project = ProjectFactory.project().toBuilder().deadline(DateTime.now().plusDays(2).plusMillis(300)).build()
 
         assertEquals("48 hours", project.deadlineCountdown(context))
     }

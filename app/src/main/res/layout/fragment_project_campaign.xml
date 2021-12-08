@@ -3,15 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/project_campaign"
-    android:layout_marginBottom="@dimen/grid_7"
+    android:layout_marginBottom="@dimen/grid_9"
+    android:layout_marginTop="@dimen/grid_3"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/project_campaign_view_list_items"
         android:layout_width="0dp"
-        android:paddingTop="@dimen/grid_3"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/grid_3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

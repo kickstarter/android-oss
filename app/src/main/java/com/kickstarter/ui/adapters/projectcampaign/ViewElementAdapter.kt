@@ -10,6 +10,7 @@ import com.kickstarter.databinding.EmptyViewBinding
 import com.kickstarter.databinding.ViewElementExternalSourceFromHtmlBinding
 import com.kickstarter.databinding.ViewElementImageFromHtmlBinding
 import com.kickstarter.databinding.ViewElementTextFromHtmlBinding
+import com.kickstarter.databinding.ViewElementVideoFromHtmlBinding
 import com.kickstarter.libs.htmlparser.ExternalSourceViewElement
 import com.kickstarter.libs.htmlparser.ImageViewElement
 import com.kickstarter.libs.htmlparser.TextViewElement
@@ -19,6 +20,7 @@ import com.kickstarter.ui.viewholders.EmptyViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.ExternalViewViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.ImageElementViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.TextElementViewHolder
+import com.kickstarter.ui.viewholders.projectcampaign.VideoElementViewHolder
 
 /**
  * Adapter Specific to hold a list of ViewElements from the HTML Parser
@@ -66,7 +68,8 @@ class ViewElementAdapter(val requireActivity: FragmentActivity) : RecyclerView
         }
     }
 
-    private val elements: AsyncListDiffer<ViewElement> = AsyncListDiffer<ViewElement>(this, diffCallback)
+    private val elements: AsyncListDiffer<ViewElement> =
+        AsyncListDiffer<ViewElement>(this, diffCallback)
 
     override fun getItemCount() = elements.currentList.size
 
@@ -124,6 +127,19 @@ class ViewElementAdapter(val requireActivity: FragmentActivity) : RecyclerView
                     )
                 )
             }
+            ElementViewHolderType.VIDEO.ordinal -> {
+                return VideoElementViewHolder(
+                    ViewElementVideoFromHtmlBinding.inflate(
+                        LayoutInflater.from(
+                            viewGroup
+                                .context
+                        ),
+                        viewGroup,
+                        false
+                    ),
+                    requireActivity
+                )
+            }
             ElementViewHolderType.EXTERNAL_SOURCES.ordinal -> {
                 return ExternalViewViewHolder(
                     ViewElementExternalSourceFromHtmlBinding.inflate(
@@ -137,7 +153,13 @@ class ViewElementAdapter(val requireActivity: FragmentActivity) : RecyclerView
                     requireActivity
                 )
             }
-            else -> EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
+            else -> EmptyViewHolder(
+                EmptyViewBinding.inflate(
+                    LayoutInflater.from(viewGroup.context),
+                    viewGroup,
+                    false
+                )
+            )
         }
     }
 
@@ -156,11 +178,25 @@ class ViewElementAdapter(val requireActivity: FragmentActivity) : RecyclerView
             }
         }
 
+        (element as? VideoViewElement)?.let { videoElement ->
+            (viewHolder as? VideoElementViewHolder)?.let {
+                viewHolder.bindData(videoElement)
+            }
+        }
+
         (element as? ExternalSourceViewElement)?.let { externalSourceViewElement ->
             (viewHolder as? ExternalViewViewHolder)?.let {
                 viewHolder.bindData(externalSourceViewElement)
             }
         }
+    }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        (holder as? VideoElementViewHolder)?.let { videoElementViewHolder ->
+            videoElementViewHolder.releasePlayer(index = videoElementViewHolder.bindingAdapterPosition)
+        }
+
+        super.onViewRecycled(holder)
     }
 
     private enum class ElementViewHolderType {
@@ -169,5 +205,17 @@ class ViewElementAdapter(val requireActivity: FragmentActivity) : RecyclerView
         VIDEO,
         EMBEDDED,
         EXTERNAL_SOURCES
+    }
+
+    fun playIndexThenPausePreviousPlayer(index: Int) {
+        VideoElementViewHolder.playIndexThenPausePreviousPlayer(index)
+    }
+
+    fun releaseAllPlayers() {
+        VideoElementViewHolder.releaseAllPlayers()
+    }
+
+    fun releasePlayersOnPause() {
+        VideoElementViewHolder.releasePlayersOnPause()
     }
 }

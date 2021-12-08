@@ -9,6 +9,7 @@ import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
 import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
 import org.junit.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
@@ -113,7 +114,7 @@ class ProjectExtTest : KSRobolectricTestCase() {
         `when`(context.getString(R.string.discovery_baseball_card_deadline_units_hours)).thenReturn("hours")
         `when`(context.getString(R.string.discovery_baseball_card_deadline_units_days)).thenReturn("days")
 
-        val project: Project = ProjectFactory.project().toBuilder().deadline(DateTime.now().plusDays(2)).build()
+        val project: Project = ProjectFactory.project().toBuilder().deadline(DateTime.now(DateTimeZone.UTC).plusDays(2)).build()
 
         assertEquals("48 hours", project.deadlineCountdown(context))
     }
@@ -125,32 +126,34 @@ class ProjectExtTest : KSRobolectricTestCase() {
         `when`(context.getString(R.string.discovery_baseball_card_deadline_units_hours)).thenReturn("hours")
         `when`(context.getString(R.string.discovery_baseball_card_deadline_units_days)).thenReturn("days")
 
-        var project: Project = ProjectFactory.project().toBuilder().deadline(DateTime.now().plusDays(1)).build()
+        val dateTime = DateTime.now(DateTimeZone.UTC)
+        var project: Project = ProjectFactory.project().toBuilder().deadline(dateTime.plusDays(1)).build()
         assertEquals("hours", project.deadlineCountdownUnit(context))
 
-        project = project.toBuilder().deadline(DateTime.now().plusMinutes(10)).build()
+        project = project.toBuilder().deadline(dateTime.plusMinutes(10)).build()
         assertEquals("mins", project.deadlineCountdownUnit(context))
 
-        project = project.toBuilder().deadline(DateTime.now().plusSeconds(25)).build()
+        project = project.toBuilder().deadline(dateTime.plusSeconds(25)).build()
         assertEquals("secs", project.deadlineCountdownUnit(context))
 
-        project = project.toBuilder().deadline(DateTime.now().plusDays(10)).build()
+        project = project.toBuilder().deadline(dateTime.plusDays(10)).build()
         assertEquals("days", project.deadlineCountdownUnit(context))
     }
 
     @Test
     fun testDeadlineCountdownValue_testAllCases_shouldReturnCorrectValueOfTime() {
-        var project: Project = ProjectFactory.project().toBuilder().deadline(DateTime.now().plusDays(2)).build()
-        assertEquals(48, project.deadlineCountdownValue())
+        val dateTime = DateTime.now(DateTimeZone.UTC)
+        var project: Project = ProjectFactory.project().toBuilder().deadline(dateTime.plusDays(2)).build()
+        assertEquals(47, project.deadlineCountdownValue())
 
-        project = project.toBuilder().deadline(DateTime.now().plusMinutes(10)).build()
-        assertEquals(10, project.deadlineCountdownValue())
+        project = ProjectFactory.project().toBuilder().deadline(dateTime.plusMinutes(10)).build()
+        assertEquals(9, project.deadlineCountdownValue())
 
-        project = project.toBuilder().deadline(DateTime.now().plusSeconds(25)).build()
-        assertEquals(25, project.deadlineCountdownValue())
+        project = project.toBuilder().deadline(dateTime.plusSeconds(25)).build()
+        assertEquals(24, project.deadlineCountdownValue())
 
-        project = project.toBuilder().deadline(DateTime.now().plusDays(10)).build()
-        assertEquals(10, project.deadlineCountdownValue())
+        project = project.toBuilder().deadline(dateTime.plusDays(10)).build()
+        assertEquals(9, project.deadlineCountdownValue())
     }
 
     @Test

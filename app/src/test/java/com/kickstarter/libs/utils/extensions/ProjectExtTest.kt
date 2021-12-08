@@ -8,8 +8,10 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
+import net.danlew.android.joda.JodaTimeAndroid
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
+import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
@@ -19,6 +21,12 @@ import java.util.Locale
 class ProjectExtTest : KSRobolectricTestCase() {
 
     var context: Context = mock(Context::class.java)
+
+    @Before
+    fun init() {
+        // -  DateTimeZone.forID("EST")) requires initializing joda time library, on newest versions the initializing method has been deprecated look for an alternative
+        JodaTimeAndroid.init(context())
+    }
 
     @Test
     fun testBritishProject_WhenNoUserAndCanadaConfig() {
@@ -144,16 +152,17 @@ class ProjectExtTest : KSRobolectricTestCase() {
     fun testDeadlineCountdownValue_testAllCases_shouldReturnCorrectValueOfTime() {
         val dateTime = DateTime.now(DateTimeZone.UTC)
         var project: Project = ProjectFactory.project().toBuilder().deadline(dateTime.plusDays(2)).build()
-        assertEquals(47, project.deadlineCountdownValue())
+        assertEquals(48, project.deadlineCountdownValue())
 
         project = ProjectFactory.project().toBuilder().deadline(dateTime.plusMinutes(10)).build()
-        assertEquals(9, project.deadlineCountdownValue())
+        assertEquals(10, project.deadlineCountdownValue())
 
-        project = project.toBuilder().deadline(dateTime.plusSeconds(25)).build()
-        assertEquals(24, project.deadlineCountdownValue())
+        // Added milliseconds to allow the processing time
+        project = project.toBuilder().deadline(dateTime.plusSeconds(25).plusMillis(300)).build()
+        assertEquals(25, project.deadlineCountdownValue())
 
         project = project.toBuilder().deadline(dateTime.plusDays(10)).build()
-        assertEquals(9, project.deadlineCountdownValue())
+        assertEquals(10, project.deadlineCountdownValue())
     }
 
     @Test

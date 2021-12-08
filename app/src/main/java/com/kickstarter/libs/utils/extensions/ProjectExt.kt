@@ -13,7 +13,7 @@ import com.kickstarter.services.DiscoveryParams
 import org.joda.time.DateTime
 import org.joda.time.Duration
 import type.CreditCardTypes
-import kotlin.math.floor
+import kotlin.math.round
 
 /**
  * When fetching a project from GraphQL, we need to populate the next fields
@@ -128,9 +128,9 @@ fun Project.deadlineCountdownValue(): Int {
 
     return when {
         seconds <= 120.0 -> seconds.toInt() // seconds
-        seconds <= 120.0 * 60.0 -> floor(seconds / 60.0).toInt() // minutes
-        seconds < 72.0 * 60.0 * 60.0 -> floor(seconds / 60.0 / 60.0).toInt() // hours
-        else -> floor(seconds / 60.0 / 60.0 / 24.0).toInt() // days
+        seconds <= 120.0 * 60.0 -> round(seconds / 60.0).toInt() // minutes
+        seconds < 72.0 * 60.0 * 60.0 -> round(seconds / 60.0 / 60.0).toInt() // hours
+        else -> round(seconds / 60.0 / 60.0 / 24.0).toInt() // days
     }
 }
 

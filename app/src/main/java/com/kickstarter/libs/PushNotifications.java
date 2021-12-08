@@ -341,7 +341,7 @@ public final class PushNotifications {
     final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this.context)
       .addNextIntentWithParentStack(messageThreadIntent);
 
-    return taskStackBuilder.getPendingIntent(envelope.signature(), PendingIntent.FLAG_UPDATE_CURRENT);
+    return taskStackBuilder.getPendingIntent(envelope.signature(), PendingIntent.FLAG_IMMUTABLE);
   }
 
   @VisibleForTesting
@@ -355,7 +355,7 @@ public final class PushNotifications {
     final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this.context)
       .addNextIntentWithParentStack(this.messageThreadIntent);
 
-    return taskStackBuilder.getPendingIntent(envelope.signature(), PendingIntent.FLAG_UPDATE_CURRENT);
+    return taskStackBuilder.getPendingIntent(envelope.signature(), PendingIntent.FLAG_IMMUTABLE);
   }
 
   private @NonNull NotificationCompat.Builder notificationBuilder(final @NonNull String title,
@@ -376,7 +376,7 @@ public final class PushNotifications {
     final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this.context)
       .addNextIntentWithParentStack(projectIntent);
 
-    return taskStackBuilder.getPendingIntent(envelope.signature(), PendingIntent.FLAG_UPDATE_CURRENT);
+    return taskStackBuilder.getPendingIntent(envelope.signature(), PendingIntent.FLAG_IMMUTABLE);
   }
 
   private @NonNull PendingIntent projectUpdateContentIntent(final @NonNull PushNotificationEnvelope envelope,
@@ -395,7 +395,7 @@ public final class PushNotifications {
       .addNextIntentWithParentStack(projectIntent)
       .addNextIntent(updateIntent);
 
-    return taskStackBuilder.getPendingIntent(envelope.signature(), PendingIntent.FLAG_UPDATE_CURRENT);
+    return taskStackBuilder.getPendingIntent(envelope.signature(), PendingIntent.FLAG_IMMUTABLE);
   }
 
   private @NonNull PendingIntent surveyResponseContentIntent(final @NonNull PushNotificationEnvelope envelope,
@@ -410,7 +410,7 @@ public final class PushNotifications {
       .addNextIntentWithParentStack(activityFeedIntent)
       .addNextIntent(surveyResponseIntent);
 
-    return taskStackBuilder.getPendingIntent(envelope.signature(), PendingIntent.FLAG_UPDATE_CURRENT);
+    return taskStackBuilder.getPendingIntent(envelope.signature(), PendingIntent.FLAG_IMMUTABLE);
   }
 
   private @Nullable Bitmap fetchBitmap(final @Nullable String url, final boolean transformIntoCircle) {

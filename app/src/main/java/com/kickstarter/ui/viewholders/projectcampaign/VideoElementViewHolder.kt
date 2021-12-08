@@ -193,12 +193,12 @@ class VideoElementViewHolder(
 
     fun releasePlayer(index: Int) {
         playersMap[index]?.let {
-         //   it.removeListener(listener)
+            //   it.removeListener(listener)
             it.release()
             trackSelector = null
         }
     }
-    
+
     companion object {
         // for hold all players generated
         private var playersMap: MutableMap<Int, SimpleExoPlayer?> = mutableMapOf()

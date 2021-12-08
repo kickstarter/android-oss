@@ -15,11 +15,13 @@ class ProjectCampaignViewModel {
     interface Inputs {
         /** Configure with current [ProjectData]. */
         fun configureWith(projectData: ProjectData)
+        fun scrollToVideoPosition(position: Int)
     }
 
     interface Outputs {
         /** Emits in a list format the DOM elements  */
         fun storyViewElements(): Observable<List<ViewElement>>
+        fun onScrollToVideoPosition(): Observable<Int>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<ProjectOverviewFragment>(environment), Inputs, Outputs {
@@ -29,6 +31,9 @@ class ProjectCampaignViewModel {
         private val htmlParser = HTMLParser()
         private val projectDataInput = BehaviorSubject.create<ProjectData>()
         private val storyViewElementsList: Observable<List<ViewElement>>
+
+        private val scrollToVideoPosition = BehaviorSubject.create<Int>()
+        private val onScrollToVideoPosition = BehaviorSubject.create<Int>()
 
         init {
             val project = projectDataInput
@@ -41,12 +46,20 @@ class ProjectCampaignViewModel {
                 .filter { ObjectUtils.isNotNull(it.story()) }
                 .map { requireNotNull(it.story()) }
                 .map { htmlParser.parse(it) }
+
+            scrollToVideoPosition
+                .compose(bindToLifecycle())
+                .subscribe {
+                    onScrollToVideoPosition.onNext(it)
+                }
         }
 
         // - Inputs
         override fun configureWith(projectData: ProjectData) =
             this.projectDataInput.onNext(projectData)
+        override fun scrollToVideoPosition(position: Int) = scrollToVideoPosition.onNext(position)
 
         override fun storyViewElements(): Observable<List<ViewElement>> = storyViewElementsList
+        override fun onScrollToVideoPosition(): Observable<Int> = onScrollToVideoPosition
     }
 }

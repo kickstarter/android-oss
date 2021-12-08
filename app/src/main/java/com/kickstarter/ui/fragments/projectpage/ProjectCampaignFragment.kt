@@ -22,7 +22,10 @@ import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
 @RequiresFragmentViewModel(ProjectCampaignViewModel.ViewModel::class)
-class ProjectCampaignFragment : BaseFragment<ProjectCampaignViewModel.ViewModel>(), Configure {
+class ProjectCampaignFragment :
+    BaseFragment<ProjectCampaignViewModel.ViewModel>(),
+    Configure,
+    ViewElementAdapter.FullScreenDelegate {
 
     private var binding: FragmentProjectCampaignBinding? = null
     private var viewElementAdapter: ViewElementAdapter? = null
@@ -35,7 +38,7 @@ class ProjectCampaignFragment : BaseFragment<ProjectCampaignViewModel.ViewModel>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewElementAdapter = ViewElementAdapter(requireActivity())
+        viewElementAdapter = ViewElementAdapter(requireActivity(), this)
         val headerElementAdapter = HeaderElementAdapter()
         binding?.projectCampaignViewListItems?.itemAnimator?.changeDuration = 0
         binding?.projectCampaignViewListItems?.layoutManager = LinearLayoutManager(context)
@@ -54,6 +57,16 @@ class ProjectCampaignFragment : BaseFragment<ProjectCampaignViewModel.ViewModel>
             .compose(Transformers.observeForUI())
             .subscribe {
                 viewElementAdapter?.submitList(it)
+            }
+
+        this.viewModel.outputs.onScrollToVideoPosition()
+            .subscribeOn(Schedulers.io())
+            .distinctUntilChanged()
+            .delay(300, TimeUnit.MILLISECONDS)
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                binding?.projectCampaignViewListItems?.smoothScrollToPosition(it)
             }
 
         val scrollListener = object : RecyclerViewScrollListener() {
@@ -96,5 +109,9 @@ class ProjectCampaignFragment : BaseFragment<ProjectCampaignViewModel.ViewModel>
             fragment.arguments = bundle
             return fragment
         }
+    }
+
+    override fun onFullScreenClosed(index: Int) {
+        viewModel.inputs.scrollToVideoPosition(position = index)
     }
 }

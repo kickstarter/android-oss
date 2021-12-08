@@ -25,7 +25,10 @@ import com.kickstarter.ui.viewholders.projectcampaign.VideoElementViewHolder
 /**
  * Adapter Specific to hold a list of ViewElements from the HTML Parser
  */
-class ViewElementAdapter(val requireActivity: FragmentActivity) : RecyclerView
+class ViewElementAdapter(
+    val requireActivity: FragmentActivity,
+    private val fullScreenDelegate: FullScreenDelegate
+) : RecyclerView
 .Adapter<RecyclerView
     .ViewHolder>() {
 
@@ -137,6 +140,7 @@ class ViewElementAdapter(val requireActivity: FragmentActivity) : RecyclerView
                         viewGroup,
                         false
                     ),
+                    fullScreenDelegate,
                     requireActivity
                 )
             }
@@ -150,6 +154,7 @@ class ViewElementAdapter(val requireActivity: FragmentActivity) : RecyclerView
                         viewGroup,
                         false
                     ),
+                    fullScreenDelegate,
                     requireActivity
                 )
             }
@@ -217,5 +222,9 @@ class ViewElementAdapter(val requireActivity: FragmentActivity) : RecyclerView
 
     fun releasePlayersOnPause() {
         VideoElementViewHolder.releasePlayersOnPause()
+    }
+
+    interface FullScreenDelegate {
+        fun onFullScreenClosed(index: Int)
     }
 }

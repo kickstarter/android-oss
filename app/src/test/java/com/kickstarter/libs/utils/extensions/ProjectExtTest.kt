@@ -22,12 +22,6 @@ class ProjectExtTest : KSRobolectricTestCase() {
 
     var context: Context = mock(Context::class.java)
 
-    @Before
-    fun init() {
-        // -  DateTimeZone.forID("EST")) requires initializing joda time library, on newest versions the initializing method has been deprecated look for an alternative
-        JodaTimeAndroid.init(context())
-    }
-
     @Test
     fun testBritishProject_WhenNoUserAndCanadaConfig() {
         val user = null
@@ -157,7 +151,7 @@ class ProjectExtTest : KSRobolectricTestCase() {
         project = ProjectFactory.project().toBuilder().deadline(dateTime.plusMinutes(10)).build()
         assertEquals(10, project.deadlineCountdownValue())
 
-        // Added milliseconds to allow the processing time
+        // - Added milliseconds to allow the processing time
         project = project.toBuilder().deadline(dateTime.plusSeconds(25).plusMillis(300)).build()
         assertEquals(25, project.deadlineCountdownValue())
 

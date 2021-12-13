@@ -1,0 +1,20 @@
+version: 2
+updates:
+  # Updates for Github Actions used in the repo
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "13:00"
+    open-pull-requests-limit: 10
+    labels:
+      - "Platform"
+  # Gradle
+  - package-ecosystem: gradle
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "13:00"
+    open-pull-requests-limit: 40
+    labels:
+      - "Platform"

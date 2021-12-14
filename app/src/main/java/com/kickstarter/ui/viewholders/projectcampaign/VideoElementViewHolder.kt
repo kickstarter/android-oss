@@ -1,6 +1,5 @@
 package com.kickstarter.ui.viewholders.projectcampaign
 
-import android.app.Dialog
 import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
@@ -104,12 +103,14 @@ class VideoElementViewHolder(
 
         if (seekPosition != 0L) {
             player.seekTo(seekPosition)
+            System.out.println("seekPosition element " + seekPosition)
         }
 
         // add player with its index to map
         if (playersMap.containsKey(bindingAdapterPosition)) {
             playersMap[bindingAdapterPosition]?.currentPosition?.let {
                 player.seekTo(it)
+                System.out.println("seekPosition map " + it)
                 if (it != 0L)
                     player.playWhenReady = true
             }
@@ -150,10 +151,6 @@ class VideoElementViewHolder(
         )
     }
 
-    private fun closeFullscreenDialog() {
-        fullScreenDelegate.onFullScreenClosed(absoluteAdapterPosition)
-    }
-
     fun releasePlayer(index: Int) {
         playersMap[index]?.let {
             //   it.removeListener(listener)
@@ -170,10 +167,15 @@ class VideoElementViewHolder(
         private var currentPlayingVideo: Pair<Int, SimpleExoPlayer?>? = null
 
         fun releaseAllPlayers() {
-            playersMap.onEachIndexed { index, item ->
-                item.value?.release()
-                playersMap[index] = null
+            val itr = playersMap.iterator()
+            while (itr.hasNext()) {
+                val entry = itr.next()
+
+                entry.value?.release()
+                entry.setValue(null)
+                itr.remove()
             }
+
             playersMap.clear()
             playersMap = mutableMapOf()
             currentPlayingVideo?.second?.release()
@@ -188,6 +190,7 @@ class VideoElementViewHolder(
 
         fun setPlayerSeekPosition(index: Int, seekPosition: Long) {
             playersMap[index]?.seekTo(seekPosition)
+            System.out.println("seekPositionp video closed " + seekPosition)
         }
 
         // call when scroll to pause any playing player

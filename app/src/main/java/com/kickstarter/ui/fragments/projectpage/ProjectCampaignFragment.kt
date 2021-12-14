@@ -118,8 +118,8 @@ class ProjectCampaignFragment :
         binding?.projectCampaignViewListItems?.addOnScrollListener(scrollListener)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDetach() {
+        super.onDetach()
         viewElementAdapter?.releaseAllPlayers()
     }
 

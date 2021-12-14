@@ -85,7 +85,7 @@ fun Element.parseExternalElement(): ExternalSourceViewElement {
  * This function extract from the textNode a tag list from their ancestors
  * until it detects the parent blockType.
  *
- * Note: BlockTypes are direct childs of body HTML tag
+ * Note: BlockTypes are direct children of body HTML tag
  * @param tags - Populates the list of parent tags
  * @param urls - In case of any of the parents is a link(<a>) populates the urls list
  */

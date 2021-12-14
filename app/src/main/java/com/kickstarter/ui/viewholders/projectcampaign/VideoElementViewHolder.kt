@@ -24,11 +24,13 @@ import com.kickstarter.databinding.ViewElementVideoFromHtmlBinding
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.htmlparser.VideoViewElement
 import com.kickstarter.libs.utils.WebUtils
+import com.kickstarter.ui.adapters.projectcampaign.ViewElementAdapter
 import com.kickstarter.ui.extensions.loadImage
 import com.kickstarter.ui.viewholders.KSViewHolder
 
 class VideoElementViewHolder(
     val binding: ViewElementVideoFromHtmlBinding,
+    private val fullScreenDelegate: ViewElementAdapter.FullScreenDelegate,
     val requireActivity: FragmentActivity
 ) : KSViewHolder(binding.root) {
 
@@ -189,6 +191,7 @@ class VideoElementViewHolder(
                 R.drawable.ic_fullscreen_open
             )
         )
+        fullScreenDelegate.onFullScreenClosed(absoluteAdapterPosition)
     }
 
     fun releasePlayer(index: Int) {

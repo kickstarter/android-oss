@@ -16,10 +16,12 @@ import kotlin.math.absoluteValue
 
 fun decodeRelayId(encodedRelayId: String?): Long? {
     return try {
-        String(Base64Utils.decode(encodedRelayId), Charset.defaultCharset())
-            .replaceBeforeLast("-", "", "")
-            .toLong()
-            .absoluteValue
+        encodedRelayId?.let {
+            String(Base64Utils.decode(it), Charset.defaultCharset())
+                .replaceBeforeLast("-", "", "")
+                .toLong()
+                .absoluteValue
+        }
     } catch (e: Exception) {
         null
     }

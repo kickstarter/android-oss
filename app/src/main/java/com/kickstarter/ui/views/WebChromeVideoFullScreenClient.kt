@@ -7,8 +7,13 @@ import android.view.View
 import android.webkit.WebChromeClient
 import android.widget.FrameLayout
 import androidx.fragment.app.FragmentActivity
+import com.kickstarter.ui.adapters.projectcampaign.ViewElementAdapter
 
-class WebChromeVideoFullScreenClient(val requireActivity: FragmentActivity) : WebChromeClient() {
+class WebChromeVideoFullScreenClient(
+    val requireActivity: FragmentActivity,
+    private val fullScreenDelegate: ViewElementAdapter.FullScreenDelegate? = null,
+    private val elementIndex: Int? = null
+) : WebChromeClient() {
 
     private var customView: View? = null
     private var customViewCallback: CustomViewCallback? = null
@@ -31,6 +36,7 @@ class WebChromeVideoFullScreenClient(val requireActivity: FragmentActivity) : We
         requireActivity.requestedOrientation = originalOrientation
         customViewCallback?.onCustomViewHidden()
         customViewCallback = null
+        elementIndex?.let { fullScreenDelegate?.onFullScreenClosed(it) }
     }
 
     override fun onShowCustomView(paramView: View, paramCustomViewCallback: CustomViewCallback) {

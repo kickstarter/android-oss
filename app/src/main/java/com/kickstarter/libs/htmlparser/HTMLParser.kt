@@ -34,7 +34,8 @@ class HTMLParser {
                     val videoViewElement = VideoViewElement(
                         element.parseVideoElement(),
                         element
-                            .parseVideoElementThumbnailUrl()
+                            .parseVideoElementThumbnailUrl(),
+                        0
                     )
                     viewElements.add(videoViewElement)
                 }

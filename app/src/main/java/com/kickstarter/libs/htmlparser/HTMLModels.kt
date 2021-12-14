@@ -5,7 +5,12 @@ import org.jsoup.nodes.Element
 interface ViewElement
 
 data class TextViewElement(var components: List<TextComponent>) : ViewElement
-data class VideoViewElement(val sourceUrl: String, val thumbnailUrl: String?) : ViewElement
+data class VideoViewElement(
+    val sourceUrl: String,
+    val thumbnailUrl: String?,
+    val seekPosition: Long
+) :
+    ViewElement
 
 data class TextComponent(
     var text: String,

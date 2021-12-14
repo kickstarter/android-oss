@@ -181,7 +181,6 @@
             android:name=".ui.activities.ProjectPageActivity"
             android:parentActivityName=".ui.activities.DiscoveryActivity"
             android:theme="@style/ProjectActivity"
-            android:configChanges="screenSize|orientation"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.activities.ProjectNotificationSettingsActivity"

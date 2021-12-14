@@ -1,5 +1,7 @@
 package com.kickstarter.ui.activities
 
+import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -19,6 +21,7 @@ import com.kickstarter.libs.Build
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.WebUtils.userAgent
+import com.kickstarter.ui.IntentKey
 import com.kickstarter.viewmodels.VideoViewModel
 import com.trello.rxlifecycle.ActivityEvent
 
@@ -41,6 +44,14 @@ class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
             .compose(Transformers.takeWhen(lifecycle().filter { other: ActivityEvent? -> ActivityEvent.RESUME.equals(other) }))
             .compose(bindToLifecycle())
             .subscribe { preparePlayer(it) }
+
+        viewModel.outputs.preparePlayerWithUrlAndPosition()
+            .compose(Transformers.takeWhen(lifecycle().filter { other: ActivityEvent? -> ActivityEvent.RESUME.equals(other) }))
+            .compose(bindToLifecycle())
+            .subscribe {
+                playerPosition = it.second
+                preparePlayer(it.first)
+            }
     }
 
     public override fun onDestroy() {
@@ -58,6 +69,13 @@ class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
         if (hasFocus) {
             binding.videoPlayerLayout.systemUiVisibility = systemUIFlags()
         }
+    }
+
+    override fun back() {
+        val intent = Intent()
+            .putExtra(IntentKey.VIDEO_SEEK_POSITION, playerPosition)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 
     private fun systemUIFlags(): Int {
@@ -102,12 +120,12 @@ class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
 
         binding.playerView.player = player
         player?.addListener(eventListener)
-        playerPosition?.let {
-            player?.seekTo(it)
-        }
 
         val playerIsResuming = (playerPosition != 0L)
         player?.prepare(getMediaSource(videoUrl), playerIsResuming, false)
+        playerPosition?.let {
+            player?.seekTo(it)
+        }
         player?.playWhenReady = true
     }
 

@@ -1,12 +1,10 @@
 package com.kickstarter.ui.viewholders.projectcampaign
 
 import android.app.Dialog
-import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import com.google.android.exoplayer2.C
@@ -77,12 +75,12 @@ class VideoElementViewHolder(
     fun configure(element: VideoViewElement) {
         build = environment().build()
         thumbnail.loadImage(element.thumbnailUrl, context())
-        loadVideo(element.sourceUrl)
+        loadVideo(element.sourceUrl, element.seekPosition)
         fullscreenButton = videoPlayerView.findViewById(R.id.exo_fullscreen_icon)
 
         fullscreenButton?.setOnClickListener {
             if (!mExoPlayerFullscreen)
-                openFullscreenDialog()
+                openFullscreenDialog(element.sourceUrl)
             else
                 closeFullscreenDialog()
         }
@@ -94,7 +92,7 @@ class VideoElementViewHolder(
         }
     }
 
-    private fun loadVideo(url: String) {
+    private fun loadVideo(url: String, seekPosition: Long) {
         val adaptiveTrackSelectionFactory: AdaptiveTrackSelection.Factory = AdaptiveTrackSelection.Factory()
         trackSelector = DefaultTrackSelector(context(), adaptiveTrackSelectionFactory)
 
@@ -105,6 +103,10 @@ class VideoElementViewHolder(
         val player = playerBuilder.build().also {
             it.playWhenReady = false
             it.prepare(getMediaSource(url))
+        }
+
+        if (seekPosition != 0L) {
+            player.seekTo(seekPosition)
         }
 
         // add player with its index to map
@@ -153,44 +155,15 @@ class VideoElementViewHolder(
             }
         }
 
-    private fun openFullscreenDialog() {
-        parentViewGroup = (videoPlayerView.parent as ViewGroup)
-        parentViewGroup?.removeView(videoPlayerView)
-        mFullScreenDialog.addContentView(
-            videoPlayerView,
-            ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-        )
+    private fun openFullscreenDialog(url: String) {
 
-        fullscreenButton?.setImageDrawable(
-            ContextCompat.getDrawable(
-                context(),
-                R.drawable.ic_fullscreen_close
-            )
+        fullScreenDelegate.onFullScreenOpened(
+            bindingAdapterPosition, url,
+            playersMap[bindingAdapterPosition]?.currentPosition ?: 0
         )
-        mExoPlayerFullscreen = true
-        originalSystemUiVisibility = requireActivity.window.decorView.systemUiVisibility
-        originalOrientation = requireActivity.requestedOrientation
-        requireActivity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        requireActivity.window.decorView.systemUiVisibility = 3846
-        mFullScreenDialog.show()
     }
 
     private fun closeFullscreenDialog() {
-        (videoPlayerView.parent as ViewGroup).removeView(videoPlayerView)
-        parentViewGroup?.addView(videoPlayerView)
-        mExoPlayerFullscreen = false
-        requireActivity.window.decorView.systemUiVisibility = originalSystemUiVisibility
-        requireActivity.requestedOrientation = originalOrientation
-        mFullScreenDialog.dismiss()
-        fullscreenButton?.setImageDrawable(
-            ContextCompat.getDrawable(
-                context(),
-                R.drawable.ic_fullscreen_open
-            )
-        )
         fullScreenDelegate.onFullScreenClosed(absoluteAdapterPosition)
     }
 
@@ -224,6 +197,10 @@ class VideoElementViewHolder(
             playersMap.forEach { item ->
                 item.value?.playWhenReady = false
             }
+        }
+
+        fun setPlayerSeekPosition(index: Int, seekPosition: Long) {
+            playersMap[index]?.seekTo(seekPosition)
         }
 
         // call when scroll to pause any playing player

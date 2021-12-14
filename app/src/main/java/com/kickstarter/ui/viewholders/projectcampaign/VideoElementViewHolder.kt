@@ -79,10 +79,7 @@ class VideoElementViewHolder(
         fullscreenButton = videoPlayerView.findViewById(R.id.exo_fullscreen_icon)
 
         fullscreenButton?.setOnClickListener {
-            if (!mExoPlayerFullscreen)
-                openFullscreenDialog(element.sourceUrl)
-            else
-                closeFullscreenDialog()
+            openFullscreenDialog(element.sourceUrl)
         }
     }
 
@@ -146,17 +143,7 @@ class VideoElementViewHolder(
         }
     }
 
-    private val mFullScreenDialog: Dialog =
-        object : Dialog(context(), android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
-            override fun onBackPressed() {
-                if (mExoPlayerFullscreen)
-                    closeFullscreenDialog()
-                super.onBackPressed()
-            }
-        }
-
     private fun openFullscreenDialog(url: String) {
-
         fullScreenDelegate.onFullScreenOpened(
             bindingAdapterPosition, url,
             playersMap[bindingAdapterPosition]?.currentPosition ?: 0

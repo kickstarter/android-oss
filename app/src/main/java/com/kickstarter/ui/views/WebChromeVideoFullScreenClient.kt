@@ -36,7 +36,6 @@ class WebChromeVideoFullScreenClient(
         requireActivity.requestedOrientation = originalOrientation
         customViewCallback?.onCustomViewHidden()
         customViewCallback = null
-        elementIndex?.let { fullScreenDelegate?.onFullScreenClosed(it) }
     }
 
     override fun onShowCustomView(paramView: View, paramCustomViewCallback: CustomViewCallback) {

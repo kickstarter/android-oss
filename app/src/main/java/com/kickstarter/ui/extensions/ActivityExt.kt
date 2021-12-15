@@ -6,6 +6,7 @@ import android.content.Intent
 import android.util.Pair
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.result.ActivityResultLauncher
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.kickstarter.R
@@ -16,6 +17,7 @@ import com.kickstarter.libs.utils.extensions.getCreatorDashboardActivityIntent
 import com.kickstarter.libs.utils.extensions.getProjectUpdatesActivityIntent
 import com.kickstarter.libs.utils.extensions.getRootCommentsActivityIntent
 import com.kickstarter.libs.utils.extensions.getUpdatesActivityIntent
+import com.kickstarter.libs.utils.extensions.getVideoActivityIntent
 import com.kickstarter.models.Project
 import com.kickstarter.ui.data.ProjectData
 import timber.log.Timber
@@ -105,6 +107,15 @@ fun Activity.startCreatorDashboardActivity(project: Project) {
 
 fun Activity.startCreatorBioWebViewActivity(project: Project) {
     startActivity(Intent().getCreatorBioWebViewActivityIntent(this, project))
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+}
+
+fun Activity.startVideoActivity(
+    startForResult: ActivityResultLauncher<Intent>,
+    videoSource: String,
+    videoSeekPosition: Long
+) {
+    startForResult.launch(Intent().getVideoActivityIntent(this, videoSource, videoSeekPosition))
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
 }
 

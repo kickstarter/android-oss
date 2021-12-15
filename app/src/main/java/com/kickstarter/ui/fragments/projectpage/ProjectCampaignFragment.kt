@@ -1,9 +1,11 @@
 package com.kickstarter.ui.fragments.projectpage
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
@@ -13,9 +15,11 @@ import com.kickstarter.libs.Configure
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.ui.ArgumentsKey
+import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.projectcampaign.HeaderElementAdapter
 import com.kickstarter.ui.adapters.projectcampaign.ViewElementAdapter
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.extensions.startVideoActivity
 import com.kickstarter.ui.views.RecyclerViewScrollListener
 import com.kickstarter.viewmodels.projectpage.ProjectCampaignViewModel
 import rx.schedulers.Schedulers
@@ -29,6 +33,14 @@ class ProjectCampaignFragment :
 
     private var binding: FragmentProjectCampaignBinding? = null
     private var viewElementAdapter: ViewElementAdapter? = null
+
+    var startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data = result.data?.getLongExtra(IntentKey.VIDEO_SEEK_POSITION, 0)
+            data?.let { viewModel.inputs.closeFullScreenVideo(it) }
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -58,7 +70,6 @@ class ProjectCampaignFragment :
             .subscribe {
                 viewElementAdapter?.submitList(it)
             }
-
         this.viewModel.outputs.onScrollToVideoPosition()
             .subscribeOn(Schedulers.io())
             .distinctUntilChanged()
@@ -66,7 +77,25 @@ class ProjectCampaignFragment :
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                binding?.projectCampaignViewListItems?.smoothScrollToPosition(it)
+                binding?.projectCampaignViewListItems?.smoothScrollToPosition(it + 1)
+            }
+
+        this.viewModel.outputs.onOpenVideoInFullScreen()
+            .subscribeOn(Schedulers.io())
+            .distinctUntilChanged()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                requireActivity().startVideoActivity(startForResult, it.first, it.second)
+            }
+
+        this.viewModel.outputs.updateVideoCloseSeekPosition()
+            .subscribeOn(Schedulers.io())
+            .distinctUntilChanged()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                viewElementAdapter?.setPlayerSeekPosition(it.first, it.second)
             }
 
         val scrollListener = object : RecyclerViewScrollListener() {
@@ -81,8 +110,8 @@ class ProjectCampaignFragment :
         binding?.projectCampaignViewListItems?.addOnScrollListener(scrollListener)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDetach() {
+        super.onDetach()
         viewElementAdapter?.releaseAllPlayers()
     }
 
@@ -111,7 +140,7 @@ class ProjectCampaignFragment :
         }
     }
 
-    override fun onFullScreenClosed(index: Int) {
-        viewModel.inputs.scrollToVideoPosition(position = index)
+    override fun onFullScreenOpened(index: Int, source: String, seekPosition: Long) {
+        viewModel.inputs.openVideoInFullScreen(index, source, seekPosition)
     }
 }

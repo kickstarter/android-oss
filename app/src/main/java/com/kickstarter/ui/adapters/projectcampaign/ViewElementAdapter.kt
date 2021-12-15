@@ -224,7 +224,11 @@ class ViewElementAdapter(
         VideoElementViewHolder.releasePlayersOnPause()
     }
 
+    fun setPlayerSeekPosition(index: Int, seekPosition: Long) {
+        VideoElementViewHolder.setPlayerSeekPosition(index, seekPosition)
+    }
+
     interface FullScreenDelegate {
-        fun onFullScreenClosed(index: Int)
+        fun onFullScreenOpened(index: Int, source: String, seekPosition: Long = 0L)
     }
 }

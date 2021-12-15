@@ -73,7 +73,7 @@ class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
 
     override fun back() {
         val intent = Intent()
-            .putExtra(IntentKey.VIDEO_SEEK_POSITION, playerPosition)
+            .putExtra(IntentKey.VIDEO_SEEK_POSITION, player?.currentPosition)
         setResult(Activity.RESULT_OK, intent)
         finish()
     }

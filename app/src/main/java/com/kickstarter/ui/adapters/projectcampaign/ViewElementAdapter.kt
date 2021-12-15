@@ -229,7 +229,6 @@ class ViewElementAdapter(
     }
 
     interface FullScreenDelegate {
-        fun onFullScreenClosed(index: Int)
         fun onFullScreenOpened(index: Int, source: String, seekPosition: Long = 0L)
     }
 }

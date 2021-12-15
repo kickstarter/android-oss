@@ -3,7 +3,6 @@ package com.kickstarter.ui.fragments.projectpage
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,14 +34,12 @@ class ProjectCampaignFragment :
 
     private var binding: FragmentProjectCampaignBinding? = null
     private var viewElementAdapter: ViewElementAdapter? = null
-    private var delegate: ProjectCampaignFragmentDelegate? = null
 
     var startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             // There are no request codes
             val data = result.data?.getLongExtra(IntentKey.VIDEO_SEEK_POSITION, 0)
             data?.let { viewModel.inputs.closeFullScreenVideo(it) }
-            // viewElementAdapter?.setPlayerSeekPosition(index,data)
         }
     }
 
@@ -148,18 +145,7 @@ class ProjectCampaignFragment :
         }
     }
 
-    override fun onFullScreenClosed(index: Int) {
-    }
-
     override fun onFullScreenOpened(index: Int, source: String, seekPosition: Long) {
         viewModel.inputs.openVideoInFullScreen(index, source, seekPosition)
-    }
-
-    fun setProjectCampaignFragmentDelegate(delegate: ProjectCampaignFragmentDelegate) {
-        this.delegate = delegate
-    }
-
-    interface ProjectCampaignFragmentDelegate {
-        fun onFullScreenVideoOpened(video: Pair<String, Long>)
     }
 }

@@ -1,7 +1,6 @@
 package com.kickstarter.ui.fragments.projectpage
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,10 +16,10 @@ import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.activities.VideoActivity
 import com.kickstarter.ui.adapters.projectcampaign.HeaderElementAdapter
 import com.kickstarter.ui.adapters.projectcampaign.ViewElementAdapter
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.extensions.startVideoActivity
 import com.kickstarter.ui.views.RecyclerViewScrollListener
 import com.kickstarter.viewmodels.projectpage.ProjectCampaignViewModel
 import rx.schedulers.Schedulers
@@ -71,7 +70,6 @@ class ProjectCampaignFragment :
             .subscribe {
                 viewElementAdapter?.submitList(it)
             }
-
         this.viewModel.outputs.onScrollToVideoPosition()
             .subscribeOn(Schedulers.io())
             .distinctUntilChanged()
@@ -88,10 +86,7 @@ class ProjectCampaignFragment :
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                val intent = Intent(context, VideoActivity::class.java)
-                    .putExtra(IntentKey.VIDEO_URL_SOURCE, it.first)
-                    .putExtra(IntentKey.VIDEO_SEEK_POSITION, it.second)
-                startForResult.launch(intent)
+                requireActivity().startVideoActivity(startForResult, it.first, it.second)
             }
 
         this.viewModel.outputs.updateVideoCloseSeekPosition()

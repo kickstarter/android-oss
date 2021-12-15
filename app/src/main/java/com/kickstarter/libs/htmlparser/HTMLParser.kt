@@ -50,32 +50,6 @@ class HTMLParser {
         return viewElements
     }
 
-    /**
-     * This function extract from the textNode a tag list from their ancestors
-     * until it detects the parent blockType.
-     * @param tags - Populates the list of parent tags
-     * @param urls - In case of any of the parents is a link(<a>) populates the urls list
-     * Returns blockType
-     */
-    private fun extractTextAttributes(
-        element: Element,
-        tags: MutableList<String>,
-        urls: MutableList<String>
-    ): TextComponent.TextBlockType? =
-        if (TextComponent.TextBlockType.values().map { it.tag }
-            .contains(element.tagName())
-        ) {
-            TextComponent.TextBlockType.initialize(element.tagName())
-        } else {
-            tags.add(element.tagName())
-            if (element.tagName() == "a") {
-                urls.add(element.attr("href"))
-            }
-            element.parent()?.let {
-                extractTextAttributes(it, tags, urls)
-            }
-        }
-
     private fun parseTextElement(
         element: Element,
         textComponents: MutableList<TextComponent>

@@ -816,6 +816,12 @@ class ProjectPageActivity :
         }
     }
 
+    override fun onDestroy() {
+        binding.projectPager.adapter = null
+        this.viewModel = null
+        super.onDestroy()
+    }
+
     private fun updateManagePledgeMenu(@MenuRes menu: Int?) {
         menu?.let {
             binding.pledgeContainerLayout.pledgeToolbar.inflateMenu(it)

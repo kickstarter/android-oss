@@ -23,10 +23,11 @@ class BooleanDataStore @JvmOverloads constructor(
 ) : BooleanDataStoreType {
 
     val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+    private val prefKey = booleanPreferencesKey(this.key)
 
     override fun get(): Boolean {
         val flow: Flow<Boolean> = context.dataStore.data.map {
-            it[booleanPreferencesKey(key)] ?: defaultValue
+            it[prefKey] ?: defaultValue
         }
         return unwrapFlowValue(flow) as Boolean
     }
@@ -53,21 +54,21 @@ class BooleanDataStore @JvmOverloads constructor(
                 } else {
                     throw exception
                 }
-            }.map { it.contains(booleanPreferencesKey(key)) }
+            }.map { it.contains(prefKey) }
 
             return unwrapFlowValue(flow) as Boolean
         }
 
     override suspend fun set(value: Boolean) {
         context.dataStore.edit {
-            it[booleanPreferencesKey(key)] = !(it[booleanPreferencesKey(key)] ?: false)
+            it[prefKey] = !(it[prefKey] ?: false)
         }
     }
 
     override suspend fun delete() {
         context.dataStore.edit {
-            if (it.contains(booleanPreferencesKey(key)))
-                it.remove(booleanPreferencesKey(key))
+            if (it.contains(prefKey))
+                it.remove(prefKey)
         }
     }
 }

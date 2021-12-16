@@ -243,6 +243,9 @@ dependencies {
     implementation "net.danlew:android.joda:2.10.7"
     implementation "org.jsoup:jsoup:1.14.3"
 
+    // Data Store (SharedPreferences like API)
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
+
     // Analytics Segment-Braze
     implementation 'com.segment.analytics.android:analytics:4.10.0'
     implementation 'com.appboy:appboy-segment-integration:9.0.0'

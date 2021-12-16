@@ -1,10 +1,12 @@
 package com.kickstarter.libs.preferences
 
+import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -15,13 +17,15 @@ import java.io.IOException
 import kotlin.jvm.JvmOverloads
 
 class BooleanDataStore @JvmOverloads constructor(
-    private val dataStore: DataStore<Preferences>,
+    private val context: Context,
     private val key: String,
     private val defaultValue: Boolean = false
 ) : BooleanDataStoreType {
 
+    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+
     override fun get(): Boolean {
-        val flow: Flow<Boolean> = dataStore.data.map {
+        val flow: Flow<Boolean> = context.dataStore.data.map {
             it[booleanPreferencesKey(key)] ?: defaultValue
         }
         return unwrapFlowValue(flow) as Boolean
@@ -42,7 +46,7 @@ class BooleanDataStore @JvmOverloads constructor(
     override val isSet: Boolean
         get(): Boolean {
 
-            val flow: Flow<Boolean> = dataStore.data.catch { exception ->
+            val flow: Flow<Boolean> = context.dataStore.data.catch { exception ->
                 // dataStore.data throws an IOException if it can't read the data
                 if (exception is IOException) {
                     emit(emptyPreferences())
@@ -55,13 +59,13 @@ class BooleanDataStore @JvmOverloads constructor(
         }
 
     override suspend fun set(value: Boolean) {
-        dataStore.edit {
+        context.dataStore.edit {
             it[booleanPreferencesKey(key)] = !(it[booleanPreferencesKey(key)] ?: false)
         }
     }
 
     override suspend fun delete() {
-        dataStore.edit {
+        context.dataStore.edit {
             if (it.contains(booleanPreferencesKey(key)))
                 it.remove(booleanPreferencesKey(key))
         }

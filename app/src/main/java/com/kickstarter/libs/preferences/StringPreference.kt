@@ -6,10 +6,10 @@ import kotlin.jvm.JvmOverloads
 class StringPreference @JvmOverloads constructor(
     private val sharedPreferences: SharedPreferences,
     private val key: String,
-    private val defaultValue: String? = null
+    private val defaultValue: String = ""
 ) : StringPreferenceType {
     override fun get(): String {
-        return sharedPreferences.getString(key, defaultValue)!!
+        return sharedPreferences.getString(key, defaultValue) ?: defaultValue
     }
 
     override val isSet: Boolean

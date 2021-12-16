@@ -11,6 +11,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/project_campaign_view_list_items"
         android:layout_width="0dp"
+        android:layout_marginHorizontal="@dimen/grid_3"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_3"
         app:layout_constraintBottom_toBottomOf="parent"

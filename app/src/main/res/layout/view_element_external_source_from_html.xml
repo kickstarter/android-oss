@@ -4,7 +4,6 @@
     android:id="@+id/external_source_web_view_cl"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="@dimen/grid_2"
     android:clipToPadding="true">
 
     <WebView

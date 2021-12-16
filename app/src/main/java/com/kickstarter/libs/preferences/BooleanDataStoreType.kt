@@ -14,10 +14,10 @@ interface BooleanDataStoreType {
     /**
      * Set the preference to a value.
      */
-    suspend fun set(value: Boolean)
+    fun set(value: Boolean)
 
     /**
      * Delete the currently stored preference.
      */
-    suspend fun delete()
+    fun delete()
 }

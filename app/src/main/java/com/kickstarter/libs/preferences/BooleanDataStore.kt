@@ -59,16 +59,20 @@ class BooleanDataStore @JvmOverloads constructor(
             return unwrapFlowValue(flow) as Boolean
         }
 
-    override suspend fun set(value: Boolean) {
-        context.dataStore.edit {
-            it[prefKey] = !(it[prefKey] ?: false)
+    override fun set(value: Boolean) {
+        runBlocking {
+            context.dataStore.edit {
+                it[prefKey] = value
+            }
         }
     }
 
-    override suspend fun delete() {
-        context.dataStore.edit {
-            if (it.contains(prefKey))
-                it.remove(prefKey)
+    override fun delete() {
+        runBlocking {
+            context.dataStore.edit {
+                if (it.contains(prefKey))
+                    it.remove(prefKey)
+            }
         }
     }
 }

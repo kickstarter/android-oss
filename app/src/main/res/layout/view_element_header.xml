@@ -9,8 +9,6 @@
         style="@style/PledgeCurrency"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/grid_7_half"
-        android:layout_marginEnd="@dimen/grid_7_half"
         android:paddingTop="@dimen/grid_3"
         android:gravity="start|center_vertical"
         android:text="@string/Story"

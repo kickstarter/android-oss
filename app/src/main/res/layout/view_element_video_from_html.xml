@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="200dp"
     android:layout_marginTop="@dimen/grid_3"
-    android:layout_marginHorizontal="@dimen/grid_2"
     android:clipToPadding="true">
 
     <com.google.android.exoplayer2.ui.PlayerView

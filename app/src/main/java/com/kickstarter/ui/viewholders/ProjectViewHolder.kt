@@ -9,6 +9,7 @@ import android.util.Pair
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.isGone
 import com.kickstarter.R
 import com.kickstarter.databinding.ProjectMainLayoutBinding
 import com.kickstarter.libs.BaseActivity
@@ -513,9 +514,10 @@ class ProjectViewHolder(
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe { url: String? ->
-                url?.let {
+                binding.projectSocialImage.isGone = url.isNullOrEmpty()
+                if (!url.isNullOrEmpty()) {
                     Picasso.get()
-                        .load(it)
+                        .load(url)
                         .transform(CircleTransformation())
                         .into(binding.projectSocialImage)
                 }

@@ -7,7 +7,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.BooleanUtils
-import com.kickstarter.libs.utils.IntegerUtils
+import com.kickstarter.libs.utils.extensions.isNullOrZero
 import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
@@ -114,7 +114,7 @@ interface UpdateCardViewHolderViewModel {
 
             update
                 .map { it.commentsCount() }
-                .map { IntegerUtils.isNullOrZero(it) }
+                .map { it?.isNullOrZero() }
                 .compose(bindToLifecycle())
                 .subscribe(this.commentsCountIsGone)
 
@@ -126,7 +126,7 @@ interface UpdateCardViewHolderViewModel {
 
             update
                 .map { it.likesCount() }
-                .map { IntegerUtils.isNullOrZero(it) }
+                .map { it?.isNullOrZero() }
                 .compose(bindToLifecycle())
                 .subscribe(this.likesCountIsGone)
 

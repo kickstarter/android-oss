@@ -9,6 +9,7 @@ import com.kickstarter.libs.utils.RewardUtils.isShippable
 import com.kickstarter.libs.utils.RewardUtils.isTimeLimitedEnd
 import com.kickstarter.libs.utils.extensions.addOnsCost
 import com.kickstarter.libs.utils.extensions.bonus
+import com.kickstarter.libs.utils.extensions.intValueOrZero
 import com.kickstarter.libs.utils.extensions.rewardCost
 import com.kickstarter.libs.utils.extensions.round
 import com.kickstarter.libs.utils.extensions.shippingAmount
@@ -41,7 +42,9 @@ object AnalyticEventsUtils {
         val properties = HashMap<String, Any>().apply {
             put("amount", checkoutData.amount().round())
             checkoutData.id()?.let { put("id", it.toString()) }
-            put("payment_type", checkoutData.paymentType().rawValue().toLowerCase(Locale.getDefault()))
+            put("payment_type",
+                checkoutData.paymentType().rawValue().lowercase(Locale.getDefault())
+            )
             put("amount_total_usd", checkoutData.totalAmount(project.staticUsdRate()).round())
             put("shipping_amount", checkoutData.shippingAmount())
             put("shipping_amount_usd", checkoutData.shippingAmount(project.staticUsdRate()).round())
@@ -60,7 +63,9 @@ object AnalyticEventsUtils {
         val properties = HashMap<String, Any>().apply {
             put("amount", checkoutData.amount().round())
             checkoutData.id()?.let { put("id", it.toString()) }
-            put("payment_type", checkoutData.paymentType().rawValue().toLowerCase(Locale.getDefault()))
+            put("payment_type",
+                checkoutData.paymentType().rawValue().lowercase(Locale.getDefault())
+            )
             put("amount_total_usd", checkoutData.totalAmount(project.staticUsdRate()).round())
             put("shipping_amount", checkoutData.shippingAmount())
             put("shipping_amount_usd", checkoutData.shippingAmount(project.staticUsdRate()).round())
@@ -237,7 +242,7 @@ object AnalyticEventsUtils {
             put("goal_usd", (project.goal() * project.usdExchangeRate()).round())
             put("has_video", project.video() != null)
             put("hours_remaining", ceil((project.timeInSecondsUntilDeadline() / 60.0f / 60.0f).toDouble()).toInt())
-            put("is_repeat_creator", IntegerUtils.intValueOrZero(project.creator().createdProjectsCount()) >= 2)
+            put("is_repeat_creator", project.creator().createdProjectsCount().intValueOrZero() >= 2)
             project.launchedAt()?.let { launchedAt ->
                 put("launched_at", launchedAt)
             }

@@ -23,13 +23,13 @@ import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.OVERVIEW
 import com.kickstarter.libs.utils.ExperimentData
-import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
+import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.libs.utils.extensions.updateProjectWith
 import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Backing
@@ -899,7 +899,7 @@ interface ProjectViewModel {
             val project = projectAndFragmentStackCount.first
             val count = projectAndFragmentStackCount.second
             return when {
-                !project.isBacking || IntegerUtils.isNonZero(count) -> null
+                !project.isBacking || count.isNonZero() -> null
                 project.isLive -> when {
                     project.backing()?.status() == Backing.STATUS_PREAUTH -> R.menu.manage_pledge_preauth
                     else -> R.menu.manage_pledge_live

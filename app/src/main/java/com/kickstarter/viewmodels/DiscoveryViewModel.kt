@@ -14,9 +14,10 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.DiscoveryDrawerUtils
 import com.kickstarter.libs.utils.DiscoveryUtils
-import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.getTokenFromQueryParams
+import com.kickstarter.libs.utils.extensions.intValueOrZero
+import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.libs.utils.extensions.isVerificationEmailUrl
 import com.kickstarter.models.Category
 import com.kickstarter.models.User
@@ -125,15 +126,13 @@ interface DiscoveryViewModel {
             if (ObjectUtils.isNull(user)) {
                 return R.drawable.ic_menu
             }
-            val erroredBackingsCount = IntegerUtils.intValueOrZero(user?.erroredBackingsCount())
-            val unreadMessagesCount = IntegerUtils.intValueOrZero(user?.unreadMessagesCount())
-            val unseenActivityCount = IntegerUtils.intValueOrZero(user?.unseenActivityCount())
-            return if (!IntegerUtils.isZero(erroredBackingsCount)) {
-                R.drawable.ic_menu_error_indicator
-            } else if (!IntegerUtils.isZero(unreadMessagesCount + unseenActivityCount + erroredBackingsCount)) {
-                R.drawable.ic_menu_indicator
-            } else {
-                R.drawable.ic_menu
+            val erroredBackingsCount = user?.erroredBackingsCount().intValueOrZero()
+            val unreadMessagesCount = user?.unreadMessagesCount().intValueOrZero()
+            val unseenActivityCount = user?.unseenActivityCount().intValueOrZero()
+            return when {
+                erroredBackingsCount.isNonZero() -> R.drawable.ic_menu_error_indicator
+                (unreadMessagesCount + unseenActivityCount + erroredBackingsCount).isNonZero() -> R.drawable.ic_menu_indicator
+                else -> R.drawable.ic_menu
             }
         }
 

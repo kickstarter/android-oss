@@ -8,10 +8,10 @@ import com.kickstarter.libs.Either;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MessagePreviousScreenType;
 import com.kickstarter.libs.utils.BooleanUtils;
-import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.PairUtils;
+import com.kickstarter.libs.utils.extensions.IntExtKt;
 import com.kickstarter.libs.utils.extensions.StringExt;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.BackingWrapper;
@@ -370,7 +370,7 @@ public interface MessagesViewModel {
 
       // Take only the first instance in which the offset changes.
       this.recyclerViewDefaultBottomPadding = this.appBarOffset
-        .filter(IntegerUtils::isNonZero)
+        .filter(IntExtKt::isNonZero)
         .compose(ignoreValues())
         .take(1);
     }

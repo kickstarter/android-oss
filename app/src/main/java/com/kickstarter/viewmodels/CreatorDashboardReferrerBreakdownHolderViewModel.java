@@ -5,9 +5,9 @@ import android.util.Pair;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.BooleanUtils;
-import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.PairUtils;
+import com.kickstarter.libs.utils.extensions.IntExtKt;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.viewholders.CreatorDashboardReferrerBreakdownViewHolder;
@@ -115,7 +115,7 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
       this.customReferrerPercent = referralAggregates
         .map(ProjectStatsEnvelope.ReferralAggregateStats::custom)
         .compose(combineLatestPair(pledged))
-        .map(customAndPledged -> IntegerUtils.isZero(customAndPledged.second.intValue()) ?  0 : customAndPledged.first / customAndPledged.second);
+        .map(customAndPledged -> IntExtKt.isZero(customAndPledged.second.intValue()) ?  0 : customAndPledged.first / customAndPledged.second);
 
       this.customReferrerPercentText = this.customReferrerPercent
         .map(percent -> NumberUtils.flooredPercentage(percent * 100f));
@@ -132,7 +132,7 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
       this.externalReferrerPercent = referralAggregates
         .map(ProjectStatsEnvelope.ReferralAggregateStats::external)
         .compose(combineLatestPair(pledged))
-        .map(externalAndPledged -> IntegerUtils.isZero(externalAndPledged.second.intValue()) ?  0 : externalAndPledged.first / externalAndPledged.second);
+        .map(externalAndPledged -> IntExtKt.isZero(externalAndPledged.second.intValue()) ?  0 : externalAndPledged.first / externalAndPledged.second);
 
       this.externalReferrerPercentText = this.externalReferrerPercent
         .map(percent -> NumberUtils.flooredPercentage(percent * 100f));
@@ -149,7 +149,7 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
       this.kickstarterReferrerPercent = referralAggregates
         .map(ProjectStatsEnvelope.ReferralAggregateStats::internal)
         .compose(combineLatestPair(pledged))
-        .map(internalAndPledged -> IntegerUtils.isZero(internalAndPledged.second.intValue()) ?  0 : internalAndPledged.first / internalAndPledged.second);
+        .map(internalAndPledged -> IntExtKt.isZero(internalAndPledged.second.intValue()) ?  0 : internalAndPledged.first / internalAndPledged.second);
 
       this.kickstarterReferrerPercentText = this.kickstarterReferrerPercent
         .map(percent -> NumberUtils.flooredPercentage(percent * 100f));

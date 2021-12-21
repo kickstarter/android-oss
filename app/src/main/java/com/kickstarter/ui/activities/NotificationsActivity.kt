@@ -14,8 +14,8 @@ import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.AnimationUtils
 import com.kickstarter.libs.utils.BooleanUtils.isTrue
-import com.kickstarter.libs.utils.IntegerUtils.intValueOrZero
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.intValueOrZero
 import com.kickstarter.models.User
 import com.kickstarter.viewmodels.NotificationsViewModel
 import rx.android.schedulers.AndroidSchedulers
@@ -95,7 +95,7 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
     }
 
     private fun displayPreferences(user: User) {
-        binding.projectNotificationsCount.text = intValueOrZero(user.backedProjectsCount()).toString()
+        binding.projectNotificationsCount.text = user.backedProjectsCount().intValueOrZero().toString()
 
         displayMarketingUpdates(user)
         displayBackingsNotificationSettings(user)

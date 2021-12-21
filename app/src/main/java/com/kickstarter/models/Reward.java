@@ -3,6 +3,7 @@ package com.kickstarter.models;
 import android.os.Parcelable;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
+import com.kickstarter.libs.utils.extensions.IntExtKt;
 
 import org.joda.time.DateTime;
 
@@ -14,7 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringDef;
 import auto.parcel.AutoParcel;
 
-import static com.kickstarter.libs.utils.IntegerUtils.isZero;
+
 
 @AutoGson
 @AutoParcel
@@ -102,7 +103,7 @@ public abstract class Reward implements Parcelable, Relay {
   public @interface ShippingType {}
 
   public boolean isAllGone() {
-    return isZero(this.remaining());
+    return IntExtKt.isZero(this.remaining());
   }
 
   public boolean isLimited() {
@@ -120,7 +121,7 @@ public abstract class Reward implements Parcelable, Relay {
 
     UNKNOWN("$UNKNOWN");
 
-    private String type;
+    private final String type;
 
     ShippingPreference(final String type) {
       this.type = type;

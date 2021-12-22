@@ -44,7 +44,8 @@ object AnalyticEventsUtils {
         val properties = HashMap<String, Any>().apply {
             put("amount", checkoutData.amount().round())
             checkoutData.id()?.let { put("id", it.toString()) }
-            put("payment_type",
+            put(
+                "payment_type",
                 checkoutData.paymentType().rawValue().lowercase(Locale.getDefault())
             )
             put("amount_total_usd", checkoutData.totalAmount(project.staticUsdRate()).round())
@@ -65,7 +66,8 @@ object AnalyticEventsUtils {
         val properties = HashMap<String, Any>().apply {
             put("amount", checkoutData.amount().round())
             checkoutData.id()?.let { put("id", it.toString()) }
-            put("payment_type",
+            put(
+                "payment_type",
                 checkoutData.paymentType().rawValue().lowercase(Locale.getDefault())
             )
             put("amount_total_usd", checkoutData.totalAmount(project.staticUsdRate()).round())

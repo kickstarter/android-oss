@@ -10,6 +10,8 @@ import com.kickstarter.libs.utils.RewardUtils.isTimeLimitedEnd
 import com.kickstarter.libs.utils.extensions.addOnsCost
 import com.kickstarter.libs.utils.extensions.bonus
 import com.kickstarter.libs.utils.extensions.intValueOrZero
+import com.kickstarter.libs.utils.extensions.isNonZero
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.rewardCost
 import com.kickstarter.libs.utils.extensions.round
 import com.kickstarter.libs.utils.extensions.shippingAmount
@@ -88,12 +90,12 @@ object AnalyticEventsUtils {
     @JvmOverloads
     fun discoveryParamsProperties(params: DiscoveryParams, discoverSort: DiscoveryParams.Sort? = params.sort(), prefix: String = "discover_"): Map<String, Any> {
         val properties = HashMap<String, Any>().apply {
-            put("everything", BooleanUtils.isTrue(params.isAllProjects))
-            put("pwl", BooleanUtils.isTrue(params.staffPicks()))
-            put("recommended", BooleanUtils.isTrue(params.recommended()))
+            put("everything", params.isAllProjects.isTrue())
+            put("pwl", params.staffPicks().isTrue())
+            put("recommended", params.recommended().isTrue())
             put("ref_tag", DiscoveryParamsUtils.refTag(params).tag())
             params.term()?.let { put("search_term", it) }
-            put("social", BooleanUtils.isIntTrue(params.social()))
+            put("social", params.social().isNonZero())
             put(
                 "sort",
                 discoverSort?.let {
@@ -105,7 +107,7 @@ object AnalyticEventsUtils {
                 } ?: ""
             )
             params.tagId()?.let { put("tag", it) }
-            put("watched", BooleanUtils.isIntTrue(params.starred()))
+            put("watched", params.starred().isNonZero())
 
             val paramsCategory = params.category()
             paramsCategory?.let { category ->
@@ -205,7 +207,7 @@ object AnalyticEventsUtils {
         props.apply {
             put("add_ons_count_total", pledgeData.totalQuantity())
             put("add_ons_count_unique", pledgeData.totalCountUnique())
-            put("add_ons_minimum_usd", addOnsCost(project.staticUsdRate(), pledgeData.addOns()?.let { it as List<Reward> } ?: emptyList()).round())
+            put("add_ons_minimum_usd", addOnsCost(project.staticUsdRate(), pledgeData.addOns()?.let { it as? List<Reward> } ?: emptyList()).round())
         }
 
         return MapUtils.prefixKeys(props, prefix)
@@ -252,7 +254,7 @@ object AnalyticEventsUtils {
             put("name", project.name())
             put("percent_raised", (project.percentageFunded()).toInt())
             put("pid", project.id().toString())
-            put("prelaunch_activated", BooleanUtils.isTrue(project.prelaunchActivated()))
+            put("prelaunch_activated", project.prelaunchActivated().isTrue())
 
             project.rewards()?.let { a ->
                 val rewards = a.filter { isReward(it) }

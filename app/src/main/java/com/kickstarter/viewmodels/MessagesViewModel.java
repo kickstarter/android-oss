@@ -7,7 +7,6 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Either;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MessagePreviousScreenType;
-import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.PairUtils;
@@ -44,6 +43,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.values;
+import com.kickstarter.libs.utils.extensions.BoolenExtKt;
 
 public interface MessagesViewModel {
 
@@ -197,7 +197,7 @@ public interface MessagesViewModel {
         });
 
       this.loadingIndicatorViewIsGone = messagesAreLoading
-        .map(BooleanUtils::negate)
+        .map(BoolenExtKt::negate)
         .distinctUntilChanged();
 
       // If view model was not initialized with a MessageThread, participant is
@@ -330,18 +330,18 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.viewPledgeButtonIsGone::onNext);
 
-      this.backButtonIsGone = this.viewPledgeButtonIsGone.map(BooleanUtils::negate);
-      this.closeButtonIsGone = this.backButtonIsGone.map(BooleanUtils::negate);
+      this.backButtonIsGone = this.viewPledgeButtonIsGone.map(BoolenExtKt::negate);
+      this.closeButtonIsGone = this.backButtonIsGone.map(BoolenExtKt::negate);
       this.goBack = this.backOrCloseButtonClicked;
       this.projectNameToolbarTextViewText = this.projectNameTextViewText;
       this.scrollRecyclerViewToBottom = updatedMessages.compose(ignoreValues());
-      this.sendMessageButtonIsEnabled = Observable.merge(messageHasBody, messageIsSending.map(BooleanUtils::negate));
+      this.sendMessageButtonIsEnabled = Observable.merge(messageHasBody, messageIsSending.map(BoolenExtKt::negate));
       this.setMessageEditText = messageSent.map(__ -> "");
 
       this.toolbarIsExpanded = this.messageList
         .compose(takePairWhen(this.messageEditTextIsFocused))
         .map(PairUtils::second)
-        .map(BooleanUtils::negate);
+        .map(BoolenExtKt::negate);
 
       messageNotification
         .compose(errors())

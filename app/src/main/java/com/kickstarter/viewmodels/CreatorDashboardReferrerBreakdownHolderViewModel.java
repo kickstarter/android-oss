@@ -4,7 +4,7 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.BooleanUtils;
+import com.kickstarter.libs.utils.extensions.BoolenExtKt;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.libs.utils.extensions.IntExtKt;
@@ -110,7 +110,7 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
       this.breakdownViewIsGone = emptyStats;
 
       this.emptyViewIsGone = emptyStats
-        .map(BooleanUtils::negate);
+        .map(BoolenExtKt::negate);
 
       this.customReferrerPercent = referralAggregates
         .map(ProjectStatsEnvelope.ReferralAggregateStats::custom)

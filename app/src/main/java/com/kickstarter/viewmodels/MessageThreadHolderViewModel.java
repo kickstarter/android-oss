@@ -4,7 +4,7 @@ import android.content.SharedPreferences;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.BooleanUtils;
+import com.kickstarter.libs.utils.extensions.BoolenExtKt;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
@@ -96,7 +96,7 @@ public interface MessageThreadHolderViewModel {
       this.participantNameTextViewIsBold = hasUnreadMessages;
       this.participantNameTextViewText = participant.map(User::name);
       this.startMessagesActivity = this.messageThread.compose(takeWhen(this.messageThreadCardViewClicked));
-      this.unreadCountTextViewIsGone = hasUnreadMessages.map(BooleanUtils::negate);
+      this.unreadCountTextViewIsGone = hasUnreadMessages.map(BoolenExtKt::negate);
       this.unreadCountTextViewText = this.messageThread
         .map(MessageThread::unreadMessagesCount)
         .map(NumberUtils::format);

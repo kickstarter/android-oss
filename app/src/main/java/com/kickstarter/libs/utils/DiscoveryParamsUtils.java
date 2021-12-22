@@ -5,7 +5,7 @@ import com.kickstarter.services.DiscoveryParams;
 
 import androidx.annotation.NonNull;
 
-import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
+import com.kickstarter.libs.utils.extensions.BoolenExtKt;
 import com.kickstarter.libs.utils.extensions.IntExtKt;
 
 public final class DiscoveryParamsUtils {
@@ -28,7 +28,7 @@ public final class DiscoveryParamsUtils {
       return RefTag.city();
     }
 
-    final boolean staffPicks = isTrue(params.staffPicks());
+    final boolean staffPicks = BoolenExtKt.isTrue(params.staffPicks());
     if (staffPicks) {
       final DiscoveryParams.Sort sort = params.sort();
       if (sort != null) {

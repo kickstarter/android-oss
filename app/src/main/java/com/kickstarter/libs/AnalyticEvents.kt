@@ -1,7 +1,6 @@
 package com.kickstarter.libs
 
 import com.kickstarter.libs.utils.AnalyticEventsUtils
-import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
@@ -60,6 +59,8 @@ import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.libs.utils.checkoutProperties
+import com.kickstarter.libs.utils.extensions.isNonZero
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -222,11 +223,11 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         props[CONTEXT_LOCATION.contextName] = DISCOVER_ADVANCED.contextName
         props[CONTEXT_PAGE.contextName] = DISCOVER.contextName
         props[CONTEXT_TYPE.contextName] = when {
-            BooleanUtils.isTrue(discoveryParams.category()?.isRoot) ||
+            discoveryParams.category()?.isRoot.isTrue() ||
                 discoveryParams.category() != null ||
-                BooleanUtils.isTrue(discoveryParams.staffPicks()) ||
-                BooleanUtils.isTrue(discoveryParams.isAllProjects) -> RESULTS.contextName
-            BooleanUtils.isTrue(discoveryParams.recommended()) -> RECOMMENDED.contextName
+                discoveryParams.staffPicks().isTrue() ||
+                discoveryParams.isAllProjects.isTrue() -> RESULTS.contextName
+            discoveryParams.recommended().isTrue() -> RECOMMENDED.contextName
             else -> ""
         }
 
@@ -259,13 +260,13 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         props[CONTEXT_LOCATION.contextName] = DISCOVER_OVERLAY.contextName
         props[CONTEXT_PAGE.contextName] = DISCOVER.contextName
         props[CONTEXT_TYPE.contextName] = when {
-            BooleanUtils.isTrue(discoveryParams.staffPicks()) -> PWL.contextName
-            BooleanUtils.isTrue(discoveryParams.recommended()) -> RECOMMENDED.contextName
-            BooleanUtils.isIntTrue(discoveryParams.starred()) -> WATCHED.contextName
-            BooleanUtils.isIntTrue(discoveryParams.social()) -> SOCIAL.contextName
-            BooleanUtils.isTrue(discoveryParams.category()?.isRoot) -> CATEGORY_NAME.contextName
+            discoveryParams.staffPicks().isTrue() -> PWL.contextName
+            discoveryParams.recommended().isTrue() -> RECOMMENDED.contextName
+            discoveryParams.starred().isNonZero() -> WATCHED.contextName
+            discoveryParams.social().isNonZero() -> SOCIAL.contextName
+            discoveryParams.category()?.isRoot.isTrue() -> CATEGORY_NAME.contextName
             discoveryParams.category() != null -> SUBCATEGORY_NAME.contextName
-            BooleanUtils.isTrue(discoveryParams.isAllProjects) -> ALL.contextName
+            discoveryParams.isAllProjects.isTrue() -> ALL.contextName
             else -> ALL.contextName
         }
         props.putAll(AnalyticEventsUtils.discoveryParamsProperties(discoveryParams))

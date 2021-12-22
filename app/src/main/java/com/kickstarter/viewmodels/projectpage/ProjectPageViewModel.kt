@@ -22,7 +22,6 @@ import com.kickstarter.libs.rx.transformers.Transformers.neverError
 import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
-import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.ENVIRONMENT
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.FAQS
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.OVERVIEW
@@ -35,8 +34,11 @@ import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.ProjectMetadata
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
+import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isNonZero
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.metadataForProject
+import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.libs.utils.extensions.updateProjectWith
 import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Backing
@@ -379,14 +381,14 @@ interface ProjectPageViewModel {
                 .compose(errors())
 
             mappedProjectValues
-                .filter { BooleanUtils.isTrue(it.displayPrelaunch()) }
+                .filter { it.displayPrelaunch().isTrue() }
                 .map { it.webProjectUrl() }
                 .compose(bindToLifecycle())
                 .subscribe(this.prelaunchUrl)
 
             val initialProject = mappedProjectValues
                 .filter {
-                    BooleanUtils.isFalse(it.displayPrelaunch())
+                    it.displayPrelaunch().isFalse()
                 }
 
             // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
@@ -598,11 +600,11 @@ interface ProjectPageViewModel {
                 .map { it.hasRewards() }
                 .distinctUntilChanged()
                 .compose<Pair<Boolean, Boolean>>(combineLatestPair(pledgeSheetExpanded))
-                .filter { BooleanUtils.isFalse(it.second) }
+                .filter { it.second.isFalse() }
                 .map { it.first }
 
             val rewardsLoaded = projectHasRewardsAndSheetCollapsed
-                .filter { BooleanUtils.isTrue(it) }
+                .filter { it.isTrue() }
                 .map { true }
 
             Observable.merge(rewardsLoaded, this.reloadProjectContainerClicked.map { true })
@@ -616,7 +618,7 @@ interface ProjectPageViewModel {
 
             projectHasRewardsAndSheetCollapsed
                 .compose<Pair<Boolean, Boolean>>(combineLatestPair(this.retryProgressBarIsGone))
-                .map { BooleanUtils.negate(it.first && it.second) }
+                .map { (it.first && it.second).negate() }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(this.pledgeActionButtonContainerIsGone)
@@ -674,13 +676,13 @@ interface ProjectPageViewModel {
 
             backedProject
                 .compose<Project>(takeWhen(this.cancelPledgeClicked))
-                .filter { BooleanUtils.isTrue(it.backing()?.cancelable() ?: false) }
+                .filter { (it.backing()?.cancelable() ?: false).isTrue() }
                 .compose(bindToLifecycle())
                 .subscribe(this.showCancelPledgeFragment)
 
             backedProject
                 .compose<Project>(takeWhen(this.cancelPledgeClicked))
-                .filter { BooleanUtils.isFalse(it.backing()?.cancelable() ?: true) }
+                .filter { it.backing()?.cancelable().isFalse() }
                 .compose(ignoreValues())
                 .compose(bindToLifecycle())
                 .subscribe(this.showPledgeNotCancelableDialog)

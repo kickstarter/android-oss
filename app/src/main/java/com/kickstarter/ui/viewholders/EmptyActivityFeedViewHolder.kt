@@ -2,7 +2,7 @@ package com.kickstarter.ui.viewholders
 
 import android.view.View
 import com.kickstarter.databinding.EmptyActivityFeedViewBinding
-import com.kickstarter.libs.utils.BooleanUtils
+import com.kickstarter.libs.utils.extensions.isTrue
 
 class EmptyActivityFeedViewHolder(
     private val binding: EmptyActivityFeedViewBinding,
@@ -18,7 +18,7 @@ class EmptyActivityFeedViewHolder(
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        isLoggedIn = BooleanUtils.isTrue(data as Boolean?)
+        isLoggedIn = (data as? Boolean?).isTrue()
     }
 
     override fun onBind() {

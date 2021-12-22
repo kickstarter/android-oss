@@ -5,7 +5,7 @@ import android.util.Pair;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.BooleanUtils;
+import com.kickstarter.libs.utils.extensions.BoolenExtKt;
 import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.models.Message;
 import com.kickstarter.ui.viewholders.MessageViewHolder;
@@ -70,7 +70,7 @@ public interface MessageHolderViewModel {
         .map(mb -> mb.first.body());
 
       this.messageBodySenderCardViewIsGone = this.messageBodyRecipientCardViewIsGone
-        .map(BooleanUtils::negate);
+        .map(BoolenExtKt::negate);
 
       this.messageBodySenderTextViewText = messageAndCurrentUserIsSender
         .filter(mb -> mb.second)

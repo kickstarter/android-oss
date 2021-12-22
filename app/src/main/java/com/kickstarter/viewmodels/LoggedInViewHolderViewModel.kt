@@ -4,8 +4,8 @@ import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.extensions.intValueOrZero
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.isZero
 import com.kickstarter.models.User
 import com.kickstarter.ui.viewholders.discoverydrawer.LoggedInViewHolder
@@ -89,7 +89,7 @@ interface LoggedInViewHolderViewModel {
 
             this.user
                 .map { it.erroredBackingsCount().intValueOrZero().isZero() }
-                .map { if (BooleanUtils.isTrue(it)) R.color.text_primary else R.color.kds_alert }
+                .map { if (it.isTrue()) R.color.text_primary else R.color.kds_alert }
                 .compose(bindToLifecycle())
                 .subscribe(this.activityCountTextColor)
 

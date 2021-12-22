@@ -114,7 +114,7 @@ interface UpdateCardViewHolderViewModel {
 
             update
                 .map { it.commentsCount() }
-                .map { it?.isNullOrZero() }
+                .map { it.isNullOrZero() }
                 .compose(bindToLifecycle())
                 .subscribe(this.commentsCountIsGone)
 
@@ -126,7 +126,7 @@ interface UpdateCardViewHolderViewModel {
 
             update
                 .map { it.likesCount() }
-                .map { it?.isNullOrZero() }
+                .map { it.isNullOrZero() }
                 .compose(bindToLifecycle())
                 .subscribe(this.likesCountIsGone)
 

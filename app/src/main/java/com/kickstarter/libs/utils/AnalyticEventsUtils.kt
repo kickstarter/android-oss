@@ -12,6 +12,7 @@ import com.kickstarter.libs.utils.extensions.bonus
 import com.kickstarter.libs.utils.extensions.intValueOrZero
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.libs.utils.extensions.isTrue
+import com.kickstarter.libs.utils.extensions.refTag
 import com.kickstarter.libs.utils.extensions.rewardCost
 import com.kickstarter.libs.utils.extensions.round
 import com.kickstarter.libs.utils.extensions.shippingAmount
@@ -95,7 +96,7 @@ object AnalyticEventsUtils {
             put("everything", params.isAllProjects.isTrue())
             put("pwl", params.staffPicks().isTrue())
             put("recommended", params.recommended().isTrue())
-            put("ref_tag", DiscoveryParamsUtils.refTag(params).tag())
+            put("ref_tag", params.refTag().tag())
             params.term()?.let { put("search_term", it) }
             put("social", params.social().isNonZero())
             put(

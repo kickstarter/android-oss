@@ -11,7 +11,7 @@ import com.kickstarter.ApplicationComponent;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
-import com.kickstarter.libs.utils.BundleUtils;
+import com.kickstarter.libs.utils.extensions.BundleExtKt;
 import com.kickstarter.services.ConnectivityReceiver;
 import com.kickstarter.ui.data.ActivityResult;
 import com.kickstarter.ui.extensions.ActivityExtKt;
@@ -291,7 +291,7 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
       if (viewModelClass != null) {
         this.viewModel = ActivityViewModelManager.getInstance().fetch(this,
           viewModelClass,
-          BundleUtils.maybeGetBundle(viewModelEnvelope, VIEW_MODEL_KEY));
+            BundleExtKt.maybeGetBundle(viewModelEnvelope, VIEW_MODEL_KEY));
       }
     }
   }

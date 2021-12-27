@@ -10,7 +10,6 @@ import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.databinding.ItemRewardBinding
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
-import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
@@ -20,6 +19,7 @@ import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromRight
 import com.kickstarter.libs.utils.TransitionUtils.transition
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.IntentKey
@@ -236,7 +236,7 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
     }
 
     private fun setPledgeButtonVisibility(gone: Boolean) {
-        if (BooleanUtils.isTrue(this.inset)) {
+        if (this.inset.isTrue()) {
             ViewUtils.setGone(this.binding.rewardButtonContainer, true)
             ViewUtils.setGone(this.binding.rewardButtonPlaceholder, true)
         } else {

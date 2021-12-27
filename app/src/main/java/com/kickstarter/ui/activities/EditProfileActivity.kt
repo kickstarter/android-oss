@@ -8,8 +8,8 @@ import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
-import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.SwitchCompatUtils
+import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.models.User
 import com.kickstarter.viewmodels.EditProfileViewModel
 import com.squareup.picasso.Picasso
@@ -56,6 +56,6 @@ class EditProfileActivity : BaseActivity<EditProfileViewModel.ViewModel>() {
     }
 
     private fun displayPreferences(user: User) {
-        SwitchCompatUtils.setCheckedWithoutAnimation(binding.privateProfileSwitch, BooleanUtils.isFalse(user.showPublicProfile()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.privateProfileSwitch, user.showPublicProfile().isFalse())
     }
 }

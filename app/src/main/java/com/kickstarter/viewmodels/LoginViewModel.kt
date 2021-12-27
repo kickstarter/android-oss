@@ -8,9 +8,9 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
-import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isEmail
+import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope
@@ -167,7 +167,7 @@ interface LoginViewModel {
                 .subscribe(this.showCreatedPasswordSnackbar)
 
             this.resetPasswordConfirmationDialogDismissed
-                .map<Boolean> { BooleanUtils.negate(it) }
+                .map<Boolean> { it.negate() }
                 .compose<Pair<Boolean, Pair<String, LoginReason>>>(combineLatestPair(emailAndReason))
                 .map { Pair.create(it.first, it.second.first) }
                 .compose(bindToLifecycle())

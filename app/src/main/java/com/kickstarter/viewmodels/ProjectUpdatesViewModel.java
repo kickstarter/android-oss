@@ -6,7 +6,7 @@ import android.util.Pair;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.BooleanUtils;
+import com.kickstarter.libs.utils.extensions.BoolenExtKt;
 import com.kickstarter.libs.utils.EventContextValues;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.extensions.ProjectDataExtKt;
@@ -112,7 +112,7 @@ public interface ProjectUpdatesViewModel {
         .isFetching()
         .distinctUntilChanged()
         .take(2)
-        .map(BooleanUtils::negate)
+        .map(BoolenExtKt::negate)
         .compose(bindToLifecycle())
         .subscribe(this.horizontalProgressBarIsGone);
 

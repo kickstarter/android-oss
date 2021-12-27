@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.libs.KSString
+import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import org.joda.time.DateTime
@@ -16,7 +17,7 @@ object RewardUtils {
     /**
      * Returns `true` if the reward has backers, `false` otherwise.
      */
-    fun hasBackers(reward: Reward) = IntegerUtils.isNonZero(reward.backersCount())
+    fun hasBackers(reward: Reward) = reward.backersCount().isNonZero()
 
     fun isAvailable(project: Project, reward: Reward) = project.isLive && !isLimitReached(reward) && !isExpired(reward)
 

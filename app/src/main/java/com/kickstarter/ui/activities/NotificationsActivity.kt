@@ -13,9 +13,9 @@ import com.kickstarter.databinding.ActivityNotificationsBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.AnimationUtils
-import com.kickstarter.libs.utils.BooleanUtils.isTrue
-import com.kickstarter.libs.utils.IntegerUtils.intValueOrZero
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.intValueOrZero
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.User
 import com.kickstarter.viewmodels.NotificationsViewModel
 import rx.android.schedulers.AndroidSchedulers
@@ -95,7 +95,7 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
     }
 
     private fun displayPreferences(user: User) {
-        binding.projectNotificationsCount.text = intValueOrZero(user.backedProjectsCount()).toString()
+        binding.projectNotificationsCount.text = user.backedProjectsCount().intValueOrZero().toString()
 
         displayMarketingUpdates(user)
         displayBackingsNotificationSettings(user)
@@ -110,14 +110,14 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
     }
 
     private fun displayMarketingUpdates(user: User) {
-        this.notifyMobileOfMarketingUpdates = isTrue(user.notifyMobileOfMarketingUpdate())
+        this.notifyMobileOfMarketingUpdates = user.notifyMobileOfMarketingUpdate().isTrue()
         toggleImageButtonIconColor(binding.marketingUpdatesPhoneIcon, this.notifyMobileOfMarketingUpdates, true)
     }
 
     private fun displayBackingsNotificationSettings(user: User) {
-        this.notifyMobileOfBackings = isTrue(user.notifyMobileOfBackings())
-        this.notifyOfBackings = isTrue(user.notifyOfBackings())
-        this.notifyOfCreatorDigest = isTrue(user.notifyOfCreatorDigest())
+        this.notifyMobileOfBackings = user.notifyMobileOfBackings().isTrue()
+        this.notifyOfBackings = user.notifyOfBackings().isTrue()
+        this.notifyOfCreatorDigest = user.notifyOfCreatorDigest().isTrue()
 
         val frequencyIndex = when {
             notifyOfCreatorDigest -> User.EmailFrequency.DAILY_SUMMARY.ordinal
@@ -144,59 +144,59 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
     }
 
     private fun displayCommentsNotificationSettings(user: User) {
-        this.notifyMobileOfComments = isTrue(user.notifyMobileOfComments())
-        this.notifyOfComments = isTrue(user.notifyOfComments())
+        this.notifyMobileOfComments = user.notifyMobileOfComments().isTrue()
+        this.notifyOfComments = user.notifyOfComments().isTrue()
 
         toggleImageButtonIconColor(binding.commentsPhoneIcon, this.notifyMobileOfComments, true)
         toggleImageButtonIconColor(binding.commentsMailIcon, this.notifyOfComments)
     }
 
     private fun displayCommentRepliesNotificationSettings(user: User) {
-        this.notifyMobileOfCommentReplies = isTrue(user.notifyOfCommentReplies())
+        this.notifyMobileOfCommentReplies = user.notifyOfCommentReplies().isTrue()
         toggleImageButtonIconColor(binding.commentRepliesMailIcon, this.notifyMobileOfCommentReplies)
     }
 
     private fun displayCreatorTipsNotificationSettings(user: User) {
-        this.notifyMobileOfCreatorEdu = isTrue(user.notifyMobileOfCreatorEdu())
-        this.notifyOfCreatorEdu = isTrue(user.notifyOfCreatorEdu())
+        this.notifyMobileOfCreatorEdu = user.notifyMobileOfCreatorEdu().isTrue()
+        this.notifyOfCreatorEdu = user.notifyOfCreatorEdu().isTrue()
 
         toggleImageButtonIconColor(binding.creatorEduPhoneIcon, this.notifyMobileOfCreatorEdu, true)
         toggleImageButtonIconColor(binding.creatorEduMailIcon, this.notifyOfCreatorEdu)
     }
 
     private fun displayFollowerNotificationSettings(user: User) {
-        this.notifyMobileOfFollower = isTrue(user.notifyMobileOfFollower())
-        this.notifyOfFollower = isTrue(user.notifyOfFollower())
+        this.notifyMobileOfFollower = user.notifyMobileOfFollower().isTrue()
+        this.notifyOfFollower = user.notifyOfFollower().isTrue()
 
         toggleImageButtonIconColor(binding.newFollowersPhoneIcon, this.notifyMobileOfFollower, true)
         toggleImageButtonIconColor(binding.newFollowersMailIcon, this.notifyOfFollower)
     }
 
     private fun displayFriendActivityNotificationSettings(user: User) {
-        this.notifyMobileOfFriendActivity = isTrue(user.notifyMobileOfFriendActivity())
-        this.notifyOfFriendActivity = isTrue(user.notifyOfFriendActivity())
+        this.notifyMobileOfFriendActivity = user.notifyMobileOfFriendActivity().isTrue()
+        this.notifyOfFriendActivity = user.notifyOfFriendActivity().isTrue()
 
         toggleImageButtonIconColor(binding.friendActivityPhoneIcon, this.notifyMobileOfFriendActivity, true)
         toggleImageButtonIconColor(binding.friendActivityMailIcon, this.notifyOfFriendActivity)
     }
 
     private fun displayMessagesNotificationSettings(user: User) {
-        this.notifyMobileOfMessages = isTrue(user.notifyMobileOfMessages())
-        this.notifyOfMessages = isTrue(user.notifyOfMessages())
+        this.notifyMobileOfMessages = user.notifyMobileOfMessages().isTrue()
+        this.notifyOfMessages = user.notifyOfMessages().isTrue()
 
         toggleImageButtonIconColor(binding.messagesPhoneIcon, this.notifyMobileOfMessages, true)
         toggleImageButtonIconColor(binding.messagesMailIcon, this.notifyOfMessages)
     }
 
     private fun displayPostLikesNotificationSettings(user: User) {
-        this.notifyMobileOfPostLikes = isTrue(user.notifyMobileOfPostLikes())
+        this.notifyMobileOfPostLikes = user.notifyMobileOfPostLikes().isTrue()
 
         toggleImageButtonIconColor(binding.postLikesPhoneIcon, this.notifyMobileOfPostLikes, true)
     }
 
     private fun displayUpdatesNotificationSettings(user: User) {
-        this.notifyMobileOfUpdates = isTrue(user.notifyMobileOfUpdates())
-        this.notifyOfUpdates = isTrue(user.notifyOfUpdates())
+        this.notifyMobileOfUpdates = user.notifyMobileOfUpdates().isTrue()
+        this.notifyOfUpdates = user.notifyOfUpdates().isTrue()
 
         toggleImageButtonIconColor(binding.projectUpdatesPhoneIcon, this.notifyMobileOfUpdates, true)
         toggleImageButtonIconColor(binding.projectUpdatesMailIcon, this.notifyOfUpdates)

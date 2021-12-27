@@ -8,10 +8,10 @@ import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.models.OptimizelyFeature;
-import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.RefTagUtils;
+import com.kickstarter.libs.utils.extensions.IntExtKt;
 import com.kickstarter.libs.utils.extensions.StringExt;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
@@ -169,7 +169,7 @@ public interface SearchViewModel {
           .filter(it -> ObjectUtils.isNotNull(it.first.first.term())
                   && StringExt.isPresent(it.first.first.term())
                   && it.first.first.sort() != defaultSort
-                  && IntegerUtils.intValueOrZero(it.second) == 1)
+                  && IntExtKt.intValueOrZero(it.second) == 1)
           .distinct()
           .subscribe(it -> {
             this.analyticEvents.trackSearchResultPageViewed(it.first.first, it.first.second.stats().count(), defaultSort);

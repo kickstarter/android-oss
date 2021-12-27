@@ -17,8 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import rx.Observable;
 
-import static com.kickstarter.libs.utils.BooleanUtils.isFalse;
-import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
+import com.kickstarter.libs.utils.extensions.BoolenExtKt;
 
 public final class DiscoveryDrawerUtils {
   private DiscoveryDrawerUtils() {}
@@ -139,7 +138,7 @@ public final class DiscoveryDrawerUtils {
     final List<DiscoveryParams> filters = ListUtils.empty();
     final boolean userIsLoggedIn = user != null;
 
-    if (userIsLoggedIn && isFalse(user.optedOutOfRecommendations())) {
+    if (userIsLoggedIn && BoolenExtKt.isFalse(user.optedOutOfRecommendations())) {
       filters.add(DiscoveryParams.builder().recommended(true).backed(-1).build());
     }
 
@@ -149,7 +148,7 @@ public final class DiscoveryDrawerUtils {
     if (userIsLoggedIn) {
       filters.add(DiscoveryParams.builder().starred(1).build());
 
-      if (isTrue(user.social())) {
+      if (BoolenExtKt.isTrue(user.social())) {
         filters.add(DiscoveryParams.builder().social(1).build());
       }
     }

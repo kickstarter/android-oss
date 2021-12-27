@@ -4,21 +4,12 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Pair
 import com.kickstarter.R
-import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.BuildCheck
-import com.kickstarter.libs.CurrentConfigType
-import com.kickstarter.libs.CurrentUserType
-import com.kickstarter.libs.Environment
+import com.kickstarter.libs.*
 import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.DiscoveryDrawerUtils
 import com.kickstarter.libs.utils.DiscoveryUtils
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.extensions.getTokenFromQueryParams
-import com.kickstarter.libs.utils.extensions.intValueOrZero
-import com.kickstarter.libs.utils.extensions.isNonZero
-import com.kickstarter.libs.utils.extensions.isTrue
-import com.kickstarter.libs.utils.extensions.isVerificationEmailUrl
+import com.kickstarter.libs.utils.extensions.*
 import com.kickstarter.models.Category
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
@@ -31,11 +22,7 @@ import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter
 import com.kickstarter.ui.adapters.DiscoveryPagerAdapter
 import com.kickstarter.ui.adapters.data.NavigationDrawerData
 import com.kickstarter.ui.intentmappers.DiscoveryIntentMapper
-import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder
-import com.kickstarter.ui.viewholders.discoverydrawer.LoggedInViewHolder
-import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder
-import com.kickstarter.ui.viewholders.discoverydrawer.ParentFilterViewHolder
-import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder
+import com.kickstarter.ui.viewholders.discoverydrawer.*
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -352,7 +339,7 @@ interface DiscoveryViewModel {
                 params,
                 expandedCategory,
                 currentUser
-            ) { c, s, ec, u -> DiscoveryDrawerUtils.deriveNavigationDrawerData(c, s, ec, u) }
+            ) { c, s, ec, u -> s.deriveNavigationDrawerData(c, ec, u) }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(navigationDrawerData)

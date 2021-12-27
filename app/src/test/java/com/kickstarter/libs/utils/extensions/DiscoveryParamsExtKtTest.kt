@@ -4,10 +4,22 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.RefTag
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.LocationFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.ui.adapters.data.NavigationDrawerData
 import org.junit.Test
 
 class DiscoveryParamsExtKtTest : KSRobolectricTestCase() {
+
+    private val categories = listOf(
+        CategoryFactory.artCategory(),
+        CategoryFactory.ceramicsCategory(),
+        CategoryFactory.textilesCategory(),
+        CategoryFactory.photographyCategory(),
+        CategoryFactory.musicCategory(),
+        CategoryFactory.bluesCategory(),
+        CategoryFactory.worldMusicCategory()
+    )
 
     @Test
     fun testRefTag() {
@@ -45,5 +57,88 @@ class DiscoveryParamsExtKtTest : KSRobolectricTestCase() {
             RefTag.discovery(),
             DiscoveryParams.builder().build().refTag()
         )
+    }
+
+
+
+    @Test
+    fun testDeriveNavigationDrawerData_LoggedOut_DefaultSelected() {
+        val data: NavigationDrawerData = DiscoveryParams.builder().build().deriveNavigationDrawerData(
+            categories,
+            null,
+            null
+        )
+        assertEquals(5, data.sections().size)
+        assertEquals(1, data.sections()[0].rows().size)
+        assertEquals(1, data.sections()[1].rows().size)
+        assertEquals(1, data.sections()[2].rows().size)
+        assertEquals(1, data.sections()[3].rows().size)
+        assertEquals(1, data.sections()[4].rows().size)
+    }
+
+    @Test
+    fun testDeriveNavigationDrawerData_LoggedIn_DefaultSelected() {
+        val data: NavigationDrawerData = DiscoveryParams.builder().build().deriveNavigationDrawerData(
+            categories,
+            null,
+            UserFactory.user()
+        )
+        assertEquals(7, data.sections().size)
+        assertEquals(1, data.sections()[0].rows().size)
+        assertEquals(1, data.sections()[1].rows().size)
+        assertEquals(1, data.sections()[2].rows().size)
+        assertEquals(1, data.sections()[3].rows().size)
+        assertEquals(1, data.sections()[4].rows().size)
+        assertEquals(1, data.sections()[5].rows().size)
+        assertEquals(1, data.sections()[6].rows().size)
+    }
+
+    @Test
+    fun testDeriveNavigationDrawerData_LoggedIn_NoRecommendations_DefaultSelected() {
+        val data: NavigationDrawerData = DiscoveryParams.builder().build().deriveNavigationDrawerData(
+            categories,
+            null,
+            UserFactory.noRecommendations()
+        )
+        assertEquals(6, data.sections().size)
+        assertEquals(1, data.sections()[0].rows().size)
+        assertEquals(1, data.sections()[1].rows().size)
+        assertEquals(1, data.sections()[2].rows().size)
+        assertEquals(1, data.sections()[3].rows().size)
+        assertEquals(1, data.sections()[4].rows().size)
+        assertEquals(1, data.sections()[5].rows().size)
+    }
+
+    @Test
+    fun testDeriveNavigationDrawerData_LoggedIn_Social_DefaultSelected() {
+        val data: NavigationDrawerData = DiscoveryParams.builder().build().deriveNavigationDrawerData(
+            categories,
+            null,
+            UserFactory.socialUser()
+        )
+        assertEquals(8, data.sections().size)
+        assertEquals(1, data.sections()[0].rows().size)
+        assertEquals(1, data.sections()[1].rows().size)
+        assertEquals(1, data.sections()[2].rows().size)
+        assertEquals(1, data.sections()[3].rows().size)
+        assertEquals(1, data.sections()[4].rows().size)
+        assertEquals(1, data.sections()[5].rows().size)
+        assertEquals(1, data.sections()[6].rows().size)
+        assertEquals(1, data.sections()[7].rows().size)
+    }
+
+    @Test
+    fun testDeriveNavigationDrawerData_LoggedOut_ArtExpanded() {
+        val data: NavigationDrawerData = DiscoveryParams.builder().build().deriveNavigationDrawerData(
+            categories,
+            CategoryFactory.artCategory(),
+            null
+        )
+        assertEquals(5, data.sections().size)
+        assertEquals(1, data.sections()[0].rows().size)
+        assertEquals(1, data.sections()[1].rows().size)
+        assertEquals(4, data.sections()[2].rows().size)
+        assertEquals(1, data.sections()[3].rows().size)
+        assertEquals(1, data.sections()[4].rows().size)
     }
 }

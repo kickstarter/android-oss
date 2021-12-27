@@ -15,7 +15,11 @@ import com.kickstarter.databinding.ProjectMainLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.transformations.CircleTransformation
-import com.kickstarter.libs.utils.*
+import com.kickstarter.libs.utils.DateTimeUtils
+import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.SocialUtils
+import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.photoHeightFromWidthRatio
 import com.kickstarter.models.Photo

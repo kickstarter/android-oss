@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.kickstarter.KSApplication;
-import com.kickstarter.libs.utils.BundleUtils;
+import com.kickstarter.libs.utils.extensions.BundleExtKt;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -21,7 +21,7 @@ public final class FragmentViewModelManager {
   private static final String VIEW_MODEL_STATE_KEY = "fragment_view_model_state";
 
   private static final FragmentViewModelManager instance = new FragmentViewModelManager();
-  private Map<String, FragmentViewModel> viewModels = new HashMap<>();
+  private final Map<String, FragmentViewModel> viewModels = new HashMap<>();
 
   public static @NonNull FragmentViewModelManager getInstance() {
     return instance;
@@ -82,7 +82,7 @@ public final class FragmentViewModelManager {
     }
 
     this.viewModels.put(id, viewModel);
-    viewModel.onCreate(context, BundleUtils.maybeGetBundle(savedInstanceState, VIEW_MODEL_STATE_KEY));
+    viewModel.onCreate(context, BundleExtKt.maybeGetBundle(savedInstanceState, VIEW_MODEL_STATE_KEY));
 
     return viewModel;
   }

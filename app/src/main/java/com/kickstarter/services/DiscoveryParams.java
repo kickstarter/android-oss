@@ -23,8 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import auto.parcel.AutoParcel;
 
-import static com.kickstarter.libs.utils.BooleanUtils.isFalse;
-import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
+import com.kickstarter.libs.utils.extensions.BoolenExtKt;
 
 @AutoGson
 @AutoParcel
@@ -456,7 +455,7 @@ public abstract class DiscoveryParams implements Parcelable {
    */
   public @NonNull String filterString(final @NonNull Context context, final @NonNull KSString ksString,
     final boolean isToolbar, final boolean isParentFilter) {
-    if (isTrue(staffPicks())) {
+    if (BoolenExtKt.isTrue(staffPicks())) {
       return context.getString(R.string.Projects_We_Love);
     } else if (starred() != null && starred() == 1) {
       return context.getString(R.string.Saved);
@@ -470,7 +469,7 @@ public abstract class DiscoveryParams implements Parcelable {
         : category().name();
     } else if (location() != null) {
       return location().displayableName();
-    } else if (isTrue(recommended())) {
+    } else if (BoolenExtKt.isTrue(recommended())) {
       return isToolbar ? context.getString(R.string.Recommended) : context.getString(R.string.discovery_recommended_for_you);
     } else {
       return context.getString(R.string.All_Projects);
@@ -479,7 +478,7 @@ public abstract class DiscoveryParams implements Parcelable {
 
   public static DiscoveryParams getDefaultParams(final @Nullable User user) {
     final Builder builder = DiscoveryParams.builder();
-    if (user != null && isFalse(user.optedOutOfRecommendations())) {
+    if (user != null && BoolenExtKt.isFalse(user.optedOutOfRecommendations())) {
       builder.recommended(true).backed(-1);
     }
     return builder
@@ -492,8 +491,8 @@ public abstract class DiscoveryParams implements Parcelable {
    * @return true if is All Projects.
    */
   public boolean isAllProjects() {
-    return isFalse(staffPicks()) && (starred() == null || starred() != 1) && (backed() == null || backed() != 1)
-      && (social() == null || social() != 1) && category() == null && location() == null && isFalse(recommended())
+    return BoolenExtKt.isFalse(staffPicks()) && (starred() == null || starred() != 1) && (backed() == null || backed() != 1)
+      && (social() == null || social() != 1) && category() == null && location() == null && BoolenExtKt.isFalse(recommended())
       && (tagId() == null);
   }
 
@@ -502,8 +501,8 @@ public abstract class DiscoveryParams implements Parcelable {
    * @return true if is Saved Projects.
    */
   public boolean isSavedProjects() {
-    return isTrue(starred() != null && starred() == 1) && isFalse(staffPicks()) && (backed() == null || backed() != 1)
-      && (social() == null || social() != 1) && category() == null && location() == null && isFalse(recommended())
+    return BoolenExtKt.isTrue(starred() != null && starred() == 1) && BoolenExtKt.isFalse(staffPicks()) && (backed() == null || backed() != 1)
+      && (social() == null || social() != 1) && category() == null && location() == null && BoolenExtKt.isFalse(recommended())
       && (tagId() == null);
   }
 

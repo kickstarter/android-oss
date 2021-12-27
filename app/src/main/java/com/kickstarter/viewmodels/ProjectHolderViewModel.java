@@ -9,7 +9,7 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.models.OptimizelyExperiment;
-import com.kickstarter.libs.utils.BooleanUtils;
+import com.kickstarter.libs.utils.extensions.BoolenExtKt;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.ExperimentData;
 import com.kickstarter.libs.utils.ListUtils;
@@ -225,7 +225,7 @@ public interface ProjectHolderViewModel {
 
       this.backingViewGroupIsGone = projectMetadata
         .map(ProjectMetadata.BACKING::equals)
-        .map(BooleanUtils::negate);
+        .map(BoolenExtKt::negate);
 
       this.blurbTextViewText = project.map(Project::blurb);
 
@@ -249,7 +249,7 @@ public interface ProjectHolderViewModel {
 
       this.conversionTextViewIsGone = project
         .map(pc -> !pc.currency().equals(pc.currentCurrency()))
-        .map(BooleanUtils::negate);
+        .map(BoolenExtKt::negate);
 
       this.conversionPledgedAndGoalText = project
         .map(p -> {
@@ -299,10 +299,10 @@ public interface ProjectHolderViewModel {
 
       this.featuredViewGroupIsGone = projectMetadata
         .map(ProjectMetadata.CATEGORY_FEATURED::equals)
-        .map(BooleanUtils::negate);
+        .map(BoolenExtKt::negate);
 
       this.featuredTextViewRootCategory = this.featuredViewGroupIsGone
-        .filter(BooleanUtils::isFalse)
+        .filter(BoolenExtKt::isFalse)
         .compose(combineLatestPair(project))
         .map(bp -> bp.second.category())
         .filter(ObjectUtils::isNotNull)
@@ -323,7 +323,7 @@ public interface ProjectHolderViewModel {
       this.percentageFundedProgressBarIsGone = project
         .map(p -> p.isSuccessful() || p.isCanceled() || p.isFailed() || p.isSuspended());
 
-      this.playButtonIsGone = project.map(Project::hasVideo).map(BooleanUtils::negate);
+      this.playButtonIsGone = project.map(Project::hasVideo).map(BoolenExtKt::negate);
 
       this.pledgedTextViewText = project
         .map(p -> this.ksCurrency.formatWithUserPreference(p.pledged(), p));
@@ -341,7 +341,7 @@ public interface ProjectHolderViewModel {
         .map(buttonTextAndIsCreator -> buttonTextAndIsCreator.first);
 
       this.projectDashboardContainerIsGone = userIsCreatorOfProject
-        .map(BooleanUtils::negate);
+        .map(BoolenExtKt::negate);
 
       this.projectDisclaimerGoalReachedDateTime = project
         .filter(Project::isFunded)
@@ -361,8 +361,8 @@ public interface ProjectHolderViewModel {
       this.projectLaunchDateIsGone = project
         .map(Project::launchedAt)
         .compose(combineLatestPair(userIsCreatorOfProject))
-        .map(launchDateAndIsCreator -> ObjectUtils.isNotNull(launchDateAndIsCreator.first) && BooleanUtils.isTrue(launchDateAndIsCreator.second))
-        .map(BooleanUtils::negate);
+        .map(launchDateAndIsCreator -> ObjectUtils.isNotNull(launchDateAndIsCreator.first) && BoolenExtKt.isTrue(launchDateAndIsCreator.second))
+        .map(BoolenExtKt::negate);
 
       this.projectMetadataViewGroupBackgroundDrawableInt = projectMetadata
         .filter(ProjectMetadata.BACKING::equals)
@@ -385,7 +385,7 @@ public interface ProjectHolderViewModel {
         .filter(Project::isFriendBacking)
         .map(Project::friends);
 
-      this.projectSocialViewGroupIsGone = project.map(Project::isFriendBacking).map(BooleanUtils::negate);
+      this.projectSocialViewGroupIsGone = project.map(Project::isFriendBacking).map(BoolenExtKt::negate);
 
       this.projectStateViewGroupBackgroundColorInt = project
         .filter(p -> !p.isLive())

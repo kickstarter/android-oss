@@ -4,8 +4,8 @@ import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
-import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.extensions.acceptedCardType
+import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.StoredCard
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -70,7 +70,7 @@ interface RewardCardUnselectedViewHolderViewModel : BaseRewardCardViewHolderView
                 .subscribe(this.lastFourTextColor)
 
             allowedCardType
-                .map { BooleanUtils.negate(it) }
+                .map { it.negate() }
                 .compose(bindToLifecycle())
                 .subscribe(this.notAvailableCopyIsVisible)
 

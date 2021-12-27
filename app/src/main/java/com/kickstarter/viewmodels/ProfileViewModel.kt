@@ -9,8 +9,9 @@ import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers.neverError
 import com.kickstarter.libs.utils.EventContextValues
-import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.libs.utils.extensions.isNonZero
+import com.kickstarter.libs.utils.extensions.isZero
 import com.kickstarter.models.Project
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.DiscoveryParams
@@ -141,21 +142,21 @@ interface ProfileViewModel {
             this.avatarImageViewUrl = loggedInUser.map { u -> u.avatar().medium() }
 
             this.backedCountTextViewHidden = loggedInUser
-                .map { u -> IntegerUtils.isZero(u.backedProjectsCount()) }
+                .map { u -> u.backedProjectsCount().isZero() }
             this.backedTextViewHidden = this.backedCountTextViewHidden
 
             this.backedCountTextViewText = loggedInUser
                 .map<Int> { it.backedProjectsCount() }
-                .filter { IntegerUtils.isNonZero(it) }
+                .filter { it.isNonZero() }
                 .map { NumberUtils.format(it) }
 
             this.createdCountTextViewHidden = loggedInUser
-                .map { u -> IntegerUtils.isZero(u.createdProjectsCount()) }
+                .map { u -> u.createdProjectsCount().isZero() }
             this.createdTextViewHidden = this.createdCountTextViewHidden
 
             this.createdCountTextViewText = loggedInUser
                 .map<Int> { it.createdProjectsCount() }
-                .filter { IntegerUtils.isNonZero(it) }
+                .filter { it.isNonZero() }
                 .map { NumberUtils.format(it) }
 
             this.dividerViewHidden = Observable.combineLatest<Boolean, Boolean, Pair<Boolean, Boolean>>(

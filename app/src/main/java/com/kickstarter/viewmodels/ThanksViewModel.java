@@ -45,7 +45,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
-import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
+import com.kickstarter.libs.utils.extensions.BoolenExtKt;
 
 public interface ThanksViewModel {
 
@@ -115,7 +115,7 @@ public interface ThanksViewModel {
       final Observable<Boolean> hasSeenGamesNewsletterDialog = Observable.just(this.hasSeenGamesNewsletterPreference.get());
 
       final Observable<Boolean> isSignedUpToGamesNewsletter = this.currentUser.observable()
-        .map(u -> u != null && isTrue(u.gamesNewsletter()));
+        .map(u -> u != null && BoolenExtKt.isTrue(u.gamesNewsletter()));
 
       final Observable<Boolean> showGamesNewsletter = Observable.combineLatest(
         isGamesCategory, hasSeenGamesNewsletterDialog, isSignedUpToGamesNewsletter,

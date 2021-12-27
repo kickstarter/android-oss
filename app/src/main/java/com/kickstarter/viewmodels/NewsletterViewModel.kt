@@ -9,9 +9,9 @@ import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
-import com.kickstarter.libs.utils.BooleanUtils.isTrue
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.isLocationGermany
 import com.kickstarter.ui.activities.NewsletterActivity
@@ -228,11 +228,11 @@ interface NewsletterViewModel {
         }
 
         private fun isSubscribedToAllNewsletters(@NonNull user: User): Boolean {
-            return isTrue(user.alumniNewsletter()) && isTrue(user.artsCultureNewsletter()) &&
-                isTrue(user.filmNewsletter()) && isTrue(user.gamesNewsletter()) &&
-                isTrue(user.happeningNewsletter()) && isTrue(user.inventNewsletter()) &&
-                isTrue(user.musicNewsletter()) && isTrue(user.promoNewsletter()) &&
-                isTrue(user.publishingNewsletter()) && isTrue(user.weeklyNewsletter())
+            return user.alumniNewsletter().isTrue() && user.artsCultureNewsletter().isTrue() &&
+                user.filmNewsletter().isTrue() && user.gamesNewsletter().isTrue() &&
+                user.happeningNewsletter().isTrue() && user.inventNewsletter().isTrue() &&
+                user.musicNewsletter().isTrue() && user.promoNewsletter().isTrue() &&
+                user.publishingNewsletter().isTrue() && user.weeklyNewsletter().isTrue()
         }
 
         private fun requiresDoubleOptIn(user: User, checked: Boolean) = user.isLocationGermany() && checked

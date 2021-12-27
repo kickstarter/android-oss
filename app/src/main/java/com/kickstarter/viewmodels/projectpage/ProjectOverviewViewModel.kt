@@ -10,13 +10,14 @@ import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProgressBarUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
+import com.kickstarter.libs.utils.extensions.isTrue
+import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.ApolloClientType
@@ -502,7 +503,7 @@ interface ProjectOverviewViewModel {
 
             conversionTextViewIsGone = project
                 .map { it.currency() != it.currentCurrency() }
-                .map { BooleanUtils.negate(it) }
+                .map { it.negate() }
 
             conversionPledgedAndGoalText = project
                 .map { proj ->
@@ -606,7 +607,7 @@ interface ProjectOverviewViewModel {
                 .map { buttonTextAndIsCreator: Pair<Int, Boolean?> -> buttonTextAndIsCreator.first }
 
             projectDashboardContainerIsGone = userIsCreatorOfProject
-                .map { BooleanUtils.negate(it) }
+                .map { it.negate() }
 
             projectDisclaimerGoalReachedDateTime = project
                 .filter { obj: Project -> obj.isFunded }
@@ -632,9 +633,9 @@ interface ProjectOverviewViewModel {
                 .map { launchDateAndIsCreator: Pair<DateTime?, Boolean?> ->
                     ObjectUtils.isNotNull(
                         launchDateAndIsCreator.first
-                    ) && BooleanUtils.isTrue(launchDateAndIsCreator.second)
+                    ) && launchDateAndIsCreator.second.isTrue()
                 }
-                .map { BooleanUtils.negate(it) }
+                .map { it.negate() }
 
             projectNameTextViewText = project
                 .map { it.name() }
@@ -654,7 +655,7 @@ interface ProjectOverviewViewModel {
 
             projectSocialViewGroupIsGone = project
                 .map { it.isFriendBacking }
-                .map { BooleanUtils.negate(it) }
+                .map { it.negate() }
 
             projectStateViewGroupBackgroundColorInt = project
                 .filter { p: Project -> !p.isLive }

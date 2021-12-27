@@ -5,9 +5,9 @@ import androidx.core.content.ContextCompat
 import com.kickstarter.databinding.DiscoveryDrawerLoggedInViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.transformations.CircleTransformation
-import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.isNullOrZero
 import com.kickstarter.models.User
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.viewmodels.LoggedInViewHolderViewModel
@@ -47,7 +47,7 @@ class LoggedInViewHolder(private val binding: DiscoveryDrawerLoggedInViewBinding
             .compose(observeForUI())
             .subscribe {
                 binding.unreadMessagesCount.text = when {
-                    IntegerUtils.isNullOrZero(it) -> null
+                    it.isNullOrZero() -> null
                     else -> NumberUtils.format(it)
                 }
             }
@@ -57,7 +57,7 @@ class LoggedInViewHolder(private val binding: DiscoveryDrawerLoggedInViewBinding
             .compose(observeForUI())
             .subscribe {
                 binding.unseenActivityCount.text = when {
-                    IntegerUtils.isNullOrZero(it) -> null
+                    it.isNullOrZero() -> null
                     else -> NumberUtils.format(it)
                 }
             }

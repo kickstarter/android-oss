@@ -3,7 +3,7 @@ package com.kickstarter.libs;
 import android.util.Pair;
 
 import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView;
-import com.kickstarter.libs.utils.BooleanUtils;
+import com.kickstarter.libs.utils.extensions.BoolenExtKt;
 import com.kickstarter.libs.utils.Secrets;
 
 import androidx.annotation.NonNull;
@@ -50,7 +50,7 @@ public final class RecyclerViewPaginator {
     stop();
 
     final Observable<Pair<Integer, Integer>> lastVisibleAndCount = RxRecyclerView.scrollEvents(this.recyclerView)
-      .filter(__ -> BooleanUtils.isFalse(Secrets.IS_OSS))
+      .filter(__ -> BoolenExtKt.isFalse(Secrets.IS_OSS))
       .filter(__ -> this.recyclerView.canScrollVertically(DIRECTION_DOWN))
       .map(__ -> this.recyclerView.getLayoutManager())
       .ofType(LinearLayoutManager.class)

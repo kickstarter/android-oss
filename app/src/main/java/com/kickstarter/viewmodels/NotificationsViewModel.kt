@@ -8,9 +8,9 @@ import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.neverError
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
-import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.isZero
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.NotificationsActivity
@@ -133,7 +133,7 @@ interface NotificationsViewModel {
 
             this.creatorNotificationsAreGone = currentUser
                 .compose(bindToLifecycle())
-                .map { IntegerUtils.isZero(it.createdProjectsCount() ?: 0) }
+                .map { (it.createdProjectsCount() ?: 0).isZero() }
                 .distinctUntilChanged()
 
             val updateSettingsNotification = this.userInput

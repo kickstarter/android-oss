@@ -19,7 +19,6 @@ import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.rx.transformers.Transformers.zipPair
-import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.NumberUtils
@@ -28,6 +27,9 @@ import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.acceptedCardType
+import com.kickstarter.libs.utils.extensions.isFalse
+import com.kickstarter.libs.utils.extensions.isTrue
+import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.libs.utils.extensions.parseToDouble
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
@@ -693,7 +695,7 @@ interface PledgeFragmentViewModel {
 
             val initialAmount = rewardMinimum
                 .compose<Pair<Double, Boolean>>(combineLatestPair(updatingPaymentOrUpdatingPledge))
-                .filter { BooleanUtils.isFalse(it.second) }
+                .filter { it.second.isFalse() }
                 .map { it.first }
 
             // - For no Reward the amount of the RW and the bonus amount are the same value
@@ -909,7 +911,7 @@ interface PledgeFragmentViewModel {
 
             projectAndReward
                 .map { it.first.currency() != it.first.currentCurrency() }
-                .map { BooleanUtils.negate(it) }
+                .map { it.negate() }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(this.conversionTextViewIsGone)
@@ -1067,7 +1069,7 @@ interface PledgeFragmentViewModel {
 
             val changeDuringUpdatingPledge = validChange
                 .compose<Pair<Boolean, Boolean>>(combineLatestPair(updatingPledge))
-                .filter { BooleanUtils.isTrue(it.second) }
+                .filter { it.second.isTrue() }
                 .map { it.first }
 
             // - Enable/Disable button with shipping
@@ -1092,14 +1094,14 @@ interface PledgeFragmentViewModel {
                 .subscribe(this.continueButtonIsGone)
 
             userIsLoggedIn
-                .map { BooleanUtils.negate(it) }
+                .map { it.negate() }
                 .compose(bindToLifecycle())
                 .subscribe { this.pledgeButtonIsGone.onNext(it) }
 
             val storedCards = BehaviorSubject.create<List<StoredCard>>()
 
             userIsLoggedIn
-                .filter { BooleanUtils.isTrue(it) }
+                .filter { it.isTrue() }
                 .compose<Pair<Boolean, PledgeReason>>(combineLatestPair(pledgeReason))
                 .filter { it.second == PledgeReason.PLEDGE || it.second == PledgeReason.UPDATE_PAYMENT || it.second == PledgeReason.FIX_PLEDGE }
                 .take(1)
@@ -1146,7 +1148,7 @@ interface PledgeFragmentViewModel {
                 .subscribe(this.startLoginToutActivity)
 
             userIsLoggedIn
-                .filter { BooleanUtils.isFalse(it) }
+                .filter { it.isFalse() }
                 .compose<Pair<Boolean, PledgeReason>>(combineLatestPair(pledgeReason))
                 .filter { it.second == PledgeReason.PLEDGE }
                 .compose<Pair<Pair<Boolean, PledgeReason>, Boolean>>(combineLatestPair(totalIsValid))
@@ -1296,7 +1298,7 @@ interface PledgeFragmentViewModel {
                 .compose<Checkout>(takeWhen(this.stripeSetupResultSuccessful.filter { it == StripeIntentResult.Outcome.SUCCEEDED }))
 
             val successfulCheckout = checkoutResult
-                .filter { BooleanUtils.isFalse(it.backing().requiresAction()) }
+                .filter { it.backing().requiresAction().isFalse() }
 
             val successfulBacking = successfulCheckout
                 .map { it.backing() }
@@ -1328,7 +1330,7 @@ interface PledgeFragmentViewModel {
             Observable.merge(createBackingNotification, updateBackingNotification)
                 .compose(values())
                 .map { it.backing() }
-                .filter { BooleanUtils.isTrue(it.requiresAction()) }
+                .filter { it.requiresAction().isTrue() }
                 .map { it.clientSecret() }
                 .compose(bindToLifecycle())
                 .subscribe(this.showSCAFlow)

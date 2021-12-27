@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.kickstarter.KSApplication;
-import com.kickstarter.libs.utils.BundleUtils;
+import com.kickstarter.libs.utils.extensions.BundleExtKt;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -21,7 +21,7 @@ public class ActivityViewModelManager {
   private static final String VIEW_MODEL_STATE_KEY = "view_model_state";
 
   private static final ActivityViewModelManager instance = new ActivityViewModelManager();
-  private Map<String, ActivityViewModel> viewModels = new HashMap<>();
+  private final Map<String, ActivityViewModel> viewModels = new HashMap<>();
 
   public static @NonNull ActivityViewModelManager getInstance() {
     return instance;
@@ -83,7 +83,7 @@ public class ActivityViewModelManager {
     }
 
     this.viewModels.put(id, activityViewModel);
-    activityViewModel.onCreate(context, BundleUtils.maybeGetBundle(savedInstanceState, VIEW_MODEL_STATE_KEY));
+    activityViewModel.onCreate(context, BundleExtKt.maybeGetBundle(savedInstanceState, VIEW_MODEL_STATE_KEY));
 
     return activityViewModel;
   }

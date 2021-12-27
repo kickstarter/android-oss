@@ -11,8 +11,8 @@ import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
-import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.services.mutations.SavePaymentMethodData
@@ -133,12 +133,12 @@ interface NewCardFragmentViewModel {
                 .distinctUntilChanged()
 
             modal
-                .map { BooleanUtils.negate(it) }
+                .map { it.negate() }
                 .compose(bindToLifecycle())
                 .subscribe(this.appBarLayoutHasElevation)
 
             modal
-                .map { BooleanUtils.negate(it) }
+                .map { it.negate() }
                 .compose(bindToLifecycle())
                 .subscribe(this.dividerIsVisible)
 
@@ -147,7 +147,7 @@ interface NewCardFragmentViewModel {
                 .subscribe(this.reusableContainerIsVisible)
 
             val initialReusable = modal
-                .map { BooleanUtils.negate(it) }
+                .map { it.negate() }
 
             val reusable = Observable.merge(initialReusable, this.reusable)
 

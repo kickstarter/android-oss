@@ -6,8 +6,8 @@ import android.os.Parcelable;
 import com.kickstarter.libs.Permission;
 import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.utils.DateTimeUtils;
-import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.UrlUtils;
+import com.kickstarter.libs.utils.extensions.IntExtKt;
 
 import org.joda.time.DateTime;
 
@@ -244,7 +244,7 @@ public abstract class Project implements Parcelable, Relay {
   }
 
   public boolean hasComments() {
-    return IntegerUtils.isNonZero(this.commentsCount());
+    return IntExtKt.isNonZero(this.commentsCount());
   }
 
   public boolean hasRewards() {

@@ -7,9 +7,9 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.values
-import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.EditProfileActivity
@@ -104,7 +104,7 @@ interface EditProfileViewModel {
             currentUser
                 .compose(bindToLifecycle())
                 .filter(ObjectUtils::isNotNull)
-                .map { user -> IntegerUtils.isNonZero(user.createdProjectsCount()) }
+                .map { user -> user.createdProjectsCount().isNonZero() }
                 .subscribe(this.hidePrivateProfileRow)
 
             currentUser

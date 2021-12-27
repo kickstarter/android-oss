@@ -7,7 +7,7 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.utils.EventContextValues;
-import com.kickstarter.libs.utils.IntegerUtils;
+import com.kickstarter.libs.utils.extensions.IntExtKt;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.ErroredBacking;
 import com.kickstarter.models.Project;
@@ -146,8 +146,8 @@ public interface ActivityFeedViewModel {
 
       loggedInUser
         .compose(takeWhen(refreshOrResume))
-        .map(user -> IntegerUtils.intValueOrZero(user.unseenActivityCount()) + IntegerUtils.intValueOrZero(user.erroredBackingsCount()))
-        .filter(IntegerUtils::isNonZero)
+        .map(user -> IntExtKt.intValueOrZero(user.unseenActivityCount()) + IntExtKt.intValueOrZero(user.erroredBackingsCount()))
+        .filter(IntExtKt::isNonZero)
         .distinctUntilChanged()
         .switchMap(__ -> this.apolloClient.clearUnseenActivity().compose(neverError()))
         .switchMap(__ -> this.apiClient.fetchCurrentUser().compose(neverError()))

@@ -7,7 +7,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.BooleanUtils;
+import com.kickstarter.libs.utils.extensions.BoolenExtKt;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
@@ -200,16 +200,16 @@ public interface ProjectCardHolderViewModel {
       this.friendAvatar2IsGone = this.project
         .map(Project::friends)
         .map(friends -> friends != null && friends.size() > 1)
-        .map(BooleanUtils::negate);
+        .map(BoolenExtKt::negate);
 
       this.friendAvatar3IsGone = this.project
         .map(Project::friends)
         .map(friends -> friends != null && friends.size() > 2)
-        .map(BooleanUtils::negate);
+        .map(BoolenExtKt::negate);
 
       this.friendBackingViewIsHidden = this.project
         .map(Project::isFriendBacking)
-        .map(BooleanUtils::negate);
+        .map(BoolenExtKt::negate);
 
       this.friendsForNamepile = this.project
         .filter(Project::isFriendBacking)
@@ -240,7 +240,7 @@ public interface ProjectCardHolderViewModel {
         .map(params -> shouldShowLocationTag(params))
         .compose(combineLatestPair(this.project))
         .map(distanceSortAndProject -> distanceSortAndProject.first && ObjectUtils.isNotNull(distanceSortAndProject.second.location()))
-        .map(BooleanUtils::negate)
+        .map(BoolenExtKt::negate)
         .distinctUntilChanged()
         .compose(bindToLifecycle())
         .subscribe(this.locationContainerIsGone::onNext);
@@ -286,7 +286,7 @@ public interface ProjectCardHolderViewModel {
 
       this.projectStateViewGroupIsGone = this.project
         .map(ProjectExt::isCompleted)
-        .map(BooleanUtils::negate);
+        .map(BoolenExtKt::negate);
 
       final Observable<Category> projectCategory = this.project
         .map(Project::category)
@@ -316,7 +316,7 @@ public interface ProjectCardHolderViewModel {
         .compose(coalesce(false))
         .compose(combineLatestPair(this.discoveryParams.map(DiscoveryParams::staffPicks).compose(coalesce(false))))
         .map(staffPickPair -> staffPickPair.first && !staffPickPair.second)
-        .map(BooleanUtils::negate)
+        .map(BoolenExtKt::negate)
         .distinctUntilChanged();
 
       this.projectTagContainerIsGone = Observable.combineLatest(this.projectSubcategoryIsGone,
@@ -340,7 +340,7 @@ public interface ProjectCardHolderViewModel {
     }
 
     private boolean areParamsAllOrSameCategoryAsProject(final @NonNull Pair<Category, Category> categoryPair) {
-      return ObjectUtils.isNotNull(categoryPair.first) ? categoryPair.first.id() == categoryPair.second.id() : false;
+      return ObjectUtils.isNotNull(categoryPair.first) && categoryPair.first.id() == categoryPair.second.id();
     }
 
     private final PublishSubject<DiscoveryParams> discoveryParams = PublishSubject.create();

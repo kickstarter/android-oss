@@ -10,7 +10,6 @@ import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.neverError
 import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
-import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils
@@ -18,6 +17,7 @@ import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
+import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Backing
@@ -309,7 +309,7 @@ interface BackingFragmentViewModel {
                 .map { it.paymentSource() }
                 .map { CreditCardPaymentType.safeValueOf(it?.paymentType()) }
                 .map { it == CreditCardPaymentType.ANDROID_PAY || it == CreditCardPaymentType.APPLE_PAY || it == CreditCardPaymentType.CREDIT_CARD }
-                .map { BooleanUtils.negate(it) }
+                .map { it.negate() }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(this.paymentMethodIsGone)
@@ -353,7 +353,7 @@ interface BackingFragmentViewModel {
             val backingIsNotErrored = backing
                 .map { it.isErrored() }
                 .distinctUntilChanged()
-                .map { BooleanUtils.negate(it) }
+                .map { it.negate() }
 
             backingIsNotErrored
                 .compose(bindToLifecycle())
@@ -401,7 +401,7 @@ interface BackingFragmentViewModel {
             val sectionShouldBeGone = rewardIsReceivable
                 .compose(combineLatestPair<Boolean, Boolean>(backingIsCollected))
                 .map { it.first && it.second }
-                .map { BooleanUtils.negate(it) }
+                .map { it.negate() }
                 .distinctUntilChanged()
 
             sectionShouldBeGone

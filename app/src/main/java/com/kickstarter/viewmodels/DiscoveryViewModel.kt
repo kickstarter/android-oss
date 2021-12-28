@@ -13,12 +13,12 @@ import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DiscoveryUtils
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.deriveNavigationDrawerData
 import com.kickstarter.libs.utils.extensions.getTokenFromQueryParams
 import com.kickstarter.libs.utils.extensions.intValueOrZero
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.isVerificationEmailUrl
-import com.kickstarter.libs.utils.extensions.deriveNavigationDrawerData
 import com.kickstarter.libs.utils.extensions.positionFromSort
 import com.kickstarter.models.Category
 import com.kickstarter.models.User

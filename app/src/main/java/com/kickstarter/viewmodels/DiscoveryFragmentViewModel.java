@@ -11,7 +11,6 @@ import com.kickstarter.libs.FragmentViewModel;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.preferences.IntPreferenceType;
-import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.EventContextValues;
 import com.kickstarter.libs.utils.ExperimentData;
 import com.kickstarter.libs.utils.ListUtils;
@@ -200,7 +199,7 @@ public interface DiscoveryFragmentViewModel {
       final Observable<List<Project>> projects = Observable.combineLatest(
         paginator.paginatedData(),
         this.rootCategories,
-        DiscoveryUtils::fillRootCategoryForFeaturedProjects);
+        ProjectExt::fillRootCategoryForFeaturedProjects);
 
       Observable.combineLatest(projects,
         selectedParams.distinctUntilChanged(),

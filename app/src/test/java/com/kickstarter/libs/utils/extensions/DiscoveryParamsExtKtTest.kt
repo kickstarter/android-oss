@@ -59,8 +59,6 @@ class DiscoveryParamsExtKtTest : KSRobolectricTestCase() {
         )
     }
 
-
-
     @Test
     fun testDeriveNavigationDrawerData_LoggedOut_DefaultSelected() {
         val data: NavigationDrawerData = DiscoveryParams.builder().build().deriveNavigationDrawerData(
@@ -140,5 +138,14 @@ class DiscoveryParamsExtKtTest : KSRobolectricTestCase() {
         assertEquals(4, data.sections()[2].rows().size)
         assertEquals(1, data.sections()[3].rows().size)
         assertEquals(1, data.sections()[4].rows().size)
+    }
+
+    @Test
+    fun testDiscoveryParamsPositionFromSort() {
+        assertEquals(0, DiscoveryParams.Sort.MAGIC.positionFromSort())
+        assertEquals(0, null.positionFromSort())
+        assertEquals(1, DiscoveryParams.Sort.POPULAR.positionFromSort())
+        assertEquals(2, DiscoveryParams.Sort.NEWEST.positionFromSort())
+        assertEquals(3, DiscoveryParams.Sort.ENDING_SOON.positionFromSort())
     }
 }

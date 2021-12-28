@@ -317,7 +317,7 @@ interface DiscoveryViewModel {
                 .map { it.first }
                 .flatMap {
                     Observable.from(DiscoveryParams.Sort.defaultSorts)
-                        .map { sort: DiscoveryParams.Sort? -> DiscoveryUtils.positionFromSort(sort) }
+                        .map { sort: DiscoveryParams.Sort? -> sort.positionFromSort() }
                         .filter { sortPosition: Int -> sortPosition != it }
                         .toList()
                 }

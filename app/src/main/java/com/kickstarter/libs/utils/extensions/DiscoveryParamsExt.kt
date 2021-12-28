@@ -226,3 +226,18 @@ private fun paramsGroupedByRootCategory(ps: List<DiscoveryParams>): List<List<Di
     }
     return ArrayList<List<DiscoveryParams>>(grouped.values)
 }
+
+/**
+ * Return the corresponding tab position for a given sort param.
+ */
+fun DiscoveryParams.Sort?.positionFromSort(): Int {
+    return if (this == null) {
+        0
+    } else when (this) {
+        DiscoveryParams.Sort.MAGIC -> 0
+        DiscoveryParams.Sort.POPULAR -> 1
+        DiscoveryParams.Sort.NEWEST -> 2
+        DiscoveryParams.Sort.ENDING_SOON -> 3
+        else -> 0
+    }
+}

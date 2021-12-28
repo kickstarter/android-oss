@@ -31,7 +31,7 @@ import com.kickstarter.ui.fragments.DiscoveryFragment
 import com.kickstarter.ui.fragments.DiscoveryFragment.Companion.newInstance
 import com.kickstarter.viewmodels.DiscoveryViewModel
 import rx.android.schedulers.AndroidSchedulers
-import java.util.*
+import java.util.Arrays
 import kotlin.collections.ArrayList
 
 @RequiresActivityViewModel(DiscoveryViewModel.ViewModel::class)

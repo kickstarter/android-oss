@@ -8,7 +8,7 @@ import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.adapters.data.NavigationDrawerData
 import rx.Observable
-import java.util.*
+import java.util.TreeMap
 
 /**
  * A `ref_tag` representation of some discovery params. This tag can be used to attribute a checkout when a user

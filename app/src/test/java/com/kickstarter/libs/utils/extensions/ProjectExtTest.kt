@@ -14,7 +14,7 @@ import org.junit.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import type.CreditCardTypes
-import java.util.*
+import java.util.Locale
 
 class ProjectExtTest : KSRobolectricTestCase() {
 

@@ -32,7 +32,11 @@ import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter
 import com.kickstarter.ui.adapters.DiscoveryPagerAdapter
 import com.kickstarter.ui.adapters.data.NavigationDrawerData
 import com.kickstarter.ui.intentmappers.DiscoveryIntentMapper
-import com.kickstarter.ui.viewholders.discoverydrawer.*
+import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder
+import com.kickstarter.ui.viewholders.discoverydrawer.LoggedInViewHolder
+import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder
+import com.kickstarter.ui.viewholders.discoverydrawer.ParentFilterViewHolder
+import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject

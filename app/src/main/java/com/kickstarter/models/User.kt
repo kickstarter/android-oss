@@ -5,115 +5,174 @@ import com.kickstarter.libs.qualifiers.AutoGson
 import auto.parcel.AutoParcel
 import android.os.Parcelable
 import com.kickstarter.R
+import kotlinx.android.parcel.Parcelize
 
-@AutoGson
-@AutoParcel
-abstract class User : Parcelable, Relay {
-    abstract fun alumniNewsletter(): Boolean?
-    abstract fun artsCultureNewsletter(): Boolean?
-    abstract fun avatar(): Avatar?
-    abstract fun backedProjectsCount(): Int?
-    abstract fun createdProjectsCount(): Int?
-    abstract fun draftProjectsCount(): Int?
-    abstract fun erroredBackingsCount(): Int?
-    abstract fun facebookConnected(): Boolean?
-    abstract fun filmNewsletter(): Boolean?
-    abstract fun gamesNewsletter(): Boolean?
-    abstract fun happeningNewsletter(): Boolean?
-    abstract override fun id(): Long
-    abstract fun inventNewsletter(): Boolean?
-    abstract val isAdmin: Boolean?
-    abstract val isEmailVerified: Boolean?
-    abstract fun chosenCurrency(): String?
-    abstract fun location(): Location?
-    abstract fun memberProjectsCount(): Int?
-    abstract fun musicNewsletter(): Boolean?
-    abstract fun name(): String?
-    abstract fun notifyMobileOfBackings(): Boolean?
-    abstract fun notifyMobileOfComments(): Boolean?
-    abstract fun notifyMobileOfCreatorEdu(): Boolean?
-    abstract fun notifyMobileOfFollower(): Boolean?
-    abstract fun notifyMobileOfFriendActivity(): Boolean?
-    abstract fun notifyMobileOfMessages(): Boolean?
-    abstract fun notifyMobileOfPostLikes(): Boolean?
-    abstract fun notifyMobileOfUpdates(): Boolean?
-    abstract fun notifyMobileOfMarketingUpdate(): Boolean?
-    abstract fun notifyOfBackings(): Boolean?
-    abstract fun notifyOfComments(): Boolean?
-    abstract fun notifyOfCommentReplies(): Boolean?
-    abstract fun notifyOfCreatorDigest(): Boolean?
-    abstract fun notifyOfCreatorEdu(): Boolean?
-    abstract fun notifyOfFollower(): Boolean?
-    abstract fun notifyOfFriendActivity(): Boolean?
-    abstract fun notifyOfMessages(): Boolean?
-    abstract fun notifyOfUpdates(): Boolean?
-    abstract fun optedOutOfRecommendations(): Boolean?
-    abstract fun promoNewsletter(): Boolean?
-    abstract fun publishingNewsletter(): Boolean?
-    abstract fun showPublicProfile(): Boolean?
-    abstract fun social(): Boolean?
-    abstract fun starredProjectsCount(): Int?
-    abstract fun unreadMessagesCount(): Int?
-    abstract fun unseenActivityCount(): Int?
-    abstract fun weeklyNewsletter(): Boolean?
+@Parcelize
+class User private constructor(
+    private val alumniNewsletter: Boolean,
+    private val artsCultureNewsletter: Boolean,
+    private val avatar: Avatar,
+    private val backedProjectsCount: Int,
+    private val createdProjectsCount: Int,
+    private val draftProjectsCount: Int,
+    private val erroredBackingsCount: Int,
+    private val facebookConnected: Boolean,
+    private val filmNewsletter: Boolean,
+    private val gamesNewsletter: Boolean,
+    private val happeningNewsletter: Boolean,
+    private val id: Long,
+    private val inventNewsletter: Boolean,
+    private val isAdmin: Boolean,
+    private val isEmailVerified: Boolean,
+    private val chosenCurrency: String,
+    private val location: Location,
+    private val memberProjectsCount: Int,
+    private val musicNewsletter: Boolean,
+    private val name: String,
+    private val notifyMobileOfBackings: Boolean,
+    private val notifyMobileOfComments: Boolean,
+    private val notifyMobileOfCreatorEdu: Boolean,
+    private val notifyMobileOfFollower: Boolean,
+    private val notifyMobileOfFriendActivity: Boolean,
+    private val notifyMobileOfMessages: Boolean,
+    private val notifyMobileOfPostLikes: Boolean,
+    private val notifyMobileOfUpdates: Boolean,
+    private val notifyMobileOfMarketingUpdate: Boolean,
+    private val notifyOfBackings: Boolean,
+    private val notifyOfComments: Boolean,
+    private val notifyOfCommentReplies: Boolean,
+    private val notifyOfCreatorDigest: Boolean,
+    private val notifyOfCreatorEdu: Boolean,
+    private val notifyOfFollower: Boolean,
+    private val notifyOfFriendActivity: Boolean,
+    private val notifyOfMessages: Boolean,
+    private val notifyOfUpdates: Boolean,
+    private val optedOutOfRecommendations: Boolean,
+    private val promoNewsletter: Boolean,
+    private val publishingNewsletter: Boolean,
+    private val showPublicProfile: Boolean,
+    private val social: Boolean,
+    private val starredProjectsCount: Int,
+    private val unreadMessagesCount: Int,
+    private val unseenActivityCount: Int,
+    private val weeklyNewsletter: Boolean
+): Parcelable, Relay {
 
-    @AutoParcel.Builder
-    abstract class Builder {
-        abstract fun alumniNewsletter(__: Boolean?): Builder?
-        abstract fun artsCultureNewsletter(__: Boolean?): Builder?
-        abstract fun avatar(__: Avatar?): Builder?
-        abstract fun backedProjectsCount(__: Int?): Builder?
-        abstract fun createdProjectsCount(__: Int?): Builder?
-        abstract fun draftProjectsCount(__: Int?): Builder?
-        abstract fun erroredBackingsCount(__: Int?): Builder?
-        abstract fun facebookConnected(__: Boolean?): Builder?
-        abstract fun filmNewsletter(__: Boolean?): Builder?
-        abstract fun gamesNewsletter(__: Boolean?): Builder?
-        abstract fun happeningNewsletter(__: Boolean?): Builder?
-        abstract fun id(__: Long): Builder?
-        abstract fun isAdmin(__: Boolean?): Builder?
-        abstract fun isEmailVerified(__: Boolean?): Builder?
-        abstract fun chosenCurrency(__: String?): Builder?
-        abstract fun inventNewsletter(__: Boolean?): Builder?
-        abstract fun location(__: Location?): Builder?
-        abstract fun memberProjectsCount(__: Int?): Builder?
-        abstract fun musicNewsletter(__: Boolean?): Builder?
-        abstract fun name(__: String?): Builder?
-        abstract fun notifyMobileOfBackings(__: Boolean?): Builder?
-        abstract fun notifyMobileOfComments(__: Boolean?): Builder?
-        abstract fun notifyMobileOfCreatorEdu(__: Boolean?): Builder?
-        abstract fun notifyMobileOfFollower(__: Boolean?): Builder?
-        abstract fun notifyMobileOfFriendActivity(__: Boolean?): Builder?
-        abstract fun notifyMobileOfMessages(__: Boolean?): Builder?
-        abstract fun notifyMobileOfPostLikes(__: Boolean?): Builder?
-        abstract fun notifyMobileOfUpdates(__: Boolean?): Builder?
-        abstract fun notifyMobileOfMarketingUpdate(__: Boolean?): Builder?
-        abstract fun notifyOfBackings(__: Boolean?): Builder?
-        abstract fun notifyOfComments(__: Boolean?): Builder?
-        abstract fun notifyOfCommentReplies(__: Boolean?): Builder?
-        abstract fun notifyOfCreatorDigest(__: Boolean?): Builder?
-        abstract fun notifyOfCreatorEdu(__: Boolean?): Builder?
-        abstract fun notifyOfFollower(__: Boolean?): Builder?
-        abstract fun notifyOfFriendActivity(__: Boolean?): Builder?
-        abstract fun notifyOfMessages(__: Boolean?): Builder?
-        abstract fun notifyOfUpdates(__: Boolean?): Builder?
-        abstract fun optedOutOfRecommendations(__: Boolean?): Builder?
-        abstract fun promoNewsletter(__: Boolean?): Builder?
-        abstract fun publishingNewsletter(__: Boolean?): Builder?
-        abstract fun showPublicProfile(__: Boolean?): Builder?
-        abstract fun social(__: Boolean?): Builder?
-        abstract fun starredProjectsCount(__: Int?): Builder?
-        abstract fun unreadMessagesCount(__: Int?): Builder?
-        abstract fun unseenActivityCount(__: Int?): Builder?
-        abstract fun weeklyNewsletter(__: Boolean?): Builder?
-        abstract fun build(): User?
+    fun alumniNewsletter() = this.alumniNewsletter
+    fun artsCultureNewsletter() = this.artsCultureNewsletter
+    fun avatar() = this.avatar
+    fun backedProjectsCount() = this.backedProjectsCount
+    fun createdProjectsCount() = this.createdProjectsCount
+    fun draftProjectsCount() = this.draftProjectsCount
+    fun erroredBackingsCount() = this.erroredBackingsCount
+    fun facebookConnected() = this.facebookConnected
+    fun filmNewsletter() = this.filmNewsletter
+    fun gamesNewsletter() = this.gamesNewsletter
+    fun happeningNewsletter() = this.happeningNewsletter
+    override fun id() = this.id
+    fun isAdmin() = this.isAdmin
+    fun isEmailVerified() = this.isEmailVerified
+    fun chosenCurrency() = this.chosenCurrency
+    fun inventNewsletter() = this.inventNewsletter
+    fun location() = this.location
+    fun memberProjectsCount() = this.memberProjectsCount
+    fun musicNewsletter() = this.musicNewsletter
+    fun name() = this.name
+    fun notifyMobileOfBackings() = this.notifyMobileOfBackings
+    fun notifyMobileOfComments() = this.notifyMobileOfComments
+    fun notifyMobileOfCreatorEdu() = this.notifyMobileOfCreatorEdu
+    fun notifyMobileOfFollower() = this.notifyMobileOfFollower
+    fun notifyMobileOfFriendActivity() = this.notifyMobileOfFriendActivity
+    fun notifyMobileOfMessages() = this.notifyMobileOfMessages
+    fun notifyMobileOfPostLikes() = this.notifyMobileOfPostLikes
+    fun notifyMobileOfUpdates() = this.notifyMobileOfUpdates
+    fun notifyMobileOfMarketingUpdate() = this.notifyMobileOfMarketingUpdate
+    fun notifyOfBackings() = this.notifyOfBackings
+    fun notifyOfComments() = this.notifyOfComments
+    fun notifyOfCommentReplies() = this.notifyOfCommentReplies
+    fun notifyOfCreatorDigest() = this.notifyOfCreatorDigest
+    fun notifyOfCreatorEdu() = this.notifyOfCreatorEdu
+    fun notifyOfFollower() = this.notifyOfFollower
+    fun notifyOfFriendActivity() = this.notifyOfFriendActivity
+    fun notifyOfMessages() = this.notifyOfMessages
+    fun notifyOfUpdates() = this.notifyOfUpdates
+    fun optedOutOfRecommendations() = this.optedOutOfRecommendations
+    fun promoNewsletter() = this.promoNewsletter
+    fun publishingNewsletter() = this.publishingNewsletter
+    fun showPublicProfile() = this.showPublicProfile
+    fun social() = this.social
+    fun starredProjectsCount() = this.starredProjectsCount
+    fun unreadMessagesCount() = this.unreadMessagesCount
+    fun unseenActivityCount() = this.unseenActivityCount
+    fun weeklyNewsletter() = this.weeklyNewsletter
+
+    @Parcelize
+    data class Builder(
+        private val alumniNewsletter: Boolean = false,
+        private val artsCultureNewsletter: Boolean = false,
+        private val avatar: Avatar = Avatar.builder().build(),
+        private val backedProjectsCount: Int = 0,
+        private val createdProjectsCount: Int = 0,
+        private val draftProjectsCount: Int = 0,
+        private val erroredBackingsCount: Int = 0,
+        private val facebookConnected: Boolean = false,
+        private val filmNewsletter: Boolean = false,
+        private val gamesNewsletter: Boolean = false,
+        private val happeningNewsletter: Boolean = false,
+        private val id: Long = 0L,
+        private val inventNewsletter: Boolean = false,
+        private val isAdmin: Boolean = false,
+        private val isEmailVerified: Boolean = false,
+        private val chosenCurrency: String = "",
+        private val location: Location = Location.Builder().build(),
+        private val memberProjectsCount: Int,
+        private val musicNewsletter: Boolean,
+        private val name: String,
+        private val notifyMobileOfBackings: Boolean,
+        private val notifyMobileOfComments: Boolean,
+        private val notifyMobileOfCreatorEdu: Boolean,
+        private val notifyMobileOfFollower: Boolean,
+        private val notifyMobileOfFriendActivity: Boolean,
+        private val notifyMobileOfMessages: Boolean,
+        private val notifyMobileOfPostLikes: Boolean,
+        private val notifyMobileOfUpdates: Boolean,
+        private val notifyMobileOfMarketingUpdate: Boolean,
+        private val notifyOfBackings: Boolean,
+        private val notifyOfComments: Boolean,
+        private val notifyOfCommentReplies: Boolean,
+        private val notifyOfCreatorDigest: Boolean,
+        private val notifyOfCreatorEdu: Boolean,
+        private val notifyOfFollower: Boolean,
+        private val notifyOfFriendActivity: Boolean,
+        private val notifyOfMessages: Boolean,
+        private val notifyOfUpdates: Boolean,
+        private val optedOutOfRecommendations: Boolean,
+        private val promoNewsletter: Boolean,
+        private val publishingNewsletter: Boolean,
+        private val showPublicProfile: Boolean,
+        private val social: Boolean,
+        private val starredProjectsCount: Int,
+        private val unreadMessagesCount: Int,
+        private val unseenActivityCount: Int,
+        private val weeklyNewsletter: Boolean
+    ) : Parcelable {
+        fun medium(med: String?) = apply { med?.let { this.medium = it } }
+        fun small(sma: String?) = apply { sma?.let { this.small = it } }
+        fun thumb(thu: String?) = apply { thu?.let { this.thumb = it } }
+        fun build() = Avatar(medium = medium, small = small, thumb = thumb)
     }
 
     fun param(): String {
         return id().toString()
     }
 
-    abstract fun toBuilder(): Builder?
+    companion object {
+        @JvmStatic
+        fun builder() = Builder()
+    }
+
+    fun toBuilder() = Builder()
+
     enum class EmailFrequency(private val stringResId: Int) {
         TWICE_A_DAY_SUMMARY(R.string.Twice_a_day_summary), DAILY_SUMMARY(R.string.Daily_summary);
 
@@ -187,12 +246,5 @@ abstract class User : Parcelable, Relay {
 
     override fun hashCode(): Int {
         return super.hashCode()
-    }
-
-    companion object {
-        @JvmStatic
-        fun builder(): Builder {
-            return AutoParcel_User.Builder()
-        }
     }
 }

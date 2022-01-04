@@ -2,7 +2,7 @@ package com.kickstarter.viewmodels;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.BooleanUtils;
+import com.kickstarter.libs.utils.extensions.BoolenExtKt;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
@@ -66,7 +66,7 @@ public interface CreatorDashboardViewModel {
         .map(intent -> intent.hasExtra(IntentKey.PROJECT));
 
       final Observable<Notification<ProjectsEnvelope>> projectsNotification = isViewingSingleProject
-        .filter(BooleanUtils::isFalse)
+        .filter(BoolenExtKt::isFalse)
         .switchMap(i -> this.client.fetchProjects(true)
           .materialize()
           .share());

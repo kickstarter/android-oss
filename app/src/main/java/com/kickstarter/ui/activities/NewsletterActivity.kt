@@ -9,9 +9,9 @@ import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.utils.BooleanUtils.isTrue
 import com.kickstarter.libs.utils.SwitchCompatUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.User
 import com.kickstarter.ui.data.Newsletter
 import com.kickstarter.viewmodels.NewsletterViewModel
@@ -70,16 +70,16 @@ class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
     }
 
     private fun displayPreferences(@NonNull user: User) {
-        SwitchCompatUtils.setCheckedWithoutAnimation(binding.alumniSwitch, isTrue(user.alumniNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(binding.artsNewsSwitch, isTrue(user.artsCultureNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(binding.filmsSwitch, isTrue(user.filmNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(binding.gamesWeLoveSwitch, isTrue(user.gamesNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(binding.happeningSwitch, isTrue(user.happeningNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(binding.inventSwitch, isTrue(user.inventNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(binding.musicSwitch, isTrue(user.musicNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(binding.newsEventsSwitch, isTrue(user.promoNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(binding.projectsWeLoveSwitch, isTrue(user.weeklyNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(binding.readsSwitch, isTrue(user.publishingNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.alumniSwitch, user.alumniNewsletter().isTrue())
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.artsNewsSwitch, user.artsCultureNewsletter().isTrue())
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.filmsSwitch, user.filmNewsletter().isTrue())
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.gamesWeLoveSwitch, user.gamesNewsletter().isTrue())
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.happeningSwitch, user.happeningNewsletter().isTrue())
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.inventSwitch, user.inventNewsletter().isTrue())
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.musicSwitch, user.musicNewsletter().isTrue())
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.newsEventsSwitch, user.promoNewsletter().isTrue())
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.projectsWeLoveSwitch, user.weeklyNewsletter().isTrue())
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.readsSwitch, user.publishingNewsletter().isTrue())
     }
 
     private fun newsletterString(@NonNull newsletter: Newsletter): String? {

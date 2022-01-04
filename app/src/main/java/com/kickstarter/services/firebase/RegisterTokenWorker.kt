@@ -14,7 +14,7 @@ import com.google.gson.JsonSyntaxException
 import com.kickstarter.KSApplication
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.qualifiers.ApplicationContext
-import com.kickstarter.libs.utils.IntegerUtils
+import com.kickstarter.libs.utils.extensions.isZero
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.IntentKey
@@ -45,7 +45,7 @@ class RegisterTokenWorker(@ApplicationContext applicationContext: Context, priva
     }
 
     private fun handleResponse(response: JsonObject): Result {
-        return if (IntegerUtils.isZero(response.size())) {
+        return if (response.size().isZero()) {
             FirebaseMessaging.getInstance().subscribeToTopic(TOPIC_GLOBAL)
             logResponse()
             Result.success()

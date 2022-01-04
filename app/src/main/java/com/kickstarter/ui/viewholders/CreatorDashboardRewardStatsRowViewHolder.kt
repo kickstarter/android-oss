@@ -5,8 +5,8 @@ import com.kickstarter.R
 import com.kickstarter.databinding.DashboardRewardStatsRowViewBinding
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.isZero
 import com.kickstarter.models.Project
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope.RewardStats
 import com.kickstarter.viewmodels.DashboardRewardStatsRowHolderViewModel
@@ -45,7 +45,7 @@ class CreatorDashboardRewardStatsRowViewHolder(private val binding: DashboardRew
     }
 
     private fun setRewardMinimumText(projectAndMinimumForReward: Pair<Project, Int>) {
-        binding.rewardMinimumTextView.text = if (IntegerUtils.isZero(projectAndMinimumForReward.second))
+        binding.rewardMinimumTextView.text = if (projectAndMinimumForReward.second.isZero())
             context().getString(R.string.dashboard_graphs_rewards_no_reward)
         else
             ksCurrency.format(projectAndMinimumForReward.second.toDouble(), projectAndMinimumForReward.first)

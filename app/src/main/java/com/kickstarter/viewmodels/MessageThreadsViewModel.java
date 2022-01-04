@@ -8,7 +8,6 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.models.MessageThread;
@@ -31,7 +30,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPai
 import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
-import static com.kickstarter.libs.utils.IntegerUtils.intValueOrZero;
+import com.kickstarter.libs.utils.extensions.IntExtKt;
 
 public interface MessageThreadsViewModel {
 
@@ -178,15 +177,15 @@ public interface MessageThreadsViewModel {
         .subscribe(this.hasNoMessages);
 
       unreadMessagesCount
-        .map(IntegerUtils::isZero)
+        .map(IntExtKt::isZero)
         .subscribe(this.hasNoUnreadMessages);
 
       unreadMessagesCount
-        .map(count -> intValueOrZero(count) > 0 ? R.color.accent : R.color.kds_support_400)
+        .map(count -> IntExtKt.intValueOrZero(count) > 0 ? R.color.accent : R.color.kds_support_400)
         .subscribe(this.unreadCountTextViewColorInt);
 
       unreadMessagesCount
-        .map(count -> intValueOrZero(count) > 0 ? Typeface.BOLD : Typeface.NORMAL)
+        .map(count -> IntExtKt.intValueOrZero(count) > 0 ? Typeface.BOLD : Typeface.NORMAL)
         .subscribe(this.unreadCountTextViewTypefaceInt);
 
       this.unreadCountToolbarTextViewIsGone = Observable.zip(
@@ -200,7 +199,7 @@ public interface MessageThreadsViewModel {
 
       unreadMessagesCount
         .filter(ObjectUtils::isNotNull)
-        .filter(IntegerUtils::isNonZero)
+        .filter(IntExtKt::isNonZero)
         .subscribe(this.unreadMessagesCount);
 
       this.unreadMessagesCountIsGone = mailbox

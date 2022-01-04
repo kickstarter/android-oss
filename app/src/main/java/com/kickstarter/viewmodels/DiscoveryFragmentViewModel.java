@@ -11,13 +11,13 @@ import com.kickstarter.libs.FragmentViewModel;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.preferences.IntPreferenceType;
-import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.EventContextValues;
 import com.kickstarter.libs.utils.ExperimentData;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.RefTagUtils;
+import com.kickstarter.libs.utils.extensions.BoolenExtKt;
 import com.kickstarter.libs.utils.extensions.ProjectExt;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
@@ -53,7 +53,6 @@ import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
-import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 
 public interface DiscoveryFragmentViewModel {
 
@@ -244,7 +243,7 @@ public interface DiscoveryFragmentViewModel {
       this.currentUser.observable()
         .compose(combineLatestPair(this.paramsFromActivity))
         .compose(combineLatestPair(lightsOnEnabled))
-        .map(defaultParamsAndEnabled -> isDefaultParams(defaultParamsAndEnabled.first) && BooleanUtils.isTrue(defaultParamsAndEnabled.second))
+        .map(defaultParamsAndEnabled -> isDefaultParams(defaultParamsAndEnabled.first) && BoolenExtKt.isTrue(defaultParamsAndEnabled.second))
         .map(shouldShow -> shouldShow ? Editorial.LIGHTS_ON : null)
         .compose(bindToLifecycle())
         .subscribe(this.shouldShowEditorial);
@@ -268,7 +267,7 @@ public interface DiscoveryFragmentViewModel {
         .subscribe(this.shouldShowEmptySavedView);
 
       this.shouldShowEmptySavedView
-        .filter(BooleanUtils::isTrue)
+        .filter(BoolenExtKt::isTrue)
         .map(__ -> null)
         .mergeWith(this.heartContainerClicked)
         .subscribe(__ -> this.startHeartAnimation.onNext(null));
@@ -330,7 +329,7 @@ public interface DiscoveryFragmentViewModel {
     private boolean isOnboardingVisible(final @NonNull DiscoveryParams params, final boolean isLoggedIn) {
       final DiscoveryParams.Sort sort = params.sort();
       final boolean isSortHome = DiscoveryParams.Sort.MAGIC.equals(sort);
-      return isTrue(params.isAllProjects()) && isSortHome && !isLoggedIn;
+      return BoolenExtKt.isTrue(params.isAllProjects()) && isSortHome && !isLoggedIn;
     }
 
     private boolean isSavedVisible(final @NonNull DiscoveryParams params) {

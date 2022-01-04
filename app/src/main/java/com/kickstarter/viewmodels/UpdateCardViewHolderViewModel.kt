@@ -6,8 +6,8 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
-import com.kickstarter.libs.utils.BooleanUtils
-import com.kickstarter.libs.utils.IntegerUtils
+import com.kickstarter.libs.utils.extensions.isNullOrZero
+import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
@@ -95,7 +95,7 @@ interface UpdateCardViewHolderViewModel {
                 .map {
                     when {
                         it.first.first.isBacking || it.second -> false
-                        else -> BooleanUtils.negate(it.first.second.isPublic ?: false)
+                        else -> (it.first.second.isPublic ?: false).negate()
                     }
                 }
                 .compose(bindToLifecycle())
@@ -114,7 +114,7 @@ interface UpdateCardViewHolderViewModel {
 
             update
                 .map { it.commentsCount() }
-                .map { IntegerUtils.isNullOrZero(it) }
+                .map { it.isNullOrZero() }
                 .compose(bindToLifecycle())
                 .subscribe(this.commentsCountIsGone)
 
@@ -126,7 +126,7 @@ interface UpdateCardViewHolderViewModel {
 
             update
                 .map { it.likesCount() }
-                .map { IntegerUtils.isNullOrZero(it) }
+                .map { it.isNullOrZero() }
                 .compose(bindToLifecycle())
                 .subscribe(this.likesCountIsGone)
 

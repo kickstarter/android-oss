@@ -9,11 +9,11 @@ import com.kickstarter.R
 import com.kickstarter.databinding.ActivityPrivacyBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.utils.BooleanUtils.isFalse
-import com.kickstarter.libs.utils.BooleanUtils.isTrue
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.SwitchCompatUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.isFalse
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.User
 import com.kickstarter.viewmodels.PrivacyViewModel
 import rx.android.schedulers.AndroidSchedulers
@@ -72,9 +72,9 @@ class PrivacyActivity : BaseActivity<PrivacyViewModel.ViewModel>() {
     }
 
     private fun displayPreferences(user: User) {
-        SwitchCompatUtils.setCheckedWithoutAnimation(binding.followingSwitch, isTrue(user.social()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(binding.privateProfileSwitch, isFalse(user.showPublicProfile()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(binding.recommendationsSwitch, isFalse(user.optedOutOfRecommendations()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.followingSwitch, user.social().isTrue())
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.privateProfileSwitch, user.showPublicProfile().isFalse())
+        SwitchCompatUtils.setCheckedWithoutAnimation(binding.recommendationsSwitch, user.optedOutOfRecommendations().isFalse())
     }
 
     private fun lazyFollowingOptOutConfirmationDialog(): AlertDialog {

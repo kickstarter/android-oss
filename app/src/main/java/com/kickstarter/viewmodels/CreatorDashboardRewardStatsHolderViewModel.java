@@ -4,8 +4,8 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.ComparatorUtils;
 import com.kickstarter.libs.utils.PairUtils;
+import com.kickstarter.libs.utils.extensions.FloatExtKt;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.viewholders.CreatorDashboardRewardStatsViewHolder;
@@ -80,10 +80,10 @@ public interface CreatorDashboardRewardStatsHolderViewModel {
         .subscribe(this.rewardsTitleIsLimitedCopy);
     }
 
-    final private class OrderByPledgedRewardStatsComparator implements Comparator<ProjectStatsEnvelope.RewardStats> {
+    static final private class OrderByPledgedRewardStatsComparator implements Comparator<ProjectStatsEnvelope.RewardStats> {
       @Override
       public int compare(final ProjectStatsEnvelope.RewardStats o1, final ProjectStatsEnvelope.RewardStats o2) {
-        return new ComparatorUtils.DescendingOrderFloatComparator().compare(o1.pledged(), o2.pledged());
+        return FloatExtKt.compareDescending(o1.pledged(), o2.pledged());
       }
     }
 

@@ -379,7 +379,7 @@ public interface ProjectHolderViewModel {
         .filter(Project::isFriendBacking)
         .map(Project::friends)
         .map(ListUtils::first)
-        .map(f -> f.avatar().small());
+        .map(f -> f.avatar().small().isEmpty() ? f.avatar().medium() : f.avatar().small());
 
       this.projectSocialTextViewFriends = project
         .filter(Project::isFriendBacking)

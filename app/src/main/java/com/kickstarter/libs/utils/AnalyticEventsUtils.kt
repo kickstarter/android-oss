@@ -116,7 +116,7 @@ object AnalyticEventsUtils {
                 if (category.isRoot) {
                     putAll(categoryProperties(category))
                 } else {
-                    putAll(categoryProperties(category.root()))
+                    category.root()?.let { putAll(categoryProperties(it)) }
                     putAll(subcategoryProperties(category))
                 }
             }

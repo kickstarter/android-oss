@@ -177,7 +177,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["user_is_admin"])
         assertEquals(0, expectedProperties["user_launched_projects_count"])
         assertEquals("12", expectedProperties["user_uid"])
-        assertEquals("US", expectedProperties["user_country"])
+        assertEquals("", expectedProperties["user_country"])
         assertEquals(0, expectedProperties["user_created_projects_count"])
         assertEquals(false, expectedProperties["user_facebook_connected"])
         assertEquals(0, expectedProperties["user_watched_projects_count"])

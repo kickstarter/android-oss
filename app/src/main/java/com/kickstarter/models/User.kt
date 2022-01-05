@@ -155,53 +155,53 @@ class User private constructor(
         private var weeklyNewsletter: Boolean = false
     ) : Parcelable {
 
-        fun alumniNewsletter(alN: Boolean?) = apply { alN?.let { this.alumniNewsletter = it } }
-        fun artsCultureNewsletter(arN: Boolean?) = apply { arN?.let { this.artsCultureNewsletter = it } }
+        fun alumniNewsletter(alN: Boolean?) = apply { this.alumniNewsletter = alN ?: false }
+        fun artsCultureNewsletter(arN: Boolean?) = apply { this.artsCultureNewsletter = arN ?: false }
         fun avatar(avatar: Avatar?) = apply { avatar?.let { this.avatar = it } }
-        fun backedProjectsCount(bPC: Int?) = apply { bPC?.let { this.backedProjectsCount = it } }
-        fun draftProjectsCount(dPC: Int?) = apply { dPC?.let { this.draftProjectsCount = it } }
-        fun createdProjectsCount(cPC: Int?) = apply { cPC?.let { this.createdProjectsCount = it } }
-        fun erroredBackingsCount(eBC: Int?) = apply { eBC?.let { this.erroredBackingsCount = it } }
-        fun facebookConnected(facebookConnected: Boolean?) = apply { facebookConnected?.let { this.facebookConnected = it } }
-        fun filmNewsletter(filmNewsletter: Boolean?) = apply { filmNewsletter?.let { this.filmNewsletter = it } }
-        fun gamesNewsletter(gamesNewsletter: Boolean?) = apply { gamesNewsletter?.let { this.gamesNewsletter = it } }
-        fun happeningNewsletter(happeningNewsletter: Boolean?) = apply { happeningNewsletter?.let { this.happeningNewsletter = it } }
-        fun id(id: Long?) = apply { id?.let { this.id = it } }
-        fun isAdmin(isAdmin: Boolean?) = apply { isAdmin?.let { this.isAdmin = it } }
-        fun isEmailVerified(isEmailVerified: Boolean?) = apply { isEmailVerified?.let { this.isEmailVerified = it } }
+        fun backedProjectsCount(bPC: Int?) = apply { this.backedProjectsCount = bPC ?: 0 }
+        fun draftProjectsCount(dPC: Int?) = apply { this.draftProjectsCount = dPC ?: 0 }
+        fun createdProjectsCount(cPC: Int?) = apply { this.createdProjectsCount = cPC ?: 0 }
+        fun erroredBackingsCount(eBC: Int?) = apply { this.erroredBackingsCount = eBC ?: 0 }
+        fun facebookConnected(facebookConnected: Boolean?) = apply { this.facebookConnected = facebookConnected ?: false }
+        fun filmNewsletter(filmNewsletter: Boolean?) = apply { this.filmNewsletter = filmNewsletter ?: false }
+        fun gamesNewsletter(gamesNewsletter: Boolean?) = apply { this.gamesNewsletter = gamesNewsletter ?: false }
+        fun happeningNewsletter(happeningNewsletter: Boolean?) = apply { this.happeningNewsletter = happeningNewsletter ?: false }
+        fun id(id: Long?) = apply { this.id = id ?: 0 }
+        fun isAdmin(isAdmin: Boolean?) = apply { this.isAdmin = isAdmin ?: false }
+        fun isEmailVerified(isEmailVerified: Boolean?) = apply { this.isEmailVerified = isEmailVerified ?: false }
         fun chosenCurrency(chosenCurrency: String?) = apply { chosenCurrency?.let { this.chosenCurrency = it } }
-        fun inventNewsletter(inventNewsletter: Boolean?) = apply { inventNewsletter?.let { this.inventNewsletter = it } }
+        fun inventNewsletter(inventNewsletter: Boolean?) = apply { this.inventNewsletter = inventNewsletter ?: false }
         fun location(location: Location?) = apply { location?.let { this.location = it } }
-        fun memberProjectsCount(memberProjectsCount: Int?) = apply { memberProjectsCount?.let { this.memberProjectsCount = it } }
-        fun musicNewsletter(musicNewsletter: Boolean?) = apply { musicNewsletter?.let { this.musicNewsletter = it } }
+        fun memberProjectsCount(memberProjectsCount: Int?) = apply { this.memberProjectsCount = memberProjectsCount ?: 0 }
+        fun musicNewsletter(musicNewsletter: Boolean?) = apply { this.musicNewsletter = musicNewsletter ?: false }
         fun name(name: String?) = apply { name?.let { this.name = it } }
-        fun notifyMobileOfBackings(notifyOfFriendActivity: Boolean?) = apply { notifyOfFriendActivity?.let { this.notifyMobileOfBackings = it } }
-        fun notifyMobileOfComments(notifyMobileOfComments: Boolean?) = apply { notifyMobileOfComments?.let { this.notifyMobileOfComments = it } }
-        fun notifyMobileOfCreatorEdu(notifyMobileOfCreatorEdu: Boolean?) = apply { notifyMobileOfCreatorEdu?.let { this.notifyMobileOfCreatorEdu = it } }
-        fun notifyMobileOfFollower(notifyMobileOfFollower: Boolean?) = apply { notifyMobileOfFollower?.let { this.notifyMobileOfFollower = it } }
-        fun notifyMobileOfFriendActivity(notifyMobileOfFriendActivity: Boolean?) = apply { notifyMobileOfFriendActivity?.let { this.notifyMobileOfFriendActivity = it } }
-        fun notifyMobileOfMessages(notifyMobileOfMessages: Boolean?) = apply { notifyMobileOfMessages?.let { this.notifyMobileOfMessages = it } }
-        fun notifyMobileOfPostLikes(notifyMobileOfPostLikes: Boolean?) = apply { notifyMobileOfPostLikes?.let { this.notifyMobileOfPostLikes = it } }
-        fun notifyMobileOfUpdates(notifyMobileOfUpdates: Boolean?) = apply { notifyMobileOfUpdates?.let { this.notifyMobileOfUpdates = it } }
-        fun notifyMobileOfMarketingUpdate(notifyMobileOfMarketingUpdate: Boolean?) = apply { notifyMobileOfMarketingUpdate?.let { this.notifyMobileOfMarketingUpdate = it } }
-        fun notifyOfBackings(notifyOfBackings: Boolean?) = apply { notifyOfBackings?.let { this.notifyOfBackings = it } }
-        fun notifyOfComments(notifyOfComments: Boolean?) = apply { notifyOfComments?.let { this.notifyOfComments = it } }
-        fun notifyOfCommentReplies(notifyOfCommentReplies: Boolean?) = apply { notifyOfCommentReplies?.let { this.notifyOfCommentReplies = it } }
-        fun notifyOfCreatorDigest(notifyOfCreatorDigest: Boolean?) = apply { notifyOfCreatorDigest?.let { this.notifyOfCreatorDigest = it } }
-        fun notifyOfCreatorEdu(notifyOfCreatorEdu: Boolean) = apply { notifyOfCreatorEdu?.let { this.notifyOfCreatorEdu = it } }
-        fun notifyOfFollower(notifyOfFollower: Boolean?) = apply { notifyOfFollower?.let { this.notifyOfFollower = it } }
-        fun notifyOfFriendActivity(notifyOfFriendActivity: Boolean?) = apply { notifyOfFriendActivity?.let { this.notifyOfFriendActivity = it } }
-        fun notifyOfMessages(notifyOfMessages: Boolean?) = apply { notifyOfMessages?.let { this.notifyOfMessages = it } }
-        fun notifyOfUpdates(notifyOfUpdates: Boolean?) = apply { notifyOfUpdates?.let { this.notifyOfUpdates = it } }
-        fun optedOutOfRecommendations(optedOutOfRecommendations: Boolean?) = apply { optedOutOfRecommendations?.let { this.optedOutOfRecommendations = it } }
-        fun promoNewsletter(promoNewsletter: Boolean?) = apply { promoNewsletter?.let { this.promoNewsletter = it } }
-        fun publishingNewsletter(publishingNewsletter: Boolean?) = apply { publishingNewsletter?.let { this.publishingNewsletter = it } }
-        fun showPublicProfile(showPublicProfile: Boolean?) = apply { showPublicProfile?.let { this.showPublicProfile = it } }
-        fun social(social: Boolean?) = apply { social?.let { this.social = it } }
+        fun notifyMobileOfBackings(notifyOfFriendActivity: Boolean?) = apply { this.notifyMobileOfBackings = notifyOfFriendActivity ?: false }
+        fun notifyMobileOfComments(notifyMobileOfComments: Boolean?) = apply { this.notifyMobileOfComments = notifyMobileOfComments ?: false }
+        fun notifyMobileOfCreatorEdu(notifyMobileOfCreatorEdu: Boolean?) = apply { this.notifyMobileOfCreatorEdu = notifyMobileOfCreatorEdu ?: false }
+        fun notifyMobileOfFollower(notifyMobileOfFollower: Boolean?) = apply { this.notifyMobileOfFollower = notifyMobileOfFollower ?: false }
+        fun notifyMobileOfFriendActivity(notifyMobileOfFriendActivity: Boolean?) = apply { this.notifyMobileOfFriendActivity = notifyMobileOfFriendActivity ?: false }
+        fun notifyMobileOfMessages(notifyMobileOfMessages: Boolean?) = apply { this.notifyMobileOfMessages = notifyMobileOfMessages ?: false }
+        fun notifyMobileOfPostLikes(notifyMobileOfPostLikes: Boolean?) = apply { this.notifyMobileOfPostLikes = notifyMobileOfPostLikes ?: false }
+        fun notifyMobileOfUpdates(notifyMobileOfUpdates: Boolean?) = apply { this.notifyMobileOfUpdates = notifyMobileOfUpdates ?: false }
+        fun notifyMobileOfMarketingUpdate(notifyMobileOfMarketingUpdate: Boolean?) = apply { this.notifyMobileOfMarketingUpdate = notifyMobileOfMarketingUpdate ?: false }
+        fun notifyOfBackings(notifyOfBackings: Boolean?) = apply { this.notifyOfBackings = notifyOfBackings ?: false }
+        fun notifyOfComments(notifyOfComments: Boolean?) = apply { this.notifyOfComments = notifyOfComments ?: false }
+        fun notifyOfCommentReplies(notifyOfCommentReplies: Boolean?) = apply { this.notifyOfCommentReplies = notifyOfCommentReplies ?: false }
+        fun notifyOfCreatorDigest(notifyOfCreatorDigest: Boolean?) = apply { this.notifyOfCreatorDigest = notifyOfCreatorDigest ?: false }
+        fun notifyOfCreatorEdu(notifyOfCreatorEdu: Boolean?) = apply { this.notifyOfCreatorEdu = notifyOfCreatorEdu ?: false }
+        fun notifyOfFollower(notifyOfFollower: Boolean?) = apply { this.notifyOfFollower = notifyOfFollower ?: false }
+        fun notifyOfFriendActivity(notifyOfFriendActivity: Boolean?) = apply { this.notifyOfFriendActivity = notifyOfFriendActivity ?: false }
+        fun notifyOfMessages(notifyOfMessages: Boolean?) = apply { this.notifyOfMessages = notifyOfMessages ?: false }
+        fun notifyOfUpdates(notifyOfUpdates: Boolean?) = apply { this.notifyOfUpdates = notifyOfUpdates ?: false }
+        fun optedOutOfRecommendations(optedOutOfRecommendations: Boolean?) = apply { this.optedOutOfRecommendations = optedOutOfRecommendations ?: false }
+        fun promoNewsletter(promoNewsletter: Boolean?) = apply { this.promoNewsletter = promoNewsletter ?: false }
+        fun publishingNewsletter(publishingNewsletter: Boolean?) = apply { this.publishingNewsletter = publishingNewsletter ?: false }
+        fun showPublicProfile(showPublicProfile: Boolean?) = apply { this.showPublicProfile = showPublicProfile ?: false }
+        fun social(social: Boolean?) = apply { this.social = social ?: false }
         fun starredProjectsCount(starredProjectsCount: Int?) = apply { starredProjectsCount?.let { this.starredProjectsCount = it } }
-        fun unreadMessagesCount(unreadMessagesCount: Int?) = apply { unreadMessagesCount?.let { this.unreadMessagesCount = it } }
-        fun unseenActivityCount(unseenActivityCount: Int?) = apply { unseenActivityCount?.let { this.unseenActivityCount = it } }
-        fun weeklyNewsletter(weeklyNewsletter: Boolean?) = apply { weeklyNewsletter?.let { this.weeklyNewsletter = it } }
+        fun unreadMessagesCount(unreadMessagesCount: Int?) = apply { this.unreadMessagesCount = unreadMessagesCount ?: 0 }
+        fun unseenActivityCount(unseenActivityCount: Int?) = apply { this.unseenActivityCount = unseenActivityCount ?: 0 }
+        fun weeklyNewsletter(weeklyNewsletter: Boolean?) = apply { this.weeklyNewsletter = weeklyNewsletter ?: false }
         fun build() = User(
             alumniNewsletter = alumniNewsletter,
             artsCultureNewsletter = artsCultureNewsletter,

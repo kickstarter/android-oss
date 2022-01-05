@@ -68,7 +68,7 @@ class CommentFactory {
                 .author(
                     UserFactory.user()
                         .toBuilder()
-                        .id(1).name(name).avatar(avatar)
+                        .id(1L).name(name).avatar(avatar)
                         .build()
                 )
                 .parentId(-1)
@@ -96,7 +96,7 @@ class CommentFactory {
                 .author(
                     UserFactory.user()
                         .toBuilder()
-                        .id(1)
+                        .id(1L)
                         .avatar(AvatarFactory.avatar())
                         .build()
                 )
@@ -111,13 +111,13 @@ class CommentFactory {
                 .createdAt(createdAt)
                 .cursor("")
                 .deleted(false)
-                .id(-1)
+                .id(-1L)
                 .repliesCount(0)
                 .authorCanceledPledge(false)
                 .author(
                     UserFactory.user()
                         .toBuilder()
-                        .id(1)
+                        .id(1L)
                         .avatar(AvatarFactory.avatar())
                         .build()
                 )
@@ -125,7 +125,7 @@ class CommentFactory {
         }
 
         fun liveCommentCardData(comment: String = "Some Comment", createdAt: DateTime, currentUser: User, isDelete: Boolean = false, repliesCount: Int = 0): CommentCardData {
-            val project = ProjectFactory.project().toBuilder().creator(UserFactory.creator().toBuilder().id(278438049).build()).build()
+            val project = ProjectFactory.project().toBuilder().creator(UserFactory.creator().toBuilder().id(278438049L).build()).build()
             return CommentCardData(
                 Comment.builder()
                     .body(comment)
@@ -147,7 +147,7 @@ class CommentFactory {
         }
 
         fun liveCanceledPledgeCommentCardData(comment: String = "Some Comment", createdAt: DateTime, currentUser: User, isDelete: Boolean = false, repliesCount: Int = 0): CommentCardData {
-            val project = ProjectFactory.project().toBuilder().creator(UserFactory.creator().toBuilder().id(278438049).build()).build()
+            val project = ProjectFactory.project().toBuilder().creator(UserFactory.creator().toBuilder().id(278438049L).build()).build()
             return CommentCardData(
                 Comment.builder()
                     .body(comment)

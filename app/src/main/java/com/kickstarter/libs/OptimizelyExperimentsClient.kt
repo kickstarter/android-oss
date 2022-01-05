@@ -41,7 +41,7 @@ class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManag
 
     override fun variant(experiment: OptimizelyExperiment.Key, experimentData: ExperimentData): OptimizelyExperiment.Variant {
         val user = experimentData.user
-        val variationString: String? = if (user?.isAdmin == true) {
+        val variationString: String? = if (user?.isAdmin() == true) {
             optimizelyClient().getVariation(experiment.key, user.id().toString(), attributes(experimentData, this.optimizelyEnvironment))
         } else {
             optimizelyClient().activate(experiment.key, userId(), attributes(experimentData, this.optimizelyEnvironment))

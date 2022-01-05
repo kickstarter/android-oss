@@ -6,7 +6,6 @@ import com.kickstarter.mock.factories.LocationFactory.unitedStates
 import com.kickstarter.models.User
 import com.kickstarter.models.User.Companion.builder
 
-
 object UserFactory {
     @JvmStatic
     fun user(): User {

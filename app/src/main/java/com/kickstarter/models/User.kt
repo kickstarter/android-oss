@@ -166,7 +166,6 @@ class User private constructor(
         fun filmNewsletter(filmNewsletter: Boolean?) = apply { filmNewsletter?.let { this.filmNewsletter = it } }
         fun gamesNewsletter(gamesNewsletter: Boolean?) = apply { gamesNewsletter?.let { this.gamesNewsletter = it } }
         fun happeningNewsletter(happeningNewsletter: Boolean?) = apply { happeningNewsletter?.let { this.happeningNewsletter = it } }
-        fun id(id: Int?) = apply { id?.let { this.id = it.toLong() } }
         fun id(id: Long?) = apply { id?.let { this.id = it } }
         fun isAdmin(isAdmin: Boolean?) = apply { isAdmin?.let { this.isAdmin = it } }
         fun isEmailVerified(isEmailVerified: Boolean?) = apply { isEmailVerified?.let { this.isEmailVerified = it } }

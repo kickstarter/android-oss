@@ -11,7 +11,7 @@ object UserFactory {
     fun user(): User {
         return builder()
             .avatar(AvatarFactory.avatar())
-            .id(IdFactory.id())
+            .id(IdFactory.id().toLong())
             .isEmailVerified(true)
             .name("Some Name")
             .optedOutOfRecommendations(false)
@@ -22,7 +22,7 @@ object UserFactory {
     fun userNotVerifiedEmail(): User {
         return builder()
             .avatar(AvatarFactory.avatar())
-            .id(IdFactory.id())
+            .id(IdFactory.id().toLong())
             .isEmailVerified(false)
             .name("Some Name")
             .optedOutOfRecommendations(false)

@@ -10,7 +10,7 @@ public final class UpdateFactory {
   private UpdateFactory() {}
 
   public static Update update() {
-    final User creator = UserFactory.creator().toBuilder().id(278438049).build();
+    final User creator = UserFactory.creator().toBuilder().id(278438049L).build();
     final Project project = ProjectFactory.project().toBuilder().creator(creator).build();
     final String updatesUrl = "https://www.kck.str/projects/" + project.creator().param() + "/" + project.param() + "/posts";
 

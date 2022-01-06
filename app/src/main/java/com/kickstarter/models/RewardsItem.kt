@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 class RewardsItem private constructor(
     private val id: Long,
-    private val item: Item?, // TODO
+    private val item: Item, // TODO
     private val itemId: Long,
     private val quantity: Int,
     private val rewardId: Long?,
@@ -23,14 +23,14 @@ class RewardsItem private constructor(
     @Parcelize
     data class Builder(
         private var id: Long = 0,
-        private var item: Item? = null, // TODO
+        private var item: Item = Item.builder().build(),
         private var itemId: Long = 0,
         private var quantity: Int = 0,
         private var rewardId: Long? = 0,
         private var hasBackers: Boolean? = false
     ) : Parcelable {
         fun id(id: Long?) = apply { this.id = id ?: 0 }
-        fun item(item: Item?) = apply { this.item = item } // TODO
+        fun item(item: Item?) = apply { this.item = item ?: Item.builder().build() }
         fun itemId(itemId: Long?) = apply { this.itemId = itemId ?: 0 }
         fun quantity(quantity: Int?) = apply { this.quantity = quantity ?: 0 }
         fun rewardId(rewardId: Long?) = apply { this.rewardId = rewardId ?: 0 }

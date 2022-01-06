@@ -8,7 +8,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
-import com.kickstarter.models.RewardsItemTest
+import com.kickstarter.models.RewardsItem
 import org.junit.Test
 import rx.observers.TestSubscriber
 
@@ -20,7 +20,7 @@ class AddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     private val conversionIsGone = TestSubscriber.create<Boolean>()
     private val descriptionForNoReward = TestSubscriber.create<Int>()
     private val descriptionForReward = TestSubscriber.create<String?>()
-    private val rewardItems = TestSubscriber.create<List<RewardsItemTest>>()
+    private val rewardItems = TestSubscriber.create<List<RewardsItem>>()
     private val rewardItemsAreGone = TestSubscriber.create<Boolean>()
     private val titleForReward = TestSubscriber.create<String>()
     private val titleForNoReward = TestSubscriber.create<Int>()

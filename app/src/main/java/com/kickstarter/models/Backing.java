@@ -8,7 +8,6 @@ import org.joda.time.DateTime;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.Date;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -90,32 +89,4 @@ public abstract class Backing implements Parcelable, Relay {
   @Retention(RetentionPolicy.SOURCE)
   @StringDef({STATUS_CANCELED, STATUS_COLLECTED, STATUS_DROPPED, STATUS_ERRORED, STATUS_PLEDGED, STATUS_PREAUTH})
   public @interface Status {}
-
-  @AutoParcel
-  @AutoGson
-  public abstract static class PaymentSource implements Parcelable {
-    public abstract String id();
-    public abstract String paymentType();
-    public abstract String state();
-    public abstract @Nullable String type();
-    public abstract @Nullable String lastFour();
-    public abstract @Nullable Date expirationDate();
-
-    @AutoParcel.Builder
-    public abstract static class Builder {
-      public abstract Builder id(String __);
-      public abstract Builder paymentType(String __);
-      public abstract Builder state(String __);
-      public abstract Builder type(String __);
-      public abstract Builder lastFour(String __);
-      public abstract Builder expirationDate(Date __);
-      public abstract PaymentSource build();
-    }
-
-    public static PaymentSource.Builder builder() {
-      return new AutoParcel_Backing_PaymentSource.Builder();
-    }
-
-    public abstract Builder toBuilder();
-  }
 }

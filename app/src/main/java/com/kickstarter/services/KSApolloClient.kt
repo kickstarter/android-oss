@@ -25,22 +25,7 @@ import com.kickstarter.libs.Permission
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.mock.factories.RewardFactory
-import com.kickstarter.models.Avatar
-import com.kickstarter.models.Backing
-import com.kickstarter.models.Category
-import com.kickstarter.models.Checkout
-import com.kickstarter.models.Comment
-import com.kickstarter.models.CreatorDetails
-import com.kickstarter.models.ErroredBacking
-import com.kickstarter.models.Location
-import com.kickstarter.models.Photo
-import com.kickstarter.models.Project
-import com.kickstarter.models.Reward
-import com.kickstarter.models.RewardsItem
-import com.kickstarter.models.ShippingRule
-import com.kickstarter.models.StoredCard
-import com.kickstarter.models.User
-import com.kickstarter.models.Video
+import com.kickstarter.models.*
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
@@ -928,7 +913,7 @@ private fun mapGetCommentQueryResponseToComment(responseData: GetCommentQuery.Da
 
 private fun createBackingObject(backingGr: fragment.Backing?): Backing {
     val payment = backingGr?.paymentSource()?.fragments()?.payment()?.let { payment ->
-        Backing.PaymentSource.builder()
+        PaymentSource.builder()
             .state(payment.state().toString())
             .type(payment.type().rawValue())
             .paymentType(CreditCardPaymentType.CREDIT_CARD.rawValue())

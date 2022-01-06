@@ -20,11 +20,7 @@ import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.mock.factories.RewardFactory
-import com.kickstarter.models.Backing
-import com.kickstarter.models.Project
-import com.kickstarter.models.Reward
-import com.kickstarter.models.StoredCard
-import com.kickstarter.models.User
+import com.kickstarter.models.*
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.BackingFragment
@@ -317,7 +313,7 @@ interface BackingFragmentViewModel {
             val paymentSource = backing
                 .map { it.paymentSource() }
                 .filter { ObjectUtils.isNotNull(it) }
-                .ofType(Backing.PaymentSource::class.java)
+                .ofType(PaymentSource::class.java)
 
             val simpleDateFormat = SimpleDateFormat(StoredCard.DATE_FORMAT, Locale.getDefault())
 
@@ -486,7 +482,7 @@ interface BackingFragmentViewModel {
             return Pair(projectData, reward)
         }
 
-        private fun cardIssuer(paymentSource: Backing.PaymentSource): Either<String, Int> {
+        private fun cardIssuer(paymentSource: PaymentSource): Either<String, Int> {
             return when (CreditCardPaymentType.safeValueOf(paymentSource.paymentType())) {
                 CreditCardPaymentType.ANDROID_PAY -> Either.Right(R.string.googlepay_button_content_description)
                 CreditCardPaymentType.APPLE_PAY -> Either.Right(R.string.apple_pay_content_description)
@@ -495,7 +491,7 @@ interface BackingFragmentViewModel {
             }
         }
 
-        private fun cardLogo(paymentSource: Backing.PaymentSource): Int {
+        private fun cardLogo(paymentSource: PaymentSource): Int {
             return when (CreditCardPaymentType.safeValueOf(paymentSource.paymentType())) {
                 CreditCardPaymentType.ANDROID_PAY -> R.drawable.google_pay_mark
                 CreditCardPaymentType.APPLE_PAY -> R.drawable.apple_pay_mark

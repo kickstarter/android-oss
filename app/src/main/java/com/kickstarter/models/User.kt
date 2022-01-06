@@ -22,7 +22,7 @@ class User private constructor(
     private val inventNewsletter: Boolean,
     private val isAdmin: Boolean,
     private val isEmailVerified: Boolean,
-    private val chosenCurrency: String,
+    private val chosenCurrency: String?,
     private val location: Location?,
     private val memberProjectsCount: Int,
     private val musicNewsletter: Boolean,
@@ -121,7 +121,7 @@ class User private constructor(
         private var inventNewsletter: Boolean = false,
         private var isAdmin: Boolean = false,
         private var isEmailVerified: Boolean = false,
-        private var chosenCurrency: String = "",
+        private var chosenCurrency: String? = null,
         private var location: Location? = null,
         private var memberProjectsCount: Int = 0,
         private var musicNewsletter: Boolean = false,
@@ -169,7 +169,7 @@ class User private constructor(
         fun id(id: Long?) = apply { this.id = id ?: 0 }
         fun isAdmin(isAdmin: Boolean?) = apply { this.isAdmin = isAdmin ?: false }
         fun isEmailVerified(isEmailVerified: Boolean?) = apply { this.isEmailVerified = isEmailVerified ?: false }
-        fun chosenCurrency(chosenCurrency: String?) = apply { chosenCurrency?.let { this.chosenCurrency = it } }
+        fun chosenCurrency(chosenCurrency: String?) = apply { this.chosenCurrency = chosenCurrency }
         fun inventNewsletter(inventNewsletter: Boolean?) = apply { this.inventNewsletter = inventNewsletter ?: false }
         fun location(location: Location?) = apply { this.location = location }
         fun memberProjectsCount(memberProjectsCount: Int?) = apply { this.memberProjectsCount = memberProjectsCount ?: 0 }

@@ -24,12 +24,18 @@ class RewardsItemTest : TestCase() {
         assertTrue(rwItem == rwItem1)
     }
 
-    fun testEquals_whenSecondNotEqual_returnFalse() {
+    fun testEquals_whenSecondNotEqualEqual() {
         val rwItem = RewardsItemFactory.rewardsItem()
         val rwItem1 = rwItem.toBuilder()
             .itemId(3)
             .build()
 
         assertTrue(rwItem == rwItem1)
+
+        val rwItem3 = rwItem1.toBuilder()
+            .itemId(rwItem.itemId())
+            .build()
+
+        assertTrue(rwItem == rwItem3)
     }
 }

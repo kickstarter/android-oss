@@ -3,7 +3,7 @@ package com.kickstarter.models
 import android.content.res.Resources
 import android.os.Parcelable
 import com.kickstarter.R
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class User private constructor(
@@ -23,7 +23,7 @@ class User private constructor(
     private val isAdmin: Boolean,
     private val isEmailVerified: Boolean,
     private val chosenCurrency: String,
-    private val location: Location,
+    private val location: Location?,
     private val memberProjectsCount: Int,
     private val musicNewsletter: Boolean,
     private val name: String,
@@ -122,7 +122,7 @@ class User private constructor(
         private var isAdmin: Boolean = false,
         private var isEmailVerified: Boolean = false,
         private var chosenCurrency: String = "",
-        private var location: Location = Location.Builder().build(),
+        private var location: Location? = null,
         private var memberProjectsCount: Int = 0,
         private var musicNewsletter: Boolean = false,
         private var name: String = "",
@@ -171,7 +171,7 @@ class User private constructor(
         fun isEmailVerified(isEmailVerified: Boolean?) = apply { this.isEmailVerified = isEmailVerified ?: false }
         fun chosenCurrency(chosenCurrency: String?) = apply { chosenCurrency?.let { this.chosenCurrency = it } }
         fun inventNewsletter(inventNewsletter: Boolean?) = apply { this.inventNewsletter = inventNewsletter ?: false }
-        fun location(location: Location?) = apply { location?.let { this.location = it } }
+        fun location(location: Location?) = apply { this.location = location }
         fun memberProjectsCount(memberProjectsCount: Int?) = apply { this.memberProjectsCount = memberProjectsCount ?: 0 }
         fun musicNewsletter(musicNewsletter: Boolean?) = apply { this.musicNewsletter = musicNewsletter ?: false }
         fun name(name: String?) = apply { name?.let { this.name = it } }

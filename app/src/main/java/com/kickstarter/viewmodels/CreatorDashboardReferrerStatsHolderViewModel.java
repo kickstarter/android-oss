@@ -6,8 +6,8 @@ import android.util.Pair;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.ComparatorUtils;
 import com.kickstarter.libs.utils.PairUtils;
+import com.kickstarter.libs.utils.extensions.FloatExtKt;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.viewholders.CreatorDashboardReferrerStatsViewHolder;
@@ -71,7 +71,7 @@ public interface CreatorDashboardReferrerStatsHolderViewModel {
     final private class OrderByBackersReferrerStatsComparator implements Comparator<ProjectStatsEnvelope.ReferrerStats> {
       @Override
       public int compare(final @NonNull ProjectStatsEnvelope.ReferrerStats o1, final @NonNull ProjectStatsEnvelope.ReferrerStats o2) {
-        return new ComparatorUtils.DescendingOrderFloatComparator().compare(o1.pledged(), o2.pledged());
+        return FloatExtKt.compareDescending(o1.pledged(), o2.pledged());
       }
     }
 

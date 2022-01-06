@@ -39,4 +39,17 @@ class LocationTest : TestCase() {
 
         assertFalse(locA == locB)
     }
+
+    fun testDefaultInit() {
+        val loc = Location.builder().build()
+
+        assertTrue(loc.displayableName() == "")
+        assertTrue(loc.city() == "")
+        assertTrue(loc.country() == "")
+        assertTrue(loc.expandedCountry() == "")
+        assertTrue(loc.name() == "")
+        assertTrue(loc.state() == "")
+        assertTrue(loc.projectsCount() == 0)
+        assertTrue(loc.id() == 0L)
+    }
 }

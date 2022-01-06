@@ -15,7 +15,7 @@ import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
-import com.kickstarter.models.RewardsItem
+import com.kickstarter.models.RewardsItemTest
 import org.joda.time.DateTime
 import org.junit.Test
 import rx.observers.TestSubscriber
@@ -42,7 +42,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val remaining = TestSubscriber<String>()
     private val remainingIsGone = TestSubscriber<Boolean>()
     private val reward = TestSubscriber<Reward>()
-    private val rewardItems = TestSubscriber<List<RewardsItem>>()
+    private val rewardItems = TestSubscriber<List<RewardsItemTest>>()
     private val rewardItemsAreGone = TestSubscriber<Boolean>()
     private val shippingSummary = TestSubscriber<Pair<Int, String?>>()
     private val shippingSummaryIsGone = TestSubscriber<Boolean>()

@@ -3,7 +3,6 @@ package com.kickstarter.models
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-
 @Parcelize
 class RewardsItem private constructor(
     private val id: Long,
@@ -12,7 +11,7 @@ class RewardsItem private constructor(
     private val quantity: Int,
     private val rewardId: Long?,
     private val hasBackers: Boolean?
-): Parcelable {
+) : Parcelable {
 
     fun id() = this.id
     fun item() = this.item
@@ -24,7 +23,7 @@ class RewardsItem private constructor(
     @Parcelize
     data class Builder(
         private var id: Long = 0,
-        private var item: Item? = null, //TODO
+        private var item: Item? = null, // TODO
         private var itemId: Long = 0,
         private var quantity: Int = 0,
         private var rewardId: Long? = 0,
@@ -49,10 +48,10 @@ class RewardsItem private constructor(
     override fun equals(other: Any?): Boolean =
         if (other is RewardsItem) {
             other.id() == this.id() && other.item() == this.item() &&
-                    other.itemId() == this.itemId() &&
-                    other.quantity() == this.quantity() &&
-                    other.rewardId() == this.rewardId() &&
-                    other.hasBackers() == this.hasBackers()
+                other.itemId() == this.itemId() &&
+                other.quantity() == this.quantity() &&
+                other.rewardId() == this.rewardId() &&
+                other.hasBackers() == this.hasBackers()
         } else false
 
     override fun hashCode(): Int {

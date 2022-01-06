@@ -1,7 +1,7 @@
 package com.kickstarter.mock.factories
 
-import com.kickstarter.models.RewardsItem.Companion.builder
 import com.kickstarter.models.RewardsItem
+import com.kickstarter.models.RewardsItem.Companion.builder
 
 object RewardsItemFactory {
     @JvmStatic

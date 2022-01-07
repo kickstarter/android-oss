@@ -173,7 +173,7 @@ public interface MessageThreadsViewModel {
         .subscribe(this.messageThreadList);
 
       unreadMessagesCount
-        .map(ObjectUtils::isNull)
+        .map(IntExtKt::isZero)
         .subscribe(this.hasNoMessages);
 
       unreadMessagesCount

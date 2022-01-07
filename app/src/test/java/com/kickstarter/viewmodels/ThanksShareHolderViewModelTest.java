@@ -75,7 +75,7 @@ public final class ThanksShareHolderViewModelTest extends KSRobolectricTestCase 
   }
 
   private Project setUpProjectWithWebUrls() {
-    final int creatorId = 15;
+    final Long creatorId = 15L;
     final User creator = UserFactory.creator()
       .toBuilder()
       .id(creatorId)

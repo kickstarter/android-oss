@@ -12,7 +12,7 @@ import com.kickstarter.models.User
  *         false if the userEmail has not been verified
  *         false if the field isEmailVerified does not exist
  */
-fun User.isUserEmailVerified() = this.isEmailVerified ?: false
+fun User.isUserEmailVerified() = this.isEmailVerified() ?: false
 
 /**
  * Returns whether the user's location setting is in Germany.

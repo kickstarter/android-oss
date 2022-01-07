@@ -34,8 +34,8 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testMessageBodyTextViewFormatting_CurrentUserIsRecipient() {
-    final User recipient = UserFactory.user().toBuilder().name("Ima Backer").id(123).build();
-    final User sender = UserFactory.user().toBuilder().name("Ima Creator").id(456).build();
+    final User recipient = UserFactory.user().toBuilder().name("Ima Backer").id(123L).build();
+    final User sender = UserFactory.user().toBuilder().name("Ima Creator").id(456L).build();
 
     final Message message = MessageFactory.message().toBuilder()
       .recipient(recipient)
@@ -56,8 +56,8 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testMessageBodyTextViewFormatting_CurrentUserIsSender() {
-    final User recipient = UserFactory.user().toBuilder().name("Ima Creator").id(123).build();
-    final User sender = UserFactory.user().toBuilder().name("Ima Backer").id(456).build();
+    final User recipient = UserFactory.user().toBuilder().name("Ima Creator").id(123L).build();
+    final User sender = UserFactory.user().toBuilder().name("Ima Backer").id(456L).build();
 
     final Message message = MessageFactory.message().toBuilder()
       .recipient(recipient)
@@ -78,8 +78,8 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testParticipantAvatarImage_CurrentUserIsRecipient() {
-    final User recipient = UserFactory.user().toBuilder().name("Ima Backer").id(123).build();
-    final User sender = UserFactory.user().toBuilder().name("Ima Creator").id(456).build();
+    final User recipient = UserFactory.user().toBuilder().name("Ima Backer").id(123L).build();
+    final User sender = UserFactory.user().toBuilder().name("Ima Creator").id(456L).build();
 
     final Message message = MessageFactory.message().toBuilder()
       .recipient(recipient)
@@ -99,8 +99,8 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testParticipantAvatarImage_CurrentUserIsSender() {
-    final User recipient = UserFactory.user().toBuilder().name("Ima Creator").id(123).build();
-    final User sender = UserFactory.user().toBuilder().name("Ima Backer").id(456).build();
+    final User recipient = UserFactory.user().toBuilder().name("Ima Creator").id(123L).build();
+    final User sender = UserFactory.user().toBuilder().name("Ima Backer").id(456L).build();
 
     final Message message = MessageFactory.message().toBuilder()
       .recipient(recipient)

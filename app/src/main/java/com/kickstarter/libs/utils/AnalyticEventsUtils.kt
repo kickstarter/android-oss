@@ -161,7 +161,7 @@ object AnalyticEventsUtils {
         properties["facebook_connected"] = user.facebookConnected() ?: false
         properties["watched_projects_count"] = user.starredProjectsCount() ?: 0
         properties["uid"] = user.id().toString()
-        properties["is_admin"] = user.isAdmin ?: false
+        properties["is_admin"] = user.isAdmin() ?: false
 
         return MapUtils.prefixKeys(properties, prefix)
     }

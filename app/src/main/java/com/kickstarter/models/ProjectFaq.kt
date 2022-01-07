@@ -1,7 +1,7 @@
 package com.kickstarter.models
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import org.joda.time.DateTime
 
 /**

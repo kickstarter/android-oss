@@ -171,7 +171,7 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
   public void testUpdateViewModel_StartShareIntent() {
     final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment());
 
-    final User creator = UserFactory.creator().toBuilder().id(278438049).build();
+    final User creator = UserFactory.creator().toBuilder().id(278438049L).build();
     final Project project = ProjectFactory.project().toBuilder().creator(creator).build();
     final String updatesUrl = "https://www.kck.str/projects/" + project.creator().param() + "/" + project.param() + "/posts";
 

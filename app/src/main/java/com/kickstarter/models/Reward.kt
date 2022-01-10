@@ -5,12 +5,10 @@ import androidx.annotation.StringDef
 import com.kickstarter.libs.utils.extensions.isZero
 import kotlinx.parcelize.Parcelize
 import org.joda.time.DateTime
-import java.lang.annotation.Retention
-import java.lang.annotation.RetentionPolicy
 
 @Parcelize
 class Reward private constructor(
-    private val backersCount: Int,
+    private val backersCount: Int?,
     private val convertedMinimum: Double,
     private val description: String?,
     private val endsAt: DateTime?,
@@ -75,7 +73,7 @@ class Reward private constructor(
 
     @Parcelize
     data class Builder(
-        private var backersCount: Int = 0,
+        private var backersCount: Int? = null,
         private var convertedMinimum: Double = 0.0,
         private var description: String? = null,
         private var endsAt: DateTime? = null,
@@ -98,7 +96,7 @@ class Reward private constructor(
         private var shippingPreferenceType: ShippingPreference? = null,
         private var shippingRules: List<ShippingRule>? = null
     ) : Parcelable {
-        fun backersCount(backersCount: Int?) = apply { this.backersCount = backersCount ?: 0 }
+        fun backersCount(backersCount: Int?) = apply { this.backersCount = backersCount }
         fun convertedMinimum(convertedMinimum: Double?) = apply { this.convertedMinimum = convertedMinimum ?: 0.0 }
         fun description(description: String?) = apply { this.description = description }
         fun endsAt(endsAt: DateTime?) = apply { this.endsAt = endsAt }
@@ -180,31 +178,31 @@ class Reward private constructor(
         isAvailable = isAvailable
     )
 
-    override fun equals(obj: Any?): Boolean {
-        var equals = super.equals(obj)
-        if (obj is Reward) {
-            equals = backersCount() == obj.backersCount() &&
-                convertedMinimum() == obj.convertedMinimum() &&
-                description() == obj.description() &&
-                endsAt() == obj.endsAt() &&
-                startsAt() == obj.startsAt() &&
-                id() == obj.id() &&
-                limit() == obj.limit() &&
-                minimum() == obj.minimum() &&
-                estimatedDeliveryOn() == obj.estimatedDeliveryOn() &&
-                remaining() == obj.remaining() &&
-                rewardsItems() == obj.rewardsItems() &&
-                shippingPreference() == obj.shippingPreference() &&
-                shippingSingleLocation() == obj.shippingSingleLocation() &&
-                shippingType() == obj.shippingType() &&
-                title() == obj.title() &&
-                isAddOn() == obj.isAddOn() &&
-                addOnsItems() == obj.addOnsItems() &&
-                quantity() == obj.quantity() &&
-                hasAddons() == obj.hasAddons() &&
-                shippingRules() == obj.shippingRules() &&
-                shippingPreferenceType() == obj.shippingPreferenceType() &&
-                isAvailable() == obj.isAvailable()
+    override fun equals(other: Any?): Boolean {
+        var equals = super.equals(other)
+        if (other is Reward) {
+            equals = backersCount() == other.backersCount() &&
+                convertedMinimum() == other.convertedMinimum() &&
+                description() == other.description() &&
+                endsAt() == other.endsAt() &&
+                startsAt() == other.startsAt() &&
+                id() == other.id() &&
+                limit() == other.limit() &&
+                minimum() == other.minimum() &&
+                estimatedDeliveryOn() == other.estimatedDeliveryOn() &&
+                remaining() == other.remaining() &&
+                rewardsItems() == other.rewardsItems() &&
+                shippingPreference() == other.shippingPreference() &&
+                shippingSingleLocation() == other.shippingSingleLocation() &&
+                shippingType() == other.shippingType() &&
+                title() == other.title() &&
+                isAddOn() == other.isAddOn() &&
+                addOnsItems() == other.addOnsItems() &&
+                quantity() == other.quantity() &&
+                hasAddons() == other.hasAddons() &&
+                shippingRules() == other.shippingRules() &&
+                shippingPreferenceType() == other.shippingPreferenceType() &&
+                isAvailable() == other.isAvailable()
         }
         return equals
     }
@@ -213,7 +211,7 @@ class Reward private constructor(
         return super.hashCode()
     }
 
-    @Retention(RetentionPolicy.SOURCE)
+    @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
     @StringDef(
         SHIPPING_TYPE_ANYWHERE,
         SHIPPING_TYPE_MULTIPLE_LOCATIONS,

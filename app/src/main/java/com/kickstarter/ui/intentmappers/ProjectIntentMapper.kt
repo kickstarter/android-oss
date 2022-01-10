@@ -1,0 +1,116 @@
+package com.kickstarter.ui.intentmappers
+
+import android.content.Intent
+import android.net.Uri
+import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.models.Project
+import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.apiresponses.PushNotificationEnvelope
+import com.kickstarter.ui.IntentKey
+import rx.Observable
+import java.util.regex.Pattern
+
+object ProjectIntentMapper {
+    const val SCHEME_KSR = "ksr"
+    const val SCHEME_HTTPS = "https"
+
+    // /projects/param-1/param-2*
+    val PROJECT_PATTERN =
+        Pattern.compile("\\A\\/projects\\/([a-zA-Z0-9_-]+)(\\/([a-zA-Z0-9_-]+)).*")
+
+    fun project(intent: Intent, apolloClient: ApolloClientType): Observable<Project> {
+        val intentProject = projectFromIntent(intent)
+        val projectFromParceledProject =
+            if (intentProject == null) Observable.empty() else Observable.just(intentProject)
+                .switchMap { project: Project? ->
+                    project?.let { apolloClient.getProject(it) }
+                }
+                .startWith(intentProject)
+                .retry(3)
+
+        val projectFromParceledParam = Observable.just(paramFromIntent(intent))
+            .filter { `object`: String? -> ObjectUtils.isNotNull(`object`) }
+            .switchMap { slug: String? ->
+                slug?.let { apolloClient.getProject(it) }
+            }
+            .retry(3)
+        return projectFromParceledProject
+            .mergeWith(projectFromParceledParam).last()
+    }
+
+    /**
+     * Returns an observable of projects retrieved from intent data. May hit the API if the intent only contains a project
+     * param rather than a parceled project.
+     */
+    fun project(intent: Intent, client: ApiClientType): Observable<Project> {
+        val intentProject = projectFromIntent(intent)
+        val projectFromParceledProject =
+            if (intentProject == null) Observable.empty() else Observable.just(intentProject)
+                .flatMap { project: Project? ->
+                    project?.let { client.fetchProject(it) }
+                }
+                .startWith(intentProject)
+                .retry(3)
+
+        val projectFromParceledParam = Observable.just(paramFromIntent(intent))
+            .filter { `object`: String? -> ObjectUtils.isNotNull(`object`) }
+            .flatMap { param: String? ->
+                param?.let { client.fetchProject(it) }
+            }
+            .retry(3)
+        return projectFromParceledProject
+            .mergeWith(projectFromParceledParam)
+    }
+
+    /**
+     * Returns a [RefTag] observable. If there is no parceled RefTag, emit `null`.
+     */
+    fun refTag(intent: Intent): Observable<RefTag?> {
+        return Observable.just(intent.getParcelableExtra(IntentKey.REF_TAG))
+    }
+
+    /**
+     * Returns an observable of push notification envelopes from the intent data. This will emit only when the project
+     * is launched from a push notification.
+     */
+    fun pushNotificationEnvelope(intent: Intent): Observable<PushNotificationEnvelope> {
+        return Observable.just<Any?>(intent.getParcelableExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE))
+            .ofType(PushNotificationEnvelope::class.java)
+    }
+
+    /**
+     * Gets a parceled project from the intent data, may return `null`.
+     */
+    fun projectFromIntent(intent: Intent): Project? {
+        return intent.getParcelableExtra(IntentKey.PROJECT)
+    }
+
+    /**
+     * Gets a project param from the intent data, may return `null`.
+     */
+    private fun paramFromIntent(intent: Intent): String? {
+        return if (intent.hasExtra(IntentKey.PROJECT_PARAM)) {
+            intent.getStringExtra(IntentKey.PROJECT_PARAM)
+        } else paramFromUri(IntentMapper.uri(intent))
+    }
+
+    /**
+     * Extract the project param from a uri. e.g.: A uri like `ksr://www.kickstarter.com/projects/1186238668/skull-graphic-tee`
+     * returns `skull-graphic-tee`.
+     */
+    fun paramFromUri(uri: Uri?): String? {
+        if (uri == null) {
+            return null
+        }
+        val scheme = uri.scheme
+        if (!(scheme == SCHEME_KSR || scheme == SCHEME_HTTPS)) {
+            return null
+        }
+        val matcher = PROJECT_PATTERN.matcher(uri.path)
+        return if (matcher.matches() && matcher.group(3) != null) {
+            matcher.group(3)
+        } else null
+    }
+}

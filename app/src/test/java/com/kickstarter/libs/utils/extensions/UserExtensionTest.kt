@@ -45,64 +45,64 @@ class UserExtensionTest : KSRobolectricTestCase() {
 
     @Test
     fun isEqualsUsers_whenNotifyMobileOfUpdates_Different() {
-        val userA = UserFactory.user().toBuilder().id(1).notifyMobileOfUpdates(false).build()
-        val userB = UserFactory.user().toBuilder().id(1).notifyMobileOfUpdates(true).build()
+        val userA = UserFactory.user().toBuilder().id(1L).notifyMobileOfUpdates(false).build()
+        val userB = UserFactory.user().toBuilder().id(1L).notifyMobileOfUpdates(true).build()
 
         assertFalse(userA == userB)
     }
 
     @Test
     fun isEqualsUsers_whenNotifyMobileOfUpdates_Equals() {
-        val userA = UserFactory.user().toBuilder().id(1).notifyMobileOfUpdates(true).build()
-        val userB = UserFactory.user().toBuilder().id(1).notifyMobileOfUpdates(true).build()
+        val userA = UserFactory.user().toBuilder().id(1L).notifyMobileOfUpdates(true).build()
+        val userB = UserFactory.user().toBuilder().id(1L).notifyMobileOfUpdates(true).build()
 
         assertTrue(userA == userB)
     }
 
     @Test
     fun isEqualsUsers_whenNotifyMobileOfFollower_Different() {
-        val userA = UserFactory.user().toBuilder().id(1).notifyMobileOfFollower(false).build()
-        val userB = UserFactory.user().toBuilder().id(1).notifyMobileOfFollower(true).build()
+        val userA = UserFactory.user().toBuilder().id(1L).notifyMobileOfFollower(false).build()
+        val userB = UserFactory.user().toBuilder().id(1L).notifyMobileOfFollower(true).build()
 
         assertFalse(userA == userB)
     }
 
     @Test
     fun isEqualsUsers_whenNotifyMobileOfFollower_Equals() {
-        val userA = UserFactory.user().toBuilder().id(1).notifyMobileOfFollower(true).build()
-        val userB = UserFactory.user().toBuilder().id(1).notifyMobileOfFollower(true).build()
+        val userA = UserFactory.user().toBuilder().id(1L).notifyMobileOfFollower(true).build()
+        val userB = UserFactory.user().toBuilder().id(1L).notifyMobileOfFollower(true).build()
 
         assertTrue(userA == userB)
     }
 
     @Test
     fun isEqualsUsers_whenNotifyMobileOfBackings_Different() {
-        val userA = UserFactory.user().toBuilder().id(1).notifyMobileOfBackings(false).build()
-        val userB = UserFactory.user().toBuilder().id(1).notifyMobileOfBackings(true).build()
+        val userA = UserFactory.user().toBuilder().id(1L).notifyMobileOfBackings(false).build()
+        val userB = UserFactory.user().toBuilder().id(1L).notifyMobileOfBackings(true).build()
 
         assertFalse(userA == userB)
     }
 
     @Test
     fun isEqualsUsers_whenNotifyMobileOfBackings_Equals() {
-        val userA = UserFactory.user().toBuilder().id(1).notifyMobileOfBackings(true).build()
-        val userB = UserFactory.user().toBuilder().id(1).notifyMobileOfBackings(true).build()
+        val userA = UserFactory.user().toBuilder().id(1L).notifyMobileOfBackings(true).build()
+        val userB = UserFactory.user().toBuilder().id(1L).notifyMobileOfBackings(true).build()
 
         assertTrue(userA == userB)
     }
 
     @Test
     fun isEqualsUsers_whenNotifyMobileOfComments_Different() {
-        val userA = UserFactory.user().toBuilder().id(1).notifyMobileOfComments(false).build()
-        val userB = UserFactory.user().toBuilder().id(1).notifyMobileOfComments(true).build()
+        val userA = UserFactory.user().toBuilder().id(1L).notifyMobileOfComments(false).build()
+        val userB = UserFactory.user().toBuilder().id(1L).notifyMobileOfComments(true).build()
 
         assertFalse(userA == userB)
     }
 
     @Test
     fun isEqualsUsers_whenNotifyMobileOfComments_Equals() {
-        val userA = UserFactory.user().toBuilder().id(1).notifyMobileOfComments(true).build()
-        val userB = UserFactory.user().toBuilder().id(1).notifyMobileOfComments(true).build()
+        val userA = UserFactory.user().toBuilder().id(1L).notifyMobileOfComments(true).build()
+        val userB = UserFactory.user().toBuilder().id(1L).notifyMobileOfComments(true).build()
 
         assertTrue(userA == userB)
     }
@@ -110,7 +110,7 @@ class UserExtensionTest : KSRobolectricTestCase() {
     @Test
     fun userTraits_whenID_Different() {
         val userA = UserFactory.user().toBuilder()
-            .id(1)
+            .id(1L)
             .name("")
             .notifyOfBackings(true)
             .notifyOfUpdates(true)
@@ -130,7 +130,7 @@ class UserExtensionTest : KSRobolectricTestCase() {
             .build()
 
         val userB = UserFactory.user().toBuilder()
-            .id(0)
+            .id(0L)
             .name("")
             .notifyOfBackings(true)
             .notifyOfUpdates(true)
@@ -155,7 +155,7 @@ class UserExtensionTest : KSRobolectricTestCase() {
     @Test
     fun userTraits_whenName_Different() {
         val userA = UserFactory.user().toBuilder()
-            .id(1)
+            .id(1L)
             .name("")
             .notifyOfBackings(true)
             .notifyOfUpdates(true)
@@ -175,7 +175,7 @@ class UserExtensionTest : KSRobolectricTestCase() {
             .build()
 
         val userB = UserFactory.user().toBuilder()
-            .id(1)
+            .id(1L)
             .name("Pikachu")
             .notifyOfBackings(true)
             .notifyOfUpdates(true)
@@ -200,7 +200,7 @@ class UserExtensionTest : KSRobolectricTestCase() {
     @Test
     fun userTraits_whenNumberOfTraits_Different() {
         val userA = UserFactory.user().toBuilder()
-            .id(1)
+            .id(1L)
             .name("")
             .notifyOfBackings(true)
             .notifyOfUpdates(true)
@@ -209,7 +209,7 @@ class UserExtensionTest : KSRobolectricTestCase() {
             .build()
 
         val userB = UserFactory.user().toBuilder()
-            .id(1)
+            .id(1L)
             .name("")
             .notifyOfBackings(true)
             .notifyOfUpdates(true)
@@ -234,7 +234,7 @@ class UserExtensionTest : KSRobolectricTestCase() {
     @Test
     fun userTraits_whenNotifyMobileOfMessages_Different() {
         val userA = UserFactory.user().toBuilder()
-            .id(1)
+            .id(1L)
             .name("")
             .notifyOfBackings(true)
             .notifyOfUpdates(true)
@@ -254,7 +254,7 @@ class UserExtensionTest : KSRobolectricTestCase() {
             .build()
 
         val userB = UserFactory.user().toBuilder()
-            .id(1)
+            .id(1L)
             .name("")
             .notifyOfBackings(true)
             .notifyOfUpdates(true)
@@ -279,7 +279,7 @@ class UserExtensionTest : KSRobolectricTestCase() {
     @Test
     fun userTraits_whenNotifyMobileOfMarketingUpdate() {
         val userA = UserFactory.user().toBuilder()
-            .id(1)
+            .id(1L)
             .name("")
             .notifyOfBackings(true)
             .notifyOfUpdates(true)
@@ -300,7 +300,7 @@ class UserExtensionTest : KSRobolectricTestCase() {
             .build()
 
         val userB = UserFactory.user().toBuilder()
-            .id(1)
+            .id(1L)
             .name("")
             .notifyOfBackings(true)
             .notifyOfUpdates(true)
@@ -323,7 +323,7 @@ class UserExtensionTest : KSRobolectricTestCase() {
         assertFalse(userA.getTraits() == userB.getTraits())
 
         val userC = UserFactory.user().toBuilder()
-            .id(1)
+            .id(1L)
             .name("")
             .notifyOfBackings(true)
             .notifyOfUpdates(true)
@@ -344,7 +344,7 @@ class UserExtensionTest : KSRobolectricTestCase() {
             .build()
 
         val userD = UserFactory.user().toBuilder()
-            .id(1)
+            .id(1L)
             .name("")
             .notifyOfBackings(true)
             .notifyOfUpdates(true)
@@ -369,7 +369,7 @@ class UserExtensionTest : KSRobolectricTestCase() {
 
     fun userTraits_whenSameTraits_Equals() {
         val userA = UserFactory.user().toBuilder()
-            .id(1)
+            .id(1L)
             .name("")
             .notifyOfBackings(true)
             .notifyOfUpdates(true)
@@ -390,7 +390,7 @@ class UserExtensionTest : KSRobolectricTestCase() {
             .build()
 
         val userB = UserFactory.user().toBuilder()
-            .id(1)
+            .id(1L)
             .name("")
             .notifyOfBackings(true)
             .notifyOfUpdates(true)

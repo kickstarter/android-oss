@@ -1,14 +1,13 @@
 package com.kickstarter.ui.adapters
 
-import com.kickstarter.ui.adapters.KSAdapter
-import com.kickstarter.models.RewardsItem
-import com.kickstarter.R
-import androidx.annotation.LayoutRes
+import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
+import com.kickstarter.R
+import com.kickstarter.databinding.RewardsItemViewBinding
+import com.kickstarter.models.RewardsItem
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.ui.viewholders.RewardsItemViewHolder
-import android.view.LayoutInflater
-import com.kickstarter.databinding.RewardsItemViewBinding
 
 class RewardItemsAdapter : KSAdapter() {
     fun rewardsItems(rewardsItems: List<RewardsItem?>) {

@@ -12,7 +12,7 @@ class RewardsItemViewHolder(private val binding: RewardsItemViewBinding) : KSVie
         val title = ksString.format(
             "rewards_info_item_quantity_title", rewardsItem.quantity(),
             "quantity", ObjectUtils.toString(rewardsItem.quantity()),
-            "title", rewardsItem.item().name()
+            "title", rewardsItem.item()?.name()
         )
         binding.rewardsItemTitle.text = title
     }

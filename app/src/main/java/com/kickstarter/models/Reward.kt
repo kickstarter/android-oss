@@ -15,7 +15,7 @@ class Reward private constructor(
     private val description: String,
     private val endsAt: DateTime?,
     private val id: Long,
-    private val limit: Int,
+    private val limit: Int?,
     private val minimum: Double,
     private val estimatedDeliveryOn: DateTime?,
     private val remaining: Int,
@@ -80,7 +80,7 @@ class Reward private constructor(
         private var description: String = "",
         private var endsAt: DateTime? = null,
         private var id: Long = 0L,
-        private var limit: Int = 0,
+        private var limit: Int? = null,
         private var minimum: Double = 0.0,
         private var estimatedDeliveryOn: DateTime? = null,
         private var remaining: Int = 0,
@@ -104,7 +104,7 @@ class Reward private constructor(
         fun endsAt(endsAt: DateTime?) = apply { this.endsAt = endsAt }
         fun startsAt(startsAt: DateTime?) = apply { this.startsAt = startsAt }
         fun id(id: Long?) = apply { this.id = id ?: -1L }
-        fun limit(limit: Int?) = apply { this.limit = limit ?: 0 }
+        fun limit(limit: Int?) = apply { this.limit = limit }
         fun minimum(minimum: Double?) = apply { this.minimum = minimum ?: 0.0 }
         fun estimatedDeliveryOn(estimatedDeliveryOn: DateTime?) = apply { this.estimatedDeliveryOn = estimatedDeliveryOn }
         fun remaining(remaining: Int?) = apply { this.remaining = remaining ?: 0 }

@@ -61,7 +61,7 @@ object RewardUtils {
      * Returns `true` if the reward has items, `false` otherwise.
      */
     fun isItemized(reward: Reward): Boolean {
-        val rewardsItems = if (reward.isAddOn) reward.addOnsItems() else reward.rewardsItems()
+        val rewardsItems = if (reward.isAddOn()) reward.addOnsItems() else reward.rewardsItems()
         return rewardsItems != null && rewardsItems.isNotEmpty()
     }
 

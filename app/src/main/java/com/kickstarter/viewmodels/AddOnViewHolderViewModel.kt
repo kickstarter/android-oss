@@ -120,7 +120,7 @@ interface AddOnViewHolderViewModel {
                 .subscribe(this.descriptionForReward)
 
             reward
-                .filter { !it.isAddOn && RewardUtils.isNoReward(it) }
+                .filter { !it.isAddOn() && RewardUtils.isNoReward(it) }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.descriptionForNoReward.onNext(R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality)

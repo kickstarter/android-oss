@@ -87,6 +87,29 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testEquals() {
+        currentDate.addDays(31)
+        reward = RewardFactory.reward().toBuilder()
+            .endsAt(currentDate.toDateTime())
+            .build()
+
+        var reward2 = reward.toBuilder()
+            .id(3L)
+            .build()
+
+        assertFalse(reward == reward2)
+
+        reward2 = reward
+        assertTrue(reward == reward2)
+
+        val reward3 = reward2.toBuilder()
+            .hasAddons(true)
+            .quantity(4)
+            .build()
+        assertTrue(reward3.quantity() == 4)
+    }
+
+    @Test
     fun deadlineCountdownDetail_whenHoursLeft_returnsHoursToGoString() {
         currentDate.addHours(3)
         reward = RewardFactory.reward().toBuilder()

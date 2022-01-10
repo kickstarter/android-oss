@@ -108,7 +108,7 @@ private fun isVisible(category: Category, expandedCategory: Category?): Boolean 
     }
     return if (category.isRoot) {
         true
-    } else category.root().id() == expandedCategory.id()
+    } else category.root()?.id() == expandedCategory.id()
 }
 
 /**

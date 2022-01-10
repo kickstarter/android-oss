@@ -12,19 +12,19 @@ import java.lang.annotation.RetentionPolicy
 class Reward private constructor(
     private val backersCount: Int,
     private val convertedMinimum: Double,
-    private val description: String,
+    private val description: String?,
     private val endsAt: DateTime?,
     private val id: Long,
     private val limit: Int?,
     private val minimum: Double,
     private val estimatedDeliveryOn: DateTime?,
-    private val remaining: Int,
+    private val remaining: Int?,
     private val rewardsItems: List<RewardsItem>,
     private val shippingPreference: String?,
     private val shippingSingleLocation: SingleLocation?,
     @ShippingType
     private val shippingType: String?,
-    private val title: String,
+    private val title: String?,
     private val isAddOn: Boolean,
     private val addOnsItems: List<RewardsItem>,
     private val quantity: Int?,
@@ -77,18 +77,18 @@ class Reward private constructor(
     data class Builder(
         private var backersCount: Int = 0,
         private var convertedMinimum: Double = 0.0,
-        private var description: String = "",
+        private var description: String? = null,
         private var endsAt: DateTime? = null,
         private var id: Long = 0L,
         private var limit: Int? = null,
         private var minimum: Double = 0.0,
         private var estimatedDeliveryOn: DateTime? = null,
-        private var remaining: Int = 0,
+        private var remaining: Int? = null,
         private var rewardsItems: List<RewardsItem> = emptyList(),
         private var shippingPreference: String? = null,
         private var shippingSingleLocation: SingleLocation? = null,
         private var shippingType: String? = null,
-        private var title: String = "",
+        private var title: String? = null,
         private var isAddOn: Boolean = false,
         private var addOnsItems: List<RewardsItem> = emptyList(),
         private var quantity: Int? = null,
@@ -100,19 +100,19 @@ class Reward private constructor(
     ) : Parcelable {
         fun backersCount(backersCount: Int?) = apply { this.backersCount = backersCount ?: 0 }
         fun convertedMinimum(convertedMinimum: Double?) = apply { this.convertedMinimum = convertedMinimum ?: 0.0 }
-        fun description(description: String?) = apply { this.description = description ?: "" }
+        fun description(description: String?) = apply { this.description = description }
         fun endsAt(endsAt: DateTime?) = apply { this.endsAt = endsAt }
         fun startsAt(startsAt: DateTime?) = apply { this.startsAt = startsAt }
         fun id(id: Long?) = apply { this.id = id ?: -1L }
         fun limit(limit: Int?) = apply { this.limit = limit }
         fun minimum(minimum: Double?) = apply { this.minimum = minimum ?: 0.0 }
         fun estimatedDeliveryOn(estimatedDeliveryOn: DateTime?) = apply { this.estimatedDeliveryOn = estimatedDeliveryOn }
-        fun remaining(remaining: Int?) = apply { this.remaining = remaining ?: 0 }
+        fun remaining(remaining: Int?) = apply { this.remaining = remaining }
         fun rewardsItems(rewardsItems: List<RewardsItem>?) = apply { this.rewardsItems = rewardsItems ?: emptyList() }
         fun shippingPreference(shippingPreference: String?) = apply { this.shippingPreference = shippingPreference }
         fun shippingSingleLocation(shippingSingleLocation: SingleLocation?) = apply { this.shippingSingleLocation = shippingSingleLocation }
         fun shippingType(shippingType: String?) = apply { this.shippingType = shippingType }
-        fun title(title: String?) = apply { this.title = title ?: "" }
+        fun title(title: String?) = apply { this.title = title }
         fun isAddOn(isAddOn: Boolean?) = apply { this.isAddOn = isAddOn ?: false }
         fun addOnsItems(addOnsItems: List<RewardsItem>?) = apply { this.addOnsItems = addOnsItems ?: emptyList() }
         fun quantity(quantity: Int?) = apply { this.quantity = quantity }

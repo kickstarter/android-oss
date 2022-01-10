@@ -244,7 +244,7 @@ class ProjectExtTest : KSRobolectricTestCase() {
 
     @Test
     fun testTimeInSecondsUntilDeadline_whenProjectNotFinished_shouldReturnDuration() {
-        val project = ProjectFactory.project().toBuilder().deadline(DateTime.now().plusDays(2)).build()
+        val project = ProjectFactory.project().toBuilder().deadline(DateTime.now().plusDays(2).plusMillis(300)).build()
 
         assertEquals(172800, project.timeInSecondsUntilDeadline())
     }

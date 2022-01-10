@@ -1,28 +1,51 @@
 package com.kickstarter.models
 
 import android.os.Parcelable
-import auto.parcel.AutoParcel
-import com.kickstarter.libs.qualifiers.AutoGson
+import kotlinx.parcelize.Parcelize
 
-@AutoParcel
-@AutoGson
-abstract class SingleLocation : Parcelable {
-    abstract fun id(): Long
-    abstract fun localizedName(): String?
+@Parcelize
+class SingleLocation private constructor(
+    private val id: Long,
+    private val localizedName: String
+) : Parcelable {
+    fun id() = this.id
+    fun localizedName() = this.localizedName
 
-    @AutoParcel.Builder
-    abstract class Builder {
-        abstract fun id(id: Long): Builder?
-        abstract fun localizedName(localizedName: String?): Builder?
-        abstract fun build(): SingleLocation?
+    @Parcelize
+    data class Builder(
+        private var id: Long = 0L,
+        private var localizedName: String = ""
+    ) : Parcelable {
+        fun id(id: Long?) = apply { this.id = id ?: 0L }
+        fun localizedName(localizedName: String?) = apply { this.localizedName = localizedName ?: "" }
+        fun build() = SingleLocation(
+            id = id,
+            localizedName = localizedName
+        )
     }
 
-    abstract fun toBuilder(): Builder?
+    override fun equals(obj: Any?): Boolean {
+        var equals = super.equals(obj)
+        if (obj is SingleLocation) {
+            equals = id() == obj.id() &&
+                localizedName() == obj.localizedName()
+        }
+        return equals
+    }
+
+    override fun hashCode(): Int {
+        return super.hashCode()
+    }
+
+    fun toBuilder() = Builder(
+        id = id,
+        localizedName = localizedName
+    )
 
     companion object {
         @JvmStatic
         fun builder(): Builder {
-            return AutoParcel_SingleLocation.Builder()
+            return Builder()
         }
     }
 }

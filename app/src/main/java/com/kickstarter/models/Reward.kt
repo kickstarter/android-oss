@@ -27,7 +27,7 @@ class Reward private constructor(
     private val title: String,
     private val isAddOn: Boolean,
     private val addOnsItems: List<RewardsItem>,
-    private val quantity: Int,
+    private val quantity: Int?,
     private val hasAddons: Boolean,
     private val startsAt: DateTime?,
     /**
@@ -91,7 +91,7 @@ class Reward private constructor(
         private var title: String = "",
         private var isAddOn: Boolean = false,
         private var addOnsItems: List<RewardsItem> = emptyList(),
-        private var quantity: Int = 0,
+        private var quantity: Int? = null,
         private var hasAddons: Boolean = false,
         private var startsAt: DateTime? = null,
         private var isAvailable: Boolean = false,
@@ -103,7 +103,7 @@ class Reward private constructor(
         fun description(description: String?) = apply { this.description = description ?: "" }
         fun endsAt(endsAt: DateTime?) = apply { this.endsAt = endsAt }
         fun startsAt(startsAt: DateTime?) = apply { this.startsAt = startsAt }
-        fun id(id: Long?) = apply { this.id = id ?: 0L }
+        fun id(id: Long?) = apply { this.id = id ?: -1L }
         fun limit(limit: Int?) = apply { this.limit = limit ?: 0 }
         fun minimum(minimum: Double?) = apply { this.minimum = minimum ?: 0.0 }
         fun estimatedDeliveryOn(estimatedDeliveryOn: DateTime?) = apply { this.estimatedDeliveryOn = estimatedDeliveryOn }
@@ -115,7 +115,7 @@ class Reward private constructor(
         fun title(title: String?) = apply { this.title = title ?: "" }
         fun isAddOn(isAddOn: Boolean?) = apply { this.isAddOn = isAddOn ?: false }
         fun addOnsItems(addOnsItems: List<RewardsItem>?) = apply { this.addOnsItems = addOnsItems ?: emptyList() }
-        fun quantity(quantity: Int?) = apply { this.quantity = quantity ?: 0 }
+        fun quantity(quantity: Int?) = apply { this.quantity = quantity }
         fun hasAddons(hasAddons: Boolean?) = apply { this.hasAddons = hasAddons ?: false }
         fun shippingRules(shippingRules: List<ShippingRule>?) = apply { this.shippingRules = shippingRules }
         fun shippingPreferenceType(shippingPreferenceType: ShippingPreference?) = apply { this.shippingPreferenceType = shippingPreferenceType }

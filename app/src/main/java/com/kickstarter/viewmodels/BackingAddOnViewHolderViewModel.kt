@@ -144,7 +144,7 @@ class BackingAddOnViewHolderViewModel {
                 .subscribe(this.rewardItemsAreGone)
 
             addOn.filter { RewardUtils.isItemized(it) }
-                .map { if (it.isAddOn) it.addOnsItems() else it.rewardsItems() }
+                .map { if (it.isAddOn()) it.addOnsItems() else it.rewardsItems() }
                 .compose(bindToLifecycle())
                 .subscribe(this.rewardItems)
 
@@ -236,7 +236,7 @@ class BackingAddOnViewHolderViewModel {
         private fun maximumLimit(addOn: Reward): Int? {
             val limit = addOn.limit()
             val remaining = addOn.remaining()
-            return if (addOn.isAvailable && RewardUtils.isValidTimeRange(addOn)) {
+            return if (addOn.isAvailable() && RewardUtils.isValidTimeRange(addOn)) {
                 when {
                     remaining != null && limit != null -> min(remaining, limit)
                     remaining != null -> remaining

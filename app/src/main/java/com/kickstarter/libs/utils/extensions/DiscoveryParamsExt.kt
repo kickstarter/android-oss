@@ -38,7 +38,7 @@ fun DiscoveryParams.refTag(): RefTag {
     }
 
     this.tagId()?.let {
-        RefTag.collection(it)
+        return RefTag.collection(it)
     }
 
     if (this.social().isNonZero()) {

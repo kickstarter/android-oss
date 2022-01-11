@@ -453,7 +453,7 @@ class BackingAddOnsFragmentViewModel {
          */
         private fun filterOutUnAvailableOrEndedExceptIfBacked(combinedList: List<Reward>): List<Reward> {
             return combinedList.filter { addOn ->
-                addOn.quantity()?.let { it > 0 } ?: (addOn.isAvailable && RewardUtils.isValidTimeRange(addOn))
+                addOn.quantity()?.let { it > 0 } ?: (addOn.isAvailable() && RewardUtils.isValidTimeRange(addOn))
             }
         }
 

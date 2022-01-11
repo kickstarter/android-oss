@@ -235,6 +235,20 @@ interface CommentsViewModel {
                     commentsList.onNext(it)
                 }
 
+            this.insertNewCommentToList
+                .map { it.first }
+                .distinctUntilChanged()
+                .withLatestFrom(projectOrUpdateComment) {
+                    commentData, project ->
+                    Pair(commentData, project)
+                }.subscribe {
+                    if (it.second.second?.id() != null) {
+                        this.analyticEvents.trackCommentReplyCTA(it.second.first, it.first, it.second.second?.id()?.toString())
+                    } else {
+                        this.analyticEvents.trackCommentReplyCTA(it.second.first, it.first)
+                    }
+                }
+
             this.onShowGuideLinesLinkClicked
                 .compose(bindToLifecycle())
                 .subscribe {

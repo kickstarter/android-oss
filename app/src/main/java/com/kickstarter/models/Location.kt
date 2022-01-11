@@ -71,17 +71,17 @@ class Location private constructor(
         state = state
     )
 
-    override fun equals(obj: Any?): Boolean {
-        var equals = super.equals(obj)
-        if (obj is Location) {
-            equals = id() == obj.id() &&
-                city() == obj.city() &&
-                country() == obj.country() &&
-                displayableName() == obj.displayableName() &&
-                expandedCountry() == obj.expandedCountry() &&
-                name() == obj.name() &&
-                projectsCount() == obj.projectsCount() &&
-                state() == obj.state()
+    override fun equals(other: Any?): Boolean {
+        var equals = super.equals(other)
+        if (other is Location) {
+            equals = id() == other.id() &&
+                city() == other.city() &&
+                country() == other.country() &&
+                displayableName() == other.displayableName() &&
+                expandedCountry() == other.expandedCountry() &&
+                name() == other.name() &&
+                projectsCount() == other.projectsCount() &&
+                state() == other.state()
         }
         return equals
     }

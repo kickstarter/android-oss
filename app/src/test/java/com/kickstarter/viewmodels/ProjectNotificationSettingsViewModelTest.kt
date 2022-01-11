@@ -29,7 +29,7 @@ class ProjectNotificationSettingsViewModelTest : KSRobolectricTestCase() {
         val projectNotifications = Collections.singletonList(ProjectNotificationFactory.disabled())
         setUpEnvironment(
             environment().toBuilder().apiClient(object : MockApiClient() {
-                override fun fetchProjectNotifications(): Observable<MutableList<ProjectNotification>> {
+                override fun fetchProjectNotifications(): Observable<List<ProjectNotification>> {
                     return Observable.just(projectNotifications)
                 }
             }).build()
@@ -42,7 +42,7 @@ class ProjectNotificationSettingsViewModelTest : KSRobolectricTestCase() {
     fun testUnableToFetchProjectNotificationsError() {
         setUpEnvironment(
             environment().toBuilder().apiClient(object : MockApiClient() {
-                override fun fetchProjectNotifications(): Observable<MutableList<ProjectNotification>> {
+                override fun fetchProjectNotifications(): Observable<List<ProjectNotification>> {
                     return Observable.error(Throwable("error"))
                 }
             }).build()

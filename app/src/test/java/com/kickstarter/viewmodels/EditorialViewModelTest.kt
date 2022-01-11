@@ -91,9 +91,9 @@ class EditorialViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
             .toBuilder()
             .apiClient(object : MockApiClient() {
-                override fun fetchCategories(): Observable<MutableList<Category>?> {
+                override fun fetchCategories(): Observable<List<Category>> {
                     return when {
-                        error -> Observable.error<MutableList<Category>?>(Throwable("boop"))
+                        error -> Observable.error(Throwable("boop"))
                         else -> {
                             super.fetchCategories()
                         }

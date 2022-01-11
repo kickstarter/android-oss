@@ -10,8 +10,8 @@ import com.kickstarter.R;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.EventName;
+import com.kickstarter.libs.utils.extensions.DiscoveryParamsExtKt;
 import com.kickstarter.mock.factories.ApiExceptionFactory;
 import com.kickstarter.mock.factories.CategoryFactory;
 import com.kickstarter.mock.factories.InternalBuildEnvelopeFactory;
@@ -250,7 +250,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.vm = new DiscoveryViewModel.ViewModel(environment());
 
     this.vm.getOutputs().updateParamsForPage().subscribe(this.updateParams);
-    this.vm.getOutputs().updateParamsForPage().map(params -> DiscoveryUtils.positionFromSort(params.sort())).subscribe(this.updatePage);
+    this.vm.getOutputs().updateParamsForPage().map(params -> DiscoveryParamsExtKt.positionFromSort(params.sort())).subscribe(this.updatePage);
 
     // Start initial activity.
     final Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -309,7 +309,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     // Simulate rotating the device and hitting initial getInputs() again.
     this.vm.getOutputs().updateParamsForPage().subscribe(this.rotatedUpdateParams);
-    this.vm.getOutputs().updateParamsForPage().map(params -> DiscoveryUtils.positionFromSort(params.sort())).subscribe(this.rotatedUpdatePage);
+    this.vm.getOutputs().updateParamsForPage().map(params -> DiscoveryParamsExtKt.positionFromSort(params.sort())).subscribe(this.rotatedUpdatePage);
 
     // Should emit again with same params.
     this.rotatedUpdateParams.assertValues(

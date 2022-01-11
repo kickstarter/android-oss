@@ -3,6 +3,7 @@ package com.kickstarter.libs.utils.extensions
 import android.content.Context
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
+import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
@@ -284,5 +285,16 @@ class ProjectExtTest : KSRobolectricTestCase() {
     @Test
     fun testIsUSUserViewingNonUSProject_whenProjectUSButUserNotUS_shouldReturnFalse() {
         assertFalse(isUSUserViewingNonUSProject(Locale.GERMANY.country, Locale.US.country))
+    }
+
+    @Test
+    fun testProjectNeedsRootCategory() {
+        assertFalse(ProjectFactory.backedProject().projectNeedsRootCategory(CategoryFactory.tabletopGamesCategory()))
+        assertTrue(
+            ProjectFactory.featured().projectNeedsRootCategory(
+                CategoryFactory
+                    .photographyCategory().toBuilder().parentId(1).build()
+            )
+        )
     }
 }

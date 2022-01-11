@@ -11,14 +11,15 @@ import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.DiscoveryDrawerUtils
 import com.kickstarter.libs.utils.DiscoveryUtils
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.deriveNavigationDrawerData
 import com.kickstarter.libs.utils.extensions.getTokenFromQueryParams
 import com.kickstarter.libs.utils.extensions.intValueOrZero
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.isVerificationEmailUrl
+import com.kickstarter.libs.utils.extensions.positionFromSort
 import com.kickstarter.models.Category
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
@@ -330,7 +331,7 @@ interface DiscoveryViewModel {
                 .map { it.first }
                 .flatMap {
                     Observable.from(DiscoveryParams.Sort.defaultSorts)
-                        .map { sort: DiscoveryParams.Sort? -> DiscoveryUtils.positionFromSort(sort) }
+                        .map { sort: DiscoveryParams.Sort? -> sort.positionFromSort() }
                         .filter { sortPosition: Int -> sortPosition != it }
                         .toList()
                 }
@@ -352,7 +353,7 @@ interface DiscoveryViewModel {
                 params,
                 expandedCategory,
                 currentUser
-            ) { c, s, ec, u -> DiscoveryDrawerUtils.deriveNavigationDrawerData(c, s, ec, u) }
+            ) { c, s, ec, u -> s.deriveNavigationDrawerData(c, ec, u) }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(navigationDrawerData)

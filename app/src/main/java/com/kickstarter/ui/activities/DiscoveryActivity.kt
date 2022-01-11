@@ -18,8 +18,8 @@ import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.InternalToolsType
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.DiscoveryUtils
 import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.extensions.positionFromSort
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter
@@ -32,6 +32,7 @@ import com.kickstarter.ui.fragments.DiscoveryFragment.Companion.newInstance
 import com.kickstarter.viewmodels.DiscoveryViewModel
 import rx.android.schedulers.AndroidSchedulers
 import java.util.Arrays
+import kotlin.collections.ArrayList
 
 @RequiresActivityViewModel(DiscoveryViewModel.ViewModel::class)
 class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
@@ -84,7 +85,7 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                binding.discoveryViewPager.setCurrentItem(DiscoveryUtils.positionFromSort(it.sort()))
+                binding.discoveryViewPager.currentItem = it.sort().positionFromSort()
                 pagerAdapter.takeParams(it)
             }
 

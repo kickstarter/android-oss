@@ -2,11 +2,11 @@ package com.kickstarter.ui.adapters;
 
 import android.view.ViewGroup;
 
-import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.ArgumentsKey;
 import com.kickstarter.ui.fragments.DiscoveryFragment;
+import com.kickstarter.libs.utils.extensions.DiscoveryParamsExtKt;
 
 import java.util.List;
 
@@ -18,8 +18,8 @@ import rx.Observable;
 
 public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
   private final Delegate delegate;
-  private List<DiscoveryFragment> fragments;
-  private List<String> pageTitles;
+  private final List<DiscoveryFragment> fragments;
+  private final List<String> pageTitles;
 
   public interface Delegate {
     void discoveryPagerAdapterSetPrimaryPage(DiscoveryPagerAdapter adapter, int position);
@@ -85,7 +85,7 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
       .filter(DiscoveryFragment::isAttached)
       .filter(frag -> {
         final int fragmentPosition = frag.getArguments().getInt(ArgumentsKey.DISCOVERY_SORT_POSITION);
-        return DiscoveryUtils.positionFromSort(params.sort()) == fragmentPosition;
+        return DiscoveryParamsExtKt.positionFromSort(params.sort()) == fragmentPosition;
       })
       .subscribe(frag -> frag.updateParams(params));
   }

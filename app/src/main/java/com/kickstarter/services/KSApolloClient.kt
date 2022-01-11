@@ -33,6 +33,7 @@ import com.kickstarter.models.Comment
 import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.Location
+import com.kickstarter.models.PaymentSource
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -928,7 +929,7 @@ private fun mapGetCommentQueryResponseToComment(responseData: GetCommentQuery.Da
 
 private fun createBackingObject(backingGr: fragment.Backing?): Backing {
     val payment = backingGr?.paymentSource()?.fragments()?.payment()?.let { payment ->
-        Backing.PaymentSource.builder()
+        PaymentSource.builder()
             .state(payment.state().toString())
             .type(payment.type().rawValue())
             .paymentType(CreditCardPaymentType.CREDIT_CARD.rawValue())

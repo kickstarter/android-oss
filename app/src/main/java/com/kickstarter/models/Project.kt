@@ -41,8 +41,8 @@ class Project private constructor(
     private val pledged: Double,
     private val photo: Photo?,
     private val prelaunchActivated: Boolean?,
-    private val tags: List<String>,
-    private val rewards: List<Reward>,
+    private val tags: List<String>?,
+    private val rewards: List<Reward>?,
     private val slug: String?,
     private val staffPick: Boolean?,
     private val canComment: Boolean?,
@@ -57,9 +57,9 @@ class Project private constructor(
     private val updatedAt: DateTime?,
     private val urls: Urls,
     private val video: Video?,
-    private val projectFaqs: List<ProjectFaq>,
-    private val envCommitments: List<EnvironmentalCommitment>,
-    private val risks: String
+    private val projectFaqs: List<ProjectFaq>?,
+    private val envCommitments: List<EnvironmentalCommitment>?,
+    private val risks: String?
 ) : Parcelable, Relay {
     fun availableCardTypes() = this.availableCardTypes
     fun backersCount() = this.backersCount
@@ -142,8 +142,8 @@ class Project private constructor(
         private var pledged: Double = 0.0,
         private var photo: Photo? = null,
         private var prelaunchActivated: Boolean? = null,
-        private var tags: List<String> = emptyList(),
-        private var rewards: List<Reward> = emptyList(),
+        private var tags: List<String>? = emptyList(),
+        private var rewards: List<Reward>? = emptyList(),
         private var slug: String? = null,
         private var staffPick: Boolean? = null,
         private var canComment: Boolean? = null,
@@ -158,9 +158,9 @@ class Project private constructor(
         private var updatedAt: DateTime? = null,
         private var urls: Urls = Urls.builder().build(),
         private var video: Video? = null,
-        private var projectFaqs: List<ProjectFaq> = emptyList(),
-        private var envCommitments: List<EnvironmentalCommitment> = emptyList(),
-        private var risks: String = ""
+        private var projectFaqs: List<ProjectFaq>? = emptyList(),
+        private var envCommitments: List<EnvironmentalCommitment>? = emptyList(),
+        private var risks: String? = ""
     ) : Parcelable {
         fun availableCardTypes(availableCardTypes: List<String>?) = apply { this.availableCardTypes = availableCardTypes }
         fun backersCount(backersCount: Int?) = apply { this.backersCount = backersCount ?: 0 }
@@ -338,7 +338,7 @@ class Project private constructor(
 
     fun hasComments() = commentsCount().isNonZero()
 
-    fun hasRewards() = rewards() != null
+    fun hasRewards() = rewards()?.isNotEmpty() ?: false
 
     fun hasVideo() = video() != null
 
@@ -349,16 +349,19 @@ class Project private constructor(
     /** Returns whether the project is in a failed state.  */
     val isFailed: Boolean
         get() = STATE_FAILED == state()
+
     val isFeaturedToday: Boolean
-        get() = if (featuredAt() == null) {
-            false
-        } else DateTimeUtils.isDateToday(featuredAt()!!)
+        get() = featuredAt()?.let {
+            DateTimeUtils.isDateToday(it)
+        } ?: false
 
     /** Returns whether the project is in a live state.  */
     val isLive: Boolean
         get() = STATE_LIVE == state()
+
     val isFriendBacking: Boolean
-        get() = friends() != null && friends()!!.size > 0
+        get() = friends().isNotEmpty()
+
     val isFunded: Boolean
         get() = isLive && percentageFunded() >= 100
 
@@ -381,10 +384,12 @@ class Project private constructor(
     /** Returns whether the project is in a successful state.  */
     val isSuccessful: Boolean
         get() = STATE_SUCCESSFUL == state()
+
     val isApproachingDeadline: Boolean
-        get() = if (deadline()!!.isBeforeNow) {
-            false
-        } else deadline()!!.isBefore(DateTime().plusDays(2))
+        get() = deadline()?.let {
+            if (it.isBeforeNow) false
+            else it.isBefore(DateTime().plusDays(2))
+        } ?: false
 
     fun percentageFunded(): Float {
         return if (goal() > 0.0f) {

@@ -60,7 +60,7 @@ public class DashboardRewardStatsRowHolderViewModelTest extends KSRobolectricTes
 
   @Test
   public void testPercentageOfTotalPledged() {
-    final Project project = ProjectFactory.project().toBuilder().pledged(100).build();
+    final Project project = ProjectFactory.project().toBuilder().pledged(100.0).build();
     final ProjectStatsEnvelope.RewardStats rewardStats = ProjectStatsEnvelopeFactory.RewardStatsFactory
       .rewardStats()
       .toBuilder()
@@ -74,7 +74,7 @@ public class DashboardRewardStatsRowHolderViewModelTest extends KSRobolectricTes
 
   @Test
   public void testProjectAndPledgedForReward() {
-    final Project project = ProjectFactory.project().toBuilder().pledged(100).build();
+    final Project project = ProjectFactory.project().toBuilder().pledged(100.0).build();
     final ProjectStatsEnvelope.RewardStats rewardStats = ProjectStatsEnvelopeFactory.RewardStatsFactory
       .rewardStats()
       .toBuilder()

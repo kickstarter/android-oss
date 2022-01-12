@@ -23,7 +23,7 @@ class Project private constructor(
     private val currency: String, // e.g.: USD
     private val currencySymbol: String, // e.g.: $
     private val currentCurrency: String?, // e.g.: User's Preferred currency USD
-    private val currencyTrailingCode: Boolean?,
+    private val currencyTrailingCode: Boolean,
     private val displayPrelaunch: Boolean?,
     private val featuredAt: DateTime?,
     private val friends: List<User>,
@@ -124,7 +124,7 @@ class Project private constructor(
         private var currency: String = "",
         private var currencySymbol: String = "",
         private var currentCurrency: String? = null,
-        private var currencyTrailingCode: Boolean? = null,
+        private var currencyTrailingCode: Boolean = false,
         private var displayPrelaunch: Boolean? = null,
         private var featuredAt: DateTime? = null,
         private var friends: List<User> = emptyList(),
@@ -174,7 +174,7 @@ class Project private constructor(
         fun currency(currency: String?) = apply { currency?.let { this.currency = it } }
         fun currencySymbol(currencySymbol: String?) = apply { currencySymbol?.let { this.currencySymbol = it } }
         fun currentCurrency(currency: String?) = apply { this.currentCurrency = currency }
-        fun currencyTrailingCode(currencyTrailingCode: Boolean?) = apply { this.currencyTrailingCode = currencyTrailingCode }
+        fun currencyTrailingCode(currencyTrailingCode: Boolean?) = apply { this.currencyTrailingCode = currencyTrailingCode ?: false }
         fun displayPrelaunch(displayPrelaunch: Boolean?) = apply { this.displayPrelaunch = displayPrelaunch }
         fun canComment(canComment: Boolean?) = apply { this.canComment = canComment ?: false }
         fun deadline(deadline: DateTime?) = apply { this.deadline = deadline }

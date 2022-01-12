@@ -328,8 +328,6 @@ class Project private constructor(
 
     fun creatorBioUrl() = urls().web().creatorBio()
 
-    fun isBackingRewardId(rewardId: Long) = backing() != null && backing()?.rewardId() != null && backing()?.rewardId() == rewardId
-
     fun descriptionUrl() = urls().web().description()
 
     fun updatesUrl() = urls().web().updates() ?: ""
@@ -417,18 +415,6 @@ class Project private constructor(
             .toString()
     }
 
-    fun rewardSelectedUrl(reward: Reward): String {
-        return Uri.parse(newPledgeUrl())
-            .buildUpon().scheme("https")
-            .appendQueryParameter(
-                "backing[backer_reward_id]",
-                java.lang.String.valueOf(reward.id())
-            )
-            .appendQueryParameter("clicked_reward", "true")
-            .build()
-            .toString()
-    }
-
     override fun toString(): String {
         return (
             "Project{" +
@@ -438,11 +424,60 @@ class Project private constructor(
             )
     }
 
-    override fun equals(o: Any?): Boolean {
-        if (o != null && o is Project) {
-            return id() == o.id()
+    override fun equals(other: Any?): Boolean {
+        var equals = super.equals(other)
+        if (other is Project) {
+            equals = backersCount() == other.backersCount() &&
+                availableCardTypes() == other.availableCardTypes() &&
+                blurb() == other.blurb() &&
+                backing() == other.backing() &&
+                category() == other.category() &&
+                commentsCount() == other.commentsCount() &&
+                country() == other.country() &&
+                createdAt() == other.createdAt() &&
+                creator() == other.creator() &&
+                createdAt() == other.createdAt() &&
+                currency() == other.currency() &&
+                currencySymbol() == other.currencySymbol() &&
+                currentCurrency() == other.currentCurrency() &&
+                currencyTrailingCode() == other.currencyTrailingCode() &&
+                displayPrelaunch() == other.displayPrelaunch() &&
+                featuredAt() == other.featuredAt() &&
+                friends() == other.friends() &&
+                fxRate() == other.fxRate() &&
+                deadline() == other.deadline() &&
+                goal() == other.goal() &&
+                id() == other.id() &&
+                isBacking() == other.isBacking() &&
+                isStarred() == other.isStarred() &&
+                lastUpdatePublishedAt() == other.lastUpdatePublishedAt() &&
+                launchedAt() == other.launchedAt() &&
+                location() == other.location() &&
+                name() == other.name() &&
+                permissions() == other.permissions() &&
+                pledged() == other.pledged() &&
+                photo() == other.photo() &&
+                prelaunchActivated() == other.prelaunchActivated() &&
+                rewards() == other.rewards() &&
+                slug() == other.slug() &&
+                staffPick() == other.staffPick() &&
+                slug() == other.slug() &&
+                canComment() == other.canComment() &&
+                state() == other.state() &&
+                stateChangedAt() == other.stateChangedAt() &&
+                staticUsdRate() == other.staticUsdRate() &&
+                usdExchangeRate() == other.usdExchangeRate() &&
+                unreadMessagesCount() == other.unreadMessagesCount() &&
+                unseenActivityCount() == other.unseenActivityCount() &&
+                updatesCount() == other.updatesCount() &&
+                updatedAt() == other.updatedAt() &&
+                urls() == other.urls() &&
+                video() == other.video() &&
+                projectFaqs() == other.projectFaqs() &&
+                envCommitments() == other.envCommitments() &&
+                risks() == other.risks()
         }
-        return false
+        return equals
     }
 
     override fun hashCode(): Int {

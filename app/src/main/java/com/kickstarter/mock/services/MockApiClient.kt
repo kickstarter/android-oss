@@ -376,7 +376,7 @@ open class MockApiClient : ApiClientType {
     }
 
     override fun toggleProjectSave(project: Project): Observable<Project> {
-        return Observable.just(project.toBuilder().isStarred(!project.isStarred).build())
+        return Observable.just(project.toBuilder().isStarred(!project.isStarred()).build())
     }
 
     override fun fetchUnansweredSurveys(): Observable<List<SurveyResponse>> {

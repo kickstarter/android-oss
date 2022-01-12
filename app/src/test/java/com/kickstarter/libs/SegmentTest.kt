@@ -1375,7 +1375,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val expectedProperties = propertiesTest.value
         assertEquals(reply, expectedProperties[COMMENT_BODY.contextName])
-        assertEquals(reply.length.toString(), expectedProperties[COMMENT_CHARACTER_COUNT.contextName])
+        assertEquals(reply.length, expectedProperties[COMMENT_CHARACTER_COUNT.contextName])
         assertNull(expectedProperties[PROJECT_UPDATE_ID.contextName])
         this.segmentTrack.assertValue(CTA_CLICKED.eventName)
     }

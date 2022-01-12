@@ -4,6 +4,7 @@ import android.content.Intent
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.AvatarFactory
 import com.kickstarter.mock.factories.CommentEnvelopeFactory
@@ -553,6 +554,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             assertTrue(newList[2].comment?.body() == commentCardData2.comment?.body())
             assertTrue(newList[2].commentCardState == commentCardData2.commentCardState)
         }
+        segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -645,6 +647,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.inputs.checkIfThereAnyPendingComments(false)
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
         this.hasPendingComments.assertValues(Pair(false, false), Pair(true, false), Pair(false, false))
+        segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -737,6 +740,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.inputs.checkIfThereAnyPendingComments(true)
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
         this.hasPendingComments.assertValues(Pair(false, true), Pair(true, true), Pair(false, true))
+        segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
 
     @Test

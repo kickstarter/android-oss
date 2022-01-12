@@ -1,11 +1,14 @@
 package com.kickstarter.libs
 
 import com.kickstarter.libs.utils.AnalyticEventsUtils
+import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_BODY
+import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_CHARACTER_COUNT
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_SECTION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
+import com.kickstarter.libs.utils.ContextPropertyKeyName.PROJECT_UPDATE_ID
 import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ADD_ONS
@@ -21,10 +24,12 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.TWO_FACTOR_AUTH
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.UPDATE_PLEDGE
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.CREDIT_CARD
+import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.ROOT
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.UNWATCH
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.WATCH
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.ADD_ONS_CONTINUE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CAMPAIGN_DETAILS
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.COMMENT_POST
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CREATOR_DETAILS
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_FILTER
@@ -595,6 +600,30 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to CREATOR_DETAILS.contextName)
         props[CONTEXT_PAGE.contextName] = PROJECT.contextName
         props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client when reply is clicked on the project comment screen.
+     *
+     * @param project: The current project.
+     * @param commentReply: The reply.
+     */
+    fun trackCommentReplyCTA(project: Project, commentReply: String, projectUpdateId: String? = null) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to COMMENT_POST.contextName)
+        props[CONTEXT_PAGE.contextName] = PROJECT.contextName
+        props[CONTEXT_TYPE.contextName] = ROOT.contextName
+        props[CONTEXT_SECTION.contextName] = EventContextValues.ContextSectionName.COMMENTS.contextName
+
+        projectUpdateId?.let {
+            props[CONTEXT_SECTION.contextName] = EventContextValues.ContextSectionName.UPDATES.contextName
+            props[CONTEXT_LOCATION.contextName] = EventContextValues.LocationContextName.COMMENTS.contextName
+            props[PROJECT_UPDATE_ID.contextName] = projectUpdateId
+        }
+
+        props[COMMENT_BODY.contextName] = commentReply
+        props[COMMENT_CHARACTER_COUNT.contextName] = commentReply.length
+        props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
         client.track(CTA_CLICKED.eventName, props)
     }
 

@@ -252,8 +252,8 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
     final TestSubscriber<User> updateUserSettingsTest = new TestSubscriber<>();
     ((MockApiClient) environment.apiClient()).observable()
-      .filter(e -> "update_user_settings".equals(e.first))
-      .map(e -> (User) e.second.get("user"))
+      .filter(e -> "update_user_settings".equals(e.getFirst()))
+      .map(e -> (User) e.getSecond().get("user"))
       .subscribe(updateUserSettingsTest);
 
     final Project project = ProjectFactory.project()

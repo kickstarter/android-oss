@@ -410,11 +410,11 @@ class BackingAddOnsFragmentViewModel {
             if (finalList.isNotEmpty()) {
                 if (isShippable(rw) && !isDigital(rw)) {
                     pledgeData.toBuilder()
-                        .addOns(finalList as java.util.List<Reward>)
+                        .addOns(finalList)
                         .shippingRule(shippingRule)
                         .build()
                 } else pledgeData.toBuilder()
-                    .addOns(finalList as java.util.List<Reward>)
+                    .addOns(finalList)
                     .build()
             } else {
                 pledgeData.toBuilder()

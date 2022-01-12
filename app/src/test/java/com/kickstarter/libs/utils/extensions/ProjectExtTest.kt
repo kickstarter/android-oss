@@ -341,4 +341,12 @@ class ProjectExtTest : KSRobolectricTestCase() {
         assertTrue(project == secondProject)
         assertTrue(project.creator() == secondProject.creator())
     }
+
+    @Test
+    fun testEqualProjects_deadline_true() {
+        val project = ProjectFactory.project()
+        val secondProject = project
+
+        assertTrue(project.deadline() == secondProject.deadline())
+    }
 }

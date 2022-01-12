@@ -444,8 +444,8 @@ class Project private constructor(
                 displayPrelaunch() == other.displayPrelaunch() &&
                 featuredAt() == other.featuredAt() &&
                 friends() == other.friends() &&
-                fxRate() == other.fxRate() &&
                 deadline() == other.deadline() &&
+                fxRate() == other.fxRate() &&
                 goal() == other.goal() &&
                 id() == other.id() &&
                 isBacking() == other.isBacking() &&

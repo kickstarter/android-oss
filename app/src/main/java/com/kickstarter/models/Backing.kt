@@ -17,7 +17,7 @@ class Backing private constructor(
     private val backerCompletedAt: DateTime?,
     private val cancelable: Boolean,
     private val completedAt: DateTime?,
-    private val completedByBacker: Boolean?,
+    private val completedByBacker: Boolean,
     private val id: Long,
     private val location: Location?,
     private val locationId: Long?,
@@ -73,7 +73,7 @@ class Backing private constructor(
         private var backerCompletedAt: DateTime? = null,
         private var cancelable: Boolean = false,
         private var completedAt: DateTime? = null,
-        private var completedByBacker: Boolean? = null,
+        private var completedByBacker: Boolean = false,
         private var id: Long = 0L,
         private var location: Location? = null,
         private var locationId: Long? = null,
@@ -100,7 +100,7 @@ class Backing private constructor(
         fun backerCompletedAt(backerCompletedAt: DateTime?) = apply { this.backerCompletedAt = backerCompletedAt }
         fun cancelable(cancelable: Boolean?) = apply { this.cancelable = cancelable ?: false }
         fun completedAt(completedAt: DateTime?) = apply { this.completedAt = completedAt }
-        fun completedByBacker(completedByBacker: Boolean?) = apply { this.completedByBacker = completedByBacker }
+        fun completedByBacker(completedByBacker: Boolean?) = apply { this.completedByBacker = completedByBacker ?: false }
         fun id(id: Long?) = apply { this.id = id ?: 0L }
         fun location(location: Location?) = apply { this.location = location }
         fun locationId(locationId: Long?) = apply { this.locationId = locationId }

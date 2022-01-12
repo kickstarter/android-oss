@@ -1220,7 +1220,7 @@ interface PledgeFragmentViewModel {
                 .startWith(null as String?)
 
             val backingToUpdate = project
-                .filter { it.isBacking }
+                .filter { it.isBacking() }
                 .map { it.backing() }
                 .ofType(Backing::class.java)
                 .distinctUntilChanged()

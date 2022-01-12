@@ -84,13 +84,13 @@ interface FrequentlyAskedQuestionViewModel {
 
             project
                 .compose(Transformers.takeWhen(this.askQuestionButtonClicked))
-                .filter { !it.isBacking }
+                .filter { !it.isBacking() }
                 .compose(bindToLifecycle())
                 .subscribe(this.startComposeMessageActivity)
 
             project
                 .compose(Transformers.takeWhen(this.askQuestionButtonClicked))
-                .filter { it.isBacking }
+                .filter { it.isBacking() }
                 .compose(bindToLifecycle())
                 .subscribe(this.startMessageActivity)
         }

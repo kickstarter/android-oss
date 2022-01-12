@@ -727,7 +727,7 @@ interface ProjectOverviewViewModel {
             projectData
                 .compose(Transformers.takePairWhen(campaignClicked))
                 .map { it.first }
-                .filter { it.project().isLive && !it.project().isBacking }
+                .filter { it.project().isLive && !it.project().isBacking() }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.analyticEvents.trackCampaignDetailsCTAClicked(it)

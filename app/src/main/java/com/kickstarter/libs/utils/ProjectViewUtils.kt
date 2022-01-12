@@ -27,7 +27,7 @@ object ProjectViewUtils {
      */
     @ColorRes
     fun pledgeActionButtonColor(project: Project, currentUser: User?): Int {
-        return if (project.isBacking && project.isLive) {
+        return if (project.isBacking() && project.isLive) {
             R.color.button_pledge_manage
         } else if (!project.isLive || project.creator().id() == currentUser?.id()) {
             when {
@@ -46,15 +46,15 @@ object ProjectViewUtils {
     fun pledgeActionButtonText(project: Project, currentUser: User?, variant: OptimizelyExperiment.Variant?): Int {
         return if (project.creator().id() == currentUser?.id()) {
             R.string.View_your_rewards
-        } else if (!project.isBacking && project.isLive) {
+        } else if (!project.isBacking() && project.isLive) {
             when (variant) {
                 OptimizelyExperiment.Variant.VARIANT_1 -> R.string.See_the_rewards
                 OptimizelyExperiment.Variant.VARIANT_2 -> R.string.View_the_rewards
                 else -> R.string.Back_this_project
             }
-        } else if (project.isBacking && project.isLive) {
+        } else if (project.isBacking() && project.isLive) {
             R.string.Manage
-        } else if (project.isBacking && !project.isLive) {
+        } else if (project.isBacking() && !project.isLive) {
             when {
                 project.backing()?.let { backing -> backing.isErrored() } == true -> R.string.Manage
                 else -> R.string.View_your_pledge
@@ -68,11 +68,11 @@ object ProjectViewUtils {
     fun pledgeToolbarTitle(project: Project, currentUser: User?): Int {
         return if (project.creator().id() == currentUser?.id()) {
             R.string.View_your_rewards
-        } else if (!project.isBacking && project.isLive) {
+        } else if (!project.isBacking() && project.isLive) {
             R.string.Back_this_project
-        } else if (project.isBacking && project.isLive) {
+        } else if (project.isBacking() && project.isLive) {
             R.string.Manage_your_pledge
-        } else if (project.isBacking && !project.isLive) {
+        } else if (project.isBacking() && !project.isLive) {
             R.string.View_your_pledge
         } else {
             R.string.View_rewards

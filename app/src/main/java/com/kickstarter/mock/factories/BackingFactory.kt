@@ -13,18 +13,22 @@ import kotlin.jvm.JvmOverloads
 
 object BackingFactory {
 
+    @JvmStatic
+    @JvmOverloads
     fun backing(backer: User): Backing {
-        return backing(ProjectFactory.project(), backer, RewardFactory.reward())
+        return backing(project(), backer, RewardFactory.reward())
     }
 
+    @JvmStatic
+    @JvmOverloads
     fun backing(reward: Reward): Backing {
-        return backing(ProjectFactory.project(), user(), reward)
+        return backing(project(), user(), reward)
     }
 
     @JvmStatic
     @JvmOverloads
     fun backing(
-        project: Project = ProjectFactory.project(),
+        project: Project = project(),
         backer: User = user(),
         reward: Reward = RewardFactory.reward()
     ): Backing {
@@ -48,6 +52,8 @@ object BackingFactory {
             .build()
     }
 
+    @JvmStatic
+    @JvmOverloads
     fun backingNull(): Backing {
         return builder()
             .amount(0.0)
@@ -69,6 +75,8 @@ object BackingFactory {
             .build()
     }
 
+    @JvmStatic
+    @JvmOverloads
     fun backing(status: String): Backing {
         return backing()
             .toBuilder()

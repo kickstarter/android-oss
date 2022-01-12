@@ -235,8 +235,8 @@ interface CommentsViewModel {
                     commentsList.onNext(it)
                 }
 
-            this.insertNewCommentToList
-                .map { it.first }
+            this.commentToRefresh
+                .map { it.first.body() }
                 .distinctUntilChanged()
                 .withLatestFrom(projectOrUpdateComment) {
                     commentData, project ->

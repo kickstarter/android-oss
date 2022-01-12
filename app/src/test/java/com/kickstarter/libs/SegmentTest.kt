@@ -1370,7 +1370,6 @@ class SegmentTest : KSRobolectricTestCase() {
 
         assertSessionProperties(user)
         assertContextProperties()
-        assertProjectProperties(project)
         assertPageContextProperty(PROJECT.contextName)
         assertUserProperties(false)
 

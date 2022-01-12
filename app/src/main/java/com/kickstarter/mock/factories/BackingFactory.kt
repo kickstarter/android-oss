@@ -1,6 +1,7 @@
 package com.kickstarter.mock.factories
 
 import com.kickstarter.mock.factories.PaymentSourceFactory.Companion.visa
+import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.UserFactory.user
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Backing.Companion.builder
@@ -11,6 +12,7 @@ import org.joda.time.DateTime
 import kotlin.jvm.JvmOverloads
 
 object BackingFactory {
+
     fun backing(backer: User): Backing {
         return backing(ProjectFactory.project(), backer, RewardFactory.reward())
     }
@@ -19,6 +21,7 @@ object BackingFactory {
         return backing(ProjectFactory.project(), user(), reward)
     }
 
+    @JvmStatic
     @JvmOverloads
     fun backing(
         project: Project = ProjectFactory.project(),

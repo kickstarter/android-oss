@@ -1362,7 +1362,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val segment = AnalyticEvents(listOf(client))
 
         val reply = "comment"
-        segment.trackCommentReplyCTA(
+        segment.trackCommentCTA(
             project,
             reply
         )

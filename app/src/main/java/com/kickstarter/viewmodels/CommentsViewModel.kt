@@ -243,9 +243,9 @@ interface CommentsViewModel {
                     Pair(commentData, project)
                 }.subscribe {
                     if (it.second.second?.id() != null) {
-                        this.analyticEvents.trackCommentReplyCTA(it.second.first, it.first, it.second.second?.id()?.toString())
+                        this.analyticEvents.trackCommentCTA(it.second.first, it.first, it.second.second?.id()?.toString())
                     } else {
-                        this.analyticEvents.trackCommentReplyCTA(it.second.first, it.first)
+                        this.analyticEvents.trackCommentCTA(it.second.first, it.first)
                     }
                 }
 

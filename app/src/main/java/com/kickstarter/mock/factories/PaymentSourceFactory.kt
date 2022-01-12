@@ -8,7 +8,7 @@ class PaymentSourceFactory private constructor() {
     companion object {
         fun visa(): PaymentSource {
             return PaymentSource.builder()
-                .id(IdFactory.id().toString())
+                .id("id")
                 .expirationDate(Date())
                 .lastFour("4321")
                 .paymentType(CreditCardPaymentType.CREDIT_CARD.rawValue())

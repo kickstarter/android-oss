@@ -100,7 +100,7 @@ class RewardsFragmentViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
 
-            val defaultRewardClicked = Pair(Reward.builder().id(0).minimum(0.0).build(), false)
+            val defaultRewardClicked = Pair(Reward.builder().id(0L).minimum(0.0).build(), false)
 
             Observable
                 .combineLatest(this.rewardClicked.startWith(defaultRewardClicked), this.projectDataInput) { rewardPair, projectData ->

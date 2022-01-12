@@ -120,7 +120,7 @@ interface AddOnViewHolderViewModel {
                 .subscribe(this.descriptionForReward)
 
             reward
-                .filter { !it.isAddOn && RewardUtils.isNoReward(it) }
+                .filter { !it.isAddOn() && RewardUtils.isNoReward(it) }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.descriptionForNoReward.onNext(R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality)
@@ -129,7 +129,7 @@ interface AddOnViewHolderViewModel {
 
             reward
                 .filter { RewardUtils.isItemized(it) }
-                .map { if (it.isAddOn) it.addOnsItems() else it.rewardsItems() }
+                .map { if (it.isAddOn()) it.addOnsItems() else it.rewardsItems() }
                 .compose(bindToLifecycle())
                 .subscribe(this.rewardItems)
 
@@ -141,18 +141,18 @@ interface AddOnViewHolderViewModel {
                 .subscribe(this.rewardItemsAreGone)
 
             reward
-                .filter { !it.isAddOn && RewardUtils.isReward(it) }
+                .filter { !it.isAddOn() && RewardUtils.isReward(it) }
                 .map { it.title() }
                 .compose(bindToLifecycle())
                 .subscribe(this.titleForReward)
 
             reward
-                .map { !it.isAddOn }
+                .map { !it.isAddOn() }
                 .compose(bindToLifecycle())
                 .subscribe(this.titleIsGone)
 
             reward
-                .filter { it.isAddOn && it.quantity()?.let { q -> q > 0 } ?: false }
+                .filter { it.isAddOn() && it.quantity()?.let { q -> q > 0 } ?: false }
                 .map { reward -> parametersForTitle(reward) }
                 .compose(bindToLifecycle())
                 .subscribe(this.titleForAddOn)

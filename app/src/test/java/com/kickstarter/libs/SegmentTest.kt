@@ -1362,9 +1362,39 @@ class SegmentTest : KSRobolectricTestCase() {
         val segment = AnalyticEvents(listOf(client))
 
         val reply = "comment"
-        segment.trackCommentReplyCTA(
+        segment.trackCommentCTA(
             project,
             reply
+        )
+        this.segmentIdentify.assertValue(user)
+
+        assertSessionProperties(user)
+        assertContextProperties()
+        assertPageContextProperty(PROJECT.contextName)
+        assertUserProperties(false)
+
+        val expectedProperties = propertiesTest.value
+        assertEquals(reply, expectedProperties[COMMENT_BODY.contextName])
+        assertEquals(reply.length, expectedProperties[COMMENT_CHARACTER_COUNT.contextName])
+        assertNull(expectedProperties[PROJECT_UPDATE_ID.contextName])
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
+    }
+
+    @Test
+    fun testTrackRootCommentReplyCTA_Properties() {
+        val user = user()
+        val project = project()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedUser.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        val reply = "comment"
+        segment.trackRootCommentReplyCTA(
+            project,
+            reply,
+            "34879063"
         )
         this.segmentIdentify.assertValue(user)
 

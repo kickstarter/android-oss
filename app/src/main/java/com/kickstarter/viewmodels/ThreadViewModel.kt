@@ -250,6 +250,22 @@ interface ThreadViewModel {
                 .subscribe { this.onCommentReplies.onNext(it) }
 
             // - Update internal mutable list with the latest state after successful response
+
+            this.successfullyPostedCommentCardToRefresh
+                .map { it.first.body() }
+                .compose(Transformers.combineLatestPair(this.getProjectUpdateId()))
+                .compose(Transformers.combineLatestPair(project))
+                .compose(Transformers.combineLatestPair(comment))
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe {
+                    if (it.first.first.second != null) {
+                        this.analyticEvents.trackRootCommentReplyCTA(it.first.second, it.first.first.first, it.second.id().toString(), it.first.first.second)
+                    } else {
+                        this.analyticEvents.trackRootCommentReplyCTA(it.first.second, it.first.first.first, it.second.id().toString())
+                    }
+                }
+
             this.onCommentReplies
                 .compose(Transformers.combineLatestPair(this.successfullyPostedCommentCardToRefresh))
                 .map {
@@ -402,6 +418,9 @@ interface ThreadViewModel {
         private fun getCommentCardDataFromIntent() = intent()
             .map { it.getParcelableExtra(IntentKey.COMMENT_CARD_DATA) as CommentCardData? }
             .ofType(CommentCardData::class.java)
+
+        private fun getProjectUpdateId() = intent()
+            .map { it.getStringExtra(IntentKey.UPDATE_POST_ID) }
 
         override fun nextPage() = nextPage.onNext(null)
         override fun reloadRepliesPage() = onLoadingReplies.onNext(null)

@@ -1589,7 +1589,9 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testShowUpdatePledgeSuccess_whenUpdatingPayment() {
         val initialBackedProject = ProjectFactory.backedProject()
-        val refreshedProject = ProjectFactory.backedProject()
+        val refreshedProject = initialBackedProject.toBuilder()
+            .id(8L)
+            .build()
         val environment = environment()
             .toBuilder()
             .apolloClient(apiClientWithSuccessFetchingProjectFromSlug(refreshedProject))
@@ -1619,7 +1621,9 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testShowUpdatePledgeSuccess_whenUpdatingPledge() {
         val initialBackedProject = ProjectFactory.backedProject()
-        val refreshedProject = ProjectFactory.backedProject()
+        val refreshedProject = initialBackedProject.toBuilder()
+            .id(9L)
+            .build()
         val environment = environment()
             .toBuilder()
             .apolloClient(apiClientWithSuccessFetchingProjectFromSlug(refreshedProject))

@@ -26,7 +26,7 @@ class Project private constructor(
     private val currencyTrailingCode: Boolean,
     private val displayPrelaunch: Boolean?,
     private val featuredAt: DateTime?,
-    private val friends: List<User>,
+    private val friends: List<User>?,
     private val fxRate: Float,
     private val deadline: DateTime?,
     private val goal: Double,
@@ -37,7 +37,7 @@ class Project private constructor(
     private val launchedAt: DateTime?,
     private val location: Location?,
     private val name: String,
-    private val permissions: List<Permission>,
+    private val permissions: List<Permission>?,
     private val pledged: Double,
     private val photo: Photo?,
     private val prelaunchActivated: Boolean?,
@@ -76,7 +76,7 @@ class Project private constructor(
     fun currencyTrailingCode() = this.currencyTrailingCode
     fun displayPrelaunch() = this.displayPrelaunch
     fun featuredAt() = this.featuredAt
-    fun friends() = this.friends
+    fun friends() = this.friends ?: emptyList()
     fun fxRate() = this.fxRate
     fun deadline() = this.deadline
     fun goal() = this.goal
@@ -127,7 +127,7 @@ class Project private constructor(
         private var currencyTrailingCode: Boolean = false,
         private var displayPrelaunch: Boolean? = null,
         private var featuredAt: DateTime? = null,
-        private var friends: List<User> = emptyList(),
+        private var friends: List<User>? = emptyList(),
         private var fxRate: Float = 0f,
         private var deadline: DateTime? = null,
         private var goal: Double = 0.0,
@@ -138,7 +138,7 @@ class Project private constructor(
         private var launchedAt: DateTime? = null,
         private var location: Location? = null,
         private var name: String = "",
-        private var permissions: List<Permission> = emptyList(),
+        private var permissions: List<Permission>? = emptyList(),
         private var pledged: Double = 0.0,
         private var photo: Photo? = null,
         private var prelaunchActivated: Boolean? = null,

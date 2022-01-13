@@ -219,14 +219,14 @@ class CommentsActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                startThreadActivity(it.first, it.second)
+                startThreadActivity(it.first.first, it.first.second, it.second)
             }
 
         viewModel.outputs.startThreadActivityFromDeepLink()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                startThreadActivityFromDeepLink(it)
+                startThreadActivityFromDeepLink(it.first, it.second)
             }
     }
 
@@ -293,10 +293,11 @@ class CommentsActivity :
      * // TODO: Once the viewReplies UI is completed call this method with openKeyboard = false
      * // TODO: https://kickstarter.atlassian.net/browse/NT-1955
      */
-    private fun startThreadActivity(commentData: CommentCardData, openKeyboard: Boolean) {
+    private fun startThreadActivity(commentData: CommentCardData, openKeyboard: Boolean, projectUpdateId: String? = null) {
         val threadIntent = Intent(this, ThreadActivity::class.java).apply {
             putExtra(IntentKey.COMMENT_CARD_DATA, commentData)
             putExtra(IntentKey.REPLY_EXPAND, openKeyboard)
+            putExtra(IntentKey.UPDATE_POST_ID, projectUpdateId)
         }
 
         startActivity(threadIntent)
@@ -305,11 +306,12 @@ class CommentsActivity :
         }
     }
 
-    private fun startThreadActivityFromDeepLink(commentData: CommentCardData) {
+    private fun startThreadActivityFromDeepLink(commentData: CommentCardData, projectUpdateId: String? = null) {
         val threadIntent = Intent(this, ThreadActivity::class.java).apply {
             putExtra(IntentKey.COMMENT_CARD_DATA, commentData)
             putExtra(IntentKey.REPLY_EXPAND, false)
             putExtra(IntentKey.REPLY_SCROLL_BOTTOM, true)
+            putExtra(IntentKey.UPDATE_POST_ID, projectUpdateId)
         }
 
         startActivity(threadIntent)

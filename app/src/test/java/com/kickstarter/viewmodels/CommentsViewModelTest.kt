@@ -458,8 +458,8 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         vm.inputs.onReplyClicked(comment1, true)
         vm.outputs.startThreadActivity().take(0).subscribe {
-            assertEquals(it.first.comment, comment1)
-            assertTrue(it.second)
+            assertEquals(it.first.first.comment, comment1)
+            assertTrue(it.first.second)
         }
     }
 
@@ -825,8 +825,8 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.intent(Intent().putExtra(IntentKey.COMMENT, commentableId))
 
         vm.outputs.startThreadActivity().take(0).subscribe {
-            assertEquals(it.first.commentableId, commentableId)
-            assertFalse(it.second)
+            assertEquals(it.first.first.commentableId, commentableId)
+            assertFalse(it.first.second)
         }
     }
 }

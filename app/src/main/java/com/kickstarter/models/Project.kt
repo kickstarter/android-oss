@@ -37,7 +37,7 @@ class Project private constructor(
     private val launchedAt: DateTime?,
     private val location: Location?,
     private val name: String,
-    private val permissions: List<Permission>?,
+    private val permissions: List<Permission?>?,
     private val pledged: Double,
     private val photo: Photo?,
     private val prelaunchActivated: Boolean?,
@@ -138,7 +138,7 @@ class Project private constructor(
         private var launchedAt: DateTime? = null,
         private var location: Location? = null,
         private var name: String = "",
-        private var permissions: List<Permission>? = emptyList(),
+        private var permissions: List<Permission?>? = null,
         private var pledged: Double = 0.0,
         private var photo: Photo? = null,
         private var prelaunchActivated: Boolean? = null,
@@ -189,7 +189,7 @@ class Project private constructor(
         fun launchedAt(launchedAt: DateTime?) = apply { this.launchedAt = launchedAt }
         fun location(location: Location?) = apply { this.location = location }
         fun name(name: String?) = apply { this.name = name ?: "" }
-        fun permissions(permissions: List<Permission>?) = apply { this.permissions = permissions ?: emptyList() }
+        fun permissions(permissions: List<Permission?>?) = apply { this.permissions = permissions?.filterNotNull() ?: emptyList() }
         fun pledged(pledged: Double?) = apply { this.pledged = pledged ?: 0.0 }
         fun photo(photo: Photo?) = apply { this.photo = photo }
         fun prelaunchActivated(prelaunchActivated: Boolean?) = apply { this.prelaunchActivated = prelaunchActivated }

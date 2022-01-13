@@ -160,8 +160,8 @@ fun isProjectNamePunctuated(name: String): Boolean = name.substring(name.length 
  */
 fun Project.metadataForProject(): ProjectMetadata? =
     when {
-        this.isBacking -> ProjectMetadata.BACKING
-        this.isStarred -> ProjectMetadata.SAVING
+        this.isBacking() -> ProjectMetadata.BACKING
+        this.isStarred() -> ProjectMetadata.SAVING
         this.isFeaturedToday -> ProjectMetadata.CATEGORY_FEATURED
         else -> null
     }
@@ -198,7 +198,7 @@ fun isUSUserViewingNonUSProject(userCountry: String, projectCountry: String): Bo
  * In order to update the fulfillment state for a project
  * the the user needs to be a backer, and the project successful
  */
-fun Project.canUpdateFulfillment() = isBacking && isSuccessful
+fun Project.canUpdateFulfillment() = isBacking() && isSuccessful
 
 enum class ProjectMetadata {
     BACKING, SAVING, CATEGORY_FEATURED

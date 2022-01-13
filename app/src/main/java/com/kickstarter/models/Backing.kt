@@ -180,10 +180,11 @@ class Backing private constructor(
                 amount() == other.amount() &&
                 backer() == other.backer() &&
                 backerNote() == other.backerNote() &&
-                backerNote() == other.backerNote() &&
-                backerNote() == other.backerNote() &&
                 backerName() == other.backerName() &&
                 backerUrl() == other.backerUrl() &&
+                backerId() == other.backerId() &&
+                backerCompletedAt() == other.backerCompletedAt() &&
+                cancelable() == other.cancelable() &&
                 completedAt() == other.completedAt() &&
                 completedByBacker() == other.completedByBacker() &&
                 location() == other.location() &&

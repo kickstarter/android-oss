@@ -1220,7 +1220,7 @@ interface PledgeFragmentViewModel {
                 .startWith(null as String?)
 
             val backingToUpdate = project
-                .filter { it.isBacking }
+                .filter { it.isBacking() }
                 .map { it.backing() }
                 .ofType(Backing::class.java)
                 .distinctUntilChanged()
@@ -1528,7 +1528,7 @@ interface PledgeFragmentViewModel {
         /**
          * If a user has selected addOns, we will know by checking field addOns from pledgeData input
          */
-        private fun hasSelectedAddOns(addOns: java.util.List<Reward>?): Boolean = addOns?.isNotEmpty() ?: false
+        private fun hasSelectedAddOns(addOns: List<Reward>?): Boolean = addOns?.isNotEmpty() ?: false
 
         /**
          * Determine if the user has backed addOns

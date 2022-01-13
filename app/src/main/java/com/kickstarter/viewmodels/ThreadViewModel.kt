@@ -411,7 +411,7 @@ interface ThreadViewModel {
         private fun getCommentComposerStatus(projectAndUser: Pair<Project, User?>) =
             when {
                 projectAndUser.second == null -> CommentComposerStatus.GONE
-                projectAndUser.first.isBacking || projectAndUser.first.userIsCreator(projectAndUser.second) -> CommentComposerStatus.ENABLED
+                projectAndUser.first.isBacking() || projectAndUser.first.userIsCreator(projectAndUser.second) -> CommentComposerStatus.ENABLED
                 else -> CommentComposerStatus.DISABLED
             }
 

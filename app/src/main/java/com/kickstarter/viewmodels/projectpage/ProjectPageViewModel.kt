@@ -469,7 +469,7 @@ interface ProjectPageViewModel {
                 .subscribe { this.analyticEvents.trackWatchProjectCTA(it) }
 
             projectSavedStatus
-                .filter { p -> p.isStarred && p.isLive && !p.isApproachingDeadline }
+                .filter { p -> p.isStarred() && p.isLive && !p.isApproachingDeadline }
                 .compose(ignoreValues())
                 .compose(bindToLifecycle())
                 .subscribe(this.showSavedPrompt)
@@ -626,7 +626,7 @@ interface ProjectPageViewModel {
             val projectData = Observable.combineLatest<RefTag, RefTag, Project, ProjectData>(refTag, cookieRefTag, currentProject) { refTagFromIntent, refTagFromCookie, project -> projectData(refTagFromIntent, refTagFromCookie, project) }
 
             projectData
-                .filter { it.project().hasRewards() && !it.project().isBacking }
+                .filter { it.project().hasRewards() && !it.project().isBacking() }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(this.updateFragments)
@@ -653,7 +653,7 @@ interface ProjectPageViewModel {
                 .subscribe { this.hideVideoPlayer.onNext(it) }
 
             val backedProject = currentProject
-                .filter { it.isBacking }
+                .filter { it.isBacking() }
 
             val backing = backedProject
                 .map { it.backing() }
@@ -665,7 +665,7 @@ interface ProjectPageViewModel {
                 .filter { it.project().hasRewards() }
                 .compose<Pair<ProjectData, Backing>>(combineLatestPair(backing))
                 .map {
-                    val updatedProject = if (it.first.project().isBacking)
+                    val updatedProject = if (it.first.project().isBacking())
                         it.first.project().toBuilder().backing(it.second).build()
                     else it.first.project()
 
@@ -726,20 +726,20 @@ interface ProjectPageViewModel {
                 .subscribe(this.revealRewardsFragment)
 
             currentProject
-                .map { it.isBacking && it.isLive || it.backing()?.isErrored() == true }
+                .map { it.isBacking() && it.isLive || it.backing()?.isErrored() == true }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(this.backingDetailsIsVisible)
 
             currentProject
-                .filter { it.isBacking }
+                .filter { it.isBacking() }
                 .map { if (it.backing()?.isErrored() == true) R.string.Payment_failure else R.string.Youre_a_backer }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(this.backingDetailsTitle)
 
             currentProject
-                .filter { it.isBacking }
+                .filter { it.isBacking() }
                 .map { backingDetailsSubtitle(it) }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
@@ -797,13 +797,13 @@ interface ProjectPageViewModel {
 
             this.fragmentStackCount
                 .compose<Pair<Int, Project>>(combineLatestPair(currentProject))
-                .map { if (it.second.isBacking) it.first > 4 else it.first > 3 }
+                .map { if (it.second.isBacking()) it.first > 4 else it.first > 3 }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(this.scrimIsVisible)
 
             currentProject
-                .map { p -> if (p.isStarred) R.drawable.icon__heart else R.drawable.icon__heart_outline }
+                .map { p -> if (p.isStarred()) R.drawable.icon__heart else R.drawable.icon__heart_outline }
                 .subscribe(this.heartDrawableId)
 
             currentProject
@@ -852,7 +852,7 @@ interface ProjectPageViewModel {
 
             fullProjectDataAndPledgeFlowContext
                 .compose<Pair<ProjectData, PledgeFlowContext?>>(takeWhen(this.nativeProjectActionButtonClicked))
-                .filter { it.first.project().isLive && !it.first.project().isBacking }
+                .filter { it.first.project().isLive && !it.first.project().isBacking() }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.analyticEvents.trackPledgeInitiateCTA(it.first)
@@ -878,7 +878,7 @@ interface ProjectPageViewModel {
             val project = projectAndFragmentStackCount.first
             val count = projectAndFragmentStackCount.second
             return when {
-                !project.isBacking || count.isNonZero() -> null
+                !project.isBacking() || count.isNonZero() -> null
                 project.isLive -> when {
                     project.backing()?.status() == Backing.STATUS_PREAUTH -> R.menu.manage_pledge_preauth
                     else -> R.menu.manage_pledge_live
@@ -894,7 +894,7 @@ interface ProjectPageViewModel {
         private fun pledgeFlowContext(project: Project, currentUser: User?): PledgeFlowContext? {
             return when {
                 project.userIsCreator(currentUser) -> null
-                project.isLive && !project.isBacking -> PledgeFlowContext.NEW_PLEDGE
+                project.isLive && !project.isBacking() -> PledgeFlowContext.NEW_PLEDGE
                 !project.isLive && project.backing()?.isErrored() ?: false -> PledgeFlowContext.FIX_ERRORED_PLEDGE
                 else -> null
             }

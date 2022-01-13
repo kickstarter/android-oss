@@ -23,6 +23,8 @@ import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
+import com.kickstarter.models.Urls
+import com.kickstarter.models.Web
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.CheckoutData
@@ -113,7 +115,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.showUpdatePledge().subscribe(this.showUpdatePledge)
         this.vm.outputs.showUpdatePledgeSuccess().subscribe(this.showUpdatePledgeSuccess)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
-        this.vm.outputs.projectData().map { pD -> pD.project().isStarred }.subscribe(this.savedTest)
+        this.vm.outputs.projectData().map { pD -> pD.project().isStarred() }.subscribe(this.savedTest)
         this.vm.outputs.startRootCommentsActivity().subscribe(this.startRootCommentsActivity)
         this.vm.outputs.startProjectUpdateActivity().subscribe(this.startProjectUpdateActivity)
         this.vm.outputs.startMessagesActivity().subscribe(this.startMessagesActivity)
@@ -470,7 +472,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val slug = "best-project-2k19"
         val projectUrl = "https://www.kck.str/projects/" + creator.id().toString() + "/" + slug
 
-        val webUrls = Project.Urls.Web.builder()
+        val webUrls = Web.builder()
             .project(projectUrl)
             .rewards("$projectUrl/rewards")
             .updates("$projectUrl/posts")
@@ -479,7 +481,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
             .toBuilder()
             .name("Best Project 2K19")
-            .urls(Project.Urls.builder().web(webUrls).build())
+            .urls(Urls.builder().web(webUrls).build())
             .build()
 
         setUpEnvironment(environment())
@@ -1469,7 +1471,9 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testShowUpdatePledgeSuccess_whenUpdatingPayment() {
         val initialBackedProject = ProjectFactory.backedProject()
-        val refreshedProject = ProjectFactory.backedProject()
+        val refreshedProject = initialBackedProject.toBuilder()
+            .id(9L)
+            .build()
         val environment = environment()
             .toBuilder()
             .apolloClient(apiClientWithSuccessFetchingProjectFromSlug(refreshedProject))
@@ -1499,7 +1503,9 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testShowUpdatePledgeSuccess_whenUpdatingPledge() {
         val initialBackedProject = ProjectFactory.backedProject()
-        val refreshedProject = ProjectFactory.backedProject()
+        val refreshedProject = initialBackedProject.toBuilder()
+            .id(9L)
+            .build()
         val environment = environment()
             .toBuilder()
             .apolloClient(apiClientWithSuccessFetchingProjectFromSlug(refreshedProject))

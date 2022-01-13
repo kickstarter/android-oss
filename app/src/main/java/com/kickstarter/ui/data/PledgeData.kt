@@ -4,7 +4,6 @@ import android.os.Parcelable
 import auto.parcel.AutoParcel
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
-import java.util.List
 
 @AutoParcel
 abstract class PledgeData : Parcelable {

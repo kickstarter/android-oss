@@ -85,8 +85,8 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
   public void testEmitsProjectStats() {
     final Project project = ProjectFactory.project()
       .toBuilder()
-      .pledged(100)
-      .goal(200)
+      .pledged(100.0)
+      .goal(200.0)
       .deadline(new DateTime().plusHours(24 * 10 + 1))
       .build();
 

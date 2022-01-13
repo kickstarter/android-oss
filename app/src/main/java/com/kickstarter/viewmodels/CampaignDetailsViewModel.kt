@@ -62,7 +62,7 @@ interface CampaignDetailsViewModel {
                 }
 
             projectData
-                .filter { it.project().isLive && !it.project().isBacking }
+                .filter { it.project().isLive && !it.project().isBacking() }
                 .compose<Pair<ProjectData, User?>>(combineLatestPair(this.currentUser.observable()))
                 .map { ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()) }
                 .map { this.optimizely.variant(OptimizelyExperiment.Key.CAMPAIGN_DETAILS, it) }
@@ -71,7 +71,7 @@ interface CampaignDetailsViewModel {
                 .subscribe(this.pledgeContainerIsVisible)
 
             projectData
-                .filter { !it.project().isLive || it.project().isBacking }
+                .filter { !it.project().isLive || it.project().isBacking() }
                 .map { false }
                 .compose(bindToLifecycle())
                 .subscribe(this.pledgeContainerIsVisible)

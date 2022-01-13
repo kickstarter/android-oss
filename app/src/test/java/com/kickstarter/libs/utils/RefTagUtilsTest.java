@@ -8,6 +8,8 @@ import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.libs.MockSharedPreferences;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.Urls;
+import com.kickstarter.models.Web;
 
 import org.junit.Test;
 
@@ -60,8 +62,8 @@ public final class RefTagUtilsTest extends KSRobolectricTestCase {
 
   @Test
   public void testBuildCookieForRefTagAndProject_WithMalformedUrl() {
-    final Project.Urls.Web webUrls = ProjectFactory.project().urls().web().toBuilder().project("such:\\bad^<data").build();
-    final Project.Urls urls = ProjectFactory.project().urls().toBuilder().web(webUrls).build();
+    final Web webUrls = ProjectFactory.project().urls().web().toBuilder().project("such:\\bad^<data").build();
+    final Urls urls = ProjectFactory.project().urls().toBuilder().web(webUrls).build();
     final Project project = ProjectFactory.project().toBuilder().urls(urls).build();
 
     final RefTag refTag = RefTag.category();

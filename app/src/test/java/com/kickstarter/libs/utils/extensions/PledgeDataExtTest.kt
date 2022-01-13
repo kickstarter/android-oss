@@ -13,7 +13,7 @@ class PledgeDataExtTest : TestCase() {
     fun testAddOnsCountTotalEmpty() {
         val project = ProjectFactory.project()
         val rw = RewardFactory.reward()
-        val addOns = emptyList<Reward>() as java.util.List<Reward>
+        val addOns = emptyList<Reward>()
         val pledgeData = with(
             PledgeFlowContext.NEW_PLEDGE,
             project(project), rw, addOns, null
@@ -27,7 +27,7 @@ class PledgeDataExtTest : TestCase() {
         val project = ProjectFactory.project()
         val rw = RewardFactory.rewardHasAddOns()
         val addOn = RewardFactory.addOnSingle()
-        val addOns = listOf(addOn, addOn) as java.util.List<Reward>
+        val addOns = listOf(addOn, addOn)
         val pledgeData = with(
             PledgeFlowContext.NEW_PLEDGE,
             project(project), rw, addOns, null
@@ -41,7 +41,7 @@ class PledgeDataExtTest : TestCase() {
         val project = ProjectFactory.project()
         val rw = RewardFactory.rewardHasAddOns()
         val addOn = RewardFactory.addOnMultiple()
-        val addOns = listOf(addOn, addOn) as java.util.List<Reward>
+        val addOns = listOf(addOn, addOn)
         val pledgeData = with(
             PledgeFlowContext.NEW_PLEDGE,
             project(project), rw, addOns, null
@@ -56,7 +56,7 @@ class PledgeDataExtTest : TestCase() {
         val rw = RewardFactory.rewardHasAddOns()
         val addOnSingle = RewardFactory.addOnSingle()
         val addOnMultiple = RewardFactory.addOnMultiple()
-        val addOns = listOf(addOnSingle, addOnMultiple) as java.util.List<Reward>
+        val addOns = listOf(addOnSingle, addOnMultiple)
         val pledgeData = with(
             PledgeFlowContext.NEW_PLEDGE,
             project(project), rw, addOns, null
@@ -71,7 +71,7 @@ class PledgeDataExtTest : TestCase() {
         val rw = RewardFactory.rewardHasAddOns()
         val addOnSingle = RewardFactory.addOnSingle().toBuilder().minimum(30.0).build()
         val addOnMultiple = RewardFactory.addOnMultiple().toBuilder().minimum(5.0).build()
-        val addOns = listOf(addOnSingle, addOnMultiple) as java.util.List<Reward>
+        val addOns = listOf(addOnSingle, addOnMultiple)
         val pledgeData = with(
             PledgeFlowContext.NEW_PLEDGE,
             project(project), rw, addOns, null
@@ -88,7 +88,7 @@ class PledgeDataExtTest : TestCase() {
         val addOnSingle = RewardFactory.addOnSingle().toBuilder().minimum(30.0).build()
         // - quantity = 5 on addOnMultiple
         val addOnMultiple = RewardFactory.addOnMultiple().toBuilder().minimum(5.0).build()
-        val addOns = listOf(addOnSingle, addOnMultiple) as java.util.List<Reward>
+        val addOns = listOf(addOnSingle, addOnMultiple)
         val pledgeData = with(
             PledgeFlowContext.NEW_PLEDGE,
             project(project), rw, addOns, null
@@ -101,7 +101,7 @@ class PledgeDataExtTest : TestCase() {
     fun testRewardCost_whenUSDProject() {
         val project = ProjectFactory.project()
         val rw = RewardFactory.rewardHasAddOns()
-        val addOns = emptyList<Reward>() as java.util.List<Reward>
+        val addOns = emptyList<Reward>()
         val pledgeData = with(
             PledgeFlowContext.NEW_PLEDGE,
             project(project), rw, addOns, null
@@ -113,7 +113,7 @@ class PledgeDataExtTest : TestCase() {
     fun testRewardCost_whenCAProject() {
         val project = ProjectFactory.caProject()
         val rw = RewardFactory.rewardHasAddOns()
-        val addOns = emptyList<Reward>() as java.util.List<Reward>
+        val addOns = emptyList<Reward>()
         val pledgeData = with(
             PledgeFlowContext.NEW_PLEDGE,
             project(project), rw, addOns, null

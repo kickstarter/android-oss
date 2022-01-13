@@ -1709,8 +1709,8 @@ class SegmentTest : KSRobolectricTestCase() {
             .category(CategoryFactory.ceramicsCategory())
             .build()
 
-    private fun listOfAddons(): java.util.List<Reward>? =
-        listOf(RewardFactory.addOnSingle().toBuilder().minimum(10.06).build(), RewardFactory.addOnMultiple().toBuilder().minimum(20.13).build()) as java.util.List<Reward>?
+    private fun listOfAddons(): List<Reward>? =
+        listOf(RewardFactory.addOnSingle().toBuilder().minimum(10.06).build(), RewardFactory.addOnMultiple().toBuilder().minimum(20.13).build())
 
     private fun listOfTags(): List<String> = listOf("tag1", "tag2", "tag3")
 }

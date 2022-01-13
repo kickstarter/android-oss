@@ -8,7 +8,8 @@ import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.models.Project
+import com.kickstarter.models.Urls
+import com.kickstarter.models.Web
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.ProjectData
 import org.junit.Test
@@ -94,14 +95,14 @@ class CampaignDetailsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testUrl() {
         val projectUrl = "https://www.kickstarter.com/projects/creator/slug"
-        val web = Project.Urls.Web.builder()
+        val web = Web.builder()
             .project(projectUrl)
             .rewards("$projectUrl/rewards")
             .updates("$projectUrl/posts")
             .build()
         val project = ProjectFactory.project()
             .toBuilder()
-            .urls(Project.Urls.builder().web(web).build())
+            .urls(Urls.builder().web(web).build())
             .build()
 
         setUpEnvironment(environment(), ProjectDataFactory.project(project))

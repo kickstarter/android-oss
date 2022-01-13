@@ -5,6 +5,7 @@ import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.factories.AvatarFactory
 import com.kickstarter.mock.factories.CommentCardDataFactory
 import com.kickstarter.mock.factories.CommentEnvelopeFactory
@@ -394,6 +395,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
             assertTrue(newList[2].comment?.body() == commentCardData2.comment?.body())
             assertTrue(newList[2].commentCardState == commentCardData2.commentCardState)
         }
+        segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -517,6 +519,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
             assertTrue(newList[2].comment?.body() == commentCardData2.comment?.body())
             assertTrue(newList[2].commentCardState == commentCardData2.commentCardState)
         }
+        segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
 
     @Test

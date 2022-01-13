@@ -301,7 +301,7 @@ interface RewardViewHolderViewModel {
                 .subscribe(this.showFragment)
 
             this.projectDataAndReward
-                .filter { it.first.project().isLive && !it.first.project().isBacking }
+                .filter { it.first.project().isLive && !it.first.project().isBacking() }
                 .compose<Pair<ProjectData, Reward>>(takeWhen(this.rewardClicked))
                 .map { PledgeData.with(PledgeFlowContext.NEW_PLEDGE, it.first, it.second) }
                 .compose(bindToLifecycle())

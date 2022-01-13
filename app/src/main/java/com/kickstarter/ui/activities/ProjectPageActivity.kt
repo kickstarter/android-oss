@@ -796,7 +796,7 @@ class ProjectPageActivity :
             if (rewardsFragment != null && backingFragment != null) {
                 when {
                     supportFragmentManager.backStackEntryCount == 0 -> when {
-                        projectData.project().isBacking -> if (!rewardsFragment.isHidden) {
+                        projectData.project().isBacking() -> if (!rewardsFragment.isHidden) {
                             supportFragmentManager.beginTransaction()
                                 .show(backingFragment)
                                 .hide(rewardsFragment)

@@ -1220,7 +1220,7 @@ interface PledgeFragmentViewModel {
                 .startWith(null as String?)
 
             val backingToUpdate = project
-                .filter { it.isBacking }
+                .filter { it.isBacking() }
                 .map { it.backing() }
                 .ofType(Backing::class.java)
                 .distinctUntilChanged()
@@ -1528,7 +1528,7 @@ interface PledgeFragmentViewModel {
         /**
          * If a user has selected addOns, we will know by checking field addOns from pledgeData input
          */
-        private fun hasSelectedAddOns(addOns: java.util.List<Reward>?): Boolean = addOns?.isNotEmpty() ?: false
+        private fun hasSelectedAddOns(addOns: List<Reward>?): Boolean = addOns?.isNotEmpty() ?: false
 
         /**
          * Determine if the user has backed addOns
@@ -1544,7 +1544,7 @@ interface PledgeFragmentViewModel {
         private fun getPledgeAmount(rewards: List<Reward>): Double {
             var totalPledgeAmount = 0.0
             rewards.forEach {
-                totalPledgeAmount += if (RewardUtils.isNoReward(it) && !it.isAddOn) it.minimum() // - Cost of the selected Reward
+                totalPledgeAmount += if (RewardUtils.isNoReward(it) && !it.isAddOn()) it.minimum() // - Cost of the selected Reward
                 else it.quantity()?.let { q -> (q * it.minimum()) } ?: it.minimum() // - Cost of each addOn
             }
             return totalPledgeAmount
@@ -1595,7 +1595,7 @@ interface PledgeFragmentViewModel {
         private fun shippingCostForAddOns(listRw: List<Reward>, selectedRule: ShippingRule): Double {
             var shippingCost = 0.0
             listRw.filter {
-                it.isAddOn
+                it.isAddOn()
             }.map { rw ->
                 rw.shippingRules()?.filter { rule ->
                     rule.location().id() == selectedRule.location().id()
@@ -1624,7 +1624,7 @@ interface PledgeFragmentViewModel {
             val mutableList = mutableListOf<Reward>()
 
             flattenedList.map {
-                if (!it.isAddOn) mutableList.add(it)
+                if (!it.isAddOn()) mutableList.add(it)
                 else {
                     val q = it.quantity() ?: 1
                     for (i in 1..q) {

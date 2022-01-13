@@ -40,8 +40,10 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
+import com.kickstarter.models.Urls
 import com.kickstarter.models.User
 import com.kickstarter.models.Video
+import com.kickstarter.models.Web
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
@@ -1116,11 +1118,11 @@ private fun projectTransformer(projectFragment: FullProject?): Project {
     }
     val updatesCount = projectFragment?.posts()?.fragments()?.updates()?.totalCount()
     val url = projectFragment?.url()
-    val urlsWeb = Project.Urls.Web.builder()
+    val urlsWeb = Web.builder()
         .project(url)
         .rewards("$url/rewards")
         .build()
-    val urls = Project.Urls.builder().web(urlsWeb).build()
+    val urls = Urls.builder().web(urlsWeb).build()
     val video = if (projectFragment?.video()?.fragments()?.video() != null) {
         videoTransformer(projectFragment.video()?.fragments()?.video())
     } else null

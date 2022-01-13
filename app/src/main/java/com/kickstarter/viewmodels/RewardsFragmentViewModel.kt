@@ -89,7 +89,7 @@ class RewardsFragmentViewModel {
                 .map { it.project() }
 
             project
-                .filter { it.isBacking }
+                .filter { it.isBacking() }
                 .map { indexOfBackedReward(it) }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
@@ -100,7 +100,7 @@ class RewardsFragmentViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
 
-            val defaultRewardClicked = Pair(Reward.builder().id(0).minimum(0.0).build(), false)
+            val defaultRewardClicked = Pair(Reward.builder().id(0L).minimum(0.0).build(), false)
 
             Observable
                 .combineLatest(this.rewardClicked.startWith(defaultRewardClicked), this.projectDataInput) { rewardPair, projectData ->
@@ -205,7 +205,7 @@ class RewardsFragmentViewModel {
         }
 
         private fun pledgeDataAndPledgeReason(projectData: ProjectData, reward: Reward): Pair<PledgeData, PledgeReason> {
-            val pledgeReason = if (projectData.project().isBacking) PledgeReason.UPDATE_REWARD else PledgeReason.PLEDGE
+            val pledgeReason = if (projectData.project().isBacking()) PledgeReason.UPDATE_REWARD else PledgeReason.PLEDGE
             val pledgeData = PledgeData.with(PledgeFlowContext.forPledgeReason(pledgeReason), projectData, reward)
             return Pair(pledgeData, pledgeReason)
         }

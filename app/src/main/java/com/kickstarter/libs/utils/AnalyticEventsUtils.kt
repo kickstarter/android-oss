@@ -267,8 +267,8 @@ object AnalyticEventsUtils {
             put("static_usd_rate", project.staticUsdRate())
             project.updatesCount()?.let { put("updates_count", it) }
             put("user_is_project_creator", project.userIsCreator(loggedInUser))
-            put("user_is_backer", project.isBacking)
-            put("user_has_watched", project.isStarred)
+            put("user_is_backer", project.isBacking())
+            put("user_has_watched", project.isStarred())
 
             val hasAddOns = project.rewards()?.find {
                 it.hasAddons()

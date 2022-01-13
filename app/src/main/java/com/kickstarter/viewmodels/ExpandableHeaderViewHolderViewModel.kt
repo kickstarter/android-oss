@@ -46,13 +46,13 @@ interface ExpandableHeaderViewHolderViewModel {
                 .map { it.first }
 
             reward
-                .filter { it.isAddOn && ObjectUtils.isNotNull(it.quantity()) && it.quantity()?.let { q -> q > 0 } ?: false }
+                .filter { it.isAddOn() && ObjectUtils.isNotNull(it.quantity()) && it.quantity()?.let { q -> q > 0 } ?: false }
                 .map { it.quantity().toString() + " X " + it.title() }
                 .compose(bindToLifecycle())
                 .subscribe(this.titleForSummary)
 
             reward
-                .filter { !it.isAddOn }
+                .filter { !it.isAddOn() }
                 .map { it.title() }
                 .compose(bindToLifecycle())
                 .subscribe(this.titleForSummary)

@@ -410,11 +410,11 @@ class BackingAddOnsFragmentViewModel {
             if (finalList.isNotEmpty()) {
                 if (isShippable(rw) && !isDigital(rw)) {
                     pledgeData.toBuilder()
-                        .addOns(finalList as java.util.List<Reward>)
+                        .addOns(finalList)
                         .shippingRule(shippingRule)
                         .build()
                 } else pledgeData.toBuilder()
-                    .addOns(finalList as java.util.List<Reward>)
+                    .addOns(finalList)
                     .build()
             } else {
                 pledgeData.toBuilder()
@@ -453,7 +453,7 @@ class BackingAddOnsFragmentViewModel {
          */
         private fun filterOutUnAvailableOrEndedExceptIfBacked(combinedList: List<Reward>): List<Reward> {
             return combinedList.filter { addOn ->
-                addOn.quantity()?.let { it > 0 } ?: (addOn.isAvailable && RewardUtils.isValidTimeRange(addOn))
+                addOn.quantity()?.let { it > 0 } ?: (addOn.isAvailable() && RewardUtils.isValidTimeRange(addOn))
             }
         }
 

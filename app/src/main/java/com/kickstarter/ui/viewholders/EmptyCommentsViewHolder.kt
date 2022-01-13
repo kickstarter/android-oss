@@ -29,7 +29,7 @@ class EmptyCommentsViewHolder(private val binding: EmptyCommentsLayoutBinding, p
             user == null -> {
                 bindView(View.VISIBLE, R.string.project_comments_empty_state_logged_out_message_log_in)
             }
-            project?.isBacking == true -> {
+            project?.isBacking() == true -> {
                 bindView(View.GONE, R.string.project_comments_empty_state_backer_message)
             }
             else -> {

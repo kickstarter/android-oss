@@ -10,8 +10,8 @@ import org.junit.Test;
 public class ProjectTest extends KSRobolectricTestCase {
   Project projectWithSecureUrl() {
     final String projectUrl = "https://www.kickstarter.com/projects/foo/bar";
-    final Project.Urls urls = Project.Urls.builder()
-      .web(Project.Urls.Web.builder().project(projectUrl).rewards(projectUrl + "/rewards").build())
+    final Urls urls = Urls.builder()
+      .web(Web.builder().project(projectUrl).rewards(projectUrl + "/rewards").build())
       .build();
 
     return ProjectFactory.project().toBuilder().urls(urls).build();
@@ -21,8 +21,8 @@ public class ProjectTest extends KSRobolectricTestCase {
   public void testSecureWebProjectUrl() {
     final String projectUrl = "http://www.kickstarter.com/projects/foo/bar";
 
-    final Project.Urls urls = Project.Urls.builder()
-      .web(Project.Urls.Web.builder().project(projectUrl).rewards(projectUrl + "/rewards").build())
+    final Urls urls = Urls.builder()
+      .web(Web.builder().project(projectUrl).rewards(projectUrl + "/rewards").build())
       .build();
 
     final Project project = ProjectFactory.project().toBuilder().urls(urls).build();

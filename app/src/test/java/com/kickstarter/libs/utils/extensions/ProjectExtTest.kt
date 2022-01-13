@@ -297,4 +297,56 @@ class ProjectExtTest : KSRobolectricTestCase() {
             )
         )
     }
+
+    @Test
+    fun testEqualProjects_backing_false() {
+        val backedProject = ProjectFactory.backedProject()
+        val backing = backedProject.backing()?.toBuilder()?.backer(UserFactory.canadianUser())?.build()
+        val secondProject = ProjectFactory.backedProject()
+            .toBuilder()
+            .backing(backing)
+            .build()
+
+        assertFalse(backedProject == secondProject)
+        assertFalse(backedProject.backing() == secondProject.backing())
+    }
+
+    @Test
+    fun testEqualProjects_backing_true() {
+        val backedProject = ProjectFactory.backedProject()
+        val secondProject = backedProject
+
+        assertTrue(backedProject == secondProject)
+        assertTrue(backedProject.backing() == secondProject.backing())
+    }
+
+    @Test
+    fun testEqualProjects_creator_false() {
+        val project = ProjectFactory.project()
+        val creator = project.creator().toBuilder().id(9L).build()
+        val secondProject = ProjectFactory.project()
+            .toBuilder()
+            .creator(creator)
+            .build()
+
+        assertFalse(project == secondProject)
+        assertFalse(project.creator() == secondProject.creator())
+    }
+
+    @Test
+    fun testEqualProjects_creator_true() {
+        val project = ProjectFactory.project()
+        val secondProject = project
+
+        assertTrue(project == secondProject)
+        assertTrue(project.creator() == secondProject.creator())
+    }
+
+    @Test
+    fun testEqualProjects_deadline_true() {
+        val project = ProjectFactory.project()
+        val secondProject = project
+
+        assertTrue(project.deadline() == secondProject.deadline())
+    }
 }

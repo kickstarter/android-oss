@@ -4,10 +4,13 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.models.OptimizelyEnvironment
+import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_BODY
+import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_CHARACTER_COUNT
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
+import com.kickstarter.libs.utils.ContextPropertyKeyName.PROJECT_UPDATE_ID
 import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
@@ -1349,6 +1352,65 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testTrackCommentReplyCTA_Properties() {
+        val user = user()
+        val project = project()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedUser.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        val reply = "comment"
+        segment.trackCommentCTA(
+            project,
+            reply
+        )
+        this.segmentIdentify.assertValue(user)
+
+        assertSessionProperties(user)
+        assertContextProperties()
+        assertPageContextProperty(PROJECT.contextName)
+        assertUserProperties(false)
+
+        val expectedProperties = propertiesTest.value
+        assertEquals(reply, expectedProperties[COMMENT_BODY.contextName])
+        assertEquals(reply.length, expectedProperties[COMMENT_CHARACTER_COUNT.contextName])
+        assertNull(expectedProperties[PROJECT_UPDATE_ID.contextName])
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
+    }
+
+    @Test
+    fun testTrackRootCommentReplyCTA_Properties() {
+        val user = user()
+        val project = project()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedUser.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        val reply = "comment"
+        segment.trackRootCommentReplyCTA(
+            project,
+            reply,
+            "34879063"
+        )
+        this.segmentIdentify.assertValue(user)
+
+        assertSessionProperties(user)
+        assertContextProperties()
+        assertPageContextProperty(PROJECT.contextName)
+        assertUserProperties(false)
+
+        val expectedProperties = propertiesTest.value
+        assertEquals(reply, expectedProperties[COMMENT_BODY.contextName])
+        assertEquals(reply.length, expectedProperties[COMMENT_CHARACTER_COUNT.contextName])
+        assertNull(expectedProperties[PROJECT_UPDATE_ID.contextName])
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
+    }
+
+    @Test
     fun testLoginOrSignUpPageViewed_Properties() {
 
         val client = client(null)
@@ -1677,8 +1739,8 @@ class SegmentTest : KSRobolectricTestCase() {
             .category(CategoryFactory.ceramicsCategory())
             .build()
 
-    private fun listOfAddons(): java.util.List<Reward>? =
-        listOf(RewardFactory.addOnSingle().toBuilder().minimum(10.06).build(), RewardFactory.addOnMultiple().toBuilder().minimum(20.13).build()) as java.util.List<Reward>?
+    private fun listOfAddons(): List<Reward>? =
+        listOf(RewardFactory.addOnSingle().toBuilder().minimum(10.06).build(), RewardFactory.addOnMultiple().toBuilder().minimum(20.13).build())
 
     private fun listOfTags(): List<String> = listOf("tag1", "tag2", "tag3")
 }

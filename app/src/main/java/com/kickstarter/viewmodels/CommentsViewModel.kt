@@ -60,8 +60,8 @@ interface CommentsViewModel {
         fun initialLoadCommentsError(): Observable<Throwable>
         fun paginateCommentsError(): Observable<Throwable>
         fun pullToRefreshError(): Observable<Throwable>
-        fun startThreadActivity(): Observable<Pair<CommentCardData, Boolean>>
-        fun startThreadActivityFromDeepLink(): Observable<CommentCardData>
+        fun startThreadActivity(): Observable<Pair<Pair<CommentCardData, Boolean>, String?>>
+        fun startThreadActivityFromDeepLink(): Observable<Pair<CommentCardData, String?>>
         fun hasPendingComments(): Observable<Pair<Boolean, Boolean>>
 
         /** Emits a boolean indicating whether comments are being fetched from the API.  */
@@ -104,8 +104,8 @@ interface CommentsViewModel {
         private val displayInitialError = BehaviorSubject.create<Boolean>()
         private val displayPaginationError = BehaviorSubject.create<Boolean>()
         private val commentToRefresh = PublishSubject.create<Pair<Comment, Int>>()
-        private val startThreadActivity = BehaviorSubject.create<Pair<CommentCardData, Boolean>>()
-        private val startThreadActivityFromDeepLink = BehaviorSubject.create<CommentCardData>()
+        private val startThreadActivity = BehaviorSubject.create<Pair<Pair<CommentCardData, Boolean>, String?>>()
+        private val startThreadActivityFromDeepLink = BehaviorSubject.create<Pair<CommentCardData, String?>>()
         private val hasPendingComments = BehaviorSubject.create<Pair<Boolean, Boolean>>()
 
         // - Error observables to handle the 3 different use cases
@@ -198,8 +198,13 @@ interface CommentsViewModel {
                         .commentCardState(it.first.cardStatus())
                         .commentableId(it.second)
                         .build()
-                }.compose(bindToLifecycle())
-                .subscribe { this.startThreadActivityFromDeepLink.onNext(it) }
+                }.withLatestFrom(projectOrUpdateComment) { commentData, projectOrUpdate ->
+                    Pair(commentData, projectOrUpdate)
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.startThreadActivityFromDeepLink.onNext(Pair(it.first, it.second.second?.id()?.toString()))
+                }
 
             this.insertNewCommentToList
                 .distinctUntilChanged()
@@ -233,6 +238,20 @@ interface CommentsViewModel {
                 }.compose(bindToLifecycle())
                 .subscribe {
                     commentsList.onNext(it)
+                }
+
+            this.commentToRefresh
+                .map { it.first.body() }
+                .distinctUntilChanged()
+                .withLatestFrom(projectOrUpdateComment) {
+                    commentData, project ->
+                    Pair(commentData, project)
+                }.subscribe {
+                    if (it.second.second?.id() != null) {
+                        this.analyticEvents.trackCommentCTA(it.second.first, it.first, it.second.second?.id()?.toString())
+                    } else {
+                        this.analyticEvents.trackCommentCTA(it.second.first, it.first)
+                    }
                 }
 
             this.onShowGuideLinesLinkClicked
@@ -280,16 +299,24 @@ interface CommentsViewModel {
                 .compose(bindToLifecycle())
                 .subscribe { this.closeCommentsPage.onNext(it) }
 
-            commentsList
+            val subscribe = commentsList
+                .withLatestFrom(projectOrUpdateComment) { commentData, projectOrUpdate ->
+                    Pair(commentData, projectOrUpdate)
+                }
                 .compose(takePairWhen(onReplyClicked))
                 .compose(bindToLifecycle())
                 .subscribe { pair ->
 
-                    val cardData = pair.first.first { it.comment?.id() == pair.second.first.id() }
+                    val cardData =
+                        pair.first.first.first { it.comment?.id() == pair.second.first.id() }
+                    val threadData = Pair(
+                        cardData,
+                        pair.second.second
+                    )
                     this.startThreadActivity.onNext(
                         Pair(
-                            cardData,
-                            pair.second.second
+                            threadData,
+                            pair.first.second.second?.id()?.toString()
                         )
                     )
                 }
@@ -492,8 +519,8 @@ interface CommentsViewModel {
 
         override fun setEmptyState(): Observable<Boolean> = setEmptyState
 
-        override fun startThreadActivity(): Observable<Pair<CommentCardData, Boolean>> = this.startThreadActivity
-        override fun startThreadActivityFromDeepLink(): Observable<CommentCardData> = this.startThreadActivityFromDeepLink
+        override fun startThreadActivity(): Observable<Pair<Pair<CommentCardData, Boolean>, String?>> = this.startThreadActivity
+        override fun startThreadActivityFromDeepLink(): Observable<Pair<CommentCardData, String?>> = this.startThreadActivityFromDeepLink
 
         override fun isFetchingComments(): Observable<Boolean> = this.isFetchingComments
 

@@ -94,7 +94,7 @@ interface UpdateCardViewHolderViewModel {
                 .compose<Pair<Pair<Project, Update>, Boolean>>(Transformers.combineLatestPair(isCreator))
                 .map {
                     when {
-                        it.first.first.isBacking || it.second -> false
+                        it.first.first.isBacking() || it.second -> false
                         else -> (it.first.second.isPublic ?: false).negate()
                     }
                 }

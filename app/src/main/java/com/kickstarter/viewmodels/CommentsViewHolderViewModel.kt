@@ -403,7 +403,7 @@ interface CommentsViewHolderViewModel {
             user: User?
         ) =
             commentCardData.project?.let {
-                (it.isBacking || it.userIsCreator(user)) &&
+                (it.isBacking() || it.userIsCreator(user)) &&
                     (
                         commentCardData.commentCardState == CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus ||
                             commentCardData.commentCardState == CommentCardStatus.COMMENT_WITH_REPLIES.commentCardStatus

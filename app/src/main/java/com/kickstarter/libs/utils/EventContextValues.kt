@@ -42,6 +42,7 @@ class EventContextValues {
         LOGIN_SUBMIT("log_in_submit"),
         SIGN_UP_SUBMIT("sign_up_submit"),
         SIGN_UP_INITIATE("sign_up_initiate"),
+        COMMENT_POST("comment_post"),
     }
 
     /**
@@ -119,6 +120,7 @@ class EventContextValues {
         SEARCH_RESULTS("search_results"),
         GLOBAL_NAV("global_nav"),
         CURATED("curated"),
+        COMMENTS("comments")
     }
 
     /**
@@ -162,7 +164,9 @@ class EventContextValues {
         WATCH("watch"),
         UNWATCH("unwatch"),
         FACEBOOK("facebook"),
-        RESULTS("results")
+        RESULTS("results"),
+        ROOT("root"),
+        REPLY("reply")
     }
 
     /**

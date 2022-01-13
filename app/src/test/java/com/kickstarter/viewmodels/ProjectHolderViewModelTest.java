@@ -415,8 +415,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     final Project project = ProjectFactory.project()
       .toBuilder()
       .state(Project.STATE_LIVE)
-      .goal(100f)
-      .pledged(500f)
+      .goal(100.0)
+      .pledged(500.0)
       .build();
 
     setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
@@ -431,8 +431,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .toBuilder()
       .deadline(DateTime.now())
       .state(Project.STATE_LIVE)
-      .goal(100f)
-      .pledged(50f)
+      .goal(100.0)
+      .pledged(50.0)
       .build();
 
     setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));

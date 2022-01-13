@@ -206,7 +206,7 @@ interface BackingFragmentViewModel {
                 .subscribe(this.showUpdatePledgeSuccess)
 
             this.projectDataInput
-                .filter { it.project().isBacking || it.project().userIsCreator(it.user()) }
+                .filter { it.project().isBacking() || it.project().userIsCreator(it.user()) }
                 .map { projectData -> joinProjectDataAndReward(projectData) }
                 .compose(bindToLifecycle())
                 .subscribe(this.projectDataAndReward)

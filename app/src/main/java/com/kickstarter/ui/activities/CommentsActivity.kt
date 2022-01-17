@@ -331,6 +331,11 @@ class CommentsActivity :
         this.viewModel = null
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.onResumeActivity()
+    }
+
     companion object {
         const val COMMENT_KICKSTARTER_GUIDELINES = "help/community"
     }

@@ -554,7 +554,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             assertTrue(newList[2].comment?.body() == commentCardData2.comment?.body())
             assertTrue(newList[2].commentCardState == commentCardData2.commentCardState)
         }
-        segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -647,7 +647,10 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.inputs.checkIfThereAnyPendingComments(false)
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
         this.hasPendingComments.assertValues(Pair(false, false), Pair(true, false), Pair(false, false))
-        segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+
+        vm.onResumeActivity()
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -740,7 +743,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.inputs.checkIfThereAnyPendingComments(true)
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
         this.hasPendingComments.assertValues(Pair(false, true), Pair(true, true), Pair(false, true))
-        segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -819,14 +822,24 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             .build()
 
         val vm = CommentsViewModel.ViewModel(env)
+
         // Start the view model with a project.
 
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
-        vm.intent(Intent().putExtra(IntentKey.COMMENT, commentableId))
+        vm.intent(
+            Intent().apply {
+                putExtra(IntentKey.COMMENT, commentableId)
+                putExtra(IntentKey.PROJECT, ProjectFactory.project())
+            }
+        )
 
         vm.outputs.startThreadActivity().take(0).subscribe {
             assertEquals(it.first.first.commentableId, commentableId)
             assertFalse(it.first.second)
         }
+
+        vm.onResumeActivity()
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
+        vm.onResumeActivity()
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
     }
 }

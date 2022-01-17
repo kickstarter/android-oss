@@ -631,6 +631,18 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     /**
+     * Sends data associated with the comment screen page viewed to segment.
+     * @param project: The current project.
+
+     */
+    fun trackRootCommentPageViewed(project: Project, projectUpdateId: String? = null) {
+        val props: HashMap<String, Any> = HashMap()
+        props.putAll(createCommentPagePropMap(projectUpdateId))
+        props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
+    /**
      * Sends data to the client when reply is clicked on the project comment screen.
      *
      * @param project: The current project.

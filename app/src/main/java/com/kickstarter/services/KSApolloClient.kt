@@ -6,6 +6,7 @@ import CreateBackingMutation
 import CreatePasswordMutation
 import DeletePaymentSourceMutation
 import ErroredBackingsQuery
+import FetchProjectsPageQuery
 import GetProjectBackingQuery
 import ProjectCreatorDetailsQuery
 import SavePaymentMethodMutation
@@ -44,6 +45,7 @@ import com.kickstarter.models.Urls
 import com.kickstarter.models.User
 import com.kickstarter.models.Video
 import com.kickstarter.models.Web
+import com.kickstarter.services.apiresponses.DiscoverEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
@@ -65,6 +67,7 @@ import type.CollaboratorPermission
 import type.CreditCardPaymentType
 import type.CurrencyCode
 import type.PaymentTypes
+import type.ProjectSort
 import type.RewardType
 import type.ShippingPreference
 
@@ -348,6 +351,84 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     }
                 }
             })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
+    }
+
+    override fun getProjects(discoveryParams: DiscoveryParams): Observable<DiscoverEnvelope> {
+        return Observable.defer {
+            val ps = PublishSubject.create<DiscoverEnvelope>()
+            this.service.query(
+                FetchProjectsQuery.builder()
+                    .sort(ProjectSort.MAGIC)
+                    .categoryId(discoveryParams.category()?.id().toString())
+                    .backed(discoveryParams.backed()?.let { it >= 0 } ?: false)
+                    .recommended(discoveryParams.recommended())
+                    .categoryId(discoveryParams.categoryParam())
+                    .build()
+            ).enqueue(object : ApolloCall.Callback<FetchProjectsQuery.Data>() {
+                override fun onFailure(e: ApolloException) {
+                    ps.onError(e)
+                }
+
+                override fun onResponse(response: Response<FetchProjectsQuery.Data>) {
+                    response.data?.let { responseData ->
+                        val projects = responseData.projects()?.nodes()?.map {
+                            projectTransformer(it.fragments().fullProject())
+                        }
+                        val discoverEnvelope = DiscoverEnvelope.builder()
+                            .projects(projects)
+                            .build()
+                        Observable.just(discoverEnvelope)
+                            .subscribeOn(Schedulers.io())
+                            .subscribe {
+                                ps.onNext(it)
+                                ps.onCompleted()
+                            }
+                    }
+                }
+            })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
+    }
+
+    override fun getProjects(cursor: String?, limit: Int): Observable<DiscoverEnvelope> {
+        return Observable.defer {
+            val ps = PublishSubject.create<DiscoverEnvelope>()
+            this.service.query(
+                FetchProjectsPageQuery.builder()
+                    .first(limit)
+                    .cursor(cursor)
+                    .build()
+            ).enqueue(object : ApolloCall.Callback<FetchProjectsPageQuery.Data>() {
+                override fun onFailure(e: ApolloException) {
+                    ps.onError(e)
+                }
+
+                override fun onResponse(response: Response<FetchProjectsPageQuery.Data>) {
+                    response.data?.let { responseData ->
+                        val projects = responseData.projects()?.nodes()?.map {
+                            projectTransformer(it.fragments().fullProject())
+                        }
+                        val discoverEnvelope = DiscoverEnvelope.builder()
+                            .projects(projects)
+                            .build()
+                        Observable.just(discoverEnvelope)
+                            .subscribeOn(Schedulers.io())
+                            .subscribe {
+                                ps.onNext(it)
+                                ps.onCompleted()
+                            }
+                    }
+                }
+            })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
+    }
+
+    override fun getProjects(isMember: Boolean): Observable<DiscoverEnvelope> {
+        return Observable.defer {
+            val ps = PublishSubject.create<DiscoverEnvelope>()
             return@defer ps
         }.subscribeOn(Schedulers.io())
     }

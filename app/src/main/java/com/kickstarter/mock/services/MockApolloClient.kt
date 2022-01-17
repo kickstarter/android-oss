@@ -12,6 +12,7 @@ import com.kickstarter.mock.factories.CheckoutFactory
 import com.kickstarter.mock.factories.CommentEnvelopeFactory
 import com.kickstarter.mock.factories.CommentFactory
 import com.kickstarter.mock.factories.CreatorDetailsFactory
+import com.kickstarter.mock.factories.DiscoverEnvelopeFactory
 import com.kickstarter.mock.factories.ErroredBackingFactory
 import com.kickstarter.mock.factories.PageInfoEnvelopeFactory
 import com.kickstarter.mock.factories.ProjectFactory
@@ -28,6 +29,8 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
 import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.services.apiresponses.DiscoverEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.PostCommentData
@@ -44,16 +47,28 @@ open class MockApolloClient : ApolloClientType {
     }
 
     override fun getProject(project: Project): Observable<Project> {
-        return return Observable.just(project)
+        return Observable.just(project)
     }
 
     override fun getProject(slug: String): Observable<Project> {
-        return return Observable.just(
+        return Observable.just(
             ProjectFactory.project()
                 .toBuilder()
                 .slug(slug)
                 .build()
         )
+    }
+
+    override fun getProjects(discoveryParams: DiscoveryParams): Observable<DiscoverEnvelope> {
+        return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(emptyList()))
+    }
+
+    override fun getProjects(cursor: String?, limit: Int): Observable<DiscoverEnvelope> {
+        return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(emptyList()))
+    }
+
+    override fun getProjects(isMember: Boolean): Observable<DiscoverEnvelope> {
+        return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(emptyList()))
     }
 
     override fun getProjectAddOns(slug: String, location: Location): Observable<List<Reward>> {

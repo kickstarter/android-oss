@@ -1,3 +1,19 @@
+query FetchProjectsPage($first: Int = 15, $cursor: String) {
+  projects(first: $first, after:$cursor) {
+    nodes {
+      ... fullProject
+    }
+  }
+}
+
+query FetchProjects($first: Int = 15, $sort: ProjectSort, $backed: Boolean, $recommended: Boolean, $categoryId: String) {
+  projects(first: $first, sort:$sort, backed:$backed, recommended:$recommended, categoryId: $categoryId) {
+    nodes {
+      ... fullProject
+    }
+  }
+}
+
 query FetchProject($slug: String!) {
   project(slug: $slug) {
     ... fullProject

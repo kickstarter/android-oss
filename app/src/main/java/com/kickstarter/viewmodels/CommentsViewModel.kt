@@ -45,6 +45,7 @@ interface CommentsViewModel {
         fun refreshComment(comment: Comment, position: Int)
         fun refreshCommentCardInCaseFailedPosted(comment: Comment, position: Int)
         fun onShowCanceledPledgeComment(comment: Comment)
+        fun onResumeActivity()
     }
 
     interface Outputs {
@@ -87,6 +88,7 @@ interface CommentsViewModel {
         private val checkIfThereAnyPendingComments = PublishSubject.create<Boolean>()
         private val failedCommentCardToRefresh = PublishSubject.create<Pair<Comment, Int>>()
         private val showCanceledPledgeComment = PublishSubject.create<Comment>()
+        private val onResumeActivity = PublishSubject.create<Void>()
 
         private val closeCommentsPage = BehaviorSubject.create<Void>()
         private val currentUserAvatar = BehaviorSubject.create<String?>()
@@ -117,6 +119,8 @@ interface CommentsViewModel {
 
         private val isFetchingComments = BehaviorSubject.create<Boolean>()
         private lateinit var project: Project
+
+        private var openedThreadActivityFromDeepLink = false
 
         init {
 
@@ -185,6 +189,45 @@ interface CommentsViewModel {
                     it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty()
                 }.map { requireNotNull(it.getStringExtra(IntentKey.COMMENT)) }
 
+            projectOrUpdateComment
+                .distinctUntilChanged()
+                .compose(
+                    combineLatestPair(
+                        intent().map {
+                            it.hasExtra(IntentKey.COMMENT)
+                        }
+                    )
+                )
+                .filter {
+                    !it.second
+                }
+                .map { it.first }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    if (it.second?.id() != null) {
+                        this.analyticEvents.trackRootCommentPageViewed(it.first, it.second?.id()?.toString())
+                    } else {
+                        this.analyticEvents.trackRootCommentPageViewed(it.first)
+                    }
+                }
+
+            projectOrUpdateComment
+                .compose(Transformers.takeWhen(onResumeActivity))
+                .compose(bindToLifecycle())
+                .subscribe {
+                    if (openedThreadActivityFromDeepLink) {
+                        if (it.second?.id() != null) {
+                            this.analyticEvents.trackRootCommentPageViewed(
+                                it.first,
+                                it.second?.id()?.toString()
+                            )
+                        } else {
+                            this.analyticEvents.trackRootCommentPageViewed(it.first)
+                        }
+                        openedThreadActivityFromDeepLink = false
+                    }
+                }
+
             deepLinkCommentableId
                 .compose(Transformers.takeWhen(projectOrUpdateComment))
                 .switchMap {
@@ -204,6 +247,7 @@ interface CommentsViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.startThreadActivityFromDeepLink.onNext(Pair(it.first, it.second.second?.id()?.toString()))
+                    openedThreadActivityFromDeepLink = true
                 }
 
             this.insertNewCommentToList
@@ -502,6 +546,9 @@ interface CommentsViewModel {
             this.failedCommentCardToRefresh.onNext(Pair(comment, position))
         override fun onShowCanceledPledgeComment(comment: Comment) =
             this.showCanceledPledgeComment.onNext(comment)
+
+        override fun onResumeActivity() =
+            this.onResumeActivity.onNext(null)
         // - Outputs
         override fun closeCommentsPage(): Observable<Void> = closeCommentsPage
         override fun currentUserAvatar(): Observable<String?> = currentUserAvatar

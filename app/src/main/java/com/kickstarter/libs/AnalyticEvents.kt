@@ -606,6 +606,18 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     /**
+     * Sends data associated with the comment screen page viewed to segment.
+     * @param project: The current project.
+
+     */
+    fun trackRootCommentPageViewed(project: Project, projectUpdateId: String? = null) {
+        val props: HashMap<String, Any> = HashMap()
+        props.putAll(createCommentPagePropMap(projectUpdateId))
+        props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
+    /**
      * Sends data to the client when reply is clicked on the project comment screen.
      *
      * @param project: The current project.
@@ -644,6 +656,16 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         commentReply: String
     ): HashMap<String, Any> {
         return hashMapOf<String, Any>(CONTEXT_CTA.contextName to COMMENT_POST.contextName).also { map ->
+            map.putAll(createCommentPagePropMap(projectUpdateId))
+            map[COMMENT_BODY.contextName] = commentReply
+            map[COMMENT_CHARACTER_COUNT.contextName] = commentReply.length
+        }
+    }
+
+    private fun createCommentPagePropMap(
+        projectUpdateId: String?
+    ): HashMap<String, Any> {
+        return hashMapOf<String, Any>().also { map ->
             map[CONTEXT_PAGE.contextName] = PROJECT.contextName
             map[CONTEXT_SECTION.contextName] =
                 EventContextValues.ContextSectionName.COMMENTS.contextName
@@ -655,9 +677,6 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
                     EventContextValues.LocationContextName.COMMENTS.contextName
                 map[PROJECT_UPDATE_ID.contextName] = projectUpdateId
             }
-
-            map[COMMENT_BODY.contextName] = commentReply
-            map[COMMENT_CHARACTER_COUNT.contextName] = commentReply.length
         }
     }
 

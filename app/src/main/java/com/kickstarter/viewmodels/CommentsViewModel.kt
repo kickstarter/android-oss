@@ -192,6 +192,7 @@ interface CommentsViewModel {
             projectOrUpdateComment
                 .distinctUntilChanged()
                 .compose(
+                    // check if the activity opened by deeplink action
                     combineLatestPair(
                         intent().map {
                             it.hasExtra(IntentKey.COMMENT)
@@ -204,26 +205,16 @@ interface CommentsViewModel {
                 .map { it.first }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    if (it.second?.id() != null) {
-                        this.analyticEvents.trackRootCommentPageViewed(it.first, it.second?.id()?.toString())
-                    } else {
-                        this.analyticEvents.trackRootCommentPageViewed(it.first)
-                    }
+                    trackRootCommentPageViewEvent(it)
                 }
 
             projectOrUpdateComment
                 .compose(Transformers.takeWhen(onResumeActivity))
                 .compose(bindToLifecycle())
                 .subscribe {
+                    // send event after back action after deep link to thread activity
                     if (openedThreadActivityFromDeepLink) {
-                        if (it.second?.id() != null) {
-                            this.analyticEvents.trackRootCommentPageViewed(
-                                it.first,
-                                it.second?.id()?.toString()
-                            )
-                        } else {
-                            this.analyticEvents.trackRootCommentPageViewed(it.first)
-                        }
+                        trackRootCommentPageViewEvent(it)
                         openedThreadActivityFromDeepLink = false
                     }
                 }
@@ -406,6 +397,17 @@ interface CommentsViewModel {
                 .subscribe {
                     this.commentsList.onNext(it)
                 }
+        }
+
+        private fun trackRootCommentPageViewEvent(it: Pair<Project, Update?>) {
+            if (it.second?.id() != null) {
+                this.analyticEvents.trackRootCommentPageViewed(
+                    it.first,
+                    it.second?.id()?.toString()
+                )
+            } else {
+                this.analyticEvents.trackRootCommentPageViewed(it.first)
+            }
         }
 
         private fun loadCommentListFromProjectOrUpdate(projectOrUpdate: Observable<Pair<Project, Update?>>) {

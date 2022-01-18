@@ -9,6 +9,7 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.FragmentViewModel;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.loadmore.ApolloPaginate;
 import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.preferences.IntPreferenceType;
 import com.kickstarter.libs.utils.EventContextValues;
@@ -151,19 +152,20 @@ public interface DiscoveryFragmentViewModel {
         selectedParams.compose(takeWhen(this.refresh))
       );
 
-      /*
-      final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginatorGraph =
-        ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
-          .nextPage(this.nextPage)
-          .startOverWith(startOverWith)
-          .envelopeToListOfData(DiscoverEnvelope::projects)
-          .envelopeToMoreUrl(env -> "")
-          .loadWithParams(this.apolloClient::getProjects)
-          .loadWithPaginationPath(this.apiClient::fetchProjects)
-          .clearWhenStartingOver(false)
-          .concater(ListUtils::concatDistinct)
-          .build();
-       */
+      /*val apolloPaginate =
+                ApolloPaginate.builder<CommentCardData, CommentEnvelope, Pair<Project, Update?>>()
+                    .nextPage(nextPage)
+                    .distinctUntilChanged(true)
+                    .startOverWith(startOverWith)
+                    .envelopeToListOfData {
+                        mapToCommentCardDataList(Pair(it, this.project))
+                    }
+                    .loadWithParams {
+                        loadWithProjectOrUpdateComments(Observable.just(it.first), it.second)
+                    }
+                    .clearWhenStartingOver(false)
+                    .build()*/
+
 
       final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
         ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()

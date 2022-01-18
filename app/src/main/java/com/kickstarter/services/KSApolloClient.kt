@@ -373,11 +373,15 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                 override fun onResponse(response: Response<FetchProjectsQuery.Data>) {
                     response.data?.let { responseData ->
-                        val projects = responseData.projects()?.nodes()?.map {
-                            projectTransformer(it.fragments().fullProject())
+                        val projects = responseData.projects()?.edges()?.map {
+                            projectTransformer(it.node()?.fragments()?.fullProject())
+                        }
+                        val pageInfoEnvelope = responseData.projects()?.pageInfo()?.fragments()?.pageInfo()?.let {
+                            createPageInfoObject(it)
                         }
                         val discoverEnvelope = DiscoverEnvelope.builder()
                             .projects(projects)
+                            .pageInfoEnvelope(pageInfoEnvelope)
                             .build()
                         Observable.just(discoverEnvelope)
                             .subscribeOn(Schedulers.io())
@@ -407,11 +411,15 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                 override fun onResponse(response: Response<FetchProjectsPageQuery.Data>) {
                     response.data?.let { responseData ->
-                        val projects = responseData.projects()?.nodes()?.map {
-                            projectTransformer(it.fragments().fullProject())
+                        val projects = responseData.projects()?.edges()?.map {
+                            projectTransformer(it.node()?.fragments()?.fullProject())
+                        }
+                        val pageInfoEnvelope = responseData.projects()?.pageInfo()?.fragments()?.pageInfo()?.let {
+                            createPageInfoObject(it)
                         }
                         val discoverEnvelope = DiscoverEnvelope.builder()
                             .projects(projects)
+                            .pageInfoEnvelope(pageInfoEnvelope)
                             .build()
                         Observable.just(discoverEnvelope)
                             .subscribeOn(Schedulers.io())

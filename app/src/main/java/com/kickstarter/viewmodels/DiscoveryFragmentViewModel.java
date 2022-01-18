@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels;
 import android.content.SharedPreferences;
 import android.util.Pair;
 
-import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
@@ -322,11 +321,11 @@ public interface DiscoveryFragmentViewModel {
 
     }
 
-    private List<Project> envToData(DiscoverEnvelope discoverEnvelope) {
+    private List<Project> envToData(final DiscoverEnvelope discoverEnvelope) {
       return discoverEnvelope.projects();
     }
 
-    private Observable<DiscoverEnvelope> makeCallWithParams(Pair<DiscoveryParams, String> discoveryParamsStringPair) {
+    private Observable<DiscoverEnvelope> makeCallWithParams(final Pair<DiscoveryParams, String> discoveryParamsStringPair) {
       if (discoveryParamsStringPair.second == null) {
         return this.apolloClient.getProjects(discoveryParamsStringPair.first);
       } else {

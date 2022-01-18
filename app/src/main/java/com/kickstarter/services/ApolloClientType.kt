@@ -89,6 +89,6 @@ interface ApolloClientType {
 
 private const val PAGE_SIZE = 25
 
-private const val DISCOVERY_PAGE_SIZE = 15
+const val DISCOVERY_PAGE_SIZE = 15
 
 private const val REPLIES_PAGE_SIZE = 7

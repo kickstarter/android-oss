@@ -3,12 +3,12 @@ package com.kickstarter.viewmodels;
 import android.content.SharedPreferences;
 import android.util.Pair;
 
+import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.FragmentViewModel;
 import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.loadmore.ApolloPaginate;
 import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.preferences.IntPreferenceType;
 import com.kickstarter.libs.utils.EventContextValues;
@@ -151,18 +151,19 @@ public interface DiscoveryFragmentViewModel {
         selectedParams.compose(takeWhen(this.refresh))
       );
 
-      final ApolloPaginate<Project, DiscoverEnvelope, DiscoveryParams> paginator =
-        ApolloPaginate.<Project, DiscoverEnvelope, DiscoveryParams>builder()
-            .nextPage(this.nextPage)
-            .distinctUntilChanged(true)
-            .startOverWith(startOverWith)
-            .envelopeToListOfData(this::envToData)
-            .loadWithParams(this::makeCallWithParams)
-            .clearWhenStartingOver(false)
-            .concater(ListUtils::concatDistinct)
-            .build();
+      // TODO: fetch projects and paginate from GraphQL
+      /*final ApolloPaginate<Project, DiscoverEnvelope, DiscoveryParams> paginator;
+      paginator = ApolloPaginate.<Project, DiscoverEnvelope, DiscoveryParams>builder()
+          .nextPage(this.nextPage)
+          .distinctUntilChanged(true)
+          .startOverWith(startOverWith)
+          .envelopeToListOfData(DiscoverEnvelope::projects)
+          .loadWithParams(this::makeCallWithParams)
+          .clearWhenStartingOver(false)
+          .concater(ListUtils::concatDistinct)
+          .build();*/
 
-      /*final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
+      final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
         ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
           .nextPage(this.nextPage)
           .startOverWith(startOverWith)
@@ -172,7 +173,7 @@ public interface DiscoveryFragmentViewModel {
           .loadWithPaginationPath(this.apiClient::fetchProjects)
           .clearWhenStartingOver(false)
           .concater(ListUtils::concatDistinct)
-          .build();*/
+          .build();
 
       paginator.isFetching()
         .compose(bindToLifecycle())
@@ -321,14 +322,12 @@ public interface DiscoveryFragmentViewModel {
 
     }
 
-    private List<Project> envToData(final DiscoverEnvelope discoverEnvelope) {
-      return discoverEnvelope.projects();
-    }
-
     private Observable<DiscoverEnvelope> makeCallWithParams(final Pair<DiscoveryParams, String> discoveryParamsStringPair) {
       if (discoveryParamsStringPair.second == null) {
+        //- Initial network call with Discovery params
         return this.apolloClient.getProjects(discoveryParamsStringPair.first);
       } else {
+        //- next Page call for more projects
         return this.apolloClient.getProjects(discoveryParamsStringPair.second);
       }
     }

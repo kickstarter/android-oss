@@ -23,6 +23,7 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.toProjectSort
 import com.kickstarter.models.Avatar
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
@@ -53,7 +54,6 @@ import rx.subjects.PublishSubject
 import type.BackingState
 import type.CurrencyCode
 import type.PaymentTypes
-import type.ProjectSort
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
@@ -344,7 +344,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             val ps = PublishSubject.create<DiscoverEnvelope>()
             this.service.query(
                 FetchProjectsQuery.builder()
-                    .sort(ProjectSort.MAGIC)
+                    .sort(discoveryParams.sort()?.toProjectSort())
                     .categoryId(discoveryParams.category()?.id().toString())
                     .backed(discoveryParams.backed()?.let { it >= 0 } ?: false)
                     .recommended(discoveryParams.recommended())
@@ -385,7 +385,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             val ps = PublishSubject.create<DiscoverEnvelope>()
             this.service.query(
                 FetchProjectsPageQuery.builder()
-                    .first(15)
+                    .first(DISCOVERY_PAGE_SIZE)
                     .cursor(cursor)
                     .build()
             ).enqueue(object : ApolloCall.Callback<FetchProjectsPageQuery.Data>() {

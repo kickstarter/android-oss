@@ -3,7 +3,7 @@ query FetchProjectsPage($first: Int = 15, $cursor: String) {
     edges {
       cursor
       node{
-        ... fullProject
+        ... projectCard
       }
     }
     pageInfo {
@@ -18,7 +18,7 @@ query FetchProjects($first: Int = 15, $sort: ProjectSort, $backed: Boolean, $rec
     edges {
       cursor
       node{
-        ... fullProject
+        ... projectCard
       }
     }
     pageInfo {

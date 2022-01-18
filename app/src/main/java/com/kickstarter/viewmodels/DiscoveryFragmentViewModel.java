@@ -152,22 +152,18 @@ public interface DiscoveryFragmentViewModel {
         selectedParams.compose(takeWhen(this.refresh))
       );
 
-      /*val apolloPaginate =
-                ApolloPaginate.builder<CommentCardData, CommentEnvelope, Pair<Project, Update?>>()
-                    .nextPage(nextPage)
-                    .distinctUntilChanged(true)
-                    .startOverWith(startOverWith)
-                    .envelopeToListOfData {
-                        mapToCommentCardDataList(Pair(it, this.project))
-                    }
-                    .loadWithParams {
-                        loadWithProjectOrUpdateComments(Observable.just(it.first), it.second)
-                    }
-                    .clearWhenStartingOver(false)
-                    .build()*/
+      final ApolloPaginate<Project, DiscoverEnvelope, DiscoveryParams> paginator =
+        ApolloPaginate.<Project, DiscoverEnvelope, DiscoveryParams>builder()
+            .nextPage(this.nextPage)
+            .distinctUntilChanged(true)
+            .startOverWith(startOverWith)
+            .envelopeToListOfData(this::envToData)
+            .loadWithParams(this::makeCallWithParams)
+            .clearWhenStartingOver(false)
+            .concater(ListUtils::concatDistinct)
+            .build();
 
-
-      final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
+      /*final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
         ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
           .nextPage(this.nextPage)
           .startOverWith(startOverWith)
@@ -177,7 +173,7 @@ public interface DiscoveryFragmentViewModel {
           .loadWithPaginationPath(this.apiClient::fetchProjects)
           .clearWhenStartingOver(false)
           .concater(ListUtils::concatDistinct)
-          .build();
+          .build();*/
 
       paginator.isFetching()
         .compose(bindToLifecycle())
@@ -324,6 +320,18 @@ public interface DiscoveryFragmentViewModel {
           this.analyticEvents.trackLoginOrSignUpCtaClicked(null, EventContextValues.ContextPageName.DISCOVER.getContextName());
         });
 
+    }
+
+    private List<Project> envToData(DiscoverEnvelope discoverEnvelope) {
+      return discoverEnvelope.projects();
+    }
+
+    private Observable<DiscoverEnvelope> makeCallWithParams(Pair<DiscoveryParams, String> discoveryParamsStringPair) {
+      if (discoveryParamsStringPair.second == null) {
+        return this.apolloClient.getProjects(discoveryParamsStringPair.first);
+      } else {
+        return this.apolloClient.getProjects(discoveryParamsStringPair.second);
+      }
     }
 
     private boolean activityHasNotBeenSeen(final @Nullable Activity activity) {

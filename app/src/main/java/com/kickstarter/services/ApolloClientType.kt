@@ -41,7 +41,7 @@ interface ApolloClientType {
 
     fun getProjects(discoveryParams: DiscoveryParams): Observable<DiscoverEnvelope>
 
-    fun getProjects(cursor: String?, limit: Int = DISCOVERY_PAGE_SIZE): Observable<DiscoverEnvelope>
+    fun getProjects(cursor: String?): Observable<DiscoverEnvelope>
 
     // - Get projects from the Creator Dashboard
     fun getProjects(isMember: Boolean): Observable<DiscoverEnvelope>

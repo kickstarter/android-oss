@@ -396,12 +396,12 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }.subscribeOn(Schedulers.io())
     }
 
-    override fun getProjects(cursor: String?, limit: Int): Observable<DiscoverEnvelope> {
+    override fun getProjects(cursor: String?): Observable<DiscoverEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<DiscoverEnvelope>()
             this.service.query(
                 FetchProjectsPageQuery.builder()
-                    .first(limit)
+                    .first(15)
                     .cursor(cursor)
                     .build()
             ).enqueue(object : ApolloCall.Callback<FetchProjectsPageQuery.Data>() {

@@ -128,7 +128,7 @@ interface ProfileViewModel {
             val paginator = ApiPaginator.builder<Project, DiscoverEnvelope, DiscoveryParams>()
                 .nextPage(this.nextPage)
                 .envelopeToListOfData { it.projects() }
-                .envelopeToMoreUrl { env -> env.urls().api().moreProjects() }
+                .envelopeToMoreUrl { env -> env.urls()?.api()?.moreProjects() }
                 .loadWithParams { this.client.fetchProjects(params) }
                 .loadWithPaginationPath { this.client.fetchProjects(it) }
                 .build()

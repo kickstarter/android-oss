@@ -23,6 +23,7 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
+import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
@@ -115,6 +116,7 @@ public interface DiscoveryFragmentViewModel {
 
   final class ViewModel extends FragmentViewModel<DiscoveryFragment> implements Inputs, Outputs {
     private final ApiClientType apiClient;
+    private final ApolloClientType apolloClient;
     private final CurrentUserType currentUser;
     private final IntPreferenceType activitySamplePreference;
     private final ExperimentsClientType optimizely;
@@ -125,6 +127,7 @@ public interface DiscoveryFragmentViewModel {
       super(environment);
 
       this.apiClient = environment.apiClient();
+      this.apolloClient = environment.apolloClient();
       this.activitySamplePreference = environment.activitySamplePreference();
       this.currentUser = environment.currentUser();
       this.optimizely = environment.optimizely();
@@ -147,6 +150,20 @@ public interface DiscoveryFragmentViewModel {
         selectedParams,
         selectedParams.compose(takeWhen(this.refresh))
       );
+
+      /*
+      final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginatorGraph =
+        ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
+          .nextPage(this.nextPage)
+          .startOverWith(startOverWith)
+          .envelopeToListOfData(DiscoverEnvelope::projects)
+          .envelopeToMoreUrl(env -> "")
+          .loadWithParams(this.apolloClient::getProjects)
+          .loadWithPaginationPath(this.apiClient::fetchProjects)
+          .clearWhenStartingOver(false)
+          .concater(ListUtils::concatDistinct)
+          .build();
+       */
 
       final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
         ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()

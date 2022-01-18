@@ -209,6 +209,19 @@ interface ThreadViewModel {
                     replyComposerStatus.onNext(composerStatus)
                 }
 
+            project
+                .compose(Transformers.combineLatestPair(this.getProjectUpdateId()))
+                .compose(Transformers.combineLatestPair(comment))
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe {
+                    if (it.first.second != null) {
+                        this.analyticEvents.trackThreadCommentPageViewed(it.first.first, it.second.id().toString(), it.first.second)
+                    } else {
+                        this.analyticEvents.trackThreadCommentPageViewed(it.first.first, it.second.id().toString())
+                    }
+                }
+
             this.onLoadingReplies
                 .map {
                     this.onCommentReplies.value

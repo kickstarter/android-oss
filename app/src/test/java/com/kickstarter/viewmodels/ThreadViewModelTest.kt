@@ -395,7 +395,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
             assertTrue(newList[2].comment?.body() == commentCardData2.comment?.body())
             assertTrue(newList[2].commentCardState == commentCardData2.commentCardState)
         }
-        segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -519,7 +519,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
             assertTrue(newList[2].comment?.body() == commentCardData2.comment?.body())
             assertTrue(newList[2].commentCardState == commentCardData2.commentCardState)
         }
-        segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test

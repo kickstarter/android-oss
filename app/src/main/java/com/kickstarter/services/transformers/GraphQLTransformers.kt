@@ -401,7 +401,7 @@ fun categoryTransformer(categoryFragment: fragment.Category?): Category {
  * @param fragment.User user
  * @return Project
  */
-private fun userTransformer(user: fragment.User?): User {
+fun userTransformer(user: fragment.User?): User {
 
     val id = decodeRelayId(user?.id()) ?: -1
     val name = user?.name()

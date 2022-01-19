@@ -1357,8 +1357,10 @@ class SegmentTest : KSRobolectricTestCase() {
         val segment = AnalyticEvents(listOf(client))
 
         val reply = "comment"
+        val commentID = "1"
         segment.trackCommentCTA(
             project,
+            commentID,
             reply
         )
         this.segmentIdentify.assertValue(user)
@@ -1369,6 +1371,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertUserProperties(false)
 
         val expectedProperties = propertiesTest.value
+        assertEquals(commentID, expectedProperties[ContextPropertyKeyName.COMMENT_ID.contextName])
         assertEquals(reply, expectedProperties[COMMENT_BODY.contextName])
         assertEquals(reply.length, expectedProperties[COMMENT_CHARACTER_COUNT.contextName])
         assertNull(expectedProperties[PROJECT_UPDATE_ID.contextName])
@@ -1386,10 +1389,13 @@ class SegmentTest : KSRobolectricTestCase() {
         val segment = AnalyticEvents(listOf(client))
 
         val reply = "comment"
+        val commentID = "34879063"
+        val rootCommentID = "1"
         segment.trackRootCommentReplyCTA(
             project,
+            commentID,
             reply,
-            "34879063"
+            rootCommentID
         )
         this.segmentIdentify.assertValue(user)
 
@@ -1399,6 +1405,8 @@ class SegmentTest : KSRobolectricTestCase() {
         assertUserProperties(false)
 
         val expectedProperties = propertiesTest.value
+        assertEquals(commentID, expectedProperties[ContextPropertyKeyName.COMMENT_ID.contextName])
+        assertEquals(rootCommentID, expectedProperties[ContextPropertyKeyName.COMMENT_ROOT_ID.contextName])
         assertEquals(reply, expectedProperties[COMMENT_BODY.contextName])
         assertEquals(reply.length, expectedProperties[COMMENT_CHARACTER_COUNT.contextName])
         assertNull(expectedProperties[PROJECT_UPDATE_ID.contextName])

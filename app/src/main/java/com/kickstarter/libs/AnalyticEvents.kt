@@ -609,7 +609,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     /**
      * Sends data associated with the comment screen page viewed to segment.
      * @param project: The current project.
-
+     * @param projectUpdateId: the update id
      */
     fun trackRootCommentPageViewed(project: Project, projectUpdateId: String? = null) {
         val props: HashMap<String, Any> = HashMap()
@@ -621,12 +621,13 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     /**
      * Sends data associated with the comment screen page viewed to segment.
      * @param project: The current project.
-
+     * @param rootCommentId: The root comment id.
+     * @param projectUpdateId: the update id
      */
-    fun trackThreadCommentPageViewed(project: Project, commentId: String, projectUpdateId: String? = null) {
+    fun trackThreadCommentPageViewed(project: Project, rootCommentId: String, projectUpdateId: String? = null) {
         val props: HashMap<String, Any> = HashMap()
         props.putAll(createCommentPagePropMap(projectUpdateId))
-        props[COMMENT_ROOT_ID.contextName] = commentId
+        props[COMMENT_ROOT_ID.contextName] = rootCommentId
         props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
         client.track(PAGE_VIEWED.eventName, props)
     }
@@ -635,12 +636,15 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * Sends data to the client when reply is clicked on the project comment screen.
      *
      * @param project: The current project.
+     * @param commentId: The comment id.
      * @param comment: The reply.
+     * @param projectUpdateId: the update id
      */
-    fun trackCommentCTA(project: Project, comment: String, projectUpdateId: String? = null) {
+    fun trackCommentCTA(project: Project, commentId: String, comment: String, projectUpdateId: String? = null) {
         val props: HashMap<String, Any> =
             createCommentPropMap(projectUpdateId, comment)
         props[CONTEXT_TYPE.contextName] = ROOT.contextName
+        props[COMMENT_ID.contextName] = commentId
         props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
         client.track(CTA_CLICKED.eventName, props)
     }
@@ -650,16 +654,24 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      *
      * @param project: The current project.
      * @param commentReply: The reply.
-     * @param commentId: The root comment id.
+     * @param commentId: The comment id.
+     * @param rootCommentId: The root comment id.
      * @param projectUpdateId: the update id
      *
      */
-    fun trackRootCommentReplyCTA(project: Project, commentReply: String, commentId: String, projectUpdateId: String? = null) {
+    fun trackRootCommentReplyCTA(
+        project: Project,
+        commentId: String,
+        commentReply: String,
+        rootCommentId: String,
+        projectUpdateId: String? = null
+    ) {
         val props: HashMap<String, Any> =
             createCommentPropMap(projectUpdateId, commentReply)
 
         props[CONTEXT_TYPE.contextName] = REPLY.contextName
         props[COMMENT_ID.contextName] = commentId
+        props[COMMENT_ROOT_ID.contextName] = rootCommentId
 
         props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
         client.track(CTA_CLICKED.eventName, props)

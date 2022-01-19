@@ -4,6 +4,7 @@ import com.kickstarter.libs.utils.AnalyticEventsUtils
 import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_BODY
 import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_CHARACTER_COUNT
 import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_ID
+import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_ROOT_ID
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
@@ -625,7 +626,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     fun trackThreadCommentPageViewed(project: Project, commentId: String, projectUpdateId: String? = null) {
         val props: HashMap<String, Any> = HashMap()
         props.putAll(createCommentPagePropMap(projectUpdateId))
-        props[COMMENT_ID.contextName] = commentId
+        props[COMMENT_ROOT_ID.contextName] = commentId
         props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
         client.track(PAGE_VIEWED.eventName, props)
     }

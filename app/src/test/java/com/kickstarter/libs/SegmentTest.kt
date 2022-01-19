@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.models.OptimizelyEnvironment
+import com.kickstarter.libs.utils.ContextPropertyKeyName
 import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_BODY
 import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_CHARACTER_COUNT
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
@@ -1348,6 +1349,34 @@ class SegmentTest : KSRobolectricTestCase() {
         assertNull(properties["user_uid"])
         assertEquals(SIGN_UP.contextName, properties[CONTEXT_PAGE.contextName])
 
+        this.segmentTrack.assertValue(PAGE_VIEWED.eventName)
+    }
+
+    @Test
+    fun testTrackThreadCommentPageViewed_Properties() {
+        val user = user()
+        val project = project()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedUser.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        val commentId = "1"
+        segment.trackThreadCommentPageViewed(
+            project,
+            commentId
+        )
+        this.segmentIdentify.assertValue(user)
+
+        assertSessionProperties(user)
+        assertContextProperties()
+        assertPageContextProperty(PROJECT.contextName)
+        assertUserProperties(false)
+
+        val expectedProperties = propertiesTest.value
+        assertEquals(commentId, expectedProperties[ContextPropertyKeyName.COMMENT_ROOT_ID.contextName])
+        assertNull(expectedProperties[PROJECT_UPDATE_ID.contextName])
         this.segmentTrack.assertValue(PAGE_VIEWED.eventName)
     }
 

@@ -8,6 +8,7 @@ import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.adapters.data.NavigationDrawerData
 import rx.Observable
+import type.ProjectSort
 import java.util.TreeMap
 
 /**
@@ -239,5 +240,18 @@ fun DiscoveryParams.Sort?.positionFromSort(): Int {
         DiscoveryParams.Sort.NEWEST -> 2
         DiscoveryParams.Sort.ENDING_SOON -> 3
         else -> 0
+    }
+}
+
+/**
+ * From the current Sort param, to the GraphQL Project.Sort param
+ */
+fun DiscoveryParams.Sort.toProjectSort(): ProjectSort {
+    return when (this) {
+        DiscoveryParams.Sort.MAGIC -> ProjectSort.MAGIC
+        DiscoveryParams.Sort.DISTANCE -> ProjectSort.DISTANCE
+        DiscoveryParams.Sort.POPULAR -> ProjectSort.POPULARITY
+        DiscoveryParams.Sort.ENDING_SOON -> ProjectSort.END_DATE
+        DiscoveryParams.Sort.NEWEST -> ProjectSort.NEWEST
     }
 }

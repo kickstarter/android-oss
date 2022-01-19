@@ -275,6 +275,8 @@ object AnalyticEventsUtils {
             }
             put("has_add_ons", hasAddOns?.hasAddons() ?: false)
             put("tags", project.tags()?.let { it.joinToString(", ") } ?: "")
+            put("url", project.urls().web().project())
+            project.photo()?.full()?.let { put("image_url", it) }
         }
 
         return MapUtils.prefixKeys(properties, prefix)

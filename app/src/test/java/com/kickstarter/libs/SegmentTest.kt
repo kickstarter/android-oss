@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.models.OptimizelyEnvironment
+import com.kickstarter.libs.utils.ContextPropertyKeyName
 import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_BODY
 import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_CHARACTER_COUNT
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
@@ -47,13 +48,16 @@ import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.CheckoutDataFactory
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.LocationFactory
+import com.kickstarter.mock.factories.PhotoFactory
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.models.Urls
 import com.kickstarter.models.User
+import com.kickstarter.models.Web
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
@@ -759,16 +763,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
     @Test
     fun testProjectProperties_LoggedInUser_IsBacker() {
-        val project = ProjectFactory.backedProject()
-            .toBuilder()
-            .id(4)
-            .tags(listOfTags())
-            .category(CategoryFactory.ceramicsCategory())
-            .commentsCount(3)
-            .creator(creator())
-            .location(LocationFactory.unitedStates())
-            .updatesCount(5)
-            .build()
+        val project = backedProject()
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
@@ -978,16 +973,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
     @Test
     fun testManagePledgePageViewed() {
-        val project = ProjectFactory.backedProject()
-            .toBuilder()
-            .id(4)
-            .tags(listOfTags())
-            .category(CategoryFactory.ceramicsCategory())
-            .commentsCount(3)
-            .creator(creator())
-            .location(LocationFactory.unitedStates())
-            .updatesCount(5)
-            .build()
+        val project = backedProject()
 
         val addOn1 = RewardFactory.addOn()
         val addOn2 = RewardFactory.addOnMultiple()
@@ -1033,16 +1019,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
     @Test
     fun testUpdatePledgePageViewed() {
-        val project = ProjectFactory.backedProject()
-            .toBuilder()
-            .id(4)
-            .category(CategoryFactory.ceramicsCategory())
-            .commentsCount(3)
-            .creator(creator())
-            .location(LocationFactory.unitedStates())
-            .tags(listOfTags())
-            .updatesCount(5)
-            .build()
+        val project = backedProject()
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
@@ -1070,16 +1047,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
     @Test
     fun testCheckoutProperties_whenFixingPledge() {
-        val project = ProjectFactory.backedProject()
-            .toBuilder()
-            .id(4)
-            .tags(listOfTags())
-            .category(CategoryFactory.ceramicsCategory())
-            .commentsCount(3)
-            .creator(creator())
-            .location(LocationFactory.unitedStates())
-            .updatesCount(5)
-            .build()
+        val project = backedProject()
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
@@ -1352,6 +1320,34 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testTrackThreadCommentPageViewed_Properties() {
+        val user = user()
+        val project = project()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedUser.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        val commentId = "1"
+        segment.trackThreadCommentPageViewed(
+            project,
+            commentId
+        )
+        this.segmentIdentify.assertValue(user)
+
+        assertSessionProperties(user)
+        assertContextProperties()
+        assertPageContextProperty(PROJECT.contextName)
+        assertUserProperties(false)
+
+        val expectedProperties = propertiesTest.value
+        assertEquals(commentId, expectedProperties[ContextPropertyKeyName.COMMENT_ROOT_ID.contextName])
+        assertNull(expectedProperties[PROJECT_UPDATE_ID.contextName])
+        this.segmentTrack.assertValue(PAGE_VIEWED.eventName)
+    }
+
+    @Test
     fun testTrackCommentReplyCTA_Properties() {
         val user = user()
         val project = project()
@@ -1362,8 +1358,10 @@ class SegmentTest : KSRobolectricTestCase() {
         val segment = AnalyticEvents(listOf(client))
 
         val reply = "comment"
+        val commentID = "1"
         segment.trackCommentCTA(
             project,
+            commentID,
             reply
         )
         this.segmentIdentify.assertValue(user)
@@ -1374,6 +1372,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertUserProperties(false)
 
         val expectedProperties = propertiesTest.value
+        assertEquals(commentID, expectedProperties[ContextPropertyKeyName.COMMENT_ID.contextName])
         assertEquals(reply, expectedProperties[COMMENT_BODY.contextName])
         assertEquals(reply.length, expectedProperties[COMMENT_CHARACTER_COUNT.contextName])
         assertNull(expectedProperties[PROJECT_UPDATE_ID.contextName])
@@ -1391,10 +1390,13 @@ class SegmentTest : KSRobolectricTestCase() {
         val segment = AnalyticEvents(listOf(client))
 
         val reply = "comment"
+        val commentID = "34879063"
+        val rootCommentID = "1"
         segment.trackRootCommentReplyCTA(
             project,
+            commentID,
             reply,
-            "34879063"
+            rootCommentID
         )
         this.segmentIdentify.assertValue(user)
 
@@ -1404,6 +1406,8 @@ class SegmentTest : KSRobolectricTestCase() {
         assertUserProperties(false)
 
         val expectedProperties = propertiesTest.value
+        assertEquals(commentID, expectedProperties[ContextPropertyKeyName.COMMENT_ID.contextName])
+        assertEquals(rootCommentID, expectedProperties[ContextPropertyKeyName.COMMENT_ROOT_ID.contextName])
         assertEquals(reply, expectedProperties[COMMENT_BODY.contextName])
         assertEquals(reply.length, expectedProperties[COMMENT_CHARACTER_COUNT.contextName])
         assertNull(expectedProperties[PROJECT_UPDATE_ID.contextName])
@@ -1624,6 +1628,8 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("tag1, tag2, tag3", expectedProperties["project_tags"])
         assertEquals("discovery", expectedProperties["session_ref_tag"])
         assertEquals("recommended", expectedProperties["session_referrer_credit"])
+        assertEquals(PhotoFactory.photo().full(), expectedProperties["project_image_url"])
+        assertEquals("https://www.kickstarter.com/projects/${expectedProperties["project_creator_uid"]}/slug-1", expectedProperties["project_url"])
         assertEquals(false, expectedProperties["project_has_add_ons"])
     }
 
@@ -1695,17 +1701,48 @@ class SegmentTest : KSRobolectricTestCase() {
             .starredProjectsCount(2)
             .build()
 
-    private fun project() =
-        ProjectFactory.project().toBuilder()
+    private fun project(): Project {
+        val creatorUser = creator()
+        val slug = "slug-1"
+        val projectUrl = "https://www.kickstarter.com/projects/" + creatorUser.id() + "/" + slug
+        val web = Web.builder()
+            .project(projectUrl)
+            .rewards("$projectUrl/rewards")
+            .updates("$projectUrl/posts")
+            .build()
+        return ProjectFactory.project().toBuilder()
             .id(4)
+            .urls(Urls.builder().web(web).build())
             .category(CategoryFactory.ceramicsCategory())
-            .creator(creator())
+            .creator(creatorUser)
             .commentsCount(3)
             .tags(listOfTags())
             .location(LocationFactory.unitedStates())
             .updatesCount(5)
             .build()
+    }
 
+    private fun backedProject(): Project {
+        val creatorUser = creator()
+        val slug = "slug-1"
+        val projectUrl = "https://www.kickstarter.com/projects/" + creatorUser.id() + "/" + slug
+        val web = Web.builder()
+            .project(projectUrl)
+            .rewards("$projectUrl/rewards")
+            .updates("$projectUrl/posts")
+            .build()
+        return ProjectFactory.backedProject()
+            .toBuilder()
+            .id(4)
+            .urls(Urls.builder().web(web).build())
+            .category(CategoryFactory.ceramicsCategory())
+            .commentsCount(3)
+            .creator(creator())
+            .location(LocationFactory.unitedStates())
+            .tags(listOfTags())
+            .updatesCount(5)
+            .build()
+    }
     private fun reward() =
         RewardFactory.rewardWithShipping().toBuilder()
             .id(2)

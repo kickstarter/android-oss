@@ -47,6 +47,7 @@ import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.CheckoutDataFactory
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.LocationFactory
+import com.kickstarter.mock.factories.PhotoFactory
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
@@ -1590,6 +1591,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("tag1, tag2, tag3", expectedProperties["project_tags"])
         assertEquals("discovery", expectedProperties["session_ref_tag"])
         assertEquals("recommended", expectedProperties["session_referrer_credit"])
+        assertEquals(PhotoFactory.photo().full(), expectedProperties["project_image_url"])
         assertEquals("https://www.kickstarter.com/projects/${expectedProperties["project_creator_uid"]}/slug-1", expectedProperties["project_url"])
         assertEquals(false, expectedProperties["project_has_add_ons"])
     }

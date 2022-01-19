@@ -8,6 +8,7 @@ import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.adapters.data.NavigationDrawerData
 import org.junit.Test
+import type.ProjectSort
 
 class DiscoveryParamsExtKtTest : KSRobolectricTestCase() {
 
@@ -147,5 +148,14 @@ class DiscoveryParamsExtKtTest : KSRobolectricTestCase() {
         assertEquals(1, DiscoveryParams.Sort.POPULAR.positionFromSort())
         assertEquals(2, DiscoveryParams.Sort.NEWEST.positionFromSort())
         assertEquals(3, DiscoveryParams.Sort.ENDING_SOON.positionFromSort())
+    }
+
+    @Test
+    fun testDiscoveryParamsSortToProjectSort() {
+        assertEquals(ProjectSort.MAGIC, DiscoveryParams.Sort.MAGIC.toProjectSort())
+        assertEquals(ProjectSort.POPULARITY, DiscoveryParams.Sort.POPULAR.toProjectSort())
+        assertEquals(ProjectSort.NEWEST, DiscoveryParams.Sort.NEWEST.toProjectSort())
+        assertEquals(ProjectSort.END_DATE, DiscoveryParams.Sort.ENDING_SOON.toProjectSort())
+        assertEquals(ProjectSort.DISTANCE, DiscoveryParams.Sort.DISTANCE.toProjectSort())
     }
 }

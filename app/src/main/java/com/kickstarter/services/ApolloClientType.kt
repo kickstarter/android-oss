@@ -17,6 +17,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
+import com.kickstarter.services.apiresponses.DiscoverEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.PostCommentData
@@ -37,6 +38,13 @@ interface ApolloClientType {
     fun getProject(slug: String): Observable<Project>
 
     fun getProject(project: Project): Observable<Project>
+
+    fun getProjects(discoveryParams: DiscoveryParams): Observable<DiscoverEnvelope>
+
+    fun getProjects(cursor: String?): Observable<DiscoverEnvelope>
+
+    // - Get projects from the Creator Dashboard
+    fun getProjects(isMember: Boolean): Observable<DiscoverEnvelope>
 
     fun getProjectComments(slug: String, cursor: String?, limit: Int = PAGE_SIZE): Observable<CommentEnvelope>
 
@@ -80,5 +88,7 @@ interface ApolloClientType {
 }
 
 private const val PAGE_SIZE = 25
+
+const val DISCOVERY_PAGE_SIZE = 15
 
 private const val REPLIES_PAGE_SIZE = 7

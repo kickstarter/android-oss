@@ -23,6 +23,7 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
+import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
@@ -115,6 +116,7 @@ public interface DiscoveryFragmentViewModel {
 
   final class ViewModel extends FragmentViewModel<DiscoveryFragment> implements Inputs, Outputs {
     private final ApiClientType apiClient;
+    private final ApolloClientType apolloClient;
     private final CurrentUserType currentUser;
     private final IntPreferenceType activitySamplePreference;
     private final ExperimentsClientType optimizely;
@@ -125,6 +127,7 @@ public interface DiscoveryFragmentViewModel {
       super(environment);
 
       this.apiClient = environment.apiClient();
+      this.apolloClient = environment.apolloClient();
       this.activitySamplePreference = environment.activitySamplePreference();
       this.currentUser = environment.currentUser();
       this.optimizely = environment.optimizely();
@@ -147,6 +150,18 @@ public interface DiscoveryFragmentViewModel {
         selectedParams,
         selectedParams.compose(takeWhen(this.refresh))
       );
+
+      // TODO: fetch projects and paginate from GraphQL
+      /*final ApolloPaginate<Project, DiscoverEnvelope, DiscoveryParams> paginator;
+      paginator = ApolloPaginate.<Project, DiscoverEnvelope, DiscoveryParams>builder()
+          .nextPage(this.nextPage)
+          .distinctUntilChanged(true)
+          .startOverWith(startOverWith)
+          .envelopeToListOfData(DiscoverEnvelope::projects)
+          .loadWithParams(this::makeCallWithParams)
+          .clearWhenStartingOver(false)
+          .concater(ListUtils::concatDistinct)
+          .build();*/
 
       final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
         ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
@@ -305,6 +320,16 @@ public interface DiscoveryFragmentViewModel {
           this.analyticEvents.trackLoginOrSignUpCtaClicked(null, EventContextValues.ContextPageName.DISCOVER.getContextName());
         });
 
+    }
+
+    private Observable<DiscoverEnvelope> makeCallWithParams(final Pair<DiscoveryParams, String> discoveryParamsStringPair) {
+      if (discoveryParamsStringPair.second == null) {
+        //- Initial network call with Discovery params
+        return this.apolloClient.getProjects(discoveryParamsStringPair.first);
+      } else {
+        //- next Page call for more projects
+        return this.apolloClient.getProjects(discoveryParamsStringPair.second);
+      }
     }
 
     private boolean activityHasNotBeenSeen(final @Nullable Activity activity) {

@@ -173,6 +173,7 @@ class ApolloPaginate<Data, Envelope : ApolloEnvelope, Params>(
     }
 
     companion object {
+        @JvmStatic
         fun <Data, Envelope : ApolloEnvelope, FirstPageParams> builder(): Builder<Data, Envelope, FirstPageParams> = Builder()
     }
 

@@ -1,3 +1,50 @@
+# Fragment used to load the Project Card information on Discovery
+fragment projectCard on Project {
+    backersCount
+    description
+    isLaunched
+    backing {
+        id
+    }
+    category {
+        ...category
+    }
+    country {
+        ...country
+    }
+    createdAt
+    creator {
+        ... user
+    }
+    prelaunchActivated
+    projectOfTheDayAt
+    friends(first:3) {
+        nodes {
+            ... user
+        }
+    }
+    fxRate
+    deadlineAt
+    goal {
+        ... amount
+    }
+    id
+    isWatched
+    launchedAt
+    location {
+        ... location
+    }
+    name
+    ...full
+    prelaunchActivated
+    slug
+    isProjectWeLove
+    state
+    stateChangedAt
+    url
+}
+
+# Fragment used to load all the Project information on Project Page
 fragment fullProject on Project {
     availableCardTypes
     backersCount

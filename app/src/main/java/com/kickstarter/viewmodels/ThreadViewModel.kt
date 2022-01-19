@@ -215,11 +215,7 @@ interface ThreadViewModel {
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe {
-                    if (it.first.second != null) {
-                        this.analyticEvents.trackThreadCommentPageViewed(it.first.first, it.second.id().toString(), it.first.second)
-                    } else {
-                        this.analyticEvents.trackThreadCommentPageViewed(it.first.first, it.second.id().toString())
-                    }
+                    this.analyticEvents.trackThreadCommentPageViewed(it.first.first, it.second.id().toString(), it.first.second)
                 }
 
             this.onLoadingReplies
@@ -265,18 +261,19 @@ interface ThreadViewModel {
             // - Update internal mutable list with the latest state after successful response
 
             this.successfullyPostedCommentCardToRefresh
-                .map { it.first.body() }
+                .map { it.first }
                 .compose(Transformers.combineLatestPair(this.getProjectUpdateId()))
                 .compose(Transformers.combineLatestPair(project))
                 .compose(Transformers.combineLatestPair(comment))
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe {
-                    if (it.first.first.second != null) {
-                        this.analyticEvents.trackRootCommentReplyCTA(it.first.second, it.first.first.first, it.second.id().toString(), it.first.first.second)
-                    } else {
-                        this.analyticEvents.trackRootCommentReplyCTA(it.first.second, it.first.first.first, it.second.id().toString())
-                    }
+                    this.analyticEvents.trackRootCommentReplyCTA(
+                        it.first.second,
+                        it.first.first.first.id().toString(),
+                        it.first.first.first.body(), it.second.id().toString(),
+                        it.first.first.second
+                    )
                 }
 
             this.onCommentReplies

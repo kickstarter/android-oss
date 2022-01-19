@@ -20,5 +20,6 @@ enum class ContextPropertyKeyName(val contextName: String) {
     COMMENT_BODY("comment_body"),
     COMMENT_CHARACTER_COUNT("comment_character_count"),
     COMMENT_ID("comment_id"),
+    COMMENT_ROOT_ID("comment_root_id"),
     PROJECT_UPDATE_ID("project_update_id")
 }

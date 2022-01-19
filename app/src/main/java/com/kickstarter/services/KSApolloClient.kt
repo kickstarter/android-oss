@@ -42,8 +42,8 @@ import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
+import com.kickstarter.services.transformers.backingTransformer
 import com.kickstarter.services.transformers.complexRewardItemsTransformer
-import com.kickstarter.services.transformers.createBackingObject
 import com.kickstarter.services.transformers.decodeRelayId
 import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.services.transformers.projectTransformer
@@ -149,7 +149,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         response.data?.let { data ->
                             Observable.just(data.backing())
                                 .filter { it?.fragments()?.backing() != null }
-                                .map { backingObj -> createBackingObject(backingObj?.fragments()?.backing()) }
+                                .map { backingObj -> backingTransformer(backingObj?.fragments()?.backing()) }
                                 .filter { ObjectUtils.isNotNull(it) }
                                 .subscribe {
                                     ps.onNext(it)
@@ -626,7 +626,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         response.data?.let { data ->
                             Observable.just(data.project()?.backing())
                                 .filter { it?.fragments()?.backing() != null }
-                                .map { backingObj -> createBackingObject(backingObj?.fragments()?.backing()) }
+                                .map { backingObj -> backingTransformer(backingObj?.fragments()?.backing()) }
                                 .subscribe {
                                     ps.onNext(it)
                                     ps.onCompleted()

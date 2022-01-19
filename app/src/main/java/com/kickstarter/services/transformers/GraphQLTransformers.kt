@@ -214,7 +214,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
     val backersCount = projectFragment?.backersCount() ?: 0
     val blurb = projectFragment?.description() ?: ""
     val backing = if (projectFragment?.backing()?.fragments()?.backing() != null) {
-        createBackingObject(projectFragment.backing()?.fragments()?.backing())
+        backingTransformer(projectFragment.backing()?.fragments()?.backing())
     } else null
     val category = if (projectFragment?.category()?.fragments()?.category() != null) {
         categoryTransformer(projectFragment.category()?.fragments()?.category())
@@ -386,7 +386,7 @@ fun categoryTransformer(categoryFragment: fragment.Category?): Category {
     } else null
 
     return Category.builder()
-        .analyticsName(name)
+        .analyticsName(analyticsName)
         .id(id)
         .name(name)
         .slug(slug)
@@ -502,11 +502,11 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
 }
 
 /**
- * Transform the BAcking GraphQL data structure into our own Backing data model
+ * Transform the Backing GraphQL data structure into our own Backing data model
  * @param fragment.Baking projectFragment
  * @return Backing
  */
-fun createBackingObject(backingGr: fragment.Backing?): Backing {
+fun backingTransformer(backingGr: fragment.Backing?): Backing {
     val payment = backingGr?.paymentSource()?.fragments()?.payment()?.let { payment ->
         PaymentSource.builder()
             .state(payment.state().toString())

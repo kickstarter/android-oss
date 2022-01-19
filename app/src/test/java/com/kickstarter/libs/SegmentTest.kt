@@ -54,7 +54,9 @@ import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.models.Urls
 import com.kickstarter.models.User
+import com.kickstarter.models.Web
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
@@ -760,16 +762,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
     @Test
     fun testProjectProperties_LoggedInUser_IsBacker() {
-        val project = ProjectFactory.backedProject()
-            .toBuilder()
-            .id(4)
-            .tags(listOfTags())
-            .category(CategoryFactory.ceramicsCategory())
-            .commentsCount(3)
-            .creator(creator())
-            .location(LocationFactory.unitedStates())
-            .updatesCount(5)
-            .build()
+        val project = backedProject()
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
@@ -979,16 +972,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
     @Test
     fun testManagePledgePageViewed() {
-        val project = ProjectFactory.backedProject()
-            .toBuilder()
-            .id(4)
-            .tags(listOfTags())
-            .category(CategoryFactory.ceramicsCategory())
-            .commentsCount(3)
-            .creator(creator())
-            .location(LocationFactory.unitedStates())
-            .updatesCount(5)
-            .build()
+        val project = backedProject()
 
         val addOn1 = RewardFactory.addOn()
         val addOn2 = RewardFactory.addOnMultiple()
@@ -1034,16 +1018,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
     @Test
     fun testUpdatePledgePageViewed() {
-        val project = ProjectFactory.backedProject()
-            .toBuilder()
-            .id(4)
-            .category(CategoryFactory.ceramicsCategory())
-            .commentsCount(3)
-            .creator(creator())
-            .location(LocationFactory.unitedStates())
-            .tags(listOfTags())
-            .updatesCount(5)
-            .build()
+        val project = backedProject()
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
@@ -1071,16 +1046,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
     @Test
     fun testCheckoutProperties_whenFixingPledge() {
-        val project = ProjectFactory.backedProject()
-            .toBuilder()
-            .id(4)
-            .tags(listOfTags())
-            .category(CategoryFactory.ceramicsCategory())
-            .commentsCount(3)
-            .creator(creator())
-            .location(LocationFactory.unitedStates())
-            .updatesCount(5)
-            .build()
+        val project = backedProject()
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
@@ -1653,6 +1619,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("tag1, tag2, tag3", expectedProperties["project_tags"])
         assertEquals("discovery", expectedProperties["session_ref_tag"])
         assertEquals("recommended", expectedProperties["session_referrer_credit"])
+        assertEquals("https://www.kickstarter.com/projects/${expectedProperties["project_creator_uid"]}/slug-1", expectedProperties["project_url"])
         assertEquals(false, expectedProperties["project_has_add_ons"])
     }
 
@@ -1724,17 +1691,48 @@ class SegmentTest : KSRobolectricTestCase() {
             .starredProjectsCount(2)
             .build()
 
-    private fun project() =
-        ProjectFactory.project().toBuilder()
+    private fun project(): Project {
+        val creatorUser = creator()
+        val slug = "slug-1"
+        val projectUrl = "https://www.kickstarter.com/projects/" + creatorUser.id() + "/" + slug
+        val web = Web.builder()
+            .project(projectUrl)
+            .rewards("$projectUrl/rewards")
+            .updates("$projectUrl/posts")
+            .build()
+        return ProjectFactory.project().toBuilder()
             .id(4)
+            .urls(Urls.builder().web(web).build())
             .category(CategoryFactory.ceramicsCategory())
-            .creator(creator())
+            .creator(creatorUser)
             .commentsCount(3)
             .tags(listOfTags())
             .location(LocationFactory.unitedStates())
             .updatesCount(5)
             .build()
+    }
 
+    private fun backedProject(): Project {
+        val creatorUser = creator()
+        val slug = "slug-1"
+        val projectUrl = "https://www.kickstarter.com/projects/" + creatorUser.id() + "/" + slug
+        val web = Web.builder()
+            .project(projectUrl)
+            .rewards("$projectUrl/rewards")
+            .updates("$projectUrl/posts")
+            .build()
+        return ProjectFactory.backedProject()
+            .toBuilder()
+            .id(4)
+            .urls(Urls.builder().web(web).build())
+            .category(CategoryFactory.ceramicsCategory())
+            .commentsCount(3)
+            .creator(creator())
+            .location(LocationFactory.unitedStates())
+            .tags(listOfTags())
+            .updatesCount(5)
+            .build()
+    }
     private fun reward() =
         RewardFactory.rewardWithShipping().toBuilder()
             .id(2)

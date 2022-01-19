@@ -276,17 +276,13 @@ interface CommentsViewModel {
                 }
 
             this.commentToRefresh
-                .map { it.first.body() }
+                .map { it.first }
                 .distinctUntilChanged()
                 .withLatestFrom(projectOrUpdateComment) {
                     commentData, project ->
                     Pair(commentData, project)
                 }.subscribe {
-                    if (it.second.second?.id() != null) {
-                        this.analyticEvents.trackCommentCTA(it.second.first, it.first, it.second.second?.id()?.toString())
-                    } else {
-                        this.analyticEvents.trackCommentCTA(it.second.first, it.first)
-                    }
+                    this.analyticEvents.trackCommentCTA(it.second.first, it.first.id().toString(), it.first.body(), it.second.second?.id()?.toString())
                 }
 
             this.onShowGuideLinesLinkClicked

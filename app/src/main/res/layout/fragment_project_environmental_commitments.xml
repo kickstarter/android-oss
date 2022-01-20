@@ -18,7 +18,7 @@
             android:layout_marginTop="@dimen/grid_3"
             android:layout_marginEnd="@dimen/grid_7_half"
             android:gravity="start|center_vertical"
-            android:text="@string/Environmental_Commitments"
+            android:text="@string/Environmental_commitments"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -4,24 +4,7 @@ import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.libs.Permission
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.mock.factories.RewardFactory
-import com.kickstarter.models.Avatar
-import com.kickstarter.models.Backing
-import com.kickstarter.models.Category
-import com.kickstarter.models.EnvironmentalCommitment
-import com.kickstarter.models.Item
-import com.kickstarter.models.Location
-import com.kickstarter.models.PaymentSource
-import com.kickstarter.models.Photo
-import com.kickstarter.models.Project
-import com.kickstarter.models.ProjectFaq
-import com.kickstarter.models.Relay
-import com.kickstarter.models.Reward
-import com.kickstarter.models.RewardsItem
-import com.kickstarter.models.ShippingRule
-import com.kickstarter.models.Urls
-import com.kickstarter.models.User
-import com.kickstarter.models.Video
-import com.kickstarter.models.Web
+import com.kickstarter.models.*
 import fragment.FullProject
 import fragment.ProjectCard
 import org.jetbrains.annotations.Nullable
@@ -500,6 +483,43 @@ private fun getPhoto(photoUrl: @Nullable String?): Photo? {
     }
 
     return photo
+}
+
+fun commentTransformer(commentFr: fragment.Comment?): Comment {
+
+    val badges: List<String> = commentFr?.authorBadges()?.map { badge ->
+        badge?.rawValue() ?: ""
+    } ?: emptyList()
+
+    val author = User.builder()
+        .id(decodeRelayId(commentFr?.author()?.fragments()?.user()?.id()) ?: -1)
+        .name(commentFr?.author()?.fragments()?.user()?.name() ?: "")
+        .avatar(
+            Avatar.builder()
+                .medium(commentFr?.author()?.fragments()?.user()?.imageUrl())
+                .build()
+        )
+        .build()
+    val id = decodeRelayId(commentFr?.id()) ?: -1
+    val repliesCount = commentFr?.replies()?.totalCount() ?: 0
+    val body = commentFr?.body() ?: ""
+    val createdAt = commentFr?.createdAt()
+    val deleted = commentFr?.deleted() ?: false
+    val authorCanceled = commentFr?.authorCanceledPledge() ?: false
+    val parentId = decodeRelayId(commentFr?.parentId())
+
+    return Comment.builder()
+        .id(id)
+        .author(author)
+        .repliesCount(repliesCount)
+        .body(body)
+        .authorBadges(badges)
+        .cursor("")
+        .createdAt(createdAt)
+        .deleted(deleted)
+        .authorCanceledPledge(authorCanceled)
+        .parentId(parentId)
+        .build()
 }
 
 /**

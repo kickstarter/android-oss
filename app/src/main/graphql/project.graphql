@@ -1,5 +1,5 @@
-query FetchProjectsPage($first: Int = 15, $cursor: String) {
-  projects(first: $first, after:$cursor) {
+query FetchProjectsPage($first: Int = 15, $cursor: String, $sort: ProjectSort, $backed: Boolean, $recommended: Boolean, $categoryId: String) {
+  projects(first: $first, after:$cursor, sort:$sort, backed:$backed, recommended:$recommended, categoryId: $categoryId) {
     edges {
       cursor
       node{

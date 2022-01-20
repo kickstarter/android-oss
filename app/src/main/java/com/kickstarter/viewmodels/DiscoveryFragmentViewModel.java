@@ -9,6 +9,7 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.FragmentViewModel;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.loadmore.ApolloPaginate;
 import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.preferences.IntPreferenceType;
 import com.kickstarter.libs.utils.EventContextValues;
@@ -152,7 +153,7 @@ public interface DiscoveryFragmentViewModel {
       );
 
       // TODO: fetch projects and paginate from GraphQL
-      /*final ApolloPaginate<Project, DiscoverEnvelope, DiscoveryParams> paginator;
+      final ApolloPaginate<Project, DiscoverEnvelope, DiscoveryParams> paginator;
       paginator = ApolloPaginate.<Project, DiscoverEnvelope, DiscoveryParams>builder()
           .nextPage(this.nextPage)
           .distinctUntilChanged(true)
@@ -161,9 +162,9 @@ public interface DiscoveryFragmentViewModel {
           .loadWithParams(this::makeCallWithParams)
           .clearWhenStartingOver(false)
           .concater(ListUtils::concatDistinct)
-          .build();*/
+          .build();
 
-      final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
+      /*final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
         ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
           .nextPage(this.nextPage)
           .startOverWith(startOverWith)
@@ -173,7 +174,7 @@ public interface DiscoveryFragmentViewModel {
           .loadWithPaginationPath(this.apiClient::fetchProjects)
           .clearWhenStartingOver(false)
           .concater(ListUtils::concatDistinct)
-          .build();
+          .build();*/
 
       paginator.isFetching()
         .compose(bindToLifecycle())
@@ -328,7 +329,7 @@ public interface DiscoveryFragmentViewModel {
         return this.apolloClient.getProjects(discoveryParamsStringPair.first);
       } else {
         //- next Page call for more projects
-        return this.apolloClient.getProjects(discoveryParamsStringPair.second);
+        return this.apolloClient.getProjects(discoveryParamsStringPair.first, discoveryParamsStringPair.second);
       }
     }
 

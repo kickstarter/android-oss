@@ -63,7 +63,7 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(emptyList()))
     }
 
-    override fun getProjects(cursor: String?): Observable<DiscoverEnvelope> {
+    override fun getProjects(discoveryParams: DiscoveryParams, cursor: String?): Observable<DiscoverEnvelope> {
         return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(emptyList()))
     }
 

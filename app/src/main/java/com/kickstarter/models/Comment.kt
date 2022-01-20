@@ -11,7 +11,7 @@ class Comment private constructor(
     private val createdAt: DateTime?,
     private val deleted: Boolean,
     private val authorCanceledPledge: Boolean,
-    private val cursor: String, // TODO remove
+    private val cursor: String,
     private val repliesCount: Int,
     private val authorBadges: List<String>?,
     private val id: Long,
@@ -35,7 +35,7 @@ class Comment private constructor(
         private var createdAt: DateTime? = null,
         private var deleted: Boolean = false,
         private var authorCanceledPledge: Boolean = false,
-        private var cursor: String = "", // TODO remove
+        private var cursor: String = "",
         private var repliesCount: Int = 0,
         private var authorBadges: List<String>? = emptyList(),
         private var id: Long = -1,
@@ -78,19 +78,19 @@ class Comment private constructor(
         parentId = parentId
     )
 
-    override fun equals(obj: Any?): Boolean {
-        var equals = super.equals(obj)
-        if (obj is Comment) {
-            equals = id() == obj.id() &&
-                body() == obj.body() &&
-                author() == obj.author() &&
-                authorBadges() == obj.authorBadges() &&
-                cursor() == obj.cursor() &&
-                deleted() == obj.deleted() &&
-                repliesCount() == obj.repliesCount() &&
-                authorCanceledPledge() == obj.authorCanceledPledge() &&
-                createdAt() == obj.createdAt() &&
-                parentId() == obj.parentId()
+    override fun equals(other: Any?): Boolean {
+        var equals = super.equals(other)
+        if (other is Comment) {
+            equals = id() == other.id() &&
+                body() == other.body() &&
+                author() == other.author() &&
+                authorBadges() == other.authorBadges() &&
+                cursor() == other.cursor() &&
+                deleted() == other.deleted() &&
+                repliesCount() == other.repliesCount() &&
+                authorCanceledPledge() == other.authorCanceledPledge() &&
+                createdAt() == other.createdAt() &&
+                parentId() == other.parentId()
         }
         return equals
     }

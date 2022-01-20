@@ -24,6 +24,7 @@ import com.kickstarter.models.Video
 import com.kickstarter.models.Web
 import fragment.FullProject
 import fragment.ProjectCard
+import org.jetbrains.annotations.Nullable
 import org.joda.time.DateTime
 import type.CollaboratorPermission
 import type.CreditCardPaymentType
@@ -252,14 +253,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
     }
     val pledged = projectFragment?.pledged()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0
     val photoUrl = projectFragment?.fragments()?.full()?.image()?.url()
-    val photo = Photo.builder()
-        .ed(photoUrl)
-        .full(photoUrl)
-        .little(photoUrl)
-        .med(photoUrl)
-        .small(photoUrl)
-        .thumb(photoUrl)
-        .build()
+    val photo = getPhoto(photoUrl)
     val tags = mutableListOf<String>()
     projectFragment?.fragments()?.tagsCreative()?.tags()?.map { tags.add(it.id()) }
     projectFragment?.fragments()?.tagsDiscovery()?.tags()?.map { tags.add(it.id()) }
@@ -449,15 +443,7 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
     val location = locationTransformer(projectFragment?.location()?.fragments()?.location())
     val name = projectFragment?.name()
     val photoUrl = projectFragment?.fragments()?.full()?.image()?.url()
-    val photo = Photo.builder()
-        .ed(photoUrl)
-        .full(photoUrl)
-        .little(photoUrl)
-        .med(photoUrl)
-        .small(photoUrl)
-        .thumb(photoUrl)
-        .build()
-
+    val photo = getPhoto(photoUrl)
     val slug = projectFragment?.slug()
     val staffPicked = projectFragment?.isProjectWeLove ?: false
     val state = projectFragment?.state()?.name?.lowercase()
@@ -499,6 +485,21 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
         .urls(urls)
         .stateChangedAt(stateChangedAt)
         .build()
+}
+
+private fun getPhoto(photoUrl: @Nullable String?): Photo? {
+    val photo = photoUrl?.let {
+        Photo.builder()
+            .ed(photoUrl)
+            .full(photoUrl)
+            .little(photoUrl)
+            .med(photoUrl)
+            .small(photoUrl)
+            .thumb(photoUrl)
+            .build()
+    }
+
+    return photo
 }
 
 /**

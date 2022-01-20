@@ -328,6 +328,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                 override fun onResponse(response: Response<FetchProjectQuery.Data>) {
                     response.data?.let { responseData ->
                         Observable.just(projectTransformer(responseData.project()?.fragments()?.fullProject()))
+                            .subscribeOn(Schedulers.io())
                             .subscribe {
                                 ps.onNext(it)
                                 ps.onCompleted()

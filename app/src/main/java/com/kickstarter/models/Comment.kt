@@ -16,7 +16,7 @@ class Comment private constructor(
     private val authorBadges: List<String>?,
     private val id: Long,
     private val parentId: Long
-): Parcelable, Relay {
+) : Parcelable, Relay {
     fun author() = this.author
     fun body() = this.body
     fun createdAt() = this.createdAt
@@ -40,7 +40,7 @@ class Comment private constructor(
         private var authorBadges: List<String>? = emptyList(),
         private var id: Long = -1,
         private var parentId: Long = -1
-    ): Parcelable {
+    ) : Parcelable {
         fun author(author: User?) = apply { author?.let { this.author = it } }
         fun cursor(cursor: String?) = apply { this.cursor = cursor ?: "" }
         fun authorBadges(authorBadges: List<String>?) = apply { this.authorBadges = authorBadges }
@@ -82,15 +82,15 @@ class Comment private constructor(
         var equals = super.equals(obj)
         if (obj is Comment) {
             equals = id() == obj.id() &&
-                    body() == obj.body() &&
-                    author() == obj.author() &&
-                    authorBadges() == obj.authorBadges() &&
-                    cursor() == obj.cursor() &&
-                    deleted() == obj.deleted() &&
-                    repliesCount() == obj.repliesCount() &&
-                    authorCanceledPledge() == obj.authorCanceledPledge() &&
-                    createdAt() == obj.createdAt() &&
-                    parentId() == obj.parentId()
+                body() == obj.body() &&
+                author() == obj.author() &&
+                authorBadges() == obj.authorBadges() &&
+                cursor() == obj.cursor() &&
+                deleted() == obj.deleted() &&
+                repliesCount() == obj.repliesCount() &&
+                authorCanceledPledge() == obj.authorCanceledPledge() &&
+                createdAt() == obj.createdAt() &&
+                parentId() == obj.parentId()
         }
         return equals
     }

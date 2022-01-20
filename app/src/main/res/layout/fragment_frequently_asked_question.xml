@@ -18,7 +18,7 @@
             android:layout_marginEnd="@dimen/grid_7_half"
             android:layout_marginHorizontal="@dimen/grid_3"
             android:gravity="start|center_vertical"
-            android:text="@string/profile_settings_about_faq"
+            android:text="@string/Frequently_asked_questions"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -204,7 +204,7 @@ Cliquez pour réessayer.</string>
   <string name="Ending_in_last_four" formatted="false">Finissant par %{last_four}</string>
   <string name="Ending_soon" formatted="false">Campagnes bientôt terminées</string>
   <string name="Enter_an_amount_less_than_max_pledge" formatted="false">Veuillez saisir un montant inférieur à %{max_pledge}.</string>
-  <string name="Environmental_Commitments" formatted="false">Engagements pour l\'environnement</string>
+  <string name="Environmental_commitments" formatted="false">Engagements pour l\'environnement</string>
   <string name="Environmentally_friendly_factories" formatted="false">Usines respectueuses de l\'environnement</string>
   <string name="Estimated_delivery" formatted="false">Livraison prévue :</string>
   <string name="Estimated_delivery_colon" formatted="false">Livraison prévue :</string>

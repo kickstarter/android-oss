@@ -223,7 +223,7 @@
       "Estimated_delivery": "Estimated delivery",
       "Estimated_delivery_colon": "Estimated delivery:",
       "Estimated_delivery_of": "Estimated delivery of",
-      "Environmental_Commitments": "Environmental Commitments",
+      "Environmental_commitments": "Environmental commitments",
       "Environmentally_friendly_factories": "Environmentally friendly factories",
       "Expiration": "Expiration",
       "Expired_date_at_time": "Expired %{date} at %{time}",
@@ -2655,7 +2655,7 @@
       "Estimated_delivery": "Voraussichtliche Lieferung:",
       "Estimated_delivery_colon": "Voraussichtliche Lieferung:",
       "Estimated_delivery_of": "Voraussichtliches Lieferdatum",
-      "Environmental_Commitments": "Verpflichtung zum Umweltschutz",
+      "Environmental_commitments": "Verpflichtung zum Umweltschutz",
       "Environmentally_friendly_factories": "Umweltfreundliche Fertigungsanlagen",
       "Expiration": "Verfallsdatum",
       "Expired_date_at_time": "Abgelaufen am %{date} um %{time}",
@@ -4862,7 +4862,8 @@
         "message": "Du scheinst eine sehr alte Version der App zu benutzen. Um fortzufahren, installiere bitte die neueste Version aus dem App Store.",
         "cancel": "Abbrechen",
         "upgrade": "Aktualisierung"
-      }
+      },
+      "Environmental_Commitments": "Verpflichtung zum Umweltschutz"
     },
     "es": {
       "A_little_extra_to_help": "Algo extra para ayudar a que este proyecto se pueda realizar.",
@@ -5087,7 +5088,7 @@
       "Estimated_delivery": "Entrega estimada:",
       "Estimated_delivery_colon": "Entrega estimada:",
       "Estimated_delivery_of": "Entrega estimada de",
-      "Environmental_Commitments": "Compromisos medioambientales",
+      "Environmental_commitments": "Compromisos medioambientales",
       "Environmentally_friendly_factories": "Fábricas ecológicas",
       "Expiration": "Vencimiento",
       "Expired_date_at_time": "Venció el %{date} a la(s) %{time}",
@@ -7294,7 +7295,8 @@
         "message": "Parece que estás usando una versión muy antigua de esta aplicación. Por favor descarga la última versión en la App Store para continuar usándola.",
         "cancel": "Cancelar",
         "upgrade": "Actualizar"
-      }
+      },
+      "Environmental_Commitments": "Compromisos medioambientales"
     },
     "fr": {
       "A_little_extra_to_help": "Du soutien supplémentaire pour faire vivre ce projet.",
@@ -7519,7 +7521,7 @@
       "Estimated_delivery": "Livraison prévue :",
       "Estimated_delivery_colon": "Livraison prévue :",
       "Estimated_delivery_of": "Livraison prévue le",
-      "Environmental_Commitments": "Engagements pour l'environnement",
+      "Environmental_commitments": "Engagements pour l'environnement",
       "Environmentally_friendly_factories": "Usines respectueuses de l'environnement",
       "Expiration": "Expiration",
       "Expired_date_at_time": "Expirées depuis le %{date} à %{time}",
@@ -9726,7 +9728,8 @@
         "message": "On dirait que vous utilisez une ancienne version de l'application. Veuillez la mettre à jour depuis l'App Store pour continuer à l'utiliser.",
         "cancel": "Annuler",
         "upgrade": "Mise à jour"
-      }
+      },
+      "Environmental_Commitments": "Engagements pour l'environnement"
     },
     "it": {
       "A_little_extra_to_help": "A little extra to help bring this project to life.",
@@ -9951,7 +9954,7 @@
       "Estimated_delivery": "Estimated delivery",
       "Estimated_delivery_colon": "Estimated delivery:",
       "Estimated_delivery_of": "Estimated delivery of",
-      "Environmental_Commitments": "Environmental Commitments",
+      "Environmental_commitments": "Environmental commitments",
       "Environmentally_friendly_factories": "Environmentally friendly factories",
       "Expiration": "Expiration",
       "Expired_date_at_time": "Expired %{date} at %{time}",
@@ -12383,7 +12386,7 @@
       "Estimated_delivery": "配達予定",
       "Estimated_delivery_colon": "配達予定:",
       "Estimated_delivery_of": "配送予定日",
-      "Environmental_Commitments": "環境への取り組み",
+      "Environmental_commitments": "環境への取り組み",
       "Environmentally_friendly_factories": "環境に優しい工場",
       "Expiration": "有効期限",
       "Expired_date_at_time": "有効期限: %{date} %{time}",
@@ -14590,7 +14593,8 @@
         "message": "引き続き利用するにはApp Storeからアプリのバージョンを更新してください。",
         "cancel": "キャンセル",
         "upgrade": "アップグレード"
-      }
+      },
+      "Environmental_Commitments": "環境への取り組み"
     },
     "zh": {
       "A_little_extra_to_help": "A little extra to help bring this project to life.",
@@ -14815,7 +14819,7 @@
       "Estimated_delivery": "Estimated delivery",
       "Estimated_delivery_colon": "Estimated delivery:",
       "Estimated_delivery_of": "Estimated delivery of",
-      "Environmental_Commitments": "Environmental Commitments",
+      "Environmental_commitments": "Environmental commitments",
       "Environmentally_friendly_factories": "Environmentally friendly factories",
       "Expiration": "Expiration",
       "Expired_date_at_time": "Expired %{date} at %{time}",

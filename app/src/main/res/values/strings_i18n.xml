@@ -204,7 +204,7 @@ Tap to retry</string>
   <string name="Ending_in_last_four" formatted="false">Ending in %{last_four}</string>
   <string name="Ending_soon" formatted="false">Ending Soon</string>
   <string name="Enter_an_amount_less_than_max_pledge" formatted="false">Enter an amount less than %{max_pledge}.</string>
-  <string name="Environmental_Commitments" formatted="false">Environmental Commitments</string>
+  <string name="Environmental_commitments" formatted="false">Environmental commitments</string>
   <string name="Environmentally_friendly_factories" formatted="false">Environmentally friendly factories</string>
   <string name="Estimated_delivery" formatted="false">Estimated delivery</string>
   <string name="Estimated_delivery_colon" formatted="false">Estimated delivery:</string>

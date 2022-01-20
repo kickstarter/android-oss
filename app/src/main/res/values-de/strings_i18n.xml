@@ -204,7 +204,7 @@ Antippen und erneut versuchen</string>
   <string name="Ending_in_last_four" formatted="false">Endet auf %{last_four}</string>
   <string name="Ending_soon" formatted="false">Endet bald</string>
   <string name="Enter_an_amount_less_than_max_pledge" formatted="false">Gib einen Betrag unter %{max_pledge} ein.</string>
-  <string name="Environmental_Commitments" formatted="false">Verpflichtung zum Umweltschutz</string>
+  <string name="Environmental_commitments" formatted="false">Verpflichtung zum Umweltschutz</string>
   <string name="Environmentally_friendly_factories" formatted="false">Umweltfreundliche Fertigungsanlagen</string>
   <string name="Estimated_delivery" formatted="false">Voraussichtliche Lieferung:</string>
   <string name="Estimated_delivery_colon" formatted="false">Voraussichtliche Lieferung:</string>

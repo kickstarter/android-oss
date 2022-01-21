@@ -6,7 +6,6 @@ import CreateBackingMutation
 import CreatePasswordMutation
 import DeletePaymentSourceMutation
 import ErroredBackingsQuery
-import FetchProjectsPageQuery
 import FetchProjectsQuery
 import GetProjectBackingQuery
 import ProjectCreatorDetailsQuery
@@ -341,20 +340,11 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }.subscribeOn(Schedulers.io())
     }
 
-    override fun getProjects(discoveryParams: DiscoveryParams): Observable<DiscoverEnvelope> {
+    override fun getProjects(discoveryParams: DiscoveryParams, slug: String?): Observable<DiscoverEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<DiscoverEnvelope>()
-            /*
-                            FetchProjectsQuery.builder()
-                    .sort(discoveryParams.sort()?.toProjectSort())
-                    .categoryId(discoveryParams.category()?.let { it.id().toString() } ?: "")
-                    .recommended(discoveryParams.recommended() ?: false)
-                    .backed(discoveryParams.backed()?.let { it > 0 } ?: true)
-                    .build()
-
-             */
             this.service.query(
-                buildFetchProjectsQuery(discoveryParams)
+                buildFetchProjectsQuery(discoveryParams, slug)
             ).enqueue(object : ApolloCall.Callback<FetchProjectsQuery.Data>() {
                 override fun onFailure(e: ApolloException) {
                     ps.onError(e)
@@ -385,60 +375,20 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }.subscribeOn(Schedulers.io())
     }
 
-    private fun buildFetchProjectsQuery(discoveryParams: DiscoveryParams): FetchProjectsQuery {
+    private fun buildFetchProjectsQuery(discoveryParams: DiscoveryParams, slug: String?): FetchProjectsQuery {
         val query = FetchProjectsQuery.builder()
             .sort(discoveryParams.sort()?.toProjectSort())
             .apply {
+                slug?.let { cursor -> this.cursor(cursor) }
                 discoveryParams.category()?.id()?.let { id -> this.categoryId(id.toString()) }
                 discoveryParams.recommended()?.let { isRecommended -> this.recommended(isRecommended) }
                 discoveryParams.starred()?.let { isStarred -> this.starred(isStarred.toBoolean()) }
                 discoveryParams.backed()?.let { isBacked -> this.backed(isBacked.toBoolean()) }
+                discoveryParams.staffPicks()?.let { isPicked -> this.staffPicks(isPicked) }
             }
             .build()
 
         return query
-    }
-
-    override fun getProjects(discoveryParams: DiscoveryParams, cursor: String?): Observable<DiscoverEnvelope> {
-        return Observable.defer {
-            val ps = PublishSubject.create<DiscoverEnvelope>()
-            this.service.query(
-                FetchProjectsPageQuery.builder()
-                    .first(DISCOVERY_PAGE_SIZE)
-                    .cursor(cursor)
-                    .sort(discoveryParams.sort()?.toProjectSort())
-                    .categoryId(discoveryParams.category()?.let { it.id().toString() } ?: "")
-                    .recommended(discoveryParams.recommended() ?: false)
-                    .backed(discoveryParams.backed()?.let { it > 0 }) // TODO: missing starred, and figure out the backed value
-                    .build()
-            ).enqueue(object : ApolloCall.Callback<FetchProjectsPageQuery.Data>() {
-                override fun onFailure(e: ApolloException) {
-                    ps.onError(e)
-                }
-
-                override fun onResponse(response: Response<FetchProjectsPageQuery.Data>) {
-                    response.data?.let { responseData ->
-                        val projects = responseData.projects()?.edges()?.map {
-                            projectTransformer(it.node()?.fragments()?.projectCard())
-                        }
-                        val pageInfoEnvelope = responseData.projects()?.pageInfo()?.fragments()?.pageInfo()?.let {
-                            createPageInfoObject(it)
-                        }
-                        val discoverEnvelope = DiscoverEnvelope.builder()
-                            .projects(projects)
-                            .pageInfoEnvelope(pageInfoEnvelope)
-                            .build()
-                        Observable.just(discoverEnvelope)
-                            .subscribeOn(Schedulers.io())
-                            .subscribe {
-                                ps.onNext(it)
-                                ps.onCompleted()
-                            }
-                    }
-                }
-            })
-            return@defer ps
-        }.subscribeOn(Schedulers.io())
     }
 
     override fun getProjects(isMember: Boolean): Observable<DiscoverEnvelope> {

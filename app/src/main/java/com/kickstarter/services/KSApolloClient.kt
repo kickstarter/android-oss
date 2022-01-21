@@ -24,7 +24,17 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.toProjectSort
-import com.kickstarter.models.*
+import com.kickstarter.models.Avatar
+import com.kickstarter.models.Backing
+import com.kickstarter.models.Checkout
+import com.kickstarter.models.Comment
+import com.kickstarter.models.CreatorDetails
+import com.kickstarter.models.ErroredBacking
+import com.kickstarter.models.Location
+import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
+import com.kickstarter.models.StoredCard
+import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.DiscoverEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
@@ -335,10 +345,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             this.service.query(
                 FetchProjectsQuery.builder()
                     .sort(discoveryParams.sort()?.toProjectSort())
-                    .categoryId(discoveryParams.category()?.id().toString())
-                    .backed(discoveryParams.backed()?.let { it >= 0 } ?: false)
-                    .recommended(discoveryParams.recommended())
-                    .categoryId(discoveryParams.categoryParam())
+                    .categoryId(discoveryParams.category()?.let { it.id().toString() } ?: "")
+                    .recommended(discoveryParams.recommended() ?: false)
+                    .backed(discoveryParams.backed()?.let { it > 0 } ?: true)
                     .build()
             ).enqueue(object : ApolloCall.Callback<FetchProjectsQuery.Data>() {
                 override fun onFailure(e: ApolloException) {
@@ -373,16 +382,14 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
     override fun getProjects(discoveryParams: DiscoveryParams, cursor: String?): Observable<DiscoverEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<DiscoverEnvelope>()
-            val categoryId = discoveryParams.category()?.id() ?: -1
             this.service.query(
                 FetchProjectsPageQuery.builder()
                     .first(DISCOVERY_PAGE_SIZE)
                     .cursor(cursor)
                     .sort(discoveryParams.sort()?.toProjectSort())
-                    .categoryId(encodeRelayId(categoryId as Relay))
-                    .backed(discoveryParams.backed()?.let { it >= 0 } ?: false)
-                    .recommended(discoveryParams.recommended())
-                    .categoryId(discoveryParams.categoryParam())
+                    .categoryId(discoveryParams.category()?.let { it.id().toString() } ?: "")
+                    .recommended(discoveryParams.recommended() ?: false)
+                    .backed(discoveryParams.backed()?.let { it > 0 }) // TODO: missing starred, and figure out the backed value
                     .build()
             ).enqueue(object : ApolloCall.Callback<FetchProjectsPageQuery.Data>() {
                 override fun onFailure(e: ApolloException) {

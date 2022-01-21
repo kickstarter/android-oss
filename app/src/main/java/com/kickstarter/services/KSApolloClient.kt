@@ -7,6 +7,7 @@ import CreatePasswordMutation
 import DeletePaymentSourceMutation
 import ErroredBackingsQuery
 import FetchProjectsPageQuery
+import FetchProjectsQuery
 import GetProjectBackingQuery
 import ProjectCreatorDetailsQuery
 import SavePaymentMethodMutation
@@ -23,6 +24,7 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.toBoolean
 import com.kickstarter.libs.utils.extensions.toProjectSort
 import com.kickstarter.models.Avatar
 import com.kickstarter.models.Backing
@@ -342,13 +344,17 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
     override fun getProjects(discoveryParams: DiscoveryParams): Observable<DiscoverEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<DiscoverEnvelope>()
-            this.service.query(
-                FetchProjectsQuery.builder()
+            /*
+                            FetchProjectsQuery.builder()
                     .sort(discoveryParams.sort()?.toProjectSort())
                     .categoryId(discoveryParams.category()?.let { it.id().toString() } ?: "")
                     .recommended(discoveryParams.recommended() ?: false)
                     .backed(discoveryParams.backed()?.let { it > 0 } ?: true)
                     .build()
+
+             */
+            this.service.query(
+                buildFetchProjectsQuery(discoveryParams)
             ).enqueue(object : ApolloCall.Callback<FetchProjectsQuery.Data>() {
                 override fun onFailure(e: ApolloException) {
                     ps.onError(e)
@@ -377,6 +383,20 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             })
             return@defer ps
         }.subscribeOn(Schedulers.io())
+    }
+
+    private fun buildFetchProjectsQuery(discoveryParams: DiscoveryParams): FetchProjectsQuery {
+        val query = FetchProjectsQuery.builder()
+            .sort(discoveryParams.sort()?.toProjectSort())
+            .apply {
+                discoveryParams.category()?.id()?.let { id -> this.categoryId(id.toString()) }
+                discoveryParams.recommended()?.let { isRecommended -> this.recommended(isRecommended) }
+                discoveryParams.starred()?.let { isStarred -> this.starred(isStarred.toBoolean()) }
+                discoveryParams.backed()?.let { isBacked -> this.backed(isBacked.toBoolean()) }
+            }
+            .build()
+
+        return query
     }
 
     override fun getProjects(discoveryParams: DiscoveryParams, cursor: String?): Observable<DiscoverEnvelope> {

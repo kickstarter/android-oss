@@ -478,6 +478,7 @@ interface PledgeFragmentViewModel {
 
             val pledgeReason = arguments()
                 .map { it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason }
+                .distinctUntilChanged()
 
             val updatingPayment = pledgeReason
                 .map { it == PledgeReason.UPDATE_PAYMENT || it == PledgeReason.FIX_PLEDGE }
@@ -807,7 +808,7 @@ interface PledgeFragmentViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
                 .compose<Pair<ShippingRule, PledgeReason>>(combineLatestPair(pledgeReason))
-                .filter { it.second == PledgeReason.PLEDGE || it.second == PledgeReason.UPDATE_REWARD }
+                .filter { it.second == PledgeReason.PLEDGE || it.second == PledgeReason.UPDATE_REWARD || it.second == PledgeReason.FIX_PLEDGE }
                 .map { it.first }
                 .compose<Pair<ShippingRule, Project>>(combineLatestPair(project))
                 .compose(bindToLifecycle())
@@ -855,9 +856,11 @@ interface PledgeFragmentViewModel {
 
             val isRewardWithShipping = this.selectedReward
                 .filter { RewardUtils.isShippable(it) }
+                .distinctUntilChanged()
 
             val isDigitalRw = this.selectedReward
                 .filter { RewardUtils.isDigital(it) }
+                .distinctUntilChanged()
 
             // - Calculate total for Reward || Rewards + AddOns with Shipping location
             val totalWShipping = Observable.combineLatest(isRewardWithShipping, pledgeAmountHeader, shippingAmount, this.bonusAmount, pledgeReason) {

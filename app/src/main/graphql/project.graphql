@@ -85,6 +85,15 @@ mutation CreateComment($body: String!, $commentableId: ID!, $parentId: ID, $clie
   }
 }
 
+mutation watchProject($id: ID!) {
+  watchProject(input: {id: $id}) {
+    clientMutationId
+    project {
+      ...fullProject
+    }
+  }
+}
+
 query GetProjectComments($slug: String!, $limit: Int!, $cursor: String) {
   project(slug: $slug) {
     id

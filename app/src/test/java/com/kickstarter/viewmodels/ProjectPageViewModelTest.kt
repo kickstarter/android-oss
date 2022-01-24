@@ -524,6 +524,10 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.savedTest.assertValues(false, true)
         this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart)
         this.showSavedPromptTest.assertValueCount(0)
+        this.projectData.assertValues(
+            ProjectDataFactory.project(project),
+            ProjectDataFactory.project(project.toBuilder().isStarred(true).build())
+        )
     }
 
     @Test

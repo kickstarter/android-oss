@@ -1210,7 +1210,7 @@ interface ProjectViewModel {
         }
 
         private fun saveProject(project: Project): Observable<Project> {
-            return this.client.saveProject(project)
+            return this.apolloClient.watchProject(project)
                 .compose(neverError())
         }
 

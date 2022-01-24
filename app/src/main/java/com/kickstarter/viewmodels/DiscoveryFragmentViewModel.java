@@ -329,7 +329,7 @@ public interface DiscoveryFragmentViewModel {
      * @return Observable<DiscoverEnvelope>
      */
     private Observable<DiscoverEnvelope> makeCallWithParams(final Pair<DiscoveryParams, String> discoveryParamsStringPair) {
-        return this.apolloClient.getProjects(discoveryParamsStringPair.first, discoveryParamsStringPair.second);
+      return this.apolloClient.getProjects(discoveryParamsStringPair.first, discoveryParamsStringPair.second);
     }
 
     private boolean activityHasNotBeenSeen(final @Nullable Activity activity) {

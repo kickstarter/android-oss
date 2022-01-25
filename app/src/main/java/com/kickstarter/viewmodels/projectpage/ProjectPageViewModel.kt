@@ -1158,6 +1158,7 @@ interface ProjectPageViewModel {
         private fun unSaveProject(project: Project): Observable<Project> {
             return this.apolloClient.unWatchProject(project).compose(neverError())
         }
+
         private fun toggleProjectSave(project: Project): Observable<Project> {
             return if (project.isStarred())
                 unSaveProject(project)

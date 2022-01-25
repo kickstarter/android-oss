@@ -55,8 +55,8 @@ android {
 
         // Enable Multidex to support over 65K methods
         multiDexEnabled true
+        resConfigs 'de', 'es', 'en', 'fr', 'ja'
 
-        resConfigs "de", "es", "en", "fr", "ja"
 
         def fabricProps = new Properties()
         file("fabric.properties").withInputStream { fabricProps.load(it) }
@@ -132,21 +132,14 @@ android {
         viewBinding true
     }
 
-    lintOptions {
-        disable 'NonConstantResourceId'
-        quiet true
-        warningsAsErrors true
-        abortOnError false
-    }
 
     packagingOptions {
         jniLibs {
             useLegacyPackaging = true
         }
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'LICENSE.txt'
-        exclude 'META-INF/AL2.0'
-        exclude 'META-INF/LGPL2.1'
+        resources {
+            excludes += ['META-INF/LICENSE.txt', 'LICENSE.txt', 'META-INF/AL2.0', 'META-INF/LGPL2.1']
+        }
     }
 
     testOptions {
@@ -160,6 +153,12 @@ android {
         if( names.contains("regression")) {
             setIgnore(true)
         }
+    }
+    lint {
+        abortOnError false
+        disable 'NonConstantResourceId'
+        quiet true
+        warningsAsErrors true
     }
 
 }

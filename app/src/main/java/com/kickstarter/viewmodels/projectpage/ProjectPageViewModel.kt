@@ -462,7 +462,6 @@ interface ProjectPageViewModel {
                 savedProjectOnLoginSuccess
             )
 
-
             val projectSavedStatus = projectOnUserChangeSave.mergeWith(savedProjectOnLoginSuccess)
 
             projectSavedStatus

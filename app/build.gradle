@@ -256,12 +256,12 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:29.0.2')
+    implementation platform('com.google.firebase:firebase-bom:29.0.4')
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics-ktx'
-    implementation 'com.google.firebase:firebase-perf-ktx'
     implementation "com.google.firebase:firebase-messaging"
     implementation 'com.google.firebase:firebase-inappmessaging-display'
+    implementation 'com.google.firebase:firebase-perf'
 
     // Testing
     testImplementation "junit:junit:4.13.2"

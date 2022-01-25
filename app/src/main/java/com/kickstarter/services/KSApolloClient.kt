@@ -12,6 +12,7 @@ import ProjectCreatorDetailsQuery
 import SavePaymentMethodMutation
 import SendEmailVerificationMutation
 import SendMessageMutation
+import UnwatchProjectMutation
 import UpdateBackingMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
@@ -19,7 +20,6 @@ import UpdateUserPasswordMutation
 import UserPaymentsQuery
 import UserPrivacyQuery
 import WatchProjectMutation
-import UnwatchProjectMutation
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response

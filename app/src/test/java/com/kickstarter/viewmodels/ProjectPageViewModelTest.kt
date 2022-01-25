@@ -556,6 +556,37 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testUnStarProjectThatIsAlmostCompleted() {
+        val project = ProjectFactory.almostCompletedProject().toBuilder().isStarred(true).build()
+
+        val currentUser = MockCurrentUser()
+        val environment = environment().toBuilder()
+            .currentUser(currentUser)
+            .build()
+        environment.currentConfig().config(ConfigFactory.config())
+
+        setUpEnvironment(environment)
+
+        // Start the view model with an almost completed project
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        // Login
+        currentUser.refresh(UserFactory.user())
+
+        // Star the project
+        this.vm.inputs.heartButtonClicked()
+
+        // The project should be saved, and a save prompt should NOT be shown.
+        this.savedTest.assertValues(true, false)
+        this.heartDrawableId.assertValues(R.drawable.icon__heart, R.drawable.icon__heart_outline)
+        this.showSavedPromptTest.assertValueCount(0)
+        this.projectData.assertValues(
+            ProjectDataFactory.project(project),
+            ProjectDataFactory.project(project.toBuilder().isStarred(false).build())
+        )
+    }
+
+    @Test
     fun testStartCommentsActivityFromDeepLink() {
         val project = ProjectFactory.project()
         val projectData = ProjectDataFactory.project(project)

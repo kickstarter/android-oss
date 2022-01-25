@@ -462,6 +462,7 @@ interface ProjectPageViewModel {
                 savedProjectOnLoginSuccess
             )
 
+
             val projectSavedStatus = projectOnUserChangeSave.mergeWith(savedProjectOnLoginSuccess)
 
             projectSavedStatus
@@ -1149,9 +1150,14 @@ interface ProjectPageViewModel {
                 .compose(neverError())
         }
 
+        private fun unSaveProject(project: Project): Observable<Project> {
+            return this.apolloClient.unWatchProject(project).compose(neverError())
+        }
         private fun toggleProjectSave(project: Project): Observable<Project> {
-            return this.client.toggleProjectSave(project)
-                .compose(neverError())
+            return if (project.isStarred())
+                unSaveProject(project)
+            else
+                saveProject(project)
         }
     }
 }

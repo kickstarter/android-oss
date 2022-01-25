@@ -1215,7 +1215,7 @@ interface ProjectViewModel {
         }
 
         private fun toggleProjectSave(project: Project): Observable<Project> {
-            return this.client.toggleProjectSave(project)
+            return this.apolloClient.unWatchProject(project)
                 .compose(neverError())
         }
     }

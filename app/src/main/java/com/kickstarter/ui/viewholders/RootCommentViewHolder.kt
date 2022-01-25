@@ -56,7 +56,9 @@ class RootCommentViewHolder(
                     binding.commentsCardView.setCommentUserName(comment.author().name())
                     binding.commentsCardView.setCommentBody(comment.body())
                     binding.commentsCardView.hideReplyButton()
-                    binding.commentsCardView.setCommentPostTime(DateTimeUtils.relative(context(), ksString, comment.createdAt()))
+                    comment.createdAt()?.let { createdAt ->
+                        binding.commentsCardView.setCommentPostTime(DateTimeUtils.relative(context(), ksString, createdAt))
+                    }
                     binding.commentsCardView.setCommentUserName(comment.author().name())
                     binding.commentsCardView.setAvatarUrl(comment.author().avatar().medium())
                 }

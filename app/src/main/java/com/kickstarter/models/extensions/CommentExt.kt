@@ -50,14 +50,14 @@ fun Comment.updateCommentFailedToPost(
 }
 
 fun Comment.assignAuthorBadge(user: User? = null): CommentCardBadge {
-    if (this.author().id() == user?.id()) return CommentCardBadge.YOU
+    if (this.author()?.id() == user?.id()) return CommentCardBadge.YOU
     if (this.authorBadges()?.contains(CommentBadge.CREATOR.rawValue()) == true) return CommentCardBadge.CREATOR
     if (this.authorBadges()?.contains(CommentBadge.COLLABORATOR.rawValue()) == true) return CommentCardBadge.COLLABORATOR
     if (this.authorBadges()?.contains(CommentBadge.SUPERBACKER.rawValue()) == true) return CommentCardBadge.SUPERBACKER
     return CommentCardBadge.NO_BADGE
 }
 
-fun Comment.isReply() = this.parentId() > 0
+fun Comment.isReply() = this.parentId() ?: 0 > 0
 
 /**
  * Update the internal persisted list of comments with the failed response
@@ -70,7 +70,7 @@ fun Comment.updateCanceledPledgeComment(
     val position = listOfComments.indexOfFirst { commentCardData ->
         commentCardData.commentCardState == CommentCardStatus.CANCELED_PLEDGE_MESSAGE.commentCardStatus &&
             commentCardData.comment?.body() == this.body() &&
-            commentCardData.comment?.author()?.id() == this.author().id()
+            commentCardData.comment?.author()?.id() == this.author()?.id()
     }
 
     if (position >= 0 && position < listOfComments.size) {

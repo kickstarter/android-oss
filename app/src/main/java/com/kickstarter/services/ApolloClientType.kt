@@ -66,6 +66,8 @@ interface ApolloClientType {
 
     fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>>
 
+    fun watchProject(project: Project): Observable<Project>
+
     fun getStoredCards(): Observable<List<StoredCard>>
 
     fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard>

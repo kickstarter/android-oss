@@ -823,6 +823,30 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testPledgeSummaryAmount_whenFixingPaymentMethod_whenRewardAddOnShipping() {
+        val testData = setUpBackedRewardWithAddOnsAndShippingTestData()
+        val backedProject = testData.project
+        val reward = testData.reward
+
+        val environment = environment()
+        setUpEnvironment(environment, reward, backedProject, PledgeReason.FIX_PLEDGE)
+
+        this.totalAmount.assertValue(expectedCurrency(environment, backedProject, 40.0))
+    }
+
+    @Test
+    fun testPledgeSummaryAmount_whenFixingPaymentMethod_whenRewardAddOnShippingBonusAmount() {
+        val testData = setUpBackedRewardWithAddOnsAndShippingAndBonusAmountTestData()
+        val backedProject = testData.project
+        val reward = testData.reward
+
+        val environment = environment()
+        setUpEnvironment(environment, reward, backedProject, PledgeReason.FIX_PLEDGE)
+
+        this.totalAmount.assertValue(expectedCurrency(environment, backedProject, 42.0))
+    }
+
+    @Test
     fun testTotalAmount_whenUpdatingPledge() {
         val testData = setUpBackedShippableRewardTestData()
         val backedProject = testData.project
@@ -2767,6 +2791,70 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
             .build()
 
         return TestData(shippableReward, backedProject, backing, shippingRulesEnvelope, storedCards)
+    }
+
+    private fun setUpBackedRewardWithAddOnsAndShippingAndBonusAmountTestData(): TestData {
+        val backingCard = StoredCardFactory.visa()
+        val reward = RewardFactory.rewardWithShipping()
+        val addOns = RewardFactory.rewardWithShipping()
+        val bAmount = 2.0
+        val storedCards = listOf(StoredCardFactory.discoverCard(), backingCard, StoredCardFactory.visa())
+        val backing = BackingFactory.backing()
+            .toBuilder()
+            .paymentSource(
+                PaymentSourceFactory.visa()
+                    .toBuilder()
+                    .id(backingCard.id())
+                    .build()
+            )
+            .bonusAmount(bAmount)
+            .reward(reward)
+            .rewardId(reward.id())
+            .addOns(listOf(addOns))
+            .build()
+
+        val backedProject = ProjectFactory.backedProject()
+            .toBuilder()
+            .backing(backing)
+            .build()
+
+        val shippingRulesEnvelope = ShippingRulesEnvelopeFactory.shippingRules()
+            .toBuilder()
+            .shippingRules(listOf(ShippingRuleFactory.usShippingRule(), ShippingRuleFactory.germanyShippingRule(), ShippingRuleFactory.mexicoShippingRule()))
+            .build()
+
+        return TestData(reward, backedProject, backing, shippingRulesEnvelope, storedCards)
+    }
+
+    private fun setUpBackedRewardWithAddOnsAndShippingTestData(): TestData {
+        val backingCard = StoredCardFactory.visa()
+        val reward = RewardFactory.rewardWithShipping()
+        val addOns = RewardFactory.rewardWithShipping()
+        val storedCards = listOf(StoredCardFactory.discoverCard(), backingCard, StoredCardFactory.visa())
+        val backing = BackingFactory.backing()
+            .toBuilder()
+            .paymentSource(
+                PaymentSourceFactory.visa()
+                    .toBuilder()
+                    .id(backingCard.id())
+                    .build()
+            )
+            .reward(reward)
+            .rewardId(reward.id())
+            .addOns(listOf(addOns))
+            .build()
+
+        val backedProject = ProjectFactory.backedProject()
+            .toBuilder()
+            .backing(backing)
+            .build()
+
+        val shippingRulesEnvelope = ShippingRulesEnvelopeFactory.shippingRules()
+            .toBuilder()
+            .shippingRules(listOf(ShippingRuleFactory.usShippingRule(), ShippingRuleFactory.germanyShippingRule(), ShippingRuleFactory.mexicoShippingRule()))
+            .build()
+
+        return TestData(reward, backedProject, backing, shippingRulesEnvelope, storedCards)
     }
 
     private fun setUpBackedNoRewardTestData(): TestData {

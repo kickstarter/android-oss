@@ -409,6 +409,12 @@ interface ProjectPageViewModel {
 
             val projectOnUserChangeSave = initialProject
                 .compose(takeWhen<Project, User>(loggedInUserOnHeartClick))
+                .withLatestFrom(projectData) { initial_Project, project_Data ->
+                    if (project_Data.project().isStarred() != initial_Project.isStarred())
+                        project_Data.project()
+                    else
+                        initial_Project
+                }
                 .switchMap {
                     this.toggleProjectSave(it)
                 }

@@ -79,6 +79,16 @@ mutation watchProject($id: ID!) {
   }
 }
 
+mutation unwatchProject($id: ID!) {
+  watchProject: unwatchProject(input: {id: $id}) {
+    clientMutationId
+    project {
+      ...fullProject
+    }
+  }
+}
+
+
 query GetProjectComments($slug: String!, $limit: Int!, $cursor: String) {
   project(slug: $slug) {
     id

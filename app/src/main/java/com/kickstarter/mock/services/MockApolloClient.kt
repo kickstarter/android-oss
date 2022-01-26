@@ -76,6 +76,10 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(project.toBuilder().isStarred(true).build())
     }
 
+    override fun unWatchProject(project: Project): Observable<Project> {
+        return Observable.just(project.toBuilder().isStarred(false).build())
+    }
+
     override fun cancelBacking(backing: Backing, note: String): Observable<Any> {
         return Observable.just(true)
     }

@@ -68,6 +68,8 @@ interface ApolloClientType {
 
     fun watchProject(project: Project): Observable<Project>
 
+    fun unWatchProject(project: Project): Observable<Project>
+
     fun getStoredCards(): Observable<List<StoredCard>>
 
     fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard>

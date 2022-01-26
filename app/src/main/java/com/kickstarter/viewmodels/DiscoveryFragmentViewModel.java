@@ -322,14 +322,14 @@ public interface DiscoveryFragmentViewModel {
 
     }
 
+    /**
+     * Calls to GraphQL client to fetch projects filtering by DiscoveryParams
+     * @param discoveryParamsStringPair .first discovery params.
+     * @param discoveryParamsStringPair .second cursor for pagination, null on the first call.
+     * @return Observable<DiscoverEnvelope>
+     */
     private Observable<DiscoverEnvelope> makeCallWithParams(final Pair<DiscoveryParams, String> discoveryParamsStringPair) {
-      if (discoveryParamsStringPair.second == null) {
-        //- Initial network call with Discovery params
-        return this.apolloClient.getProjects(discoveryParamsStringPair.first);
-      } else {
-        //- next Page call for more projects
-        return this.apolloClient.getProjects(discoveryParamsStringPair.second);
-      }
+      return this.apolloClient.getProjects(discoveryParamsStringPair.first, discoveryParamsStringPair.second);
     }
 
     private boolean activityHasNotBeenSeen(final @Nullable Activity activity) {

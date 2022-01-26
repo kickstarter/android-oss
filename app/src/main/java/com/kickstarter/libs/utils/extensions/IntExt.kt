@@ -35,3 +35,11 @@ fun Int?.isNullOrZero(): Boolean {
 fun Int?.isZeroOrHigher(): Boolean {
     return this != null && this >= 0
 }
+
+/**
+ * Returns `true` if `this` is 1 or Higer
+ * False if `this` is null or this is 0 or minor
+ */
+fun Int?.toBoolean(): Boolean {
+    return this != null && this >= 1
+}

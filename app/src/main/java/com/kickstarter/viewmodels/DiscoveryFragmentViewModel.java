@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels;
 import android.content.SharedPreferences;
 import android.util.Pair;
 
-import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;

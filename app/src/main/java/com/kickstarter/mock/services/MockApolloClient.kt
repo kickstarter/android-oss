@@ -59,11 +59,7 @@ open class MockApolloClient : ApolloClientType {
         )
     }
 
-    override fun getProjects(discoveryParams: DiscoveryParams): Observable<DiscoverEnvelope> {
-        return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(emptyList()))
-    }
-
-    override fun getProjects(cursor: String?): Observable<DiscoverEnvelope> {
+    override fun getProjects(discoveryParams: DiscoveryParams, cursor: String?): Observable<DiscoverEnvelope> {
         return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(emptyList()))
     }
 
@@ -74,6 +70,14 @@ open class MockApolloClient : ApolloClientType {
     override fun getProjectAddOns(slug: String, location: Location): Observable<List<Reward>> {
         val reward = RewardFactory.reward().toBuilder().isAddOn(true).quantity(2).build()
         return Observable.just(listOf(reward, reward))
+    }
+
+    override fun watchProject(project: Project): Observable<Project> {
+        return Observable.just(project.toBuilder().isStarred(true).build())
+    }
+
+    override fun unWatchProject(project: Project): Observable<Project> {
+        return Observable.just(project.toBuilder().isStarred(false).build())
     }
 
     override fun cancelBacking(backing: Backing, note: String): Observable<Any> {

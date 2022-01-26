@@ -417,6 +417,12 @@ interface ProjectViewModel {
 
             val projectOnUserChangeSave = initialProject
                 .compose(takeWhen<Project, User>(loggedInUserOnHeartClick))
+                .withLatestFrom(projectData) { initProject, latestProjectData ->
+                    if (latestProjectData.project().isStarred() != initProject.isStarred())
+                        latestProjectData.project()
+                    else
+                        initProject
+                }
                 .switchMap {
                     this.toggleProjectSave(it)
                 }
@@ -1210,13 +1216,19 @@ interface ProjectViewModel {
         }
 
         private fun saveProject(project: Project): Observable<Project> {
-            return this.client.saveProject(project)
+            return this.apolloClient.watchProject(project)
                 .compose(neverError())
         }
 
+        private fun unSaveProject(project: Project): Observable<Project> {
+            return this.apolloClient.unWatchProject(project).compose(neverError())
+        }
+
         private fun toggleProjectSave(project: Project): Observable<Project> {
-            return this.client.toggleProjectSave(project)
-                .compose(neverError())
+            return if (project.isStarred())
+                unSaveProject(project)
+            else
+                saveProject(project)
         }
     }
 }

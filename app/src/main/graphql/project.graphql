@@ -1,20 +1,5 @@
-query FetchProjectsPage($first: Int = 15, $cursor: String) {
-  projects(first: $first, after:$cursor) {
-    edges {
-      cursor
-      node{
-        ... projectCard
-      }
-    }
-    pageInfo {
-      ... pageInfo
-    }
-    totalCount
-  }
-}
-
-query FetchProjects($first: Int = 15, $sort: ProjectSort, $backed: Boolean, $recommended: Boolean, $categoryId: String) {
-  projects(first: $first, sort:$sort, backed:$backed, recommended:$recommended, categoryId: $categoryId) {
+query FetchProjects($first: Int = 15, $cursor: String, $sort: ProjectSort, $backed: Boolean, $recommended: Boolean, $categoryId: String, $starred: Boolean, $staffPicks: Boolean) {
+  projects(first: $first, after:$cursor, sort:$sort, backed:$backed, recommended:$recommended, categoryId: $categoryId, starred:$starred, staffPicks: $staffPicks) {
     edges {
       cursor
       node{
@@ -84,6 +69,25 @@ mutation CreateComment($body: String!, $commentableId: ID!, $parentId: ID, $clie
     }
   }
 }
+
+mutation watchProject($id: ID!) {
+  watchProject(input: {id: $id}) {
+    clientMutationId
+    project {
+      ...fullProject
+    }
+  }
+}
+
+mutation unwatchProject($id: ID!) {
+  watchProject: unwatchProject(input: {id: $id}) {
+    clientMutationId
+    project {
+      ...fullProject
+    }
+  }
+}
+
 
 query GetProjectComments($slug: String!, $limit: Int!, $cursor: String) {
   project(slug: $slug) {

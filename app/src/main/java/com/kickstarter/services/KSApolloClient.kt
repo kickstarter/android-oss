@@ -6,25 +6,27 @@ import CreateBackingMutation
 import CreatePasswordMutation
 import DeletePaymentSourceMutation
 import ErroredBackingsQuery
-import FetchProjectsPageQuery
+import FetchProjectsQuery
 import GetProjectBackingQuery
 import ProjectCreatorDetailsQuery
 import SavePaymentMethodMutation
 import SendEmailVerificationMutation
 import SendMessageMutation
+import UnwatchProjectMutation
 import UpdateBackingMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPaymentsQuery
 import UserPrivacyQuery
+import WatchProjectMutation
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.toBoolean
 import com.kickstarter.libs.utils.extensions.toProjectSort
-import com.kickstarter.models.Avatar
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.Comment
@@ -43,6 +45,7 @@ import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.services.transformers.backingTransformer
+import com.kickstarter.services.transformers.commentTransformer
 import com.kickstarter.services.transformers.complexRewardItemsTransformer
 import com.kickstarter.services.transformers.decodeRelayId
 import com.kickstarter.services.transformers.encodeRelayId
@@ -210,7 +213,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                 .map { project ->
 
                                     val comments = project?.comments()?.edges()?.map { edge ->
-                                        createCommentObject(edge?.node()?.fragments()?.comment()).toBuilder()
+                                        commentTransformer(edge?.node()?.fragments()?.comment()).toBuilder()
                                             .cursor(edge?.cursor())
                                             .build()
                                     }
@@ -257,7 +260,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                 .map { post ->
 
                                     val comments = post?.fragments()?.freeformPost()?.comments()?.edges()?.map { edge ->
-                                        createCommentObject(edge?.node()?.fragments()?.comment()).toBuilder()
+                                        commentTransformer(edge?.node()?.fragments()?.comment()).toBuilder()
                                             .cursor(edge?.cursor())
                                             .build()
                                     }
@@ -328,6 +331,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                 override fun onResponse(response: Response<FetchProjectQuery.Data>) {
                     response.data?.let { responseData ->
                         Observable.just(projectTransformer(responseData.project()?.fragments()?.fullProject()))
+                            .subscribeOn(Schedulers.io())
                             .subscribe {
                                 ps.onNext(it)
                                 ps.onCompleted()
@@ -339,17 +343,11 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }.subscribeOn(Schedulers.io())
     }
 
-    override fun getProjects(discoveryParams: DiscoveryParams): Observable<DiscoverEnvelope> {
+    override fun getProjects(discoveryParams: DiscoveryParams, slug: String?): Observable<DiscoverEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<DiscoverEnvelope>()
             this.service.query(
-                FetchProjectsQuery.builder()
-                    .sort(discoveryParams.sort()?.toProjectSort())
-                    .categoryId(discoveryParams.category()?.id().toString())
-                    .backed(discoveryParams.backed()?.let { it >= 0 } ?: false)
-                    .recommended(discoveryParams.recommended())
-                    .categoryId(discoveryParams.categoryParam())
-                    .build()
+                buildFetchProjectsQuery(discoveryParams, slug)
             ).enqueue(object : ApolloCall.Callback<FetchProjectsQuery.Data>() {
                 override fun onFailure(e: ApolloException) {
                     ps.onError(e)
@@ -380,42 +378,20 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }.subscribeOn(Schedulers.io())
     }
 
-    override fun getProjects(cursor: String?): Observable<DiscoverEnvelope> {
-        return Observable.defer {
-            val ps = PublishSubject.create<DiscoverEnvelope>()
-            this.service.query(
-                FetchProjectsPageQuery.builder()
-                    .first(DISCOVERY_PAGE_SIZE)
-                    .cursor(cursor)
-                    .build()
-            ).enqueue(object : ApolloCall.Callback<FetchProjectsPageQuery.Data>() {
-                override fun onFailure(e: ApolloException) {
-                    ps.onError(e)
-                }
+    private fun buildFetchProjectsQuery(discoveryParams: DiscoveryParams, slug: String?): FetchProjectsQuery {
+        val query = FetchProjectsQuery.builder()
+            .sort(discoveryParams.sort()?.toProjectSort())
+            .apply {
+                slug?.let { cursor -> this.cursor(cursor) }
+                discoveryParams.category()?.id()?.let { id -> this.categoryId(id.toString()) }
+                discoveryParams.recommended()?.let { isRecommended -> this.recommended(isRecommended) }
+                discoveryParams.starred()?.let { isStarred -> this.starred(isStarred.toBoolean()) }
+                discoveryParams.backed()?.let { isBacked -> this.backed(isBacked.toBoolean()) }
+                discoveryParams.staffPicks()?.let { isPicked -> this.staffPicks(isPicked) }
+            }
+            .build()
 
-                override fun onResponse(response: Response<FetchProjectsPageQuery.Data>) {
-                    response.data?.let { responseData ->
-                        val projects = responseData.projects()?.edges()?.map {
-                            projectTransformer(it.node()?.fragments()?.projectCard())
-                        }
-                        val pageInfoEnvelope = responseData.projects()?.pageInfo()?.fragments()?.pageInfo()?.let {
-                            createPageInfoObject(it)
-                        }
-                        val discoverEnvelope = DiscoverEnvelope.builder()
-                            .projects(projects)
-                            .pageInfoEnvelope(pageInfoEnvelope)
-                            .build()
-                        Observable.just(discoverEnvelope)
-                            .subscribeOn(Schedulers.io())
-                            .subscribe {
-                                ps.onNext(it)
-                                ps.onCompleted()
-                            }
-                    }
-                }
-            })
-            return@defer ps
-        }.subscribeOn(Schedulers.io())
+        return query
     }
 
     override fun getProjects(isMember: Boolean): Observable<DiscoverEnvelope> {
@@ -476,7 +452,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                          * a full refresh.
                          */
                         ps.onNext(
-                            createCommentObject(response.data?.createComment()?.comment()?.fragments()?.comment())
+                            commentTransformer(response.data?.createComment()?.comment()?.fragments()?.comment())
                         )
                         ps.onCompleted()
                     }
@@ -663,6 +639,64 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                     ps.onCompleted()
                                 }
                         }
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun watchProject(project: Project): Observable<Project> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Project>()
+            this.service.mutate(
+                WatchProjectMutation.builder().id(encodeRelayId(project)).build()
+            )
+                .enqueue(object : ApolloCall.Callback<WatchProjectMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<WatchProjectMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                        }
+                        /* make a copy of what you posted. just in case
+                         * we want to update the list without doing
+                         * a full refresh.
+                         */
+                        ps.onNext(
+                            projectTransformer(response.data?.watchProject()?.project()?.fragments()?.fullProject())
+                        )
+                        ps.onCompleted()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun unWatchProject(project: Project): Observable<Project> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Project>()
+            this.service.mutate(
+                UnwatchProjectMutation.builder().id(encodeRelayId(project)).build()
+            )
+                .enqueue(object : ApolloCall.Callback<UnwatchProjectMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<UnwatchProjectMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                        }
+                        /* make a copy of what you posted. just in case
+                         * we want to update the list without doing
+                         * a full refresh.
+                         */
+                        ps.onNext(
+                            projectTransformer(response.data?.watchProject()?.project()?.fragments()?.fullProject())
+                        )
+                        ps.onCompleted()
                     }
                 })
             return@defer ps
@@ -943,36 +977,6 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
     }
 }
 
-private fun createCommentObject(commentFr: fragment.Comment?): Comment {
-
-    val badges: List<String>? = commentFr?.authorBadges()?.map { badge ->
-        badge?.rawValue() ?: ""
-    }
-
-    val author = User.builder()
-        .id(decodeRelayId(commentFr?.author()?.fragments()?.user()?.id()) ?: -1)
-        .name(commentFr?.author()?.fragments()?.user()?.name() ?: "")
-        .avatar(
-            Avatar.builder()
-                .medium(commentFr?.author()?.fragments()?.user()?.imageUrl())
-                .build()
-        )
-        .build()
-
-    return Comment.builder()
-        .id(decodeRelayId(commentFr?.id()) ?: -1)
-        .author(author)
-        .repliesCount(commentFr?.replies()?.totalCount() ?: 0)
-        .body(commentFr?.body())
-        .authorBadges(badges)
-        .cursor("")
-        .createdAt(commentFr?.createdAt())
-        .deleted(commentFr?.deleted())
-        .authorCanceledPledge(commentFr?.authorCanceledPledge())
-        .parentId(decodeRelayId(commentFr?.parentId()) ?: -1)
-        .build()
-}
-
 private fun createPageInfoObject(pageFr: fragment.PageInfo?): PageInfoEnvelope {
     return PageInfoEnvelope.builder()
         .endCursor(pageFr?.endCursor() ?: "")
@@ -985,7 +989,7 @@ private fun createPageInfoObject(pageFr: fragment.PageInfo?): PageInfoEnvelope {
 private fun createCommentEnvelop(responseData: GetRepliesForCommentQuery.Data): CommentEnvelope {
     val replies = (responseData.commentable() as? GetRepliesForCommentQuery.AsComment)?.replies()
     val listOfComments = replies?.nodes()?.map { commentFragment ->
-        createCommentObject(commentFragment.fragments().comment())
+        commentTransformer(commentFragment.fragments().comment())
     } ?: emptyList()
     val totalCount = replies?.totalCount() ?: 0
     val pageInfo = createPageInfoObject(replies?.pageInfo()?.fragments()?.pageInfo())
@@ -999,7 +1003,7 @@ private fun createCommentEnvelop(responseData: GetRepliesForCommentQuery.Data): 
 
 private fun mapGetCommentQueryResponseToComment(responseData: GetCommentQuery.Data): Comment {
     val commentFragment = (responseData.commentable() as? GetCommentQuery.AsComment)?.fragments()?.comment()
-    return createCommentObject(commentFragment)
+    return commentTransformer(commentFragment)
 }
 
 private fun <T : Any?> handleResponse(it: T, ps: PublishSubject<T>) {

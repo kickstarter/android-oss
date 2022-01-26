@@ -15,11 +15,11 @@ class Category internal constructor(
     private val position: Int,
     private val projectsCount: Int,
     private val slug: String
-) : Parcelable, Comparable<Category> {
+) : Parcelable, Comparable<Category>, Relay {
 
     fun analyticsName() = this.analyticsName
     fun color() = this.color
-    fun id() = this.id
+    override fun id() = this.id
     fun name() = this.name
     fun parent() = this.parent
     fun parentId() = this.parentId

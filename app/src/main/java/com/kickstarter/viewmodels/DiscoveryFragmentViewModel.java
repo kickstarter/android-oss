@@ -9,6 +9,7 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.FragmentViewModel;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.loadmore.ApolloPaginate;
 import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.preferences.IntPreferenceType;
 import com.kickstarter.libs.utils.EventContextValues;
@@ -151,26 +152,13 @@ public interface DiscoveryFragmentViewModel {
         selectedParams.compose(takeWhen(this.refresh))
       );
 
-      // TODO: fetch projects and paginate from GraphQL
-      /*final ApolloPaginate<Project, DiscoverEnvelope, DiscoveryParams> paginator;
+      final ApolloPaginate<Project, DiscoverEnvelope, DiscoveryParams> paginator;
       paginator = ApolloPaginate.<Project, DiscoverEnvelope, DiscoveryParams>builder()
           .nextPage(this.nextPage)
           .distinctUntilChanged(true)
           .startOverWith(startOverWith)
           .envelopeToListOfData(DiscoverEnvelope::projects)
           .loadWithParams(this::makeCallWithParams)
-          .clearWhenStartingOver(false)
-          .concater(ListUtils::concatDistinct)
-          .build();*/
-
-      final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
-        ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
-          .nextPage(this.nextPage)
-          .startOverWith(startOverWith)
-          .envelopeToListOfData(DiscoverEnvelope::projects)
-          .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
-          .loadWithParams(this.apiClient::fetchProjects)
-          .loadWithPaginationPath(this.apiClient::fetchProjects)
           .clearWhenStartingOver(false)
           .concater(ListUtils::concatDistinct)
           .build();

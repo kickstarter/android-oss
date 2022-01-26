@@ -12,6 +12,7 @@ import ProjectCreatorDetailsQuery
 import SavePaymentMethodMutation
 import SendEmailVerificationMutation
 import SendMessageMutation
+import UnwatchProjectMutation
 import UpdateBackingMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
@@ -683,6 +684,35 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     }
 
                     override fun onResponse(response: Response<WatchProjectMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                        }
+                        /* make a copy of what you posted. just in case
+                         * we want to update the list without doing
+                         * a full refresh.
+                         */
+                        ps.onNext(
+                            projectTransformer(response.data?.watchProject()?.project()?.fragments()?.fullProject())
+                        )
+                        ps.onCompleted()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun unWatchProject(project: Project): Observable<Project> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Project>()
+            this.service.mutate(
+                UnwatchProjectMutation.builder().id(encodeRelayId(project)).build()
+            )
+                .enqueue(object : ApolloCall.Callback<UnwatchProjectMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<UnwatchProjectMutation.Data>) {
                         if (response.hasErrors()) {
                             ps.onError(java.lang.Exception(response.errors?.first()?.message))
                         }

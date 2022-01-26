@@ -115,7 +115,7 @@ class DiscoveryParamsExtKtTest : KSRobolectricTestCase() {
             null,
             UserFactory.socialUser()
         )
-        assertEquals(8, data.sections().size)
+        assertEquals(7, data.sections().size)
         assertEquals(1, data.sections()[0].rows().size)
         assertEquals(1, data.sections()[1].rows().size)
         assertEquals(1, data.sections()[2].rows().size)
@@ -123,7 +123,6 @@ class DiscoveryParamsExtKtTest : KSRobolectricTestCase() {
         assertEquals(1, data.sections()[4].rows().size)
         assertEquals(1, data.sections()[5].rows().size)
         assertEquals(1, data.sections()[6].rows().size)
-        assertEquals(1, data.sections()[7].rows().size)
     }
 
     @Test

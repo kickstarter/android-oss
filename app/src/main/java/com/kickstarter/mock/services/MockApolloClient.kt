@@ -60,7 +60,35 @@ open class MockApolloClient : ApolloClientType {
     }
 
     override fun getProjects(discoveryParams: DiscoveryParams, cursor: String?): Observable<DiscoverEnvelope> {
-        return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(emptyList()))
+        return Observable.just(
+            DiscoverEnvelope
+                .builder()
+                .projects(
+                    listOf(
+                        ProjectFactory.project(),
+                        ProjectFactory.allTheWayProject(),
+                        ProjectFactory.successfulProject()
+                    )
+                )
+                .urls(
+                    DiscoverEnvelope.UrlsEnvelope
+                        .builder()
+                        .api(
+                            DiscoverEnvelope.UrlsEnvelope.ApiEnvelope
+                                .builder()
+                                .moreProjects("http://more.projects.please")
+                                .build()
+                        )
+                        .build()
+                )
+                .stats(
+                    DiscoverEnvelope.StatsEnvelope
+                        .builder()
+                        .count(10)
+                        .build()
+                )
+                .build()
+        )
     }
 
     override fun getProjects(isMember: Boolean): Observable<DiscoverEnvelope> {

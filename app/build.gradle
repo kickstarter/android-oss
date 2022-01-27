@@ -156,8 +156,6 @@ android {
     }
     lint {
         abortOnError false
-        disable 'NonConstantResourceId'
-        quiet true
         warningsAsErrors true
     }
 

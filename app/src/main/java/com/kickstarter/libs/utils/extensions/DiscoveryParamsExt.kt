@@ -197,9 +197,9 @@ private fun topSections(user: User?): List<NavigationDrawerData.Section> {
 
     if (userIsLoggedIn) {
         filters.add(DiscoveryParams.builder().starred(1).build())
-        if (user?.social()?.isTrue() == true) {
+        /*if (user?.social()?.isTrue() == true) { //TODO: Bring back once social is available on graphql
             filters.add(DiscoveryParams.builder().social(1).build())
-        }
+        }*/
     }
 
     return Observable.from(filters)

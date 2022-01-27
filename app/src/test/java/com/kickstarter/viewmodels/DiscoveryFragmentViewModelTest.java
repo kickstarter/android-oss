@@ -19,10 +19,12 @@ import com.kickstarter.mock.factories.DiscoverEnvelopeFactory;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.mock.services.MockApiClient;
+import com.kickstarter.mock.services.MockApolloClient;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
+import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
@@ -266,7 +268,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     final CurrentUserType currentUser = new MockCurrentUser();
 
     final Environment environment = environment().toBuilder()
-      .apiClient(new MockApiClient())
+      .apolloClient(new MockApolloClient())
       .currentUser(currentUser)
       .build();
 
@@ -296,19 +298,19 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testShouldShowEmptySavedView_isTrue_whenUserHasNoSavedProjects() {
     final CurrentUserType currentUser = new MockCurrentUser();
-    final ApiClientType apiClient = new MockApiClient() {
+    final ApolloClientType apiClient = new MockApolloClient() {
       @Override
-      public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
+      public @NonNull Observable<DiscoverEnvelope> getProjects(final @NonNull DiscoveryParams params, final String cursor) {
         if (params.isSavedProjects()) {
           return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(new ArrayList<>()));
         } else {
-          return super.fetchProjects(params);
+          return super.getProjects(params, cursor);
         }
       }
     };
 
     final Environment environment = environment().toBuilder()
-      .apiClient(apiClient)
+      .apolloClient(apiClient)
       .currentUser(currentUser)
       .build();
 

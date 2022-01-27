@@ -90,6 +90,7 @@ import org.joda.time.DateTime;
 import java.net.CookieManager;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 import javax.inject.Singleton;
@@ -628,8 +629,8 @@ public class ApplicationModule {
 
     final OptimizelyManager optimizelyManager = OptimizelyManager.builder()
       .withSDKKey(optimizelyEnvironment.getSdkKey())
-      .withDatafileDownloadInterval(60L * 10L)
-      .withEventDispatchInterval(2L)
+      .withDatafileDownloadInterval(15, TimeUnit.MINUTES)
+      .withEventDispatchInterval(2L, TimeUnit.MILLISECONDS)
       .build(context);
 
     optimizelyManager.initialize(context, null, optimizely -> {

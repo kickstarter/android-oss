@@ -160,9 +160,6 @@ class DiscoveryDrawerAdapter(private val delegate: Delegate) : KSAdapter() {
             .filter {
                 it.isTopFilter
             }
-            /*.map {
-                it.toBuilder().rows(containsSocialParam(it.rows())).build()
-            }*/
             .toList()
             .toBlocking().single()
 

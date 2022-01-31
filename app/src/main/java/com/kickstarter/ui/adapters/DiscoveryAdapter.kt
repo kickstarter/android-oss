@@ -1,135 +1,175 @@
-package com.kickstarter.ui.adapters;
+package com.kickstarter.ui.adapters
 
-import android.util.Pair;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
+import android.util.Pair
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.annotation.LayoutRes
+import com.kickstarter.R
+import com.kickstarter.databinding.ActivitySampleFriendBackingViewBinding
+import com.kickstarter.databinding.ActivitySampleFriendFollowViewBinding
+import com.kickstarter.databinding.ActivitySampleProjectViewBinding
+import com.kickstarter.databinding.DiscoveryOnboardingViewBinding
+import com.kickstarter.databinding.EmptyViewBinding
+import com.kickstarter.databinding.ItemLightsOnBinding
+import com.kickstarter.databinding.ProjectCardViewBinding
+import com.kickstarter.models.Activity
+import com.kickstarter.models.Project
+import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.ui.data.Editorial
+import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder
+import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder
+import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder
+import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder
+import com.kickstarter.ui.viewholders.EditorialViewHolder
+import com.kickstarter.ui.viewholders.EmptyViewHolder
+import com.kickstarter.ui.viewholders.KSViewHolder
+import com.kickstarter.ui.viewholders.ProjectCardViewHolder
 
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+class DiscoveryAdapter(private val delegate: Delegate) : KSListAdapter() {
+    interface Delegate :
+        DiscoveryOnboardingViewHolder.Delegate,
+        EditorialViewHolder.Delegate,
+        ActivitySampleFriendFollowViewHolder.Delegate,
+        ActivitySampleFriendBackingViewHolder.Delegate,
+        ActivitySampleProjectViewHolder.Delegate,
+        ProjectCardViewHolder.Delegate
 
-import com.kickstarter.R;
-import com.kickstarter.databinding.ActivitySampleFriendBackingViewBinding;
-import com.kickstarter.databinding.ActivitySampleFriendFollowViewBinding;
-import com.kickstarter.databinding.ActivitySampleProjectViewBinding;
-import com.kickstarter.databinding.DiscoveryOnboardingViewBinding;
-import com.kickstarter.databinding.EmptyViewBinding;
-import com.kickstarter.databinding.ItemLightsOnBinding;
-import com.kickstarter.databinding.ProjectCardViewBinding;
-import com.kickstarter.models.Activity;
-import com.kickstarter.models.Project;
-import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.ui.data.Editorial;
-import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder;
-import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder;
-import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder;
-import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
-import com.kickstarter.ui.viewholders.EditorialViewHolder;
-import com.kickstarter.ui.viewholders.EmptyViewHolder;
-import com.kickstarter.ui.viewholders.KSViewHolder;
-import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
-
-import java.util.Collections;
-import java.util.List;
-
-public final class DiscoveryAdapter extends KSAdapter {
-  private static final int SECTION_ONBOARDING_VIEW = 0;
-  private static final int SECTION_EDITORIAL_VIEW = 1;
-  private static final int SECTION_ACTIVITY_SAMPLE_VIEW = 2;
-  private static final int SECTION_PROJECT_CARD_VIEW = 3;
-
-  private final Delegate delegate;
-
-  public interface Delegate extends DiscoveryOnboardingViewHolder.Delegate,
-    EditorialViewHolder.Delegate,
-    ActivitySampleFriendFollowViewHolder.Delegate,
-    ActivitySampleFriendBackingViewHolder.Delegate,
-    ActivitySampleProjectViewHolder.Delegate,
-    ProjectCardViewHolder.Delegate {}
-
-  public DiscoveryAdapter(final @NonNull Delegate delegate) {
-    this.delegate = delegate;
-
-    insertSection(SECTION_ONBOARDING_VIEW, Collections.emptyList());
-    insertSection(SECTION_EDITORIAL_VIEW, Collections.emptyList());
-    insertSection(SECTION_ACTIVITY_SAMPLE_VIEW, Collections.emptyList());
-    insertSection(SECTION_PROJECT_CARD_VIEW, Collections.emptyList());
-  }
-
-  public void takeActivity(final @Nullable Activity activity) {
-    if (activity == null) {
-      setSection(SECTION_ACTIVITY_SAMPLE_VIEW, Collections.emptyList());
-    } else {
-      setSection(SECTION_ACTIVITY_SAMPLE_VIEW, Collections.singletonList(activity));
-    }
-    notifyDataSetChanged();
-  }
-
-  public void setShouldShowEditorial(final @Nullable Editorial editorial) {
-    if (editorial == null) {
-      setSection(SECTION_EDITORIAL_VIEW, Collections.emptyList());
-    } else {
-      setSection(SECTION_EDITORIAL_VIEW, Collections.singletonList(editorial));
-    }
-
-    notifyDataSetChanged();
-  }
-
-  public void setShouldShowOnboardingView(final boolean shouldShowOnboardingView) {
-    if (shouldShowOnboardingView) {
-      setSection(SECTION_ONBOARDING_VIEW, Collections.singletonList(null));
-    } else {
-      setSection(SECTION_ONBOARDING_VIEW, Collections.emptyList());
-    }
-
-    notifyDataSetChanged();
-  }
-
-  public void takeProjects(final @NonNull List<Pair<Project, DiscoveryParams>> projects) {
-    setSection(SECTION_PROJECT_CARD_VIEW, projects);
-    notifyDataSetChanged();
-  }
-
-  @Override
-  protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
-    if (sectionRow.section() == SECTION_ONBOARDING_VIEW) {
-      return R.layout.discovery_onboarding_view;
-    } else if (sectionRow.section() == SECTION_EDITORIAL_VIEW) {
-      return R.layout.item_lights_on;
-    } else if (sectionRow.section() == SECTION_ACTIVITY_SAMPLE_VIEW) {
-      if (objectFromSectionRow(sectionRow) instanceof Activity) {
-        final Activity activity = (Activity) objectFromSectionRow(sectionRow);
-        if (activity.category().equals(Activity.CATEGORY_BACKING)) {
-          return R.layout.activity_sample_friend_backing_view;
-        } else if (activity.category().equals(Activity.CATEGORY_FOLLOW)) {
-          return R.layout.activity_sample_friend_follow_view;
+    fun takeActivity(activity: Activity?) {
+        if (activity == null) {
+            setSection(SECTION_ACTIVITY_SAMPLE_VIEW, emptyList<Any>())
         } else {
-          return R.layout.activity_sample_project_view;
+            setSection(SECTION_ACTIVITY_SAMPLE_VIEW, listOf(activity))
         }
-      }
-      return R.layout.empty_view;
-    } else {
-      return R.layout.project_card_view;
-    }
-  }
 
-  @Override
-  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull ViewGroup viewGroup) {
-    switch (layout) {
-      case R.layout.discovery_onboarding_view:
-        return new DiscoveryOnboardingViewHolder(DiscoveryOnboardingViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
-      case R.layout.item_lights_on:
-        return new EditorialViewHolder(ItemLightsOnBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
-      case R.layout.project_card_view:
-        return new ProjectCardViewHolder(ProjectCardViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
-      case R.layout.activity_sample_friend_backing_view:
-        return new ActivitySampleFriendBackingViewHolder(ActivitySampleFriendBackingViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
-      case R.layout.activity_sample_friend_follow_view:
-        return new ActivitySampleFriendFollowViewHolder(ActivitySampleFriendFollowViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
-      case R.layout.activity_sample_project_view:
-        return new ActivitySampleProjectViewHolder(ActivitySampleProjectViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
-      default:
-        return new EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
+        submitList(items())
     }
-  }
+
+    fun setShouldShowEditorial(editorial: Editorial?) {
+        if (editorial == null) {
+            setSection(SECTION_EDITORIAL_VIEW, emptyList<Any>())
+        } else {
+            setSection(SECTION_EDITORIAL_VIEW, listOf(editorial))
+        }
+        submitList(items())
+    }
+
+    fun setShouldShowOnboardingView(shouldShowOnboardingView: Boolean) {
+        if (shouldShowOnboardingView) {
+            setSection(SECTION_ONBOARDING_VIEW, listOf<Any?>(null))
+        } else {
+            setSection(SECTION_ONBOARDING_VIEW, emptyList<Any>())
+        }
+        submitList(items())
+    }
+
+    fun takeProjects(projects: List<Pair<Project, DiscoveryParams>>) {
+        setSection(SECTION_PROJECT_CARD_VIEW, projects)
+        submitList(items())
+    }
+
+    @LayoutRes
+    override fun layout(sectionRow: SectionRow): Int {
+        return when {
+            sectionRow.section() == SECTION_ONBOARDING_VIEW ->
+                R.layout.discovery_onboarding_view
+
+            sectionRow.section() == SECTION_EDITORIAL_VIEW ->
+                R.layout.item_lights_on
+
+            sectionRow.section() == SECTION_ACTIVITY_SAMPLE_VIEW -> {
+                if (objectFromSectionRow(sectionRow) is Activity) {
+                    val activity = objectFromSectionRow(sectionRow) as Activity
+                    return when {
+                        activity.category() == Activity.CATEGORY_BACKING -> {
+                            R.layout.activity_sample_friend_backing_view
+                        }
+                        activity.category() == Activity.CATEGORY_FOLLOW -> {
+                            R.layout.activity_sample_friend_follow_view
+                        }
+                        else -> {
+                            R.layout.activity_sample_project_view
+                        }
+                    }
+                }
+                R.layout.empty_view
+            }
+            else ->
+                R.layout.project_card_view
+        }
+    }
+
+    override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
+        return when (layout) {
+            R.layout.discovery_onboarding_view -> DiscoveryOnboardingViewHolder(
+                DiscoveryOnboardingViewBinding.inflate(
+                    LayoutInflater.from(viewGroup.context),
+                    viewGroup,
+                    false
+                ),
+                delegate
+            )
+            R.layout.item_lights_on -> EditorialViewHolder(
+                ItemLightsOnBinding.inflate(
+                    LayoutInflater.from(viewGroup.context),
+                    viewGroup,
+                    false
+                ),
+                delegate
+            )
+            R.layout.project_card_view -> ProjectCardViewHolder(
+                ProjectCardViewBinding.inflate(
+                    LayoutInflater.from(viewGroup.context),
+                    viewGroup,
+                    false
+                ),
+                delegate
+            )
+            R.layout.activity_sample_friend_backing_view -> ActivitySampleFriendBackingViewHolder(
+                ActivitySampleFriendBackingViewBinding.inflate(
+                    LayoutInflater.from(viewGroup.context),
+                    viewGroup,
+                    false
+                ),
+                delegate
+            )
+            R.layout.activity_sample_friend_follow_view -> ActivitySampleFriendFollowViewHolder(
+                ActivitySampleFriendFollowViewBinding.inflate(
+                    LayoutInflater.from(viewGroup.context),
+                    viewGroup,
+                    false
+                ),
+                delegate
+            )
+            R.layout.activity_sample_project_view -> ActivitySampleProjectViewHolder(
+                ActivitySampleProjectViewBinding.inflate(
+                    LayoutInflater.from(viewGroup.context),
+                    viewGroup,
+                    false
+                ),
+                delegate
+            )
+            else -> EmptyViewHolder(
+                EmptyViewBinding.inflate(
+                    LayoutInflater.from(
+                        viewGroup.context
+                    ),
+                    viewGroup, false
+                )
+            )
+        }
+    }
+
+    companion object {
+        private const val SECTION_ONBOARDING_VIEW = 0
+        private const val SECTION_EDITORIAL_VIEW = 1
+        private const val SECTION_ACTIVITY_SAMPLE_VIEW = 2
+        private const val SECTION_PROJECT_CARD_VIEW = 3
+    }
+
+    init {
+        insertSection(SECTION_ONBOARDING_VIEW, emptyList<Any>())
+        insertSection(SECTION_EDITORIAL_VIEW, emptyList<Any>())
+        insertSection(SECTION_ACTIVITY_SAMPLE_VIEW, emptyList<Any>())
+        insertSection(SECTION_PROJECT_CARD_VIEW, emptyList<Any>())
+    }
 }

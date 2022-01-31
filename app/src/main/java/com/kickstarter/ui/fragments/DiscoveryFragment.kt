@@ -61,12 +61,12 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         super.onViewCreated(view, savedInstanceState)
 
         val discoveryActivitySampleAdapter = DiscoveryActivitySampleAdapter(this.viewModel.inputs)
-        val discoveryEditorialViewHolder = DiscoveryEditorialAdapter(this.viewModel.inputs)
+        val discoveryEditorialAdapter = DiscoveryEditorialAdapter(this.viewModel.inputs)
         val discoveryOnboardingAdapter = DiscoveryOnboardingAdapter(this.viewModel.inputs)
         val discoveryProjectCardAdapter = DiscoveryProjectCardAdapter(this.viewModel.inputs)
 
-        val discoveryAdapter = ConcatAdapter(discoveryOnboardingAdapter, discoveryEditorialViewHolder, discoveryActivitySampleAdapter, discoveryProjectCardAdapter)
-        this.discoveryEditorialAdapter = discoveryEditorialViewHolder
+        val discoveryAdapter = ConcatAdapter(discoveryOnboardingAdapter, discoveryEditorialAdapter, discoveryActivitySampleAdapter, discoveryProjectCardAdapter)
+        this.discoveryEditorialAdapter = discoveryEditorialAdapter
 
         binding?.discoveryRecyclerView?.apply {
             adapter = discoveryAdapter
@@ -103,7 +103,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.shouldShowEditorial()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { discoveryEditorialViewHolder.setShouldShowEditorial(it) }
+            .subscribe { discoveryEditorialAdapter.setShouldShowEditorial(it) }
 
         this.viewModel.outputs.shouldShowEmptySavedView()
             .compose(bindToLifecycle())

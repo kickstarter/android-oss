@@ -89,7 +89,6 @@ class DiscoveryActivitySampleAdapter(private val delegate: Delegate) : KSListAda
     }
 
     companion object {
-
         private const val SECTION_ACTIVITY_SAMPLE_VIEW = 0
     }
 

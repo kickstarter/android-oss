@@ -33,7 +33,6 @@ class DiscoveryEditorialAdapter(private val delegate: Delegate) : KSListAdapter(
     }
 
     companion object {
-
         private const val SECTION_EDITORIAL_VIEW = 0
     }
 

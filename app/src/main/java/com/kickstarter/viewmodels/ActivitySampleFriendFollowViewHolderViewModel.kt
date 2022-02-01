@@ -29,7 +29,6 @@ class ActivitySampleFriendFollowViewHolderViewModel {
             activityInput
                 .filter { ObjectUtils.isNotNull(it) }
                 .filter { ObjectUtils.isNotNull(it.user()) }
-                .filter { ObjectUtils.isNotNull(it.project()) }
                 .map { requireNotNull(it) }
                 .compose(bindToLifecycle())
                 .subscribe {

@@ -22,12 +22,9 @@ class DiscoveryActivitySampleAdapter(private val delegate: Delegate) : KSListAda
         ActivitySampleProjectViewHolder.Delegate
 
     fun takeActivity(activity: Activity?) {
-        if (activity == null) {
-            setSection(SECTION_ACTIVITY_SAMPLE_VIEW, emptyList<Any>())
-        } else {
+        activity?.let {
             setSection(SECTION_ACTIVITY_SAMPLE_VIEW, listOf(activity))
         }
-
         submitList(items())
     }
 

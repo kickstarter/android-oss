@@ -26,7 +26,8 @@ class ActivitySampleProjectViewHolder(
         activity = ObjectUtils.requireNonNull(data as Activity?, Activity::class.java)
     }
 
-    override fun onBind() {
+    init {
+
         val context = context()
 
         activity?.project()?.let { project ->

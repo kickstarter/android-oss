@@ -22,7 +22,7 @@ class ActivitySampleFriendBackingViewHolder(
         activity = ObjectUtils.requireNonNull(data as Activity?, Activity::class.java)
     }
 
-    override fun onBind() {
+    init {
         val user = activity?.user()
         val project = activity?.project()
         if (user != null && project != null) {

@@ -19,12 +19,7 @@ class ActivitySampleFriendFollowViewHolder(
         fun activitySampleFriendFollowViewHolderSeeActivityClicked(viewHolder: ActivitySampleFriendFollowViewHolder)
     }
 
-    @Throws(Exception::class)
-    override fun bindData(data: Any?) {
-        activity = ObjectUtils.requireNonNull(data as Activity?, Activity::class.java)
-    }
-
-    override fun onBind() {
+    init {
         activity?.user()?.let { user ->
             user.avatar()?.small()?.let {
                 Picasso.get().load(it)
@@ -39,6 +34,11 @@ class ActivitySampleFriendFollowViewHolder(
             binding.activitySubtitle.visibility = View.GONE
             binding.seeActivityButton.setOnClickListener { seeActivityOnClick() }
         }
+    }
+
+    @Throws(Exception::class)
+    override fun bindData(data: Any?) {
+        activity = ObjectUtils.requireNonNull(data as Activity?, Activity::class.java)
     }
 
     private fun seeActivityOnClick() {

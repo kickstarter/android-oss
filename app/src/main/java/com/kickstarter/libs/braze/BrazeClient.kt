@@ -7,7 +7,8 @@ import com.appboy.Appboy
 import com.appboy.AppboyFirebaseMessagingService
 import com.appboy.AppboyLifecycleCallbackListener
 import com.appboy.support.AppboyLogger
-import com.appboy.ui.inappmessage.AppboyInAppMessageManager
+import com.braze.BrazeActivityLifecycleCallbackListener
+import com.braze.ui.inappmessage.BrazeInAppMessageManager
 import com.braze.configuration.BrazeConfig
 import com.google.firebase.messaging.RemoteMessage
 import com.kickstarter.libs.Build
@@ -137,7 +138,7 @@ open class BrazeClient(
     }
 
     override fun getLifeCycleCallbacks(): Application.ActivityLifecycleCallbacks =
-        AppboyLifecycleCallbackListener(true, false)
+        BrazeActivityLifecycleCallbackListener(true, false)
 
     override fun registerActivityLifecycleCallbacks(context: Context) {
         if (isSDKEnabled() && context.isKSApplication()) {
@@ -152,7 +153,7 @@ open class BrazeClient(
      */
     companion object {
         fun setInAppCustomListener(currentUser: CurrentUserType, build: Build) {
-            AppboyInAppMessageManager.getInstance().setCustomInAppMessageManagerListener(InAppCustomListener(currentUser, build))
+            BrazeInAppMessageManager.getInstance().setCustomInAppMessageManagerListener(InAppCustomListener(currentUser, build))
         }
     }
 }

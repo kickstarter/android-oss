@@ -245,7 +245,7 @@ dependencies {
 
     // Analytics Segment-Braze
     implementation 'com.segment.analytics.android:analytics:4.10.0'
-    implementation 'com.appboy:appboy-segment-integration:9.0.0'
+    implementation 'com.appboy:appboy-segment-integration:10.0.0'
 
     // Security
     implementation 'com.perimeterx.sdk:msdk:1.16.4'

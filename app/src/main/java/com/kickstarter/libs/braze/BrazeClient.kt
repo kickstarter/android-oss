@@ -5,11 +5,10 @@ import android.content.Context
 import android.util.Log
 import com.appboy.Appboy
 import com.appboy.AppboyFirebaseMessagingService
-import com.appboy.AppboyLifecycleCallbackListener
 import com.appboy.support.AppboyLogger
 import com.braze.BrazeActivityLifecycleCallbackListener
-import com.braze.ui.inappmessage.BrazeInAppMessageManager
 import com.braze.configuration.BrazeConfig
+import com.braze.ui.inappmessage.BrazeInAppMessageManager
 import com.google.firebase.messaging.RemoteMessage
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType

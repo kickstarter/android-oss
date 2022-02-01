@@ -76,17 +76,12 @@ class ProjectPageActivity :
     private val animDuration = 200L
     private lateinit var binding: ActivityProjectPageBinding
 
-    private var pagerAdapterMap = mutableMapOf(
+    private val pagerAdapterMap = mutableMapOf(
         ProjectPagerTabs.OVERVIEW to true,
         ProjectPagerTabs.CAMPAIGN to true,
         ProjectPagerTabs.FAQS to true,
         ProjectPagerTabs.RISKS to true,
         ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT to false
-    )
-
-    private var pagerAdapter = ProjectPagerAdapter(
-        supportFragmentManager, pagerAdapterMap,
-        lifecycle
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -130,7 +125,7 @@ class ProjectPageActivity :
             .subscribe {
                 // - Every time the ProjectData gets updated
                 // - the fragments on the viewPager are updated as well
-                pagerAdapter.updatedWithProjectData(it)
+                (binding.projectPager.adapter as ProjectPagerAdapter).updatedWithProjectData(it)
             }
 
         this.viewModel.outputs.updateEnvCommitmentsTabVisibility()
@@ -373,9 +368,7 @@ class ProjectPageActivity :
         val viewPager = binding.projectPager
         val tabLayout = binding.projectDetailTabs
 
-        pagerAdapter = ProjectPagerAdapter(supportFragmentManager, pagerAdapterMap, lifecycle)
-
-        viewPager.adapter = pagerAdapter
+        viewPager.adapter = ProjectPagerAdapter(supportFragmentManager, pagerAdapterMap, lifecycle)
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = getTabTitle(position)

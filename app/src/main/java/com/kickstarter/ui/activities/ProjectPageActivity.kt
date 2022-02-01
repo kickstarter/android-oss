@@ -135,10 +135,6 @@ class ProjectPageActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { isGone ->
-                binding.projectDetailTabs.getTabAt(
-                    ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT
-                        .ordinal
-                )?.view?.isGone = isGone
                 if (!isGone) {
                     pagerAdapterMap[ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT] = !isGone
                 }
@@ -390,6 +386,12 @@ class ProjectPageActivity :
                 // Handle tab unselect
             }
         })
+
+        pagerAdapterMap.forEach { entry ->
+            binding.projectDetailTabs.getTabAt(
+                entry.key.ordinal
+            )?.view?.isGone = !entry.value
+        }
     }
 
     override fun onResume() {

@@ -25,7 +25,7 @@ class ActivitySampleFriendBackingViewHolderViewModelTest : KSRobolectricTestCase
         setupEnvironment(environment())
         this.vm.inputs.configureWith(
             Activity.builder()
-                .category(Activity.CATEGORY_FOLLOW)
+                .category(Activity.CATEGORY_BACKING)
                 .createdAt(DateTime.now())
                 .updatedAt(DateTime.now())
                 .id(1).build()
@@ -38,7 +38,7 @@ class ActivitySampleFriendBackingViewHolderViewModelTest : KSRobolectricTestCase
         setupEnvironment(environment())
 
         val activityWithProjectAndUser = Activity.builder()
-            .category(Activity.CATEGORY_FOLLOW)
+            .category(Activity.CATEGORY_BACKING)
             .project(ProjectFactory.backedProject())
             .user(UserFactory.creator())
             .createdAt(DateTime.now())

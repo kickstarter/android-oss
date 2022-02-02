@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.view.isGone
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
@@ -33,7 +34,10 @@ import com.kickstarter.ui.activities.ActivityFeedActivity
 import com.kickstarter.ui.activities.EditorialActivity
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.activities.UpdateActivity
-import com.kickstarter.ui.adapters.DiscoveryAdapter
+import com.kickstarter.ui.adapters.DiscoveryActivitySampleAdapter
+import com.kickstarter.ui.adapters.DiscoveryEditorialAdapter
+import com.kickstarter.ui.adapters.DiscoveryOnboardingAdapter
+import com.kickstarter.ui.adapters.DiscoveryProjectCardAdapter
 import com.kickstarter.ui.data.Editorial
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.viewholders.EditorialViewHolder
@@ -45,6 +49,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
     private var recyclerViewPaginator: RecyclerViewPaginator? = null
 
     private var binding: FragmentDiscoveryBinding? = null
+    private var discoveryEditorialAdapter: DiscoveryEditorialAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -55,11 +60,17 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val discoveryAdapter = DiscoveryAdapter(this.viewModel.inputs)
+        val discoveryActivitySampleAdapter = DiscoveryActivitySampleAdapter(this.viewModel.inputs)
+        val discoveryEditorialAdapter = DiscoveryEditorialAdapter(this.viewModel.inputs)
+        val discoveryOnboardingAdapter = DiscoveryOnboardingAdapter(this.viewModel.inputs)
+        val discoveryProjectCardAdapter = DiscoveryProjectCardAdapter(this.viewModel.inputs)
+
+        val discoveryAdapter = ConcatAdapter(discoveryOnboardingAdapter, discoveryEditorialAdapter, discoveryActivitySampleAdapter, discoveryProjectCardAdapter)
+        this.discoveryEditorialAdapter = discoveryEditorialAdapter
 
         binding?.discoveryRecyclerView?.apply {
             adapter = discoveryAdapter
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             recyclerViewPaginator = RecyclerViewPaginator(
                 this,
                 { this@DiscoveryFragment.viewModel.inputs.nextPage() },
@@ -76,7 +87,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.activity()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { discoveryAdapter.takeActivity(it) }
+            .subscribe { discoveryActivitySampleAdapter.takeActivity(it) }
 
         this.viewModel.outputs.startHeartAnimation()
             .compose(bindToLifecycle())
@@ -87,12 +98,12 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.projectList()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { discoveryAdapter.takeProjects(it) }
+            .subscribe { discoveryProjectCardAdapter.takeProjects(it) }
 
         this.viewModel.outputs.shouldShowEditorial()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { discoveryAdapter.setShouldShowEditorial(it) }
+            .subscribe { discoveryEditorialAdapter.setShouldShowEditorial(it) }
 
         this.viewModel.outputs.shouldShowEmptySavedView()
             .compose(bindToLifecycle())
@@ -104,7 +115,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.shouldShowOnboardingView()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { discoveryAdapter.setShouldShowOnboardingView(it) }
+            .subscribe { discoveryOnboardingAdapter.setShouldShowOnboardingView(it) }
 
         this.viewModel.outputs.showActivityFeed()
             .compose(bindToLifecycle())
@@ -158,8 +169,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
     private val editorialImageView: ImageView?
         get() {
             val layoutManager = binding?.discoveryRecyclerView?.layoutManager as? LinearLayoutManager
-            val discoveryAdapter = binding?.discoveryRecyclerView?.adapter as? DiscoveryAdapter
-            if (layoutManager != null && discoveryAdapter != null) {
+            if (layoutManager != null && discoveryEditorialAdapter != null) {
                 for (i in layoutManager.findFirstVisibleItemPosition()..layoutManager.findLastVisibleItemPosition()) {
                     val childView = layoutManager.getChildAt(i)
                     if (childView != null) {

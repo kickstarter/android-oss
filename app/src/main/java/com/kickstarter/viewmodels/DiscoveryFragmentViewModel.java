@@ -27,7 +27,10 @@ import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
-import com.kickstarter.ui.adapters.DiscoveryAdapter;
+import com.kickstarter.ui.adapters.DiscoveryActivitySampleAdapter;
+import com.kickstarter.ui.adapters.DiscoveryEditorialAdapter;
+import com.kickstarter.ui.adapters.DiscoveryOnboardingAdapter;
+import com.kickstarter.ui.adapters.DiscoveryProjectCardAdapter;
 import com.kickstarter.ui.data.Editorial;
 import com.kickstarter.ui.data.ProjectData;
 import com.kickstarter.ui.fragments.DiscoveryFragment;
@@ -56,7 +59,10 @@ import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface DiscoveryFragmentViewModel {
 
-  interface Inputs extends DiscoveryAdapter.Delegate {
+  interface Inputs extends DiscoveryProjectCardAdapter.Delegate,
+          DiscoveryOnboardingAdapter.Delegate,
+          DiscoveryEditorialAdapter.Delegate,
+          DiscoveryActivitySampleAdapter.Delegate {
     /** Call when the page content should be cleared.  */
     void clearPage();
 

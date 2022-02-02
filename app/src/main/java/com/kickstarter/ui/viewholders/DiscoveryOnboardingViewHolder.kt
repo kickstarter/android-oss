@@ -10,8 +10,7 @@ class DiscoveryOnboardingViewHolder(
     interface Delegate {
         fun discoveryOnboardingViewHolderLoginToutClick(viewHolder: DiscoveryOnboardingViewHolder?)
     }
-
-    override fun onBind() {
+    init {
         binding.loginToutButton.setOnClickListener {
             loginToutClick()
         }

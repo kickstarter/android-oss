@@ -11,6 +11,7 @@ import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.models.OptimizelyExperiment
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.BackingFactory
@@ -289,6 +290,55 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.updateTabs.assertValue(Pair(false, true))
     }
+
+    @Test
+    fun testUIOutputs_whenFetchProjectWithEnvCommitmentAndStoryTabFFDisabled() {
+        val initialProject = ProjectFactory.project()
+        val refreshedProject = ProjectFactory.project()
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return false
+                }
+            }
+
+        val environment = environment()
+            .toBuilder()
+            .optimizely(mockExperimentsClientType)
+            .apolloClient(apiClientWithSuccessFetchingProject(refreshedProject))
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+
+        this.updateTabs.assertValue(Pair(false, true))
+    }
+
+    @Test
+    fun testUIOutputs_whenFetchProjectWithEnvCommitmentAndStoryTabFFEnabled() {
+        val initialProject = ProjectFactory.project()
+        val refreshedProject = ProjectFactory.project()
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+
+        val environment = environment()
+            .toBuilder()
+            .optimizely(mockExperimentsClientType)
+            .apolloClient(apiClientWithSuccessFetchingProject(refreshedProject))
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+
+        this.updateTabs.assertValue(Pair(true, true))
+    }
+
     @Test
     fun testUIOutputs_whenFetchProjectFromIntent_isUnsuccessful() {
         var error = true

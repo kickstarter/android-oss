@@ -24,6 +24,7 @@
         android:textSize="@dimen/caption_1"
         android:visibility="gone"
         android:textColor="@color/kds_support_400"
+        android:textIsSelectable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image_view" />

@@ -11,6 +11,7 @@ import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.models.OptimizelyExperiment
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.BackingFactory
@@ -69,21 +70,19 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val showShareSheet = TestSubscriber<Pair<String, String>>()
     private val showUpdatePledge = TestSubscriber<Pair<PledgeData, PledgeReason>>()
     private val showUpdatePledgeSuccess = TestSubscriber<Void>()
-    private val startCampaignWebViewActivity = TestSubscriber<ProjectData>()
     private val startRootCommentsActivity = TestSubscriber<Pair<Project, ProjectData>>()
     private val startRootCommentsForCommentsThreadActivity = TestSubscriber<Pair<String, Pair<Project, ProjectData>>>()
     private val startProjectUpdateActivity = TestSubscriber< Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>()
     private val startProjectUpdateToRepliesDeepLinkActivity = TestSubscriber<Pair<Pair<String, String>, Pair<Project, ProjectData>>>()
     private val startLoginToutActivity = TestSubscriber<Void>()
     private val startMessagesActivity = TestSubscriber<Project>()
-    private val startProjectUpdatesActivity = TestSubscriber<Pair<Project, ProjectData>>()
     private val startThanksActivity = TestSubscriber<Pair<CheckoutData, PledgeData>>()
     private val startVideoActivity = TestSubscriber<Project>()
     private val updateFragments = TestSubscriber<ProjectData>()
     private val projectPhoto = TestSubscriber<String>()
     private val playButtonIsVisible = TestSubscriber<Boolean>()
     private val backingViewGroupIsVisible = TestSubscriber<Boolean>()
-    private val updateEnvCommitmentsTabVisibility = TestSubscriber<Boolean>()
+    private val updateTabs = TestSubscriber<Pair<Boolean, Boolean>>()
     private val hideVideoPlayer = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(environment: Environment) {
@@ -124,7 +123,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.updateFragments().subscribe(this.updateFragments)
         this.vm.outputs.startRootCommentsForCommentsThreadActivity().subscribe(this.startRootCommentsForCommentsThreadActivity)
         this.vm.outputs.startProjectUpdateToRepliesDeepLinkActivity().subscribe(this.startProjectUpdateToRepliesDeepLinkActivity)
-        this.vm.outputs.updateEnvCommitmentsTabVisibility().subscribe(this.updateEnvCommitmentsTabVisibility)
+        this.vm.outputs.updateTabs().subscribe(this.updateTabs)
         this.vm.outputs.projectPhoto().subscribe(this.projectPhoto)
         this.vm.outputs.playButtonIsVisible().subscribe(this.playButtonIsVisible)
         this.vm.outputs.backingViewGroupIsVisible().subscribe(this.backingViewGroupIsVisible)
@@ -273,7 +272,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
-        this.updateEnvCommitmentsTabVisibility.assertValues(true)
+        this.updateTabs.assertValue(Pair(false, false))
     }
 
     @Test
@@ -289,8 +288,57 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
-        this.updateEnvCommitmentsTabVisibility.assertValues(false)
+        this.updateTabs.assertValue(Pair(false, true))
     }
+
+    @Test
+    fun testUIOutputs_whenFetchProjectWithEnvCommitmentAndStoryTabFFDisabled() {
+        val initialProject = ProjectFactory.project()
+        val refreshedProject = ProjectFactory.project()
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return false
+                }
+            }
+
+        val environment = environment()
+            .toBuilder()
+            .optimizely(mockExperimentsClientType)
+            .apolloClient(apiClientWithSuccessFetchingProject(refreshedProject))
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+
+        this.updateTabs.assertValue(Pair(false, true))
+    }
+
+    @Test
+    fun testUIOutputs_whenFetchProjectWithEnvCommitmentAndStoryTabFFEnabled() {
+        val initialProject = ProjectFactory.project()
+        val refreshedProject = ProjectFactory.project()
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+
+        val environment = environment()
+            .toBuilder()
+            .optimizely(mockExperimentsClientType)
+            .apolloClient(apiClientWithSuccessFetchingProject(refreshedProject))
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+
+        this.updateTabs.assertValue(Pair(true, true))
+    }
+
     @Test
     fun testUIOutputs_whenFetchProjectFromIntent_isUnsuccessful() {
         var error = true

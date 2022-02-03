@@ -18,7 +18,6 @@ import androidx.annotation.MenuRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.core.view.isGone
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -35,7 +34,6 @@ import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
@@ -76,17 +74,10 @@ class ProjectPageActivity :
     private val animDuration = 200L
     private lateinit var binding: ActivityProjectPageBinding
 
-    private var pagerAdapterMap = mutableMapOf(
-        ProjectPagerTabs.OVERVIEW to true,
-        ProjectPagerTabs.CAMPAIGN to true,
-        ProjectPagerTabs.FAQS to true,
-        ProjectPagerTabs.RISKS to true,
-        ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT to false
-    )
-
-    private var pagerAdapter = ProjectPagerAdapter(
-        supportFragmentManager, pagerAdapterMap,
-        lifecycle
+    private val pagerAdapterList = mutableListOf(
+        ProjectPagerTabs.OVERVIEW,
+        ProjectPagerTabs.FAQS,
+        ProjectPagerTabs.RISKS,
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,7 +89,7 @@ class ProjectPageActivity :
         // Do not configure the pager at other lifecycle events apart from OnCreate
         if (savedInstanceState == null) {
             // - Configure pager on load, otherwise the first fragment on the pager gets no data
-            configurePager()
+            configurePager(pagerAdapterList)
         }
 
         val viewTreeObserver = binding.pledgeContainerLayout.pledgeContainerRoot.viewTreeObserver
@@ -130,24 +121,20 @@ class ProjectPageActivity :
             .subscribe {
                 // - Every time the ProjectData gets updated
                 // - the fragments on the viewPager are updated as well
-                pagerAdapter.updatedWithProjectData(it)
+                (binding.projectPager.adapter as ProjectPagerAdapter).updatedWithProjectData(it)
             }
 
-        this.viewModel.outputs.updateEnvCommitmentsTabVisibility()
-            .filter { ObjectUtils.isNotNull(it) }
-            .map { requireNotNull(it) }
-            .distinctUntilChanged()
+        this.viewModel.outputs.updateTabs()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { isGone ->
-                binding.projectDetailTabs.getTabAt(
-                    ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT
-                        .ordinal
-                )?.view?.isGone = isGone
-                if (!isGone) {
-                    pagerAdapterMap[ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT] = !isGone
+            .subscribe { updateTabs ->
+                if (updateTabs.first) {
+                    pagerAdapterList.add(ProjectPagerTabs.CAMPAIGN.ordinal, ProjectPagerTabs.CAMPAIGN)
                 }
-                configurePager()
+                if (updateTabs.second) {
+                    pagerAdapterList.add(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT)
+                }
+                configurePager(pagerAdapterList)
             }
 
         this.viewModel.outputs.backingDetailsSubtitle()
@@ -369,16 +356,14 @@ class ProjectPageActivity :
         }
     }
 
-    private fun configurePager() {
+    private fun configurePager(pagerList: List<ProjectPagerTabs>) {
         val viewPager = binding.projectPager
         val tabLayout = binding.projectDetailTabs
 
-        pagerAdapter = ProjectPagerAdapter(supportFragmentManager, pagerAdapterMap, lifecycle)
-
-        viewPager.adapter = pagerAdapter
+        viewPager.adapter = ProjectPagerAdapter(supportFragmentManager, pagerList, lifecycle)
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = getTabTitle(position)
+            tab.text = getTabTitle(position, pagerList)
         }.attach()
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -465,13 +450,12 @@ class ProjectPageActivity :
         return Pair.create(R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
     }
 
-    private fun getTabTitle(position: Int) = when (position) {
-        ProjectPagerTabs.OVERVIEW.ordinal -> getString(R.string.Overview)
-        ProjectPagerTabs.CAMPAIGN.ordinal -> getString(R.string.Campaign)
-        ProjectPagerTabs.FAQS.ordinal -> getString(R.string.Faq)
-        ProjectPagerTabs.RISKS.ordinal -> getString(R.string.Risks)
-        ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal -> getString(R.string.Environmental_commitments)
-        else -> ""
+    private fun getTabTitle(position: Int, pagerList: List<ProjectPagerTabs>) = when (pagerList[position]) {
+        ProjectPagerTabs.OVERVIEW -> getString(R.string.Overview)
+        ProjectPagerTabs.CAMPAIGN -> getString(R.string.Campaign)
+        ProjectPagerTabs.FAQS -> getString(R.string.Faq)
+        ProjectPagerTabs.RISKS -> getString(R.string.Risks)
+        ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT -> getString(R.string.Environmental_commitments)
     }
 
     private fun animateScrimVisibility(show: Boolean) {
@@ -631,24 +615,24 @@ class ProjectPageActivity :
         }
 
         binding.pledgeContainerLayout.pledgeToolbar.setOnMenuItemClickListener {
-            when {
-                it.itemId == R.id.update_pledge -> {
+            when (it.itemId) {
+                R.id.update_pledge -> {
                     this.viewModel.inputs.updatePledgeClicked()
                     true
                 }
-                it.itemId == R.id.rewards -> {
+                R.id.rewards -> {
                     this.viewModel.inputs.viewRewardsClicked()
                     true
                 }
-                it.itemId == R.id.update_payment -> {
+                R.id.update_payment -> {
                     this.viewModel.inputs.updatePaymentClicked()
                     true
                 }
-                it.itemId == R.id.cancel_pledge -> {
+                R.id.cancel_pledge -> {
                     this.viewModel.inputs.cancelPledgeClicked()
                     true
                 }
-                it.itemId == R.id.contact_creator -> {
+                R.id.contact_creator -> {
                     this.viewModel.inputs.contactCreatorClicked()
                     true
                 }
@@ -794,8 +778,8 @@ class ProjectPageActivity :
             val rewardsFragment = rewardsFragment()
             val backingFragment = backingFragment()
             if (rewardsFragment != null && backingFragment != null) {
-                when {
-                    supportFragmentManager.backStackEntryCount == 0 -> when {
+                when (supportFragmentManager.backStackEntryCount) {
+                    0 -> when {
                         projectData.project().isBacking() -> if (!rewardsFragment.isHidden) {
                             supportFragmentManager.beginTransaction()
                                 .show(backingFragment)

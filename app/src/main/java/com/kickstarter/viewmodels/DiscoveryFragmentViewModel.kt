@@ -1,478 +1,605 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import android.content.SharedPreferences;
-import android.util.Pair;
+import android.content.SharedPreferences
+import android.util.Pair
+import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.ExperimentsClientType
+import com.kickstarter.libs.FragmentViewModel
+import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.loadmore.ApolloPaginate.Companion.builder
+import com.kickstarter.libs.models.OptimizelyFeature
+import com.kickstarter.libs.preferences.IntPreferenceType
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.EventContextValues
+import com.kickstarter.libs.utils.ExperimentData
+import com.kickstarter.libs.utils.ListUtils
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.RefTagUtils
+import com.kickstarter.libs.utils.extensions.combineProjectsAndParams
+import com.kickstarter.libs.utils.extensions.fillRootCategoryForFeaturedProjects
+import com.kickstarter.libs.utils.extensions.isTrue
+import com.kickstarter.libs.utils.extensions.updateStartedProjectAndDiscoveryParamsList
+import com.kickstarter.models.Activity
+import com.kickstarter.models.Category
+import com.kickstarter.models.Project
+import com.kickstarter.models.User
+import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.services.apiresponses.DiscoverEnvelope
+import com.kickstarter.ui.adapters.DiscoveryActivitySampleAdapter
+import com.kickstarter.ui.adapters.DiscoveryEditorialAdapter
+import com.kickstarter.ui.adapters.DiscoveryOnboardingAdapter
+import com.kickstarter.ui.adapters.DiscoveryProjectCardAdapter
+import com.kickstarter.ui.data.Editorial
+import com.kickstarter.ui.data.ProjectData.Companion.builder
+import com.kickstarter.ui.fragments.DiscoveryFragment
+import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder
+import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder
+import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder
+import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder
+import rx.Observable
+import rx.subjects.BehaviorSubject
+import rx.subjects.PublishSubject
+import java.net.CookieManager
+import java.util.concurrent.TimeUnit
 
-import com.kickstarter.libs.CurrentUserType;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ExperimentsClientType;
-import com.kickstarter.libs.FragmentViewModel;
-import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.loadmore.ApolloPaginate;
-import com.kickstarter.libs.models.OptimizelyFeature;
-import com.kickstarter.libs.preferences.IntPreferenceType;
-import com.kickstarter.libs.utils.EventContextValues;
-import com.kickstarter.libs.utils.ExperimentData;
-import com.kickstarter.libs.utils.ListUtils;
-import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.RefTagUtils;
-import com.kickstarter.libs.utils.extensions.BoolenExtKt;
-import com.kickstarter.libs.utils.extensions.ProjectExt;
-import com.kickstarter.models.Activity;
-import com.kickstarter.models.Category;
-import com.kickstarter.models.Project;
-import com.kickstarter.models.User;
-import com.kickstarter.services.ApiClientType;
-import com.kickstarter.services.ApolloClientType;
-import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.services.apiresponses.ActivityEnvelope;
-import com.kickstarter.services.apiresponses.DiscoverEnvelope;
-import com.kickstarter.ui.adapters.DiscoveryActivitySampleAdapter;
-import com.kickstarter.ui.adapters.DiscoveryEditorialAdapter;
-import com.kickstarter.ui.adapters.DiscoveryOnboardingAdapter;
-import com.kickstarter.ui.adapters.DiscoveryProjectCardAdapter;
-import com.kickstarter.ui.data.Editorial;
-import com.kickstarter.ui.data.ProjectData;
-import com.kickstarter.ui.fragments.DiscoveryFragment;
-import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder;
-import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder;
-import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder;
-import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
+interface DiscoveryFragmentViewModel {
+    interface Inputs :
+        DiscoveryProjectCardAdapter.Delegate,
+        DiscoveryOnboardingAdapter.Delegate,
+        DiscoveryEditorialAdapter.Delegate,
+        DiscoveryActivitySampleAdapter.Delegate {
+        /** Call when the page content should be cleared.   */
+        fun clearPage()
 
-import java.net.CookieManager;
-import java.util.Collections;
-import java.util.List;
+        /** Call when user clicks hearts to start animation.   */
+        fun heartContainerClicked()
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+        /** Call for project pagination.  */
+        fun nextPage()
 
-import kotlin.Triple;
-import rx.Observable;
-import rx.subjects.BehaviorSubject;
-import rx.subjects.PublishSubject;
+        /** Call when params from Discovery Activity change.  */
+        fun paramsFromActivity(params: DiscoveryParams)
 
-import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
-import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
-import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
-import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
-import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+        /** Call when the projects should be refreshed.  */
+        fun refresh()
 
-public interface DiscoveryFragmentViewModel {
+        /**  Call when we should load the root categories.  */
+        fun rootCategories(rootCategories: List<Category>)
+    }
 
-  interface Inputs extends DiscoveryProjectCardAdapter.Delegate,
-          DiscoveryOnboardingAdapter.Delegate,
-          DiscoveryEditorialAdapter.Delegate,
-          DiscoveryActivitySampleAdapter.Delegate {
-    /** Call when the page content should be cleared.  */
-    void clearPage();
+    interface Outputs {
+        /**  Emits an activity for the activity sample view.  */
+        fun activity(): Observable<Activity>
 
-    /** Call when user clicks hearts to start animation.  */
-    void heartContainerClicked();
+        /** Emits a boolean indicating whether projects are being fetched from the API.  */
+        fun isFetchingProjects(): Observable<Boolean>
 
-    /** Call for project pagination. */
-    void nextPage();
+        /** Emits a list of projects to display. */
+        fun projectList(): Observable<List<Pair<Project, DiscoveryParams>>>
 
-    /** Call when params from Discovery Activity change. */
-    void paramsFromActivity(final DiscoveryParams params);
+        /** Emits a boolean that determines if an editorial should be shown.  */
+        fun shouldShowEditorial(): Observable<Editorial>
 
-    /** Call when the projects should be refreshed. */
-    void refresh();
+        /** Emits a boolean that determines if the saved empty view should be shown.  */
+        fun shouldShowEmptySavedView(): Observable<Boolean>
 
-    /**  Call when we should load the root categories. */
-    void rootCategories(final List<Category> rootCategories);
-  }
+        /** Emits a boolean that determines if the onboarding view should be shown.  */
+        fun shouldShowOnboardingView(): Observable<Boolean>
 
-  interface Outputs {
-    /**  Emits an activity for the activity sample view. */
-    Observable<Activity> activity();
+        /** Emits when the activity feed should be shown.  */
+        fun showActivityFeed(): Observable<Boolean>
 
-    /** Emits a boolean indicating whether projects are being fetched from the API. */
-    Observable<Boolean> isFetchingProjects();
+        /** Emits when the login tout activity should be shown.  */
+        fun showLoginTout(): Observable<Boolean>
 
-    /** Emits a list of projects to display.*/
-    Observable<List<Pair<Project, DiscoveryParams>>> projectList();
+        /** Emits when the heart animation should play.  */
+        fun startHeartAnimation(): Observable<Void?>
 
-    /** Emits a boolean that determines if an editorial should be shown. */
-    Observable<Editorial> shouldShowEditorial();
+        /** Emits an Editorial when we should start the [com.kickstarter.ui.activities.EditorialActivity].  */
+        fun startEditorialActivity(): Observable<Editorial>
 
-    /** Emits a boolean that determines if the saved empty view should be shown. */
-    Observable<Boolean> shouldShowEmptySavedView();
+        /** Emits a Project and RefTag pair when we should start the [com.kickstarter.ui.activities.ProjectActivity].  */
+        fun startProjectActivity(): Observable<Triple<Project, RefTag, Boolean>>
 
-    /** Emits a boolean that determines if the onboarding view should be shown. */
-    Observable<Boolean> shouldShowOnboardingView();
+        /** Emits an activity when we should start the [com.kickstarter.ui.activities.UpdateActivity].  */
+        fun startUpdateActivity(): Observable<Activity>
 
-    /** Emits when the activity feed should be shown. */
-    Observable<Boolean> showActivityFeed();
+        /** Emits when we should start [com.kickstarter.ui.activities.LoginToutActivity].  */
+        fun startLoginToutActivityToSaveProject(): Observable<Project>
 
-    /** Emits when the login tout activity should be shown. */
-    Observable<Boolean> showLoginTout();
+        /** Emits when we need to scroll to saved project */
+        fun scrollToSavedProjectPosition(): Observable<Int>
+    }
 
-    /** Emits when the heart animation should play. */
-    Observable<Void> startHeartAnimation();
+    class ViewModel(environment: Environment) :
+        FragmentViewModel<DiscoveryFragment?>(environment),
+        Inputs,
+        Outputs {
+        private val apiClient: ApiClientType = environment.apiClient()
+        private val apolloClient: ApolloClientType = environment.apolloClient()
+        private val activitySamplePreference: IntPreferenceType = environment.activitySamplePreference()
+        private val optimizely: ExperimentsClientType = environment.optimizely()
+        private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
+        private val cookieManager: CookieManager = environment.cookieManager()
+        private val currentUser: CurrentUserType = environment.currentUser()
 
-    /** Emits an Editorial when we should start the {@link com.kickstarter.ui.activities.EditorialActivity}. */
-    Observable<Editorial> startEditorialActivity();
+        /**
+         * Calls to GraphQL client to fetch projects filtering by DiscoveryParams
+         * @param discoveryParamsStringPair .first discovery params.
+         * @param discoveryParamsStringPair .second cursor for pagination, null on the first call.
+         * @return Observable<DiscoverEnvelope>
+         </DiscoverEnvelope> */
+        private fun makeCallWithParams(discoveryParamsStringPair: Pair<DiscoveryParams?, String?>): Observable<DiscoverEnvelope> {
+            return apolloClient.getProjects(
+                discoveryParamsStringPair.first!!,
+                discoveryParamsStringPair.second
+            )
+        }
 
-    /** Emits a Project and RefTag pair when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
-    Observable<Triple<Project, RefTag, Boolean>> startProjectActivity();
+        private fun activityHasNotBeenSeen(activity: Activity?): Boolean {
+            return activity != null && activity.id() != activitySamplePreference.get().toLong()
+        }
 
-    /** Emits an activity when we should start the {@link com.kickstarter.ui.activities.UpdateActivity}. */
-    Observable<Activity> startUpdateActivity();
-  }
+        private fun fetchActivity(): Observable<Activity?> {
+            return apiClient.fetchActivities(1)
+                .map { it.activities() }
+                .map { it.firstOrNull() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(Transformers.neverError())
+        }
 
-  final class ViewModel extends FragmentViewModel<DiscoveryFragment> implements Inputs, Outputs {
-    private final ApiClientType apiClient;
-    private final ApolloClientType apolloClient;
-    private final CurrentUserType currentUser;
-    private final IntPreferenceType activitySamplePreference;
-    private final ExperimentsClientType optimizely;
-    private final SharedPreferences sharedPreferences;
-    private final CookieManager cookieManager;
+        private fun isDefaultParams(userAndParams: Pair<User, DiscoveryParams>): Boolean {
+            val discoveryParams = userAndParams.second
+            val user = userAndParams.first
+            return discoveryParams == DiscoveryParams.getDefaultParams(user)
+        }
 
-    public ViewModel(final @NonNull Environment environment) {
-      super(environment);
+        private fun isOnboardingVisible(params: DiscoveryParams, isLoggedIn: Boolean): Boolean {
+            val sort = params.sort()
+            val isSortHome = DiscoveryParams.Sort.MAGIC == sort
+            return params.isAllProjects.isTrue() && isSortHome && !isLoggedIn
+        }
 
-      this.apiClient = environment.apiClient();
-      this.apolloClient = environment.apolloClient();
-      this.activitySamplePreference = environment.activitySamplePreference();
-      this.currentUser = environment.currentUser();
-      this.optimizely = environment.optimizely();
-      this.sharedPreferences = environment.sharedPreferences();
-      this.cookieManager = environment.cookieManager();
+        private fun isSavedVisible(params: DiscoveryParams): Boolean {
+            return params.isSavedProjects
+        }
 
-      final Observable<User> changedUser = this.currentUser.observable()
-        .distinctUntilChanged();
+        private fun saveLastSeenActivityId(activity: Activity?) {
+            if (activity != null) {
+                activitySamplePreference.set(activity.id().toInt())
+            }
+        }
 
-      final Observable<Boolean> userIsLoggedIn = this.currentUser.isLoggedIn()
-        .distinctUntilChanged();
+        private val activityClick = PublishSubject.create<Boolean>()
+        private val activitySampleProjectClick = PublishSubject.create<Project>()
+        private val activityUpdateClick = PublishSubject.create<Activity>()
+        private val clearPage = PublishSubject.create<Void?>()
+        private val discoveryOnboardingLoginToutClick = PublishSubject.create<Boolean>()
+        private val editorialClicked = PublishSubject.create<Editorial>()
+        private val nextPage = PublishSubject.create<Void?>()
+        private val paramsFromActivity = PublishSubject.create<DiscoveryParams>()
+        private val projectCardClicked = PublishSubject.create<Project>()
+        private val onHeartButtonClicked = PublishSubject.create<Project>()
+        private val refresh = PublishSubject.create<Void?>()
+        private val rootCategories = PublishSubject.create<List<Category>>()
+        private val activity = BehaviorSubject.create<Activity?>()
+        private val heartContainerClicked = BehaviorSubject.create<Void?>()
+        private val isFetchingProjects: BehaviorSubject<Boolean> = BehaviorSubject.create()
+        private val projectList = BehaviorSubject.create<List<Pair<Project, DiscoveryParams>>>()
+        private val showActivityFeed: Observable<Boolean>
+        private val showLoginTout: Observable<Boolean>
+        private val shouldShowEditorial = BehaviorSubject.create<Editorial?>()
+        private val shouldShowEmptySavedView = BehaviorSubject.create<Boolean>()
+        private val shouldShowOnboardingView = BehaviorSubject.create<Boolean>()
+        private val startEditorialActivity = PublishSubject.create<Editorial>()
+        private val startProjectActivity: Observable<Triple<Project, RefTag, Boolean>>
+        private val startUpdateActivity: Observable<Activity>
+        private val startHeartAnimation = BehaviorSubject.create<Void?>()
+        private val startLoginToutActivityToSaveProject = PublishSubject.create<Project>()
+        private val scrollToSavedProjectPosition = PublishSubject.create<Int>()
 
-      final Observable<DiscoveryParams> selectedParams = Observable.combineLatest(
-        changedUser,
-        this.paramsFromActivity.distinctUntilChanged(),
-        (__, params) -> params
-      );
+        @JvmField
+        val inputs: Inputs = this
+        @JvmField
+        val outputs: Outputs = this
 
-      final Observable<DiscoveryParams> startOverWith = Observable.merge(
-        selectedParams,
-        selectedParams.compose(takeWhen(this.refresh))
-      );
+        override fun activitySampleFriendBackingViewHolderSeeActivityClicked(viewHolder: ActivitySampleFriendBackingViewHolder) {
+            activityClick.onNext(true)
+        }
 
-      final ApolloPaginate<Project, DiscoverEnvelope, DiscoveryParams> paginator;
-      paginator = ApolloPaginate.<Project, DiscoverEnvelope, DiscoveryParams>builder()
-          .nextPage(this.nextPage)
-          .distinctUntilChanged(true)
-          .startOverWith(startOverWith)
-          .envelopeToListOfData(DiscoverEnvelope::projects)
-          .loadWithParams(this::makeCallWithParams)
-          .clearWhenStartingOver(false)
-          .concater(ListUtils::concatDistinct)
-          .build();
+        override fun activitySampleFriendFollowViewHolderSeeActivityClicked(viewHolder: ActivitySampleFriendFollowViewHolder) {
+            activityClick.onNext(true)
+        }
 
-      paginator.isFetching()
-        .compose(bindToLifecycle())
-        .subscribe(this.isFetchingProjects);
+        override fun activitySampleProjectViewHolderSeeActivityClicked(viewHolder: ActivitySampleProjectViewHolder) {
+            activityClick.onNext(true)
+        }
 
-      this.projectList
-        .compose(ignoreValues())
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.isFetchingProjects.onNext(false));
+        override fun editorialViewHolderClicked(editorial: Editorial) {
+            editorialClicked.onNext(editorial)
+        }
 
-      final Observable<Pair<Project, RefTag>> activitySampleProjectClick = this.activitySampleProjectClick
-        .map(p -> Pair.create(p, RefTag.activitySample()));
+        override fun refresh() {
+            refresh.onNext(null)
+        }
 
-      this.projectCardClicked
-              .compose(bindToLifecycle())
-              .subscribe(p -> analyticEvents.trackProjectCardClicked(p, EventContextValues.ContextPageName.DISCOVER.getContextName()));
+        override fun rootCategories(rootCategories: List<Category>) {
+            this.rootCategories.onNext(rootCategories)
+        }
 
-      this.paramsFromActivity
-              .compose(takePairWhen(this.projectCardClicked))
-              .compose(bindToLifecycle())
-              .subscribe(it -> {
-                final Pair<Project, RefTag> refTag = RefTagUtils.projectAndRefTagFromParamsAndProject(it.first, it.second);
-                final RefTag cookieRefTag = RefTagUtils.storedCookieRefTagForProject(it.second, this.cookieManager, this.sharedPreferences);
+        override fun clearPage() {
+            clearPage.onNext(null)
+        }
 
-                final ProjectData projectData = ProjectData.Companion.builder()
+        override fun heartContainerClicked() {
+            heartContainerClicked.onNext(null)
+        }
+
+        override fun activitySampleFriendBackingViewHolderProjectClicked(
+            viewHolder: ActivitySampleFriendBackingViewHolder,
+            project: Project?
+        ) {
+            activitySampleProjectClick.onNext(project)
+        }
+
+        override fun activitySampleProjectViewHolderProjectClicked(
+            viewHolder: ActivitySampleProjectViewHolder,
+            project: Project?
+        ) {
+            activitySampleProjectClick.onNext(project)
+        }
+
+        override fun activitySampleProjectViewHolderUpdateClicked(
+            viewHolder: ActivitySampleProjectViewHolder,
+            activity: Activity?
+        ) {
+            activityUpdateClick.onNext(activity)
+        }
+
+        override fun discoveryOnboardingViewHolderLoginToutClick(viewHolder: DiscoveryOnboardingViewHolder?) {
+            discoveryOnboardingLoginToutClick.onNext(true)
+        }
+
+        override fun projectCardViewHolderClicked(project: Project?) {
+            projectCardClicked.onNext(project)
+        }
+
+        override fun nextPage() {
+            nextPage.onNext(null)
+        }
+
+        override fun paramsFromActivity(params: DiscoveryParams) {
+            paramsFromActivity.onNext(params)
+        }
+
+        override fun activity(): Observable<Activity> = activity
+        override fun isFetchingProjects(): Observable<Boolean> = isFetchingProjects
+        override fun projectList(): Observable<List<Pair<Project, DiscoveryParams>>> = projectList
+        override fun showActivityFeed(): Observable<Boolean> = showActivityFeed
+        override fun showLoginTout(): Observable<Boolean> = showLoginTout
+        override fun shouldShowEditorial(): Observable<Editorial> = shouldShowEditorial
+        override fun shouldShowEmptySavedView(): Observable<Boolean> = shouldShowEmptySavedView
+        override fun startHeartAnimation(): Observable<Void?> = startHeartAnimation
+        override fun startEditorialActivity(): Observable<Editorial> = startEditorialActivity
+        override fun startProjectActivity(): Observable<Triple<Project, RefTag, Boolean>> = startProjectActivity
+        override fun shouldShowOnboardingView(): Observable<Boolean> = shouldShowOnboardingView
+        override fun startUpdateActivity(): Observable<Activity> = startUpdateActivity
+        override fun onHeartButtonClicked(project: Project) = onHeartButtonClicked.onNext(project)
+        override fun startLoginToutActivityToSaveProject(): Observable<Project> = this.startLoginToutActivityToSaveProject
+        override fun scrollToSavedProjectPosition(): Observable<Int> = this.scrollToSavedProjectPosition
+
+        init {
+            val changedUser = currentUser.observable()
+                .distinctUntilChanged()
+            val userIsLoggedIn = currentUser.isLoggedIn
+                .distinctUntilChanged()
+            val selectedParams = Observable.combineLatest(
+                changedUser,
+                paramsFromActivity.distinctUntilChanged()
+            ) { _, params ->
+                params
+            }
+
+            val startOverWith = Observable.merge(
+                selectedParams,
+                selectedParams.compose(Transformers.takeWhen(refresh))
+            )
+
+            val paginator = builder<Project, DiscoverEnvelope, DiscoveryParams?>()
+                .nextPage(nextPage)
+                .distinctUntilChanged(true)
+                .startOverWith(startOverWith)
+                .envelopeToListOfData { it.projects() }
+                .loadWithParams {
+                    makeCallWithParams(
+                        it
+                    )
+                }
+                .clearWhenStartingOver(false)
+                .concater { xs, ys ->
+                    xs?.let { firstList ->
+                        ys?.let { secondList ->
+                            ListUtils.concatDistinct(firstList, secondList)
+                        }
+                    }
+                }
+                .build()
+
+            paginator.isFetching()
+                .compose(bindToLifecycle())
+                .subscribe(isFetchingProjects)
+
+            projectList
+                .compose(Transformers.ignoreValues())
+                .compose(bindToLifecycle())
+                .subscribe { isFetchingProjects.onNext(false) }
+
+            val activitySampleProjectClick = activitySampleProjectClick
+                .map<Pair<Project, RefTag>> {
+                    Pair.create(
+                        it,
+                        RefTag.activitySample()
+                    )
+                }
+
+            projectCardClicked
+                .compose(bindToLifecycle())
+                .subscribe {
+                    analyticEvents.trackProjectCardClicked(it, EventContextValues.ContextPageName.DISCOVER.contextName)
+                }
+
+            paramsFromActivity
+                .compose(Transformers.takePairWhen(projectCardClicked))
+                .compose(bindToLifecycle())
+                .subscribe {
+                    val refTag =
+                        RefTagUtils.projectAndRefTagFromParamsAndProject(it.first, it.second)
+                    val cookieRefTag = RefTagUtils.storedCookieRefTagForProject(
+                        it.second,
+                        cookieManager,
+                        sharedPreferences
+                    )
+                    val projectData = builder()
                         .refTagFromIntent(refTag.second)
                         .refTagFromCookie(cookieRefTag)
                         .project(it.second)
-                        .build();
+                        .build()
+                    analyticEvents.trackDiscoverProjectCtaClicked(it.first, projectData)
+                }
 
-                this.analyticEvents.trackDiscoverProjectCtaClicked(it.first, projectData);
-              });
+            val projectCardClick = paramsFromActivity
+                .compose(Transformers.takePairWhen(projectCardClicked))
+                .map {
+                    RefTagUtils.projectAndRefTagFromParamsAndProject(it.first, it.second!!)
+                }
 
-      final Observable<Pair<Project, RefTag>> projectCardClick = this.paramsFromActivity
-        .compose(takePairWhen(this.projectCardClicked))
-        .map(pp -> RefTagUtils.projectAndRefTagFromParamsAndProject(pp.first, pp.second));
+            val projects = Observable.combineLatest(
+                paginator.paginatedData(),
+                rootCategories
+            ) { projects, rootCategories ->
+                projects.fillRootCategoryForFeaturedProjects(rootCategories)
+            }
 
-      final Observable<List<Project>> projects = Observable.combineLatest(
-        paginator.paginatedData(),
-        this.rootCategories,
-        ProjectExt::fillRootCategoryForFeaturedProjects);
+            Observable.combineLatest(
+                projects,
+                selectedParams.distinctUntilChanged()
+            ) { projects, params ->
+                params?.let {
+                    combineProjectsAndParams(
+                        projects,
+                        it
+                    )
+                }
+            }.compose(bindToLifecycle())
+                .subscribe(
+                    projectList
+                )
 
-      Observable.combineLatest(projects,
-        selectedParams.distinctUntilChanged(),
-        ProjectExt::combineProjectsAndParams)
-        .compose(bindToLifecycle())
-        .subscribe(
-                this.projectList
-        );
+            showActivityFeed = activityClick
+            startUpdateActivity = activityUpdateClick
+            showLoginTout = discoveryOnboardingLoginToutClick
 
-      this.showActivityFeed = this.activityClick;
-      this.startUpdateActivity = this.activityUpdateClick;
-      this.showLoginTout = this.discoveryOnboardingLoginToutClick;
+            val isProjectPageEnabled = Observable.just(
+                optimizely.isFeatureEnabled(
+                    OptimizelyFeature.Key.PROJECT_PAGE_V2
+                )
+            )
 
-      final  Observable<Boolean> isProjectPageEnabled =
-        Observable.just(this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2));
+            startProjectActivity = Observable.merge(
+                activitySampleProjectClick,
+                projectCardClick
+            )
+                .withLatestFrom(isProjectPageEnabled) { a: Pair<Project, RefTag>, b: Boolean ->
+                    Triple(
+                        a.first,
+                        a.second,
+                        b
+                    )
+                }
 
-      this.startProjectActivity = Observable.merge(
-        activitySampleProjectClick,
-        projectCardClick
-      )
-        .withLatestFrom(isProjectPageEnabled, (a, b) -> new Triple<>(a.first, a.second, b));
+            clearPage
+                .compose(bindToLifecycle())
+                .subscribe {
+                    shouldShowOnboardingView.onNext(false)
+                    activity.onNext(null)
+                    projectList.onNext(emptyList())
+                }
 
-      this.clearPage
-        .compose(bindToLifecycle())
-        .subscribe(__ -> {
-          this.shouldShowOnboardingView.onNext(false);
-          this.activity.onNext(null);
-          this.projectList.onNext(Collections.emptyList());
-        });
+            val userWhenOptimizelyReady = Observable.merge(
+                changedUser,
+                changedUser.compose(Transformers.takeWhen(optimizelyReady))
+            )
 
-      final Observable<User> userWhenOptimizelyReady = Observable.merge(
-        changedUser,
-        changedUser.compose(takeWhen(this.optimizelyReady))
-      );
+            val lightsOnEnabled = userWhenOptimizelyReady
+                .map { user: User? ->
+                    optimizely.isFeatureEnabled(
+                        OptimizelyFeature.Key.LIGHTS_ON,
+                        ExperimentData(user, null, null)
+                    )
+                }
+                .distinctUntilChanged()
 
-      final Observable<Boolean> lightsOnEnabled = userWhenOptimizelyReady
-        .map(user -> this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.LIGHTS_ON, new ExperimentData(user, null, null)))
-        .distinctUntilChanged();
+            currentUser.observable()
+                .compose(Transformers.combineLatestPair(paramsFromActivity))
+                .compose(Transformers.combineLatestPair(lightsOnEnabled))
+                .map { defaultParamsAndEnabled: Pair<Pair<User, DiscoveryParams>, Boolean> ->
+                    isDefaultParams(
+                        defaultParamsAndEnabled.first
+                    ) && defaultParamsAndEnabled.second.isTrue()
+                }
+                .map { shouldShow: Boolean -> if (shouldShow) Editorial.LIGHTS_ON else null }
+                .compose(bindToLifecycle())
+                .subscribe(shouldShowEditorial)
 
-      this.currentUser.observable()
-        .compose(combineLatestPair(this.paramsFromActivity))
-        .compose(combineLatestPair(lightsOnEnabled))
-        .map(defaultParamsAndEnabled -> isDefaultParams(defaultParamsAndEnabled.first) && BoolenExtKt.isTrue(defaultParamsAndEnabled.second))
-        .map(shouldShow -> shouldShow ? Editorial.LIGHTS_ON : null)
-        .compose(bindToLifecycle())
-        .subscribe(this.shouldShowEditorial);
+            editorialClicked
+                .compose(bindToLifecycle())
+                .subscribe(startEditorialActivity)
 
-      this.editorialClicked
-        .compose(bindToLifecycle())
-        .subscribe(this.startEditorialActivity);
+            paramsFromActivity
+                .compose(Transformers.combineLatestPair(userIsLoggedIn))
+                .map { pu: Pair<DiscoveryParams, Boolean> ->
+                    isOnboardingVisible(
+                        pu.first,
+                        pu.second
+                    )
+                }
+                .compose(bindToLifecycle())
+                .subscribe(shouldShowOnboardingView)
 
-      this.paramsFromActivity
-        .compose(combineLatestPair(userIsLoggedIn))
-        .map(pu -> isOnboardingVisible(pu.first, pu.second))
-        .compose(bindToLifecycle())
-        .subscribe(this.shouldShowOnboardingView);
+            paramsFromActivity
+                .map { params: DiscoveryParams -> isSavedVisible(params) }
+                .compose(Transformers.combineLatestPair(projectList))
+                .map { it.first && it.second.isEmpty() }
+                .compose(bindToLifecycle())
+                .distinctUntilChanged()
+                .subscribe(shouldShowEmptySavedView)
 
-      this.paramsFromActivity
-        .map(this::isSavedVisible)
-        .compose(combineLatestPair(this.projectList))
-        .map(savedAndProjects -> savedAndProjects.first && savedAndProjects.second.isEmpty())
-        .compose(bindToLifecycle())
-        .distinctUntilChanged()
-        .subscribe(this.shouldShowEmptySavedView);
+            shouldShowEmptySavedView
+                .filter { it.isTrue() }
+                .map<Any?> { null }
+                .mergeWith(heartContainerClicked)
+                .subscribe { startHeartAnimation.onNext(null) }
 
-      this.shouldShowEmptySavedView
-        .filter(BoolenExtKt::isTrue)
-        .map(__ -> null)
-        .mergeWith(this.heartContainerClicked)
-        .subscribe(__ -> this.startHeartAnimation.onNext(null));
+            val loggedInUserAndParams = currentUser.loggedInUser()
+                .distinctUntilChanged()
+                .compose(Transformers.combineLatestPair(paramsFromActivity))
 
-      final Observable<Pair<User, DiscoveryParams>> loggedInUserAndParams = this.currentUser.loggedInUser()
-        .distinctUntilChanged()
-        .compose(combineLatestPair(this.paramsFromActivity));
+            // Activity should show on the user's default params
+            loggedInUserAndParams
+                .filter {
+                    isDefaultParams(
+                        it
+                    )
+                }
+                .flatMap { fetchActivity() }
+                .filter { activityHasNotBeenSeen(it) }
+                .doOnNext { saveLastSeenActivityId(it) }
+                .compose(bindToLifecycle())
+                .subscribe(activity)
 
-      // Activity should show on the user's default params
-      loggedInUserAndParams
-        .filter(this::isDefaultParams)
-        .flatMap(__ -> this.fetchActivity())
-        .filter(this::activityHasNotBeenSeen)
-        .doOnNext(this::saveLastSeenActivityId)
-        .compose(bindToLifecycle())
-        .subscribe(this.activity);
+            // Clear activity sample when params change from default
+            loggedInUserAndParams
+                .filter {
+                    !isDefaultParams(it)
+                }
+                .map { null }
+                .compose(bindToLifecycle())
+                .subscribe(activity)
 
-      // Clear activity sample when params change from default
-      loggedInUserAndParams
-        .filter(userAndParams -> !isDefaultParams(userAndParams))
-        .map(__ -> (Activity) null)
-        .compose(bindToLifecycle())
-        .subscribe(this.activity);
+            paramsFromActivity
+                .compose(
+                    Transformers.combineLatestPair(
+                        paginator.loadingPage()!!.distinctUntilChanged()
+                    )
+                )
+                .filter { it.second == 1 }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    analyticEvents.trackDiscoveryPageViewed(it.first)
+                }
 
-      this.paramsFromActivity
-        .compose(combineLatestPair(paginator.loadingPage().distinctUntilChanged()))
-        .filter(paramsAndPage -> paramsAndPage.second == 1)
-        .compose(bindToLifecycle())
-        .subscribe(paramsAndLoggedIn -> {
-          this.analyticEvents.trackDiscoveryPageViewed(paramsAndLoggedIn.first);
-        });
+            discoveryOnboardingLoginToutClick
+                .compose(bindToLifecycle())
+                .subscribe {
+                    analyticEvents.trackLoginOrSignUpCtaClicked(
+                        null,
+                        EventContextValues.ContextPageName.DISCOVER.contextName
+                    )
+                }
 
-      this.discoveryOnboardingLoginToutClick
-        .compose(bindToLifecycle())
-        .subscribe(v -> {
-          this.analyticEvents.trackLoginOrSignUpCtaClicked(null, EventContextValues.ContextPageName.DISCOVER.getContextName());
-        });
+            val loggedInUserOnHeartClick = userIsLoggedIn
+                .compose(Transformers.takePairWhen(this.onHeartButtonClicked))
+                .filter { it.first == true }
 
-    }
+            val loggedOutUserOnHeartClick = userIsLoggedIn
+                .compose(Transformers.takePairWhen(this.onHeartButtonClicked))
+                .filter { it.first == false }
 
-    /**
-     * Calls to GraphQL client to fetch projects filtering by DiscoveryParams
-     * @param discoveryParamsStringPair .first discovery params.
-     * @param discoveryParamsStringPair .second cursor for pagination, null on the first call.
-     * @return Observable<DiscoverEnvelope>
-     */
-    private Observable<DiscoverEnvelope> makeCallWithParams(final Pair<DiscoveryParams, String> discoveryParamsStringPair) {
-      return this.apolloClient.getProjects(discoveryParamsStringPair.first, discoveryParamsStringPair.second);
-    }
+            val projectOnUserChangeSave = loggedInUserOnHeartClick
+                .switchMap {
+                    this.toggleProjectSave(it.second)
+                }
+                .share()
 
-    private boolean activityHasNotBeenSeen(final @Nullable Activity activity) {
-      return activity != null && activity.id() != this.activitySamplePreference.get();
-    }
+            loggedOutUserOnHeartClick
+                .map { it }
+                .subscribe {
+                    this.startLoginToutActivityToSaveProject.onNext(it.second)
+                }
 
-    private Observable<Activity> fetchActivity() {
-      return this.apiClient.fetchActivities(1)
-        .map(ActivityEnvelope::activities)
-        .map(ListUtils::first)
-        .filter(ObjectUtils::isNotNull)
-        .compose(neverError());
-    }
+            val savedProjectOnLoginSuccess = this.startLoginToutActivityToSaveProject
+                .compose(Transformers.combineLatestPair(this.currentUser.observable()))
+                .filter { su ->
+                    su.second != null
+                }.take(1)
+                .switchMap {
+                    this.saveProject(it.first)
+                }
+                .share()
 
-    private boolean isDefaultParams(final @NonNull Pair<User, DiscoveryParams> userAndParams) {
-      final DiscoveryParams discoveryParams = userAndParams.second;
-      final User user = userAndParams.first;
-      return discoveryParams.equals(DiscoveryParams.getDefaultParams(user));
-    }
+            this.projectList
+                .compose(Transformers.takePairWhen(projectOnUserChangeSave))
+                .map {
+                    it.second.updateStartedProjectAndDiscoveryParamsList(it.first)
+                }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.projectList.onNext(it)
+                }
 
-    private boolean isOnboardingVisible(final @NonNull DiscoveryParams params, final boolean isLoggedIn) {
-      final DiscoveryParams.Sort sort = params.sort();
-      final boolean isSortHome = DiscoveryParams.Sort.MAGIC.equals(sort);
-      return BoolenExtKt.isTrue(params.isAllProjects()) && isSortHome && !isLoggedIn;
-    }
+            this.projectList
+                .compose(Transformers.takePairWhen(savedProjectOnLoginSuccess))
+                .map {
+                    it.first.indexOfFirst { item ->
+                        item.first.id() == it.second.id() && item.first.slug() == it.second.slug()
+                    }
+                }
+                .distinctUntilChanged()
+                .delay(300, TimeUnit.MILLISECONDS, environment.scheduler())
+                .compose(bindToLifecycle())
+                .subscribe {
+                    scrollToSavedProjectPosition.onNext(it)
+                }
+        }
 
-    private boolean isSavedVisible(final @NonNull DiscoveryParams params) {
-      return params.isSavedProjects();
-    }
+        private fun saveProject(project: Project): Observable<Project> {
+            return this.apolloClient.watchProject(project)
+                .compose(Transformers.neverError())
+        }
 
-    private void saveLastSeenActivityId(final @Nullable Activity activity) {
-      if (activity != null) {
-        this.activitySamplePreference.set((int) activity.id());
-      }
-    }
+        private fun unSaveProject(project: Project): Observable<Project> {
+            return this.apolloClient.unWatchProject(project).compose(Transformers.neverError())
+        }
 
-    private final PublishSubject<Boolean> activityClick = PublishSubject.create();
-    private final PublishSubject<Project> activitySampleProjectClick = PublishSubject.create();
-    private final PublishSubject<Activity> activityUpdateClick = PublishSubject.create();
-    private final PublishSubject<Void> clearPage = PublishSubject.create();
-    private final PublishSubject<Boolean> discoveryOnboardingLoginToutClick = PublishSubject.create();
-    private final PublishSubject<Editorial> editorialClicked = PublishSubject.create();
-    private final PublishSubject<Void> nextPage = PublishSubject.create();
-    private final PublishSubject<DiscoveryParams> paramsFromActivity = PublishSubject.create();
-    private final PublishSubject<Project> projectCardClicked = PublishSubject.create();
-    private final PublishSubject<Void> refresh = PublishSubject.create();
-    private final PublishSubject<List<Category>> rootCategories = PublishSubject.create();
-
-    private final BehaviorSubject<Activity> activity = BehaviorSubject.create();
-    private final BehaviorSubject<Void> heartContainerClicked = BehaviorSubject.create();
-    private final BehaviorSubject<Boolean> isFetchingProjects = BehaviorSubject.create();
-    private final BehaviorSubject<List<Pair<Project, DiscoveryParams>>> projectList = BehaviorSubject.create();
-    private final Observable<Boolean> showActivityFeed;
-    private final Observable<Boolean> showLoginTout;
-    private final BehaviorSubject<Editorial> shouldShowEditorial = BehaviorSubject.create();
-    private final BehaviorSubject<Boolean> shouldShowEmptySavedView = BehaviorSubject.create();
-    private final BehaviorSubject<Boolean> shouldShowOnboardingView = BehaviorSubject.create();
-    private final PublishSubject<Editorial> startEditorialActivity = PublishSubject.create();
-    private final Observable<Triple<Project, RefTag, Boolean>> startProjectActivity;
-    private final Observable<Activity> startUpdateActivity;
-    private final BehaviorSubject<Void> startHeartAnimation = BehaviorSubject.create();
-
-    public final Inputs inputs = this;
-    public final Outputs outputs = this;
-
-    @Override public void activitySampleFriendBackingViewHolderProjectClicked(final @NonNull ActivitySampleFriendBackingViewHolder viewHolder,
-      final @NonNull Project project) {
-      this.activitySampleProjectClick.onNext(project);
+        private fun toggleProjectSave(project: Project): Observable<Project> {
+            return if (project.isStarred())
+                unSaveProject(project)
+            else
+                saveProject(project)
+        }
     }
-    @Override public void activitySampleFriendBackingViewHolderSeeActivityClicked(final @NonNull ActivitySampleFriendBackingViewHolder viewHolder) {
-      this.activityClick.onNext(true);
-    }
-    @Override public void activitySampleFriendFollowViewHolderSeeActivityClicked(final @NonNull ActivitySampleFriendFollowViewHolder viewHolder) {
-      this.activityClick.onNext(true);
-    }
-    @Override public void activitySampleProjectViewHolderProjectClicked(final @NonNull ActivitySampleProjectViewHolder viewHolder,
-      final @NonNull Project project) {
-      this.activitySampleProjectClick.onNext(project);
-    }
-    @Override public void activitySampleProjectViewHolderSeeActivityClicked(final @NonNull ActivitySampleProjectViewHolder viewHolder) {
-      this.activityClick.onNext(true);
-    }
-    @Override public void activitySampleProjectViewHolderUpdateClicked(final @NonNull ActivitySampleProjectViewHolder viewHolder,
-      final @NonNull Activity activity) {
-      this.activityUpdateClick.onNext(activity);
-    }
-    @Override public void editorialViewHolderClicked(final @NonNull Editorial editorial) {
-      this.editorialClicked.onNext(editorial);
-    }
-    @Override public void projectCardViewHolderClicked(final @NonNull Project project) {
-      this.projectCardClicked.onNext(project);
-    }
-    @Override public void refresh() {
-      this.refresh.onNext(null);
-    }
-    @Override public void rootCategories(final @NonNull List<Category> rootCategories) {
-      this.rootCategories.onNext(rootCategories);
-    }
-    @Override public void clearPage() {
-      this.clearPage.onNext(null);
-    }
-    @Override public void heartContainerClicked() {
-      this.heartContainerClicked.onNext(null);
-    }
-    @Override public void discoveryOnboardingViewHolderLoginToutClick(final @NonNull DiscoveryOnboardingViewHolder viewHolder) {
-      this.discoveryOnboardingLoginToutClick.onNext(true);
-    }
-    @Override public void nextPage() {
-      this.nextPage.onNext(null);
-    }
-    @Override public void paramsFromActivity(final @NonNull DiscoveryParams params) {
-      this.paramsFromActivity.onNext(params);
-    }
-
-    @Override public @NonNull Observable<Activity> activity() {
-      return this.activity;
-    }
-    @Override public @NonNull Observable<Boolean> isFetchingProjects() {
-      return this.isFetchingProjects;
-    }
-    @Override public @NonNull Observable<List<Pair<Project, DiscoveryParams>>> projectList() {
-      return this.projectList;
-    }
-    @Override public @NonNull Observable<Boolean> showActivityFeed() {
-      return this.showActivityFeed;
-    }
-    @Override public @NonNull Observable<Boolean> showLoginTout() {
-      return this.showLoginTout;
-    }
-    @Override public @NonNull Observable<Editorial> shouldShowEditorial() {
-      return this.shouldShowEditorial;
-    }
-    @Override public @NonNull Observable<Boolean> shouldShowEmptySavedView() {
-      return this.shouldShowEmptySavedView;
-    }
-    @Override public @NonNull Observable<Void> startHeartAnimation() {
-      return this.startHeartAnimation;
-    }
-    @Override public @NonNull Observable<Editorial> startEditorialActivity() {
-      return this.startEditorialActivity;
-    }
-    @Override public @NonNull Observable<Triple<Project, RefTag, Boolean>> startProjectActivity() {
-      return this.startProjectActivity;
-    }
-
-    @Override public @NonNull Observable<Boolean> shouldShowOnboardingView() {
-      return this.shouldShowOnboardingView;
-    }
-    @Override public @NonNull Observable<Activity> startUpdateActivity() {
-      return this.startUpdateActivity;
-    }
-  }
 }

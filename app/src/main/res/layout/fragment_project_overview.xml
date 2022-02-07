@@ -30,6 +30,7 @@
             style="@style/Title2Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textIsSelectable="true"
             android:focusable="true"
             android:paddingBottom="@dimen/grid_1_half"
             tools:ignore="InconsistentLayout"
@@ -69,6 +70,7 @@
 
                     <TextView
                         style="@style/FootnotePrimary"
+                        android:textIsSelectable="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/project_menu_created_by" />
@@ -78,6 +80,7 @@
                         style="@style/SubheadlineMedium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textIsSelectable="true"
                         android:ellipsize="end"
                         android:maxLines="1"
                         tools:text="Creator Name" />
@@ -115,6 +118,7 @@
                         style="@style/FootnotePrimaryMedium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textIsSelectable="true"
                         android:ellipsize="end"
                         android:maxLines="1"
                         tools:text="Creator Name" />
@@ -125,6 +129,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/kds_trust_500"
+                        android:textIsSelectable="true"
                         tools:text="3 created • 2 launched" />
                 </LinearLayout>
 
@@ -156,6 +161,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/kds_support_700"
+                android:textIsSelectable="true"
                 tools:ignore="InconsistentLayout"
                 tools:text="Description about this project." />
 
@@ -173,6 +179,7 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_marginEnd="@dimen/grid_1"
+                  android:textIsSelectable="true"
                   android:text="@string/Read_more_about_the_campaign" />
 
                 <ImageView
@@ -194,6 +201,7 @@
                 android:id="@+id/category_icon"
                 style="@style/Caption1Primary"
                 android:layout_width="wrap_content"
+                android:textIsSelectable="true"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/discovery_baseball_card_accessibility_category_label"
                 android:text="@string/local_offer_icon"
@@ -204,6 +212,7 @@
                 style="@style/Caption1Primary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textIsSelectable="true"
                 android:paddingStart="@dimen/grid_1"
                 android:paddingEnd="@dimen/grid_5"
                 android:textColor="@color/kds_support_400"
@@ -216,6 +225,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/discovery_baseball_card_accessibility_location_label"
+                android:textIsSelectable="true"
                 android:text="@string/location_on_icon"
                 android:textColor="@color/kds_support_400" />
 
@@ -224,6 +234,7 @@
                 style="@style/Caption1Primary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textIsSelectable="true"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:paddingStart="@dimen/grid_1"
@@ -266,6 +277,7 @@
                 style="@style/BodyPrimaryMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textIsSelectable="true"
                 tools:text="Funded!" />
 
             <TextView
@@ -273,6 +285,7 @@
                 style="@style/Caption1Primary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textIsSelectable="true"
                 tools:text="This project was funded on" />
 
         </LinearLayout>
@@ -296,6 +309,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/grid_3"
                 android:focusable="true"
+                android:textIsSelectable="true"
                 android:visibility="gone"
                 tools:text="Converted from" />
 
@@ -326,6 +340,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/grid_2"
+                android:textIsSelectable="true"
                 tools:text="Gina Binetti, Christopher Wright, and 5 more are backers" />
 
         </LinearLayout>

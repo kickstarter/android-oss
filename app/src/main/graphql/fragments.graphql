@@ -28,6 +28,9 @@ fragment projectCard on Project {
     goal {
         ... amount
     }
+    pledged {
+        ... amount
+    }
     id
     isWatched
     launchedAt

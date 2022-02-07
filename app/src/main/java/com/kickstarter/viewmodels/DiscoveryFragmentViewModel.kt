@@ -533,11 +533,11 @@ interface DiscoveryFragmentViewModel {
                 saveProject(project)
         }
 
-        override fun activitySampleFriendBackingViewHolderSeeActivityClicked(viewHolder: ActivitySampleFriendBackingViewHolder) =
+        override fun activitySampleFriendBackingViewHolderSeeActivityClicked(viewHolder: ActivitySampleFriendBackingViewHolder?) =
             activityClick.onNext(true)
-        override fun activitySampleFriendFollowViewHolderSeeActivityClicked(viewHolder: ActivitySampleFriendFollowViewHolder) =
+        override fun activitySampleFriendFollowViewHolderSeeActivityClicked(viewHolder: ActivitySampleFriendFollowViewHolder?) =
             activityClick.onNext(true)
-        override fun activitySampleProjectViewHolderSeeActivityClicked(viewHolder: ActivitySampleProjectViewHolder) =
+        override fun activitySampleProjectViewHolderSeeActivityClicked(viewHolder: ActivitySampleProjectViewHolder?) =
             activityClick.onNext(true)
         override fun editorialViewHolderClicked(editorial: Editorial) = editorialClicked.onNext(editorial)
         override fun refresh() = refresh.onNext(null)
@@ -553,7 +553,7 @@ interface DiscoveryFragmentViewModel {
             project: Project?
         ) = activitySampleProjectClick.onNext(project)
         override fun activitySampleProjectViewHolderUpdateClicked(
-            viewHolder: ActivitySampleProjectViewHolder,
+            viewHolder: ActivitySampleProjectViewHolder?,
             activity: Activity?
         ) =
             activityUpdateClick.onNext(activity)

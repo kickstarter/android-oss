@@ -67,7 +67,7 @@ class ActivitySampleFriendBackingViewHolder(
     }
 
     interface Delegate {
-        fun activitySampleFriendBackingViewHolderSeeActivityClicked(viewHolder: ActivitySampleFriendBackingViewHolder)
+        fun activitySampleFriendBackingViewHolderSeeActivityClicked(viewHolder: ActivitySampleFriendBackingViewHolder?)
         fun activitySampleFriendBackingViewHolderProjectClicked(viewHolder: ActivitySampleFriendBackingViewHolder, project: Project?)
     }
 }

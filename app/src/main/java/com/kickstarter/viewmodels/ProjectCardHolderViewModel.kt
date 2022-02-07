@@ -165,8 +165,8 @@ interface ProjectCardHolderViewModel {
             return params!!.tagId() != null && params.tagId() == Editorial.LIGHTS_ON.tagId
         }
 
-        private fun areParamsAllOrSameCategoryAsProject(categoryPair: Pair<Category, Category>): Boolean {
-            return ObjectUtils.isNotNull(categoryPair.first) && categoryPair.first.id() == categoryPair.second.id()
+        private fun areParamsAllOrSameCategoryAsProject(categoryPair: Pair<Category?, Category>): Boolean {
+            return ObjectUtils.isNotNull(categoryPair.first) && categoryPair.first?.id() == categoryPair.second.id()
         }
 
         private val heartButtonClicked = PublishSubject.create<Void>()
@@ -495,8 +495,6 @@ interface ProjectCardHolderViewModel {
 
             projectSubcategoryIsGone = discoveryParams
                 .map { it.category() }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
                 .compose(Transformers.combineLatestPair(projectCategory))
                 .map {
                     areParamsAllOrSameCategoryAsProject(it)

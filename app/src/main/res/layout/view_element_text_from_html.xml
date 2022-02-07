@@ -10,6 +10,7 @@
         android:id="@+id/text_view"
         android:layout_marginTop="@dimen/grid_3"
         android:lineSpacingExtra="@dimen/callout_line_spacing_extra_story"
+        android:textIsSelectable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>

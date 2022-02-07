@@ -81,7 +81,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
     this.adapterData.assertValueCount(2);
     this.showSavedPromptTest.assertValueCount(1);
-    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CTA_CLICKED.getEventName());
+    this.segmentTrack.assertValues(EventName.CTA_CLICKED.getEventName());
   }
 
   @Test

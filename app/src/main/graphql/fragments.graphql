@@ -112,6 +112,7 @@ fragment fullProject on Project {
         }
     }
     risks
+    story
     slug
     isProjectWeLove
     state

@@ -14,6 +14,7 @@ interface VideoViewModel {
     interface Outputs {
         /** Emits the url of the video for the player.  */
         fun preparePlayerWithUrl(): Observable<String>
+        fun preparePlayerWithUrlAndPosition(): Observable<Pair<String, Long>>
     }
 
     interface Inputs {
@@ -23,6 +24,7 @@ interface VideoViewModel {
 
     class ViewModel(environment: Environment) : ActivityViewModel<VideoActivity>(environment), Inputs, Outputs {
         private val preparePlayerWithUrl = BehaviorSubject.create<String>()
+        private val preparePlayerWithUrlAndPosition = BehaviorSubject.create<Pair<String, Long>>()
         private val onVideoStarted = BehaviorSubject.create<Pair<Long, Long>>()
         private val onVideoCompleted = BehaviorSubject.create<Pair<Long, Long>>()
         @JvmField
@@ -35,6 +37,10 @@ interface VideoViewModel {
             return preparePlayerWithUrl
         }
 
+        override fun preparePlayerWithUrlAndPosition(): Observable<Pair<String, Long>> {
+            return preparePlayerWithUrlAndPosition
+        }
+
         override fun onVideoStarted(videoLength: Long, videoPosition: Long) {
             return onVideoStarted.onNext(Pair(videoLength, videoPosition))
         }
@@ -44,6 +50,16 @@ interface VideoViewModel {
         }
 
         init {
+
+            intent()
+                .map { Pair(it?.getStringExtra(IntentKey.VIDEO_URL_SOURCE), it?.getLongExtra(IntentKey.VIDEO_SEEK_POSITION, 0) ?: 0) }
+                .filter { ObjectUtils.isNotNull(it.first) }
+                .map { Pair(requireNotNull(it.first), it.second) }
+                .distinctUntilChanged()
+                .take(1)
+                .compose(bindToLifecycle())
+                .subscribe { preparePlayerWithUrlAndPosition.onNext(it) }
+
             val project = intent()
                 .map { it.getParcelableExtra(IntentKey.PROJECT) as Project? }
                 .filter { ObjectUtils.isNotNull(it) }

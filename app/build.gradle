@@ -250,8 +250,15 @@ dependencies {
     // Security
     implementation 'com.perimeterx.sdk:msdk:1.16.4'
 
+    // Dependencies for HTML Parser
+    implementation 'org.jsoup:jsoup:1.14.3'
+
     // Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
+
+    // GLIDE
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:29.0.4')

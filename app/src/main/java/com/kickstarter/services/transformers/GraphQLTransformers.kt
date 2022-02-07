@@ -302,6 +302,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         environmentalCommitmentTransformer(it.fragments().environmentalCommitment())
     } ?: emptyList()
     val risks = projectFragment?.risks()
+    val story = projectFragment?.story()?.toString() ?: ""
     val userCanComment = projectFragment?.canComment() ?: false
 
     return Project.builder()
@@ -353,6 +354,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         .projectFaqs(faqs)
         .envCommitments(eCommitment)
         .risks(risks)
+        .story(story)
         .build()
 }
 

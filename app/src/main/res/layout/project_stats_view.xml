@@ -20,12 +20,14 @@
       style="@style/CalloutPrimaryMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:textIsSelectable="true"
       android:textColor="@color/kds_create_700" />
 
     <TextView
       android:id="@+id/goal"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:textIsSelectable="true"
       style="@style/Caption1Secondary"
       android:textColor="@color/kds_create_700" />
 
@@ -43,13 +45,15 @@
       style="@style/CalloutPrimaryMedium"
       android:textColor="@color/kds_support_400"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content" />
+      android:layout_height="wrap_content"
+      android:textIsSelectable="true"  />
 
     <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/discovery_baseball_card_stats_backers"
       android:textColor="@color/kds_support_400"
+      android:textIsSelectable="true"
       style="@style/Caption1Secondary" />
   </LinearLayout>
 
@@ -58,6 +62,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingEnd="@dimen/grid_1_half"
+    android:textIsSelectable="true"
     tools:ignore="RtlSymmetry">
 
     <TextView
@@ -66,13 +71,15 @@
       style="@style/CalloutPrimaryMedium"
       android:textColor="@color/kds_support_400"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content" />
+      android:layout_height="wrap_content"
+      android:textIsSelectable="true"  />
 
     <TextView
       android:id="@+id/deadline_countdown_unit_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textColor="@color/kds_support_400"
+      android:textIsSelectable="true"
       style="@style/Caption1Secondary" />
 
   </LinearLayout>

@@ -8,32 +8,32 @@ import com.kickstarter.libs.Configure
 import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.projectpage.FrequentlyAskedQuestionFragment
+import com.kickstarter.ui.fragments.projectpage.ProjectCampaignFragment
 import com.kickstarter.ui.fragments.projectpage.ProjectEnvironmentalCommitmentsFragment
 import com.kickstarter.ui.fragments.projectpage.ProjectOverviewFragment
 import com.kickstarter.ui.fragments.projectpage.ProjectRiskFragment
 
 class ProjectPagerAdapter(
     private val fragmentManager: FragmentManager,
-    private val pagerAdapterMap: MutableMap<ProjectPagerTabs, Boolean>,
+    private val pagerAdapterList: List<ProjectPagerTabs>,
     lifecycle: Lifecycle
 ) :
     FragmentStateAdapter(fragmentManager, lifecycle) {
 
-    override fun getItemCount(): Int = pagerAdapterMap.count { it.value }
+    override fun getItemCount(): Int = pagerAdapterList.size
 
     override fun createFragment(position: Int): Fragment {
-        return when {
-            position == ProjectPagerTabs.OVERVIEW.ordinal && pagerAdapterMap[ProjectPagerTabs.OVERVIEW] == true ->
+        return when (pagerAdapterList[position]) {
+            ProjectPagerTabs.OVERVIEW ->
                 ProjectOverviewFragment.newInstance(position)
-            position == ProjectPagerTabs.FAQS.ordinal && pagerAdapterMap[ProjectPagerTabs.FAQS] == true ->
+            ProjectPagerTabs.FAQS ->
                 FrequentlyAskedQuestionFragment.newInstance(position)
-            position == ProjectPagerTabs.RISKS.ordinal && pagerAdapterMap[ProjectPagerTabs.RISKS] == true ->
+            ProjectPagerTabs.CAMPAIGN ->
+                ProjectCampaignFragment.newInstance(position)
+            ProjectPagerTabs.RISKS ->
                 ProjectRiskFragment.newInstance(position)
-            /*position == ProjectPagerTabs.CAMPAIGN.ordinal && pagerAdapterMap[ProjectPagerTabs.CAMPAIGN] == true ->
-                ProjectCampaignFragment.newInstance(position) */ // TODO bring back ProjectCampaignFragment.newInstance(position), on second place once the HTML parser is in place
-            position == ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal && pagerAdapterMap[ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT] == true ->
+            ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT ->
                 ProjectEnvironmentalCommitmentsFragment.newInstance(position)
-            else -> ProjectOverviewFragment.newInstance(position)
         }
     }
 

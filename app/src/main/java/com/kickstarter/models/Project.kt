@@ -59,7 +59,8 @@ class Project private constructor(
     private val video: Video?,
     private val projectFaqs: List<ProjectFaq>?,
     private val envCommitments: List<EnvironmentalCommitment>?,
-    private val risks: String?
+    private val risks: String?,
+    private val story: String?
 ) : Parcelable, Relay {
     fun availableCardTypes() = this.availableCardTypes
     fun backersCount() = this.backersCount
@@ -109,6 +110,7 @@ class Project private constructor(
     fun projectFaqs() = this.projectFaqs
     fun envCommitments() = this.envCommitments
     fun risks() = this.risks
+    fun story() = this.story
 
     @Parcelize
     data class Builder(
@@ -160,7 +162,8 @@ class Project private constructor(
         private var video: Video? = null,
         private var projectFaqs: List<ProjectFaq>? = emptyList(),
         private var envCommitments: List<EnvironmentalCommitment>? = emptyList(),
-        private var risks: String? = ""
+        private var risks: String? = "",
+        private var story: String? = ""
     ) : Parcelable {
         fun availableCardTypes(availableCardTypes: List<String>?) = apply { this.availableCardTypes = availableCardTypes }
         fun backersCount(backersCount: Int?) = apply { this.backersCount = backersCount ?: 0 }
@@ -210,6 +213,7 @@ class Project private constructor(
         fun projectFaqs(projectFaqs: List<ProjectFaq>?) = apply { this.projectFaqs = projectFaqs ?: emptyList() }
         fun envCommitments(envCommitments: List<EnvironmentalCommitment>?) = apply { this.envCommitments = envCommitments ?: emptyList() }
         fun risks(risks: String?) = apply { this.risks = risks ?: "" }
+        fun story(story: String?) = apply { this.story = story ?: "" }
         fun build() = Project(
             availableCardTypes = availableCardTypes,
             backersCount = backersCount,
@@ -258,7 +262,8 @@ class Project private constructor(
             video = video,
             projectFaqs = projectFaqs,
             envCommitments = envCommitments,
-            risks = risks
+            risks = risks,
+            story = story
         )
     }
 
@@ -310,7 +315,8 @@ class Project private constructor(
         video = video,
         projectFaqs = projectFaqs,
         envCommitments = envCommitments,
-        risks = risks
+        risks = risks,
+        story = story
     )
 
     @kotlin.annotation.Retention(AnnotationRetention.SOURCE)

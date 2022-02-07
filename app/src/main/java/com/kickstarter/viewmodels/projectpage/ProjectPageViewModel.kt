@@ -15,6 +15,7 @@ import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.OptimizelyExperiment
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
@@ -46,7 +47,6 @@ import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.User
-import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ProjectPageActivity
 import com.kickstarter.ui.data.CheckoutData
@@ -246,7 +246,8 @@ interface ProjectPageViewModel {
         /** Emits when the backing view group should be gone. */
         fun backingViewGroupIsVisible(): Observable<Boolean>
 
-        fun updateEnvCommitmentsTabVisibility(): Observable<Boolean>
+        /** Will emmit the need to show/hide the Campaign Tab and the Environmental Tab. */
+        fun updateTabs(): Observable<Pair<Boolean, Boolean>>
 
         fun hideVideoPlayer(): Observable<Boolean>
     }
@@ -255,7 +256,7 @@ interface ProjectPageViewModel {
         ActivityViewModel<ProjectPageActivity>(environment),
         Inputs,
         Outputs {
-        private val client: ApiClientType = environment.apiClient()
+
         private val cookieManager: CookieManager = environment.cookieManager()
         private val currentUser: CurrentUserType = environment.currentUser()
         private val ksCurrency: KSCurrency = environment.ksCurrency()
@@ -326,7 +327,7 @@ interface ProjectPageViewModel {
         private val projectPhoto = PublishSubject.create<String>()
         private val playButtonIsVisible = PublishSubject.create<Boolean>()
         private val backingViewGroupIsVisible = PublishSubject.create<Boolean>()
-        private val updateEnvCommitmentsTabVisibility = PublishSubject.create<Boolean>()
+        private val updateTabs = PublishSubject.create<Pair<Boolean, Boolean>>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -486,10 +487,13 @@ interface ProjectPageViewModel {
             }
 
             currentProjectData
+                .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.projectData.onNext(it)
-                    this.updateEnvCommitmentsTabVisibility.onNext(it.project().envCommitments()?.isNullOrEmpty())
+                    val showEnvironmentalTab = it.project().envCommitments()?.isNotEmpty() ?: false
+                    val showCampaignTab = this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_STORY_TAB)
+                    this.updateTabs.onNext(Pair(showCampaignTab, showEnvironmentalTab))
                 }
 
             currentProject
@@ -1116,8 +1120,7 @@ interface ProjectPageViewModel {
         override fun startVideoActivity(): Observable<Project> = this.startVideoActivity
 
         @NonNull
-        override fun updateEnvCommitmentsTabVisibility(): Observable<Boolean> = this
-            .updateEnvCommitmentsTabVisibility
+        override fun updateTabs(): Observable<Pair<Boolean, Boolean>> = this.updateTabs
 
         @NonNull
         override fun hideVideoPlayer(): Observable<Boolean> = this.hideVideoPlayer

@@ -1,343 +1,405 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import android.content.SharedPreferences;
-import android.util.Pair;
+import android.content.SharedPreferences
+import android.util.Pair
+import com.kickstarter.libs.ActivityViewModel
+import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.ExperimentsClientType
+import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.models.OptimizelyFeature
+import com.kickstarter.libs.preferences.BooleanPreferenceType
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.ListUtils
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.RefTagUtils
+import com.kickstarter.libs.utils.extensions.combineProjectsAndParams
+import com.kickstarter.libs.utils.extensions.isTrue
+import com.kickstarter.libs.utils.extensions.updateStartedProjectAndDiscoveryParamsList
+import com.kickstarter.models.Category
+import com.kickstarter.models.Project
+import com.kickstarter.models.User
+import com.kickstarter.models.extensions.isLocationGermany
+import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.activities.ThanksActivity
+import com.kickstarter.ui.adapters.ThanksAdapter
+import com.kickstarter.ui.adapters.data.ThanksData
+import com.kickstarter.ui.data.CheckoutData
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.ProjectData.Companion.builder
+import com.kickstarter.ui.viewholders.ProjectCardViewHolder
+import com.kickstarter.ui.viewholders.ThanksCategoryViewHolder
+import rx.Observable
+import rx.subjects.BehaviorSubject
+import rx.subjects.PublishSubject
+import java.net.CookieManager
 
-import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.CurrentUserType;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ExperimentsClientType;
-import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.models.OptimizelyFeature;
-import com.kickstarter.libs.preferences.BooleanPreferenceType;
-import com.kickstarter.libs.utils.ListUtils;
-import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.RefTagUtils;
-import com.kickstarter.models.Category;
-import com.kickstarter.models.Project;
-import com.kickstarter.models.User;
-import com.kickstarter.models.extensions.UserExt;
-import com.kickstarter.services.ApiClientType;
-import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.services.apiresponses.DiscoverEnvelope;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.activities.ThanksActivity;
-import com.kickstarter.ui.adapters.ThanksAdapter;
-import com.kickstarter.ui.adapters.data.ThanksData;
-import com.kickstarter.ui.data.CheckoutData;
-import com.kickstarter.ui.data.PledgeData;
-import com.kickstarter.ui.data.ProjectData;
-import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
-import com.kickstarter.ui.viewholders.ThanksCategoryViewHolder;
+interface ThanksViewModel {
+    interface Inputs :
+        ProjectCardViewHolder.Delegate,
+        ThanksCategoryViewHolder.Delegate,
+        ThanksAdapter.Delegate {
+        /** Call when the user clicks the close button.  */
+        fun closeButtonClicked()
 
-import java.net.CookieManager;
-import java.util.List;
-
-import androidx.annotation.NonNull;
-
-import kotlin.Triple;
-import rx.Observable;
-import rx.subjects.BehaviorSubject;
-import rx.subjects.PublishSubject;
-
-import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
-import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
-import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
-import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
-import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
-import com.kickstarter.libs.utils.extensions.BoolenExtKt;
-
-public interface ThanksViewModel {
-
-  interface Inputs extends ProjectCardViewHolder.Delegate, ThanksCategoryViewHolder.Delegate,
-    ThanksAdapter.Delegate {
-    /** Call when the user clicks the close button. */
-    void closeButtonClicked();
-
-    /** Call when the user accepts the prompt to signup to the Games newsletter. */
-    void signupToGamesNewsletterClick();
-  }
-
-  interface Outputs {
-    /** Emits the data to configure the adapter with. */
-    Observable<ThanksData> adapterData();
-
-    /** Emits when we should finish the {@link com.kickstarter.ui.activities.ThanksActivity}. */
-    Observable<Void> finish();
-
-    /** Show a dialog confirming the user will be signed up to the games newsletter. Required for German users. */
-    Observable<Void> showConfirmGamesNewsletterDialog();
-
-    /** Show a dialog prompting the user to sign-up to the games newsletter. */
-    Observable<Void> showGamesNewsletterDialog();
-
-    /** Show a dialog prompting the user to rate the app. */
-    Observable<Void> showRatingDialog();
-
-    /** Emits when we should start the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
-    Observable<DiscoveryParams> startDiscoveryActivity();
-
-    /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
-    Observable<Triple<Project, RefTag, Boolean>> startProjectActivity();
-  }
-
-  final class ViewModel extends ActivityViewModel<ThanksActivity> implements Inputs, Outputs {
-    private final ApiClientType apiClient;
-    private final BooleanPreferenceType hasSeenAppRatingPreference;
-    private final BooleanPreferenceType hasSeenGamesNewsletterPreference;
-    private final CurrentUserType currentUser;
-    private final ExperimentsClientType optimizely;
-    private final SharedPreferences sharedPreferences;
-    private final CookieManager cookieManager;
-
-    public ViewModel(final @NonNull Environment environment) {
-      super(environment);
-
-      this.apiClient = environment.apiClient();
-      this.currentUser = environment.currentUser();
-      this.hasSeenAppRatingPreference = environment.hasSeenAppRatingPreference();
-      this.hasSeenGamesNewsletterPreference = environment.hasSeenGamesNewsletterPreference();
-      this.optimizely = environment.optimizely();
-      this.sharedPreferences = environment.sharedPreferences();
-      this.cookieManager = environment.cookieManager();
-
-      final Observable<Project> project = intent()
-        .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
-        .ofType(Project.class)
-        .take(1)
-        .compose(bindToLifecycle());
-
-      final Observable<Category> rootCategory = project.switchMap(p -> rootCategory(p, this.apiClient));
-
-      final Observable<Boolean> isGamesCategory = rootCategory
-        .map(c -> "games".equals(c.slug()));
-
-      final Observable<Boolean> hasSeenGamesNewsletterDialog = Observable.just(this.hasSeenGamesNewsletterPreference.get());
-
-      final Observable<Boolean> isSignedUpToGamesNewsletter = this.currentUser.observable()
-        .map(u -> u != null && BoolenExtKt.isTrue(u.gamesNewsletter()));
-
-      final Observable<Boolean> showGamesNewsletter = Observable.combineLatest(
-        isGamesCategory, hasSeenGamesNewsletterDialog, isSignedUpToGamesNewsletter,
-        (isGames, hasSeen, isSignedUp) -> isGames && !hasSeen && !isSignedUp
-      )
-        .take(1);
-
-      this.categoryCardViewHolderClicked
-        .map(c -> DiscoveryParams.builder().category(c).build())
-        .compose(bindToLifecycle())
-        .subscribe(this.startDiscoveryActivity::onNext);
-
-      this.closeButtonClicked
-        .compose(bindToLifecycle())
-        .subscribe(this.finish);
-
-      final  Observable<Boolean> isProjectPageEnabled =
-              Observable.just(this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2));
-
-      this.projectCardViewHolderClicked
-        .withLatestFrom(isProjectPageEnabled, Pair::create)
-        .compose(bindToLifecycle())
-        .subscribe(p -> this.startProjectActivity.onNext(new Triple<>(p.first, RefTag.thanks(), p.second)));
-
-      Observable.combineLatest(
-        project,
-        rootCategory,
-        project.switchMap(p -> this.relatedProjects(p, this.apiClient)),
-        ThanksData::new
-      )
-        .compose(bindToLifecycle())
-        .subscribe(this.adapterData::onNext);
-
-      Observable.just(this.hasSeenAppRatingPreference.get())
-        .take(1)
-        .compose(combineLatestPair(showGamesNewsletter))
-        .filter(ag -> !ag.first && !ag.second)
-        .compose(ignoreValues())
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.showRatingDialog.onNext(null));
-
-      showGamesNewsletter
-        .filter(x -> x)
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.showGamesNewsletterDialog.onNext(null));
-
-      this.showGamesNewsletterDialog
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.hasSeenGamesNewsletterPreference.set(true));
-
-      this.currentUser.observable()
-        .filter(ObjectUtils::isNotNull)
-        .compose(takeWhen(this.signupToGamesNewsletterClick))
-        .flatMap(u -> this.signupToGamesNewsletter(u, this.apiClient))
-        .compose(bindToLifecycle())
-        .subscribe(this.signedUpToGamesNewsletter::onNext);
-
-      this.currentUser.observable()
-        .filter(ObjectUtils::isNotNull)
-        .compose(takeWhen(this.signedUpToGamesNewsletter))
-        .filter(UserExt::isLocationGermany)
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.showConfirmGamesNewsletterDialog.onNext(null));
-
-      final Observable<CheckoutData> checkoutData = intent()
-        .map(i -> i.getParcelableExtra(IntentKey.CHECKOUT_DATA))
-        .ofType(CheckoutData.class)
-        .take(1);
-
-      final Observable<PledgeData> pledgeData = intent()
-        .map(i -> i.getParcelableExtra(IntentKey.PLEDGE_DATA))
-        .ofType(PledgeData.class)
-        .take(1);
-
-      final Observable<Pair<CheckoutData, PledgeData>> checkoutAndPledgeData =
-        Observable.combineLatest(checkoutData, pledgeData, Pair::create);
-
-      checkoutAndPledgeData
-        .compose(bindToLifecycle())
-        .subscribe(checkoutDataPledgeData -> {
-          this.analyticEvents.trackThanksScreenViewed(checkoutDataPledgeData.first, checkoutDataPledgeData.second);
-        });
-
-      checkoutAndPledgeData
-        .compose(takePairWhen(this.projectCardViewHolderClicked))
-        .compose(bindToLifecycle())
-        .subscribe(dataCheckoutProjectPair -> {
-          final RefTag cookieRefTag = RefTagUtils.storedCookieRefTagForProject(dataCheckoutProjectPair.second, this.cookieManager, this.sharedPreferences);
-          final ProjectData projectData = ProjectData.Companion.builder()
-                  .refTagFromIntent(RefTag.thanks())
-                  .refTagFromCookie(cookieRefTag)
-                  .project(dataCheckoutProjectPair.second)
-                  .build();
-          this.analyticEvents.trackThanksActivityProjectCardClicked(projectData,
-                            dataCheckoutProjectPair.first.first,
-                            dataCheckoutProjectPair.first.second);
-        });
+        /** Call when the user accepts the prompt to signup to the Games newsletter.  */
+        fun signupToGamesNewsletterClick()
     }
 
-    /**
-     * Given a project, returns an observable that emits the project's root category.
-     */
-    private static @NonNull Observable<Category> rootCategory(final @NonNull Project project, final @NonNull ApiClientType client) {
-      final Category category = project.category();
+    interface Outputs {
+        /** Emits the data to configure the adapter with.  */
+        fun adapterData(): Observable<ThanksData>
 
-      if (category == null) {
-        return Observable.empty();
-      }
+        /** Emits when we should finish the [com.kickstarter.ui.activities.ThanksActivity].  */
+        fun finish(): Observable<Void>
 
-      if (category.parent() != null) {
-        return Observable.just(category.parent());
-      }
+        /** Show a dialog confirming the user will be signed up to the games newsletter. Required for German users.  */
+        fun showConfirmGamesNewsletterDialog(): Observable<Void?>
 
-      return client.fetchCategory(String.valueOf(category.rootId()))
-        .compose(neverError());
+        /** Show a dialog prompting the user to sign-up to the games newsletter.  */
+        fun showGamesNewsletterDialog(): Observable<Void?>
+
+        /** Show a dialog prompting the user to rate the app.  */
+        fun showRatingDialog(): Observable<Void?>
+
+        /** Emits when we should start the [com.kickstarter.ui.activities.DiscoveryActivity].  */
+        fun startDiscoveryActivity(): Observable<DiscoveryParams>
+
+        /** Emits when we should start the [com.kickstarter.ui.activities.ProjectActivity].  */
+        fun startProjectActivity(): Observable<Triple<Project, RefTag, Boolean>>
     }
 
-    /**
-     * Returns a shuffled list of 3 recommended projects, with fallbacks to similar and staff picked projects
-     * for users with fewer than 3 recommendations.
-     */
-    private @NonNull Observable<List<Project>> relatedProjects(final @NonNull Project project, final @NonNull ApiClientType client) {
-      final DiscoveryParams recommendedParams = DiscoveryParams.builder()
-        .backed(-1)
-        .recommended(true)
-        .perPage(6)
-        .build();
+    class ViewModel(environment: Environment) :
+        ActivityViewModel<ThanksActivity?>(environment),
+        Inputs,
+        Outputs {
+        private val apiClient: ApiClientType = environment.apiClient()
+        private val apolloClient: ApolloClientType = environment.apolloClient()
+        private val hasSeenAppRatingPreference: BooleanPreferenceType = environment.hasSeenAppRatingPreference()
+        private val hasSeenGamesNewsletterPreference: BooleanPreferenceType = environment.hasSeenGamesNewsletterPreference()
+        private val currentUser: CurrentUserType = environment.currentUser()
+        private val optimizely: ExperimentsClientType = environment.optimizely()
+        private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
+        private val cookieManager: CookieManager = environment.cookieManager()
 
-      final DiscoveryParams similarToParams = DiscoveryParams.builder()
-        .backed(-1)
-        .similarTo(project)
-        .perPage(3)
-        .build();
+        private val categoryCardViewHolderClicked = PublishSubject.create<Category>()
+        private val closeButtonClicked = PublishSubject.create<Void?>()
+        private val projectCardViewHolderClicked = PublishSubject.create<Project>()
+        private val signupToGamesNewsletterClick = PublishSubject.create<Void?>()
+        private val adapterData = BehaviorSubject.create<ThanksData>()
+        private val finish = PublishSubject.create<Void>()
+        private val showConfirmGamesNewsletterDialog = PublishSubject.create<Void?>()
+        private val showGamesNewsletterDialog = PublishSubject.create<Void?>()
+        private val showRatingDialog = PublishSubject.create<Void?>()
+        private val signedUpToGamesNewsletter = PublishSubject.create<User>()
+        private val startDiscoveryActivity = PublishSubject.create<DiscoveryParams>()
+        private val startProjectActivity = PublishSubject.create<Triple<Project, RefTag, Boolean>>()
+        private val onHeartButtonClicked = PublishSubject.create<Project>()
 
-      final Category category = project.category();
-      final DiscoveryParams staffPickParams = DiscoveryParams.builder()
-        .category(category == null ? null : category.root())
-        .backed(-1)
-        .staffPicks(true)
-        .perPage(3)
-        .build();
+        @JvmField
+        val inputs: Inputs = this
+        @JvmField
+        val outputs: Outputs = this
 
-      final Observable<Project> recommendedProjects = client.fetchProjects(recommendedParams)
-        .retry(2)
-        .map(DiscoverEnvelope::projects)
-        .map(ListUtils::shuffle)
-        .flatMap(iterable -> Observable.from(iterable))
-        .take(3);
+        init {
+            val project = intent()
+                .map<Project?> { it.getParcelableExtra(IntentKey.PROJECT) }
+                .ofType(Project::class.java)
+                .take(1)
+                .compose(bindToLifecycle())
 
-      final Observable<Project> similarToProjects = client.fetchProjects(similarToParams)
-        .retry(2)
-        .map(DiscoverEnvelope::projects)
-        .flatMap(Observable::from);
+            val rootCategory = project
+                .switchMap { rootCategory(it, apiClient) }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
 
-      final Observable<Project> staffPickProjects = client.fetchProjects(staffPickParams)
-        .retry(2)
-        .map(DiscoverEnvelope::projects)
-        .flatMap(Observable::from);
+            val isGamesCategory = rootCategory
+                .map { "games" == it?.slug() }
 
-      return Observable.concat(recommendedProjects, similarToProjects, staffPickProjects)
-        .compose(neverError())
-        .distinct()
-        .take(3)
-        .toList();
-    }
+            val hasSeenGamesNewsletterDialog = Observable.just(
+                hasSeenGamesNewsletterPreference.get()
+            )
 
-    private Observable<User> signupToGamesNewsletter(final @NonNull User user, final @NonNull ApiClientType client) {
-      return client
-        .updateUserSettings(user.toBuilder().gamesNewsletter(true).build())
-        .compose(neverError());
-    }
+            val isSignedUpToGamesNewsletter = currentUser.observable()
+                .map { it != null && it.gamesNewsletter().isTrue() }
 
-    private final PublishSubject<Category> categoryCardViewHolderClicked = PublishSubject.create();
-    private final PublishSubject<Void> closeButtonClicked = PublishSubject.create();
-    private final PublishSubject<Project> projectCardViewHolderClicked  = PublishSubject.create();
-    private final PublishSubject<Void> signupToGamesNewsletterClick = PublishSubject.create();
+            val showGamesNewsletter = Observable.combineLatest(
+                isGamesCategory,
+                hasSeenGamesNewsletterDialog,
+                isSignedUpToGamesNewsletter
+            ) { isGames, hasSeen, isSignedUp ->
+                isGames && !hasSeen && !isSignedUp
+            }.take(1)
 
-    private final BehaviorSubject<ThanksData> adapterData = BehaviorSubject.create();
-    private final PublishSubject<Void> finish = PublishSubject.create();
-    private final PublishSubject<Void> showConfirmGamesNewsletterDialog = PublishSubject.create();
-    private final PublishSubject<Void> showGamesNewsletterDialog = PublishSubject.create();
-    private final PublishSubject<Void> showRatingDialog = PublishSubject.create();
-    private final PublishSubject<User> signedUpToGamesNewsletter = PublishSubject.create();
-    private final PublishSubject<DiscoveryParams> startDiscoveryActivity = PublishSubject.create();
-    private final PublishSubject<Triple<Project, RefTag, Boolean>> startProjectActivity = PublishSubject.create();
+            categoryCardViewHolderClicked
+                .map { DiscoveryParams.builder().category(it).build() }
+                .compose(bindToLifecycle())
+                .subscribe { startDiscoveryActivity.onNext(it) }
 
-    public final Inputs inputs = this;
-    public final Outputs outputs = this;
+            closeButtonClicked
+                .compose(bindToLifecycle())
+                .subscribe(finish)
 
-    @Override public void categoryViewHolderClicked(final @NonNull Category category) {
-      this.categoryCardViewHolderClicked.onNext(category);
-    }
-    @Override public void closeButtonClicked() {
-      this.closeButtonClicked.onNext(null);
-    }
-    @Override public void signupToGamesNewsletterClick() {
-      this.signupToGamesNewsletterClick.onNext(null);
-    }
-    @Override public void projectCardViewHolderClicked(final @NonNull Project project) {
-      this.projectCardViewHolderClicked.onNext(project);
-    }
+            val isProjectPageEnabled = Observable.just(
+                optimizely.isFeatureEnabled(
+                    OptimizelyFeature.Key.PROJECT_PAGE_V2
+                )
+            )
 
-    @Override public @NonNull Observable<ThanksData> adapterData() {
-      return this.adapterData;
+            projectCardViewHolderClicked
+                .withLatestFrom<Boolean, Pair<Project, Boolean>>(isProjectPageEnabled) { a, b ->
+                    Pair.create(a, b)
+                }.compose(bindToLifecycle())
+                .subscribe {
+                    startProjectActivity.onNext(
+                        Triple(
+                            it.first, RefTag.thanks(), it.second
+                        )
+                    )
+                }
+
+            val projectOnUserChangeSave = this.onHeartButtonClicked
+                .switchMap {
+                    this.toggleProjectSave(it)
+                }
+                .share()
+
+            val recommendedProjects = project.switchMap {
+                relatedProjects(
+                    it,
+                    apiClient
+                )
+            }.filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .map {
+                    combineProjectsAndParams(
+                        it,
+                        DiscoveryParams.builder().build()
+                    )
+                }
+
+            Observable.combineLatest(
+                project,
+                rootCategory,
+                recommendedProjects
+            ) { backedProject, category, projects ->
+                ThanksData(backedProject, category, projects)
+            }.compose(bindToLifecycle())
+                .subscribe { adapterData.onNext(it) }
+
+            adapterData
+                .compose(Transformers.takePairWhen(projectOnUserChangeSave))
+                .map {
+                    Pair(it.first, it.second.updateStartedProjectAndDiscoveryParamsList(it.first.recommendedProjects))
+                }
+                .map {
+                    ThanksData(it.first.backedProject, it.first.category, it.second)
+                }.distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe {
+                    adapterData.onNext(it)
+                }
+
+            Observable.just(hasSeenAppRatingPreference.get())
+                .take(1)
+                .compose(Transformers.combineLatestPair(showGamesNewsletter))
+                .filter { !it.first && !it.second }
+                .compose(Transformers.ignoreValues())
+                .compose(bindToLifecycle())
+                .subscribe { showRatingDialog.onNext(null) }
+
+            showGamesNewsletter
+                .filter { it }
+                .compose(bindToLifecycle())
+                .subscribe { showGamesNewsletterDialog.onNext(null) }
+
+            showGamesNewsletterDialog
+                .compose(bindToLifecycle())
+                .subscribe { hasSeenGamesNewsletterPreference.set(true) }
+
+            currentUser.observable()
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(Transformers.takeWhen(signupToGamesNewsletterClick))
+                .flatMap { signupToGamesNewsletter(it, apiClient) }
+                .compose(bindToLifecycle())
+                .subscribe { signedUpToGamesNewsletter.onNext(it) }
+
+            currentUser.observable()
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(Transformers.takeWhen(signedUpToGamesNewsletter))
+                .filter {
+                    it.isLocationGermany()
+                }.compose(bindToLifecycle())
+                .subscribe { showConfirmGamesNewsletterDialog.onNext(null) }
+
+            val checkoutData = intent()
+                .map<CheckoutData?> { it.getParcelableExtra(IntentKey.CHECKOUT_DATA) }
+                .ofType(CheckoutData::class.java)
+                .take(1)
+
+            val pledgeData = intent()
+                .map<PledgeData?> { it.getParcelableExtra(IntentKey.PLEDGE_DATA) }
+                .ofType(PledgeData::class.java)
+                .take(1)
+
+            val checkoutAndPledgeData =
+                Observable.combineLatest<CheckoutData, PledgeData, Pair<CheckoutData, PledgeData>>(
+                    checkoutData,
+                    pledgeData
+                ) { a, b -> Pair.create(a, b) }
+
+            checkoutAndPledgeData
+                .compose(bindToLifecycle())
+                .subscribe { checkoutDataPledgeData: Pair<CheckoutData, PledgeData> ->
+                    analyticEvents.trackThanksScreenViewed(
+                        checkoutDataPledgeData.first,
+                        checkoutDataPledgeData.second
+                    )
+                }
+
+            checkoutAndPledgeData
+                .compose(Transformers.takePairWhen(projectCardViewHolderClicked))
+                .compose(bindToLifecycle())
+                .subscribe { dataCheckoutProjectPair: Pair<Pair<CheckoutData, PledgeData>, Project> ->
+
+                    val cookieRefTag = RefTagUtils.storedCookieRefTagForProject(
+                        dataCheckoutProjectPair.second,
+                        cookieManager,
+                        sharedPreferences
+                    )
+
+                    val projectData = builder()
+                        .refTagFromIntent(RefTag.thanks())
+                        .refTagFromCookie(cookieRefTag)
+                        .project(dataCheckoutProjectPair.second)
+                        .build()
+
+                    analyticEvents.trackThanksActivityProjectCardClicked(
+                        projectData,
+                        dataCheckoutProjectPair.first.first,
+                        dataCheckoutProjectPair.first.second
+                    )
+                }
+        }
+
+        /**
+         * Returns a shuffled list of 3 recommended projects, with fallbacks to similar and staff picked projects
+         * for users with fewer than 3 recommendations.
+         */
+        private fun relatedProjects(
+            project: Project,
+            client: ApiClientType
+        ): Observable<List<Project>?> {
+            val recommendedParams = DiscoveryParams.builder()
+                .backed(-1)
+                .recommended(true)
+                .perPage(6)
+                .build()
+
+            val similarToParams = DiscoveryParams.builder()
+                .backed(-1)
+                .similarTo(project)
+                .perPage(3)
+                .build()
+
+            val category = project.category()
+
+            val staffPickParams = DiscoveryParams.builder()
+                .category(category?.root())
+                .backed(-1)
+                .staffPicks(true)
+                .perPage(3)
+                .build()
+
+            val recommendedProjects = client.fetchProjects(recommendedParams)
+                .retry(2)
+                .map { it.projects() }
+                .map { ListUtils.shuffle(it) }
+                .flatMap { Observable.from(it) }
+                .take(3)
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+
+            val similarToProjects = client.fetchProjects(similarToParams)
+                .retry(2)
+                .map { it.projects() }
+                .flatMap { Observable.from(it) }
+
+            val staffPickProjects = client.fetchProjects(staffPickParams)
+                .retry(2)
+                .map { it.projects() }
+                .flatMap { Observable.from(it) }
+
+            return Observable.concat(recommendedProjects, similarToProjects, staffPickProjects)
+                .compose(Transformers.neverError())
+                .distinct()
+                .take(3)
+                .toList()
+        }
+
+        private fun signupToGamesNewsletter(user: User, client: ApiClientType): Observable<User> {
+            return client
+                .updateUserSettings(user.toBuilder().gamesNewsletter(true).build())
+                .compose(Transformers.neverError())
+        }
+        override fun categoryViewHolderClicked(category: Category?) = categoryCardViewHolderClicked.onNext(category)
+
+        override fun closeButtonClicked() = closeButtonClicked.onNext(null)
+
+        override fun signupToGamesNewsletterClick() = signupToGamesNewsletterClick.onNext(null)
+
+        override fun onHeartButtonClicked(project: Project) = onHeartButtonClicked.onNext(project)
+
+        override fun projectCardViewHolderClicked(project: Project?) = projectCardViewHolderClicked.onNext(project)
+
+        override fun adapterData(): Observable<ThanksData> = this.adapterData
+
+        override fun finish(): Observable<Void> = this.finish
+
+        override fun showConfirmGamesNewsletterDialog(): Observable<Void?> = this.showConfirmGamesNewsletterDialog
+
+        override fun showGamesNewsletterDialog(): Observable<Void?> = this.showGamesNewsletterDialog
+
+        override fun showRatingDialog(): Observable<Void?> = this.showRatingDialog
+
+        override fun startDiscoveryActivity(): Observable<DiscoveryParams> = this.startDiscoveryActivity
+
+        override fun startProjectActivity(): Observable<Triple<Project, RefTag, Boolean>> = this.startProjectActivity
+
+        private fun saveProject(project: Project): Observable<Project> {
+            return this.apolloClient.watchProject(project)
+                .compose(Transformers.neverError())
+        }
+
+        private fun unSaveProject(project: Project): Observable<Project> {
+            return this.apolloClient.unWatchProject(project).compose(Transformers.neverError())
+        }
+
+        private fun toggleProjectSave(project: Project): Observable<Project> {
+            return if (project.isStarred())
+                unSaveProject(project)
+            else
+                saveProject(project)
+        }
+
+        companion object {
+            /**
+             * Given a project, returns an observable that emits the project's root category.
+             */
+            private fun rootCategory(
+                project: Project,
+                client: ApiClientType
+            ): Observable<Category?> {
+                val category = project.category() ?: return Observable.empty()
+
+                return if (category.parent() != null) {
+                    Observable.just(category.parent())
+                } else client.fetchCategory(category.rootId().toString())
+                    .compose(Transformers.neverError())
+            }
+        }
     }
-    @Override public @NonNull Observable<Void> finish() {
-      return this.finish;
-    }
-    @Override public @NonNull Observable<Void> showConfirmGamesNewsletterDialog() {
-      return this.showConfirmGamesNewsletterDialog;
-    }
-    @Override public @NonNull Observable<Void> showGamesNewsletterDialog() {
-      return this.showGamesNewsletterDialog;
-    }
-    @Override public @NonNull Observable<Void> showRatingDialog() {
-      return this.showRatingDialog;
-    }
-    @Override public @NonNull Observable<DiscoveryParams> startDiscoveryActivity() {
-      return this.startDiscoveryActivity;
-    }
-    @Override public @NonNull Observable<Triple<Project, RefTag, Boolean>> startProjectActivity() {
-      return this.startProjectActivity;
-    }
-  }
 }

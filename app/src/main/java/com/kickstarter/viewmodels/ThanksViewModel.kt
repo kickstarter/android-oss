@@ -70,6 +70,9 @@ interface ThanksViewModel {
 
         /** Emits when we should start the [com.kickstarter.ui.activities.ProjectActivity].  */
         fun startProjectActivity(): Observable<Triple<Project, RefTag, Boolean>>
+
+        /** Emits when the success prompt for saving should be displayed.  */
+        fun showSavedPrompt(): Observable<Void>
     }
 
     class ViewModel(environment: Environment) :
@@ -98,6 +101,7 @@ interface ThanksViewModel {
         private val startDiscoveryActivity = PublishSubject.create<DiscoveryParams>()
         private val startProjectActivity = PublishSubject.create<Triple<Project, RefTag, Boolean>>()
         private val onHeartButtonClicked = PublishSubject.create<Project>()
+        private val showSavedPrompt = PublishSubject.create<Void>()
 
         @JvmField
         val inputs: Inputs = this
@@ -202,6 +206,16 @@ interface ThanksViewModel {
                 .subscribe {
                     adapterData.onNext(it)
                 }
+
+            projectOnUserChangeSave
+                .compose(bindToLifecycle())
+                .subscribe { this.analyticEvents.trackWatchProjectCTA(it) }
+
+            projectOnUserChangeSave
+                .filter { p -> p.isStarred() && p.isLive && !p.isApproachingDeadline }
+                .compose(Transformers.ignoreValues())
+                .compose(bindToLifecycle())
+                .subscribe(this.showSavedPrompt)
 
             Observable.just(hasSeenAppRatingPreference.get())
                 .take(1)
@@ -346,28 +360,19 @@ interface ThanksViewModel {
                 .compose(Transformers.neverError())
         }
         override fun categoryViewHolderClicked(category: Category?) = categoryCardViewHolderClicked.onNext(category)
-
         override fun closeButtonClicked() = closeButtonClicked.onNext(null)
-
         override fun signupToGamesNewsletterClick() = signupToGamesNewsletterClick.onNext(null)
-
         override fun onHeartButtonClicked(project: Project) = onHeartButtonClicked.onNext(project)
-
         override fun projectCardViewHolderClicked(project: Project?) = projectCardViewHolderClicked.onNext(project)
 
         override fun adapterData(): Observable<ThanksData> = this.adapterData
-
         override fun finish(): Observable<Void> = this.finish
-
         override fun showConfirmGamesNewsletterDialog(): Observable<Void?> = this.showConfirmGamesNewsletterDialog
-
         override fun showGamesNewsletterDialog(): Observable<Void?> = this.showGamesNewsletterDialog
-
         override fun showRatingDialog(): Observable<Void?> = this.showRatingDialog
-
         override fun startDiscoveryActivity(): Observable<DiscoveryParams> = this.startDiscoveryActivity
-
         override fun startProjectActivity(): Observable<Triple<Project, RefTag, Boolean>> = this.startProjectActivity
+        override fun showSavedPrompt(): Observable<Void> = this.showSavedPrompt
 
         private fun saveProject(project: Project): Observable<Project> {
             return this.apolloClient.watchProject(project)

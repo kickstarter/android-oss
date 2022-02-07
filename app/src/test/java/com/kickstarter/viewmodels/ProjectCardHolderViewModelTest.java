@@ -116,7 +116,7 @@ public class ProjectCardHolderViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.heartDrawableId.assertValue(R.drawable.icon__heart );
+    this.heartDrawableId.assertValue(R.drawable.icon__heart);
   }
 
   @Test
@@ -125,7 +125,7 @@ public class ProjectCardHolderViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.heartDrawableId.assertValue(R.drawable.icon__heart_outline );
+    this.heartDrawableId.assertValue(R.drawable.icon__heart_outline);
   }
 
   @Test

@@ -11,8 +11,6 @@ import com.kickstarter.databinding.EmptyViewBinding;
 import com.kickstarter.databinding.ProjectCardViewBinding;
 import com.kickstarter.databinding.ThanksCategoryViewBinding;
 import com.kickstarter.databinding.ThanksShareViewBinding;
-import com.kickstarter.libs.utils.extensions.ProjectExt;
-import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.adapters.data.ThanksData;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;

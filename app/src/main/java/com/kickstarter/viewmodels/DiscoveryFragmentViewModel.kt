@@ -12,6 +12,7 @@ import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.preferences.IntPreferenceType
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventContextValues
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.DISCOVER
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
@@ -460,7 +461,7 @@ interface DiscoveryFragmentViewModel {
 
             projectSavedStatus
                 .compose(bindToLifecycle())
-                .subscribe { this.analyticEvents.trackWatchProjectCTA(it) }
+                .subscribe { this.analyticEvents.trackWatchProjectCTA(it, DISCOVER) }
 
             projectSavedStatus
                 .filter { p -> p.isStarred() && p.isLive && !p.isApproachingDeadline }

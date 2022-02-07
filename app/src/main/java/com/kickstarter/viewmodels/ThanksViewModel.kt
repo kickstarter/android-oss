@@ -10,6 +10,7 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RefTagUtils
@@ -209,7 +210,7 @@ interface ThanksViewModel {
 
             projectOnUserChangeSave
                 .compose(bindToLifecycle())
-                .subscribe { this.analyticEvents.trackWatchProjectCTA(it) }
+                .subscribe { this.analyticEvents.trackWatchProjectCTA(it, THANKS) }
 
             projectOnUserChangeSave
                 .filter { p -> p.isStarred() && p.isLive && !p.isApproachingDeadline }

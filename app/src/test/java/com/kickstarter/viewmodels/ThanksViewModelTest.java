@@ -51,6 +51,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<DiscoveryParams> startDiscoveryTest = new TestSubscriber<>();
   private final TestSubscriber<Triple<Project, RefTag, Boolean>> startProjectTest = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, RefTag>> startProjectPageTest = new TestSubscriber<>();
+  private final TestSubscriber<Void> showSavedPromptTest = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new ThanksViewModel.ViewModel(environment);
@@ -61,6 +62,26 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.showConfirmGamesNewsletterDialog().subscribe(this.showConfirmGamesNewsletterDialogTest);
     this.vm.outputs.startDiscoveryActivity().subscribe(this.startDiscoveryTest);
     this.vm.outputs.startProjectActivity().subscribe(this.startProjectTest);
+    this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest);
+  }
+
+  @Test
+  public void testSaveProject() {
+    final Project project = ProjectFactory.project()
+            .toBuilder()
+            .category(CategoryFactory.artCategory())
+            .build();
+
+    setUpEnvironment(environment());
+
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    this.adapterData.assertValueCount(1);
+
+    this.vm.inputs.onHeartButtonClicked(project);
+
+    this.adapterData.assertValueCount(2);
+    this.showSavedPromptTest.assertValueCount(1);
+    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CTA_CLICKED.getEventName());
   }
 
   @Test

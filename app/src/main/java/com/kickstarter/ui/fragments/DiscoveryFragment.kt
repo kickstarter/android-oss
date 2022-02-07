@@ -23,6 +23,7 @@ import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.AnimationUtils.crossFadeAndReverse
 import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Category
@@ -51,6 +52,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
 
     private var binding: FragmentDiscoveryBinding? = null
     private var discoveryEditorialAdapter: DiscoveryEditorialAdapter? = null
+    private val projectStarConfirmationString = R.string.project_star_confirmation
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -161,6 +163,11 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
             .subscribe {
                 binding?.discoveryRecyclerView?.smoothScrollToPosition(it)
             }
+
+        this.viewModel.outputs.showSavedPrompt()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.showStarToast() }
     }
 
     override fun onPause() {
@@ -211,6 +218,10 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
 
     private fun startActivityFeedActivity() {
         startActivity(Intent(activity, ActivityFeedActivity::class.java))
+    }
+
+    private fun showStarToast() {
+        ViewUtils.showToastFromTop(requireContext(), getString(this.projectStarConfirmationString), 0, resources.getDimensionPixelSize(R.dimen.grid_8))
     }
 
     private fun startEditorialActivity(editorial: Editorial) {

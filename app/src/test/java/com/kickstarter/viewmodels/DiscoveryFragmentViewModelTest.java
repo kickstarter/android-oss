@@ -64,6 +64,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Activity> startUpdateActivity = new TestSubscriber<>();
   private final TestSubscriber<Project> startLoginToutActivityToSaveProject = new TestSubscriber<>();
   private final TestSubscriber<Integer> scrollToSavedProjectIndex = new TestSubscriber<>();
+  private final TestSubscriber<Void> showSavedPromptTest = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new DiscoveryFragmentViewModel.ViewModel(environment);
@@ -80,6 +81,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.startUpdateActivity().subscribe(this.startUpdateActivity);
     this.vm.outputs.startLoginToutActivityToSaveProject().subscribe(this.startLoginToutActivityToSaveProject);
     this.vm.outputs.scrollToSavedProjectPosition().subscribe(this.scrollToSavedProjectIndex);
+    this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest);
   }
 
   private void setUpInitialHomeAllProjectsParams() {
@@ -396,7 +398,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     final Environment environment = environment().toBuilder()
             .currentUser(currentUser)
-            .scheduler(testScheduler)
+            .scheduler(this.testScheduler)
             .build();
 
     setUpEnvironment(environment);
@@ -412,6 +414,11 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.onHeartButtonClicked(project);
 
     this.startLoginToutActivityToSaveProject.assertValue(project);
+    // Login.
+    final User user = UserFactory.user();
+    currentUser.refresh(user);
+    this.showSavedPromptTest.assertValueCount(1);
+    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CTA_CLICKED.getEventName());
   }
 
   @Test
@@ -420,7 +427,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     final Environment environment = environment().toBuilder()
             .currentUser(currentUser)
-            .scheduler(testScheduler)
+            .scheduler(this.testScheduler)
             .build();
 
     setUpEnvironment(environment);
@@ -443,6 +450,8 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     this.projects.assertValueCount(2);
     assertTrue(projects.getValue().get(0).first.isStarred());
+    this.showSavedPromptTest.assertValueCount(1);
+    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CTA_CLICKED.getEventName());
   }
 
   @Test

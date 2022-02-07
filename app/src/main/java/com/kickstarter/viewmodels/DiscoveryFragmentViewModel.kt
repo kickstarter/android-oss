@@ -112,6 +112,9 @@ interface DiscoveryFragmentViewModel {
 
         /** Emits when we need to scroll to saved project */
         fun scrollToSavedProjectPosition(): Observable<Int>
+
+        /** Emits when the success prompt for saving should be displayed.  */
+        fun showSavedPrompt(): Observable<Void>
     }
 
     class ViewModel(environment: Environment) :
@@ -125,53 +128,10 @@ interface DiscoveryFragmentViewModel {
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
         private val cookieManager: CookieManager = environment.cookieManager()
         private val currentUser: CurrentUserType = environment.currentUser()
-
-        /**
-         * Calls to GraphQL client to fetch projects filtering by DiscoveryParams
-         * @param discoveryParamsStringPair .first discovery params.
-         * @param discoveryParamsStringPair .second cursor for pagination, null on the first call.
-         * @return Observable<DiscoverEnvelope>
-         </DiscoverEnvelope> */
-        private fun makeCallWithParams(discoveryParamsStringPair: Pair<DiscoveryParams?, String?>): Observable<DiscoverEnvelope> {
-            return apolloClient.getProjects(
-                discoveryParamsStringPair.first!!,
-                discoveryParamsStringPair.second
-            )
-        }
-
-        private fun activityHasNotBeenSeen(activity: Activity?): Boolean {
-            return activity != null && activity.id() != activitySamplePreference.get().toLong()
-        }
-
-        private fun fetchActivity(): Observable<Activity?> {
-            return apiClient.fetchActivities(1)
-                .map { it.activities() }
-                .map { it.firstOrNull() }
-                .filter { ObjectUtils.isNotNull(it) }
-                .compose(Transformers.neverError())
-        }
-
-        private fun isDefaultParams(userAndParams: Pair<User, DiscoveryParams>): Boolean {
-            val discoveryParams = userAndParams.second
-            val user = userAndParams.first
-            return discoveryParams == DiscoveryParams.getDefaultParams(user)
-        }
-
-        private fun isOnboardingVisible(params: DiscoveryParams, isLoggedIn: Boolean): Boolean {
-            val sort = params.sort()
-            val isSortHome = DiscoveryParams.Sort.MAGIC == sort
-            return params.isAllProjects.isTrue() && isSortHome && !isLoggedIn
-        }
-
-        private fun isSavedVisible(params: DiscoveryParams): Boolean {
-            return params.isSavedProjects
-        }
-
-        private fun saveLastSeenActivityId(activity: Activity?) {
-            if (activity != null) {
-                activitySamplePreference.set(activity.id().toInt())
-            }
-        }
+        @JvmField
+        val inputs: Inputs = this
+        @JvmField
+        val outputs: Outputs = this
 
         private val activityClick = PublishSubject.create<Boolean>()
         private val activitySampleProjectClick = PublishSubject.create<Project>()
@@ -200,96 +160,7 @@ interface DiscoveryFragmentViewModel {
         private val startHeartAnimation = BehaviorSubject.create<Void?>()
         private val startLoginToutActivityToSaveProject = PublishSubject.create<Project>()
         private val scrollToSavedProjectPosition = PublishSubject.create<Int>()
-
-        @JvmField
-        val inputs: Inputs = this
-        @JvmField
-        val outputs: Outputs = this
-
-        override fun activitySampleFriendBackingViewHolderSeeActivityClicked(viewHolder: ActivitySampleFriendBackingViewHolder) {
-            activityClick.onNext(true)
-        }
-
-        override fun activitySampleFriendFollowViewHolderSeeActivityClicked(viewHolder: ActivitySampleFriendFollowViewHolder) {
-            activityClick.onNext(true)
-        }
-
-        override fun activitySampleProjectViewHolderSeeActivityClicked(viewHolder: ActivitySampleProjectViewHolder) {
-            activityClick.onNext(true)
-        }
-
-        override fun editorialViewHolderClicked(editorial: Editorial) {
-            editorialClicked.onNext(editorial)
-        }
-
-        override fun refresh() {
-            refresh.onNext(null)
-        }
-
-        override fun rootCategories(rootCategories: List<Category>) {
-            this.rootCategories.onNext(rootCategories)
-        }
-
-        override fun clearPage() {
-            clearPage.onNext(null)
-        }
-
-        override fun heartContainerClicked() {
-            heartContainerClicked.onNext(null)
-        }
-
-        override fun activitySampleFriendBackingViewHolderProjectClicked(
-            viewHolder: ActivitySampleFriendBackingViewHolder,
-            project: Project?
-        ) {
-            activitySampleProjectClick.onNext(project)
-        }
-
-        override fun activitySampleProjectViewHolderProjectClicked(
-            viewHolder: ActivitySampleProjectViewHolder,
-            project: Project?
-        ) {
-            activitySampleProjectClick.onNext(project)
-        }
-
-        override fun activitySampleProjectViewHolderUpdateClicked(
-            viewHolder: ActivitySampleProjectViewHolder,
-            activity: Activity?
-        ) {
-            activityUpdateClick.onNext(activity)
-        }
-
-        override fun discoveryOnboardingViewHolderLoginToutClick(viewHolder: DiscoveryOnboardingViewHolder?) {
-            discoveryOnboardingLoginToutClick.onNext(true)
-        }
-
-        override fun projectCardViewHolderClicked(project: Project?) {
-            projectCardClicked.onNext(project)
-        }
-
-        override fun nextPage() {
-            nextPage.onNext(null)
-        }
-
-        override fun paramsFromActivity(params: DiscoveryParams) {
-            paramsFromActivity.onNext(params)
-        }
-
-        override fun activity(): Observable<Activity> = activity
-        override fun isFetchingProjects(): Observable<Boolean> = isFetchingProjects
-        override fun projectList(): Observable<List<Pair<Project, DiscoveryParams>>> = projectList
-        override fun showActivityFeed(): Observable<Boolean> = showActivityFeed
-        override fun showLoginTout(): Observable<Boolean> = showLoginTout
-        override fun shouldShowEditorial(): Observable<Editorial> = shouldShowEditorial
-        override fun shouldShowEmptySavedView(): Observable<Boolean> = shouldShowEmptySavedView
-        override fun startHeartAnimation(): Observable<Void?> = startHeartAnimation
-        override fun startEditorialActivity(): Observable<Editorial> = startEditorialActivity
-        override fun startProjectActivity(): Observable<Triple<Project, RefTag, Boolean>> = startProjectActivity
-        override fun shouldShowOnboardingView(): Observable<Boolean> = shouldShowOnboardingView
-        override fun startUpdateActivity(): Observable<Activity> = startUpdateActivity
-        override fun onHeartButtonClicked(project: Project) = onHeartButtonClicked.onNext(project)
-        override fun startLoginToutActivityToSaveProject(): Observable<Project> = this.startLoginToutActivityToSaveProject
-        override fun scrollToSavedProjectPosition(): Observable<Int> = this.scrollToSavedProjectPosition
+        private val showSavedPrompt = PublishSubject.create<Void>()
 
         init {
             val changedUser = currentUser.observable()
@@ -584,6 +455,65 @@ interface DiscoveryFragmentViewModel {
                 .subscribe {
                     scrollToSavedProjectPosition.onNext(it)
                 }
+
+            val projectSavedStatus = projectOnUserChangeSave.mergeWith(savedProjectOnLoginSuccess)
+
+            projectSavedStatus
+                .compose(bindToLifecycle())
+                .subscribe { this.analyticEvents.trackWatchProjectCTA(it) }
+
+            projectSavedStatus
+                .filter { p -> p.isStarred() && p.isLive && !p.isApproachingDeadline }
+                .compose(Transformers.ignoreValues())
+                .compose(bindToLifecycle())
+                .subscribe(this.showSavedPrompt)
+        }
+
+        /**
+         * Calls to GraphQL client to fetch projects filtering by DiscoveryParams
+         * @param discoveryParamsStringPair .first discovery params.
+         * @param discoveryParamsStringPair .second cursor for pagination, null on the first call.
+         * @return Observable<DiscoverEnvelope>
+         </DiscoverEnvelope> */
+        private fun makeCallWithParams(discoveryParamsStringPair: Pair<DiscoveryParams?, String?>): Observable<DiscoverEnvelope> {
+            return apolloClient.getProjects(
+                discoveryParamsStringPair.first!!,
+                discoveryParamsStringPair.second
+            )
+        }
+
+        private fun activityHasNotBeenSeen(activity: Activity?): Boolean {
+            return activity != null && activity.id() != activitySamplePreference.get().toLong()
+        }
+
+        private fun fetchActivity(): Observable<Activity?> {
+            return apiClient.fetchActivities(1)
+                .map { it.activities() }
+                .map { it.firstOrNull() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(Transformers.neverError())
+        }
+
+        private fun isDefaultParams(userAndParams: Pair<User, DiscoveryParams>): Boolean {
+            val discoveryParams = userAndParams.second
+            val user = userAndParams.first
+            return discoveryParams == DiscoveryParams.getDefaultParams(user)
+        }
+
+        private fun isOnboardingVisible(params: DiscoveryParams, isLoggedIn: Boolean): Boolean {
+            val sort = params.sort()
+            val isSortHome = DiscoveryParams.Sort.MAGIC == sort
+            return params.isAllProjects.isTrue() && isSortHome && !isLoggedIn
+        }
+
+        private fun isSavedVisible(params: DiscoveryParams): Boolean {
+            return params.isSavedProjects
+        }
+
+        private fun saveLastSeenActivityId(activity: Activity?) {
+            if (activity != null) {
+                activitySamplePreference.set(activity.id().toInt())
+            }
         }
 
         private fun saveProject(project: Project): Observable<Project> {
@@ -601,5 +531,52 @@ interface DiscoveryFragmentViewModel {
             else
                 saveProject(project)
         }
+
+        override fun activitySampleFriendBackingViewHolderSeeActivityClicked(viewHolder: ActivitySampleFriendBackingViewHolder) =
+            activityClick.onNext(true)
+        override fun activitySampleFriendFollowViewHolderSeeActivityClicked(viewHolder: ActivitySampleFriendFollowViewHolder) =
+            activityClick.onNext(true)
+        override fun activitySampleProjectViewHolderSeeActivityClicked(viewHolder: ActivitySampleProjectViewHolder) =
+            activityClick.onNext(true)
+        override fun editorialViewHolderClicked(editorial: Editorial) = editorialClicked.onNext(editorial)
+        override fun refresh() = refresh.onNext(null)
+        override fun rootCategories(rootCategories: List<Category>) = this.rootCategories.onNext(rootCategories)
+        override fun clearPage() = clearPage.onNext(null)
+        override fun heartContainerClicked() = heartContainerClicked.onNext(null)
+        override fun activitySampleFriendBackingViewHolderProjectClicked(
+            viewHolder: ActivitySampleFriendBackingViewHolder,
+            project: Project?
+        ) = activitySampleProjectClick.onNext(project)
+        override fun activitySampleProjectViewHolderProjectClicked(
+            viewHolder: ActivitySampleProjectViewHolder,
+            project: Project?
+        ) = activitySampleProjectClick.onNext(project)
+        override fun activitySampleProjectViewHolderUpdateClicked(
+            viewHolder: ActivitySampleProjectViewHolder,
+            activity: Activity?
+        ) =
+            activityUpdateClick.onNext(activity)
+        override fun discoveryOnboardingViewHolderLoginToutClick(viewHolder: DiscoveryOnboardingViewHolder?) =
+            discoveryOnboardingLoginToutClick.onNext(true)
+        override fun projectCardViewHolderClicked(project: Project?) = projectCardClicked.onNext(project)
+        override fun nextPage() = nextPage.onNext(null)
+        override fun paramsFromActivity(params: DiscoveryParams) = paramsFromActivity.onNext(params)
+
+        override fun activity(): Observable<Activity> = activity
+        override fun isFetchingProjects(): Observable<Boolean> = isFetchingProjects
+        override fun projectList(): Observable<List<Pair<Project, DiscoveryParams>>> = projectList
+        override fun showActivityFeed(): Observable<Boolean> = showActivityFeed
+        override fun showLoginTout(): Observable<Boolean> = showLoginTout
+        override fun shouldShowEditorial(): Observable<Editorial> = shouldShowEditorial
+        override fun shouldShowEmptySavedView(): Observable<Boolean> = shouldShowEmptySavedView
+        override fun startHeartAnimation(): Observable<Void?> = startHeartAnimation
+        override fun startEditorialActivity(): Observable<Editorial> = startEditorialActivity
+        override fun startProjectActivity(): Observable<Triple<Project, RefTag, Boolean>> = startProjectActivity
+        override fun shouldShowOnboardingView(): Observable<Boolean> = shouldShowOnboardingView
+        override fun startUpdateActivity(): Observable<Activity> = startUpdateActivity
+        override fun onHeartButtonClicked(project: Project) = onHeartButtonClicked.onNext(project)
+        override fun startLoginToutActivityToSaveProject(): Observable<Project> = this.startLoginToutActivityToSaveProject
+        override fun scrollToSavedProjectPosition(): Observable<Int> = this.scrollToSavedProjectPosition
+        override fun showSavedPrompt(): Observable<Void> = this.showSavedPrompt
     }
 }

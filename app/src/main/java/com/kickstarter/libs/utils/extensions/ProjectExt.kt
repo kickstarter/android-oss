@@ -244,3 +244,21 @@ fun List<Project>.fillRootCategoryForFeaturedProjects(rootCategories: List<Categ
 fun Project.projectNeedsRootCategory(category: Category): Boolean {
     return !category.isRoot && category.parent() == null && this.isFeaturedToday
 }
+
+fun Project.updateStartedProjectAndDiscoveryParamsList(
+    listOfProjects: List<Pair<Project, DiscoveryParams>>
+): List<Pair<Project, DiscoveryParams>> {
+
+    val position = listOfProjects.indexOfFirst { item ->
+        item.first.id() == this.id()
+    }
+
+    if (position >= 0 && position < listOfProjects.size) {
+        return listOfProjects.toMutableList().apply {
+            val project = listOfProjects[position].first.toBuilder().isStarred(this@updateStartedProjectAndDiscoveryParamsList.isStarred()).build()
+            this[position] = Pair(project, listOfProjects[position].second)
+        }
+    }
+
+    return listOfProjects
+}

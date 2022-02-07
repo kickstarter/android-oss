@@ -40,14 +40,17 @@
 
                 <ImageButton
                     android:id="@+id/heart_button"
+                    style="@style/ToolbarVectorIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:background="@drawable/circle_black_alpha"
+                    android:layout_gravity="right"
+                    android:layout_marginTop="@dimen/grid_2"
+                    android:layout_marginEnd="@dimen/grid_2"
+                    android:background="@drawable/ic_toolbar_button_background"
                     android:contentDescription="@string/Save_this_project"
+                    android:elevation="@dimen/grid_7"
                     android:focusable="true"
-                    android:src="@drawable/ic_discovery_heart"
-                    android:visibility="gone" />
+                    android:src="@drawable/icon__heart_outline"/>
 
             </FrameLayout>
 

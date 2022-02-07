@@ -43,9 +43,12 @@ import androidx.annotation.NonNull;
 import kotlin.Triple;
 import rx.Observable;
 import rx.observers.TestSubscriber;
+import rx.schedulers.TestScheduler;
+import rx.subjects.BehaviorSubject;
 
 public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   private DiscoveryFragmentViewModel.ViewModel vm;
+  final TestScheduler testScheduler = new TestScheduler();
 
   private final TestSubscriber<Activity> activityTest = new TestSubscriber<>();
   private final TestSubscriber<Boolean> hasProjects = new TestSubscriber<>();
@@ -59,6 +62,8 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Triple<Project, RefTag, Boolean>> startProjectActivity = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, RefTag>> startProjectPageActivity = new TestSubscriber<>();
   private final TestSubscriber<Activity> startUpdateActivity = new TestSubscriber<>();
+  private final TestSubscriber<Project> startLoginToutActivityToSaveProject = new TestSubscriber<>();
+  private final TestSubscriber<Integer> scrollToSavedProjectIndex = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new DiscoveryFragmentViewModel.ViewModel(environment);
@@ -73,6 +78,8 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.startEditorialActivity().subscribe(this.startEditorialActivity);
     this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
     this.vm.outputs.startUpdateActivity().subscribe(this.startUpdateActivity);
+    this.vm.outputs.startLoginToutActivityToSaveProject().subscribe(this.startLoginToutActivityToSaveProject);
+    this.vm.outputs.scrollToSavedProjectPosition().subscribe(this.scrollToSavedProjectIndex);
   }
 
   private void setUpInitialHomeAllProjectsParams() {
@@ -381,6 +388,61 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     // Change params. Activity sampler should not be shown.
     this.vm.inputs.paramsFromActivity(DiscoveryParams.builder().build());
     this.activityTest.assertValues(null, activity, null);
+  }
+
+  @Test
+  public void testLoginToutToSaveProject() {
+    final CurrentUserType currentUser = new MockCurrentUser();
+
+    final Environment environment = environment().toBuilder()
+            .currentUser(currentUser)
+            .scheduler(testScheduler)
+            .build();
+
+    setUpEnvironment(environment);
+
+    final BehaviorSubject<List<Pair<Project, DiscoveryParams>>> projects =  BehaviorSubject.create();
+    this.vm.outputs.projectList().subscribe(projects);
+
+    // Initial home all projects params.
+    setUpInitialHomeAllProjectsParams();
+
+    // Click on project save
+    final Project project = projects.getValue().get(0).first;
+    this.vm.inputs.onHeartButtonClicked(project);
+
+    this.startLoginToutActivityToSaveProject.assertValue(project);
+  }
+
+  @Test
+  public void testSaveProject() {
+    final CurrentUserType currentUser = new MockCurrentUser();
+
+    final Environment environment = environment().toBuilder()
+            .currentUser(currentUser)
+            .scheduler(testScheduler)
+            .build();
+
+    setUpEnvironment(environment);
+
+    // Login.
+    final User user = UserFactory.user();
+    currentUser.refresh(user);
+
+    final BehaviorSubject<List<Pair<Project, DiscoveryParams>>> projects =  BehaviorSubject.create();
+    this.vm.outputs.projectList().subscribe(projects);
+
+    // Initial home all projects params.
+    setUpInitialHomeAllProjectsParams();
+
+    // Click on project save
+    final Project project = projects.getValue().get(0).first;
+    this.vm.inputs.onHeartButtonClicked(project);
+
+    this.startLoginToutActivityToSaveProject.assertNoValues();
+
+    this.projects.assertValueCount(2);
+    assertTrue(projects.getValue().get(0).first.isStarred());
   }
 
   @Test

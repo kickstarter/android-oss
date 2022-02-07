@@ -36,6 +36,7 @@ class ProjectCardViewHolder(
 
     interface Delegate {
         fun projectCardViewHolderClicked(project: Project?)
+        fun onHeartButtonClicked(project: Project)
     }
 
     init {
@@ -223,11 +224,27 @@ class ProjectCardViewHolder(
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { setDefaultTopPadding(it) }
+
+        this.viewModel.outputs.heartDrawableId()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.heartButton?.setImageDrawable(ContextCompat.getDrawable(context(), it)) }
+
+        this.viewModel.outputs.notifyDelegateOfHeartButtonClicked()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                delegate.onHeartButtonClicked(it)
+            }
+
+        binding.heartButton?.setOnClickListener {
+            this.viewModel.inputs.heartButtonClicked()
+        }
     }
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-        val projectAndParams = ObjectUtils.requireNonNull(data as Pair<Project, DiscoveryParams>?)
+        val projectAndParams = ObjectUtils.requireNonNull(data as? Pair<Project, DiscoveryParams>)
         viewModel.inputs.configureWith(projectAndParams)
     }
 

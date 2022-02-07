@@ -65,6 +65,8 @@ public class ProjectCardHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> rootCategoryNameForFeatured = new TestSubscriber<>();
   private final TestSubscriber<Boolean> setDefaultTopPadding = new TestSubscriber<>();
   private final TestSubscriber<Boolean> savedViewGroupIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Integer> heartDrawableId = new TestSubscriber<>();
+  private final TestSubscriber<Project> notifyDelegateOfHeartButtonClicked = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new ProjectCardHolderViewModel.ViewModel(environment);
@@ -104,6 +106,36 @@ public class ProjectCardHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.rootCategoryNameForFeatured().subscribe(this.rootCategoryNameForFeatured);
     this.vm.outputs.setDefaultTopPadding().subscribe(this.setDefaultTopPadding);
     this.vm.outputs.savedViewGroupIsGone().subscribe(this.savedViewGroupIsGone);
+    this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId);
+    this.vm.outputs.notifyDelegateOfHeartButtonClicked().subscribe(this.notifyDelegateOfHeartButtonClicked);
+  }
+
+  @Test
+  public void testProjectIsStarred() {
+    final Project project = ProjectFactory.project().toBuilder().isStarred(true).build();
+    setUpEnvironment(environment());
+
+    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
+    this.heartDrawableId.assertValue(R.drawable.icon__heart );
+  }
+
+  @Test
+  public void testProjectIsNotStarred() {
+    final Project project = ProjectFactory.project().toBuilder().isStarred(false).build();
+    setUpEnvironment(environment());
+
+    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
+    this.heartDrawableId.assertValue(R.drawable.icon__heart_outline );
+  }
+
+  @Test
+  public void testNotifyDelegateOfHeartButtonClickedClick() {
+    final Project project = ProjectFactory.project();
+    setUpEnvironment(environment());
+
+    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
+    this.vm.inputs.heartButtonClicked();
+    this.notifyDelegateOfHeartButtonClicked.assertValues(project);
   }
 
   @Test

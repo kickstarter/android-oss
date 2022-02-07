@@ -42,6 +42,7 @@ import com.kickstarter.ui.data.Editorial
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.viewholders.EditorialViewHolder
 import com.kickstarter.viewmodels.DiscoveryFragmentViewModel
+import rx.android.schedulers.AndroidSchedulers
 
 @RequiresFragmentViewModel(DiscoveryFragmentViewModel.ViewModel::class)
 class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
@@ -74,14 +75,14 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
             recyclerViewPaginator = RecyclerViewPaginator(
                 this,
                 { this@DiscoveryFragment.viewModel.inputs.nextPage() },
-                this@DiscoveryFragment.viewModel.outputs.isFetchingProjects
+                this@DiscoveryFragment.viewModel.outputs.isFetchingProjects()
             )
         }
 
         binding?.discoverySwipeRefreshLayout?.let {
             SwipeRefresher(
                 this, it, { this.viewModel.inputs.refresh() }
-            ) { this.viewModel.outputs.isFetchingProjects }
+            ) { this.viewModel.outputs.isFetchingProjects() }
         }
 
         this.viewModel.outputs.activity()
@@ -147,6 +148,19 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.heartContainerClicked() }
         }
+
+        this.viewModel.outputs.startLoginToutActivityToSaveProject()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.startLoginToutActivity() }
+
+        this.viewModel.outputs.scrollToSavedProjectPosition()
+            .filter { it != -1 }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                binding?.discoveryRecyclerView?.smoothScrollToPosition(it)
+            }
     }
 
     override fun onPause() {
@@ -244,7 +258,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         this.viewModel.inputs.refresh()
     }
 
-    fun takeCategories(categories: List<Category?>) {
+    fun takeCategories(categories: List<Category>) {
         this.viewModel.inputs.rootCategories(categories)
     }
 

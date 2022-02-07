@@ -1,8 +1,11 @@
 package com.kickstarter.libs.braze
 
-import com.appboy.models.IInAppMessage
-import com.appboy.ui.inappmessage.InAppMessageOperation
-import com.appboy.ui.inappmessage.listeners.AppboyDefaultInAppMessageManagerListener
+import android.view.View
+import com.braze.models.inappmessage.IInAppMessage
+import com.braze.models.inappmessage.MessageButton
+import com.braze.ui.inappmessage.InAppMessageCloser
+import com.braze.ui.inappmessage.InAppMessageOperation
+import com.braze.ui.inappmessage.listeners.IInAppMessageManagerListener
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
 import timber.log.Timber
@@ -16,7 +19,7 @@ import timber.log.Timber
 class InAppCustomListener(
     loggedInUser: CurrentUserType,
     private val build: Build
-) : AppboyDefaultInAppMessageManagerListener() {
+) : IInAppMessageManagerListener {
 
     private var handler: InAppCustomListenerHandler
 
@@ -44,5 +47,65 @@ class InAppCustomListener(
 
         if (build.isDebug) Timber.d("${this.javaClass.canonicalName} beforeInAppMessageDisplayed: $shouldShowMessage")
         return shouldShowMessage
+    }
+
+    /**
+     * Callback method called everytime the in app message is clicked. This gives the option of
+     * overriding braze's default behavior.
+     * If this method returns true, braze will only log a click and nothing else. If false, braze
+     * will log a click and close the in-app message automatically.
+
+     * @return false
+     */
+    override fun onInAppMessageClicked(
+        inAppMessage: IInAppMessage?,
+        inAppMessageCloser: InAppMessageCloser?
+    ): Boolean {
+        return false
+    }
+
+    /**
+     * Callback method called everytime the in app message button is clicked. This gives the option of
+     * overriding braze's default behavior.
+     * If this method returns true, braze will only log a click and nothing else. If false, braze
+     * will log a click and close the in-app message automatically.
+     *
+     * @return false
+     */
+    override fun onInAppMessageButtonClicked(
+        inAppMessage: IInAppMessage?,
+        button: MessageButton?,
+        inAppMessageCloser: InAppMessageCloser?
+    ): Boolean {
+        return false
+    }
+
+    override fun onInAppMessageDismissed(inAppMessage: IInAppMessage?) {
+        if (build.isDebug) Timber.d("${this.javaClass.canonicalName} onInAppMessageDismissed: ${inAppMessage?.toString()}")
+    }
+
+    override fun beforeInAppMessageViewOpened(
+        inAppMessageView: View?,
+        inAppMessage: IInAppMessage?
+    ) {
+        if (build.isDebug) Timber.d("${this.javaClass.canonicalName} beforeInAppMessageViewOpened: ${inAppMessage?.toString()}")
+    }
+
+    override fun afterInAppMessageViewOpened(
+        inAppMessageView: View?,
+        inAppMessage: IInAppMessage?
+    ) {
+        if (build.isDebug) Timber.d("${this.javaClass.canonicalName} afterInAppMessageViewOpened: ${inAppMessage?.toString()}")
+    }
+
+    override fun beforeInAppMessageViewClosed(
+        inAppMessageView: View?,
+        inAppMessage: IInAppMessage?
+    ) {
+        if (build.isDebug) Timber.d("${this.javaClass.canonicalName} beforeInAppMessageViewClosed: ${inAppMessage?.toString()}")
+    }
+
+    override fun afterInAppMessageViewClosed(inAppMessage: IInAppMessage?) {
+        if (build.isDebug) Timber.d("${this.javaClass.canonicalName} afterInAppMessageViewClosed: ${inAppMessage?.toString()}")
     }
 }

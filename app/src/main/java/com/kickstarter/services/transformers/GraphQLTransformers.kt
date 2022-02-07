@@ -434,6 +434,7 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
     val friends =
         projectFragment?.friends()?.nodes()?.map { userTransformer(it.fragments().user()) }
             ?: emptyList()
+    val pledged = projectFragment?.pledged()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0
     val fxRate = projectFragment?.fxRate()?.toFloat()
     val deadline = projectFragment?.deadlineAt()
     val goal = projectFragment?.goal()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0
@@ -471,6 +472,7 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
         .friends(friends)
         .fxRate(fxRate)
         .deadline(deadline)
+        .pledged(pledged)
         .goal(goal)
         .id(id)
         .isBacking(isBacking)

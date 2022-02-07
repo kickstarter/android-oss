@@ -46,4 +46,6 @@ public final class IntentKey {
   public static final String DEEP_LINK_SCREEN_PROJECT_COMMENT = "com.kickstarter.kickstarter.deep_link_screen_project_comment";
   public static final String DEEP_LINK_SCREEN_PROJECT_UPDATE = "com.kickstarter.kickstarter.deep_link_screen_project_update";
   public static final String DEEP_LINK_SCREEN_PROJECT_UPDATE_COMMENT = "com.kickstarter.kickstarter.deep_link_screen_project_update_comment";
+  public static final String VIDEO_SEEK_POSITION = "com.kickstarter.kickstarter.intent_video_seek_position";
+  public static final String VIDEO_URL_SOURCE = "com.kickstarter.kickstarter.intent_video_SOURCE";
 }

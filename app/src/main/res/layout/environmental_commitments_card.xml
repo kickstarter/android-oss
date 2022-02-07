@@ -21,6 +21,7 @@
             android:layout_marginTop="@dimen/grid_3"
             android:layout_marginEnd="@dimen/grid_7_half"
             android:gravity="start|center_vertical"
+            android:textIsSelectable="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@string/Tap_the_heart_on_each_project_page_to_save_it" />
@@ -32,6 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/grid_2"
             android:gravity="start|center_vertical"
+            android:textIsSelectable="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/section_header"

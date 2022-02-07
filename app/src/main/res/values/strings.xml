@@ -79,4 +79,7 @@
 
   <string name="estimated_delivery_data" formatted="false">%{title} %{estimated_delivery_data}</string>
 
+  <!-- Campaign -->
+  <string name="Story">Story</string>
+
 </resources>

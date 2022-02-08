@@ -185,10 +185,12 @@ interface DiscoveryFragmentViewModel {
                 .distinctUntilChanged(true)
                 .startOverWith(startOverWith)
                 .envelopeToListOfData { it.projects() }
-                .loadWithParams {
-                    makeCallWithParams(
-                        it
-                    )
+                .loadWithParams { params ->
+                    params.first?.let {
+                        makeCallWithParams(
+                            Pair(it, params.second)
+                        )
+                    }
                 }
                 .clearWhenStartingOver(false)
                 .concater { xs, ys ->
@@ -245,7 +247,7 @@ interface DiscoveryFragmentViewModel {
             val projectCardClick = paramsFromActivity
                 .compose(Transformers.takePairWhen(projectCardClicked))
                 .map {
-                    RefTagUtils.projectAndRefTagFromParamsAndProject(it.first, it.second!!)
+                    RefTagUtils.projectAndRefTagFromParamsAndProject(it.first, it.second)
                 }
 
             val projects = Observable.combineLatest(
@@ -381,17 +383,19 @@ interface DiscoveryFragmentViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(activity)
 
-            paramsFromActivity
-                .compose(
-                    Transformers.combineLatestPair(
-                        paginator.loadingPage()!!.distinctUntilChanged()
+            paginator.loadingPage()?.distinctUntilChanged()?.let { loadingPageObserver ->
+                paramsFromActivity
+                    .compose(
+                        Transformers.combineLatestPair(
+                            loadingPageObserver
+                        )
                     )
-                )
-                .filter { it.second == 1 }
-                .compose(bindToLifecycle())
-                .subscribe {
-                    analyticEvents.trackDiscoveryPageViewed(it.first)
-                }
+                    .filter { it.second == 1 }
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        analyticEvents.trackDiscoveryPageViewed(it.first)
+                    }
+            }
 
             discoveryOnboardingLoginToutClick
                 .compose(bindToLifecycle())
@@ -476,9 +480,9 @@ interface DiscoveryFragmentViewModel {
          * @param discoveryParamsStringPair .second cursor for pagination, null on the first call.
          * @return Observable<DiscoverEnvelope>
          </DiscoverEnvelope> */
-        private fun makeCallWithParams(discoveryParamsStringPair: Pair<DiscoveryParams?, String?>): Observable<DiscoverEnvelope> {
+        private fun makeCallWithParams(discoveryParamsStringPair: Pair<DiscoveryParams, String?>): Observable<DiscoverEnvelope> {
             return apolloClient.getProjects(
-                discoveryParamsStringPair.first!!,
+                discoveryParamsStringPair.first,
                 discoveryParamsStringPair.second
             )
         }

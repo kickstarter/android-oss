@@ -17,6 +17,7 @@ import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.Category
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
+import com.kickstarter.models.extensions.replaceSmallImageWithMediumIfEmpty
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.data.Editorial
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder
@@ -161,8 +162,8 @@ interface ProjectCardHolderViewModel {
 
     class ViewModel(environment: Environment) :
         ActivityViewModel<ProjectCardViewHolder?>(environment), Inputs, Outputs {
-        private fun shouldShowLocationTag(params: DiscoveryParams?): Boolean {
-            return params!!.tagId() != null && params.tagId() == Editorial.LIGHTS_ON.tagId
+        private fun shouldShowLocationTag(params: DiscoveryParams): Boolean {
+            return params.tagId() != null && params.tagId() == Editorial.LIGHTS_ON.tagId
         }
 
         private fun areParamsAllOrSameCategoryAsProject(categoryPair: Pair<Category?, Category>): Boolean {
@@ -290,10 +291,8 @@ interface ProjectCardHolderViewModel {
 
             deadlineCountdownText = project
                 .map { it.deadlineCountdownValue() }
-                .map { value: Int? ->
-                    NumberUtils.format(
-                        value!!
-                    )
+                .map {
+                    NumberUtils.format(it)
                 }
 
             project
@@ -315,7 +314,8 @@ interface ProjectCardHolderViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
                 .map { it.friends() }
-                .map { it[0].avatar().small() }
+                .map { it[0].avatar().replaceSmallImageWithMediumIfEmpty() }
+                .filter { it.isNotEmpty() }
 
             friendAvatarUrl2 = project
                 .filter(Project::isFriendBacking)
@@ -323,7 +323,8 @@ interface ProjectCardHolderViewModel {
                 .map { requireNotNull(it) }
                 .map { it.friends() }
                 .filter { it.size > 1 }
-                .map { it[1].avatar().small() }
+                .map { it[1].avatar().replaceSmallImageWithMediumIfEmpty() }
+                .filter { it.isNotEmpty() }
 
             friendAvatarUrl3 = project
                 .filter(Project::isFriendBacking)
@@ -331,7 +332,8 @@ interface ProjectCardHolderViewModel {
                 .map { requireNotNull(it) }
                 .map { it.friends() }
                 .filter { it.size > 2 }
-                .map { it[2].avatar().small() }
+                .map { it[2].avatar().replaceSmallImageWithMediumIfEmpty() }
+                .filter { it.isNotEmpty() }
 
             friendAvatar2IsGone = project
                 .filter { ObjectUtils.isNotNull(it) }
@@ -390,7 +392,7 @@ interface ProjectCardHolderViewModel {
                 .subscribe { locationName.onNext(it) }
 
             discoveryParams
-                .map { params: DiscoveryParams? -> shouldShowLocationTag(params) }
+                .map { shouldShowLocationTag(it) }
                 .compose(Transformers.combineLatestPair(project))
                 .map { distanceSortAndProject: Pair<Boolean, Project>? ->
                     distanceSortAndProject?.first == true && ObjectUtils.isNotNull(

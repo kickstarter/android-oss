@@ -20,7 +20,7 @@ class ActivitySampleFriendFollowViewHolder(
         ActivitySampleFriendFollowViewHolderViewModel.ViewModel(environment())
 
     interface Delegate {
-        fun activitySampleFriendFollowViewHolderSeeActivityClicked(viewHolder: ActivitySampleFriendFollowViewHolder)
+        fun activitySampleFriendFollowViewHolderSeeActivityClicked(viewHolder: ActivitySampleFriendFollowViewHolder?)
     }
 
     init {

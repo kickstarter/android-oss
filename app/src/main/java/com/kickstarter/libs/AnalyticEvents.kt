@@ -489,10 +489,10 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      *
      * @param project: The watched or unwatched project.
      */
-    fun trackWatchProjectCTA(project: Project) {
+    fun trackWatchProjectCTA(project: Project, contextPageName: EventContextValues.ContextPageName) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to WATCH_PROJECT.contextName)
         props[CONTEXT_TYPE.contextName] = if (project.isStarred()) WATCH.contextName else UNWATCH.contextName
-        props[CONTEXT_PAGE.contextName] = PROJECT.contextName
+        props[CONTEXT_PAGE.contextName] = contextPageName.contextName
         props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
         client.track(CTA_CLICKED.eventName, props)
     }

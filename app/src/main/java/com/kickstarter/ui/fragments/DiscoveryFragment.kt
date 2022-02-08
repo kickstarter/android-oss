@@ -23,6 +23,7 @@ import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.AnimationUtils.crossFadeAndReverse
 import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Category
@@ -42,6 +43,7 @@ import com.kickstarter.ui.data.Editorial
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.viewholders.EditorialViewHolder
 import com.kickstarter.viewmodels.DiscoveryFragmentViewModel
+import rx.android.schedulers.AndroidSchedulers
 
 @RequiresFragmentViewModel(DiscoveryFragmentViewModel.ViewModel::class)
 class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
@@ -50,6 +52,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
 
     private var binding: FragmentDiscoveryBinding? = null
     private var discoveryEditorialAdapter: DiscoveryEditorialAdapter? = null
+    private val projectStarConfirmationString = R.string.project_star_confirmation
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -74,14 +77,14 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
             recyclerViewPaginator = RecyclerViewPaginator(
                 this,
                 { this@DiscoveryFragment.viewModel.inputs.nextPage() },
-                this@DiscoveryFragment.viewModel.outputs.isFetchingProjects
+                this@DiscoveryFragment.viewModel.outputs.isFetchingProjects()
             )
         }
 
         binding?.discoverySwipeRefreshLayout?.let {
             SwipeRefresher(
                 this, it, { this.viewModel.inputs.refresh() }
-            ) { this.viewModel.outputs.isFetchingProjects }
+            ) { this.viewModel.outputs.isFetchingProjects() }
         }
 
         this.viewModel.outputs.activity()
@@ -147,6 +150,24 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.heartContainerClicked() }
         }
+
+        this.viewModel.outputs.startLoginToutActivityToSaveProject()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.startLoginToutActivity() }
+
+        this.viewModel.outputs.scrollToSavedProjectPosition()
+            .filter { it != -1 }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                binding?.discoveryRecyclerView?.smoothScrollToPosition(it)
+            }
+
+        this.viewModel.outputs.showSavedPrompt()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.showStarToast() }
     }
 
     override fun onPause() {
@@ -199,6 +220,10 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         startActivity(Intent(activity, ActivityFeedActivity::class.java))
     }
 
+    private fun showStarToast() {
+        ViewUtils.showToastFromTop(requireContext(), getString(this.projectStarConfirmationString), 0, resources.getDimensionPixelSize(R.dimen.grid_8))
+    }
+
     private fun startEditorialActivity(editorial: Editorial) {
         val activity = activity
         // The transition view must be an ImageView
@@ -244,7 +269,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         this.viewModel.inputs.refresh()
     }
 
-    fun takeCategories(categories: List<Category?>) {
+    fun takeCategories(categories: List<Category>) {
         this.viewModel.inputs.rootCategories(categories)
     }
 

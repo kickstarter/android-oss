@@ -19,9 +19,9 @@ class ActivitySampleProjectViewHolder(
         ActivitySampleProjectViewHolderViewModel.ViewModel(environment())
 
     interface Delegate {
-        fun activitySampleProjectViewHolderSeeActivityClicked(viewHolder: ActivitySampleProjectViewHolder)
+        fun activitySampleProjectViewHolderSeeActivityClicked(viewHolder: ActivitySampleProjectViewHolder?)
         fun activitySampleProjectViewHolderProjectClicked(viewHolder: ActivitySampleProjectViewHolder, project: Project?)
-        fun activitySampleProjectViewHolderUpdateClicked(viewHolder: ActivitySampleProjectViewHolder, activity: Activity?)
+        fun activitySampleProjectViewHolderUpdateClicked(viewHolder: ActivitySampleProjectViewHolder?, activity: Activity?)
     }
 
     @Throws(Exception::class)

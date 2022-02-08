@@ -20,6 +20,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
 import com.kickstarter.libs.rx.transformers.Transformers.neverError
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.OVERVIEW
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.ObjectUtils
@@ -480,7 +481,7 @@ interface ProjectViewModel {
 
             projectSavedStatus
                 .compose(bindToLifecycle())
-                .subscribe { this.analyticEvents.trackWatchProjectCTA(it) }
+                .subscribe { this.analyticEvents.trackWatchProjectCTA(it, PROJECT) }
 
             projectSavedStatus
                 .filter { p -> p.isStarred() && p.isLive && !p.isApproachingDeadline }

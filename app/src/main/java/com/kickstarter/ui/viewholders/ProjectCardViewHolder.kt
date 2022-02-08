@@ -12,7 +12,6 @@ import androidx.core.content.res.ResourcesCompat
 import com.kickstarter.R
 import com.kickstarter.databinding.ProjectCardViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.SocialUtils
@@ -23,6 +22,7 @@ import com.kickstarter.libs.utils.extensions.photoHeightFromWidthRatio
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.viewmodels.ProjectCardHolderViewModel
 import com.squareup.picasso.Picasso
 import org.joda.time.DateTime
@@ -73,7 +73,7 @@ class ProjectCardViewHolder(
         viewModel.outputs.friendAvatarUrl1()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { setFriendAvatarUrl(it, binding.friendRowBackingGroup.friendBackingAvatar2) }
+            .subscribe { setFriendAvatarUrl(it, binding.friendRowBackingGroup.friendBackingAvatar1) }
 
         viewModel.outputs.friendAvatarUrl2()
             .compose(bindToLifecycle())
@@ -288,9 +288,7 @@ class ProjectCardViewHolder(
     }
 
     private fun setFriendAvatarUrl(avatarUrl: String, imageView: ImageView) {
-        Picasso.get().load(avatarUrl)
-            .transform(CircleTransformation())
-            .into(imageView)
+        imageView.loadCircleImage(avatarUrl)
     }
 
     private fun setDefaultTopPadding(setDefaultPadding: Boolean) {

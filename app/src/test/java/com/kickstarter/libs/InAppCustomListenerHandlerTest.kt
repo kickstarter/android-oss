@@ -1,6 +1,6 @@
 package com.kickstarter.libs
 
-import com.appboy.ui.inappmessage.InAppMessageOperation
+import com.braze.ui.inappmessage.InAppMessageOperation
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.braze.InAppCustomListener
 import com.kickstarter.libs.braze.InAppCustomListenerHandler

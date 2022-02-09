@@ -410,6 +410,40 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testUIOutputs_whenSaveProjectFromDeepLink_isSuccessful() {
+
+        val currentUser = MockCurrentUser()
+        val project = ProjectFactory.successfulProject()
+        val testScheduler = TestScheduler()
+
+        setUpEnvironment(
+            environment().toBuilder()
+                .currentUser(currentUser)
+                .apolloClient(object : MockApolloClient() {
+                    override fun getProject(param: String): Observable<Project> {
+                        return Observable.just(project)
+                    }
+                })
+                .scheduler(testScheduler).build()
+        )
+
+        // Start the view model with a project.
+        val intent = deepLinkIntent().apply {
+            putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_SAVE, true)
+            putExtra(IntentKey.SAVE_FLAG_VALUE, true)
+        }
+        currentUser.refresh(UserFactory.user())
+        this.vm.intent(intent)
+
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
+
+        // The project should be saved, and a save prompt should NOT be shown.
+        this.savedTest.assertValues(false, true)
+        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart)
+        this.showSavedPromptTest.assertValueCount(0)
+    }
+
+    @Test
     fun testUIOutputs_whenFetchProjectFromDeepLink_isUnsuccessful() {
         var error = true
         val refreshedProject = ProjectFactory.project()

@@ -72,6 +72,13 @@ object ProjectIntentMapper {
     }
 
     /**
+     * Returns a [deepLinkSaveFlag] observable. If there is no deepLink Save Flag
+     */
+    fun deepLinkSaveFlag(intent: Intent): Observable<Boolean> {
+        return Observable.just(intent.getBooleanExtra(IntentKey.SAVE_FLAG_VALUE, false))
+    }
+
+    /**
      * Returns an observable of push notification envelopes from the intent data. This will emit only when the project
      * is launched from a push notification.
      */

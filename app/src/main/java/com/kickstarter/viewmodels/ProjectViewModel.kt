@@ -429,6 +429,29 @@ interface ProjectViewModel {
                 }
                 .share()
 
+            val projectOnDeepLinkChangeSave = intent()
+                .take(1)
+                .delay(3, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
+                .filter {
+                    it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_SAVE, false)
+                }
+                .flatMap { ProjectIntentMapper.deepLinkSaveFlag(it) }
+                .compose(combineLatestPair(this.currentUser.observable()))
+                .filter { it.second != null }
+                .withLatestFrom(initialProject) { userAndFlag, p ->
+                    Pair(userAndFlag, p)
+                }
+                .take(1)
+                .filter {
+                    it.second.isStarred() != it.first.first
+                }.switchMap {
+                    if (it.first.first) {
+                        this.saveProject(it.second)
+                    } else {
+                        this.unSaveProject(it.second)
+                    }
+                }.share()
+
             val refreshProjectEvent = Observable.merge(
                 this.pledgeSuccessfullyCancelled,
                 this.pledgeSuccessfullyCreated.compose(ignoreValues()),
@@ -474,10 +497,12 @@ interface ProjectViewModel {
                 initialProject,
                 refreshedProjectNotification.compose(values()),
                 projectOnUserChangeSave,
-                savedProjectOnLoginSuccess
+                savedProjectOnLoginSuccess,
+                projectOnDeepLinkChangeSave
+
             )
 
-            val projectSavedStatus = projectOnUserChangeSave.mergeWith(savedProjectOnLoginSuccess)
+            val projectSavedStatus = Observable.merge(projectOnUserChangeSave, savedProjectOnLoginSuccess, projectOnDeepLinkChangeSave)
 
             projectSavedStatus
                 .compose(bindToLifecycle())

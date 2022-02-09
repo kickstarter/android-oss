@@ -19,6 +19,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import com.aghajari.zoomhelper.ZoomHelper
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -402,6 +403,10 @@ class ProjectPageActivity :
     }
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        event?.let {
+            ZoomHelper.getInstance().dispatchTouchEvent(it, this)
+        }
+
         if (event?.action == MotionEvent.ACTION_DOWN) {
             val view = currentFocus
             if (view is EditText || view?.parent is CardInputWidget) {

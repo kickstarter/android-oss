@@ -268,6 +268,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-inappmessaging-display'
     implementation 'com.google.firebase:firebase-perf'
 
+    // Zoom on Images
+    implementation 'io.github.aghajari:ZoomHelper:1.1.0'
+
     // Testing
     testImplementation "junit:junit:4.13.2"
     testImplementation "org.mockito:mockito-core:4.0.0"

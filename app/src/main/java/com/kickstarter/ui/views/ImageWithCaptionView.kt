@@ -1,5 +1,6 @@
 package com.kickstarter.ui.views
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -7,6 +8,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import androidx.cardview.widget.CardView
 import androidx.core.view.isVisible
+import com.aghajari.zoomhelper.ZoomHelper
 import com.kickstarter.R
 import com.kickstarter.databinding.ViewImageWithCaptionBinding
 import com.kickstarter.libs.utils.extensions.isGif
@@ -14,6 +16,7 @@ import com.kickstarter.ui.extensions.loadGifImage
 import com.kickstarter.ui.extensions.loadImage
 import com.kickstarter.ui.extensions.makeLinks
 
+@SuppressLint("ClickableViewAccessibility")
 class ImageWithCaptionView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -26,6 +29,10 @@ class ImageWithCaptionView @JvmOverloads constructor(
             LayoutInflater.from(context),
             this, true
         )
+
+    init {
+        ZoomHelper.addZoomableView(binding.imageView)
+    }
 
     fun setImage(src: String) {
         if (src.isGif()) {

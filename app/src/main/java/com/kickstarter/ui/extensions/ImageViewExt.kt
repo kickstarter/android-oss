@@ -43,7 +43,6 @@ fun ImageView.loadImage(url: String?, context: Context, imageViewPlaceholder: Ap
 
                 override fun onError(e: Exception?) {
                     target.setImageResource(R.drawable.image_placeholder)
-                    imageViewPlaceholder?.setImageBitmap(target.drawable.toBitmap())
                 }
             }
         )

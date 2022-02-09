@@ -10,6 +10,8 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.UrlUtils.commentId
 import com.kickstarter.libs.utils.UrlUtils.refTag
+import com.kickstarter.libs.utils.UrlUtils.saveFlag
+import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.path
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.viewmodels.DeepLinkViewModel
@@ -36,6 +38,11 @@ class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { uri: Uri -> startProjectActivity(uri) }
+
+        viewModel.outputs.startProjectActivityToSave()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { startProjectActivityForSave(it.first, it.second) }
 
         viewModel.outputs.startProjectActivityForComment()
             .compose(bindToLifecycle())
@@ -84,6 +91,19 @@ class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
 
     private fun startProjectActivity(uri: Uri) {
         startActivity(projectIntent(uri))
+        finish()
+    }
+
+    private fun startProjectActivityForSave(uri: Uri, isFfEnabled: Boolean) {
+        val projectIntent = Intent().getProjectIntent(this, isFfEnabled)
+            .setData(uri)
+            .putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_SAVE, true)
+
+        saveFlag(uri.toString())?.let {
+            projectIntent.putExtra(IntentKey.SAVE_FLAG_VALUE, it)
+        }
+
+        startActivity(projectIntent)
         finish()
     }
 

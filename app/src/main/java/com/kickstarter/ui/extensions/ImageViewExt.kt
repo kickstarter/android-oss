@@ -12,7 +12,6 @@ import com.kickstarter.libs.utils.extensions.isKSApplication
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 
-
 fun ImageView.loadCircleImage(url: String?) {
     url?.let {
         val target = this

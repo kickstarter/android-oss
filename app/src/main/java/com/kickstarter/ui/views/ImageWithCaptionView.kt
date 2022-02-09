@@ -30,15 +30,13 @@ class ImageWithCaptionView @JvmOverloads constructor(
             this, true
         )
 
-    init {
-        ZoomHelper.addZoomableView(binding.imageView)
-    }
-
     fun setImage(src: String) {
         if (src.isGif()) {
             binding.imageView.loadGifImage(src, context)
         } else {
-            binding.imageView.loadImage(src, context)
+            binding.imageView.loadImage(src, context, binding.imageViewPlaceholder)
+            ZoomHelper.addZoomableView(binding.imageView)
+            ZoomHelper.removeZoomableView(binding.imageViewPlaceholder)
         }
     }
 

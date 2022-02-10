@@ -17,17 +17,7 @@ fun ImageView.loadCircleImage(url: String?) {
         val target = this
         Picasso.get().load(it)
             .transform(CircleTransformation())
-            .into(
-                this,
-                object : Callback {
-                    override fun onSuccess() {
-                    }
-
-                    override fun onError(e: Exception?) {
-                        target.setImageResource(R.drawable.image_placeholder)
-                    }
-                }
-            )
+            .into(this)
     }
 }
 
@@ -42,13 +32,11 @@ fun ImageView.loadImage(url: String?, context: Context, imageViewPlaceholder: Ap
                 }
 
                 override fun onError(e: Exception?) {
-                    target.setImageResource(R.drawable.image_placeholder)
                 }
             }
         )
     } else {
         this.setImageResource(R.drawable.image_placeholder)
-        imageViewPlaceholder?.setImageBitmap(target.drawable.toBitmap())
     }
 }
 

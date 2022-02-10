@@ -15,6 +15,7 @@ class ImageElementViewHolder(
 
     private fun configure(element: ImageViewElement) {
         imageView.setImage(element.src)
+        imageView.setLinkOnImage(element.href)
         element.caption?.let { caption ->
             if (element.href.isNullOrEmpty()) {
                 imageView.setCaption(caption)

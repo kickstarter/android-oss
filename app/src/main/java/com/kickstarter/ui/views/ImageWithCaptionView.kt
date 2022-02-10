@@ -62,6 +62,15 @@ class ImageWithCaptionView @JvmOverloads constructor(
             }
         }
     }
+
+    fun setLinkOnImage(href: String?) {
+        href?.takeIf { it.isNotEmpty() }?.let {
+            binding.imageView.isClickable = true
+            binding.imageView.setOnClickListener {
+                onImageWithCaptionClickedListener?.onImageWithCaptionClicked(it)
+            }
+        }
+    }
 }
 
 interface OnImageWithCaptionClickedListener {

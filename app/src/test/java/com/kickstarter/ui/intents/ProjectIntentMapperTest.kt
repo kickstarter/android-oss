@@ -2,6 +2,7 @@ package com.kickstarter.ui.intents
 
 import android.content.Intent
 import android.net.Uri
+import androidx.core.net.toUri
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.RefTag
 import com.kickstarter.mock.factories.ProjectFactory
@@ -143,5 +144,11 @@ class ProjectIntentMapperTest : KSRobolectricTestCase() {
         val resultTest = TestSubscriber.create<PushNotificationEnvelope>()
         ProjectIntentMapper.pushNotificationEnvelope(intent).subscribe(resultTest)
         resultTest.assertNoValues()
+    }
+
+    @Test
+    fun testProjectHasSaveQueryFromUri() {
+        assertTrue(ProjectIntentMapper.hasSaveQueryFromUri("ksr://www.kickstarter.com/projects/1186238668/skull-graphic-tee?save=true".toUri()))
+        assertFalse(ProjectIntentMapper.hasSaveQueryFromUri("ksr://www.kickstarter.com/projects/1186238668/skull-graphic-tee".toUri()))
     }
 }

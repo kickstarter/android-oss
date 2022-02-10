@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.query
 import com.kickstarter.models.Project
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.ApolloClientType
@@ -19,6 +20,10 @@ object ProjectIntentMapper {
     // /projects/param-1/param-2*
     val PROJECT_PATTERN =
         Pattern.compile("\\A\\/projects\\/([a-zA-Z0-9_-]+)(\\/([a-zA-Z0-9_-]+)).*")
+
+    private val PROJECT_SAVE_QUERY_PATTERN = Pattern.compile(
+        "save(\\=[a-zA-Z]+)"
+    )
 
     fun project(intent: Intent, apolloClient: ApolloClientType): Observable<Project> {
         val intentProject = projectFromIntent(intent)
@@ -72,6 +77,13 @@ object ProjectIntentMapper {
     }
 
     /**
+     * Returns a [deepLinkSaveFlag] observable. If there is no deepLink Save Flag
+     */
+    fun deepLinkSaveFlag(intent: Intent): Observable<Boolean> {
+        return Observable.just(intent.getBooleanExtra(IntentKey.SAVE_FLAG_VALUE, false))
+    }
+
+    /**
      * Returns an observable of push notification envelopes from the intent data. This will emit only when the project
      * is launched from a push notification.
      */
@@ -112,5 +124,22 @@ object ProjectIntentMapper {
         return if (matcher.matches() && matcher.group(3) != null) {
             matcher.group(3)
         } else null
+    }
+
+    /**
+     * check the project save query from a uri. e.g.: A uri like `ksr://www.kickstarter.com/projects/1186238668/skull-graphic-tee?save=true`
+     * returns true or false
+     */
+    fun hasSaveQueryFromUri(uri: Uri?): Boolean {
+        if (uri == null) {
+            return false
+        }
+        val scheme = uri.scheme
+        if (!(scheme == SCHEME_KSR || scheme == SCHEME_HTTPS)) {
+            return false
+        }
+        val matcher = PROJECT_PATTERN.matcher(uri.path)
+        val query = PROJECT_SAVE_QUERY_PATTERN.matcher(uri.query()).matches()
+        return matcher.matches() && matcher.group(3) != null && query
     }
 }

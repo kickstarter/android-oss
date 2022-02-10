@@ -7,7 +7,9 @@ import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.UrlUtils.appendRefTag
@@ -16,6 +18,7 @@ import com.kickstarter.libs.utils.extensions.canUpdateFulfillment
 import com.kickstarter.libs.utils.extensions.isCheckoutUri
 import com.kickstarter.libs.utils.extensions.isProjectCommentUri
 import com.kickstarter.libs.utils.extensions.isProjectPreviewUri
+import com.kickstarter.libs.utils.extensions.isProjectSaveUri
 import com.kickstarter.libs.utils.extensions.isProjectUpdateCommentsUri
 import com.kickstarter.libs.utils.extensions.isProjectUpdateUri
 import com.kickstarter.libs.utils.extensions.isProjectUri
@@ -55,6 +58,9 @@ interface DeepLinkViewModel {
 
         /** Emits when we should finish the current activity  */
         fun finishDeeplinkActivity(): Observable<Void>
+
+        /** Emits when we should start the [com.kickstarter.ui.activities.ProjectPageActivity].  */
+        fun startProjectActivityToSave(): Observable<Pair<Uri, Boolean>>
     }
 
     class ViewModel(environment: Environment) :
@@ -67,6 +73,7 @@ interface DeepLinkViewModel {
         private val startProjectActivityForUpdate = BehaviorSubject.create<Uri>()
         private val startProjectActivityForCommentToUpdate = BehaviorSubject.create<Uri>()
         private val startProjectActivityWithCheckout = BehaviorSubject.create<Uri>()
+        private val startProjectActivityToSave = BehaviorSubject.create<Pair<Uri, Boolean>>()
         private val updateUserPreferences = BehaviorSubject.create<Boolean>()
         private val finishDeeplinkActivity = BehaviorSubject.create<Void?>()
         private val apolloClient = environment.apolloClient()
@@ -74,9 +81,17 @@ interface DeepLinkViewModel {
         private val currentUser = environment.currentUser()
         private val webEndpoint = environment.webEndpoint()
         private val projectObservable: Observable<Project>
+        private val optimizely: ExperimentsClientType = environment.optimizely()
+
         val outputs: Outputs = this
 
         init {
+
+            val isProjectPageEnabled = Observable.just(
+                optimizely.isFeatureEnabled(
+                    OptimizelyFeature.Key.PROJECT_PAGE_V2
+                )
+            )
 
             val uriFromIntent = intent()
                 .map { obj: Intent -> obj.data }
@@ -94,6 +109,9 @@ interface DeepLinkViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .filter {
                     it.isProjectUri(webEndpoint)
+                }
+                .filter {
+                    !it.isProjectSaveUri(webEndpoint)
                 }
                 .filter {
                     !it.isCheckoutUri(webEndpoint)
@@ -117,6 +135,22 @@ interface DeepLinkViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     startProjectActivity.onNext(it)
+                }
+
+            uriFromIntent
+                .filter { ObjectUtils.isNotNull(it) }
+                .filter {
+                    it.isProjectUri(webEndpoint)
+                }
+                .filter {
+                    it.isProjectSaveUri(webEndpoint)
+                }.map { appendRefTagIfNone(it) }
+                .withLatestFrom(isProjectPageEnabled) { a, b ->
+                    Pair.create(a, b)
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    startProjectActivityToSave.onNext(it)
                 }
 
             uriFromIntent
@@ -228,6 +262,7 @@ interface DeepLinkViewModel {
             val unsupportedDeepLink = uriFromIntent
                 .filter { !lastPathSegmentIsProjects(it) }
                 .filter { !it.isSettingsUrl() }
+                .filter { !it.isProjectSaveUri(webEndpoint) }
                 .filter { !it.isCheckoutUri(webEndpoint) }
                 .filter { !it.isProjectUri(webEndpoint) }
                 .filter { !it.isProjectCommentUri(webEndpoint) }
@@ -296,5 +331,7 @@ interface DeepLinkViewModel {
         override fun startProjectActivityForCheckout(): Observable<Uri> = startProjectActivityWithCheckout
 
         override fun finishDeeplinkActivity(): Observable<Void> = finishDeeplinkActivity
+
+        override fun startProjectActivityToSave(): Observable<Pair<Uri, Boolean>> = startProjectActivityToSave
     }
 }

@@ -44,6 +44,8 @@ public final class IntentKey {
   public static final String REPLY_EXPAND = "com.kickstarter.kickstarter.intent_reply_expand";
   public static final String REPLY_SCROLL_BOTTOM = "com.kickstarter.kickstarter.intent_reply_scroll_bottom";
   public static final String DEEP_LINK_SCREEN_PROJECT_COMMENT = "com.kickstarter.kickstarter.deep_link_screen_project_comment";
+  public static final String DEEP_LINK_SCREEN_PROJECT_SAVE = "com.kickstarter.kickstarter.save";
+  public static final String SAVE_FLAG_VALUE = "com.kickstarter.kickstarter.intent_save_flag_value";
   public static final String DEEP_LINK_SCREEN_PROJECT_UPDATE = "com.kickstarter.kickstarter.deep_link_screen_project_update";
   public static final String DEEP_LINK_SCREEN_PROJECT_UPDATE_COMMENT = "com.kickstarter.kickstarter.deep_link_screen_project_update_comment";
   public static final String VIDEO_SEEK_POSITION = "com.kickstarter.kickstarter.intent_video_seek_position";

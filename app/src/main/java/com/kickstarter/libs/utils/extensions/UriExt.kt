@@ -135,6 +135,12 @@ fun Uri.isProjectCommentUri(webEndpoint: String): Boolean {
         .matches()
 }
 
+fun Uri.isProjectSaveUri(webEndpoint: String): Boolean {
+    return isKickstarterUri(webEndpoint) &&
+        PROJECT_PATTERN.matcher(path()).matches() &&
+        PROJECT_SAVE_QUERY_PATTERN.matcher(query()).matches()
+}
+
 fun Uri.isProjectUpdateCommentsUri(webEndpoint: String): Boolean {
     return isKickstarterUri(webEndpoint) && PROJECT_UPDATE_COMMENTS_PATTERN.matcher(path()).matches()
 }
@@ -210,6 +216,11 @@ private val PROJECT_REWARD_FULFILLMENT = Pattern.compile(
 // /projects/:creator_param/:project_param/comments
 private val PROJECT_COMMENTS_PATTERN = Pattern.compile(
     "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/comments\\z"
+)
+
+// save=true|false
+private val PROJECT_SAVE_QUERY_PATTERN = Pattern.compile(
+    "save(\\=[a-zA-Z]+)"
 )
 
 // /projects/:creator_param/:project_param/posts/:update_param/comments

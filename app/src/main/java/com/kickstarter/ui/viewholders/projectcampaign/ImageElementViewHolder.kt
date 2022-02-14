@@ -6,7 +6,6 @@ import com.kickstarter.libs.htmlparser.ImageViewElement
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.ui.views.OnImageWithCaptionClickedListener
-import timber.log.Timber
 
 class ImageElementViewHolder(
     val binding: ViewElementImageFromHtmlBinding
@@ -35,7 +34,6 @@ class ImageElementViewHolder(
         (data as? ImageViewElement).apply {
             this?.let {
                 configure(it)
-                Timber.d("${this.javaClass.canonicalName} with ImageViewElement: $it")
             }
         }
     }

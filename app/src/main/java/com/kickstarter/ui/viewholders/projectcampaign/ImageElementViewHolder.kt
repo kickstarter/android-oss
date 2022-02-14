@@ -11,7 +11,6 @@ import timber.log.Timber
 class ImageElementViewHolder(
     val binding: ViewElementImageFromHtmlBinding
 ) : KSViewHolder(binding.root) {
-    // TODO: attach ViewModel if necessary
     private val imageView = binding.imageView
 
     private fun configure(element: ImageViewElement) {

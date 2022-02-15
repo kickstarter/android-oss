@@ -16,8 +16,8 @@ import com.kickstarter.ui.activities.UpdateActivity
 import com.kickstarter.ui.activities.VideoActivity
 import com.kickstarter.ui.data.ProjectData
 
-fun Intent.getProjectIntent(context: Context, isFfEnabled: Boolean): Intent {
-    return this.setClass(context, if (isFfEnabled) ProjectPageActivity::class.java else ProjectActivity::class.java)
+fun Intent.getProjectIntent(context: Context): Intent {
+    return this.setClass(context, ProjectPageActivity::class.java)
 }
 
 /**

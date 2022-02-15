@@ -27,7 +27,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     private val startProjectActivityForCheckout = TestSubscriber<Uri>()
     private val startProjectActivityForComment = TestSubscriber<Uri>()
     private val startProjectActivityForUpdate = TestSubscriber<Uri>()
-    private val startProjectActivityToSave = TestSubscriber<Pair<Uri, Boolean>>()
+    private val startProjectActivityToSave = TestSubscriber<Uri>()
     private val startProjectActivityForCommentToUpdate = TestSubscriber<Uri>()
     private val finishDeeplinkActivity = TestSubscriber<Void>()
 
@@ -396,22 +396,15 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
             "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap?save=true"
         val expectedUrl =
             "$url&ref=android_deep_link"
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
-                    return true
-                }
-            }
 
         val environment = environment()
             .toBuilder()
-            .optimizely(mockExperimentsClientType)
             .build()
 
         setUpEnvironment(environment)
 
         vm.intent(intentWithData(url))
-        startProjectActivityToSave.assertValue(Pair(Uri.parse(expectedUrl), true))
+        startProjectActivityToSave.assertValue(Uri.parse(expectedUrl))
         startDiscoveryActivity.assertNoValues()
         startProjectActivity.assertNoValues()
         startProjectActivityForCheckout.assertNoValues()

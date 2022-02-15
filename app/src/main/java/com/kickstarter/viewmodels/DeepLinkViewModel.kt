@@ -60,7 +60,7 @@ interface DeepLinkViewModel {
         fun finishDeeplinkActivity(): Observable<Void>
 
         /** Emits when we should start the [com.kickstarter.ui.activities.ProjectPageActivity].  */
-        fun startProjectActivityToSave(): Observable<Pair<Uri, Boolean>>
+        fun startProjectActivityToSave(): Observable<Uri>
     }
 
     class ViewModel(environment: Environment) :
@@ -73,7 +73,7 @@ interface DeepLinkViewModel {
         private val startProjectActivityForUpdate = BehaviorSubject.create<Uri>()
         private val startProjectActivityForCommentToUpdate = BehaviorSubject.create<Uri>()
         private val startProjectActivityWithCheckout = BehaviorSubject.create<Uri>()
-        private val startProjectActivityToSave = BehaviorSubject.create<Pair<Uri, Boolean>>()
+        private val startProjectActivityToSave = BehaviorSubject.create<Uri>()
         private val updateUserPreferences = BehaviorSubject.create<Boolean>()
         private val finishDeeplinkActivity = BehaviorSubject.create<Void?>()
         private val apolloClient = environment.apolloClient()
@@ -86,12 +86,6 @@ interface DeepLinkViewModel {
         val outputs: Outputs = this
 
         init {
-
-            val isProjectPageEnabled = Observable.just(
-                optimizely.isFeatureEnabled(
-                    OptimizelyFeature.Key.PROJECT_PAGE_V2
-                )
-            )
 
             val uriFromIntent = intent()
                 .map { obj: Intent -> obj.data }
@@ -144,10 +138,8 @@ interface DeepLinkViewModel {
                 }
                 .filter {
                     it.isProjectSaveUri(webEndpoint)
-                }.map { appendRefTagIfNone(it) }
-                .withLatestFrom(isProjectPageEnabled) { a, b ->
-                    Pair.create(a, b)
                 }
+                .map { appendRefTagIfNone(it) }
                 .compose(bindToLifecycle())
                 .subscribe {
                     startProjectActivityToSave.onNext(it)
@@ -332,6 +324,6 @@ interface DeepLinkViewModel {
 
         override fun finishDeeplinkActivity(): Observable<Void> = finishDeeplinkActivity
 
-        override fun startProjectActivityToSave(): Observable<Pair<Uri, Boolean>> = startProjectActivityToSave
+        override fun startProjectActivityToSave(): Observable<Uri> = startProjectActivityToSave
     }
 }

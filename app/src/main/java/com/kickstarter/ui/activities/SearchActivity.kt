@@ -19,6 +19,7 @@ import com.kickstarter.ui.adapters.SearchAdapter
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.viewmodels.SearchViewModel
 import rx.android.schedulers.AndroidSchedulers
+import android.util.Pair
 
 @RequiresActivityViewModel(SearchViewModel.ViewModel::class)
 class SearchActivity : BaseActivity<SearchViewModel.ViewModel>(), SearchAdapter.Delegate {
@@ -59,8 +60,8 @@ class SearchActivity : BaseActivity<SearchViewModel.ViewModel>(), SearchAdapter.
             .subscribe { startProjectActivity(it) }
     }
 
-    private fun startProjectActivity(projectAndRefTagAndIsFfEnabled: Triple<Project, RefTag, Boolean>) {
-        val intent = Intent().getProjectIntent(this, projectAndRefTagAndIsFfEnabled.third)
+    private fun startProjectActivity(projectAndRefTagAndIsFfEnabled: Pair<Project, RefTag>) {
+        val intent = Intent().getProjectIntent(this)
             .putExtra(IntentKey.PROJECT, projectAndRefTagAndIsFfEnabled.first)
             .putExtra(IntentKey.REF_TAG, projectAndRefTagAndIsFfEnabled.second)
         startActivity(intent)

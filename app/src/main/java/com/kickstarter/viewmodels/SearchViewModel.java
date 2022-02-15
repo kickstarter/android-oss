@@ -7,7 +7,6 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.RefTagUtils;
@@ -26,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 
-import kotlin.Triple;
 import rx.Observable;
 import rx.Scheduler;
 import rx.subjects.BehaviorSubject;
@@ -59,7 +57,7 @@ public interface SearchViewModel {
     Observable<List<Project>> searchProjects();
 
     /** Emits a project and ref tag when we should start a project activity. */
-    Observable<Triple<Project, RefTag, Boolean>> startProjectActivity();
+    Observable<Pair<Project, RefTag>> startProjectActivity();
   }
 
   final class ViewModel extends ActivityViewModel<SearchActivity> implements Inputs, Outputs {
@@ -148,9 +146,6 @@ public interface SearchViewModel {
                 analyticEvents.trackDiscoverSearchResultProjectCATClicked(projectDiscoveryParamsPair.first.first, projectData, projectDiscoveryParamsPair.second, defaultSort);
               });
 
-      final  Observable<Boolean> isProjectPageEnabled =
-        Observable.just(environment.optimizely().isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2));
-
       this.startProjectActivity = Observable.combineLatest(this.search, projects, Pair::create)
         .compose(takePairWhen(this.projectClicked))
         .map(searchTermAndProjectsAndProjectClicked -> {
@@ -159,8 +154,7 @@ public interface SearchViewModel {
           final Project projectClicked = searchTermAndProjectsAndProjectClicked.second;
 
           return this.projectAndRefTag(searchTerm, currentProjects, projectClicked);
-        })
-        .withLatestFrom(isProjectPageEnabled, (Pair<Project, RefTag> a, Boolean b) -> new Triple<>(a.first, a.second, b));
+        });
 
       params
           .compose(takePairWhen(this.discoverEnvelope))
@@ -212,7 +206,7 @@ public interface SearchViewModel {
     private final BehaviorSubject<Boolean> isFetchingProjects = BehaviorSubject.create();
     private final BehaviorSubject<List<Project>> popularProjects = BehaviorSubject.create();
     private final BehaviorSubject<List<Project>> searchProjects = BehaviorSubject.create();
-    private final Observable<Triple<Project, RefTag, Boolean>> startProjectActivity;
+    private final Observable<Pair<Project, RefTag>> startProjectActivity;
 
     public final SearchViewModel.Inputs inputs = this;
     public final SearchViewModel.Outputs outputs = this;
@@ -227,7 +221,7 @@ public interface SearchViewModel {
       this.search.onNext(s);
     }
 
-    @Override public @NonNull Observable<Triple<Project, RefTag, Boolean>> startProjectActivity() {
+    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
       return this.startProjectActivity;
     }
     @Override public @NonNull Observable<Boolean> isFetchingProjects() {

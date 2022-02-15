@@ -42,7 +42,7 @@ class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
         viewModel.outputs.startProjectActivityToSave()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { startProjectActivityForSave(it.first, it.second) }
+            .subscribe { startProjectActivityForSave(it) }
 
         viewModel.outputs.startProjectActivityForComment()
             .compose(bindToLifecycle())
@@ -94,8 +94,8 @@ class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
         finish()
     }
 
-    private fun startProjectActivityForSave(uri: Uri, isFfEnabled: Boolean) {
-        val projectIntent = Intent().getProjectIntent(this, isFfEnabled)
+    private fun startProjectActivityForSave(uri: Uri) {
+        val projectIntent = Intent().getProjectIntent(this)
             .setData(uri)
             .putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_SAVE, true)
 

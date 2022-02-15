@@ -36,7 +36,6 @@ import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.MessagesActivity;
-import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.activities.ProjectPageActivity;
 import com.kickstarter.ui.activities.SurveyResponseActivity;
 import com.kickstarter.ui.activities.UpdateActivity;

@@ -6,7 +6,6 @@ import com.kickstarter.libs.ApiPaginator
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ExperimentsClientType
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers.neverError
 import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.NumberUtils

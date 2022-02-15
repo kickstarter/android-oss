@@ -7,7 +7,6 @@ import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.RefTag
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
@@ -70,7 +69,7 @@ interface ThanksViewModel {
         fun startDiscoveryActivity(): Observable<DiscoveryParams>
 
         /** Emits when we should start the [com.kickstarter.ui.activities.ProjectActivity].  */
-        fun startProjectActivity(): Observable<Triple<Project, RefTag, Boolean>>
+        fun startProjectActivity(): Observable<Pair<Project, RefTag>>
 
         /** Emits when the success prompt for saving should be displayed.  */
         fun showSavedPrompt(): Observable<Void>
@@ -100,7 +99,7 @@ interface ThanksViewModel {
         private val showRatingDialog = PublishSubject.create<Void?>()
         private val signedUpToGamesNewsletter = PublishSubject.create<User>()
         private val startDiscoveryActivity = PublishSubject.create<DiscoveryParams>()
-        private val startProjectActivity = PublishSubject.create<Triple<Project, RefTag, Boolean>>()
+        private val startProjectActivity = PublishSubject.create<Pair<Project, RefTag>>()
         private val onHeartButtonClicked = PublishSubject.create<Project>()
         private val showSavedPrompt = PublishSubject.create<Void>()
 
@@ -148,20 +147,12 @@ interface ThanksViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(finish)
 
-            val isProjectPageEnabled = Observable.just(
-                optimizely.isFeatureEnabled(
-                    OptimizelyFeature.Key.PROJECT_PAGE_V2
-                )
-            )
-
             projectCardViewHolderClicked
-                .withLatestFrom<Boolean, Pair<Project, Boolean>>(isProjectPageEnabled) { a, b ->
-                    Pair.create(a, b)
-                }.compose(bindToLifecycle())
+                .compose(bindToLifecycle())
                 .subscribe {
                     startProjectActivity.onNext(
-                        Triple(
-                            it.first, RefTag.thanks(), it.second
+                        Pair(
+                            it, RefTag.thanks()
                         )
                     )
                 }
@@ -372,7 +363,7 @@ interface ThanksViewModel {
         override fun showGamesNewsletterDialog(): Observable<Void?> = this.showGamesNewsletterDialog
         override fun showRatingDialog(): Observable<Void?> = this.showRatingDialog
         override fun startDiscoveryActivity(): Observable<DiscoveryParams> = this.startDiscoveryActivity
-        override fun startProjectActivity(): Observable<Triple<Project, RefTag, Boolean>> = this.startProjectActivity
+        override fun startProjectActivity(): Observable<Pair<Project, RefTag>> = this.startProjectActivity
         override fun showSavedPrompt(): Observable<Void> = this.showSavedPrompt
 
         private fun saveProject(project: Project): Observable<Project> {

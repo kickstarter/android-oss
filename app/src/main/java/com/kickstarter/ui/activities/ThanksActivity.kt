@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.Pair
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView

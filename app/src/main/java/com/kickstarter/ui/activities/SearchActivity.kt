@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Pair
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding.support.v7.widget.RecyclerViewScrollEvent
 import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView
@@ -19,7 +20,6 @@ import com.kickstarter.ui.adapters.SearchAdapter
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.viewmodels.SearchViewModel
 import rx.android.schedulers.AndroidSchedulers
-import android.util.Pair
 
 @RequiresActivityViewModel(SearchViewModel.ViewModel::class)
 class SearchActivity : BaseActivity<SearchViewModel.ViewModel>(), SearchAdapter.Delegate {

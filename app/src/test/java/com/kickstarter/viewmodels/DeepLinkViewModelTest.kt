@@ -2,12 +2,9 @@ package com.kickstarter.viewmodels
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
-import com.kickstarter.libs.models.OptimizelyFeature
-import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApiClient

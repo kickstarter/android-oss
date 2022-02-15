@@ -69,7 +69,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
     Observable<Pair<Project, RefTag>> startMessageThreadsActivity();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
-    Observable<Triple<Project, RefTag, Boolean>> startProjectActivity();
+    Observable<Pair<Project, RefTag>> startProjectActivity();
 
     /** Emits the time remaining for current project with no units. */
     Observable<String> timeRemainingText();
@@ -138,13 +138,9 @@ public interface CreatorDashboardHeaderHolderViewModel {
         .map(p -> Pair.create(p, RefTag.dashboard()))
         .compose(bindToLifecycle());
 
-      final  Observable<Boolean> isProjectPageEnabled =
-        Observable.just(this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2));
-
       this.startProjectActivity = this.currentProject
-        .withLatestFrom(isProjectPageEnabled, Pair::create)
         .compose(takeWhen(this.projectButtonClicked))
-        .map(p -> new Triple<>(p.first, RefTag.dashboard(), p.second))
+        .map(p -> new Pair<>(p, RefTag.dashboard()))
         .compose(bindToLifecycle());
 
       this.timeRemainingText = this.currentProject
@@ -172,7 +168,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
     private final Observable<String> projectBackersCountText;
     private final Observable<String> projectNameTextViewText;
     private final Observable<Pair<Project, RefTag>> startMessageThreadsActivity;
-    private final Observable<Triple<Project, RefTag, Boolean>> startProjectActivity;
+    private final Observable<Pair<Project, RefTag>> startProjectActivity;
     private final Observable<String> timeRemainingText;
     private final Observable<Boolean> viewProjectButtonIsGone;
 
@@ -213,7 +209,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
     @Override public @NonNull Observable<Pair<Project, RefTag>> startMessageThreadsActivity() {
       return this.startMessageThreadsActivity;
     }
-    @Override public @NonNull Observable<Triple<Project, RefTag, Boolean>> startProjectActivity() {
+    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
       return this.startProjectActivity;
     }
     @Override public @NonNull Observable<String> timeRemainingText() {

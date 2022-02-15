@@ -9,7 +9,6 @@ import com.kickstarter.ui.activities.CampaignDetailsActivity
 import com.kickstarter.ui.activities.CommentsActivity
 import com.kickstarter.ui.activities.CreatorBioActivity
 import com.kickstarter.ui.activities.CreatorDashboardActivity
-import com.kickstarter.ui.activities.ProjectActivity
 import com.kickstarter.ui.activities.ProjectPageActivity
 import com.kickstarter.ui.activities.ProjectUpdatesActivity
 import com.kickstarter.ui.activities.UpdateActivity

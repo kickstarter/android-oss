@@ -10,7 +10,6 @@ import com.kickstarter.ui.views.OnImageWithCaptionClickedListener
 class ImageElementViewHolder(
     val binding: ViewElementImageFromHtmlBinding
 ) : KSViewHolder(binding.root) {
-    // TODO: attach ViewModel if necessary
     private val imageView = binding.imageView
 
     private fun configure(element: ImageViewElement) {
@@ -33,7 +32,9 @@ class ImageElementViewHolder(
 
     override fun bindData(data: Any?) {
         (data as? ImageViewElement).apply {
-            this?.let { configure(it) }
+            this?.let {
+                configure(it)
+            }
         }
     }
 }

@@ -116,7 +116,7 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment);
 
     final TestSubscriber<Uri> startProjectActivity = new TestSubscriber<>();
-    vm.outputs.startProjectActivity().map(uriAndRefTag -> uriAndRefTag.getFirst()).subscribe(startProjectActivity);
+    vm.outputs.startProjectActivity().map(uriAndRefTag -> uriAndRefTag.first).subscribe(startProjectActivity);
 
     // Start the intent with a project and update.
     vm.intent(this.defaultIntent);
@@ -148,7 +148,7 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
 
     final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment);
 
-    final TestSubscriber<Triple<Uri, RefTag, Boolean>> startProjectActivity = new TestSubscriber<>();
+    final TestSubscriber<Pair<Uri, RefTag>> startProjectActivity = new TestSubscriber<>();
     vm.outputs.startProjectActivity().subscribe(startProjectActivity);
 
     // Start the intent with a project and update.
@@ -162,9 +162,8 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     vm.inputs.goToProjectRequest(projectRequest);
 
     startProjectActivity.assertValueCount(1);
-    assertTrue(startProjectActivity.getOnNextEvents().get(0).getThird());
-    assertEquals(startProjectActivity.getOnNextEvents().get(0).getFirst(), Uri.parse(url));
-    assertEquals(startProjectActivity.getOnNextEvents().get(0).getSecond(), RefTag.update());
+    assertEquals(startProjectActivity.getOnNextEvents().get(0).first, Uri.parse(url));
+    assertEquals(startProjectActivity.getOnNextEvents().get(0).second, RefTag.update());
   }
 
   @Test

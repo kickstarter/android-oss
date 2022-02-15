@@ -59,8 +59,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> showActivityFeed = new TestSubscriber<>();
   private final TestSubscriber<Boolean> showLoginTout = new TestSubscriber<>();
   private final TestSubscriber<Editorial> startEditorialActivity = new TestSubscriber<>();
-  private final TestSubscriber<Triple<Project, RefTag, Boolean>> startProjectActivity = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Project, RefTag>> startProjectPageActivity = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Project, RefTag>> startProjectActivity = new TestSubscriber<>();
   private final TestSubscriber<Activity> startUpdateActivity = new TestSubscriber<>();
   private final TestSubscriber<Project> startLoginToutActivityToSaveProject = new TestSubscriber<>();
   private final TestSubscriber<Integer> scrollToSavedProjectIndex = new TestSubscriber<>();
@@ -497,9 +496,8 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectCardViewHolderClicked(project);
 
     this.startProjectActivity.assertValueCount(1);
-    assertFalse(this.startProjectActivity.getOnNextEvents().get(0).getThird());
-    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).getFirst(), project);
-    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).getSecond(), RefTag.collection(518));
+    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).first, project);
+    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).second, RefTag.collection(518));
 
     this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CARD_CLICKED.getEventName(), EventName.CTA_CLICKED.getEventName());
   }
@@ -530,9 +528,8 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
 
     this.startProjectActivity.assertValueCount(1);
-    assertTrue(this.startProjectActivity.getOnNextEvents().get(0).getThird());
-    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).getFirst(), project);
-    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).getSecond(), RefTag.collection(518));
+    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).first, project);
+    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).second, RefTag.collection(518));
 
     this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CARD_CLICKED.getEventName(), EventName.CTA_CLICKED.getEventName());
   }
@@ -549,9 +546,8 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectCardViewHolderClicked(project);
 
     this.startProjectActivity.assertValueCount(1);
-    assertFalse(this.startProjectActivity.getOnNextEvents().get(0).getThird());
-    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).getFirst(), project);
-    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).getSecond(), RefTag.discovery());
+    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).first, project);
+    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).second, RefTag.discovery());
     this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CARD_CLICKED.getEventName(), EventName.CTA_CLICKED.getEventName());
   }
 
@@ -575,9 +571,8 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectCardViewHolderClicked(project);
 
     this.startProjectActivity.assertValueCount(1);
-    assertTrue(this.startProjectActivity.getOnNextEvents().get(0).getThird());
-    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).getFirst(), project);
-    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).getSecond(), RefTag.discovery());
+    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).first, project);
+    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).second, RefTag.discovery());
     this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CARD_CLICKED.getEventName(), EventName.CTA_CLICKED.getEventName());
   }
 

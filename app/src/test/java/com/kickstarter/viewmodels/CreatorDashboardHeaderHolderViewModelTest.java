@@ -42,7 +42,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Integer> progressBarBackground = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, RefTag>> startMessageThreadsActivity = new TestSubscriber<>();
-  private final TestSubscriber<Triple<Project, RefTag, Boolean>> startProjectActivity = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Project, RefTag>> startProjectActivity = new TestSubscriber<>();
   private final TestSubscriber<Boolean> viewProjectButtonIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> timeRemainingText = new TestSubscriber<>();
 
@@ -237,9 +237,8 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     this.vm.inputs.projectButtonClicked();
 
     this.startProjectActivity.assertValueCount(1);
-    assertFalse(this.startProjectActivity.getOnNextEvents().get(0).getThird());
-    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).getFirst(), project);
-    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).getSecond(), RefTag.dashboard());
+    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).first, project);
+    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).second, RefTag.dashboard());
   }
 
   @Test
@@ -260,9 +259,8 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     this.vm.inputs.projectButtonClicked();
 
     this.startProjectActivity.assertValueCount(1);
-    assertTrue(this.startProjectActivity.getOnNextEvents().get(0).getThird());
-    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).getFirst(), project);
-    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).getSecond(), RefTag.dashboard());
+    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).first, project);
+    assertEquals(this.startProjectActivity.getOnNextEvents().get(0).second, RefTag.dashboard());
   }
 
   @Test

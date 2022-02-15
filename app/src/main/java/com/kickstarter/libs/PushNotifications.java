@@ -19,7 +19,6 @@ import androidx.core.app.TaskStackBuilder;
 import androidx.core.content.ContextCompat;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.transformations.CropSquareTransformation;

@@ -38,7 +38,6 @@ import java.util.Collections;
 
 import androidx.annotation.NonNull;
 
-import kotlin.Triple;
 import rx.observers.TestSubscriber;
 
 public final class ThanksViewModelTest extends KSRobolectricTestCase {
@@ -50,7 +49,6 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Void> showConfirmGamesNewsletterDialogTest = TestSubscriber.create();
   private final TestSubscriber<DiscoveryParams> startDiscoveryTest = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, RefTag>> startProjectTest = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Project, RefTag>> startProjectPageTest = new TestSubscriber<>();
   private final TestSubscriber<Void> showSavedPromptTest = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {

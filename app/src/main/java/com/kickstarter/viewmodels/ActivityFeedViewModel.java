@@ -5,7 +5,6 @@ import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
-import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.utils.EventContextValues;
 import com.kickstarter.libs.utils.extensions.IntExtKt;
 import com.kickstarter.models.Activity;
@@ -35,8 +34,6 @@ import static com.kickstarter.libs.rx.transformers.Transformers.incrementalCount
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
-
-import android.util.Pair;
 
 public interface ActivityFeedViewModel {
 

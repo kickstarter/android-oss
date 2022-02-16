@@ -40,7 +40,6 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 
-import kotlin.Triple;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 import rx.schedulers.TestScheduler;

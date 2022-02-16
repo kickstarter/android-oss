@@ -28,7 +28,6 @@ import org.junit.Test;
 
 import androidx.annotation.NonNull;
 
-import kotlin.Triple;
 import rx.observers.TestSubscriber;
 
 public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTestCase {

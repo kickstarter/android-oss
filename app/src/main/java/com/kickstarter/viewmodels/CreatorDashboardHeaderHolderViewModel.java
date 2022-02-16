@@ -9,7 +9,6 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
@@ -21,7 +20,6 @@ import com.kickstarter.ui.viewholders.CreatorDashboardHeaderViewHolder;
 
 import androidx.annotation.NonNull;
 
-import kotlin.Triple;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 

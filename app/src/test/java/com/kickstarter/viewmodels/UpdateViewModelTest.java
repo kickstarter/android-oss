@@ -28,7 +28,6 @@ import androidx.annotation.NonNull;
 
 import java.util.concurrent.TimeUnit;
 
-import kotlin.Triple;
 import okhttp3.Request;
 import rx.Observable;
 import rx.observers.TestSubscriber;

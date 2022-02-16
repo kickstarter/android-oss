@@ -36,7 +36,7 @@ class SearchActivity : BaseActivity<SearchViewModel.ViewModel>(), SearchAdapter.
         binding.searchRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.searchRecyclerView.adapter = adapter
 
-        paginator = RecyclerViewPaginator(binding.searchRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingProjects)
+        paginator = RecyclerViewPaginator(binding.searchRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingProjects())
 
         RxRecyclerView.scrollEvents(binding.searchRecyclerView)
             .compose(bindToLifecycle())

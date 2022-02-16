@@ -72,7 +72,7 @@ class CreatorDashboardHeaderViewHolder(
         viewModel.outputs.startProjectActivity()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { startProjectActivity(it.first, it.second, it.third) }
+            .subscribe { startProjectActivity(it.first, it.second) }
         viewModel.outputs.viewProjectButtonIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
@@ -124,8 +124,8 @@ class CreatorDashboardHeaderViewHolder(
         context().startActivity(intent)
     }
 
-    private fun startProjectActivity(project: Project, refTag: RefTag, isProjectPageEnabled: Boolean) {
-        val intent = Intent().getProjectIntent(context(), isProjectPageEnabled)
+    private fun startProjectActivity(project: Project, refTag: RefTag) {
+        val intent = Intent().getProjectIntent(context())
             .putExtra(IntentKey.PROJECT, project)
             .putExtra(IntentKey.REF_TAG, refTag)
         context().startActivity(intent)

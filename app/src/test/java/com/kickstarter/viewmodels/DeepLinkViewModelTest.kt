@@ -2,12 +2,9 @@ package com.kickstarter.viewmodels
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
-import com.kickstarter.libs.models.OptimizelyFeature
-import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApiClient
@@ -27,7 +24,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     private val startProjectActivityForCheckout = TestSubscriber<Uri>()
     private val startProjectActivityForComment = TestSubscriber<Uri>()
     private val startProjectActivityForUpdate = TestSubscriber<Uri>()
-    private val startProjectActivityToSave = TestSubscriber<Pair<Uri, Boolean>>()
+    private val startProjectActivityToSave = TestSubscriber<Uri>()
     private val startProjectActivityForCommentToUpdate = TestSubscriber<Uri>()
     private val finishDeeplinkActivity = TestSubscriber<Void>()
 
@@ -396,22 +393,15 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
             "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap?save=true"
         val expectedUrl =
             "$url&ref=android_deep_link"
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
-                    return true
-                }
-            }
 
         val environment = environment()
             .toBuilder()
-            .optimizely(mockExperimentsClientType)
             .build()
 
         setUpEnvironment(environment)
 
         vm.intent(intentWithData(url))
-        startProjectActivityToSave.assertValue(Pair(Uri.parse(expectedUrl), true))
+        startProjectActivityToSave.assertValue(Uri.parse(expectedUrl))
         startDiscoveryActivity.assertNoValues()
         startProjectActivity.assertNoValues()
         startProjectActivityForCheckout.assertNoValues()

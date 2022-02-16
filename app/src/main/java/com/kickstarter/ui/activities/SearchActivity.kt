@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Pair
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding.support.v7.widget.RecyclerViewScrollEvent
 import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView
@@ -35,7 +36,7 @@ class SearchActivity : BaseActivity<SearchViewModel.ViewModel>(), SearchAdapter.
         binding.searchRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.searchRecyclerView.adapter = adapter
 
-        paginator = RecyclerViewPaginator(binding.searchRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingProjects)
+        paginator = RecyclerViewPaginator(binding.searchRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingProjects())
 
         RxRecyclerView.scrollEvents(binding.searchRecyclerView)
             .compose(bindToLifecycle())
@@ -59,8 +60,8 @@ class SearchActivity : BaseActivity<SearchViewModel.ViewModel>(), SearchAdapter.
             .subscribe { startProjectActivity(it) }
     }
 
-    private fun startProjectActivity(projectAndRefTagAndIsFfEnabled: Triple<Project, RefTag, Boolean>) {
-        val intent = Intent().getProjectIntent(this, projectAndRefTagAndIsFfEnabled.third)
+    private fun startProjectActivity(projectAndRefTagAndIsFfEnabled: Pair<Project, RefTag>) {
+        val intent = Intent().getProjectIntent(this)
             .putExtra(IntentKey.PROJECT, projectAndRefTagAndIsFfEnabled.first)
             .putExtra(IntentKey.REF_TAG, projectAndRefTagAndIsFfEnabled.second)
         startActivity(intent)

@@ -38,7 +38,6 @@ import java.util.Collections;
 
 import androidx.annotation.NonNull;
 
-import kotlin.Triple;
 import rx.observers.TestSubscriber;
 
 public final class ThanksViewModelTest extends KSRobolectricTestCase {
@@ -49,8 +48,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Void> showRatingDialogTest = new TestSubscriber<>();
   private final TestSubscriber<Void> showConfirmGamesNewsletterDialogTest = TestSubscriber.create();
   private final TestSubscriber<DiscoveryParams> startDiscoveryTest = new TestSubscriber<>();
-  private final TestSubscriber<Triple<Project, RefTag, Boolean>> startProjectTest = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Project, RefTag>> startProjectPageTest = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Project, RefTag>> startProjectTest = new TestSubscriber<>();
   private final TestSubscriber<Void> showSavedPromptTest = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
@@ -337,10 +335,9 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.projectCardViewHolderClicked(project);
 
-    final Triple<Project, RefTag, Boolean> projectPageParams= this.startProjectTest.getOnNextEvents().get(0);
-    assertEquals(projectPageParams.getFirst(), project);
-    assertEquals(projectPageParams.getSecond(), RefTag.thanks());
-    assertFalse(projectPageParams.getThird());
+    final Pair<Project, RefTag> projectPageParams= this.startProjectTest.getOnNextEvents().get(0);
+    assertEquals(projectPageParams.first, project);
+    assertEquals(projectPageParams.second, RefTag.thanks());
 
     this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CTA_CLICKED.getEventName());
   }
@@ -376,10 +373,9 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.projectCardViewHolderClicked(project);
 
-    final Triple<Project, RefTag, Boolean> projectPageParams= this.startProjectTest.getOnNextEvents().get(0);
-    assertEquals(projectPageParams.getFirst(), project);
-    assertEquals(projectPageParams.getSecond(), RefTag.thanks());
-    assertTrue(projectPageParams.getThird());
+    final Pair<Project, RefTag> projectPageParams= this.startProjectTest.getOnNextEvents().get(0);
+    assertEquals(projectPageParams.first, project);
+    assertEquals(projectPageParams.second, RefTag.thanks());
 
     this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CTA_CLICKED.getEventName());
   }

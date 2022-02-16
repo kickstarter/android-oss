@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels;
 
-import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.CurrentUserType;
@@ -37,11 +36,11 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<List<ErroredBacking>> erroredBackings = new TestSubscriber<>();
   private final TestSubscriber<Void> goToDiscovery = new TestSubscriber<>();
   private final TestSubscriber<Void> goToLogin = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Project, Boolean>> goToProject = new TestSubscriber<>();
+  private final TestSubscriber<Project> goToProject = new TestSubscriber<>();
   private final TestSubscriber<SurveyResponse> goToSurvey = new TestSubscriber<>();
   private final TestSubscriber<Boolean> loggedOutEmptyStateIsVisible = new TestSubscriber<>();
   private final TestSubscriber<Boolean> loggedInEmptyStateIsVisible = new TestSubscriber<>();
-  private final TestSubscriber<Pair<String, Boolean>> startFixPledge = new TestSubscriber<>();
+  private final TestSubscriber<String> startFixPledge = new TestSubscriber<>();
   private final TestSubscriber<Activity> startUpdateActivity = new TestSubscriber<>();
   private final TestSubscriber<List<SurveyResponse>> surveys = new TestSubscriber<>();
   private final TestSubscriber<User> user = new TestSubscriber<>();
@@ -115,7 +114,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testClickingInterfaceElements_whenFeatueFlagOn_shouldEmitProjectPage() {
+  public void testClickingInterfaceElements_shouldEmitProjectPage() {
     final CurrentUserType currentUser = new MockCurrentUser();
     final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
       @Override
@@ -149,7 +148,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectUpdateProjectClicked(null, ActivityFactory.updateActivity());
 
     this.goToProject.assertValueCount(4);
-    assertTrue(this.goToProject.getOnNextEvents().get(0).second);
+    //this.goToProject.assertValues(); TODO
 
     this.vm.inputs.projectUpdateClicked(null, ActivityFactory.activity());
 
@@ -261,12 +260,11 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
     final String projectSlug = "slug";
     this.vm.inputs.managePledgeClicked(projectSlug);
-    assertFalse(this.startFixPledge.getOnNextEvents().get(0).second);
-    assertEquals(this.startFixPledge.getOnNextEvents().get(0).first, projectSlug);
+    assertEquals(this.startFixPledge.getOnNextEvents().get(0), projectSlug);
   }
 
   @Test
-  public void testStartFixPledge_whenProjectPageFeatureFlagOn_shouldEmitToFixPledgeProjectPage() {
+  public void testStartFixPledge_shouldEmitToFixPledgeProjectPage() {
     final CurrentUserType currentUser = new MockCurrentUser();
     final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
       @Override
@@ -284,7 +282,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     final String projectSlug = "slug";
     this.vm.inputs.managePledgeClicked(projectSlug);
     this.startFixPledge.assertValueCount(1);
-    assertTrue(this.startFixPledge.getOnNextEvents().get(0).second);
+    assertTrue(this.startFixPledge.getOnNextEvents().get(0) == projectSlug);
   }
 
   @Test

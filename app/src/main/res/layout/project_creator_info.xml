@@ -30,7 +30,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:textIsSelectable="true"
         android:layout_toStartOf="@+id/campaign_button"
         android:text="@string/project_menu_buttons_campaign"
         android:textColor="@color/kds_support_700"
@@ -66,8 +65,7 @@
         android:layout_toStartOf="@+id/updates_count"
         android:text="@string/project_menu_buttons_updates"
         android:textColor="@color/kds_support_700"
-        android:textSize="@dimen/body"
-        android:textIsSelectable="true"  />
+        android:textSize="@dimen/body" />
 
       <TextView
         android:id="@+id/updates_count"
@@ -78,7 +76,6 @@
         android:background="@drawable/text_view_rect_background"
         android:textColor="@color/kds_support_700"
         android:textSize="@dimen/body"
-        android:textIsSelectable="true"
         tools:text="45" />
 
     </RelativeLayout>
@@ -99,7 +96,6 @@
         android:layout_centerVertical="true"
         android:layout_toStartOf="@+id/comments_count"
         android:text="@string/project_menu_buttons_comments"
-        android:textIsSelectable="true"
         android:textColor="@color/kds_support_700"
         android:textSize="@dimen/body" />
 
@@ -112,7 +108,6 @@
         android:background="@drawable/text_view_rect_background"
         android:textColor="@color/kds_support_700"
         android:textSize="@dimen/body"
-        android:textIsSelectable="true"
         tools:text="1,000" />
 
     </RelativeLayout>

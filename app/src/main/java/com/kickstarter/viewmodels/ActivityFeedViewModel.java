@@ -76,7 +76,7 @@ public interface ActivityFeedViewModel {
     /** Emits a logged-in user with zero activities in order to display an empty state. */
     Observable<Boolean> loggedInEmptyStateIsVisible();
 
-    /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectPageActivity}. */
     Observable<String> startFixPledge();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.UpdateActivity}. */

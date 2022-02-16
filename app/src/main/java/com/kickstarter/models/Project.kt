@@ -101,8 +101,8 @@ class Project private constructor(
     fun stateChangedAt() = this.stateChangedAt
     fun staticUsdRate() = this.staticUsdRate
     fun usdExchangeRate() = this.usdExchangeRate
-    fun unreadMessagesCount() = this.unreadMessagesCount
-    fun unseenActivityCount() = this.unseenActivityCount
+    fun unreadMessagesCount() = this.unreadMessagesCount ?: 0
+    fun unseenActivityCount() = this.unseenActivityCount ?: 0
     fun updatesCount() = this.updatesCount
     fun updatedAt() = this.updatedAt
     fun urls() = this.urls

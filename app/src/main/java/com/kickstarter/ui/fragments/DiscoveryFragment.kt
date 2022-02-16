@@ -138,7 +138,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.startProjectActivity()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { startProjectActivity(it.first, it.second, it.third) }
+            .subscribe { startProjectActivity(it.first, it.second) }
 
         this.viewModel.outputs.showLoginTout()
             .compose(bindToLifecycle())
@@ -245,9 +245,9 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         }
     }
 
-    private fun startProjectActivity(project: Project, refTag: RefTag, isProjectPageEnabled: Boolean) {
+    private fun startProjectActivity(project: Project, refTag: RefTag) {
         context?.let {
-            val intent = Intent().getProjectIntent(it, isProjectPageEnabled)
+            val intent = Intent().getProjectIntent(it)
                 .putExtra(IntentKey.PROJECT, project)
                 .putExtra(IntentKey.REF_TAG, refTag)
             startActivity(intent)

@@ -102,7 +102,7 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe { uriAndRefTag ->
-                startProjectActivity(uriAndRefTag.first, uriAndRefTag.second, uriAndRefTag.third)
+                startProjectActivity(uriAndRefTag.first, uriAndRefTag.second)
             }
 
         viewModel.outputs.startShareIntent()
@@ -181,8 +181,8 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
-    private fun startProjectActivity(uri: Uri, refTag: RefTag, isProjectPageEnabled: Boolean) {
-        val intent = Intent().getProjectIntent(this, isProjectPageEnabled)
+    private fun startProjectActivity(uri: Uri, refTag: RefTag) {
+        val intent = Intent().getProjectIntent(this)
             .setData(uri)
             .putExtra(IntentKey.REF_TAG, refTag)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)

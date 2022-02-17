@@ -8,6 +8,7 @@ import DeletePaymentSourceMutation
 import ErroredBackingsQuery
 import FetchProjectsQuery
 import GetProjectBackingQuery
+import GetRootCategoriesQuery
 import ProjectCreatorDetailsQuery
 import SavePaymentMethodMutation
 import SendEmailVerificationMutation
@@ -28,6 +29,7 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.toBoolean
 import com.kickstarter.libs.utils.extensions.toProjectSort
 import com.kickstarter.models.Backing
+import com.kickstarter.models.Category
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.Comment
 import com.kickstarter.models.CreatorDetails
@@ -45,6 +47,7 @@ import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.services.transformers.backingTransformer
+import com.kickstarter.services.transformers.categoryTransformer
 import com.kickstarter.services.transformers.commentTransformer
 import com.kickstarter.services.transformers.complexRewardItemsTransformer
 import com.kickstarter.services.transformers.decodeRelayId
@@ -331,6 +334,39 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                 override fun onResponse(response: Response<FetchProjectQuery.Data>) {
                     response.data?.let { responseData ->
                         Observable.just(projectTransformer(responseData.project()?.fragments()?.fullProject()))
+                            .subscribeOn(Schedulers.io())
+                            .subscribe {
+                                ps.onNext(it)
+                                ps.onCompleted()
+                            }
+                    }
+                }
+            })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
+    }
+
+    override fun fetchCategories(): Observable<List<Category>> {
+        return Observable.defer {
+            val ps = PublishSubject.create<List<Category>>()
+            this.service.query(
+                GetRootCategoriesQuery.builder()
+                    .build()
+            ).enqueue(object : ApolloCall.Callback<GetRootCategoriesQuery.Data>() {
+                override fun onFailure(e: ApolloException) {
+                    ps.onError(e)
+                }
+
+                override fun onResponse(response: Response<GetRootCategoriesQuery.Data>) {
+                    response.data?.let { responseData ->
+                        val subCategories = responseData.rootCategories().flatMap { it.subcategories()?.nodes().orEmpty() }
+                            .map {
+                                categoryTransformer(it.fragments().category())
+                            }
+                        val rootCategories = responseData.rootCategories().map { categoryTransformer(it.fragments().category()) }.toMutableList().apply {
+                            addAll(subCategories)
+                        }
+                        Observable.just(rootCategories)
                             .subscribeOn(Schedulers.io())
                             .subscribe {
                                 ps.onNext(it)

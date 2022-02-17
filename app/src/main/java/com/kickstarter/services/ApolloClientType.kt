@@ -8,6 +8,7 @@ import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPrivacyQuery
 import com.kickstarter.models.Backing
+import com.kickstarter.models.Category
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.Comment
 import com.kickstarter.models.CreatorDetails
@@ -34,6 +35,8 @@ interface ApolloClientType {
     fun getBacking(backingId: String): Observable<Backing>
 
     fun clearUnseenActivity(): Observable<Int>
+
+    fun fetchCategories(): Observable<List<Category>>
 
     fun getProject(slug: String): Observable<Project>
 

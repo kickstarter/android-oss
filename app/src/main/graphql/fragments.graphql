@@ -238,11 +238,15 @@ fragment category on Category {
     id
     name
     slug
+    totalProjectCount
+    url
     parentCategory {
         analyticsName
         id
         name
         slug
+        totalProjectCount
+        url
     }
 }
 

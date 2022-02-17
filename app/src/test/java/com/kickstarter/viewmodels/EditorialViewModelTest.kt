@@ -5,7 +5,6 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.CategoryFactory
-import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Category
 import com.kickstarter.services.DiscoveryParams
@@ -116,7 +115,7 @@ class EditorialViewModelTest : KSRobolectricTestCase() {
     fun testRootCategories() {
         val environment = environment()
             .toBuilder()
-            .apiClient(object : MockApiClient() {
+            .apolloClient(object : MockApolloClient() {
                 override fun fetchCategories(): Observable<List<Category>> {
                     return Observable.just(
                         listOf(

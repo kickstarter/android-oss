@@ -207,6 +207,10 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
             override fun onCvcComplete() {
                 cardChanged()
             }
+
+            override fun onPostalCodeComplete() {
+                cardChanged()
+            }
         })
     }
 

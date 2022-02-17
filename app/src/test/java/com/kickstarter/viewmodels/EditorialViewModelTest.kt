@@ -6,6 +6,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Category
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.IntentKey
@@ -90,7 +91,7 @@ class EditorialViewModelTest : KSRobolectricTestCase() {
         var error = true
         val environment = environment()
             .toBuilder()
-            .apiClient(object : MockApiClient() {
+            .apolloClient(object : MockApolloClient() {
                 override fun fetchCategories(): Observable<List<Category>> {
                     return when {
                         error -> Observable.error(Throwable("boop"))

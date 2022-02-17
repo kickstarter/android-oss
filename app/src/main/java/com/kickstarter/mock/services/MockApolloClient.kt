@@ -101,6 +101,10 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(CategoryFactory.rootCategories())
     }
 
+    override fun fetchCategory(param: String): Observable<Category?> {
+        return Observable.just(CategoryFactory.musicCategory())
+    }
+
     override fun getProjectAddOns(slug: String, location: Location): Observable<List<Reward>> {
         val reward = RewardFactory.reward().toBuilder().isAddOn(true).quantity(2).build()
         return Observable.just(listOf(reward, reward))

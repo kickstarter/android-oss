@@ -38,6 +38,8 @@ interface ApolloClientType {
 
     fun fetchCategories(): Observable<List<Category>>
 
+    fun fetchCategory(param: String): Observable<Category?>
+
     fun getProject(slug: String): Observable<Project>
 
     fun getProject(project: Project): Observable<Project>

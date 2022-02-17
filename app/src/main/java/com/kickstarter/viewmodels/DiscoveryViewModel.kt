@@ -235,7 +235,7 @@ interface DiscoveryViewModel {
                 .subscribe(messageError)
 
             val paramsFromIntent = intent()
-                .flatMap { DiscoveryIntentMapper.params(it, apiClient) }
+                .flatMap { DiscoveryIntentMapper.params(it, apiClient, apolloClient) }
 
             val pagerSelectedPage = pagerSetPrimaryPage.distinctUntilChanged()
 
@@ -308,9 +308,7 @@ interface DiscoveryViewModel {
                 .subscribe(rootCategoriesAndPosition)
 
             val drawerClickedParentCategory = parentFilterRowClick
-                .map {
-                    it.params().category()
-                }
+                .map { it.params().category() }
 
             val expandedCategory = Observable.merge(
                 topFilterRowClick.map { null },

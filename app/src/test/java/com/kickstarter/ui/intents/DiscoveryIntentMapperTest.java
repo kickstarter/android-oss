@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.mock.services.MockApolloClient;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.ui.IntentKey;
@@ -20,7 +21,7 @@ public final class DiscoveryIntentMapperTest extends KSRobolectricTestCase {
     final Intent intent = new Intent().putExtra(IntentKey.DISCOVERY_PARAMS, params);
     final TestSubscriber<DiscoveryParams> resultTest = TestSubscriber.create();
 
-    DiscoveryIntentMapper.params(intent, new MockApiClient())
+    DiscoveryIntentMapper.params(intent, new MockApiClient(), new MockApolloClient())
       .subscribe(resultTest);
 
     resultTest.assertValues(params);
@@ -32,7 +33,7 @@ public final class DiscoveryIntentMapperTest extends KSRobolectricTestCase {
     final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 
     final TestSubscriber<DiscoveryParams> resultTest = TestSubscriber.create();
-    DiscoveryIntentMapper.params(intent, new MockApiClient())
+    DiscoveryIntentMapper.params(intent, new MockApiClient(), new MockApolloClient())
       .subscribe(resultTest);
 
     resultTest.assertValues(DiscoveryParams.builder().build());
@@ -44,7 +45,7 @@ public final class DiscoveryIntentMapperTest extends KSRobolectricTestCase {
     final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 
     final TestSubscriber<DiscoveryParams> resultTest = TestSubscriber.create();
-    DiscoveryIntentMapper.params(intent, new MockApiClient())
+    DiscoveryIntentMapper.params(intent, new MockApiClient(), new MockApolloClient())
       .subscribe(resultTest);
 
     resultTest.assertValueCount(1);
@@ -56,7 +57,7 @@ public final class DiscoveryIntentMapperTest extends KSRobolectricTestCase {
     final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 
     final TestSubscriber<DiscoveryParams> resultTest = TestSubscriber.create();
-    DiscoveryIntentMapper.params(intent, new MockApiClient())
+    DiscoveryIntentMapper.params(intent, new MockApiClient(), new MockApolloClient())
       .subscribe(resultTest);
 
     resultTest.assertValueCount(1);
@@ -68,7 +69,7 @@ public final class DiscoveryIntentMapperTest extends KSRobolectricTestCase {
     final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 
     final TestSubscriber<DiscoveryParams> resultTest = TestSubscriber.create();
-    DiscoveryIntentMapper.params(intent, new MockApiClient())
+    DiscoveryIntentMapper.params(intent, new MockApiClient(), new MockApolloClient())
       .subscribe(resultTest);
 
     resultTest.assertValueCount(1);

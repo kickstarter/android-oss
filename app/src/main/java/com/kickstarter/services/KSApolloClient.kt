@@ -379,6 +379,11 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }.subscribeOn(Schedulers.io())
     }
 
+    override fun fetchCategory(categoryParam: String): Observable<Category?> {
+        return fetchCategories()
+            .map { it.firstOrNull { c -> c.id().toString() == categoryParam } }
+    }
+
     override fun getProjects(discoveryParams: DiscoveryParams, slug: String?): Observable<DiscoverEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<DiscoverEnvelope>()

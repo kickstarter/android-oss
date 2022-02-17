@@ -117,7 +117,7 @@ interface ThanksViewModel {
 
             val rootCategory = project
                 .switchMap {
-                    rootCategory(it)
+                    rootCategory(it, apolloClient)
                 }.filter {
                     ObjectUtils.isNotNull(it)
                 }.map { requireNotNull(it) }
@@ -389,7 +389,8 @@ interface ThanksViewModel {
              * Given a project, returns an observable that emits the project's root category.
              */
             private fun rootCategory(
-                project: Project
+                project: Project,
+                client: ApolloClientType
             ): Observable<Category?> {
                 val category = project.category() ?: return Observable.empty()
 
@@ -401,7 +402,7 @@ interface ThanksViewModel {
                         Observable.just(category)
                     }
                     else -> {
-                        Observable.empty()
+                        client.fetchCategory(category.rootId().toString())
                     }
                 }
             }

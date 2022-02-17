@@ -117,6 +117,7 @@ interface DiscoveryViewModel {
         val outputs = this
 
         private val apiClient: ApiClientType = environment.apiClient()
+        private val apolloClient = environment.apolloClient()
         private val buildCheck: BuildCheck = environment.buildCheck()
         private val currentUserType: CurrentUserType = environment.currentUser()
         private val currentConfigType: CurrentConfigType = environment.currentConfig()
@@ -289,7 +290,7 @@ interface DiscoveryViewModel {
                     analyticEvents.trackDiscoverFilterCTA(it)
                 }
 
-            val categories = apiClient.fetchCategories()
+            val categories = apolloClient.fetchCategories()
                 .compose(Transformers.neverError())
                 .flatMapIterable { it }
                 .toSortedList()
@@ -307,21 +308,22 @@ interface DiscoveryViewModel {
                 .subscribe(rootCategoriesAndPosition)
 
             val drawerClickedParentCategory = parentFilterRowClick
-                .map { it.params().category() }
+                .map {
+                    it.params().category()
+                }
 
             val expandedCategory = Observable.merge(
                 topFilterRowClick.map { null },
                 drawerClickedParentCategory
             )
                 .scan(
-                    null,
-                    { previous: Category?, next: Category? ->
-                        if (previous != null && next != null && previous == next) {
-                            return@scan null
-                        }
-                        next
+                    null
+                ) { previous: Category?, next: Category? ->
+                    if (previous != null && next != null && previous == next) {
+                        return@scan null
                     }
-                )
+                    next
+                }
 
             // Accumulate a list of pages to clear when the params or user changes,
             // to avoid displaying old data.

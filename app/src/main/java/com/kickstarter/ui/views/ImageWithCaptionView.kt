@@ -60,6 +60,15 @@ class ImageWithCaptionView @JvmOverloads constructor(
                     isUnderlineText = true
                 )
             }
+        } else binding.imageCaptionTextView.isVisible = false
+    }
+
+    fun setLinkOnImage(href: String?) {
+        href?.takeIf { it.isNotEmpty() }?.let {
+            binding.imageView.isClickable = true
+            binding.imageView.setOnClickListener {
+                onImageWithCaptionClickedListener?.onImageWithCaptionClicked(it)
+            }
         }
     }
 }

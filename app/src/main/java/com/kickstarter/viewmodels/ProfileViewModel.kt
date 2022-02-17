@@ -6,7 +6,6 @@ import com.kickstarter.libs.ApiPaginator
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ExperimentsClientType
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers.neverError
 import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.NumberUtils
@@ -78,7 +77,7 @@ interface ProfileViewModel {
         fun startMessageThreadsActivity(): Observable<Void>
 
         /** Emits when we should start the [com.kickstarter.ui.activities.ProjectActivity].  */
-        fun startProjectActivity(): Observable<Pair<Project, Boolean>>
+        fun startProjectActivity(): Observable<Project>
 
         /** Emits the user name to be displayed.  */
         fun userNameTextViewText(): Observable<String>
@@ -105,12 +104,11 @@ interface ProfileViewModel {
         private val isFetchingProjects = BehaviorSubject.create<Boolean>()
         private val projectList: Observable<List<Project>>
         private val resumeDiscoveryActivity: Observable<Void>
-        private val startProjectActivity: Observable<Pair<Project, Boolean>>
         private val startMessageThreadsActivity: Observable<Void>
         private val userNameTextViewText: Observable<String>
 
-        val inputs: ProfileViewModel.Inputs = this
-        val outputs: ProfileViewModel.Outputs = this
+        val inputs: Inputs = this
+        val outputs: Outputs = this
 
         init {
 
@@ -168,13 +166,6 @@ interface ProfileViewModel {
             this.projectList = paginator.paginatedData()
             this.resumeDiscoveryActivity = this.exploreProjectsButtonClicked
 
-            val isProfilePageEnabled =
-                Observable.just(this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.PROJECT_PAGE_V2))
-
-            this.startProjectActivity =
-                this.projectCardClicked
-                    .withLatestFrom(isProfilePageEnabled) { projectAndRef, isEnabled -> Pair(projectAndRef, isEnabled) }
-
             this.startMessageThreadsActivity = this.messagesButtonClicked
             this.userNameTextViewText = loggedInUser.map { it.name() }
 
@@ -217,7 +208,7 @@ interface ProfileViewModel {
 
         override fun resumeDiscoveryActivity() = this.resumeDiscoveryActivity
 
-        override fun startProjectActivity() = this.startProjectActivity
+        override fun startProjectActivity() = this.projectCardClicked
 
         override fun startMessageThreadsActivity() = this.startMessageThreadsActivity
 

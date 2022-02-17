@@ -89,12 +89,12 @@ class ActivityFeedActivity : BaseActivity<ActivityFeedViewModel.ViewModel>() {
         viewModel.outputs.goToProject()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { startProjectActivity(it.first, it.second) }
+            .subscribe { startProjectActivity(it) }
 
         viewModel.outputs.startFixPledge()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { startFixPledge(it.first, it.second) }
+            .subscribe { startFixPledge(it) }
 
         viewModel.outputs.startUpdateActivity()
             .compose(bindToLifecycle())
@@ -150,16 +150,16 @@ class ActivityFeedActivity : BaseActivity<ActivityFeedViewModel.ViewModel>() {
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
     }
 
-    private fun startFixPledge(projectSlug: String, isProjectPageEnabled: Boolean) {
-        val intent = Intent().getProjectIntent(this, isProjectPageEnabled)
+    private fun startFixPledge(projectSlug: String) {
+        val intent = Intent().getProjectIntent(this)
             .putExtra(IntentKey.PROJECT_PARAM, projectSlug)
             .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, true)
             .putExtra(IntentKey.REF_TAG, RefTag.activity())
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
-    private fun startProjectActivity(project: Project, isProjectPageEnabled: Boolean) {
-        val intent = Intent().getProjectIntent(this, isProjectPageEnabled)
+    private fun startProjectActivity(project: Project) {
+        val intent = Intent().getProjectIntent(this)
             .putExtra(IntentKey.PROJECT, project)
             .putExtra(IntentKey.REF_TAG, RefTag.activity())
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)

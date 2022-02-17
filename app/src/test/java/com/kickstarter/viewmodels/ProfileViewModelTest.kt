@@ -1,13 +1,10 @@
 package com.kickstarter.viewmodels
 
-import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.NumberUtils
-import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.DiscoverEnvelopeFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
@@ -33,7 +30,7 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
     private val projectList = TestSubscriber<List<Project>>()
     private val resumeDiscoveryActivity = TestSubscriber<Void>()
     private val startMessageThreadsActivity = TestSubscriber<Void>()
-    private val startProjectActivity = TestSubscriber<Pair<Project, Boolean>>()
+    private val startProjectActivity = TestSubscriber<Project>()
     private val userNameTextViewText = TestSubscriber<String>()
 
     private fun setUpEnvironment(environment: Environment) {
@@ -194,24 +191,16 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         this.vm.inputs.projectCardClicked(project)
         this.startProjectActivity.assertValueCount(1)
-        assertEquals(this.startProjectActivity.onNextEvents[0].first, project)
-        assertFalse(this.startProjectActivity.onNextEvents[0].second)
+        assertEquals(this.startProjectActivity.onNextEvents[0], project)
         this.segmentTrack.assertValue(EventName.CARD_CLICKED.eventName)
     }
 
     @Test
-    fun testProfileViewModel_whenFeatureFlagOn_shouldEmitProjectPage() {
+    fun testProfileViewModel_shouldEmitProjectPage() {
         val user = MockCurrentUser()
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
-                    return true
-                }
-            }
 
         val environment = environment().toBuilder()
             .currentUser(user)
-            .optimizely(mockExperimentsClientType)
             .build()
 
         setUpEnvironment(environment)
@@ -219,8 +208,7 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         this.vm.inputs.projectCardClicked(project)
         this.startProjectActivity.assertValueCount(1)
-        assertEquals(this.startProjectActivity.onNextEvents[0].first, project)
-        assertTrue(this.startProjectActivity.onNextEvents[0].second)
+        assertEquals(this.startProjectActivity.onNextEvents[0], project)
         this.segmentTrack.assertValue(EventName.CARD_CLICKED.eventName)
     }
 }

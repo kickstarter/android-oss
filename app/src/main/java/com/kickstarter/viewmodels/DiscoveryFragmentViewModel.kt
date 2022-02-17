@@ -103,7 +103,7 @@ interface DiscoveryFragmentViewModel {
         fun startEditorialActivity(): Observable<Editorial>
 
         /** Emits a Project and RefTag pair when we should start the [com.kickstarter.ui.activities.ProjectActivity].  */
-        fun startProjectActivity(): Observable<Triple<Project, RefTag, Boolean>>
+        fun startProjectActivity(): Observable<Pair<Project, RefTag>>
 
         /** Emits an activity when we should start the [com.kickstarter.ui.activities.UpdateActivity].  */
         fun startUpdateActivity(): Observable<Activity>
@@ -156,7 +156,7 @@ interface DiscoveryFragmentViewModel {
         private val shouldShowEmptySavedView = BehaviorSubject.create<Boolean>()
         private val shouldShowOnboardingView = BehaviorSubject.create<Boolean>()
         private val startEditorialActivity = PublishSubject.create<Editorial>()
-        private val startProjectActivity: Observable<Triple<Project, RefTag, Boolean>>
+        private val startProjectActivity: Observable<Pair<Project, RefTag>>
         private val startUpdateActivity: Observable<Activity>
         private val startHeartAnimation = BehaviorSubject.create<Void?>()
         private val startLoginToutActivityToSaveProject = PublishSubject.create<Project>()
@@ -276,23 +276,10 @@ interface DiscoveryFragmentViewModel {
             startUpdateActivity = activityUpdateClick
             showLoginTout = discoveryOnboardingLoginToutClick
 
-            val isProjectPageEnabled = Observable.just(
-                optimizely.isFeatureEnabled(
-                    OptimizelyFeature.Key.PROJECT_PAGE_V2
-                )
-            )
-
             startProjectActivity = Observable.merge(
                 activitySampleProjectClick,
                 projectCardClick
             )
-                .withLatestFrom(isProjectPageEnabled) { a: Pair<Project, RefTag>, b: Boolean ->
-                    Triple(
-                        a.first,
-                        a.second,
-                        b
-                    )
-                }
 
             clearPage
                 .compose(bindToLifecycle())
@@ -576,7 +563,7 @@ interface DiscoveryFragmentViewModel {
         override fun shouldShowEmptySavedView(): Observable<Boolean> = shouldShowEmptySavedView
         override fun startHeartAnimation(): Observable<Void?> = startHeartAnimation
         override fun startEditorialActivity(): Observable<Editorial> = startEditorialActivity
-        override fun startProjectActivity(): Observable<Triple<Project, RefTag, Boolean>> = startProjectActivity
+        override fun startProjectActivity(): Observable<Pair<Project, RefTag>> = startProjectActivity
         override fun shouldShowOnboardingView(): Observable<Boolean> = shouldShowOnboardingView
         override fun startUpdateActivity(): Observable<Activity> = startUpdateActivity
         override fun onHeartButtonClicked(project: Project) = onHeartButtonClicked.onNext(project)

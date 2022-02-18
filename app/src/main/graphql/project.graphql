@@ -121,3 +121,14 @@ query GetProjectUpdateComments($id: ID!,$limit: Int!, $cursor: String){
     ...freeformPost
   }
 }
+
+query GetRootCategories {
+  rootCategories {
+    ...category
+    subcategories {
+      nodes {
+        ...category
+      }
+    }
+  }
+}

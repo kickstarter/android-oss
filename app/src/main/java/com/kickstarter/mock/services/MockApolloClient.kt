@@ -8,6 +8,7 @@ import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPrivacyQuery
 import com.kickstarter.mock.factories.BackingFactory
+import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.CheckoutFactory
 import com.kickstarter.mock.factories.CommentEnvelopeFactory
 import com.kickstarter.mock.factories.CommentFactory
@@ -19,6 +20,7 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.models.Backing
+import com.kickstarter.models.Category
 import com.kickstarter.models.Checkout
 import com.kickstarter.models.Comment
 import com.kickstarter.models.CreatorDetails
@@ -93,6 +95,14 @@ open class MockApolloClient : ApolloClientType {
 
     override fun getProjects(isMember: Boolean): Observable<DiscoverEnvelope> {
         return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(emptyList()))
+    }
+
+    override fun fetchCategories(): Observable<List<Category>> {
+        return Observable.just(CategoryFactory.rootCategories())
+    }
+
+    override fun fetchCategory(param: String): Observable<Category?> {
+        return Observable.just(CategoryFactory.musicCategory())
     }
 
     override fun getProjectAddOns(slug: String, location: Location): Observable<List<Reward>> {

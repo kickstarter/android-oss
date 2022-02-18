@@ -116,9 +116,11 @@ interface ThanksViewModel {
                 .compose(bindToLifecycle())
 
             val rootCategory = project
-                .switchMap { rootCategory(it, apiClient) }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
+                .switchMap {
+                    rootCategory(it, apolloClient)
+                }.filter {
+                    ObjectUtils.isNotNull(it)
+                }.map { requireNotNull(it) }
 
             val isGamesCategory = rootCategory
                 .map { "games" == it?.slug() }
@@ -388,14 +390,21 @@ interface ThanksViewModel {
              */
             private fun rootCategory(
                 project: Project,
-                client: ApiClientType
+                client: ApolloClientType
             ): Observable<Category?> {
                 val category = project.category() ?: return Observable.empty()
 
-                return if (category.parent() != null) {
-                    Observable.just(category.parent())
-                } else client.fetchCategory(category.rootId().toString())
-                    .compose(Transformers.neverError())
+                return when {
+                    category.parent() != null -> {
+                        Observable.just(category.parent())
+                    }
+                    category.isRoot -> {
+                        Observable.just(category)
+                    }
+                    else -> {
+                        client.fetchCategory(category.rootId().toString())
+                    }
+                }
             }
         }
     }

@@ -368,7 +368,7 @@ fun categoryTransformer(categoryFragment: fragment.Category?): Category {
     val name = categoryFragment?.name() ?: ""
     val id = decodeRelayId(categoryFragment?.id()) ?: -1
     val slug = categoryFragment?.slug()
-    val parentId = decodeRelayId(categoryFragment?.parentCategory()?.id()) ?: -1
+    val parentId = decodeRelayId(categoryFragment?.parentCategory()?.id()) ?: 0
     val parentName = categoryFragment?.parentCategory()?.name()
     val parentSlug = categoryFragment?.parentCategory()?.slug()
     val parentAnalyticName = categoryFragment?.parentCategory()?.analyticsName() ?: ""

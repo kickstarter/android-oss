@@ -57,6 +57,7 @@ interface EditorialViewModel {
         private val title: BehaviorSubject<Int> = BehaviorSubject.create()
 
         private val apiClient: ApiClientType = environment.apiClient()
+        private val apolloClient = environment.apolloClient()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -107,8 +108,8 @@ interface EditorialViewModel {
                 .subscribe(this.refreshDiscoveryFragment)
         }
 
-        private fun fetchCategories(): Observable<Notification<MutableList<Category>>>? {
-            return this.apiClient.fetchCategories()
+        private fun fetchCategories(): Observable<Notification<List<Category>>>? {
+            return this.apolloClient.fetchCategories()
                 .doOnSubscribe { this.retryContainerIsGone.onNext(true) }
                 .materialize()
                 .share()

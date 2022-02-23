@@ -39,6 +39,7 @@ import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import rx.Observable;
 import rx.observers.TestSubscriber;
@@ -592,6 +593,68 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.startUpdateActivity.assertNoValues();
     this.vm.inputs.activitySampleProjectViewHolderUpdateClicked(null, ActivityFactory.updateActivity());
     this.startUpdateActivity.assertValueCount(1);
+  }
+
+  @Test
+  public void testErroredResponseForFetchActivitiesWithCount() {
+    final CurrentUserType currentUser = new MockCurrentUser();
+    final Throwable throwableError = new Throwable();
+    final MockApiClient apiClient = new MockApiClient() {
+      @NonNull
+      @Override
+      public Observable<ActivityEnvelope> fetchActivities(final @Nullable Integer count) {
+        return Observable.error(throwableError);
+      }
+    };
+
+    final Environment env = environment()
+            .toBuilder()
+            .currentUser(currentUser)
+            .apiClient(apiClient)
+            .build();
+
+    setUpEnvironment(env);
+
+    // Load initial params and root categories from activity.
+    setUpInitialHomeAllProjectsParams();
+
+    // Log in.
+    logUserIn(currentUser);
+
+    this.activityTest.assertValueCount(1);
+    this.activityTest.assertError(throwableError);
+    this.activityTest.assertValue(null);
+  }
+
+  @Test
+  public void testSuccessResponseForFetchActivitiesWithCount() {
+    final CurrentUserType currentUser = new MockCurrentUser();
+    final Activity activity = ActivityFactory.activity();
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @NonNull
+      @Override
+      public Observable<ActivityEnvelope> fetchActivities(final @Nullable Integer count) {
+        return Observable.just(ActivityEnvelopeFactory.activityEnvelope(Collections.singletonList(activity)));
+      }
+    };
+
+    final Environment env = environment()
+            .toBuilder()
+            .currentUser(currentUser)
+            .apiClient(apiClient)
+            .build();
+
+    setUpEnvironment(env);
+
+    // Load initial params and root categories from activity.
+    setUpInitialHomeAllProjectsParams();
+
+    // Log in.
+    logUserIn(currentUser);
+
+    this.activityTest.assertValueCount(2);
+    this.activityTest.assertValues(null, activity);
   }
 
   private void logUserIn(final @NonNull CurrentUserType currentUser) {

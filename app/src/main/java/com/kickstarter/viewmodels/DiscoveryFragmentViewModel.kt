@@ -15,7 +15,6 @@ import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.DISCOVER
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.ListUtils
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.extensions.combineProjectsAndParams
 import com.kickstarter.libs.utils.extensions.fillRootCategoryForFeaturedProjects
@@ -346,7 +345,7 @@ interface DiscoveryFragmentViewModel {
 
             val loggedInUserAndParams = currentUser.loggedInUser()
                 .distinctUntilChanged()
-                .compose(Transformers.combineLatestPair(paramsFromActivity))
+                .compose(Transformers.combineLatestPair(paramsFromActivity.distinctUntilChanged()))
 
             // Activity should show on the user's default params
             loggedInUserAndParams
@@ -355,7 +354,9 @@ interface DiscoveryFragmentViewModel {
                         it
                     )
                 }
-                .flatMap { fetchActivity() }
+                .switchMap {
+                    fetchActivity()
+                }
                 .filter { activityHasNotBeenSeen(it) }
                 .doOnNext { saveLastSeenActivityId(it) }
                 .compose(bindToLifecycle())
@@ -480,10 +481,9 @@ interface DiscoveryFragmentViewModel {
 
         private fun fetchActivity(): Observable<Activity?> {
             return apiClient.fetchActivities(1)
+                .distinctUntilChanged()
                 .map { it.activities() }
                 .map { it.firstOrNull() }
-                .filter { ObjectUtils.isNotNull(it) }
-                .compose(Transformers.neverError())
         }
 
         private fun isDefaultParams(userAndParams: Pair<User, DiscoveryParams>): Boolean {

@@ -7,6 +7,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.models.OptimizelyExperiment
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ProgressBarUtils
@@ -82,6 +83,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private val startUpdatesView = TestSubscriber<ProjectData>()
     private val startCampaignView = TestSubscriber<ProjectData>()
     private val startCreatorDashboard = TestSubscriber<ProjectData>()
+    private val hideOldCampaignLink = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(environment: Environment, projectData: ProjectData) {
         vm = ProjectOverviewViewModel.ViewModel(environment)
@@ -140,6 +142,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         vm.outputs.startCommentsView().subscribe(startCommentsView)
         vm.outputs.startCreatorView().subscribe(startCreatorView)
         vm.outputs.startCreatorDashboardView().subscribe(startCreatorDashboard)
+        vm.outputs.hideOldCampaignLink().subscribe(hideOldCampaignLink)
         vm.inputs.configureWith(projectData)
     }
 
@@ -631,6 +634,46 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
 
         // USD conversion not shown for US project.
         conversionTextViewIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testOldLinkCampaignLinks_whenFeatureFlagOff_False() {
+        val mockOptimizely = object : MockExperimentsClientType() {
+            override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                return true
+            }
+        }
+
+        val project = ProjectFactory.project()
+
+        val environment = environment()
+            .toBuilder()
+            .optimizely(mockOptimizely)
+            .build()
+
+        setUpEnvironment(environment, project(project))
+
+        hideOldCampaignLink.assertValue(true)
+    }
+
+    @Test
+    fun testOldLinkCampaignLinks_whenFeatureFlagOff_True() {
+        val mockOptimizely = object : MockExperimentsClientType() {
+            override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                return false
+            }
+        }
+
+        val project = ProjectFactory.project()
+
+        val environment = environment()
+            .toBuilder()
+            .optimizely(mockOptimizely)
+            .build()
+
+        setUpEnvironment(environment, project(project))
+
+        hideOldCampaignLink.assertValue(false)
     }
 
     private fun environmentForVariant(variant: OptimizelyExperiment.Variant): Environment? {

@@ -21,8 +21,7 @@
 
     <application
         android:name=".KSApplication"
-        android:allowBackup="true"
-        android:fullBackupContent="@xml/full_backup_content"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"

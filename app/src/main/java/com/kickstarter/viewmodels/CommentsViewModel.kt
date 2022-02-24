@@ -225,7 +225,7 @@ interface CommentsViewModel {
                     return@switchMap apolloClient.getComment(it.first)
                 }.compose(Transformers.neverError())
                 .compose(combineLatestPair(deepLinkCommentableId))
-                .compose(takePairWhen(commentableId))
+                .compose(combineLatestPair(commentableId))
                 .map {
                     CommentCardData.builder()
                         .comment(it.first.first)

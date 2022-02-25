@@ -144,8 +144,15 @@ android {
 
     testOptions {
         unitTests {
+            all {
+                jvmArgs '-noverify', '-ea'
+                jacoco {
+                    includeNoLocationClasses = true
+                }
+            }
             includeAndroidResources = true
         }
+
     }
 
     variantFilter { variant ->
@@ -333,4 +340,14 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'shot'
 shot {
     useComposer = false
+}
+
+configurations.all{
+    resolutionStrategy {
+        eachDependency { details ->
+            if ('org.jacoco' == details.requested.group) {
+                details.useVersion "0.8.7"
+            }
+        }
+    }
 }

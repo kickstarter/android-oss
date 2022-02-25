@@ -1,11 +1,11 @@
 package com.kickstarter.services
 
 import android.net.Uri
-import com.kickstarter.services.DiscoveryParams.Companion.builder
-import com.kickstarter.services.DiscoveryParams.Companion.fromUri
+import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.mock.factories.CategoryFactory.bluesCategory
 import com.kickstarter.mock.factories.CategoryFactory.gamesCategory
-import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.services.DiscoveryParams.Companion.builder
+import com.kickstarter.services.DiscoveryParams.Companion.fromUri
 import org.junit.Test
 
 class DiscoveryParamsTest : KSRobolectricTestCase() {

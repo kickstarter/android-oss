@@ -1,26 +1,25 @@
 package com.kickstarter.services
 
+import android.content.Context
+import android.net.Uri
+import android.os.Parcelable
+import auto.parcel.AutoParcel
+import com.kickstarter.R
+import com.kickstarter.libs.KSString
+import com.kickstarter.libs.qualifiers.AutoGson
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isDiscoverCategoriesPath
 import com.kickstarter.libs.utils.extensions.isDiscoverPlacesPath
 import com.kickstarter.libs.utils.extensions.isDiscoverScopePath
 import com.kickstarter.libs.utils.extensions.isDiscoverSortParam
-import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.isFalse
-import com.kickstarter.libs.qualifiers.AutoGson
-import auto.parcel.AutoParcel
-import android.os.Parcelable
-import android.annotation.SuppressLint
-import android.content.Context
-import android.net.Uri
-import kotlin.jvm.JvmOverloads
-import com.kickstarter.libs.KSString
-import com.kickstarter.R
-import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Category
 import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import java.util.Locale
+import kotlin.jvm.JvmOverloads
 
 @AutoGson
 @AutoParcel
@@ -42,66 +41,6 @@ abstract class DiscoveryParams : Parcelable {
     abstract fun state(): State?
     abstract fun tagId(): Int?
     abstract fun term(): String?
-    enum class Sort {
-        MAGIC, POPULAR, NEWEST, ENDING_SOON, DISTANCE;
-
-        override fun toString(): String {
-            return when (this) {
-                MAGIC -> "magic"
-                POPULAR -> "popularity"
-                NEWEST -> "newest"
-                ENDING_SOON -> "end_date"
-                DISTANCE -> "distance"
-            }
-        }
-
-        fun refTagSuffix(): String {
-            return when (this) {
-                MAGIC -> ""
-                POPULAR -> "_popular"
-                NEWEST -> "_newest"
-                ENDING_SOON -> "_ending_soon"
-                DISTANCE -> "_distance"
-            }
-        }
-
-        companion object {
-            @JvmField
-            var defaultSorts = arrayOf(MAGIC, POPULAR, NEWEST, ENDING_SOON)
-            fun fromString(string: String): Sort {
-                when (string) {
-                    "magic" -> return MAGIC
-                    "popularity" -> return POPULAR
-                    "newest" -> return NEWEST
-                    "end_date" -> return ENDING_SOON
-                    "distance" -> return DISTANCE
-                }
-                return MAGIC
-            }
-        }
-    }
-
-    enum class State {
-        STARTED, SUBMITTED, LIVE, SUCCESSFUL, CANCELED, FAILED, UNKNOWN;
-
-        override fun toString(): String {
-            return name.lowercase(Locale.getDefault())
-        }
-
-        companion object {
-            fun fromString(string: String): State {
-                return when (string) {
-                    "started" -> STARTED
-                    "submitted" -> SUBMITTED
-                    "live" -> LIVE
-                    "successful" -> SUCCESSFUL
-                    "canceled" -> CANCELED
-                    "failed" -> FAILED
-                    else -> { UNKNOWN }
-                }
-            }
-        }
-    }
 
     @AutoParcel.Builder
     abstract class Builder {
@@ -189,8 +128,69 @@ abstract class DiscoveryParams : Parcelable {
         return if (page != null) toBuilder().page(page + 1).build() else this
     }
 
+    enum class Sort {
+        MAGIC, POPULAR, NEWEST, ENDING_SOON, DISTANCE;
+
+        override fun toString(): String {
+            return when (this) {
+                MAGIC -> "magic"
+                POPULAR -> "popularity"
+                NEWEST -> "newest"
+                ENDING_SOON -> "end_date"
+                DISTANCE -> "distance"
+            }
+        }
+
+        fun refTagSuffix(): String {
+            return when (this) {
+                MAGIC -> ""
+                POPULAR -> "_popular"
+                NEWEST -> "_newest"
+                ENDING_SOON -> "_ending_soon"
+                DISTANCE -> "_distance"
+            }
+        }
+
+        companion object {
+            @JvmField
+            var defaultSorts = arrayOf(MAGIC, POPULAR, NEWEST, ENDING_SOON)
+            fun fromString(string: String): Sort {
+                when (string) {
+                    "magic" -> return MAGIC
+                    "popularity" -> return POPULAR
+                    "newest" -> return NEWEST
+                    "end_date" -> return ENDING_SOON
+                    "distance" -> return DISTANCE
+                }
+                return MAGIC
+            }
+        }
+    }
+
+    enum class State {
+        STARTED, SUBMITTED, LIVE, SUCCESSFUL, CANCELED, FAILED, UNKNOWN;
+
+        override fun toString(): String {
+            return name.lowercase(Locale.getDefault())
+        }
+
+        companion object {
+            fun fromString(string: String): State {
+                return when (string) {
+                    "started" -> STARTED
+                    "submitted" -> SUBMITTED
+                    "live" -> LIVE
+                    "successful" -> SUCCESSFUL
+                    "canceled" -> CANCELED
+                    "failed" -> FAILED
+                    else -> { UNKNOWN }
+                }
+            }
+        }
+    }
+
     fun queryParams(): Map<String, String> {
-    val map = mutableMapOf<String, String>()
+        val map = mutableMapOf<String, String>()
         map.apply {
             if (backed() != null) {
                 put("backed", backed().toString())
@@ -250,7 +250,7 @@ abstract class DiscoveryParams : Parcelable {
             }
         }
 
-    return map
+        return map
     }
 
     /**
@@ -277,8 +277,10 @@ abstract class DiscoveryParams : Parcelable {
      */
     @JvmOverloads
     fun filterString(
-        context: Context, ksString: KSString,
-        isToolbar: Boolean = false, isParentFilter: Boolean = false
+        context: Context,
+        ksString: KSString,
+        isToolbar: Boolean = false,
+        isParentFilter: Boolean = false
     ): String {
         return if (staffPicks().isTrue()) {
             context.getString(R.string.Projects_We_Love)
@@ -292,7 +294,8 @@ abstract class DiscoveryParams : Parcelable {
             if (category()?.isRoot == true && !isParentFilter && !isToolbar) ksString.format(
                 context.getString(
                     R.string.All_category_name_Projects
-                ), "category_name", category()?.name()
+                ),
+                "category_name", category()?.name()
             ) else category()?.name() ?: ""
         } else if (location() != null) {
             location()?.displayableName() ?: ""
@@ -308,18 +311,22 @@ abstract class DiscoveryParams : Parcelable {
      * @return true if is All Projects.
      */
     val isAllProjects: Boolean
-        get() = (staffPicks().isFalse() && (starred() == null || starred() != 1) && (backed() == null || backed() != 1)
-                && (social() == null || social() != 1) && category() == null && location() == null && recommended().isFalse()
-                && tagId() == null)
+        get() = (
+            staffPicks().isFalse() && (starred() == null || starred() != 1) && (backed() == null || backed() != 1) &&
+                (social() == null || social() != 1) && category() == null && location() == null && recommended().isFalse() &&
+                tagId() == null
+            )
 
     /**
      * Determines if params are for Saved Projects, i.e. discovery with starred params.
      * @return true if is Saved Projects.
      */
     val isSavedProjects: Boolean
-        get() = ((starred() != null && starred() == 1).isTrue() && staffPicks().isFalse() && (backed() == null || backed() != 1)
-                && (social() == null || social() != 1) && category() == null && location() == null && recommended().isFalse()
-                && tagId() == null)
+        get() = (
+            (starred() != null && starred() == 1).isTrue() && staffPicks().isFalse() && (backed() == null || backed() != 1) &&
+                (social() == null || social() != 1) && category() == null && location() == null && recommended().isFalse() &&
+                tagId() == null
+            )
     val isCategorySet: Boolean
         get() = category() != null
 

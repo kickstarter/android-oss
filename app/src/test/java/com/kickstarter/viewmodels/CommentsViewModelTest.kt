@@ -801,7 +801,8 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testCommentsViewModel_deepLink_to_ThreadActivity() {
-        val commentableId = "Q29tbWVudC0zMzU2MTY4Ng"
+        val commentID = "Q29tbWVudC0zMzU2MTY4Ng"
+        val commentableId = "RnJlZWZvcm1Qb3N0LTM0MTQ2ODk="
 
         val currentUser = UserFactory.user()
             .toBuilder()
@@ -817,6 +818,13 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             override fun getComment(commentableId: String): Observable<Comment> {
                 return Observable.just(comment1)
             }
+            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+                return Observable.just(
+                    CommentEnvelopeFactory.commentsEnvelope().toBuilder().commentableId(commentableId).comments(
+                        listOf(comment1)
+                    ).build()
+                )
+            }
         }).currentUser(MockCurrentUser(currentUser))
             .scheduler(testScheduler)
             .build()
@@ -827,13 +835,13 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         vm.intent(
             Intent().apply {
-                putExtra(IntentKey.COMMENT, commentableId)
+                putExtra(IntentKey.COMMENT, commentID)
                 putExtra(IntentKey.PROJECT, ProjectFactory.project())
             }
         )
 
         vm.outputs.startThreadActivity().take(0).subscribe {
-            assertEquals(it.first.first.commentableId, commentableId)
+            assertEquals(it.first.first.commentableId, commentID)
             assertFalse(it.first.second)
         }
 

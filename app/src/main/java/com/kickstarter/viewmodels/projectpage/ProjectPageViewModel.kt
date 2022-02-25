@@ -544,7 +544,7 @@ interface ProjectPageViewModel {
 
             intent()
                 .take(1)
-                .delay(1, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
+                .delay(3, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
                 .filter {
                     it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_COMMENT, false) &&
                         it.getStringExtra(IntentKey.COMMENT)?.isEmpty() ?: true
@@ -559,7 +559,7 @@ interface ProjectPageViewModel {
 
             intent()
                 .take(1)
-                .delay(1, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
+                .delay(3, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
                 .filter {
                     it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_COMMENT, false) &&
                         it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty() ?: false
@@ -574,7 +574,7 @@ interface ProjectPageViewModel {
 
             intent()
                 .take(1)
-                .delay(1, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
+                .delay(3, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
                 .filter {
                     it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)?.isNotEmpty() ?: false &&
                         it.getStringExtra(IntentKey.COMMENT)?.isEmpty() ?: true
@@ -594,7 +594,7 @@ interface ProjectPageViewModel {
 
             intent()
                 .take(1)
-                .delay(1, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
+                .delay(3, TimeUnit.SECONDS, environment.scheduler()) // add delay to wait until activity subscribed to viewmodel
                 .filter {
                     it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)?.isNotEmpty() ?: false &&
                         it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty() ?: false

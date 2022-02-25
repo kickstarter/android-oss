@@ -16,7 +16,6 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.apollographql.apollo'
 apply plugin: 'jacoco'
-apply plugin: 'kover'
 apply from: 'quality.gradle'
 apply from: "$project.rootDir/jacoco.gradle"
 
@@ -145,15 +144,8 @@ android {
 
     testOptions {
         unitTests {
-            all {
-                jvmArgs '-noverify', '-ea'
-                jacoco {
-                    includeNoLocationClasses = true
-                }
-            }
             includeAndroidResources = true
         }
-
     }
 
     variantFilter { variant ->
@@ -341,14 +333,4 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'shot'
 shot {
     useComposer = false
-}
-
-configurations.all{
-    resolutionStrategy {
-        eachDependency { details ->
-            if ('org.jacoco' == details.requested.group) {
-                details.useVersion "0.8.7"
-            }
-        }
-    }
 }

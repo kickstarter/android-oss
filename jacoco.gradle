@@ -39,6 +39,8 @@ android.applicationVariants.all { variant ->
                          '**/ui/*.*',
                          '**/ui/views/*.*',
                          '**/ui/adapters/*.*',
+                         '**/ui/adapters/data/*.*',
+                         '**/ui/adapters/projectcampaign/*.*',
                          '**/databinding/*.*',
                          '**/mock/*.*',
                          '**/services/*.*',

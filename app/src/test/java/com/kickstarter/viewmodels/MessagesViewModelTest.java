@@ -18,7 +18,6 @@ import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.BackingWrapper;
-import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;

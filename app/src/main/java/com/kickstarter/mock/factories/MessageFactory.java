@@ -1,19 +1,20 @@
 package com.kickstarter.mock.factories;
 
-import com.kickstarter.models.Message;
-
 import org.joda.time.DateTime;
 
 import androidx.annotation.NonNull;
 
+import com.kickstarter.models.Message;
+
 public final class MessageFactory {
   private MessageFactory() {}
 
-  public static @NonNull Message message() {
+  public static @NonNull
+  Message message() {
     return Message.builder()
       .body("")
       .createdAt(DateTime.now())
-      .id(123943059)
+      .id(123943059L)
       .recipient(UserFactory.creator())
       .sender(UserFactory.user())
       .build();

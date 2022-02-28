@@ -5,6 +5,7 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.mock.factories.MessageFactory;
 import com.kickstarter.mock.factories.UserFactory;
+import com.kickstarter.models.Message;
 import com.kickstarter.models.User;
 
 import org.junit.Test;

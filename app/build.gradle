@@ -16,7 +16,6 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.apollographql.apollo'
 apply plugin: 'jacoco'
-apply plugin: 'kover'
 apply from: 'quality.gradle'
 apply from: "$project.rootDir/jacoco.gradle"
 
@@ -146,11 +145,6 @@ android {
     testOptions {
         unitTests {
             includeAndroidResources = true
-            if (name == "testInternalReleaseUnitTest") {
-                kover {
-                    disabled = false
-                }
-            }
         }
     }
 

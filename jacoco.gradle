@@ -1,5 +1,4 @@
 apply plugin: 'jacoco'
-apply plugin: 'kover'
 
 jacoco {
     toolVersion = "$jacoco_version"
@@ -39,6 +38,7 @@ android.applicationVariants.all { variant ->
                          '**/*Dialog*.*',
                          '**/ui/*.*',
                          '**/ui/views/*.*',
+                         '**/ui/adapters/*.*',
                          '**/databinding/*.*',
                          '**/mock/*.*',
                          '**/services/*.*',

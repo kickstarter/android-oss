@@ -689,7 +689,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(intent)
 
-        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
         this.startRootCommentsActivity.assertValues(projectAndData)
     }
@@ -717,7 +717,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(intent)
 
-        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
         this.startRootCommentsForCommentsThreadActivity.assertValues(deepLinkDate)
     }
@@ -744,7 +744,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(intent)
 
-        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
         this.startProjectUpdateActivity.assertValues(updateProjectAndData)
     }
@@ -773,7 +773,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(intent)
 
-        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
         this.startProjectUpdateToRepliesDeepLinkActivity.assertValues(updateProjectAndData)
     }
@@ -801,7 +801,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(intent)
 
-        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
         this.startProjectUpdateActivity.assertValues(updateProjectAndData)
     }

@@ -115,7 +115,7 @@ interface CommentsViewModel {
         private val initialError = BehaviorSubject.create<Throwable>()
         private val paginationError = BehaviorSubject.create<Throwable>()
         private val pullToRefreshError = BehaviorSubject.create<Throwable>()
-        private var commentableId: String? = null
+        private var commentableId = BehaviorSubject.create<String?>()
 
         private val isFetchingComments = BehaviorSubject.create<Boolean>()
         private lateinit var project: Project
@@ -220,16 +220,17 @@ interface CommentsViewModel {
                 }
 
             deepLinkCommentableId
-                .compose(Transformers.takeWhen(projectOrUpdateComment))
+                .compose(takePairWhen(projectOrUpdateComment))
                 .switchMap {
-                    return@switchMap apolloClient.getComment(it)
+                    return@switchMap apolloClient.getComment(it.first)
                 }.compose(Transformers.neverError())
                 .compose(combineLatestPair(deepLinkCommentableId))
+                .compose(combineLatestPair(commentableId))
                 .map {
                     CommentCardData.builder()
-                        .comment(it.first)
+                        .comment(it.first.first)
                         .project(this.project)
-                        .commentCardState(it.first.cardStatus())
+                        .commentCardState(it.first.first.cardStatus())
                         .commentableId(it.second)
                         .build()
                 }.withLatestFrom(projectOrUpdateComment) { commentData, projectOrUpdate ->
@@ -254,13 +255,14 @@ interface CommentsViewModel {
                     commentData, project ->
                     Pair(commentData, project)
                 }
+                .compose(combineLatestPair(commentableId))
                 .map {
                     Pair(
                         it.first.first,
                         CommentCardData.builder()
-                            .comment(it.first.second)
-                            .project(it.second)
-                            .commentableId(commentableId)
+                            .comment(it.first.first.second)
+                            .project(it.first.second)
+                            .commentableId(it.second)
                             .commentCardState(CommentCardStatus.TRYING_TO_POST.commentCardStatus)
                             .build()
                     )
@@ -488,7 +490,7 @@ interface CommentsViewModel {
                     apolloClient.getProjectComments(it.first?.slug() ?: "", cursor)
                 }
             }.doOnNext {
-                commentableId = it.commentableId
+                commentableId.onNext(it.commentableId)
                 // Remove Pagination errorFrom View
                 this.displayPaginationError.onNext(false)
                 this.displayInitialError.onNext(false)

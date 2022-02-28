@@ -1,9 +1,9 @@
 package com.kickstarter.mock.factories
 
 import com.kickstarter.mock.factories.UserFactory.creator
-import com.kickstarter.models.Message.Companion.builder
 import com.kickstarter.mock.factories.UserFactory.user
 import com.kickstarter.models.Message
+import com.kickstarter.models.Message.Companion.builder
 import org.joda.time.DateTime
 
 object MessageFactory {

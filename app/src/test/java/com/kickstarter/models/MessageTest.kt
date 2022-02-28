@@ -1,6 +1,5 @@
 package com.kickstarter.models
 
-import android.os.UserManager
 import com.kickstarter.mock.factories.UserFactory
 import junit.framework.TestCase
 import org.joda.time.DateTime
@@ -17,7 +16,6 @@ class MessageTest : TestCase() {
         assertTrue(message.createdAt() == DateTime.now())
         assertTrue(message.recipient() == User.builder().build())
         assertTrue(message.sender() == User.builder().build())
-
     }
 
     @Test

@@ -58,12 +58,12 @@ class Message internal constructor(
 
     override fun equals(other: Any?): Boolean {
         var equals = super.equals(other)
-        if(other is Message) {
+        if (other is Message) {
             equals = body() == other.body() &&
-                    createdAt() == other.createdAt() &&
-                    id() == other.id() &&
-                    recipient() == other.recipient() &&
-                    sender() == other.sender()
+                createdAt() == other.createdAt() &&
+                id() == other.id() &&
+                recipient() == other.recipient() &&
+                sender() == other.sender()
         }
         return equals
     }

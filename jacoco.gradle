@@ -50,7 +50,7 @@ android.applicationVariants.all { variant ->
     /**
      * Generates Jacoco coverage reports based off the unit tests.
      */
-    task("jacoco${variantName}Report", type: JacocoReport,  dependsOn: ["test${variantName}UnitTest", "create${variantName}CoverageReport"]) {
+    task("jacoco${variantName}Report", type: JacocoReport,  dependsOn: ["test${variantName}UnitTest"]) {
         group 'Reporting'
         description "Generate ${variantName} Jacoco coverage reports."
 

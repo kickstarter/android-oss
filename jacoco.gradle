@@ -4,6 +4,7 @@ apply plugin: 'kover'
 jacoco {
     toolVersion = "$jacoco_version"
 }
+
 tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true
     jacoco.excludes = ['jdk.internal.*']
@@ -49,7 +50,7 @@ android.applicationVariants.all { variant ->
     /**
      * Generates Jacoco coverage reports based off the unit tests.
      */
-    task("jacoco${variantName}Report", type: JacocoReport, dependsOn: "test${variantName}UnitTest") {
+    task("jacoco${variantName}Report", type: JacocoReport,  dependsOn: ["test${variantName}UnitTest", "create${variantName}CoverageReport"]) {
         group 'Reporting'
         description "Generate ${variantName} Jacoco coverage reports."
 

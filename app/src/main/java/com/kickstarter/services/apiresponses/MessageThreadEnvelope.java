@@ -14,7 +14,7 @@ import auto.parcel.AutoParcel;
 
 @AutoGson
 @AutoParcel
-public abstract class MessageThreadEnvelope implements Parcelable {
+public abstract  class MessageThreadEnvelope implements Parcelable {
   public abstract @Nullable List<Message> messages();
   public abstract @Nullable MessageThread messageThread();
   public abstract List<User> participants();

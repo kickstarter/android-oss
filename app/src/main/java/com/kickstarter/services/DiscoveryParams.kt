@@ -63,6 +63,29 @@ class DiscoveryParams private constructor(
         return if (page != null) toBuilder().page(page + 1).build() else this
     }
 
+    override fun equals(other: Any?): Boolean {
+        var equals = super.equals(other)
+        if (other is DiscoveryParams) {
+            equals = backed() == other.backed() &&
+                category() == other.category() &&
+                categoryParam() == other.categoryParam() &&
+                location() == other.location() &&
+                locationParam() == other.locationParam() &&
+                page() == other.page() &&
+                perPage() == other.perPage() &&
+                staffPicks() == other.staffPicks() &&
+                starred() == other.starred() &&
+                social() == other.social() &&
+                sort() == other.sort() &&
+                recommended() == other.recommended() &&
+                similarTo() == other.similarTo() &&
+                state() == other.state() &&
+                tagId() == other.tagId() &&
+                term() == other.term()
+        }
+        return equals
+    }
+
     @Parcelize
     data class Builder(
         private var backed: Int? = null,

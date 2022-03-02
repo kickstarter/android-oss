@@ -3,10 +3,8 @@ package com.kickstarter.services
 import android.content.Context
 import android.net.Uri
 import android.os.Parcelable
-import auto.parcel.AutoParcel
 import com.kickstarter.R
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.qualifiers.AutoGson
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isDiscoverCategoriesPath
 import com.kickstarter.libs.utils.extensions.isDiscoverPlacesPath
@@ -18,50 +16,109 @@ import com.kickstarter.models.Category
 import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
+import kotlinx.parcelize.Parcelize
 import java.util.Locale
 import kotlin.jvm.JvmOverloads
 
-@AutoGson
-@AutoParcel
-abstract class DiscoveryParams : Parcelable {
-    abstract fun backed(): Int?
-    abstract fun category(): Category?
-    abstract fun categoryParam(): String?
-    abstract fun location(): Location?
-    abstract fun locationParam(): String?
-    abstract fun page(): Int?
-    abstract fun perPage(): Int?
-    abstract fun pledged(): Int?
-    abstract fun staffPicks(): Boolean?
-    abstract fun starred(): Int?
-    abstract fun social(): Int?
-    abstract fun sort(): Sort?
-    abstract fun recommended(): Boolean?
-    abstract fun similarTo(): Project?
-    abstract fun state(): State?
-    abstract fun tagId(): Int?
-    abstract fun term(): String?
+@Parcelize
+class DiscoveryParams private constructor(
+    private val backed: Int?,
+    private val category: Category?,
+    private val categoryParam: String?,
+    private val location: Location?,
+    private val locationParam: String?,
+    private val page: Int?,
+    private val perPage: Int?,
+    private val pledged: Int?,
+    private val staffPicks: Boolean?,
+    private val starred: Int?,
+    private val social: Int?,
+    private val sort: Sort?,
+    private val recommended: Boolean?,
+    private val similarTo: Project?,
+    private val state: State?,
+    private val tagId: Int?,
+    private val term: String?
+) : Parcelable {
 
-    @AutoParcel.Builder
-    abstract class Builder {
-        abstract fun backed(backed: Int?): Builder
-        abstract fun category(category: Category?): Builder
-        abstract fun categoryParam(categoryParam: String?): Builder
-        abstract fun location(location: Location?): Builder
-        abstract fun locationParam(locationParam: String?): Builder
-        abstract fun page(page: Int?): Builder
-        abstract fun perPage(perPage: Int?): Builder
-        abstract fun pledged(pledged: Int?): Builder
-        abstract fun sort(sort: Sort?): Builder
-        abstract fun staffPicks(staffPicks: Boolean?): Builder
-        abstract fun starred(starred: Int?): Builder
-        abstract fun social(social: Int?): Builder
-        abstract fun recommended(recommended: Boolean?): Builder
-        abstract fun similarTo(similarTo: Project?): Builder
-        abstract fun state(state: State?): Builder
-        abstract fun tagId(tagId: Int?): Builder
-        abstract fun term(term: String?): Builder
-        abstract fun build(): DiscoveryParams
+    fun backed() = this.backed
+    fun category() = this.category
+    fun categoryParam() = this.categoryParam
+    fun location() = this.location
+    fun locationParam() = this.locationParam
+    fun page() = this.page
+    fun perPage() = this.perPage
+    fun pledged() = this.pledged
+    fun staffPicks() = this.staffPicks
+    fun starred() = this.starred
+    fun social() = this.social
+    fun sort() = this.sort
+    fun recommended() = this.recommended
+    fun similarTo() = this.similarTo
+    fun state() = this.state
+    fun tagId() = this.tagId
+    fun term() = this.term
+    fun nextPage(): DiscoveryParams {
+        val page = page()
+        return if (page != null) toBuilder().page(page + 1).build() else this
+    }
+
+    @Parcelize
+    data class Builder(
+        private var backed: Int? = null,
+        private var category: Category? = null,
+        private var categoryParam: String? = null,
+        private var location: Location? = null,
+        private var locationParam: String? = null,
+        private var page: Int? = null,
+        private var perPage: Int? = null,
+        private var pledged: Int? = null,
+        private var staffPicks: Boolean? = null,
+        private var starred: Int? = null,
+        private var social: Int? = null,
+        private var sort: Sort? = null,
+        private var recommended: Boolean? = null,
+        private var similarTo: Project? = null,
+        private var state: State? = null,
+        private var tagId: Int? = null,
+        private var term: String? = null
+    ) : Parcelable {
+        fun backed(backed: Int?) = apply { this.backed = backed }
+        fun category(category: Category?) = apply { this.category = category }
+        fun categoryParam(categoryParam: String?) = apply { this.categoryParam = categoryParam }
+        fun location(location: Location?) = apply { this.location = location }
+        fun locationParam(locationParam: String?) = apply { this.locationParam = locationParam }
+        fun page(page: Int?) = apply { this.page = page }
+        fun perPage(perPage: Int?) = apply { this.perPage = perPage }
+        fun pledged(pledged: Int?) = apply { this.pledged = pledged }
+        fun sort(sort: Sort?) = apply { this.sort = sort }
+        fun staffPicks(staffPicks: Boolean?) = apply { this.staffPicks = staffPicks }
+        fun starred(starred: Int?) = apply { this.starred = starred }
+        fun social(social: Int?) = apply { this.social = social }
+        fun recommended(recommended: Boolean?) = apply { this.recommended = recommended }
+        fun similarTo(similarTo: Project?) = apply { this.similarTo = similarTo }
+        fun state(state: State?) = apply { this.state = state }
+        fun tagId(tagId: Int?) = apply { this.tagId = tagId }
+        fun term(term: String?) = apply { this.term = term }
+        fun build() = DiscoveryParams(
+            backed = backed,
+            category = category,
+            categoryParam = categoryParam,
+            location = location,
+            locationParam = locationParam,
+            page = page,
+            perPage = perPage,
+            pledged = pledged,
+            staffPicks = staffPicks,
+            starred = starred,
+            social = social,
+            sort = sort,
+            recommended = recommended,
+            similarTo = similarTo,
+            state = state,
+            tagId = tagId,
+            term = term
+        )
 
         /**
          * Returns a builder containing the contents of this builder and `otherBuilder`. If a value for the same property
@@ -122,72 +179,25 @@ abstract class DiscoveryParams : Parcelable {
         }
     }
 
-    abstract fun toBuilder(): Builder
-    fun nextPage(): DiscoveryParams {
-        val page = page()
-        return if (page != null) toBuilder().page(page + 1).build() else this
-    }
-
-    enum class Sort {
-        MAGIC, POPULAR, NEWEST, ENDING_SOON, DISTANCE;
-
-        override fun toString(): String {
-            return when (this) {
-                MAGIC -> "magic"
-                POPULAR -> "popularity"
-                NEWEST -> "newest"
-                ENDING_SOON -> "end_date"
-                DISTANCE -> "distance"
-            }
-        }
-
-        fun refTagSuffix(): String {
-            return when (this) {
-                MAGIC -> ""
-                POPULAR -> "_popular"
-                NEWEST -> "_newest"
-                ENDING_SOON -> "_ending_soon"
-                DISTANCE -> "_distance"
-            }
-        }
-
-        companion object {
-            @JvmField
-            var defaultSorts = arrayOf(MAGIC, POPULAR, NEWEST, ENDING_SOON)
-            fun fromString(string: String): Sort {
-                when (string) {
-                    "magic" -> return MAGIC
-                    "popularity" -> return POPULAR
-                    "newest" -> return NEWEST
-                    "end_date" -> return ENDING_SOON
-                    "distance" -> return DISTANCE
-                }
-                return MAGIC
-            }
-        }
-    }
-
-    enum class State {
-        STARTED, SUBMITTED, LIVE, SUCCESSFUL, CANCELED, FAILED, UNKNOWN;
-
-        override fun toString(): String {
-            return name.lowercase(Locale.getDefault())
-        }
-
-        companion object {
-            fun fromString(string: String): State {
-                return when (string) {
-                    "started" -> STARTED
-                    "submitted" -> SUBMITTED
-                    "live" -> LIVE
-                    "successful" -> SUCCESSFUL
-                    "canceled" -> CANCELED
-                    "failed" -> FAILED
-                    else -> { UNKNOWN }
-                }
-            }
-        }
-    }
+    fun toBuilder() = Builder(
+        backed = backed,
+        category = category,
+        categoryParam = categoryParam,
+        location = location,
+        locationParam = locationParam,
+        page = page,
+        perPage = perPage,
+        pledged = pledged,
+        staffPicks = staffPicks,
+        starred = starred,
+        social = social,
+        sort = sort,
+        recommended = recommended,
+        similarTo = similarTo,
+        state = state,
+        tagId = tagId,
+        term = term
+    )
 
     fun queryParams(): Map<String, String> {
         val map = mutableMapOf<String, String>()
@@ -432,7 +442,7 @@ abstract class DiscoveryParams : Parcelable {
 
         @JvmStatic
         fun builder(): Builder {
-            return AutoParcel_DiscoveryParams.Builder()
+            return Builder()
                 .page(1)
                 .perPage(15)
         }
@@ -446,6 +456,67 @@ abstract class DiscoveryParams : Parcelable {
             return builder
                 .sort(Sort.MAGIC)
                 .build()
+        }
+    }
+
+    enum class Sort {
+        MAGIC, POPULAR, NEWEST, ENDING_SOON, DISTANCE;
+
+        override fun toString(): String {
+            return when (this) {
+                MAGIC -> "magic"
+                POPULAR -> "popularity"
+                NEWEST -> "newest"
+                ENDING_SOON -> "end_date"
+                DISTANCE -> "distance"
+            }
+        }
+
+        fun refTagSuffix(): String {
+            return when (this) {
+                MAGIC -> ""
+                POPULAR -> "_popular"
+                NEWEST -> "_newest"
+                ENDING_SOON -> "_ending_soon"
+                DISTANCE -> "_distance"
+            }
+        }
+
+        companion object {
+            @JvmField
+            var defaultSorts = listOf(MAGIC, POPULAR, NEWEST, ENDING_SOON)
+            fun fromString(string: String): Sort {
+                when (string) {
+                    "magic" -> return MAGIC
+                    "popularity" -> return POPULAR
+                    "newest" -> return NEWEST
+                    "end_date" -> return ENDING_SOON
+                    "distance" -> return DISTANCE
+                }
+                return MAGIC
+            }
+        }
+    }
+
+    enum class State {
+        STARTED, SUBMITTED, LIVE, SUCCESSFUL, CANCELED, FAILED, UNKNOWN;
+
+        override fun toString(): String {
+            return name.lowercase(Locale.getDefault())
+        }
+
+        companion object {
+            fun fromString(string: String): State {
+                return when (string) {
+                    "started" -> STARTED
+                    "submitted" -> SUBMITTED
+                    "live" -> LIVE
+                    "successful" -> SUCCESSFUL
+                    "canceled" -> CANCELED
+                    "failed" -> FAILED
+                    else -> { UNKNOWN }
+                }
+            }
         }
     }
 }

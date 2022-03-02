@@ -17,6 +17,7 @@ object UpdateFactory {
             .update(updatesUrl + "id")
             .likes("$updatesUrl/likes")
             .build()
+
         return builder()
             .body("Update body")
             .id(1234)

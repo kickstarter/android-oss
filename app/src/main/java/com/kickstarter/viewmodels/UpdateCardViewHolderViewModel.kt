@@ -95,7 +95,7 @@ interface UpdateCardViewHolderViewModel {
                 .map {
                     when {
                         it.first.first.isBacking() || it.second -> false
-                        else -> (it.first.second.isPublic ?: false).negate()
+                        else -> (it.first.second.isPublic() ?: false).negate()
                     }
                 }
                 .compose(bindToLifecycle())

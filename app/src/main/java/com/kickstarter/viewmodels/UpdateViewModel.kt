@@ -154,7 +154,7 @@ interface UpdateViewModel {
                 .map { it.url.toString() }
 
             val deepLinkUrl = deepLinkUpdate
-                .map { it.urls().web().update() }
+                .map { it.urls()?.web()?.update() }
 
             Observable.merge(initialUpdateUrl, anotherUpdateUrl, deepLinkUrl)
                 .distinctUntilChanged()
@@ -184,7 +184,9 @@ interface UpdateViewModel {
                     it?.let { update ->
                         Pair.create(
                             update,
-                            appendRefTag(update.urls().web().update(), RefTag.updateShare().tag())
+                            update.urls()?.web()?.let { web ->
+                                appendRefTag(web.update(), RefTag.updateShare().tag())
+                            }
                         )
                     }
                 }

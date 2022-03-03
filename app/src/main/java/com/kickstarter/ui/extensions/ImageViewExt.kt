@@ -28,7 +28,7 @@ fun ImageView.loadImage(url: String?, context: Context, imageViewPlaceholder: Ap
             this,
             object : Callback {
                 override fun onSuccess() {
-                    imageViewPlaceholder?.setImageBitmap(target.drawable.toBitmap())
+                    imageViewPlaceholder?.setImageDrawable(target.drawable)
                 }
 
                 override fun onError(e: Exception?) {
@@ -44,7 +44,6 @@ fun ImageView.loadGifImage(url: String?, context: Context) {
     if (context.applicationContext.isKSApplication()) {
         Glide.with(context)
             .asGif()
-            .error(R.drawable.image_placeholder)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .load(url)
             .into(this)

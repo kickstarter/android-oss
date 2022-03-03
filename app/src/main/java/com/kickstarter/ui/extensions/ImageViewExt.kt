@@ -3,7 +3,6 @@ package com.kickstarter.ui.extensions
 import android.content.Context
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.graphics.drawable.toBitmap
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.kickstarter.R

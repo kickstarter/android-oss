@@ -9,7 +9,7 @@ class MessageTest : TestCase() {
 
     @Test
     fun testDefaultInit() {
-        val dateTime : DateTime = DateTime.now().plusMillis(300)
+        val dateTime: DateTime = DateTime.now().plusMillis(300)
         val message = Message.builder().createdAt(dateTime).build()
 
         assertTrue(message.id() == 0L)

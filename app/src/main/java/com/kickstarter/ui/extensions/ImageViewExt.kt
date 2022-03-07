@@ -13,7 +13,6 @@ import com.squareup.picasso.Picasso
 
 fun ImageView.loadCircleImage(url: String?) {
     url?.let {
-        val target = this
         Picasso.get().load(it)
             .transform(CircleTransformation())
             .into(this)

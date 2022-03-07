@@ -52,7 +52,8 @@ class ProjectCampaignFragment :
         super.onViewCreated(view, savedInstanceState)
         viewElementAdapter = ViewElementAdapter(requireActivity(), this)
         val headerElementAdapter = HeaderElementAdapter()
-        binding?.projectCampaignViewListItems?.itemAnimator?.changeDuration = 0
+
+        binding?.projectCampaignViewListItems?.itemAnimator = null
         binding?.projectCampaignViewListItems?.layoutManager = LinearLayoutManager(context)
         binding?.projectCampaignViewListItems?.adapter = ConcatAdapter(
             headerElementAdapter,
@@ -70,6 +71,7 @@ class ProjectCampaignFragment :
             .subscribe {
                 viewElementAdapter?.submitList(it)
             }
+
         this.viewModel.outputs.onScrollToVideoPosition()
             .subscribeOn(Schedulers.io())
             .distinctUntilChanged()

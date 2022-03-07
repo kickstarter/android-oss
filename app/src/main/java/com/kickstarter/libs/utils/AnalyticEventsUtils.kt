@@ -36,7 +36,6 @@ import com.kickstarter.ui.data.PledgeData
 import java.util.Locale
 import kotlin.math.ceil
 import kotlin.math.roundToInt
-import org.slf4j.MDC.put
 
 object AnalyticEventsUtils {
 
@@ -291,7 +290,7 @@ object AnalyticEventsUtils {
     @JvmOverloads
     fun activityProperties(activity: Activity, loggedInUser: User?, prefix: String = "activity_"): Map<String, Any> {
         val props= HashMap<String, Any>().apply {
-            put("category", activity.category())
+            activity.category()?.let { put("category", it) }
         }
 
         val properties = MapUtils.prefixKeys(props, prefix)

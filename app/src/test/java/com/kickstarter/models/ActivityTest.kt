@@ -125,8 +125,10 @@ class ActivityTest : KSRobolectricTestCase() {
                         Urls
                             .builder()
                             .web(web)
-                            .build())
-                    .build()).update(UpdateFactory.update()).build()
+                            .build()
+                    )
+                    .build()
+            ).update(UpdateFactory.update()).build()
 
         assertEquals(
             "https://www.kickstarter.com/projects/987/slug-1/posts/1234",

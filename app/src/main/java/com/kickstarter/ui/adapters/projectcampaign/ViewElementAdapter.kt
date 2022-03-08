@@ -200,6 +200,10 @@ class ViewElementAdapter(
         (holder as? VideoElementViewHolder)?.let { videoElementViewHolder ->
             videoElementViewHolder.releasePlayer(index = videoElementViewHolder.bindingAdapterPosition)
         }
+        (holder as? ImageElementViewHolder)?.let {
+            it.binding.imageView.setImage("")
+            it.binding.imageView.setCaption("")
+        }
 
         super.onViewRecycled(holder)
     }

@@ -105,9 +105,31 @@ class ActivityTest : KSRobolectricTestCase() {
 
     @Test
     fun testProjectUpdateUrl() {
-        val activity = ActivityFactory.activity().toBuilder().update(UpdateFactory.update()).build()
+        val slug = "slug-1"
+        val creator = UserFactory.creator().toBuilder().id(987L).build()
+        val projectUrl = "https://www.kickstarter.com/projects/" + creator.id() + "/" + slug
+        val web = Web.builder()
+            .project(projectUrl)
+            .rewards("$projectUrl/rewards")
+            .updates("$projectUrl/posts")
+            .build()
+        val activity = ActivityFactory
+            .activity()
+            .toBuilder()
+            .project(
+                ProjectFactory
+                    .project()
+                    .toBuilder()
+                    .creator(creator)
+                    .urls(
+                        Urls
+                            .builder()
+                            .web(web)
+                            .build())
+                    .build()).update(UpdateFactory.update()).build()
+
         assertEquals(
-            "https://www.kickstarter.com/projects/2/slug-1/posts/1234",
+            "https://www.kickstarter.com/projects/987/slug-1/posts/1234",
             activity.projectUpdateUrl()
         )
     }

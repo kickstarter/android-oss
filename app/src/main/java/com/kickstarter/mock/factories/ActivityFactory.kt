@@ -1,11 +1,11 @@
 package com.kickstarter.mock.factories
 
-import com.kickstarter.models.Activity.Companion.builder
-import com.kickstarter.mock.factories.ProjectFactory.project
-import com.kickstarter.mock.factories.UserFactory.user
 import com.kickstarter.mock.factories.ProjectFactory.failedProject
+import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.ProjectFactory.successfulProject
+import com.kickstarter.mock.factories.UserFactory.user
 import com.kickstarter.models.Activity
+import com.kickstarter.models.Activity.Companion.builder
 import org.joda.time.DateTime
 
 object ActivityFactory {

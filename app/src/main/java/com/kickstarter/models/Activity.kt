@@ -3,10 +3,10 @@ package com.kickstarter.models
 import android.net.Uri
 import android.os.Parcelable
 import androidx.annotation.StringDef
-import java.lang.annotation.Retention
-import java.lang.annotation.RetentionPolicy
 import kotlinx.parcelize.Parcelize
 import org.joda.time.DateTime
+import java.lang.annotation.Retention
+import java.lang.annotation.RetentionPolicy
 
 @Parcelize
 class Activity internal constructor (
@@ -18,17 +18,17 @@ class Activity internal constructor (
     private val update: Update?,
     private val updatedAt: DateTime?,
     private val user: User?
-    ) : Parcelable {
-     fun category() = this.category
-     fun createdAt() = this.createdAt
-     fun id() = this.id
-     fun project() = this.project
-     fun update() = this.update
-     fun updatedAt() = this.updatedAt
-     fun user() = this.user
+) : Parcelable {
+    fun category() = this.category
+    fun createdAt() = this.createdAt
+    fun id() = this.id
+    fun project() = this.project
+    fun update() = this.update
+    fun updatedAt() = this.updatedAt
+    fun user() = this.user
 
     @Parcelize
-    data class Builder (
+    data class Builder(
         private var category: String? = "",
         private var createdAt: DateTime = DateTime.now(),
         private var id: Long = 0L,
@@ -36,14 +36,14 @@ class Activity internal constructor (
         private var update: Update? = null,
         private var updatedAt: DateTime? = null,
         private var user: User? = null
-        ) : Parcelable {
+    ) : Parcelable {
         fun category(@Category category: String?) = apply { this.category = category ?: "" }
         fun createdAt(createdAt: DateTime?) = apply { createdAt?.let { this.createdAt = it } }
         fun id(id: Long?) = apply { this.id = id ?: 0L }
-        fun project(project: Project?) =  apply { this.project = project }
+        fun project(project: Project?) = apply { this.project = project }
         fun update(update: Update?) = apply { this.update = update }
-        fun updatedAt(updatedAt: DateTime?) =  apply { this.updatedAt = updatedAt }
-        fun user(user: User?) =  apply { this.user = user }
+        fun updatedAt(updatedAt: DateTime?) = apply { this.updatedAt = updatedAt }
+        fun user(user: User?) = apply { this.user = user }
         fun build() = Activity(
             category = category,
             createdAt = createdAt,
@@ -68,13 +68,13 @@ class Activity internal constructor (
     override fun equals(other: Any?): Boolean {
         var equals = super.equals(other)
         if (other is Activity) {
-            equals =  category() == other.category() &&
-                    createdAt() == other.createdAt() &&
-                    id() == other.id() &&
-                    project() == other.project() &&
-                    update() == other.update() &&
-                    updatedAt() == other.updatedAt() &&
-                    user() == other.user()
+            equals = category() == other.category() &&
+                createdAt() == other.createdAt() &&
+                id() == other.id() &&
+                project() == other.project() &&
+                update() == other.update() &&
+                updatedAt() == other.updatedAt() &&
+                user() == other.user()
         }
         return equals
     }

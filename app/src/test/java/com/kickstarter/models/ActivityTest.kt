@@ -103,7 +103,6 @@ class ActivityTest : KSRobolectricTestCase() {
         assertFalse(activity1 == activity2)
     }
 
-
     @Test
     fun testProjectUpdateUrl() {
         val activity = ActivityFactory.activity().toBuilder().update(UpdateFactory.update()).build()
@@ -111,6 +110,5 @@ class ActivityTest : KSRobolectricTestCase() {
             "https://www.kickstarter.com/projects/2/slug-1/posts/1234",
             activity.projectUpdateUrl()
         )
-
     }
 }

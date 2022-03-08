@@ -1,16 +1,16 @@
 package com.kickstarter.models
 
+import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.mock.factories.ActivityFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UpdateFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Activity.Companion.CATEGORY_COMMENT_POST
 import com.kickstarter.models.Activity.Companion.CATEGORY_SUCCESS
-import junit.framework.TestCase
 import org.joda.time.DateTime
 import org.junit.Test
 
-class ActivityTest : TestCase() {
+class ActivityTest : KSRobolectricTestCase() {
 
     @Test
     fun testDefaultInit() {
@@ -101,5 +101,16 @@ class ActivityTest : TestCase() {
         val activity2 = ActivityFactory.activity().toBuilder().user(UserFactory.germanUser()).build()
 
         assertFalse(activity1 == activity2)
+    }
+
+
+    @Test
+    fun testProjectUpdateUrl() {
+        val activity = ActivityFactory.activity().toBuilder().update(UpdateFactory.update()).build()
+        assertEquals(
+            "https://www.kickstarter.com/projects/2/slug-1/posts/1234",
+            activity.projectUpdateUrl()
+        )
+
     }
 }

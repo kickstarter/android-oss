@@ -129,12 +129,7 @@ class ProjectPageActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { updateTabs ->
-                if (updateTabs.first) {
-                    pagerAdapterList.add(ProjectPagerTabs.CAMPAIGN.ordinal, ProjectPagerTabs.CAMPAIGN)
-                }
-                if (updateTabs.second) {
-                    pagerAdapterList.add(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT)
-                }
+                configureTabs(updateTabs)
                 configurePager(pagerAdapterList)
             }
 
@@ -354,6 +349,24 @@ class ProjectPageActivity :
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             binding.projectAppBarLayout.setExpanded(false)
+        }
+    }
+
+    private fun configureTabs(updateTabs: Pair<Boolean, Boolean>) {
+        if (updateTabs.first) {
+            // - avoid adding Campaign tab if it already exists
+            if (!pagerAdapterList.contains(ProjectPagerTabs.CAMPAIGN)) {
+                pagerAdapterList.add(
+                    ProjectPagerTabs.CAMPAIGN.ordinal,
+                    ProjectPagerTabs.CAMPAIGN
+                )
+            }
+        }
+        if (updateTabs.second) {
+            // - avoid adding Env tab if it already exists
+            if (!pagerAdapterList.contains(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT)) {
+                pagerAdapterList.add(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT)
+            }
         }
     }
 

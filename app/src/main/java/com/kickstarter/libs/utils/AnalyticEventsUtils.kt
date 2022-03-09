@@ -289,7 +289,9 @@ object AnalyticEventsUtils {
 
     @JvmOverloads
     fun activityProperties(activity: Activity, loggedInUser: User?, prefix: String = "activity_"): Map<String, Any> {
-        val props: HashMap<String, Any> = hashMapOf("category" to activity.category())
+        val props = HashMap<String, Any>().apply {
+            activity.category()?.let { put("category", it) }
+        }
 
         val properties = MapUtils.prefixKeys(props, prefix)
         activity.project()?.let { project ->

@@ -103,6 +103,7 @@
 
                 <data
                     android:host="www.kickstarter.com"
+                    android:pathPrefix="/discover"
                     android:scheme="ksr" />
             </intent-filter>
         </activity>
@@ -193,7 +194,7 @@
 
                 <data
                     android:host="*.kickstarter.com"
-                    android:pathPrefix="/projects/"
+                    android:pathPattern="\\/projects\\/.*"
                     android:scheme="ksr" />
             </intent-filter>
         </activity>
@@ -247,6 +248,7 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
+
         <activity android:name=".ui.activities.DeepLinkActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Translucent">
@@ -260,9 +262,23 @@
                     android:host="*.kickstarter.com"
                     android:pathPrefix="/projects"
                     android:scheme="https" />
+
                 <data
                     android:host="*.kickstarter.com"
-                    android:pathPrefix="/projects"
+                    android:pathPrefix="/comments"
+                    android:scheme="https" />
+                <data
+                    android:host="*.kickstarter.com"
+                    android:pathPrefix="/posts"
+                    android:scheme="https" />
+
+                <data
+                    android:host="*.kickstarter.com"
+                    android:pathPrefix="/comments"
+                    android:scheme="ksr" />
+                <data
+                    android:host="*.kickstarter.com"
+                    android:pathPrefix="/posts"
                     android:scheme="ksr" />
 
                 <data

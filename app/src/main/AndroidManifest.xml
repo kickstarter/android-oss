@@ -186,17 +186,7 @@
             android:configChanges="screenSize|orientation"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="LockedOrientationActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="*.kickstarter.com"
-                    android:pathPattern="\\/projects\\/.*"
-                    android:scheme="ksr" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".ui.activities.ProjectNotificationSettingsActivity"
@@ -265,20 +255,7 @@
 
                 <data
                     android:host="*.kickstarter.com"
-                    android:pathPrefix="/comments"
-                    android:scheme="https" />
-                <data
-                    android:host="*.kickstarter.com"
-                    android:pathPrefix="/posts"
-                    android:scheme="https" />
-
-                <data
-                    android:host="*.kickstarter.com"
-                    android:pathPrefix="/comments"
-                    android:scheme="ksr" />
-                <data
-                    android:host="*.kickstarter.com"
-                    android:pathPrefix="/posts"
+                    android:pathPrefix="/projects"
                     android:scheme="ksr" />
 
                 <data

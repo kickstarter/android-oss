@@ -15,15 +15,15 @@ abstract class ProjectNotification : Parcelable {
 
     @AutoParcel.Builder
     abstract class Builder {
-        abstract fun project(__: Project?): Builder?
-        abstract fun id(__: Long): Builder?
-        abstract fun email(__: Boolean): Builder?
-        abstract fun mobile(__: Boolean): Builder?
-        abstract fun urls(__: Urls?): Builder?
+        abstract fun project(project: Project?): Builder
+        abstract fun id(id: Long): Builder
+        abstract fun email(email: Boolean): Builder
+        abstract fun mobile(mobile: Boolean): Builder
+        abstract fun urls(urls: Urls?): Builder
         abstract fun build(): ProjectNotification?
     }
 
-    abstract fun toBuilder(): Builder?
+    abstract fun toBuilder(): Builder
 
     @AutoParcel
     @AutoGson
@@ -33,8 +33,8 @@ abstract class ProjectNotification : Parcelable {
 
         @AutoParcel.Builder
         abstract class Builder {
-            abstract fun name(__: String?): Builder?
-            abstract fun id(__: Long): Builder?
+            abstract fun name(name: String?): Builder?
+            abstract fun id(id: Long): Builder?
             abstract fun build(): Project?
         }
 
@@ -53,7 +53,7 @@ abstract class ProjectNotification : Parcelable {
 
         @AutoParcel.Builder
         abstract class Builder {
-            abstract fun api(__: Api?): Builder?
+            abstract fun api(api: Api?): Builder?
             abstract fun build(): Urls?
         }
 
@@ -64,7 +64,7 @@ abstract class ProjectNotification : Parcelable {
 
             @AutoParcel.Builder
             abstract class Builder {
-                abstract fun notification(__: String?): Builder?
+                abstract fun notification(notification: String?): Builder
                 abstract fun build(): Api?
             }
 

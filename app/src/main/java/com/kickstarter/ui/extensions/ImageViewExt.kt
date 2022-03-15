@@ -1,6 +1,8 @@
 package com.kickstarter.ui.extensions
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
@@ -22,17 +24,23 @@ fun ImageView.loadCircleImage(url: String?) {
 fun ImageView.loadImage(url: String?, context: Context, imageViewPlaceholder: AppCompatImageView? = null) {
     val target = this
     if (context.applicationContext.isKSApplication()) {
-        Picasso.get().load(url).into(
-            this,
-            object : Callback {
-                override fun onSuccess() {
-                    imageViewPlaceholder?.setImageDrawable(target.drawable)
-                }
+        Picasso
+            .get()
+            .load(url)
+            .placeholder(ColorDrawable(Color.TRANSPARENT))
+            .into(
+                this,
+                object : Callback {
+                    override fun onSuccess() {
+                        imageViewPlaceholder?.setImageDrawable(target.drawable)
+                    }
 
-                override fun onError(e: Exception?) {
+                    override fun onError(e: Exception?) {
+                        target.setImageDrawable(null)
+                        imageViewPlaceholder?.setImageDrawable(null)
+                    }
                 }
-            }
-        )
+            )
     } else {
         this.setImageResource(R.drawable.image_placeholder)
     }
@@ -42,6 +50,7 @@ fun ImageView.loadGifImage(url: String?, context: Context) {
     if (context.applicationContext.isKSApplication()) {
         Glide.with(context)
             .asGif()
+            .placeholder(ColorDrawable(Color.TRANSPARENT))
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .load(url)
             .into(this)

@@ -31,7 +31,6 @@ import com.kickstarter.ui.fragments.DiscoveryFragment
 import com.kickstarter.ui.fragments.DiscoveryFragment.Companion.newInstance
 import com.kickstarter.viewmodels.DiscoveryViewModel
 import rx.android.schedulers.AndroidSchedulers
-import java.util.Arrays
 import kotlin.collections.ArrayList
 
 @RequiresActivityViewModel(DiscoveryViewModel.ViewModel::class)
@@ -55,7 +54,7 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
         drawerAdapter = DiscoveryDrawerAdapter(viewModel.inputs)
         binding.discoveryDrawerRecyclerView.adapter = drawerAdapter
 
-        val viewPagerTitles = Arrays.asList(
+        val viewPagerTitles = listOf(
             getString(R.string.discovery_sort_types_magic),
             getString(R.string.Popular),
             getString(R.string.discovery_sort_types_newest),
@@ -249,7 +248,7 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
                     .putExtra(IntentKey.INTERNAL_BUILD_ENVELOPE, envelope)
                 startActivity(intent)
             }
-            .setNegativeButton(android.R.string.cancel) { dialog: DialogInterface?, which: Int -> }
+            .setNegativeButton(android.R.string.cancel) { _: DialogInterface?, _: Int -> }
             .setIcon(android.R.drawable.ic_dialog_alert)
             .show()
     }

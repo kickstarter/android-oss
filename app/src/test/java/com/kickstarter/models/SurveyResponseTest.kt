@@ -15,12 +15,13 @@ class SurveyResponseTest : KSRobolectricTestCase() {
         val surveyUrl = "https://www.kickstarter.com/surveys/" + IdFactory.id()
 
         val project = ProjectFactory.allTheWayProject()
+
+        val web = SurveyResponse.Urls.Web.builder()
+            .survey(surveyUrl)
+            .build()
+
         val urlsEnvelope = SurveyResponse.Urls.builder()
-            .web(
-                SurveyResponse.Urls.Web.builder()
-                    .survey(surveyUrl)
-                    .build()
-            )
+            .web(web)
             .build()
 
         val survey = SurveyResponse.builder()
@@ -32,6 +33,8 @@ class SurveyResponseTest : KSRobolectricTestCase() {
         assertEquals(survey.id(), 1234L)
         assertEquals(survey.answeredAt(), dateTime)
         assertEquals(survey.project(), project)
+        assertEquals(survey.urls(), urlsEnvelope)
+        assertEquals(survey.urls()?.web(), web)
         assertEquals(survey.urls()?.web()?.survey(), surveyUrl)
     }
 

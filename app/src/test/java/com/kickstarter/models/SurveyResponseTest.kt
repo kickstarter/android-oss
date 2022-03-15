@@ -36,6 +36,8 @@ class SurveyResponseTest : KSRobolectricTestCase() {
         assertEquals(survey.urls(), urlsEnvelope)
         assertEquals(survey.urls()?.web(), web)
         assertEquals(survey.urls()?.web()?.survey(), surveyUrl)
+        assertEquals(web.survey(), surveyUrl)
+        assertEquals(urlsEnvelope.web(), web)
     }
 
     @Test

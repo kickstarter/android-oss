@@ -1,66 +1,131 @@
-package com.kickstarter.models;
+package com.kickstarter.models
 
-import android.os.Parcelable;
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+import org.joda.time.DateTime
 
-import com.kickstarter.libs.qualifiers.AutoGson;
+@Parcelize
+class SurveyResponse private constructor(
+    private val answeredAt: DateTime?,
+    private val id: Long,
+    private val project: Project?,
+    private val urls: Urls?
+) : Parcelable {
 
-import org.joda.time.DateTime;
+    fun answeredAt() = this.answeredAt
+    fun id() = this.id
+    fun project() = this.project
+    fun urls() = this.urls
 
-import androidx.annotation.Nullable;
-import auto.parcel.AutoParcel;
+    @Parcelize
+    data class Builder(
+        private var answeredAt: DateTime? = DateTime.now(),
+        private var id: Long = 0L,
+        private var project: Project? = null,
+        private var urls: Urls? = null
+    ) : Parcelable {
 
-@AutoGson
-@AutoParcel
-public abstract class SurveyResponse implements Parcelable {
-  public abstract @Nullable DateTime answeredAt();
-  public abstract long id();
-  public abstract @Nullable Project project();
-  public abstract Urls urls();
-
-  @AutoParcel.Builder
-  public abstract static class Builder {
-    public abstract Builder answeredAt(DateTime __);
-    public abstract Builder id(long __);
-    public abstract Builder project(Project __);
-    public abstract Builder urls(Urls __);
-    public abstract SurveyResponse build();
-  }
-
-  @AutoGson
-  @AutoParcel
-  public abstract static class Urls implements Parcelable {
-    public abstract Web web();
-
-    @AutoGson
-    @AutoParcel
-    public abstract static class Web implements Parcelable {
-      public abstract String survey();
-
-      @AutoParcel.Builder
-      public abstract static class Builder {
-        public abstract SurveyResponse.Urls.Web.Builder survey(String __);
-        public abstract SurveyResponse.Urls.Web build();
-      }
-
-      public static Builder builder() {
-        return new AutoParcel_SurveyResponse_Urls_Web.Builder();
-      }
+        fun answeredAt(answeredAt: DateTime?) = apply { answeredAt?.let { this.answeredAt = it } }
+        fun id(id: Long) = apply { this.id = id ?: 0L }
+        fun project(project: Project?) = apply { this.project = project }
+        fun urls(urls: Urls?) = apply { urls?.let { this.urls = it } }
+        fun build() = SurveyResponse(
+            answeredAt = this.answeredAt,
+            id = id,
+            project = project,
+            urls = this.urls
+        )
     }
 
-    @AutoParcel.Builder
-    public abstract static class Builder {
-      public abstract SurveyResponse.Urls.Builder web(SurveyResponse.Urls.Web __);
-      public abstract SurveyResponse.Urls build();
+    @Parcelize
+    class Urls private constructor(
+        private val web: Web
+    ) : Parcelable {
+        fun web() = this.web
+
+        @Parcelize
+        data class Builder(
+            private var web: Web = Web.builder().build()
+        ) : Parcelable {
+            fun web(web: Web?) = apply { this.web = web ?: Web.builder().build() }
+
+            fun build() = Urls(
+                web = web
+            )
+        }
+
+        fun toBuilder() = Builder(
+            web = web,
+        )
+
+        companion object {
+            @JvmStatic
+            fun builder() = Builder()
+        }
+
+        override fun equals(obj: Any?): Boolean {
+            var equals = super.equals(obj)
+            if (obj is Urls) {
+                equals = web() == obj.web()
+            }
+            return equals
+        }
+
+        @Parcelize
+        class Web private constructor(
+            private val survey: String?
+        ) : Parcelable {
+            fun survey() = this.survey
+
+            @Parcelize
+            data class Builder(
+                private var survey: String? = null
+            ) : Parcelable {
+                fun survey(survey: String?) = apply { this.survey = survey }
+                fun build() = Web(
+                    survey = survey
+                )
+            }
+
+            fun toBuilder() = Builder(
+                survey = survey
+            )
+
+            companion object {
+                @JvmStatic
+                fun builder() = Builder()
+            }
+
+            override fun equals(obj: Any?): Boolean {
+                var equals = super.equals(obj)
+                if (obj is Web) {
+                    equals = survey() == obj.survey()
+                }
+                return equals
+            }
+        }
     }
 
-    public static SurveyResponse.Urls.Builder builder() {
-      return new AutoParcel_SurveyResponse_Urls.Builder();
+    fun toBuilder() = Builder(
+        answeredAt = answeredAt,
+        id = id,
+        project = project,
+        urls = urls
+    )
+
+    override fun equals(obj: Any?): Boolean {
+        var equals = super.equals(obj)
+        if (obj is Update) {
+            equals = answeredAt() == answeredAt() &&
+                id() == id() &&
+                project() == project() &&
+                urls() == urls()
+        }
+        return equals
     }
-  }
 
-  public static Builder builder() {
-    return new AutoParcel_SurveyResponse.Builder();
-  }
-
-  public abstract Builder toBuilder();
+    companion object {
+        @JvmStatic
+        fun builder() = Builder()
+    }
 }

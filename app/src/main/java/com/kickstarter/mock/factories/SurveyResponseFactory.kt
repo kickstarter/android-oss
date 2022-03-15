@@ -1,30 +1,27 @@
-package com.kickstarter.mock.factories;
+package com.kickstarter.mock.factories
 
-import com.kickstarter.models.SurveyResponse;
+import com.kickstarter.mock.factories.ProjectFactory.allTheWayProject
+import com.kickstarter.models.SurveyResponse
+import org.joda.time.DateTime
 
-import org.joda.time.DateTime;
+object SurveyResponseFactory {
+    @JvmStatic
+    fun surveyResponse(): SurveyResponse {
+        val surveyUrl = "https://www.kickstarter.com/surveys/" + IdFactory.id()
 
-import androidx.annotation.NonNull;
+        val web = SurveyResponse.Urls.Web.builder()
+            .survey(surveyUrl)
+            .build()
 
-public final class SurveyResponseFactory {
-  private SurveyResponseFactory() {}
+        val urlsEnvelope = SurveyResponse.Urls.builder()
+            .web(web)
+            .build()
 
-  public static @NonNull SurveyResponse surveyResponse() {
-    final String surveyUrl = "https://www.kickstarter.com/surveys/" + IdFactory.id();
-
-    final SurveyResponse.Urls.Web web = SurveyResponse.Urls.Web.builder()
-      .survey(surveyUrl)
-      .build();
-
-    final SurveyResponse.Urls urlsEnvelope = SurveyResponse.Urls.builder()
-      .web(web)
-      .build();
-
-    return SurveyResponse.builder()
-      .answeredAt(new DateTime().minusDays(10))
-      .id(IdFactory.id())
-      .project(ProjectFactory.allTheWayProject())
-      .urls(urlsEnvelope)
-      .build();
-  }
+        return SurveyResponse.builder()
+            .answeredAt(DateTime().minusDays(10))
+            .id(IdFactory.id().toLong())
+            .project(allTheWayProject())
+            .urls(urlsEnvelope)
+            .build()
+    }
 }

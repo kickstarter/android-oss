@@ -115,7 +115,7 @@ class SurveyResponse private constructor(
 
     override fun equals(obj: Any?): Boolean {
         var equals = super.equals(obj)
-        if (obj is Update) {
+        if (obj is SurveyResponse) {
             equals = answeredAt() == answeredAt() &&
                 id() == id() &&
                 project() == project() &&

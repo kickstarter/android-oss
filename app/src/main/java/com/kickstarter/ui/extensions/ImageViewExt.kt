@@ -27,7 +27,6 @@ fun ImageView.loadImage(url: String?, context: Context, imageViewPlaceholder: Ap
         Picasso
             .get()
             .load(url)
-            .placeholder(ColorDrawable(Color.TRANSPARENT))
             .into(
                 this,
                 object : Callback {

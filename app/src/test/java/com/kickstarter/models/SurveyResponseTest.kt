@@ -44,11 +44,11 @@ class SurveyResponseTest : KSRobolectricTestCase() {
     fun testDefaultWebInit() {
         val surveyUrl = "https://www.kickstarter.com/surveys/" + IdFactory.id()
 
-        val web = SurveyResponse.Urls.Web.builder().build()
-        assertEquals(web.toBuilder().survey(surveyUrl).build(), surveyUrl)
+        val web = SurveyResponse.Urls.Web.builder().build().toBuilder().survey(surveyUrl).build()
+        assertEquals(web.survey(), surveyUrl)
 
-        val urlsEnvelope = SurveyResponse.Urls.builder().build()
-        assertEquals(urlsEnvelope.toBuilder().web(web).build(), surveyUrl)
+        val urlsEnvelope = SurveyResponse.Urls.builder().build().toBuilder().web(web).build()
+        assertEquals(urlsEnvelope.web(), web)
     }
 
     @Test

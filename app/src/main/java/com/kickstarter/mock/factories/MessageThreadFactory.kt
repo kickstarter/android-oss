@@ -1,18 +1,21 @@
-package com.kickstarter.mock.factories;
+package com.kickstarter.mock.factories
 
-import com.kickstarter.models.MessageThread;
+import com.kickstarter.mock.factories.MessageFactory.message
+import com.kickstarter.mock.factories.ProjectFactory.project
+import com.kickstarter.mock.factories.UserFactory.user
+import com.kickstarter.models.MessageThread
+import com.kickstarter.models.MessageThread.Companion.builder
 
-public final class MessageThreadFactory {
-  private MessageThreadFactory() {}
-
-  public static MessageThread messageThread() {
-    return MessageThread.builder()
-      .closed(false)
-      .id(123455)
-      .lastMessage(MessageFactory.message())
-      .participant(UserFactory.user())
-      .project(ProjectFactory.project())
-      .unreadMessagesCount(0)
-      .build();
-  }
+object MessageThreadFactory {
+    @JvmStatic
+    fun messageThread(): MessageThread {
+        return builder()
+            .closed(false)
+            .id(123455)
+            .lastMessage(message())
+            .participant(user())
+            .project(project())
+            .unreadMessagesCount(0)
+            .build()
+    }
 }

@@ -1,17 +1,15 @@
 package com.kickstarter.models
 
 import android.os.Parcelable
-import auto.parcel.AutoParcel
-import com.kickstarter.libs.qualifiers.AutoGson
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class ProjectNotification private constructor(
-    private val project: Project?,
+    private val project: Project,
     private val id: Long,
     private val email: Boolean,
     private val mobile: Boolean,
-    private val urls: Urls?
+    private val urls: Urls
 ) : Parcelable {
     fun project() = this.project
     fun id() = this.id
@@ -21,17 +19,17 @@ class ProjectNotification private constructor(
 
     @Parcelize
     data class Builder(
-        private var project: Project? = null,
+        private var project: Project = Project.builder().build(),
         private var id: Long = 0L,
         private var email: Boolean = false,
         private var mobile: Boolean = false,
-        private var urls: Urls? = null
+        private var urls: Urls = Urls.builder().build()
     ) : Parcelable {
-        fun project(project: Project?) = apply { this.project = project }
+        fun project(project: Project?) = apply { this.project = project ?: Project.builder().build() }
         fun id(id: Long?) = apply { id?.let { this.id = it } }
         fun email(email: Boolean?) = apply { email?.let { this.email = it } }
         fun mobile(mobile: Boolean?) = apply { mobile?.let { this.mobile = it } }
-        fun urls(urls: Urls?) = apply { this.urls = urls }
+        fun urls(urls: Urls?) = apply { this.urls = urls ?: Urls.builder().build() }
         fun build() = ProjectNotification(
             project = project,
             id = id,
@@ -49,53 +47,67 @@ class ProjectNotification private constructor(
         urls = urls
     )
 
-    @AutoParcel
-    @AutoGson
-    abstract class Project : Parcelable {
-        abstract fun name(): String?
-        abstract fun id(): Long
+    @Parcelize
+    class Project private constructor(
+        private val name: String,
+        private val id: Long
+    ) : Parcelable {
+        fun name() = this.name
+        fun id() = this.id
 
-        @AutoParcel.Builder
-        abstract class Builder {
-            abstract fun name(name: String?): Builder?
-            abstract fun id(id: Long): Builder?
-            abstract fun build(): Project?
+        @Parcelize
+        data class Builder(
+            private var name: String = "",
+            private var id: Long = 0L
+        ) : Parcelable {
+            fun name(name: String?) = apply { this.name = name ?: "" }
+            fun id(id: Long?) = apply { this.id = id ?: 0L }
+            fun build() = Project(
+                name = name,
+                id = id
+            )
         }
 
         companion object {
             @JvmStatic
             fun builder(): Builder {
-                return AutoParcel_ProjectNotification_Project.Builder()
+                return Builder()
             }
         }
     }
 
-    @AutoParcel
-    @AutoGson
-    abstract class Urls : Parcelable {
-        abstract fun api(): Api?
+    @Parcelize
+    class Urls private constructor(
+        private val api: Api
+    ) : Parcelable {
+        fun api() = this.api
 
-        @AutoParcel.Builder
-        abstract class Builder {
-            abstract fun api(api: Api?): Builder?
-            abstract fun build(): Urls?
+        @Parcelize
+        data class Builder(
+            private var api: Api = Api.builder().build()
+        ) : Parcelable {
+            fun api(api: Api?) = apply { this.api = api ?: Api.builder().build() }
+            fun build() = Urls(api = api)
         }
 
-        @AutoParcel
-        @AutoGson
-        abstract class Api : Parcelable {
-            abstract fun notification(): String?
+        @Parcelize
+        class Api private constructor(
+            private val notification: String
+        ) : Parcelable {
+            fun notification() = this.notification
 
-            @AutoParcel.Builder
-            abstract class Builder {
-                abstract fun notification(notification: String?): Builder
-                abstract fun build(): Api?
+            @Parcelize
+            data class Builder(
+                private var notification: String = ""
+            ) : Parcelable {
+                fun notification(notification: String?) = apply { this.notification = notification ?: "" }
+                fun build() = Api(notification = notification)
             }
 
             companion object {
                 @JvmStatic
                 fun builder(): Builder {
-                    return AutoParcel_ProjectNotification_Urls_Api.Builder()
+                    return Builder()
                 }
             }
         }
@@ -103,7 +115,7 @@ class ProjectNotification private constructor(
         companion object {
             @JvmStatic
             fun builder(): Builder {
-                return AutoParcel_ProjectNotification_Urls.Builder()
+                return Builder()
             }
         }
     }

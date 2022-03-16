@@ -33,6 +33,7 @@ class ImageWithCaptionView @JvmOverloads constructor(
     fun setImage(src: String) {
         if (src.isEmpty() || src.isBlank()) {
             binding.imageView.setImageDrawable(null)
+            binding.imageViewPlaceholder.setImageDrawable(null)
         } else {
             if (src.isGif()) {
                 binding.imageView.loadGifImage(src, context)

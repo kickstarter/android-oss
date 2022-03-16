@@ -41,6 +41,17 @@ class SurveyResponseTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testDefaultWebInit() {
+        val surveyUrl = "https://www.kickstarter.com/surveys/" + IdFactory.id()
+
+        val web = SurveyResponse.Urls.Web.builder().build()
+        assertEquals(web.toBuilder().survey(surveyUrl).build(), surveyUrl)
+
+        val urlsEnvelope = SurveyResponse.Urls.builder().build()
+        assertEquals(urlsEnvelope.toBuilder().web(web).build(), surveyUrl)
+    }
+
+    @Test
     fun testSurvey_equalFalse() {
         val survey = SurveyResponse.builder().build()
         val survey2 = SurveyResponse.builder().project(ProjectFactory.backedProject()).build()

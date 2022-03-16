@@ -22,12 +22,12 @@ object ProjectNotificationFactory {
     }
 
     private fun project(): ProjectNotification.Project {
-        return ProjectNotification.Project.builder().id(IdFactory.id().toLong())!!
-            .name("SKULL GRAPHIC TEE")!!.build()!!
+        return ProjectNotification.Project.builder().id(1L)
+            .name("SKULL GRAPHIC TEE").build()
     }
 
     private fun urls(): ProjectNotification.Urls {
         val api = ProjectNotification.Urls.Api.builder().notification("/url").build()
-        return ProjectNotification.Urls.builder().api(api)!!.build()!!
+        return ProjectNotification.Urls.builder().api(api).build()
     }
 }

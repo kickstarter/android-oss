@@ -15,7 +15,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.apollographql.apollo'
-apply plugin: 'jacoco'
 apply from: 'quality.gradle'
 apply from: "$project.rootDir/jacoco.gradle"
 
@@ -41,12 +40,12 @@ if (file('signing.gradle').exists()) {
 
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 31
 
     defaultConfig {
         applicationId "com.kickstarter"
         minSdkVersion 23
-        targetSdkVersion 32
+        targetSdkVersion 31
         testApplicationId "com.kickstarter.internal.debug.test"
         testInstrumentationRunner "com.kickstarter.screenshoot.testing.KSScreenShotTestRunner"
 

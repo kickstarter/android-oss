@@ -91,7 +91,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="www.kickstarter.com"
+                    android:host="*.kickstarter.com"
                     android:pathPrefix="/discover"
                     android:scheme="https" />
             </intent-filter>
@@ -102,7 +102,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="www.kickstarter.com"
+                    android:host="*.kickstarter.com"
                     android:scheme="ksr" />
             </intent-filter>
         </activity>
@@ -184,19 +184,8 @@
             android:exported="true"
             android:configChanges="screenSize|orientation"
             android:windowSoftInputMode="adjustResize"
-            android:launchMode="singleInstance"
             tools:ignore="LockedOrientationActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="*.kickstarter.com"
-                    android:pathPrefix="/projects/"
-                    android:scheme="ksr" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".ui.activities.ProjectNotificationSettingsActivity"
@@ -248,6 +237,7 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
+
         <activity android:name=".ui.activities.DeepLinkActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Translucent">
@@ -261,6 +251,7 @@
                     android:host="*.kickstarter.com"
                     android:pathPrefix="/projects"
                     android:scheme="https" />
+
                 <data
                     android:host="*.kickstarter.com"
                     android:pathPrefix="/projects"

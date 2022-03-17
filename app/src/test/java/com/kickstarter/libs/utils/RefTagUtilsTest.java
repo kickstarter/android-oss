@@ -11,6 +11,8 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.Urls;
 import com.kickstarter.models.Web;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
 import java.net.CookieManager;
@@ -51,7 +53,8 @@ public final class RefTagUtilsTest extends KSRobolectricTestCase {
 
   @Test
   public void testBuildCookieForRefTagAndProject_WithWellFormedUrl() {
-    final Project project = ProjectFactory.project();
+    final Project project = ProjectFactory.project().toBuilder().deadline(new DateTime(DateTimeZone.UTC).plusDays(10).plusSeconds(1)).build();
+
     final RefTag refTag = RefTag.category();
     final HttpCookie cookie = RefTagUtils.buildCookieWithRefTagAndProject(refTag, project);
 

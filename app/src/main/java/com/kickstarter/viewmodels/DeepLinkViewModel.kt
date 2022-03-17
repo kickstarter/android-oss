@@ -101,9 +101,6 @@ interface DeepLinkViewModel {
             uriFromIntent
                 .filter { ObjectUtils.isNotNull(it) }
                 .filter {
-                    it.isProjectUri(webEndpoint)
-                }
-                .filter {
                     !it.isProjectSaveUri(webEndpoint)
                 }
                 .filter {
@@ -124,6 +121,9 @@ interface DeepLinkViewModel {
                 .filter {
                     !it.isRewardFulfilledDl()
                 }
+                .filter {
+                    it.isProjectUri(webEndpoint)
+                }
                 .map { appendRefTagIfNone(it) }
                 .compose(bindToLifecycle())
                 .subscribe {
@@ -132,9 +132,6 @@ interface DeepLinkViewModel {
 
             uriFromIntent
                 .filter { ObjectUtils.isNotNull(it) }
-                .filter {
-                    it.isProjectUri(webEndpoint)
-                }
                 .filter {
                     it.isProjectSaveUri(webEndpoint)
                 }
@@ -255,10 +252,10 @@ interface DeepLinkViewModel {
                 .filter { !it.isSettingsUrl() }
                 .filter { !it.isProjectSaveUri(webEndpoint) }
                 .filter { !it.isCheckoutUri(webEndpoint) }
-                .filter { !it.isProjectUri(webEndpoint) }
                 .filter { !it.isProjectCommentUri(webEndpoint) }
                 .filter { !it.isProjectUpdateUri(webEndpoint) }
                 .filter { !it.isProjectUpdateCommentsUri(webEndpoint) }
+                .filter { !it.isProjectUri(webEndpoint) }
                 .filter { !it.isRewardFulfilledDl() }
 
             Observable.merge(projectPreview, unsupportedDeepLink)

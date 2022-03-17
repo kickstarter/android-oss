@@ -38,13 +38,13 @@ class ConfigTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testDefaultWebInit() {
+    fun testDefaultToBuilderInit() {
         val countryCode = "US"
         val currencyCode = "USD"
         val currencySymbol = "$"
-        val US = Config.LaunchedCountry.builder().build()
+        var US = Config.LaunchedCountry.builder().build()
 
-        US.toBuilder().name(countryCode)
+        US = US.toBuilder().name(countryCode)
             .currencyCode(currencyCode)
             .currencySymbol(currencySymbol)
             .trailingCode(true)
@@ -59,10 +59,10 @@ class ConfigTest : KSRobolectricTestCase() {
 
         val features = mapOf<String, Boolean>()
 
-        val config = Config.builder()
+        var config = Config.builder()
             .build()
 
-        config.toBuilder().launchedCountries(launchedCountries).features(features).build()
+        config = config.toBuilder().launchedCountries(launchedCountries).features(features).build()
 
         assertEquals(config.launchedCountries(), launchedCountries)
         assertEquals(config.features(), features)

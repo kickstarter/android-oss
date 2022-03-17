@@ -1,5 +1,3 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
 apply plugin: 'jacoco'
 
 jacoco {
@@ -72,7 +70,5 @@ android.applicationVariants.all { variant ->
         ]
         classDirectories.from = files([debugTree], [kotlinDebugTree])
         executionData.from = files("${buildDir}/jacoco/test${variantName}UnitTest.exec")
-
     }
-
 }

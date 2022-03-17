@@ -1,102 +1,103 @@
-package com.kickstarter.mock.factories;
+package com.kickstarter.mock.factories
 
-import com.kickstarter.libs.Config;
+import com.kickstarter.libs.Config
+import com.kickstarter.libs.Config.LaunchedCountry
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
-
-import androidx.annotation.NonNull;
-
-public final class ConfigFactory {
-  private ConfigFactory() {}
-
-  public static @NonNull Config config() {
-    final Config.LaunchedCountry US = Config.LaunchedCountry.builder()
-      .name("US")
-      .currencyCode("USD")
-      .currencySymbol("$")
-      .trailingCode(true)
-      .build();
-
-    final Config.LaunchedCountry GB = Config.LaunchedCountry.builder()
-      .name("GB")
-      .currencyCode("GBP")
-      .currencySymbol("£")
-      .trailingCode(false)
-      .build();
-
-    final Config.LaunchedCountry CA = Config.LaunchedCountry.builder()
-      .name("CA")
-      .currencyCode("CAD")
-      .currencySymbol("$")
-      .trailingCode(true)
-      .build();
-
-
-    final Config.LaunchedCountry JP = Config.LaunchedCountry.builder()
+object ConfigFactory {
+    @JvmStatic
+    fun config(): Config {
+        val US = LaunchedCountry.builder()
+            .name("US")
+            .currencyCode("USD")
+            .currencySymbol("$")
+            .trailingCode(true)
+            .build()
+        val GB = LaunchedCountry.builder()
+            .name("GB")
+            .currencyCode("GBP")
+            .currencySymbol("£")
+            .trailingCode(false)
+            .build()
+        val CA = LaunchedCountry.builder()
+            .name("CA")
+            .currencyCode("CAD")
+            .currencySymbol("$")
+            .trailingCode(true)
+            .build()
+        val JP = LaunchedCountry.builder()
             .name("JP")
             .currencyCode("JPY")
             .currencySymbol("¥")
             .trailingCode(false)
-            .build();
+            .build()
+        return Config.builder()
+            .countryCode("US")
+            .features(mutableMapOf())
+            .launchedCountries(listOf(US, GB, CA, JP))
+            .build()
+    }
 
-    return Config.builder()
-      .countryCode("US")
-      .features(Collections.emptyMap())
-      .launchedCountries(Arrays.asList(US, GB, CA, JP))
-      .build();
-  }
+    fun configForUSUser(): Config {
+        return config()
+    }
 
-  public static @NonNull Config configForUSUser() {
-    return config();
-  }
-
-  public static @NonNull Config configFor() {
-    return config().toBuilder()
+    fun configFor(): Config {
+        return config().toBuilder()
             .countryCode("CA")
-            .build();
-  }
+            .build()
+    }
 
-  public static @NonNull Config configForCA() {
-    return config().toBuilder()
-      .countryCode("CA")
-      .build();
-  }
+    fun configForCA(): Config {
+        return config().toBuilder()
+            .countryCode("CA")
+            .build()
+    }
 
-  public static @NonNull Config configForITUser() {
-    return config().toBuilder()
-      .countryCode("IT")
-      .build();
-  }
+    fun configForITUser(): Config {
+        return config().toBuilder()
+            .countryCode("IT")
+            .build()
+    }
 
-  public static @NonNull Config configWithExperiment(final @NonNull String experiment, final @NonNull String variant) {
-    return config().toBuilder()
-      .abExperiments(Collections.singletonMap(experiment, variant))
-      .build();
-  }
+    fun configWithExperiment(experiment: String, variant: String): Config {
+        return config().toBuilder()
+            .abExperiments(
+                mutableMapOf<String, String>().apply {
+                    this[experiment] = experiment
+                }
+            )
+            .build()
+    }
 
-  public static @NonNull Config configWithExperiments(final @NonNull Map<String, String> abExperiments) {
-    return config().toBuilder()
-      .abExperiments(abExperiments)
-      .build();
-  }
+    fun configWithExperiments(abExperiments: Map<String, String>): Config {
+        return config().toBuilder()
+            .abExperiments(abExperiments)
+            .build()
+    }
 
-  public static @NonNull Config configWithFeatureEnabled(final @NonNull String featureKey) {
-    return config().toBuilder()
-      .features(Collections.singletonMap(featureKey, true))
-      .build();
-  }
+    fun configWithFeatureEnabled(featureKey: String): Config {
+        return config().toBuilder()
+            .features(
+                mutableMapOf<String, Boolean>().apply {
+                    this[featureKey] = true
+                }
+            )
+            .build()
+    }
 
-  public static @NonNull Config configWithFeatureDisabled(final @NonNull String featureKey) {
-    return config().toBuilder()
-            .features(Collections.singletonMap(featureKey, false))
-            .build();
-  }
+    fun configWithFeatureDisabled(featureKey: String): Config {
+        return config().toBuilder()
+            .features(
+                mutableMapOf<String, Boolean>().apply {
+                    this[featureKey] = false
+                }
+            )
+            .build()
+    }
 
-  public static @NonNull Config configWithFeaturesEnabled(final @NonNull Map<String, Boolean> features) {
-    return config().toBuilder()
-      .features(features)
-      .build();
-  }
+    fun configWithFeaturesEnabled(features: Map<String, Boolean>): Config {
+        return config().toBuilder()
+            .features(features.toMutableMap())
+            .build()
+    }
 }

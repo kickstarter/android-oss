@@ -90,5 +90,8 @@ fun Config.setUserFeatureFlagsPrefWithFeatureFlag(
         it.set(Gson().toJson(featuresFlagsMap).toString())
     }
 
-    this.features()?.set(featureName, isEnabled)
+    this.features()?.toMutableMap()?.apply {
+        set(featureName, isEnabled)
+        this@setUserFeatureFlagsPrefWithFeatureFlag.toBuilder().features(this.toMap()).build()
+    }
 }

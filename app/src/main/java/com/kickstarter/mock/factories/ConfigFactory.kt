@@ -63,7 +63,7 @@ object ConfigFactory {
         return config().toBuilder()
             .abExperiments(
                 mutableMapOf<String, String>().apply {
-                    this[experiment] = experiment
+                    this[experiment] = variant
                 }
             )
             .build()

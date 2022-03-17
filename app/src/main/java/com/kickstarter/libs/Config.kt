@@ -75,7 +75,7 @@ class Config private constructor(
             )
         }
 
-        fun toBuilder() = LaunchedCountry(
+        fun toBuilder() = Builder(
             name = name,
             currencyCode = currencyCode,
             currencySymbol = currencySymbol,

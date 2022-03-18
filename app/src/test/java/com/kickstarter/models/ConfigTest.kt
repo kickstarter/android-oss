@@ -105,4 +105,12 @@ class ConfigTest : KSRobolectricTestCase() {
 
         assertEquals(config1, config2)
     }
+
+    @Test
+    fun testLaunchedCountry_equalTrue() {
+        val launchedCountry1 = Config.LaunchedCountry.builder().build()
+        val launchedCountry2 = Config.LaunchedCountry.builder().build()
+
+        assertEquals(launchedCountry1, launchedCountry2)
+    }
 }

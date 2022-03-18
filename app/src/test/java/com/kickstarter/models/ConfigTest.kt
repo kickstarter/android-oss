@@ -2,6 +2,7 @@ package com.kickstarter.models
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Config
+import com.kickstarter.mock.factories.ConfigFactory
 import org.junit.Test
 
 class ConfigTest : KSRobolectricTestCase() {
@@ -83,17 +84,11 @@ class ConfigTest : KSRobolectricTestCase() {
             .currencySymbol("£")
             .trailingCode(false)
             .build()
-        val CA = Config.LaunchedCountry.builder()
-            .name("CA")
-            .currencyCode("CAD")
-            .currencySymbol("$")
-            .trailingCode(true)
-            .build()
 
         val config = Config.builder().build()
         val config2 = Config.builder().launchedCountries(listOf(US, GB)).build()
-        val config3 = Config.builder().launchedCountries(listOf(US, CA)).build()
-        val config4 = Config.builder().launchedCountries(listOf(CA, GB)).build()
+        val config3 = ConfigFactory.configForCA()
+        val config4 = ConfigFactory.configForITUser()
 
         assertFalse(config == config2)
         assertFalse(config == config3)

@@ -86,6 +86,13 @@ class ConfigExtensionTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun enabledFeatureFlags_whenGivenMapOfFeatureFlagsDisabled_shouldReturnCorrectNumberOfEnabledFeatureFlags() {
+        val configSeveralFeatureFlags = ConfigFactory.configWithFeatureDisabled("android_native_checkout")
+
+        assertEquals(JSONArray(), configSeveralFeatureFlags.enabledFeatureFlags())
+    }
+
+    @Test
     fun enabledFeatureFlags_whenGivenTrueFeatureFlag_shouldReturnTrueEnabledFeatureFlag() {
         val configEnableFeatureFlag = ConfigFactory.configWithFeaturesEnabled(
             mapOf(
@@ -101,5 +108,21 @@ class ConfigExtensionTest : KSRobolectricTestCase() {
             },
             configEnableFeatureFlag.enabledFeatureFlags()
         )
+    }
+
+    @Test
+    fun setUserFeatureFlagsPrefWithFeatureFlag_whenGivenTrueFeatureFlag_shouldReturnTrueEnabledFeatureFlag() {
+        val configEnableFeatureFlag = ConfigFactory.configWithFeaturesEnabled(
+            mapOf(
+                Pair("android_native_checkout", false),
+            )
+        )
+
+        val newConfig = configEnableFeatureFlag
+            .setUserFeatureFlagsPrefWithFeatureFlag(null, "android_native_checkout", true)
+
+        val flag = newConfig.features()?.get("android_native_checkout") ?: false
+
+        assertTrue(flag)
     }
 }

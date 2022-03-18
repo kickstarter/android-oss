@@ -76,7 +76,7 @@ fun Config.setUserFeatureFlagsPrefWithFeatureFlag(
     featuresFlagPreference: StringPreferenceType?,
     featureName: String,
     isEnabled: Boolean
-) {
+): Config {
     featuresFlagPreference?.let {
         val jsonString = it.get()
         val featuresFlagsMap = if (jsonString.isNullOrEmpty()) {
@@ -90,8 +90,9 @@ fun Config.setUserFeatureFlagsPrefWithFeatureFlag(
         it.set(Gson().toJson(featuresFlagsMap).toString())
     }
 
-    this.features()?.toMutableMap()?.apply {
-        set(featureName, isEnabled)
-        this@setUserFeatureFlagsPrefWithFeatureFlag.toBuilder().features(this.toMap()).build()
-    }
+    return this.toBuilder().features(
+        features()?.toMutableMap()?.apply {
+            set(featureName, isEnabled)
+        }?.toMap()
+    ).build()
 }

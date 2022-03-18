@@ -41,12 +41,6 @@ object ConfigFactory {
         return config()
     }
 
-    fun configFor(): Config {
-        return config().toBuilder()
-            .countryCode("CA")
-            .build()
-    }
-
     fun configForCA(): Config {
         return config().toBuilder()
             .countryCode("CA")

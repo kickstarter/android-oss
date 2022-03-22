@@ -1,25 +1,38 @@
-package com.kickstarter.services.apirequests;
+package com.kickstarter.services.apirequests
 
-import android.os.Parcelable;
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-import com.kickstarter.libs.qualifiers.AutoGson;
+@Parcelize
+class MessageBody private constructor(
+    private val body: String?
+) : Parcelable {
+    fun body() = this.body
 
-import auto.parcel.AutoParcel;
+    @Parcelize
+    data class Builder(
+        private var body: String? = null
+    ) : Parcelable {
+        fun body(body: String?) = apply { this.body = body }
+        fun build() = MessageBody(
+            body = body
+        )
+    }
 
-@AutoGson
-@AutoParcel
-public abstract class MessageBody implements Parcelable {
-  public abstract String body();
+    fun toBuilder() = Builder(
+        body = body
+    )
 
-  @AutoParcel.Builder
-  public abstract static class Builder {
-    public abstract Builder body(String __);
-    public abstract MessageBody build();
-  }
+    override fun equals(obj: Any?): Boolean {
+        var equals = super.equals(obj)
+        if (obj is MessageBody) {
+            equals = body() == obj.body()
+        }
+        return equals
+    }
 
-  public static Builder builder() {
-    return new AutoParcel_MessageBody.Builder();
-  }
-
-  public abstract Builder toBuilder();
+    companion object {
+        @JvmStatic
+        fun builder() = Builder()
+    }
 }

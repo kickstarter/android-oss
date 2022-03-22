@@ -54,4 +54,20 @@ class NumberOptionsTest : KSRobolectricTestCase() {
 
         assertEquals(numberOptions1, numberOptions2)
     }
+
+    @Test
+    fun testNumberOptions_isCurrency() {
+        val numberOptions1 = NumberOptions.builder().build()
+        val numberOptions2 = NumberOptions.builder()
+            .bucketAbove(3.2f)
+            .bucketPrecision(10)
+            .currencyCode("USD")
+            .currencySymbol("$")
+            .precision(12)
+            .roundingMode(RoundingMode.HALF_UP)
+            .build()
+
+        assertFalse(numberOptions1.isCurrency)
+        assertTrue(numberOptions2.isCurrency)
+    }
 }

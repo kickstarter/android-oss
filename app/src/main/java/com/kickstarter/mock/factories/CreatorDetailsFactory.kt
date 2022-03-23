@@ -2,13 +2,12 @@ package com.kickstarter.mock.factories
 
 import com.kickstarter.models.CreatorDetails
 
-class CreatorDetailsFactory private constructor() {
-    companion object {
-        fun creatorDetails(): CreatorDetails {
-            return CreatorDetails.builder()
-                .backingsCount(3)
-                .launchedProjectsCount(2)
-                .build()
-        }
+object CreatorDetailsFactory {
+    @JvmStatic
+    fun creatorDetails(): CreatorDetails {
+        return CreatorDetails.builder()
+            .backingsCount(3)
+            .launchedProjectsCount(2)
+            .build()
     }
 }

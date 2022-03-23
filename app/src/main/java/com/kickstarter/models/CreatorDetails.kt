@@ -1,26 +1,46 @@
 package com.kickstarter.models
 
 import android.os.Parcelable
-import auto.parcel.AutoParcel
+import kotlinx.parcelize.Parcelize
 
-@AutoParcel
-abstract class CreatorDetails : Parcelable {
-    abstract fun backingsCount(): Int
-    abstract fun launchedProjectsCount(): Int
+@Parcelize
+class CreatorDetails(
+    private val backingsCount: Int,
+    private val launchedProjectsCount: Int,
+) : Parcelable {
+    fun backingsCount() = this.backingsCount
+    fun launchedProjectsCount() = this.launchedProjectsCount
 
-    @AutoParcel.Builder
-    abstract class Builder {
-        abstract fun backingsCount(backingsCount: Int): Builder
-        abstract fun launchedProjectsCount(launchedProjectsCount: Int): Builder
-        abstract fun build(): CreatorDetails
+    @Parcelize
+    data class Builder(
+        private var backingsCount: Int = 0,
+        private var launchedProjectsCount: Int = 0
+    ) : Parcelable {
+        fun backingsCount(backingsCount: Int) = apply { this.backingsCount = backingsCount }
+        fun launchedProjectsCount(launchedProjectsCount: Int) = apply {
+            this.launchedProjectsCount = launchedProjectsCount
+        }
+        fun build() = CreatorDetails(
+            backingsCount = backingsCount,
+            launchedProjectsCount = launchedProjectsCount
+        )
     }
 
-    abstract fun toBuilder(): Builder
+    fun toBuilder() = Builder(
+        backingsCount = backingsCount,
+        launchedProjectsCount = launchedProjectsCount
+    )
+
+    override fun equals(obj: Any?): Boolean {
+        var equals = super.equals(obj)
+        if (obj is CreatorDetails) {
+            equals = backingsCount() == obj.backingsCount() &&
+                launchedProjectsCount() == obj.launchedProjectsCount()
+        }
+        return equals
+    }
 
     companion object {
-
-        fun builder(): Builder {
-            return AutoParcel_CreatorDetails.Builder()
-        }
+        fun builder() = Builder()
     }
 }

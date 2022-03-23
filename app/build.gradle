@@ -261,8 +261,8 @@ dependencies {
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:29.2.1')
+    implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-crashlytics'
-    implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation "com.google.firebase:firebase-messaging"
     implementation 'com.google.firebase:firebase-inappmessaging-display'
     implementation 'com.google.firebase:firebase-perf'

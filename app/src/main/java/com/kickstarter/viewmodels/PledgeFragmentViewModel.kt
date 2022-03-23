@@ -864,7 +864,7 @@ interface PledgeFragmentViewModel {
 
             // - Calculate total for Reward || Rewards + AddOns with Shipping location
             val totalWShipping = Observable.combineLatest(isRewardWithShipping, pledgeAmountHeader, shippingAmount, this.bonusAmount, pledgeReason) {
-                _, pAmount, shippingAmount, bAmount, pReason ->
+                    _, pAmount, shippingAmount, bAmount, pReason ->
                 return@combineLatest getAmount(pAmount, shippingAmount, bAmount, pReason)
             }
                 .distinctUntilChanged()

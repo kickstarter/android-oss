@@ -257,7 +257,7 @@ dependencies {
 
     // GLIDE
     implementation 'com.github.bumptech.glide:glide:4.11.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    kapt 'com.github.bumptech.glide:compiler:4.11.0'
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:29.2.1')

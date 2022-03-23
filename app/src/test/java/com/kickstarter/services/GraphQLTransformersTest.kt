@@ -10,8 +10,8 @@ import fragment.Faq
 import fragment.User
 import org.joda.time.DateTime
 import org.junit.Test
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 import type.EnvironmentalCommitmentCategory
 
 class GraphQLTransformersTest : KSRobolectricTestCase() {

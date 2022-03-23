@@ -30,11 +30,11 @@ class CheckoutRiskMessageFragment : BaseBottomSheetDialogFragment <CheckoutRiskM
     companion object {
         fun newInstance(delegate: Delegate):
             CheckoutRiskMessageFragment {
-                val fragment = CheckoutRiskMessageFragment().apply {
-                    this.delegate = delegate
-                }
-                return fragment
+            val fragment = CheckoutRiskMessageFragment().apply {
+                this.delegate = delegate
             }
+            return fragment
+        }
     }
 
     private var binding: FragmentCheckoutRiskMessageBinding? = null

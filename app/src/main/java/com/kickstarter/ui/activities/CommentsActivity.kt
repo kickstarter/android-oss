@@ -63,7 +63,7 @@ class CommentsActivity :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                comments ->
+                    comments ->
                 commentsAdapter.takeData(comments)
             }
 

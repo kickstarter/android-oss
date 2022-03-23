@@ -245,14 +245,14 @@ interface CommentsViewModel {
             this.insertNewCommentToList
                 .distinctUntilChanged()
                 .withLatestFrom(this.currentUser.loggedInUser()) {
-                    comment, user ->
+                        comment, user ->
                     Pair(comment, user)
                 }
                 .map {
                     Pair(it.first, buildCommentBody(Pair(it.second, it.first)))
                 }
                 .withLatestFrom(initialProject) {
-                    commentData, project ->
+                        commentData, project ->
                     Pair(commentData, project)
                 }
                 .compose(combineLatestPair(commentableId))
@@ -281,7 +281,7 @@ interface CommentsViewModel {
                 .map { it.first }
                 .distinctUntilChanged()
                 .withLatestFrom(projectOrUpdateComment) {
-                    commentData, project ->
+                        commentData, project ->
                     Pair(commentData, project)
                 }.subscribe {
                     this.analyticEvents.trackCommentCTA(it.second.first, it.first.id().toString(), it.first.body(), it.second.second?.id()?.toString())

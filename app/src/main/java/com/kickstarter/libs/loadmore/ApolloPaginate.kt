@@ -46,7 +46,7 @@ class ApolloPaginate<Data, Envelope : ApolloEnvelope, Params>(
         private var envelopeToListOfData: Func1<Envelope, List<Data>>? = null
         private var loadWithParams: Func1<Pair<Params, String?>, Observable<Envelope>>? = null
         private var pageTransformation: Func1<List<Data>, List<Data>> = Func1<List<Data>, List<Data>> {
-            x: List<Data> ->
+                x: List<Data> ->
             x
         }
         private var clearWhenStartingOver = false

@@ -244,7 +244,7 @@ class BackingAddOnsFragmentViewModel {
 
             Observable
                 .combineLatest(this.retryButtonPressed.startWith(false), project, this.shippingRuleSelected) {
-                    _, pj, shipRule ->
+                        _, pj, shipRule ->
 
                     val projectSlug = pj.slug() ?: ""
                     val location = shipRule.location()
@@ -261,7 +261,7 @@ class BackingAddOnsFragmentViewModel {
                 .subscribe(addOnsFromGraph)
 
             val filteredAddOns = Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward) {
-                list, pData, rule, rw ->
+                    list, pData, rule, rw ->
                 return@combineLatest filterByLocation(list, pData, rule, rw)
             }
                 .distinctUntilChanged()
@@ -295,7 +295,7 @@ class BackingAddOnsFragmentViewModel {
                 this.currentSelection.take(1),
                 this.quantityPerId
             ) {
-                backedRule, backedList, actualRule, currentSelection, _ ->
+                    backedRule, backedList, actualRule, currentSelection, _ ->
                 return@combineLatest isDifferentLocation(backedRule, actualRule) || isDifferentSelection(backedList, currentSelection)
             }
                 .distinctUntilChanged()
@@ -375,7 +375,7 @@ class BackingAddOnsFragmentViewModel {
             continueButtonPressed: Observable<Void>
         ): Observable<Pair<PledgeData, PledgeReason>> {
             return Observable.combineLatest(filteredList, pledgeData, pledgeReason, reward, shippingRule, currentSelection, continueButtonPressed) {
-                listAddOns, pledgeData, pledgeReason, rw, shippingRule, currentSelection, _ ->
+                    listAddOns, pledgeData, pledgeReason, rw, shippingRule, currentSelection, _ ->
 
                 val updatedList = updateQuantity(listAddOns.second, currentSelection)
                 val selectedAddOns = getSelectedAddOns(updatedList)

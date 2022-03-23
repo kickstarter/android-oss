@@ -1,28 +1,39 @@
-package com.kickstarter.services.apiresponses;
+package com.kickstarter.services.apiresponses
 
-import android.os.Parcelable;
+import android.os.Parcelable
+import com.kickstarter.models.ShippingRule
+import kotlinx.parcelize.Parcelize
 
-import com.kickstarter.libs.qualifiers.AutoGson;
-import com.kickstarter.models.ShippingRule;
+@Parcelize
+class ShippingRulesEnvelope private constructor(
+    private val shippingRules: List<ShippingRule>
+) : Parcelable {
+    fun shippingRules() = this.shippingRules
 
-import java.util.List;
+    @Parcelize
+    data class Builder(
+        private var shippingRules: List<ShippingRule> = emptyList()
+    ) : Parcelable {
+        fun shippingRules(shippingRules: List<ShippingRule>) = apply { this.shippingRules = shippingRules }
+        fun build() = ShippingRulesEnvelope(
+            shippingRules = shippingRules
+        )
+    }
 
-import auto.parcel.AutoParcel;
+    fun toBuilder() = Builder(
+        shippingRules = shippingRules
+    )
 
-@AutoGson
-@AutoParcel
-public abstract class ShippingRulesEnvelope implements Parcelable {
-  public abstract List<ShippingRule> shippingRules();
+    companion object {
+        @JvmStatic
+        fun builder() = Builder()
+    }
 
-  @AutoParcel.Builder
-  public abstract static class Builder {
-    public abstract Builder shippingRules(List<ShippingRule> ___);
-    public abstract ShippingRulesEnvelope build();
-  }
-
-  public static Builder builder() {
-    return new AutoParcel_ShippingRulesEnvelope.Builder();
-  }
-
-  public abstract Builder toBuilder();
+    override fun equals(obj: Any?): Boolean {
+        var equals = super.equals(obj)
+        if (obj is ShippingRulesEnvelope) {
+            equals = shippingRules() == obj.shippingRules()
+        }
+        return equals
+    }
 }

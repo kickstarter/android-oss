@@ -803,7 +803,7 @@ interface PledgeFragmentViewModel {
                 .subscribe(this.shippingRulesAndProject)
 
             Observable.combineLatest(shippingRules, this.currentConfig.observable(), shouldLoadDefaultLocation) { rules, config, isDefault ->
-                return@combineLatest if (isDefault) defaultConfigShippingRule(rules, config) else null
+                return@combineLatest if (isDefault) defaultConfigShippingRule(rules.toMutableList(), config) else null
             }
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }

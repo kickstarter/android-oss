@@ -60,7 +60,7 @@ class ProjectCampaignViewModel {
 
             closeFullScreenVideo
                 .withLatestFrom(openVideoInFullScreen) {
-                    closePosition, videoOpenPosition ->
+                        closePosition, videoOpenPosition ->
                     Pair(videoOpenPosition.first, closePosition)
                 }.withLatestFrom(storyViewElementsList) { pair, list ->
                     Pair(pair, list)
@@ -86,7 +86,7 @@ class ProjectCampaignViewModel {
 
             closeFullScreenVideo
                 .withLatestFrom(openVideoInFullScreen) {
-                    closePosition, videoOpenPosition ->
+                        closePosition, videoOpenPosition ->
                     Pair(videoOpenPosition.first, closePosition)
                 }
                 .compose(bindToLifecycle())

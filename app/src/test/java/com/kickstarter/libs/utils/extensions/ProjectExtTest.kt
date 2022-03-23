@@ -11,8 +11,8 @@ import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
 import org.joda.time.DateTime
 import org.junit.Test
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 import type.CreditCardTypes
 import java.util.Locale
 

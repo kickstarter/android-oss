@@ -9,7 +9,7 @@ import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy
 
 @Parcelize
-class Activity internal constructor (
+class Activity internal constructor(
     @Category
     private val category: String?,
     private val createdAt: DateTime,

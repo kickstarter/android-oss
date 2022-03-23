@@ -170,7 +170,7 @@ class BackingAddOnsFragmentViewModel {
                 .compose<Pair<Backing, List<ShippingRule>>>(combineLatestPair(shippingRules))
                 .map {
                     it.second.first { rule ->
-                        rule.location().id() == it.first.locationId()
+                        rule.location()?.id() == it.first.locationId()
                     }
                 }
                 .filter { ObjectUtils.isNotNull(it) }
@@ -218,7 +218,7 @@ class BackingAddOnsFragmentViewModel {
 
             shippingRule
                 .distinctUntilChanged { rule1, rule2 ->
-                    rule1.location().id() == rule2.location().id() && rule1.cost() == rule2.cost()
+                    rule1.location()?.id() == rule2.location()?.id() && rule1.cost() == rule2.cost()
                 }
                 .compose(bindToLifecycle())
                 .subscribe {
@@ -242,14 +242,19 @@ class BackingAddOnsFragmentViewModel {
                     shippingRules.onNext(it)
                 }
 
+            val location = this.shippingRuleSelected
+                .map { it.location() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+
             Observable
-                .combineLatest(this.retryButtonPressed.startWith(false), project, this.shippingRuleSelected) {
-                    _, pj, shipRule ->
+                .combineLatest(this.retryButtonPressed.startWith(false), project, location) {
+                        _, pj, shipRuleLocation ->
 
                     val projectSlug = pj.slug() ?: ""
-                    val location = shipRule.location()
+
                     return@combineLatest this.apolloClient
-                        .getProjectAddOns(projectSlug, location)
+                        .getProjectAddOns(projectSlug, shipRuleLocation)
                         .doOnError {
                             this.showErrorDialog.onNext(true)
                             this.shippingSelectorIsGone.onNext(true)
@@ -261,7 +266,7 @@ class BackingAddOnsFragmentViewModel {
                 .subscribe(addOnsFromGraph)
 
             val filteredAddOns = Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward) {
-                list, pData, rule, rw ->
+                    list, pData, rule, rw ->
                 return@combineLatest filterByLocation(list, pData, rule, rw)
             }
                 .distinctUntilChanged()
@@ -295,7 +300,7 @@ class BackingAddOnsFragmentViewModel {
                 this.currentSelection.take(1),
                 this.quantityPerId
             ) {
-                backedRule, backedList, actualRule, currentSelection, _ ->
+                    backedRule, backedList, actualRule, currentSelection, _ ->
                 return@combineLatest isDifferentLocation(backedRule, actualRule) || isDifferentSelection(backedList, currentSelection)
             }
                 .distinctUntilChanged()
@@ -375,7 +380,7 @@ class BackingAddOnsFragmentViewModel {
             continueButtonPressed: Observable<Void>
         ): Observable<Pair<PledgeData, PledgeReason>> {
             return Observable.combineLatest(filteredList, pledgeData, pledgeReason, reward, shippingRule, currentSelection, continueButtonPressed) {
-                listAddOns, pledgeData, pledgeReason, rw, shippingRule, currentSelection, _ ->
+                    listAddOns, pledgeData, pledgeReason, rw, shippingRule, currentSelection, _ ->
 
                 val updatedList = updateQuantity(listAddOns.second, currentSelection)
                 val selectedAddOns = getSelectedAddOns(updatedList)
@@ -492,7 +497,7 @@ class BackingAddOnsFragmentViewModel {
         }
 
         private fun isDifferentLocation(backedRule: ShippingRule, actualRule: ShippingRule) =
-            backedRule.location().id() != actualRule.location().id()
+            backedRule.location()?.id() != actualRule.location()?.id()
 
         private fun calculateTotal(list: List<Reward>) =
             this.currentSelection
@@ -536,7 +541,7 @@ class BackingAddOnsFragmentViewModel {
             return this.currentConfig.observable()
                 .map { it.countryCode() }
                 .map { countryCode ->
-                    shippingRules.firstOrNull { it.location().country() == countryCode }
+                    shippingRules.firstOrNull { it.location()?.country() == countryCode }
                         ?: shippingRules.first()
                 }
         }
@@ -568,10 +573,10 @@ class BackingAddOnsFragmentViewModel {
             val idLocations = reward
                 .shippingRules()
                 ?.map {
-                    it.location().id()
+                    it.location()?.id()
                 } ?: emptyList()
 
-            return idLocations.contains(rule.location().id())
+            return idLocations.contains(rule.location()?.id())
         }
 
         // - Inputs

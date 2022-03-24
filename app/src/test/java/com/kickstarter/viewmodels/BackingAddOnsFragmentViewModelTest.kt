@@ -566,7 +566,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         // -Build the backing with location and list of AddOns
         val backing = BackingFactory.backing(project, UserFactory.user(), rw)
             .toBuilder()
-            .locationId(ShippingRuleFactory.usShippingRule().location().id())
+            .locationId(ShippingRuleFactory.usShippingRule().location()?.id())
             .location(ShippingRuleFactory.usShippingRule().location())
             .addOns(listAddonsBacked)
             .build()
@@ -625,7 +625,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         // -Build the backing with location and list of AddOns
         val backing = BackingFactory.backing(project, UserFactory.user(), rw)
             .toBuilder()
-            .locationId(ShippingRuleFactory.usShippingRule().location().id())
+            .locationId(ShippingRuleFactory.usShippingRule().location()?.id())
             .location(ShippingRuleFactory.usShippingRule().location())
             .addOns(listAddonsBacked)
             .build()
@@ -702,7 +702,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         // -Build the backing with location and list of AddOns
         val backing = BackingFactory.backing(project, UserFactory.user(), backedRw)
             .toBuilder()
-            .locationId(ShippingRuleFactory.usShippingRule().location().id())
+            .locationId(ShippingRuleFactory.usShippingRule().location()?.id())
             .location(ShippingRuleFactory.usShippingRule().location())
             .addOns(listAddonsBacked)
             .build()
@@ -770,7 +770,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         // -Build the backing with location and list of AddOns
         val backing = BackingFactory.backing(project, UserFactory.user(), backedRw)
             .toBuilder()
-            .locationId(ShippingRuleFactory.usShippingRule().location().id())
+            .locationId(ShippingRuleFactory.usShippingRule().location()?.id())
             .location(ShippingRuleFactory.usShippingRule().location())
             .addOns(listAddonsBacked)
             .build()
@@ -833,7 +833,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         // -Build the backing with location and list of AddOns
         val backing = BackingFactory.backing(project, UserFactory.user(), rw)
             .toBuilder()
-            .locationId(ShippingRuleFactory.usShippingRule().location().id())
+            .locationId(ShippingRuleFactory.usShippingRule().location()?.id())
             .location(ShippingRuleFactory.usShippingRule().location())
             .addOns(listAddonsBacked)
             .build()

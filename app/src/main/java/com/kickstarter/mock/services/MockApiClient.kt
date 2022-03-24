@@ -20,7 +20,7 @@ import com.kickstarter.mock.factories.MessageThreadsEnvelopeFactory
 import com.kickstarter.mock.factories.ProjectFactory.allTheWayProject
 import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.ProjectFactory.successfulProject
-import com.kickstarter.mock.factories.ShippingRulesEnvelopeFactory.Companion.shippingRules
+import com.kickstarter.mock.factories.ShippingRulesEnvelopeFactory.shippingRules
 import com.kickstarter.mock.factories.SurveyResponseFactory
 import com.kickstarter.mock.factories.UpdateFactory
 import com.kickstarter.mock.factories.UserFactory.user

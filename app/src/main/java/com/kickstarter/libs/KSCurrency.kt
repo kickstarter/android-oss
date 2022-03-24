@@ -3,11 +3,8 @@ package com.kickstarter.libs
 import com.kickstarter.libs.models.Country.Companion.findByCurrencyCode
 import com.kickstarter.libs.utils.extensions.trimAllWhitespace
 import kotlin.jvm.JvmOverloads
-import auto.parcel.AutoParcel
-import android.os.Parcelable
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.utils.NumberUtils
-import com.kickstarter.models.CurrencyOptions
 import com.kickstarter.models.Project
 import java.math.RoundingMode
 

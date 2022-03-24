@@ -1,34 +1,68 @@
-package com.kickstarter.models;
+package com.kickstarter.models
 
-import android.os.Parcelable;
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-import com.kickstarter.libs.qualifiers.AutoGson;
+@Parcelize
+class Video private constructor(
+    private val base: String?,
+    private val frame: String?,
+    private val high: String?,
+    private val hls: String?,
+    private val webm: String?
+) : Parcelable {
+    fun base() = this.base
+    fun frame() = this.frame
+    fun high() = this.high
+    fun hls() = this.hls
+    fun webm() = this.webm
 
-import androidx.annotation.Nullable;
-import auto.parcel.AutoParcel;
+    @Parcelize
+    data class Builder(
+        private var base: String? = null,
+        private var frame: String? = null,
+        private var high: String? = null,
+        private var hls: String? = null,
+        private var webm: String? = null,
+    ) : Parcelable {
+        fun base(base: String?) = apply { this.base = base }
+        fun frame(frame: String?) = apply { this.frame = frame }
+        fun high(high: String?) = apply { this.high = high }
+        fun hls(hls: String?) = apply { this.hls = hls }
+        fun webm(webm: String?) = apply { this.webm = webm }
 
-@AutoGson
-@AutoParcel
-public abstract class Video implements Parcelable {
-  public abstract String base();
-  public abstract String frame();
-  public abstract String high();
-  public abstract @Nullable String hls();
-  public abstract @Nullable String webm();
+        fun build() = Video(
+            base = base,
+            frame = frame,
+            high = high,
+            hls = hls,
+            webm = webm
 
-  @AutoParcel.Builder
-  public abstract static class Builder {
-    public abstract Builder base(String __);
-    public abstract Builder frame(String __);
-    public abstract Builder high(String __);
-    public abstract Builder hls(String __);
-    public abstract Builder webm(String __);
-    public abstract Video build();
-  }
+        )
+    }
 
-  public static Builder builder() {
-    return new AutoParcel_Video.Builder();
-  }
+    fun toBuilder() = Builder(
+        base = base,
+        frame = frame,
+        high = high,
+        hls = hls,
+        webm = webm
+    )
 
-  public abstract Builder toBuilder();
+    override fun equals(obj: Any?): Boolean {
+        var equals = super.equals(obj)
+        if (obj is Video) {
+            equals = base() == obj.base() &&
+                frame() == obj.frame() &&
+                high() == obj.high() &&
+                hls() == obj.hls() &&
+                webm() == obj.webm()
+        }
+        return equals
+    }
+
+    companion object {
+        @JvmStatic
+        fun builder() = Builder()
+    }
 }

@@ -1,16 +1,16 @@
 package com.kickstarter
 
-import com.kickstarter.mock.factories.ProjectFactory.project
-import com.kickstarter.mock.factories.ProjectFactory.caProject
-import com.kickstarter.mock.factories.ProjectFactory.ukProject
-import com.kickstarter.mock.factories.ConfigFactory.config
-import com.kickstarter.libs.KSCurrency
-import type.CurrencyCode
 import com.kickstarter.libs.CurrentConfigType
+import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.models.Country
 import com.kickstarter.mock.MockCurrentConfig
-import java.math.RoundingMode
+import com.kickstarter.mock.factories.ConfigFactory.config
+import com.kickstarter.mock.factories.ProjectFactory.caProject
+import com.kickstarter.mock.factories.ProjectFactory.project
+import com.kickstarter.mock.factories.ProjectFactory.ukProject
 import junit.framework.TestCase
+import type.CurrencyCode
+import java.math.RoundingMode
 
 class KSCurrencyTest : TestCase() {
     fun testFormatCurrency_withUserInCA() {

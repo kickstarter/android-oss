@@ -53,9 +53,9 @@ class CurrencyOptions internal constructor(
         var equals = super.equals(other)
         if (other is CurrencyOptions) {
             equals = country() == other.country() &&
-                    currencyCode() == other.currencyCode() &&
-                    currencySymbol() == other.currencySymbol() &&
-                    value() == other.value()
+                currencyCode() == other.currencyCode() &&
+                currencySymbol() == other.currencySymbol() &&
+                value() == other.value()
         }
         return equals
     }

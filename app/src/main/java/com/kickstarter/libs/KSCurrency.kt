@@ -1,12 +1,12 @@
 package com.kickstarter.libs
 
-import com.kickstarter.libs.models.Country.Companion.findByCurrencyCode
-import com.kickstarter.libs.utils.extensions.trimAllWhitespace
-import kotlin.jvm.JvmOverloads
 import com.kickstarter.libs.models.Country
+import com.kickstarter.libs.models.Country.Companion.findByCurrencyCode
 import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.libs.utils.extensions.trimAllWhitespace
 import com.kickstarter.models.Project
 import java.math.RoundingMode
+import kotlin.jvm.JvmOverloads
 
 class KSCurrency(private val currentConfig: CurrentConfigType) {
     /**
@@ -46,7 +46,7 @@ class KSCurrency(private val currentConfig: CurrentConfigType) {
         roundingMode: RoundingMode = RoundingMode.DOWN,
         currentCurrency: Boolean = false
     ): String {
-        val country = (if (currentCurrency) project.currentCurrency() else project.currency())?.let { findByCurrencyCode(it)} ?: return ""
+        val country = (if (currentCurrency) project.currentCurrency() else project.currency())?.let { findByCurrencyCode(it) } ?: return ""
         val roundedValue = getRoundedValue(initialValue, roundingMode)
         val currencyOptions = currencyOptions(roundedValue, country, excludeCurrencyCode)
         val numberOptions = NumberOptions.builder()
@@ -77,8 +77,10 @@ class KSCurrency(private val currentConfig: CurrentConfigType) {
      * @param precision How much of the change we should show.
      */
     fun formatWithUserPreference(
-        initialValue: Double, project: Project,
-        roundingMode: RoundingMode, precision: Int
+        initialValue: Double,
+        project: Project,
+        roundingMode: RoundingMode,
+        precision: Int
     ): String {
         val country = project.currentCurrency()?.let {
             findByCurrencyCode(

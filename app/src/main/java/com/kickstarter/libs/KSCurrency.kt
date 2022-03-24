@@ -46,9 +46,7 @@ class KSCurrency(private val currentConfig: CurrentConfigType) {
         roundingMode: RoundingMode = RoundingMode.DOWN,
         currentCurrency: Boolean = false
     ): String {
-        val country = findByCurrencyCode(
-            (if (currentCurrency) project.currentCurrency() else project.currency())!!
-        ) ?: return ""
+        val country = (if (currentCurrency) project.currentCurrency() else project.currency())?.let { findByCurrencyCode(it)} ?: return ""
         val roundedValue = getRoundedValue(initialValue, roundingMode)
         val currencyOptions = currencyOptions(roundedValue, country, excludeCurrencyCode)
         val numberOptions = NumberOptions.builder()
@@ -82,9 +80,11 @@ class KSCurrency(private val currentConfig: CurrentConfigType) {
         initialValue: Double, project: Project,
         roundingMode: RoundingMode, precision: Int
     ): String {
-        val country = findByCurrencyCode(
-            project.currentCurrency()!!
-        ) ?: return ""
+        val country = project.currentCurrency()?.let {
+            findByCurrencyCode(
+                it
+            )
+        } ?: return ""
         val convertedValue = getRoundedValue(initialValue, roundingMode) * project.fxRate()
         val currencyOptions = currencyOptions(convertedValue, country, true)
         val numberOptions = NumberOptions.builder()

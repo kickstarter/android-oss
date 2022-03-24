@@ -1,35 +1,56 @@
 package com.kickstarter.models
 
 import android.os.Parcelable
-import androidx.annotation.Nullable
-import auto.parcel.AutoParcel
-import com.kickstarter.libs.qualifiers.AutoGson
+import kotlinx.parcelize.Parcelize
 
-@AutoGson
-@AutoParcel
-abstract class ShippingRule : Parcelable {
-    @Nullable abstract fun id(): Long?
-    abstract fun cost(): Double
-    @Nullable abstract fun location(): Location
+@Parcelize
+class ShippingRule private constructor(
+    private val id: Long?,
+    private val cost: Double,
+    private val location: Location?
+) : Parcelable {
+    fun id() = this.id
+    fun cost() = this.cost
+    fun location() = this.location
 
-    @AutoParcel.Builder
-    abstract class Builder {
-        abstract fun id(id: Long?): Builder
-        abstract fun cost(cost: Double): Builder
-        abstract fun location(location: Location?): Builder
-        abstract fun build(): ShippingRule
+    @Parcelize
+    data class Builder(
+        private var id: Long? = -1L,
+        private var cost: Double = 0.0,
+        private var location: Location? = Location.builder().build()
+    ) : Parcelable {
+        fun id(id: Long?) = apply { this.id = id }
+        fun cost(cost: Double) = apply { this.cost = cost }
+        fun location(location: Location?) = apply { this.location = location }
+        fun build() = ShippingRule(
+            id = id,
+            cost = cost,
+            location = location
+        )
     }
 
     override fun toString(): String {
         return location()?.displayableName() ?: ""
     }
 
-    abstract fun toBuilder(): Builder
+    override fun equals(obj: Any?): Boolean {
+        var equals = super.equals(obj)
+        if (obj is ShippingRule) {
+            equals = id() == obj.id() &&
+                cost() == obj.cost() &&
+                location() == obj.location()
+        }
+        return equals
+    }
+
+    fun toBuilder() = Builder(
+        id = id,
+        cost = cost,
+        location = location
+    )
 
     companion object {
-
-        fun builder(): Builder {
-            return AutoParcel_ShippingRule.Builder()
-        }
+        @JvmStatic
+        fun builder() = Builder()
     }
 }

@@ -253,7 +253,7 @@ class BackingAddOnViewHolderViewModel {
             else shippingRules?.let {
                 var cost = 0.0
                 it.filter {
-                    it.location().id() == selectedShippingRule.location().id()
+                    it.location()?.id() == selectedShippingRule.location()?.id()
                 }.map {
                     cost += it.cost()
                 }

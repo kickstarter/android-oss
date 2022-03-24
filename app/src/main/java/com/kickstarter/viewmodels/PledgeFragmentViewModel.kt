@@ -803,7 +803,7 @@ interface PledgeFragmentViewModel {
                 .subscribe(this.shippingRulesAndProject)
 
             Observable.combineLatest(shippingRules, this.currentConfig.observable(), shouldLoadDefaultLocation) { rules, config, isDefault ->
-                return@combineLatest if (isDefault) defaultConfigShippingRule(rules, config) else null
+                return@combineLatest if (isDefault) defaultConfigShippingRule(rules.toMutableList(), config) else null
             }
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
@@ -1010,7 +1010,7 @@ interface PledgeFragmentViewModel {
                 }
 
             this.shippingRule
-                .map { it.location().displayableName() }
+                .map { it.location()?.displayableName() }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(this.shippingSummaryLocation)
@@ -1218,7 +1218,7 @@ interface PledgeFragmentViewModel {
                 .map { p -> RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences) }
 
             val locationId: Observable<String?> = shippingRule.map { it.location() }
-                .map { it.id() }
+                .map { it?.id() }
                 .map { it.toString() }
                 .startWith(null as String?)
 
@@ -1578,7 +1578,7 @@ interface PledgeFragmentViewModel {
          *  just select the fist one available.
          */
         private fun defaultConfigShippingRule(rules: MutableList<ShippingRule>, config: Config) =
-            rules.firstOrNull { it.location().country() == config.countryCode() }?.let { it } ?: rules.first()
+            rules.firstOrNull { it.location()?.country() == config.countryCode() }?.let { it } ?: rules.first()
 
         /**
          *  Calculate the shipping amount in case of shippable reward and reward + AddOns
@@ -1601,7 +1601,7 @@ interface PledgeFragmentViewModel {
                 it.isAddOn()
             }.map { rw ->
                 rw.shippingRules()?.filter { rule ->
-                    rule.location().id() == selectedRule.location().id()
+                    rule.location()?.id() == selectedRule.location()?.id()
                 }?.map { rule ->
                     shippingCost += rule.cost() * (rw.quantity() ?: 1)
                 }
@@ -1616,7 +1616,7 @@ interface PledgeFragmentViewModel {
          * the one matching the backingObject field locationId
          */
         private fun selectedShippingRule(shippingInfo: Pair<Long, List<ShippingRule>>): ShippingRule =
-            requireNotNull(shippingInfo.second.first { it.location().id() == shippingInfo.first })
+            requireNotNull(shippingInfo.second.first { it.location()?.id() == shippingInfo.first })
 
         /** For the checkout we need to send a list repeating as much addOns items
          * as the user has selected:

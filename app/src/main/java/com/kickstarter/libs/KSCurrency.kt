@@ -7,6 +7,7 @@ import auto.parcel.AutoParcel
 import android.os.Parcelable
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.models.CurrencyOptions
 import com.kickstarter.models.Project
 import java.math.RoundingMode
 
@@ -59,7 +60,7 @@ class KSCurrency(private val currentConfig: CurrentConfigType) {
             .roundingMode(roundingMode)
             .precision(NumberUtils.precision(initialValue, roundingMode))
             .build()
-        return NumberUtils.format(currencyOptions.value(), numberOptions).trimAllWhitespace()
+        return NumberUtils.format(currencyOptions.value() ?: 0F, numberOptions).trimAllWhitespace()
     }
 
     /**
@@ -94,7 +95,7 @@ class KSCurrency(private val currentConfig: CurrentConfigType) {
             .roundingMode(roundingMode)
             .precision(if (precision > 0) 2 else 0)
             .build()
-        return NumberUtils.format(currencyOptions.value(), numberOptions).trimAllWhitespace()
+        return NumberUtils.format(currencyOptions.value() ?: 0F, numberOptions).trimAllWhitespace()
     }
 
     /**
@@ -151,31 +152,6 @@ class KSCurrency(private val currentConfig: CurrentConfigType) {
             "\u00A0" + country.currencyCode + "\u00A0"
         } else {
             "\u00A0" + country.countryCode + country.currencySymbol + "\u00A0"
-        }
-    }
-
-    @AutoParcel
-    abstract class CurrencyOptions : Parcelable {
-        abstract fun country(): String?
-        abstract fun currencyCode(): String?
-        abstract fun currencySymbol(): String?
-        abstract fun value(): Float
-
-        @AutoParcel.Builder
-        abstract class Builder {
-            abstract fun country(__: String?): Builder
-            abstract fun currencyCode(__: String?): Builder
-            abstract fun currencySymbol(__: String?): Builder
-            abstract fun value(__: Float): Builder
-            abstract fun build(): CurrencyOptions
-        }
-
-        abstract fun toBuilder(): Builder?
-
-        companion object {
-            fun builder(): Builder {
-                return AutoParcel_KSCurrency_CurrencyOptions.Builder()
-            }
         }
     }
 

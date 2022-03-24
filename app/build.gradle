@@ -260,7 +260,7 @@ dependencies {
     kapt 'com.github.bumptech.glide:compiler:4.12.0'
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:29.0.4')
+    implementation platform('com.google.firebase:firebase-bom:29.2.1')
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation "com.google.firebase:firebase-messaging"

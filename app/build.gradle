@@ -247,7 +247,7 @@ dependencies {
     implementation 'com.appboy:appboy-segment-integration:10.0.0'
 
     // Security
-    implementation 'com.perimeterx.sdk:msdk:2.1.0'
+    implementation 'com.perimeterx.sdk:msdk:1.16.4'
 
     // Dependencies for HTML Parser
     implementation 'org.jsoup:jsoup:1.14.3'

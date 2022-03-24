@@ -35,7 +35,7 @@ interface ShippingRuleViewHolderViewModel {
         init {
             this.shippingRuleAndProject
                 .filter { ObjectUtils.isNotNull(it.first) }
-                .map { it.first.location().displayableName() }
+                .map { it.first.location()?.displayableName() }
                 .compose(bindToLifecycle())
                 .subscribe(this.shippingRuleText)
         }

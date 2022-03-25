@@ -50,6 +50,16 @@ class DateTimeUtilsTest : KSRobolectricTestCase() {
 
         assertEquals(
             "MMMM yyyy",
+            DateTimeUtils.localePattern(Locale.GERMANY)
+        )
+
+        assertEquals(
+            "MMMM yyyy",
+            DateTimeUtils.localePattern(Locale("es"))
+        )
+
+        assertEquals(
+            "MMMM yyyy",
             DateTimeUtils.localePattern(Locale.KOREA)
         )
     }
@@ -63,6 +73,11 @@ class DateTimeUtilsTest : KSRobolectricTestCase() {
         assertEquals(
             "jeudi 17 décembre 2015",
             DateTimeUtils.fullDate(DateTime.parse("2015-12-17T18:35:05Z"), Locale.FRENCH)
+        )
+
+        assertEquals(
+            "Thursday, December 17, 2015",
+            DateTimeUtils.fullDate(DateTime.parse("2015-12-17T05:20:58.697"))
         )
     }
 
@@ -99,6 +114,11 @@ class DateTimeUtilsTest : KSRobolectricTestCase() {
 
     @Test
     fun testMediumDateTime() {
+        assertEquals(
+            "Dec 17, 2015, 6:35:05 PM",
+            DateTimeUtils.mediumDateTime(DateTime.parse("2015-12-17T18:35:05Z"))
+        )
+
         assertEquals(
             "Dec 17, 2015, 6:35:05 PM",
             DateTimeUtils.mediumDateTime(DateTime.parse("2015-12-17T18:35:05Z"), DateTimeZone.UTC)
@@ -239,6 +259,14 @@ class DateTimeUtilsTest : KSRobolectricTestCase() {
                 builder.relativeToDateTime(DateTime.parse("2015-10-17T18:35:05Z")).build()
             )
         )
+
+        assertEquals(
+            "Dec 17, 2015",
+            relative(
+                context, ksString, dateTime,
+                builder.build()
+            )
+        )
     }
 
     @Test
@@ -356,6 +384,13 @@ class DateTimeUtilsTest : KSRobolectricTestCase() {
 
     @Test
     fun testMediumDateShortTime() {
+        assertEquals(
+            "Dec 17, 2015, 6:35 PM",
+            DateTimeUtils.mediumDateShortTime(
+                DateTime.parse("2015-12-17T18:35:05Z")
+            )
+        )
+
         assertEquals(
             "Dec 17, 2015, 6:35 PM",
             DateTimeUtils.mediumDateShortTime(

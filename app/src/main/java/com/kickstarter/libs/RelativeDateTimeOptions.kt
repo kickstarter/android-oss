@@ -1,54 +1,78 @@
-package com.kickstarter.libs;
+package com.kickstarter.libs
 
-import android.os.Parcelable;
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+import org.joda.time.DateTime
 
-import org.joda.time.DateTime;
+@Parcelize
+class RelativeDateTimeOptions private constructor(
+    private val abbreviated: Boolean,
+    private val absolute: Boolean,
+    private val relativeToDateTime: DateTime?,
+    private val threshold: Int
+) : Parcelable {
+    /**
+     * Abbreviates string, e.g.: "in 1 hr"
+     */
+    fun abbreviated() = this.abbreviated
 
-import androidx.annotation.Nullable;
-import auto.parcel.AutoParcel;
+    /**
+     * Don't output tense, e.g.: "1 hour" instead of "in 1 hour"
+     */
+    fun absolute() = this.absolute
 
-@AutoParcel
-public abstract class RelativeDateTimeOptions implements Parcelable {
-  /**
-   * Abbreviates string, e.g.: "in 1 hr"
-   */
-  public abstract boolean abbreviated();
+    /**
+     * Compare against this date instead of the current time
+     */
+    fun relativeToDateTime() = this.relativeToDateTime
 
-  /**
-   * Don't output tense, e.g.: "1 hour" instead of "in 1 hour"
-   */
-  public abstract boolean absolute();
+    /**
+     * Number of seconds difference permitted before an attempt to describe the relative date is abandoned.
+     * For example, "738 days ago" is not helpful to users. The threshold defaults to 30 days.
+     */
+    fun threshold() = this.threshold
 
-  /**
-   * Compare against this date instead of the current time
-   */
-  public abstract @Nullable DateTime relativeToDateTime();
+    @Parcelize
+    data class Builder(
+        private var abbreviated: Boolean = false,
+        private var absolute: Boolean = false,
+        private var relativeToDateTime: DateTime? = null,
+        private var threshold: Int = THIRTY_DAYS_IN_SECONDS
+    ) : Parcelable {
+        fun abbreviated(abbreviated: Boolean) = apply { this.abbreviated = abbreviated }
+        fun absolute(absolute: Boolean) = apply { this.absolute = absolute }
+        fun relativeToDateTime(relativeToDateTime: DateTime?) = apply { this.relativeToDateTime = relativeToDateTime }
+        fun threshold(threshold: Int) = apply { this.threshold = threshold }
+        fun build() = RelativeDateTimeOptions(
+            abbreviated = abbreviated,
+            absolute = absolute,
+            relativeToDateTime = relativeToDateTime,
+            threshold = threshold
+        )
+    }
 
-  /**
-   * Number of seconds difference permitted before an attempt to describe the relative date is abandoned.
-   * For example, "738 days ago" is not helpful to users. The threshold defaults to 30 days.
-   */
-  public abstract int threshold();
+    fun toBuilder() = Builder(
+        abbreviated = abbreviated,
+        absolute = absolute,
+        relativeToDateTime = relativeToDateTime,
+        threshold = threshold
+    )
 
-  @AutoParcel.Builder
-  public abstract static class Builder {
-    public abstract Builder abbreviated(boolean __);
-    public abstract Builder absolute(boolean __);
-    public abstract Builder relativeToDateTime(DateTime __);
-    public abstract Builder threshold(int __);
-    public abstract RelativeDateTimeOptions build();
-  }
+    override fun equals(obj: Any?): Boolean {
+        var equals = super.equals(obj)
+        if (obj is RelativeDateTimeOptions) {
+            equals = abbreviated() == obj.abbreviated() &&
+                absolute() == obj.absolute() &&
+                relativeToDateTime() == obj.relativeToDateTime() &&
+                threshold() == obj.threshold()
+        }
+        return equals
+    }
 
-  public static Builder builder() {
-    return new AutoParcel_RelativeDateTimeOptions.Builder()
-      .abbreviated(false)
-      .absolute(false)
-      .threshold(THIRTY_DAYS_IN_SECONDS);
-  }
+    companion object {
+        @JvmStatic
+        fun builder() = Builder()
 
-  public abstract Builder toBuilder();
-
-  private final static int THIRTY_DAYS_IN_SECONDS = 60 * 60 * 24 * 30;
+        private const val THIRTY_DAYS_IN_SECONDS = 60 * 60 * 24 * 30
+    }
 }
-
-

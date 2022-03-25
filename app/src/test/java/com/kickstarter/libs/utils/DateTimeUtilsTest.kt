@@ -74,11 +74,6 @@ class DateTimeUtilsTest : KSRobolectricTestCase() {
             "jeudi 17 décembre 2015",
             DateTimeUtils.fullDate(DateTime.parse("2015-12-17T18:35:05Z"), Locale.FRENCH)
         )
-
-        assertEquals(
-            "Thursday, December 17, 2015",
-            DateTimeUtils.fullDate(DateTime.parse("2015-12-17T05:20:58.697"))
-        )
     }
 
     @Test

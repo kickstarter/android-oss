@@ -22,9 +22,6 @@ object DateTimeUtils {
     /**
      * e.g.: December 2015.
      */
-    /**
-     * e.g.: December 2015.
-     */
     @JvmOverloads
     fun estimatedDeliveryOn(dateTime: DateTime, locale: Locale = Locale.getDefault()): String {
         return dateTime.toString(
@@ -46,9 +43,7 @@ object DateTimeUtils {
     fun isEpoch(dateTime: DateTime): Boolean {
         return dateTime.millis == 0L
     }
-    /**
-     * e.g.: Tuesday, June 20, 2017
-     */
+
     /**
      * e.g.: Tuesday, June 20, 2017
      */
@@ -77,9 +72,7 @@ object DateTimeUtils {
             else -> "MMMM yyyy"
         }
     }
-    /**
-     * e.g.: June 20, 2017
-     */
+
     /**
      * e.g.: June 20, 2017
      */
@@ -87,9 +80,7 @@ object DateTimeUtils {
     fun longDate(dateTime: DateTime, locale: Locale = Locale.getDefault()): String {
         return dateTime.toString(DateTimeFormat.longDate().withLocale(locale).withZoneUTC())
     }
-    /**
-     * e.g.: Dec 17, 2015.
-     */
+
     /**
      * e.g.: Dec 17, 2015.
      */
@@ -97,12 +88,7 @@ object DateTimeUtils {
     fun mediumDate(dateTime: DateTime, locale: Locale = Locale.getDefault()): String {
         return dateTime.toString(DateTimeFormat.mediumDate().withLocale(locale).withZoneUTC())
     }
-    /**
-     * e.g.: Jan 14, 2016 2:20 PM.
-     */
-    /**
-     * e.g.: Jan 14, 2016 2:20 PM.
-     */
+
     /**
      * e.g.: Jan 14, 2016 2:20 PM.
      */
@@ -118,12 +104,7 @@ object DateTimeUtils {
 
         return dateTime.toString(formatter)
     }
-    /**
-     * e.g.: Dec 17, 2015 6:35:05 PM.
-     */
-    /**
-     * e.g.: Dec 17, 2015 6:35:05 PM.
-     */
+
     /**
      * e.g.: Dec 17, 2015 6:35:05 PM.
      */
@@ -137,10 +118,7 @@ object DateTimeUtils {
             DateTimeFormat.mediumDateTime().withLocale(locale).withZone(dateTimeZone)
         )
     }
-    /**
-     * Returns a string indicating the distance between [DateTime]s. Defaults to comparing the input [DateTime] to
-     * the current time.
-     */
+
     /**
      * Returns a string indicating the distance between [DateTime]s. Defaults to comparing the input [DateTime] to
      * the current time.
@@ -208,9 +186,7 @@ object DateTimeUtils {
             "time_count", NumberUtils.format(difference.toFloat(), NumberOptions.builder().build())
         )
     }
-    /**
-     * e.g.: 4:20 PM
-     */
+
     /**
      * e.g.: 4:20 PM
      */

@@ -572,7 +572,9 @@ class ProjectPageActivity :
 
     private fun setFragmentsState(expand: Boolean) {
         supportFragmentManager.fragments.map { fragment ->
-            (fragment as BaseFragment<*>).setState(expand && fragment.isVisible)
+            if (fragment is BaseFragment<*>) {
+                fragment.setState(expand && fragment.isVisible)
+            }
         }
     }
 

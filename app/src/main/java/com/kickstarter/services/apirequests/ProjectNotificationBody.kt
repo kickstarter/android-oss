@@ -1,27 +1,47 @@
-package com.kickstarter.services.apirequests;
+package com.kickstarter.services.apirequests
 
-import android.os.Parcelable;
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-import com.kickstarter.libs.qualifiers.AutoGson;
+@Parcelize
+class ProjectNotificationBody private constructor(
+    private val email: Boolean,
+    private val mobile: Boolean
+) :
+    Parcelable {
+    fun email() = this.email
+    fun mobile() = this.mobile
 
-import auto.parcel.AutoParcel;
+    @Parcelize
+    data class Builder(
+        private var email: Boolean = false,
+        private var mobile: Boolean = false,
+    ) : Parcelable {
+        fun email(email: Boolean) = apply { this.email = email }
+        fun mobile(mobile: Boolean) = apply { this.mobile = mobile }
 
-@AutoGson
-@AutoParcel
-public abstract class ProjectNotificationBody implements Parcelable {
-  public abstract boolean email();
-  public abstract boolean mobile();
+        fun build() = ProjectNotificationBody(
+            email = email,
+            mobile = mobile
+        )
+    }
 
-  @AutoParcel.Builder
-  public abstract static class Builder {
-    public abstract Builder email(boolean __);
-    public abstract Builder mobile(boolean __);
-    public abstract ProjectNotificationBody build();
-  }
+    fun toBuilder() = Builder(
+        email = email,
+        mobile = mobile
+    )
 
-  public static Builder builder() {
-    return new AutoParcel_ProjectNotificationBody.Builder();
-  }
+    companion object {
+        @JvmStatic
+        fun builder() = Builder()
+    }
 
-  public abstract Builder toBuilder();
+    override fun equals(obj: Any?): Boolean {
+        var equals = super.equals(obj)
+        if (obj is ProjectNotificationBody) {
+            equals = email() == obj.email() &&
+                mobile() == obj.mobile()
+        }
+        return equals
+    }
 }

@@ -154,19 +154,17 @@ class KSCurrency(private val currentConfig: CurrentConfigType) {
         }
     }
 
-    companion object {
-        /**
-         * Returns a number rounded to the specification.
-         *
-         * @param initialValue Value to convert, local to the project's currency.
-         * @param roundingMode When this is DOWN, we get the floor of the initialValue.
-         */
-        private fun getRoundedValue(initialValue: Double, roundingMode: RoundingMode): Float {
-            return if (roundingMode == RoundingMode.DOWN) {
-                Math.floor(initialValue).toFloat()
-            } else {
-                initialValue.toFloat()
-            }
+    /**
+     * Returns a number rounded to the specification.
+     *
+     * @param initialValue Value to convert, local to the project's currency.
+     * @param roundingMode When this is DOWN, we get the floor of the initialValue.
+     */
+    private fun getRoundedValue(initialValue: Double, roundingMode: RoundingMode): Float {
+        return if (roundingMode == RoundingMode.DOWN) {
+            Math.floor(initialValue).toFloat()
+        } else {
+            initialValue.toFloat()
         }
     }
 }

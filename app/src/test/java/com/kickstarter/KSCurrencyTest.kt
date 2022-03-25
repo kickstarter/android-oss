@@ -9,10 +9,12 @@ import com.kickstarter.mock.factories.ProjectFactory.caProject
 import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.ProjectFactory.ukProject
 import junit.framework.TestCase
+import org.junit.Test
 import type.CurrencyCode
 import java.math.RoundingMode
 
 class KSCurrencyTest : TestCase() {
+    @Test
     fun testFormatCurrency_withUserInCA() {
         val currency = createKSCurrency("CA")
         assertEquals("US$ 100", currency.format(100.9, project()))
@@ -32,6 +34,7 @@ class KSCurrencyTest : TestCase() {
         assertEquals("£100", currency.format(100.0, ukProject(), RoundingMode.HALF_UP))
     }
 
+    @Test
     fun testFormatCurrency_withUserInCA_prefersUSD() {
         val currency = createKSCurrency("CA")
         val preferUSD_USProject = project()
@@ -84,6 +87,7 @@ class KSCurrencyTest : TestCase() {
         )
     }
 
+    @Test
     fun testFormatCurrency_withUserInUS_prefersUSD() {
         val currency = createKSCurrency("US")
         val preferUSD_USProject = project()
@@ -136,6 +140,7 @@ class KSCurrencyTest : TestCase() {
         )
     }
 
+    @Test
     fun testFormatCurrency_withUserInUK() {
         val currency = createKSCurrency("UK")
         assertEquals("US$ 100", currency.format(100.1, project()))
@@ -155,6 +160,7 @@ class KSCurrencyTest : TestCase() {
         assertEquals("£100", currency.format(100.0, ukProject(), RoundingMode.HALF_UP))
     }
 
+    @Test
     fun testFormatCurrency_withUserInUnlaunchedCountry() {
         val currency = createKSCurrency("XX")
         assertEquals("US$ 100", currency.format(100.1, project()))
@@ -174,6 +180,7 @@ class KSCurrencyTest : TestCase() {
         assertEquals("£100", currency.format(100.0, ukProject(), RoundingMode.HALF_UP))
     }
 
+    @Test
     fun testPreferUSD_withUserInUS() {
         val currency = createKSCurrency("US")
         val preferUSD_USProject = project()
@@ -244,6 +251,21 @@ class KSCurrencyTest : TestCase() {
         )
     }
 
+    @Test
+    fun testFormatWithUserPreference_whenCurrentCurrencyEmpty_shouldReturnEmptyString() {
+        val preferUSD_USProject2 = project()
+            .toBuilder()
+            .currentCurrency("")
+            .build()
+        val currency = createKSCurrency("US")
+
+        assertEquals(
+            "",
+            currency.formatWithUserPreference(100.9, preferUSD_USProject2, RoundingMode.HALF_UP, 2)
+        )
+    }
+
+    @Test
     fun testPreferUSD_withUserInCA() {
         val currency = createKSCurrency("CA")
         val preferUSD_USProject = project()
@@ -317,6 +339,7 @@ class KSCurrencyTest : TestCase() {
         )
     }
 
+    @Test
     fun testPreferUSD_withUserInUK() {
         val currency = createKSCurrency("UK")
         val preferUSD_USProject = project()
@@ -390,6 +413,7 @@ class KSCurrencyTest : TestCase() {
         )
     }
 
+    @Test
     fun testPreferUSD_withUserInUnlaunchedCountry() {
         val currency = createKSCurrency("XX")
         val preferUSD_USProject = project()
@@ -463,6 +487,7 @@ class KSCurrencyTest : TestCase() {
         )
     }
 
+    @Test
     fun testPreferCAD_withUserInCA() {
         val currency = createKSCurrency("CA")
         val preferCAD_USProject = project()
@@ -536,6 +561,7 @@ class KSCurrencyTest : TestCase() {
         )
     }
 
+    @Test
     fun testPreferGBP_withUserInUK() {
         val currency = createKSCurrency("UK")
         val preferGBP_USProject = project()
@@ -609,6 +635,7 @@ class KSCurrencyTest : TestCase() {
         )
     }
 
+    @Test
     fun testFormatCurrency_withCurrencyCodeExcluded() {
         val caCurrency = createKSCurrency("CA")
         assertEquals("US$ 100", caCurrency.format(100.0, project(), true))
@@ -622,6 +649,7 @@ class KSCurrencyTest : TestCase() {
         assertEquals("CA$ 100", usCurrency.format(100.0, caProject(), false))
     }
 
+    @Test
     fun testCurrencyNeedsCode() {
         val usCurrency = createKSCurrency("US")
         assertFalse(usCurrency.currencyNeedsCode(Country.US, true))
@@ -634,6 +662,7 @@ class KSCurrencyTest : TestCase() {
         assertTrue(unlaunchedCurrency.currencyNeedsCode(Country.US, false))
     }
 
+    @Test
     fun testGetSymbolForCurrency() {
         val usCurrency = createKSCurrency("US")
         // US people looking at US currency just get the currency symbol.

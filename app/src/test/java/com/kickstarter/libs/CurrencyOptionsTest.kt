@@ -76,4 +76,27 @@ class CurrencyOptionsTest : TestCase() {
         assertFalse(currencyOptions3 == currencyOptions4)
         assertFalse(currencyOptions4 == currencyOptions1)
     }
+
+    @Test
+    fun testCurrencyOptionsToBuilder() {
+        val currencyOptions1 = CurrencyOptions.builder()
+            .country("JP")
+            .currencyCode("USD")
+            .currencySymbol("$")
+            .value(1234F)
+            .build()
+
+        val currencyOptions2 = currencyOptions1.toBuilder()
+            .country("CA")
+            .currencyCode("USD")
+            .currencySymbol("$")
+            .value(5678F)
+            .build()
+
+        assertFalse(currencyOptions1 == currencyOptions2)
+        assertNotSame(currencyOptions1.country(), currencyOptions2.country())
+        assertSame(currencyOptions1.currencyCode(), currencyOptions2.currencyCode())
+        assertSame(currencyOptions1.currencySymbol(), currencyOptions2.currencySymbol())
+        assertNotSame(currencyOptions1.value(), currencyOptions2.value())
+    }
 }

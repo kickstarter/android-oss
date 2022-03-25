@@ -38,6 +38,23 @@ class DateTimeUtilsTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testLocalPattern() {
+        assertEquals(
+            "yyyy'年'MMMM",
+            DateTimeUtils.localePattern(Locale.JAPANESE)
+        )
+        assertEquals(
+            "MMMM yyyy",
+            DateTimeUtils.localePattern(Locale.FRENCH)
+        )
+
+        assertEquals(
+            "MMMM yyyy",
+            DateTimeUtils.localePattern(Locale.KOREA)
+        )
+    }
+
+    @Test
     fun testFullDate() {
         assertEquals(
             "Thursday, December 17, 2015",

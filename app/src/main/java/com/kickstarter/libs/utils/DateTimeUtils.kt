@@ -2,6 +2,7 @@ package com.kickstarter.libs.utils
 
 import android.content.Context
 import android.util.Pair
+import androidx.annotation.VisibleForTesting
 import com.kickstarter.R
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.NumberOptions
@@ -65,7 +66,8 @@ object DateTimeUtils {
     /**
      * Returns the proper DateTime format pattern for supported locales.
      */
-    private fun localePattern(locale: Locale): String {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun localePattern(locale: Locale): String {
         return when (locale.language) {
             "de" -> "MMMM yyyy"
             "en" -> "MMMM yyyy"

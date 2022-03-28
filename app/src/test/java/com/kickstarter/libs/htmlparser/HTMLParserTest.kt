@@ -122,8 +122,7 @@ class HTMLParserTest {
     fun parseTextElementListWithNestedLinks() {
 
         val url = "https://www.meneame.net/"
-        val html =
-            "<ul><li><a href=$url target=\\\"_blank\\\" rel=\\\"noopener\\\"><em><strong>Meneane</strong></em></a><a href=$url target=\\\"_blank\\\" rel=\\\"noopener\\\">Another URL in this list</a> and some text</li></ul>"
+        val html = "<ul><li><a href=$url target=\\\"_blank\\\" rel=\\\"noopener\\\"><em><strong>Meneane</strong></em></a><a href=$url target=\\\"_blank\\\" rel=\\\"noopener\\\">Another URL in this list</a> and some text</li></ul>"
         val listOfElements = HTMLParser().parse(html)
         val textElement: TextViewElement = listOfElements.first() as TextViewElement
 

@@ -2,6 +2,7 @@ package com.kickstarter.models
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.mock.factories.CheckoutBackingFactory
+import com.kickstarter.mock.factories.CheckoutFactory
 import org.junit.Test
 
 class CheckoutTest : KSRobolectricTestCase() {
@@ -35,10 +36,10 @@ class CheckoutTest : KSRobolectricTestCase() {
 
     @Test
     fun testCheckout_equalFalse() {
-        val checkout = Checkout.builder().build()
+        val checkout = CheckoutFactory.requiresAction(false)
         val checkout2 = Checkout.builder().backing(CheckoutBackingFactory.requiresAction(true)).build()
         val checkout3 = Checkout.builder().id(5678L).build()
-       
+
         assertFalse(checkout == checkout2)
         assertFalse(checkout == checkout3)
         assertFalse(checkout3 == checkout2)

@@ -76,7 +76,7 @@ class Checkout private constructor(
         fun toBuilder() = Builder(
             clientSecret = clientSecret,
             requiresAction = requiresAction
-         
+
         )
 
         companion object {

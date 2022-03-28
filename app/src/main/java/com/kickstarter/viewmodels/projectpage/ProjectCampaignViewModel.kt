@@ -11,6 +11,7 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.projectpage.ProjectOverviewFragment
 import rx.Observable
 import rx.subjects.BehaviorSubject
+import timber.log.Timber
 
 class ProjectCampaignViewModel {
     interface Inputs {
@@ -24,11 +25,12 @@ class ProjectCampaignViewModel {
         /** Emits in a list format the DOM elements  */
         fun storyViewElements(): Observable<List<ViewElement>>
         fun onScrollToVideoPosition(): Observable<Int>
-        fun onOpenVideoInFullScreen(): Observable< Pair<String, Long>>
-        fun updateVideoCloseSeekPosition(): Observable< Pair<Int, Long>>
+        fun onOpenVideoInFullScreen(): Observable<Pair<String, Long>>
+        fun updateVideoCloseSeekPosition(): Observable<Pair<Int, Long>>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<ProjectOverviewFragment>(environment), Inputs, Outputs {
+    class ViewModel(@NonNull val environment: Environment) :
+        FragmentViewModel<ProjectOverviewFragment>(environment), Inputs, Outputs {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -39,8 +41,9 @@ class ProjectCampaignViewModel {
         private val closeFullScreenVideo = BehaviorSubject.create<Long>()
         private val openVideoInFullScreen = BehaviorSubject.create<Pair<Int, Pair<String, Long>>>()
         private val onScrollToVideoPosition = BehaviorSubject.create<Int>()
-        private val onOpenVideoInFullScreen = BehaviorSubject.create< Pair<String, Long>>()
+        private val onOpenVideoInFullScreen = BehaviorSubject.create<Pair<String, Long>>()
         private val updateVideoCloseSeekPosition = BehaviorSubject.create<Pair<Int, Long>>()
+
         init {
             val project = projectDataInput
                 .map { it.project() }
@@ -54,13 +57,14 @@ class ProjectCampaignViewModel {
                 .map { htmlParser.parse(it) }
                 .compose(bindToLifecycle())
                 .subscribe {
-
+                    if (environment.build().isDebug) {
+                        Timber.d("${this.javaClass.canonicalName} parsed ViewElements: $it")
+                    }
                     storyViewElementsList.onNext(it)
                 }
 
             closeFullScreenVideo
-                .withLatestFrom(openVideoInFullScreen) {
-                        closePosition, videoOpenPosition ->
+                .withLatestFrom(openVideoInFullScreen) { closePosition, videoOpenPosition ->
                     Pair(videoOpenPosition.first, closePosition)
                 }.withLatestFrom(storyViewElementsList) { pair, list ->
                     Pair(pair, list)
@@ -85,8 +89,7 @@ class ProjectCampaignViewModel {
                 }
 
             closeFullScreenVideo
-                .withLatestFrom(openVideoInFullScreen) {
-                        closePosition, videoOpenPosition ->
+                .withLatestFrom(openVideoInFullScreen) { closePosition, videoOpenPosition ->
                     Pair(videoOpenPosition.first, closePosition)
                 }
                 .compose(bindToLifecycle())
@@ -107,14 +110,17 @@ class ProjectCampaignViewModel {
         // - Inputs
         override fun configureWith(projectData: ProjectData) =
             this.projectDataInput.onNext(projectData)
+
         override fun closeFullScreenVideo(position: Long) = closeFullScreenVideo.onNext(position)
         override fun openVideoInFullScreen(index: Int, source: String, seekPosition: Long) =
             openVideoInFullScreen.onNext(Pair(index, Pair(source, seekPosition)))
 
         override fun storyViewElements(): Observable<List<ViewElement>> = storyViewElementsList
         override fun onScrollToVideoPosition(): Observable<Int> = onScrollToVideoPosition
-        override fun onOpenVideoInFullScreen(): Observable< Pair<String, Long>> = onOpenVideoInFullScreen
-        override fun updateVideoCloseSeekPosition(): Observable< Pair<Int, Long>> =
+        override fun onOpenVideoInFullScreen(): Observable<Pair<String, Long>> =
+            onOpenVideoInFullScreen
+
+        override fun updateVideoCloseSeekPosition(): Observable<Pair<Int, Long>> =
             updateVideoCloseSeekPosition
     }
 }

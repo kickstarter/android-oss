@@ -58,7 +58,7 @@ class ProjectCampaignViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     if (environment.build().isDebug) {
-                        Timber.d("${this.javaClass.canonicalName} parsed ViewElements: ${it}")
+                        Timber.d("$this parsed list of ViewElements: ${it.map { item -> "$item \n" }}")
                     }
                     storyViewElementsList.onNext(it)
                 }

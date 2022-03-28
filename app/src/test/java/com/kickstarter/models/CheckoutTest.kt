@@ -34,7 +34,7 @@ class CheckoutTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testSurvey_equalFalse() {
+    fun testCheckout_equalFalse() {
         val checkout = Checkout.builder().build()
         val checkout2 = Checkout.builder().backing(CheckoutBackingFactory.requiresAction(true)).build()
         val checkout3 = Checkout.builder().id(5678L).build()
@@ -45,7 +45,7 @@ class CheckoutTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testSurvey_equalTrue() {
+    fun testCheckout_equalTrue() {
         val checkout1 = Checkout.builder().build()
         val checkout2 = Checkout.builder().build()
 

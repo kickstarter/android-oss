@@ -262,6 +262,11 @@ class DateTimeUtilsTest : KSRobolectricTestCase() {
                 builder.build()
             )
         )
+
+        assertEquals(
+            "Dec 17, 2015",
+            relative(context, ksString, dateTime)
+        )
     }
 
     @Test

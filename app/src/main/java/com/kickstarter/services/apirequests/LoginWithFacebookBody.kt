@@ -1,28 +1,45 @@
-package com.kickstarter.services.apirequests;
+package com.kickstarter.services.apirequests
 
-import android.os.Parcelable;
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-import com.kickstarter.libs.qualifiers.AutoGson;
+@Parcelize
+class LoginWithFacebookBody private constructor(
+    private val accessToken: String,
+    private val code: String?,
+) : Parcelable {
+    fun accessToken() = this.accessToken
+    fun code() = this.code
 
-import androidx.annotation.Nullable;
-import auto.parcel.AutoParcel;
+    @Parcelize
+    data class Builder(
+        private var accessToken: String = "",
+        private var code: String? = null
+    ) : Parcelable {
+        fun accessToken(accessToken: String) = apply { this.accessToken = accessToken }
+        fun code(code: String?) = apply { this.code = code }
+        fun build() = LoginWithFacebookBody(
+            accessToken = accessToken,
+            code = code
+        )
+    }
 
-@AutoGson
-@AutoParcel
-public abstract class LoginWithFacebookBody implements Parcelable {
-  public abstract String accessToken();
-  public abstract @Nullable String code();
+    override fun equals(obj: Any?): Boolean {
+        var equals = super.equals(obj)
+        if (obj is LoginWithFacebookBody) {
+            equals = accessToken() == obj.accessToken() &&
+                code() == obj.code()
+        }
+        return equals
+    }
+    
+    fun toBuilder() = Builder(
+        accessToken = accessToken,
+        code = code
+    )
 
-  @AutoParcel.Builder
-  public abstract static class Builder {
-    public abstract Builder accessToken(String __);
-    public abstract Builder code(String __);
-    public abstract LoginWithFacebookBody build();
-  }
-
-  public static Builder builder() {
-    return new AutoParcel_LoginWithFacebookBody.Builder();
-  }
-
-  public abstract Builder toBuilder();
+    companion object {
+        @JvmStatic
+        fun builder() = Builder()
+    }
 }

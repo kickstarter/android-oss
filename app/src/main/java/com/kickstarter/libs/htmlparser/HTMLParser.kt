@@ -39,6 +39,10 @@ class HTMLParser {
                     )
                     viewElements.add(videoViewElement)
                 }
+                ViewElementType.AUDIO -> {
+                    val audioElement = element.parseAudioElement()
+                    viewElements.add(audioElement)
+                }
                 ViewElementType.EXTERNAL_SOURCES -> {
                     viewElements.add(element.parseExternalElement())
                 }

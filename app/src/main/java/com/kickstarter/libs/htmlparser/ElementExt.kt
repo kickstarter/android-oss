@@ -45,6 +45,14 @@ fun Element.isImageStructure(): Boolean {
     return !isTemplateDiv.isNullOrEmpty()
 }
 
+fun Element.parseAudioElement(): AudioViewElement {
+    val url = this.children()
+        .firstOrNull { (it.attr("type") ?: "").contentEquals("audio/mp3") }
+        ?.attr("src") ?: ""
+
+    return AudioViewElement(url)
+}
+
 fun Element.parseVideoElement(): String {
     val sourceUrls = this.children().mapNotNull { it.attr("src") }
     return sourceUrls.firstOrNull { it.contains("high") } ?: sourceUrls.first()

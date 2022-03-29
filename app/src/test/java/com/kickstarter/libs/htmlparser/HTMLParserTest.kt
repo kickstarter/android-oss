@@ -1,6 +1,7 @@
 package com.kickstarter.libs.htmlparser
 
 import junit.framework.TestCase
+import junit.framework.TestCase.assertEquals
 import org.junit.Test
 import java.net.URI
 
@@ -252,5 +253,48 @@ class HTMLParserTest {
         val videoViewElement: VideoViewElement = listOfElements.last() as VideoViewElement
         TestCase.assertEquals(videoViewElement.sourceUrl, baseURL)
         TestCase.assertEquals(videoViewElement.thumbnailUrl, thumbnailUrl)
+    }
+
+    @Test
+    fun parseAudioElementCorrectFormat() {
+        val baseUrl =
+            "https://dr0rfahizzuzj.cloudfront.net/assets/002/236/466/f17de99e2a9e76a4954418c16d963f9b_mp3.mp3?2015"
+        val html =
+            "<div class=\"template asset\" contenteditable=\"false\" data-id=\"2236466\">" +
+                "<figure>" +
+                "<audio controls=\"controls\" preload=\"none\">" +
+                "   <source src=$baseUrl type=\"audio/mp3\"></source>" +
+                "   <source src=\"https://dr0rfahizzuzj.cloudfront.net/assets/002/236/466/f17de99e2a9e76a4954418c16d963f9b_aac.aac?2015\" type=\"audio/aac\"></source>" +
+                "   <source src=\"https://dr0rfahizzuzj.cloudfront.net/assets/002/236/466/f17de99e2a9e76a4954418c16d963f9b_ogg.ogg?2015\" type=\"audio/ogg\"></source>" +
+                "   <source src=\"https://dr0rfahizzuzj.cloudfront.net/assets/002/236/466/f17de99e2a9e76a4954418c16d963f9b_webm.webm?2015\" type=\"audio/webm\"></source>" +
+                "</audio>" +
+                "</figure>" +
+                "</div>"
+
+        val listOfElements = HTMLParser().parse(html)
+        assert(listOfElements.size == 1)
+
+        val audioElement: AudioViewElement = listOfElements.last() as AudioViewElement
+        assertEquals(audioElement.sourceUrl, baseUrl)
+    }
+
+    @Test
+    fun parseAudioElementNoMP3Source() {
+        val html =
+            "<div class=\"template asset\" contenteditable=\"false\" data-id=\"2236466\">" +
+                "<figure>" +
+                "<audio controls=\"controls\" preload=\"none\">" +
+                "   <source src=\"https://dr0rfahizzuzj.cloudfront.net/assets/002/236/466/f17de99e2a9e76a4954418c16d963f9b_aac.aac?2015\" type=\"audio/aac\"></source>" +
+                "   <source src=\"https://dr0rfahizzuzj.cloudfront.net/assets/002/236/466/f17de99e2a9e76a4954418c16d963f9b_ogg.ogg?2015\" type=\"audio/ogg\"></source>" +
+                "   <source src=\"https://dr0rfahizzuzj.cloudfront.net/assets/002/236/466/f17de99e2a9e76a4954418c16d963f9b_webm.webm?2015\" type=\"audio/webm\"></source>" +
+                "</audio>" +
+                "</figure>" +
+                "</div>"
+
+        val listOfElements = HTMLParser().parse(html)
+        assert(listOfElements.size == 1)
+
+        val audioElement: AudioViewElement = listOfElements.last() as AudioViewElement
+        assertEquals(audioElement.sourceUrl, "")
     }
 }

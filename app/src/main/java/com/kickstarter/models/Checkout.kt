@@ -1,49 +1,87 @@
 package com.kickstarter.models
 
 import android.os.Parcelable
-import auto.parcel.AutoParcel
+import kotlinx.parcelize.Parcelize
 
-@AutoParcel
-abstract class Checkout : Parcelable {
-    abstract fun id(): Long?
-    abstract fun backing(): Backing
+@Parcelize
+class Checkout private constructor(
+    private val id: Long?,
+    private val backing: Backing,
+) : Parcelable {
+    fun id() = this.id
+    fun backing() = this.backing
 
-    @AutoParcel.Builder
-    abstract class Builder {
-        abstract fun id(id: Long?): Builder
-        abstract fun backing(backing: Backing): Builder
-        abstract fun build(): Checkout
+    @Parcelize
+    data class Builder(
+        private var id: Long? = null,
+        private var backing: Backing = Backing.builder().build()
+    ) : Parcelable {
+        fun id(id: Long?) = apply { this.id = id }
+        fun backing(backing: Backing) = apply { this.backing = backing }
+        fun build() = Checkout(
+            id = id,
+            backing = backing
+        )
     }
 
-    abstract fun toBuilder(): Builder
+    fun toBuilder() = Builder(
+        id = id,
+        backing = backing
+    )
 
     companion object {
-
-        fun builder(): Builder {
-            return AutoParcel_Checkout.Builder()
-        }
+        @JvmStatic
+        fun builder() = Builder()
     }
 
-    @AutoParcel
-    abstract class Backing : Parcelable {
+    override fun equals(obj: Any?): Boolean {
+        var equals = super.equals(obj)
+        if (obj is Checkout) {
+            equals = id() == obj.id() &&
+                backing() == obj.backing()
+        }
+        return equals
+    }
 
-        abstract fun clientSecret(): String?
-        abstract fun requiresAction(): Boolean
+    @Parcelize
+    data class Backing private constructor(
+        private val clientSecret: String?,
+        private val requiresAction: Boolean,
+    ) : Parcelable {
 
-        @AutoParcel.Builder
-        abstract class Builder {
-            abstract fun clientSecret(secret: String?): Builder
-            abstract fun requiresAction(requiresAction: Boolean): Builder
-            abstract fun build(): Backing
+        fun clientSecret() = this.clientSecret
+        fun requiresAction() = this.requiresAction
+
+        @Parcelize
+        data class Builder(
+            private var clientSecret: String? = null,
+            private var requiresAction: Boolean = false,
+        ) : Parcelable {
+            fun clientSecret(clientSecret: String?) = apply { this.clientSecret = clientSecret }
+            fun requiresAction(requiresAction: Boolean) = apply { this.requiresAction = requiresAction }
+            fun build() = Backing(
+                clientSecret = clientSecret,
+                requiresAction = requiresAction
+            )
         }
 
-        abstract fun toBuilder(): Builder
+        override fun equals(obj: Any?): Boolean {
+            var equals = super.equals(obj)
+            if (obj is Backing) {
+                equals = clientSecret() == obj.clientSecret() &&
+                    requiresAction() == obj.requiresAction()
+            }
+            return equals
+        }
+        fun toBuilder() = Builder(
+            clientSecret = clientSecret,
+            requiresAction = requiresAction
+
+        )
 
         companion object {
-
-            fun builder(): Builder {
-                return AutoParcel_Checkout_Backing.Builder()
-            }
+            @JvmStatic
+            fun builder() = Builder()
         }
     }
 }

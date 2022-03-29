@@ -19,7 +19,7 @@ class SurveyResponse private constructor(
 
     @Parcelize
     data class Builder(
-        private var answeredAt: DateTime? = DateTime.now(),
+        private var answeredAt: DateTime? = null,
         private var id: Long = 0L,
         private var project: Project? = null,
         private var urls: Urls? = null

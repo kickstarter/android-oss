@@ -32,7 +32,7 @@ class LoginWithFacebookBody private constructor(
         }
         return equals
     }
-    
+
     fun toBuilder() = Builder(
         accessToken = accessToken,
         code = code

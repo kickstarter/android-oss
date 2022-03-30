@@ -24,13 +24,16 @@ import com.kickstarter.ui.viewholders.projectcampaign.ExternalViewViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.ImageElementViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.TextElementViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.VideoElementViewHolder
+import com.trello.rxlifecycle.FragmentEvent
+import rx.Observable
 
 /**
  * Adapter Specific to hold a list of ViewElements from the HTML Parser
  */
 class ViewElementAdapter(
     val requireActivity: FragmentActivity,
-    private val fullScreenDelegate: FullScreenDelegate
+    private val fullScreenDelegate: FullScreenDelegate,
+    private val lifecycle: Observable<FragmentEvent>
 ) : RecyclerView
 .Adapter<RecyclerView.ViewHolder>() {
 
@@ -165,7 +168,8 @@ class ViewElementAdapter(
                         ),
                         viewGroup,
                         false
-                    )
+                    ),
+                    this.lifecycle
                 )
             }
             ElementViewHolderType.EXTERNAL_SOURCES.ordinal -> {
@@ -210,6 +214,12 @@ class ViewElementAdapter(
         (element as? VideoViewElement)?.let { videoElement ->
             (viewHolder as? VideoElementViewHolder)?.let {
                 viewHolder.bindData(videoElement)
+            }
+        }
+
+        (element as? AudioViewElement)?.let { audioElement ->
+            (viewHolder as? AudioElementViewHolder)?.let {
+                viewHolder.bindData(audioElement)
             }
         }
 

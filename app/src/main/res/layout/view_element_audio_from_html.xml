@@ -1,7 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#CC000000">
 
-    <include layout="@layout/exo_playback_control_view" />
+    <androidx.appcompat.widget.AppCompatImageView android:id="@+id/play"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/ExoMediaButton.Play" />
+
+    <androidx.appcompat.widget.AppCompatImageView  android:id="@+id/pause"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/ExoMediaButton.Pause"/>
+
+    <TextView android:id="@+id/duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:includeFontPadding="false"
+        android:textColor="#FFBEBEBE"
+        tools:text="5:03"/>
+
+    <TextView android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:includeFontPadding="false"
+        android:textColor="#FFBEBEBE"
+        tools:text="1:00"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

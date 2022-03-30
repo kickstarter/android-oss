@@ -23,7 +23,7 @@ class CheckoutData private constructor(
     data class Builder(
         private var id: Long? = null,
         private var amount: Double = 0.0,
-        private var paymentType: CreditCardPaymentType = CreditCardPaymentType.`$UNKNOWN`,
+        private var paymentType: CreditCardPaymentType = CreditCardPaymentType.CREDIT_CARD,
         private var shippingAmount: Double = 0.0,
         private var bonusAmount: Double? = null
     ) : Parcelable {

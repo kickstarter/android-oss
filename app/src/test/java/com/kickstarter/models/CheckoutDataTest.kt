@@ -27,8 +27,7 @@ class CheckoutDataTest : KSRobolectricTestCase() {
 
     @Test
     fun testDefaultToBuilderInit() {
-        val checkout = CheckoutData.builder().build().toBuilder()
-            .id(1234L)
+        val checkout = CheckoutData.builder().id(1234L).build().toBuilder()
             .bonusAmount(2.1)
             .paymentType(CreditCardPaymentType.BANK_ACCOUNT)
             .shippingAmount(1.2)

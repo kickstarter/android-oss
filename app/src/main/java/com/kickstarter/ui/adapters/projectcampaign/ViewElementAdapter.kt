@@ -7,16 +7,19 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.databinding.EmptyViewBinding
+import com.kickstarter.databinding.ViewElementAudioFromHtmlBinding
 import com.kickstarter.databinding.ViewElementExternalSourceFromHtmlBinding
 import com.kickstarter.databinding.ViewElementImageFromHtmlBinding
 import com.kickstarter.databinding.ViewElementTextFromHtmlBinding
 import com.kickstarter.databinding.ViewElementVideoFromHtmlBinding
+import com.kickstarter.libs.htmlparser.AudioViewElement
 import com.kickstarter.libs.htmlparser.ExternalSourceViewElement
 import com.kickstarter.libs.htmlparser.ImageViewElement
 import com.kickstarter.libs.htmlparser.TextViewElement
 import com.kickstarter.libs.htmlparser.VideoViewElement
 import com.kickstarter.libs.htmlparser.ViewElement
 import com.kickstarter.ui.viewholders.EmptyViewHolder
+import com.kickstarter.ui.viewholders.projectcampaign.AudioElementViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.ExternalViewViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.ImageElementViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.TextElementViewHolder
@@ -29,8 +32,7 @@ class ViewElementAdapter(
     val requireActivity: FragmentActivity,
     private val fullScreenDelegate: FullScreenDelegate
 ) : RecyclerView
-.Adapter<RecyclerView
-    .ViewHolder>() {
+.Adapter<RecyclerView.ViewHolder>() {
 
     private val diffCallback = object : DiffUtil.ItemCallback<ViewElement>() {
         override fun areItemsTheSame(oldItem: ViewElement, newItem: ViewElement): Boolean {
@@ -57,6 +59,12 @@ class ViewElementAdapter(
 
             (oldItem as? VideoViewElement)?.let {
                 val isSameType = newItem is VideoViewElement
+                return if (isSameType) newItem == oldItem
+                else false
+            }
+
+            (oldItem as? AudioViewElement)?.let {
+                val isSameType = newItem is AudioViewElement
                 return if (isSameType) newItem == oldItem
                 else false
             }
@@ -95,6 +103,10 @@ class ViewElementAdapter(
 
         (element as? VideoViewElement)?.let {
             return ElementViewHolderType.VIDEO.ordinal
+        }
+
+        (element as? AudioViewElement)?.let {
+            return ElementViewHolderType.AUDIO.ordinal
         }
 
         (element as? ExternalSourceViewElement)?.let {
@@ -142,6 +154,18 @@ class ViewElementAdapter(
                     ),
                     fullScreenDelegate,
                     requireActivity
+                )
+            }
+            ElementViewHolderType.AUDIO.ordinal -> {
+                return AudioElementViewHolder(
+                    ViewElementAudioFromHtmlBinding.inflate(
+                        LayoutInflater.from(
+                            viewGroup
+                                .context
+                        ),
+                        viewGroup,
+                        false
+                    )
                 )
             }
             ElementViewHolderType.EXTERNAL_SOURCES.ordinal -> {
@@ -212,6 +236,7 @@ class ViewElementAdapter(
         TEXT,
         IMAGE,
         VIDEO,
+        AUDIO,
         EMBEDDED,
         EXTERNAL_SOURCES
     }

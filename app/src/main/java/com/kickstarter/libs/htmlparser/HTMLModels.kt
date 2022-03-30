@@ -5,12 +5,16 @@ import org.jsoup.nodes.Element
 interface ViewElement
 
 data class TextViewElement(var components: List<TextComponent>) : ViewElement
+
+data class AudioViewElement(
+    val sourceUrl: String
+) : ViewElement
+
 data class VideoViewElement(
     val sourceUrl: String,
     val thumbnailUrl: String?,
     val seekPosition: Long
-) :
-    ViewElement
+) : ViewElement
 
 data class TextComponent(
     var text: String,
@@ -63,6 +67,7 @@ enum class ViewElementType(val tag: String?) {
     IMAGE("img"),
     TEXT(null),
     VIDEO("video"),
+    AUDIO("audio"),
     EXTERNAL_SOURCES("iframe"),
     UNKNOWN(null);
 
@@ -81,6 +86,9 @@ enum class ViewElementType(val tag: String?) {
                 }
                 tag == VIDEO.tag -> {
                     return VIDEO
+                }
+                tag == AUDIO.tag -> {
+                    return AUDIO
                 }
             }
             return UNKNOWN

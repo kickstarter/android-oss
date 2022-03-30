@@ -322,7 +322,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment());
 
     final Project project = ProjectFactory.project();
-    final CheckoutData checkoutData = CheckoutDataFactory.Companion.checkoutData(3L,
+    final CheckoutData checkoutData = CheckoutDataFactory.checkoutData(3L,
             20.0, 30.0);
     final PledgeData pledgeData = PledgeData.Companion.with(PledgeFlowContext.NEW_PLEDGE,
             ProjectDataFactory.Companion.project(project), RewardFactory.reward(), Collections.emptyList(), null);
@@ -360,7 +360,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment);
 
     final Project project = ProjectFactory.project();
-    final CheckoutData checkoutData = CheckoutDataFactory.Companion.checkoutData(3L,
+    final CheckoutData checkoutData = CheckoutDataFactory.checkoutData(3L,
             20.0, 30.0);
     final PledgeData pledgeData = PledgeData.Companion.with(PledgeFlowContext.NEW_PLEDGE,
             ProjectDataFactory.Companion.project(project), RewardFactory.reward(), Collections.emptyList(), null);
@@ -385,7 +385,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment());
 
     final Project project = ProjectFactory.project();
-    final CheckoutData checkoutData = CheckoutDataFactory.Companion.checkoutData(3L,
+    final CheckoutData checkoutData = CheckoutDataFactory.checkoutData(3L,
             20.0, 30.0);
     final PledgeData pledgeData = PledgeData.Companion.with(PledgeFlowContext.NEW_PLEDGE,
             ProjectDataFactory.Companion.project(project), RewardFactory.reward(), Collections.emptyList(), null);

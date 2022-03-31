@@ -103,6 +103,7 @@
 
                 <data
                     android:host="*.kickstarter.com"
+                    android:pathPrefix="/discover"
                     android:scheme="ksr" />
             </intent-filter>
         </activity>

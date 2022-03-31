@@ -30,7 +30,7 @@ interface AudioViewElementViewHolderViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        private val audioElement = PublishSubject.create<AudioViewElement>()
+        private val audioElement = BehaviorSubject.create<AudioViewElement>()
         private val lifecycleObservable = BehaviorSubject.create<FragmentEvent>()
         private val playButtonPressed = PublishSubject.create<Void>()
 
@@ -52,7 +52,9 @@ interface AudioViewElementViewHolderViewModel {
                 }
 
             this.audioElement
-                .filter { it.sourceUrl.isNullOrBlank() }
+                .filter {
+                    it.sourceUrl.isNullOrBlank()
+                }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.sourceUrl.onNext(it.sourceUrl)
@@ -75,7 +77,9 @@ interface AudioViewElementViewHolderViewModel {
         override fun onPlayButtonPressed() =
             this.playButtonPressed.onNext(null)
 
+        // - Outputs
         override fun preparePlayerWithUrl() = this.sourceUrl
+
         override fun stopPlayer(): Observable<Void> =
             this.stopPlayer
 

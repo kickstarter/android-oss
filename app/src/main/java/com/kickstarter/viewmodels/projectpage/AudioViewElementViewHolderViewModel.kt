@@ -53,7 +53,7 @@ interface AudioViewElementViewHolderViewModel {
 
             this.audioElement
                 .filter {
-                    it.sourceUrl.isNullOrBlank()
+                    !it.sourceUrl.isNullOrBlank()
                 }
                 .compose(bindToLifecycle())
                 .subscribe {

@@ -1,29 +1,52 @@
-package com.kickstarter.services.apirequests;
+package com.kickstarter.services.apirequests
 
-import android.os.Parcelable;
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-import com.kickstarter.libs.qualifiers.AutoGson;
+@Parcelize
+class RegisterWithFacebookBody private constructor(
+    private val accessToken: String,
+    private val newsletterOptIn: Boolean,
+    private val sendNewsletters: Boolean,
+) : Parcelable {
+    fun accessToken() = this.accessToken
+    fun newsletterOptIn() = this.newsletterOptIn
+    fun sendNewsletters() = this.sendNewsletters
 
-import auto.parcel.AutoParcel;
+    @Parcelize
+    data class Builder(
+        private var accessToken: String = "",
+        private var newsletterOptIn: Boolean = false,
+        private var sendNewsletters: Boolean = false
+    ) : Parcelable {
+        fun accessToken(accessToken: String) = apply { this.accessToken = accessToken }
+        fun newsletterOptIn(newsletterOptIn: Boolean) = apply { this.newsletterOptIn = newsletterOptIn }
+        fun sendNewsletters(sendNewsletters: Boolean) = apply { this.sendNewsletters = sendNewsletters }
+        fun build() = RegisterWithFacebookBody(
+            accessToken = accessToken,
+            newsletterOptIn = newsletterOptIn,
+            sendNewsletters = sendNewsletters
+        )
+    }
 
-@AutoGson
-@AutoParcel
-public abstract class RegisterWithFacebookBody implements Parcelable {
-  public abstract String accessToken();
-  public abstract boolean newsletterOptIn();
-  public abstract boolean sendNewsletters();
+    override fun equals(obj: Any?): Boolean {
+        var equals = super.equals(obj)
+        if (obj is RegisterWithFacebookBody) {
+            equals = accessToken() == obj.accessToken() &&
+                newsletterOptIn() == obj.newsletterOptIn() &&
+                sendNewsletters() == obj.sendNewsletters()
+        }
+        return equals
+    }
 
-  @AutoParcel.Builder
-  public abstract static class Builder {
-    public abstract Builder accessToken(String __);
-    public abstract Builder newsletterOptIn(boolean __);
-    public abstract Builder sendNewsletters(boolean __);
-    public abstract RegisterWithFacebookBody build();
-  }
+    fun toBuilder() = Builder(
+        accessToken = accessToken,
+        newsletterOptIn = newsletterOptIn,
+        sendNewsletters = sendNewsletters
+    )
 
-  public static Builder builder() {
-    return new AutoParcel_RegisterWithFacebookBody.Builder();
-  }
-
-  public abstract Builder toBuilder();
+    companion object {
+        @JvmStatic
+        fun builder() = Builder()
+    }
 }

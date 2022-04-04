@@ -70,21 +70,13 @@
         tools:text="5:00"
         tools:ignore="SelectableText" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_separator_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.35" />
-
     <ProgressBar
         android:id="@+id/progressbar"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-
-        app:layout_constraintStart_toStartOf="@id/guideline_separator_2"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        app:layout_constraintStart_toEndOf="@id/duration"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

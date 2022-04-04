@@ -2,6 +2,8 @@ package com.kickstarter.ui.viewholders.projectcampaign
 
 import android.media.AudioAttributes
 import android.media.MediaPlayer
+import android.media.MediaPlayer.OnCompletionListener
+import android.os.Build
 import com.kickstarter.R
 import com.kickstarter.databinding.ViewElementAudioFromHtmlBinding
 import com.kickstarter.libs.htmlparser.AudioViewElement
@@ -10,8 +12,10 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.viewmodels.projectpage.AudioViewElementViewHolderViewModel
 import com.trello.rxlifecycle.FragmentEvent
+import io.reactivex.disposables.Disposable
 import rx.Observable
-import java.lang.Exception
+import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 class AudioElementViewHolder(
     private val binding: ViewElementAudioFromHtmlBinding,
@@ -20,6 +24,8 @@ class AudioElementViewHolder(
 
     private val viewModel = AudioViewElementViewHolderViewModel.ViewModel(environment())
     private val mediaPlayer: MediaPlayer by lazy { MediaPlayer() }
+    private val updateObservable = Observable.interval(500, TimeUnit.MILLISECONDS)
+    private lateinit var disposable: Disposable
 
     init {
         this.lifecycle
@@ -54,21 +60,63 @@ class AudioElementViewHolder(
         this.binding.playPause.setOnClickListener {
             toggleButton()
         }
+
+        mediaPlayer.setOnCompletionListener(OnCompletionListener {
+            resetPlayer()
+        })
     }
 
     private fun toggleButton() {
         if (mediaPlayer.isPlaying) {
-            this.binding.playPause.setImageResource(R.drawable.exo_controls_pause)
+            this.binding.playPause.setImageResource(R.drawable.exo_controls_play)
             pausePlayer()
         } else {
-            this.binding.playPause.setImageResource(R.drawable.exo_controls_play)
+            this.binding.playPause.setImageResource(R.drawable.exo_controls_pause)
             startPlayer()
         }
+    }
+
+    private fun resetPlayer() {
+        this.binding.progressbar.progress = mediaPlayer.currentPosition
+        mediaPlayer.stop()
+        mediaPlayer.reset()
     }
 
     private fun startPlayer() {
         if (!mediaPlayer.isPlaying) {
             mediaPlayer.start()
+
+            updateObservable
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe {
+                    // TODO: extract to a function, create a kill function, call with every start() kill with every pause/stop
+                    if (mediaPlayer.isPlaying) {
+                        val progress = String.format(
+                            "%02d:%02d",
+                            TimeUnit.MILLISECONDS.toMinutes(mediaPlayer.currentPosition.toLong()),
+                            TimeUnit.MILLISECONDS.toSeconds(mediaPlayer.currentPosition.toLong()) -
+                                    TimeUnit.MINUTES.toSeconds(
+                                        TimeUnit.MILLISECONDS.toMinutes(
+                                            mediaPlayer.currentPosition.toLong()
+                                        )
+                                    )
+                        )
+
+                        val progressOnBAr =
+                            (mediaPlayer.currentPosition.toDouble() / mediaPlayer.duration.toDouble() * 100).toInt()
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            this.binding.progressbar.setProgress(progressOnBAr, true)
+                        }
+                        this.binding.progress.text = progress
+
+                        // TODO delete debug
+                        Timber.d("****** the duration is: $progress")
+                        Timber.d("****** the duration on bar is: $progressOnBAr")
+                    }
+
+                    Timber.d("****** the observable is active")
+                }
         }
     }
 
@@ -94,7 +142,21 @@ class AudioElementViewHolder(
             mediaPlayer.setDataSource(url)
             mediaPlayer.prepare()
 
-            this.binding.duration.text = mediaPlayer.duration.toString()
+            this.binding.duration.text = String.format(
+                "%02d:%02d",
+                TimeUnit.MILLISECONDS.toMinutes(mediaPlayer.duration.toLong()),
+                TimeUnit.MILLISECONDS.toSeconds(mediaPlayer.duration.toLong()) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(mediaPlayer.duration.toLong()))
+            )
+
+            val progress = String.format(
+                "%02d:%02d",
+                TimeUnit.MILLISECONDS.toMinutes(mediaPlayer.currentPosition.toLong()),
+                TimeUnit.MILLISECONDS.toSeconds(mediaPlayer.currentPosition.toLong()) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(mediaPlayer.currentPosition.toLong()))
+            )
+            this.binding.progress.text = progress
+
         } catch (e: Exception) {
         }
     }

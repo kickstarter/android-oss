@@ -48,7 +48,6 @@ class RefTagTest : TestCase() {
     fun testActivity_returnsActivityRefTag() {
         val activityRefTag = RefTag.activity()
 
-
         assertTrue(activityRefTag is RefTag)
         assertEquals(activityRefTag.tag(), "activity")
     }

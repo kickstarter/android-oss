@@ -11,8 +11,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class RefTag private constructor(
-    private val tag : String
-    ) : Parcelable {
+    private val tag: String
+) : Parcelable {
     fun tag() = this.tag
 
     @Parcelize
@@ -23,7 +23,7 @@ class RefTag private constructor(
         fun build() = RefTag(
             tag = tag
         )
-}
+    }
     fun toBuilder() = Builder(
         tag = tag
     )

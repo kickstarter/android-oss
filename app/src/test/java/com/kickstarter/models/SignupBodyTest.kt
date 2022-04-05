@@ -34,12 +34,12 @@ class SignupBodyTest : TestCase() {
         val email = "test@test.123"
         val name = "test"
         val password = "123"
-        
+
         val signupBody = SignupBody.builder().build()
         val signupBody2 = SignupBody.builder().password(password).build()
         val signupBody3 = SignupBody.builder().name(name).build()
         val signupBody4 = SignupBody.builder().email(email).build()
-        
+
         assertFalse(signupBody == signupBody2)
         assertFalse(signupBody == signupBody3)
         assertFalse(signupBody == signupBody4)

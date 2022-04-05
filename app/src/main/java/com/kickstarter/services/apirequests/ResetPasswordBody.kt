@@ -1,25 +1,38 @@
-package com.kickstarter.services.apirequests;
+package com.kickstarter.services.apirequests
 
-import android.os.Parcelable;
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-import com.kickstarter.libs.qualifiers.AutoGson;
+@Parcelize
+class ResetPasswordBody private constructor(
+    private val email: String
+) : Parcelable {
+    fun email() = this.email
 
-import auto.parcel.AutoParcel;
+    @Parcelize
+    data class Builder(
+        private var email: String = ""
+    ) : Parcelable {
+        fun email(email: String) = apply { this.email = email }
+        fun build() = ResetPasswordBody(
+            email = email
+        )
+    }
 
-@AutoGson
-@AutoParcel
-public abstract class ResetPasswordBody implements Parcelable {
-  public abstract String email();
+    fun toBuilder() = Builder(
+        email = email
+    )
 
-  @AutoParcel.Builder
-  public abstract static class Builder {
-    public abstract Builder email(String __);
-    public abstract ResetPasswordBody build();
-  }
+    override fun equals(obj: Any?): Boolean {
+        var equals = super.equals(obj)
+        if (obj is ResetPasswordBody) {
+            equals = email() == obj.email()
+        }
+        return equals
+    }
 
-  public static Builder builder() {
-    return new AutoParcel_ResetPasswordBody.Builder();
-  }
-
-  public abstract Builder toBuilder();
+    companion object {
+        @JvmStatic
+        fun builder() = Builder()
+    }
 }

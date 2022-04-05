@@ -1,5 +1,7 @@
 package com.kickstarter.ui.viewholders.projectcampaign
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnCompletionListener
@@ -12,9 +14,10 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.viewmodels.projectpage.AudioViewElementViewHolderViewModel
 import com.trello.rxlifecycle.FragmentEvent
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import rx.Observable
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class AudioElementViewHolder(
@@ -24,7 +27,8 @@ class AudioElementViewHolder(
 
     private val viewModel = AudioViewElementViewHolderViewModel.ViewModel(environment())
     private val mediaPlayer: MediaPlayer by lazy { MediaPlayer() }
-    private val updateObservable = Observable.interval(500, TimeUnit.MILLISECONDS)
+    private var url = ""
+    private val updateObservable = io.reactivex.Observable.interval(500, TimeUnit.MILLISECONDS)
     private lateinit var disposable: Disposable
 
     init {
@@ -40,6 +44,7 @@ class AudioElementViewHolder(
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
+                url = it
                 prepareMediaPlayer(it)
             }
 
@@ -57,13 +62,22 @@ class AudioElementViewHolder(
                 stopPlayer()
             }
 
+        this.viewModel.pausePlayer()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                pausePlayer()
+            }
+
         this.binding.playPause.setOnClickListener {
             toggleButton()
         }
 
-        mediaPlayer.setOnCompletionListener(OnCompletionListener {
-            resetPlayer()
-        })
+        mediaPlayer.setOnCompletionListener(
+            OnCompletionListener {
+                resetPlayer()
+            }
+        )
     }
 
     private fun toggleButton() {
@@ -77,57 +91,60 @@ class AudioElementViewHolder(
     }
 
     private fun resetPlayer() {
-        this.binding.progressbar.progress = mediaPlayer.currentPosition
-        mediaPlayer.stop()
+        this.binding.progressbar.progress = 0
+        stopPlayer()
         mediaPlayer.reset()
+        disposable.dispose()
+        prepareMediaPlayer(url)
     }
 
     private fun startPlayer() {
         if (!mediaPlayer.isPlaying) {
             mediaPlayer.start()
 
-            updateObservable
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
+            disposable = updateObservable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    // TODO: extract to a function, create a kill function, call with every start() kill with every pause/stop
-                    if (mediaPlayer.isPlaying) {
-                        val progress = String.format(
-                            "%02d:%02d",
-                            TimeUnit.MILLISECONDS.toMinutes(mediaPlayer.currentPosition.toLong()),
-                            TimeUnit.MILLISECONDS.toSeconds(mediaPlayer.currentPosition.toLong()) -
-                                    TimeUnit.MINUTES.toSeconds(
-                                        TimeUnit.MILLISECONDS.toMinutes(
-                                            mediaPlayer.currentPosition.toLong()
-                                        )
-                                    )
-                        )
-
-                        val progressOnBAr =
-                            (mediaPlayer.currentPosition.toDouble() / mediaPlayer.duration.toDouble() * 100).toInt()
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            this.binding.progressbar.setProgress(progressOnBAr, true)
-                        }
-                        this.binding.progress.text = progress
-
-                        // TODO delete debug
-                        Timber.d("****** the duration is: $progress")
-                        Timber.d("****** the duration on bar is: $progressOnBAr")
-                    }
-
-                    Timber.d("****** the observable is active")
+                    updateProgressUI()
                 }
+        }
+    }
+
+    private fun updateProgressUI() {
+        if (mediaPlayer.isPlaying) {
+            val progress = String.format(
+                "%02d:%02d",
+                TimeUnit.MILLISECONDS.toMinutes(mediaPlayer.currentPosition.toLong()),
+                TimeUnit.MILLISECONDS.toSeconds(mediaPlayer.currentPosition.toLong()) -
+                    TimeUnit.MINUTES.toSeconds(
+                        TimeUnit.MILLISECONDS.toMinutes(
+                            mediaPlayer.currentPosition.toLong()
+                        )
+                    )
+            )
+
+            val progressOnBAr =
+                (mediaPlayer.currentPosition.toDouble() / mediaPlayer.duration.toDouble() * 100).toInt()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                this.binding.progressbar.setProgress(progressOnBAr, true)
+            } else this.binding.progressbar.progress = progressOnBAr
+
+            this.binding.progressbar.progressTintList = ColorStateList.valueOf(Color.WHITE)
+            this.binding.progress.text = progress
         }
     }
 
     private fun pausePlayer() {
         if (mediaPlayer.isPlaying) {
+            disposable.dispose()
             mediaPlayer.pause()
         }
     }
 
     private fun stopPlayer() {
         if (mediaPlayer.isPlaying) {
+            disposable.dispose()
             mediaPlayer.stop()
         }
     }
@@ -146,17 +163,16 @@ class AudioElementViewHolder(
                 "%02d:%02d",
                 TimeUnit.MILLISECONDS.toMinutes(mediaPlayer.duration.toLong()),
                 TimeUnit.MILLISECONDS.toSeconds(mediaPlayer.duration.toLong()) -
-                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(mediaPlayer.duration.toLong()))
+                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(mediaPlayer.duration.toLong()))
             )
 
             val progress = String.format(
                 "%02d:%02d",
                 TimeUnit.MILLISECONDS.toMinutes(mediaPlayer.currentPosition.toLong()),
                 TimeUnit.MILLISECONDS.toSeconds(mediaPlayer.currentPosition.toLong()) -
-                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(mediaPlayer.currentPosition.toLong()))
+                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(mediaPlayer.currentPosition.toLong()))
             )
             this.binding.progress.text = progress
-
         } catch (e: Exception) {
         }
     }

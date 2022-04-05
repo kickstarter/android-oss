@@ -22,6 +22,7 @@ interface AudioViewElementViewHolderViewModel {
     interface Outputs {
         fun preparePlayerWithUrl(): Observable<String>
         fun stopPlayer(): Observable<Void>
+        fun pausePlayer(): Observable<Void>
         fun startPlayer(): Observable<Void>
     }
 
@@ -35,6 +36,7 @@ interface AudioViewElementViewHolderViewModel {
         private val playButtonPressed = PublishSubject.create<Void>()
 
         private val sourceUrl = PublishSubject.create<String>()
+        private val pausePlayer = PublishSubject.create<Void>()
         private val stopPlayer = PublishSubject.create<Void>()
         private val startPlayer = PublishSubject.create<Void>()
 
@@ -44,7 +46,7 @@ interface AudioViewElementViewHolderViewModel {
                 .subscribe {
                     Timber.d("$this is aware of the lifecycle changes on  parent fragment: $it")
                     when (it) {
-                        FragmentEvent.PAUSE,
+                        FragmentEvent.PAUSE -> this.pausePlayer.onNext(null)
                         FragmentEvent.STOP -> this.stopPlayer.onNext(null)
                         else -> {
                         }
@@ -78,12 +80,16 @@ interface AudioViewElementViewHolderViewModel {
             this.playButtonPressed.onNext(null)
 
         // - Outputs
-        override fun preparePlayerWithUrl() = this.sourceUrl
+        override fun preparePlayerWithUrl(): PublishSubject<String> =
+            this.sourceUrl
 
         override fun stopPlayer(): Observable<Void> =
             this.stopPlayer
 
         override fun startPlayer(): Observable<Void> =
             this.startPlayer
+
+        override fun pausePlayer(): Observable<Void> =
+            this.pausePlayer
     }
 }

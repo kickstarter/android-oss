@@ -9,7 +9,6 @@ import com.trello.rxlifecycle.FragmentEvent
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
-import timber.log.Timber
 
 interface AudioViewElementViewHolderViewModel {
 
@@ -44,7 +43,6 @@ interface AudioViewElementViewHolderViewModel {
             this.lifecycleObservable
                 .compose(bindToLifecycle())
                 .subscribe {
-                    Timber.d("$this is aware of the lifecycle changes on  parent fragment: $it")
                     when (it) {
                         FragmentEvent.PAUSE -> this.pausePlayer.onNext(null)
                         FragmentEvent.STOP -> this.stopPlayer.onNext(null)
@@ -58,6 +56,7 @@ interface AudioViewElementViewHolderViewModel {
                     !it.sourceUrl.isNullOrBlank()
                 }
                 .compose(bindToLifecycle())
+                .distinctUntilChanged()
                 .subscribe {
                     this.sourceUrl.onNext(it.sourceUrl)
                 }

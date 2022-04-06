@@ -4,6 +4,7 @@ import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.htmlparser.AudioViewElement
+import com.kickstarter.libs.utils.extensions.isMP3Url
 import com.kickstarter.ui.fragments.projectpage.ProjectCampaignFragment
 import com.trello.rxlifecycle.FragmentEvent
 import rx.Observable
@@ -22,7 +23,6 @@ interface AudioViewElementViewHolderViewModel {
         fun preparePlayerWithUrl(): Observable<String>
         fun stopPlayer(): Observable<Void>
         fun pausePlayer(): Observable<Void>
-        fun startPlayer(): Observable<Void>
     }
 
     class ViewModel(@NonNull environment: Environment) :
@@ -37,7 +37,6 @@ interface AudioViewElementViewHolderViewModel {
         private val sourceUrl = PublishSubject.create<String>()
         private val pausePlayer = PublishSubject.create<Void>()
         private val stopPlayer = PublishSubject.create<Void>()
-        private val startPlayer = PublishSubject.create<Void>()
 
         init {
 
@@ -54,7 +53,7 @@ interface AudioViewElementViewHolderViewModel {
 
             this.audioElement
                 .filter {
-                    !it.sourceUrl.isNullOrBlank()
+                    !it.sourceUrl.isNullOrBlank() && it.sourceUrl.isMP3Url()
                 }
                 .compose(bindToLifecycle())
                 .distinctUntilChanged()
@@ -85,9 +84,6 @@ interface AudioViewElementViewHolderViewModel {
 
         override fun stopPlayer(): Observable<Void> =
             this.stopPlayer
-
-        override fun startPlayer(): Observable<Void> =
-            this.startPlayer
 
         override fun pausePlayer(): Observable<Void> =
             this.pausePlayer

@@ -45,13 +45,6 @@ class AudioElementViewHolder(
                 initializePlayer(it)
             }
 
-        this.viewModel.outputs.startPlayer()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe {
-                startPlayer()
-            }
-
         this.viewModel.outputs.stopPlayer()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())

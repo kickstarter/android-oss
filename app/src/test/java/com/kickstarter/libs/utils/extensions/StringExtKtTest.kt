@@ -159,6 +159,12 @@ class StringExtKtTest : KSRobolectricTestCase() {
         assertEquals(10000.5, "10.000,50".parseToDouble())
     }
 
+    @Test
+    fun isValidMP3Format() {
+        val url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+        assertTrue(url.isMP3Url())
+    }
+
     companion object {
         private const val VALID_EMAIL = "hello@kickstarter.com"
         private const val VALID_GIF_URL = "https://ksr-qa-ugc.imgix.net/assets/035/272/960/eae68383730822ffe949f3825600a80a_original.gif?gif-q=50&q=92&s=d0420b019010dc7c21de0454a47902e0"

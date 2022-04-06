@@ -104,6 +104,7 @@ class AudioElementViewHolder(
     }
 
     fun togglePlayerState() {
+        if (!isPrepared) return
         if (mediaPlayer.isPlaying) {
             pausePlayer()
         } else {

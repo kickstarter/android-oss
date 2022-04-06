@@ -3,8 +3,31 @@ package com.kickstarter.models
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import junit.framework.TestCase
+import org.junit.Test
 
 class AccessTokenEnvelopeTest : TestCase() {
+
+    @Test
+    fun testDefaultInit() {
+        val accessToken = "test"
+        val user = UserFactory.canadianUser()
+        val loginWithFacebookBody = AccessTokenEnvelope.builder()
+            .accessToken(accessToken)
+            .user(user)
+            .build()
+
+        assertEquals(loginWithFacebookBody.accessToken(), accessToken)
+        assertEquals(loginWithFacebookBody.user(), user)
+    }
+
+    @Test
+    fun testAccessTokenEnvelopeToBuilder() {
+        val user = UserFactory.canadianUser()
+        val loginWithFacebookBody = AccessTokenEnvelope.builder().build().toBuilder()
+            .user(user).build()
+
+        assertEquals(loginWithFacebookBody.user(), user)
+    }
 
     fun testEquals_whenSecondEnvelopNull_returnFalse() {
         val envelopA = AccessTokenEnvelope.builder().user(UserFactory.user()).accessToken("SomeToken").build()

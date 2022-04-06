@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/grid_2"
+    android:id="@+id/audio_player"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="#CC000000">
@@ -34,12 +35,13 @@
         android:paddingRight="4dp"
         android:includeFontPadding="false"
         android:textColor="#FFBEBEBE"
+        android:text="00:00"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/guideline_separator_1"
         app:layout_constraintVertical_bias="0.5"
-        tools:text="1:03"
-        tools:ignore="SelectableText" />
+        tools:text="1:20"
+        tools:ignore="HardcodedText,SelectableText" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/separator"
@@ -66,10 +68,11 @@
         android:paddingRight="4dp"
         android:includeFontPadding="false"
         android:textColor="#FFBEBEBE"
+        android:text="00:00"
         app:layout_constraintLeft_toRightOf="@id/separator"
         app:layout_constraintBaseline_toBaselineOf="@id/progress"
         tools:text="5:00"
-        tools:ignore="SelectableText" />
+        tools:ignore="HardcodedText,SelectableText" />
 
     <androidx.appcompat.widget.AppCompatSeekBar
         android:id="@+id/progressbar"

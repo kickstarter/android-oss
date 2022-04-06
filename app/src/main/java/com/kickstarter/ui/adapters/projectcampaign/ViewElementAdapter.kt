@@ -219,6 +219,7 @@ class ViewElementAdapter(
 
         (element as? AudioViewElement)?.let { audioElement ->
             (viewHolder as? AudioElementViewHolder)?.let {
+                viewHolder.setIsRecyclable(false)
                 viewHolder.bindData(audioElement)
             }
         }
@@ -228,6 +229,19 @@ class ViewElementAdapter(
                 viewHolder.bindData(externalSourceViewElement)
             }
         }
+    }
+
+    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
+        (holder as? AudioElementViewHolder)?.setIsRecyclable(false)
+        super.onViewAttachedToWindow(holder)
+    }
+
+    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+        (holder as? AudioElementViewHolder)?.let {
+            it.setIsRecyclable(false)
+            it.pausePlayer()
+        }
+        super.onViewDetachedFromWindow(holder)
     }
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {

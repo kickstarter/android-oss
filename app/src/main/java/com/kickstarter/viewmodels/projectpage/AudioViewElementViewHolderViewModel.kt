@@ -40,6 +40,7 @@ interface AudioViewElementViewHolderViewModel {
         private val startPlayer = PublishSubject.create<Void>()
 
         init {
+
             this.lifecycleObservable
                 .compose(bindToLifecycle())
                 .subscribe {

@@ -29,6 +29,7 @@ class AudioElementViewHolder(
     private lateinit var disposable: Disposable
 
     init {
+
         this.lifecycle
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
@@ -103,7 +104,7 @@ class AudioElementViewHolder(
     }
 
     fun togglePlayerState() {
-        if (isPrepared && mediaPlayer.isPlaying) {
+        if (mediaPlayer.isPlaying) {
             pausePlayer()
         } else {
             startPlayer()
@@ -111,12 +112,14 @@ class AudioElementViewHolder(
     }
 
     fun resetPlayer() {
-        stopPlayer()
-        this.binding.progressbar.progress = 0
-        this.binding.playPause.setImageResource(R.drawable.exo_controls_play)
-        mediaPlayer.seekTo(0)
-        updateProgressTextLabel()
-        prepareMediaPlayer()
+        if (isPrepared) {
+            stopPlayer()
+            this.binding.progressbar.progress = 0
+            this.binding.playPause.setImageResource(R.drawable.exo_controls_play)
+            mediaPlayer.seekTo(0)
+            updateProgressTextLabel()
+            prepareMediaPlayer()
+        }
     }
 
     fun startPlayer() {
@@ -167,6 +170,8 @@ class AudioElementViewHolder(
             mediaPlayer.setDataSource(url)
             mediaPlayer.prepareAsync()
         } catch (e: Exception) {
+            isPrepared = false
+            mediaPlayer.release()
         }
     }
 

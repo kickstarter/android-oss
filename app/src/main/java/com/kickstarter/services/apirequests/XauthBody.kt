@@ -1,30 +1,52 @@
-package com.kickstarter.services.apirequests;
+package com.kickstarter.services.apirequests
 
-import android.os.Parcelable;
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-import com.kickstarter.libs.qualifiers.AutoGson;
+@Parcelize
+class XauthBody private constructor(
+    private val email: String,
+    private val password: String,
+    private val code: String?
+) : Parcelable {
+    fun email() = this.email
+    fun password() = this.password
+    fun code() = this.code
 
-import androidx.annotation.Nullable;
-import auto.parcel.AutoParcel;
+    @Parcelize
+    data class Builder(
+        private var email: String = "",
+        private var password: String = "",
+        private var code: String? = null
+    ) : Parcelable {
+        fun email(email: String) = apply { this.email = email }
+        fun password(password: String) = apply { this.password = password }
+        fun code(code: String?) = apply { this.code = code }
+        fun build() = XauthBody(
+            email = email,
+            password = password,
+            code = code
+        )
+    }
 
-@AutoGson
-@AutoParcel
-public abstract class XauthBody implements Parcelable {
-  public abstract String email();
-  public abstract String password();
-  public abstract @Nullable String code();
+    fun toBuilder() = Builder(
+        email = email,
+        password = password,
+        code = code
+    )
 
-  @AutoParcel.Builder
-  public abstract static class Builder {
-    public abstract Builder email(String __);
-    public abstract Builder password(String __);
-    public abstract Builder code(String __);
-    public abstract XauthBody build();
-  }
+    override fun equals(obj: Any?): Boolean {
+        var equals = super.equals(obj)
+        if (obj is XauthBody) {
+            equals = email == obj.email &&
+                password == obj.password &&
+                code == obj.code
+        }
+        return equals
+    }
 
-  public static Builder builder() {
-    return new AutoParcel_XauthBody.Builder();
-  }
-
-  public abstract Builder toBuilder();
+    companion object {
+        @JvmStatic
+        fun builder() = Builder()
+    }
 }

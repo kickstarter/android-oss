@@ -122,7 +122,7 @@ class ProjectPageActivity :
             .subscribe {
                 // - Every time the ProjectData gets updated
                 // - the fragments on the viewPager are updated as well
-                (binding.projectPager.adapter as ProjectPagerAdapter).updatedWithProjectData(it)
+                (binding.projectPager.adapter as? ProjectPagerAdapter)?.updatedWithProjectData(it)
             }
 
         this.viewModel.outputs.updateTabs()

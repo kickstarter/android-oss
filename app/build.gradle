@@ -223,7 +223,7 @@ dependencies {
     implementation "com.jakewharton.timber:timber:5.0.1"
     implementation 'com.optimizely.ab:android-sdk:3.11.1'
     implementation "com.stripe:stripe-android:19.2.0"
-    final okhttp_version = "4.9.+"
+    final okhttp_version = "4.10.+"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
     implementation "com.squareup.okhttp3:okhttp-urlconnection:$okhttp_version"
 

@@ -50,7 +50,7 @@ class ProjectCampaignFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewElementAdapter = ViewElementAdapter(requireActivity(), this)
+        viewElementAdapter = ViewElementAdapter(requireActivity(), this, this.lifecycle())
         val headerElementAdapter = HeaderElementAdapter()
 
         binding?.projectCampaignViewListItems?.itemAnimator = null

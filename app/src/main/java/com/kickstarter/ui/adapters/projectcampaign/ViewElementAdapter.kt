@@ -7,30 +7,35 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.databinding.EmptyViewBinding
+import com.kickstarter.databinding.ViewElementAudioFromHtmlBinding
 import com.kickstarter.databinding.ViewElementExternalSourceFromHtmlBinding
 import com.kickstarter.databinding.ViewElementImageFromHtmlBinding
 import com.kickstarter.databinding.ViewElementTextFromHtmlBinding
 import com.kickstarter.databinding.ViewElementVideoFromHtmlBinding
+import com.kickstarter.libs.htmlparser.AudioViewElement
 import com.kickstarter.libs.htmlparser.ExternalSourceViewElement
 import com.kickstarter.libs.htmlparser.ImageViewElement
 import com.kickstarter.libs.htmlparser.TextViewElement
 import com.kickstarter.libs.htmlparser.VideoViewElement
 import com.kickstarter.libs.htmlparser.ViewElement
 import com.kickstarter.ui.viewholders.EmptyViewHolder
+import com.kickstarter.ui.viewholders.projectcampaign.AudioElementViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.ExternalViewViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.ImageElementViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.TextElementViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.VideoElementViewHolder
+import com.trello.rxlifecycle.FragmentEvent
+import rx.Observable
 
 /**
  * Adapter Specific to hold a list of ViewElements from the HTML Parser
  */
 class ViewElementAdapter(
     val requireActivity: FragmentActivity,
-    private val fullScreenDelegate: FullScreenDelegate
+    private val fullScreenDelegate: FullScreenDelegate,
+    private val lifecycle: Observable<FragmentEvent>
 ) : RecyclerView
-.Adapter<RecyclerView
-    .ViewHolder>() {
+.Adapter<RecyclerView.ViewHolder>() {
 
     private val diffCallback = object : DiffUtil.ItemCallback<ViewElement>() {
         override fun areItemsTheSame(oldItem: ViewElement, newItem: ViewElement): Boolean {
@@ -57,6 +62,12 @@ class ViewElementAdapter(
 
             (oldItem as? VideoViewElement)?.let {
                 val isSameType = newItem is VideoViewElement
+                return if (isSameType) newItem == oldItem
+                else false
+            }
+
+            (oldItem as? AudioViewElement)?.let {
+                val isSameType = newItem is AudioViewElement
                 return if (isSameType) newItem == oldItem
                 else false
             }
@@ -95,6 +106,10 @@ class ViewElementAdapter(
 
         (element as? VideoViewElement)?.let {
             return ElementViewHolderType.VIDEO.ordinal
+        }
+
+        (element as? AudioViewElement)?.let {
+            return ElementViewHolderType.AUDIO.ordinal
         }
 
         (element as? ExternalSourceViewElement)?.let {
@@ -144,6 +159,19 @@ class ViewElementAdapter(
                     requireActivity
                 )
             }
+            ElementViewHolderType.AUDIO.ordinal -> {
+                return AudioElementViewHolder(
+                    ViewElementAudioFromHtmlBinding.inflate(
+                        LayoutInflater.from(
+                            viewGroup
+                                .context
+                        ),
+                        viewGroup,
+                        false
+                    ),
+                    this.lifecycle
+                )
+            }
             ElementViewHolderType.EXTERNAL_SOURCES.ordinal -> {
                 return ExternalViewViewHolder(
                     ViewElementExternalSourceFromHtmlBinding.inflate(
@@ -189,11 +217,31 @@ class ViewElementAdapter(
             }
         }
 
+        (element as? AudioViewElement)?.let { audioElement ->
+            (viewHolder as? AudioElementViewHolder)?.let {
+                viewHolder.setIsRecyclable(false)
+                viewHolder.bindData(audioElement)
+            }
+        }
+
         (element as? ExternalSourceViewElement)?.let { externalSourceViewElement ->
             (viewHolder as? ExternalViewViewHolder)?.let {
                 viewHolder.bindData(externalSourceViewElement)
             }
         }
+    }
+
+    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
+        (holder as? AudioElementViewHolder)?.setIsRecyclable(false)
+        super.onViewAttachedToWindow(holder)
+    }
+
+    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+        (holder as? AudioElementViewHolder)?.let {
+            it.setIsRecyclable(false)
+            it.pausePlayer()
+        }
+        super.onViewDetachedFromWindow(holder)
     }
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
@@ -212,6 +260,7 @@ class ViewElementAdapter(
         TEXT,
         IMAGE,
         VIDEO,
+        AUDIO,
         EMBEDDED,
         EXTERNAL_SOURCES
     }

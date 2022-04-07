@@ -4,6 +4,8 @@ package com.kickstarter.libs.utils.extensions
 import android.util.Patterns
 import org.jsoup.Jsoup
 import java.util.Locale
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 const val MINIMUM_PASSWORD_LENGTH = 6
 
@@ -12,6 +14,16 @@ const val MINIMUM_PASSWORD_LENGTH = 6
  */
 fun String.isEmail(): Boolean {
     return Patterns.EMAIL_ADDRESS.matcher(this).matches()
+}
+
+/**
+ * Returns a boolean that reflects if the string url contains a valid MP3 format
+ */
+fun String.isMP3Url(): Boolean {
+    val regex = "^https?://\\S+\\.mp3"
+    val pattern: Pattern = Pattern.compile(regex)
+    val matcher: Matcher = pattern.matcher(this)
+    return matcher.find()
 }
 
 /**

@@ -11,7 +11,6 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.projectpage.ProjectOverviewFragment
 import rx.Observable
 import rx.subjects.BehaviorSubject
-import timber.log.Timber
 
 class ProjectCampaignViewModel {
     interface Inputs {
@@ -57,9 +56,6 @@ class ProjectCampaignViewModel {
                 .map { htmlParser.parse(it) }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    if (environment.build().isDebug) {
-                        Timber.d("$this parsed list of ViewElements: ${it.map { item -> "$item \n" }}")
-                    }
                     storyViewElementsList.onNext(it)
                 }
 

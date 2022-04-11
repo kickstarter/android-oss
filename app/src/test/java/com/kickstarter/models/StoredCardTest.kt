@@ -57,7 +57,7 @@ class StoredCardTest : TestCase() {
     @Test
     fun testStoredCardToBuilder() {
         val lastFourDigits = "3556"
-        val storedCard = StoredCardFactory.discoverCard().toBuilder()
+        val storedCard = StoredCardFactory.visa().toBuilder()
             .lastFourDigits(lastFourDigits).build()
 
         assertEquals(storedCard.lastFourDigits(), lastFourDigits)

@@ -38,7 +38,7 @@ class SettingsBody internal constructor(
     private val promoNewsletter: Int,
     private val publishingNewsletter: Int,
     private val weeklyNewsletter: Int
-) :Parcelable {
+) : Parcelable {
     fun optedOutOfRecommendations() = this.optedOutOfRecommendations
     fun notifyMobileOfBackings() = this.notifyMobileOfBackings
     fun notifyMobileOfComments() = this.notifyMobileOfComments
@@ -105,46 +105,206 @@ class SettingsBody internal constructor(
         private var publishingNewsletter: Int = 0,
         private var weeklyNewsletter: Int = 0
     ) : Parcelable {
-        fun optedOutOfRecommendations(optedOutOfRecommendations: Int?) = apply { this.optedOutOfRecommendations = optedOutOfRecommendations ?: 0 }
-        fun notifyMobileOfBackings(notifyMobileOfBackings: Boolean?) = apply { this.notifyMobileOfBackings = notifyMobileOfBackings ?: false }
-        fun notifyMobileOfComments(notifyMobileOfComments: Boolean?) = apply { this.notifyMobileOfComments = notifyMobileOfComments ?: false }
-        fun notifyMobileOfCreatorEdu(notifyMobileOfCreatorEdu: Boolean?) = apply { this.notifyMobileOfComments = notifyMobileOfComments ?: false }
-        fun notifyMobileOfFollower(notifyMobileOfFollower: Boolean?) = apply { this.notifyMobileOfFollower = notifyMobileOfFollower ?: false }
-        fun notifyMobileOfFriendActivity(__: Boolean): Builder? = apply { this.notifyMobileOfComments = notifyMobileOfComments ?: false }
-        fun notifyMobileOfMessages(__: Boolean): Builder?= apply { this.notifyMobileOfComments = notifyMobileOfComments ?: false }
-        fun notifyMobileOfPostLikes(__: Boolean): Builder?= apply { this.notifyMobileOfComments = notifyMobileOfComments ?: false }
-        fun notifyMobileOfUpdates(__: Boolean): Builder?= apply { this.notifyMobileOfComments = notifyMobileOfComments ?: false }
-        fun notifyMobileOfMarketingUpdate(__: Boolean): Builder?= apply { this.notifyMobileOfComments = notifyMobileOfComments ?: false }
-        fun notifyOfBackings(__: Boolean): Builder?= apply { this.notifyMobileOfComments = notifyMobileOfComments ?: false }
-        fun notifyOfComments(__: Boolean): Builder?= apply { this.notifyMobileOfComments = notifyMobileOfComments ?: false }
-        fun notifyOfCommentReplies(__: Boolean): Builder?
-        fun notifyOfCreatorDigest(__: Boolean): Builder?
-        fun notifyOfCreatorEdu(__: Boolean): Builder?
-        fun notifyOfFollower(__: Boolean): Builder?
-        fun notifyOfFriendActivity(__: Boolean): Builder?
-        fun notifyOfMessages(__: Boolean): Builder?
-        fun notifyOfUpdates(__: Boolean): Builder?
-        fun showPublicProfile(__: Int): Builder?
-        fun social(__: Int): Builder?
-        fun alumniNewsletter(__: Int): Builder?
-        fun artsCultureNewsletter(__: Int): Builder?
-        fun filmNewsletter(__: Int): Builder?
-        fun gamesNewsletter(__: Int): Builder?
-        fun happeningNewsletter(__: Int): Builder?
-        fun inventNewsletter(__: Int): Builder?
-        fun musicNewsletter(__: Int): Builder?
-        fun promoNewsletter(__: Int): Builder?
-        fun publishingNewsletter(__: Int): Builder?
-        fun weeklyNewsletter(__: Int): Builder?
-        fun build(): SettingsBody?
+        fun optedOutOfRecommendations(optedOutOfRecommendations: Int?) =
+            apply { this.optedOutOfRecommendations = optedOutOfRecommendations ?: 0 }
+
+        fun notifyMobileOfBackings(notifyMobileOfBackings: Boolean?) =
+            apply { this.notifyMobileOfBackings = notifyMobileOfBackings ?: false }
+
+        fun notifyMobileOfComments(notifyMobileOfComments: Boolean?) =
+            apply { this.notifyMobileOfComments = notifyMobileOfComments ?: false }
+
+        fun notifyMobileOfCreatorEdu(notifyMobileOfCreatorEdu: Boolean?) =
+            apply { this.notifyMobileOfCreatorEdu = notifyMobileOfCreatorEdu ?: false }
+
+        fun notifyMobileOfFollower(notifyMobileOfFollower: Boolean?) =
+            apply { this.notifyMobileOfFollower = notifyMobileOfFollower ?: false }
+
+        fun notifyMobileOfFriendActivity(notifyMobileOfFriendActivity: Boolean?) =
+            apply { this.notifyMobileOfFriendActivity = notifyMobileOfFriendActivity ?: false }
+
+        fun notifyMobileOfMessages(notifyMobileOfMessages: Boolean?) =
+            apply { this.notifyMobileOfMessages = notifyMobileOfMessages ?: false }
+
+        fun notifyMobileOfPostLikes(notifyMobileOfPostLikes: Boolean?) =
+            apply { this.notifyMobileOfPostLikes = notifyMobileOfPostLikes ?: false }
+
+        fun notifyMobileOfUpdates(notifyMobileOfUpdates: Boolean?) =
+            apply { this.notifyMobileOfUpdates = notifyMobileOfUpdates ?: false }
+
+        fun notifyMobileOfMarketingUpdate(notifyMobileOfMarketingUpdate: Boolean?) =
+            apply { this.notifyMobileOfMarketingUpdate = notifyMobileOfMarketingUpdate ?: false }
+
+        fun notifyOfBackings(notifyOfBackings: Boolean?) =
+            apply { this.notifyOfBackings = notifyOfBackings ?: false }
+
+        fun notifyOfComments(notifyOfComments: Boolean?) =
+            apply { this.notifyOfComments = notifyOfComments ?: false }
+
+        fun notifyOfCommentReplies(notifyOfCommentReplies: Boolean?) =
+            apply { this.notifyOfCommentReplies = notifyOfCommentReplies ?: false }
+
+        fun notifyOfCreatorDigest(notifyOfCreatorDigest: Boolean?) =
+            apply { this.notifyOfCreatorDigest = notifyOfCreatorDigest ?: false }
+
+        fun notifyOfCreatorEdu(notifyOfCreatorEdu: Boolean?) =
+            apply { this.notifyOfCreatorEdu = notifyOfCreatorEdu ?: false }
+
+        fun notifyOfFollower(notifyOfFollower: Boolean?) =
+            apply { this.notifyOfFollower = notifyOfFollower ?: false }
+
+        fun notifyOfFriendActivity(notifyOfFriendActivity: Boolean?) =
+            apply { this.notifyOfFriendActivity = notifyOfFriendActivity ?: false }
+
+        fun notifyOfMessages(notifyOfMessages: Boolean?) =
+            apply { this.notifyOfMessages = notifyOfMessages ?: false }
+
+        fun notifyOfUpdates(notifyOfUpdates: Boolean?) =
+            apply { this.notifyOfUpdates = notifyOfUpdates ?: false }
+
+        fun showPublicProfile(showPublicProfile: Int?) =
+            apply { this.showPublicProfile = showPublicProfile ?: 0 }
+
+        fun social(social: Int?) = apply { this.social = social ?: 0 }
+        fun alumniNewsletter(alumniNewsletter: Int?) =
+            apply { this.alumniNewsletter = alumniNewsletter ?: 0 }
+
+        fun artsCultureNewsletter(artsCultureNewsletter: Int?) =
+            apply { this.artsCultureNewsletter = artsCultureNewsletter ?: 0 }
+
+        fun filmNewsletter(filmNewsletter: Int?) =
+            apply { this.filmNewsletter = filmNewsletter ?: 0 }
+
+        fun gamesNewsletter(gamesNewsletter: Int?) =
+            apply { this.gamesNewsletter = gamesNewsletter ?: 0 }
+
+        fun happeningNewsletter(happeningNewsletter: Int?) =
+            apply { this.happeningNewsletter = happeningNewsletter ?: 0 }
+
+        fun inventNewsletter(inventNewsletter: Int?) =
+            apply { this.inventNewsletter = inventNewsletter ?: 0 }
+
+        fun musicNewsletter(musicNewsletter: Int?) =
+            apply { this.musicNewsletter = musicNewsletter ?: 0 }
+
+        fun promoNewsletter(promoNewsletter: Int?) =
+            apply { this.promoNewsletter = promoNewsletter ?: 0 }
+
+        fun publishingNewsletter(publishingNewsletter: Int?) =
+            apply { this.publishingNewsletter = publishingNewsletter ?: 0 }
+
+        fun weeklyNewsletter(weeklyNewsletter: Int?) =
+            apply { this.weeklyNewsletter = weeklyNewsletter ?: 0 }
+
+        fun build() = SettingsBody(
+            optedOutOfRecommendations = optedOutOfRecommendations,
+            notifyMobileOfBackings = notifyMobileOfBackings,
+            notifyMobileOfComments = notifyMobileOfComments,
+            notifyMobileOfCreatorEdu = notifyMobileOfCreatorEdu,
+            notifyMobileOfFollower = notifyMobileOfFollower,
+            notifyMobileOfFriendActivity = notifyMobileOfFriendActivity,
+            notifyMobileOfMessages = notifyMobileOfMessages,
+            notifyMobileOfPostLikes = notifyMobileOfPostLikes,
+            notifyMobileOfUpdates = notifyMobileOfUpdates,
+            notifyMobileOfMarketingUpdate = notifyMobileOfMarketingUpdate,
+            notifyOfBackings = notifyOfBackings,
+            notifyOfComments = notifyOfComments,
+            notifyOfCommentReplies = notifyOfCommentReplies,
+            notifyOfCreatorDigest = notifyOfCreatorDigest,
+            notifyOfCreatorEdu = notifyOfCreatorEdu,
+            notifyOfFollower = notifyOfFollower,
+            notifyOfFriendActivity = notifyOfFriendActivity,
+            notifyOfMessages = notifyOfMessages,
+            notifyOfUpdates = notifyOfUpdates,
+            showPublicProfile = showPublicProfile,
+            social = social,
+            alumniNewsletter = alumniNewsletter,
+            artsCultureNewsletter = artsCultureNewsletter,
+            filmNewsletter = filmNewsletter,
+            gamesNewsletter = gamesNewsletter,
+            happeningNewsletter = happeningNewsletter,
+            inventNewsletter = inventNewsletter,
+            musicNewsletter = musicNewsletter,
+            promoNewsletter = promoNewsletter,
+            publishingNewsletter = publishingNewsletter,
+            weeklyNewsletter = weeklyNewsletter
+        )
     }
 
-    abstract fun toBuilder(): Builder?
+    fun toBuilder() = Builder(
+        optedOutOfRecommendations = optedOutOfRecommendations,
+        notifyMobileOfBackings = notifyMobileOfBackings,
+        notifyMobileOfComments = notifyMobileOfComments,
+        notifyMobileOfCreatorEdu = notifyMobileOfCreatorEdu,
+        notifyMobileOfFollower = notifyMobileOfFollower,
+        notifyMobileOfFriendActivity = notifyMobileOfFriendActivity,
+        notifyMobileOfMessages = notifyMobileOfMessages,
+        notifyMobileOfPostLikes = notifyMobileOfPostLikes,
+        notifyMobileOfUpdates = notifyMobileOfUpdates,
+        notifyMobileOfMarketingUpdate = notifyMobileOfMarketingUpdate,
+        notifyOfBackings = notifyOfBackings,
+        notifyOfComments = notifyOfComments,
+        notifyOfCommentReplies = notifyOfCommentReplies,
+        notifyOfCreatorDigest = notifyOfCreatorDigest,
+        notifyOfCreatorEdu = notifyOfCreatorEdu,
+        notifyOfFollower = notifyOfFollower,
+        notifyOfFriendActivity = notifyOfFriendActivity,
+        notifyOfMessages = notifyOfMessages,
+        notifyOfUpdates = notifyOfUpdates,
+        showPublicProfile = showPublicProfile,
+        social = social,
+        alumniNewsletter = alumniNewsletter,
+        artsCultureNewsletter = artsCultureNewsletter,
+        filmNewsletter = filmNewsletter,
+        gamesNewsletter = gamesNewsletter,
+        happeningNewsletter = happeningNewsletter,
+        inventNewsletter = inventNewsletter,
+        musicNewsletter = musicNewsletter,
+        promoNewsletter = promoNewsletter,
+        publishingNewsletter = publishingNewsletter,
+        weeklyNewsletter = weeklyNewsletter
+    )
+
+    override fun equals(other: Any?): Boolean {
+        var equals = super.equals(other)
+        if (other is SettingsBody) {
+            equals = optedOutOfRecommendations() == other.optedOutOfRecommendations() &&
+                    notifyMobileOfBackings() == other.notifyMobileOfBackings() &&
+                    notifyMobileOfComments() == other.notifyMobileOfComments() &&
+                    notifyMobileOfCreatorEdu() == other.notifyMobileOfCreatorEdu() &&
+                    notifyMobileOfFollower() == other.notifyMobileOfFollower() &&
+                    notifyMobileOfFriendActivity() == other.notifyMobileOfFriendActivity() &&
+                    notifyMobileOfMessages() == other.notifyMobileOfMessages() &&
+                    notifyMobileOfPostLikes() == other.notifyMobileOfPostLikes() &&
+                    notifyMobileOfUpdates() == other.notifyMobileOfUpdates() &&
+                    notifyMobileOfMarketingUpdate() == other.notifyMobileOfMarketingUpdate() &&
+                    notifyOfBackings() == other.notifyOfBackings() &&
+                    notifyOfComments() == other.notifyOfComments() &&
+                    notifyOfCommentReplies() == other.notifyOfCommentReplies() &&
+                    notifyOfCreatorDigest() == other.notifyOfCreatorDigest() &&
+                    notifyOfCreatorEdu() == other.notifyOfCreatorEdu() &&
+                    notifyOfFollower() == other.notifyOfFollower() &&
+                    notifyOfFriendActivity() == other.notifyOfFriendActivity() &&
+                    notifyOfMessages() == other.notifyOfMessages() &&
+                    notifyOfUpdates() == other.notifyOfUpdates() &&
+                    showPublicProfile() == other.showPublicProfile() &&
+                    social() == other.social() &&
+                    alumniNewsletter() == other.alumniNewsletter() &&
+                    artsCultureNewsletter() == other.artsCultureNewsletter() &&
+                    filmNewsletter() == other.filmNewsletter() &&
+                    gamesNewsletter() == other.gamesNewsletter() &&
+                    happeningNewsletter() == other.happeningNewsletter() &&
+                    inventNewsletter() == other.inventNewsletter() &&
+                    musicNewsletter() == other.musicNewsletter() &&
+                    promoNewsletter() == other.promoNewsletter() &&
+                    publishingNewsletter() == other.publishingNewsletter() &&
+                    weeklyNewsletter() == other.weeklyNewsletter()
+        }
+        return equals
+    }
 
     companion object {
         @JvmStatic
-        fun builder(): Builder {
-            return AutoParcel_SettingsBody.Builder()
-        }
+        fun builder() = Builder()
     }
 }

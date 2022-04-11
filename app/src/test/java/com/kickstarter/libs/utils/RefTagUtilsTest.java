@@ -53,7 +53,7 @@ public final class RefTagUtilsTest extends KSRobolectricTestCase {
 
   @Test
   public void testBuildCookieForRefTagAndProject_WithWellFormedUrl() {
-    final Project project = ProjectFactory.project().toBuilder().deadline(new DateTime(DateTimeZone.UTC).plusDays(10).plusSeconds(1)).build();
+    final Project project = ProjectFactory.project().toBuilder().deadline(DateTime.now().plusMillis(300).plusDays(10).plusSeconds(1)).build();
 
     final RefTag refTag = RefTag.category();
     final HttpCookie cookie = RefTagUtils.buildCookieWithRefTagAndProject(refTag, project);

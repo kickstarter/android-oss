@@ -32,8 +32,7 @@ class EmailVerificationEnvelope private constructor(
     override fun equals(other: Any?): Boolean {
         var equals = super.equals(other)
         if (other is EmailVerificationEnvelope) {
-            equals = other.code() == this.code() && 
-                other.message() == this.message()
+            equals = other.code() == this.code() && other.message() == this.message()
         }
         return equals
     }

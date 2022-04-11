@@ -9,14 +9,14 @@ class EmailVerificationEnvelopeTest : TestCase() {
     @Test
     fun testDefaultInit() {
         val message = "test"
-      
+
         val emailVerificationEnvelope = EmailVerificationEnvelope.builder()
             .message(message)
             .code(1)
             .build()
 
         assertEquals(emailVerificationEnvelope.message(), message)
-        
+
         assertEquals(emailVerificationEnvelope.code(), 1)
     }
 

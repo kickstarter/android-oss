@@ -1,34 +1,69 @@
 package com.kickstarter.models
 
 import android.os.Parcelable
-import auto.parcel.AutoParcel
 import com.kickstarter.R
 import com.stripe.android.model.CardBrand
+import kotlinx.parcelize.Parcelize
 import type.CreditCardTypes
 import java.util.Date
 
-@AutoParcel
-abstract class StoredCard : Parcelable {
-    abstract fun id(): String
-    abstract fun expiration(): Date
-    abstract fun lastFourDigits(): String
-    abstract fun type(): CreditCardTypes
+@Parcelize
+class StoredCard private constructor(
+    private val id: String,
+    private val expiration: Date,
+    private val lastFourDigits: String,
+    private val type: CreditCardTypes
+) : Parcelable {
+    fun id() = this.id
+    fun expiration() = this.expiration
+    fun lastFourDigits() = this.lastFourDigits
+    fun type() = this.type
 
-    @AutoParcel.Builder
-    abstract class Builder {
-        abstract fun id(id: String): Builder
-        abstract fun lastFourDigits(lastFourDigits: String): Builder
-        abstract fun expiration(expiration: Date): Builder
-        abstract fun type(creditCardType: CreditCardTypes): Builder
-        abstract fun build(): StoredCard
+    @Parcelize
+    data class Builder(
+        private var id: String = "0L",
+        private var lastFourDigits: String = "",
+        private var expiration: Date = Date(),
+        private var type: CreditCardTypes = CreditCardTypes.`$UNKNOWN`
+    ) : Parcelable {
+        fun id(id: String) = apply { this.id = id }
+        fun lastFourDigits(lastFourDigits: String) = apply { this.lastFourDigits = lastFourDigits }
+        fun expiration(expiration: Date) = apply { this.expiration = expiration }
+        fun type(type: CreditCardTypes) = apply { this.type = type }
+        fun build() = StoredCard(
+            id = id,
+            lastFourDigits = lastFourDigits,
+            expiration = expiration,
+            type = type
+        )
     }
 
-    abstract fun toBuilder(): Builder
+    override fun equals(obj: Any?): Boolean {
+        var equals = super.equals(obj)
+        if (obj is StoredCard) {
+            equals = id() == obj.id() &&
+                lastFourDigits() == obj.lastFourDigits() &&
+                expiration() == obj.expiration() &&
+                type() == obj.type()
+        }
+        return equals
+    }
+
+    override fun hashCode(): Int {
+        return super.hashCode()
+    }
+
+    fun toBuilder() = Builder(
+        id = id,
+        lastFourDigits = lastFourDigits,
+        expiration = expiration,
+        type = type
+    )
 
     companion object {
 
         fun builder(): Builder {
-            return AutoParcel_StoredCard.Builder()
+            return Builder()
         }
 
         internal fun getCardTypeDrawable(cardType: CreditCardTypes): Int {

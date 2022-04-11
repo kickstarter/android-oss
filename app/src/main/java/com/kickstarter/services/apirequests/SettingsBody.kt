@@ -1,8 +1,6 @@
 package com.kickstarter.services.apirequests
 
 import android.os.Parcelable
-import auto.parcel.AutoParcel
-
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -269,36 +267,36 @@ class SettingsBody internal constructor(
         var equals = super.equals(other)
         if (other is SettingsBody) {
             equals = optedOutOfRecommendations() == other.optedOutOfRecommendations() &&
-                    notifyMobileOfBackings() == other.notifyMobileOfBackings() &&
-                    notifyMobileOfComments() == other.notifyMobileOfComments() &&
-                    notifyMobileOfCreatorEdu() == other.notifyMobileOfCreatorEdu() &&
-                    notifyMobileOfFollower() == other.notifyMobileOfFollower() &&
-                    notifyMobileOfFriendActivity() == other.notifyMobileOfFriendActivity() &&
-                    notifyMobileOfMessages() == other.notifyMobileOfMessages() &&
-                    notifyMobileOfPostLikes() == other.notifyMobileOfPostLikes() &&
-                    notifyMobileOfUpdates() == other.notifyMobileOfUpdates() &&
-                    notifyMobileOfMarketingUpdate() == other.notifyMobileOfMarketingUpdate() &&
-                    notifyOfBackings() == other.notifyOfBackings() &&
-                    notifyOfComments() == other.notifyOfComments() &&
-                    notifyOfCommentReplies() == other.notifyOfCommentReplies() &&
-                    notifyOfCreatorDigest() == other.notifyOfCreatorDigest() &&
-                    notifyOfCreatorEdu() == other.notifyOfCreatorEdu() &&
-                    notifyOfFollower() == other.notifyOfFollower() &&
-                    notifyOfFriendActivity() == other.notifyOfFriendActivity() &&
-                    notifyOfMessages() == other.notifyOfMessages() &&
-                    notifyOfUpdates() == other.notifyOfUpdates() &&
-                    showPublicProfile() == other.showPublicProfile() &&
-                    social() == other.social() &&
-                    alumniNewsletter() == other.alumniNewsletter() &&
-                    artsCultureNewsletter() == other.artsCultureNewsletter() &&
-                    filmNewsletter() == other.filmNewsletter() &&
-                    gamesNewsletter() == other.gamesNewsletter() &&
-                    happeningNewsletter() == other.happeningNewsletter() &&
-                    inventNewsletter() == other.inventNewsletter() &&
-                    musicNewsletter() == other.musicNewsletter() &&
-                    promoNewsletter() == other.promoNewsletter() &&
-                    publishingNewsletter() == other.publishingNewsletter() &&
-                    weeklyNewsletter() == other.weeklyNewsletter()
+                notifyMobileOfBackings() == other.notifyMobileOfBackings() &&
+                notifyMobileOfComments() == other.notifyMobileOfComments() &&
+                notifyMobileOfCreatorEdu() == other.notifyMobileOfCreatorEdu() &&
+                notifyMobileOfFollower() == other.notifyMobileOfFollower() &&
+                notifyMobileOfFriendActivity() == other.notifyMobileOfFriendActivity() &&
+                notifyMobileOfMessages() == other.notifyMobileOfMessages() &&
+                notifyMobileOfPostLikes() == other.notifyMobileOfPostLikes() &&
+                notifyMobileOfUpdates() == other.notifyMobileOfUpdates() &&
+                notifyMobileOfMarketingUpdate() == other.notifyMobileOfMarketingUpdate() &&
+                notifyOfBackings() == other.notifyOfBackings() &&
+                notifyOfComments() == other.notifyOfComments() &&
+                notifyOfCommentReplies() == other.notifyOfCommentReplies() &&
+                notifyOfCreatorDigest() == other.notifyOfCreatorDigest() &&
+                notifyOfCreatorEdu() == other.notifyOfCreatorEdu() &&
+                notifyOfFollower() == other.notifyOfFollower() &&
+                notifyOfFriendActivity() == other.notifyOfFriendActivity() &&
+                notifyOfMessages() == other.notifyOfMessages() &&
+                notifyOfUpdates() == other.notifyOfUpdates() &&
+                showPublicProfile() == other.showPublicProfile() &&
+                social() == other.social() &&
+                alumniNewsletter() == other.alumniNewsletter() &&
+                artsCultureNewsletter() == other.artsCultureNewsletter() &&
+                filmNewsletter() == other.filmNewsletter() &&
+                gamesNewsletter() == other.gamesNewsletter() &&
+                happeningNewsletter() == other.happeningNewsletter() &&
+                inventNewsletter() == other.inventNewsletter() &&
+                musicNewsletter() == other.musicNewsletter() &&
+                promoNewsletter() == other.promoNewsletter() &&
+                publishingNewsletter() == other.publishingNewsletter() &&
+                weeklyNewsletter() == other.weeklyNewsletter()
         }
         return equals
     }

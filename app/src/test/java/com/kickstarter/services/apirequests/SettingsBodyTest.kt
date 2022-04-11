@@ -94,7 +94,7 @@ class SettingsBodyTest : TestCase() {
     fun testToBuilder() {
         val settingsBody = SettingsBody.builder().build().toBuilder().showPublicProfile(1).notifyMobileOfBackings(true).build()
 
-        assertEquals(settingsBody.showPublicProfile(),1)
+        assertEquals(settingsBody.showPublicProfile(), 1)
         assertEquals(settingsBody.notifyMobileOfBackings(), true)
     }
 }

@@ -58,6 +58,7 @@ import com.kickstarter.ui.fragments.RewardsFragment
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import com.stripe.android.view.CardInputWidget
 import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 
 @RequiresActivityViewModel(ProjectPageViewModel.ViewModel::class)
 class ProjectPageActivity :
@@ -118,6 +119,7 @@ class ProjectPageActivity :
 
         this.viewModel.outputs.projectData()
             .compose(bindToLifecycle())
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 // - Every time the ProjectData gets updated

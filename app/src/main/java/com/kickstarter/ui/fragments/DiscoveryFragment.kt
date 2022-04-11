@@ -44,6 +44,7 @@ import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.viewholders.EditorialViewHolder
 import com.kickstarter.viewmodels.DiscoveryFragmentViewModel
 import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 
 @RequiresFragmentViewModel(DiscoveryFragmentViewModel.ViewModel::class)
 class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
@@ -90,6 +91,8 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.activity()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { discoveryActivitySampleAdapter.takeActivity(it) }
 
         this.viewModel.outputs.startHeartAnimation()
@@ -101,6 +104,8 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.projectList()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { discoveryProjectCardAdapter.takeProjects(it) }
 
         this.viewModel.outputs.shouldShowEditorial()

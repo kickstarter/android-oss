@@ -31,6 +31,7 @@ import com.kickstarter.ui.fragments.DiscoveryFragment
 import com.kickstarter.ui.fragments.DiscoveryFragment.Companion.newInstance
 import com.kickstarter.viewmodels.DiscoveryViewModel
 import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import kotlin.collections.ArrayList
 
 @RequiresActivityViewModel(DiscoveryViewModel.ViewModel::class)
@@ -146,6 +147,8 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
         viewModel.outputs.navigationDrawerData()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { drawerAdapter.takeData(it) }
 
         viewModel.outputs.drawerIsOpen()

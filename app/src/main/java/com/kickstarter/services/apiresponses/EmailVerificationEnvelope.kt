@@ -1,34 +1,45 @@
 package com.kickstarter.services.apiresponses
 
 import android.os.Parcelable
-import auto.parcel.AutoParcel
-import com.kickstarter.libs.qualifiers.AutoGson
+import kotlinx.parcelize.Parcelize
 
-@AutoGson
-@AutoParcel
-abstract class EmailVerificationEnvelope : Parcelable {
-    abstract fun message(): String
-    abstract fun code(): Int
+@Parcelize
+class EmailVerificationEnvelope private constructor(
+    private val message: String,
+    private val code: Int
+) : Parcelable {
+    fun message() = this.message
+    fun code() = this.code
 
-    @AutoParcel.Builder
-    abstract class Builder {
-        abstract fun message(message: String): Builder
-        abstract fun code(code: Int): Builder
-        abstract fun build(): EmailVerificationEnvelope
+    @Parcelize
+    data class Builder(
+        private var message: String = "",
+        private var code: Int = 0
+    ) : Parcelable {
+        fun message(message: String) = apply { this.message = message }
+        fun code(code: Int) = apply { this.code = code }
+        fun build() = EmailVerificationEnvelope(
+            message = message,
+            code = code
+        )
     }
 
-    @Override
+    fun toBuilder() = Builder(
+        message = message,
+        code = code
+    )
+
     override fun equals(other: Any?): Boolean {
-        return if (other is EmailVerificationEnvelope) {
-            other.code() == this.code() && other.message() == this.message()
-        } else super.equals(other)
+        var equals = super.equals(other)
+        if (other is EmailVerificationEnvelope) {
+            equals = other.code() == this.code() && 
+                other.message() == this.message()
+        }
+        return equals
     }
-
-    abstract fun toBuilder(): Builder
 
     companion object {
-        fun builder(): Builder {
-            return AutoParcel_EmailVerificationEnvelope.Builder()
-        }
+        @JvmStatic
+        fun builder() = Builder()
     }
 }

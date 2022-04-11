@@ -73,50 +73,50 @@ class SettingsBody internal constructor(
 
     @Parcelize
     data class Builder(
-        private val optedOutOfRecommendations: Int = 0,
-        private val notifyMobileOfBackings: Boolean = false,
-        private val notifyMobileOfComments: Boolean = false,
-        private val notifyMobileOfCreatorEdu: Boolean = false,
-        private val notifyMobileOfFollower: Boolean = false,
-        private val notifyMobileOfFriendActivity: Boolean = false,
-        private val notifyMobileOfMessages: Boolean = false,
-        private val notifyMobileOfPostLikes: Boolean = false,
-        private val notifyMobileOfUpdates: Boolean = false,
-        private val notifyMobileOfMarketingUpdate: Boolean = false,
-        private val notifyOfBackings: Boolean = false,
-        private val notifyOfComments: Boolean = false,
-        private val notifyOfCommentReplies: Boolean = false,
-        private val notifyOfCreatorDigest: Boolean = false,
-        private val notifyOfCreatorEdu: Boolean = false,
-        private val notifyOfFollower: Boolean = false,
-        private val notifyOfFriendActivity: Boolean = false,
-        private val notifyOfMessages: Boolean = false,
-        private val notifyOfUpdates: Boolean = false,
-        private val showPublicProfile: Int = 0,
-        private val social: Int = 0,
-        private val alumniNewsletter: Int = 0,
-        private val artsCultureNewsletter: Int = 0,
-        private val filmNewsletter: Int = 0,
-        private val gamesNewsletter: Int = 0,
-        private val happeningNewsletter: Int = 0,
-        private val inventNewsletter: Int = 0,
-        private val musicNewsletter: Int = 0,
-        private val promoNewsletter: Int = 0,
-        private val publishingNewsletter: Int = 0,
-        private val weeklyNewsletter: Int = 0
+        private var optedOutOfRecommendations: Int = 0,
+        private var notifyMobileOfBackings: Boolean = false,
+        private var notifyMobileOfComments: Boolean = false,
+        private var notifyMobileOfCreatorEdu: Boolean = false,
+        private var notifyMobileOfFollower: Boolean = false,
+        private var notifyMobileOfFriendActivity: Boolean = false,
+        private var notifyMobileOfMessages: Boolean = false,
+        private var notifyMobileOfPostLikes: Boolean = false,
+        private var notifyMobileOfUpdates: Boolean = false,
+        private var notifyMobileOfMarketingUpdate: Boolean = false,
+        private var notifyOfBackings: Boolean = false,
+        private var notifyOfComments: Boolean = false,
+        private var notifyOfCommentReplies: Boolean = false,
+        private var notifyOfCreatorDigest: Boolean = false,
+        private var notifyOfCreatorEdu: Boolean = false,
+        private var notifyOfFollower: Boolean = false,
+        private var notifyOfFriendActivity: Boolean = false,
+        private var notifyOfMessages: Boolean = false,
+        private var notifyOfUpdates: Boolean = false,
+        private var showPublicProfile: Int = 0,
+        private var social: Int = 0,
+        private var alumniNewsletter: Int = 0,
+        private var artsCultureNewsletter: Int = 0,
+        private var filmNewsletter: Int = 0,
+        private var gamesNewsletter: Int = 0,
+        private var happeningNewsletter: Int = 0,
+        private var inventNewsletter: Int = 0,
+        private var musicNewsletter: Int = 0,
+        private var promoNewsletter: Int = 0,
+        private var publishingNewsletter: Int = 0,
+        private var weeklyNewsletter: Int = 0
     ) : Parcelable {
-        fun optedOutOfRecommendations(optedOutOfRecommendations: Int): Builder?
-        fun notifyMobileOfBackings(__: Boolean): Builder?
-        fun notifyMobileOfComments(__: Boolean): Builder?
-        fun notifyMobileOfCreatorEdu(__: Boolean): Builder?
-        fun notifyMobileOfFollower(__: Boolean): Builder?
-        fun notifyMobileOfFriendActivity(__: Boolean): Builder?
-        fun notifyMobileOfMessages(__: Boolean): Builder?
-        fun notifyMobileOfPostLikes(__: Boolean): Builder?
-        fun notifyMobileOfUpdates(__: Boolean): Builder?
-        fun notifyMobileOfMarketingUpdate(__: Boolean): Builder?
-        fun notifyOfBackings(__: Boolean): Builder?
-        fun notifyOfComments(__: Boolean): Builder?
+        fun optedOutOfRecommendations(optedOutOfRecommendations: Int?) = apply { this.optedOutOfRecommendations = optedOutOfRecommendations ?: 0 }
+        fun notifyMobileOfBackings(notifyMobileOfBackings: Boolean?) = apply { this.notifyMobileOfBackings = notifyMobileOfBackings ?: false }
+        fun notifyMobileOfComments(notifyMobileOfComments: Boolean?) = apply { this.notifyMobileOfComments = notifyMobileOfComments ?: false }
+        fun notifyMobileOfCreatorEdu(notifyMobileOfCreatorEdu: Boolean?) = apply { this.notifyMobileOfComments = notifyMobileOfComments ?: false }
+        fun notifyMobileOfFollower(notifyMobileOfFollower: Boolean?) = apply { this.notifyMobileOfFollower = notifyMobileOfFollower ?: false }
+        fun notifyMobileOfFriendActivity(__: Boolean): Builder? = apply { this.notifyMobileOfComments = notifyMobileOfComments ?: false }
+        fun notifyMobileOfMessages(__: Boolean): Builder?= apply { this.notifyMobileOfComments = notifyMobileOfComments ?: false }
+        fun notifyMobileOfPostLikes(__: Boolean): Builder?= apply { this.notifyMobileOfComments = notifyMobileOfComments ?: false }
+        fun notifyMobileOfUpdates(__: Boolean): Builder?= apply { this.notifyMobileOfComments = notifyMobileOfComments ?: false }
+        fun notifyMobileOfMarketingUpdate(__: Boolean): Builder?= apply { this.notifyMobileOfComments = notifyMobileOfComments ?: false }
+        fun notifyOfBackings(__: Boolean): Builder?= apply { this.notifyMobileOfComments = notifyMobileOfComments ?: false }
+        fun notifyOfComments(__: Boolean): Builder?= apply { this.notifyMobileOfComments = notifyMobileOfComments ?: false }
         fun notifyOfCommentReplies(__: Boolean): Builder?
         fun notifyOfCreatorDigest(__: Boolean): Builder?
         fun notifyOfCreatorEdu(__: Boolean): Builder?

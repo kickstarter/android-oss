@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 class PushTokenBody private constructor(
     private val pushServer: String?,
     private val token: String?
-): Parcelable {
+) : Parcelable {
     fun pushServer() = this.pushServer
     fun token() = this.token
 
@@ -38,7 +38,7 @@ class PushTokenBody private constructor(
         var equals = super.equals(other)
         if (other is PushTokenBody) {
             equals = pushServer() == other.pushServer() &&
-                    token() == other.token()
+                token() == other.token()
         }
         return equals
     }

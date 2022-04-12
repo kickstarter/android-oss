@@ -6,7 +6,7 @@ import org.junit.Test
 class PushTokenBodyTest : TestCase() {
 
     @Test
-    fun testDefaultInit(){
+    fun testDefaultInit() {
         val pushTokenBody = PushTokenBody.builder()
             .pushServer("push_server")
             .token("this_is_a_token")
@@ -17,7 +17,7 @@ class PushTokenBodyTest : TestCase() {
     }
 
     @Test
-    fun testEquals_whenFieldsDontMatch_returnFalse(){
+    fun testEquals_whenFieldsDontMatch_returnFalse() {
         val pushTokenBody1 = PushTokenBody.builder()
             .pushServer("push_server")
             .token("this_is_a_token")
@@ -32,11 +32,10 @@ class PushTokenBodyTest : TestCase() {
         assertFalse(pushTokenBody1 == pushTokenBody2)
         assertFalse(pushTokenBody1 == pushTokenBody3)
         assertFalse(pushTokenBody2 == pushTokenBody3)
-
     }
 
     @Test
-    fun testEquals_whenFieldsMatch_returnTrue(){
+    fun testEquals_whenFieldsMatch_returnTrue() {
         val pushTokenBody1 = PushTokenBody.builder()
             .pushServer("push_server")
             .token("this_is_a_token")

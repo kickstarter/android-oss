@@ -12,7 +12,6 @@ import com.kickstarter.models.Urls;
 import com.kickstarter.models.Web;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
 import java.net.CookieManager;

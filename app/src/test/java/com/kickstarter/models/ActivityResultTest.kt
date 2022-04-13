@@ -30,9 +30,7 @@ class ActivityResultTest : TestCase() {
         val activityResult = ActivityResult.builder().build()
         val activityResult2 = ActivityResult.builder().resultCode(1)
             .requestCode(2).build()
-        val activityResult3 = ActivityResult.create(1, 2, intent)   
-
-        assertFalse(activityResult == activityResult2)
+        val activityResult3 = ActivityResult.create(1, 2, intent) assertFalse(activityResult == activityResult2)
         assertFalse(activityResult == activityResult3)
 
         assertFalse(activityResult3 == activityResult2)

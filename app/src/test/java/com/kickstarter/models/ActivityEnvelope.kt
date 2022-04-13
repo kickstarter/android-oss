@@ -6,7 +6,7 @@ import com.kickstarter.services.apiresponses.ActivityEnvelope
 import junit.framework.TestCase
 import org.junit.Test
 
-class ActivityEnvelope : TestCase() {
+class ActivityEnvelopeTest : TestCase() {
     @Test
     fun testDefaultInit() {
 

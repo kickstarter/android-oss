@@ -1,7 +1,6 @@
 package com.kickstarter.libs.rx.operators;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.kickstarter.services.ApiException;
 import com.kickstarter.services.ResponseException;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;

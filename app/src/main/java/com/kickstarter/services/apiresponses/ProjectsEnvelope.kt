@@ -8,7 +8,7 @@ import kotlinx.parcelize.Parcelize
 class ProjectsEnvelope internal constructor(
     private val projects: List<Project>,
     private val urls: UrlsEnvelope
-): Parcelable {
+) : Parcelable {
     fun projects() = this.projects
     fun urls() = this.urls
 
@@ -17,7 +17,7 @@ class ProjectsEnvelope internal constructor(
         private var projects: List<Project> = emptyList(),
         private var urls: UrlsEnvelope = UrlsEnvelope.builder().build()
     ) : Parcelable {
-        fun projects(projects: List<Project>) = apply { this.projects = projects}
+        fun projects(projects: List<Project>) = apply { this.projects = projects }
         fun urls(urls: UrlsEnvelope) = apply { this.urls = urls }
         fun build() = ProjectsEnvelope(
             projects = projects,
@@ -39,7 +39,7 @@ class ProjectsEnvelope internal constructor(
         var equals = super.equals(other)
         if (other is ProjectsEnvelope) {
             equals = projects() == other.projects() &&
-                    urls() == other.urls()
+                urls() == other.urls()
         }
         return equals
     }
@@ -47,7 +47,7 @@ class ProjectsEnvelope internal constructor(
     @Parcelize
     class UrlsEnvelope private constructor(
         private val api: ApiEnvelope
-    ): Parcelable {
+    ) : Parcelable {
         fun api() = this.api
 
         @Parcelize

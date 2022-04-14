@@ -56,6 +56,7 @@ import com.kickstarter.services.transformers.decodeRelayId
 import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.services.transformers.projectTransformer
 import com.kickstarter.services.transformers.rewardTransformer
+import com.kickstarter.services.transformers.simpleShippingRuleTransformer
 import rx.Observable
 import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject

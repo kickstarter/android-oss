@@ -1,91 +1,165 @@
-package com.kickstarter.ui.adapters.data;
+package com.kickstarter.ui.adapters.data
 
-import com.kickstarter.libs.utils.ListUtils;
-import com.kickstarter.models.Category;
-import com.kickstarter.models.User;
-import com.kickstarter.services.DiscoveryParams;
+import android.os.Parcelable
+import com.kickstarter.models.Category
+import com.kickstarter.models.User
+import com.kickstarter.services.DiscoveryParams
+import kotlinx.parcelize.Parcelize
 
-import java.util.List;
+@Parcelize
+class NavigationDrawerData private constructor(
+    private val user: User?,
+    private val sections: List<Section>,
+    private val expandedCategory: Category?,
+    private val selectedParams: DiscoveryParams?
+) : Parcelable {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import auto.parcel.AutoParcel;
+    fun user() = this.user
+    fun sections() = this.sections
+    fun expandedCategory() = this.expandedCategory
+    fun selectedParams() = this.selectedParams
 
-@AutoParcel
-public abstract class NavigationDrawerData {
-  public abstract @Nullable User user();
-  public abstract List<Section> sections();
-
-  public abstract @Nullable Category expandedCategory();
-  public abstract @Nullable DiscoveryParams selectedParams();
-
-  @AutoParcel.Builder
-  public abstract static class Builder {
-    public abstract Builder user(User __);
-    public abstract Builder sections(List<Section> __);
-    public abstract Builder expandedCategory(Category __);
-    public abstract Builder selectedParams(DiscoveryParams __);
-    public abstract NavigationDrawerData build();
-  }
-  public static Builder builder() {
-    return new AutoParcel_NavigationDrawerData.Builder()
-      .user(null)
-      .expandedCategory(null)
-      .selectedParams(null)
-      .sections(ListUtils.empty());
-  }
-  public abstract Builder toBuilder();
-
-  @AutoParcel
-  static public abstract class Section {
-    public abstract boolean expandable();
-    public abstract boolean expanded();
-    public abstract List<Section.Row> rows();
-
-    @AutoParcel.Builder
-    public abstract static class Builder {
-      public abstract Section.Builder expandable(boolean __);
-      public abstract Section.Builder expanded(boolean __);
-      public abstract Section.Builder rows(List<Section.Row> __);
-      public abstract Section build();
+    @Parcelize
+    data class Builder(
+        private var user: User? = null,
+        private var sections: List<Section> = emptyList(),
+        private var expandedCategory: Category? = null,
+        private var selectedParams: DiscoveryParams ? = null
+    ) : Parcelable {
+        fun user(user: User?) = apply { this.user = user }
+        fun sections(sections: List<Section>) = apply { this.sections = sections }
+        fun expandedCategory(expandedCategory: Category?) = apply { this.expandedCategory = expandedCategory }
+        fun selectedParams(selectedParams: DiscoveryParams?) = apply { this.selectedParams = selectedParams }
+        fun build() = NavigationDrawerData(
+            user = user,
+            sections = sections,
+            expandedCategory = expandedCategory,
+            selectedParams = selectedParams
+        )
     }
 
-    public static Section.Builder builder() {
-      return new AutoParcel_NavigationDrawerData_Section.Builder()
-        .expandable(false)
-        .expanded(false)
-        .rows(ListUtils.empty());
-    }
-    public abstract Section.Builder toBuilder();
+    fun toBuilder() = Builder(
+        user = user,
+        sections = sections,
+        expandedCategory = expandedCategory,
+        selectedParams = selectedParams
+    )
 
-    public boolean isCategoryFilter() {
-      return rows().size() >= 1 && rows().get(0).params().isCategorySet();
-    }
-
-    public boolean isTopFilter() {
-      return !isCategoryFilter();
+    companion object {
+        @JvmStatic
+        fun builder() = Builder()
     }
 
-    @AutoParcel
-    static public abstract class Row {
-      public abstract @NonNull DiscoveryParams params();
-      public abstract boolean selected();
-      public abstract boolean rootIsExpanded();
-
-      @AutoParcel.Builder
-      public static abstract class Builder {
-        public abstract Builder params(DiscoveryParams __);
-        public abstract Builder selected(boolean __);
-        public abstract Builder rootIsExpanded(boolean __);
-        public abstract Section.Row build();
-      }
-      public static Builder builder() {
-        return new AutoParcel_NavigationDrawerData_Section_Row.Builder()
-          .params(DiscoveryParams.builder().build())
-          .selected(false)
-          .rootIsExpanded(false);
-      }
-      public abstract Section.Row.Builder toBuilder();
+    override fun equals(obj: Any?): Boolean {
+        var equals = super.equals(obj)
+        if (obj is NavigationDrawerData) {
+            equals = user() == obj.user() &&
+                sections() == obj.sections() &&
+                expandedCategory() == obj.expandedCategory() &&
+                selectedParams() == obj.selectedParams()
+        }
+        return equals
     }
-  }
+
+    @Parcelize
+    class Section private constructor(
+        private val expandable: Boolean,
+        private val expanded: Boolean,
+        private val rows: List<Row>
+    ) : Parcelable {
+        fun expandable() = this.expandable
+        fun expanded() = this.expanded
+        fun rows() = this.rows
+
+        @Parcelize
+        data class Builder(
+            private var expandable: Boolean = false,
+            private var expanded: Boolean = false,
+            private var rows: List<Row> = emptyList()
+        ) : Parcelable {
+            fun expandable(expandable: Boolean) = apply { this.expandable = expandable }
+            fun expanded(expanded: Boolean) = apply { this.expanded = expanded }
+            fun rows(rows: List<Row>) = apply { this.rows = rows }
+            fun build() = Section(
+                expandable = expandable,
+                expanded = expanded,
+                rows = rows
+            )
+        }
+
+        fun toBuilder() = Builder(
+            expandable = expandable,
+            expanded = expanded,
+            rows = rows
+        )
+
+        companion object {
+            @JvmStatic
+            fun builder() = Builder()
+        }
+
+        override fun equals(obj: Any?): Boolean {
+            var equals = super.equals(obj)
+            if (obj is Section) {
+                equals = expandable() == obj.expandable() &&
+                    expanded() == obj.expanded() &&
+                    rows() == obj.rows()
+            }
+            return equals
+        }
+
+        val isCategoryFilter: Boolean
+            get() = rows().isNotEmpty() && rows()[0].params().isCategorySet
+        
+        val isTopFilter: Boolean
+            get() = !isCategoryFilter
+        
+        @Parcelize
+        class Row private constructor(
+            private val params: DiscoveryParams,
+            private val selected: Boolean,
+            private val rootIsExpanded: Boolean,
+        ) : Parcelable {
+            fun params() = this.params
+            fun selected() = this.selected
+            fun rootIsExpanded() = this.rootIsExpanded
+
+            @Parcelize
+            data class Builder(
+                private var params: DiscoveryParams = DiscoveryParams.builder().build(),
+                private var selected: Boolean = false,
+                private var rootIsExpanded: Boolean = false,
+            ) : Parcelable {
+                fun rootIsExpanded(rootIsExpanded: Boolean) = apply { this.rootIsExpanded = rootIsExpanded }
+                fun selected(selected: Boolean) = apply { this.selected = selected }
+                fun params(params: DiscoveryParams) = apply { this.params = params }
+                fun build() = Row(
+                    params = params,
+                    selected = selected,
+                    rootIsExpanded = rootIsExpanded
+                )
+            }
+
+            fun toBuilder() = Builder(
+                params = params,
+                selected = selected,
+                rootIsExpanded = rootIsExpanded
+            )
+
+            companion object {
+                @JvmStatic
+                fun builder() = Builder()
+            }
+
+            override fun equals(obj: Any?): Boolean {
+                var equals = super.equals(obj)
+                if (obj is Row) {
+                    equals = params() == obj.params() &&
+                        selected() == obj.selected() &&
+                        rootIsExpanded() == obj.rootIsExpanded()
+                }
+                return equals
+            }
+        }
+    }
 }

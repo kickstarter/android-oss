@@ -1,13 +1,7 @@
 package com.kickstarter.services.apiresponses
 
-import com.kickstarter.libs.qualifiers.AutoGson
-import auto.parcel.AutoParcel
 import android.os.Parcelable
 import com.kickstarter.models.Update
-import com.kickstarter.services.apiresponses.UpdatesEnvelope
-import com.kickstarter.services.apiresponses.AutoParcel_UpdatesEnvelope_UrlsEnvelope_ApiEnvelope
-import com.kickstarter.services.apiresponses.AutoParcel_UpdatesEnvelope_UrlsEnvelope
-import com.kickstarter.services.apiresponses.AutoParcel_UpdatesEnvelope
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -23,57 +17,98 @@ class UpdatesEnvelope internal constructor(
         private var updates: List<Update> = emptyList(),
         private var urls: UrlsEnvelope = UrlsEnvelope.builder().build()
     ) : Parcelable {
-        fun updates(updates: List<Update>?) = apply { this.updates = updates }
+        fun updates(updates: List<Update>) = apply { this.updates = updates }
         fun urls(urls: UrlsEnvelope) = apply { this.urls = urls }
-        fun build(): UpdatesEnvelope?
+        fun build() = UpdatesEnvelope(
+            updates = updates,
+            urls = urls
+        )
     }
 
-    abstract fun toBuilder(): Builder?
-
-    @AutoGson
-    @AutoParcel
-    abstract class UrlsEnvelope : Parcelable {
-        abstract fun api(): ApiEnvelope?
-
-        @AutoParcel.Builder
-        abstract class Builder {
-            abstract fun api(__: ApiEnvelope?): Builder?
-            abstract fun build(): UrlsEnvelope?
-        }
-
-        abstract fun toBuilder(): Builder?
-
-        @AutoGson
-        @AutoParcel
-        abstract class ApiEnvelope : Parcelable {
-            abstract fun moreUpdates(): String?
-
-            @AutoParcel.Builder
-            abstract class Builder {
-                abstract fun moreUpdates(__: String?): Builder?
-                abstract fun build(): ApiEnvelope?
-            }
-
-            companion object {
-                @JvmStatic
-                fun builder(): Builder {
-                    return AutoParcel_UpdatesEnvelope_UrlsEnvelope_ApiEnvelope.Builder()
-                }
-            }
-        }
-
-        companion object {
-            @JvmStatic
-            fun builder(): Builder {
-                return AutoParcel_UpdatesEnvelope_UrlsEnvelope.Builder()
-            }
-        }
-    }
+    fun toBuilder() = Builder(
+        updates = updates,
+        urls = urls
+    )
 
     companion object {
         @JvmStatic
-        fun builder(): Builder {
-            return AutoParcel_UpdatesEnvelope.Builder()
+        fun builder() = Builder()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        var equals = super.equals(other)
+        if (other is UpdatesEnvelope) {
+            equals = updates() == other.updates() &&
+                    urls() == other.urls()
+        }
+        return equals
+    }
+
+    @Parcelize
+    class UrlsEnvelope private constructor(
+        private val api: ApiEnvelope
+    ) : Parcelable {
+        fun api() = this.api
+
+        @Parcelize
+        data class Builder(
+            private var api: ApiEnvelope = ApiEnvelope.builder().build()
+        ) : Parcelable {
+            fun api(api: ApiEnvelope) = apply { this.api = api }
+            fun build() = UrlsEnvelope(
+                api = api
+            )
+        }
+
+        fun toBuilder() = Builder(
+            api = api
+        )
+
+        companion object {
+            @JvmStatic
+            fun builder() = Builder()
+        }
+
+        override fun equals(other: Any?): Boolean {
+            var equals = super.equals(other)
+            if (other is UrlsEnvelope) {
+                equals = api() == other.api()
+            }
+            return equals
+        }
+
+        @Parcelize
+        class ApiEnvelope private constructor(
+            private val moreUpdates: String
+        ): Parcelable {
+            fun moreUpdates() = this.moreUpdates
+
+            @Parcelize
+            data class Builder(
+                private var moreUpdates: String = ""
+            ) : Parcelable {
+                fun moreUpdates(moreUpdates: String?) = apply { this.moreUpdates = moreUpdates ?: "" }
+                fun build() = ApiEnvelope(
+                    moreUpdates = moreUpdates
+                )
+            }
+
+            fun toBuilder() = Builder(
+                moreUpdates = moreUpdates
+            )
+
+            companion object {
+                @JvmStatic
+                fun builder() = Builder()
+            }
+
+            override fun equals(other: Any?): Boolean {
+                var equals = super.equals(other)
+                if (other is ApiEnvelope) {
+                    equals = moreUpdates() == other.moreUpdates()
+                }
+                return equals
+            }
         }
     }
 }

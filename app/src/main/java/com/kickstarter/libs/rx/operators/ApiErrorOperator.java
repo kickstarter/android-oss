@@ -1,11 +1,11 @@
 package com.kickstarter.libs.rx.operators;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.kickstarter.services.ApiException;
 import com.kickstarter.services.ResponseException;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
-import java.io.IOException;
 
 import androidx.annotation.NonNull;
 import retrofit2.Response;
@@ -55,9 +55,17 @@ public final class ApiErrorOperator<T> implements Observable.Operator<T, retrofi
 
         if (!response.isSuccessful()) {
           try {
-            final ErrorEnvelope envelope = gson.fromJson(response.errorBody().string(), ErrorEnvelope.class);
-            subscriber.onError(new ApiException(envelope, response));
-          } catch (final @NonNull IOException e) {
+            if (response.errorBody() != null) {
+              try {
+                final ErrorEnvelope envelope = gson.fromJson(response.errorBody().string(), ErrorEnvelope.class);
+                subscriber.onError(new ApiException(envelope, response));
+              } catch (JsonSyntaxException e) {
+                subscriber.onError(new ResponseException(response));
+              }
+            } else {
+              subscriber.onError(new ResponseException(response));
+            }
+          } catch (final @NonNull Exception e) {
             subscriber.onError(new ResponseException(response));
           }
         } else { 

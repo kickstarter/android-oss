@@ -1,7 +1,6 @@
 package com.kickstarter.services.apiresponses
 
 import com.kickstarter.mock.factories.UpdateFactory
-import com.kickstarter.models.Update
 import junit.framework.TestCase
 import org.junit.Test
 
@@ -9,7 +8,7 @@ class UpdatesEnvelopeTest : TestCase() {
 
     @Test
     fun testUpdatesEnvelopDefaultInit() {
-        val updates = listOf<Update>(UpdateFactory.update(), UpdateFactory.backersOnlyUpdate())
+        val updates = listOf(UpdateFactory.update(), UpdateFactory.backersOnlyUpdate())
         val urls = UpdatesEnvelope.UrlsEnvelope.builder().build()
         val updatesEnvelope = UpdatesEnvelope.builder().updates(updates).urls(urls).build()
 
@@ -34,7 +33,7 @@ class UpdatesEnvelopeTest : TestCase() {
     fun testApiEnvelopeDefaultInit() {
         val apiEnvelope = UpdatesEnvelope.UrlsEnvelope.ApiEnvelope.builder().moreUpdates("more_updates").build()
 
-         assertEquals(apiEnvelope.moreUpdates(), "more_updates")
+        assertEquals(apiEnvelope.moreUpdates(), "more_updates")
     }
 
     @Test
@@ -72,7 +71,7 @@ class UpdatesEnvelopeTest : TestCase() {
         val apiEnvelope1 = UpdatesEnvelope.UrlsEnvelope.ApiEnvelope.builder().moreUpdates("first_update").build()
 
         val apiEnvelope2 = apiEnvelope1.toBuilder()
-           .moreUpdates("second_update").build()
+            .moreUpdates("second_update").build()
 
         assertFalse(apiEnvelope1 == apiEnvelope2)
     }

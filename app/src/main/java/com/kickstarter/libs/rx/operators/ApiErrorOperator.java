@@ -59,20 +59,19 @@ public final class ApiErrorOperator<T> implements Observable.Operator<T, retrofi
         }
 
         if (!response.isSuccessful()) {
-          try {
-            if (response.errorBody() != null) {
-              try {
-                final ErrorEnvelope envelope = gson.fromJson(response.errorBody().string(), ErrorEnvelope.class);
-                subscriber.onError(new ApiException(envelope, response));
-              } catch (JsonSyntaxException e) {
-                subscriber.onError(new ResponseException(response));
-              }
+            ErrorEnvelope envelope;
+            try {
+              envelope = gson.fromJson(response.errorBody().string(), ErrorEnvelope.class);
+            } catch (final @NonNull Exception e) {
+              envelope = null;
+            }
+
+            if (envelope != null) {
+              subscriber.onError(new ApiException(envelope, response));
             } else {
               subscriber.onError(new ResponseException(response));
             }
-          } catch (final @NonNull Exception e) {
-            subscriber.onError(new ResponseException(response));
-          }
+
         } else { 
           subscriber.onNext(response.body());
           subscriber.onCompleted();

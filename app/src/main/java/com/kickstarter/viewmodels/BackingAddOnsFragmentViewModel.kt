@@ -226,9 +226,9 @@ class BackingAddOnsFragmentViewModel {
                 }
 
             Observable
-                .combineLatest(this.retryButtonPressed.startWith(false), projectAndReward) { _, projectAndReward ->
-                    return@combineLatest this.apiClient
-                        .fetchShippingRules(projectAndReward.first, projectAndReward.second)
+                .combineLatest(this.retryButtonPressed.startWith(false), reward) { _, rw ->
+                    return@combineLatest this.apolloClient
+                        .getShippingRules(rw)
                         .doOnError {
                             this.showErrorDialog.onNext(true)
                             this.shippingSelectorIsGone.onNext(true)

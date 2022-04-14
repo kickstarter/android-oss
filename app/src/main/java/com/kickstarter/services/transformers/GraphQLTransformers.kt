@@ -23,6 +23,7 @@ import com.kickstarter.models.Urls
 import com.kickstarter.models.User
 import com.kickstarter.models.Video
 import com.kickstarter.models.Web
+import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import fragment.FullProject
 import fragment.ProjectCard
 import org.jetbrains.annotations.Nullable
@@ -108,7 +109,8 @@ fun rewardTransformer(
     addOnItems: List<RewardsItem> = emptyList()
 ): Reward {
     val amount = rewardGr.amount().fragments().amount().amount()?.toDouble() ?: 0.0
-    val convertedAmount = rewardGr.convertedAmount().fragments().amount().amount()?.toDouble() ?: 0.0
+    val convertedAmount =
+        rewardGr.convertedAmount().fragments().amount().amount()?.toDouble() ?: 0.0
     val desc = rewardGr.description()
     val title = rewardGr.name()
     val estimatedDelivery = rewardGr.estimatedDeliveryOn()?.let { DateTime(it) }
@@ -690,5 +692,35 @@ fun locationTransformer(locationGR: fragment.Location?): Location {
         .country(country)
         .displayableName(displayName)
         .name(name)
+        .build()
+}
+
+fun simpleShippingRuleTransformer(simpleShippingRulesExpanded: List<GetShippingRulesForRewardIdQuery.SimpleShippingRulesExpanded>?):
+    ShippingRulesEnvelope {
+
+    val shippingRulesList = simpleShippingRulesExpanded?.mapNotNull {
+        val graphRule = it.fragments().shippingRuleSimple()
+        val locationId = decodeRelayId(graphRule?.locationId()) ?: -1L
+        val locationName = graphRule?.locationName() ?: ""
+        val cost = graphRule?.cost()?.toDouble() ?: 0.0
+        val currency = graphRule.currency() ?: ""
+
+        val location = Location.builder()
+            .displayableName(locationName)
+            .id(locationId)
+            .name(locationName)
+            .country(locationName)
+            .expandedCountry(locationName)
+            .build()
+
+        ShippingRule.Builder()
+            .cost(cost)
+            .location(location)
+            .build()
+    }
+
+    return ShippingRulesEnvelope
+        .builder()
+        .shippingRules(shippingRulesList ?: emptyList())
         .build()
 }

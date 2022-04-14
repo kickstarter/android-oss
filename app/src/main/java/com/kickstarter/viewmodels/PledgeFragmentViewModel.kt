@@ -37,7 +37,6 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
-import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.ui.ArgumentsKey
@@ -468,10 +467,11 @@ interface PledgeFragmentViewModel {
                 .map { it.project() }
 
             // Shipping rules section
-            val shippingRules = project
-                .compose<Pair<Project, Reward>>(combineLatestPair(this.selectedReward))
-                .filter { RewardUtils.isShippable(it.second) }
-                .switchMap<ShippingRulesEnvelope> { this.apiClient.fetchShippingRules(it.first, it.second).compose(neverError()) }
+            val shippingRules = this.selectedReward
+                .filter { RewardUtils.isShippable(it) }
+                .switchMap {
+                    this.apolloClient.getShippingRules(it).compose(neverError())
+                }
                 .map { it.shippingRules() }
                 .distinctUntilChanged()
                 .share()

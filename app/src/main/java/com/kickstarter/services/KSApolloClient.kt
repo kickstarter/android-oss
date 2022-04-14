@@ -9,6 +9,7 @@ import ErroredBackingsQuery
 import FetchProjectsQuery
 import GetProjectBackingQuery
 import GetRootCategoriesQuery
+import GetShippingRulesForRewardIdQuery
 import ProjectCreatorDetailsQuery
 import SavePaymentMethodMutation
 import SendEmailVerificationMutation
@@ -40,6 +41,7 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.DiscoverEnvelope
+import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
@@ -644,6 +646,35 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             Observable.just(data.project()?.backing())
                                 .filter { it?.fragments()?.backing() != null }
                                 .map { backingObj -> backingTransformer(backingObj?.fragments()?.backing()) }
+                                .subscribe {
+                                    ps.onNext(it)
+                                    ps.onCompleted()
+                                }
+                        }
+                    }
+                })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
+    }
+
+    override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
+        return Observable.defer {
+            val ps = PublishSubject.create<ShippingRulesEnvelope>()
+
+            this.service.query(
+                GetShippingRulesForRewardIdQuery.builder()
+                    .rewardId(encodeRelayId(reward))
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<GetShippingRulesForRewardIdQuery.Data>() {
+                    override fun onFailure(e: ApolloException) {
+                        ps.onError(e)
+                    }
+
+                    override fun onResponse(response: Response<GetShippingRulesForRewardIdQuery.Data>) {
+                        response.data?.let { data ->
+                            val rulesExpanded = (data?.node() as? GetShippingRulesForRewardIdQuery.AsReward)?.simpleShippingRulesExpanded() ?: emptyList()
+                            Observable.just(simpleShippingRuleTransformer(rulesExpanded))
                                 .subscribe {
                                     ps.onNext(it)
                                     ps.onCompleted()

@@ -326,6 +326,13 @@ fragment shippingRule on ShippingRule {
     }
 }
 
+fragment shippingRuleSimple on SimpleShippingRule {
+    cost
+    currency
+    locationName
+    locationId
+}
+
 fragment user on User {
     name
     id

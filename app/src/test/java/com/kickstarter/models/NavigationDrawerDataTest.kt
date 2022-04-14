@@ -38,16 +38,16 @@ class NavigationDrawerDataTest : KSRobolectricTestCase() {
         assertEquals(navigationDrawerData.expandedCategory(), expandedCategory)
         assertEquals(navigationDrawerData.sections(), sections)
         assertEquals(navigationDrawerData.selectedParams(), selectedParams)
-        
+
         assertTrue(section.expandable())
         assertTrue(section.expanded())
         assertEquals(section.rows(), rows)
-        
+
         assertEquals(row.params(), params)
         assertTrue(row.selected())
         assertTrue(row.rootIsExpanded())
     }
-    
+
     @Test
     fun testNavigationDrawerData_equalFalse() {
         val user = User.builder().build()

@@ -110,10 +110,10 @@ class NavigationDrawerData private constructor(
 
         val isCategoryFilter: Boolean
             get() = rows().isNotEmpty() && rows()[0].params().isCategorySet
-        
+
         val isTopFilter: Boolean
             get() = !isCategoryFilter
-        
+
         @Parcelize
         class Row private constructor(
             private val params: DiscoveryParams,

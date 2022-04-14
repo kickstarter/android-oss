@@ -1,16 +1,39 @@
-package com.kickstarter.services.apiresponses;
+package com.kickstarter.services.apiresponses
 
-import android.os.Parcelable;
+import android.os.Parcelable
+import com.kickstarter.models.Category
+import kotlinx.parcelize.Parcelize
 
-import com.kickstarter.libs.qualifiers.AutoGson;
-import com.kickstarter.models.Category;
+@Parcelize
+class CategoriesEnvelope private constructor(
+    private val categories: List<Category>
+) : Parcelable {
+    fun categories() = this.categories
 
-import java.util.List;
+    @Parcelize
+    data class Builder(
+        private var categories: List<Category> = emptyList(),
+    ) : Parcelable {
+        fun categories(categories: List<Category>) = apply { this.categories = categories }
+        fun build() = CategoriesEnvelope(
+            categories = categories
+        )
+    }
 
-import auto.parcel.AutoParcel;
+    fun toBuilder() = Builder(
+        categories = categories,
+    )
 
-@AutoGson
-@AutoParcel
-public abstract class CategoriesEnvelope implements Parcelable {
-  public abstract List<Category> categories();
+    companion object {
+        @JvmStatic
+        fun builder() = Builder()
+    }
+
+    override fun equals(obj: Any?): Boolean {
+        var equals = super.equals(obj)
+        if (obj is CategoriesEnvelope) {
+            equals = categories() == obj.categories()
+        }
+        return equals
+    }
 }

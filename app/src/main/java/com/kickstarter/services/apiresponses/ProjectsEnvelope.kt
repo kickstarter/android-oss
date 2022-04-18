@@ -5,7 +5,7 @@ import com.kickstarter.models.Project
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class ProjectsEnvelope internal constructor(
+class ProjectsEnvelope private constructor(
     private val projects: List<Project>,
     private val urls: UrlsEnvelope
 ) : Parcelable {

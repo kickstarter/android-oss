@@ -1,11 +1,11 @@
 package com.kickstarter.ui.data
 
 import android.os.Parcelable
-import auto.parcel.AutoParcel
 import com.kickstarter.libs.RefTag
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
+import kotlinx.parcelize.Parcelize
 
 /**
  * A light-weight value to hold two ref tags and a project.
@@ -13,30 +13,69 @@ import com.kickstarter.models.User
  * and the other comes from the ref stored in a cookie associated to the project.
  */
 
-@AutoParcel
-abstract class ProjectData : Parcelable {
-    abstract fun refTagFromIntent(): RefTag?
-    abstract fun refTagFromCookie(): RefTag?
-    abstract fun project(): Project
-    abstract fun backing(): Backing?
-    abstract fun user(): User?
+@Parcelize
+class ProjectData private constructor(
+    private val refTagFromIntent: RefTag?,
+    private val refTagFromCookie: RefTag?,
+    private val project: Project,
+    private val backing: Backing?,
+    private val user: User?,
+) : Parcelable {
+    fun refTagFromIntent() = this.refTagFromIntent
+    fun refTagFromCookie() = this.refTagFromCookie
+    fun project() = this.project
+    fun backing() = this.backing
+    fun user() = this.user
 
-    @AutoParcel.Builder
-    abstract class Builder {
-        abstract fun refTagFromIntent(intentRefTag: RefTag?): Builder
-        abstract fun refTagFromCookie(cookieRefTag: RefTag?): Builder
-        abstract fun project(project: Project): Builder
-        abstract fun backing(project: Backing): Builder
-        abstract fun user(project: User): Builder
-        abstract fun build(): ProjectData
+    @Parcelize
+    data class Builder(
+        private var refTagFromIntent: RefTag? = null,
+        private var refTagFromCookie: RefTag? = null,
+        private var project: Project = Project.builder().build(),
+        private var backing: Backing? = null,
+        private var user: User? = null,
+
+    ) : Parcelable {
+        fun refTagFromIntent(refTagFromIntent: RefTag?) = apply { this.refTagFromIntent = refTagFromIntent }
+        fun refTagFromCookie(refTagFromCookie: RefTag?) = apply { this.refTagFromCookie = refTagFromCookie }
+        fun project(project: Project) = apply { this.project = project }
+        fun backing(backing: Backing) = apply { this.backing = backing }
+        fun user(user: User) = apply { this.user = user }
+        fun build() = ProjectData(
+            refTagFromIntent = refTagFromIntent,
+            refTagFromCookie = refTagFromCookie,
+            project = project,
+            backing = backing,
+            user = user
+        )
     }
 
-    abstract fun toBuilder(): Builder
+    fun toBuilder() = Builder(
+        refTagFromIntent = refTagFromIntent,
+        refTagFromCookie = refTagFromCookie,
+        project = project,
+        backing = backing,
+        user = user
+    )
 
     companion object {
+        @JvmStatic
+        fun builder() = Builder()
+    }
 
-        fun builder(): Builder {
-            return AutoParcel_ProjectData.Builder()
+    override fun equals(other: Any?): Boolean {
+        var equals = super.equals(other)
+        if (other is ProjectData) {
+            equals = refTagFromCookie() == other.refTagFromCookie() &&
+                refTagFromIntent() == other.refTagFromIntent() &&
+                project() == other.project() &&
+                backing() == other.backing() &&
+                user() == other.user()
         }
+        return equals
+    }
+
+    override fun hashCode(): Int {
+        return super.hashCode()
     }
 }

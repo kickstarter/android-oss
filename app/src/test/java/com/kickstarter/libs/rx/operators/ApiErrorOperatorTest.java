@@ -2,6 +2,7 @@ package com.kickstarter.libs.rx.operators;
 
 import com.google.gson.Gson;
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
 import org.junit.Test;
 
@@ -39,7 +40,30 @@ public final class ApiErrorOperatorTest extends KSRobolectricTestCase {
     final TestSubscriber<Integer> resultTest = new TestSubscriber<>();
     result.subscribe(resultTest);
 
-    final ResponseBody body= ResponseBody.create("Some error here", MediaType.parse("application/json; charset=utf-8"));
+    final ErrorEnvelope envelope = ErrorEnvelope.builder()
+            .ksrCode(ErrorEnvelope.TFA_FAILED)
+            .httpCode(400)
+            .build();
+
+    final String jsonString = new Gson().toJson(envelope);
+    response.onNext(Response.error(400, ResponseBody.create(jsonString, MediaType.parse("application/json; charset=utf-8"))));
+
+    resultTest.assertNoValues();
+    assertEquals(1, resultTest.getOnErrorEvents().size());
+  }
+
+  @Test
+  public void testErrorResponseJSON() {
+    final Gson gson = new Gson();
+
+    final PublishSubject<Response<Integer>> response = PublishSubject.create();
+    final Observable<Integer> result = response.lift(Operators.apiError(gson));
+
+    final TestSubscriber<Integer> resultTest = new TestSubscriber<>();
+    result.subscribe(resultTest);
+    final String message = "{\"httpCode\":\"" + "503" + "\"}";
+
+    final ResponseBody body= ResponseBody.create(message, MediaType.parse("application/json; charset=utf-8"));
     response.onNext(Response.error(503, body));
 
     resultTest.assertNoValues();

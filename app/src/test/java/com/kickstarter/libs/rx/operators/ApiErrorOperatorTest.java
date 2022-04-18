@@ -31,7 +31,7 @@ public final class ApiErrorOperatorTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testErrorResponseErrorBodyNotJSON() {
+  public void testErrorResponseErrorBodyJSON() {
     final Gson gson = new Gson();
 
     final PublishSubject<Response<Integer>> response = PublishSubject.create();
@@ -53,7 +53,7 @@ public final class ApiErrorOperatorTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testErrorResponseJSON() {
+  public void testErrorResponseBadJSON() {
     final Gson gson = new Gson();
 
     final PublishSubject<Response<Integer>> response = PublishSubject.create();
@@ -61,7 +61,7 @@ public final class ApiErrorOperatorTest extends KSRobolectricTestCase {
 
     final TestSubscriber<Integer> resultTest = new TestSubscriber<>();
     result.subscribe(resultTest);
-    final String message = "{\"httpCode\":\"" + "503" + "\"}";
+    final String message = "{malformed json}";
 
     final ResponseBody body= ResponseBody.create(message, MediaType.parse("application/json; charset=utf-8"));
     response.onNext(Response.error(503, body));

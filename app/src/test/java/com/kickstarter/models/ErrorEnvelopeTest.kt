@@ -42,19 +42,27 @@ class ErrorEnvelopeTest : TestCase() {
 
     @Test
     fun testEqualsNotEquals() {
+        val fbUser1 = ErrorEnvelope.FacebookUser.builder().build()
+        val fbUser2 = fbUser1.toBuilder()
+            .name("name")
+            .email("email")
+            .build()
+
         val envelope = builder()
             .ksrCode(ErrorEnvelope.TFA_REQUIRED)
             .httpCode(403)
+            .facebookUser(fbUser1)
             .errorMessages(listOf("Two-factor authentication required."))
             .build()
 
         val envelope1 = envelope.toBuilder()
             .httpCode(503)
+            .facebookUser(fbUser2)
             .build()
 
         assertNotSame(envelope, envelope1)
         assertEquals(envelope.errorMessage(), envelope1.errorMessage())
-        assertEquals(envelope.facebookUser(), envelope1.facebookUser())
+        assertNotSame(envelope.facebookUser(), envelope1.facebookUser())
         assertNotSame(envelope.httpCode(), envelope1.httpCode())
         assertEquals(envelope.ksrCode(), envelope1.ksrCode())
     }

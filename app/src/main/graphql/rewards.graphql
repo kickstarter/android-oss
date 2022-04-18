@@ -3,8 +3,10 @@ query GetShippingRulesForRewardId($rewardId: ID!) {
         ... on Reward {
             id
             name
-            simpleShippingRulesExpanded {
-                ...shippingRuleSimple
+            shippingRulesExpanded {
+                nodes {
+                    ... shippingRule
+                }
             }
         }
     }

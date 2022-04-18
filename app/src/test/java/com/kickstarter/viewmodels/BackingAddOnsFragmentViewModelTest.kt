@@ -16,10 +16,8 @@ import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.mock.factories.ShippingRulesEnvelopeFactory
 import com.kickstarter.mock.factories.UserFactory
-import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Location
-import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
@@ -1022,8 +1020,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
                     return Observable.error(ApiExceptionFactory.badRequestException())
                 }
             })
-            .apiClient(object : MockApiClient() {
-                override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
+            .apolloClient(object : MockApolloClient() {
+                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
                     return Observable.error(ApiExceptionFactory.badRequestException())
                 }
             })
@@ -1039,8 +1037,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
                     return Observable.just(addOns)
                 }
             })
-            .apiClient(object : MockApiClient() {
-                override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
+            .apolloClient(object : MockApolloClient() {
+                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
                     return Observable.just(shippingRule)
                 }
             })

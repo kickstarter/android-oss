@@ -683,7 +683,7 @@ fun shippingRuleTransformer(rule: fragment.ShippingRule): ShippingRule {
  */
 fun locationTransformer(locationGR: fragment.Location?): Location {
     val id = decodeRelayId(locationGR?.id()) ?: -1
-    val country = locationGR?.county() ?: ""
+    val country = locationGR?.country() ?: ""
     val displayName = locationGR?.displayableName()
     val name = locationGR?.name()
 
@@ -695,32 +695,14 @@ fun locationTransformer(locationGR: fragment.Location?): Location {
         .build()
 }
 
-fun simpleShippingRuleTransformer(simpleShippingRulesExpanded: List<GetShippingRulesForRewardIdQuery.SimpleShippingRulesExpanded>?):
-    ShippingRulesEnvelope {
+fun shippingRulesListTransformer(shippingRulesExpanded: List<fragment.ShippingRule>): ShippingRulesEnvelope {
 
-    val shippingRulesList = simpleShippingRulesExpanded?.mapNotNull {
-        val graphRule = it.fragments().shippingRuleSimple()
-        val locationId = decodeRelayId(graphRule?.locationId()) ?: -1L
-        val locationName = graphRule?.locationName() ?: ""
-        val cost = graphRule?.cost()?.toDouble() ?: 0.0
-        val currency = graphRule.currency() ?: ""
-
-        val location = Location.builder()
-            .displayableName(locationName)
-            .id(locationId)
-            .name(locationName)
-            .country(locationName)
-            .expandedCountry(locationName)
-            .build()
-
-        ShippingRule.Builder()
-            .cost(cost)
-            .location(location)
-            .build()
+    val shippingRulesList = shippingRulesExpanded?.mapNotNull { shippingRule ->
+        shippingRuleTransformer(shippingRule)
     }
 
     return ShippingRulesEnvelope
         .builder()
-        .shippingRules(shippingRulesList ?: emptyList())
+        .shippingRules(shippingRulesList)
         .build()
 }

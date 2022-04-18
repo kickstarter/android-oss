@@ -326,13 +326,6 @@ fragment shippingRule on ShippingRule {
     }
 }
 
-fragment shippingRuleSimple on SimpleShippingRule {
-    cost
-    currency
-    locationName
-    locationId
-}
-
 fragment user on User {
     name
     id
@@ -348,8 +341,8 @@ fragment amount on Money {
 }
 
 fragment location on Location {
-    county
     displayableName
+    country
     id
     name
 }

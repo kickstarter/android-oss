@@ -5,7 +5,6 @@ import com.kickstarter.services.ApiException;
 import com.kickstarter.services.ResponseException;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
-import java.io.IOException;
 
 import androidx.annotation.NonNull;
 import retrofit2.Response;
@@ -53,13 +52,25 @@ public final class ApiErrorOperator<T> implements Observable.Operator<T, retrofi
           return;
         }
 
+        if (response == null) {
+          subscriber.onError(new ResponseException(response));
+          return;
+        }
+
         if (!response.isSuccessful()) {
-          try {
-            final ErrorEnvelope envelope = gson.fromJson(response.errorBody().string(), ErrorEnvelope.class);
-            subscriber.onError(new ApiException(envelope, response));
-          } catch (final @NonNull IOException e) {
-            subscriber.onError(new ResponseException(response));
-          }
+            ErrorEnvelope envelope;
+            try {
+              envelope = gson.fromJson(response.errorBody().string(), ErrorEnvelope.class);
+            } catch (final @NonNull Exception e) {
+              envelope = null;
+            }
+
+            if (envelope != null) {
+              subscriber.onError(new ApiException(envelope, response));
+            } else {
+              subscriber.onError(new ResponseException(response));
+            }
+
         } else { 
           subscriber.onNext(response.body());
           subscriber.onCompleted();

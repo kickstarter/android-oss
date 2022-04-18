@@ -32,7 +32,7 @@ public class FacebookConfimationViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testPrefillEmail() {
     final ErrorEnvelope.FacebookUser facebookUser = ErrorEnvelope.FacebookUser.builder()
-      .id(1).name("Test").email("test@kickstarter.com")
+      .id(1L).name("Test").email("test@kickstarter.com")
       .build();
 
     this.vm = new FacebookConfirmationViewModel.ViewModel(environment());

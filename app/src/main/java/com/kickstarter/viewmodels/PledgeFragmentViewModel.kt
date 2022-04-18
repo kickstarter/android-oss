@@ -417,7 +417,6 @@ interface PledgeFragmentViewModel {
         private val isNoReward = BehaviorSubject.create<Boolean>()
         private val projectTitle = BehaviorSubject.create<String>()
 
-        private val apiClient = environment.apiClient()
         private val apolloClient = environment.apolloClient()
         private val optimizely = environment.optimizely()
         private val cookieManager: CookieManager = environment.cookieManager()

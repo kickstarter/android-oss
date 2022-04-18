@@ -1019,8 +1019,6 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
                 override fun getProjectAddOns(slug: String, location: Location): Observable<List<Reward>> {
                     return Observable.error(ApiExceptionFactory.badRequestException())
                 }
-            })
-            .apolloClient(object : MockApolloClient() {
                 override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
                     return Observable.error(ApiExceptionFactory.badRequestException())
                 }
@@ -1036,8 +1034,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
                 override fun getProjectAddOns(slug: String, location: Location): Observable<List<Reward>> {
                     return Observable.just(addOns)
                 }
-            })
-            .apolloClient(object : MockApolloClient() {
+
                 override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
                     return Observable.just(shippingRule)
                 }

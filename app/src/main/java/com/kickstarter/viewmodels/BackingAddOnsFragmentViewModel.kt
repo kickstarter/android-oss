@@ -97,7 +97,6 @@ class BackingAddOnsFragmentViewModel {
         private val continueButtonPressed = BehaviorSubject.create<Void>()
         private val isEnabledCTAButton = BehaviorSubject.create<Boolean>()
         private val apolloClient = this.environment.apolloClient()
-        private val apiClient = environment.apiClient()
         private val currentConfig = environment.currentConfig()
         val ksString: KSString = this.environment.ksString()
 

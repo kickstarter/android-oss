@@ -17,7 +17,7 @@ import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.LocationFactory
-import com.kickstarter.mock.factories.ProjectDataFactory.Companion.project
+import com.kickstarter.mock.factories.ProjectDataFactory.project
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient

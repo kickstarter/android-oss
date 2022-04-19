@@ -1,6 +1,6 @@
 package com.kickstarter.libs.utils.extensions
 
-import com.kickstarter.mock.factories.ProjectDataFactory.Companion.project
+import com.kickstarter.mock.factories.ProjectDataFactory.project
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Reward

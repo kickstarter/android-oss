@@ -1,35 +1,70 @@
 package com.kickstarter.ui.data
 
 import android.os.Parcelable
-import auto.parcel.AutoParcel
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
+import kotlinx.parcelize.Parcelize
 
-@AutoParcel
-abstract class PledgeData : Parcelable {
-    abstract fun pledgeFlowContext(): PledgeFlowContext
-    abstract fun projectData(): ProjectData
-    abstract fun addOns(): List<Reward>?
-    abstract fun shippingRule(): ShippingRule?
-    abstract fun reward(): Reward
+@Parcelize
+class PledgeData private constructor(
+    private val pledgeFlowContext: PledgeFlowContext,
+    private val projectData: ProjectData,
+    private val addOns: List<Reward>?,
+    private val shippingRule: ShippingRule?,
+    private val reward: Reward
+) : Parcelable {
+    fun pledgeFlowContext() = this.pledgeFlowContext
+    fun projectData() = this.projectData
+    fun addOns() = this.addOns
+    fun shippingRule() = this.shippingRule
+    fun reward() = this.reward
 
-    @AutoParcel.Builder
-    abstract class Builder {
-        abstract fun pledgeFlowContext(pledgeFlowContext: PledgeFlowContext): Builder
-        abstract fun projectData(projectData: ProjectData): Builder
-        abstract fun reward(reward: Reward): Builder
-        abstract fun addOns(rewards: List<Reward>): Builder
-        abstract fun shippingRule(shippingRule: ShippingRule): Builder
-        abstract fun build(): PledgeData
+    @Parcelize
+    data class Builder(
+        private var pledgeFlowContext: PledgeFlowContext = PledgeFlowContext.MANAGE_REWARD,
+        private var projectData: ProjectData = ProjectData.builder().build(),
+        private var addOns: List<Reward>? = null,
+        private var shippingRule: ShippingRule? = null,
+        private var reward: Reward = Reward.builder().build()
+    ) : Parcelable {
+        fun pledgeFlowContext(pledgeFlowContext: PledgeFlowContext) = apply { this.pledgeFlowContext = pledgeFlowContext }
+        fun projectData(projectData: ProjectData) = apply { this.projectData = projectData }
+        fun reward(reward: Reward) = apply { this.reward = reward }
+        fun addOns(addOns: List<Reward>) = apply { this.addOns = addOns }
+        fun shippingRule(shippingRule: ShippingRule) = apply { this.shippingRule = shippingRule }
+        fun build() = PledgeData(
+            pledgeFlowContext = pledgeFlowContext,
+            projectData = projectData,
+            reward = reward,
+            addOns = addOns,
+            shippingRule = shippingRule
+        )
     }
 
-    abstract fun toBuilder(): Builder
+    fun toBuilder() = Builder(
+        pledgeFlowContext = pledgeFlowContext,
+        projectData = projectData,
+        reward = reward,
+        addOns = addOns,
+        shippingRule = shippingRule
+    )
+
+    override fun equals(other: Any?): Boolean {
+        var equals = super.equals(other)
+        if (other is PledgeData) {
+            equals = pledgeFlowContext() == other.pledgeFlowContext() &&
+                projectData() == other.projectData() &&
+                reward() == other.reward() &&
+                addOns() == other.addOns() &&
+                shippingRule() == other.shippingRule()
+        }
+        return equals
+    }
 
     companion object {
 
-        fun builder(): Builder {
-            return AutoParcel_PledgeData.Builder()
-        }
+        @JvmStatic
+        fun builder() = Builder()
 
         fun with(pledgeFlowContext: PledgeFlowContext, projectData: ProjectData, reward: Reward, addOns: List<Reward>? = null, shippingRule: ShippingRule? = null) =
             addOns?.let { addOns ->

@@ -46,7 +46,7 @@ class PledgeDataTest : KSRobolectricTestCase() {
             .pledgeFlowContext(PledgeFlowContext.FIX_ERRORED_PLEDGE)
             .projectData(projectData)
             .build()
-        
+
         val pledgeData4 = PledgeData.builder()
             .pledgeFlowContext(PledgeFlowContext.MANAGE_REWARD)
             .projectData(projectData)
@@ -88,7 +88,7 @@ class PledgeDataTest : KSRobolectricTestCase() {
             projectData = projectData,
             reward = reward,
             addOns = addOns
-        ) 
+        )
 
         assertEquals(pledgeData.pledgeFlowContext(), PledgeFlowContext.MANAGE_REWARD)
         assertEquals(pledgeData.reward(), reward)

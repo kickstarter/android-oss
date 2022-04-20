@@ -39,8 +39,8 @@ class InternalBuildEnvelope private constructor(
         var equals = super.equals(other)
         if (other is InternalBuildEnvelope) {
             equals = build() == other.build() &&
-                    changelog() == other.changelog() &&
-                    newerBuildAvailable() == other.newerBuildAvailable()
+                changelog() == other.changelog() &&
+                newerBuildAvailable() == other.newerBuildAvailable()
         }
         return equals
     }

@@ -29,7 +29,6 @@ import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.mock.factories.ShippingRulesEnvelopeFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.mock.factories.UserFactory
-import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
@@ -856,8 +855,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForShippingRules(shippingRulesEnvelope)
             .toBuilder()
             .currentUser(MockCurrentUser(UserFactory.user()))
-            .apiClient(object : MockApiClient() {
-                override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
+            .apolloClient(object : MockApolloClient() {
+                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
                     return Observable.just(shippingRulesEnvelope)
                 }
             })
@@ -877,8 +876,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForShippingRules(shippingRulesEnvelope)
             .toBuilder()
             .currentUser(MockCurrentUser(UserFactory.user()))
-            .apiClient(object : MockApiClient() {
-                override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
+            .apolloClient(object : MockApolloClient() {
+                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
                     return Observable.just(shippingRulesEnvelope)
                 }
             })
@@ -898,8 +897,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForShippingRules(shippingRulesEnvelope)
             .toBuilder()
             .currentUser(MockCurrentUser(UserFactory.user()))
-            .apiClient(object : MockApiClient() {
-                override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
+            .apolloClient(object : MockApolloClient() {
+                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
                     return Observable.just(shippingRulesEnvelope)
                 }
             })
@@ -1308,8 +1307,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForShippingRules(shippingRulesEnvelope)
             .toBuilder()
             .currentUser(MockCurrentUser(UserFactory.user()))
-            .apiClient(object : MockApiClient() {
-                override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
+            .apolloClient(object : MockApolloClient() {
+                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
                     return Observable.just(shippingRulesEnvelope)
                 }
             })
@@ -1329,8 +1328,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForShippingRules(shippingRulesEnvelope)
             .toBuilder()
             .currentUser(MockCurrentUser(UserFactory.user()))
-            .apiClient(object : MockApiClient() {
-                override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
+            .apolloClient(object : MockApolloClient() {
+                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
                     return Observable.just(shippingRulesEnvelope)
                 }
             })
@@ -1369,8 +1368,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testShippingRulesAndProject_error() {
         val environment = environment().toBuilder()
-            .apiClient(object : MockApiClient() {
-                override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
+            .apolloClient(object : MockApolloClient() {
+                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
                     return Observable.error(Throwable("error"))
                 }
             })
@@ -1738,8 +1737,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForShippingRules(shippingRulesEnvelope)
             .toBuilder()
             .currentUser(MockCurrentUser(UserFactory.user()))
-            .apiClient(object : MockApiClient() {
-                override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
+            .apolloClient(object : MockApolloClient() {
+                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
                     return Observable.just(shippingRulesEnvelope)
                 }
             })
@@ -1860,8 +1859,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForShippingRules(shippingRulesEnvelope)
             .toBuilder()
             .currentUser(MockCurrentUser(UserFactory.user()))
-            .apiClient(object : MockApiClient() {
-                override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
+            .apolloClient(object : MockApolloClient() {
+                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
                     return Observable.just(shippingRulesEnvelope)
                 }
             })
@@ -2340,8 +2339,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForShippingRules(shippingRulesEnvelope)
             .toBuilder()
             .currentUser(MockCurrentUser(UserFactory.user()))
-            .apiClient(object : MockApiClient() {
-                override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
+            .apolloClient(object : MockApolloClient() {
+                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
                     return Observable.just(shippingRulesEnvelope)
                 }
             })
@@ -2735,8 +2734,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     private fun environmentForShippingRules(envelope: ShippingRulesEnvelope): Environment {
-        val apiClient = object : MockApiClient() {
-            override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
+        val apolloClient = object : MockApolloClient() {
+            override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
                 return Observable.just(envelope)
             }
         }
@@ -2746,7 +2745,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         currentConfig.config(config)
 
         return environment().toBuilder()
-            .apiClient(apiClient)
+            .apolloClient(apolloClient)
             .currentConfig(currentConfig)
             .build()
     }

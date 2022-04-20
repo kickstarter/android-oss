@@ -18,6 +18,7 @@ import com.kickstarter.mock.factories.ErroredBackingFactory
 import com.kickstarter.mock.factories.PageInfoEnvelopeFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
+import com.kickstarter.mock.factories.ShippingRulesEnvelopeFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Category
@@ -33,6 +34,7 @@ import com.kickstarter.models.User
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.DiscoverEnvelope
+import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.PostCommentData
@@ -128,6 +130,10 @@ open class MockApolloClient : ApolloClientType {
 
     override fun getBacking(backingId: String): Observable<Backing> {
         return Observable.just(BackingFactory.backing())
+    }
+
+    override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
+        return Observable.just(ShippingRulesEnvelopeFactory.shippingRules())
     }
 
     override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {

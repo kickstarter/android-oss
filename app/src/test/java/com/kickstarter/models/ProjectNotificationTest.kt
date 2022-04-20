@@ -61,8 +61,5 @@ class ProjectNotificationTest : TestCase() {
         assertFalse(projectNotification == projectNotification1)
         assertNotSame(projectNotification.email(), projectNotification1.email())
         assertNotSame(projectNotification.project(), projectNotification1.project())
-        assertSame(projectNotification.id(), projectNotification1.id())
-        assertNotSame(projectNotification.mobile(), projectNotification1.mobile())
-        assertNotSame(projectNotification.urls(), projectNotification1.urls())
     }
 }

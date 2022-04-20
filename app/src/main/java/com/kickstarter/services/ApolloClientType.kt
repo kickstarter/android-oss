@@ -19,6 +19,7 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.DiscoverEnvelope
+import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.PostCommentData
@@ -33,6 +34,8 @@ interface ApolloClientType {
     fun createBacking(createBackingData: CreateBackingData): Observable<Checkout>
 
     fun getBacking(backingId: String): Observable<Backing>
+
+    fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope>
 
     fun clearUnseenActivity(): Observable<Int>
 

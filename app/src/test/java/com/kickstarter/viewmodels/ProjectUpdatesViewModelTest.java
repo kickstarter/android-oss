@@ -47,7 +47,7 @@ public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
   @Test
   public void init_whenViewModelInstantiated_shouldTrackPageViewEvent() {
     final Project project = ProjectFactory.project();
-    setUpEnvironment(environment(), project, ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), project, ProjectDataFactory.project(project));
 
     this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
   }
@@ -55,7 +55,7 @@ public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testHorizontalProgressBarIsGone() {
     final Project project = ProjectFactory.project();
-    setUpEnvironment(environment(), project, ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), project, ProjectDataFactory.project(project));
 
     this.horizontalProgressBarIsGone.assertValues(false, true);
   }
@@ -63,7 +63,7 @@ public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testIsFetchingUpdates() {
     final Project project = ProjectFactory.project();
-    setUpEnvironment(environment(), project, ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), project, ProjectDataFactory.project(project));
 
     this.isFetchingUpdates.assertValues(true, false);
   }
@@ -88,7 +88,7 @@ public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
             .build()
         );
       }
-    }).build(), project, ProjectDataFactory.Companion.project(project));
+    }).build(), project, ProjectDataFactory.project(project));
 
     this.projectAndUpdates.assertValues(Pair.create(project, updates));
   }
@@ -108,7 +108,7 @@ public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
                         .build()
         );
       }
-    }).build(), project, ProjectDataFactory.Companion.project(project));
+    }).build(), project, ProjectDataFactory.project(project));
 
     this.projectAndUpdates.assertValues(Pair.create(project, Collections.emptyList()));
     this.isFetchingUpdates.assertValues(true, false);
@@ -133,7 +133,7 @@ public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
             .build()
         );
       }
-    }).build(), project, ProjectDataFactory.Companion.project(project));
+    }).build(), project, ProjectDataFactory.project(project));
 
     this.vm.inputs.updateClicked(update);
 

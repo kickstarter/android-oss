@@ -1,0 +1,13 @@
+query GetShippingRulesForRewardId($rewardId: ID!) {
+    node(id: $rewardId) {
+        ... on Reward {
+            id
+            name
+            shippingRulesExpanded {
+                nodes {
+                    ... shippingRule
+                }
+            }
+        }
+    }
+}

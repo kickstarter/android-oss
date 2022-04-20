@@ -23,6 +23,7 @@ import com.kickstarter.models.Urls
 import com.kickstarter.models.User
 import com.kickstarter.models.Video
 import com.kickstarter.models.Web
+import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import fragment.FullProject
 import fragment.ProjectCard
 import org.jetbrains.annotations.Nullable
@@ -108,7 +109,8 @@ fun rewardTransformer(
     addOnItems: List<RewardsItem> = emptyList()
 ): Reward {
     val amount = rewardGr.amount().fragments().amount().amount()?.toDouble() ?: 0.0
-    val convertedAmount = rewardGr.convertedAmount().fragments().amount().amount()?.toDouble() ?: 0.0
+    val convertedAmount =
+        rewardGr.convertedAmount().fragments().amount().amount()?.toDouble() ?: 0.0
     val desc = rewardGr.description()
     val title = rewardGr.name()
     val estimatedDelivery = rewardGr.estimatedDeliveryOn()?.let { DateTime(it) }
@@ -681,7 +683,7 @@ fun shippingRuleTransformer(rule: fragment.ShippingRule): ShippingRule {
  */
 fun locationTransformer(locationGR: fragment.Location?): Location {
     val id = decodeRelayId(locationGR?.id()) ?: -1
-    val country = locationGR?.county() ?: ""
+    val country = locationGR?.country() ?: ""
     val displayName = locationGR?.displayableName()
     val name = locationGR?.name()
 
@@ -690,5 +692,17 @@ fun locationTransformer(locationGR: fragment.Location?): Location {
         .country(country)
         .displayableName(displayName)
         .name(name)
+        .build()
+}
+
+fun shippingRulesListTransformer(shippingRulesExpanded: List<fragment.ShippingRule>): ShippingRulesEnvelope {
+
+    val shippingRulesList = shippingRulesExpanded?.mapNotNull { shippingRule ->
+        shippingRuleTransformer(shippingRule)
+    }
+
+    return ShippingRulesEnvelope
+        .builder()
+        .shippingRules(shippingRulesList)
         .build()
 }

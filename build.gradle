@@ -1,6 +1,6 @@
 buildscript {
-    ext.kotlin_version = '1.6.20'
-    ext.jacoco_version = '0.8.7'
+    ext.kotlin_version = '1.6.21'
+    ext.jacoco_version = '0.8.8'
 
     repositories {
         google()
@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.2'
+        classpath 'com.android.tools.build:gradle:7.1.3'
         classpath 'com.google.gms:google-services:4.3.10'
         classpath "org.jacoco:org.jacoco.core:$jacoco_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"

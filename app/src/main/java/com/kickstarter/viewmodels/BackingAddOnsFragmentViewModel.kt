@@ -97,7 +97,6 @@ class BackingAddOnsFragmentViewModel {
         private val continueButtonPressed = BehaviorSubject.create<Void>()
         private val isEnabledCTAButton = BehaviorSubject.create<Boolean>()
         private val apolloClient = this.environment.apolloClient()
-        private val apiClient = environment.apiClient()
         private val currentConfig = environment.currentConfig()
         val ksString: KSString = this.environment.ksString()
 
@@ -226,9 +225,9 @@ class BackingAddOnsFragmentViewModel {
                 }
 
             Observable
-                .combineLatest(this.retryButtonPressed.startWith(false), projectAndReward) { _, projectAndReward ->
-                    return@combineLatest this.apiClient
-                        .fetchShippingRules(projectAndReward.first, projectAndReward.second)
+                .combineLatest(this.retryButtonPressed.startWith(false), reward) { _, rw ->
+                    return@combineLatest this.apolloClient
+                        .getShippingRules(rw)
                         .doOnError {
                             this.showErrorDialog.onNext(true)
                             this.shippingSelectorIsGone.onNext(true)

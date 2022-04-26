@@ -88,34 +88,14 @@
                     app:layout_constraintTop_toBottomOf="@id/add_on_items_container"
                     tools:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/local_pickup_title"
-                    style="@style/RewardSectionTitle"
-                    android:text="@string/FPO_reward_location"
-                    android:layout_marginTop="@dimen/grid_5_half"
-                    app:layout_constraintTop_toBottomOf="@id/add_on_description_text_view"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/local_pickup_location"
-                    style="@style/BodyPrimary"
-                    android:layout_height="wrap_content"
-                    android:layout_width="0dp"
-                    android:scrollHorizontally="true"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:layout_marginTop="@dimen/grid_2"
-                    app:layout_constraintTop_toBottomOf="@id/local_pickup_title"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    tools:text="Oakland, CA Plus a super long description here because we need to know how it is gonna behave "/>
-
-                <androidx.constraintlayout.widget.Group
-                    android:id="@+id/backing_group"
-                    android:layout_width="wrap_content"
+                <include
+                    layout="@layout/reward_item_local_pickup"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="visible"
-                    app:constraint_referenced_ids="local_pickup_title, local_pickup_location" />
+                    app:layout_constraintTop_toBottomOf="@id/add_on_description_text_view"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>

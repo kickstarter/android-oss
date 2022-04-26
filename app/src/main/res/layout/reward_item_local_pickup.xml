@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/local_pickup_container">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/local_pickup_title"
+        style="@style/RewardSectionTitle"
+        android:text="@string/FPO_reward_location"
+        android:layout_marginTop="@dimen/grid_5_half"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/local_pickup_location"
+        style="@style/BodyPrimary"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:scrollHorizontally="true"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginTop="@dimen/grid_1"
+        app:layout_constraintTop_toBottomOf="@id/local_pickup_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Oakland, CA Plus a super long description here because we need to know how it is gonna behave "/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/backing_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="local_pickup_title, local_pickup_location" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -154,6 +154,12 @@
                 tools:text="December 2019" />
             </LinearLayout>
 
+            <include
+                layout="@layout/reward_item_local_pickup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible" />
+
           <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/reward_limit_container"
             android:layout_width="wrap_content"

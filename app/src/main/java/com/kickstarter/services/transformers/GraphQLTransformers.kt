@@ -126,6 +126,7 @@ fun rewardTransformer(
         ShippingPreference.NONE -> Reward.ShippingPreference.NONE
         ShippingPreference.RESTRICTED -> Reward.ShippingPreference.RESTRICTED
         ShippingPreference.UNRESTRICTED -> Reward.ShippingPreference.UNRESTRICTED
+        ShippingPreference.LOCAL -> Reward.ShippingPreference.LOCAL
         else -> Reward.ShippingPreference.UNKNOWN
     }
 
@@ -135,6 +136,8 @@ fun rewardTransformer(
     val shippingRules = shippingRulesExpanded.map {
         shippingRuleTransformer(it)
     }
+
+    val localReceiptLocation = locationTransformer(rewardGr.localReceiptLocation()?.fragments()?.location())
 
     return Reward.builder()
         .title(title)
@@ -157,6 +160,7 @@ fun rewardTransformer(
         .shippingRules(shippingRules)
         .isAvailable(available)
         .backersCount(backersCount)
+        .localReceiptLocation(localReceiptLocation)
         .build()
 }
 

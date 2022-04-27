@@ -66,6 +66,33 @@
               "deprecationReason": null
             },
             {
+              "name": "category",
+              "description": "Fetch a project category by param..",
+              "args": [
+                {
+                  "name": "param",
+                  "description": "",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Category",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "checkout",
               "description": "Fetches a checkout given its id.",
               "args": [

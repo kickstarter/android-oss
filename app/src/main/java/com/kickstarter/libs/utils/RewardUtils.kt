@@ -94,8 +94,16 @@ object RewardUtils {
      */
     fun isShippable(reward: Reward): Boolean {
         val shippingType = reward.shippingType()
-        val noShippingTypes = reward.shippingPreferenceType() == Reward.ShippingPreference.NONE
+        val noShippingTypes = reward.shippingPreferenceType() == Reward.ShippingPreference.NONE ||
+            reward.shippingPreferenceType() == Reward.ShippingPreference.LOCAL
         return shippingType != null && !(Reward.SHIPPING_TYPE_NO_SHIPPING == shippingType || noShippingTypes)
+    }
+
+    fun isLocalPickup(reward: Reward): Boolean {
+        val isLocalPreference = reward.shippingPreferenceType() == Reward.ShippingPreference.LOCAL
+        val hasLocalLocation = reward.localReceiptLocation()?.displayableName()?.isNotEmpty() ?: false
+
+        return isLocalPreference && hasLocalLocation
     }
 
     /**

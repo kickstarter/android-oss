@@ -15,6 +15,7 @@ import com.kickstarter.libs.utils.RewardUtils.isExpired
 import com.kickstarter.libs.utils.RewardUtils.isItemized
 import com.kickstarter.libs.utils.RewardUtils.isLimitReached
 import com.kickstarter.libs.utils.RewardUtils.isLimited
+import com.kickstarter.libs.utils.RewardUtils.isLocalPickup
 import com.kickstarter.libs.utils.RewardUtils.isNoReward
 import com.kickstarter.libs.utils.RewardUtils.isReward
 import com.kickstarter.libs.utils.RewardUtils.isShippable
@@ -442,6 +443,13 @@ class RewardUtilsTest : KSRobolectricTestCase() {
         reward = RewardFactory.reward().toBuilder().endsAt(currentDate.toDateTime()).build()
         val timeInSecondsUntilDeadline = timeInSecondsUntilDeadline(reward)
         assertEquals(timeInSecondsUntilDeadline, 120)
+    }
+
+    @Test
+    fun testIsShippableRewardWithLocalPickupLocation() {
+        val reward = RewardFactory.localReceiptLocation()
+        assertFalse(isShippable(reward))
+        assertTrue(isLocalPickup(reward))
     }
 
     companion object {

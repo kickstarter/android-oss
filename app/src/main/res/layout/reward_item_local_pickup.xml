@@ -4,8 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/local_pickup_container">
+    android:layout_height="match_parent">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/local_pickup_title"
@@ -30,7 +29,7 @@
         tools:text="Oakland, CA Plus a super long description here because we need to know how it is gonna behave "/>
 
     <androidx.constraintlayout.widget.Group
-        android:id="@+id/backing_group"
+        android:id="@+id/local_pickup_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"

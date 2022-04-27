@@ -108,7 +108,6 @@ fragment fullProject on Project {
             items {
                 ... rewardItems
             }
-
         }
     }
     risks
@@ -286,6 +285,9 @@ fragment reward on Reward {
     startsAt
     endsAt
     rewardType
+    localReceiptLocation {
+        ... location
+    }
 }
 
 fragment environmentalCommitment on EnvironmentalCommitment {

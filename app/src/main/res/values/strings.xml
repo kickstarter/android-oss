@@ -81,5 +81,6 @@
 
   <!-- Campaign -->
   <string name="Story">Story</string>
+    <string name="FPO_reward_location">Reward location</string>
 
 </resources>

@@ -20,6 +20,7 @@ import com.kickstarter.libs.utils.TransitionUtils.slideInFromRight
 import com.kickstarter.libs.utils.TransitionUtils.transition
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.isTrue
+import com.kickstarter.libs.utils.extensions.setGone
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.IntentKey
@@ -27,6 +28,7 @@ import com.kickstarter.ui.activities.BackingActivity
 import com.kickstarter.ui.adapters.RewardItemsAdapter
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.RewardViewHolderViewModel
+import rx.android.schedulers.AndroidSchedulers
 
 class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Delegate?, private val inset: Boolean = false) : KSViewHolder(binding.root) {
 
@@ -103,8 +105,10 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
 
         this.viewModel.outputs.shippingSummaryIsGone()
             .compose(bindToLifecycle())
-            .compose(observeForUI())
-            .subscribe { ViewUtils.setGone(this.binding.rewardShippingSummary, it) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                this.binding.rewardShippingSummary.setGone(it)
+            }
 
         this.viewModel.outputs.minimumAmountTitle()
             .compose(bindToLifecycle())
@@ -202,6 +206,20 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
             .subscribe { isGone ->
                 if (!isGone) this.binding.rewardSelectedRewardTag.visibility = View.VISIBLE
                 else ViewUtils.setGone(this.binding.rewardSelectedRewardTag, true)
+            }
+
+        this.viewModel.outputs.localPickUpIsGone()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                this.binding.localPickupContainer.localPickupGroup.setGone(it)
+            }
+
+        this.viewModel.outputs.localPickUpName()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                this.binding.localPickupContainer.localPickupLocation.text = it
             }
     }
 

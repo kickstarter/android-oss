@@ -44,7 +44,11 @@ class Reward private constructor(
     /**
      * this field will be available just for GraphQL, in V1 it would be empty
      */
-    private val shippingRules: List<ShippingRule>?
+    private val shippingRules: List<ShippingRule>?,
+    /**
+     * field reflecting the local pickup location, available only at GraphQL, in V1 it would be empty
+     */
+    private val localReceiptLocation: Location?
 ) : Parcelable, Relay {
     fun backersCount() = this.backersCount
     fun convertedMinimum() = this.convertedMinimum
@@ -70,6 +74,7 @@ class Reward private constructor(
     fun shippingRules() = this.shippingRules
     fun isAllGone() = remaining().isZero()
     fun isLimited() = limit() != null && !isAllGone()
+    fun localReceiptLocation() = this.localReceiptLocation
 
     @Parcelize
     data class Builder(
@@ -94,7 +99,8 @@ class Reward private constructor(
         private var startsAt: DateTime? = null,
         private var isAvailable: Boolean = false,
         private var shippingPreferenceType: ShippingPreference? = null,
-        private var shippingRules: List<ShippingRule>? = null
+        private var shippingRules: List<ShippingRule>? = null,
+        private var localReceiptLocation: Location? = null
     ) : Parcelable {
         fun backersCount(backersCount: Int?) = apply { this.backersCount = backersCount }
         fun convertedMinimum(convertedMinimum: Double?) = apply { this.convertedMinimum = convertedMinimum ?: 0.0 }
@@ -118,6 +124,7 @@ class Reward private constructor(
         fun shippingRules(shippingRules: List<ShippingRule>?) = apply { this.shippingRules = shippingRules }
         fun shippingPreferenceType(shippingPreferenceType: ShippingPreference?) = apply { this.shippingPreferenceType = shippingPreferenceType }
         fun isAvailable(isAvailable: Boolean?) = apply { this.isAvailable = isAvailable ?: false }
+        fun localReceiptLocation(localReceiptLocation: Location?) = apply { this.localReceiptLocation = localReceiptLocation }
         fun build() = Reward(
             backersCount = backersCount,
             convertedMinimum = convertedMinimum,
@@ -140,7 +147,8 @@ class Reward private constructor(
             hasAddons = hasAddons,
             shippingRules = shippingRules,
             shippingPreferenceType = shippingPreferenceType,
-            isAvailable = isAvailable
+            isAvailable = isAvailable,
+            localReceiptLocation = localReceiptLocation
         )
     }
 
@@ -151,6 +159,7 @@ class Reward private constructor(
         const val SHIPPING_TYPE_MULTIPLE_LOCATIONS = "multiple_locations"
         const val SHIPPING_TYPE_NO_SHIPPING = "no_shipping"
         const val SHIPPING_TYPE_SINGLE_LOCATION = "single_location"
+        const val SHIPPING_TYPE_LOCAL_PICKUP = "local"
     }
 
     fun toBuilder() = Builder(
@@ -175,7 +184,8 @@ class Reward private constructor(
         hasAddons = hasAddons,
         shippingRules = shippingRules,
         shippingPreferenceType = shippingPreferenceType,
-        isAvailable = isAvailable
+        isAvailable = isAvailable,
+        localReceiptLocation = localReceiptLocation
     )
 
     override fun equals(other: Any?): Boolean {
@@ -202,7 +212,8 @@ class Reward private constructor(
                 hasAddons() == other.hasAddons() &&
                 shippingRules() == other.shippingRules() &&
                 shippingPreferenceType() == other.shippingPreferenceType() &&
-                isAvailable() == other.isAvailable()
+                isAvailable() == other.isAvailable() &&
+                localReceiptLocation() == other.localReceiptLocation()
         }
         return equals
     }
@@ -227,6 +238,7 @@ class Reward private constructor(
         NOSHIPPING(
             SHIPPING_TYPE_NO_SHIPPING
         ),
+        LOCAL("local"),
         UNKNOWN("\$UNKNOWN");
     }
 }

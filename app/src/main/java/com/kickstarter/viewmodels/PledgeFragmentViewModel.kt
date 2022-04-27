@@ -11,6 +11,7 @@ import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.NumberOptions
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.models.OptimizelyExperiment
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
@@ -323,6 +324,12 @@ interface PledgeFragmentViewModel {
         fun changeCheckoutRiskMessageBottomSheetStatus(): Observable<Boolean>
 
         fun changePledgeSectionAccountabilityFragmentVisiablity(): Observable<Boolean>
+
+        /** Emits a boolean that determines if the local PickUp section should be hidden **/
+        fun localPickUpIsGone(): Observable<Boolean>
+
+        /** Emits the String with the Local Pickup Displayable name **/
+        fun localPickUpName(): Observable<String>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
@@ -441,6 +448,9 @@ interface PledgeFragmentViewModel {
         private val stepperAmount = 1
 
         private var riskConfirmationFlag = BehaviorSubject.create(false)
+
+        private val localPickUpIsGone = BehaviorSubject.create<Boolean>()
+        private val localPickUpName = BehaviorSubject.create<String>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -622,6 +632,26 @@ interface PledgeFragmentViewModel {
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(this.rewardTitle)
+
+            this.selectedReward
+                .filter { !RewardUtils.isShippable(it) }
+                .map {
+                    RewardUtils.isLocalPickup(it) && optimizely.isFeatureEnabled(
+                        OptimizelyFeature.Key.ANDROID_LOCAL_PICKUP
+                    )
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.localPickUpIsGone.onNext(!it)
+                }
+
+            this.selectedReward
+                .filter { !RewardUtils.isShippable(it) }
+                .filter { RewardUtils.isLocalPickup(it) }
+                .map { it.localReceiptLocation()?.displayableName() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
+                .subscribe(this.localPickUpName)
 
             this.selectedReward
                 .map { it.estimatedDeliveryOn() }
@@ -1953,5 +1983,13 @@ interface PledgeFragmentViewModel {
         @NonNull
         override fun changePledgeSectionAccountabilityFragmentVisiablity(): Observable<Boolean> =
             this.changePledgeSectionAccountabilityFragmentVisiablity
+
+        @NonNull
+        override fun localPickUpIsGone(): Observable<Boolean> =
+            localPickUpIsGone
+
+        @Override
+        override fun localPickUpName(): Observable<String> =
+            localPickUpName
     }
 }

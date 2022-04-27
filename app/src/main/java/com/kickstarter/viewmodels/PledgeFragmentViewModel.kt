@@ -888,7 +888,7 @@ interface PledgeFragmentViewModel {
                 .distinctUntilChanged()
 
             val isDigitalRw = this.selectedReward
-                .filter { RewardUtils.isDigital(it) }
+                .filter { RewardUtils.isDigital(it) || RewardUtils.isLocalPickup(it) }
                 .distinctUntilChanged()
 
             // - Calculate total for Reward || Rewards + AddOns with Shipping location
@@ -904,13 +904,13 @@ interface PledgeFragmentViewModel {
                 .compose<Pair<Reward, String>>(combineLatestPair(this.pledgeInput.startWith("")))
                 .map { if (it.second.isNotEmpty()) NumberUtils.parse(it.second) else it.first.minimum() }
 
-            // - Calculate total for DigitalRewards || DigitalReward + DigitalAddOns
-            val totalDigital = Observable.combineLatest(isDigitalRw, pledgeAmountHeader, this.bonusAmount, pledgeReason) { _, pledgeAmount, bonusAmount, pReason ->
+            // - Calculate total for DigitalRewards || DigitalReward + DigitalAddOns || LocalPickup
+            val totalNoShipping = Observable.combineLatest(isDigitalRw, pledgeAmountHeader, this.bonusAmount, pledgeReason) { _, pledgeAmount, bonusAmount, pReason ->
                 return@combineLatest getAmountDigital(pledgeAmount, NumberUtils.parse(bonusAmount), pReason)
             }
                 .distinctUntilChanged()
 
-            val total = Observable.merge(totalWShipping, totalNR, totalDigital)
+            val total = Observable.merge(totalWShipping, totalNR, totalNoShipping)
 
             total
                 .compose<Pair<Double, Project>>(combineLatestPair(project))

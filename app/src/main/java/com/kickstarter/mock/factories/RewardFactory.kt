@@ -169,6 +169,16 @@ object RewardFactory {
             .build()
     }
 
+    fun localReceiptLocation(): Reward {
+        return reward().toBuilder()
+            .shippingType(Reward.SHIPPING_TYPE_LOCAL_PICKUP)
+            .shippingPreference(Reward.ShippingPreference.LOCAL.name)
+            .shippingPreferenceType(Reward.ShippingPreference.LOCAL)
+            .localReceiptLocation(LocationFactory.germany())
+            .estimatedDeliveryOn(null)
+            .build()
+    }
+
     @JvmStatic
     fun noReward(): Reward {
         return builder()

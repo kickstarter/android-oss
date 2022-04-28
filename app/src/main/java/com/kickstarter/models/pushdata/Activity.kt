@@ -5,7 +5,7 @@ import com.kickstarter.models.Activity.Category
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class Activity internal constructor(
+class Activity private constructor(
     @Category
     private val category: String,
     private val commentId: Long?,

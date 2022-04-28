@@ -1,38 +1,77 @@
-package com.kickstarter.models.pushdata;
+package com.kickstarter.models.pushdata
 
-import android.os.Parcelable;
+import android.os.Parcelable
+import com.kickstarter.models.Activity.Category
+import kotlinx.parcelize.Parcelize
 
-import com.kickstarter.libs.qualifiers.AutoGson;
+@Parcelize
+class Activity internal constructor(
+    @Category
+    private val category: String,
+    private val commentId: Long?,
+    private val id: Long,
+    private val projectId: Long?,
+    private val projectPhoto: String?,
+    private val userPhoto: String?,
+    private val updateId: Long?
+) : Parcelable {
+    fun category() = this.category
+    fun commentId() = this.commentId
+    fun id() = id
+    fun projectId() = projectId
+    fun projectPhoto() = projectPhoto
+    fun userPhoto() = userPhoto
+    fun updateId() = updateId
 
-import androidx.annotation.Nullable;
-import auto.parcel.AutoParcel;
+    @Parcelize
+    data class Builder(
+        private var category: String = "",
+        private var commentId: Long? = null,
+        private var id: Long = 0L,
+        private var projectId: Long? = null,
+        private var projectPhoto: String? = null,
+        private var userPhoto: String? = null,
+        private var updateId: Long? = null
+    ) : Parcelable {
+        fun category(@Category category: String?) = apply { this.category = category ?: "" }
+        fun commentId(commentId: Long?) = apply { commentId?.let { this.commentId = it } }
+        fun id(id: Long?) = apply { this.id = id ?: 0L }
+        fun projectId(projectId: Long?) = apply { this.projectId = projectId }
+        fun projectPhoto(projectPhoto: String?) = apply { this.projectPhoto = projectPhoto }
+        fun userPhoto(userPhoto: String?) = apply { this.userPhoto = userPhoto }
+        fun updateId(updateId: Long?) = apply { this.updateId = updateId }
+        fun build() = Activity(
+            category = category,
+            commentId = commentId,
+            id = id,
+            projectId = projectId,
+            projectPhoto = projectPhoto,
+            userPhoto = userPhoto,
+            updateId = updateId
+        )
+    }
 
-@AutoGson
-@AutoParcel
-public abstract class Activity implements Parcelable {
-  @com.kickstarter.models.Activity.Category public abstract String category();
-  public abstract @Nullable Long commentId();
-  public abstract long id();
-  public abstract @Nullable Long projectId();
-  public abstract @Nullable String projectPhoto();
-  public abstract @Nullable String userPhoto();
-  public abstract @Nullable Long updateId();
+    fun toBuilder() = Builder(
+        category = category,
+        commentId = commentId,
+        id = id,
+        projectId = projectId,
+        projectPhoto = projectPhoto,
+        userPhoto = userPhoto,
+        updateId = updateId
+    )
 
-  @AutoParcel.Builder
-  public abstract static class Builder {
-    public abstract Builder commentId(Long __);
-    public abstract Builder category(@com.kickstarter.models.Activity.Category String __);
-    public abstract Builder id(long __);
-    public abstract Builder projectId(Long __);
-    public abstract Builder projectPhoto(String __);
-    public abstract Builder userPhoto(String __);
-    public abstract Builder updateId(Long __);
-    public abstract Activity build();
-  }
-
-  public static Builder builder() {
-    return new AutoParcel_Activity.Builder();
-  }
-
-  public abstract Builder toBuilder();
+    override fun equals(other: Any?): Boolean {
+        var equals = super.equals(other)
+        if (other is Activity) {
+            equals = category() == other.category() &&
+                commentId() == other.commentId() &&
+                id() == other.id() &&
+                projectId() == other.projectId() &&
+                projectPhoto() == other.projectPhoto() &&
+                userPhoto() == other.userPhoto() &&
+                updateId() == other.updateId()
+        }
+        return equals
+    }
 }

@@ -12,6 +12,7 @@ import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.adapters.RewardItemsAdapter
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.BackingAddOnViewHolderViewModel
+import rx.android.schedulers.AndroidSchedulers
 
 class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, private val viewListener: ViewListener) : KSViewHolder(binding.root) {
 
@@ -166,6 +167,20 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
                 quantityPerId?.let { viewListener.quantityPerId(it) }
                 val quantity = quantityPerId.first
                 binding.addOnCard.setStepperInitialValue(quantity)
+            }
+
+        this.viewModel.outputs.localPickUpIsGone()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                this.binding.addOnCard.localPickUpIsGone(it)
+            }
+
+        this.viewModel.outputs.localPickUpName()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                this.binding.addOnCard.setLocalPickUpName(it)
             }
 
         binding.addOnCard.outputs.stepperQuantity()

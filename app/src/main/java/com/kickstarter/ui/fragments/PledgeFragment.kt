@@ -61,6 +61,7 @@ import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
 import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import com.stripe.android.ApiResultCallback
 import com.stripe.android.SetupIntentResult
+import rx.android.schedulers.AndroidSchedulers
 
 @RequiresFragmentViewModel(PledgeFragmentViewModel.ViewModel::class)
 class PledgeFragment :
@@ -548,6 +549,20 @@ class PledgeFragment :
             .compose(bindToLifecycle())
             .subscribe {
                 binding?.pledgeSectionRewardSummary?.pledgeHeaderTitleNoReward ?.text = it
+            }
+
+        this.viewModel.outputs.localPickUpIsGone()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                this.binding?.pledgeSectionPickupLocation?.localPickupContainer?.setGone(it)
+            }
+
+        this.viewModel.outputs.localPickUpName()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                this.binding?.pledgeSectionPickupLocation?.localPickupLocationName?.text = it
             }
 
         binding?.pledgeSectionPledgeAmount?. pledgeAmount?.setOnTouchListener { _, _ ->

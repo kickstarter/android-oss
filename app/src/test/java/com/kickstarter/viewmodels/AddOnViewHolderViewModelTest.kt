@@ -5,6 +5,8 @@ import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.models.OptimizelyFeature
+import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
@@ -25,6 +27,8 @@ class AddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     private val titleForReward = TestSubscriber.create<String>()
     private val titleForNoReward = TestSubscriber.create<Int>()
     private val titleForAddOn = TestSubscriber.create<Pair<String, Int>>()
+    private val localPickUpIsGone = TestSubscriber.create<Boolean>()
+    private val localPickUpName = TestSubscriber.create<String>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = AddOnViewHolderViewModel.ViewModel(environment)
@@ -38,6 +42,8 @@ class AddOnViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.titleForNoReward().subscribe(this.titleForNoReward)
         this.vm.outputs.titleForReward().subscribe(this.titleForReward)
         this.vm.outputs.titleForAddOn().subscribe(this.titleForAddOn)
+        this.vm.outputs.localPickUpIsGone().subscribe(this.localPickUpIsGone)
+        this.vm.outputs.localPickUpName().subscribe(this.localPickUpName)
     }
 
     @Test
@@ -105,5 +111,65 @@ class AddOnViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.conversionIsGone.assertValue(true)
         this.conversion.assertValue("$50")
+    }
+
+    @Test
+    fun testReward_LocalReceiptGroup_Visible_FF_On() {
+        val env = environment()
+            .toBuilder()
+            .optimizely(getMockOptimizelyFFOn())
+            .build()
+        setUpEnvironment(env)
+
+        val project = ProjectFactory.project()
+        val reward = RewardFactory.localReceiptLocation()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project), reward)
+
+        this.localPickUpName.assertValue(reward.localReceiptLocation()?.displayableName())
+        this.localPickUpIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testReward_LocalReceiptGroup_Visible_FF_On_When_RewardNotLocal() {
+        val env = environment()
+            .toBuilder()
+            .optimizely(getMockOptimizelyFFOn())
+            .build()
+        setUpEnvironment(env)
+
+        val project = ProjectFactory.project()
+        val reward = RewardFactory.rewardWithShipping()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project), reward)
+
+        this.localPickUpName.assertNoValues()
+        this.localPickUpIsGone.assertNoValues()
+    }
+
+    @Test
+    fun testReward_LocalReceipt_Group_Not_Visible_FF_Off() {
+        val env = environment()
+            .toBuilder()
+            .optimizely(getMockOptimizelyFFOff())
+            .build()
+        setUpEnvironment(env)
+
+        val project = ProjectFactory.project()
+        val reward = RewardFactory.localReceiptLocation()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project), reward)
+
+        this.localPickUpName.assertValue(reward.localReceiptLocation()?.displayableName())
+        this.localPickUpIsGone.assertValue(true)
+    }
+
+    private fun getMockOptimizelyFFOn() = object : MockExperimentsClientType() {
+        override fun isFeatureEnabled(key: OptimizelyFeature.Key): Boolean {
+            return true
+        }
+    }
+
+    private fun getMockOptimizelyFFOff() = object : MockExperimentsClientType() {
+        override fun isFeatureEnabled(key: OptimizelyFeature.Key): Boolean {
+            return false
+        }
     }
 }

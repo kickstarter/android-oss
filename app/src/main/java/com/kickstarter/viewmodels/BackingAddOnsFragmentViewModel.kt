@@ -10,6 +10,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardUtils.isDigital
+import com.kickstarter.libs.utils.RewardUtils.isLocalPickup
 import com.kickstarter.libs.utils.RewardUtils.isShippable
 import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.models.Backing
@@ -177,7 +178,7 @@ class BackingAddOnsFragmentViewModel {
 
             // - In case of digital Reward to follow the same flow as the rest of use cases use and empty shippingRule
             reward
-                .filter { isDigital(it) || !isShippable(it) }
+                .filter { isDigital(it) || !isShippable(it) || isLocalPickup(it) }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe {
@@ -210,7 +211,7 @@ class BackingAddOnsFragmentViewModel {
             val defaultShippingRule = shippingRules
                 .filter { it.isNotEmpty() }
                 .compose<Pair<List<ShippingRule>, Reward>>(combineLatestPair(reward))
-                .filter { !isDigital(it.second) && isShippable(it.second) }
+                .filter { !isDigital(it.second) && isShippable(it.second) && !isLocalPickup(it.second) }
                 .switchMap { defaultShippingRule(it.first) }
 
             val shippingRule = getSelectedShippingRule(defaultShippingRule, isSameReward, backingShippingRule, reward)
@@ -356,7 +357,7 @@ class BackingAddOnsFragmentViewModel {
          */
         private fun chooseShippingRule(defaultShipping: ShippingRule, backingShippingRule: ShippingRule, sameReward: Boolean, rw: Reward): ShippingRule =
             when {
-                isDigital(rw) || !isShippable(rw) -> ShippingRuleFactory.emptyShippingRule()
+                isDigital(rw) || !isShippable(rw) || isLocalPickup(rw) -> ShippingRuleFactory.emptyShippingRule()
                 sameReward -> backingShippingRule
                 else -> defaultShipping
             }
@@ -412,7 +413,7 @@ class BackingAddOnsFragmentViewModel {
          */
         private fun updatePledgeData(finalList: List<Reward>, rw: Reward, pledgeData: PledgeData, shippingRule: ShippingRule) =
             if (finalList.isNotEmpty()) {
-                if (isShippable(rw) && !isDigital(rw)) {
+                if (isShippable(rw) && !isDigital(rw) && !isLocalPickup(rw)) {
                     pledgeData.toBuilder()
                         .addOns(finalList)
                         .shippingRule(shippingRule)
@@ -549,14 +550,18 @@ class BackingAddOnsFragmentViewModel {
         private fun filterByLocation(addOns: List<Reward>, pData: ProjectData, rule: ShippingRule, rw: Reward): Triple<ProjectData, List<Reward>, ShippingRule> {
             val filteredAddOns = when (rw.shippingPreference()) {
                 Reward.ShippingPreference.UNRESTRICTED.name,
-                Reward.ShippingPreference.UNRESTRICTED.toString().toLowerCase(Locale.getDefault()) -> {
+                Reward.ShippingPreference.UNRESTRICTED.name.lowercase(Locale.getDefault()) -> {
                     addOns.filter {
                         it.shippingPreferenceType() == Reward.ShippingPreference.UNRESTRICTED || containsLocation(rule, it) || isDigital(it)
                     }
                 }
                 Reward.ShippingPreference.RESTRICTED.name,
-                Reward.ShippingPreference.RESTRICTED.toString().toLowerCase(Locale.getDefault()) -> {
+                Reward.ShippingPreference.RESTRICTED.name.lowercase(Locale.getDefault()) -> {
                     addOns.filter { containsLocation(rule, it) || isDigital(it) }
+                }
+                Reward.ShippingPreference.LOCAL.name,
+                Reward.ShippingPreference.LOCAL.name.lowercase(Locale.getDefault()) -> {
+                    addOns.filter { it.localReceiptLocation() == rw.localReceiptLocation() || isDigital(it) }
                 }
                 else -> {
                     if (isDigital(rw))

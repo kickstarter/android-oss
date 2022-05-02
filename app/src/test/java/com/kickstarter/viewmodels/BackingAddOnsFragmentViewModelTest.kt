@@ -356,6 +356,137 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testDigitalAddOns_whenLocalReceiptReward() {
+
+        // DIGITAL AddOns
+        val addOn = RewardFactory.addOn().toBuilder()
+            .shippingPreferenceType(Reward.ShippingPreference.NONE) // - Reward from GraphQL use this field
+            .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING) // - // - Reward from V1 use this field
+            .build()
+        val listAddons = listOf(addOn, addOn, addOn)
+
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
+
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig))
+
+        // - LocalReceipt Reward
+        val rw = RewardFactory.localReceiptLocation().toBuilder()
+            .hasAddons(true)
+            .shippingType(Reward.ShippingPreference.LOCAL.name.toLowerCase())
+            .shippingPreferenceType(Reward.ShippingPreference.LOCAL) // - Reward from GraphQL use this field
+            .shippingType(Reward.SHIPPING_TYPE_LOCAL_PICKUP) // - Reward from V1 use this field
+            .build()
+
+        val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
+        val projectData = ProjectDataFactory.project(project, null, null)
+        val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
+
+        val bundle = Bundle()
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
+        this.vm.arguments(bundle)
+
+        this.shippingSelectorIsGone.assertValues(true)
+        this.addOnsList.assertValue(Triple(projectData, listAddons, ShippingRuleFactory.emptyShippingRule()))
+
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
+
+    @Test
+    fun testDigitalAddOnsAndLocalReceipt_whenLocalReceiptReward() {
+
+        // - LocalReceipt Reward
+        val rw = RewardFactory.localReceiptLocation().toBuilder()
+            .hasAddons(true)
+            .build()
+
+        // DIGITAL AddOn
+        val addOn = RewardFactory.addOn().toBuilder()
+            .shippingPreferenceType(Reward.ShippingPreference.NONE) // - Reward from GraphQL use this field
+            .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING) // - // - Reward from V1 use this field
+            .build()
+
+        val localReceipAddOn = RewardFactory.localReceiptLocation().toBuilder()
+            .isAddOn(true)
+            .isAvailable(true)
+            .build()
+
+        val listAddons = listOf(addOn, addOn, addOn, localReceipAddOn, localReceipAddOn)
+
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
+
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig))
+
+        val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
+        val projectData = ProjectDataFactory.project(project, null, null)
+        val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
+
+        val bundle = Bundle()
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
+        this.vm.arguments(bundle)
+
+        this.shippingSelectorIsGone.assertValues(true)
+        this.addOnsList.assertValue(Triple(projectData, listAddons, ShippingRuleFactory.emptyShippingRule()))
+
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
+
+    @Test
+    fun testFilterOutShippableAddOns_whenLocalReceiptReward() {
+
+        // - LocalReceipt Reward
+        val rw = RewardFactory.localReceiptLocation().toBuilder()
+            .hasAddons(true)
+            .build()
+
+        // DIGITAL AddOn
+        val digitalAddOn = RewardFactory.addOn().toBuilder()
+            .shippingPreferenceType(Reward.ShippingPreference.NONE) // - Reward from GraphQL use this field
+            .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING) // - // - Reward from V1 use this field
+            .build()
+
+        val localReceipAddOn = RewardFactory.localReceiptLocation().toBuilder()
+            .isAddOn(true)
+            .isAvailable(true)
+            .build()
+
+        val shippableAddOn = RewardFactory.addOn().toBuilder()
+            .shippingRules(listOf(ShippingRuleFactory.usShippingRule(), ShippingRuleFactory.germanyShippingRule()))
+            .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name)
+            .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED)
+            .shippingType(Reward.SHIPPING_TYPE_ANYWHERE)
+            .build()
+
+        val listAddons = listOf(shippableAddOn, digitalAddOn, shippableAddOn, localReceipAddOn, shippableAddOn)
+        val outputTestList = listOf(digitalAddOn, localReceipAddOn)
+
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
+
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig))
+
+        val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
+        val projectData = ProjectDataFactory.project(project, null, null)
+        val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
+
+        val bundle = Bundle()
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
+        this.vm.arguments(bundle)
+
+        this.shippingSelectorIsGone.assertValues(true)
+        this.addOnsList.assertValue(Triple(projectData, outputTestList, ShippingRuleFactory.emptyShippingRule()))
+
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
+
+    @Test
     fun testShippingSelectorGone_WhenNoAddOns_Shippable() {
         val shippingRuleRw = ShippingRuleFactory.usShippingRule()
         val addOn = RewardFactory.addOn().toBuilder()

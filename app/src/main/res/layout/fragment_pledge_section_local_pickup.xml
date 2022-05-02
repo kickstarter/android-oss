@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/local_pickup_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/grid_2"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:visibility="gone"
+    tools:visibility="visible"
+    tools:showIn="@layout/fragment_pledge">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/local_pickup_label_static"
+        style="@style/CalloutPrimaryMedium"
+        android:textColor="@color/kds_support_700"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/FPO_reward_location"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/local_pickup_location_name"
+        style="@style/CalloutPrimary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_1"
+        android:layout_marginEnd="@dimen/grid_3"
+        android:ellipsize="end"
+        android:enabled="false"
+        android:hint="@string/Shipping"
+        android:maxLines="1"
+        android:textColor="@color/kds_support_400"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/local_pickup_label_static"
+        tools:text="Los Angeles, CA" />
+</androidx.constraintlayout.widget.ConstraintLayout>

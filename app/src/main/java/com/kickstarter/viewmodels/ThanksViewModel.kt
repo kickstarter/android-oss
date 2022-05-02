@@ -402,7 +402,7 @@ interface ThanksViewModel {
                         Observable.just(category)
                     }
                     else -> {
-                        client.fetchCategory(category.rootId().toString())
+                        client.fetchCategory(category.rootId().toString()).compose(Transformers.neverError())
                     }
                 }
             }

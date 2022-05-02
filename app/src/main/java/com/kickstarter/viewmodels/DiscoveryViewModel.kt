@@ -215,7 +215,7 @@ interface DiscoveryViewModel {
             val verification = uriFromVerification
                 .map { it.getTokenFromQueryParams() }
                 .filter { ObjectUtils.isNotNull(it) }
-                .switchMap { apiClient.verifyEmail(it).compose(Transformers.neverError()) }
+                .switchMap { apiClient.verifyEmail(it) }
                 .materialize()
                 .share()
                 .distinctUntilChanged()

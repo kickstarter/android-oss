@@ -173,7 +173,7 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                this.binding.addOnCard.localPickUpIsGone(it)
+                this.binding.addOnCard.setLocalPickUpIsGone(it)
             }
 
         this.viewModel.outputs.localPickUpName()

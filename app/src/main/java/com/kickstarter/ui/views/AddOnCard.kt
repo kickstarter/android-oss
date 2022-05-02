@@ -125,6 +125,9 @@ class AddOnCard @JvmOverloads constructor(
             getInt(R.styleable.AddOnCardComponent_add_on_stepper_max, 10).also {
                 setStepperMax(it)
             }
+            getBoolean(R.styleable.AddOnCardComponent_add_on_local_pickup_is_gone, true).also {
+                setLocalPickUpIsGone(it)
+            }
         }
     }
 
@@ -196,7 +199,7 @@ class AddOnCard @JvmOverloads constructor(
         binding.localPickupContainer.localPickupLocation.text = localPickupName
     }
 
-    fun localPickUpIsGone(isGone: Boolean) {
+    fun setLocalPickUpIsGone(isGone: Boolean) {
         binding.localPickupContainer.localPickupGroup.setGone(isGone)
     }
 

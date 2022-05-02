@@ -472,7 +472,7 @@ interface DiscoveryFragmentViewModel {
             return apolloClient.getProjects(
                 discoveryParamsStringPair.first,
                 discoveryParamsStringPair.second
-            )
+            ).compose(Transformers.neverError())
         }
 
         private fun activityHasNotBeenSeen(activity: Activity?): Boolean {
@@ -481,6 +481,7 @@ interface DiscoveryFragmentViewModel {
 
         private fun fetchActivity(): Observable<Activity?> {
             return apiClient.fetchActivities(1)
+                .compose(Transformers.neverError())
                 .distinctUntilChanged()
                 .map { it.activities() }
                 .map { it.firstOrNull() }

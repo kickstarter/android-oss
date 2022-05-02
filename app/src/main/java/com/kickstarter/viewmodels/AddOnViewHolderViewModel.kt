@@ -7,6 +7,8 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.models.Country
+import com.kickstarter.libs.models.OptimizelyFeature
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.Project
@@ -62,6 +64,12 @@ interface AddOnViewHolderViewModel {
 
         /** Emits a pait with the add on title and the quantity in order to build the stylized title  */
         fun titleForAddOn(): Observable<Pair<String, Int>>
+
+        /** Emits a boolean that determines if the local PickUp section should be hidden **/
+        fun localPickUpIsGone(): Observable<Boolean>
+
+        /** Emits the String with the Local Pickup Displayable name **/
+        fun localPickUpName(): Observable<String>
     }
 
     /**
@@ -86,6 +94,9 @@ interface AddOnViewHolderViewModel {
         private val titleForReward = BehaviorSubject.create<String?>()
         private val titleForAddOn = BehaviorSubject.create<Pair<String, Int>>()
         private val titleIsGone = BehaviorSubject.create<Boolean>()
+        private val localPickUpIsGone = BehaviorSubject.create<Boolean>()
+        private val localPickUpName = BehaviorSubject.create<String>()
+        private val optimizely = environment.optimizely()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -156,6 +167,26 @@ interface AddOnViewHolderViewModel {
                 .map { reward -> parametersForTitle(reward) }
                 .compose(bindToLifecycle())
                 .subscribe(this.titleForAddOn)
+
+            reward
+                .filter { !RewardUtils.isShippable(it) }
+                .map {
+                    RewardUtils.isLocalPickup(it) && optimizely.isFeatureEnabled(
+                        OptimizelyFeature.Key.ANDROID_LOCAL_PICKUP
+                    )
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.localPickUpIsGone.onNext(!it)
+                }
+
+            reward
+                .filter { !RewardUtils.isShippable(it) }
+                .filter { RewardUtils.isLocalPickup(it) }
+                .map { it.localReceiptLocation()?.displayableName() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
+                .subscribe(this.localPickUpName)
         }
 
         private fun getCurrency(it: Pair<Project, Reward>) =
@@ -198,5 +229,9 @@ interface AddOnViewHolderViewModel {
         override fun titleForReward(): Observable<String?> = this.titleForReward
 
         override fun titleForAddOn(): Observable<Pair<String, Int>> = this.titleForAddOn
+
+        override fun localPickUpIsGone(): Observable<Boolean> = localPickUpIsGone
+
+        override fun localPickUpName(): Observable<String> = localPickUpName
     }
 }

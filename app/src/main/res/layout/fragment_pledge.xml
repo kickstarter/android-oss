@@ -43,6 +43,9 @@
                 android:paddingEnd="@dimen/activity_vertical_margin">
 
                 <include
+                    android:id="@+id/pledge_section_pickup_location"
+                    layout="@layout/fragment_pledge_section_local_pickup" />
+                <include
                     android:id="@+id/pledge_section_shipping"
                     layout="@layout/fragment_pledge_section_shipping" />
 

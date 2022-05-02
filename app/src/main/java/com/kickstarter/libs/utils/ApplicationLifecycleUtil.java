@@ -71,14 +71,19 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
    */
   private void refreshConfigFile() {
     this.client.config()
-      .compose(Transformers.pipeApiErrorsTo(this::handleConfigApiError))
-      .compose(Transformers.neverError())
-      .subscribe(c -> {
-        //sync save features flags in the config object
-        if (this.build.isDebug() || Build.isInternal()) {
-          ConfigExtension.syncUserFeatureFlagsFromPref(c, this.featuresFlagPreference);
+      .materialize()
+      .share()
+      .subscribe(notification -> {
+        if (notification.hasValue()) {
+          //sync save features flags in the config object
+          if (this.build.isDebug() || Build.isInternal()) {
+            ConfigExtension.syncUserFeatureFlagsFromPref(notification.getValue(), this.featuresFlagPreference);
+          }
+          this.config.config(notification.getValue());
         }
-        this.config.config(c);
+        if (notification.hasThrowable()) {
+          this.handleConfigApiError(ErrorEnvelope.fromThrowable(notification.getThrowable()));
+        }
       });
   }
 

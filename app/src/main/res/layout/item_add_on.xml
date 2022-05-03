@@ -89,6 +89,7 @@
                     tools:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life" />
 
                 <include
+                    android:id="@+id/reward_item_local_pickup_container"
                     layout="@layout/reward_item_local_pickup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

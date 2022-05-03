@@ -388,4 +388,42 @@ class AddonCardShotTest : ScreenshotTest {
 
         compareScreenshot(addonCard)
     }
+
+    @Test
+    fun localPickupIsVisible() {
+        addonCard = (
+                LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+                    R.layout.item_add_on_pledge, null
+                ) as CardView
+                )
+            .findViewById(R.id.add_on_card)
+
+        stepper = addonCard.findViewById(R.id.add_on_stepper) as Stepper
+
+        addonCard.setAddonDescriptionVisibility(true)
+        addonCard.setAddOnDescription("Description")
+        addonCard.setAddOnItemLayoutVisibility(false)
+        addonCard.setDividerVisibility(true)
+        addonCard.setAddOnTitleText("Title Text")
+        addonCard.setAddOnMinimumText("5")
+        addonCard.setAddonConversionVisibility(true)
+        addonCard.setAddonConversionText("Conversion")
+        addonCard.setBackerLimitPillVisibility(true)
+        addonCard.setBackerLimitText("Backer limit")
+        addonCard.setAddonQuantityRemainingPillVisibility(true)
+        addonCard.setAddonQuantityRemainingText("Quantity remaining")
+        addonCard.setTimeLeftVisibility(true)
+        addonCard.setTimeLeftText("Time left")
+        addonCard.setShippingAmountText("Shipping amount")
+        addonCard.setShippingAmountVisibility(true)
+        addonCard.setLocalPickUpIsGone(false)
+        addonCard.setLocalPickUpName("Lo Angeles, CA")
+        addonCard.setUpItemsAdapter(itemsAdapter, LinearLayoutManager(InstrumentationRegistry.getInstrumentation().targetContext))
+        itemsAdapter.rewardsItems(emptyList())
+        stepper.inputs.setInitialValue(0)
+        stepper.inputs.setMinimum(0)
+        stepper.inputs.setMaximum(10)
+
+        compareScreenshot(addonCard)
+    }
 }

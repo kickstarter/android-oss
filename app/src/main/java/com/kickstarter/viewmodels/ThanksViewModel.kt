@@ -118,7 +118,9 @@ interface ThanksViewModel {
             val rootCategory = project
                 .switchMap {
                     rootCategory(it, apolloClient)
-                }.filter {
+                }
+                .compose(Transformers.neverError())
+                .filter {
                     ObjectUtils.isNotNull(it)
                 }.map { requireNotNull(it) }
 
@@ -402,7 +404,7 @@ interface ThanksViewModel {
                         Observable.just(category)
                     }
                     else -> {
-                        client.fetchCategory(category.rootId().toString()).compose(Transformers.neverError())
+                        client.fetchCategory(category.rootId().toString())
                     }
                 }
             }

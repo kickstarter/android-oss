@@ -392,10 +392,10 @@ class AddonCardShotTest : ScreenshotTest {
     @Test
     fun localPickupIsVisible() {
         addonCard = (
-                LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
-                    R.layout.item_add_on_pledge, null
-                ) as CardView
-                )
+            LayoutInflater.from(InstrumentationRegistry.getInstrumentation().targetContext).inflate(
+                R.layout.item_add_on_pledge, null
+            ) as CardView
+            )
             .findViewById(R.id.add_on_card)
 
         stepper = addonCard.findViewById(R.id.add_on_stepper) as Stepper

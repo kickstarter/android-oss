@@ -5,6 +5,7 @@ import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.EventContextValues;
 import com.kickstarter.libs.utils.extensions.IntExtKt;
 import com.kickstarter.models.Activity;
@@ -152,7 +153,7 @@ public interface ActivityFeedViewModel {
         .startOverWith(this.refresh)
         .envelopeToListOfData(ActivityEnvelope::activities)
         .envelopeToMoreUrl(env -> env.urls().api().moreActivities())
-        .loadWithParams(__ -> this.apiClient.fetchActivities())
+        .loadWithParams(__ -> this.apiClient.fetchActivities().compose(Transformers.neverError()))
         .loadWithPaginationPath(this.apiClient::fetchActivitiesWithPaginationPath)
         .build();
 

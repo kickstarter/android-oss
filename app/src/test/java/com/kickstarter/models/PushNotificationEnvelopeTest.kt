@@ -88,8 +88,21 @@ class PushNotificationEnvelopeTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testSurveyToBuilder() {
+        val survey = PushNotificationEnvelope.Survey.builder()
+            .build().toBuilder()
+            .id(1L)
+            .projectId(12L)
+            .build()
+
+        assertEquals(survey.id(), 1L)
+        assertEquals(survey.projectId(), 12L)
+    }
+
+    @Test
     fun testErroredPledgeToBuilder() {
         val erroredPledge = PushNotificationEnvelope.ErroredPledge.builder()
+            .build().toBuilder()
             .projectId(12L)
             .build()
 

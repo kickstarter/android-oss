@@ -127,8 +127,8 @@ interface ProfileViewModel {
                 .nextPage(this.nextPage)
                 .envelopeToListOfData { it.projects() }
                 .envelopeToMoreUrl { env -> env.urls()?.api()?.moreProjects() }
-                .loadWithParams { this.client.fetchProjects(params) }
-                .loadWithPaginationPath { this.client.fetchProjects(it) }
+                .loadWithParams { this.client.fetchProjects(params).compose(neverError()) }
+                .loadWithPaginationPath { this.client.fetchProjects(it).compose(neverError()) }
                 .build()
 
             paginator.isFetching

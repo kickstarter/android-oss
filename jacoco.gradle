@@ -30,6 +30,8 @@ android.applicationVariants.all { variant ->
                          '**/*Subcomponent$Builder.class',
                          '**/*Module_*Factory.class',
                          '**/KSApplication.*',
+                         '**/libs/utils/ApplicationLifecycleUtil.*',
+                         '**/libs/utils/ApplicationUtils.*',
                          '**/ApplicationModule.*',
                          '**/*Activity*.*',
                          '**/*Fragment*.*',

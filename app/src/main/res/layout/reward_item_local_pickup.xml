@@ -33,5 +33,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        tools:visibility="visible"
         app:constraint_referenced_ids="local_pickup_title, local_pickup_location" />
 </androidx.constraintlayout.widget.ConstraintLayout>

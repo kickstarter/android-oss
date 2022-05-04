@@ -9,6 +9,7 @@ import androidx.core.content.withStyledAttributes
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
 import com.kickstarter.databinding.AddOnCardBinding
+import com.kickstarter.libs.utils.extensions.setGone
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.ui.adapters.RewardItemsAdapter
 import rx.Observable
@@ -124,6 +125,9 @@ class AddOnCard @JvmOverloads constructor(
             getInt(R.styleable.AddOnCardComponent_add_on_stepper_max, 10).also {
                 setStepperMax(it)
             }
+            getBoolean(R.styleable.AddOnCardComponent_add_on_local_pickup_is_gone, true).also {
+                setLocalPickUpIsGone(it)
+            }
         }
     }
 
@@ -189,6 +193,14 @@ class AddOnCard @JvmOverloads constructor(
 
     fun setShippingAmountText(shippingAmount: String) {
         binding.addOnShippingAmount.text = shippingAmount
+    }
+
+    fun setLocalPickUpName(localPickupName: String) {
+        binding.localPickupContainer.localPickupLocation.text = localPickupName
+    }
+
+    fun setLocalPickUpIsGone(isGone: Boolean) {
+        binding.localPickupContainer.localPickupGroup.setGone(isGone)
     }
 
     private fun hideStepper() {

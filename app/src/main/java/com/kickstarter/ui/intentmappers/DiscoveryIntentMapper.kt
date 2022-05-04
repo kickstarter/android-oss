@@ -74,10 +74,10 @@ object DiscoveryIntentMapper {
         if (categoryParam != null) {
             paramBuilders.add(
                 apolloClient.fetchCategory(categoryParam)
+                    .compose(Transformers.neverError())
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
                     .map { DiscoveryParams.builder().category(it) }
-                    .compose(Transformers.neverError())
             )
         }
 
@@ -86,8 +86,8 @@ object DiscoveryIntentMapper {
             paramBuilders.add(
                 client
                     .fetchLocation(locationParam)
-                    .map { DiscoveryParams.builder().location(it) }
                     .compose(Transformers.neverError())
+                    .map { DiscoveryParams.builder().location(it) }
             )
         }
         paramBuilders.add(Observable.just(params.toBuilder()))

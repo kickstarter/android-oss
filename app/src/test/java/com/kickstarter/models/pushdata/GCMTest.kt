@@ -11,7 +11,7 @@ class GCMTest : KSRobolectricTestCase() {
             .alert("You've received a new push notification")
             .title("Hello")
             .build()
-        
+
         assertEquals(gcm.title(), "Hello")
         assertEquals(gcm.alert(), "You've received a new push notification")
     }

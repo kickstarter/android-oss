@@ -5,6 +5,7 @@ import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils
@@ -15,6 +16,7 @@ import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.BackingAddOnViewHolder
 import rx.Observable
+import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
 import kotlin.math.min
@@ -89,6 +91,12 @@ class BackingAddOnViewHolderViewModel {
 
         /** Emits the maximum quantity for available addon*/
         fun maxQuantity(): Observable<Int>
+
+        /** Emits a boolean that determines if the local PickUp section should be hidden **/
+        fun localPickUpIsGone(): Observable<Boolean>
+
+        /** Emits the String with the Local Pickup Displayable name **/
+        fun localPickUpName(): Observable<String>
     }
 
     /**
@@ -121,6 +129,9 @@ class BackingAddOnViewHolderViewModel {
         private val quantity = PublishSubject.create<Int>()
         private val quantityPerId = PublishSubject.create<Pair<Int, Long>>()
         private val maxQuantity = PublishSubject.create<Int>()
+        private val localPickUpIsGone = BehaviorSubject.create<Boolean>()
+        private val localPickUpName = BehaviorSubject.create<String>()
+        private val optimizely = environment.optimizely()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -213,6 +224,26 @@ class BackingAddOnViewHolderViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(this.maxQuantity)
 
+            addOn
+                .filter { !RewardUtils.isShippable(it) }
+                .map {
+                    RewardUtils.isLocalPickup(it) && optimizely.isFeatureEnabled(
+                        OptimizelyFeature.Key.ANDROID_LOCAL_PICKUP
+                    )
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.localPickUpIsGone.onNext(!it)
+                }
+
+            addOn
+                .filter { !RewardUtils.isShippable(it) }
+                .filter { RewardUtils.isLocalPickup(it) }
+                .map { it.localReceiptLocation()?.displayableName() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
+                .subscribe(this.localPickUpName)
+
             this.quantity
                 .compose<Pair<Int, Reward>>(combineLatestPair(addOn))
                 .map { data -> Pair(data.first, data.second.id()) }
@@ -301,5 +332,9 @@ class BackingAddOnViewHolderViewModel {
         override fun quantityPerId(): PublishSubject<Pair<Int, Long>> = this.quantityPerId
 
         override fun maxQuantity(): Observable<Int> = this.maxQuantity
+
+        override fun localPickUpIsGone(): Observable<Boolean> = this.localPickUpIsGone
+
+        override fun localPickUpName(): Observable<String> = this.localPickUpName
     }
 }

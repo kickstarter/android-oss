@@ -16,7 +16,7 @@ class PushNotificationEnvelopeTest : KSRobolectricTestCase() {
             .photo(
                 "https://www.kickstarter.com/avatars/12345678"
             ).build()
-        
+
         val message = PushNotificationEnvelope.Message.builder()
             .projectId(12L)
             .messageThreadId(13L)
@@ -158,9 +158,9 @@ class PushNotificationEnvelopeTest : KSRobolectricTestCase() {
     @Test
     fun testPushNotificationEnvelope_isErroredPledge() {
         val pushNotificationEnvelope = PushNotificationEnvelope.builder().build()
-        
+
         assertFalse(pushNotificationEnvelope.isErroredPledge())
-        
+
         val erroredPledge = PushNotificationEnvelope.ErroredPledge.builder()
             .projectId(12L)
             .build()
@@ -169,16 +169,16 @@ class PushNotificationEnvelopeTest : KSRobolectricTestCase() {
             .erroredPledge(erroredPledge)
             .build()
             .isErroredPledge()
-        
+
         assertTrue(isErroredPledge)
     }
 
     @Test
     fun testPushNotificationEnvelope_isFriendFollow() {
         val pushNotificationEnvelope = PushNotificationEnvelope.builder().build()
-        
+
         assertFalse(pushNotificationEnvelope.isFriendFollow())
-        
+
         val activity = Activity.builder()
             .commentId(12L)
             .projectId(123L)
@@ -188,21 +188,21 @@ class PushNotificationEnvelopeTest : KSRobolectricTestCase() {
             .userPhoto(
                 "https://www.kickstarter.com/avatars/12345678"
             ).build()
-        
+
         val isFriendFollow = pushNotificationEnvelope.toBuilder()
             .activity(activity)
             .build()
             .isFriendFollow()
-        
+
         assertTrue(isFriendFollow)
     }
 
     @Test
     fun testPushNotificationEnvelope_isMessage() {
         val pushNotificationEnvelope = PushNotificationEnvelope.builder().build()
-       
+
         assertFalse(pushNotificationEnvelope.isMessage())
-        
+
         val message = PushNotificationEnvelope.Message.builder()
             .projectId(12L)
             .messageThreadId(13L)
@@ -219,7 +219,7 @@ class PushNotificationEnvelopeTest : KSRobolectricTestCase() {
     @Test
     fun testPushNotificationEnvelope_isProjectActivity() {
         val pushNotificationEnvelope = PushNotificationEnvelope.builder().build()
-        
+
         assertFalse(pushNotificationEnvelope.isProjectActivity())
 
         val activity = Activity.builder()
@@ -278,7 +278,7 @@ class PushNotificationEnvelopeTest : KSRobolectricTestCase() {
     @Test
     fun testPushNotificationEnvelope_isProjectReminder() {
         val pushNotificationEnvelope = PushNotificationEnvelope.builder().build()
-        
+
         assertFalse(pushNotificationEnvelope.isProjectReminder())
 
         val project = PushNotificationEnvelope.Project.builder()
@@ -286,7 +286,7 @@ class PushNotificationEnvelopeTest : KSRobolectricTestCase() {
             .photo(
                 "https://www.kickstarter.com/avatars/12345678"
             ).build()
-        
+
         val isProjectReminder = pushNotificationEnvelope.toBuilder()
             .project(project)
             .build()
@@ -300,7 +300,7 @@ class PushNotificationEnvelopeTest : KSRobolectricTestCase() {
         val pushNotificationEnvelope = PushNotificationEnvelope.builder().build()
 
         assertFalse(pushNotificationEnvelope.isProjectUpdateActivity())
-        
+
         val activity = Activity.builder()
             .projectId(123L)
             .category(com.kickstarter.models.Activity.CATEGORY_UPDATE)
@@ -310,7 +310,7 @@ class PushNotificationEnvelopeTest : KSRobolectricTestCase() {
             .activity(activity)
             .build()
             .isProjectUpdateActivity()
-        
+
         assertTrue(isProjectActivity)
     }
 

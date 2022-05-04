@@ -53,6 +53,7 @@
     <attr name="initial_state_add_on_visibility" format="boolean"/>
     <attr name="add_on_stepper_initial_value" format="integer"/>
     <attr name="add_on_stepper_max" format="integer"/>
+    <attr name="add_on_local_pickup_is_gone" format="boolean"/>
   </declare-styleable>
 
   <declare-styleable name="FrequentlyAskedQuestionCard">

@@ -88,6 +88,40 @@ class PushNotificationEnvelopeTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testErroredPledgeToBuilder() {
+        val erroredPledge = PushNotificationEnvelope.ErroredPledge.builder()
+            .projectId(12L)
+            .build()
+
+        assertEquals(erroredPledge.projectId(), 12)
+    }
+
+    @Test
+    fun testMessageToBuilder() {
+        val message = PushNotificationEnvelope.Message.builder()
+            .build().toBuilder()
+            .projectId(12L)
+            .messageThreadId(13L)
+            .build()
+
+        assertEquals(message.messageThreadId(), 13L)
+        assertEquals(message.projectId(), 12L)
+    }
+
+    @Test
+    fun testProjectToBuilder() {
+        val project = PushNotificationEnvelope.Project.builder()
+            .build().toBuilder()
+            .id(12L)
+            .photo(
+                "https://www.kickstarter.com/avatars/12345678"
+            ).build()
+
+        assertEquals(project.id(), 12L)
+        assertEquals(project.photo(), "https://www.kickstarter.com/avatars/12345678")
+    }
+
+    @Test
     fun testPushNotificationEnvelope_equalFalse() {
         val project = PushNotificationEnvelope.Project.builder()
             .id(12L)

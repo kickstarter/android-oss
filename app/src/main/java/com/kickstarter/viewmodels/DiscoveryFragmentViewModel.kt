@@ -472,7 +472,7 @@ interface DiscoveryFragmentViewModel {
             return apolloClient.getProjects(
                 discoveryParamsStringPair.first,
                 discoveryParamsStringPair.second
-            )
+            ).compose(Transformers.neverError())
         }
 
         private fun activityHasNotBeenSeen(activity: Activity?): Boolean {

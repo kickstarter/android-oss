@@ -799,7 +799,7 @@ class ProjectPageActivity :
         try {
             // - Every time the ProjectData gets updated
             // - the fragments on the viewPager are updated as well
-            (binding.projectPager.adapter as ProjectPagerAdapter).updatedWithProjectData(projectData)
+            (binding.projectPager.adapter as? ProjectPagerAdapter)?.updatedWithProjectData(projectData)
 
             val rewardsFragment = rewardsFragment()
             val backingFragment = backingFragment()

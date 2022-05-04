@@ -118,7 +118,9 @@ interface ThanksViewModel {
             val rootCategory = project
                 .switchMap {
                     rootCategory(it, apolloClient)
-                }.filter {
+                }
+                .compose(Transformers.neverError())
+                .filter {
                     ObjectUtils.isNotNull(it)
                 }.map { requireNotNull(it) }
 

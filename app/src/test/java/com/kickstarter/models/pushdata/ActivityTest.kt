@@ -7,7 +7,7 @@ class ActivityTest : KSRobolectricTestCase() {
 
     @Test
     fun testDefaultInit() {
-        val activity = Activity.Builder()
+        val activity = Activity.builder()
             .commentId(12L)
             .projectId(123L)
             .projectPhoto("https://www.kickstarter.com/projects/123")
@@ -28,7 +28,7 @@ class ActivityTest : KSRobolectricTestCase() {
     @Test
     fun testDefaultToBuilder() {
         val activity1 =
-            Activity.Builder()
+            Activity.builder()
                 .commentId(12L)
                 .projectId(123L)
                 .projectPhoto("https://www.kickstarter.com/projects/123")
@@ -44,7 +44,7 @@ class ActivityTest : KSRobolectricTestCase() {
     @Test
     fun testActivity_equalFalse() {
         val activity =
-            Activity.Builder()
+            Activity.builder()
                 .commentId(12L)
                 .projectId(123L)
                 .projectPhoto("https://www.kickstarter.com/projects/123")
@@ -53,16 +53,16 @@ class ActivityTest : KSRobolectricTestCase() {
                     "https://www.kickstarter.com/avatars/12345678"
                 ).build()
 
-        val activity2 = Activity.Builder().id(1234L).build()
+        val activity2 = Activity.builder().id(1234L).build()
 
         val activity3 =
-            Activity.Builder()
+            Activity.builder()
                 .commentId(12L)
                 .userPhoto(
                     "https://www.kickstarter.com/avatars/12345678"
                 ).build()
         val activity4 =
-            Activity.Builder()
+            Activity.builder()
                 .commentId(12L)
                 .projectId(123L)
                 .projectPhoto("https://www.kickstarter.com/projects/123")
@@ -81,9 +81,9 @@ class ActivityTest : KSRobolectricTestCase() {
     @Test
     fun testActivity_equalsTrue() {
         val activity1 =
-            Activity.Builder().build()
+            Activity.builder().build()
 
-        val activity2 = Activity.Builder().build()
+        val activity2 = Activity.builder().build()
 
         assertTrue(activity1 == activity2)
     }

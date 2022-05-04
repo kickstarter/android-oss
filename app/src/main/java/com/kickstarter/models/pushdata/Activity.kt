@@ -74,4 +74,11 @@ class Activity private constructor(
         }
         return equals
     }
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder {
+            return Builder()
+        }
+    }
 }

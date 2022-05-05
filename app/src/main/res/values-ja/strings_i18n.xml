@@ -520,6 +520,7 @@
   <string name="Reward_Surveys_zero" formatted="false">%{reward_survey_count} リワードのサーベイ</string>
   <string name="Reward_delivered" formatted="false">リワードを受け取りましたか？</string>
   <string name="Reward_estimated_for_delivery_in_date" formatted="false">&lt;b>リワード&lt;/b>の配達予定日は%{delivery_date}</string>
+  <string name="Reward_location" formatted="false">Reward location</string>
   <string name="Reward_received" formatted="false">リワードを受け取りました</string>
   <string name="Reward_selected" formatted="false">選択中のリワード</string>
   <string name="Reward_surveys" formatted="false">リワードのサーベイ</string>

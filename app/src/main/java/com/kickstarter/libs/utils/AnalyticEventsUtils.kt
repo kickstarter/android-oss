@@ -95,8 +95,8 @@ object AnalyticEventsUtils {
         val properties = HashMap<String, Any>().apply {
             put("everything", params.isAllProjects.isTrue())
             put("pwl", params.staffPicks().isTrue())
-            put("recommended", params.recommended().isTrue())
-            put("ref_tag", params.refTag().tag())
+            put("recommended", params.recommended()?.isTrue() ?: false)
+            put("ref_tag", params.refTag()?.tag())
             params.term()?.let { put("search_term", it) }
             put("social", params.social().isNonZero())
             put(

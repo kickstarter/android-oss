@@ -522,6 +522,7 @@ Toca para intentar de nuevo.</string>
   <string name="Reward_Surveys_zero" formatted="false">%{reward_survey_count} cuestionarios</string>
   <string name="Reward_delivered" formatted="false">¿Recompensa entregada?</string>
   <string name="Reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Recompensa&lt;/b> estimada para entregarse en %{delivery_date}</string>
+  <string name="Reward_location" formatted="false">Lugar de la recompensa</string>
   <string name="Reward_received" formatted="false">Recompensa recibida</string>
   <string name="Reward_selected" formatted="false">Recompensa seleccionada</string>
   <string name="Reward_surveys" formatted="false">Cuestionarios sobre recompensas</string>

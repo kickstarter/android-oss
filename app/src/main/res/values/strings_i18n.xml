@@ -524,6 +524,7 @@ daring ideas.</string>
   <string name="Reward_Surveys_zero" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_delivered" formatted="false">Reward delivered?</string>
   <string name="Reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Reward&lt;/b> estimated for delivery in %{delivery_date}</string>
+  <string name="Reward_location" formatted="false">Reward location</string>
   <string name="Reward_received" formatted="false">Reward received</string>
   <string name="Reward_selected" formatted="false">Reward selected</string>
   <string name="Reward_surveys" formatted="false">Reward surveys</string>

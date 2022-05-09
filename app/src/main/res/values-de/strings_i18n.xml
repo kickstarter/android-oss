@@ -521,7 +521,7 @@ Antippen und erneut versuchen</string>
   <string name="Reward_Surveys_zero" formatted="false">%{reward_survey_count} Befragungen</string>
   <string name="Reward_delivered" formatted="false">Belohnung versandt?</string>
   <string name="Reward_estimated_for_delivery_in_date" formatted="false">Voraussichtliche Lieferung der &lt;b>Belohnung&lt;/b> im %{delivery_date}</string>
-  <string name="Reward_location" formatted="false">Reward location</string>
+  <string name="Reward_location" formatted="false">Standort der Belohnung</string>
   <string name="Reward_received" formatted="false">Belohnung erhalten</string>
   <string name="Reward_selected" formatted="false">Ausgewählte Belohnung</string>
   <string name="Reward_surveys" formatted="false">Befragungen</string>

@@ -522,7 +522,7 @@ n\'ont rien soutenu.</string>
   <string name="Reward_Surveys_zero" formatted="false">%{reward_survey_count} questionnaires</string>
   <string name="Reward_delivered" formatted="false">Récompense livrée ?</string>
   <string name="Reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Récompense&lt;/b> prévue pour %{delivery_date}</string>
-  <string name="Reward_location" formatted="false">Reward location</string>
+  <string name="Reward_location" formatted="false">Lieu de la récompense</string>
   <string name="Reward_received" formatted="false">Récompense reçue</string>
   <string name="Reward_selected" formatted="false">Récompense sélectionnée</string>
   <string name="Reward_surveys" formatted="false">Questionnaires des récompenses</string>

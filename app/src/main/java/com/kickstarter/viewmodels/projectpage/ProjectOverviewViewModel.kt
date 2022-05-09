@@ -4,7 +4,6 @@ import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.KSString
@@ -190,7 +189,7 @@ interface ProjectOverviewViewModel {
         private val apolloClient: ApolloClientType = environment.apolloClient()
         private val currentUser: CurrentUserType = environment.currentUser()
         private val ksCurrency: KSCurrency = environment.ksCurrency()
-        private val optimizely: ExperimentsClientType = environment.optimizely()
+        private val optimizely = environment.optimizely()
         val kSString: KSString = environment.ksString()
 
         // Inputs
@@ -459,7 +458,9 @@ interface ProjectOverviewViewModel {
         }
 
         init {
-            hideOldCampaignLink = Observable.just(optimizely.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_STORY_TAB))
+            hideOldCampaignLink = Observable.just(optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_STORY_TAB) == true)
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
 
             val project = projectData
                 .distinctUntilChanged()
@@ -490,7 +491,7 @@ interface ProjectOverviewViewModel {
                     )
                 }
                 .map { experimentData ->
-                    optimizely.variant(
+                    optimizely?.variant(
                         OptimizelyExperiment.Key.CAMPAIGN_DETAILS,
                         experimentData
                     )
@@ -568,7 +569,7 @@ interface ProjectOverviewViewModel {
                     )
                 }
                 .map { experimentData: ExperimentData? ->
-                    optimizely.variant(
+                    optimizely?.variant(
                         OptimizelyExperiment.Key.CREATOR_DETAILS,
                         experimentData!!
                     )

@@ -219,7 +219,7 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
     }
 
     private fun createStripeToken(card: CardParams) {
-        this.viewModel.environment.stripe().createCardToken(
+        this.viewModel.environment.stripe()?.createCardToken(
             cardParams = card,
             callback = object : ApiResultCallback<Token> {
                 override fun onSuccess(result: Token) {

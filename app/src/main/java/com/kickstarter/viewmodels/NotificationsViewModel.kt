@@ -12,7 +12,6 @@ import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isZero
 import com.kickstarter.models.User
-import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.NotificationsActivity
 import rx.Notification
 import rx.Observable
@@ -107,12 +106,12 @@ interface NotificationsViewModel {
         val outputs: Outputs = this
         val errors: Errors = this
 
-        private val client: ApiClientType = environment.apiClient()
+        private val client = environment.apiClient()
         private val currentUser: CurrentUserType = environment.currentUser()
 
         init {
 
-            this.client.fetchCurrentUser()
+            requireNotNull(this.client).fetchCurrentUser()
                 .retry(2)
                 .compose(neverError())
                 .compose(bindToLifecycle())
@@ -254,7 +253,7 @@ interface NotificationsViewModel {
         }
 
         private fun updateSettings(user: User): Observable<Notification<User>> {
-            return this.client.updateUserSettings(user)
+            return requireNotNull(this.client).updateUserSettings(user)
                 .materialize()
                 .share()
         }

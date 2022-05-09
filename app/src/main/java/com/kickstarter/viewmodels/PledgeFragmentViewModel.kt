@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels
 
-import android.content.SharedPreferences
 import android.text.SpannableString
 import android.util.Pair
 import androidx.annotation.NonNull
@@ -54,7 +53,6 @@ import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import type.CreditCardPaymentType
 import java.math.RoundingMode
-import java.net.CookieManager
 import kotlin.math.max
 
 interface PledgeFragmentViewModel {
@@ -426,11 +424,11 @@ interface PledgeFragmentViewModel {
 
         private val apolloClient = environment.apolloClient()
         private val optimizely = environment.optimizely()
-        private val cookieManager: CookieManager = environment.cookieManager()
+        private val cookieManager = environment.cookieManager()
         private val currentConfig = environment.currentConfig()
         private val currentUser = environment.currentUser()
         private val ksCurrency = environment.ksCurrency()
-        private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
+        private val sharedPreferences = environment.sharedPreferences()
         private val minPledgeByCountry = BehaviorSubject.create<Double>()
         private val shippingRuleUpdated = BehaviorSubject.create<Boolean>(false)
         private val selectedReward = BehaviorSubject.create<Reward>()
@@ -636,9 +634,9 @@ interface PledgeFragmentViewModel {
             this.selectedReward
                 .filter { !RewardUtils.isShippable(it) }
                 .map {
-                    RewardUtils.isLocalPickup(it) && optimizely.isFeatureEnabled(
+                    RewardUtils.isLocalPickup(it) && optimizely?.isFeatureEnabled(
                         OptimizelyFeature.Key.ANDROID_LOCAL_PICKUP
-                    )
+                    ) == true
                 }
                 .compose(bindToLifecycle())
                 .subscribe {
@@ -1202,7 +1200,7 @@ interface PledgeFragmentViewModel {
 
             this.pledgeButtonClicked
                 .compose(combineLatestPair(experimentData))
-                .filter { this.optimizely.variant(OptimizelyExperiment.Key.NATIVE_RISK_MESSAGING, it.second) != OptimizelyExperiment.Variant.CONTROL }
+                .filter { this.optimizely?.variant(OptimizelyExperiment.Key.NATIVE_RISK_MESSAGING, it.second) != OptimizelyExperiment.Variant.CONTROL }
                 .withLatestFrom(riskConfirmationFlag) { _, flag -> flag }
                 .filter { !it }
                 .compose(combineLatestPair(pledgeReason))
@@ -1215,7 +1213,7 @@ interface PledgeFragmentViewModel {
                 }
 
             experimentData
-                .map { this.optimizely.variant(OptimizelyExperiment.Key.NATIVE_RISK_MESSAGING, it) != OptimizelyExperiment.Variant.CONTROL }
+                .map { this.optimizely?.variant(OptimizelyExperiment.Key.NATIVE_RISK_MESSAGING, it) != OptimizelyExperiment.Variant.CONTROL }
                 .compose(combineLatestPair(pledgeReason))
                 .filter { it.second == PledgeReason.PLEDGE }
                 .compose(bindToLifecycle())
@@ -1225,7 +1223,7 @@ interface PledgeFragmentViewModel {
 
             this.pledgeButtonClicked
                 .compose(combineLatestPair(experimentData))
-                .filter { this.optimizely.variant(OptimizelyExperiment.Key.NATIVE_RISK_MESSAGING, it.second) == OptimizelyExperiment.Variant.CONTROL }
+                .filter { this.optimizely?.variant(OptimizelyExperiment.Key.NATIVE_RISK_MESSAGING, it.second) == OptimizelyExperiment.Variant.CONTROL }
                 .withLatestFrom(riskConfirmationFlag) { _, flag -> flag }
                 .filter { !it }
                 .compose(combineLatestPair(pledgeReason))
@@ -1244,7 +1242,7 @@ interface PledgeFragmentViewModel {
             // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
             val cookieRefTag = project
                 .take(1)
-                .map { p -> RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences) }
+                .map { p -> RefTagUtils.storedCookieRefTagForProject(p, requireNotNull(this.cookieManager), requireNotNull(this.sharedPreferences)) }
 
             val locationId: Observable<String?> = shippingRule.map { it.location() }
                 .map { it?.id() }

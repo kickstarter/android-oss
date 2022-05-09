@@ -20,7 +20,7 @@ import rx.android.schedulers.AndroidSchedulers
 @RequiresActivityViewModel(NewsletterViewModel.ViewModel::class)
 class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
 
-    private lateinit var build: Build
+    private var build: Build ? = null
     private lateinit var currentUserType: CurrentUserType
     private lateinit var ksString: KSString
 

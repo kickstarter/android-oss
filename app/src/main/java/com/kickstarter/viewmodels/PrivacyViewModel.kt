@@ -11,7 +11,6 @@ import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.models.User
-import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.PrivacyActivity
 import rx.Notification
 import rx.Observable
@@ -69,11 +68,11 @@ interface PrivacyViewModel {
         val outputs: PrivacyViewModel.Outputs = this
         val errors: PrivacyViewModel.Errors = this
 
-        private val client: ApiClientType = environment.apiClient()
+        private val client = environment.apiClient()
         private val currentUser: CurrentUserType = environment.currentUser()
 
         init {
-            this.client.fetchCurrentUser()
+            requireNotNull(this.client).fetchCurrentUser()
                 .retry(2)
                 .compose(Transformers.neverError())
                 .compose(bindToLifecycle())
@@ -173,7 +172,7 @@ interface PrivacyViewModel {
         }
 
         private fun updateSettings(user: User): Observable<Notification<User>> {
-            return this.client.updateUserSettings(user)
+            return requireNotNull(this.client).updateUserSettings(user)
                 .materialize()
                 .share()
         }

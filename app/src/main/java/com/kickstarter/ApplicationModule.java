@@ -146,7 +146,13 @@ public class ApplicationModule {
     final @NonNull WebClientType webClient,
     final @NonNull @WebEndpoint String webEndpoint) {
 
-    return Environment.builder()
+    return Environment.builder(
+
+             apolloClient,
+          ksCurrency,
+           ksString,
+            currentConfig,
+             currentUser)
       .activitySamplePreference(activitySamplePreference)
       .apiClient(apiClient)
       .apolloClient(apolloClient)

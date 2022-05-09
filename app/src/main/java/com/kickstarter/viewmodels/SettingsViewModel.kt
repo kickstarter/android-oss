@@ -2,12 +2,10 @@ package com.kickstarter.viewmodels
 
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.models.User
-import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.SettingsActivity
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -42,7 +40,7 @@ interface SettingsViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<SettingsActivity>(environment), Inputs, Outputs {
 
-        private val client: ApiClientType = environment.apiClient()
+        private val client = environment.apiClient()
         private val confirmLogoutClicked = PublishSubject.create<Void>()
         private val currentUser: CurrentUserType = environment.currentUser()
         private val logout = BehaviorSubject.create<Void>()
@@ -55,10 +53,10 @@ interface SettingsViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        private val analytics: AnalyticEvents = this.environment.analytics()
+        private val analytics = this.environment.analytics()
         init {
 
-            this.client.fetchCurrentUser()
+            requireNotNull(this.client).fetchCurrentUser()
                 .retry(2)
                 .compose(Transformers.neverError())
                 .compose(bindToLifecycle())
@@ -72,7 +70,7 @@ interface SettingsViewModel {
             this.confirmLogoutClicked
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.analytics.reset()
+                    this.analytics?.reset()
                     this.logout.onNext(null)
                 }
 

@@ -377,7 +377,7 @@ interface BackingFragmentViewModel {
             backing
                 .compose<Pair<Backing, Project>>(combineLatestPair(backedProject))
                 .compose(takePairWhen<Pair<Backing, Project>, Boolean>(this.receivedCheckboxToggled))
-                .switchMap { this.apiClient.postBacking(it.first.second, it.first.first, it.second).compose(neverError()) }
+                .switchMap { this.apiClient?.postBacking(it.first.second, it.first.first, it.second)?.compose(neverError()) }
                 .compose(bindToLifecycle())
                 .share()
                 .subscribe()

@@ -3,16 +3,13 @@ package com.kickstarter.viewmodels
 import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.ApiPaginator
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.rx.transformers.Transformers.neverError
 import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.libs.utils.extensions.isZero
 import com.kickstarter.models.Project
-import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.DiscoverEnvelope
 import com.kickstarter.ui.activities.ProfileActivity
@@ -84,9 +81,8 @@ interface ProfileViewModel {
     }
 
     class ViewModel(environment: Environment) : ActivityViewModel<ProfileActivity>(environment), ProfileAdapter.Delegate, Inputs, Outputs {
-        private val client: ApiClientType = environment.apiClient()
-        private val currentUser: CurrentUserType = environment.currentUser()
-        private val optimizely: ExperimentsClientType = environment.optimizely()
+        private val client = environment.apiClient()
+        private val currentUser = environment.currentUser()
 
         private val exploreProjectsButtonClicked = PublishSubject.create<Void>()
         private val messagesButtonClicked = PublishSubject.create<Void>()
@@ -112,7 +108,7 @@ interface ProfileViewModel {
 
         init {
 
-            val freshUser = this.client.fetchCurrentUser()
+            val freshUser = requireNotNull(this.client).fetchCurrentUser()
                 .retry(2)
                 .compose(neverError())
             freshUser.subscribe { this.currentUser.refresh(it) }
@@ -127,8 +123,8 @@ interface ProfileViewModel {
                 .nextPage(this.nextPage)
                 .envelopeToListOfData { it.projects() }
                 .envelopeToMoreUrl { env -> env.urls()?.api()?.moreProjects() }
-                .loadWithParams { this.client.fetchProjects(params).compose(neverError()) }
-                .loadWithPaginationPath { this.client.fetchProjects(it).compose(neverError()) }
+                .loadWithParams { requireNotNull(this.client).fetchProjects(params).compose(neverError()) }
+                .loadWithPaginationPath { requireNotNull(this.client).fetchProjects(it).compose(neverError()) }
                 .build()
 
             paginator.isFetching

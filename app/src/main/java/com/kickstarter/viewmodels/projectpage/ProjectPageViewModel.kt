@@ -1,17 +1,13 @@
 package com.kickstarter.viewmodels.projectpage
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.ExperimentsClientType
-import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.OptimizelyExperiment
@@ -59,7 +55,6 @@ import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
-import java.net.CookieManager
 import java.util.concurrent.TimeUnit
 
 interface ProjectPageViewModel {
@@ -257,11 +252,11 @@ interface ProjectPageViewModel {
         Inputs,
         Outputs {
 
-        private val cookieManager: CookieManager = environment.cookieManager()
-        private val currentUser: CurrentUserType = environment.currentUser()
-        private val ksCurrency: KSCurrency = environment.ksCurrency()
-        private val optimizely: ExperimentsClientType = environment.optimizely()
-        private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
+        private val cookieManager = environment.cookieManager()
+        private val currentUser = environment.currentUser()
+        private val ksCurrency = environment.ksCurrency()
+        private val optimizely = environment.optimizely()
+        private val sharedPreferences = environment.sharedPreferences()
         private val apolloClient = environment.apolloClient()
         private val currentConfig = environment.currentConfig()
 
@@ -396,7 +391,7 @@ interface ProjectPageViewModel {
             // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
             val cookieRefTag = initialProject
                 .take(1)
-                .map { p -> RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences) }
+                .map { p -> RefTagUtils.storedCookieRefTagForProject(p, requireNotNull(this.cookieManager), requireNotNull(this.sharedPreferences)) }
 
             val refTag = intent()
                 .flatMap { ProjectIntentMapper.refTag(it) }
@@ -530,7 +525,7 @@ interface ProjectPageViewModel {
                 .subscribe {
                     this.projectData.onNext(it)
                     val showEnvironmentalTab = it.project().envCommitments()?.isNotEmpty() ?: false
-                    val showCampaignTab = this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_STORY_TAB)
+                    val showCampaignTab = this.optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_STORY_TAB)
                     this.updateTabs.onNext(Pair(showCampaignTab, showEnvironmentalTab))
                 }
 
@@ -802,7 +797,7 @@ interface ProjectPageViewModel {
                 ProjectViewUtils.pledgeActionButtonText(
                     data.project(),
                     user,
-                    this.optimizely.variant(OptimizelyExperiment.Key.PLEDGE_CTA_COPY, experimentData)
+                    this.optimizely?.variant(OptimizelyExperiment.Key.PLEDGE_CTA_COPY, experimentData)
                 )
             }
                 .distinctUntilChanged()
@@ -882,7 +877,7 @@ interface ProjectPageViewModel {
                     val pledgeFlowContext = projectDataAndPledgeFlowContext.second
                     // If a cookie hasn't been set for this ref+project then do so.
                     if (data.refTagFromCookie() == null) {
-                        data.refTagFromIntent()?.let { RefTagUtils.storeCookie(it, data.project(), this.cookieManager, this.sharedPreferences) }
+                        data.refTagFromIntent()?.let { RefTagUtils.storeCookie(it, data.project(), requireNotNull(this.cookieManager), requireNotNull(this.sharedPreferences)) }
                     }
 
                     val dataWithStoredCookieRefTag = storeCurrentCookieRefTag(data)
@@ -961,7 +956,7 @@ interface ProjectPageViewModel {
         private fun storeCurrentCookieRefTag(data: ProjectData): ProjectData {
             return data
                 .toBuilder()
-                .refTagFromCookie(RefTagUtils.storedCookieRefTagForProject(data.project(), cookieManager, sharedPreferences))
+                .refTagFromCookie(RefTagUtils.storedCookieRefTagForProject(data.project(), requireNotNull(this.cookieManager), requireNotNull(this.sharedPreferences)))
                 .build()
         }
 

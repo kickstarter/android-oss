@@ -23,7 +23,7 @@ class VideoElementViewHolder(
     val requireActivity: FragmentActivity
 ) : KSViewHolder(binding.root) {
 
-    private lateinit var build: Build
+    private var build: Build ? = null
 
     private val thumbnail = binding.thumbnail
     private val loadingIndicator = binding.loadingIndicator

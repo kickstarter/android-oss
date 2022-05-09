@@ -4,7 +4,6 @@ import UpdateUserPasswordMutation
 import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
@@ -66,7 +65,7 @@ interface ChangePasswordViewModel {
         val outputs: ChangePasswordViewModel.Outputs = this
 
         private val apolloClient: ApolloClientType = this.environment.apolloClient()
-        private val analytics: AnalyticEvents = this.environment.analytics()
+        private val analytics = this.environment.analytics()
 
         init {
 
@@ -103,7 +102,7 @@ interface ChangePasswordViewModel {
                 .compose(values())
                 .map { it.updateUserAccount()?.user()?.email() }
                 .subscribe {
-                    this.analytics.reset()
+                    this.analytics?.reset()
                     this.success.onNext(it)
                 }
         }

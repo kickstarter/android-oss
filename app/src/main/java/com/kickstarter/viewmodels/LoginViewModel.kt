@@ -11,7 +11,6 @@ import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isEmail
 import com.kickstarter.libs.utils.extensions.negate
-import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.IntentKey
@@ -89,7 +88,7 @@ interface LoginViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        private val client: ApiClientType = environment.apiClient()
+        private val client = environment.apiClient()
         private val currentUser: CurrentUserType = environment.currentUser()
 
         init {
@@ -121,7 +120,7 @@ interface LoginViewModel {
             emailAndPassword
                 .compose(takeWhen(this.logInButtonClicked))
                 .compose(bindToLifecycle())
-                .switchMap { ep -> this.client.login(ep.first, ep.second).materialize() }
+                .switchMap { ep -> requireNotNull(this.client).login(ep.first, ep.second).materialize() }
                 .share()
                 .subscribe {
                     this.logInButtonIsEnabled.onNext(true)

@@ -422,7 +422,7 @@ class PledgeFragment :
         this.viewModel.outputs.showSCAFlow()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { this.viewModel.environment.stripe().handleNextActionForSetupIntent(this, it) }
+            .subscribe { this.viewModel.environment.stripe()?.handleNextActionForSetupIntent(this, it) }
 
         this.viewModel.outputs.showPledgeError()
             .compose(bindToLifecycle())
@@ -700,7 +700,7 @@ class PledgeFragment :
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val stripe = this.viewModel.environment.stripe()
-        stripe.onSetupResult(
+        stripe?.onSetupResult(
             requestCode, data,
             object : ApiResultCallback<SetupIntentResult> {
                 override fun onSuccess(result: SetupIntentResult) {

@@ -55,7 +55,7 @@ interface CampaignDetailsViewModel {
                 .ofType(ProjectData::class.java)
 
             projectData
-                .map { it.storeCurrentCookieRefTag(cookieManager, sharedPreferences) }
+                .map { it.storeCurrentCookieRefTag(requireNotNull(cookieManager), requireNotNull(sharedPreferences)) }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.analyticEvents.trackProjectScreenViewed(it, ContextSectionName.CAMPAIGN.contextName)
@@ -65,7 +65,7 @@ interface CampaignDetailsViewModel {
                 .filter { it.project().isLive && !it.project().isBacking() }
                 .compose<Pair<ProjectData, User?>>(combineLatestPair(this.currentUser.observable()))
                 .map { ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()) }
-                .map { this.optimizely.variant(OptimizelyExperiment.Key.CAMPAIGN_DETAILS, it) }
+                .map { this.optimizely?.variant(OptimizelyExperiment.Key.CAMPAIGN_DETAILS, it) }
                 .map { it == OptimizelyExperiment.Variant.VARIANT_2 }
                 .compose(bindToLifecycle())
                 .subscribe(this.pledgeContainerIsVisible)

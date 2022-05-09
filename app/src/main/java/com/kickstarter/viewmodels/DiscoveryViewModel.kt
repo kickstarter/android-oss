@@ -5,11 +5,7 @@ import android.net.Uri
 import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.BuildCheck
-import com.kickstarter.libs.CurrentConfigType
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DiscoveryUtils
 import com.kickstarter.libs.utils.ObjectUtils
@@ -22,9 +18,7 @@ import com.kickstarter.libs.utils.extensions.isVerificationEmailUrl
 import com.kickstarter.libs.utils.extensions.positionFromSort
 import com.kickstarter.models.Category
 import com.kickstarter.models.User
-import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.DiscoveryParams
-import com.kickstarter.services.WebClientType
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope
 import com.kickstarter.ui.activities.DiscoveryActivity
@@ -116,13 +110,12 @@ interface DiscoveryViewModel {
         val inputs = this
         val outputs = this
 
-        private val apiClient: ApiClientType = environment.apiClient()
+        private val apiClient = environment.apiClient()
         private val apolloClient = environment.apolloClient()
-        private val buildCheck: BuildCheck = environment.buildCheck()
-        private val currentUserType: CurrentUserType = environment.currentUser()
-        private val currentConfigType: CurrentConfigType = environment.currentConfig()
-        private val firstSessionPreference: BooleanPreferenceType = environment.firstSessionPreference()
-        private val webClient: WebClientType = environment.webClient()
+        private val buildCheck = environment.buildCheck()
+        private val currentUserType = environment.currentUser()
+        private val currentConfigType = environment.currentConfig()
+        private val webClient = environment.webClient()
 
         private fun currentDrawerMenuIcon(user: User?): Int {
             if (ObjectUtils.isNull(user)) {
@@ -174,7 +167,7 @@ interface DiscoveryViewModel {
         private val messageError = PublishSubject.create<String?>()
 
         init {
-            buildCheck.bind(this, webClient)
+            buildCheck?.bind(this, requireNotNull(webClient))
             showActivityFeed = activityFeedClick
             showBuildCheckAlert = newerBuildIsAvailable
             showCreatorDashboard = creatorDashboardClick
@@ -193,7 +186,7 @@ interface DiscoveryViewModel {
             changedUser
                 .compose(bindToLifecycle())
                 .subscribe {
-                    apiClient.config()
+                    requireNotNull(apiClient).config()
                         .compose(Transformers.neverError())
                         .subscribe { currentConfigType.config(it) }
                 }
@@ -215,7 +208,7 @@ interface DiscoveryViewModel {
             val verification = uriFromVerification
                 .map { it.getTokenFromQueryParams() }
                 .filter { ObjectUtils.isNotNull(it) }
-                .switchMap { apiClient.verifyEmail(it) }
+                .switchMap { requireNotNull(apiClient).verifyEmail(it) }
                 .materialize()
                 .share()
                 .distinctUntilChanged()
@@ -235,7 +228,7 @@ interface DiscoveryViewModel {
                 .subscribe(messageError)
 
             val paramsFromIntent = intent()
-                .flatMap { DiscoveryIntentMapper.params(it, apiClient, apolloClient) }
+                .flatMap { DiscoveryIntentMapper.params(it, requireNotNull(apiClient), apolloClient) }
 
             val pagerSelectedPage = pagerSetPrimaryPage.distinctUntilChanged()
 

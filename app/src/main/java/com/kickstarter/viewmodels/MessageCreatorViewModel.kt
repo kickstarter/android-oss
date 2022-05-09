@@ -11,7 +11,6 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isPresent
 import com.kickstarter.models.MessageThread
 import com.kickstarter.models.Project
-import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.MessageCreatorActivity
@@ -60,7 +59,7 @@ interface MessageCreatorViewModel {
         private val showSentError = BehaviorSubject.create<Int>()
         private val showSentSuccess = BehaviorSubject.create<Int>()
 
-        private val apiClient: ApiClientType = environment.apiClient()
+        private val apiClient = environment.apiClient()
         private val apolloClient: ApolloClientType = environment.apolloClient()
 
         val inputs: Inputs = this
@@ -107,7 +106,7 @@ interface MessageCreatorViewModel {
         }
 
         private fun fetchThread(conversationId: Long): Observable<MessageThread> {
-            val fetchThreadNotification = this.apiClient.fetchMessagesForThread(conversationId)
+            val fetchThreadNotification = requireNotNull(this.apiClient).fetchMessagesForThread(conversationId)
                 .compose(bindToLifecycle())
                 .materialize()
                 .share()

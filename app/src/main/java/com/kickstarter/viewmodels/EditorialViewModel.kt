@@ -6,7 +6,6 @@ import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Category
-import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.EditorialActivity
@@ -56,7 +55,6 @@ interface EditorialViewModel {
         private val rootCategories: BehaviorSubject<List<Category>> = BehaviorSubject.create()
         private val title: BehaviorSubject<Int> = BehaviorSubject.create()
 
-        private val apiClient: ApiClientType = environment.apiClient()
         private val apolloClient = environment.apolloClient()
 
         val inputs: Inputs = this

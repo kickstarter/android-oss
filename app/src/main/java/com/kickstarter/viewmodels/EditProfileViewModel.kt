@@ -11,7 +11,6 @@ import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.models.User
-import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.EditProfileActivity
 import rx.Notification
 import rx.Observable
@@ -46,7 +45,7 @@ interface EditProfileViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<EditProfileActivity>(environment), Inputs, Outputs, Errors {
 
-        private val client: ApiClientType = environment.apiClient()
+        private val client = environment.apiClient()
         private val currentUser: CurrentUserType = environment.currentUser()
 
         private val userInput = PublishSubject.create<User>()
@@ -65,7 +64,7 @@ interface EditProfileViewModel {
 
             val currentUser = this.currentUser.observable()
 
-            this.client.fetchCurrentUser()
+            requireNotNull(this.client).fetchCurrentUser()
                 .retry(2)
                 .compose(Transformers.neverError())
                 .compose(bindToLifecycle())
@@ -138,7 +137,7 @@ interface EditProfileViewModel {
         }
 
         private fun updateSettings(user: User): Observable<Notification<User>>? {
-            return this.client.updateUserSettings(user)
+            return requireNotNull(this.client).updateUserSettings(user)
                 .materialize()
                 .share()
         }

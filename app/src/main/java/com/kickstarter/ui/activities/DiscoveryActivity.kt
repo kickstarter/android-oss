@@ -39,7 +39,7 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
     private lateinit var drawerAdapter: DiscoveryDrawerAdapter
     private lateinit var drawerLayoutManager: LinearLayoutManager
     private lateinit var pagerAdapter: DiscoveryPagerAdapter
-    private lateinit var internalTools: InternalToolsType
+    private var internalTools: InternalToolsType? = null
     private lateinit var binding: DiscoveryLayoutBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -122,7 +122,7 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
         viewModel.outputs.showInternalTools()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { internalTools.maybeStartInternalToolsActivity(this) }
+            .subscribe { internalTools?.maybeStartInternalToolsActivity(this) }
 
         viewModel.outputs.showLoginTout()
             .compose(bindToLifecycle())

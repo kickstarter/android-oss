@@ -227,9 +227,9 @@ class BackingAddOnViewHolderViewModel {
             addOn
                 .filter { !RewardUtils.isShippable(it) }
                 .map {
-                    RewardUtils.isLocalPickup(it) && optimizely.isFeatureEnabled(
+                    RewardUtils.isLocalPickup(it) && optimizely?.isFeatureEnabled(
                         OptimizelyFeature.Key.ANDROID_LOCAL_PICKUP
-                    )
+                    ) == true
                 }
                 .compose(bindToLifecycle())
                 .subscribe {

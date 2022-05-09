@@ -95,7 +95,7 @@ interface NewsletterViewModel {
 
         init {
 
-            this.client.fetchCurrentUser()
+            requireNotNull(this.client).fetchCurrentUser()
                 .retry(2)
                 .compose(Transformers.neverError())
                 .compose(bindToLifecycle())
@@ -243,7 +243,7 @@ interface NewsletterViewModel {
         }
 
         private fun updateSettings(user: User): Observable<Notification<User>> {
-            return this.client.updateUserSettings(user)
+            return requireNotNull(this.client).updateUserSettings(user)
                 .materialize()
                 .share()
         }

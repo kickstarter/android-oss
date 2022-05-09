@@ -7,7 +7,6 @@ import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
@@ -80,7 +79,6 @@ interface DeepLinkViewModel {
         private val currentUser = environment.currentUser()
         private val webEndpoint = environment.webEndpoint()
         private val projectObservable: Observable<Project>
-        private val optimizely: ExperimentsClientType = environment.optimizely()
 
         val outputs: Outputs = this
 
@@ -189,7 +187,7 @@ interface DeepLinkViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .compose(Transformers.combineLatestPair(updateUserPreferences))
                 .switchMap { it: Pair<User, Boolean?> ->
-                    updateSettings(it.first, apiClientType)
+                    updateSettings(it.first, requireNotNull(apiClientType))
                 }
                 .compose(Transformers.values())
                 .distinctUntilChanged()
@@ -224,10 +222,10 @@ interface DeepLinkViewModel {
                 .filter { it.canUpdateFulfillment() }
                 .switchMap {
                     postBacking(it)
-                        .doOnError {
+                        ?.doOnError {
                             finishDeeplinkActivity.onNext(null)
                         }
-                        .distinctUntilChanged()
+                        ?.distinctUntilChanged()
                 }
                 .compose(bindToLifecycle())
                 .subscribe {
@@ -268,9 +266,9 @@ interface DeepLinkViewModel {
         }
 
         private fun postBacking(it: Project) =
-            apiClientType.postBacking(it, requireNotNull(it.backing()), true)
-                .compose(Transformers.neverError())
-                .distinctUntilChanged()
+            apiClientType?.postBacking(it, requireNotNull(it.backing()), true)
+                ?.compose(Transformers.neverError())
+                ?.distinctUntilChanged()
 
         private fun getProject(it: String) = apolloClient.getProject(it)
             .materialize()

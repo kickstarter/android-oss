@@ -55,8 +55,8 @@ interface SearchViewModel {
         Inputs,
         Outputs {
         private val discoverEnvelope = PublishSubject.create<DiscoverEnvelope>()
-        private val sharedPreferences: SharedPreferences
-        private val cookieManager: CookieManager
+        private val sharedPreferences: SharedPreferences?
+        private val cookieManager: CookieManager?
 
         /**
          * Returns a project and its appropriate ref tag given its location in a list of popular projects or search results.
@@ -169,10 +169,10 @@ interface SearchViewModel {
                     )
                 }
                 .loadWithParams {
-                    apiClient.fetchProjects(it)
+                    requireNotNull(apiClient).fetchProjects(it)
                 }
                 .loadWithPaginationPath {
-                    apiClient.fetchProjects(it)
+                    requireNotNull(apiClient).fetchProjects(it)
                 }
                 .build()
 
@@ -210,8 +210,8 @@ interface SearchViewModel {
                     )
                     val cookieRefTag = RefTagUtils.storedCookieRefTagForProject(
                         projectDiscoveryParamsPair.first.second,
-                        cookieManager,
-                        sharedPreferences
+                        requireNotNull(cookieManager),
+                        requireNotNull(sharedPreferences)
                     )
                     val projectData = builder()
                         .refTagFromIntent(refTag.second)

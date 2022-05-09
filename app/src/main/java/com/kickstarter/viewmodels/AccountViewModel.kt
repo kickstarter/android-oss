@@ -9,7 +9,6 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.activities.AccountActivity
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -62,7 +61,7 @@ interface AccountViewModel {
 
         private val error = BehaviorSubject.create<String>()
 
-        private val apolloClient: ApolloClientType = environment.apolloClient()
+        private val apolloClient = environment.apolloClient()
 
         init {
 

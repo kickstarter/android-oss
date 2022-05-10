@@ -598,6 +598,7 @@
       "reward_amount_plus_shipping_cost_each": "%{reward_amount} + %{shipping_cost} shipping each",
       "Reward_delivered": "Reward delivered?",
       "Reward_estimated_for_delivery_in_date": "<b>Reward</b> estimated for delivery in %{delivery_date}",
+      "Reward_location": "Reward location",
       "Reward_received": "Reward received",
       "Reward_surveys": "Reward surveys",
       "Rewards_arent_guaranteed": "Rewards aren't guaranteed.",
@@ -3030,6 +3031,7 @@
       "reward_amount_plus_shipping_cost_each": "Jeweils %{reward_amount} + %{shipping_cost} Versandkosten",
       "Reward_delivered": "Belohnung versandt?",
       "Reward_estimated_for_delivery_in_date": "Voraussichtliche Lieferung der <b>Belohnung</b> im %{delivery_date}",
+      "Reward_location": "Standort der Belohnung",
       "Reward_received": "Belohnung erhalten",
       "Reward_surveys": "Befragungen",
       "Rewards_arent_guaranteed": "Es gibt keine Garantie für die Erfüllung der Belohnungen.",
@@ -3432,7 +3434,7 @@
             "funded": "finanziert",
             "pledged_of_goal": "von %{goal}",
             "pledged_of_goal_short": "von %{goal}",
-            "convert_from_pledged_of_goal": "Umgerechneter Betrag: %{pledged} von %{goal} (Fianzierungsziel)."
+            "convert_from_pledged_of_goal": "Umgerechneter Betrag: %{pledged} von %{goal} (Finanzierungsziel)."
           },
           "time_left_to_go": "%{time_left} zum Ziel",
           "deadline_units": {
@@ -4862,8 +4864,7 @@
         "message": "Du scheinst eine sehr alte Version der App zu benutzen. Um fortzufahren, installiere bitte die neueste Version aus dem App Store.",
         "cancel": "Abbrechen",
         "upgrade": "Aktualisierung"
-      },
-      "Environmental_Commitments": "Verpflichtung zum Umweltschutz"
+      }
     },
     "es": {
       "A_little_extra_to_help": "Algo extra para ayudar a que este proyecto se pueda realizar.",
@@ -5463,6 +5464,7 @@
       "reward_amount_plus_shipping_cost_each": "%{reward_amount} + %{shipping_cost} de envío cada una",
       "Reward_delivered": "¿Recompensa entregada?",
       "Reward_estimated_for_delivery_in_date": "<b>Recompensa</b> estimada para entregarse en %{delivery_date}",
+      "Reward_location": "Lugar de la recompensa",
       "Reward_received": "Recompensa recibida",
       "Reward_surveys": "Cuestionarios sobre recompensas",
       "Rewards_arent_guaranteed": "Las recompensas no están garantizadas.",
@@ -7295,8 +7297,7 @@
         "message": "Parece que estás usando una versión muy antigua de esta aplicación. Por favor descarga la última versión en la App Store para continuar usándola.",
         "cancel": "Cancelar",
         "upgrade": "Actualizar"
-      },
-      "Environmental_Commitments": "Compromisos medioambientales"
+      }
     },
     "fr": {
       "A_little_extra_to_help": "Du soutien supplémentaire pour faire vivre ce projet.",
@@ -7896,6 +7897,7 @@
       "reward_amount_plus_shipping_cost_each": "%{reward_amount} + %{shipping_cost} de frais de port par unité",
       "Reward_delivered": "Récompense livrée ?",
       "Reward_estimated_for_delivery_in_date": "<b>Récompense</b> prévue pour %{delivery_date}",
+      "Reward_location": "Lieu de la récompense",
       "Reward_received": "Récompense reçue",
       "Reward_surveys": "Questionnaires des récompenses",
       "Rewards_arent_guaranteed": "Les récompenses ne font pas l'objet d'une garantie de livraison.",
@@ -9728,8 +9730,7 @@
         "message": "On dirait que vous utilisez une ancienne version de l'application. Veuillez la mettre à jour depuis l'App Store pour continuer à l'utiliser.",
         "cancel": "Annuler",
         "upgrade": "Mise à jour"
-      },
-      "Environmental_Commitments": "Engagements pour l'environnement"
+      }
     },
     "it": {
       "A_little_extra_to_help": "A little extra to help bring this project to life.",
@@ -10329,6 +10330,7 @@
       "reward_amount_plus_shipping_cost_each": "%{reward_amount} + %{shipping_cost} shipping each",
       "Reward_delivered": "Reward delivered?",
       "Reward_estimated_for_delivery_in_date": "<b>Reward</b> estimated for delivery in %{delivery_date}",
+      "Reward_location": "Reward location",
       "Reward_received": "Reward received",
       "Reward_surveys": "Reward surveys",
       "Rewards_arent_guaranteed": "Rewards aren't guaranteed.",
@@ -12761,6 +12763,7 @@
       "reward_amount_plus_shipping_cost_each": "%{reward_amount} + 送料各 %{shipping_cost} ",
       "Reward_delivered": "リワードを受け取りましたか？",
       "Reward_estimated_for_delivery_in_date": "<b>リワード</b>の配達予定日は%{delivery_date}",
+      "Reward_location": "リワードの場所",
       "Reward_received": "リワードを受け取りました",
       "Reward_surveys": "リワードのサーベイ",
       "Rewards_arent_guaranteed": "リワードは保証されていません。",
@@ -14593,8 +14596,7 @@
         "message": "引き続き利用するにはApp Storeからアプリのバージョンを更新してください。",
         "cancel": "キャンセル",
         "upgrade": "アップグレード"
-      },
-      "Environmental_Commitments": "環境への取り組み"
+      }
     },
     "zh": {
       "A_little_extra_to_help": "A little extra to help bring this project to life.",
@@ -15194,6 +15196,7 @@
       "reward_amount_plus_shipping_cost_each": "%{reward_amount} + %{shipping_cost} shipping each",
       "Reward_delivered": "Reward delivered?",
       "Reward_estimated_for_delivery_in_date": "<b>Reward</b> estimated for delivery in %{delivery_date}",
+      "Reward_location": "Reward location",
       "Reward_received": "Reward received",
       "Reward_surveys": "Reward surveys",
       "Rewards_arent_guaranteed": "Rewards aren't guaranteed.",
@@ -17776,6 +17779,6 @@
       ]
     }
   },
-  "country_code": "EG",
+  "country_code": "US",
   "locale": "en"
 }

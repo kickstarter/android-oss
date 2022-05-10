@@ -19,7 +19,7 @@
         android:textColor="@color/kds_support_700"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/FPO_reward_location"
+        android:text="@string/Reward_location"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

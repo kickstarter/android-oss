@@ -1,12 +1,8 @@
 package com.kickstarter.services.apiresponses
 
-import com.kickstarter.libs.qualifiers.AutoGson
-import auto.parcel.AutoParcel
 import android.os.Parcelable
 import com.kickstarter.libs.ReferrerType
-import com.kickstarter.models.Photo
-import com.kickstarter.models.Project
-import java.util.*
+import java.util.Locale
 import kotlinx.parcelize.Parcelize
 import org.joda.time.DateTime
 
@@ -34,12 +30,12 @@ class ProjectStatsEnvelope private constructor(
         private var referralDistribution: List<ReferrerStats> = emptyList(),
         private var rewardDistribution: List<RewardStats> = emptyList(),
         private var videoStats: VideoStats? = null
-    ) {
-        fun cumulativeStats(cumulativeStats: CumulativeStats?) = apply { this.cumulativeStats = cumulativeStats }
-        fun fundingDistribution(fundingDistribution: List<FundingDateStats>?) = apply { this.fundingDistribution = fundingDistribution }
-        fun referralAggregates(referralAggregates: ReferralAggregateStats?) = apply { this.referralAggregates = referralAggregates }
-        fun referralDistribution(referralDistribution: List<ReferrerStats>?) = apply { this.referralDistribution = referralDistribution }
-        fun rewardDistribution(rewardDistribution: List<RewardStats>?) = apply { this.rewardDistribution = rewardDistribution }
+    ) : Parcelable {
+        fun cumulative(cumulativeStats: CumulativeStats?) = apply { cumulativeStats?.let { this.cumulativeStats = cumulativeStats } }
+        fun fundingDistribution(fundingDistribution: List<FundingDateStats>?) = apply { fundingDistribution?.let { this.fundingDistribution = fundingDistribution } }
+        fun referralAggregates(referralAggregates: ReferralAggregateStats?) = apply { referralAggregates?.let { this.referralAggregates = referralAggregates } }
+        fun referralDistribution(referralDistribution: List<ReferrerStats>?) = apply { referralDistribution?.let { this.referralDistribution = referralDistribution } }
+        fun rewardDistribution(rewardDistribution: List<RewardStats>?) = apply { rewardDistribution?.let { this.rewardDistribution = rewardDistribution } }
         fun videoStats(videoStats: VideoStats?) = apply { this.videoStats = videoStats }
         fun build() = ProjectStatsEnvelope(
             cumulativeStats = cumulativeStats,
@@ -63,7 +59,7 @@ class ProjectStatsEnvelope private constructor(
     override fun equals(other: Any?): Boolean {
         var equals = super.equals(other)
         if (other is ProjectStatsEnvelope) {
-            equals = cumulativeStats() == other.cumulativeStats() &&
+            equals = cumulative() == other.cumulative() &&
                     fundingDistribution() == other.fundingDistribution() &&
                     referralAggregates() == other.referralAggregates() &&
                     referralDistribution() == other.referralDistribution() &&
@@ -75,7 +71,7 @@ class ProjectStatsEnvelope private constructor(
 
     companion object {
         @JvmStatic
-        fun builder() = CumulativeStats.Builder()
+        fun builder() = Builder()
     }
 
     @Parcelize
@@ -215,7 +211,7 @@ class ProjectStatsEnvelope private constructor(
         @Parcelize
         data class Builder(
             private var custom: Float = 0f,
-            private var external: Float = 0f,,
+            private var external: Float = 0f,
             private var internal: Float = 0f
         ) : Parcelable {
             fun custom(custom: Float?) = apply { this.custom = custom ?: 0f }
@@ -335,63 +331,114 @@ class ProjectStatsEnvelope private constructor(
 
     @Parcelize
     class RewardStats private constructor(
-        
+        private val backersCount: Int,
+        private val rewardId: Int,
+        private val minimum: Int,
+        private val pledged: Float
     ) : Parcelable {
-        abstract fun backersCount(): Int
-        abstract fun rewardId(): Int
-        abstract fun minimum(): Int
-        abstract fun pledged(): Float
+        fun backersCount() = this.backersCount
+        fun rewardId() = this.rewardId
+        fun minimum() = this.minimum
+        fun pledged() = this.pledged
 
-        @AutoParcel.Builder
-        abstract class Builder {
-            abstract fun backersCount(__: Int): Builder?
-            abstract fun rewardId(__: Int): Builder?
-            abstract fun minimum(__: Int): Builder?
-            abstract fun pledged(__: Float): Builder?
-            abstract fun build(): RewardStats?
+        @Parcelize
+        data class Builder(
+            private var backersCount: Int = 0,
+            private var rewardId: Int = 0,
+            private var minimum: Int = 0,
+            private var pledged: Float = 0f
+        ) : Parcelable {
+            fun backersCount(backersCount: Int?) = apply { this.backersCount = backersCount ?: 0 }
+            fun rewardId(rewardId: Int?) = apply { this.rewardId = rewardId ?: 0 }
+            fun minimum(minimum: Int?) = apply { this.minimum = minimum ?: 0 }
+            fun pledged(pledged: Float?) = apply { this.pledged = pledged ?: 0f }
+            fun build() = RewardStats(
+                backersCount = backersCount,
+                rewardId = rewardId,
+                minimum = minimum,
+                pledged = pledged
+            )
         }
 
-        abstract fun toBuilder(): Builder?
+        fun toBuilder() = Builder(
+            backersCount = backersCount,
+            rewardId = rewardId,
+            minimum = minimum,
+            pledged = pledged
+        )
 
         companion object {
             @JvmStatic
             fun builder(): Builder {
-                return AutoParcel_ProjectStatsEnvelope_RewardStats.Builder()
+                return Builder()
             }
+        }
+
+        override fun equals(other: Any?): Boolean {
+            var equals = super.equals(other)
+            if (other is RewardStats) {
+                equals = backersCount() == other.backersCount() &&
+                        rewardId() == other.rewardId() &&
+                        minimum() == other.minimum() &&
+                        pledged() == other.pledged()
+            }
+            return equals
         }
     }
 
-    @AutoParcel
-    @AutoGson
-    abstract class VideoStats : Parcelable {
-        abstract fun externalCompletions(): Int
-        abstract fun externalStarts(): Int
-        abstract fun internalCompletions(): Int
-        abstract fun internalStarts(): Int
-
-        @AutoParcel.Builder
-        abstract class Builder {
-            abstract fun externalCompletions(__: Int): Builder?
-            abstract fun externalStarts(__: Int): Builder?
-            abstract fun internalCompletions(__: Int): Builder?
-            abstract fun internalStarts(__: Int): Builder?
-            abstract fun build(): VideoStats?
+    @Parcelize
+    class VideoStats internal constructor(
+        private val externalCompletions: Int,
+        private val externalStarts: Int,
+        private val internalCompletions: Int,
+        private val internalStarts: Int,
+    ) : Parcelable {
+        fun externalCompletions() = this.externalCompletions
+        fun externalStarts() = this.externalStarts
+        fun internalCompletions() = this.internalCompletions
+        fun internalStarts() = this.internalStarts
+        @Parcelize
+        data class Builder(
+            private var externalCompletions: Int = 0,
+            private var externalStarts: Int = 0,
+            private var internalCompletions: Int = 0,
+            private var internalStarts: Int = 0,
+        ) : Parcelable {
+            fun externalCompletions(externalCompletions: Int?) = apply { this.externalCompletions = externalCompletions ?: 0 }
+            fun externalStarts(externalStarts: Int?) = apply { this.externalStarts = externalStarts ?: 0 }
+            fun internalCompletions(internalCompletions: Int?) = apply { this.internalCompletions = internalCompletions ?: 0 }
+            fun internalStarts(internalStarts: Int?) = apply { this.internalStarts = internalStarts ?: 0 }
+            fun build() = VideoStats(
+                externalCompletions = externalCompletions,
+                externalStarts = externalStarts,
+                internalCompletions = internalCompletions,
+                internalStarts = internalStarts
+            )
         }
 
-        abstract fun toBuilder(): Builder?
+        fun toBuilder() = Builder(
+            externalCompletions = externalCompletions,
+            externalStarts = externalStarts,
+            internalCompletions = internalCompletions,
+            internalStarts = internalStarts
+        )
 
         companion object {
             @JvmStatic
             fun builder(): Builder {
-                return AutoParcel_ProjectStatsEnvelope_VideoStats.Builder()
+                return Builder()
             }
         }
-    }
 
-    companion object {
-        @JvmStatic
-        fun builder(): Builder {
-            return AutoParcel_ProjectStatsEnvelope.Builder()
+        override fun equals(other: Any?): Boolean {
+            var equals = super.equals(other)
+            if (other is VideoStats) {
+                equals = externalCompletions() == other.externalCompletions() &&
+                        externalStarts() == other.externalStarts() &&
+                        internalCompletions() == other.internalCompletions() &&
+                        internalStarts() == other.internalStarts()
+            }
+            return equals
         }
     }
 }

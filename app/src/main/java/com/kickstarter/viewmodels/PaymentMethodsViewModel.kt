@@ -61,7 +61,7 @@ interface PaymentMethodsViewModel {
         private val showDeleteCardDialog = BehaviorSubject.create<Void>()
         private val success = BehaviorSubject.create<String>()
 
-        private val client = environment.apolloClient()
+        private val apolloClient = environment.apolloClient()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -124,7 +124,7 @@ interface PaymentMethodsViewModel {
         override fun success(): Observable<String> = this.success
 
         private fun getListOfStoredCards(): Observable<List<StoredCard>> {
-            return this.client.getStoredCards()
+            return requireNotNull(this.apolloClient).getStoredCards()
                 .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
                 .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
                 .compose(bindToLifecycle())
@@ -132,7 +132,7 @@ interface PaymentMethodsViewModel {
         }
 
         private fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
-            return this.client.deletePaymentSource(paymentSourceId)
+            return requireNotNull(this.apolloClient).deletePaymentSource(paymentSourceId)
                 .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
                 .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
         }

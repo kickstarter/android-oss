@@ -477,7 +477,7 @@ interface PledgeFragmentViewModel {
             val shippingRules = this.selectedReward
                 .filter { RewardUtils.isShippable(it) }
                 .switchMap {
-                    this.apolloClient.getShippingRules(it).compose(neverError())
+                    requireNotNull(this.apolloClient).getShippingRules(it).compose(neverError())
                 }
                 .map { it.shippingRules() }
                 .distinctUntilChanged()
@@ -1272,7 +1272,7 @@ interface PledgeFragmentViewModel {
             }
                 .compose<CreateBackingData>(takeWhen(pledgeButtonClicked))
                 .switchMap {
-                    this.apolloClient.createBacking(it)
+                    requireNotNull(this.apolloClient).createBacking(it)
                         .doOnSubscribe {
                             this.pledgeProgressIsGone.onNext(false)
                             this.pledgeButtonIsEnabled.onNext(false)
@@ -1312,7 +1312,7 @@ interface PledgeFragmentViewModel {
             ) { b, a, l, r, p -> UpdateBackingData(b, a, l, r, p) }
                 .compose<UpdateBackingData>(takeWhen(Observable.merge(updatePledgeClick, updatePaymentClick, fixPaymentClick)))
                 .switchMap {
-                    this.apolloClient.updateBacking(it)
+                    requireNotNull(this.apolloClient).updateBacking(it)
                         .doOnSubscribe {
                             this.pledgeProgressIsGone.onNext(false)
                             this.pledgeButtonIsEnabled.onNext(false)
@@ -1725,7 +1725,7 @@ interface PledgeFragmentViewModel {
                 pledgeFlowContext == PledgeFlowContext.FIX_ERRORED_PLEDGE
 
         private fun storedCards(): Observable<List<StoredCard>> {
-            return this.apolloClient.getStoredCards()
+            return requireNotNull(this.apolloClient).getStoredCards()
                 .compose(bindToLifecycle())
                 .compose(neverError())
         }

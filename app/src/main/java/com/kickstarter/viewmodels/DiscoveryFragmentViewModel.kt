@@ -22,7 +22,6 @@ import com.kickstarter.models.Activity
 import com.kickstarter.models.Category
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
-import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.DiscoverEnvelope
 import com.kickstarter.ui.adapters.DiscoveryActivitySampleAdapter
@@ -118,7 +117,7 @@ interface DiscoveryFragmentViewModel {
         Inputs,
         Outputs {
         private val apiClient = environment.apiClient()
-        private val apolloClient: ApolloClientType = environment.apolloClient()
+        private val apolloClient = environment.apolloClient()
         private val activitySamplePreference = environment.activitySamplePreference()
         private val optimizely = environment.optimizely()
         private val sharedPreferences = environment.sharedPreferences()
@@ -467,7 +466,7 @@ interface DiscoveryFragmentViewModel {
          * @return Observable<DiscoverEnvelope>
          </DiscoverEnvelope> */
         private fun makeCallWithParams(discoveryParamsStringPair: Pair<DiscoveryParams, String?>): Observable<DiscoverEnvelope> {
-            return apolloClient.getProjects(
+            return requireNotNull(apolloClient).getProjects(
                 discoveryParamsStringPair.first,
                 discoveryParamsStringPair.second
             ).compose(Transformers.neverError())
@@ -507,12 +506,12 @@ interface DiscoveryFragmentViewModel {
         }
 
         private fun saveProject(project: Project): Observable<Project> {
-            return this.apolloClient.watchProject(project)
+            return requireNotNull(this.apolloClient).watchProject(project)
                 .compose(Transformers.neverError())
         }
 
         private fun unSaveProject(project: Project): Observable<Project> {
-            return this.apolloClient.unWatchProject(project).compose(Transformers.neverError())
+            return requireNotNull(this.apolloClient).unWatchProject(project).compose(Transformers.neverError())
         }
 
         private fun toggleProjectSave(project: Project): Observable<Project> {

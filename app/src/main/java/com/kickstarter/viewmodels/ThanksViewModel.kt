@@ -112,7 +112,7 @@ interface ThanksViewModel {
 
             val rootCategory = project
                 .switchMap {
-                    rootCategory(it, apolloClient)
+                    rootCategory(it, requireNotNull(apolloClient))
                 }
                 .compose(Transformers.neverError())
                 .filter {
@@ -369,12 +369,12 @@ interface ThanksViewModel {
         override fun showSavedPrompt(): Observable<Void> = this.showSavedPrompt
 
         private fun saveProject(project: Project): Observable<Project> {
-            return this.apolloClient.watchProject(project)
+            return requireNotNull(this.apolloClient).watchProject(project)
                 .compose(Transformers.neverError())
         }
 
         private fun unSaveProject(project: Project): Observable<Project> {
-            return this.apolloClient.unWatchProject(project).compose(Transformers.neverError())
+            return requireNotNull(this.apolloClient).unWatchProject(project).compose(Transformers.neverError())
         }
 
         private fun toggleProjectSave(project: Project): Observable<Project> {

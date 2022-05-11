@@ -11,7 +11,6 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isPresent
 import com.kickstarter.models.MessageThread
 import com.kickstarter.models.Project
-import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.MessageCreatorActivity
 import rx.Observable
@@ -60,7 +59,7 @@ interface MessageCreatorViewModel {
         private val showSentSuccess = BehaviorSubject.create<Int>()
 
         private val apiClient = environment.apiClient()
-        private val apolloClient: ApolloClientType = environment.apolloClient()
+        private val apolloClient = environment.apolloClient()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -122,7 +121,7 @@ interface MessageCreatorViewModel {
         }
 
         private fun sendMessage(sendMessage: SendMessage): Observable<Long> {
-            return this.apolloClient.sendMessage(sendMessage.project, sendMessage.project.creator(), sendMessage.body)
+            return requireNotNull(this.apolloClient).sendMessage(sendMessage.project, sendMessage.project.creator(), sendMessage.body)
                 .doOnSubscribe {
                     this.progressBarIsVisible.onNext(true)
                     this.sendButtonIsEnabled.onNext(false)

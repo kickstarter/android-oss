@@ -147,8 +147,6 @@ public class ApplicationModule {
     final @NonNull @WebEndpoint String webEndpoint) {
 
     return Environment.builder(
-
-             apolloClient,
           ksCurrency,
            ksString,
             currentConfig,

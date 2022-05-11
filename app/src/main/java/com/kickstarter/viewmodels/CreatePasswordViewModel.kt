@@ -9,7 +9,6 @@ import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.extensions.MINIMUM_PASSWORD_LENGTH
-import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.activities.CreatePasswordActivity
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -61,7 +60,7 @@ interface CreatePasswordViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        private val apolloClient: ApolloClientType = this.environment.apolloClient()
+        private val apolloClient = this.environment.apolloClient()
         private val analytics = this.environment.analytics()
 
         init {
@@ -103,7 +102,7 @@ interface CreatePasswordViewModel {
         }
 
         private fun submit(createPassword: CreatePasswordViewModel.ViewModel.CreatePassword): Observable<CreatePasswordMutation.Data> {
-            return this.apolloClient.createPassword(createPassword.newPassword, createPassword.confirmPassword)
+            return requireNotNull(this.apolloClient).createPassword(createPassword.newPassword, createPassword.confirmPassword)
                 .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
                 .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
         }

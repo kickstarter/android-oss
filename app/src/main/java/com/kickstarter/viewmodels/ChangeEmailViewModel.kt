@@ -14,7 +14,6 @@ import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.extensions.isEmail
 import com.kickstarter.libs.utils.extensions.isValidPassword
-import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.activities.ChangeEmailActivity
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -94,11 +93,11 @@ interface ChangeEmailViewModel {
 
         private val error = BehaviorSubject.create<String>()
 
-        private val apolloClient: ApolloClientType = environment.apolloClient()
+        private val apolloClient = environment.apolloClient()
 
         init {
 
-            val userPrivacy = this.apolloClient.userPrivacy()
+            val userPrivacy = requireNotNull(this.apolloClient).userPrivacy()
                 .compose(neverError())
 
             userPrivacy
@@ -242,13 +241,13 @@ interface ChangeEmailViewModel {
         }
 
         private fun sendEmailVerification(): Observable<SendEmailVerificationMutation.Data> {
-            return this.apolloClient.sendVerificationEmail()
+            return requireNotNull(this.apolloClient).sendVerificationEmail()
                 .doOnSubscribe { this.showProgressBar.onNext(true) }
                 .doAfterTerminate { this.showProgressBar.onNext(false) }
         }
 
         private fun updateEmail(changeEmail: ChangeEmail): Observable<UpdateUserEmailMutation.Data> {
-            return this.apolloClient.updateUserEmail(changeEmail.email, changeEmail.password)
+            return requireNotNull(this.apolloClient).updateUserEmail(changeEmail.email, changeEmail.password)
                 .doOnSubscribe { this.showProgressBar.onNext(true) }
                 .doAfterTerminate { this.showProgressBar.onNext(false) }
         }

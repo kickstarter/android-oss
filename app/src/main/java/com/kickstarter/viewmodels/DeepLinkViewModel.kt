@@ -270,7 +270,7 @@ interface DeepLinkViewModel {
                 ?.compose(Transformers.neverError())
                 ?.distinctUntilChanged()
 
-        private fun getProject(it: String) = apolloClient.getProject(it)
+        private fun getProject(it: String) = requireNotNull(this.apolloClient).getProject(it)
             .materialize()
             .share()
             .distinctUntilChanged()

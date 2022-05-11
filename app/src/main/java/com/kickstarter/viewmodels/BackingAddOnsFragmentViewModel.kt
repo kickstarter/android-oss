@@ -227,7 +227,7 @@ class BackingAddOnsFragmentViewModel {
 
             Observable
                 .combineLatest(this.retryButtonPressed.startWith(false), reward) { _, rw ->
-                    return@combineLatest this.apolloClient
+                    return@combineLatest requireNotNull(this.apolloClient)
                         .getShippingRules(rw)
                         .doOnError {
                             this.showErrorDialog.onNext(true)
@@ -253,7 +253,7 @@ class BackingAddOnsFragmentViewModel {
 
                     val projectSlug = pj.slug() ?: ""
 
-                    return@combineLatest this.apolloClient
+                    return@combineLatest requireNotNull(this.apolloClient)
                         .getProjectAddOns(projectSlug, shipRuleLocation)
                         .doOnError {
                             this.showErrorDialog.onNext(true)

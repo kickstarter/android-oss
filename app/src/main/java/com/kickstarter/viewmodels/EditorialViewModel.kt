@@ -107,7 +107,7 @@ interface EditorialViewModel {
         }
 
         private fun fetchCategories(): Observable<Notification<List<Category>>>? {
-            return this.apolloClient.fetchCategories()
+            return requireNotNull(this.apolloClient).fetchCategories()
                 .doOnSubscribe { this.retryContainerIsGone.onNext(true) }
                 .materialize()
                 .share()

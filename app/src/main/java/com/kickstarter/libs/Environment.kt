@@ -15,7 +15,7 @@ import java.net.CookieManager
 class Environment private constructor(
     private val activitySamplePreference: IntPreferenceType?,
     private val apiClient: ApiClientType?,
-    private val apolloClient: ApolloClientType,
+    private val apolloClient: ApolloClientType?,
     private val build: Build?,
     private val buildCheck: BuildCheck?,
     private val cookieManager: CookieManager?,
@@ -37,7 +37,6 @@ class Environment private constructor(
     private val stripe: Stripe?,
     private val webClient: WebClientType?,
     private val webEndpoint: String
-
 ) {
     fun activitySamplePreference() = this.activitySamplePreference
     fun apiClient() = this.apiClient
@@ -67,7 +66,7 @@ class Environment private constructor(
     data class Builder(
         private var activitySamplePreference: IntPreferenceType? = null,
         private var apiClient: ApiClientType? = null,
-        private var apolloClient: ApolloClientType,
+        private var apolloClient: ApolloClientType? = null,
         private var build: Build? = null,
         private var buildCheck: BuildCheck? = null,
         private var cookieManager: CookieManager? = null,
@@ -173,15 +172,12 @@ class Environment private constructor(
     companion object {
         @JvmStatic
         fun builder(
-
-            apolloClient: ApolloClientType,
             ksCurrency: KSCurrency,
             ksString: KSString,
             currentConfig: CurrentConfigType,
             currentUser: CurrentUserType
         ): Builder {
             return Builder(
-                apolloClient = apolloClient,
                 ksCurrency = ksCurrency,
                 ksString = ksString,
                 currentConfig = currentConfig,

@@ -20,7 +20,6 @@ import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
-import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.projectpage.ProjectOverviewFragment
 import org.joda.time.DateTime
@@ -186,7 +185,7 @@ interface ProjectOverviewViewModel {
 
     class ViewModel(environment: Environment) : FragmentViewModel<ProjectOverviewFragment?>(environment), Inputs, Outputs {
 
-        private val apolloClient: ApolloClientType = environment.apolloClient()
+        private val apolloClient = environment.apolloClient()
         private val currentUser: CurrentUserType = environment.currentUser()
         private val ksCurrency: KSCurrency = environment.ksCurrency()
         private val optimizely = environment.optimizely()
@@ -530,7 +529,7 @@ interface ProjectOverviewViewModel {
                 .distinctUntilChanged()
                 .map { it.slug() }
                 .switchMap { slug ->
-                    apolloClient.creatorDetails(slug ?: "")
+                    requireNotNull(apolloClient).creatorDetails(slug ?: "")
                         .doOnSubscribe { creatorDetailsLoadingContainerIsVisible.onNext(true) }
                         .doAfterTerminate { creatorDetailsLoadingContainerIsVisible.onNext(false) }
                         .materialize()

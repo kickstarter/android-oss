@@ -337,7 +337,7 @@ interface ProjectPageViewModel {
                     .compose(takeWhen<Intent, Void>(this.reloadProjectContainerClicked))
             )
                 .switchMap {
-                    ProjectIntentMapper.project(it, this.apolloClient)
+                    ProjectIntentMapper.project(it, requireNotNull(this.apolloClient))
                         .doOnSubscribe {
                             progressBarIsGone.onNext(false)
                         }
@@ -449,7 +449,7 @@ interface ProjectPageViewModel {
                 .compose(takeWhen<Project, Void>(refreshProjectEvent))
                 .switchMap {
                     it.slug()?.let { slug ->
-                        this.apolloClient.getProject(slug)
+                        requireNotNull(this.apolloClient).getProject(slug)
                             .doOnSubscribe {
                                 progressBarIsGone.onNext(false)
                             }
@@ -1188,12 +1188,12 @@ interface ProjectPageViewModel {
         }
 
         private fun saveProject(project: Project): Observable<Project> {
-            return this.apolloClient.watchProject(project)
+            return requireNotNull(this.apolloClient).watchProject(project)
                 .compose(neverError())
         }
 
         private fun unSaveProject(project: Project): Observable<Project> {
-            return this.apolloClient.unWatchProject(project).compose(neverError())
+            return requireNotNull(this.apolloClient).unWatchProject(project).compose(neverError())
         }
 
         private fun toggleProjectSave(project: Project): Observable<Project> {

@@ -73,7 +73,7 @@ object DiscoveryIntentMapper {
         val categoryParam = params.categoryParam()
         if (categoryParam != null) {
             paramBuilders.add(
-                apolloClient.fetchCategory(categoryParam)
+                requireNotNull(apolloClient).fetchCategory(categoryParam)
                     .compose(Transformers.neverError())
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }

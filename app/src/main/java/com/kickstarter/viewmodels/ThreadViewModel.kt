@@ -16,7 +16,6 @@ import com.kickstarter.models.User
 import com.kickstarter.models.extensions.updateCanceledPledgeComment
 import com.kickstarter.models.extensions.updateCommentAfterSuccessfulPost
 import com.kickstarter.models.extensions.updateCommentFailedToPost
-import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ThreadActivity
@@ -73,7 +72,7 @@ interface ThreadViewModel {
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ThreadActivity>(environment), Inputs, Outputs {
-        private val apolloClient: ApolloClientType = environment.apolloClient()
+        private val apolloClient = environment.apolloClient()
         private val currentUser: CurrentUserType = environment.currentUser()
 
         private val nextPage = PublishSubject.create<Void>()
@@ -396,7 +395,7 @@ interface ThreadViewModel {
             cursor: String?
         ): Observable<CommentEnvelope> {
             return comment.switchMap {
-                return@switchMap this.apolloClient.getRepliesForComment(it, cursor)
+                return@switchMap requireNotNull(this.apolloClient).getRepliesForComment(it, cursor)
             }.doOnError {
                 this.internalError.onNext(it)
             }

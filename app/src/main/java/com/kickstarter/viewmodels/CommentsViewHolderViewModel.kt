@@ -377,7 +377,7 @@ interface CommentsViewHolderViewModel {
             postCommentData: PostCommentData,
             errorObservable: BehaviorSubject<Throwable>
         ) =
-            this.apolloClient.createComment(
+            requireNotNull(this.apolloClient).createComment(
                 postCommentData
             ).doOnError {
                 errorObservable.onNext(it)

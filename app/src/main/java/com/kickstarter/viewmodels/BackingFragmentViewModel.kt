@@ -471,7 +471,7 @@ interface BackingFragmentViewModel {
 
         private fun getBackingInfo(it: ProjectData): Observable<Backing> {
             return if (it.backing() == null) {
-                this.apolloClient.getProjectBacking(it.project().slug() ?: "")
+                requireNotNull(this.apolloClient).getProjectBacking(it.project().slug() ?: "")
             } else {
                 Observable.just(it.backing())
             }

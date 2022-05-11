@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.loadmore.ApolloPaginate
@@ -18,7 +17,6 @@ import com.kickstarter.models.extensions.cardStatus
 import com.kickstarter.models.extensions.updateCanceledPledgeComment
 import com.kickstarter.models.extensions.updateCommentAfterSuccessfulPost
 import com.kickstarter.models.extensions.updateCommentFailedToPost
-import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CommentsActivity
@@ -76,8 +74,8 @@ interface CommentsViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
 
-        private val currentUser: CurrentUserType = environment.currentUser()
-        private val apolloClient: ApolloClientType = environment.apolloClient()
+        private val currentUser = environment.currentUser()
+        private val apolloClient = environment.apolloClient()
         val inputs: Inputs = this
         val outputs: Outputs = this
         private val backPressed = PublishSubject.create<Void>()
@@ -157,7 +155,7 @@ interface CommentsViewModel {
             }.flatMap {
                 it?.either<Observable<Project?>>(
                     { value: Project? -> Observable.just(value) },
-                    { u: Update? -> apolloClient.getProject(u?.projectId().toString()).compose(Transformers.neverError()) }
+                    { u: Update? -> requireNotNull(apolloClient).getProject(u?.projectId().toString()).compose(Transformers.neverError()) }
                 )
             }.map {
                 requireNotNull(it)
@@ -222,7 +220,7 @@ interface CommentsViewModel {
             deepLinkCommentableId
                 .compose(takePairWhen(projectOrUpdateComment))
                 .switchMap {
-                    return@switchMap apolloClient.getComment(it.first)
+                    return@switchMap requireNotNull(apolloClient).getComment(it.first)
                 }.compose(Transformers.neverError())
                 .compose(combineLatestPair(deepLinkCommentableId))
                 .compose(combineLatestPair(commentableId))
@@ -485,9 +483,9 @@ interface CommentsViewModel {
         ): Observable<CommentEnvelope> {
             return projectOrUpdate.switchMap {
                 return@switchMap if (it.second?.id() != null) {
-                    apolloClient.getProjectUpdateComments(it.second?.id().toString(), cursor)
+                    requireNotNull(apolloClient).getProjectUpdateComments(it.second?.id().toString(), cursor)
                 } else {
-                    apolloClient.getProjectComments(it.first?.slug() ?: "", cursor)
+                    requireNotNull(apolloClient).getProjectComments(it.first?.slug() ?: "", cursor)
                 }
             }.doOnNext {
                 commentableId.onNext(it.commentableId)

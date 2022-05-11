@@ -215,7 +215,7 @@ interface NewCardFragmentViewModel {
                 .map { token -> token.card?.id?.let { Pair(token.id, it) } }
                 .compose<Pair<Pair<String, String>, Boolean>>(combineLatestPair(reusable))
                 .map { SavePaymentMethodData(stripeToken = it.first.first, stripeCardId = it.first.second, reusable = it.second) }
-                .switchMap { this.apolloClient.savePaymentMethod(it).materialize() }
+                .switchMap { requireNotNull(this.apolloClient).savePaymentMethod(it).materialize() }
                 .share()
 
             saveCardNotification

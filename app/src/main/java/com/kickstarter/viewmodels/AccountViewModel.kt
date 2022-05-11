@@ -65,7 +65,7 @@ interface AccountViewModel {
 
         init {
 
-            val userPrivacy = this.apolloClient.userPrivacy()
+            val userPrivacy = requireNotNull(requireNotNull(this.apolloClient)).userPrivacy()
                 .compose(Transformers.neverError())
 
             userPrivacy
@@ -141,7 +141,7 @@ interface AccountViewModel {
         }
 
         private fun updateUserCurrency(currencyCode: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {
-            return this.apolloClient.updateUserCurrencyPreference(currencyCode)
+            return requireNotNull(this.apolloClient).updateUserCurrencyPreference(currencyCode)
                 .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
                 .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
         }

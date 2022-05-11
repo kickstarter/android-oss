@@ -123,7 +123,7 @@ interface CancelPledgeViewModel {
         }
 
         private fun cancelBacking(note: String, backing: Backing): Observable<Notification<Any>> {
-            return this.apolloClient.cancelBacking(backing, note)
+            return requireNotNull(this.apolloClient).cancelBacking(backing, note)
                 .doOnSubscribe {
                     this.progressBarIsVisible.onNext(true)
                     this.cancelButtonIsVisible.onNext(false)

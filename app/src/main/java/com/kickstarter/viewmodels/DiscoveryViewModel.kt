@@ -228,7 +228,7 @@ interface DiscoveryViewModel {
                 .subscribe(messageError)
 
             val paramsFromIntent = intent()
-                .flatMap { DiscoveryIntentMapper.params(it, requireNotNull(apiClient), apolloClient) }
+                .flatMap { DiscoveryIntentMapper.params(it, requireNotNull(apiClient), requireNotNull(apolloClient)) }
 
             val pagerSelectedPage = pagerSetPrimaryPage.distinctUntilChanged()
 
@@ -283,7 +283,7 @@ interface DiscoveryViewModel {
                     analyticEvents.trackDiscoverFilterCTA(it)
                 }
 
-            val categories = apolloClient.fetchCategories()
+            val categories = requireNotNull(apolloClient).fetchCategories()
                 .compose(Transformers.neverError())
                 .flatMapIterable { it }
                 .toSortedList()

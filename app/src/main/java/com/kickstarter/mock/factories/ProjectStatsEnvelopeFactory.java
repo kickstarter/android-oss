@@ -63,11 +63,11 @@ public final class ProjectStatsEnvelopeFactory {
 
     public static @NonNull ProjectStatsEnvelope.CumulativeStats cumulativeStats() {
       return ProjectStatsEnvelope.CumulativeStats.builder()
-        .averagePledge(5)
+        .averagePledge(5f)
         .backersCount(10)
         .goal(1000)
-        .percentRaised(50)
-        .pledged(500)
+        .percentRaised(50f)
+        .pledged(500f)
         .build();
     }
   }
@@ -78,10 +78,10 @@ public final class ProjectStatsEnvelopeFactory {
     public static @NonNull ProjectStatsEnvelope.FundingDateStats fundingDateStats() {
       return ProjectStatsEnvelope.FundingDateStats.builder()
         .backersCount(10)
-        .cumulativePledged(500)
+        .cumulativePledged(500f)
         .cumulativeBackersCount(10)
         .date(new DateTime())
-        .pledged(500)
+        .pledged(500f)
         .build();
     }
   }
@@ -91,9 +91,9 @@ public final class ProjectStatsEnvelopeFactory {
 
     public static @NonNull ProjectStatsEnvelope.ReferralAggregateStats referralAggregates() {
       return ProjectStatsEnvelope.ReferralAggregateStats.builder()
-        .custom(10)
-        .external(15)
-        .internal(20)
+        .custom(10f)
+        .external(15f)
+        .internal(20f)
         .build();
     }
   }
@@ -105,8 +105,8 @@ public final class ProjectStatsEnvelopeFactory {
       return ProjectStatsEnvelope.ReferrerStats.builder()
         .backersCount(10)
         .code("wots_this")
-        .percentageOfDollars(50)
-        .pledged(500)
+        .percentageOfDollars(50f)
+        .pledged(500f)
         .referrerName("Important Referrer")
         .referrerType(ReferrerType.EXTERNAL.getReferrerType())
         .build();
@@ -121,7 +121,7 @@ public final class ProjectStatsEnvelopeFactory {
         .backersCount(10)
         .rewardId(1)
         .minimum(5)
-        .pledged(10)
+        .pledged(10f)
         .build();
     }
   }

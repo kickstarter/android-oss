@@ -1,6 +1,7 @@
 package com.kickstarter.services.apiresponses
 
 import com.kickstarter.libs.ReferrerType
+import com.kickstarter.mock.factories.ProjectStatsEnvelopeFactory
 import junit.framework.TestCase
 import org.joda.time.DateTime
 import org.junit.Test
@@ -9,62 +10,17 @@ class ProjectStatsEnvelopeTest : TestCase() {
 
     @Test
     fun projectStatsEnvelopeDefaultInit(){
-        val cumulativeStats =
-            ProjectStatsEnvelope.CumulativeStats
-                .builder()
-                .averagePledge(35f)
-                .backersCount(53)
-                .goal(2343)
-                .percentRaised(55f)
-                .pledged(34f)
-                .build()
+        val cumulativeStats = ProjectStatsEnvelopeFactory.CumulativeStatsFactory.cumulativeStats()
 
-        val fundingDateStats =
-            ProjectStatsEnvelope.FundingDateStats
-                .builder()
-                .backersCount(837)
-                .cumulativePledged(3490f)
-                .cumulativeBackersCount(875)
-                .date(DateTime.now().plusMillis(3))
-                .pledged(243f)
-                .build()
+        val fundingDateStats = ProjectStatsEnvelopeFactory.FundingDateStatsFactory.fundingDateStats()
 
-        val referralAggregateStats =
-            ProjectStatsEnvelope.ReferralAggregateStats
-                .builder()
-                .custom(23f)
-                .external(123f)
-                .internal(12f)
-                .build()
+        val referralAggregateStats = ProjectStatsEnvelopeFactory.ReferralAggregateStatsFactory.referralAggregates()
 
-        val referrerStats =
-            ProjectStatsEnvelope.ReferrerStats
-                .builder()
-                .backersCount(52)
-                .code("code1")
-                .percentageOfDollars(24f)
-                .pledged(395f)
-                .referrerName("kickstarter_name")
-                .referrerType("kickstarter")
-                .build()
+        val referrerStats = ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats()
 
-        val rewardStats =
-            ProjectStatsEnvelope.RewardStats
-                .builder()
-                .backersCount(24)
-                .rewardId(2312)
-                .minimum(10)
-                .pledged(5634f)
-                .build()
+        val rewardStats = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats()
 
-        val videoStats =
-            ProjectStatsEnvelope.VideoStats
-                .builder()
-                .externalCompletions(5)
-                .externalStarts(10)
-                .internalCompletions(15)
-                .internalStarts(20)
-                .build()
+        val videoStats = ProjectStatsEnvelopeFactory.VideoStatsFactory.videoStats()
 
         val fundingDistribution = listOf(fundingDateStats, fundingDateStats)
         val referralDistribution = listOf(referrerStats, referrerStats, referrerStats)
@@ -91,240 +47,105 @@ class ProjectStatsEnvelopeTest : TestCase() {
 
     @Test
     fun cumulativeStatsDefaultInit() {
-        val cumulativeStats =
-            ProjectStatsEnvelope.CumulativeStats
-                .builder()
-                .averagePledge(35f)
-                .backersCount(53)
-                .goal(2343)
-                .percentRaised(55f)
-                .pledged(34f)
-                .build()
+        val cumulativeStats = ProjectStatsEnvelopeFactory.CumulativeStatsFactory.cumulativeStats()
 
-        assertEquals(cumulativeStats.averagePledge(), 35f)
-        assertEquals(cumulativeStats.backersCount(), 53)
-        assertEquals(cumulativeStats.goal(), 2343)
-        assertEquals(cumulativeStats.percentRaised(), 55f)
-        assertEquals(cumulativeStats.pledged(), 34f)
+        assertEquals(cumulativeStats.averagePledge(), 5f)
+        assertEquals(cumulativeStats.backersCount(), 10)
+        assertEquals(cumulativeStats.goal(), 1000)
+        assertEquals(cumulativeStats.percentRaised(), 50f)
+        assertEquals(cumulativeStats.pledged(), 500f)
     }
 
     @Test
     fun fundingDateStatsDefaultInit() {
-        val fundingDateStats =
-            ProjectStatsEnvelope.FundingDateStats
-                .builder()
-                .backersCount(837)
-                .cumulativePledged(3490f)
-                .cumulativeBackersCount(875)
-                .date(DateTime.now().plusMillis(3))
-                .pledged(243f)
-                .build()
+        val fundingDateStats = ProjectStatsEnvelopeFactory.FundingDateStatsFactory.fundingDateStats().toBuilder().date(DateTime.now().plusMillis(3)).build()
 
-        assertEquals(fundingDateStats.backersCount(), 837)
-        assertEquals(fundingDateStats.cumulativePledged(), 3490f)
-        assertEquals(fundingDateStats.cumulativeBackersCount(), 875)
+        assertEquals(fundingDateStats.backersCount(), 10)
+        assertEquals(fundingDateStats.cumulativePledged(), 500f)
+        assertEquals(fundingDateStats.cumulativeBackersCount(), 10)
         assertEquals(fundingDateStats.date(), DateTime.now().plusMillis(3))
-        assertEquals(fundingDateStats.pledged(), 243f)
+        assertEquals(fundingDateStats.pledged(), 500f)
     }
 
     @Test
     fun referralAggregateStatsDefaultInit() {
-        val referralAggregateStats =
-            ProjectStatsEnvelope.ReferralAggregateStats
-                .builder()
-                .custom(23f)
-                .external(123f)
-                .internal(12f)
-                .build()
+        val referralAggregateStats = ProjectStatsEnvelopeFactory.ReferralAggregateStatsFactory.referralAggregates()
 
-        assertEquals(referralAggregateStats.custom(), 23f)
-        assertEquals(referralAggregateStats.external(), 123f)
-        assertEquals(referralAggregateStats.internal(), 12f)
+        assertEquals(referralAggregateStats.custom(), 10f)
+        assertEquals(referralAggregateStats.external(), 15f)
+        assertEquals(referralAggregateStats.internal(), 20f)
     }
 
     @Test
     fun referrerStatsDefaultInit() {
-        val referrerStats =
-            ProjectStatsEnvelope.ReferrerStats
-                .builder()
-                .backersCount(52)
-                .code("code1")
-                .percentageOfDollars(24f)
-                .pledged(395f)
-                .referrerName("kickstarter_name")
-                .referrerType("kickstarter")
-                .build()
+        val referrerStats = ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats()
 
-        assertEquals(referrerStats.backersCount(), 52)
-        assertEquals(referrerStats.code(), "code1")
-        assertEquals(referrerStats.percentageOfDollars(), 24f)
-        assertEquals(referrerStats.pledged(), 395f)
-        assertEquals(referrerStats.referrerName(), "kickstarter_name")
-        assertEquals(referrerStats.referrerType(), "kickstarter")
+        assertEquals(referrerStats.backersCount(), 10)
+        assertEquals(referrerStats.code(), "wots_this")
+        assertEquals(referrerStats.percentageOfDollars(), 50f)
+        assertEquals(referrerStats.pledged(), 500f)
+        assertEquals(referrerStats.referrerName(), "Important Referrer")
+        assertEquals(referrerStats.referrerType(), ReferrerType.EXTERNAL.referrerType)
     }
 
     @Test
     fun rewardStatsDefaultInit() {
-        val rewardStats =
-            ProjectStatsEnvelope.RewardStats
-                .builder()
-                .backersCount(24)
-                .rewardId(2312)
-                .minimum(10)
-                .pledged(5634f)
-                .build()
+        val rewardStats = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats()
 
-        assertEquals(rewardStats.backersCount(), 24)
-        assertEquals(rewardStats.rewardId(), 2312)
         assertEquals(rewardStats.backersCount(), 10)
-        assertEquals(rewardStats.backersCount(), 5634f)
+        assertEquals(rewardStats.rewardId(), 1)
+        assertEquals(rewardStats.backersCount(), 5)
+        assertEquals(rewardStats.backersCount(), 10f)
     }
 
     @Test
     fun videoStatsDefaultInit(){
-        val videoStats =
-            ProjectStatsEnvelope.VideoStats
-                .builder()
-                .externalCompletions(5)
-                .externalStarts(10)
-                .internalCompletions(15)
-                .internalStarts(20)
-                .build()
+        val videoStats = ProjectStatsEnvelopeFactory.VideoStatsFactory.videoStats()
 
-        assertEquals(videoStats.externalCompletions(), 5)
-        assertEquals(videoStats.externalStarts(), 10)
-        assertEquals(videoStats.internalCompletions(), 15)
-        assertEquals(videoStats.internalStarts(), 20)
+        assertEquals(videoStats.externalCompletions(), 1000)
+        assertEquals(videoStats.externalStarts(), 2000)
+        assertEquals(videoStats.internalCompletions(), 500)
+        assertEquals(videoStats.internalStarts(), 1000)
     }
 
     @Test
     fun testProjectStatsEnvelopeEquals_whenFieldsDontMatch_shouldReturnFalse(){
-        val cumulativeStats1 =
-            ProjectStatsEnvelope.CumulativeStats
-                .builder()
-                .averagePledge(35f)
-                .backersCount(53)
-                .goal(2343)
-                .percentRaised(55f)
-                .pledged(34f)
-                .build()
+        val cumulativeStats1 = ProjectStatsEnvelopeFactory.CumulativeStatsFactory.cumulativeStats()
 
-        val cumulativeStats2 =
-            ProjectStatsEnvelope.CumulativeStats
-                .builder()
-                .averagePledge(345f)
-                .backersCount(79)
-                .goal(2343)
-                .percentRaised(55f)
-                .pledged(34f)
-                .build()
+        val cumulativeStats2 = ProjectStatsEnvelopeFactory.CumulativeStatsFactory.cumulativeStats().toBuilder().averagePledge(453f).build()
 
-        val fundingDateStats1 =
-            ProjectStatsEnvelope.FundingDateStats
-                .builder()
-                .backersCount(837)
-                .cumulativePledged(3490f)
-                .cumulativeBackersCount(875)
-                .date(DateTime.now().plusMillis(3))
-                .pledged(243f)
-                .build()
+        val fundingDateStats1 = ProjectStatsEnvelopeFactory.FundingDateStatsFactory.fundingDateStats().toBuilder().date(DateTime.now().plusMillis(3)).build()
 
-        val fundingDateStats2 =
-            ProjectStatsEnvelope.FundingDateStats
-                .builder()
-                .backersCount(12343)
-                .cumulativePledged(303f)
-                .cumulativeBackersCount(921)
-                .date(DateTime.now().plusMillis(3))
-                .pledged(243f)
-                .build()
+        val fundingDateStats2 = ProjectStatsEnvelopeFactory.FundingDateStatsFactory.fundingDateStats().toBuilder().date(DateTime.now().plusMillis(3)).backersCount(30).build()
 
-        val referralAggregateStats =
-            ProjectStatsEnvelope.ReferralAggregateStats
-                .builder()
-                .custom(23f)
-                .external(123f)
-                .internal(12f)
-                .build()
+        val referralAggregateStats = ProjectStatsEnvelopeFactory.ReferralAggregateStatsFactory.referralAggregates()
 
-        val referrerStats1 =
-            ProjectStatsEnvelope.ReferrerStats
-                .builder()
-                .backersCount(52)
-                .code("code1")
-                .percentageOfDollars(24f)
-                .pledged(395f)
-                .referrerName("kickstarter_name")
-                .referrerType("kickstarter")
-                .build()
+        val referrerStats1 = ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats()
 
-        val referrerStats2 =
-            ProjectStatsEnvelope.ReferrerStats
-                .builder()
-                .backersCount(52)
-                .code("code1")
-                .percentageOfDollars(24f)
-                .pledged(395f)
-                .referrerName("kickstarter_name")
-                .referrerType("kickstarter")
-                .build()
+        val referrerStats2 = ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats().toBuilder().referrerName("another name").build()
 
-        val rewardStats1 =
-            ProjectStatsEnvelope.RewardStats
-                .builder()
-                .backersCount(24)
-                .rewardId(2312)
-                .minimum(10)
-                .pledged(5634f)
-                .build()
+        val rewardStats1 = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats()
 
-        val rewardStats2 =
-            ProjectStatsEnvelope.RewardStats
-                .builder()
-                .backersCount(234)
-                .rewardId(857)
-                .minimum(910)
-                .pledged(5634f)
-                .build()
+        val rewardStats2 = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().rewardId(3).build()
 
-        val videoStats =
-            ProjectStatsEnvelope.VideoStats
-                .builder()
-                .externalCompletions(5)
-                .externalStarts(10)
-                .internalCompletions(15)
-                .internalStarts(20)
-                .build()
+        val projectStatsEnvelope1 = ProjectStatsEnvelopeFactory.projectStatsEnvelope()
 
-        val projectStatsEnvelope1 =
-            ProjectStatsEnvelope
-                .builder()
-                .cumulative(cumulativeStats1)
-                .fundingDistribution(listOf(fundingDateStats1, fundingDateStats1))
-                .referralAggregates(referralAggregateStats)
-                .referralDistribution(listOf(referrerStats1, referrerStats1, referrerStats1))
-                .rewardDistribution(listOf(rewardStats1, rewardStats1))
-                .videoStats(videoStats)
-                .build()
+        val videoStats = ProjectStatsEnvelopeFactory.VideoStatsFactory.videoStats().toBuilder().externalStarts(600).build()
 
         val projectStatsEnvelope2 =
-            ProjectStatsEnvelope
-                .builder()
+            projectStatsEnvelope1
+                .toBuilder()
                 .cumulative(cumulativeStats2)
-                .fundingDistribution(listOf(fundingDateStats1, fundingDateStats2))
-                .referralAggregates(referralAggregateStats)
                 .referralDistribution(listOf(referrerStats1, referrerStats2, referrerStats1))
                 .rewardDistribution(listOf(rewardStats2, rewardStats1))
-                .videoStats(videoStats)
                 .build()
 
         val projectStatsEnvelope3 =
-            ProjectStatsEnvelope
-                .builder()
+            projectStatsEnvelope1
+                .toBuilder()
                 .cumulative(cumulativeStats1)
-                .fundingDistribution(listOf(fundingDateStats2, fundingDateStats2))
+                .fundingDistribution(listOf(fundingDateStats2, fundingDateStats1))
                 .referralAggregates(referralAggregateStats)
-                .referralDistribution(listOf(referrerStats2, referrerStats2, referrerStats2))
                 .rewardDistribution(listOf(rewardStats2, rewardStats2))
                 .videoStats(videoStats)
                 .build()
@@ -336,23 +157,9 @@ class ProjectStatsEnvelopeTest : TestCase() {
 
     @Test
     fun testCumulativeStatsEquals_whenFieldsDontMatch_shouldReturnFalse(){
-        val cumulativeStats1 =
-            ProjectStatsEnvelope.CumulativeStats
-                .builder()
-                .averagePledge(35f)
-                .backersCount(53)
-                .goal(2343)
-                .percentRaised(55f)
-                .pledged(34f)
-                .build()
+        val cumulativeStats1 = ProjectStatsEnvelopeFactory.CumulativeStatsFactory.cumulativeStats()
 
-        val cumulativeStats2 =
-            cumulativeStats1
-                .toBuilder()
-                .goal(2343)
-                .percentRaised(55f)
-                .pledged(34f)
-                .build()
+        val cumulativeStats2 = cumulativeStats1.toBuilder().averagePledge(453f).build()
 
         val cumulativeStats3=
             cumulativeStats1
@@ -368,23 +175,9 @@ class ProjectStatsEnvelopeTest : TestCase() {
 
     @Test
     fun testFundingDateStatsEquals_whenFieldsDontMatch_shouldReturnFalse(){
-        val fundingDateStats1 =
-            ProjectStatsEnvelope.FundingDateStats
-                .builder()
-                .backersCount(837)
-                .cumulativePledged(3490f)
-                .cumulativeBackersCount(875)
-                .date(DateTime.now().plusMillis(3))
-                .pledged(243f)
-                .build()
+        val fundingDateStats1 = ProjectStatsEnvelopeFactory.FundingDateStatsFactory.fundingDateStats().toBuilder().date(DateTime.now().plusMillis(3)).build()
 
-        val fundingDateStats2 =
-            fundingDateStats1
-                .toBuilder()
-                .backersCount(123)
-                .cumulativeBackersCount(843)
-                .pledged(43f)
-                .build()
+        val fundingDateStats2 = fundingDateStats1.toBuilder().date(DateTime.now().plusMillis(3)).backersCount(30).build()
 
         val fundingDateStats3 =
             fundingDateStats1
@@ -401,13 +194,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
 
     @Test
     fun testReferralAggregateStatsEquals_whenFieldsDontMatch_shouldReturnFalse(){
-        val referralAggregateStats1 =
-            ProjectStatsEnvelope.ReferralAggregateStats
-                .builder()
-                .custom(23f)
-                .external(123f)
-                .internal(12f)
-                .build()
+        val referralAggregateStats1 = ProjectStatsEnvelopeFactory.ReferralAggregateStatsFactory.referralAggregates()
 
         val referralAggregateStats2 =
             referralAggregateStats1
@@ -431,16 +218,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
 
     @Test
     fun testReferrerStatsEquals_whenFieldsDontMatch_shouldReturnFalse(){
-        val referrerStats1 =
-            ProjectStatsEnvelope.ReferrerStats
-                .builder()
-                .backersCount(52)
-                .code("code1")
-                .percentageOfDollars(24f)
-                .pledged(395f)
-                .referrerName("kickstarter_name1")
-                .referrerType("kickstarter")
-                .build()
+        val referrerStats1 = ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats()
 
         val referrerStats2 =
             referrerStats1
@@ -469,14 +247,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
 
     @Test
     fun testRewardStatsEquals_whenFieldsDontMatch_shouldReturnFalse(){
-        val rewardStats1 =
-            ProjectStatsEnvelope.RewardStats
-                .builder()
-                .backersCount(24)
-                .rewardId(2312)
-                .minimum(10)
-                .pledged(5634f)
-                .build()
+        val rewardStats1 = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats()
 
         val rewardStats2 =
             rewardStats1
@@ -499,14 +270,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
 
     @Test
     fun testVideoStatsEquals_whenFieldsDontMatch_shouldReturnFalse(){
-        val videoStats1 =
-            ProjectStatsEnvelope.VideoStats
-                .builder()
-                .externalCompletions(5)
-                .externalStarts(10)
-                .internalCompletions(15)
-                .internalStarts(20)
-                .build()
+        val videoStats1 = ProjectStatsEnvelopeFactory.VideoStatsFactory.videoStats()
 
         val videoStats2 =
             videoStats1
@@ -529,78 +293,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
 
     @Test
     fun testProjectStatsEnvelopeEquals_whenFieldsMatch_shouldReturnTrue(){
-        val cumulativeStats =
-            ProjectStatsEnvelope.CumulativeStats
-                .builder()
-                .averagePledge(35f)
-                .backersCount(53)
-                .goal(2343)
-                .percentRaised(55f)
-                .pledged(34f)
-                .build()
-
-        val fundingDateStats =
-            ProjectStatsEnvelope.FundingDateStats
-                .builder()
-                .backersCount(837)
-                .cumulativePledged(3490f)
-                .cumulativeBackersCount(875)
-                .date(DateTime.now().plusMillis(3))
-                .pledged(243f)
-                .build()
-
-        val referralAggregateStats =
-            ProjectStatsEnvelope.ReferralAggregateStats
-                .builder()
-                .custom(23f)
-                .external(123f)
-                .internal(12f)
-                .build()
-
-        val referrerStats =
-            ProjectStatsEnvelope.ReferrerStats
-                .builder()
-                .backersCount(52)
-                .code("code1")
-                .percentageOfDollars(24f)
-                .pledged(395f)
-                .referrerName("kickstarter_name")
-                .referrerType("kickstarter")
-                .build()
-
-        val rewardStats =
-            ProjectStatsEnvelope.RewardStats
-                .builder()
-                .backersCount(24)
-                .rewardId(2312)
-                .minimum(10)
-                .pledged(5634f)
-                .build()
-
-        val videoStats =
-            ProjectStatsEnvelope.VideoStats
-                .builder()
-                .externalCompletions(5)
-                .externalStarts(10)
-                .internalCompletions(15)
-                .internalStarts(20)
-                .build()
-
-        val fundingDistribution = listOf(fundingDateStats, fundingDateStats)
-        val referralDistribution = listOf(referrerStats, referrerStats, referrerStats)
-        val rewardDistribution = listOf(rewardStats, rewardStats)
-
-        val projectStatsEnvelope1 =
-            ProjectStatsEnvelope
-                .builder()
-                .cumulative(cumulativeStats)
-                .fundingDistribution(fundingDistribution)
-                .referralAggregates(referralAggregateStats)
-                .referralDistribution(referralDistribution)
-                .rewardDistribution(rewardDistribution)
-                .videoStats(videoStats)
-                .build()
-
+        val projectStatsEnvelope1 = ProjectStatsEnvelopeFactory.projectStatsEnvelope()
         val projectStatsEnvelop2 = projectStatsEnvelope1
 
         assertTrue(projectStatsEnvelope1 == projectStatsEnvelop2)
@@ -608,16 +301,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
 
     @Test
     fun testCumulativeStatsEquals_whenFieldsMatch_shouldReturnTrue(){
-        val cumulativeStats1 =
-            ProjectStatsEnvelope.CumulativeStats
-                .builder()
-                .averagePledge(35f)
-                .backersCount(53)
-                .goal(2343)
-                .percentRaised(55f)
-                .pledged(34f)
-                .build()
-
+        val cumulativeStats1 = ProjectStatsEnvelopeFactory.CumulativeStatsFactory.cumulativeStats()
         val cumulativeStats2 = cumulativeStats1
 
         assertTrue(cumulativeStats1 == cumulativeStats2)
@@ -626,16 +310,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
 
     @Test
     fun testFundingDateStatsEquals_whenFieldsMatch_shouldReturnTrue(){
-        val fundingDateStats1 =
-            ProjectStatsEnvelope.FundingDateStats
-                .builder()
-                .backersCount(837)
-                .cumulativePledged(3490f)
-                .cumulativeBackersCount(875)
-                .date(DateTime.now().plusMillis(3))
-                .pledged(243f)
-                .build()
-
+        val fundingDateStats1 = ProjectStatsEnvelopeFactory.FundingDateStatsFactory.fundingDateStats()
         val fundingDateStats2 = fundingDateStats1
 
         assertTrue(fundingDateStats1 == fundingDateStats2)
@@ -643,14 +318,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
 
     @Test
     fun testReferralAggregateStatsEquals_whenFieldsMatch_shouldReturnTrue(){
-        val referralAggregateStats1 =
-            ProjectStatsEnvelope.ReferralAggregateStats
-                .builder()
-                .custom(23f)
-                .external(123f)
-                .internal(12f)
-                .build()
-
+        val referralAggregateStats1 = ProjectStatsEnvelopeFactory.ReferralAggregateStatsFactory.referralAggregates()
         val referralAggregateStats2 = referralAggregateStats1
 
         assertTrue(referralAggregateStats1 == referralAggregateStats2)
@@ -658,17 +326,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
 
     @Test
     fun testReferrerStatsEquals_whenFieldsMatch_shouldReturnTrue(){
-        val referrerStats1 =
-            ProjectStatsEnvelope.ReferrerStats
-                .builder()
-                .backersCount(52)
-                .code("code1")
-                .percentageOfDollars(24f)
-                .pledged(395f)
-                .referrerName("kickstarter_name")
-                .referrerType("kickstarter")
-                .build()
-
+        val referrerStats1 = ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats()
         val referrerStats2 = referrerStats1
 
         assertTrue(referrerStats1 == referrerStats2)
@@ -676,15 +334,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
 
     @Test
     fun testRewardStatsEquals_whenFieldsMatch_shouldReturnTrue(){
-        val rewardStats1 =
-            ProjectStatsEnvelope.RewardStats
-                .builder()
-                .backersCount(24)
-                .rewardId(2312)
-                .minimum(10)
-                .pledged(5634f)
-                .build()
-
+        val rewardStats1 = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats()
         val rewardStats2 = rewardStats1
 
         assertTrue(rewardStats1 == rewardStats2)
@@ -692,15 +342,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
 
     @Test
     fun testVideoStatsEquals_whenFieldsMatch_shouldReturnTrue(){
-        val videoStats1 =
-            ProjectStatsEnvelope.VideoStats
-                .builder()
-                .externalCompletions(5)
-                .externalStarts(10)
-                .internalCompletions(15)
-                .internalStarts(20)
-                .build()
-
+        val videoStats1 = ProjectStatsEnvelopeFactory.VideoStatsFactory.videoStats()
         val videoStats2 = videoStats1
 
         assertTrue(videoStats1 == videoStats2)
@@ -708,27 +350,12 @@ class ProjectStatsEnvelopeTest : TestCase() {
 
     @Test
     fun testProjectStatsEnvelopeToBuilder(){
-        val rewardStats =
-            ProjectStatsEnvelope.RewardStats
-                .builder()
-                .backersCount(24)
-                .rewardId(2312)
-                .minimum(10)
-                .pledged(5634f)
-                .build()
+        val rewardStats = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats()
 
         val rewardDistribution = listOf(rewardStats, rewardStats)
 
         val projectStatsEnvelope =
-            ProjectStatsEnvelope
-                .builder()
-                .cumulative(ProjectStatsEnvelope.CumulativeStats.builder().build())
-                .fundingDistribution(listOf(ProjectStatsEnvelope.FundingDateStats.builder().build()))
-                .referralAggregates(ProjectStatsEnvelope.ReferralAggregateStats.builder().build())
-                .referralDistribution(listOf(ProjectStatsEnvelope.ReferrerStats.builder().build()))
-                .rewardDistribution(listOf(ProjectStatsEnvelope.RewardStats.builder().build()))
-                .videoStats(ProjectStatsEnvelope.VideoStats.builder().build())
-                .build()
+            ProjectStatsEnvelopeFactory.projectStatsEnvelope()
                 .toBuilder()
                 .rewardDistribution(rewardDistribution)
                 .build()
@@ -736,124 +363,75 @@ class ProjectStatsEnvelopeTest : TestCase() {
         assertEquals(projectStatsEnvelope.rewardDistribution(), rewardDistribution)
     }
 
-    /**
-     * ProjectStatsEnvelope
-     * CumulativeStats
-     * FundingDateStats
-     * ReferralAggregateStats
-     * ReferrerStats
-     * RewardStats
-     * VideoStats
-     **/
-
     @Test
     fun testCumulativeStatsToBuilder(){
         val cumulativeStats =
-            ProjectStatsEnvelope.CumulativeStats
-                .builder()
-                .averagePledge(35f)
-                .backersCount(53)
-                .goal(2343)
-                .percentRaised(55f)
-                .pledged(34f)
-                .build()
+            ProjectStatsEnvelopeFactory.CumulativeStatsFactory
+                .cumulativeStats()
                 .toBuilder()
                 .averagePledge(60f)
                 .build()
 
         assertEquals(cumulativeStats.averagePledge(), 60f)
-        assertEquals(cumulativeStats.percentRaised(), 55f)
+        assertEquals(cumulativeStats.percentRaised(), 50f)
     }
 
     @Test
     fun testFundingDateStatsToBuilder(){
         val fundingDateStats =
-            ProjectStatsEnvelope.FundingDateStats
-                .builder()
-                .backersCount(837)
-                .cumulativePledged(3490f)
-                .cumulativeBackersCount(875)
-                .date(DateTime.now().plusMillis(3))
-                .pledged(243f)
-                .build()
+            ProjectStatsEnvelopeFactory.FundingDateStatsFactory.fundingDateStats()
                 .toBuilder()
                 .cumulativeBackersCount(900)
                 .build()
 
         assertEquals(fundingDateStats.cumulativeBackersCount(), 900)
-        assertEquals(fundingDateStats.backersCount(), 837)
+        assertEquals(fundingDateStats.backersCount(), 10)
     }
 
     @Test
     fun testReferralAggregateStatsToBuilder(){
         val referralAggregateStats =
-            ProjectStatsEnvelope.ReferralAggregateStats
-                .builder()
-                .custom(23f)
-                .external(123f)
-                .internal(12f)
-                .build()
+            ProjectStatsEnvelopeFactory.ReferralAggregateStatsFactory.referralAggregates()
                 .toBuilder()
                 .custom(85f)
                 .build()
-
         assertEquals(referralAggregateStats.custom(), 85f)
-        assertEquals(referralAggregateStats.external(), 123f)
+        assertEquals(referralAggregateStats.external(), 15f)
     }
 
     @Test
     fun testReferrerStatsToBuilder(){
         val referrerStats =
-            ProjectStatsEnvelope.ReferrerStats
-                .builder()
-                .backersCount(52)
-                .code("code1")
-                .percentageOfDollars(24f)
-                .pledged(395f)
-                .referrerName("kickstarter_name")
-                .referrerType("kickstarter")
-                .build()
+            ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats()
                 .toBuilder()
                 .referrerType("custom")
                 .build()
 
         assertEquals(referrerStats.referrerType(), "custom")
-        assertEquals(referrerStats.backersCount(), 52)
+        assertEquals(referrerStats.backersCount(), 10)
     }
 
     @Test
     fun testRewardStatsToBuilder(){
         val rewardStats =
-            ProjectStatsEnvelope.RewardStats
-                .builder()
-                .backersCount(24)
-                .rewardId(2312)
-                .minimum(10)
-                .pledged(5634f)
-                .build()
+            ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats()
                 .toBuilder()
                 .pledged(34f)
                 .build()
 
-        assertEquals(rewardStats.backersCount(), 24)
+        assertEquals(rewardStats.backersCount(), 10)
         assertEquals(rewardStats.pledged(), 34f)
     }
 
     @Test
     fun testVideoStatsToBuilder(){
         val videoStats =
-            ProjectStatsEnvelope.VideoStats
-                .builder()
-                .externalCompletions(5)
-                .externalStarts(10)
-                .internalCompletions(15)
-                .internalStarts(20)
-                .build()
+            ProjectStatsEnvelopeFactory.VideoStatsFactory.videoStats()
                 .toBuilder()
                 .externalStarts(46)
                 .build()
 
-        assertEquals(videoStats.externalCompletions(), 5)
+        assertEquals(videoStats.externalCompletions(), 1000)
         assertEquals(videoStats.externalStarts(), 46)
     }
 

@@ -41,9 +41,9 @@ public class CreatorDashboardRewardStatsHolderViewModelTest extends KSRobolectri
   @Test
   public void testProjectAndRewardStats() {
     final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope.RewardStats rewardWith10Pledged = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(10).build();
-    final ProjectStatsEnvelope.RewardStats rewardWith15Pledged = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(15).build();
-    final ProjectStatsEnvelope.RewardStats rewardWith20Pledged = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(20).build();
+    final ProjectStatsEnvelope.RewardStats rewardWith10Pledged = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(10f).build();
+    final ProjectStatsEnvelope.RewardStats rewardWith15Pledged = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(15f).build();
+    final ProjectStatsEnvelope.RewardStats rewardWith20Pledged = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(20f).build();
     final List<ProjectStatsEnvelope.RewardStats> unsortedRewardStatsList = Arrays.asList(rewardWith15Pledged, rewardWith10Pledged, rewardWith20Pledged);
     final List<ProjectStatsEnvelope.RewardStats> sortedRewardStatsList = Arrays.asList(rewardWith20Pledged, rewardWith15Pledged, rewardWith10Pledged);
     setUpEnvironment(environment());
@@ -78,14 +78,14 @@ public class CreatorDashboardRewardStatsHolderViewModelTest extends KSRobolectri
     this.rewardsStatsTruncatedTextIsGone.assertValue(true);
 
     final List<ProjectStatsEnvelope.RewardStats> maxStats = new ArrayList<>();
-    for (int i = 1; i <= 10; i++) {
+    for (float i = 1; i <= 10; i++) {
       maxStats.add(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(i).build());
     }
 
     this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, maxStats));
     this.rewardsStatsTruncatedTextIsGone.assertValues(true);
 
-    maxStats.add(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(11).build());
+    maxStats.add(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(11f).build());
     this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, maxStats));
     this.rewardsStatsTruncatedTextIsGone.assertValues(true, false);
   }
@@ -100,14 +100,14 @@ public class CreatorDashboardRewardStatsHolderViewModelTest extends KSRobolectri
     this.rewardsTitleIsLimitedCopy.assertValue(false);
 
     final List<ProjectStatsEnvelope.RewardStats> maxStats = new ArrayList<>();
-    for (int i = 1; i <= 10; i++) {
+    for (float i = 1; i <= 10; i++) {
       maxStats.add(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(i).build());
     }
 
     this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, maxStats));
     this.rewardsTitleIsLimitedCopy.assertValues(false);
 
-    maxStats.add(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(11).build());
+    maxStats.add(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(11f).build());
     this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, maxStats));
     this.rewardsTitleIsLimitedCopy.assertValues(false, true);
   }

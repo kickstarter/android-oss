@@ -9,7 +9,7 @@ import org.junit.Test
 class ProjectStatsEnvelopeTest : TestCase() {
 
     @Test
-    fun projectStatsEnvelopeDefaultInit(){
+    fun projectStatsEnvelopeDefaultInit() {
         val cumulativeStats = ProjectStatsEnvelopeFactory.CumulativeStatsFactory.cumulativeStats()
 
         val fundingDateStats = ProjectStatsEnvelopeFactory.FundingDateStatsFactory.fundingDateStats()
@@ -99,7 +99,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
-    fun videoStatsDefaultInit(){
+    fun videoStatsDefaultInit() {
         val videoStats = ProjectStatsEnvelopeFactory.VideoStatsFactory.videoStats()
 
         assertEquals(videoStats.externalCompletions(), 1000)
@@ -109,7 +109,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
-    fun testProjectStatsEnvelopeEquals_whenFieldsDontMatch_shouldReturnFalse(){
+    fun testProjectStatsEnvelopeEquals_whenFieldsDontMatch_shouldReturnFalse() {
         val cumulativeStats1 = ProjectStatsEnvelopeFactory.CumulativeStatsFactory.cumulativeStats()
 
         val cumulativeStats2 = ProjectStatsEnvelopeFactory.CumulativeStatsFactory.cumulativeStats().toBuilder().averagePledge(453f).build()
@@ -156,12 +156,12 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
-    fun testCumulativeStatsEquals_whenFieldsDontMatch_shouldReturnFalse(){
+    fun testCumulativeStatsEquals_whenFieldsDontMatch_shouldReturnFalse() {
         val cumulativeStats1 = ProjectStatsEnvelopeFactory.CumulativeStatsFactory.cumulativeStats()
 
         val cumulativeStats2 = cumulativeStats1.toBuilder().averagePledge(453f).build()
 
-        val cumulativeStats3=
+        val cumulativeStats3 =
             cumulativeStats1
                 .toBuilder()
                 .averagePledge(85f)
@@ -174,7 +174,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
-    fun testFundingDateStatsEquals_whenFieldsDontMatch_shouldReturnFalse(){
+    fun testFundingDateStatsEquals_whenFieldsDontMatch_shouldReturnFalse() {
         val fundingDateStats1 = ProjectStatsEnvelopeFactory.FundingDateStatsFactory.fundingDateStats().toBuilder().date(DateTime.now().plusMillis(3)).build()
 
         val fundingDateStats2 = fundingDateStats1.toBuilder().date(DateTime.now().plusMillis(3)).backersCount(30).build()
@@ -193,7 +193,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
-    fun testReferralAggregateStatsEquals_whenFieldsDontMatch_shouldReturnFalse(){
+    fun testReferralAggregateStatsEquals_whenFieldsDontMatch_shouldReturnFalse() {
         val referralAggregateStats1 = ProjectStatsEnvelopeFactory.ReferralAggregateStatsFactory.referralAggregates()
 
         val referralAggregateStats2 =
@@ -217,7 +217,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
-    fun testReferrerStatsEquals_whenFieldsDontMatch_shouldReturnFalse(){
+    fun testReferrerStatsEquals_whenFieldsDontMatch_shouldReturnFalse() {
         val referrerStats1 = ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats()
 
         val referrerStats2 =
@@ -246,7 +246,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
-    fun testRewardStatsEquals_whenFieldsDontMatch_shouldReturnFalse(){
+    fun testRewardStatsEquals_whenFieldsDontMatch_shouldReturnFalse() {
         val rewardStats1 = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats()
 
         val rewardStats2 =
@@ -269,7 +269,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
-    fun testVideoStatsEquals_whenFieldsDontMatch_shouldReturnFalse(){
+    fun testVideoStatsEquals_whenFieldsDontMatch_shouldReturnFalse() {
         val videoStats1 = ProjectStatsEnvelopeFactory.VideoStatsFactory.videoStats()
 
         val videoStats2 =
@@ -292,7 +292,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
-    fun testProjectStatsEnvelopeEquals_whenFieldsMatch_shouldReturnTrue(){
+    fun testProjectStatsEnvelopeEquals_whenFieldsMatch_shouldReturnTrue() {
         val projectStatsEnvelope1 = ProjectStatsEnvelopeFactory.projectStatsEnvelope()
         val projectStatsEnvelop2 = projectStatsEnvelope1
 
@@ -300,16 +300,15 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
-    fun testCumulativeStatsEquals_whenFieldsMatch_shouldReturnTrue(){
+    fun testCumulativeStatsEquals_whenFieldsMatch_shouldReturnTrue() {
         val cumulativeStats1 = ProjectStatsEnvelopeFactory.CumulativeStatsFactory.cumulativeStats()
         val cumulativeStats2 = cumulativeStats1
 
         assertTrue(cumulativeStats1 == cumulativeStats2)
-
     }
 
     @Test
-    fun testFundingDateStatsEquals_whenFieldsMatch_shouldReturnTrue(){
+    fun testFundingDateStatsEquals_whenFieldsMatch_shouldReturnTrue() {
         val fundingDateStats1 = ProjectStatsEnvelopeFactory.FundingDateStatsFactory.fundingDateStats()
         val fundingDateStats2 = fundingDateStats1
 
@@ -317,7 +316,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
-    fun testReferralAggregateStatsEquals_whenFieldsMatch_shouldReturnTrue(){
+    fun testReferralAggregateStatsEquals_whenFieldsMatch_shouldReturnTrue() {
         val referralAggregateStats1 = ProjectStatsEnvelopeFactory.ReferralAggregateStatsFactory.referralAggregates()
         val referralAggregateStats2 = referralAggregateStats1
 
@@ -325,7 +324,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
-    fun testReferrerStatsEquals_whenFieldsMatch_shouldReturnTrue(){
+    fun testReferrerStatsEquals_whenFieldsMatch_shouldReturnTrue() {
         val referrerStats1 = ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats()
         val referrerStats2 = referrerStats1
 
@@ -333,7 +332,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
-    fun testRewardStatsEquals_whenFieldsMatch_shouldReturnTrue(){
+    fun testRewardStatsEquals_whenFieldsMatch_shouldReturnTrue() {
         val rewardStats1 = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats()
         val rewardStats2 = rewardStats1
 
@@ -341,7 +340,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
-    fun testVideoStatsEquals_whenFieldsMatch_shouldReturnTrue(){
+    fun testVideoStatsEquals_whenFieldsMatch_shouldReturnTrue() {
         val videoStats1 = ProjectStatsEnvelopeFactory.VideoStatsFactory.videoStats()
         val videoStats2 = videoStats1
 
@@ -349,7 +348,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
-    fun testProjectStatsEnvelopeToBuilder(){
+    fun testProjectStatsEnvelopeToBuilder() {
         val rewardStats = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats()
 
         val rewardDistribution = listOf(rewardStats, rewardStats)
@@ -364,7 +363,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
-    fun testCumulativeStatsToBuilder(){
+    fun testCumulativeStatsToBuilder() {
         val cumulativeStats =
             ProjectStatsEnvelopeFactory.CumulativeStatsFactory
                 .cumulativeStats()
@@ -377,7 +376,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
-    fun testFundingDateStatsToBuilder(){
+    fun testFundingDateStatsToBuilder() {
         val fundingDateStats =
             ProjectStatsEnvelopeFactory.FundingDateStatsFactory.fundingDateStats()
                 .toBuilder()
@@ -389,7 +388,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
-    fun testReferralAggregateStatsToBuilder(){
+    fun testReferralAggregateStatsToBuilder() {
         val referralAggregateStats =
             ProjectStatsEnvelopeFactory.ReferralAggregateStatsFactory.referralAggregates()
                 .toBuilder()
@@ -400,7 +399,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
-    fun testReferrerStatsToBuilder(){
+    fun testReferrerStatsToBuilder() {
         val referrerStats =
             ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats()
                 .toBuilder()
@@ -412,7 +411,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
-    fun testRewardStatsToBuilder(){
+    fun testRewardStatsToBuilder() {
         val rewardStats =
             ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats()
                 .toBuilder()
@@ -424,7 +423,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
-    fun testVideoStatsToBuilder(){
+    fun testVideoStatsToBuilder() {
         val videoStats =
             ProjectStatsEnvelopeFactory.VideoStatsFactory.videoStats()
                 .toBuilder()
@@ -436,7 +435,7 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
-    fun referrerTypeEnum_whenNotNull_returnsCorrectEnumValue(){
+    fun referrerTypeEnum_whenNotNull_returnsCorrectEnumValue() {
         val referrerStats =
             ProjectStatsEnvelope.ReferrerStats
                 .builder()

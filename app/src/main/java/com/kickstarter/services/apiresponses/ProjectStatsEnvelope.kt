@@ -2,9 +2,9 @@ package com.kickstarter.services.apiresponses
 
 import android.os.Parcelable
 import com.kickstarter.libs.ReferrerType
-import java.util.Locale
 import kotlinx.parcelize.Parcelize
 import org.joda.time.DateTime
+import java.util.Locale
 
 @Parcelize
 class ProjectStatsEnvelope private constructor(
@@ -60,11 +60,11 @@ class ProjectStatsEnvelope private constructor(
         var equals = super.equals(other)
         if (other is ProjectStatsEnvelope) {
             equals = cumulative() == other.cumulative() &&
-                    fundingDistribution() == other.fundingDistribution() &&
-                    referralAggregates() == other.referralAggregates() &&
-                    referralDistribution() == other.referralDistribution() &&
-                    rewardDistribution() == other.rewardDistribution() &&
-                    videoStats() == other.videoStats()
+                fundingDistribution() == other.fundingDistribution() &&
+                referralAggregates() == other.referralAggregates() &&
+                referralDistribution() == other.referralDistribution() &&
+                rewardDistribution() == other.rewardDistribution() &&
+                videoStats() == other.videoStats()
         }
         return equals
     }
@@ -81,7 +81,7 @@ class ProjectStatsEnvelope private constructor(
         private val goal: Int,
         private val percentRaised: Float,
         private val pledged: Float
-    ): Parcelable {
+    ) : Parcelable {
         fun averagePledge() = this.averagePledge
         fun backersCount() = this.backersCount
         fun goal() = this.goal
@@ -122,10 +122,10 @@ class ProjectStatsEnvelope private constructor(
             var equals = super.equals(other)
             if (other is CumulativeStats) {
                 equals = averagePledge() == other.averagePledge() &&
-                        backersCount() == other.backersCount() &&
-                        goal() == other.goal() &&
-                        percentRaised() == other.percentRaised() &&
-                        pledged() == other.pledged()
+                    backersCount() == other.backersCount() &&
+                    goal() == other.goal() &&
+                    percentRaised() == other.percentRaised() &&
+                    pledged() == other.pledged()
             }
             return equals
         }
@@ -143,7 +143,7 @@ class ProjectStatsEnvelope private constructor(
         private val cumulativeBackersCount: Int,
         private val date: DateTime,
         private val pledged: Float
-    ): Parcelable {
+    ) : Parcelable {
         fun backersCount() = this.backersCount
         fun cumulativePledged() = this.cumulativePledged
         fun cumulativeBackersCount() = this.cumulativeBackersCount
@@ -189,10 +189,10 @@ class ProjectStatsEnvelope private constructor(
             var equals = super.equals(other)
             if (other is FundingDateStats) {
                 equals = backersCount() == other.backersCount() &&
-                        cumulativePledged() == other.cumulativePledged() &&
-                        cumulativeBackersCount() == other.cumulativeBackersCount() &&
-                        date() == other.date() &&
-                        pledged() == other.pledged()
+                    cumulativePledged() == other.cumulativePledged() &&
+                    cumulativeBackersCount() == other.cumulativeBackersCount() &&
+                    date() == other.date() &&
+                    pledged() == other.pledged()
             }
             return equals
         }
@@ -239,8 +239,8 @@ class ProjectStatsEnvelope private constructor(
             var equals = super.equals(other)
             if (other is ReferralAggregateStats) {
                 equals = custom() == other.custom() &&
-                        external() == other.external() &&
-                        internal() == other.internal()
+                    external() == other.external() &&
+                    internal() == other.internal()
             }
             return equals
         }
@@ -274,7 +274,7 @@ class ProjectStatsEnvelope private constructor(
             fun backersCount(backersCount: Int?) = apply { this.backersCount = backersCount ?: 0 }
             fun code(code: String?) = apply { this.code = code ?: "" }
             fun percentageOfDollars(percentageOfDollars: Float?) = apply { this.percentageOfDollars = percentageOfDollars ?: 0f }
-            fun pledged(pledged: Float?) = apply { this.pledged = pledged  ?: 0f}
+            fun pledged(pledged: Float?) = apply { this.pledged = pledged ?: 0f }
             fun referrerName(referrerName: String?) = apply { this.referrerName = referrerName ?: "" }
             fun referrerType(referrerType: String?) = apply { this.referrerType = referrerType ?: "" }
             fun build() = ReferrerStats(
@@ -319,11 +319,11 @@ class ProjectStatsEnvelope private constructor(
             var equals = super.equals(other)
             if (other is ReferrerStats) {
                 equals = backersCount() == other.backersCount() &&
-                        code() == other.code() &&
-                        percentageOfDollars() == other.percentageOfDollars() &&
-                        pledged() == other.pledged() &&
-                        referrerName() == other.referrerName() &&
-                        referrerType() == other.referrerType()
+                    code() == other.code() &&
+                    percentageOfDollars() == other.percentageOfDollars() &&
+                    pledged() == other.pledged() &&
+                    referrerName() == other.referrerName() &&
+                    referrerType() == other.referrerType()
             }
             return equals
         }
@@ -378,9 +378,9 @@ class ProjectStatsEnvelope private constructor(
             var equals = super.equals(other)
             if (other is RewardStats) {
                 equals = backersCount() == other.backersCount() &&
-                        rewardId() == other.rewardId() &&
-                        minimum() == other.minimum() &&
-                        pledged() == other.pledged()
+                    rewardId() == other.rewardId() &&
+                    minimum() == other.minimum() &&
+                    pledged() == other.pledged()
             }
             return equals
         }
@@ -434,9 +434,9 @@ class ProjectStatsEnvelope private constructor(
             var equals = super.equals(other)
             if (other is VideoStats) {
                 equals = externalCompletions() == other.externalCompletions() &&
-                        externalStarts() == other.externalStarts() &&
-                        internalCompletions() == other.internalCompletions() &&
-                        internalStarts() == other.internalStarts()
+                    externalStarts() == other.externalStarts() &&
+                    internalCompletions() == other.internalCompletions() &&
+                    internalStarts() == other.internalStarts()
             }
             return equals
         }

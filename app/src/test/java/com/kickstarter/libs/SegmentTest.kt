@@ -77,7 +77,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
     override fun setUp() {
         super.setUp()
-        build = environment().build()
+        build = requireNotNull(environment().build())
         context = application()
     }
 

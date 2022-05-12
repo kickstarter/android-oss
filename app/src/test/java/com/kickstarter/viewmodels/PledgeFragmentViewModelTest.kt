@@ -3130,10 +3130,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     private fun expectedConvertedCurrency(environment: Environment, project: Project, amount: Double): String =
-        environment.ksCurrency().formatWithUserPreference(amount, project, RoundingMode.HALF_UP, 2)
+        requireNotNull(environment.ksCurrency()).formatWithUserPreference(amount, project, RoundingMode.HALF_UP, 2)
 
     private fun expectedCurrency(environment: Environment, project: Project, amount: Double): String =
-        environment.ksCurrency().format(amount, project, RoundingMode.HALF_UP)
+        requireNotNull(environment.ksCurrency()).format(amount, project, RoundingMode.HALF_UP)
 
     private fun normalizeCurrency(spannedCurrencyString: CharSequence) =
         spannedCurrencyString.toString().replace("\u00A0", " ")

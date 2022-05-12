@@ -110,12 +110,12 @@ interface DiscoveryViewModel {
         val inputs = this
         val outputs = this
 
-        private val apiClient = environment.apiClient()
-        private val apolloClient = environment.apolloClient()
-        private val buildCheck = environment.buildCheck()
-        private val currentUserType = environment.currentUser()
-        private val currentConfigType = environment.currentConfig()
-        private val webClient = environment.webClient()
+        private val apiClient = requireNotNull(environment.apiClient())
+        private val apolloClient = requireNotNull(environment.apolloClient())
+        private val buildCheck = requireNotNull(environment.buildCheck())
+        private val currentUserType = requireNotNull(environment.currentUser())
+        private val currentConfigType = requireNotNull(environment.currentConfig())
+        private val webClient = requireNotNull(environment.webClient())
 
         private fun currentDrawerMenuIcon(user: User?): Int {
             if (ObjectUtils.isNull(user)) {
@@ -167,7 +167,7 @@ interface DiscoveryViewModel {
         private val messageError = PublishSubject.create<String?>()
 
         init {
-            buildCheck?.bind(this, requireNotNull(webClient))
+            buildCheck.bind(this, webClient)
             showActivityFeed = activityFeedClick
             showBuildCheckAlert = newerBuildIsAvailable
             showCreatorDashboard = creatorDashboardClick
@@ -186,7 +186,7 @@ interface DiscoveryViewModel {
             changedUser
                 .compose(bindToLifecycle())
                 .subscribe {
-                    requireNotNull(apiClient).config()
+                    apiClient.config()
                         .compose(Transformers.neverError())
                         .subscribe { currentConfigType.config(it) }
                 }
@@ -208,7 +208,7 @@ interface DiscoveryViewModel {
             val verification = uriFromVerification
                 .map { it.getTokenFromQueryParams() }
                 .filter { ObjectUtils.isNotNull(it) }
-                .switchMap { requireNotNull(apiClient).verifyEmail(it) }
+                .switchMap { apiClient.verifyEmail(it) }
                 .materialize()
                 .share()
                 .distinctUntilChanged()
@@ -228,7 +228,7 @@ interface DiscoveryViewModel {
                 .subscribe(messageError)
 
             val paramsFromIntent = intent()
-                .flatMap { DiscoveryIntentMapper.params(it, requireNotNull(apiClient), requireNotNull(apolloClient)) }
+                .flatMap { DiscoveryIntentMapper.params(it, apiClient, apolloClient) }
 
             val pagerSelectedPage = pagerSetPrimaryPage.distinctUntilChanged()
 
@@ -283,7 +283,7 @@ interface DiscoveryViewModel {
                     analyticEvents.trackDiscoverFilterCTA(it)
                 }
 
-            val categories = requireNotNull(apolloClient).fetchCategories()
+            val categories = apolloClient.fetchCategories()
                 .compose(Transformers.neverError())
                 .flatMapIterable { it }
                 .toSortedList()

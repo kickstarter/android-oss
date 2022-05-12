@@ -2,7 +2,6 @@ package com.kickstarter.ui.viewholders
 
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityFriendBackingViewBinding
-import com.kickstarter.libs.KSString
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.SocialUtils
 import com.kickstarter.models.Activity
@@ -12,7 +11,7 @@ class FriendBackingViewHolder(
     private val binding: ActivityFriendBackingViewBinding,
     private val delegate: Delegate?
 ) : ActivityListViewHolder(binding.root) {
-    private val ksString: KSString = environment().ksString()
+    private val ksString = requireNotNull(environment().ksString())
 
     interface Delegate {
         fun friendBackingClicked(viewHolder: FriendBackingViewHolder?, activity: Activity?)

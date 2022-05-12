@@ -190,11 +190,11 @@ interface BackingFragmentViewModel {
         private val estimatedDelivery = BehaviorSubject.create<String>()
         private val deliveryDisclaimerSectionIsGone = BehaviorSubject.create<Boolean>()
 
-        private val apiClient = this.environment.apiClient()
-        private val apolloClient = this.environment.apolloClient()
-        private val ksCurrency = this.environment.ksCurrency()
-        val ksString: KSString = this.environment.ksString()
-        private val currentUser = this.environment.currentUser()
+        private val apiClient = requireNotNull(this.environment.apiClient())
+        private val apolloClient = requireNotNull(this.environment.apolloClient())
+        private val ksCurrency = requireNotNull(this.environment.ksCurrency())
+        val ksString: KSString = requireNotNull(this.environment.ksString())
+        private val currentUser = requireNotNull(this.environment.currentUser())
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -377,7 +377,7 @@ interface BackingFragmentViewModel {
             backing
                 .compose<Pair<Backing, Project>>(combineLatestPair(backedProject))
                 .compose(takePairWhen<Pair<Backing, Project>, Boolean>(this.receivedCheckboxToggled))
-                .switchMap { this.apiClient?.postBacking(it.first.second, it.first.first, it.second)?.compose(neverError()) }
+                .switchMap { this.apiClient.postBacking(it.first.second, it.first.first, it.second).compose(neverError()) }
                 .compose(bindToLifecycle())
                 .share()
                 .subscribe()
@@ -471,7 +471,7 @@ interface BackingFragmentViewModel {
 
         private fun getBackingInfo(it: ProjectData): Observable<Backing> {
             return if (it.backing() == null) {
-                requireNotNull(this.apolloClient).getProjectBacking(it.project().slug() ?: "")
+                this.apolloClient.getProjectBacking(it.project().slug() ?: "")
             } else {
                 Observable.just(it.backing())
             }

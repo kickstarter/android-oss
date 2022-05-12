@@ -93,11 +93,11 @@ interface ChangeEmailViewModel {
 
         private val error = BehaviorSubject.create<String>()
 
-        private val apolloClient = environment.apolloClient()
+        private val apolloClient = requireNotNull(environment.apolloClient())
 
         init {
 
-            val userPrivacy = requireNotNull(this.apolloClient).userPrivacy()
+            val userPrivacy = this.apolloClient.userPrivacy()
                 .compose(neverError())
 
             userPrivacy
@@ -241,13 +241,13 @@ interface ChangeEmailViewModel {
         }
 
         private fun sendEmailVerification(): Observable<SendEmailVerificationMutation.Data> {
-            return requireNotNull(this.apolloClient).sendVerificationEmail()
+            return this.apolloClient.sendVerificationEmail()
                 .doOnSubscribe { this.showProgressBar.onNext(true) }
                 .doAfterTerminate { this.showProgressBar.onNext(false) }
         }
 
         private fun updateEmail(changeEmail: ChangeEmail): Observable<UpdateUserEmailMutation.Data> {
-            return requireNotNull(this.apolloClient).updateUserEmail(changeEmail.email, changeEmail.password)
+            return this.apolloClient.updateUserEmail(changeEmail.email, changeEmail.password)
                 .doOnSubscribe { this.showProgressBar.onNext(true) }
                 .doAfterTerminate { this.showProgressBar.onNext(false) }
         }

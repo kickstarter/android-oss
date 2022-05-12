@@ -21,7 +21,7 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
     }
 
     private var viewModel = BackingAddOnViewHolderViewModel.ViewModel(environment())
-    private val ksString = environment().ksString()
+    private val ksString = requireNotNull(environment().ksString())
 
     init {
 

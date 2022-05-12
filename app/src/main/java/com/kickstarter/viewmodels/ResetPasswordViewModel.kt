@@ -43,7 +43,7 @@ interface ResetPasswordViewModel {
     }
 
     class ViewModel(val environment: Environment) : ActivityViewModel<ResetPasswordActivity>(environment), Inputs, Outputs {
-        private val client = environment.apiClient()
+        private val client = requireNotNull(environment.apiClient())
 
         private val email = PublishSubject.create<String>()
         private val resetPasswordClick = PublishSubject.create<Void>()
@@ -95,7 +95,7 @@ interface ResetPasswordViewModel {
         }
 
         private fun submitEmail(email: String): Observable<Notification<User>> {
-            return requireNotNull(this.client).resetPassword(email)
+            return this.client.resetPassword(email)
                 .doOnSubscribe { this.isFormSubmitting.onNext(true) }
                 .doAfterTerminate { this.isFormSubmitting.onNext(false) }
                 .materialize()

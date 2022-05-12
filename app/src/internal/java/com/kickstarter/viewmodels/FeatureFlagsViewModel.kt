@@ -22,8 +22,8 @@ interface FeatureFlagsViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<FeatureFlagsActivity>(environment), Inputs, Outputs {
 
-        private val currentConfig = environment.currentConfig()
-        private val currentUser = environment.currentUser()
+        private val currentConfig = requireNotNull(environment.currentConfig())
+        private val currentUser = requireNotNull(environment.currentUser())
         private val optimizely = environment.optimizely()
 
         private val configFeatures = BehaviorSubject.create<List<FeatureFlagsModel>>()

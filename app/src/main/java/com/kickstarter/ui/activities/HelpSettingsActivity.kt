@@ -22,7 +22,7 @@ import rx.android.schedulers.AndroidSchedulers
 @RequiresActivityViewModel(HelpSettingsViewModel.ViewModel::class)
 class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
 
-    private var build: Build ? = null
+    private lateinit var build: Build
     private lateinit var currentUser: CurrentUserType
 
     private val mailto = R.string.mailto
@@ -38,8 +38,8 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
         val view = binding.root
         setContentView(view)
 
-        this.build = environment().build()
-        this.currentUser = environment().currentUser()
+        this.build = requireNotNull(environment().build())
+        this.currentUser = requireNotNull(environment().currentUser())
 
         binding.contact.setOnClickListener {
             this.viewModel.contactClicked()
@@ -78,7 +78,7 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
     private fun composeContactEmail(user: User?) {
         val debugInfo = listOf(
             user?.id() ?: getString(R.string.Logged_Out),
-            this.build?.versionName(),
+            this.build.versionName(),
             android.os.Build.VERSION.RELEASE + " (SDK " + Integer.toString(android.os.Build.VERSION.SDK_INT) + ")",
             android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL
         )

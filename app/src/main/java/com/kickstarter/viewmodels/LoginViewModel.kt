@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
@@ -88,8 +87,8 @@ interface LoginViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        private val client = environment.apiClient()
-        private val currentUser: CurrentUserType = environment.currentUser()
+        private val client = requireNotNull(environment.apiClient())
+        private val currentUser = requireNotNull(environment.currentUser())
 
         init {
 
@@ -120,7 +119,7 @@ interface LoginViewModel {
             emailAndPassword
                 .compose(takeWhen(this.logInButtonClicked))
                 .compose(bindToLifecycle())
-                .switchMap { ep -> requireNotNull(this.client).login(ep.first, ep.second).materialize() }
+                .switchMap { ep -> this.client.login(ep.first, ep.second).materialize() }
                 .share()
                 .subscribe {
                     this.logInButtonIsEnabled.onNext(true)

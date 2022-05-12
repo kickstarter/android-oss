@@ -63,7 +63,7 @@ interface ChangePasswordViewModel {
         val inputs: ChangePasswordViewModel.Inputs = this
         val outputs: ChangePasswordViewModel.Outputs = this
 
-        private val apolloClient = this.environment.apolloClient()
+        private val apolloClient = requireNotNull(this.environment.apolloClient())
         private val analytics = this.environment.analytics()
 
         init {
@@ -107,7 +107,7 @@ interface ChangePasswordViewModel {
         }
 
         private fun submit(changePassword: ChangePasswordViewModel.ViewModel.ChangePassword): Observable<UpdateUserPasswordMutation.Data> {
-            return requireNotNull(this.apolloClient).updateUserPassword(changePassword.currentPassword, changePassword.newPassword, changePassword.confirmPassword)
+            return this.apolloClient.updateUserPassword(changePassword.currentPassword, changePassword.newPassword, changePassword.confirmPassword)
                 .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
                 .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
         }

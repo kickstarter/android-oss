@@ -27,7 +27,7 @@ import com.trello.rxlifecycle.ActivityEvent
 
 @RequiresActivityViewModel(VideoViewModel.ViewModel::class)
 class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
-    private var build: Build ? = null
+    private lateinit var build: Build
     private var player: SimpleExoPlayer? = null
     private var playerPosition: Long? = null
     private var trackSelector: DefaultTrackSelector? = null
@@ -38,7 +38,7 @@ class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
         binding = VideoPlayerLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        build = environment().build()
+        build = requireNotNull(environment().build())
 
         viewModel.outputs.preparePlayerWithUrl()
             .compose(Transformers.takeWhen(lifecycle().filter { other: ActivityEvent? -> ActivityEvent.RESUME.equals(other) }))
@@ -130,13 +130,7 @@ class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
     }
 
     private fun getMediaSource(videoUrl: String): MediaSource {
-        val dataSourceFactory = DefaultHttpDataSource.Factory().setUserAgent(
-            build?.let {
-                userAgent(
-                    it
-                )
-            }
-        )
+        val dataSourceFactory = DefaultHttpDataSource.Factory().setUserAgent(userAgent(build))
         val videoUri = Uri.parse(videoUrl)
         val fileType = Util.inferContentType(videoUri)
 

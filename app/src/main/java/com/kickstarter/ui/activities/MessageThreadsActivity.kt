@@ -38,7 +38,7 @@ class MessageThreadsActivity : BaseActivity<MessageThreadsViewModel.ViewModel>()
 
         setUpAdapter()
 
-        ksString = environment().ksString()
+        ksString = requireNotNull(environment().ksString())
 
         binding.messageThreadsRecyclerView.adapter = adapter
         binding.messageThreadsRecyclerView.layoutManager = LinearLayoutManager(this)

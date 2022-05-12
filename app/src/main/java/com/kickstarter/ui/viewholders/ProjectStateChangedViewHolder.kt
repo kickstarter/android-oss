@@ -2,7 +2,6 @@ package com.kickstarter.ui.viewholders
 
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityProjectStateChangedViewBinding
-import com.kickstarter.libs.KSString
 import com.kickstarter.models.Activity
 import com.squareup.picasso.Picasso
 
@@ -11,7 +10,7 @@ class ProjectStateChangedViewHolder(
     private val delegate: Delegate?
 ) : ActivityListViewHolder(binding.root) {
 
-    private val ksString: KSString = environment().ksString()
+    private val ksString = requireNotNull(environment().ksString())
 
     interface Delegate {
         fun projectStateChangedClicked(viewHolder: ProjectStateChangedViewHolder?, activity: Activity?)

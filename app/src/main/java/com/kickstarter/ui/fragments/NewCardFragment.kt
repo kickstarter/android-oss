@@ -245,7 +245,7 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
             if (project == null) {
                 fragmentNewCardBinding?.formNewCardLayout?.allowedCardWarning ?.setText(it)
             } else {
-                val ksString = this.viewModel.environment.ksString()
+                val ksString = requireNotNull(this.viewModel.environment.ksString())
                 val country = project.location()?.expandedCountry()
                 fragmentNewCardBinding?.formNewCardLayout?.allowedCardWarning ?.text = ksString.format(getString(it), "project_country", country)
             }

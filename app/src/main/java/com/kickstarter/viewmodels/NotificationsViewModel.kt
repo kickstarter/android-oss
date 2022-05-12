@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels
 
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.neverError
@@ -106,12 +105,12 @@ interface NotificationsViewModel {
         val outputs: Outputs = this
         val errors: Errors = this
 
-        private val client = environment.apiClient()
-        private val currentUser: CurrentUserType = environment.currentUser()
+        private val client = requireNotNull(environment.apiClient())
+        private val currentUser = requireNotNull(environment.currentUser())
 
         init {
 
-            requireNotNull(this.client).fetchCurrentUser()
+            this.client.fetchCurrentUser()
                 .retry(2)
                 .compose(neverError())
                 .compose(bindToLifecycle())
@@ -253,7 +252,7 @@ interface NotificationsViewModel {
         }
 
         private fun updateSettings(user: User): Observable<Notification<User>> {
-            return requireNotNull(this.client).updateUserSettings(user)
+            return this.client.updateUserSettings(user)
                 .materialize()
                 .share()
         }

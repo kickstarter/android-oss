@@ -81,8 +81,8 @@ interface ProfileViewModel {
     }
 
     class ViewModel(environment: Environment) : ActivityViewModel<ProfileActivity>(environment), ProfileAdapter.Delegate, Inputs, Outputs {
-        private val client = environment.apiClient()
-        private val currentUser = environment.currentUser()
+        private val client = requireNotNull(environment.apiClient())
+        private val currentUser = requireNotNull(environment.currentUser())
 
         private val exploreProjectsButtonClicked = PublishSubject.create<Void>()
         private val messagesButtonClicked = PublishSubject.create<Void>()
@@ -108,7 +108,7 @@ interface ProfileViewModel {
 
         init {
 
-            val freshUser = requireNotNull(this.client).fetchCurrentUser()
+            val freshUser = this.client.fetchCurrentUser()
                 .retry(2)
                 .compose(neverError())
             freshUser.subscribe { this.currentUser.refresh(it) }
@@ -123,8 +123,8 @@ interface ProfileViewModel {
                 .nextPage(this.nextPage)
                 .envelopeToListOfData { it.projects() }
                 .envelopeToMoreUrl { env -> env.urls()?.api()?.moreProjects() }
-                .loadWithParams { requireNotNull(this.client).fetchProjects(params).compose(neverError()) }
-                .loadWithPaginationPath { requireNotNull(this.client).fetchProjects(it).compose(neverError()) }
+                .loadWithParams { this.client.fetchProjects(params).compose(neverError()) }
+                .loadWithPaginationPath { this.client.fetchProjects(it).compose(neverError()) }
                 .build()
 
             paginator.isFetching

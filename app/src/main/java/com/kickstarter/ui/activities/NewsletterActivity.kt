@@ -5,8 +5,6 @@ import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityNewsletterBinding
 import com.kickstarter.libs.BaseActivity
-import com.kickstarter.libs.Build
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.SwitchCompatUtils
@@ -20,8 +18,6 @@ import rx.android.schedulers.AndroidSchedulers
 @RequiresActivityViewModel(NewsletterViewModel.ViewModel::class)
 class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
 
-    private var build: Build ? = null
-    private lateinit var currentUserType: CurrentUserType
     private lateinit var ksString: KSString
 
     private lateinit var binding: ActivityNewsletterBinding
@@ -32,9 +28,7 @@ class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
 
         setContentView(binding.root)
 
-        this.build = environment().build()
-        this.currentUserType = environment().currentUser()
-        this.ksString = environment().ksString()
+        this.ksString = requireNotNull(environment().ksString())
 
         this.viewModel.outputs.user()
             .compose(bindToLifecycle())

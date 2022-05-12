@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels
 
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.errors
@@ -68,11 +67,11 @@ interface PrivacyViewModel {
         val outputs: PrivacyViewModel.Outputs = this
         val errors: PrivacyViewModel.Errors = this
 
-        private val client = environment.apiClient()
-        private val currentUser: CurrentUserType = environment.currentUser()
+        private val client = requireNotNull(environment.apiClient())
+        private val currentUser = requireNotNull(environment.currentUser())
 
         init {
-            requireNotNull(this.client).fetchCurrentUser()
+            this.client.fetchCurrentUser()
                 .retry(2)
                 .compose(Transformers.neverError())
                 .compose(bindToLifecycle())
@@ -172,7 +171,7 @@ interface PrivacyViewModel {
         }
 
         private fun updateSettings(user: User): Observable<Notification<User>> {
-            return requireNotNull(this.client).updateUserSettings(user)
+            return this.client.updateUserSettings(user)
                 .materialize()
                 .share()
         }

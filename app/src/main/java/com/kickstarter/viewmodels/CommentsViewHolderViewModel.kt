@@ -137,8 +137,8 @@ interface CommentsViewHolderViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        private val apolloClient = environment.apolloClient()
-        private val currentUser = environment.currentUser()
+        private val apolloClient = requireNotNull(environment.apolloClient())
+        private val currentUser = requireNotNull(environment.currentUser())
 
         init {
 
@@ -377,7 +377,7 @@ interface CommentsViewHolderViewModel {
             postCommentData: PostCommentData,
             errorObservable: BehaviorSubject<Throwable>
         ) =
-            requireNotNull(this.apolloClient).createComment(
+            this.apolloClient.createComment(
                 postCommentData
             ).doOnError {
                 errorObservable.onNext(it)

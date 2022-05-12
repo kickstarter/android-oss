@@ -422,13 +422,13 @@ interface PledgeFragmentViewModel {
         private val isNoReward = BehaviorSubject.create<Boolean>()
         private val projectTitle = BehaviorSubject.create<String>()
 
-        private val apolloClient = environment.apolloClient()
+        private val apolloClient = requireNotNull(environment.apolloClient())
         private val optimizely = environment.optimizely()
-        private val cookieManager = environment.cookieManager()
-        private val currentConfig = environment.currentConfig()
-        private val currentUser = environment.currentUser()
-        private val ksCurrency = environment.ksCurrency()
-        private val sharedPreferences = environment.sharedPreferences()
+        private val cookieManager = requireNotNull(environment.cookieManager())
+        private val currentConfig = requireNotNull(environment.currentConfig())
+        private val currentUser = requireNotNull(environment.currentUser())
+        private val ksCurrency = requireNotNull(environment.ksCurrency())
+        private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val minPledgeByCountry = BehaviorSubject.create<Double>()
         private val shippingRuleUpdated = BehaviorSubject.create<Boolean>(false)
         private val selectedReward = BehaviorSubject.create<Reward>()
@@ -477,7 +477,7 @@ interface PledgeFragmentViewModel {
             val shippingRules = this.selectedReward
                 .filter { RewardUtils.isShippable(it) }
                 .switchMap {
-                    requireNotNull(this.apolloClient).getShippingRules(it).compose(neverError())
+                    this.apolloClient.getShippingRules(it).compose(neverError())
                 }
                 .map { it.shippingRules() }
                 .distinctUntilChanged()
@@ -1242,7 +1242,7 @@ interface PledgeFragmentViewModel {
             // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
             val cookieRefTag = project
                 .take(1)
-                .map { p -> RefTagUtils.storedCookieRefTagForProject(p, requireNotNull(this.cookieManager), requireNotNull(this.sharedPreferences)) }
+                .map { p -> RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences) }
 
             val locationId: Observable<String?> = shippingRule.map { it.location() }
                 .map { it?.id() }
@@ -1272,7 +1272,7 @@ interface PledgeFragmentViewModel {
             }
                 .compose<CreateBackingData>(takeWhen(pledgeButtonClicked))
                 .switchMap {
-                    requireNotNull(this.apolloClient).createBacking(it)
+                    this.apolloClient.createBacking(it)
                         .doOnSubscribe {
                             this.pledgeProgressIsGone.onNext(false)
                             this.pledgeButtonIsEnabled.onNext(false)
@@ -1312,7 +1312,7 @@ interface PledgeFragmentViewModel {
             ) { b, a, l, r, p -> UpdateBackingData(b, a, l, r, p) }
                 .compose<UpdateBackingData>(takeWhen(Observable.merge(updatePledgeClick, updatePaymentClick, fixPaymentClick)))
                 .switchMap {
-                    requireNotNull(this.apolloClient).updateBacking(it)
+                    this.apolloClient.updateBacking(it)
                         .doOnSubscribe {
                             this.pledgeProgressIsGone.onNext(false)
                             this.pledgeButtonIsEnabled.onNext(false)
@@ -1725,7 +1725,7 @@ interface PledgeFragmentViewModel {
                 pledgeFlowContext == PledgeFlowContext.FIX_ERRORED_PLEDGE
 
         private fun storedCards(): Observable<List<StoredCard>> {
-            return requireNotNull(this.apolloClient).getStoredCards()
+            return this.apolloClient.getStoredCards()
                 .compose(bindToLifecycle())
                 .compose(neverError())
         }

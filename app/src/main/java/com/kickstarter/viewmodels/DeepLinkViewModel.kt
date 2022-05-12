@@ -74,10 +74,10 @@ interface DeepLinkViewModel {
         private val startProjectActivityToSave = BehaviorSubject.create<Uri>()
         private val updateUserPreferences = BehaviorSubject.create<Boolean>()
         private val finishDeeplinkActivity = BehaviorSubject.create<Void?>()
-        private val apolloClient = environment.apolloClient()
-        private val apiClientType = environment.apiClient()
-        private val currentUser = environment.currentUser()
-        private val webEndpoint = environment.webEndpoint()
+        private val apolloClient = requireNotNull(environment.apolloClient())
+        private val apiClientType = requireNotNull(environment.apiClient())
+        private val currentUser = requireNotNull(environment.currentUser())
+        private val webEndpoint = requireNotNull(environment.webEndpoint())
         private val projectObservable: Observable<Project>
 
         val outputs: Outputs = this
@@ -187,7 +187,7 @@ interface DeepLinkViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .compose(Transformers.combineLatestPair(updateUserPreferences))
                 .switchMap { it: Pair<User, Boolean?> ->
-                    updateSettings(it.first, requireNotNull(apiClientType))
+                    updateSettings(it.first, apiClientType)
                 }
                 .compose(Transformers.values())
                 .distinctUntilChanged()
@@ -222,10 +222,10 @@ interface DeepLinkViewModel {
                 .filter { it.canUpdateFulfillment() }
                 .switchMap {
                     postBacking(it)
-                        ?.doOnError {
+                        .doOnError {
                             finishDeeplinkActivity.onNext(null)
                         }
-                        ?.distinctUntilChanged()
+                        .distinctUntilChanged()
                 }
                 .compose(bindToLifecycle())
                 .subscribe {
@@ -266,11 +266,11 @@ interface DeepLinkViewModel {
         }
 
         private fun postBacking(it: Project) =
-            apiClientType?.postBacking(it, requireNotNull(it.backing()), true)
-                ?.compose(Transformers.neverError())
-                ?.distinctUntilChanged()
+            apiClientType.postBacking(it, requireNotNull(it.backing()), true)
+                .compose(Transformers.neverError())
+                .distinctUntilChanged()
 
-        private fun getProject(it: String) = requireNotNull(this.apolloClient).getProject(it)
+        private fun getProject(it: String) = apolloClient.getProject(it)
             .materialize()
             .share()
             .distinctUntilChanged()

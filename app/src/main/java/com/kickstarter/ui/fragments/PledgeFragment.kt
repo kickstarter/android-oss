@@ -777,7 +777,7 @@ class PledgeFragment :
     private fun setDeadlineWarning(totalAndDeadline: Pair<String, String>) {
         val total = totalAndDeadline.first
         val deadline = totalAndDeadline.second
-        val ksString = this.viewModel.environment.ksString()
+        val ksString = requireNotNull(this.viewModel.environment.ksString())
         val warning = ksString.format(
             getString(R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline),
             "total", total,
@@ -793,18 +793,18 @@ class PledgeFragment :
     }
 
     private fun setPledgeMaximumText(maximumAmount: String) {
-        val ksString = this.viewModel.environment.ksString()
+        val ksString = requireNotNull(this.viewModel.environment.ksString())
         binding?.pledgeSectionPledgeAmount?. pledgeMaximum ?.text = ksString.format(getString(R.string.Enter_an_amount_less_than_max_pledge), "max_pledge", maximumAmount)
         binding?.pledgeSectionBonusSupport?.bonusMaximum?.text = ksString.format(getString(R.string.Enter_an_amount_less_than_max_pledge), "max_pledge", maximumAmount)
     }
 
     private fun setPledgeMinimumText(minimumAmount: String) {
-        val ksString = this.viewModel.environment.ksString()
+        val ksString = requireNotNull(this.viewModel.environment.ksString())
         binding?.pledgeSectionPledgeAmount?. pledgeMinimum ?.text = ksString.format(getString(R.string.The_minimum_pledge_is_min_pledge), "min_pledge", minimumAmount)
     }
 
     private fun setPlusTextView(textView: TextView, localizedAmount: CharSequence) {
-        val ksString = this.viewModel.environment.ksString()
+        val ksString = requireNotNull(this.viewModel.environment.ksString())
         textView.contentDescription = ksString.format(getString(R.string.plus_shipping_cost), "shipping_cost", localizedAmount.toString())
         textView.text = localizedAmount
     }
@@ -878,9 +878,10 @@ class PledgeFragment :
 
     private fun setConversionTextView(@NonNull amount: String) {
         val currencyConversionString = context?.getString(R.string.About_reward_amount)
+        val ksString = requireNotNull(this.viewModel.environment.ksString())
         binding?.pledgeSectionTotal?.totalAmountConversion ?.text = (
             currencyConversionString?.let {
-                this.viewModel.environment.ksString().format(it, "reward_amount", amount)
+                ksString.format(it, "reward_amount", amount)
             }
             )
     }
@@ -891,7 +892,7 @@ class PledgeFragment :
         val cookiePolicyUrl = UrlUtils.appendPath(baseUrl, HelpActivity.COOKIES)
         val privacyPolicyUrl = UrlUtils.appendPath(baseUrl, HelpActivity.PRIVACY)
 
-        val ksString = (activity?.applicationContext as KSApplication).component().environment().ksString()
+        val ksString = requireNotNull((activity?.applicationContext as? KSApplication)?.component()?.environment()?.ksString())
         val byPledgingYouAgree = getString(R.string.By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy)
 
         val agreementWithUrls = ksString.format(

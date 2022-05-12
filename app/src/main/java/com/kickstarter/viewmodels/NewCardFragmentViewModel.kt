@@ -121,7 +121,7 @@ interface NewCardFragmentViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        private val apolloClient = this.environment.apolloClient()
+        private val apolloClient = requireNotNull(this.environment.apolloClient())
 
         init {
             val modal = arguments()
@@ -215,7 +215,7 @@ interface NewCardFragmentViewModel {
                 .map { token -> token.card?.id?.let { Pair(token.id, it) } }
                 .compose<Pair<Pair<String, String>, Boolean>>(combineLatestPair(reusable))
                 .map { SavePaymentMethodData(stripeToken = it.first.first, stripeCardId = it.first.second, reusable = it.second) }
-                .switchMap { requireNotNull(this.apolloClient).savePaymentMethod(it).materialize() }
+                .switchMap { this.apolloClient.savePaymentMethod(it).materialize() }
                 .share()
 
             saveCardNotification

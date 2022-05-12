@@ -42,8 +42,8 @@ class MessagesActivity : BaseActivity<MessagesViewModel.ViewModel>() {
         binding = MessagesLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        ksCurrency = environment().ksCurrency()
-        ksString = environment().ksString()
+        ksCurrency = requireNotNull(environment().ksCurrency())
+        ksString = requireNotNull(environment().ksString())
         adapter = MessagesAdapter()
 
         binding.messagesRecyclerView.adapter = adapter

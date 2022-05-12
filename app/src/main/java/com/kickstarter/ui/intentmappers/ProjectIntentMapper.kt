@@ -30,7 +30,7 @@ object ProjectIntentMapper {
         val projectFromParceledProject =
             if (intentProject == null) Observable.empty() else Observable.just(intentProject)
                 .switchMap { project: Project? ->
-                    project?.let { requireNotNull(apolloClient).getProject(it) }
+                    project?.let { apolloClient.getProject(it) }
                 }
                 .startWith(intentProject)
                 .retry(3)
@@ -38,7 +38,7 @@ object ProjectIntentMapper {
         val projectFromParceledParam = Observable.just(paramFromIntent(intent))
             .filter { `object`: String? -> ObjectUtils.isNotNull(`object`) }
             .switchMap { slug: String? ->
-                slug?.let { requireNotNull(apolloClient).getProject(it) }
+                slug?.let { apolloClient.getProject(it) }
             }
             .retry(3)
         return projectFromParceledProject

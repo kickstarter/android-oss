@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.loadmore.ApolloPaginate
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -72,8 +71,8 @@ interface ThreadViewModel {
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ThreadActivity>(environment), Inputs, Outputs {
-        private val apolloClient = environment.apolloClient()
-        private val currentUser: CurrentUserType = environment.currentUser()
+        private val apolloClient = requireNotNull(environment.apolloClient())
+        private val currentUser = requireNotNull(environment.currentUser())
 
         private val nextPage = PublishSubject.create<Void>()
         private val onLoadingReplies = PublishSubject.create<Void>()
@@ -395,7 +394,7 @@ interface ThreadViewModel {
             cursor: String?
         ): Observable<CommentEnvelope> {
             return comment.switchMap {
-                return@switchMap requireNotNull(this.apolloClient).getRepliesForComment(it, cursor)
+                return@switchMap this.apolloClient.getRepliesForComment(it, cursor)
             }.doOnError {
                 this.internalError.onNext(it)
             }

@@ -252,13 +252,13 @@ interface ProjectPageViewModel {
         Inputs,
         Outputs {
 
-        private val cookieManager = environment.cookieManager()
-        private val currentUser = environment.currentUser()
-        private val ksCurrency = environment.ksCurrency()
+        private val cookieManager = requireNotNull(environment.cookieManager())
+        private val currentUser = requireNotNull(environment.currentUser())
+        private val ksCurrency = requireNotNull(environment.ksCurrency())
         private val optimizely = environment.optimizely()
-        private val sharedPreferences = environment.sharedPreferences()
-        private val apolloClient = environment.apolloClient()
-        private val currentConfig = environment.currentConfig()
+        private val sharedPreferences = requireNotNull(environment.sharedPreferences())
+        private val apolloClient = requireNotNull(environment.apolloClient())
+        private val currentConfig = requireNotNull(environment.currentConfig())
 
         private val cancelPledgeClicked = PublishSubject.create<Void>()
         private val commentsTextViewClicked = PublishSubject.create<Void>()
@@ -337,7 +337,7 @@ interface ProjectPageViewModel {
                     .compose(takeWhen<Intent, Void>(this.reloadProjectContainerClicked))
             )
                 .switchMap {
-                    ProjectIntentMapper.project(it, requireNotNull(this.apolloClient))
+                    ProjectIntentMapper.project(it, this.apolloClient)
                         .doOnSubscribe {
                             progressBarIsGone.onNext(false)
                         }
@@ -391,7 +391,7 @@ interface ProjectPageViewModel {
             // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
             val cookieRefTag = initialProject
                 .take(1)
-                .map { p -> RefTagUtils.storedCookieRefTagForProject(p, requireNotNull(this.cookieManager), requireNotNull(this.sharedPreferences)) }
+                .map { p -> RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences) }
 
             val refTag = intent()
                 .flatMap { ProjectIntentMapper.refTag(it) }
@@ -449,7 +449,7 @@ interface ProjectPageViewModel {
                 .compose(takeWhen<Project, Void>(refreshProjectEvent))
                 .switchMap {
                     it.slug()?.let { slug ->
-                        requireNotNull(this.apolloClient).getProject(slug)
+                        this.apolloClient.getProject(slug)
                             .doOnSubscribe {
                                 progressBarIsGone.onNext(false)
                             }
@@ -877,7 +877,7 @@ interface ProjectPageViewModel {
                     val pledgeFlowContext = projectDataAndPledgeFlowContext.second
                     // If a cookie hasn't been set for this ref+project then do so.
                     if (data.refTagFromCookie() == null) {
-                        data.refTagFromIntent()?.let { RefTagUtils.storeCookie(it, data.project(), requireNotNull(this.cookieManager), requireNotNull(this.sharedPreferences)) }
+                        data.refTagFromIntent()?.let { RefTagUtils.storeCookie(it, data.project(), this.cookieManager, this.sharedPreferences) }
                     }
 
                     val dataWithStoredCookieRefTag = storeCurrentCookieRefTag(data)
@@ -956,7 +956,7 @@ interface ProjectPageViewModel {
         private fun storeCurrentCookieRefTag(data: ProjectData): ProjectData {
             return data
                 .toBuilder()
-                .refTagFromCookie(RefTagUtils.storedCookieRefTagForProject(data.project(), requireNotNull(this.cookieManager), requireNotNull(this.sharedPreferences)))
+                .refTagFromCookie(RefTagUtils.storedCookieRefTagForProject(data.project(), cookieManager, sharedPreferences))
                 .build()
         }
 
@@ -1188,12 +1188,12 @@ interface ProjectPageViewModel {
         }
 
         private fun saveProject(project: Project): Observable<Project> {
-            return requireNotNull(this.apolloClient).watchProject(project)
+            return this.apolloClient.watchProject(project)
                 .compose(neverError())
         }
 
         private fun unSaveProject(project: Project): Observable<Project> {
-            return requireNotNull(this.apolloClient).unWatchProject(project).compose(neverError())
+            return this.apolloClient.unWatchProject(project).compose(neverError())
         }
 
         private fun toggleProjectSave(project: Project): Observable<Project> {

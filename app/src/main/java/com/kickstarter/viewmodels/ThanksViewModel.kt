@@ -74,14 +74,13 @@ interface ThanksViewModel {
         ActivityViewModel<ThanksActivity?>(environment),
         Inputs,
         Outputs {
-        private val apiClient = environment.apiClient()
-        private val apolloClient = environment.apolloClient()
+        private val apiClient = requireNotNull(environment.apiClient())
+        private val apolloClient = requireNotNull(environment.apolloClient())
         private val hasSeenAppRatingPreference = environment.hasSeenAppRatingPreference()
         private val hasSeenGamesNewsletterPreference = environment.hasSeenGamesNewsletterPreference()
-        private val currentUser = environment.currentUser()
-        private val optimizely = environment.optimizely()
-        private val sharedPreferences = environment.sharedPreferences()
-        private val cookieManager = environment.cookieManager()
+        private val currentUser = requireNotNull(environment.currentUser())
+        private val sharedPreferences = requireNotNull(environment.sharedPreferences())
+        private val cookieManager = requireNotNull(environment.cookieManager())
 
         private val categoryCardViewHolderClicked = PublishSubject.create<Category>()
         private val closeButtonClicked = PublishSubject.create<Void?>()
@@ -112,7 +111,7 @@ interface ThanksViewModel {
 
             val rootCategory = project
                 .switchMap {
-                    rootCategory(it, requireNotNull(apolloClient))
+                    rootCategory(it, apolloClient)
                 }
                 .compose(Transformers.neverError())
                 .filter {
@@ -166,7 +165,7 @@ interface ThanksViewModel {
             val recommendedProjects = project.switchMap {
                 relatedProjects(
                     it,
-                    requireNotNull(apiClient)
+                    apiClient
                 )
             }.filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
@@ -231,7 +230,7 @@ interface ThanksViewModel {
             currentUser.observable()
                 .filter { ObjectUtils.isNotNull(it) }
                 .compose(Transformers.takeWhen(signupToGamesNewsletterClick))
-                .flatMap { signupToGamesNewsletter(it, requireNotNull(apiClient)) }
+                .flatMap { signupToGamesNewsletter(it, apiClient) }
                 .compose(bindToLifecycle())
                 .subscribe { signedUpToGamesNewsletter.onNext(it) }
 
@@ -275,8 +274,8 @@ interface ThanksViewModel {
 
                     val cookieRefTag = RefTagUtils.storedCookieRefTagForProject(
                         dataCheckoutProjectPair.second,
-                        requireNotNull(cookieManager),
-                        requireNotNull(sharedPreferences)
+                        cookieManager,
+                        sharedPreferences
                     )
 
                     val projectData = builder()
@@ -369,12 +368,12 @@ interface ThanksViewModel {
         override fun showSavedPrompt(): Observable<Void> = this.showSavedPrompt
 
         private fun saveProject(project: Project): Observable<Project> {
-            return requireNotNull(this.apolloClient).watchProject(project)
+            return this.apolloClient.watchProject(project)
                 .compose(Transformers.neverError())
         }
 
         private fun unSaveProject(project: Project): Observable<Project> {
-            return requireNotNull(this.apolloClient).unWatchProject(project).compose(Transformers.neverError())
+            return this.apolloClient.unWatchProject(project).compose(Transformers.neverError())
         }
 
         private fun toggleProjectSave(project: Project): Observable<Project> {

@@ -76,8 +76,8 @@ interface NewsletterViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<NewsletterActivity>(environment), Inputs, Errors, Outputs {
 
-        private val client = environment.apiClient()
-        private val currentUser = environment.currentUser()
+        private val client = requireNotNull(environment.apiClient())
+        private val currentUser = requireNotNull(environment.currentUser())
 
         private val newsletterInput = PublishSubject.create<Pair<Boolean, Newsletter>>()
         private val userInput = PublishSubject.create<User>()
@@ -95,7 +95,7 @@ interface NewsletterViewModel {
 
         init {
 
-            requireNotNull(this.client).fetchCurrentUser()
+            this.client.fetchCurrentUser()
                 .retry(2)
                 .compose(Transformers.neverError())
                 .compose(bindToLifecycle())
@@ -243,7 +243,7 @@ interface NewsletterViewModel {
         }
 
         private fun updateSettings(user: User): Observable<Notification<User>> {
-            return requireNotNull(this.client).updateUserSettings(user)
+            return this.client.updateUserSettings(user)
                 .materialize()
                 .share()
         }

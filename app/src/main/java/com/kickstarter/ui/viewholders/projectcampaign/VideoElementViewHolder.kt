@@ -23,7 +23,7 @@ class VideoElementViewHolder(
     val requireActivity: FragmentActivity
 ) : KSViewHolder(binding.root) {
 
-    private var build: Build ? = null
+    private lateinit var build: Build
 
     private val thumbnail = binding.thumbnail
     private val loadingIndicator = binding.loadingIndicator
@@ -60,7 +60,7 @@ class VideoElementViewHolder(
     }
 
     fun configure(element: VideoViewElement) {
-        build = environment().build()
+        build = requireNotNull(environment().build())
         thumbnail.loadImage(element.thumbnailUrl, context())
         loadVideo(element.sourceUrl, element.seekPosition)
         fullscreenButton = videoPlayerView.findViewById(R.id.exo_fullscreen_icon)

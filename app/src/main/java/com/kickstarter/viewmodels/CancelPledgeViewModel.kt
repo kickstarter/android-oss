@@ -63,8 +63,8 @@ interface CancelPledgeViewModel {
         private val showServerError = PublishSubject.create<Void>()
         private val success = BehaviorSubject.create<Void>()
 
-        private val apolloClient = environment.apolloClient()
-        private val ksCurrency = environment.ksCurrency()
+        private val apolloClient = requireNotNull(environment.apolloClient())
+        private val ksCurrency = requireNotNull(environment.ksCurrency())
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -123,7 +123,7 @@ interface CancelPledgeViewModel {
         }
 
         private fun cancelBacking(note: String, backing: Backing): Observable<Notification<Any>> {
-            return requireNotNull(this.apolloClient).cancelBacking(backing, note)
+            return this.apolloClient.cancelBacking(backing, note)
                 .doOnSubscribe {
                     this.progressBarIsVisible.onNext(true)
                     this.cancelButtonIsVisible.onNext(false)

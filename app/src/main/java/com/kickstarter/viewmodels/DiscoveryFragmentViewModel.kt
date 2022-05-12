@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels
 
 import android.util.Pair
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.RefTag
@@ -116,13 +115,13 @@ interface DiscoveryFragmentViewModel {
         FragmentViewModel<DiscoveryFragment?>(environment),
         Inputs,
         Outputs {
-        private val apiClient = environment.apiClient()
-        private val apolloClient = environment.apolloClient()
+        private val apiClient = requireNotNull(environment.apiClient())
+        private val apolloClient = requireNotNull(environment.apolloClient())
         private val activitySamplePreference = environment.activitySamplePreference()
         private val optimizely = environment.optimizely()
-        private val sharedPreferences = environment.sharedPreferences()
-        private val cookieManager = environment.cookieManager()
-        private val currentUser: CurrentUserType = environment.currentUser()
+        private val sharedPreferences = requireNotNull(environment.sharedPreferences())
+        private val cookieManager = requireNotNull(environment.cookieManager())
+        private val currentUser = requireNotNull(environment.currentUser())
         @JvmField
         val inputs: Inputs = this
         @JvmField
@@ -227,8 +226,8 @@ interface DiscoveryFragmentViewModel {
                         RefTagUtils.projectAndRefTagFromParamsAndProject(it.first, it.second)
                     val cookieRefTag = RefTagUtils.storedCookieRefTagForProject(
                         it.second,
-                        requireNotNull(cookieManager),
-                        requireNotNull(sharedPreferences)
+                        cookieManager,
+                        sharedPreferences
                     )
                     val projectData = builder()
                         .refTagFromIntent(refTag.second)
@@ -466,7 +465,7 @@ interface DiscoveryFragmentViewModel {
          * @return Observable<DiscoverEnvelope>
          </DiscoverEnvelope> */
         private fun makeCallWithParams(discoveryParamsStringPair: Pair<DiscoveryParams, String?>): Observable<DiscoverEnvelope> {
-            return requireNotNull(apolloClient).getProjects(
+            return apolloClient.getProjects(
                 discoveryParamsStringPair.first,
                 discoveryParamsStringPair.second
             ).compose(Transformers.neverError())
@@ -477,7 +476,7 @@ interface DiscoveryFragmentViewModel {
         }
 
         private fun fetchActivity(): Observable<Activity?>? {
-            return requireNotNull(apiClient).fetchActivities(1)
+            return apiClient.fetchActivities(1)
                 .distinctUntilChanged()
                 .map { it.activities() }
                 .map { it.firstOrNull() }
@@ -506,12 +505,12 @@ interface DiscoveryFragmentViewModel {
         }
 
         private fun saveProject(project: Project): Observable<Project> {
-            return requireNotNull(this.apolloClient).watchProject(project)
+            return this.apolloClient.watchProject(project)
                 .compose(Transformers.neverError())
         }
 
         private fun unSaveProject(project: Project): Observable<Project> {
-            return requireNotNull(this.apolloClient).unWatchProject(project).compose(Transformers.neverError())
+            return this.apolloClient.unWatchProject(project).compose(Transformers.neverError())
         }
 
         private fun toggleProjectSave(project: Project): Observable<Project> {

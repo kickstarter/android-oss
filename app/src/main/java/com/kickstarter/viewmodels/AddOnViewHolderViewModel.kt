@@ -5,7 +5,6 @@ import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.ObjectUtils
@@ -80,7 +79,7 @@ interface AddOnViewHolderViewModel {
      */
     class ViewModel(@NonNull environment: Environment) : ActivityViewModel<RewardViewHolder>(environment), Inputs, Outputs {
 
-        private val ksCurrency: KSCurrency = environment.ksCurrency()
+        private val ksCurrency = requireNotNull(environment.ksCurrency())
         private val isAddonTitleGone = BehaviorSubject.create<Boolean>()
         private val projectDataAndReward = PublishSubject.create<Pair<ProjectData, Reward>>()
         private val conversion = BehaviorSubject.create<String>()

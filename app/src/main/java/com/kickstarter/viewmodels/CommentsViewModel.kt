@@ -74,8 +74,8 @@ interface CommentsViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
 
-        private val currentUser = environment.currentUser()
-        private val apolloClient = environment.apolloClient()
+        private val apolloClient = requireNotNull(environment.apolloClient())
+        private val currentUser = requireNotNull(environment.currentUser())
         val inputs: Inputs = this
         val outputs: Outputs = this
         private val backPressed = PublishSubject.create<Void>()
@@ -155,7 +155,7 @@ interface CommentsViewModel {
             }.flatMap {
                 it?.either<Observable<Project?>>(
                     { value: Project? -> Observable.just(value) },
-                    { u: Update? -> requireNotNull(apolloClient).getProject(u?.projectId().toString()).compose(Transformers.neverError()) }
+                    { u: Update? -> apolloClient.getProject(u?.projectId().toString()).compose(Transformers.neverError()) }
                 )
             }.map {
                 requireNotNull(it)
@@ -220,7 +220,7 @@ interface CommentsViewModel {
             deepLinkCommentableId
                 .compose(takePairWhen(projectOrUpdateComment))
                 .switchMap {
-                    return@switchMap requireNotNull(apolloClient).getComment(it.first)
+                    return@switchMap apolloClient.getComment(it.first)
                 }.compose(Transformers.neverError())
                 .compose(combineLatestPair(deepLinkCommentableId))
                 .compose(combineLatestPair(commentableId))
@@ -483,9 +483,9 @@ interface CommentsViewModel {
         ): Observable<CommentEnvelope> {
             return projectOrUpdate.switchMap {
                 return@switchMap if (it.second?.id() != null) {
-                    requireNotNull(apolloClient).getProjectUpdateComments(it.second?.id().toString(), cursor)
+                    apolloClient.getProjectUpdateComments(it.second?.id().toString(), cursor)
                 } else {
-                    requireNotNull(apolloClient).getProjectComments(it.first?.slug() ?: "", cursor)
+                    apolloClient.getProjectComments(it.first?.slug() ?: "", cursor)
                 }
             }.doOnNext {
                 commentableId.onNext(it.commentableId)

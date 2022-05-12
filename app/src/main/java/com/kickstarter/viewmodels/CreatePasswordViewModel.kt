@@ -60,8 +60,8 @@ interface CreatePasswordViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        private val apolloClient = this.environment.apolloClient()
-        private val analytics = this.environment.analytics()
+        private val apolloClient = requireNotNull(this.environment.apolloClient())
+        private val analytics = requireNotNull(this.environment.analytics())
 
         init {
 
@@ -102,7 +102,7 @@ interface CreatePasswordViewModel {
         }
 
         private fun submit(createPassword: CreatePasswordViewModel.ViewModel.CreatePassword): Observable<CreatePasswordMutation.Data> {
-            return requireNotNull(this.apolloClient).createPassword(createPassword.newPassword, createPassword.confirmPassword)
+            return this.apolloClient.createPassword(createPassword.newPassword, createPassword.confirmPassword)
                 .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
                 .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
         }

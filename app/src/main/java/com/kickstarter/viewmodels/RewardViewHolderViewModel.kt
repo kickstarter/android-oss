@@ -5,9 +5,7 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
@@ -138,8 +136,8 @@ interface RewardViewHolderViewModel {
 
     class ViewModel(@NonNull environment: Environment) :
         ActivityViewModel<RewardViewHolder>(environment), Inputs, Outputs {
-        private val currentUser: CurrentUserType = environment.currentUser()
-        private val ksCurrency: KSCurrency = environment.ksCurrency()
+        private val currentUser = requireNotNull(environment.currentUser())
+        private val ksCurrency = requireNotNull(environment.ksCurrency())
         private val optimizely = environment.optimizely()
 
         private val projectDataAndReward = PublishSubject.create<Pair<ProjectData, Reward>>()

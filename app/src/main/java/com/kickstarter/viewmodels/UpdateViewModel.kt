@@ -76,7 +76,7 @@ interface UpdateViewModel {
 
     class ViewModel(environment: Environment) : ActivityViewModel<UpdateActivity?>(environment), Inputs, Outputs {
 
-        private val client = environment.apiClient()
+        private val client = requireNotNull(environment.apiClient())
         private val externalLinkActivated = PublishSubject.create<Request?>()
         private val goToCommentsRequest = PublishSubject.create<Request>()
         private val goToProjectRequest = PublishSubject.create<Request>()
@@ -127,7 +127,7 @@ interface UpdateViewModel {
             val project = intent()
                 .flatMap {
                     ProjectIntentMapper
-                        .project(it, requireNotNull(this.client))
+                        .project(it, client)
                         .compose(Transformers.neverError())
                 }
                 .share()
@@ -145,7 +145,7 @@ interface UpdateViewModel {
                     Pair(requireNotNull(it.second.slug()), requireNotNull(it.first))
                 }
                 .switchMap {
-                    requireNotNull(this.client).fetchUpdate(it.first, it.second).compose(Transformers.neverError())
+                    client.fetchUpdate(it.first, it.second).compose(Transformers.neverError())
                 }
                 .share()
 
@@ -168,7 +168,7 @@ interface UpdateViewModel {
             val anotherUpdate = goToUpdateRequest
                 .map { projectUpdateParams(it) }
                 .switchMap {
-                    requireNotNull(this.client).fetchUpdate(it.first, it.second).compose(Transformers.neverError())
+                    client.fetchUpdate(it.first, it.second).compose(Transformers.neverError())
                 }
                 .share()
 

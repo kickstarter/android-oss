@@ -58,8 +58,8 @@ interface MessageCreatorViewModel {
         private val showSentError = BehaviorSubject.create<Int>()
         private val showSentSuccess = BehaviorSubject.create<Int>()
 
-        private val apiClient = environment.apiClient()
-        private val apolloClient = environment.apolloClient()
+        private val apiClient = requireNotNull(environment.apiClient())
+        private val apolloClient = requireNotNull(environment.apolloClient())
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -105,7 +105,7 @@ interface MessageCreatorViewModel {
         }
 
         private fun fetchThread(conversationId: Long): Observable<MessageThread> {
-            val fetchThreadNotification = requireNotNull(this.apiClient).fetchMessagesForThread(conversationId)
+            val fetchThreadNotification = this.apiClient.fetchMessagesForThread(conversationId)
                 .compose(bindToLifecycle())
                 .materialize()
                 .share()
@@ -121,7 +121,7 @@ interface MessageCreatorViewModel {
         }
 
         private fun sendMessage(sendMessage: SendMessage): Observable<Long> {
-            return requireNotNull(this.apolloClient).sendMessage(sendMessage.project, sendMessage.project.creator(), sendMessage.body)
+            return this.apolloClient.sendMessage(sendMessage.project, sendMessage.project.creator(), sendMessage.body)
                 .doOnSubscribe {
                     this.progressBarIsVisible.onNext(true)
                     this.sendButtonIsEnabled.onNext(false)

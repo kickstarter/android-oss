@@ -55,8 +55,8 @@ interface SearchViewModel {
         Inputs,
         Outputs {
         private val discoverEnvelope = PublishSubject.create<DiscoverEnvelope>()
-        private val sharedPreferences: SharedPreferences?
-        private val cookieManager: CookieManager?
+        private val sharedPreferences: SharedPreferences
+        private val cookieManager: CookieManager
 
         /**
          * Returns a project and its appropriate ref tag given its location in a list of popular projects or search results.
@@ -132,10 +132,10 @@ interface SearchViewModel {
         }
 
         init {
-            val apiClient = environment.apiClient()
+            val apiClient = requireNotNull(environment.apiClient())
             val scheduler = environment.scheduler()
-            sharedPreferences = environment.sharedPreferences()
-            cookieManager = environment.cookieManager()
+            sharedPreferences = requireNotNull(environment.sharedPreferences())
+            cookieManager = requireNotNull(environment.cookieManager())
 
             val searchParams = search
                 .filter { ObjectUtils.isNotNull(it) }
@@ -169,10 +169,10 @@ interface SearchViewModel {
                     )
                 }
                 .loadWithParams {
-                    requireNotNull(apiClient).fetchProjects(it)
+                    apiClient.fetchProjects(it)
                 }
                 .loadWithPaginationPath {
-                    requireNotNull(apiClient).fetchProjects(it)
+                    apiClient.fetchProjects(it)
                 }
                 .build()
 
@@ -210,8 +210,8 @@ interface SearchViewModel {
                     )
                     val cookieRefTag = RefTagUtils.storedCookieRefTagForProject(
                         projectDiscoveryParamsPair.first.second,
-                        requireNotNull(cookieManager),
-                        requireNotNull(sharedPreferences)
+                        cookieManager,
+                        sharedPreferences
                     )
                     val projectData = builder()
                         .refTagFromIntent(refTag.second)

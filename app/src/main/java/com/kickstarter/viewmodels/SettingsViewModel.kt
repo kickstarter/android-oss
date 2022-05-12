@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels
 
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.models.User
@@ -40,9 +39,9 @@ interface SettingsViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<SettingsActivity>(environment), Inputs, Outputs {
 
-        private val client = environment.apiClient()
+        private val client = requireNotNull(environment.apiClient())
         private val confirmLogoutClicked = PublishSubject.create<Void>()
-        private val currentUser: CurrentUserType = environment.currentUser()
+        private val currentUser = requireNotNull(environment.currentUser())
         private val logout = BehaviorSubject.create<Void>()
         private val showConfirmLogoutPrompt = BehaviorSubject.create<Boolean>()
         private val userOutput = BehaviorSubject.create<User>()
@@ -56,7 +55,7 @@ interface SettingsViewModel {
         private val analytics = this.environment.analytics()
         init {
 
-            requireNotNull(this.client).fetchCurrentUser()
+            this.client.fetchCurrentUser()
                 .retry(2)
                 .compose(Transformers.neverError())
                 .compose(bindToLifecycle())

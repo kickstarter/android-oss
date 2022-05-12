@@ -20,7 +20,7 @@ import com.kickstarter.viewmodels.ThanksShareHolderViewModel
 
 class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSViewHolder(binding.root) {
     private val viewModel = ThanksShareHolderViewModel.ViewModel(environment())
-    private val ksString = environment().ksString()
+    private val ksString = requireNotNull(environment().ksString())
     private val shareDialog: ShareDialog
 
     init {

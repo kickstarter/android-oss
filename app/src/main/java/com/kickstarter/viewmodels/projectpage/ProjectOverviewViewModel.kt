@@ -2,11 +2,8 @@ package com.kickstarter.viewmodels.projectpage
 
 import android.util.Pair
 import com.kickstarter.R
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
-import com.kickstarter.libs.KSCurrency
-import com.kickstarter.libs.KSString
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -185,11 +182,11 @@ interface ProjectOverviewViewModel {
 
     class ViewModel(environment: Environment) : FragmentViewModel<ProjectOverviewFragment?>(environment), Inputs, Outputs {
 
-        private val apolloClient = environment.apolloClient()
-        private val currentUser: CurrentUserType = environment.currentUser()
-        private val ksCurrency: KSCurrency = environment.ksCurrency()
+        private val apolloClient = requireNotNull(environment.apolloClient())
+        private val currentUser = requireNotNull(environment.currentUser())
+        private val ksCurrency = requireNotNull(environment.ksCurrency())
         private val optimizely = environment.optimizely()
-        val kSString: KSString = environment.ksString()
+        val kSString = requireNotNull(environment.ksString())
 
         // Inputs
         private val projectData = PublishSubject.create<ProjectData>()
@@ -529,7 +526,7 @@ interface ProjectOverviewViewModel {
                 .distinctUntilChanged()
                 .map { it.slug() }
                 .switchMap { slug ->
-                    requireNotNull(apolloClient).creatorDetails(slug ?: "")
+                    apolloClient.creatorDetails(slug ?: "")
                         .doOnSubscribe { creatorDetailsLoadingContainerIsVisible.onNext(true) }
                         .doAfterTerminate { creatorDetailsLoadingContainerIsVisible.onNext(false) }
                         .materialize()

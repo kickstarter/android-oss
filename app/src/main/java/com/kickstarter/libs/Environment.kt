@@ -19,15 +19,15 @@ class Environment private constructor(
     private val build: Build?,
     private val buildCheck: BuildCheck?,
     private val cookieManager: CookieManager?,
-    private val currentConfig: CurrentConfigType,
-    private val currentUser: CurrentUserType,
+    private val currentConfig: CurrentConfigType?,
+    private val currentUser: CurrentUserType?,
     private val firstSessionPreference: BooleanPreferenceType?,
     private val gson: Gson?,
     private val hasSeenAppRatingPreference: BooleanPreferenceType?,
     private val hasSeenGamesNewsletterPreference: BooleanPreferenceType?,
     private val internalTools: InternalToolsType?,
-    private val ksCurrency: KSCurrency,
-    private val ksString: KSString,
+    private val ksCurrency: KSCurrency?,
+    private val ksString: KSString?,
     private val analytics: AnalyticEvents?,
     private val logout: Logout?,
     private val optimizely: ExperimentsClientType?,
@@ -70,15 +70,15 @@ class Environment private constructor(
         private var build: Build? = null,
         private var buildCheck: BuildCheck? = null,
         private var cookieManager: CookieManager? = null,
-        private var currentConfig: CurrentConfigType,
-        private var currentUser: CurrentUserType,
+        private var currentConfig: CurrentConfigType? = null,
+        private var currentUser: CurrentUserType? = null,
         private var firstSessionPreference: BooleanPreferenceType? = null,
         private var gson: Gson? = null,
         private var hasSeenAppRatingPreference: BooleanPreferenceType? = null,
         private var hasSeenGamesNewsletterPreference: BooleanPreferenceType? = null,
         private var internalTools: InternalToolsType? = null,
-        private var ksCurrency: KSCurrency,
-        private var ksString: KSString,
+        private var ksCurrency: KSCurrency? = null,
+        private var ksString: KSString? = null,
         private var analytics: AnalyticEvents? = null,
         private var logout: Logout? = null,
         private var optimizely: ExperimentsClientType? = null,
@@ -171,18 +171,8 @@ class Environment private constructor(
 
     companion object {
         @JvmStatic
-        fun builder(
-            ksCurrency: KSCurrency,
-            ksString: KSString,
-            currentConfig: CurrentConfigType,
-            currentUser: CurrentUserType
-        ): Builder {
-            return Builder(
-                ksCurrency = ksCurrency,
-                ksString = ksString,
-                currentConfig = currentConfig,
-                currentUser = currentUser,
-            )
+        fun builder(): Builder {
+            return Builder()
         }
     }
 }

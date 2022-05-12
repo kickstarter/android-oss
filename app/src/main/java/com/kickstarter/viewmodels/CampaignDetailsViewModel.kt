@@ -35,9 +35,9 @@ interface CampaignDetailsViewModel {
     }
 
     class ViewModel(environment: Environment) : ActivityViewModel<CampaignDetailsActivity>(environment), Inputs, Outputs {
-        private val cookieManager = environment.cookieManager()
-        private val sharedPreferences = environment.sharedPreferences()
-        private val currentUser = environment.currentUser()
+        private val cookieManager = requireNotNull(environment.cookieManager())
+        private val sharedPreferences = requireNotNull(environment.sharedPreferences())
+        private val currentUser = requireNotNull(environment.currentUser())
         private val optimizely = environment.optimizely()
 
         private val pledgeButtonClicked = PublishSubject.create<Void>()
@@ -55,7 +55,7 @@ interface CampaignDetailsViewModel {
                 .ofType(ProjectData::class.java)
 
             projectData
-                .map { it.storeCurrentCookieRefTag(requireNotNull(cookieManager), requireNotNull(sharedPreferences)) }
+                .map { it.storeCurrentCookieRefTag(cookieManager, sharedPreferences) }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.analyticEvents.trackProjectScreenViewed(it, ContextSectionName.CAMPAIGN.contextName)

@@ -1,13 +1,13 @@
 package com.kickstarter.mock.factories
 
+import com.kickstarter.libs.ReferrerType
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope.CumulativeStats
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope.FundingDateStats
-import com.kickstarter.services.apiresponses.ProjectStatsEnvelope.ReferrerStats
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope.ReferralAggregateStats
+import com.kickstarter.services.apiresponses.ProjectStatsEnvelope.ReferrerStats
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope.RewardStats
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope.VideoStats
-import com.kickstarter.libs.ReferrerType
 import org.joda.time.DateTime
 
 object ProjectStatsEnvelopeFactory {

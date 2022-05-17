@@ -64,7 +64,7 @@ public class DashboardRewardStatsRowHolderViewModelTest extends KSRobolectricTes
     final ProjectStatsEnvelope.RewardStats rewardStats = ProjectStatsEnvelopeFactory.RewardStatsFactory
       .rewardStats()
       .toBuilder()
-      .pledged(50)
+      .pledged(50f)
       .build();
 
     setUpEnvironment(environment());
@@ -78,7 +78,7 @@ public class DashboardRewardStatsRowHolderViewModelTest extends KSRobolectricTes
     final ProjectStatsEnvelope.RewardStats rewardStats = ProjectStatsEnvelopeFactory.RewardStatsFactory
       .rewardStats()
       .toBuilder()
-      .pledged(50)
+      .pledged(50f)
       .build();
 
     setUpEnvironment(environment());

@@ -57,7 +57,7 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
   public void onActivityResumed(final @NonNull Activity activity) {
     if(this.isInBackground) {
       // Facebook: logs 'install' and 'app activate' App Events.
-      AppEventsLogger.activateApp(activity.getApplication());
+      //AppEventsLogger.activateApp(activity.getApplication());
 
       refreshConfigFile();
       refreshUser();

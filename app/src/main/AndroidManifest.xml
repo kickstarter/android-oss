@@ -28,6 +28,9 @@
         android:supportsRtl="false"
         android:theme="@style/KSTheme"
         tools:replace="android:supportsRtl">
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
         <!-- ACTIVITIES -->
         <activity
             android:name=".ui.activities.AccountActivity"
@@ -289,9 +292,7 @@
             android:authorities="com.facebook.app.FacebookContentProvider${applicationId}"
             android:exported="true"
             tools:ignore="ExportedContentProvider" /> <!-- META-DATA -->
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
+
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
             android:value="true" />

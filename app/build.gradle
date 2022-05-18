@@ -41,12 +41,12 @@ if (file('signing.gradle').exists()) {
 
 
 android {
-    compileSdkVersion 31
+    compileSdkPreview "Tiramisu"
 
     defaultConfig {
         applicationId "com.kickstarter"
         minSdkVersion 23
-        targetSdkVersion 31
+        targetSdkPreview "Tiramisu"
         testApplicationId "com.kickstarter.internal.debug.test"
         testInstrumentationRunner "com.kickstarter.screenshoot.testing.KSScreenShotTestRunner"
 
@@ -203,7 +203,7 @@ dependencies {
     implementation 'androidx.work:work-runtime-ktx:2.7.1'
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
     implementation 'com.apollographql.apollo:apollo-runtime:2.5.11'
-    implementation 'com.facebook.android:facebook-android-sdk:12.0.1'
+    implementation 'com.facebook.android:facebook-android-sdk:13.2.0'
     implementation 'com.google.android.play:core-ktx:1.8.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     final auto_parcel_version = "0.3.1"
@@ -211,7 +211,7 @@ dependencies {
     kapt "com.github.frankiesardo:auto-parcel-processor:$auto_parcel_version"
     implementation "com.google.android.exoplayer:exoplayer:2.16.1"
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
-    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'com.google.android.material:material:1.6.0'
     final dagger_version = "2.41"
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
@@ -221,7 +221,7 @@ dependencies {
     implementation "com.jakewharton.rxbinding:rxbinding-recyclerview-v7:$rx_binding_version"
     implementation "com.jakewharton.rxbinding:rxbinding-support-v4:$rx_binding_version"
     implementation "com.jakewharton.timber:timber:5.0.1"
-    implementation 'com.optimizely.ab:android-sdk:3.11.1'
+    implementation 'com.optimizely.ab:android-sdk:3.13.2'
     implementation "com.stripe:stripe-android:19.2.0"
     final okhttp_version = "4.10.+"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
@@ -243,7 +243,7 @@ dependencies {
     implementation "androidx.datastore:datastore-preferences:1.0.0"
 
     // Analytics Segment-Braze
-    implementation 'com.segment.analytics.android:analytics:4.10.0'
+    implementation 'com.segment.analytics.android:analytics:4.10.4'
     implementation 'com.appboy:appboy-segment-integration:10.0.0'
 
     // Security
@@ -256,16 +256,16 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
 
     // GLIDE
-    implementation 'com.github.bumptech.glide:glide:4.12.0'
-    kapt 'com.github.bumptech.glide:compiler:4.12.0'
+    implementation 'com.github.bumptech.glide:glide:4.13.2'
+    kapt 'com.github.bumptech.glide:compiler:4.13.2'
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:29.2.1')
-    implementation 'com.google.firebase:firebase-crashlytics'
-    implementation 'com.google.firebase:firebase-analytics-ktx'
-    implementation "com.google.firebase:firebase-messaging"
-    implementation 'com.google.firebase:firebase-inappmessaging-display'
-    implementation 'com.google.firebase:firebase-perf'
+    implementation platform('com.google.firebase:firebase-bom:30.0.1')
+    implementation 'com.google.firebase:firebase-crashlytics:18.2.10'
+    implementation 'com.google.firebase:firebase-analytics-ktx:21.0.0'
+    implementation 'com.google.firebase:firebase-messaging:23.0.4'
+    implementation 'com.google.firebase:firebase-inappmessaging-display:20.1.2'
+    implementation 'com.google.firebase:firebase-perf:20.0.6'
 
     // Zoom on Images
     implementation 'io.github.aghajari:ZoomHelper:1.1.0'

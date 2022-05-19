@@ -14,7 +14,6 @@ import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.extensions.isEmail
 import com.kickstarter.libs.utils.extensions.isValidPassword
-import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.activities.ChangeEmailActivity
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -94,7 +93,7 @@ interface ChangeEmailViewModel {
 
         private val error = BehaviorSubject.create<String>()
 
-        private val apolloClient: ApolloClientType = environment.apolloClient()
+        private val apolloClient = requireNotNull(environment.apolloClient())
 
         init {
 

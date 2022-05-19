@@ -1317,5 +1317,5 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     private fun expectedCurrency(environment: Environment, project: Project, amount: Double): String =
-        environment.ksCurrency().format(amount, project, RoundingMode.HALF_UP)
+        requireNotNull(environment.ksCurrency()).format(amount, project, RoundingMode.HALF_UP)
 }

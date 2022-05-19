@@ -30,7 +30,7 @@ interface RootCommentViewHolderViewModel {
         private val onShowCanceledPledgeRootCommentClicked = PublishSubject.create<Void>()
         private val authorBadge = BehaviorSubject.create<CommentCardBadge>()
 
-        private val currentUser = environment.currentUser()
+        private val currentUser = requireNotNull(environment.currentUser())
 
         private val bindRootComment = BehaviorSubject.create<CommentCardData>()
         private val showCanceledPledgeRootComment = PublishSubject.create<CommentCardStatus>()

@@ -22,7 +22,7 @@ import com.kickstarter.viewmodels.CreatePasswordViewModel
 class CreatePasswordActivity : BaseActivity<CreatePasswordViewModel.ViewModel>() {
 
     private var saveEnabled = false
-    private lateinit var logout: Logout
+    private var logout: Logout? = null
 
     private lateinit var binding: ActivityCreatePasswordBinding
 
@@ -94,7 +94,7 @@ class CreatePasswordActivity : BaseActivity<CreatePasswordViewModel.ViewModel>()
     }
 
     private fun logout(email: String) {
-        this.logout.execute()
+        this.logout?.execute()
         ApplicationUtils.startNewDiscoveryActivity(this)
         startActivity(
             Intent(this, LoginActivity::class.java)

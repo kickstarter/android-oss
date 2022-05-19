@@ -3,10 +3,8 @@ package com.kickstarter.viewmodels
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Config
-import com.kickstarter.libs.CurrentConfigType
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.ExperimentsClientType
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.model.FeatureFlagsModel
 import com.kickstarter.ui.activities.FeatureFlagsActivity
 import rx.Observable
@@ -24,9 +22,9 @@ interface FeatureFlagsViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<FeatureFlagsActivity>(environment), Inputs, Outputs {
 
-        private val currentConfig: CurrentConfigType = environment.currentConfig()
-        private val currentUser: CurrentUserType = environment.currentUser()
-        private val optimizely: ExperimentsClientType = environment.optimizely()
+        private val currentConfig = requireNotNull(environment.currentConfig())
+        private val currentUser = requireNotNull(environment.currentUser())
+        private val optimizely = environment.optimizely()
 
         private val configFeatures = BehaviorSubject.create<List<FeatureFlagsModel>>()
         private val optimizelyFeatures = BehaviorSubject.create<List<FeatureFlagsModel>>()
@@ -55,7 +53,9 @@ interface FeatureFlagsViewModel {
 
             this.currentUser
                 .observable()
-                .map { this.optimizely.enabledFeatures(it) }
+                .map { this.optimizely?.enabledFeatures(it) }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
                 .map { it.map { entry -> FeatureFlagsModel(entry, isFeatureFlagEnabled = true, isFeatureFlagChangeable = false) }.toList() }
                 .compose(bindToLifecycle())
                 .subscribe(this.optimizelyFeatures)

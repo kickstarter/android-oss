@@ -219,7 +219,7 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
     }
 
     private fun createStripeToken(card: CardParams) {
-        this.viewModel.environment.stripe().createCardToken(
+        this.viewModel.environment.stripe()?.createCardToken(
             cardParams = card,
             callback = object : ApiResultCallback<Token> {
                 override fun onSuccess(result: Token) {
@@ -245,7 +245,7 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
             if (project == null) {
                 fragmentNewCardBinding?.formNewCardLayout?.allowedCardWarning ?.setText(it)
             } else {
-                val ksString = this.viewModel.environment.ksString()
+                val ksString = requireNotNull(this.viewModel.environment.ksString())
                 val country = project.location()?.expandedCountry()
                 fragmentNewCardBinding?.formNewCardLayout?.allowedCardWarning ?.text = ksString.format(getString(it), "project_country", country)
             }

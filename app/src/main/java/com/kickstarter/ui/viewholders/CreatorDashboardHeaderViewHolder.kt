@@ -22,8 +22,8 @@ class CreatorDashboardHeaderViewHolder(
 ) : KSViewHolder(binding.root) {
 
     private val viewModel = CreatorDashboardHeaderHolderViewModel.ViewModel(environment())
-    private val ksString = environment().ksString()
-    private val ksCurrency = environment().ksCurrency()
+    private val ksString = requireNotNull(environment().ksString())
+    private val ksCurrency = requireNotNull(environment().ksCurrency())
 
     interface Delegate {
         fun projectsListButtonClicked()

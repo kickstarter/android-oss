@@ -32,7 +32,7 @@ class ProjectCardViewHolder(
     delegate: Delegate
 ) : KSViewHolder(binding.root) {
     private val viewModel = ProjectCardHolderViewModel.ViewModel(environment())
-    private val ksString = environment().ksString()
+    private val ksString = requireNotNull(environment().ksString())
 
     interface Delegate {
         fun projectCardViewHolderClicked(project: Project?)

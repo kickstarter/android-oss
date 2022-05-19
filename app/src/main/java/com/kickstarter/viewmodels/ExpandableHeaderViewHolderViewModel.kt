@@ -33,7 +33,7 @@ interface ExpandableHeaderViewHolderViewModel {
         private val titleForSummary = PublishSubject.create<String>()
         private val amountForSummary = PublishSubject.create<String>()
 
-        private val ksCurrency = environment.ksCurrency()
+        private val ksCurrency = requireNotNull(environment.ksCurrency())
 
         val inputs = this
         val outputs = this

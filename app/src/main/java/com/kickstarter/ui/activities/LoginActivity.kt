@@ -42,7 +42,7 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
 
         setContentView(binding.root)
 
-        this.ksString = environment().ksString()
+        this.ksString = requireNotNull(environment().ksString())
         binding.loginToolbar.loginToolbar.setTitle(getString(this.loginString))
         binding.loginFormView.forgotYourPasswordTextView.text = ViewUtils.html(getString(this.forgotPasswordString))
 

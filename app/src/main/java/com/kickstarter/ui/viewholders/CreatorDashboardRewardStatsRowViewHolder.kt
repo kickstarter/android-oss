@@ -3,7 +3,6 @@ package com.kickstarter.ui.viewholders
 import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.databinding.DashboardRewardStatsRowViewBinding
-import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isZero
@@ -14,7 +13,7 @@ import com.kickstarter.viewmodels.DashboardRewardStatsRowHolderViewModel
 class CreatorDashboardRewardStatsRowViewHolder(private val binding: DashboardRewardStatsRowViewBinding) :
     KSViewHolder(binding.root) {
     private val viewModel = DashboardRewardStatsRowHolderViewModel.ViewModel(environment())
-    private val ksCurrency: KSCurrency = environment().ksCurrency()
+    private val ksCurrency = requireNotNull(environment().ksCurrency())
 
     init {
         viewModel.outputs.percentageOfTotalPledged()

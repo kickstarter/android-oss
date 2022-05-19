@@ -5,11 +5,7 @@ import android.net.Uri
 import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.BuildCheck
-import com.kickstarter.libs.CurrentConfigType
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DiscoveryUtils
 import com.kickstarter.libs.utils.ObjectUtils
@@ -22,9 +18,7 @@ import com.kickstarter.libs.utils.extensions.isVerificationEmailUrl
 import com.kickstarter.libs.utils.extensions.positionFromSort
 import com.kickstarter.models.Category
 import com.kickstarter.models.User
-import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.DiscoveryParams
-import com.kickstarter.services.WebClientType
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope
 import com.kickstarter.ui.activities.DiscoveryActivity
@@ -116,13 +110,12 @@ interface DiscoveryViewModel {
         val inputs = this
         val outputs = this
 
-        private val apiClient: ApiClientType = environment.apiClient()
-        private val apolloClient = environment.apolloClient()
-        private val buildCheck: BuildCheck = environment.buildCheck()
-        private val currentUserType: CurrentUserType = environment.currentUser()
-        private val currentConfigType: CurrentConfigType = environment.currentConfig()
-        private val firstSessionPreference: BooleanPreferenceType = environment.firstSessionPreference()
-        private val webClient: WebClientType = environment.webClient()
+        private val apiClient = requireNotNull(environment.apiClient())
+        private val apolloClient = requireNotNull(environment.apolloClient())
+        private val buildCheck = requireNotNull(environment.buildCheck())
+        private val currentUserType = requireNotNull(environment.currentUser())
+        private val currentConfigType = requireNotNull(environment.currentConfig())
+        private val webClient = requireNotNull(environment.webClient())
 
         private fun currentDrawerMenuIcon(user: User?): Int {
             if (ObjectUtils.isNull(user)) {

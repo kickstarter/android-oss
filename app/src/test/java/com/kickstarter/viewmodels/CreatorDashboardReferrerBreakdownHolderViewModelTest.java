@@ -193,14 +193,14 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
     final ProjectStatsEnvelope.ReferralAggregateStats referralAggregateStats = ProjectStatsEnvelopeFactory.ReferralAggregateStatsFactory
       .referralAggregates()
       .toBuilder()
-      .custom(100)
-      .internal(50)
-      .external(50)
+      .custom(100f)
+      .internal(50f)
+      .external(50f)
       .build();
 
     final ProjectStatsEnvelope.CumulativeStats cumulativeStats = ProjectStatsEnvelopeFactory.CumulativeStatsFactory.cumulativeStats()
       .toBuilder()
-      .pledged(200)
+      .pledged(200f)
       .build();
 
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope().toBuilder()
@@ -238,14 +238,14 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
   private ProjectStatsEnvelope getEmptyProjectStatsEnvelope() {
     final ProjectStatsEnvelope.ReferralAggregateStats referralAggregateStats = ProjectStatsEnvelopeFactory.ReferralAggregateStatsFactory.referralAggregates()
       .toBuilder()
-      .custom(0)
-      .external(0)
-      .internal(0)
+      .custom(0f)
+      .external(0f)
+      .internal(0f)
       .build();
 
     final ProjectStatsEnvelope.CumulativeStats cumulativeStats = ProjectStatsEnvelopeFactory.CumulativeStatsFactory.cumulativeStats()
       .toBuilder()
-      .pledged(0)
+      .pledged(0f)
       .build();
 
     return ProjectStatsEnvelopeFactory.projectStatsEnvelope()
@@ -260,14 +260,14 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
     final ProjectStatsEnvelope.ReferralAggregateStats referralAggregateStats = ProjectStatsEnvelopeFactory.ReferralAggregateStatsFactory
       .referralAggregates()
       .toBuilder()
-      .custom(100)
-      .internal(50)
-      .external(50)
+      .custom(100f)
+      .internal(50f)
+      .external(50f)
       .build();
 
     final ProjectStatsEnvelope.CumulativeStats cumulativeStats = ProjectStatsEnvelopeFactory.CumulativeStatsFactory.cumulativeStats()
       .toBuilder()
-      .pledged(200)
+      .pledged(200f)
       .build();
 
     return ProjectStatsEnvelopeFactory.projectStatsEnvelope().toBuilder()

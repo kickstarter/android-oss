@@ -4,7 +4,6 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
-import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
@@ -97,9 +96,9 @@ class BackingAddOnsFragmentViewModel {
         private val showErrorDialog = BehaviorSubject.create<Boolean>()
         private val continueButtonPressed = BehaviorSubject.create<Void>()
         private val isEnabledCTAButton = BehaviorSubject.create<Boolean>()
-        private val apolloClient = this.environment.apolloClient()
-        private val currentConfig = environment.currentConfig()
-        val ksString: KSString = this.environment.ksString()
+        private val apolloClient = requireNotNull(this.environment.apolloClient())
+        private val currentConfig = requireNotNull(environment.currentConfig())
+        private val ksString = requireNotNull(this.environment.ksString())
 
         // - Current addOns selection
         private val totalSelectedAddOns = BehaviorSubject.create(0)

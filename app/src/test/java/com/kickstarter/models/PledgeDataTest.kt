@@ -5,6 +5,7 @@ import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
+import org.joda.time.DateTime
 import org.junit.Test
 
 class PledgeDataTest : KSRobolectricTestCase() {
@@ -62,9 +63,10 @@ class PledgeDataTest : KSRobolectricTestCase() {
 
     @Test
     fun testPledgeData_equalTrue() {
-        val pledgeData1 = PledgeData.builder().build()
-        val pledgeData2 = PledgeData.builder().build()
-
+        val createdAt = DateTime.now()
+        val project = ProjectFactory.project().toBuilder().createdAt(createdAt).build()
+        val pledgeData1 = PledgeData.builder().build().toBuilder().projectData(ProjectDataFactory.project(project)).build()
+        val pledgeData2 = PledgeData.builder().build().toBuilder().projectData(ProjectDataFactory.project(project)).build()
         assertEquals(pledgeData1, pledgeData2)
     }
 

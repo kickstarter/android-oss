@@ -3,7 +3,6 @@ package com.kickstarter.ui.viewholders
 import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.databinding.ItemRewardSelectedCardBinding
-import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
@@ -16,7 +15,7 @@ class RewardCardSelectedViewHolder(val binding: ItemRewardSelectedCardBinding) :
     private val lastFourString = this.context().getString(R.string.payment_method_last_four)
 
     private val viewModel: RewardCardSelectedViewHolderViewModel.ViewModel = RewardCardSelectedViewHolderViewModel.ViewModel(environment())
-    private val ksString: KSString = environment().ksString()
+    private val ksString = requireNotNull(environment().ksString())
 
     init {
 

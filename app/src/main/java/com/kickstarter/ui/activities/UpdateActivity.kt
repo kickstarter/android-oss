@@ -36,7 +36,7 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
         binding = UpdateLayoutBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
-        ksString = environment().ksString()
+        ksString = requireNotNull(environment().ksString())
 
         binding.updateWebView.setDelegate(this)
         binding.updateWebView.registerRequestHandlers(

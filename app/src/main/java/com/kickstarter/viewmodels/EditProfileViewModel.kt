@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels
 
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.errors
@@ -11,7 +10,6 @@ import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.models.User
-import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.EditProfileActivity
 import rx.Notification
 import rx.Observable
@@ -46,8 +44,8 @@ interface EditProfileViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<EditProfileActivity>(environment), Inputs, Outputs, Errors {
 
-        private val client: ApiClientType = environment.apiClient()
-        private val currentUser: CurrentUserType = environment.currentUser()
+        private val apiClient = requireNotNull(environment.apiClient())
+        private val currentUser = requireNotNull(environment.currentUser())
 
         private val userInput = PublishSubject.create<User>()
 
@@ -65,7 +63,7 @@ interface EditProfileViewModel {
 
             val currentUser = this.currentUser.observable()
 
-            this.client.fetchCurrentUser()
+            this.apiClient.fetchCurrentUser()
                 .retry(2)
                 .compose(Transformers.neverError())
                 .compose(bindToLifecycle())
@@ -138,7 +136,7 @@ interface EditProfileViewModel {
         }
 
         private fun updateSettings(user: User): Observable<Notification<User>>? {
-            return this.client.updateUserSettings(user)
+            return this.apiClient.updateUserSettings(user)
                 .materialize()
                 .share()
         }

@@ -114,7 +114,7 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
     }
 
     private fun setRewardsCount(count: Int) {
-        val rewardsCountString = this.viewModel.environment.ksString().format(
+        val rewardsCountString = requireNotNull(this.viewModel.environment.ksString()).format(
             "Rewards_count_rewards", count,
             "rewards_count", NumberUtils.format(count)
         )

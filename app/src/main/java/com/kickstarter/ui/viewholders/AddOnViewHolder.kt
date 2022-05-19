@@ -19,7 +19,7 @@ class AddOnViewHolder(private val binding: ItemAddOnBinding) : KSViewHolder(bind
 
     private var viewModel = AddOnViewHolderViewModel.ViewModel(environment())
     private val currencyConversionString = context().getString(R.string.About_reward_amount)
-    private val ksString = environment().ksString()
+    private val ksString = requireNotNull(environment().ksString())
 
     init {
         val rewardItemAdapter = setUpItemAdapter()

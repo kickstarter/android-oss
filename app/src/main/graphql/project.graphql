@@ -132,3 +132,14 @@ query GetRootCategories {
     }
   }
 }
+
+query FetchCategory($categoryParam: String!) {
+  category(param: $categoryParam){
+    ...category
+    subcategories {
+      nodes {
+        ...category
+      }
+    }
+  }
+}

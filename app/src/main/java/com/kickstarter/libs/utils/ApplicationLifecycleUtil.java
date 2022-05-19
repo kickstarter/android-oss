@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.Build;
@@ -56,7 +57,7 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
   public void onActivityResumed(final @NonNull Activity activity) {
     if(this.isInBackground) {
       // Facebook: logs 'install' and 'app activate' App Events.
-      //AppEventsLogger.activateApp(activity.getApplication());
+      AppEventsLogger.activateApp(activity.getApplication());
 
       refreshConfigFile();
       refreshUser();

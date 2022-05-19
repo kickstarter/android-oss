@@ -1,5 +1,7 @@
 package com.kickstarter;
 
+import com.facebook.FacebookSdk;
+
 public class TestKSApplication extends KSApplication {
 
   @Override
@@ -14,7 +16,7 @@ public class TestKSApplication extends KSApplication {
   @Override
   public void onCreate() {
     // - LoginToutViewModelTest needs the FacebookSDK initialized
-    // FacebookSdk.sdkInitialize(this);
+    FacebookSdk.sdkInitialize(this);
     super.onCreate();
   }
 

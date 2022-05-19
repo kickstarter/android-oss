@@ -209,7 +209,7 @@ dependencies {
     final auto_parcel_version = "0.3.1"
     implementation "com.github.frankiesardo:auto-parcel:$auto_parcel_version"
     kapt "com.github.frankiesardo:auto-parcel-processor:$auto_parcel_version"
-    implementation "com.google.android.exoplayer:exoplayer:2.16.1"
+    implementation "com.google.android.exoplayer:exoplayer:2.17.1"
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'com.google.android.material:material:1.5.0'
     final dagger_version = "2.41"

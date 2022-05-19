@@ -38,7 +38,7 @@ public class CreatorDashboardReferrerStatsRowHolderViewModelTest extends KSRobol
     final ProjectStatsEnvelope.ReferrerStats referrerStats = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
       .referrerStats()
       .toBuilder()
-      .pledged(50)
+      .pledged(50f)
       .build();
 
     final float pledgedFloat = referrerStats.pledged();

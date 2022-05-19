@@ -48,8 +48,12 @@ class ProjectNotificationTest : TestCase() {
 
     @Test
     fun testProjectNotificationToBuilder() {
-        val projectNotification = ProjectNotificationFactory.enabled()
         val project = ProjectNotification.Project.builder().build()
+
+        val projectNotification = ProjectNotificationFactory.enabled().toBuilder()
+            .project(project)
+            .build()
+
         val urls = ProjectNotification.Urls.builder().build()
         val projectNotification1 = projectNotification.toBuilder()
             .email(false)

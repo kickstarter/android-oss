@@ -46,7 +46,8 @@ class TopFilterViewHolder(
         }
 
         binding.filterTextView.apply {
-            text = item?.params()?.filterString(context, environment().ksString())
+            val ksString = requireNotNull(environment().ksString())
+            text = item?.params()?.filterString(context, ksString)
             setCompoundDrawablesRelativeWithIntrinsicBounds(iconDrawable, null, null, null)
             setTextColor(textColor)
             background = backgroundDrawable

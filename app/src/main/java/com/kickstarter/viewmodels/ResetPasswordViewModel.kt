@@ -7,7 +7,6 @@ import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.extensions.isEmail
 import com.kickstarter.models.User
-import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ResetPasswordActivity
@@ -44,7 +43,7 @@ interface ResetPasswordViewModel {
     }
 
     class ViewModel(val environment: Environment) : ActivityViewModel<ResetPasswordActivity>(environment), Inputs, Outputs {
-        private val client: ApiClientType = environment.apiClient()
+        private val client = requireNotNull(environment.apiClient())
 
         private val email = PublishSubject.create<String>()
         private val resetPasswordClick = PublishSubject.create<Void>()

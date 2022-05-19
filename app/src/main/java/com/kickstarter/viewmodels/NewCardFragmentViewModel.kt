@@ -121,7 +121,7 @@ interface NewCardFragmentViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        private val apolloClient = this.environment.apolloClient()
+        private val apolloClient = requireNotNull(this.environment.apolloClient())
 
         init {
             val modal = arguments()

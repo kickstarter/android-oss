@@ -73,7 +73,7 @@ interface UpdateCardViewHolderViewModel {
         private val sequence = BehaviorSubject.create<Int>()
         private val showUpdateDetails = PublishSubject.create<Update>()
         private val title = BehaviorSubject.create<String>()
-        private val currentUser = environment.currentUser()
+        private val currentUser = requireNotNull(environment.currentUser())
 
         val inputs: Inputs = this
         val outputs: Outputs = this

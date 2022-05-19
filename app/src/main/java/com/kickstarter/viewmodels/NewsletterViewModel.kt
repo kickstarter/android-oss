@@ -76,8 +76,8 @@ interface NewsletterViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<NewsletterActivity>(environment), Inputs, Errors, Outputs {
 
-        private val client = environment.apiClient()
-        private val currentUser = environment.currentUser()
+        private val client = requireNotNull(environment.apiClient())
+        private val currentUser = requireNotNull(environment.currentUser())
 
         private val newsletterInput = PublishSubject.create<Pair<Boolean, Newsletter>>()
         private val userInput = PublishSubject.create<User>()

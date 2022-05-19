@@ -3,9 +3,7 @@ package com.kickstarter.viewmodels
 import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.NumberUtils
@@ -71,8 +69,7 @@ interface CreatorDashboardHeaderHolderViewModel {
 
     class ViewModel(environment: Environment) :
         ActivityViewModel<CreatorDashboardHeaderViewHolder?>(environment), Inputs, Outputs {
-        private val currentUser: CurrentUserType
-        private val optimizely: ExperimentsClientType
+        private val currentUser = requireNotNull(environment.currentUser())
         @JvmField
         val inputs: Inputs = this
         @JvmField
@@ -154,8 +151,6 @@ interface CreatorDashboardHeaderHolderViewModel {
         }
 
         init {
-            currentUser = environment.currentUser()
-            optimizely = environment.optimizely()
             val user = currentUser.observable()
             val singleProjectView = projectDashboardData
                 .map(ProjectDashboardData::isViewingSingleProject)

@@ -39,9 +39,9 @@ public class CreatorDashboardReferrerStatsHolderViewModelTest extends KSRobolect
   @Test
   public void testProjectAndReferrerStats() {
     final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope.ReferrerStats referrerWithOnePledged = ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats().toBuilder().pledged(1).build();
-    final ProjectStatsEnvelope.ReferrerStats referrerWithTwoPledged = ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats().toBuilder().pledged(2).build();
-    final ProjectStatsEnvelope.ReferrerStats referrerWithThreePledged = ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats().toBuilder().pledged(3).build();
+    final ProjectStatsEnvelope.ReferrerStats referrerWithOnePledged = ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats().toBuilder().pledged(1f).build();
+    final ProjectStatsEnvelope.ReferrerStats referrerWithTwoPledged = ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats().toBuilder().pledged(2f).build();
+    final ProjectStatsEnvelope.ReferrerStats referrerWithThreePledged = ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats().toBuilder().pledged(3f).build();
     final List<ProjectStatsEnvelope.ReferrerStats> unsortedReferrerList = Arrays.asList(referrerWithOnePledged, referrerWithThreePledged, referrerWithTwoPledged);
     final List<ProjectStatsEnvelope.ReferrerStats> sortedReferrerList = Arrays.asList(referrerWithThreePledged, referrerWithTwoPledged, referrerWithOnePledged);
     setUpEnvironment(environment());
@@ -76,14 +76,14 @@ public class CreatorDashboardReferrerStatsHolderViewModelTest extends KSRobolect
     this.referrersTitleIsLimitedCopy.assertValue(false);
 
     final List<ProjectStatsEnvelope.ReferrerStats> maxStats = new ArrayList<>();
-    for (int i = 1; i <= 10; i++) {
+    for (float i = 1; i <= 10; i++) {
       maxStats.add(ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats().toBuilder().pledged(i).build());
     }
 
     this.vm.inputs.projectAndReferrerStatsInput(Pair.create(project, maxStats));
     this.referrersTitleIsLimitedCopy.assertValues(false);
 
-    maxStats.add(ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats().toBuilder().pledged(11).build());
+    maxStats.add(ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats().toBuilder().pledged(11f).build());
     this.vm.inputs.projectAndReferrerStatsInput(Pair.create(project, maxStats));
     this.referrersTitleIsLimitedCopy.assertValues(false, true);
   }

@@ -14,7 +14,6 @@ import com.kickstarter.libs.utils.UrlUtils.refTag
 import com.kickstarter.libs.utils.extensions.isProjectPreviewUri
 import com.kickstarter.libs.utils.extensions.isProjectUri
 import com.kickstarter.models.Update
-import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.UpdateActivity
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
@@ -77,7 +76,7 @@ interface UpdateViewModel {
 
     class ViewModel(environment: Environment) : ActivityViewModel<UpdateActivity?>(environment), Inputs, Outputs {
 
-        private val client: ApiClientType = environment.apiClient()
+        private val client = requireNotNull(environment.apiClient())
         private val externalLinkActivated = PublishSubject.create<Request?>()
         private val goToCommentsRequest = PublishSubject.create<Request>()
         private val goToProjectRequest = PublishSubject.create<Request>()

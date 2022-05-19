@@ -16,7 +16,7 @@ class FeaturedSearchResultViewHolder(
     protected val delegate: ProjectSearchResultViewHolder.Delegate
 ) : KSViewHolder(binding.root) {
 
-    private val ksString = environment().ksString()
+    private val ksString = requireNotNull(environment().ksString())
     private val viewModel = ProjectSearchResultHolderViewModel.ViewModel(environment())
 
     init {

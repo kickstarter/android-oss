@@ -13,7 +13,7 @@ class ChildFilterViewHolder(
     private val delegate: Delegate
 ) : KSViewHolder(binding.root) {
 
-    private val ksString = environment().ksString()
+    private val ksString = requireNotNull(environment().ksString())
     private var item: NavigationDrawerData.Section.Row? = null
 
     interface Delegate {

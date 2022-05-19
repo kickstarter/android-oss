@@ -5,7 +5,6 @@ import android.text.Html
 import android.view.View
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivitySurveyViewBinding
-import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ObjectUtils
@@ -18,7 +17,7 @@ import com.squareup.picasso.Picasso
 
 class SurveyViewHolder(private val binding: ActivitySurveyViewBinding) :
     KSViewHolder(binding.root) {
-    private val ksString: KSString = environment().ksString()
+    private val ksString = requireNotNull(environment().ksString())
     private val viewModel: SurveyHolderViewModel.ViewModel = SurveyHolderViewModel.ViewModel(environment())
 
     private fun setSurveyDescription(projectForSurveyDescription: Project) {

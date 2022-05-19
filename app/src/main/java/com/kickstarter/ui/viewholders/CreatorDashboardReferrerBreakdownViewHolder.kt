@@ -17,7 +17,7 @@ class CreatorDashboardReferrerBreakdownViewHolder(private val binding: Dashboard
     KSViewHolder(binding.root) {
     private val viewModel = CreatorDashboardReferrerBreakdownHolderViewModel.ViewModel(environment())
 
-    private val ksCurrency = environment().ksCurrency()
+    private val ksCurrency = requireNotNull(environment().ksCurrency())
     init {
         viewModel.outputs.breakdownViewIsGone()
             .compose(bindToLifecycle())

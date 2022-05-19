@@ -91,7 +91,7 @@ class CancelPledgeFragment : BaseFragment<CancelPledgeViewModel.ViewModel>() {
     }
 
     private fun setPromptText(amountAndProjectName: Pair<String, String>) {
-        val ksString = (activity?.applicationContext as KSApplication).component().environment().ksString()
+        val ksString = requireNotNull((activity?.applicationContext as? KSApplication)?.component()?.environment()?.ksString())
         val amount = amountAndProjectName.first
         val name = amountAndProjectName.second
         val formattedString = ksString.format(

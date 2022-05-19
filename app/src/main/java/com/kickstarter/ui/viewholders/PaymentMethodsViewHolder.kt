@@ -9,7 +9,7 @@ import com.kickstarter.viewmodels.PaymentMethodsViewHolderViewModel
 
 class PaymentMethodsViewHolder(private val binding: ItemPaymentMethodBinding, @NonNull val delegate: Delegate) : KSViewHolder(binding.root) {
 
-    private val ksString = environment().ksString()
+    private val ksString = requireNotNull(environment().ksString())
     private val vm: PaymentMethodsViewHolderViewModel.ViewModel = PaymentMethodsViewHolderViewModel.ViewModel(environment())
 
     private val creditCardExpirationString = this.context().getString(R.string.Credit_card_expiration)

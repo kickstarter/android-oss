@@ -35,9 +35,9 @@ interface CampaignDetailsViewModel {
     }
 
     class ViewModel(environment: Environment) : ActivityViewModel<CampaignDetailsActivity>(environment), Inputs, Outputs {
-        private val cookieManager = environment.cookieManager()
-        private val sharedPreferences = environment.sharedPreferences()
-        private val currentUser = environment.currentUser()
+        private val cookieManager = requireNotNull(environment.cookieManager())
+        private val sharedPreferences = requireNotNull(environment.sharedPreferences())
+        private val currentUser = requireNotNull(environment.currentUser())
         private val optimizely = environment.optimizely()
 
         private val pledgeButtonClicked = PublishSubject.create<Void>()
@@ -65,7 +65,7 @@ interface CampaignDetailsViewModel {
                 .filter { it.project().isLive && !it.project().isBacking() }
                 .compose<Pair<ProjectData, User?>>(combineLatestPair(this.currentUser.observable()))
                 .map { ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()) }
-                .map { this.optimizely.variant(OptimizelyExperiment.Key.CAMPAIGN_DETAILS, it) }
+                .map { this.optimizely?.variant(OptimizelyExperiment.Key.CAMPAIGN_DETAILS, it) }
                 .map { it == OptimizelyExperiment.Variant.VARIANT_2 }
                 .compose(bindToLifecycle())
                 .subscribe(this.pledgeContainerIsVisible)

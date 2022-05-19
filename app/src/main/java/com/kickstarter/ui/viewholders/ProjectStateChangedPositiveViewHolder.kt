@@ -3,8 +3,6 @@ package com.kickstarter.ui.viewholders
 import androidx.core.content.ContextCompat
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityProjectStateChangedPositiveViewBinding
-import com.kickstarter.libs.KSCurrency
-import com.kickstarter.libs.KSString
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Activity
@@ -17,8 +15,8 @@ class ProjectStateChangedPositiveViewHolder(
 ) :
     ActivityListViewHolder(binding.root) {
 
-    private val ksCurrency: KSCurrency = environment().ksCurrency()
-    private val ksString: KSString = environment().ksString()
+    private val ksCurrency = requireNotNull(environment().ksCurrency())
+    private val ksString = requireNotNull(environment().ksString())
 
     interface Delegate {
         fun projectStateChangedPositiveClicked(viewHolder: ProjectStateChangedPositiveViewHolder?, activity: Activity?)

@@ -140,7 +140,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             .currentUser(currentUser)
             .build()
 
-        environment.currentConfig().config(ConfigFactory.config())
+        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
@@ -159,7 +159,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             .currentUser(currentUser)
             .build()
 
-        environment.currentConfig().config(ConfigFactory.config())
+        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
@@ -177,7 +177,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             .currentUser(currentUser)
             .build()
 
-        environment.currentConfig().config(ConfigFactory.config())
+        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
@@ -195,7 +195,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             .currentUser(currentUser)
             .build()
 
-        environment.currentConfig().config(ConfigFactory.config())
+        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
@@ -213,7 +213,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             .currentUser(currentUser)
             .build()
 
-        environment.currentConfig().config(ConfigFactory.config())
+        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
@@ -231,7 +231,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             .currentUser(currentUser)
             .build()
 
-        environment.currentConfig().config(ConfigFactory.config())
+        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
@@ -517,7 +517,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val environment = environment().toBuilder()
             .currentUser(currentUser)
             .build()
-        environment.currentConfig().config(ConfigFactory.config())
+        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
@@ -590,7 +590,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val environment = environment().toBuilder()
             .currentUser(currentUser)
             .build()
-        environment.currentConfig().config(ConfigFactory.config())
+        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
@@ -619,7 +619,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val environment = environment().toBuilder()
             .currentUser(currentUser)
             .build()
-        environment.currentConfig().config(ConfigFactory.config())
+        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
@@ -646,7 +646,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val environment = environment().toBuilder()
             .currentUser(currentUser)
             .build()
-        environment.currentConfig().config(ConfigFactory.config())
+        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
 
         setUpEnvironment(environment)
 
@@ -1800,5 +1800,5 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     }
 
     private fun expectedCurrency(environment: Environment, project: Project, amount: Double): String =
-        environment.ksCurrency().format(amount, project, RoundingMode.HALF_UP)
+        requireNotNull(environment.ksCurrency()).format(amount, project, RoundingMode.HALF_UP)
 }

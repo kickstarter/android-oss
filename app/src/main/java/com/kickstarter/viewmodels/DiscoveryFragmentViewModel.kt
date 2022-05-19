@@ -1,20 +1,17 @@
 package com.kickstarter.viewmodels
 
-import android.content.SharedPreferences
 import android.util.Pair
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.loadmore.ApolloPaginate.Companion.builder
 import com.kickstarter.libs.models.OptimizelyFeature
-import com.kickstarter.libs.preferences.IntPreferenceType
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.DISCOVER
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.ListUtils
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.extensions.combineProjectsAndParams
 import com.kickstarter.libs.utils.extensions.fillRootCategoryForFeaturedProjects
@@ -24,8 +21,6 @@ import com.kickstarter.models.Activity
 import com.kickstarter.models.Category
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
-import com.kickstarter.services.ApiClientType
-import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.DiscoverEnvelope
 import com.kickstarter.ui.adapters.DiscoveryActivitySampleAdapter
@@ -42,7 +37,6 @@ import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
-import java.net.CookieManager
 import java.util.concurrent.TimeUnit
 
 interface DiscoveryFragmentViewModel {
@@ -121,13 +115,13 @@ interface DiscoveryFragmentViewModel {
         FragmentViewModel<DiscoveryFragment?>(environment),
         Inputs,
         Outputs {
-        private val apiClient: ApiClientType = environment.apiClient()
-        private val apolloClient: ApolloClientType = environment.apolloClient()
-        private val activitySamplePreference: IntPreferenceType = environment.activitySamplePreference()
-        private val optimizely: ExperimentsClientType = environment.optimizely()
-        private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
-        private val cookieManager: CookieManager = environment.cookieManager()
-        private val currentUser: CurrentUserType = environment.currentUser()
+        private val apiClient = requireNotNull(environment.apiClient())
+        private val apolloClient = requireNotNull(environment.apolloClient())
+        private val activitySamplePreference = environment.activitySamplePreference()
+        private val optimizely = environment.optimizely()
+        private val sharedPreferences = requireNotNull(environment.sharedPreferences())
+        private val cookieManager = requireNotNull(environment.cookieManager())
+        private val currentUser = requireNotNull(environment.currentUser())
         @JvmField
         val inputs: Inputs = this
         @JvmField
@@ -295,11 +289,13 @@ interface DiscoveryFragmentViewModel {
 
             val lightsOnEnabled = userWhenOptimizelyReady
                 .map { user: User? ->
-                    optimizely.isFeatureEnabled(
+                    optimizely?.isFeatureEnabled(
                         OptimizelyFeature.Key.LIGHTS_ON,
                         ExperimentData(user, null, null)
                     )
                 }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
                 .distinctUntilChanged()
 
             currentUser.observable()
@@ -476,10 +472,10 @@ interface DiscoveryFragmentViewModel {
         }
 
         private fun activityHasNotBeenSeen(activity: Activity?): Boolean {
-            return activity != null && activity.id() != activitySamplePreference.get().toLong()
+            return activity != null && activity.id() != activitySamplePreference?.get()?.toLong()
         }
 
-        private fun fetchActivity(): Observable<Activity?> {
+        private fun fetchActivity(): Observable<Activity?>? {
             return apiClient.fetchActivities(1)
                 .distinctUntilChanged()
                 .map { it.activities() }
@@ -504,7 +500,7 @@ interface DiscoveryFragmentViewModel {
 
         private fun saveLastSeenActivityId(activity: Activity?) {
             if (activity != null) {
-                activitySamplePreference.set(activity.id().toInt())
+                activitySamplePreference?.set(activity.id().toInt())
             }
         }
 

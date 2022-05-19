@@ -2,12 +2,8 @@ package com.kickstarter.viewmodels.projectpage
 
 import android.util.Pair
 import com.kickstarter.R
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.FragmentViewModel
-import com.kickstarter.libs.KSCurrency
-import com.kickstarter.libs.KSString
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -21,7 +17,6 @@ import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
-import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.projectpage.ProjectOverviewFragment
 import org.joda.time.DateTime
@@ -187,11 +182,11 @@ interface ProjectOverviewViewModel {
 
     class ViewModel(environment: Environment) : FragmentViewModel<ProjectOverviewFragment?>(environment), Inputs, Outputs {
 
-        private val apolloClient: ApolloClientType = environment.apolloClient()
-        private val currentUser: CurrentUserType = environment.currentUser()
-        private val ksCurrency: KSCurrency = environment.ksCurrency()
-        private val optimizely: ExperimentsClientType = environment.optimizely()
-        val kSString: KSString = environment.ksString()
+        private val apolloClient = requireNotNull(environment.apolloClient())
+        private val currentUser = requireNotNull(environment.currentUser())
+        private val ksCurrency = requireNotNull(environment.ksCurrency())
+        private val optimizely = environment.optimizely()
+        val kSString = requireNotNull(environment.ksString())
 
         // Inputs
         private val projectData = PublishSubject.create<ProjectData>()
@@ -459,7 +454,9 @@ interface ProjectOverviewViewModel {
         }
 
         init {
-            hideOldCampaignLink = Observable.just(optimizely.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_STORY_TAB))
+            hideOldCampaignLink = Observable.just(optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_STORY_TAB) == true)
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
 
             val project = projectData
                 .distinctUntilChanged()
@@ -490,7 +487,7 @@ interface ProjectOverviewViewModel {
                     )
                 }
                 .map { experimentData ->
-                    optimizely.variant(
+                    optimizely?.variant(
                         OptimizelyExperiment.Key.CAMPAIGN_DETAILS,
                         experimentData
                     )
@@ -568,7 +565,7 @@ interface ProjectOverviewViewModel {
                     )
                 }
                 .map { experimentData: ExperimentData? ->
-                    optimizely.variant(
+                    optimizely?.variant(
                         OptimizelyExperiment.Key.CREATOR_DETAILS,
                         experimentData!!
                     )

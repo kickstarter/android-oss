@@ -19,7 +19,7 @@ class UpdateCardViewHolder(private val binding: ItemUpdateCardBinding, val deleg
         fun updateCardClicked(update: Update)
     }
 
-    private val ksString = environment().ksString()
+    private val ksString = requireNotNull(environment().ksString())
     private var viewModel = UpdateCardViewHolderViewModel.ViewModel(environment())
 
     private val updateSequenceTemplate = context().getString(R.string.activity_project_update_update_count)

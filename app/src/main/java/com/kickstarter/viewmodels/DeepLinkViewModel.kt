@@ -7,7 +7,6 @@ import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
@@ -75,12 +74,11 @@ interface DeepLinkViewModel {
         private val startProjectActivityToSave = BehaviorSubject.create<Uri>()
         private val updateUserPreferences = BehaviorSubject.create<Boolean>()
         private val finishDeeplinkActivity = BehaviorSubject.create<Void?>()
-        private val apolloClient = environment.apolloClient()
-        private val apiClientType = environment.apiClient()
-        private val currentUser = environment.currentUser()
-        private val webEndpoint = environment.webEndpoint()
+        private val apolloClient = requireNotNull(environment.apolloClient())
+        private val apiClientType = requireNotNull(environment.apiClient())
+        private val currentUser = requireNotNull(environment.currentUser())
+        private val webEndpoint = requireNotNull(environment.webEndpoint())
         private val projectObservable: Observable<Project>
-        private val optimizely: ExperimentsClientType = environment.optimizely()
 
         val outputs: Outputs = this
 

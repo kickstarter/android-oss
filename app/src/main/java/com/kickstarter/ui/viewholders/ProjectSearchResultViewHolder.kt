@@ -12,7 +12,7 @@ import com.kickstarter.viewmodels.ProjectSearchResultHolderViewModel
 import com.squareup.picasso.Picasso
 
 class ProjectSearchResultViewHolder(private val binding: ProjectSearchResultViewBinding, protected val delegate: Delegate) : KSViewHolder(binding.root) {
-    private val ksString = environment().ksString()
+    private val ksString = requireNotNull(environment().ksString())
     private val viewModel = ProjectSearchResultHolderViewModel.ViewModel(environment())
 
     init {

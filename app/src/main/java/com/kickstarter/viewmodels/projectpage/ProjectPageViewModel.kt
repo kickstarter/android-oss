@@ -1,17 +1,13 @@
 package com.kickstarter.viewmodels.projectpage
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.ExperimentsClientType
-import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.OptimizelyExperiment
@@ -59,7 +55,6 @@ import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
-import java.net.CookieManager
 import java.util.concurrent.TimeUnit
 
 interface ProjectPageViewModel {
@@ -257,13 +252,13 @@ interface ProjectPageViewModel {
         Inputs,
         Outputs {
 
-        private val cookieManager: CookieManager = environment.cookieManager()
-        private val currentUser: CurrentUserType = environment.currentUser()
-        private val ksCurrency: KSCurrency = environment.ksCurrency()
-        private val optimizely: ExperimentsClientType = environment.optimizely()
-        private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
-        private val apolloClient = environment.apolloClient()
-        private val currentConfig = environment.currentConfig()
+        private val cookieManager = requireNotNull(environment.cookieManager())
+        private val currentUser = requireNotNull(environment.currentUser())
+        private val ksCurrency = requireNotNull(environment.ksCurrency())
+        private val optimizely = environment.optimizely()
+        private val sharedPreferences = requireNotNull(environment.sharedPreferences())
+        private val apolloClient = requireNotNull(environment.apolloClient())
+        private val currentConfig = requireNotNull(environment.currentConfig())
 
         private val cancelPledgeClicked = PublishSubject.create<Void>()
         private val commentsTextViewClicked = PublishSubject.create<Void>()
@@ -530,7 +525,7 @@ interface ProjectPageViewModel {
                 .subscribe {
                     this.projectData.onNext(it)
                     val showEnvironmentalTab = it.project().envCommitments()?.isNotEmpty() ?: false
-                    val showCampaignTab = this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_STORY_TAB)
+                    val showCampaignTab = this.optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_STORY_TAB)
                     this.updateTabs.onNext(Pair(showCampaignTab, showEnvironmentalTab))
                 }
 
@@ -802,7 +797,7 @@ interface ProjectPageViewModel {
                 ProjectViewUtils.pledgeActionButtonText(
                     data.project(),
                     user,
-                    this.optimizely.variant(OptimizelyExperiment.Key.PLEDGE_CTA_COPY, experimentData)
+                    this.optimizely?.variant(OptimizelyExperiment.Key.PLEDGE_CTA_COPY, experimentData)
                 )
             }
                 .distinctUntilChanged()

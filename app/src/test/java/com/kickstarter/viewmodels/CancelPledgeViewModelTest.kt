@@ -66,7 +66,7 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
         setUpEnvironment(environment, backedProject)
 
-        val expectedCurrency = environment.ksCurrency().format(amount, backedProject, RoundingMode.HALF_UP)
+        val expectedCurrency = requireNotNull(environment.ksCurrency()).format(amount, backedProject, RoundingMode.HALF_UP)
         this.pledgeAmount.assertValue(expectedCurrency)
         this.projectName.assertValue("Some Name")
     }

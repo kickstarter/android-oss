@@ -18,7 +18,6 @@ import com.kickstarter.models.User
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.viewmodels.HelpSettingsViewModel
 import rx.android.schedulers.AndroidSchedulers
-import java.util.Arrays
 
 @RequiresActivityViewModel(HelpSettingsViewModel.ViewModel::class)
 class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
@@ -39,8 +38,8 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
         val view = binding.root
         setContentView(view)
 
-        this.build = environment().build()
-        this.currentUser = environment().currentUser()
+        this.build = requireNotNull(environment().build())
+        this.currentUser = requireNotNull(environment().currentUser())
 
         binding.contact.setOnClickListener {
             this.viewModel.contactClicked()
@@ -77,7 +76,7 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
     }
 
     private fun composeContactEmail(user: User?) {
-        val debugInfo = Arrays.asList(
+        val debugInfo = listOf(
             user?.id() ?: getString(R.string.Logged_Out),
             this.build.versionName(),
             android.os.Build.VERSION.RELEASE + " (SDK " + Integer.toString(android.os.Build.VERSION.SDK_INT) + ")",

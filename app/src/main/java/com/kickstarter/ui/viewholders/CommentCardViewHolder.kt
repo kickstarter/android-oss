@@ -29,7 +29,7 @@ class CommentCardViewHolder(
     }
 
     private val vm: CommentsViewHolderViewModel.ViewModel = CommentsViewHolderViewModel.ViewModel(environment())
-    private val ksString = environment().ksString()
+    private val ksString = requireNotNull(environment().ksString())
 
     init {
 

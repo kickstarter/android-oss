@@ -15,7 +15,7 @@ class ActivitySampleFriendFollowViewHolder(
     private val delegate: Delegate
 ) : KSViewHolder(binding.root) {
 
-    private val ksString = environment().ksString()
+    private val ksString = requireNotNull(environment().ksString())
     private val vm: ActivitySampleFriendFollowViewHolderViewModel.ViewModel =
         ActivitySampleFriendFollowViewHolderViewModel.ViewModel(environment())
 

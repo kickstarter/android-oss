@@ -31,7 +31,7 @@ class PerimeterXTest : KSRobolectricTestCase() {
 
     override fun setUp() {
         super.setUp()
-        build = environment().build()
+        build = requireNotNull(environment().build())
     }
 
     @Test
@@ -84,8 +84,9 @@ class PerimeterXTest : KSRobolectricTestCase() {
 
     @Test
     fun testChallengedResponse() {
-        val clientNotChallenged = PXClientFactory.pxNotChallenged(environment().build())
-        val clientWithChallenged = PXClientFactory.pxChallengedSuccessful(environment().build())
+        val build = requireNotNull(environment().build())
+        val clientNotChallenged = PXClientFactory.pxNotChallenged(build)
+        val clientWithChallenged = PXClientFactory.pxChallengedSuccessful(build)
 
         val challenge1 = clientWithChallenged.isChallenged(mockBody)
         val challenge2 = clientNotChallenged.isChallenged(mockBody)
@@ -119,7 +120,8 @@ class PerimeterXTest : KSRobolectricTestCase() {
 
     @Test
     fun testIntercept_whenCaptchaCanceled() {
-        val client = PXClientFactory.pxChallengedCanceled(environment().build())
+        val build = requireNotNull(environment().build())
+        val client = PXClientFactory.pxChallengedCanceled(build)
         val testCaptchaSuccess = TestSubscriber.create<Boolean>()
         val testCaptchaCanceled = TestSubscriber.create<String>()
 

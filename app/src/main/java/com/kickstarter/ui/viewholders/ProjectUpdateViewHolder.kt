@@ -2,7 +2,6 @@ package com.kickstarter.ui.viewholders
 
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityProjectUpdateViewBinding
-import com.kickstarter.libs.KSString
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Activity
@@ -14,7 +13,7 @@ class ProjectUpdateViewHolder(
     private val delegate: Delegate?
 ) : ActivityListViewHolder(binding.root) {
 
-    private val ksString: KSString = environment().ksString()
+    private val ksString = requireNotNull(environment().ksString())
 
     interface Delegate {
         fun projectUpdateProjectClicked(viewHolder: ProjectUpdateViewHolder?, activity: Activity?)

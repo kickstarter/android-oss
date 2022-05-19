@@ -431,8 +431,32 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
     }
 
     override fun fetchCategory(categoryParam: String): Observable<Category?> {
-        return fetchCategories()
-            .map { it.firstOrNull { c -> c.id().toString() == categoryParam } }
+        return Observable.defer {
+            val ps = PublishSubject.create<Category>()
+            this.service.query(
+                FetchCategoryQuery.builder()
+                    .categoryParam(categoryParam)
+                    .build()
+            ).enqueue(object : ApolloCall.Callback<FetchCategoryQuery.Data>() {
+                override fun onFailure(e: ApolloException) {
+                    ps.onError(e)
+                }
+
+                override fun onResponse(response: Response<FetchCategoryQuery.Data>) {
+                    response.data?.let { responseData ->
+                        val category = categoryTransformer(responseData.category()?.fragments()?.category())
+
+                        Observable.just(category)
+                            .subscribeOn(Schedulers.io())
+                            .subscribe {
+                                ps.onNext(it)
+                                ps.onCompleted()
+                            }
+                    }
+                }
+            })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
     }
 
     override fun getProjects(

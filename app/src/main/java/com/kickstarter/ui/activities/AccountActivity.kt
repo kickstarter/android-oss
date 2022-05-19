@@ -55,7 +55,7 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
 
         setContentView(binding.root)
 
-        this.ksString = environment().ksString()
+        this.ksString = requireNotNull(environment().ksString())
 
         setUpSpinner()
 

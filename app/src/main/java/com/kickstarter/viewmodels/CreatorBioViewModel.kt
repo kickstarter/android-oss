@@ -48,7 +48,7 @@ interface CreatorBioViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        private val currentUser = environment.currentUser()
+        private val currentUser = requireNotNull(environment.currentUser())
 
         init {
             intent()

@@ -55,7 +55,7 @@ interface FrequentlyAskedQuestionViewModel {
         private val projectFaqList = BehaviorSubject.create<List<ProjectFaq>>()
         private val bindEmptyState = BehaviorSubject.create<Void>()
 
-        private val currentUser = environment.currentUser()
+        private val currentUser = requireNotNull(environment.currentUser())
 
         init {
             val projectFaqList = projectDataInput

@@ -36,7 +36,7 @@ class CommentCardShotTest : ScreenshotTest {
         commentCard.setCommentBody("Message here for the Screenshot test lets see how it behaves ...")
 
         val relativeTime = DateTime.now().minusMinutes(5)
-        val commentPostedRelativeTime = DateTimeUtils.relative(getInstrumentation().targetContext, component.environment().ksString(), relativeTime)
+        val commentPostedRelativeTime = DateTimeUtils.relative(getInstrumentation().targetContext, requireNotNull(component.environment().ksString()), relativeTime)
         commentCard.setCommentPostTime(commentPostedRelativeTime)
     }
 

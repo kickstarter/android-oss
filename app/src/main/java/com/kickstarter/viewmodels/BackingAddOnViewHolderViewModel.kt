@@ -4,7 +4,6 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.ObjectUtils
@@ -107,7 +106,7 @@ class BackingAddOnViewHolderViewModel {
      */
     class ViewModel(@NonNull environment: Environment) : ActivityViewModel<BackingAddOnViewHolder>(environment), Inputs, Outputs {
 
-        private val ksCurrency: KSCurrency = environment.ksCurrency()
+        private val ksCurrency = requireNotNull(environment.ksCurrency())
         private val projectDataAndAddOn = PublishSubject.create<Triple<ProjectData, Reward, ShippingRule>>()
         private val title = PublishSubject.create<String>()
         private val description = PublishSubject.create<String>()
@@ -227,9 +226,9 @@ class BackingAddOnViewHolderViewModel {
             addOn
                 .filter { !RewardUtils.isShippable(it) }
                 .map {
-                    RewardUtils.isLocalPickup(it) && optimizely.isFeatureEnabled(
+                    RewardUtils.isLocalPickup(it) && optimizely?.isFeatureEnabled(
                         OptimizelyFeature.Key.ANDROID_LOCAL_PICKUP
-                    )
+                    ) == true
                 }
                 .compose(bindToLifecycle())
                 .subscribe {

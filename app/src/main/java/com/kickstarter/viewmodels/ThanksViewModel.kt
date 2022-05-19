@@ -1,13 +1,9 @@
 package com.kickstarter.viewmodels
 
-import android.content.SharedPreferences
 import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.RefTag
-import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.ListUtils
@@ -35,7 +31,6 @@ import com.kickstarter.ui.viewholders.ThanksCategoryViewHolder
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
-import java.net.CookieManager
 
 interface ThanksViewModel {
     interface Inputs :
@@ -79,14 +74,13 @@ interface ThanksViewModel {
         ActivityViewModel<ThanksActivity?>(environment),
         Inputs,
         Outputs {
-        private val apiClient: ApiClientType = environment.apiClient()
-        private val apolloClient: ApolloClientType = environment.apolloClient()
-        private val hasSeenAppRatingPreference: BooleanPreferenceType = environment.hasSeenAppRatingPreference()
-        private val hasSeenGamesNewsletterPreference: BooleanPreferenceType = environment.hasSeenGamesNewsletterPreference()
-        private val currentUser: CurrentUserType = environment.currentUser()
-        private val optimizely: ExperimentsClientType = environment.optimizely()
-        private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
-        private val cookieManager: CookieManager = environment.cookieManager()
+        private val apiClient = requireNotNull(environment.apiClient())
+        private val apolloClient = requireNotNull(environment.apolloClient())
+        private val hasSeenAppRatingPreference = environment.hasSeenAppRatingPreference()
+        private val hasSeenGamesNewsletterPreference = environment.hasSeenGamesNewsletterPreference()
+        private val currentUser = requireNotNull(environment.currentUser())
+        private val sharedPreferences = requireNotNull(environment.sharedPreferences())
+        private val cookieManager = requireNotNull(environment.cookieManager())
 
         private val categoryCardViewHolderClicked = PublishSubject.create<Category>()
         private val closeButtonClicked = PublishSubject.create<Void?>()
@@ -128,8 +122,9 @@ interface ThanksViewModel {
                 .map { "games" == it?.slug() }
 
             val hasSeenGamesNewsletterDialog = Observable.just(
-                hasSeenGamesNewsletterPreference.get()
-            )
+                hasSeenGamesNewsletterPreference?.get()
+            ).filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
 
             val isSignedUpToGamesNewsletter = currentUser.observable()
                 .map { it != null && it.gamesNewsletter().isTrue() }
@@ -213,7 +208,9 @@ interface ThanksViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(this.showSavedPrompt)
 
-            Observable.just(hasSeenAppRatingPreference.get())
+            Observable.just(hasSeenAppRatingPreference?.get())
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
                 .take(1)
                 .compose(Transformers.combineLatestPair(showGamesNewsletter))
                 .filter { !it.first && !it.second }
@@ -228,7 +225,7 @@ interface ThanksViewModel {
 
             showGamesNewsletterDialog
                 .compose(bindToLifecycle())
-                .subscribe { hasSeenGamesNewsletterPreference.set(true) }
+                .subscribe { hasSeenGamesNewsletterPreference?.set(true) }
 
             currentUser.observable()
                 .filter { ObjectUtils.isNotNull(it) }

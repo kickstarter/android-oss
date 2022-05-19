@@ -28,7 +28,7 @@ class MessageCreatorActivity : BaseActivity<MessageCreatorViewModel.ViewModel>()
 
         setContentView(binding.root)
 
-        this.ksString = this.environment().ksString()
+        this.ksString = requireNotNull(this.environment().ksString())
 
         this.viewModel.outputs.showSentError()
             .compose(bindToLifecycle())

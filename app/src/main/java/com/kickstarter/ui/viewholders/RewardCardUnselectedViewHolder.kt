@@ -4,7 +4,6 @@ import android.util.Pair
 import androidx.core.content.ContextCompat
 import com.kickstarter.R
 import com.kickstarter.databinding.ItemRewardUnselectedCardBinding
-import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
@@ -18,7 +17,7 @@ class RewardCardUnselectedViewHolder(val binding: ItemRewardUnselectedCardBindin
     }
 
     private val viewModel: RewardCardUnselectedViewHolderViewModel.ViewModel = RewardCardUnselectedViewHolderViewModel.ViewModel(environment())
-    private val ksString: KSString = environment().ksString()
+    private val ksString = requireNotNull(environment().ksString())
 
     private val creditCardExpirationString = this.context().getString(R.string.Credit_card_expiration)
     private val lastFourString = this.context().getString(R.string.payment_method_last_four)

@@ -25,7 +25,7 @@ class DiscoveryToolbar @JvmOverloads constructor(
         if (isInEditMode) {
             return
         }
-        ksString = environment().ksString()
+        ksString = requireNotNull(environment().ksString())
 
         (findViewById<ImageButton>(R.id.menu_button)).setOnClickListener {
             menuButtonClick()

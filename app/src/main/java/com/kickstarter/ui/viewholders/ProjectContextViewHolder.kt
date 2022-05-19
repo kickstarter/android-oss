@@ -3,7 +3,6 @@ package com.kickstarter.ui.viewholders
 import android.view.View
 import com.kickstarter.R
 import com.kickstarter.databinding.ProjectContextViewBinding
-import com.kickstarter.libs.KSString
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Project
 import com.squareup.picasso.Picasso
@@ -14,7 +13,7 @@ class ProjectContextViewHolder(
 ) :
     KSViewHolder(binding.root) {
 
-    private val ksString: KSString = environment().ksString()
+    private val ksString = requireNotNull(environment().ksString())
     private var project: Project? = null
 
     interface Delegate {

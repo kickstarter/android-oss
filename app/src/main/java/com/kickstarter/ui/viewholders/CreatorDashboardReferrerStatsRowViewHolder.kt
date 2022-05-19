@@ -4,7 +4,6 @@ import android.util.Pair
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.kickstarter.databinding.DashboardReferrerStatsRowViewBinding
-import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Project
@@ -15,7 +14,7 @@ class CreatorDashboardReferrerStatsRowViewHolder(
     private val binding: DashboardReferrerStatsRowViewBinding
 ) : KSViewHolder(binding.root) {
     private val viewModel = CreatorDashboardReferrerStatsRowHolderViewModel.ViewModel(environment())
-    private val ksCurrency: KSCurrency = environment().ksCurrency()
+    private val ksCurrency = requireNotNull(environment().ksCurrency())
 
     init {
         viewModel.outputs.projectAndPledgedForReferrer()

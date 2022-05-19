@@ -86,7 +86,7 @@ class ProjectPageActivity :
         super.onCreate(savedInstanceState)
         binding = ActivityProjectPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        this.ksString = environment().ksString()
+        this.ksString = requireNotNull(environment().ksString())
 
         // Do not configure the pager at other lifecycle events apart from OnCreate
         if (savedInstanceState == null) {

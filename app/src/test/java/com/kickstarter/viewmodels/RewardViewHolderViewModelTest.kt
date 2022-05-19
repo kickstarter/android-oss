@@ -1065,8 +1065,8 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     private fun expectedConvertedCurrency(environment: Environment, project: Project, amount: Double): String =
-        environment.ksCurrency().format(amount, project, true, RoundingMode.HALF_UP, true)
+        requireNotNull(environment.ksCurrency()).format(amount, project, true, RoundingMode.HALF_UP, true)
 
     private fun expectedCurrency(environment: Environment, project: Project, amount: Double): String =
-        environment.ksCurrency().format(amount, project, RoundingMode.HALF_UP)
+        requireNotNull(environment.ksCurrency()).format(amount, project, RoundingMode.HALF_UP)
 }

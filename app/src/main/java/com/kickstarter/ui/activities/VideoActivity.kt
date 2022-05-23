@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
@@ -135,9 +136,9 @@ class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
         val fileType = Util.inferContentType(videoUri)
 
         return if (fileType == C.TYPE_HLS) {
-            HlsMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri)
+            HlsMediaSource.Factory(dataSourceFactory).createMediaSource(MediaItem.fromUri(videoUri))
         } else {
-            ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri)
+            ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(MediaItem.fromUri(videoUri))
         }
     }
 
@@ -154,7 +155,7 @@ class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
         }
     }
 
-    private val eventListener: Player.EventListener = object : Player.EventListener {
+    private val eventListener: Player.Listener = object : Player.Listener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             onStateChanged(playbackState)
         }

@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels
 
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.neverError
@@ -12,7 +11,6 @@ import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isZero
 import com.kickstarter.models.User
-import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.NotificationsActivity
 import rx.Notification
 import rx.Observable
@@ -107,8 +105,8 @@ interface NotificationsViewModel {
         val outputs: Outputs = this
         val errors: Errors = this
 
-        private val client: ApiClientType = environment.apiClient()
-        private val currentUser: CurrentUserType = environment.currentUser()
+        private val client = requireNotNull(environment.apiClient())
+        private val currentUser = requireNotNull(environment.currentUser())
 
         init {
 

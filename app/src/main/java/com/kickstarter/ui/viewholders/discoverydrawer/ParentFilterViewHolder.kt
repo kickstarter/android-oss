@@ -24,7 +24,8 @@ class ParentFilterViewHolder(
 
     override fun onBind() {
         val context = context()
-        binding.filterTextView.text = item?.params()?.filterString(context, environment().ksString(), false, true)
+        val ksString = requireNotNull(environment().ksString())
+        binding.filterTextView.text = item?.params()?.filterString(context, ksString, false, true)
         if (item?.rootIsExpanded() == true) {
             binding.expandButton.visibility = View.GONE
             binding.collapseButton.visibility = View.VISIBLE

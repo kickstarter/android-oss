@@ -16,7 +16,7 @@ class RootCommentViewHolder(
 ) : KSViewHolder(binding.root) {
 
     private val vm: RootCommentViewHolderViewModel.ViewModel = RootCommentViewHolderViewModel.ViewModel(environment())
-    private val ksString = environment().ksString()
+    private val ksString = requireNotNull(environment().ksString())
     init {
         this.vm.outputs.bindRootComment()
             .compose(bindToLifecycle())

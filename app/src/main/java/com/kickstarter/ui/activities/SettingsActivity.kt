@@ -9,7 +9,6 @@ import com.kickstarter.R
 import com.kickstarter.databinding.SettingsLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Build
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.Logout
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
@@ -24,7 +23,6 @@ import rx.android.schedulers.AndroidSchedulers
 @RequiresActivityViewModel(SettingsViewModel.ViewModel::class)
 class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
     private lateinit var build: Build
-    private lateinit var currentUser: CurrentUserType
     private lateinit var ksString: KSString
     private lateinit var logout: Logout
     private var logoutConfirmationDialog: AlertDialog? = null
@@ -40,10 +38,9 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
             binding.editProfileRow.visibility = View.VISIBLE
         }
 
-        this.build = environment().build()
-        this.currentUser = environment().currentUser()
-        this.ksString = environment().ksString()
-        this.logout = environment().logout()
+        this.build = requireNotNull(environment().build())
+        this.ksString = requireNotNull(environment().ksString())
+        this.logout = requireNotNull(environment().logout())
 
         binding.versionNameTextView.text = ksString.format(
             getString(R.string.profile_settings_version_number),

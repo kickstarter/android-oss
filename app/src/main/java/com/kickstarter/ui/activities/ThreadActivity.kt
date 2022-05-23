@@ -51,7 +51,7 @@ class ThreadActivity :
 
         binding = ActivityThreadLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ksString = environment().ksString()
+        ksString = requireNotNull(environment().ksString())
         recyclerViewPaginator = RecyclerViewPaginator(binding.commentRepliesRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingReplies(), false)
 
         /** use ConcatAdapter to bind adapters to recycler view and replace the section issue **/

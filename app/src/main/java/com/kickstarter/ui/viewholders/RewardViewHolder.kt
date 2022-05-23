@@ -36,7 +36,7 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
         fun rewardClicked(reward: Reward)
     }
 
-    private val ksString = environment().ksString()
+    private val ksString = requireNotNull(environment().ksString())
     private var viewModel = RewardViewHolderViewModel.ViewModel(environment())
 
     private val currencyConversionString = context().getString(R.string.About_reward_amount)

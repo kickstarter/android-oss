@@ -60,7 +60,7 @@ class VideoElementViewHolder(
     }
 
     fun configure(element: VideoViewElement) {
-        build = environment().build()
+        build = requireNotNull(environment().build())
         thumbnail.loadImage(element.thumbnailUrl, context())
         loadVideo(element.sourceUrl, element.seekPosition)
         fullscreenButton = videoPlayerView.findViewById(R.id.exo_fullscreen_icon)

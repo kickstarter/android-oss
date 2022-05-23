@@ -63,8 +63,8 @@ interface CancelPledgeViewModel {
         private val showServerError = PublishSubject.create<Void>()
         private val success = BehaviorSubject.create<Void>()
 
-        private val apolloClient = environment.apolloClient()
-        private val ksCurrency = environment.ksCurrency()
+        private val apolloClient = requireNotNull(environment.apolloClient())
+        private val ksCurrency = requireNotNull(environment.ksCurrency())
 
         val inputs: Inputs = this
         val outputs: Outputs = this

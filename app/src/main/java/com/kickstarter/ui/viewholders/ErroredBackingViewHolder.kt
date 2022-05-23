@@ -17,7 +17,7 @@ class ErroredBackingViewHolder(private val binding: ItemErroredBackingBinding, v
         fun managePledgeClicked(projectSlug: String)
     }
 
-    private val ksString = environment().ksString()
+    private val ksString = requireNotNull(environment().ksString())
     private var viewModel = ErroredBackingViewHolderViewModel.ViewModel(environment())
 
     init {

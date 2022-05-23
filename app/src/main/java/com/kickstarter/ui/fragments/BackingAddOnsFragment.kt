@@ -112,7 +112,7 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
     }
 
     private fun selectProperString(totalSelected: Int): String {
-        val ksString = this.viewModel.environment.ksString()
+        val ksString = requireNotNull(this.viewModel.environment.ksString())
         return when {
             totalSelected == 0 -> ksString.format(getString(R.string.Skip_add_ons), "", "")
             totalSelected == 1 -> ksString.format(getString(R.string.Continue_with_quantity_count_add_ons_one), "quantity_count", totalSelected.toString())

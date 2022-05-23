@@ -39,7 +39,7 @@ class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
         binding = VideoPlayerLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        build = environment().build()
+        build = requireNotNull(environment().build())
 
         viewModel.outputs.preparePlayerWithUrl()
             .compose(Transformers.takeWhen(lifecycle().filter { other: ActivityEvent? -> ActivityEvent.RESUME.equals(other) }))

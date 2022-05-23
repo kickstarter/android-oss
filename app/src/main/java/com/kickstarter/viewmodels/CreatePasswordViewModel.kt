@@ -4,13 +4,11 @@ import CreatePasswordMutation
 import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.extensions.MINIMUM_PASSWORD_LENGTH
-import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.activities.CreatePasswordActivity
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -62,8 +60,8 @@ interface CreatePasswordViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        private val apolloClient: ApolloClientType = this.environment.apolloClient()
-        private val analytics: AnalyticEvents = this.environment.analytics()
+        private val apolloClient = requireNotNull(this.environment.apolloClient())
+        private val analytics = requireNotNull(this.environment.analytics())
 
         init {
 
@@ -99,7 +97,7 @@ interface CreatePasswordViewModel {
                 .map { it.updateUserAccount()?.user()?.email() }
                 .subscribe {
                     this.success.onNext(it)
-                    this.analytics.reset()
+                    this.analytics?.reset()
                 }
         }
 

@@ -35,7 +35,7 @@ class ThanksActivity : BaseActivity<ThanksViewModel.ViewModel>() {
         super.onCreate(savedInstanceState)
         binding = ThanksLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ksString = environment().ksString()
+        ksString = requireNotNull(environment().ksString())
 
         binding.thanksRecyclerView.layoutManager = LinearLayoutManager(this).apply {
             orientation = RecyclerView.VERTICAL

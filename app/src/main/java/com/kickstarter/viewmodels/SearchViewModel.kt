@@ -132,10 +132,10 @@ interface SearchViewModel {
         }
 
         init {
-            val apiClient = environment.apiClient()
+            val apiClient = requireNotNull(environment.apiClient())
             val scheduler = environment.scheduler()
-            sharedPreferences = environment.sharedPreferences()
-            cookieManager = environment.cookieManager()
+            sharedPreferences = requireNotNull(environment.sharedPreferences())
+            cookieManager = requireNotNull(environment.cookieManager())
 
             val searchParams = search
                 .filter { ObjectUtils.isNotNull(it) }

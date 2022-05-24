@@ -1,13 +1,11 @@
 package com.kickstarter.services.apiresponses.commentresponse
 
 import android.os.Parcelable
-import com.kickstarter.libs.qualifiers.AutoGson
 import com.kickstarter.models.ApolloEnvelope
 import com.kickstarter.models.Comment
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-@AutoGson
 class CommentEnvelope(
     val comments: List<Comment>?,
     val commentableId: String?,
@@ -16,7 +14,6 @@ class CommentEnvelope(
 ) : Parcelable, ApolloEnvelope {
 
     @Parcelize
-    @AutoGson
     data class Builder(
         var comments: List<Comment>? = null,
         var commentableId: String? = null,

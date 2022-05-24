@@ -15,7 +15,6 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kickstarter.libs.ApiEndpoint;
-import com.kickstarter.libs.AutoParcelAdapterFactory;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentConfig;
@@ -527,7 +526,6 @@ public class ApplicationModule {
     return new GsonBuilder()
       .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
       .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter())
-      .registerTypeAdapterFactory(new AutoParcelAdapterFactory())
       .create();
   }
 

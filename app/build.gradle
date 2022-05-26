@@ -156,6 +156,7 @@ android {
         abortOnError false
         warningsAsErrors true
     }
+    namespace 'com.kickstarter'
 
 }
 

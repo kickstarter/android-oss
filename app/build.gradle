@@ -89,7 +89,6 @@ android {
             debuggable true
             applicationIdSuffix '.debug'
             signingConfig signingConfigs.debug
-            testCoverageEnabled true
             FirebasePerformance {
                 // Set this flag to 'false' to disable @AddTrace annotation processing and
                 // automatic monitoring of HTTP/S network requests

@@ -72,6 +72,8 @@ android.applicationVariants.all { variant ->
         ]
         classDirectories.from = files([debugTree], [kotlinDebugTree])
 
-        executionData.from = files("${project.buildDir}/jacoco/test${variantName}UnitTest.exec")
+        def unitTestTask = "test${variantName.capitalize()}UnitTest"
+        def unitTestsData = "$project.buildDir/jacoco/${unitTestTask}.exec"
+        executionData.from =  files([unitTestsData, "${buildDir}/jacoco/test${variantName}UnitTest.exec"])
     }
 }

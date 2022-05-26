@@ -70,6 +70,7 @@ android.applicationVariants.all { variant ->
                 variantSourceSets,
                 "src/main/java/com/kickstarter/"
         ]
+
         classDirectories.from = files([debugTree], [kotlinDebugTree])
 
         def unitTestTask = "test${variantName.capitalize()}UnitTest"

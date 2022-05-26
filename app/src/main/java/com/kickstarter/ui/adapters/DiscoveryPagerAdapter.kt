@@ -1,117 +1,99 @@
-package com.kickstarter.ui.adapters;
+package com.kickstarter.ui.adapters
 
-import android.view.ViewGroup;
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import com.kickstarter.libs.utils.extensions.positionFromSort
+import com.kickstarter.models.Category
+import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.ui.ArgumentsKey
+import com.kickstarter.ui.fragments.DiscoveryFragment
+import rx.Observable
 
-import com.kickstarter.models.Category;
-import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.ui.ArgumentsKey;
-import com.kickstarter.ui.fragments.DiscoveryFragment;
-import com.kickstarter.libs.utils.extensions.DiscoveryParamsExtKt;
+class DiscoveryPagerAdapter(
+    fragmentManager: FragmentManager,
+    private val fragments: MutableList<DiscoveryFragment>,
+    private val pageTitles: List<String>,
+    private val delegate: Delegate
+) : FragmentPagerAdapter(fragmentManager) {
+    interface Delegate {
+        fun discoveryPagerAdapterSetPrimaryPage(adapter: DiscoveryPagerAdapter, position: Int)
+    }
 
-import java.util.List;
+    override fun setPrimaryItem(container: ViewGroup, position: Int, `object`: Any) {
+        super.setPrimaryItem(container, position, `object`)
+        delegate.discoveryPagerAdapterSetPrimaryPage(this, position)
+    }
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import rx.Observable;
+    override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        val fragment = super.instantiateItem(container, position) as DiscoveryFragment
+        fragments[position] = fragment
+        return fragment
+    }
 
-public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
-  private final Delegate delegate;
-  private final List<DiscoveryFragment> fragments;
-  private final List<String> pageTitles;
+    override fun getItem(position: Int): Fragment {
+        return fragments[position]
+    }
 
-  public interface Delegate {
-    void discoveryPagerAdapterSetPrimaryPage(DiscoveryPagerAdapter adapter, int position);
-  }
+    override fun getCount(): Int {
+        return DiscoveryParams.Sort.defaultSorts.size
+    }
 
-  public DiscoveryPagerAdapter(final @NonNull FragmentManager fragmentManager, final @NonNull List<DiscoveryFragment> fragments,
-    final @NonNull List<String> pageTitles, final Delegate delegate) {
-    super(fragmentManager);
+    override fun getPageTitle(position: Int): CharSequence? {
+        return pageTitles[position]
+    }
 
-    this.delegate = delegate;
-    this.fragments = fragments;
-    this.pageTitles = pageTitles;
-  }
+    /**
+     * Passes along root categories to its fragment position to help fetch appropriate projects.
+     */
+    fun takeCategoriesForPosition(categories: List<Category>, position: Int) {
+        Observable.from(fragments)
+            .filter(DiscoveryFragment::isInstantiated)
+            .filter(DiscoveryFragment::isAttached)
+            .filter { frag: DiscoveryFragment ->
+                val fragmentPosition = frag.arguments?.getInt(ArgumentsKey.DISCOVERY_SORT_POSITION)
+                fragmentPosition == position
+            }
+            .subscribe { frag: DiscoveryFragment -> frag.takeCategories(categories) }
+    }
 
-  @Override
-  public void setPrimaryItem(final @NonNull ViewGroup container, final int position, final @NonNull Object object) {
-    super.setPrimaryItem(container, position, object);
-    this.delegate.discoveryPagerAdapterSetPrimaryPage(this, position);
-  }
+    /**
+     * Take current params from activity and pass to the appropriate fragment.
+     */
+    fun takeParams(params: DiscoveryParams) {
+        Observable.from(fragments)
+            .filter(DiscoveryFragment::isInstantiated)
+            .filter(DiscoveryFragment::isAttached)
+            .filter { frag: DiscoveryFragment ->
+                val fragmentPosition = frag.arguments?.getInt(ArgumentsKey.DISCOVERY_SORT_POSITION)
+                params.sort().positionFromSort() == fragmentPosition
+            }
+            .subscribe { frag: DiscoveryFragment -> frag.updateParams(params) }
+    }
 
-  @Override
-  public @NonNull Object instantiateItem(final @NonNull ViewGroup container, final int position) {
-    final DiscoveryFragment fragment = (DiscoveryFragment) super.instantiateItem(container, position);
-    this.fragments.set(position, fragment);
-    return fragment;
-  }
+    /**
+     * Call when the view model tells us to clear specific pages.
+     */
+    fun clearPages(pages: List<Int?>) {
+        Observable.from(fragments)
+            .filter(DiscoveryFragment::isInstantiated)
+            .filter(DiscoveryFragment::isAttached)
+            .filter { frag: DiscoveryFragment ->
+                val fragmentPosition = frag.arguments?.getInt(ArgumentsKey.DISCOVERY_SORT_POSITION)
+                pages.contains(fragmentPosition)
+            }
+            .subscribe { obj: DiscoveryFragment -> obj.clearPage() }
+    }
 
-  @Override
-  public @NonNull Fragment getItem(final int position) {
-    return this.fragments.get(position);
-  }
-
-  @Override
-  public int getCount() {
-    return DiscoveryParams.Sort.defaultSorts.size();
-  }
-
-  @Override
-  public CharSequence getPageTitle(final int position) {
-    return this.pageTitles.get(position);
-  }
-
-  /**
-   * Passes along root categories to its fragment position to help fetch appropriate projects.
-   */
-  public void takeCategoriesForPosition(final @NonNull List<Category> categories, final int position) {
-    Observable.from(this.fragments)
-      .filter(DiscoveryFragment::isInstantiated)
-      .filter(DiscoveryFragment::isAttached)
-      .filter(frag -> {
-        final int fragmentPosition = frag.getArguments().getInt(ArgumentsKey.DISCOVERY_SORT_POSITION);
-        return fragmentPosition == position;
-      })
-      .subscribe(frag -> frag.takeCategories(categories));
-  }
-
-  /**
-   * Take current params from activity and pass to the appropriate fragment.
-   */
-  public void takeParams(final @NonNull DiscoveryParams params) {
-    Observable.from(this.fragments)
-      .filter(DiscoveryFragment::isInstantiated)
-      .filter(DiscoveryFragment::isAttached)
-      .filter(frag -> {
-        final int fragmentPosition = frag.getArguments().getInt(ArgumentsKey.DISCOVERY_SORT_POSITION);
-        return DiscoveryParamsExtKt.positionFromSort(params.sort()) == fragmentPosition;
-      })
-      .subscribe(frag -> frag.updateParams(params));
-  }
-
-  /**
-   * Call when the view model tells us to clear specific pages.
-   */
-  public void clearPages(final @NonNull List<Integer> pages) {
-    Observable.from(this.fragments)
-      .filter(DiscoveryFragment::isInstantiated)
-      .filter(DiscoveryFragment::isAttached)
-      .filter(frag -> {
-        final int fragmentPosition = frag.getArguments().getInt(ArgumentsKey.DISCOVERY_SORT_POSITION);
-        return pages.contains(fragmentPosition);
-      })
-      .subscribe(DiscoveryFragment::clearPage);
-  }
-
-  public void scrollToTop(final int position) {
-    Observable.from(this.fragments)
-      .filter(DiscoveryFragment::isInstantiated)
-      .filter(DiscoveryFragment::isAttached)
-      .filter(frag -> {
-        final int fragmentPosition = frag.getArguments().getInt(ArgumentsKey.DISCOVERY_SORT_POSITION);
-        return position == fragmentPosition;
-      })
-      .subscribe(DiscoveryFragment::scrollToTop);
-  }
+    fun scrollToTop(position: Int) {
+        Observable.from(fragments)
+            .filter(DiscoveryFragment::isInstantiated)
+            .filter(DiscoveryFragment::isAttached)
+            .filter { frag: DiscoveryFragment ->
+                val fragmentPosition = frag.arguments?.getInt(ArgumentsKey.DISCOVERY_SORT_POSITION)
+                position == fragmentPosition
+            }
+            .subscribe { obj: DiscoveryFragment -> obj.scrollToTop() }
+    }
 }

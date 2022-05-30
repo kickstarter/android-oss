@@ -1,7 +1,6 @@
-package com.kickstarter.libs.qualifiers;
+package com.kickstarter.libs.qualifiers
 
-import javax.inject.Qualifier;
+import javax.inject.Qualifier
 
 @Qualifier
-public @interface WebEndpoint {
-}
+annotation class WebEndpoint 

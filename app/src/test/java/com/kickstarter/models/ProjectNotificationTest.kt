@@ -45,24 +45,4 @@ class ProjectNotificationTest : TestCase() {
         assertSame(projectNotification.mobile(), projectNotification1.mobile())
         assertSame(projectNotification.urls().api().notification(), projectNotification1.urls().api().notification())
     }
-
-    @Test
-    fun testProjectNotificationToBuilder() {
-        val projectNotification = ProjectNotificationFactory.enabled()
-        val project = ProjectNotification.Project.builder().build()
-        val urls = ProjectNotification.Urls.builder().build()
-        val projectNotification1 = projectNotification.toBuilder()
-            .email(false)
-            .mobile(false)
-            .project(project)
-            .urls(urls)
-            .build()
-
-        assertFalse(projectNotification == projectNotification1)
-        assertNotSame(projectNotification.email(), projectNotification1.email())
-        assertNotSame(projectNotification.project(), projectNotification1.project())
-        assertSame(projectNotification.id(), projectNotification1.id())
-        assertNotSame(projectNotification.mobile(), projectNotification1.mobile())
-        assertNotSame(projectNotification.urls(), projectNotification1.urls())
-    }
 }

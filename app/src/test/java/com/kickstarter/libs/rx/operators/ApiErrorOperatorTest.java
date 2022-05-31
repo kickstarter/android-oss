@@ -87,7 +87,7 @@ public final class ApiErrorOperatorTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testNullErrorResponse() {
+  public void testExceptionErrorResponse() {
     final Gson gson = new Gson();
 
     final PublishSubject<Response<Integer>> response = PublishSubject.create();
@@ -96,7 +96,7 @@ public final class ApiErrorOperatorTest extends KSRobolectricTestCase {
     final TestSubscriber<Integer> resultTest = new TestSubscriber<>();
     result.subscribe(resultTest);
 
-    response.onError(null);
+    response.onError(new Exception());
 
     resultTest.assertNoValues();
     assertEquals(1, resultTest.getOnErrorEvents().size());

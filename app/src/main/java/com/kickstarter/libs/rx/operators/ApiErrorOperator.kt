@@ -7,7 +7,7 @@ import com.kickstarter.services.apiresponses.ErrorEnvelope
 import retrofit2.Response
 import rx.Observable
 import rx.Subscriber
-import java.lang.Exception
+import kotlin.Exception
 
 /**
  * Takes a [retrofit2.Response], if it's successful send it to [Subscriber.onNext], otherwise
@@ -40,22 +40,20 @@ class ApiErrorOperator<T>(private val gson: Gson?) : Observable.Operator<T, Resp
                 }
 
                 response?.let {
-                    subscriber.onError(ResponseException(it))
-                } ?: return
-
-                if (!response.isSuccessful) {
-                    val envelope: ErrorEnvelope? = try {
-                        gson?.fromJson(response.errorBody()?.string(), ErrorEnvelope::class.java)
-                    } catch (e: Exception) {
-                        null
+                    if (!response?.isSuccessful) {
+                        val envelope: ErrorEnvelope? = try {
+                            gson?.fromJson(response.errorBody()?.string(), ErrorEnvelope::class.java)
+                        } catch (e: Exception) {
+                            null
+                        }
+                        envelope?.let {
+                            subscriber.onError(ApiException(envelope, response))
+                        } ?: subscriber.onError(ResponseException(response))
+                    } else {
+                        subscriber.onNext(response.body())
+                        subscriber.onCompleted()
                     }
-                    envelope?.let {
-                        subscriber.onError(ApiException(envelope, response))
-                    } ?: subscriber.onError(ResponseException(response))
-                } else {
-                    subscriber.onNext(response.body())
-                    subscriber.onCompleted()
-                }
+                } ?: subscriber.onError(Exception())
             }
         }
     }

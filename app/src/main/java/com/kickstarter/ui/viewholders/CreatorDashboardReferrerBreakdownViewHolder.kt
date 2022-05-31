@@ -7,7 +7,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.kickstarter.R
 import com.kickstarter.databinding.DashboardReferrerBreakdownLayoutBinding
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope

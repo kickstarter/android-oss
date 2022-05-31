@@ -8,7 +8,7 @@ import java.util.Locale
 
 @Parcelize
 class ProjectStatsEnvelope private constructor(
-    private val cumulativeStats: CumulativeStats,
+    private val cumulativeStats: CumulativeStats?,
     private val fundingDistribution: List<FundingDateStats>,
     private val referralAggregates: ReferralAggregateStats,
     private val referralDistribution: List<ReferrerStats>,
@@ -24,14 +24,14 @@ class ProjectStatsEnvelope private constructor(
 
     @Parcelize
     data class Builder(
-        private var cumulativeStats: CumulativeStats = CumulativeStats.builder().build(),
+        private var cumulativeStats: CumulativeStats? = null,
         private var fundingDistribution: List<FundingDateStats> = emptyList(),
         private var referralAggregates: ReferralAggregateStats = ReferralAggregateStats.builder().build(),
         private var referralDistribution: List<ReferrerStats> = emptyList(),
         private var rewardDistribution: List<RewardStats> = emptyList(),
         private var videoStats: VideoStats? = null
     ) : Parcelable {
-        fun cumulative(cumulativeStats: CumulativeStats?) = apply { cumulativeStats?.let { this.cumulativeStats = cumulativeStats } }
+        fun cumulative(cumulativeStats: CumulativeStats?) = apply { this.cumulativeStats = cumulativeStats }
         fun fundingDistribution(fundingDistribution: List<FundingDateStats>?) = apply { fundingDistribution?.let { this.fundingDistribution = fundingDistribution } }
         fun referralAggregates(referralAggregates: ReferralAggregateStats?) = apply { referralAggregates?.let { this.referralAggregates = referralAggregates } }
         fun referralDistribution(referralDistribution: List<ReferrerStats>?) = apply { referralDistribution?.let { this.referralDistribution = referralDistribution } }

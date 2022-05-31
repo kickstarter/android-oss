@@ -4,6 +4,7 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.extensions.BoolenExtKt;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.PairUtils;
@@ -93,6 +94,7 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
         .map(ProjectStatsEnvelope::referralDistribution);
 
       final Observable<ProjectStatsEnvelope.CumulativeStats> cumulativeStats = projectStats
+        .filter(obj -> ObjectUtils.isNotNull(obj.cumulative()))
         .map(ProjectStatsEnvelope::cumulative);
 
       final Observable<Integer> averagePledge = cumulativeStats

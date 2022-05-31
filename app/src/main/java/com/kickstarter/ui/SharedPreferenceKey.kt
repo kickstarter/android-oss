@@ -1,15 +1,13 @@
-package com.kickstarter.ui;
+package com.kickstarter.ui
 
-public final class SharedPreferenceKey {
-  private SharedPreferenceKey() {}
-
-  public static final String ACCESS_TOKEN = "access_token";
-  public static final String CONFIG = "config";
-  public static final String FIRST_SESSION = "first_session";
-  public static final String HAS_SEEN_APP_RATING = "has_seen_app_rating";
-  public static final String HAS_SEEN_GAMES_NEWSLETTER = "has_seen_games_newsletter";
-  public static final String LAST_SEEN_ACTIVITY_ID = "last_seen_activity_id";
-  public static final String MESSAGE_THREAD_HAS_UNREAD_MESSAGES = "message_thread_has_unread_messages";
-  public static final String USER = "user";
-  public static final String FEATURE_FLAG = "feature_flags";
+object SharedPreferenceKey {
+    const val ACCESS_TOKEN = "access_token"
+    const val CONFIG = "config"
+    const val FIRST_SESSION = "first_session"
+    const val HAS_SEEN_APP_RATING = "has_seen_app_rating"
+    const val HAS_SEEN_GAMES_NEWSLETTER = "has_seen_games_newsletter"
+    const val LAST_SEEN_ACTIVITY_ID = "last_seen_activity_id"
+    const val MESSAGE_THREAD_HAS_UNREAD_MESSAGES = "message_thread_has_unread_messages"
+    const val USER = "user"
+    const val FEATURE_FLAG = "feature_flags"
 }

@@ -7,7 +7,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.kickstarter.R
 import com.kickstarter.databinding.DashboardReferrerBreakdownLayoutBinding
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope
@@ -136,9 +135,9 @@ class CreatorDashboardReferrerBreakdownViewHolder(private val binding: Dashboard
 
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
-
-        val projectAndStats = ObjectUtils.requireNonNull(data as? Pair<Project, ProjectStatsEnvelope>?)
-        viewModel.inputs.projectAndStatsInput(projectAndStats as Pair<Project, ProjectStatsEnvelope>?)
+        (data as? Pair<Project, ProjectStatsEnvelope>?)?.let {
+            viewModel.inputs.projectAndStatsInput(it)
+        }
     }
 
     private fun setAmountPledgedTextViewText(projectAndAmount: Pair<Project, Float>, textview: TextView) {

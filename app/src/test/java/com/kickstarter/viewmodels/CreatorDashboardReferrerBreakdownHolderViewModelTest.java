@@ -170,6 +170,20 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
   }
 
   @Test
+  public void testProjectCumulativeNull() {
+    final Project project = ProjectFactory.project();
+
+    final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope()
+            .toBuilder()
+            .cumulative(null)
+            .build();
+
+    setUpEnvironment(environment());
+    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
+    this.projectAndAveragePledge.assertNoValues();
+  }
+
+  @Test
   public void testProjectAndCustomReferrerPledgedAmount() {
     final Project project = setUpEnvironmentAndInputProjectAndStats();
     this.projectAndCustomReferrerPledgedAmount.assertValue(Pair.create(project, 100f));

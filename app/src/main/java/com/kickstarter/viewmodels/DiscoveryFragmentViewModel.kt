@@ -478,8 +478,13 @@ interface DiscoveryFragmentViewModel {
         private fun fetchActivity(): Observable<Activity?>? {
             return apiClient.fetchActivities(1)
                 .distinctUntilChanged()
+                .materialize()
+                .share()
+                .filter { it.hasValue() }
+                .map { it.value }
                 .map { it.activities() }
                 .map { it.firstOrNull() }
+                .onErrorResumeNext(Observable.empty())
         }
 
         private fun isDefaultParams(userAndParams: Pair<User, DiscoveryParams>): Boolean {

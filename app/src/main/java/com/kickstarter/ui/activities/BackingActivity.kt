@@ -1,58 +1,58 @@
-package com.kickstarter.ui.activities;
+package com.kickstarter.ui.activities
 
-import android.os.Bundle;
+import android.os.Bundle
+import com.kickstarter.R
+import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.models.BackingWrapper
+import com.kickstarter.ui.data.ProjectData.Companion.builder
+import com.kickstarter.ui.fragments.BackingFragment
+import com.kickstarter.ui.fragments.BackingFragment.BackingDelegate
+import com.kickstarter.viewmodels.BackingViewModel
 
-import com.kickstarter.R;
-import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
-import com.kickstarter.models.BackingWrapper;
-import com.kickstarter.ui.data.ProjectData;
-import com.kickstarter.ui.fragments.BackingFragment;
-import com.kickstarter.viewmodels.BackingViewModel;
+@RequiresActivityViewModel(BackingViewModel.ViewModel::class)
+class BackingActivity : BaseActivity<BackingViewModel.ViewModel>(), BackingDelegate {
+    public override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-import androidx.annotation.Nullable;
+        setContentView(R.layout.backing_layout)
 
-@RequiresActivityViewModel(BackingViewModel.ViewModel.class)
-public final class BackingActivity extends BaseActivity<BackingViewModel.ViewModel> implements BackingFragment.BackingDelegate {
-
-  @Override
-  public void onCreate(final @Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.backing_layout);
-
-    this.viewModel.outputs.showBackingFragment()
+        viewModel.outputs.showBackingFragment()
             .compose(bindToLifecycle())
-            .subscribe(this::startBackingFragment);
+            .subscribe { startBackingFragment(it) }
 
-    this.viewModel.outputs.isRefreshing()
+        viewModel.outputs.isRefreshing()
             .compose(bindToLifecycle())
-            .subscribe(it -> backingFragment().isRefreshing(it));
+            .subscribe {
+                backingFragment()?.isRefreshing(
+                    it
+                )
+            }
+    }
 
-  }
+    private fun startBackingFragment(backingWrapper: BackingWrapper) {
+        val data = builder()
+            .project(backingWrapper.project)
+            .backing(backingWrapper.backing)
+            .user(backingWrapper.user)
+            .build()
 
-  private void startBackingFragment(final BackingWrapper backingWrapper) {
-    final ProjectData data = ProjectData.Companion.builder()
-            .project(backingWrapper.getProject())
-            .backing(backingWrapper.getBacking())
-            .user(backingWrapper.getUser())
-            .build();
-    backingFragment().configureWith(data);
+        backingFragment()?.configureWith(data)
 
-    getSupportFragmentManager().beginTransaction()
-            .show(backingFragment())
-            .commit();
-  }
+        backingFragment()?.let {
+            supportFragmentManager.beginTransaction()
+                .show(it)
+                .commit()
+        }
+    }
 
-  private BackingFragment backingFragment() {
-    return  (BackingFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_backing);
-  }
+    private fun backingFragment(): BackingFragment? {
+        return supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment?
+    }
 
-  @Override
-  public void refreshProject() {
-    this.viewModel.inputs.refresh();
-  }
+    override fun refreshProject() {
+        viewModel.inputs.refresh()
+    }
 
-  @Override
-  public void showFixPaymentMethod() { }
+    override fun showFixPaymentMethod() {}
 }
-

@@ -1,369 +1,375 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
+import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.models.OptimizelyFeature
+import com.kickstarter.libs.utils.EventName
+import com.kickstarter.mock.MockExperimentsClientType
+import com.kickstarter.mock.factories.ActivityFactory.activity
+import com.kickstarter.mock.factories.ActivityFactory.friendBackingActivity
+import com.kickstarter.mock.factories.ActivityFactory.projectStateChangedActivity
+import com.kickstarter.mock.factories.ActivityFactory.projectStateChangedPositiveActivity
+import com.kickstarter.mock.factories.ActivityFactory.updateActivity
+import com.kickstarter.mock.factories.SurveyResponseFactory.surveyResponse
+import com.kickstarter.mock.factories.UserFactory.user
+import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.models.Activity
+import com.kickstarter.models.ErroredBacking
+import com.kickstarter.models.Project
+import com.kickstarter.models.SurveyResponse
+import com.kickstarter.models.User
+import com.kickstarter.services.ApiClientType
+import org.junit.Test
+import rx.Observable
+import rx.observers.TestSubscriber
+import java.util.Arrays
 
-import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.CurrentUserType;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.MockCurrentUser;
-import com.kickstarter.libs.models.OptimizelyFeature;
-import com.kickstarter.mock.MockExperimentsClientType;
-import com.kickstarter.mock.factories.ActivityFactory;
-import com.kickstarter.mock.factories.SurveyResponseFactory;
-import com.kickstarter.mock.factories.UserFactory;
-import com.kickstarter.mock.services.MockApiClient;
-import com.kickstarter.models.Activity;
-import com.kickstarter.models.ErroredBacking;
-import com.kickstarter.models.Project;
-import com.kickstarter.models.SurveyResponse;
-import com.kickstarter.models.User;
-import com.kickstarter.services.ApiClientType;
-import com.kickstarter.viewmodels.ActivityFeedViewModel.ViewModel;
-import com.kickstarter.libs.utils.EventName;
+class ActivityFeedViewModelTest : KSRobolectricTestCase() {
 
-import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
+    private lateinit var vm: ActivityFeedViewModel.ViewModel
+    private val activityList = TestSubscriber<List<Activity>>()
+    private val erroredBackings = TestSubscriber<List<ErroredBacking>>()
+    private val goToDiscovery = TestSubscriber<Void>()
+    private val goToLogin = TestSubscriber<Void>()
+    private val goToProject = TestSubscriber<Project>()
+    private val goToSurvey = TestSubscriber<SurveyResponse>()
+    private val loggedOutEmptyStateIsVisible = TestSubscriber<Boolean>()
+    private val loggedInEmptyStateIsVisible = TestSubscriber<Boolean>()
+    private val startFixPledge = TestSubscriber<String>()
+    private val startUpdateActivity = TestSubscriber<Activity>()
+    private val surveys = TestSubscriber<List<SurveyResponse>>()
+    private val user = TestSubscriber<User>()
 
-import java.util.Arrays;
-import java.util.List;
+    private fun setUpEnvironment(environment: Environment) {
+        vm = ActivityFeedViewModel.ViewModel(environment)
+        vm.outputs.activityList().subscribe(activityList)
+        vm.outputs.erroredBackings().subscribe(erroredBackings)
+        vm.outputs.goToDiscovery().subscribe(goToDiscovery)
+        vm.outputs.goToLogin().subscribe(goToLogin)
+        vm.outputs.goToProject().subscribe(goToProject)
+        vm.outputs.goToSurvey().subscribe(goToSurvey)
+        vm.outputs.loggedOutEmptyStateIsVisible().subscribe(loggedOutEmptyStateIsVisible)
+        vm.outputs.loggedInEmptyStateIsVisible().subscribe(loggedInEmptyStateIsVisible)
+        vm.outputs.startFixPledge().subscribe(startFixPledge)
+        vm.outputs.startUpdateActivity().subscribe(startUpdateActivity)
+        vm.outputs.surveys().subscribe(surveys)
+    }
 
-import androidx.annotation.NonNull;
-import rx.Observable;
-import rx.observers.TestSubscriber;
+    @Test
+    fun testActivitiesEmit() {
+        setUpEnvironment(environment())
 
-public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
-  private ViewModel vm;
-  private final TestSubscriber<List<Activity>> activityList = new TestSubscriber<>();
-  private final TestSubscriber<List<ErroredBacking>> erroredBackings = new TestSubscriber<>();
-  private final TestSubscriber<Void> goToDiscovery = new TestSubscriber<>();
-  private final TestSubscriber<Void> goToLogin = new TestSubscriber<>();
-  private final TestSubscriber<Project> goToProject = new TestSubscriber<>();
-  private final TestSubscriber<SurveyResponse> goToSurvey = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> loggedOutEmptyStateIsVisible = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> loggedInEmptyStateIsVisible = new TestSubscriber<>();
-  private final TestSubscriber<String> startFixPledge = new TestSubscriber<>();
-  private final TestSubscriber<Activity> startUpdateActivity = new TestSubscriber<>();
-  private final TestSubscriber<List<SurveyResponse>> surveys = new TestSubscriber<>();
-  private final TestSubscriber<User> user = new TestSubscriber<>();
+        // Swipe refresh.
+        vm.inputs.refresh()
 
-  private void setUpEnvironment(final @NonNull Environment environment) {
-    this.vm = new ViewModel(environment);
-    this.vm.outputs.activityList().subscribe(this.activityList);
-    this.vm.outputs.erroredBackings().subscribe(this.erroredBackings);
-    this.vm.outputs.goToDiscovery().subscribe(this.goToDiscovery);
-    this.vm.outputs.goToLogin().subscribe(this.goToLogin);
-    this.vm.outputs.goToProject().subscribe(this.goToProject);
-    this.vm.outputs.goToSurvey().subscribe(this.goToSurvey);
-    this.vm.outputs.loggedOutEmptyStateIsVisible().subscribe(this.loggedOutEmptyStateIsVisible);
-    this.vm.outputs.loggedInEmptyStateIsVisible().subscribe(this.loggedInEmptyStateIsVisible);
-    this.vm.outputs.startFixPledge().subscribe(this.startFixPledge);
-    this.vm.outputs.startUpdateActivity().subscribe(this.startUpdateActivity);
-    this.vm.outputs.surveys().subscribe(this.surveys);
-  }
+        // Activities should emit.
+        activityList.assertValueCount(1)
 
-  @Test
-  public void testActivitiesEmit() {
-    setUpEnvironment(environment());
+        // Paginate.
+        vm.inputs.nextPage()
+        activityList.assertValueCount(1)
+        segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
 
-    // Swipe refresh.
-    this.vm.inputs.refresh();
+    @Test
+    fun testClickingInterfaceElements() {
+        setUpEnvironment(environment())
+        goToDiscovery.assertNoValues()
+        goToLogin.assertNoValues()
+        goToProject.assertNoValues()
+        startUpdateActivity.assertNoValues()
 
-    // Activities should emit.
-    this.activityList.assertValueCount(1);
+        // Empty activity feed clicks do not trigger events yet.
+        vm.inputs.emptyActivityFeedDiscoverProjectsClicked(null)
 
-    // Paginate.
-    this.vm.inputs.nextPage();
-    this.activityList.assertValueCount(1);
+        goToDiscovery.assertValueCount(1)
 
-    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
-  }
+        vm.inputs.emptyActivityFeedLoginClicked(null)
 
-  @Test
-  public void testClickingInterfaceElements() {
-    this.setUpEnvironment(this.environment());
+        goToLogin.assertValueCount(1)
 
-    this.goToDiscovery.assertNoValues();
-    this.goToLogin.assertNoValues();
-    this.goToProject.assertNoValues();
-    this.startUpdateActivity.assertNoValues();
+        vm.inputs.friendBackingClicked(null, friendBackingActivity())
+        vm.inputs.projectStateChangedClicked(null, projectStateChangedActivity())
+        vm.inputs.projectStateChangedPositiveClicked(null, projectStateChangedPositiveActivity())
+        vm.inputs.projectUpdateProjectClicked(null, updateActivity())
 
-    // Empty activity feed clicks do not trigger events yet.
-    this.vm.inputs.emptyActivityFeedDiscoverProjectsClicked(null);
-    this.goToDiscovery.assertValueCount(1);
+        goToProject.assertValueCount(4)
 
-    this.vm.inputs.emptyActivityFeedLoginClicked(null);
-    this.goToLogin.assertValueCount(1);
+        vm.inputs.projectUpdateClicked(null, activity())
 
-    this.vm.inputs.friendBackingClicked(null, ActivityFactory.friendBackingActivity());
-    this.vm.inputs.projectStateChangedClicked(null, ActivityFactory.projectStateChangedActivity());
-    this.vm.inputs.projectStateChangedPositiveClicked(null, ActivityFactory.projectStateChangedPositiveActivity());
-    this.vm.inputs.projectUpdateProjectClicked(null, ActivityFactory.updateActivity());
+        startUpdateActivity.assertValueCount(1)
 
-    this.goToProject.assertValueCount(4);
+        segmentTrack.assertValues(
+            EventName.PAGE_VIEWED.eventName,
+            EventName.CTA_CLICKED.eventName,
+            EventName.CARD_CLICKED.eventName,
+            EventName.CARD_CLICKED.eventName,
+            EventName.CARD_CLICKED.eventName,
+            EventName.CARD_CLICKED.eventName
+        )
+    }
 
-    this.vm.inputs.projectUpdateClicked(null, ActivityFactory.activity());
+    @Test
+    fun testClickingInterfaceElements_shouldEmitProjectPage() {
+        val currentUser: CurrentUserType = MockCurrentUser()
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
 
-    this.startUpdateActivity.assertValueCount(1);
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .currentUser(currentUser)
+                .optimizely(mockExperimentsClientType)
+                .build()
+        )
 
-    this.segmentTrack.assertValues(
-            EventName.PAGE_VIEWED.getEventName(),
-            EventName.CTA_CLICKED.getEventName(),
-            EventName.CARD_CLICKED.getEventName(),
-            EventName.CARD_CLICKED.getEventName(),
-            EventName.CARD_CLICKED.getEventName(),
-            EventName.CARD_CLICKED.getEventName());
-  }
+        goToDiscovery.assertNoValues()
+        goToLogin.assertNoValues()
+        goToProject.assertNoValues()
+        startUpdateActivity.assertNoValues()
 
-  @Test
-  public void testClickingInterfaceElements_shouldEmitProjectPage() {
-    final CurrentUserType currentUser = new MockCurrentUser();
-    final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
-      @Override
-      public boolean isFeatureEnabled(final @NotNull OptimizelyFeature.Key feature) {
-        return true;
-      }
-    };
+        // Empty activity feed clicks do not trigger events yet.
+        vm.inputs.emptyActivityFeedDiscoverProjectsClicked(null)
 
-    this.setUpEnvironment(
-      this.environment()
-        .toBuilder()
-        .currentUser(currentUser)
-        .optimizely(mockExperimentsClientType)
-        .build());
+        goToDiscovery.assertValueCount(1)
 
-    this.goToDiscovery.assertNoValues();
-    this.goToLogin.assertNoValues();
-    this.goToProject.assertNoValues();
-    this.startUpdateActivity.assertNoValues();
+        vm.inputs.emptyActivityFeedLoginClicked(null)
 
-    // Empty activity feed clicks do not trigger events yet.
-    this.vm.inputs.emptyActivityFeedDiscoverProjectsClicked(null);
-    this.goToDiscovery.assertValueCount(1);
+        goToLogin.assertValueCount(1)
 
-    this.vm.inputs.emptyActivityFeedLoginClicked(null);
-    this.goToLogin.assertValueCount(1);
+        vm.inputs.friendBackingClicked(null, friendBackingActivity())
+        vm.inputs.projectStateChangedClicked(null, projectStateChangedActivity())
+        vm.inputs.projectStateChangedPositiveClicked(null, projectStateChangedPositiveActivity())
+        vm.inputs.projectUpdateProjectClicked(null, updateActivity())
 
-    this.vm.inputs.friendBackingClicked(null, ActivityFactory.friendBackingActivity());
-    this.vm.inputs.projectStateChangedClicked(null, ActivityFactory.projectStateChangedActivity());
-    this.vm.inputs.projectStateChangedPositiveClicked(null, ActivityFactory.projectStateChangedPositiveActivity());
-    this.vm.inputs.projectUpdateProjectClicked(null, ActivityFactory.updateActivity());
+        goToProject.assertValueCount(4)
 
-    this.goToProject.assertValueCount(4);
-    //this.goToProject.assertValues(); TODO
+        // this.goToProject.assertValues(); TODO
+        vm.inputs.projectUpdateClicked(null, activity())
 
-    this.vm.inputs.projectUpdateClicked(null, ActivityFactory.activity());
+        startUpdateActivity.assertValueCount(1)
 
-    this.startUpdateActivity.assertValueCount(1);
+        segmentTrack.assertValues(
+            EventName.PAGE_VIEWED.eventName,
+            EventName.CTA_CLICKED.eventName,
+            EventName.CARD_CLICKED.eventName,
+            EventName.CARD_CLICKED.eventName,
+            EventName.CARD_CLICKED.eventName,
+            EventName.CARD_CLICKED.eventName
+        )
+    }
 
-    this.segmentTrack.assertValues(
-            EventName.PAGE_VIEWED.getEventName(),
-            EventName.CTA_CLICKED.getEventName(),
-            EventName.CARD_CLICKED.getEventName(),
-            EventName.CARD_CLICKED.getEventName(),
-            EventName.CARD_CLICKED.getEventName(),
-            EventName.CARD_CLICKED.getEventName());
-  }
+    @Test
+    fun testErroredBackings_whenLoggedIn() {
+        val currentUser: CurrentUserType = MockCurrentUser()
+        val initialUser = user()
+        currentUser.login(initialUser, "deadbeef")
+        val updatedUser = user()
+        val environment = environment().toBuilder()
+            .apiClient(object : MockApiClient() {
+                override fun fetchCurrentUser(): Observable<User> {
+                    return Observable.just(updatedUser)
+                }
+            })
+            .currentUser(currentUser)
+            .build()
+        setUpEnvironment(environment)
+        erroredBackings.assertValueCount(1)
+        vm.inputs.refresh()
+        erroredBackings.assertValueCount(2)
+        segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
 
-  @Test
-  public void testErroredBackings_whenLoggedIn() {
-    final CurrentUserType currentUser = new MockCurrentUser();
-    final User initialUser = UserFactory.user();
-    currentUser.login(initialUser, "deadbeef");
+    @Test
+    fun testErroredBackings_whenLoggedOut() {
+        setUpEnvironment(environment())
+        vm.inputs.resume()
+        erroredBackings.assertNoValues()
+        segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
 
-    final User updatedUser = UserFactory.user();
-    final Environment environment = this.environment().toBuilder()
-      .apiClient(new MockApiClient(){
-        @NonNull
-        @Override
-        public Observable<User> fetchCurrentUser() {
-          return Observable.just(updatedUser);
+    @Test
+    fun testLoginFlow() {
+        val apiClient: ApiClientType = MockApiClient()
+        val currentUser: CurrentUserType = MockCurrentUser()
+        val environment = environment().toBuilder()
+            .apiClient(apiClient)
+            .currentUser(currentUser)
+            .build()
+        setUpEnvironment(environment)
+
+        // Empty activity feed with login button should be shown.
+        loggedOutEmptyStateIsVisible.assertValue(true)
+
+        // Login.
+        vm.inputs.emptyActivityFeedLoginClicked(null)
+        goToLogin.assertValueCount(1)
+        currentUser.refresh(user())
+
+        // Empty states are not shown when activities emit on successful login.
+        activityList.assertValueCount(1)
+        loggedOutEmptyStateIsVisible.assertValues(true, false)
+        loggedInEmptyStateIsVisible.assertValue(false)
+    }
+
+    @Test
+    fun testSurveys_LoggedOut() {
+        val surveyResponses = Arrays.asList(
+            surveyResponse(),
+            surveyResponse()
+        )
+
+        val apiClient: MockApiClient = object : MockApiClient() {
+            override fun fetchUnansweredSurveys(): Observable<List<SurveyResponse>> {
+                return Observable.just(surveyResponses)
+            }
         }
-      })
-      .currentUser(currentUser)
-      .build();
 
-    setUpEnvironment(environment);
-    this.erroredBackings.assertValueCount(1);
+        val currentUser: CurrentUserType = MockCurrentUser()
+        currentUser.logout()
 
-    this.vm.inputs.refresh();
-    this.erroredBackings.assertValueCount(2);
+        val environment = environment().toBuilder()
+            .apiClient(apiClient)
+            .currentUser(currentUser)
+            .build()
 
-    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
-  }
+        setUpEnvironment(environment)
 
-  @Test
-  public void testErroredBackings_whenLoggedOut() {
-    setUpEnvironment(environment());
+        vm.inputs.resume()
 
-    this.vm.inputs.resume();
+        surveys.assertNoValues()
+    }
 
-    this.erroredBackings.assertNoValues();
-    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
-  }
+    @Test
+    fun testStartFixPledge() {
+        setUpEnvironment(environment())
 
-  @Test
-  public void testLoginFlow() {
-    final ApiClientType apiClient = new MockApiClient();
-    final CurrentUserType currentUser = new MockCurrentUser();
+        val projectSlug = "slug"
 
-    final Environment environment = this.environment().toBuilder()
-      .apiClient(apiClient)
-      .currentUser(currentUser)
-      .build();
+        vm.inputs.managePledgeClicked(projectSlug)
 
-    setUpEnvironment(environment);
+        assertEquals(startFixPledge.onNextEvents[0], projectSlug)
+    }
 
-    // Empty activity feed with login button should be shown.
-    this.loggedOutEmptyStateIsVisible.assertValue(true);
+    @Test
+    fun testStartFixPledge_shouldEmitToFixPledgeProjectPage() {
+        val currentUser: CurrentUserType = MockCurrentUser()
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
 
-    // Login.
-    this.vm.inputs.emptyActivityFeedLoginClicked(null);
-    this.goToLogin.assertValueCount(1);
-    currentUser.refresh(UserFactory.user());
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .currentUser(currentUser)
+                .optimizely(mockExperimentsClientType).build()
+        )
 
-    // Empty states are not shown when activities emit on successful login.
-    this.activityList.assertValueCount(1);
-    this.loggedOutEmptyStateIsVisible.assertValues(true, false);
-    this.loggedInEmptyStateIsVisible.assertValue(false);
-  }
+        val projectSlug = "slug"
 
-  @Test
-  public void testSurveys_LoggedOut() {
-    final List<SurveyResponse> surveyResponses = Arrays.asList(
-      SurveyResponseFactory.surveyResponse(),
-      SurveyResponseFactory.surveyResponse()
-    );
+        vm.inputs.managePledgeClicked(projectSlug)
 
-    final MockApiClient apiClient = new MockApiClient() {
-      @Override
-      public @NonNull Observable<List<SurveyResponse>> fetchUnansweredSurveys() {
-        return Observable.just(surveyResponses);
-      }
-    };
+        startFixPledge.assertValueCount(1)
 
-    final CurrentUserType currentUser = new MockCurrentUser();
-    currentUser.logout();
+        assertTrue(startFixPledge.onNextEvents[0] === projectSlug)
+    }
 
-    final Environment environment = this.environment().toBuilder()
-      .apiClient(apiClient)
-      .currentUser(currentUser)
-      .build();
+    @Test
+    fun testStartUpdateActivity() {
+        val activity = updateActivity()
 
-    setUpEnvironment(environment);
-    this.vm.inputs.resume();
+        setUpEnvironment(environment())
 
-    this.surveys.assertNoValues();
-  }
+        vm.inputs.projectUpdateClicked(null, activity)
 
-  @Test
-  public void testStartFixPledge() {
-    setUpEnvironment(environment());
+        startUpdateActivity.assertValues(activity)
+    }
 
-    final String projectSlug = "slug";
-    this.vm.inputs.managePledgeClicked(projectSlug);
-    assertEquals(this.startFixPledge.getOnNextEvents().get(0), projectSlug);
-  }
+    @Test
+    fun testSurveys_LoggedIn_SwipeRefreshed() {
+        val currentUser: CurrentUserType = MockCurrentUser()
+        currentUser.login(user(), "deadbeef")
 
-  @Test
-  public void testStartFixPledge_shouldEmitToFixPledgeProjectPage() {
-    final CurrentUserType currentUser = new MockCurrentUser();
-    final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
-      @Override
-      public boolean isFeatureEnabled(final @NotNull OptimizelyFeature.Key feature) {
-        return true;
-      }
-    };
+        val environment = environment().toBuilder()
+            .currentUser(currentUser)
+            .build()
 
-    this.setUpEnvironment(
-      this.environment()
-        .toBuilder()
-        .currentUser(currentUser)
-        .optimizely(mockExperimentsClientType).build());
+        setUpEnvironment(environment)
 
-    final String projectSlug = "slug";
-    this.vm.inputs.managePledgeClicked(projectSlug);
-    this.startFixPledge.assertValueCount(1);
-    assertTrue(this.startFixPledge.getOnNextEvents().get(0) == projectSlug);
-  }
+        surveys.assertValueCount(1)
 
-  @Test
-  public void testStartUpdateActivity() {
-    final Activity activity = ActivityFactory.updateActivity();
-    setUpEnvironment(environment());
+        vm.inputs.refresh()
+        surveys.assertValueCount(2)
+    }
 
-    this.vm.inputs.projectUpdateClicked(null, activity);
-    this.startUpdateActivity.assertValues(activity);
-  }
+    @Test
+    fun testUser_LoggedIn_SwipeRefreshed() {
+        val currentUser: CurrentUserType = MockCurrentUser()
+        val initialUser = user().toBuilder().unseenActivityCount(3).build()
 
-  @Test
-  public void testSurveys_LoggedIn_SwipeRefreshed() {
-    final CurrentUserType currentUser = new MockCurrentUser();
-    currentUser.login(UserFactory.user(), "deadbeef");
+        currentUser.login(initialUser, "deadbeef")
 
-    final Environment environment = this.environment().toBuilder()
-      .currentUser(currentUser)
-      .build();
+        val updatedUser = user()
 
-    setUpEnvironment(environment);
-    this.surveys.assertValueCount(1);
+        val environment = environment().toBuilder()
+            .apiClient(object : MockApiClient() {
+                override fun fetchCurrentUser(): Observable<User> {
+                    return Observable.just(updatedUser)
+                }
+            })
+            .currentUser(currentUser)
+            .build()
 
-    this.vm.inputs.refresh();
-    this.surveys.assertValueCount(2);
-  }
+        environment.currentUser()?.loggedInUser()?.subscribe(user)
 
-  @Test
-  public void testUser_LoggedIn_SwipeRefreshed() {
-    final CurrentUserType currentUser = new MockCurrentUser();
-    final User initialUser = UserFactory.user().toBuilder().unseenActivityCount(3).build();
-    currentUser.login(initialUser, "deadbeef");
+        setUpEnvironment(environment)
 
-    final User updatedUser = UserFactory.user();
-    final Environment environment = this.environment().toBuilder()
-      .apiClient(new MockApiClient(){
-        @NonNull
-        @Override
-        public Observable<User> fetchCurrentUser() {
-          return Observable.just(updatedUser);
-        }
-      })
-      .currentUser(currentUser)
-      .build();
+        surveys.assertValueCount(1)
 
-    environment.currentUser().loggedInUser().subscribe(this.user);
+        user.assertValues(initialUser, updatedUser)
 
-    setUpEnvironment(environment);
-    this.surveys.assertValueCount(1);
-    this.user.assertValues(initialUser, updatedUser);
+        vm.inputs.refresh()
 
-    this.vm.inputs.refresh();
-    this.surveys.assertValueCount(2);
-    this.user.assertValues(initialUser, updatedUser);
-  }
+        surveys.assertValueCount(2)
+        user.assertValues(initialUser, updatedUser)
+    }
 
-  @Test
-  public void testUser_whenLoggedInAndResumedWithErroredBackings() {
-    final CurrentUserType currentUser = new MockCurrentUser();
-    final User initialUser = UserFactory.user()
-      .toBuilder()
-      .erroredBackingsCount(3)
-      .build();
-    currentUser.login(initialUser, "token");
+    @Test
+    fun testUser_whenLoggedInAndResumedWithErroredBackings() {
+        val currentUser: CurrentUserType = MockCurrentUser()
+        val initialUser = user()
+            .toBuilder()
+            .erroredBackingsCount(3)
+            .build()
 
-    final User updatedUser = UserFactory.user();
-    final Environment environment = this.environment().toBuilder()
-      .apiClient(new MockApiClient() {
-        @Override public @NonNull Observable<User> fetchCurrentUser() {
-          return Observable.just(updatedUser);
-        }
-      })
-      .currentUser(currentUser)
-      .build();
+        currentUser.login(initialUser, "token")
 
-    environment.currentUser().loggedInUser().subscribe(this.user);
+        val updatedUser = user()
+        val environment = environment().toBuilder()
+            .apiClient(object : MockApiClient() {
+                override fun fetchCurrentUser(): Observable<User> {
+                    return Observable.just(updatedUser)
+                }
+            })
+            .currentUser(currentUser)
+            .build()
 
-    setUpEnvironment(environment);
-    this.user.assertValues(initialUser, updatedUser);
+        environment.currentUser()?.loggedInUser()?.subscribe(user)
 
-    this.vm.inputs.resume();
-    this.user.assertValues(initialUser, updatedUser);
-  }
+        setUpEnvironment(environment)
+
+        user.assertValues(initialUser, updatedUser)
+
+        vm.inputs.resume()
+        user.assertValues(initialUser, updatedUser)
+    }
 }

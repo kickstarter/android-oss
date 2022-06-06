@@ -1,310 +1,317 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.ApiPaginator;
-import com.kickstarter.libs.CurrentUserType;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ExperimentsClientType;
-import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.EventContextValues;
-import com.kickstarter.libs.utils.extensions.IntExtKt;
-import com.kickstarter.models.Activity;
-import com.kickstarter.models.ErroredBacking;
-import com.kickstarter.models.Project;
-import com.kickstarter.models.SurveyResponse;
-import com.kickstarter.models.User;
-import com.kickstarter.services.ApiClientType;
-import com.kickstarter.services.ApolloClientType;
-import com.kickstarter.services.apiresponses.ActivityEnvelope;
-import com.kickstarter.ui.activities.ActivityFeedActivity;
-import com.kickstarter.ui.adapters.ActivityFeedAdapter;
-import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder;
-import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
-import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder;
-import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder;
-import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
+import android.util.Pair
+import com.kickstarter.libs.ActivityViewModel
+import com.kickstarter.libs.ApiPaginator
+import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.ExperimentsClientType
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.EventContextValues
+import com.kickstarter.libs.utils.extensions.intValueOrZero
+import com.kickstarter.libs.utils.extensions.isNonZero
+import com.kickstarter.models.Activity
+import com.kickstarter.models.ErroredBacking
+import com.kickstarter.models.Project
+import com.kickstarter.models.SurveyResponse
+import com.kickstarter.models.User
+import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.apiresponses.ActivityEnvelope
+import com.kickstarter.ui.activities.ActivityFeedActivity
+import com.kickstarter.ui.adapters.ActivityFeedAdapter
+import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder
+import com.kickstarter.ui.viewholders.FriendBackingViewHolder
+import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder
+import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder
+import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder
+import rx.Observable
+import rx.subjects.BehaviorSubject
+import rx.subjects.PublishSubject
 
-import java.util.List;
+interface ActivityFeedViewModel {
+    interface Inputs : ActivityFeedAdapter.Delegate {
+        /** Invoke when pagination should happen.  */
+        fun nextPage()
 
-import androidx.annotation.NonNull;
-import rx.Observable;
-import rx.subjects.BehaviorSubject;
-import rx.subjects.PublishSubject;
+        /** Invoke when activity's onResume runs  */
+        fun resume()
 
-import static com.kickstarter.libs.rx.transformers.Transformers.incrementalCount;
-import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
-import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
-import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
-
-public interface ActivityFeedViewModel {
-
-  interface Inputs extends ActivityFeedAdapter.Delegate {
-    /** Invoke when pagination should happen. */
-    void nextPage();
-
-    /** Invoke when activity's onResume runs */
-    void resume();
-
-    /** Invoke when the feed should be refreshed. */
-    void refresh();
-  }
-
-  interface Outputs {
-    /** Emits a list of activities representing the user's activity feed. */
-    Observable<List<Activity>> activityList();
-
-    /** Emits a list of the user's errored backings. */
-    Observable<List<ErroredBacking>> erroredBackings();
-
-    /** Emits when view should be returned to Discovery projects. */
-    Observable<Void> goToDiscovery();
-
-    /** Emits when login tout should be shown. */
-    Observable<Void> goToLogin();
-
-    /** Emits a project when it should be shown. */
-    Observable<Project> goToProject();
-
-    /** Emits a SurveyResponse when it should be shown. */
-    Observable<SurveyResponse> goToSurvey();
-
-    /** Emits a boolean indicating whether activities are being fetched from the API. */
-    Observable<Boolean> isFetchingActivities();
-
-    /** Emits a boolean that determines if a logged-out, empty state should be displayed. */
-    Observable<Boolean> loggedOutEmptyStateIsVisible();
-
-    /** Emits a logged-in user with zero activities in order to display an empty state. */
-    Observable<Boolean> loggedInEmptyStateIsVisible();
-
-    /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectPageActivity}. */
-    Observable<String> startFixPledge();
-
-    /** Emits when we should start the {@link com.kickstarter.ui.activities.UpdateActivity}. */
-    Observable<Activity> startUpdateActivity();
-
-    /** Emits a list of unanswered surveys to be shown in the user's activity feed */
-    Observable<List<SurveyResponse>> surveys();
-  }
-
-  final class ViewModel extends ActivityViewModel<ActivityFeedActivity> implements Inputs, Outputs {
-    private final ApiClientType apiClient;
-    private final ApolloClientType apolloClient;
-    private final CurrentUserType currentUser;
-    private final ExperimentsClientType optimizely;
-
-    public ViewModel(final @NonNull Environment environment) {
-      super(environment);
-
-      this.apiClient = environment.apiClient();
-      this.apolloClient = environment.apolloClient();
-      this.currentUser = environment.currentUser();
-      this.optimizely = environment.optimizely();
-
-      this.goToDiscovery = this.discoverProjectsClick;
-      this.goToLogin = this.loginClick;
-      this.goToSurvey = this.surveyClick;
-
-      this.goToProject = Observable.merge(
-        this.friendBackingClick,
-        this.projectStateChangedClick,
-        this.projectStateChangedPositiveClick,
-        this.projectUpdateProjectClick
-      )
-        .map(Activity::project);
-
-      this.goToProject
-        .compose(bindToLifecycle())
-        .subscribe(p ->
-          this.analyticEvents.trackProjectCardClicked(
-            p,
-            EventContextValues.ContextPageName.ACTIVITY_FEED.getContextName()));
-
-      this.startUpdateActivity = this.projectUpdateClick;
-
-      final Observable<Void> refreshOrResume = Observable.merge(this.refresh, this.resume).share();
-
-      final Observable<User> loggedInUser = this.currentUser.loggedInUser();
-
-      loggedInUser
-        .compose(takeWhen(refreshOrResume))
-        .switchMap(__ -> this.apiClient.fetchUnansweredSurveys().compose(neverError()).share())
-        .compose(bindToLifecycle())
-        .subscribe(this.surveys);
-
-      loggedInUser
-        .compose(takeWhen(refreshOrResume))
-        .switchMap(__ -> this.apolloClient.erroredBackings().compose(neverError()).share())
-        .compose(bindToLifecycle())
-        .subscribe(this.erroredBackings::onNext);
-
-      loggedInUser
-        .compose(takeWhen(refreshOrResume))
-        .map(user -> IntExtKt.intValueOrZero(user.unseenActivityCount()) + IntExtKt.intValueOrZero(user.erroredBackingsCount()))
-        .filter(IntExtKt::isNonZero)
-        .distinctUntilChanged()
-        .switchMap(__ -> this.apolloClient.clearUnseenActivity().compose(neverError()))
-        .switchMap(__ -> this.apiClient.fetchCurrentUser().compose(neverError()))
-        .compose(bindToLifecycle())
-        .subscribe(freshUser -> this.currentUser.refresh(freshUser));
-
-      final ApiPaginator<Activity, ActivityEnvelope, Void> paginator = ApiPaginator.<Activity, ActivityEnvelope, Void>builder()
-        .nextPage(this.nextPage)
-        .startOverWith(this.refresh)
-        .envelopeToListOfData(ActivityEnvelope::activities)
-        .envelopeToMoreUrl(env -> env.urls().api().moreActivities())
-        .loadWithParams(__ -> this.apiClient.fetchActivities().compose(Transformers.neverError()))
-        .loadWithPaginationPath(this.apiClient::fetchActivitiesWithPaginationPath)
-        .build();
-
-      paginator.paginatedData()
-        .compose(this.bindToLifecycle())
-        .subscribe(this.activityList);
-
-      paginator.isFetching()
-        .compose(this.bindToLifecycle())
-        .subscribe(this.isFetchingActivities);
-
-      this.currentUser.loggedInUser()
-        .take(1)
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.refresh());
-
-      this.currentUser.isLoggedIn()
-        .map(loggedIn -> !loggedIn)
-        .compose(this.bindToLifecycle())
-        .subscribe(this.loggedOutEmptyStateIsVisible);
-
-      this.managePledgeClicked
-        .compose(bindToLifecycle())
-        .subscribe(this.startFixPledge::onNext);
-
-      this.currentUser.observable()
-        .compose(takePairWhen(this.activityList))
-        .map(ua -> ua.first != null && ua.second.size() == 0)
-        .compose(this.bindToLifecycle())
-        .subscribe(this.loggedInEmptyStateIsVisible);
-
-      // Track viewing and paginating activity.
-      final Observable<Integer> feedViewed = this.nextPage
-        .compose(incrementalCount())
-        .startWith(0);
-
-      feedViewed
-        .take(1)
-        .compose(this.bindToLifecycle())
-        .subscribe(__ -> {
-          this.analyticEvents.trackActivityFeedPageViewed();
-        });
-
-      this.discoverProjectsClick
-        .compose(this.bindToLifecycle())
-        .subscribe(__ -> this.analyticEvents.trackDiscoverProjectCTAClicked());
+        /** Invoke when the feed should be refreshed.  */
+        fun refresh()
     }
 
-    private final PublishSubject<Void> discoverProjectsClick = PublishSubject.create();
-    private final PublishSubject<Activity> friendBackingClick = PublishSubject.create();
-    private final PublishSubject<Void> loginClick = PublishSubject.create();
-    private final PublishSubject<String> managePledgeClicked = PublishSubject.create();
-    private final PublishSubject<Void> nextPage = PublishSubject.create();
-    private final PublishSubject<Activity> projectStateChangedClick = PublishSubject.create();
-    private final PublishSubject<Activity> projectStateChangedPositiveClick = PublishSubject.create();
-    private final PublishSubject<Activity> projectUpdateClick = PublishSubject.create();
-    private final PublishSubject<Activity> projectUpdateProjectClick = PublishSubject.create();
-    private final PublishSubject<Void> refresh = PublishSubject.create();
-    private final PublishSubject<Void> resume = PublishSubject.create();
-    private final PublishSubject<SurveyResponse> surveyClick = PublishSubject.create();
+    interface Outputs {
+        /** Emits a list of activities representing the user's activity feed.  */
+        fun activityList(): Observable<List<Activity>>
 
-    private final BehaviorSubject<List<Activity>> activityList = BehaviorSubject.create();
-    private final BehaviorSubject<List<ErroredBacking>> erroredBackings = BehaviorSubject.create();
-    private final Observable<Void> goToDiscovery;
-    private final Observable<Void> goToLogin;
-    private final Observable<Project> goToProject;
-    private final Observable<SurveyResponse> goToSurvey;
-    private final BehaviorSubject<Boolean> isFetchingActivities= BehaviorSubject.create();
-    private final BehaviorSubject<Boolean> loggedInEmptyStateIsVisible = BehaviorSubject.create();
-    private final BehaviorSubject<Boolean> loggedOutEmptyStateIsVisible = BehaviorSubject.create();
-    private final PublishSubject<String> startFixPledge = PublishSubject.create();
-    private final Observable<Activity> startUpdateActivity;
-    private final BehaviorSubject<List<SurveyResponse>> surveys = BehaviorSubject.create();
+        /** Emits a list of the user's errored backings.  */
+        fun erroredBackings(): Observable<List<ErroredBacking>>
 
-    public final Inputs inputs = this;
-    public final Outputs outputs = this;
+        /** Emits when view should be returned to Discovery projects.  */
+        fun goToDiscovery(): Observable<Void>
 
-    @Override public void emptyActivityFeedDiscoverProjectsClicked(final @NonNull EmptyActivityFeedViewHolder viewHolder) {
-      this.discoverProjectsClick.onNext(null);
-    }
-    @Override public void emptyActivityFeedLoginClicked(final @NonNull EmptyActivityFeedViewHolder viewHolder) {
-      this.loginClick.onNext(null);
-    }
-    @Override public void friendBackingClicked(final @NonNull FriendBackingViewHolder viewHolder, final @NonNull Activity activity) {
-      this.friendBackingClick.onNext(activity);
-    }
-    @Override public void managePledgeClicked(final @NonNull String projectSlug) {
-      this.managePledgeClicked.onNext(projectSlug);
-    }
-    @Override public void nextPage() {
-      this.nextPage.onNext(null);
-    }
-    @Override public void projectStateChangedClicked(final @NonNull ProjectStateChangedViewHolder viewHolder,
-      final @NonNull Activity activity) {
-      this.projectStateChangedClick.onNext(activity);
-    }
-    @Override public void projectStateChangedPositiveClicked(final @NonNull ProjectStateChangedPositiveViewHolder viewHolder,
-      final @NonNull Activity activity) {
-      this.projectStateChangedPositiveClick.onNext(activity);
-    }
-    @Override public void projectUpdateClicked(final @NonNull ProjectUpdateViewHolder viewHolder,
-      final @NonNull Activity activity) {
-      this.projectUpdateClick.onNext(activity);
-    }
-    @Override public void projectUpdateProjectClicked(final @NonNull ProjectUpdateViewHolder viewHolder,
-      final @NonNull Activity activity) {
-      this.projectUpdateProjectClick.onNext(activity);
-    }
-    @Override public void refresh() {
-      this.refresh.onNext(null);
-    }
-    @Override public void resume() {
-      this.resume.onNext(null);
+        /** Emits when login tout should be shown.  */
+        fun goToLogin(): Observable<Void>
+
+        /** Emits a project when it should be shown.  */
+        fun goToProject(): Observable<Project>
+
+        /** Emits a SurveyResponse when it should be shown.  */
+        fun goToSurvey(): Observable<SurveyResponse>
+
+        /** Emits a boolean indicating whether activities are being fetched from the API.  */
+        fun isFetchingActivities(): Observable<Boolean>
+
+        /** Emits a boolean that determines if a logged-out, empty state should be displayed.  */
+        fun loggedOutEmptyStateIsVisible(): Observable<Boolean>
+
+        /** Emits a logged-in user with zero activities in order to display an empty state.  */
+        fun loggedInEmptyStateIsVisible(): Observable<Boolean>
+
+        /** Emits when we should start the [com.kickstarter.ui.activities.ProjectPageActivity].  */
+        fun startFixPledge(): Observable<String>
+
+        /** Emits when we should start the [com.kickstarter.ui.activities.UpdateActivity].  */
+        fun startUpdateActivity(): Observable<Activity>
+
+        /** Emits a list of unanswered surveys to be shown in the user's activity feed  */
+        fun surveys(): Observable<List<SurveyResponse>>
     }
 
-    @Override public @NonNull Observable<List<Activity>> activityList() {
-      return this.activityList;
-    }
-    @Override public @NonNull Observable<List<ErroredBacking>> erroredBackings() {
-      return this.erroredBackings;
-    }
-    @Override public @NonNull Observable<Void> goToDiscovery() {
-      return this.goToDiscovery;
-    }
-    @Override public @NonNull Observable<Void> goToLogin() {
-      return this.goToLogin;
-    }
-    @Override public @NonNull Observable<Project> goToProject() {
-      return this.goToProject;
-    }
+    class ViewModel(environment: Environment) :
+        ActivityViewModel<ActivityFeedActivity>(environment), Inputs, Outputs {
 
-    @Override public @NonNull Observable<SurveyResponse> goToSurvey() {
-      return this.goToSurvey;
+        private val apiClient: ApiClientType
+        private val apolloClient: ApolloClientType
+        private val currentUser: CurrentUserType
+        private val optimizely: ExperimentsClientType
+
+        private val discoverProjectsClick = PublishSubject.create<Void>()
+        private val friendBackingClick = PublishSubject.create<Activity>()
+        private val loginClick = PublishSubject.create<Void>()
+        private val managePledgeClicked = PublishSubject.create<String>()
+        private val nextPage = PublishSubject.create<Void>()
+        private val projectStateChangedClick = PublishSubject.create<Activity>()
+        private val projectStateChangedPositiveClick = PublishSubject.create<Activity>()
+        private val projectUpdateClick = PublishSubject.create<Activity>()
+        private val projectUpdateProjectClick = PublishSubject.create<Activity>()
+        private val refresh = PublishSubject.create<Void>()
+        private val resume = PublishSubject.create<Void>()
+        private val surveyClick = PublishSubject.create<SurveyResponse>()
+        private val activityList = BehaviorSubject.create<List<Activity>>()
+        private val erroredBackings = BehaviorSubject.create<List<ErroredBacking>>()
+        private val goToDiscovery: Observable<Void>
+        private val goToLogin: Observable<Void>
+        private val goToProject: Observable<Project>
+        private val goToSurvey: Observable<SurveyResponse>
+        private val isFetchingActivities = BehaviorSubject.create<Boolean>()
+        private val loggedInEmptyStateIsVisible = BehaviorSubject.create<Boolean>()
+        private val loggedOutEmptyStateIsVisible = BehaviorSubject.create<Boolean>()
+        private val startFixPledge = PublishSubject.create<String>()
+        private val startUpdateActivity: Observable<Activity>
+        private val surveys = BehaviorSubject.create<List<SurveyResponse>>()
+
+        @JvmField
+        val inputs: Inputs = this
+        @JvmField
+        val outputs: Outputs = this
+
+        init {
+            apiClient = requireNotNull(environment.apiClient())
+            apolloClient = requireNotNull(environment.apolloClient())
+            currentUser = requireNotNull(environment.currentUser())
+            optimizely = requireNotNull(environment.optimizely())
+
+            goToDiscovery = discoverProjectsClick
+            goToLogin = loginClick
+            goToSurvey = surveyClick
+
+            goToProject = Observable.merge(
+                friendBackingClick,
+                projectStateChangedClick,
+                projectStateChangedPositiveClick,
+                projectUpdateProjectClick
+            ).map { obj: Activity -> obj.project() }
+
+            goToProject
+                .compose(bindToLifecycle())
+                .subscribe { p: Project ->
+                    analyticEvents.trackProjectCardClicked(
+                        p,
+                        EventContextValues.ContextPageName.ACTIVITY_FEED.contextName
+                    )
+                }
+
+            startUpdateActivity = projectUpdateClick
+
+            val refreshOrResume = Observable.merge(refresh, resume).share()
+
+            val loggedInUser = currentUser.loggedInUser()
+
+            loggedInUser
+                .compose(Transformers.takeWhen(refreshOrResume))
+                .switchMap {
+                    apiClient.fetchUnansweredSurveys().compose(Transformers.neverError()).share()
+                }
+                .compose(bindToLifecycle())
+                .subscribe(surveys)
+
+            loggedInUser
+                .compose(Transformers.takeWhen(refreshOrResume))
+                .switchMap {
+                    apolloClient.erroredBackings().compose(Transformers.neverError()).share()
+                }
+                .compose(bindToLifecycle())
+                .subscribe { v: List<ErroredBacking> -> erroredBackings.onNext(v) }
+
+            loggedInUser
+                .compose(Transformers.takeWhen(refreshOrResume))
+                .map { user: User ->
+                    user.unseenActivityCount().intValueOrZero() + user.erroredBackingsCount()
+                        .intValueOrZero()
+                }
+                .filter { it.isNonZero() }
+                .distinctUntilChanged()
+                .switchMap {
+                    apolloClient.clearUnseenActivity().compose(Transformers.neverError())
+                }
+                .switchMap {
+                    apiClient.fetchCurrentUser().compose(Transformers.neverError())
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    currentUser.refresh(it)
+                }
+
+            val paginator = ApiPaginator.builder<Activity, ActivityEnvelope, Void>()
+                .nextPage(nextPage)
+                .startOverWith(refresh)
+                .envelopeToListOfData { obj: ActivityEnvelope -> obj.activities() }
+                .envelopeToMoreUrl { env: ActivityEnvelope -> env.urls().api().moreActivities() }
+                .loadWithParams {
+                    apiClient.fetchActivities().compose(Transformers.neverError())
+                }
+                .loadWithPaginationPath { paginationPath: String ->
+                    apiClient.fetchActivitiesWithPaginationPath(
+                        paginationPath
+                    )
+                }
+                .build()
+
+            paginator.paginatedData()
+                .compose(bindToLifecycle())
+                .subscribe(activityList)
+
+            paginator.isFetching
+                .compose(bindToLifecycle())
+                .subscribe(isFetchingActivities)
+
+            currentUser.loggedInUser()
+                .take(1)
+                .compose(bindToLifecycle())
+                .subscribe { refresh() }
+
+            currentUser.isLoggedIn
+                .map { loggedIn: Boolean -> !loggedIn }
+                .compose(bindToLifecycle())
+                .subscribe(loggedOutEmptyStateIsVisible)
+
+            managePledgeClicked
+                .compose(bindToLifecycle())
+                .subscribe { v: String -> startFixPledge.onNext(v) }
+
+            currentUser.observable()
+                .compose(Transformers.takePairWhen(activityList))
+                .map { ua: Pair<User, List<Activity>> -> ua.first != null && ua.second.isEmpty() }
+                .compose(bindToLifecycle())
+                .subscribe(loggedInEmptyStateIsVisible)
+
+            // Track viewing and paginating activity.
+            val feedViewed = nextPage
+                .compose(Transformers.incrementalCount())
+                .startWith(0)
+
+            feedViewed
+                .take(1)
+                .compose(bindToLifecycle())
+                .subscribe { analyticEvents.trackActivityFeedPageViewed() }
+
+            discoverProjectsClick
+                .compose(bindToLifecycle())
+                .subscribe { analyticEvents.trackDiscoverProjectCTAClicked() }
+        }
+
+        override fun emptyActivityFeedDiscoverProjectsClicked(viewHolder: EmptyActivityFeedViewHolder?) {
+            discoverProjectsClick.onNext(null)
+        }
+
+        override fun emptyActivityFeedLoginClicked(viewHolder: EmptyActivityFeedViewHolder?) {
+            loginClick.onNext(null)
+        }
+
+        override fun managePledgeClicked(projectSlug: String) {
+            managePledgeClicked.onNext(projectSlug)
+        }
+
+        override fun friendBackingClicked(
+            viewHolder: FriendBackingViewHolder?,
+            activity: Activity?
+        ) {
+            friendBackingClick.onNext(activity)
+        }
+
+        override fun nextPage() {
+            nextPage.onNext(null)
+        }
+
+        override fun projectStateChangedClicked(
+            viewHolder: ProjectStateChangedViewHolder?,
+            activity: Activity?
+        ) {
+            projectStateChangedClick.onNext(activity)
+        }
+
+        override fun projectStateChangedPositiveClicked(
+            viewHolder: ProjectStateChangedPositiveViewHolder?,
+            activity: Activity?
+        ) {
+            projectStateChangedPositiveClick.onNext(activity)
+        }
+
+        override fun projectUpdateClicked(
+            viewHolder: ProjectUpdateViewHolder?,
+            activity: Activity?
+        ) {
+            projectUpdateClick.onNext(activity)
+        }
+
+        override fun projectUpdateProjectClicked(
+            viewHolder: ProjectUpdateViewHolder?,
+            activity: Activity?
+        ) {
+            projectUpdateProjectClick.onNext(activity)
+        }
+
+        override fun refresh() {
+            refresh.onNext(null)
+        }
+
+        override fun resume() {
+            resume.onNext(null)
+        }
+
+        override fun activityList(): Observable<List<Activity>> = activityList
+        override fun erroredBackings(): Observable<List<ErroredBacking>> = erroredBackings
+        override fun goToDiscovery(): Observable<Void> = goToDiscovery
+        override fun goToLogin(): Observable<Void> = goToLogin
+        override fun goToProject(): Observable<Project> = goToProject
+        override fun goToSurvey(): Observable<SurveyResponse> = goToSurvey
+        override fun isFetchingActivities(): Observable<Boolean> = isFetchingActivities
+        override fun loggedInEmptyStateIsVisible(): Observable<Boolean> = loggedInEmptyStateIsVisible
+        override fun loggedOutEmptyStateIsVisible(): Observable<Boolean> = loggedOutEmptyStateIsVisible
+        override fun startFixPledge(): Observable<String> = startFixPledge
+        override fun startUpdateActivity(): Observable<Activity> = startUpdateActivity
+        override fun surveys(): Observable<List<SurveyResponse>> = surveys
     }
-    @Override public @NonNull Observable<Boolean> isFetchingActivities() {
-      return this.isFetchingActivities;
-    }
-    @Override public @NonNull Observable<Boolean> loggedInEmptyStateIsVisible() {
-      return this.loggedInEmptyStateIsVisible;
-    }
-    @Override public @NonNull Observable<Boolean> loggedOutEmptyStateIsVisible() {
-      return this.loggedOutEmptyStateIsVisible;
-    }
-    @Override public @NonNull Observable<String> startFixPledge() {
-      return this.startFixPledge;
-    }
-    @Override public @NonNull Observable<Activity> startUpdateActivity() {
-      return this.startUpdateActivity;
-    }
-    @Override public @NonNull Observable<List<SurveyResponse>> surveys() {
-      return this.surveys;
-    }
-  }
 }

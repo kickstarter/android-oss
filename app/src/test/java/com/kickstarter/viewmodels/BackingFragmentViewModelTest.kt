@@ -122,6 +122,31 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun shippingSummaryIsGoneWhenLocalPickup() {
+        val reward = RewardFactory.localReceiptLocation()
+        val backing = BackingFactory.backing()
+            .toBuilder()
+            .rewardId(reward.id())
+            .build()
+        val backedProject = ProjectFactory.backedProject()
+            .toBuilder()
+            .backing(backing)
+            .rewards(listOf(RewardFactory.noReward(), reward))
+            .build()
+
+        val environment = environment()
+            .toBuilder()
+            .apolloClient(mockApolloClientForBacking(backing))
+            .build()
+        setUpEnvironment(environment)
+
+        val projectData = ProjectDataFactory.project(backedProject)
+        this.vm.inputs.configureWith(projectData)
+
+        this.shippingSummaryIsGone.assertValue(true)
+    }
+
+    @Test
     fun testBackingObjectNullFields() {
         val environment = environment()
             .toBuilder()

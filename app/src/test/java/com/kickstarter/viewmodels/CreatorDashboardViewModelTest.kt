@@ -25,6 +25,7 @@ class CreatorDashboardViewModelTest : KSRobolectricTestCase() {
 
     private val bottomSheetShouldExpand = TestSubscriber<Boolean>()
     private val projectDashboardData = TestSubscriber<ProjectDashboardData>()
+    private val progressBarIsVisible = TestSubscriber<Boolean>()
     private val projectsForBottomSheet = TestSubscriber<List<Project>>()
     private val projectName = TestSubscriber<String>()
 
@@ -34,6 +35,7 @@ class CreatorDashboardViewModelTest : KSRobolectricTestCase() {
         vm.outputs.bottomSheetShouldExpand().subscribe(bottomSheetShouldExpand)
         vm.outputs.projectDashboardData().subscribe(projectDashboardData)
         vm.outputs.projectsForBottomSheet().subscribe(projectsForBottomSheet)
+        vm.outputs.progressBarIsVisible().subscribe(progressBarIsVisible)
         vm.outputs.projectName().subscribe(projectName)
     }
 
@@ -73,6 +75,7 @@ class CreatorDashboardViewModelTest : KSRobolectricTestCase() {
         bottomSheetShouldExpand.assertValue(false)
     }
 
+    @Test
     fun testProjectDashboardData_whenViewingAllProjects() {
         val projects = listOf(project())
         val projectStatsEnvelope = projectStatsEnvelope()
@@ -90,6 +93,7 @@ class CreatorDashboardViewModelTest : KSRobolectricTestCase() {
 
         vm.intent(Intent())
 
+        progressBarIsVisible.assertValues(true, false)
         projectDashboardData.assertValue(
             ProjectDashboardData(
                 ObjectUtils.requireNonNull(
@@ -102,6 +106,7 @@ class CreatorDashboardViewModelTest : KSRobolectricTestCase() {
         )
     }
 
+    @Test
     fun testProjectDashboardData_whenViewingSingleProjects() {
         val project = project()
         val projectStatsEnvelope = projectStatsEnvelope()

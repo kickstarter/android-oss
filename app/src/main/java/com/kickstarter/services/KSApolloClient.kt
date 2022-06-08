@@ -772,11 +772,8 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                         it.fragments().shippingRule()
                                     } ?: emptyList()
 
-                            Observable.just(shippingRulesListTransformer(rulesExpanded))
-                                .subscribe {
-                                    ps.onNext(it)
-                                    ps.onCompleted()
-                                }
+                            ps.onNext(shippingRulesListTransformer(rulesExpanded))
+                            ps.onCompleted()
                         }
                     }
                 })

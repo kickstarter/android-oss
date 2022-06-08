@@ -1,131 +1,118 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import android.util.Pair;
+import android.util.Pair
+import com.kickstarter.libs.ActivityViewModel
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.PairUtils
+import com.kickstarter.libs.utils.extensions.compareDescending
+import com.kickstarter.models.Project
+import com.kickstarter.services.apiresponses.ProjectStatsEnvelope.RewardStats
+import com.kickstarter.ui.viewholders.CreatorDashboardRewardStatsViewHolder
+import rx.Observable
+import rx.subjects.PublishSubject
+import java.util.Collections
 
-import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.PairUtils;
-import com.kickstarter.libs.utils.extensions.FloatExtKt;
-import com.kickstarter.models.Project;
-import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
-import com.kickstarter.ui.viewholders.CreatorDashboardRewardStatsViewHolder;
+interface CreatorDashboardRewardStatsHolderViewModel {
+    interface Inputs {
+        /** Call when user clicks pledged column title.  */
+        fun pledgedColumnTitleClicked()
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import androidx.annotation.NonNull;
-import rx.Observable;
-import rx.subjects.PublishSubject;
-
-import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
-
-public interface CreatorDashboardRewardStatsHolderViewModel {
-
-  interface Inputs {
-    /** Call when user clicks pledged column title. */
-    void pledgedColumnTitleClicked();
-
-    /** Current project and list of stats. */
-    void projectAndRewardStatsInput(Pair<Project, List<ProjectStatsEnvelope.RewardStats>> projectAndRewardStatsEnvelope);
-  }
-
-  interface Outputs {
-    /** Emits current project and sorted reward stats. */
-    Observable<Pair<Project, List<ProjectStatsEnvelope.RewardStats>>> projectAndRewardStats();
-
-    /** Emits when there are no reward stats. */
-    Observable<Boolean> rewardsStatsListIsGone();
-
-    /** Emits when there are more than 10 reward stats. */
-    Observable<Boolean> rewardsStatsTruncatedTextIsGone();
-
-    /** Emits when there are more than 10 reward stats and title copy should reflect limited list. */
-    Observable<Boolean> rewardsTitleIsTopTen();
-  }
-
-  final class ViewModel extends ActivityViewModel<CreatorDashboardRewardStatsViewHolder> implements Inputs, Outputs {
-
-    public ViewModel(final @NonNull Environment environment) {
-      super(environment);
-
-      final Observable<List<ProjectStatsEnvelope.RewardStats>> sortedRewardStats = this.projectAndRewardStatsInput
-        .map(PairUtils::second)
-        .map(this::sortRewardStats);
-
-      final Observable<List<ProjectStatsEnvelope.RewardStats>> limitedSortedRewardStats = sortedRewardStats
-        .map(stats -> new ArrayList<>(stats.subList(0, Math.min(stats.size(), 10))));
-
-      this.projectAndRewardStats = this.projectAndRewardStatsInput
-        .map(PairUtils::first)
-        .compose(combineLatestPair(limitedSortedRewardStats));
-
-      sortedRewardStats
-        .map(List::isEmpty)
-        .distinctUntilChanged()
-        .compose(bindToLifecycle())
-        .subscribe(this.rewardsStatsListIsGone);
-
-      sortedRewardStats
-        .map(rs -> rs.size() <= 10)
-        .distinctUntilChanged()
-        .compose(bindToLifecycle())
-        .subscribe(this.rewardsStatsTruncatedTextIsGone);
-
-      sortedRewardStats
-        .map(rs -> rs.size() > 10)
-        .distinctUntilChanged()
-        .compose(bindToLifecycle())
-        .subscribe(this.rewardsTitleIsLimitedCopy);
+        /** Current project and list of stats.  */
+        fun projectAndRewardStatsInput(projectAndRewardStatsEnvelope: Pair<Project, List<RewardStats>>)
     }
 
-    static final private class OrderByPledgedRewardStatsComparator implements Comparator<ProjectStatsEnvelope.RewardStats> {
-      @Override
-      public int compare(final ProjectStatsEnvelope.RewardStats o1, final ProjectStatsEnvelope.RewardStats o2) {
-        return FloatExtKt.compareDescending(o1.pledged(), o2.pledged());
-      }
+    interface Outputs {
+        /** Emits current project and sorted reward stats.  */
+        fun projectAndRewardStats(): Observable<Pair<Project, List<RewardStats>>>
+
+        /** Emits when there are no reward stats.  */
+        fun rewardsStatsListIsGone(): Observable<Boolean>
+
+        /** Emits when there are more than 10 reward stats.  */
+        fun rewardsStatsTruncatedTextIsGone(): Observable<Boolean>
+
+        /** Emits when there are more than 10 reward stats and title copy should reflect limited list.  */
+        fun rewardsTitleIsTopTen(): Observable<Boolean>
     }
 
-    private @NonNull List<ProjectStatsEnvelope.RewardStats> sortRewardStats(final @NonNull List<ProjectStatsEnvelope.RewardStats> rewardStatsList) {
-      final OrderByPledgedRewardStatsComparator rewardStatsComparator = new OrderByPledgedRewardStatsComparator();
-      Collections.sort(rewardStatsList, rewardStatsComparator);
+    class ViewModel(environment: Environment) :
+        ActivityViewModel<CreatorDashboardRewardStatsViewHolder?>(environment), Inputs, Outputs {
 
-      return rewardStatsList;
-    }
+        @JvmField
+        val inputs: Inputs = this
+        @JvmField
+        val outputs: Outputs = this
+        private val pledgedColumnTitleClicked = PublishSubject.create<Void?>()
+        private val projectAndRewardStatsInput =
+            PublishSubject.create<Pair<Project, List<RewardStats>>>()
+        private val projectAndRewardStats: Observable<Pair<Project, List<RewardStats>>>
+        private val rewardsStatsListIsGone = PublishSubject.create<Boolean>()
+        private val rewardsStatsTruncatedTextIsGone = PublishSubject.create<Boolean>()
+        private val rewardsTitleIsLimitedCopy = PublishSubject.create<Boolean>()
 
-    public final Inputs inputs = this;
-    public final Outputs outputs = this;
+        init {
+            val sortedRewardStats = projectAndRewardStatsInput
+                .map { PairUtils.second(it) }
+                .map { sortRewardStats(it) }
 
-    private final PublishSubject<Void> pledgedColumnTitleClicked = PublishSubject.create();
-    private final PublishSubject<Pair<Project, List<ProjectStatsEnvelope.RewardStats>>> projectAndRewardStatsInput = PublishSubject.create();
+            val limitedSortedRewardStats = sortedRewardStats
+                .map<List<RewardStats>> {
+                    ArrayList(
+                        it.subList(
+                            0,
+                            Math.min(it.size, 10)
+                        )
+                    )
+                }
 
-    private final Observable<Pair<Project, List<ProjectStatsEnvelope.RewardStats>>> projectAndRewardStats;
-    private final PublishSubject<Boolean> rewardsStatsListIsGone = PublishSubject.create();
-    private final PublishSubject<Boolean> rewardsStatsTruncatedTextIsGone = PublishSubject.create();
-    private final PublishSubject<Boolean> rewardsTitleIsLimitedCopy = PublishSubject.create();
+            projectAndRewardStats = projectAndRewardStatsInput
+                .map { PairUtils.first(it) }
+                .compose(Transformers.combineLatestPair(limitedSortedRewardStats))
 
-    @Override
-    public void pledgedColumnTitleClicked() {
-      this.pledgedColumnTitleClicked.onNext(null);
-    }
-    @Override
-    public void projectAndRewardStatsInput(final @NonNull Pair<Project, List<ProjectStatsEnvelope.RewardStats>> projectAndRewardStats) {
-      this.projectAndRewardStatsInput.onNext(projectAndRewardStats);
-    }
+            sortedRewardStats
+                .map { it.isEmpty() }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(rewardsStatsListIsGone)
 
-    @Override public @NonNull Observable<Pair<Project, List<ProjectStatsEnvelope.RewardStats>>> projectAndRewardStats() {
-      return this.projectAndRewardStats;
+            sortedRewardStats
+                .map { it.size <= 10 }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(rewardsStatsTruncatedTextIsGone)
+
+            sortedRewardStats
+                .map { it.size > 10 }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(rewardsTitleIsLimitedCopy)
+        }
+
+        private class OrderByPledgedRewardStatsComparator : Comparator<RewardStats> {
+            override fun compare(o1: RewardStats, o2: RewardStats): Int {
+                return o1.pledged().compareDescending(o2.pledged())
+            }
+        }
+
+        private fun sortRewardStats(rewardStatsList: List<RewardStats>): List<RewardStats> {
+            val rewardStatsComparator = OrderByPledgedRewardStatsComparator()
+            Collections.sort(rewardStatsList, rewardStatsComparator)
+            return rewardStatsList
+        }
+
+        override fun pledgedColumnTitleClicked() {
+            pledgedColumnTitleClicked.onNext(null)
+        }
+
+        override fun projectAndRewardStatsInput(projectAndRewardStats: Pair<Project, List<RewardStats>>) {
+            projectAndRewardStatsInput.onNext(projectAndRewardStats)
+        }
+
+        override fun projectAndRewardStats(): Observable<Pair<Project, List<RewardStats>>> = projectAndRewardStats
+        override fun rewardsStatsListIsGone(): Observable<Boolean> = rewardsStatsListIsGone
+        override fun rewardsStatsTruncatedTextIsGone(): Observable<Boolean> = rewardsStatsTruncatedTextIsGone
+
+        override fun rewardsTitleIsTopTen(): Observable<Boolean> = rewardsTitleIsLimitedCopy
     }
-    @Override public @NonNull Observable<Boolean> rewardsStatsListIsGone() {
-      return this.rewardsStatsListIsGone;
-    }
-    @Override public @NonNull Observable<Boolean> rewardsStatsTruncatedTextIsGone() {
-      return this.rewardsStatsTruncatedTextIsGone;
-    }
-    @Override
-    public Observable<Boolean> rewardsTitleIsTopTen() {
-      return this.rewardsTitleIsLimitedCopy;
-    }
-  }
 }

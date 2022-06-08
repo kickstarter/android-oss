@@ -1,218 +1,226 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
+import android.content.Intent
+import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.ListUtils
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.mock.factories.ProjectFactory.project
+import com.kickstarter.mock.factories.ProjectStatsEnvelopeFactory.projectStatsEnvelope
+import com.kickstarter.mock.factories.ProjectsEnvelopeFactory
+import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.models.Project
+import com.kickstarter.services.apiresponses.ProjectStatsEnvelope
+import com.kickstarter.services.apiresponses.ProjectsEnvelope
+import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.adapters.data.ProjectDashboardData
+import org.joda.time.DateTime
+import org.joda.time.DateTimeUtils
+import org.junit.Test
+import rx.Observable
+import rx.observers.TestSubscriber
 
-import android.content.Intent;
+class CreatorDashboardViewModelTest : KSRobolectricTestCase() {
+    private lateinit var vm: CreatorDashboardViewModel.ViewModel
 
-import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.ListUtils;
-import com.kickstarter.mock.factories.ProjectFactory;
-import com.kickstarter.mock.factories.ProjectStatsEnvelopeFactory;
-import com.kickstarter.mock.factories.ProjectsEnvelopeFactory;
-import com.kickstarter.mock.services.MockApiClient;
-import com.kickstarter.models.Project;
-import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
-import com.kickstarter.services.apiresponses.ProjectsEnvelope;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.adapters.data.ProjectDashboardData;
+    private val bottomSheetShouldExpand = TestSubscriber<Boolean>()
+    private val projectDashboardData = TestSubscriber<ProjectDashboardData>()
+    private val projectsForBottomSheet = TestSubscriber<List<Project>>()
+    private val projectName = TestSubscriber<String>()
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeUtils;
-import org.junit.Test;
+    protected fun setUpEnvironment(environment: Environment) {
+        vm = CreatorDashboardViewModel.ViewModel(environment)
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+        vm.outputs.bottomSheetShouldExpand().subscribe(bottomSheetShouldExpand)
+        vm.outputs.projectDashboardData().subscribe(projectDashboardData)
+        vm.outputs.projectsForBottomSheet().subscribe(projectsForBottomSheet)
+        vm.outputs.projectName().subscribe(projectName)
+    }
 
-import androidx.annotation.NonNull;
-import rx.Observable;
-import rx.observers.TestSubscriber;
+    @Test
+    fun testBottomSheetShouldExpand_whenBackClicked() {
+        setUpEnvironment(environment())
 
-public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
-  private CreatorDashboardViewModel.ViewModel vm;
+        vm.intent(Intent())
+        vm.inputs.backClicked()
+        bottomSheetShouldExpand.assertValue(false)
+    }
 
-  private final TestSubscriber<Boolean> bottomSheetShouldExpand = new TestSubscriber<>();
-  private final TestSubscriber<ProjectDashboardData> projectDashboardData = new TestSubscriber<>();
-  private final TestSubscriber<List<Project>> projectsForBottomSheet = new TestSubscriber<>();
-  private final TestSubscriber<String> projectName = new TestSubscriber<>();
+    @Test
+    fun testBottomSheetShouldExpand_whenNewProjectSelected() {
+        setUpEnvironment(environment())
 
-  protected void setUpEnvironment(final @NonNull Environment environment) {
-    this.vm = new CreatorDashboardViewModel.ViewModel(environment);
-    this.vm.outputs.bottomSheetShouldExpand().subscribe(this.bottomSheetShouldExpand);
-    this.vm.outputs.projectDashboardData().subscribe(this.projectDashboardData);
-    this.vm.outputs.projectsForBottomSheet().subscribe(this.projectsForBottomSheet);
-    this.vm.outputs.projectName().subscribe(this.projectName);
-  }
+        vm.intent(Intent())
+        vm.inputs.projectSelectionInput(project())
+        bottomSheetShouldExpand.assertValue(false)
+    }
 
-  @Test
-  public void testBottomSheetShouldExpand_whenBackClicked() {
-    setUpEnvironment(environment());
-    this.vm.intent(new Intent());
-    this.vm.inputs.backClicked();
+    @Test
+    fun testBottomSheetShouldExpand_whenProjectsListButtonClicked() {
+        setUpEnvironment(environment())
 
-    this.bottomSheetShouldExpand.assertValue(false);
-  }
+        vm.intent(Intent())
+        vm.inputs.projectsListButtonClicked()
+        bottomSheetShouldExpand.assertValue(true)
+    }
 
-  @Test
-  public void testBottomSheetShouldExpand_whenNewProjectSelected() {
-    setUpEnvironment(environment());
-    this.vm.intent(new Intent());
-    this.vm.inputs.projectSelectionInput(ProjectFactory.project());
+    @Test
+    fun testBottomSheetShouldExpand_whenScrimClicked() {
+        setUpEnvironment(environment())
 
-    this.bottomSheetShouldExpand.assertValue(false);
-  }
+        vm.intent(Intent())
+        vm.inputs.scrimClicked()
+        bottomSheetShouldExpand.assertValue(false)
+    }
 
-  @Test
-  public void testBottomSheetShouldExpand_whenProjectsListButtonClicked() {
-    setUpEnvironment(environment());
-    this.vm.intent(new Intent());
-    this.vm.inputs.projectsListButtonClicked();
+    fun testProjectDashboardData_whenViewingAllProjects() {
+        val projects = listOf(project())
+        val projectStatsEnvelope = projectStatsEnvelope()
+        val apiClient: MockApiClient = object : MockApiClient() {
+            override fun fetchProjects(member: Boolean): Observable<ProjectsEnvelope> {
+                return Observable.just(ProjectsEnvelopeFactory.projectsEnvelope(projects))
+            }
 
-    this.bottomSheetShouldExpand.assertValue(true);
-  }
+            override fun fetchProjectStats(project: Project): Observable<ProjectStatsEnvelope> {
+                return Observable.just(projectStatsEnvelope)
+            }
+        }
 
-  @Test
-  public void testBottomSheetShouldExpand_whenScrimClicked() {
-    setUpEnvironment(environment());
-    this.vm.intent(new Intent());
-    this.vm.inputs.scrimClicked();
+        setUpEnvironment(environment().toBuilder().apiClient(apiClient).build())
 
-    this.bottomSheetShouldExpand.assertValue(false);
-  }
+        vm.intent(Intent())
 
-  public void testProjectDashboardData_whenViewingAllProjects() {
-    final List<Project> projects = Collections.singletonList(ProjectFactory.project());
+        projectDashboardData.assertValue(
+            ProjectDashboardData(
+                ObjectUtils.requireNonNull(
+                    ListUtils.first(
+                        projects
+                    )
+                ),
+                projectStatsEnvelope, false
+            )
+        )
+    }
 
-    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
-    final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull Observable<ProjectsEnvelope> fetchProjects(final boolean member) {
-        return Observable.just(ProjectsEnvelopeFactory.projectsEnvelope(projects));
-      }
-      @Override public @NonNull
-      Observable<ProjectStatsEnvelope> fetchProjectStats(final @NonNull Project project) {
-        return Observable.just(projectStatsEnvelope);
-      }
-    };
+    fun testProjectDashboardData_whenViewingSingleProjects() {
+        val project = project()
+        val projectStatsEnvelope = projectStatsEnvelope()
+        val apiClient: MockApiClient = object : MockApiClient() {
+            override fun fetchProjectStats(project: Project): Observable<ProjectStatsEnvelope> {
+                return Observable.just(projectStatsEnvelope)
+            }
+        }
 
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-    this.vm.intent(new Intent());
-    this.projectDashboardData.assertValue(new ProjectDashboardData(Objects.requireNonNull(ListUtils.first(projects)), projectStatsEnvelope, false));
-  }
+        setUpEnvironment(environment().toBuilder().apiClient(apiClient).build())
 
-  public void testProjectDashboardData_whenViewingSingleProjects() {
-    final Project project = ProjectFactory.project();
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        projectDashboardData.assertValue(ProjectDashboardData(project, projectStatsEnvelope, true))
+    }
 
-    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
-    final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull Observable<ProjectStatsEnvelope> fetchProjectStats(final @NonNull Project project) {
-        return Observable.just(projectStatsEnvelope);
-      }
-    };
+    @Test
+    fun testProjectsForBottomSheet_With1Project() {
+        val projects = listOf(project())
+        val apiClient: MockApiClient = object : MockApiClient() {
+            override fun fetchProjects(member: Boolean): Observable<ProjectsEnvelope> {
+                return Observable.just(ProjectsEnvelopeFactory.projectsEnvelope(projects))
+            }
+        }
 
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-    this.projectDashboardData.assertValue(new ProjectDashboardData(project, projectStatsEnvelope, true));
-  }
+        setUpEnvironment(environment().toBuilder().apiClient(apiClient).build())
 
-  @Test
-  public void testProjectsForBottomSheet_With1Project() {
-    final List<Project> projects = Collections.singletonList(ProjectFactory.project());
-    final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull
-      Observable<ProjectsEnvelope> fetchProjects(final boolean member) {
-        return Observable.just(ProjectsEnvelopeFactory.projectsEnvelope(projects));
-      }
-    };
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-    this.projectsForBottomSheet.assertNoValues();
-  }
+        projectsForBottomSheet.assertNoValues()
+    }
 
-  @Test
-  public void testProjectsForBottomSheet_WithManyProjects() {
-    final Project project1 = ProjectFactory.project();
-    final Project project2 = ProjectFactory.project();
-    final List<Project> projects = Arrays.asList(
-      project1,
-      project2
-    );
-    final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull
-      Observable<ProjectsEnvelope> fetchProjects(final boolean member) {
-        return Observable.just(ProjectsEnvelopeFactory.projectsEnvelope(projects));
-      }
-    };
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-    this.vm.intent(new Intent());
-    this.projectsForBottomSheet.assertValue(Collections.singletonList(project2));
-  }
+    @Test
+    fun testProjectsForBottomSheet_WithManyProjects() {
+        val project1 = project()
+        val project2 = project()
+        val projects = listOf(
+            project1,
+            project2
+        )
 
-  @Test
-  public void testProjectSwitcherProjectClickOutput() {
-    DateTimeUtils.setCurrentMillisFixed(new DateTime().getMillis());
+        val apiClient: MockApiClient = object : MockApiClient() {
+            override fun fetchProjects(member: Boolean): Observable<ProjectsEnvelope> {
+                return Observable.just(ProjectsEnvelopeFactory.projectsEnvelope(projects))
+            }
+        }
 
-    final Project project1 = ProjectFactory.project();
-    final Project project2 = ProjectFactory.project();
-    final List<Project> projects = Arrays.asList(
-      project1,
-      project2
-    );
+        setUpEnvironment(environment().toBuilder().apiClient(apiClient).build())
 
-    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
-    final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull Observable<ProjectsEnvelope> fetchProjects(final boolean member) {
-        return Observable.just(ProjectsEnvelopeFactory.projectsEnvelope(projects));
-      }
-      @Override public @NonNull
-      Observable<ProjectStatsEnvelope> fetchProjectStats(final @NonNull Project project) {
-        return Observable.just(projectStatsEnvelope);
-      }
-    };
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-    this.vm.intent(new Intent());
-    this.vm.inputs.projectSelectionInput(project2);
-    this.projectDashboardData.assertValues(new ProjectDashboardData(project1, ProjectStatsEnvelopeFactory.projectStatsEnvelope(), false),
-      new ProjectDashboardData(project2, ProjectStatsEnvelopeFactory.projectStatsEnvelope(), false));
-  }
+        vm.intent(Intent())
+        projectsForBottomSheet.assertValue(listOf(project2))
+    }
 
-  @Test
-  public void testProjectName_whenMultipleProjects() {
-    final Project project1 = ProjectFactory.project()
-      .toBuilder()
-      .name("Best Project 2K19")
-      .build();
-    final Project project2 = ProjectFactory.project();
-    final List<Project> projects = Arrays.asList(
-      project1,
-      project2
-    );
+    @Test
+    fun testProjectSwitcherProjectClickOutput() {
+        DateTimeUtils.setCurrentMillisFixed(DateTime().millis)
+        val project1 = project()
+        val project2 = project()
+        val projects = listOf(
+            project1,
+            project2
+        )
+        val projectStatsEnvelope = projectStatsEnvelope()
+        val apiClient: MockApiClient = object : MockApiClient() {
+            override fun fetchProjects(member: Boolean): Observable<ProjectsEnvelope> {
+                return Observable.just(ProjectsEnvelopeFactory.projectsEnvelope(projects))
+            }
 
-    final MockApiClient apiClient = new MockApiClient() {
-      @Override
-      public @NonNull Observable<ProjectsEnvelope> fetchProjects(final boolean member) {
-        return Observable.just(ProjectsEnvelopeFactory.projectsEnvelope(projects));
-      }
-    };
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-    this.vm.intent(new Intent());
-    this.projectName.assertValue("Best Project 2K19");
-  }
+            override fun fetchProjectStats(project: Project): Observable<ProjectStatsEnvelope> {
+                return Observable.just(projectStatsEnvelope)
+            }
+        }
 
-  @Test
-  public void testProjectName_whenSingleProject() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .name("Best Project 2K19")
-      .build();
+        setUpEnvironment(environment().toBuilder().apiClient(apiClient).build())
 
-    final MockApiClient apiClient = new MockApiClient() {
-      @Override
-      public @NonNull Observable<ProjectsEnvelope> fetchProjects(final boolean member) {
-        return Observable.just(ProjectsEnvelopeFactory.projectsEnvelope(Collections.singletonList(project)));
-      }
-    };
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-    this.projectName.assertValue("Best Project 2K19");
-  }
+        vm.intent(Intent())
+        vm.inputs.projectSelectionInput(project2)
+
+        projectDashboardData.assertValues(
+            ProjectDashboardData(project1, projectStatsEnvelope(), false),
+            ProjectDashboardData(project2, projectStatsEnvelope(), false)
+        )
+    }
+
+    @Test
+    fun testProjectName_whenMultipleProjects() {
+        val project1 = project()
+            .toBuilder()
+            .name("Best Project 2K19")
+            .build()
+        val project2 = project()
+        val projects = listOf(
+            project1,
+            project2
+        )
+        val apiClient: MockApiClient = object : MockApiClient() {
+            override fun fetchProjects(member: Boolean): Observable<ProjectsEnvelope> {
+                return Observable.just(ProjectsEnvelopeFactory.projectsEnvelope(projects))
+            }
+        }
+
+        setUpEnvironment(environment().toBuilder().apiClient(apiClient).build())
+        vm.intent(Intent())
+
+        projectName.assertValue("Best Project 2K19")
+    }
+
+    @Test
+    fun testProjectName_whenSingleProject() {
+        val project = project()
+            .toBuilder()
+            .name("Best Project 2K19")
+            .build()
+        val apiClient: MockApiClient = object : MockApiClient() {
+            override fun fetchProjects(member: Boolean): Observable<ProjectsEnvelope> {
+                return Observable.just(ProjectsEnvelopeFactory.projectsEnvelope(listOf(project)))
+            }
+        }
+
+        setUpEnvironment(environment().toBuilder().apiClient(apiClient).build())
+
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        projectName.assertValue("Best Project 2K19")
+    }
 }

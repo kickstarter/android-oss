@@ -1,88 +1,83 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import android.util.Pair;
+import android.util.Pair
+import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.mock.factories.ProjectFactory.project
+import com.kickstarter.mock.factories.ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats
+import com.kickstarter.models.Project
+import org.junit.Test
+import rx.observers.TestSubscriber
 
-import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.NumberUtils;
-import com.kickstarter.mock.factories.ProjectFactory;
-import com.kickstarter.mock.factories.ProjectStatsEnvelopeFactory;
-import com.kickstarter.models.Project;
-import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
+class DashboardRewardStatsRowHolderViewModelTest : KSRobolectricTestCase() {
+    private lateinit var vm: DashboardRewardStatsRowHolderViewModel.ViewModel
 
-import org.junit.Test;
+    private val rewardBackerCount = TestSubscriber<String>()
+    private val projectAndRewardMinimum = TestSubscriber<Pair<Project, Int>>()
+    private val percentageOfTotalPledged = TestSubscriber<String>()
+    private val projectAndRewardPledged = TestSubscriber<Pair<Project, Float>>()
 
-import androidx.annotation.NonNull;
-import rx.observers.TestSubscriber;
+    protected fun setUpEnvironment(environment: Environment) {
+        vm = DashboardRewardStatsRowHolderViewModel.ViewModel(environment)
+        vm.outputs.rewardBackerCount().subscribe(rewardBackerCount)
+        vm.outputs.projectAndRewardMinimum().subscribe(projectAndRewardMinimum)
+        vm.outputs.percentageOfTotalPledged().subscribe(percentageOfTotalPledged)
+        vm.outputs.projectAndRewardPledged().subscribe(projectAndRewardPledged)
+    }
 
-public class DashboardRewardStatsRowHolderViewModelTest extends KSRobolectricTestCase {
-  private DashboardRewardStatsRowHolderViewModel.ViewModel vm;
+    @Test
+    fun testRewardBackerCount() {
+        val rewardStats = rewardStats()
+            .toBuilder()
+            .backersCount(10)
+            .build()
 
-  private final TestSubscriber<String> rewardBackerCount = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Project, Integer>> projectAndRewardMinimum = new TestSubscriber<>();
-  private final TestSubscriber<String> percentageOfTotalPledged = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Project, Float>> projectAndRewardPledged = new TestSubscriber<>();
+        setUpEnvironment(environment())
 
-  protected void setUpEnvironment(final @NonNull Environment environment) {
-    this.vm = new DashboardRewardStatsRowHolderViewModel.ViewModel(environment);
-    this.vm.outputs.rewardBackerCount().subscribe(this.rewardBackerCount);
-    this.vm.outputs.projectAndRewardMinimum().subscribe(this.projectAndRewardMinimum);
-    this.vm.outputs.percentageOfTotalPledged().subscribe(this.percentageOfTotalPledged);
-    this.vm.outputs.projectAndRewardPledged().subscribe(this.projectAndRewardPledged);
-  }
+        vm.inputs.projectAndRewardStats(Pair.create(project(), rewardStats))
+        rewardBackerCount.assertValues(NumberUtils.format(10))
+    }
 
-  @Test
-  public void testRewardBackerCount() {
-    final ProjectStatsEnvelope.RewardStats rewardStats = ProjectStatsEnvelopeFactory.RewardStatsFactory
-      .rewardStats()
-      .toBuilder()
-      .backersCount(10)
-      .build();
+    @Test
+    fun testRewardMinimum() {
+        val rewardStats = rewardStats()
+            .toBuilder()
+            .minimum(5)
+            .build()
 
-    setUpEnvironment(environment());
-    this.vm.inputs.projectAndRewardStats(Pair.create(ProjectFactory.project(), rewardStats));
-    this.rewardBackerCount.assertValues(NumberUtils.format(10));
-  }
+        setUpEnvironment(environment())
+        val project = project()
 
-  @Test
-  public void testRewardMinimum() {
-    final ProjectStatsEnvelope.RewardStats rewardStats = ProjectStatsEnvelopeFactory.RewardStatsFactory
-      .rewardStats()
-      .toBuilder()
-      .minimum(5)
-      .build();
+        vm.inputs.projectAndRewardStats(Pair.create(project, rewardStats))
+        projectAndRewardMinimum.assertValue(Pair.create(project, 5))
+    }
 
-    setUpEnvironment(environment());
-    final Project project = ProjectFactory.project();
-    this.vm.inputs.projectAndRewardStats(Pair.create(project, rewardStats));
-    this.projectAndRewardMinimum.assertValue(Pair.create(project, 5));
-  }
+    @Test
+    fun testPercentageOfTotalPledged() {
+        val project = project().toBuilder().pledged(100.0).build()
+        val rewardStats = rewardStats()
+            .toBuilder()
+            .pledged(50f)
+            .build()
 
-  @Test
-  public void testPercentageOfTotalPledged() {
-    final Project project = ProjectFactory.project().toBuilder().pledged(100.0).build();
-    final ProjectStatsEnvelope.RewardStats rewardStats = ProjectStatsEnvelopeFactory.RewardStatsFactory
-      .rewardStats()
-      .toBuilder()
-      .pledged(50f)
-      .build();
+        setUpEnvironment(environment())
 
-    setUpEnvironment(environment());
-    this.vm.inputs.projectAndRewardStats(Pair.create(project, rewardStats));
-    this.percentageOfTotalPledged.assertValues("(50%)");
-  }
+        vm.inputs.projectAndRewardStats(Pair.create(project, rewardStats))
+        percentageOfTotalPledged.assertValues("(50%)")
+    }
 
-  @Test
-  public void testProjectAndPledgedForReward() {
-    final Project project = ProjectFactory.project().toBuilder().pledged(100.0).build();
-    final ProjectStatsEnvelope.RewardStats rewardStats = ProjectStatsEnvelopeFactory.RewardStatsFactory
-      .rewardStats()
-      .toBuilder()
-      .pledged(50f)
-      .build();
+    @Test
+    fun testProjectAndPledgedForReward() {
+        val project = project().toBuilder().pledged(100.0).build()
+        val rewardStats = rewardStats()
+            .toBuilder()
+            .pledged(50f)
+            .build()
 
-    setUpEnvironment(environment());
-    this.vm.inputs.projectAndRewardStats(Pair.create(project, rewardStats));
-    this.projectAndRewardPledged.assertValue(Pair.create(project, 50f));
-  }
+        setUpEnvironment(environment())
+
+        vm.inputs.projectAndRewardStats(Pair.create(project, rewardStats))
+        projectAndRewardPledged.assertValue(Pair.create(project, 50f))
+    }
 }

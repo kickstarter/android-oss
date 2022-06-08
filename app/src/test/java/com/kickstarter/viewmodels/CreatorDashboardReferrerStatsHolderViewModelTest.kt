@@ -1,90 +1,104 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import android.util.Pair;
+import android.util.Pair
+import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.PairUtils
+import com.kickstarter.mock.factories.ProjectFactory.project
+import com.kickstarter.mock.factories.ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats
+import com.kickstarter.models.Project
+import com.kickstarter.services.apiresponses.ProjectStatsEnvelope.ReferrerStats
+import org.junit.Test
+import rx.observers.TestSubscriber
+import java.util.ArrayList
 
-import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.PairUtils;
-import com.kickstarter.mock.factories.ProjectFactory;
-import com.kickstarter.mock.factories.ProjectStatsEnvelopeFactory;
-import com.kickstarter.models.Project;
-import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
+class CreatorDashboardReferrerStatsHolderViewModelTest : KSRobolectricTestCase() {
 
-import org.junit.Test;
+    private lateinit var vm: CreatorDashboardReferrerStatsHolderViewModel.ViewModel
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+    private val projectOutput = TestSubscriber<Project>()
+    private val referrerStatsListIsGone = TestSubscriber<Boolean>()
+    private val referrerStatsOutput = TestSubscriber<List<ReferrerStats>>()
+    private val referrersTitleIsLimitedCopy = TestSubscriber<Boolean>()
 
-import androidx.annotation.NonNull;
-import rx.observers.TestSubscriber;
-
-public class CreatorDashboardReferrerStatsHolderViewModelTest extends KSRobolectricTestCase  {
-  private CreatorDashboardReferrerStatsHolderViewModel.ViewModel vm;
-
-  private final TestSubscriber<Project> projectOutput = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> referrerStatsListIsGone = new TestSubscriber<>();
-  private final TestSubscriber<List<ProjectStatsEnvelope.ReferrerStats>> referrerStatsOutput = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> referrersTitleIsLimitedCopy = new TestSubscriber<>();
-
-  protected void setUpEnvironment(final @NonNull Environment environment) {
-    this.vm = new CreatorDashboardReferrerStatsHolderViewModel.ViewModel(environment);
-    this.vm.outputs.projectAndReferrerStats().map(PairUtils::first).subscribe(this.projectOutput);
-    this.vm.outputs.projectAndReferrerStats().map(PairUtils::second).subscribe(this.referrerStatsOutput);
-    this.vm.outputs.referrerStatsListIsGone().subscribe(this.referrerStatsListIsGone);
-    this.vm.outputs.referrersTitleIsTopTen().subscribe(this.referrersTitleIsLimitedCopy);
-  }
-
-  @Test
-  public void testProjectAndReferrerStats() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope.ReferrerStats referrerWithOnePledged = ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats().toBuilder().pledged(1f).build();
-    final ProjectStatsEnvelope.ReferrerStats referrerWithTwoPledged = ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats().toBuilder().pledged(2f).build();
-    final ProjectStatsEnvelope.ReferrerStats referrerWithThreePledged = ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats().toBuilder().pledged(3f).build();
-    final List<ProjectStatsEnvelope.ReferrerStats> unsortedReferrerList = Arrays.asList(referrerWithOnePledged, referrerWithThreePledged, referrerWithTwoPledged);
-    final List<ProjectStatsEnvelope.ReferrerStats> sortedReferrerList = Arrays.asList(referrerWithThreePledged, referrerWithTwoPledged, referrerWithOnePledged);
-    setUpEnvironment(environment());
-
-    this.vm.inputs.projectAndReferrerStatsInput(Pair.create(project, unsortedReferrerList));
-    this.projectOutput.assertValues(project);
-    this.referrerStatsOutput.assertValue(sortedReferrerList);
-  }
-
-  @Test
-  public void testReferrerStatsListIsGone() {
-    setUpEnvironment(environment());
-
-    final Project project = ProjectFactory.project();
-    this.vm.inputs.projectAndReferrerStatsInput(Pair.create(project, new ArrayList<>()));
-
-    this.referrerStatsListIsGone.assertValue(true);
-    this.referrersTitleIsLimitedCopy.assertValue(false);
-
-    this.vm.inputs.projectAndReferrerStatsInput(Pair.create(project, Collections.singletonList(ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats())));
-    this.referrerStatsListIsGone.assertValues(true, false);
-    this.referrersTitleIsLimitedCopy.assertValue(false);
-  }
-
-  @Test
-  public void testReferrersTitleIsLimitedCopy() {
-    setUpEnvironment(environment());
-
-    final Project project = ProjectFactory.project();
-    this.vm.inputs.projectAndReferrerStatsInput(Pair.create(project, Collections.singletonList(ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats())));
-
-    this.referrersTitleIsLimitedCopy.assertValue(false);
-
-    final List<ProjectStatsEnvelope.ReferrerStats> maxStats = new ArrayList<>();
-    for (float i = 1; i <= 10; i++) {
-      maxStats.add(ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats().toBuilder().pledged(i).build());
+    protected fun setUpEnvironment(environment: Environment) {
+        vm = CreatorDashboardReferrerStatsHolderViewModel.ViewModel(environment)
+        vm.outputs.projectAndReferrerStats()
+            .map {
+                PairUtils.first(it)
+            }.subscribe(
+                projectOutput
+            )
+        vm.outputs.projectAndReferrerStats()
+            .map {
+                PairUtils.second(it)
+            }.subscribe(
+                referrerStatsOutput
+            )
+        vm.outputs.referrerStatsListIsGone().subscribe(referrerStatsListIsGone)
+        vm.outputs.referrersTitleIsTopTen().subscribe(referrersTitleIsLimitedCopy)
     }
 
-    this.vm.inputs.projectAndReferrerStatsInput(Pair.create(project, maxStats));
-    this.referrersTitleIsLimitedCopy.assertValues(false);
+    @Test
+    fun testProjectAndReferrerStats() {
+        val project = project()
+        val referrerWithOnePledged = referrerStats().toBuilder().pledged(1f).build()
+        val referrerWithTwoPledged = referrerStats().toBuilder().pledged(2f).build()
+        val referrerWithThreePledged = referrerStats().toBuilder().pledged(3f).build()
+        val unsortedReferrerList =
+            listOf(referrerWithOnePledged, referrerWithThreePledged, referrerWithTwoPledged)
+        val sortedReferrerList =
+            listOf(referrerWithThreePledged, referrerWithTwoPledged, referrerWithOnePledged)
 
-    maxStats.add(ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats().toBuilder().pledged(11f).build());
-    this.vm.inputs.projectAndReferrerStatsInput(Pair.create(project, maxStats));
-    this.referrersTitleIsLimitedCopy.assertValues(false, true);
-  }
+        setUpEnvironment(environment())
+
+        vm.inputs.projectAndReferrerStatsInput(Pair.create(project, unsortedReferrerList))
+        projectOutput.assertValues(project)
+        referrerStatsOutput.assertValue(sortedReferrerList)
+    }
+
+    @Test
+    fun testReferrerStatsListIsGone() {
+
+        setUpEnvironment(environment())
+
+        val project = project()
+
+        vm.inputs.projectAndReferrerStatsInput(Pair.create(project, ArrayList()))
+
+        referrerStatsListIsGone.assertValue(true)
+        referrersTitleIsLimitedCopy.assertValue(false)
+
+        vm.inputs.projectAndReferrerStatsInput(Pair.create(project, listOf(referrerStats())))
+
+        referrerStatsListIsGone.assertValues(true, false)
+        referrersTitleIsLimitedCopy.assertValue(false)
+    }
+
+    @Test
+    fun testReferrersTitleIsLimitedCopy() {
+
+        setUpEnvironment(environment())
+
+        val project = project()
+
+        vm.inputs.projectAndReferrerStatsInput(Pair.create(project, listOf(referrerStats())))
+        referrersTitleIsLimitedCopy.assertValue(false)
+
+        val maxStats: MutableList<ReferrerStats> = ArrayList()
+
+        for (i in 1..10) {
+            maxStats.add(referrerStats().toBuilder().pledged(i.toFloat()).build())
+        }
+
+        vm.inputs.projectAndReferrerStatsInput(Pair.create(project, maxStats))
+
+        referrersTitleIsLimitedCopy.assertValues(false)
+
+        maxStats.add(referrerStats().toBuilder().pledged(11f).build())
+
+        vm.inputs.projectAndReferrerStatsInput(Pair.create(project, maxStats))
+
+        referrersTitleIsLimitedCopy.assertValues(false, true)
+    }
 }

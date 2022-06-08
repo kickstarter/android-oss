@@ -1,176 +1,180 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.extensions.BoolenExtKt;
-import com.kickstarter.libs.utils.ListUtils;
-import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.models.Project;
-import com.kickstarter.services.ApiClientType;
-import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
-import com.kickstarter.services.apiresponses.ProjectsEnvelope;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.activities.CreatorDashboardActivity;
-import com.kickstarter.ui.adapters.CreatorDashboardAdapter;
-import com.kickstarter.ui.adapters.CreatorDashboardBottomSheetAdapter;
-import com.kickstarter.ui.adapters.data.ProjectDashboardData;
+import com.kickstarter.libs.ActivityViewModel
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.ListUtils
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.isFalse
+import com.kickstarter.models.Project
+import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.apiresponses.ProjectStatsEnvelope
+import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.activities.CreatorDashboardActivity
+import com.kickstarter.ui.adapters.CreatorDashboardAdapter
+import com.kickstarter.ui.adapters.CreatorDashboardBottomSheetAdapter
+import com.kickstarter.ui.adapters.data.ProjectDashboardData
+import rx.Observable
+import rx.subjects.BehaviorSubject
+import rx.subjects.PublishSubject
 
-import java.util.List;
+interface CreatorDashboardViewModel {
+    interface Inputs :
+        CreatorDashboardBottomSheetAdapter.Delegate,
+        CreatorDashboardAdapter.Delegate {
+        /** Call when the back button is clicked and the bottom sheet is expanded.  */
+        fun backClicked()
 
-import androidx.annotation.NonNull;
-import rx.Notification;
-import rx.Observable;
-import rx.subjects.BehaviorSubject;
-import rx.subjects.PublishSubject;
+        /** Call when project selection should be shown.  */
+        override fun projectsListButtonClicked()
 
-import static com.kickstarter.libs.rx.transformers.Transformers.values;
-
-
-public interface CreatorDashboardViewModel {
-  interface Inputs extends CreatorDashboardBottomSheetAdapter.Delegate, CreatorDashboardAdapter.Delegate {
-    /** Call when the back button is clicked and the bottom sheet is expanded. */
-    void backClicked();
-
-    /** Call when project selection should be shown. */
-    void projectsListButtonClicked();
-
-    /** Call when the scrim is clicked. */
-    void scrimClicked();
-  }
-
-  interface Outputs {
-    /** Emits a boolean determining if the bottom sheet should expand. */
-    Observable<Boolean> bottomSheetShouldExpand();
-
-    /** Emits a boolean determining if the progress bar should be visible. */
-    Observable<Boolean> progressBarIsVisible();
-
-    /** Emits the current project dashboard data. */
-    Observable<ProjectDashboardData> projectDashboardData();
-
-    /** Emits the current project's name. */
-    Observable<String> projectName();
-
-    /** Emits when project dropdown should be shown. */
-    Observable<List<Project>> projectsForBottomSheet();
-  }
-
-  final class ViewModel extends ActivityViewModel<CreatorDashboardActivity> implements Inputs, Outputs {
-    private final ApiClientType client;
-
-    public ViewModel(final @NonNull Environment environment) {
-      super(environment);
-      this.client = environment.apiClient();
-
-      final Observable<Boolean> isViewingSingleProject = intent()
-        .map(intent -> intent.hasExtra(IntentKey.PROJECT));
-
-      final Observable<Notification<ProjectsEnvelope>> projectsNotification = isViewingSingleProject
-        .filter(BoolenExtKt::isFalse)
-        .switchMap(i -> this.client.fetchProjects(true)
-          .materialize()
-          .share());
-
-      final Observable<List<Project>> projects = projectsNotification
-        .compose(values())
-        .map(ProjectsEnvelope::projects);
-
-      final Observable<Project> firstProject = projects
-        .map(ListUtils::first);
-
-      final Observable<Project> intentProject = intent()
-        .map(intent -> intent.getParcelableExtra(IntentKey.PROJECT))
-        .filter(ObjectUtils::isNotNull)
-        .ofType(Project.class);
-
-      final Observable<Project> currentProject = Observable
-        .merge(firstProject, this.projectSelectionInput, intentProject)
-        .filter(ObjectUtils::isNotNull);
-
-      currentProject
-        .map(Project::name)
-        .compose(bindToLifecycle())
-        .subscribe(this.projectName);
-
-      final Observable<Notification<ProjectStatsEnvelope>> projectStatsEnvelopeNotification = currentProject
-        .switchMap(project -> this.client.fetchProjectStats(project)
-          .doOnSubscribe(() -> this.progressBarIsVisible.onNext(true))
-          .doAfterTerminate(() -> this.progressBarIsVisible.onNext(false)))
-        .share()
-        .materialize();
-
-      final Observable<ProjectStatsEnvelope> projectStatsEnvelope = projectStatsEnvelopeNotification
-        .compose(values());
-
-      Observable.combineLatest(
-        projects.filter(projectList -> projectList.size() > 1),
-        currentProject,
-        (projectList, project) -> Observable
-          .from(projectList)
-          .filter(p -> p.id() != project.id())
-          .toList())
-        .flatMap(listObservable -> listObservable)
-        .compose(bindToLifecycle())
-        .subscribe(this.projectsForBottomSheet);
-
-      Observable.combineLatest(currentProject, projectStatsEnvelope, isViewingSingleProject, ProjectDashboardData::new)
-        .compose(bindToLifecycle())
-        .distinctUntilChanged()
-        .subscribe(this.projectDashboardData);
-
-      this.projectsListButtonClicked
-        .map(__ -> true)
-        .compose(bindToLifecycle())
-        .subscribe(this.bottomSheetShouldExpand);
-
-      Observable.merge(this.backClicked, this.scrimClicked, this.projectSelectionInput)
-        .map(__ -> false)
-        .compose(bindToLifecycle())
-        .subscribe(this.bottomSheetShouldExpand);
+        /** Call when the scrim is clicked.  */
+        fun scrimClicked()
     }
 
-    private final PublishSubject<Void> backClicked = PublishSubject.create();
-    private final PublishSubject<Project> projectSelectionInput = PublishSubject.create();
-    private final PublishSubject<Void> projectsListButtonClicked = PublishSubject.create();
-    private final PublishSubject<Void> scrimClicked = PublishSubject.create();
+    interface Outputs {
+        /** Emits a boolean determining if the bottom sheet should expand.  */
+        fun bottomSheetShouldExpand(): Observable<Boolean>
 
-    private final BehaviorSubject<Boolean> bottomSheetShouldExpand = BehaviorSubject.create();
-    private final BehaviorSubject<Boolean> progressBarIsVisible = BehaviorSubject.create();
-    private final BehaviorSubject<ProjectDashboardData> projectDashboardData = BehaviorSubject.create();
-    private final BehaviorSubject<String> projectName = BehaviorSubject.create();
-    private final BehaviorSubject<List<Project>> projectsForBottomSheet = BehaviorSubject.create();
+        /** Emits a boolean determining if the progress bar should be visible.  */
+        fun progressBarIsVisible(): Observable<Boolean>
 
-    public final Inputs inputs = this;
-    public final Outputs outputs = this;
+        /** Emits the current project dashboard data.  */
+        fun projectDashboardData(): Observable<ProjectDashboardData>
 
+        /** Emits the current project's name.  */
+        fun projectName(): Observable<String>
 
-    @Override public void backClicked() {
-      this.backClicked.onNext(null);
-    }
-    @Override public void projectSelectionInput(final @NonNull Project project) {
-      this.projectSelectionInput.onNext(project);
-    }
-    @Override public void projectsListButtonClicked() {
-      this.projectsListButtonClicked.onNext(null);
-    }
-    @Override public void scrimClicked() {
-      this.scrimClicked.onNext(null);
+        /** Emits when project dropdown should be shown.  */
+        fun projectsForBottomSheet(): Observable<List<Project>>
     }
 
-    @Override public @NonNull Observable<Boolean> bottomSheetShouldExpand() {
-      return this.bottomSheetShouldExpand;
+    class ViewModel(environment: Environment) :
+        ActivityViewModel<CreatorDashboardActivity?>(environment), Inputs, Outputs {
+        private val client: ApiClientType
+
+        private val backClicked = PublishSubject.create<Void>()
+        private val projectSelectionInput = PublishSubject.create<Project?>()
+        private val projectsListButtonClicked = PublishSubject.create<Void>()
+        private val scrimClicked = PublishSubject.create<Void>()
+
+        private val bottomSheetShouldExpand = BehaviorSubject.create<Boolean>()
+        private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
+        private val projectDashboardData = BehaviorSubject.create<ProjectDashboardData>()
+        private val projectName = BehaviorSubject.create<String>()
+        private val projectsForBottomSheet = BehaviorSubject.create<List<Project>>()
+
+        @JvmField
+        val inputs: Inputs = this
+        @JvmField
+        val outputs: Outputs = this
+
+        init {
+            client = requireNotNull(environment.apiClient())
+
+            val isViewingSingleProject = intent()
+                .map { it.hasExtra(IntentKey.PROJECT) }
+
+            val projectsNotification = isViewingSingleProject
+                .filter { it.isFalse() }
+                .switchMap {
+                    client.fetchProjects(true)
+                        .materialize()
+                        .share()
+                }
+
+            val projects = projectsNotification
+                .compose(Transformers.values())
+                .map { it.projects() }
+
+            val firstProject = projects
+                .map { ListUtils.first(it) }
+
+            val intentProject = intent()
+                .map { it.getParcelableExtra<Project>(IntentKey.PROJECT) }
+                .filter { ObjectUtils.isNotNull(it) }
+
+            val currentProject = Observable
+                .merge(firstProject, projectSelectionInput, intentProject)
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+
+            currentProject
+                .map { it.name() }
+                .compose(bindToLifecycle())
+                .subscribe(projectName)
+
+            val projectStatsEnvelopeNotification = currentProject
+                .switchMap {
+                    client.fetchProjectStats(it)
+                        .doOnSubscribe { progressBarIsVisible.onNext(true) }
+                        .doAfterTerminate { progressBarIsVisible.onNext(false) }
+                }
+                .share()
+                .materialize()
+
+            val projectStatsEnvelope = projectStatsEnvelopeNotification
+                .compose(Transformers.values())
+
+            Observable.combineLatest(
+                projects.filter { it.size > 1 },
+                currentProject
+            ) { projectList: List<Project>?, project: Project? ->
+                Observable
+                    .from(projectList)
+                    .filter { it.id() != project?.id() }
+                    .toList()
+            }.flatMap { listObservable: Observable<List<Project>>? -> listObservable }
+                .compose(bindToLifecycle())
+                .subscribe(projectsForBottomSheet)
+
+            Observable.combineLatest(
+                currentProject,
+                projectStatsEnvelope,
+                isViewingSingleProject
+            ) { project: Project, projectStatsEnvelope: ProjectStatsEnvelope, isViewingSingleProject: Boolean ->
+                ProjectDashboardData(
+                    project, projectStatsEnvelope, isViewingSingleProject
+                )
+            }
+                .compose(bindToLifecycle())
+                .distinctUntilChanged()
+                .subscribe(projectDashboardData)
+
+            projectsListButtonClicked
+                .map { true }
+                .compose(bindToLifecycle())
+                .subscribe(bottomSheetShouldExpand)
+
+            Observable.merge(backClicked, scrimClicked, projectSelectionInput)
+                .map { false }
+                .compose(bindToLifecycle())
+                .subscribe(bottomSheetShouldExpand)
+        }
+        override fun backClicked() {
+            backClicked.onNext(null)
+        }
+
+        override fun projectSelectionInput(project: Project?) {
+            projectSelectionInput.onNext(project)
+        }
+
+        override fun projectsListButtonClicked() {
+            projectsListButtonClicked.onNext(null)
+        }
+
+        override fun scrimClicked() {
+            scrimClicked.onNext(null)
+        }
+
+        override fun bottomSheetShouldExpand(): Observable<Boolean> = bottomSheetShouldExpand
+
+        override fun progressBarIsVisible(): Observable<Boolean> = progressBarIsVisible
+
+        override fun projectDashboardData(): Observable<ProjectDashboardData> = projectDashboardData
+
+        override fun projectName(): Observable<String> = projectName
+
+        override fun projectsForBottomSheet(): Observable<List<Project>> = projectsForBottomSheet
     }
-    @Override public Observable<Boolean> progressBarIsVisible() {
-      return this.progressBarIsVisible;
-    }
-    @Override public @NonNull Observable<ProjectDashboardData> projectDashboardData() {
-      return this.projectDashboardData;
-    }
-    @Override public @NonNull Observable<String> projectName() {
-      return this.projectName;
-    }
-    @Override public @NonNull Observable<List<Project>> projectsForBottomSheet() {
-      return this.projectsForBottomSheet;
-    }
-  }
 }

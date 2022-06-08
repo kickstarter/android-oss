@@ -1,114 +1,119 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import android.util.Pair;
+import android.util.Pair
+import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.PairUtils
+import com.kickstarter.mock.factories.ProjectFactory.project
+import com.kickstarter.mock.factories.ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats
+import com.kickstarter.models.Project
+import com.kickstarter.services.apiresponses.ProjectStatsEnvelope.RewardStats
+import org.junit.Test
+import rx.observers.TestSubscriber
 
-import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.PairUtils;
-import com.kickstarter.mock.factories.ProjectFactory;
-import com.kickstarter.mock.factories.ProjectStatsEnvelopeFactory;
-import com.kickstarter.models.Project;
-import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
+class CreatorDashboardRewardStatsHolderViewModelTest : KSRobolectricTestCase() {
 
-import org.junit.Test;
+    private lateinit var vm: CreatorDashboardRewardStatsHolderViewModel.ViewModel
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import androidx.annotation.NonNull;
-import rx.observers.TestSubscriber;
-
-public class CreatorDashboardRewardStatsHolderViewModelTest extends KSRobolectricTestCase {
-  private CreatorDashboardRewardStatsHolderViewModel.ViewModel vm;
-
-  private final TestSubscriber<Project> projectOutput= new TestSubscriber<>();
-  private final TestSubscriber<List<ProjectStatsEnvelope.RewardStats>> rewardStatsOutput = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> rewardsStatsListIsGone = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> rewardsStatsTruncatedTextIsGone = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> rewardsTitleIsLimitedCopy = new TestSubscriber<>();
-
-  protected void setUpEnvironment(final @NonNull Environment environment) {
-    this.vm = new CreatorDashboardRewardStatsHolderViewModel.ViewModel(environment);
-    this.vm.outputs.projectAndRewardStats().map(PairUtils::first).subscribe(this.projectOutput);
-    this.vm.outputs.projectAndRewardStats().map(PairUtils::second).subscribe(this.rewardStatsOutput);
-    this.vm.outputs.rewardsStatsListIsGone().subscribe(this.rewardsStatsListIsGone);
-    this.vm.outputs.rewardsStatsTruncatedTextIsGone().subscribe(this.rewardsStatsTruncatedTextIsGone);
-    this.vm.outputs.rewardsTitleIsTopTen().subscribe(this.rewardsTitleIsLimitedCopy);
-  }
-
-  @Test
-  public void testProjectAndRewardStats() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope.RewardStats rewardWith10Pledged = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(10f).build();
-    final ProjectStatsEnvelope.RewardStats rewardWith15Pledged = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(15f).build();
-    final ProjectStatsEnvelope.RewardStats rewardWith20Pledged = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(20f).build();
-    final List<ProjectStatsEnvelope.RewardStats> unsortedRewardStatsList = Arrays.asList(rewardWith15Pledged, rewardWith10Pledged, rewardWith20Pledged);
-    final List<ProjectStatsEnvelope.RewardStats> sortedRewardStatsList = Arrays.asList(rewardWith20Pledged, rewardWith15Pledged, rewardWith10Pledged);
-    setUpEnvironment(environment());
-
-    this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, unsortedRewardStatsList));
-    this.projectOutput.assertValue(project);
-    this.rewardStatsOutput.assertValue(sortedRewardStatsList);
-  }
-
-  @Test
-  public void testRewardsStatsListIsGone() {
-    setUpEnvironment(environment());
-
-    final Project project = ProjectFactory.project();
-    this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, new ArrayList<>()));
-
-    this.rewardsStatsListIsGone.assertValue(true);
-    this.rewardsStatsTruncatedTextIsGone.assertValue(true);
-
-    this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, Collections.singletonList(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats())));
-    this.rewardsStatsListIsGone.assertValues(true, false);
-    this.rewardsStatsTruncatedTextIsGone.assertValue(true);
-  }
-
-  @Test
-  public void testRewardsStatsTruncatedTextIsGone() {
-    setUpEnvironment(environment());
-
-    final Project project = ProjectFactory.project();
-    this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, Collections.singletonList(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats())));
-
-    this.rewardsStatsTruncatedTextIsGone.assertValue(true);
-
-    final List<ProjectStatsEnvelope.RewardStats> maxStats = new ArrayList<>();
-    for (float i = 1; i <= 10; i++) {
-      maxStats.add(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(i).build());
+    private val projectOutput = TestSubscriber<Project>()
+    private val rewardStatsOutput = TestSubscriber<List<RewardStats>>()
+    private val rewardsStatsListIsGone = TestSubscriber<Boolean>()
+    private val rewardsStatsTruncatedTextIsGone = TestSubscriber<Boolean>()
+    private val rewardsTitleIsLimitedCopy = TestSubscriber<Boolean>()
+    protected fun setUpEnvironment(environment: Environment) {
+        vm = CreatorDashboardRewardStatsHolderViewModel.ViewModel(environment)
+        vm.outputs.projectAndRewardStats()
+            .map {
+                PairUtils.first(it)
+            }.subscribe(
+                projectOutput
+            )
+        vm.outputs.projectAndRewardStats()
+            .map {
+                PairUtils.second(it)
+            }.subscribe(
+                rewardStatsOutput
+            )
+        vm.outputs.rewardsStatsListIsGone().subscribe(rewardsStatsListIsGone)
+        vm.outputs.rewardsStatsTruncatedTextIsGone().subscribe(rewardsStatsTruncatedTextIsGone)
+        vm.outputs.rewardsTitleIsTopTen().subscribe(rewardsTitleIsLimitedCopy)
     }
 
-    this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, maxStats));
-    this.rewardsStatsTruncatedTextIsGone.assertValues(true);
+    @Test
+    fun testProjectAndRewardStats() {
+        val project = project()
+        val rewardWith10Pledged = rewardStats().toBuilder().pledged(10f).build()
+        val rewardWith15Pledged = rewardStats().toBuilder().pledged(15f).build()
+        val rewardWith20Pledged = rewardStats().toBuilder().pledged(20f).build()
+        val unsortedRewardStatsList =
+            listOf(rewardWith15Pledged, rewardWith10Pledged, rewardWith20Pledged)
+        val sortedRewardStatsList =
+            listOf(rewardWith20Pledged, rewardWith15Pledged, rewardWith10Pledged)
 
-    maxStats.add(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(11f).build());
-    this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, maxStats));
-    this.rewardsStatsTruncatedTextIsGone.assertValues(true, false);
-  }
+        setUpEnvironment(environment())
 
-  @Test
-  public void rewardsTitleIsLimitedCopy() {
-    setUpEnvironment(environment());
+        vm.inputs.projectAndRewardStatsInput(Pair.create(project, unsortedRewardStatsList))
 
-    final Project project = ProjectFactory.project();
-    this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, Collections.singletonList(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats())));
-
-    this.rewardsTitleIsLimitedCopy.assertValue(false);
-
-    final List<ProjectStatsEnvelope.RewardStats> maxStats = new ArrayList<>();
-    for (float i = 1; i <= 10; i++) {
-      maxStats.add(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(i).build());
+        projectOutput.assertValue(project)
+        rewardStatsOutput.assertValue(sortedRewardStatsList)
     }
 
-    this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, maxStats));
-    this.rewardsTitleIsLimitedCopy.assertValues(false);
+    @Test
+    fun testRewardsStatsListIsGone() {
 
-    maxStats.add(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(11f).build());
-    this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, maxStats));
-    this.rewardsTitleIsLimitedCopy.assertValues(false, true);
-  }
+        setUpEnvironment(environment())
+
+        val project = project()
+
+        vm.inputs.projectAndRewardStatsInput(Pair.create(project, ArrayList()))
+        rewardsStatsListIsGone.assertValue(true)
+        rewardsStatsTruncatedTextIsGone.assertValue(true)
+
+        vm.inputs.projectAndRewardStatsInput(Pair.create(project, listOf(rewardStats())))
+        rewardsStatsListIsGone.assertValues(true, false)
+        rewardsStatsTruncatedTextIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testRewardsStatsTruncatedTextIsGone() {
+        setUpEnvironment(environment())
+        val project = project()
+
+        vm.inputs.projectAndRewardStatsInput(Pair.create(project, listOf(rewardStats())))
+        rewardsStatsTruncatedTextIsGone.assertValue(true)
+
+        val maxStats: MutableList<RewardStats> = ArrayList()
+
+        for (i in 1..10) {
+            maxStats.add(rewardStats().toBuilder().pledged(i.toFloat()).build())
+        }
+
+        vm.inputs.projectAndRewardStatsInput(Pair.create(project, maxStats))
+        rewardsStatsTruncatedTextIsGone.assertValues(true)
+        maxStats.add(rewardStats().toBuilder().pledged(11f).build())
+
+        vm.inputs.projectAndRewardStatsInput(Pair.create(project, maxStats))
+        rewardsStatsTruncatedTextIsGone.assertValues(true, false)
+    }
+
+    @Test
+    fun rewardsTitleIsLimitedCopy() {
+        setUpEnvironment(environment())
+        val project = project()
+
+        vm.inputs.projectAndRewardStatsInput(Pair.create(project, listOf(rewardStats())))
+        rewardsTitleIsLimitedCopy.assertValue(false)
+
+        val maxStats: MutableList<RewardStats> = ArrayList()
+        for (i in 1..10) {
+            maxStats.add(rewardStats().toBuilder().pledged(i.toFloat()).build())
+        }
+
+        vm.inputs.projectAndRewardStatsInput(Pair.create(project, maxStats))
+        rewardsTitleIsLimitedCopy.assertValues(false)
+        maxStats.add(rewardStats().toBuilder().pledged(11f).build())
+
+        vm.inputs.projectAndRewardStatsInput(Pair.create(project, maxStats))
+        rewardsTitleIsLimitedCopy.assertValues(false, true)
+    }
 }

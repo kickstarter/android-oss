@@ -1,38 +1,31 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.mock.factories.ProjectFactory;
-import com.kickstarter.models.Project;
+import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.Environment
+import com.kickstarter.mock.factories.ProjectFactory.project
+import org.joda.time.DateTime
+import org.junit.Test
+import rx.observers.TestSubscriber
 
-import org.joda.time.DateTime;
-import org.junit.Test;
+class CreatorDashboardBottomSheetHolderViewModelTest : KSRobolectricTestCase() {
+    private lateinit var vm: CreatorDashboardBottomSheetHolderViewModel.ViewModel
+    private val projectName = TestSubscriber<String>()
+    private val projectLaunchDate = TestSubscriber<DateTime>()
 
-import androidx.annotation.NonNull;
-import rx.observers.TestSubscriber;
+    private fun setUpEnvironment(environment: Environment) {
+        vm = CreatorDashboardBottomSheetHolderViewModel.ViewModel(environment)
+        vm.outputs.projectNameText().subscribe(projectName)
+        vm.outputs.projectLaunchDate().subscribe(projectLaunchDate)
+    }
 
-public class CreatorDashboardBottomSheetHolderViewModelTest extends KSRobolectricTestCase {
-  private CreatorDashboardBottomSheetHolderViewModel.ViewModel vm;
-
-  private final TestSubscriber<String> projectName = new TestSubscriber<>();
-  private final TestSubscriber<DateTime> projectLaunchDate = new TestSubscriber<>();
-
-  private void setUpEnvironment(final @NonNull Environment environment) {
-    this.vm = new CreatorDashboardBottomSheetHolderViewModel.ViewModel(environment);
-    this.vm.outputs.projectNameText().subscribe(this.projectName);
-    this.vm.outputs.projectLaunchDate().subscribe(this.projectLaunchDate);
-  }
-
-  @Test
-  public void testProjectNameText() {
-    setUpEnvironment(environment());
-
-    final String projectName = "Test Project";
-    final DateTime now = DateTime.now();
-    final Project project = ProjectFactory.project().toBuilder().name(projectName).launchedAt(now).build();
-
-    this.vm.inputs.projectInput(project);
-    this.projectName.assertValues(projectName);
-    this.projectLaunchDate.assertValue(now);
-  }
+    @Test
+    fun testProjectNameText() {
+        setUpEnvironment(environment())
+        val projectName = "Test Project"
+        val now = DateTime.now()
+        val project = project().toBuilder().name(projectName).launchedAt(now).build()
+        vm.inputs.projectInput(project)
+        this.projectName.assertValues(projectName)
+        projectLaunchDate.assertValue(now)
+    }
 }

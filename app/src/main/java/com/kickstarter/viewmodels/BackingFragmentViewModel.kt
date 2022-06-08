@@ -260,7 +260,9 @@ interface BackingFragmentViewModel {
                 .subscribe(this.pledgeAmount)
 
             backing
-                .map { ObjectUtils.isNull(it.locationId()) }
+                .map {
+                    shouldHideShipping(it)
+                }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe {
@@ -468,6 +470,11 @@ interface BackingFragmentViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(this.deliveryDisclaimerSectionIsGone)
         }
+
+        private fun shouldHideShipping(it: Backing) =
+            ObjectUtils.isNull(it.locationId()) || it.reward()?.let { rw ->
+                RewardUtils.isLocalPickup(rw)
+            } ?: true
 
         private fun getBackingInfo(it: ProjectData): Observable<Backing> {
             return if (it.backing() == null) {

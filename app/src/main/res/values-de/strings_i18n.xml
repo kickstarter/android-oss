@@ -1708,7 +1708,7 @@ gespeichert</string>
   <string name="rewards_info_shipping" formatted="false">Versand</string>
   <string name="rewards_info_shipping_destinations" formatted="false">Versandziele</string>
   <string name="rewards_info_ships_to" formatted="false">Versandziel</string>
-  <string name="rewards_info_time_left" formatted="false">{{time}} verbleibend</string>
+  <string name="rewards_info_time_left" formatted="false">%{time} verbleibend</string>
   <string name="rewards_selected_label_you_selected" formatted="false">Deine Auswahl</string>
   <string name="rewards_shipping_preferences_location_unrestricted" formatted="false">Weltweiter Versand</string>
   <string name="rewards_title_about_amount_usd" formatted="false">Ungefähr %{reward_amount} USD</string>

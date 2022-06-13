@@ -140,8 +140,9 @@ interface CommentsViewHolderViewModel {
         private val apolloClient = requireNotNull(environment.apolloClient())
         private val currentUser = requireNotNull(environment.currentUser())
 
-        init {
+        val isCommentModerationEnabled = environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_COMMENT_MODERATION)
 
+        init {
             val comment = Observable.merge(this.commentInput.distinctUntilChanged().map { it.comment }, postedSuccessfully)
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }

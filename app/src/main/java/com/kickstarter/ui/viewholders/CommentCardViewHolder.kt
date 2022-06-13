@@ -154,9 +154,14 @@ class CommentCardViewHolder(
                 context().getString(R.string.Learn_more_about_comment_guidelines)
         )
 
-        binding.commentsCardView.setCancelPledgeMessage(
-            context().getString(R.string.This_person_canceled_their_pledge).plus(" ").plus(context().getString(R.string.Show_comment))
-        )
+        if (vm.isCommentModerationEnabled == true) {
+            context().getString(R.string.This_person_canceled_their_pledge)
+        } else {
+            context().getString(R.string.This_person_canceled_their_pledge).plus(" ")
+                .plus(context().getString(R.string.Show_comment))
+        }.also {
+            binding.commentsCardView.setCancelPledgeMessage(it)
+        }
 
         if (isReply) {
             val params = Constraints.LayoutParams(

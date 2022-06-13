@@ -25,9 +25,16 @@ class RootCommentViewHolder(
                 CommentCardStatus.values().firstOrNull { commentCardData.commentCardState == it.commentCardStatus }?.let {
                     if (it == CommentCardStatus.CANCELED_PLEDGE_MESSAGE) {
                         binding.commentsCardView.setCommentCardStatus(it)
-                        binding.commentsCardView.setCancelPledgeMessage(
-                            context().getString(R.string.This_person_canceled_their_pledge).plus(" ").plus(context().getString(R.string.Show_comment))
-                        )
+
+                        if (vm.isCommentModerationEnabled == true) {
+                            context().getString(R.string.This_person_canceled_their_pledge)
+                        } else {
+                            context().getString(R.string.This_person_canceled_their_pledge).plus(" ")
+                                .plus(context().getString(R.string.Show_comment))
+                        }.also {
+                            binding.commentsCardView.setCancelPledgeMessage(it)
+                        }
+
                         binding.commentsCardView.setCommentCardClickedListener(object :
                                 OnCommentCardClickedListener {
                                 override fun onRetryViewClicked(view: View) {

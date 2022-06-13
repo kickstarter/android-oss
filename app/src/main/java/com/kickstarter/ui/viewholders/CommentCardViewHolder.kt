@@ -150,7 +150,7 @@ class CommentCardViewHolder(
             }
         })
 
-        binding.commentsCardView.setFlaggedMessage(
+        binding.commentsCardView.setRemovedMessage(
             context().getString(R.string.This_comment_has_been_removed_by_Kickstarter) +
                 context().getString(R.string.Learn_more_about_comment_guidelines)
         )

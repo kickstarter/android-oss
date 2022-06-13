@@ -33,7 +33,7 @@ class CommentCard @JvmOverloads constructor(
     init {
         obtainStyledAttributes(context, attrs, defStyleAttr)
 
-        bindFlaggedMessage()
+        bindRemovedMessage()
 
         binding.retryButtonGroup.setAllOnClickListener {
             onCommentCardClickedListener?.onRetryViewClicked(it)
@@ -43,17 +43,18 @@ class CommentCard @JvmOverloads constructor(
             onCommentCardClickedListener?.onViewRepliesButtonClicked(it)
         }
 
-        binding.flaggedMessage.setOnClickListener {
+        binding.removedMessage.setOnClickListener {
             onCommentCardClickedListener?.onCommentGuideLinesClicked(it)
         }
+        
         binding.replyButton.setOnClickListener {
             onCommentCardClickedListener?.onReplyButtonClicked(it)
         }
     }
 
-    private fun bindFlaggedMessage() {
-        binding.flaggedMessage.parseHtmlTag()
-        binding.flaggedMessage.makeLinks(
+    private fun bindRemovedMessage() {
+        binding.removedMessage.parseHtmlTag()
+        binding.removedMessage.makeLinks(
             Pair(
                 context.resources.getString(R.string.Learn_more_about_comment_guidelines).parseHtmlTag(),
                 OnClickListener {
@@ -197,8 +198,7 @@ class CommentCard @JvmOverloads constructor(
         binding.separtor.isVisible = visibility
     }
 
-    fun setViewRepliesVisibility(isViewRepliesVisible: Boolean) {
-        binding.replies.isVisible = isViewRepliesVisible && isCommentEnabledThreads
+    fun setViewRepliesVisibility(isViewRepliesVisible: Boolean) { isVisible = isViewRepliesVisible && isCommentEnabledThreads
     }
 
     fun setCommentUserName(username: String) {
@@ -219,9 +219,9 @@ class CommentCard @JvmOverloads constructor(
         binding.commentBody.urlSpanWithoutUnderlines()
     }
 
-    fun setFlaggedMessage(message: String) {
-        binding.flaggedMessage.text = message
-        bindFlaggedMessage()
+    fun setRemovedMessage(message: String) {
+        binding.removedMessage.text = message
+        bindRemovedMessage()
     }
 
     fun setCancelPledgeMessage(message: String) {

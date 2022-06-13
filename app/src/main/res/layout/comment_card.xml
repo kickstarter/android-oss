@@ -170,12 +170,12 @@
         android:id="@+id/info_button"
         style="@style/CommentsReplyButton"
         android:src="@drawable/ic_info"
-        app:layout_constraintTop_toTopOf="@+id/flagged_message"
+        app:layout_constraintTop_toTopOf="@+id/removed_message"
         app:layout_constraintStart_toStartOf="@id/avatar"
         />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/flagged_message"
+        android:id="@+id/removed_message"
         style="@style/CommentCardFlaggedMessage"
         android:text="@string/This_comment_has_been_removed_by_Kickstarter"
         app:layout_constraintEnd_toEndOf="parent"
@@ -203,6 +203,14 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.Group
+        android:id="@+id/reply_message_group"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        tools:visibility="visible"
+        app:constraint_referenced_ids="removed_message,info_button" />
+
+    <androidx.constraintlayout.widget.Group
         android:id="@+id/retry_button_group"
         android:layout_width="wrap_content"
         android:visibility="gone"
@@ -217,5 +225,5 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         tools:visibility="visible"
-        app:constraint_referenced_ids="flagged_message,info_button" />
+        app:constraint_referenced_ids="removed_message,info_button" />
 </androidx.constraintlayout.widget.ConstraintLayout>

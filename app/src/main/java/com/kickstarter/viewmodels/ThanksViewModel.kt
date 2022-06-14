@@ -97,9 +97,7 @@ interface ThanksViewModel {
         private val onHeartButtonClicked = PublishSubject.create<Project>()
         private val showSavedPrompt = PublishSubject.create<Void>()
 
-        @JvmField
         val inputs: Inputs = this
-        @JvmField
         val outputs: Outputs = this
 
         init {

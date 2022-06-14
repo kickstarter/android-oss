@@ -93,9 +93,7 @@ interface SearchViewModel {
         private val searchProjects = BehaviorSubject.create<List<Project>>()
         private val startProjectActivity: Observable<Pair<Project, RefTag>>
 
-        @JvmField
         val inputs: Inputs = this
-        @JvmField
         val outputs: Outputs = this
 
         override fun nextPage() {

@@ -112,9 +112,7 @@ interface ActivityFeedViewModel {
         private val startUpdateActivity: Observable<Activity>
         private val surveys = BehaviorSubject.create<List<SurveyResponse>>()
 
-        @JvmField
         val inputs: Inputs = this
-        @JvmField
         val outputs: Outputs = this
 
         init {

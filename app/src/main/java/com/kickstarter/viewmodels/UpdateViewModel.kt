@@ -95,10 +95,7 @@ interface UpdateViewModel {
         private val deepLinkToRootComment = BehaviorSubject.create<Boolean>()
         private val deepLinkToThreadActivity = BehaviorSubject.create<Pair<String, Boolean>>()
 
-        @JvmField
         val inputs: Inputs = this
-
-        @JvmField
         val outputs: Outputs = this
 
         init {

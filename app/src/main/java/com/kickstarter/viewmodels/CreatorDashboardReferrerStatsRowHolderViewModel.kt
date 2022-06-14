@@ -35,9 +35,8 @@ interface CreatorDashboardReferrerStatsRowHolderViewModel {
 
     class ViewModel(environment: Environment) :
         ActivityViewModel<CreatorDashboardReferrerStatsViewHolder?>(environment), Inputs, Outputs {
-        @JvmField
+
         val inputs: Inputs = this
-        @JvmField
         val outputs: Outputs = this
         private val projectAndReferrerStats = PublishSubject.create<Pair<Project, ReferrerStats>>()
         private val projectAndPledgedForReferrer: Observable<Pair<Project, Float>>

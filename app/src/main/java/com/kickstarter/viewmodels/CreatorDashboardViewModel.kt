@@ -64,9 +64,7 @@ interface CreatorDashboardViewModel {
         private val projectName = BehaviorSubject.create<String>()
         private val projectsForBottomSheet = BehaviorSubject.create<List<Project>>()
 
-        @JvmField
         val inputs: Inputs = this
-        @JvmField
         val outputs: Outputs = this
 
         init {

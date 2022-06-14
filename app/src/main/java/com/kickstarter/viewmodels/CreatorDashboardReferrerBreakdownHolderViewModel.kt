@@ -73,9 +73,7 @@ interface CreatorDashboardReferrerBreakdownHolderViewModel {
         Inputs,
         Outputs {
 
-        @JvmField
         val inputs: Inputs = this
-        @JvmField
         val outputs: Outputs = this
 
         private val projectAndProjectStatsInput =

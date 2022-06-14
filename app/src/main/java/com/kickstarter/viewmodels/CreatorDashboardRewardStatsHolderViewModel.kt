@@ -39,10 +39,9 @@ interface CreatorDashboardRewardStatsHolderViewModel {
     class ViewModel(environment: Environment) :
         ActivityViewModel<CreatorDashboardRewardStatsViewHolder?>(environment), Inputs, Outputs {
 
-        @JvmField
         val inputs: Inputs = this
-        @JvmField
         val outputs: Outputs = this
+
         private val pledgedColumnTitleClicked = PublishSubject.create<Void?>()
         private val projectAndRewardStatsInput =
             PublishSubject.create<Pair<Project, List<RewardStats>>>()

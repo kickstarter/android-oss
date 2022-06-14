@@ -70,10 +70,10 @@ interface CreatorDashboardHeaderHolderViewModel {
     class ViewModel(environment: Environment) :
         ActivityViewModel<CreatorDashboardHeaderViewHolder?>(environment), Inputs, Outputs {
         private val currentUser = requireNotNull(environment.currentUser())
-        @JvmField
+
         val inputs: Inputs = this
-        @JvmField
         val outputs: Outputs = this
+
         private val messagesButtonClicked = PublishSubject.create<Void?>()
         private val projectButtonClicked = PublishSubject.create<Void?>()
         private val projectDashboardData = PublishSubject.create<ProjectDashboardData>()

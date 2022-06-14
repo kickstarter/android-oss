@@ -215,10 +215,9 @@ interface ProjectCardHolderViewModel {
         private val heartDrawableId = BehaviorSubject.create<Int>()
         private val notifyDelegateOfHeartButtonClicked = BehaviorSubject.create<Project>()
 
-        @JvmField
         val inputs: Inputs = this
-        @JvmField
         val outputs: Outputs = this
+
         override fun configureWith(projectAndDiscoveryParams: Pair<Project, DiscoveryParams>) {
             project.onNext(projectAndDiscoveryParams.first)
             discoveryParams.onNext(projectAndDiscoveryParams.second)

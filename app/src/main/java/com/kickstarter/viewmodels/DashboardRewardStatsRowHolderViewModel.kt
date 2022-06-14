@@ -35,9 +35,7 @@ interface DashboardRewardStatsRowHolderViewModel {
     class ViewModel(environment: Environment) :
         ActivityViewModel<CreatorDashboardRewardStatsRowViewHolder?>(environment), Inputs, Outputs {
 
-        @JvmField
         val inputs: Inputs = this
-        @JvmField
         val outputs: Outputs = this
 
         private val projectAndRewardStats = PublishSubject.create<Pair<Project, RewardStats>>()

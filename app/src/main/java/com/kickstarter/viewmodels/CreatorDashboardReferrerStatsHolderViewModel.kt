@@ -39,9 +39,7 @@ interface CreatorDashboardReferrerStatsHolderViewModel {
         private val referrerStatsListIsGone = PublishSubject.create<Boolean>()
         private val referrersTitleIsLimitedCopy = PublishSubject.create<Boolean>()
 
-        @JvmField
         val inputs: Inputs = this
-        @JvmField
         val outputs: Outputs = this
 
         init {

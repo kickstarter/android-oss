@@ -3,6 +3,7 @@ package com.kickstarter.ui.viewholders
 import android.view.View
 import com.kickstarter.R
 import com.kickstarter.databinding.ItemRootCommentCardBinding
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.ui.data.CommentCardData
@@ -25,9 +26,16 @@ class RootCommentViewHolder(
                 CommentCardStatus.values().firstOrNull { commentCardData.commentCardState == it.commentCardStatus }?.let {
                     if (it == CommentCardStatus.CANCELED_PLEDGE_MESSAGE) {
                         binding.commentsCardView.setCommentCardStatus(it)
-                        binding.commentsCardView.setCancelPledgeMessage(
-                            context().getString(R.string.This_person_canceled_their_pledge).plus(" ").plus(context().getString(R.string.Show_comment))
-                        )
+
+                        if (this.environment().optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_COMMENT_MODERATION) == true) {
+                            context().getString(R.string.This_person_canceled_their_pledge)
+                        } else {
+                            context().getString(R.string.This_person_canceled_their_pledge).plus(" ")
+                                .plus(context().getString(R.string.Show_comment))
+                        }.also {
+                            binding.commentsCardView.setCancelPledgeMessage(it)
+                        }
+
                         binding.commentsCardView.setCommentCardClickedListener(object :
                                 OnCommentCardClickedListener {
                                 override fun onRetryViewClicked(view: View) {

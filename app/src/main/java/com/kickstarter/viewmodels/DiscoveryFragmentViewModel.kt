@@ -122,8 +122,9 @@ interface DiscoveryFragmentViewModel {
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val cookieManager = requireNotNull(environment.cookieManager())
         private val currentUser = requireNotNull(environment.currentUser())
-
+        @JvmField
         val inputs: Inputs = this
+        @JvmField
         val outputs: Outputs = this
 
         private val activityClick = PublishSubject.create<Boolean>()

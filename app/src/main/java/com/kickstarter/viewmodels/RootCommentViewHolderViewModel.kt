@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels
 import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.models.extensions.assignAuthorBadge
 import com.kickstarter.ui.data.CommentCardData
@@ -38,10 +37,6 @@ interface RootCommentViewHolderViewModel {
 
         val inputs = this
         val outputs = this
-
-        val isCommentModerationEnabled = environment.optimizely()?.isFeatureEnabled(
-            OptimizelyFeature.Key.ANDROID_COMMENT_MODERATION
-        )
 
         init {
             val commentCardData = this.initCellConfig

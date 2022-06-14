@@ -4,6 +4,7 @@ import android.view.View
 import androidx.constraintlayout.widget.Constraints
 import com.kickstarter.R
 import com.kickstarter.databinding.ItemCommentCardBinding
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.models.Comment
@@ -154,7 +155,7 @@ class CommentCardViewHolder(
                 context().getString(R.string.Learn_more_about_comment_guidelines)
         )
 
-        if (vm.isCommentModerationEnabled == true) {
+        if (this.environment().optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_COMMENT_MODERATION) == true) {
             context().getString(R.string.This_person_canceled_their_pledge)
         } else {
             context().getString(R.string.This_person_canceled_their_pledge).plus(" ")

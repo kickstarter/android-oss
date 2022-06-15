@@ -40,7 +40,6 @@ interface BackingViewModel {
         private val isRefreshing = PublishSubject.create<Boolean>()
         private val backingWrapper = PublishSubject.create<BackingWrapper>()
 
-        @JvmField
         val outputs: Outputs = this
         val inputs: Inputs = this
 

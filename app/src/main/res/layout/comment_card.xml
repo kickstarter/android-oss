@@ -168,19 +168,31 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/info_button"
-        style="@style/CommentsReplyButton"
+        style="@style/CommentsInfoIcon"
         android:src="@drawable/ic_info"
-        app:layout_constraintTop_toTopOf="@+id/removed_message"
+        app:layout_constraintTop_toBottomOf="@+id/avatar"
         app:layout_constraintStart_toStartOf="@id/avatar"
         />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/removed_message"
         style="@style/CommentCardFlaggedMessage"
+        android:visibility="gone"
         android:text="@string/This_comment_has_been_removed_by_Kickstarter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/info_button"
-        app:layout_constraintTop_toBottomOf="@id/avatar"/>
+        app:layout_constraintTop_toBottomOf="@id/avatar"
+        tools:visibility="visible"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/flagged_message"
+        style="@style/CommentCardFlaggedMessage"
+        android:visibility="gone"
+        android:text="@string/this_comment_is_under_review"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/info_button"
+        app:layout_constraintTop_toBottomOf="@id/avatar"
+        tools:visibility="visible"/>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/canceled_pledge_message"
@@ -203,14 +215,6 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.Group
-        android:id="@+id/reply_message_group"
-        android:layout_width="wrap_content"
-        android:visibility="gone"
-        android:layout_height="wrap_content"
-        tools:visibility="visible"
-        app:constraint_referenced_ids="removed_message,info_button" />
-
-    <androidx.constraintlayout.widget.Group
         android:id="@+id/retry_button_group"
         android:layout_width="wrap_content"
         android:visibility="gone"
@@ -219,11 +223,4 @@
         tools:visibility="visible"
         app:constraint_referenced_ids="retry_button,retry_message" />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/comment_deleted_message_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:constraint_referenced_ids="removed_message,info_button" />
 </androidx.constraintlayout.widget.ConstraintLayout>

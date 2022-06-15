@@ -26,16 +26,19 @@ class CreatorDashboardRewardStatsViewHolder(private val binding: DashboardReward
         }
         viewModel.outputs.projectAndRewardStats()
             .compose(bindToLifecycle())
-            .compose<Pair<Project?, List<RewardStats?>?>>(Transformers.observeForUI())
+            .compose(Transformers.observeForUI())
             .subscribe { rewardStatsAdapter.takeProjectAndStats(it) }
+
         viewModel.outputs.rewardsStatsListIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { toggleRecyclerViewAndEmptyStateVisibility(it) }
+
         viewModel.outputs.rewardsStatsTruncatedTextIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { ViewUtils.setGone(binding.dashboardRewardStatsTruncatedTextView, it) }
+
         viewModel.outputs.rewardsTitleIsTopTen()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())

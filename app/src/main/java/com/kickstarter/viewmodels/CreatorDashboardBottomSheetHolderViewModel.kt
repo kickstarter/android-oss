@@ -31,9 +31,8 @@ interface CreatorDashboardBottomSheetHolderViewModel {
 
     class ViewModel(environment: Environment) :
         ActivityViewModel<CreatorDashboardBottomSheetViewHolder?>(environment), Inputs, Outputs {
-        @JvmField
+
         val inputs: Inputs = this
-        @JvmField
         val outputs: Outputs = this
 
         private val currentProject = PublishSubject.create<Project>()

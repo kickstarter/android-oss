@@ -26,12 +26,14 @@ class CreatorDashboardReferrerStatsViewHolder(private val binding: DashboardRefe
         }
         viewModel.outputs.projectAndReferrerStats()
             .compose(bindToLifecycle())
-            .compose<Pair<Project?, List<ReferrerStats?>?>>(Transformers.observeForUI())
+            .compose(Transformers.observeForUI())
             .subscribe { referrerStatsAdapter.takeProjectAndReferrerStats(it) }
+
         viewModel.outputs.referrerStatsListIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { toggleRecyclerViewAndEmptyStateVisibility(it) }
+
         viewModel.outputs.referrersTitleIsTopTen()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())

@@ -49,13 +49,13 @@ class CommentCard @JvmOverloads constructor(
         binding.removedMessage.setOnClickListener {
             onCommentCardClickedListener?.onCommentGuideLinesClicked(it)
         }
-        
+
         binding.replyButton.setOnClickListener {
             onCommentCardClickedListener?.onReplyButtonClicked(it)
         }
     }
 
-    private fun bindCommunityGuidelines(textView: AppCompatTextView, onCommentCardClickedListener: OnCommentCardClickedListener?){
+    private fun bindCommunityGuidelines(textView: AppCompatTextView, onCommentCardClickedListener: OnCommentCardClickedListener?) {
         textView.parseHtmlTag()
         textView.makeLinks(
             Pair(
@@ -64,7 +64,7 @@ class CommentCard @JvmOverloads constructor(
                     onCommentCardClickedListener?.onCommentGuideLinesClicked(it)
                 },
 
-                ),
+            ),
             linkColor = R.color.kds_create_500,
             isUnderlineText = false
         )
@@ -176,7 +176,7 @@ class CommentCard @JvmOverloads constructor(
 
         binding.infoButton.isVisible =
             cardCommentStatus == CommentCardStatus.DELETED_COMMENT ||
-                    cardCommentStatus == CommentCardStatus.FLAGGED_COMMENT
+            cardCommentStatus == CommentCardStatus.FLAGGED_COMMENT
 
         binding.canceledPledgeMessage.isVisible =
             cardCommentStatus == CommentCardStatus.CANCELED_PLEDGE_MESSAGE
@@ -251,7 +251,7 @@ class CommentCard @JvmOverloads constructor(
         bindCommunityGuidelines(binding.removedMessage, onCommentCardClickedListener)
     }
 
-    fun setFlaggedMessage(message: String){
+    fun setFlaggedMessage(message: String) {
         binding.flaggedMessage.text = message
         bindCommunityGuidelines(binding.flaggedMessage, onCommentCardClickedListener)
     }

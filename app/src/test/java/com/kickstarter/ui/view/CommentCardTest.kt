@@ -6,7 +6,6 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.Group
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.kickstarter.KSRobolectricTestCase
@@ -240,7 +239,7 @@ class CommentCardTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShowFlaggedMessageStatus(){
+    fun testShowFlaggedMessageStatus() {
         commentCard.setCommentCardStatus(CommentCardStatus.FLAGGED_COMMENT)
         assertFalse(commentBody.isVisible)
         assertFalse(showCanceledPledgeComment.isVisible)

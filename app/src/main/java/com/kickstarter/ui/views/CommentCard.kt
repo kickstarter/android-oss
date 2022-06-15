@@ -36,7 +36,6 @@ class CommentCard @JvmOverloads constructor(
 
         bindCommunityGuidelines(binding.removedMessage, onCommentCardClickedListener)
         bindCommunityGuidelines(binding.flaggedMessage, onCommentCardClickedListener)
-//        bindRemovedMessage()
 
         binding.retryButtonGroup.setAllOnClickListener {
             onCommentCardClickedListener?.onRetryViewClicked(it)
@@ -58,21 +57,6 @@ class CommentCard @JvmOverloads constructor(
     private fun bindCommunityGuidelines(textView: AppCompatTextView, onCommentCardClickedListener: OnCommentCardClickedListener?) {
         textView.parseHtmlTag()
         textView.makeLinks(
-            Pair(
-                context.resources.getString(R.string.Learn_more_about_comment_guidelines).parseHtmlTag(),
-                OnClickListener {
-                    onCommentCardClickedListener?.onCommentGuideLinesClicked(it)
-                },
-
-            ),
-            linkColor = R.color.kds_create_500,
-            isUnderlineText = false
-        )
-    }
-
-    private fun bindRemovedMessage() {
-        binding.removedMessage.parseHtmlTag()
-        binding.removedMessage.makeLinks(
             Pair(
                 context.resources.getString(R.string.Learn_more_about_comment_guidelines).parseHtmlTag(),
                 OnClickListener {
@@ -247,7 +231,6 @@ class CommentCard @JvmOverloads constructor(
 
     fun setRemovedMessage(message: String) {
         binding.removedMessage.text = message
-//        bindRemovedMessage()
         bindCommunityGuidelines(binding.removedMessage, onCommentCardClickedListener)
     }
 

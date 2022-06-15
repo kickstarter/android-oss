@@ -413,7 +413,6 @@ interface CommentsViewHolderViewModel {
          * everytime the state changes.
          */
         private fun cardStatus(commentCardData: CommentCardData) = when {
-            true -> CommentCardStatus.DELETED_COMMENT
             commentCardData.comment?.deleted() ?: false -> CommentCardStatus.DELETED_COMMENT
             commentCardData.comment?.authorCanceledPledge() ?: false -> checkCanceledPledgeCommentStatus(commentCardData)
             (commentCardData.comment?.repliesCount() ?: 0 != 0) -> CommentCardStatus.COMMENT_WITH_REPLIES

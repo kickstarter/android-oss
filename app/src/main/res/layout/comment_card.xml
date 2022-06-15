@@ -171,8 +171,7 @@
         style="@style/CommentsInfoIcon"
         android:src="@drawable/ic_info"
         app:layout_constraintTop_toBottomOf="@+id/avatar"
-        app:layout_constraintStart_toStartOf="@id/avatar"
-        />
+        app:layout_constraintStart_toStartOf="@id/avatar" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/removed_message"

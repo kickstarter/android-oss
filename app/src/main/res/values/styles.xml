@@ -936,6 +936,14 @@
     <item name="android:drawablePadding">@dimen/grid_1</item>
   </style>
 
+  <style name="CommentsInfoIcon" parent="CommentsCardButton">
+    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_marginTop">@dimen/grid_3</item>
+    <item name="android:layout_marginEnd">@dimen/grid_3</item>
+    <item name="android:layout_marginStart">@dimen/grid_1</item>
+    <item name="android:drawablePadding">@dimen/grid_1</item>
+  </style>
+
   <style name="CommentsDisabledMessageTextView" parent="Widget.Design.TextInputLayout">
     <item name="android:layout_width">0dp</item>
     <item name="android:layout_marginStart">@dimen/grid_2</item>

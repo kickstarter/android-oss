@@ -151,6 +151,11 @@ class CommentCardViewHolder(
         })
 
         binding.commentsCardView.setFlaggedMessage(
+            context().getString(R.string.FPO_this_comment_is_under_review) +
+                " " +
+                context().getString(R.string.Learn_more_about_comment_guidelines)
+        )
+        binding.commentsCardView.setRemovedMessage(
             context().getString(R.string.This_comment_has_been_removed_by_Kickstarter) +
                 context().getString(R.string.Learn_more_about_comment_guidelines)
         )

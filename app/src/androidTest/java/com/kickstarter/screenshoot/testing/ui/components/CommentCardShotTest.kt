@@ -82,4 +82,10 @@ class CommentCardShotTest : ScreenshotTest {
         )
         compareScreenshot(commentCard)
     }
+
+    @Test
+    fun commentCardScreenshotTest_FLAGGED_MESSAGE() {
+        commentCard.setCommentCardStatus(CommentCardStatus.FLAGGED_COMMENT)
+        compareScreenshot(commentCard)
+    }
 }

@@ -6,6 +6,7 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.loadmore.ApolloPaginate
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
@@ -500,7 +501,9 @@ interface CommentsViewModel {
         }
 
         private fun mapToCommentCardDataList(it: Pair<CommentEnvelope, Project>) =
-            it.first.comments?.map { comment: Comment ->
+            it.first.comments?. filter { item ->
+                filterCancelledPledgeWithoutRepliesComment(item)
+            }?.map { comment: Comment ->
                 CommentCardData.builder()
                     .comment(comment)
                     .project(it.second)
@@ -508,6 +511,15 @@ interface CommentsViewModel {
                     .commentableId(it.first.commentableId)
                     .build()
             } ?: emptyList()
+
+        private fun filterCancelledPledgeWithoutRepliesComment(item: Comment) =
+            if (environment.optimizely()
+                ?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_COMMENT_MODERATION) == true
+            ) {
+                !(item.authorCanceledPledge() && item.repliesCount() == 0)
+            } else {
+                true
+            }
 
         private fun buildCommentBody(it: Pair<User, Pair<String, DateTime>>): Comment {
             return Comment.builder()

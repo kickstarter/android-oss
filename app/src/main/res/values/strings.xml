@@ -70,7 +70,7 @@
   <string name="stripe_version" tools:ignore="TypographyDashes">2015-08-07</string>
 
   <!-- Comments -->
-  <string name="this_comment_is_under_review">This comment is under review.</string>
+  <string name="FPO_this_comment_is_under_review">This comment is under review.</string>
 
   <!--  Qualtrics -->
   <string name="Take_our_survey_to_help_us_make_a_better_app_for_you">Take our survey to help us make a better app for you.</string>

@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
@@ -33,7 +34,8 @@ class CommentCard @JvmOverloads constructor(
     init {
         obtainStyledAttributes(context, attrs, defStyleAttr)
 
-        bindFlaggedMessage()
+        bindCommunityGuidelines(binding.removedMessage, onCommentCardClickedListener)
+        bindCommunityGuidelines(binding.flaggedMessage, onCommentCardClickedListener)
 
         binding.retryButtonGroup.setAllOnClickListener {
             onCommentCardClickedListener?.onRetryViewClicked(it)
@@ -43,17 +45,18 @@ class CommentCard @JvmOverloads constructor(
             onCommentCardClickedListener?.onViewRepliesButtonClicked(it)
         }
 
-        binding.flaggedMessage.setOnClickListener {
+        binding.removedMessage.setOnClickListener {
             onCommentCardClickedListener?.onCommentGuideLinesClicked(it)
         }
+
         binding.replyButton.setOnClickListener {
             onCommentCardClickedListener?.onReplyButtonClicked(it)
         }
     }
 
-    private fun bindFlaggedMessage() {
-        binding.flaggedMessage.parseHtmlTag()
-        binding.flaggedMessage.makeLinks(
+    private fun bindCommunityGuidelines(textView: AppCompatTextView, onCommentCardClickedListener: OnCommentCardClickedListener?) {
+        textView.parseHtmlTag()
+        textView.makeLinks(
             Pair(
                 context.resources.getString(R.string.Learn_more_about_comment_guidelines).parseHtmlTag(),
                 OnClickListener {
@@ -149,8 +152,15 @@ class CommentCard @JvmOverloads constructor(
             cardCommentStatus == CommentCardStatus.TRYING_TO_POST ||
             cardCommentStatus == CommentCardStatus.CANCELED_PLEDGE_COMMENT
 
-        binding.commentDeletedMessageGroup.isVisible =
+        binding.removedMessage.isVisible =
             cardCommentStatus == CommentCardStatus.DELETED_COMMENT
+
+        binding.flaggedMessage.isVisible =
+            cardCommentStatus == CommentCardStatus.FLAGGED_COMMENT
+
+        binding.infoButton.isVisible =
+            cardCommentStatus == CommentCardStatus.DELETED_COMMENT ||
+            cardCommentStatus == CommentCardStatus.FLAGGED_COMMENT
 
         binding.canceledPledgeMessage.isVisible =
             cardCommentStatus == CommentCardStatus.CANCELED_PLEDGE_MESSAGE
@@ -219,9 +229,14 @@ class CommentCard @JvmOverloads constructor(
         binding.commentBody.urlSpanWithoutUnderlines()
     }
 
+    fun setRemovedMessage(message: String) {
+        binding.removedMessage.text = message
+        bindCommunityGuidelines(binding.removedMessage, onCommentCardClickedListener)
+    }
+
     fun setFlaggedMessage(message: String) {
         binding.flaggedMessage.text = message
-        bindFlaggedMessage()
+        bindCommunityGuidelines(binding.flaggedMessage, onCommentCardClickedListener)
     }
 
     fun setCancelPledgeMessage(message: String) {
@@ -287,4 +302,5 @@ enum class CommentCardStatus(val commentCardStatus: Int) {
     TRYING_TO_POST(6), // comments without reply view,
     CANCELED_PLEDGE_MESSAGE(7),
     CANCELED_PLEDGE_COMMENT(8),
+    FLAGGED_COMMENT(9),
 }

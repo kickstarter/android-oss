@@ -850,4 +850,62 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.onResumeActivity()
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
     }
+
+    @Test
+    fun testCommentsViewModel_ProjectCommentsWithCancelledPledgeCommentsEmit() {
+        val currentUser = UserFactory.user()
+            .toBuilder()
+            .id(1)
+            .avatar(AvatarFactory.avatar())
+            .build()
+
+        val comment1 = CommentFactory.commentToPostWithUser(currentUser).toBuilder().id(1).body("comment1").build()
+
+        val user2 = UserFactory.user()
+            .toBuilder()
+            .id(2)
+            .avatar(AvatarFactory.avatar())
+            .build()
+
+        val comment2 = CommentFactory.commentToPostWithUser(user2).toBuilder().id(1).body("comment1").authorCanceledPledge(true).build()
+        val comment3 = CommentFactory.commentToPostWithUser(user2).toBuilder().id(1).body("comment1").authorCanceledPledge(true).repliesCount(3).build()
+
+        val commentCardData1 = CommentCardData.builder()
+            .comment(comment1)
+            .build()
+
+        val commentCardData3 = CommentCardData.builder()
+            .comment(comment3)
+            .build()
+
+        val commentEnvelope = CommentEnvelopeFactory.commentsEnvelope().toBuilder()
+            .comments(listOf(comment1, comment2, comment3))
+            .build()
+
+        val testScheduler = TestScheduler()
+        val env = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+                return Observable.just(commentEnvelope)
+            }
+        })
+            .currentUser(MockCurrentUser(currentUser))
+            .scheduler(testScheduler)
+            .build()
+
+        val vm = CommentsViewModel.ViewModel(env)
+
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        vm.outputs.commentsList().subscribe(commentsList)
+
+        commentsList.assertValueCount(1)
+        vm.outputs.commentsList().take(0).subscribe {
+            val newList = it
+            assertTrue(newList.size == 2)
+            assertTrue(newList[0].comment?.body() == commentCardData1.comment?.body())
+            assertTrue(newList[0].commentCardState == commentCardData1.commentCardState)
+
+            assertTrue(newList[1].comment?.body() == commentCardData3.comment?.body())
+            assertTrue(newList[1].commentCardState == commentCardData3.commentCardState)
+        }
+    }
 }

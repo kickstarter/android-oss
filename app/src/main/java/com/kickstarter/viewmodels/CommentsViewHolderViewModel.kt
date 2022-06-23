@@ -12,6 +12,8 @@ import com.kickstarter.models.Comment
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.assignAuthorBadge
+import com.kickstarter.models.extensions.isCommentPendingReview
+import com.kickstarter.models.extensions.isCurrentUserAuthor
 import com.kickstarter.models.extensions.isReply
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.ui.data.CommentCardData
@@ -149,14 +151,15 @@ interface CommentsViewHolderViewModel {
             configureCommentCardWithComment(comment)
 
             val commentCardStatus = this.commentInput
+                .compose(combineLatestPair(currentUser.observable()))
                 .distinctUntilChanged()
                 .filter { ObjectUtils.isNotNull(it) }
                 .map {
-                    val commentCardState = cardStatus(it)
-                    it.toBuilder().commentCardState(commentCardState?.commentCardStatus ?: 0)
+                    val commentCardState = cardStatus(it.first, it.second, environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_COMMENT_MODERATION))
+                    it.first.toBuilder().commentCardState(commentCardState?.commentCardStatus ?: 0)
                         .build()
                 }
-            handleStatus(commentCardStatus)
+            handleStatus(commentCardStatus, environment)
 
             // - CommentData will hold the information for posting a new comment if needed
             val commentData = this.commentInput
@@ -190,11 +193,12 @@ interface CommentsViewHolderViewModel {
          * Handles the configuration and behaviour for the comment card
          * @param comment the comment observable
          */
-        private fun handleStatus(commentCardStatus: Observable<CommentCardData>) {
+        private fun handleStatus(commentCardStatus: Observable<CommentCardData>, environment: Environment) {
             commentCardStatus
+                .compose(combineLatestPair(currentUser.observable()))
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.commentCardStatus.onNext(cardStatus(it))
+                    this.commentCardStatus.onNext(cardStatus(it.first, it.second, environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_COMMENT_MODERATION)))
                 }
 
             commentCardStatus
@@ -412,7 +416,8 @@ interface CommentsViewHolderViewModel {
          * Updates the status of the current comment card.
          * everytime the state changes.
          */
-        private fun cardStatus(commentCardData: CommentCardData) = when {
+        private fun cardStatus(commentCardData: CommentCardData, currentUser: User?, isCommentModerationFeatureFlagEnabled: Boolean?) = when {
+            commentCardData.comment?.isCommentPendingReview() ?: false && commentCardData.comment?.isCurrentUserAuthor(currentUser) == false  && (isCommentModerationFeatureFlagEnabled ?: false) -> CommentCardStatus.FLAGGED_COMMENT
             commentCardData.comment?.deleted() ?: false -> CommentCardStatus.DELETED_COMMENT
             commentCardData.comment?.authorCanceledPledge() ?: false -> checkCanceledPledgeCommentStatus(commentCardData)
             (commentCardData.comment?.repliesCount() ?: 0 != 0) -> CommentCardStatus.COMMENT_WITH_REPLIES

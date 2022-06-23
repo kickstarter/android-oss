@@ -311,6 +311,8 @@ fragment comment on Comment {
     }
     body
     deleted
+    hasFlaggings
+    sustained
     parentId
     authorCanceledPledge
     replies {

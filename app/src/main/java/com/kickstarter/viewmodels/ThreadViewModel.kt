@@ -5,6 +5,7 @@ import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.loadmore.ApolloPaginate
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.toCommentCardList
@@ -73,7 +74,6 @@ interface ThreadViewModel {
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ThreadActivity>(environment), Inputs, Outputs {
         private val apolloClient = requireNotNull(environment.apolloClient())
         private val currentUser = requireNotNull(environment.currentUser())
-
         private val nextPage = PublishSubject.create<Void>()
         private val onLoadingReplies = PublishSubject.create<Void>()
         private val insertNewReplyToList = PublishSubject.create<Pair<String, DateTime>>()
@@ -103,6 +103,7 @@ interface ThreadViewModel {
         private val onCommentReplies =
             BehaviorSubject.create<Pair<List<CommentCardData>, Boolean>>()
         private var project: Project? = null
+        private var thisUser: User? = null
 
         val inputs = this
         val outputs = this
@@ -137,6 +138,12 @@ interface ThreadViewModel {
                 .subscribe {
                     this.project = it
                 }
+
+            currentUser
+                .observable()
+                .take(1)
+                .compose(bindToLifecycle())
+                .subscribe { this.thisUser = it }
 
             loadCommentListFromProjectOrUpdate(comment)
 
@@ -342,7 +349,7 @@ interface ThreadViewModel {
                     .startOverWith(startOverWith)
                     .envelopeToListOfData {
                         hasPreviousElements.onNext(it.pageInfoEnvelope()?.hasPreviousPage ?: false)
-                        this.project?.let { project -> mapListToData(it, project) }
+                        this.project?.let { project -> mapListToData(it, project, thisUser) }
                     }
                     .loadWithParams {
                         loadWithProjectReplies(
@@ -386,8 +393,9 @@ interface ThreadViewModel {
                 }
         }
 
-        private fun mapListToData(it: CommentEnvelope, project: Project) =
-            it.comments?.toCommentCardList(project)
+        private fun mapListToData(it: CommentEnvelope, project: Project, currentUser: User?) =
+            it.comments?.toCommentCardList(project, currentUser, environment.optimizely()?.isFeatureEnabled(
+                OptimizelyFeature.Key.ANDROID_COMMENT_MODERATION))
 
         private fun loadWithProjectReplies(
             comment: Observable<Comment>,

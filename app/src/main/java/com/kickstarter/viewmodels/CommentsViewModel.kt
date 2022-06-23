@@ -119,9 +119,15 @@ interface CommentsViewModel {
         private val isFetchingComments = BehaviorSubject.create<Boolean>()
         private lateinit var project: Project
 
+        private var thisUser: User? = null
+
         private var openedThreadActivityFromDeepLink = false
 
         init {
+
+            this.currentUser.observable()
+                .compose(bindToLifecycle())
+                .subscribe { this.thisUser = it}
 
             val loggedInUser = this.currentUser.loggedInUser()
                 .filter { u -> u != null }
@@ -225,12 +231,13 @@ interface CommentsViewModel {
                 }.compose(Transformers.neverError())
                 .compose(combineLatestPair(deepLinkCommentableId))
                 .compose(combineLatestPair(commentableId))
+                .compose(combineLatestPair(currentUser.observable()))
                 .map {
                     CommentCardData.builder()
-                        .comment(it.first.first)
+                        .comment(it.first.first.first)
                         .project(this.project)
-                        .commentCardState(it.first.first.cardStatus())
-                        .commentableId(it.second)
+                        .commentCardState(it.first.first.first.cardStatus(it.second, environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_COMMENT_MODERATION)))
+                        .commentableId(it.first.second)
                         .build()
                 }.withLatestFrom(projectOrUpdateComment) { commentData, projectOrUpdate ->
                     Pair(commentData, projectOrUpdate)
@@ -424,7 +431,7 @@ interface CommentsViewModel {
                     .distinctUntilChanged(true)
                     .startOverWith(startOverWith)
                     .envelopeToListOfData {
-                        mapToCommentCardDataList(Pair(it, this.project))
+                        mapToCommentCardDataList(Pair(it, this.project), thisUser)
                     }
                     .loadWithParams {
                         loadWithProjectOrUpdateComments(Observable.just(it.first), it.second)
@@ -500,14 +507,14 @@ interface CommentsViewModel {
                 .onErrorResumeNext(Observable.empty())
         }
 
-        private fun mapToCommentCardDataList(it: Pair<CommentEnvelope, Project>) =
+        private fun mapToCommentCardDataList(it: Pair<CommentEnvelope, Project>, currentUser: User?) =
             it.first.comments?. filter { item ->
                 filterCancelledPledgeWithoutRepliesComment(item)
             }?.map { comment: Comment ->
                 CommentCardData.builder()
                     .comment(comment)
                     .project(it.second)
-                    .commentCardState(comment.cardStatus())
+                    .commentCardState(comment.cardStatus(currentUser, environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_COMMENT_MODERATION)))
                     .commentableId(it.first.commentableId)
                     .build()
             } ?: emptyList()

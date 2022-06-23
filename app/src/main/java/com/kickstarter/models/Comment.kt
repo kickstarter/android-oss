@@ -10,6 +10,8 @@ class Comment private constructor(
     private val body: String,
     private val createdAt: DateTime?,
     private val deleted: Boolean,
+    private val hasFlaggings: Boolean,
+    private val sustained: Boolean,
     private val authorCanceledPledge: Boolean,
     private val cursor: String,
     private val repliesCount: Int,
@@ -21,6 +23,8 @@ class Comment private constructor(
     fun body() = this.body
     fun createdAt() = this.createdAt
     fun deleted() = this.deleted
+    fun hasFlaggings() = this.hasFlaggings
+    fun sustained() = this.sustained
     fun authorCanceledPledge() = this.authorCanceledPledge
     fun cursor() = this.cursor
     fun repliesCount() = this.repliesCount
@@ -34,6 +38,8 @@ class Comment private constructor(
         private var body: String = "",
         private var createdAt: DateTime? = null,
         private var deleted: Boolean = false,
+        private var hasFlaggings: Boolean = false,
+        private var sustained: Boolean = false,
         private var authorCanceledPledge: Boolean = false,
         private var cursor: String = "",
         private var repliesCount: Int = 0,
@@ -48,6 +54,8 @@ class Comment private constructor(
         fun body(body: String?) = apply { this.body = body ?: "" }
         fun createdAt(createdAt: DateTime?) = apply { this.createdAt = createdAt }
         fun deleted(deleted: Boolean?) = apply { this.deleted = deleted ?: false }
+        fun hasFlaggings(hasFlaggings: Boolean?) = apply { this.hasFlaggings = hasFlaggings ?: false }
+        fun sustained(sustained: Boolean?) = apply { this.sustained = sustained ?: false }
         fun authorCanceledPledge(authorCanceledPledge: Boolean?) = apply { this.authorCanceledPledge = authorCanceledPledge ?: false }
         fun id(id: Long?) = apply { this.id = id ?: -1 }
         fun parentId(parentId: Long?) = apply { this.parentId = parentId ?: -1 }
@@ -59,6 +67,8 @@ class Comment private constructor(
             body = body,
             createdAt = createdAt,
             deleted = deleted,
+            hasFlaggings = hasFlaggings,
+            sustained = sustained,
             authorCanceledPledge = authorCanceledPledge,
             id = id,
             parentId = parentId
@@ -73,6 +83,8 @@ class Comment private constructor(
         body = body,
         createdAt = createdAt,
         deleted = deleted,
+        hasFlaggings = hasFlaggings,
+        sustained = sustained,
         authorCanceledPledge = authorCanceledPledge,
         id = id,
         parentId = parentId
@@ -87,6 +99,8 @@ class Comment private constructor(
                 authorBadges() == other.authorBadges() &&
                 cursor() == other.cursor() &&
                 deleted() == other.deleted() &&
+                hasFlaggings() == other.hasFlaggings() &&
+                sustained() == other.sustained() &&
                 repliesCount() == other.repliesCount() &&
                 authorCanceledPledge() == other.authorCanceledPledge() &&
                 createdAt() == other.createdAt() &&

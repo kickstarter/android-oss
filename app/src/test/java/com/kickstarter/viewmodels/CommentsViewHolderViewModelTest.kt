@@ -3,6 +3,8 @@ package com.kickstarter.viewmodels
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.models.OptimizelyFeature
+import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.AvatarFactory
 import com.kickstarter.mock.factories.CommentFactory
 import com.kickstarter.mock.factories.ProjectFactory
@@ -519,6 +521,98 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         )
 
         this.isCommentReply.assertValue(null)
+    }
+
+    @Test
+    fun testCommentsViewModel_whenCommentFlagged_shouldSetStatusToFlagged(){
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+        val env = environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).optimizely(mockExperimentsClientType).build()
+        setUpEnvironment(env)
+
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser, hasFlaggings = true)
+
+        this.vm.inputs.configureWith(commentCardData)
+
+        this.commentCardStatus.assertValue(CommentCardStatus.FLAGGED_COMMENT)
+
+    }
+
+    @Test
+    fun testCommentsViewModel_whenCommentFlaggedAndUserIsAuthor_shouldNotSetStatusToFlagged(){
+        val user = UserFactory.user()
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+        val env = environment().toBuilder().currentUser(MockCurrentUser(user)).optimizely(mockExperimentsClientType).build()
+        setUpEnvironment(env)
+
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = user, hasFlaggings = true)
+
+        this.vm.inputs.configureWith(commentCardData)
+
+        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
+    }
+
+    @Test
+    fun testCommentsViewModel_whenCommentFlaggedAndSustained_shouldNotSetStatusToFlagged(){
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+        val env = environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).optimizely(mockExperimentsClientType).build()
+        setUpEnvironment(env)
+
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser, hasFlaggings = true, sustained = true)
+
+        this.vm.inputs.configureWith(commentCardData)
+
+        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
+    }
+
+    @Test
+    fun testCommentsViewModel_whenCommentFlaggedAndDeleted_shouldNotSetStatusToFlagged(){
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+        val env = environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).optimizely(mockExperimentsClientType).build()
+        setUpEnvironment(env)
+
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser, isDelete = true, hasFlaggings = true, sustained = false)
+
+        this.vm.inputs.configureWith(commentCardData)
+
+        this.commentCardStatus.assertValue(CommentCardStatus.DELETED_COMMENT)
+    }
+
+    @Test
+    fun testCommentsViewModel_whenCommentModFFDisabled_shouldNotSetStatusToFlagged(){
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return false
+                }
+            }
+        val env = environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).optimizely(mockExperimentsClientType).build()
+        setUpEnvironment(env)
+
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser, isDelete = false, hasFlaggings = true, sustained = false)
+
+        this.vm.inputs.configureWith(commentCardData)
+
+        this.commentCardStatus.assertValue(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS)
     }
 
     @Test

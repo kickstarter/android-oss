@@ -16,6 +16,7 @@ import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Comment
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.CommentCardData
 import com.kickstarter.ui.views.CommentCardStatus
 import com.kickstarter.ui.views.CommentComposerStatus
@@ -31,6 +32,7 @@ import java.util.concurrent.TimeUnit
 class CommentsViewModelTest : KSRobolectricTestCase() {
     private val closeCommentPage = TestSubscriber<Void>()
     private val commentsList = TestSubscriber<List<CommentCardData>?>()
+    private val commentCardStatus = TestSubscriber<CommentCardStatus>()
     private val commentComposerStatus = TestSubscriber<CommentComposerStatus>()
     private val showCommentComposer = TestSubscriber<Boolean>()
     private val showEmptyState = TestSubscriber<Boolean>()

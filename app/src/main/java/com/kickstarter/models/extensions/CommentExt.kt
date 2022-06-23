@@ -95,4 +95,4 @@ fun Comment.cardStatus(currentUser: User?, isCommentModerationFeatureEnabled: Bo
 
 fun Comment.isCommentPendingReview() = this.hasFlaggings() && !this.deleted() && !this.sustained()
 
-fun Comment.isCurrentUserAuthor(user: User?) = user?.let{ it.id() == this.author().id() } ?: false
+fun Comment.isCurrentUserAuthor(user: User?) = user?.let { it.id() == this.author().id() } ?: false

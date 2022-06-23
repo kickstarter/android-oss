@@ -127,7 +127,7 @@ interface CommentsViewModel {
 
             this.currentUser.observable()
                 .compose(bindToLifecycle())
-                .subscribe { this.thisUser = it}
+                .subscribe { this.thisUser = it }
 
             val loggedInUser = this.currentUser.loggedInUser()
                 .filter { u -> u != null }

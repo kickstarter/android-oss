@@ -417,7 +417,7 @@ interface CommentsViewHolderViewModel {
          * everytime the state changes.
          */
         private fun cardStatus(commentCardData: CommentCardData, currentUser: User?, isCommentModerationFeatureFlagEnabled: Boolean?) = when {
-            commentCardData.comment?.isCommentPendingReview() ?: false && commentCardData.comment?.isCurrentUserAuthor(currentUser) == false  && (isCommentModerationFeatureFlagEnabled ?: false) -> CommentCardStatus.FLAGGED_COMMENT
+            commentCardData.comment?.isCommentPendingReview() ?: false && commentCardData.comment?.isCurrentUserAuthor(currentUser) == false && (isCommentModerationFeatureFlagEnabled ?: false) -> CommentCardStatus.FLAGGED_COMMENT
             commentCardData.comment?.deleted() ?: false -> CommentCardStatus.DELETED_COMMENT
             commentCardData.comment?.authorCanceledPledge() ?: false -> checkCanceledPledgeCommentStatus(commentCardData)
             (commentCardData.comment?.repliesCount() ?: 0 != 0) -> CommentCardStatus.COMMENT_WITH_REPLIES

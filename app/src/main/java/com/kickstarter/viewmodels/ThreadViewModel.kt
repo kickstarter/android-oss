@@ -394,8 +394,12 @@ interface ThreadViewModel {
         }
 
         private fun mapListToData(it: CommentEnvelope, project: Project, currentUser: User?) =
-            it.comments?.toCommentCardList(project, currentUser, environment.optimizely()?.isFeatureEnabled(
-                OptimizelyFeature.Key.ANDROID_COMMENT_MODERATION))
+            it.comments?.toCommentCardList(
+                project, currentUser,
+                environment.optimizely()?.isFeatureEnabled(
+                    OptimizelyFeature.Key.ANDROID_COMMENT_MODERATION
+                )
+            )
 
         private fun loadWithProjectReplies(
             comment: Observable<Comment>,

@@ -524,7 +524,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCommentsViewModel_whenCommentFlagged_shouldSetStatusToFlagged(){
+    fun testCommentsViewModel_whenCommentFlagged_shouldSetStatusToFlagged() {
         val mockExperimentsClientType: MockExperimentsClientType =
             object : MockExperimentsClientType() {
                 override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
@@ -539,11 +539,10 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(commentCardData)
 
         this.commentCardStatus.assertValue(CommentCardStatus.FLAGGED_COMMENT)
-
     }
 
     @Test
-    fun testCommentsViewModel_whenCommentFlaggedAndUserIsAuthor_shouldNotSetStatusToFlagged(){
+    fun testCommentsViewModel_whenCommentFlaggedAndUserIsAuthor_shouldNotSetStatusToFlagged() {
         val user = UserFactory.user()
         val mockExperimentsClientType: MockExperimentsClientType =
             object : MockExperimentsClientType() {
@@ -562,7 +561,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCommentsViewModel_whenCommentFlaggedAndSustained_shouldNotSetStatusToFlagged(){
+    fun testCommentsViewModel_whenCommentFlaggedAndSustained_shouldNotSetStatusToFlagged() {
         val mockExperimentsClientType: MockExperimentsClientType =
             object : MockExperimentsClientType() {
                 override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
@@ -580,7 +579,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCommentsViewModel_whenCommentFlaggedAndDeleted_shouldNotSetStatusToFlagged(){
+    fun testCommentsViewModel_whenCommentFlaggedAndDeleted_shouldNotSetStatusToFlagged() {
         val mockExperimentsClientType: MockExperimentsClientType =
             object : MockExperimentsClientType() {
                 override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
@@ -598,7 +597,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCommentsViewModel_whenCommentModFFDisabled_shouldNotSetStatusToFlagged(){
+    fun testCommentsViewModel_whenCommentModFFDisabled_shouldNotSetStatusToFlagged() {
         val mockExperimentsClientType: MockExperimentsClientType =
             object : MockExperimentsClientType() {
                 override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {

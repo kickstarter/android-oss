@@ -22,8 +22,8 @@ class RootCommentViewHolder(
 
         binding.commentsCardView.setFlaggedMessage(
             context().getString(R.string.FPO_this_comment_is_under_review) +
-                    " " +
-                    context().getString(R.string.Learn_more_about_comment_guidelines)
+                " " +
+                context().getString(R.string.Learn_more_about_comment_guidelines)
         )
 
         this.vm.outputs.bindRootComment()
@@ -31,7 +31,7 @@ class RootCommentViewHolder(
             .compose(Transformers.observeForUI())
             .subscribe { commentCardData ->
                 CommentCardStatus.values().firstOrNull { commentCardData.commentCardState == it.commentCardStatus }?.let {
-                    if (it == CommentCardStatus.CANCELED_PLEDGE_MESSAGE || it == CommentCardStatus.FLAGGED_COMMENT ) {
+                    if (it == CommentCardStatus.CANCELED_PLEDGE_MESSAGE || it == CommentCardStatus.FLAGGED_COMMENT) {
                         binding.commentsCardView.setCommentCardStatus(it)
 
                         if (this.environment().optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_COMMENT_MODERATION) == true) {

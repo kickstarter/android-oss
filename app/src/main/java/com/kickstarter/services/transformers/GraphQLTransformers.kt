@@ -533,6 +533,8 @@ fun commentTransformer(commentFr: fragment.Comment?): Comment {
     val body = commentFr?.body() ?: ""
     val createdAt = commentFr?.createdAt()
     val deleted = commentFr?.deleted() ?: false
+    val hasFlaggings = commentFr?.hasFlaggings() ?: false
+    val sustained = commentFr?.sustained() ?: false
     val authorCanceled = commentFr?.authorCanceledPledge() ?: false
     val parentId = decodeRelayId(commentFr?.parentId())
 
@@ -545,6 +547,8 @@ fun commentTransformer(commentFr: fragment.Comment?): Comment {
         .cursor("")
         .createdAt(createdAt)
         .deleted(deleted)
+        .hasFlaggings(hasFlaggings)
+        .sustained(sustained)
         .authorCanceledPledge(authorCanceled)
         .parentId(parentId)
         .build()

@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit
 class CommentsViewModelTest : KSRobolectricTestCase() {
     private val closeCommentPage = TestSubscriber<Void>()
     private val commentsList = TestSubscriber<List<CommentCardData>?>()
+    private val commentCardStatus = TestSubscriber<CommentCardStatus>()
     private val commentComposerStatus = TestSubscriber<CommentComposerStatus>()
     private val showCommentComposer = TestSubscriber<Boolean>()
     private val showEmptyState = TestSubscriber<Boolean>()

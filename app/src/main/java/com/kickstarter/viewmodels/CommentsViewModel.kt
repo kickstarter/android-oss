@@ -76,7 +76,7 @@ interface CommentsViewModel {
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CommentsActivity>(environment), Inputs, Outputs {
 
         private val apolloClient = requireNotNull(environment.apolloClient())
-        private val currentUser = requireNotNull(environment.currentUser())
+        private val currentUserStream = requireNotNull(environment.currentUser())
         val inputs: Inputs = this
         val outputs: Outputs = this
         private val backPressed = PublishSubject.create<Void>()
@@ -119,17 +119,17 @@ interface CommentsViewModel {
         private val isFetchingComments = BehaviorSubject.create<Boolean>()
         private lateinit var project: Project
 
-        private var thisUser: User? = null
+        private var currentUser: User? = null
 
         private var openedThreadActivityFromDeepLink = false
 
         init {
 
-            this.currentUser.observable()
+            this.currentUserStream.observable()
                 .compose(bindToLifecycle())
-                .subscribe { this.thisUser = it }
+                .subscribe { this.currentUser = it }
 
-            val loggedInUser = this.currentUser.loggedInUser()
+            val loggedInUser = this.currentUserStream.loggedInUser()
                 .filter { u -> u != null }
                 .map { requireNotNull(it) }
 
@@ -172,7 +172,7 @@ interface CommentsViewModel {
                 .share()
 
             initialProject
-                .compose(combineLatestPair(currentUser.observable()))
+                .compose(combineLatestPair(currentUserStream.observable()))
                 .compose(bindToLifecycle())
                 .subscribe {
                     val composerStatus = getCommentComposerStatus(Pair(it.first, it.second))
@@ -231,7 +231,7 @@ interface CommentsViewModel {
                 }.compose(Transformers.neverError())
                 .compose(combineLatestPair(deepLinkCommentableId))
                 .compose(combineLatestPair(commentableId))
-                .compose(combineLatestPair(currentUser.observable()))
+                .compose(combineLatestPair(currentUserStream.observable()))
                 .map {
                     CommentCardData.builder()
                         .comment(it.first.first.first)
@@ -250,7 +250,7 @@ interface CommentsViewModel {
 
             this.insertNewCommentToList
                 .distinctUntilChanged()
-                .withLatestFrom(this.currentUser.loggedInUser()) {
+                .withLatestFrom(this.currentUserStream.loggedInUser()) {
                         comment, user ->
                     Pair(comment, user)
                 }
@@ -431,7 +431,7 @@ interface CommentsViewModel {
                     .distinctUntilChanged(true)
                     .startOverWith(startOverWith)
                     .envelopeToListOfData {
-                        mapToCommentCardDataList(Pair(it, this.project), thisUser)
+                        mapToCommentCardDataList(Pair(it, this.project), currentUser)
                     }
                     .loadWithParams {
                         loadWithProjectOrUpdateComments(Observable.just(it.first), it.second)

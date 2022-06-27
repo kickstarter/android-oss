@@ -37,6 +37,7 @@ class MessageThreadsViewModelTest : KSRobolectricTestCase() {
     private val unreadCountToolbarTextViewIsGone = TestSubscriber<Boolean>()
     private val unreadMessagesCount = TestSubscriber<Int>()
     private val unreadMessagesCountIsGone = TestSubscriber<Boolean>()
+    private val isFetchingMessageThreads = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(env: Environment) {
         vm = MessageThreadsViewModel.ViewModel(env)
@@ -51,6 +52,60 @@ class MessageThreadsViewModelTest : KSRobolectricTestCase() {
         vm.outputs.unreadCountToolbarTextViewIsGone().subscribe(unreadCountToolbarTextViewIsGone)
         vm.outputs.unreadMessagesCount().subscribe(unreadMessagesCount)
         vm.outputs.unreadMessagesCountIsGone().subscribe(unreadMessagesCountIsGone)
+        vm.outputs.isFetchingMessageThreads().subscribe(isFetchingMessageThreads)
+    }
+
+    @Test
+    fun testMessageThreadsEmit_Pagination() {
+        val currentUser: CurrentUserType = MockCurrentUser()
+        currentUser.login(user().toBuilder().unreadMessagesCount(0).build(), "beefbod5")
+
+        val inboxEnvelope = messageThreadsEnvelope()
+            .toBuilder()
+            .messageThreads(listOf(messageThread()))
+            .build()
+
+        val sentEnvelope = messageThreadsEnvelope()
+            .toBuilder()
+            .messageThreads(listOf(messageThread(), messageThread()))
+            .build()
+
+        val project = project().toBuilder().unreadMessagesCount(5).build()
+
+        val apiClient: ApiClientType = object : MockApiClient() {
+            override fun fetchMessageThreads(
+                project: Project?,
+                mailbox: Mailbox
+            ): Observable<MessageThreadsEnvelope> {
+                return Observable.just(if (mailbox === Mailbox.INBOX) inboxEnvelope else sentEnvelope)
+            }
+
+            override fun fetchMessageThreadsWithPaginationPath(paginationPath: String): Observable<MessageThreadsEnvelope> {
+                return Observable.just(sentEnvelope)
+            }
+
+            override fun fetchProject(param: String): Observable<Project> {
+                return Observable.just(project)
+            }
+        }
+
+        setUpEnvironment(
+            environment().toBuilder().apiClient(apiClient).currentUser(currentUser).build()
+        )
+
+        val intent = Intent().putExtra(IntentKey.PROJECT, project)
+        vm.intent(intent)
+
+        messageThreadList.assertValueCount(2)
+        messageThreadListCount.assertValues(0, 1)
+
+        vm.inputs.swipeRefresh()
+        messageThreadList.assertValueCount(4)
+
+        vm.inputs.nextPage()
+
+        isFetchingMessageThreads.assertValues(true, false, true, false)
+        messageThreadList.assertValueCount(4)
     }
 
     @Test

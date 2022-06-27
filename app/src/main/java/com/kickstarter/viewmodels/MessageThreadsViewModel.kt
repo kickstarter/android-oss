@@ -102,62 +102,6 @@ interface MessageThreadsViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        override fun mailbox(mailbox: Mailbox) {
-            this.mailbox.onNext(mailbox)
-        }
-
-        override fun nextPage() {
-            nextPage.onNext(null)
-        }
-
-        override fun onResume() {
-            onResume.onNext(null)
-        }
-
-        override fun swipeRefresh() {
-            swipeRefresh.onNext(null)
-        }
-
-        override fun hasNoMessages(): Observable<Boolean> {
-            return hasNoMessages
-        }
-
-        override fun hasNoUnreadMessages(): Observable<Boolean> {
-            return hasNoUnreadMessages
-        }
-
-        override fun isFetchingMessageThreads(): Observable<Boolean> {
-            return isFetchingMessageThreads
-        }
-
-        override fun mailboxTitle(): Observable<Int> {
-            return mailboxTitle
-        }
-
-        override fun messageThreadList(): Observable<List<MessageThread>> {
-            return messageThreadList
-        }
-
-        override fun unreadCountTextViewColorInt(): Observable<Int> {
-            return unreadCountTextViewColorInt
-        }
-
-        override fun unreadCountTextViewTypefaceInt(): Observable<Int> {
-            return unreadCountTextViewTypefaceInt
-        }
-
-        override fun unreadCountToolbarTextViewIsGone(): Observable<Boolean> {
-            return unreadCountToolbarTextViewIsGone
-        }
-
-        override fun unreadMessagesCount(): Observable<Int> {
-            return unreadMessagesCount
-        }
-
-        override fun unreadMessagesCountIsGone(): Observable<Boolean> {
-            return unreadMessagesCountIsGone
-        }
-
         init {
             client = requireNotNull(environment.apiClient())
             currentUser = requireNotNull(environment.currentUser())
@@ -178,6 +122,7 @@ interface MessageThreadsViewModel {
                     it
                 )
             }
+
             val project = Observable.merge(
                 initialProject,
                 initialProject
@@ -217,8 +162,9 @@ interface MessageThreadsViewModel {
             val mailbox = mailbox
                 .startWith(Mailbox.INBOX)
                 .distinctUntilChanged()
+
             mailbox
-                .map { mailbox: Mailbox -> getStringResForMailbox(mailbox) }
+                .map { getStringResForMailbox(it) }
                 .compose(bindToLifecycle())
                 .subscribe(mailboxTitle)
 
@@ -238,14 +184,14 @@ interface MessageThreadsViewModel {
                 ApiPaginator.builder<MessageThread, MessageThreadsEnvelope, Pair<Project, Mailbox>>()
                     .nextPage(nextPage)
                     .startOverWith(startOverWith)
-                    .envelopeToListOfData { obj: MessageThreadsEnvelope -> obj.messageThreads() }
-                    .envelopeToMoreUrl { env: MessageThreadsEnvelope ->
-                        env.urls().api().moreMessageThreads()
+                    .envelopeToListOfData { it.messageThreads() }
+                    .envelopeToMoreUrl {
+                        it.urls().api().moreMessageThreads()
                     }
-                    .loadWithParams { pm: Pair<Project, Mailbox> ->
+                    .loadWithParams {
                         client.fetchMessageThreads(
-                            pm.first,
-                            pm.second
+                            it.first,
+                            it.second
                         )
                     }
                     .loadWithPaginationPath {
@@ -255,25 +201,38 @@ interface MessageThreadsViewModel {
                     }
                     .clearWhenStartingOver(true)
                     .build()
+
             paginator.isFetching
                 .compose(bindToLifecycle())
                 .subscribe(isFetchingMessageThreads)
+
             paginator.paginatedData()
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
-                .subscribe(messageThreadList)
+                .subscribe {
+                    messageThreadList.onNext(it)
+                }
+
             unreadMessagesCount
                 .map { it.isZero() }
                 .subscribe(hasNoMessages)
+
             unreadMessagesCount
                 .map { it.isZero() }
                 .subscribe(hasNoUnreadMessages)
+
             unreadMessagesCount
-                .map { if (it?.intValueOrZero()!! > 0) R.color.accent else R.color.kds_support_400 }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .map { if (it.intValueOrZero() > 0) R.color.accent else R.color.kds_support_400 }
                 .subscribe(unreadCountTextViewColorInt)
+
             unreadMessagesCount
-                .map { if (it?.intValueOrZero()!! > 0) Typeface.BOLD else Typeface.NORMAL }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .map { if (it.intValueOrZero() > 0) Typeface.BOLD else Typeface.NORMAL }
                 .subscribe(unreadCountTextViewTypefaceInt)
+
             unreadCountToolbarTextViewIsGone =
                 Observable.zip<Boolean, Boolean, Pair<Boolean, Boolean>>(
                     hasNoMessages,
@@ -282,12 +241,39 @@ interface MessageThreadsViewModel {
                     .map { noMessagesAndNoUnread: Pair<Boolean, Boolean> -> noMessagesAndNoUnread.first || noMessagesAndNoUnread.second }
                     .compose(Transformers.combineLatestPair(mailbox))
                     .map { noMessagesAndMailbox: Pair<Boolean, Mailbox> -> noMessagesAndMailbox.first || noMessagesAndMailbox.second == Mailbox.SENT }
+
             unreadMessagesCount
-                .filter { `object`: Int? -> ObjectUtils.isNotNull(`object`) }
+                .filter { ObjectUtils.isNotNull(it) }
                 .filter { it.isNonZero() }
                 .subscribe(this.unreadMessagesCount)
             unreadMessagesCountIsGone = mailbox
                 .map { m: Mailbox -> m == Mailbox.SENT }
         }
+        override fun mailbox(mailbox: Mailbox) {
+            this.mailbox.onNext(mailbox)
+        }
+
+        override fun nextPage() {
+            nextPage.onNext(null)
+        }
+
+        override fun onResume() {
+            onResume.onNext(null)
+        }
+
+        override fun swipeRefresh() {
+            swipeRefresh.onNext(null)
+        }
+
+        override fun hasNoMessages(): Observable<Boolean> = hasNoMessages
+        override fun hasNoUnreadMessages(): Observable<Boolean> = hasNoUnreadMessages
+        override fun isFetchingMessageThreads(): Observable<Boolean> = isFetchingMessageThreads
+        override fun mailboxTitle(): Observable<Int> = mailboxTitle
+        override fun messageThreadList(): Observable<List<MessageThread>> = messageThreadList
+        override fun unreadCountTextViewColorInt(): Observable<Int> = unreadCountTextViewColorInt
+        override fun unreadCountTextViewTypefaceInt(): Observable<Int> = unreadCountTextViewTypefaceInt
+        override fun unreadCountToolbarTextViewIsGone(): Observable<Boolean> = unreadCountToolbarTextViewIsGone
+        override fun unreadMessagesCount(): Observable<Int> = unreadMessagesCount
+        override fun unreadMessagesCountIsGone(): Observable<Boolean> = unreadMessagesCountIsGone
     }
 }

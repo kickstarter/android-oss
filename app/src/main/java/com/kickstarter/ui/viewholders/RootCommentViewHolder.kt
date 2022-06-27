@@ -19,12 +19,19 @@ class RootCommentViewHolder(
     private val vm: RootCommentViewHolderViewModel.ViewModel = RootCommentViewHolderViewModel.ViewModel(environment())
     private val ksString = requireNotNull(environment().ksString())
     init {
+
+        binding.commentsCardView.setFlaggedMessage(
+            context().getString(R.string.FPO_this_comment_is_under_review) +
+                " " +
+                context().getString(R.string.Learn_more_about_comment_guidelines)
+        )
+
         this.vm.outputs.bindRootComment()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { commentCardData ->
                 CommentCardStatus.values().firstOrNull { commentCardData.commentCardState == it.commentCardStatus }?.let {
-                    if (it == CommentCardStatus.CANCELED_PLEDGE_MESSAGE) {
+                    if (it == CommentCardStatus.CANCELED_PLEDGE_MESSAGE || it == CommentCardStatus.FLAGGED_COMMENT) {
                         binding.commentsCardView.setCommentCardStatus(it)
 
                         if (this.environment().optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_COMMENT_MODERATION) == true) {

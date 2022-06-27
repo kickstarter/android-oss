@@ -1,245 +1,255 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import android.content.Intent;
-import android.graphics.Typeface;
+import android.content.Intent
+import android.graphics.Typeface
+import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.R
+import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.mock.factories.MessageThreadFactory.messageThread
+import com.kickstarter.mock.factories.MessageThreadsEnvelopeFactory.messageThreadsEnvelope
+import com.kickstarter.mock.factories.ProjectFactory.project
+import com.kickstarter.mock.factories.UserFactory.user
+import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.models.Empty
+import com.kickstarter.models.MessageThread
+import com.kickstarter.models.Project
+import com.kickstarter.models.User
+import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.apiresponses.MessageThreadsEnvelope
+import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.data.Mailbox
+import org.junit.Test
+import rx.Observable
+import rx.observers.TestSubscriber
 
-import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.R;
-import com.kickstarter.libs.CurrentUserType;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.MockCurrentUser;
-import com.kickstarter.mock.factories.MessageThreadFactory;
-import com.kickstarter.mock.factories.MessageThreadsEnvelopeFactory;
-import com.kickstarter.mock.factories.ProjectFactory;
-import com.kickstarter.mock.factories.UserFactory;
-import com.kickstarter.mock.services.MockApiClient;
-import com.kickstarter.models.Empty;
-import com.kickstarter.models.MessageThread;
-import com.kickstarter.models.Project;
-import com.kickstarter.models.User;
-import com.kickstarter.services.ApiClientType;
-import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.data.Mailbox;
+class MessageThreadsViewModelTest : KSRobolectricTestCase() {
+    private lateinit var vm: MessageThreadsViewModel.ViewModel
 
-import org.junit.Test;
+    private val hasNoMessages = TestSubscriber<Boolean>()
+    private val hasNoUnreadMessages = TestSubscriber<Boolean>()
+    private val mailboxTitle = TestSubscriber<Int>()
+    private val messageThreadList = TestSubscriber<List<MessageThread>>()
+    private val messageThreadListCount = TestSubscriber<Int>()
+    private val unreadCountTextViewColorInt = TestSubscriber<Int>()
+    private val unreadCountTextViewTypefaceInt = TestSubscriber<Int>()
+    private val unreadCountToolbarTextViewIsGone = TestSubscriber<Boolean>()
+    private val unreadMessagesCount = TestSubscriber<Int>()
+    private val unreadMessagesCountIsGone = TestSubscriber<Boolean>()
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+    private fun setUpEnvironment(env: Environment) {
+        vm = MessageThreadsViewModel.ViewModel(env)
+        vm.outputs.hasNoMessages().subscribe(hasNoMessages)
+        vm.outputs.hasNoUnreadMessages().subscribe(hasNoUnreadMessages)
+        vm.outputs.mailboxTitle().subscribe(mailboxTitle)
+        vm.outputs.messageThreadList().subscribe(messageThreadList)
+        vm.outputs.messageThreadList().map { obj: List<MessageThread?> -> obj.size }
+            .subscribe(messageThreadListCount)
+        vm.outputs.unreadCountTextViewColorInt().subscribe(unreadCountTextViewColorInt)
+        vm.outputs.unreadCountTextViewTypefaceInt().subscribe(unreadCountTextViewTypefaceInt)
+        vm.outputs.unreadCountToolbarTextViewIsGone().subscribe(unreadCountToolbarTextViewIsGone)
+        vm.outputs.unreadMessagesCount().subscribe(unreadMessagesCount)
+        vm.outputs.unreadMessagesCountIsGone().subscribe(unreadMessagesCountIsGone)
+    }
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import rx.Observable;
-import rx.observers.TestSubscriber;
+    @Test
+    fun testMessageThreadsEmit_NoProjectIntent() {
+        val currentUser: CurrentUserType = MockCurrentUser()
+        currentUser.login(user().toBuilder().unreadMessagesCount(0).build(), "beefbod5")
 
-public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
-  private MessageThreadsViewModel.ViewModel vm;
-  private final TestSubscriber<Boolean> hasNoMessages = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> hasNoUnreadMessages = new TestSubscriber<>();
-  private final TestSubscriber<Integer> mailboxTitle = new TestSubscriber<>();
-  private final TestSubscriber<List<MessageThread>> messageThreadList = new TestSubscriber<>();
-  private final TestSubscriber<Integer> messageThreadListCount = new TestSubscriber<>();
-  private final TestSubscriber<Integer> unreadCountTextViewColorInt = new TestSubscriber<>();
-  private final TestSubscriber<Integer> unreadCountTextViewTypefaceInt = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> unreadCountToolbarTextViewIsGone = new TestSubscriber<>();
-  private final TestSubscriber<Integer> unreadMessagesCount = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> unreadMessagesCountIsGone = new TestSubscriber<>();
+        val inboxEnvelope = messageThreadsEnvelope()
+            .toBuilder()
+            .messageThreads(listOf(messageThread()))
+            .build()
 
-  private void setUpEnvironment(final @NonNull Environment env) {
-    this.vm = new MessageThreadsViewModel.ViewModel(env);
-    this.vm.outputs.hasNoMessages().subscribe(this.hasNoMessages);
-    this.vm.outputs.hasNoUnreadMessages().subscribe(this.hasNoUnreadMessages);
-    this.vm.outputs.mailboxTitle().subscribe(this.mailboxTitle);
-    this.vm.outputs.messageThreadList().subscribe(this.messageThreadList);
-    this.vm.outputs.messageThreadList().map(List::size).subscribe(this.messageThreadListCount);
-    this.vm.outputs.unreadCountTextViewColorInt().subscribe(this.unreadCountTextViewColorInt);
-    this.vm.outputs.unreadCountTextViewTypefaceInt().subscribe(this.unreadCountTextViewTypefaceInt);
-    this.vm.outputs.unreadCountToolbarTextViewIsGone().subscribe(this.unreadCountToolbarTextViewIsGone);
-    this.vm.outputs.unreadMessagesCount().subscribe(this.unreadMessagesCount);
-    this.vm.outputs.unreadMessagesCountIsGone().subscribe(this.unreadMessagesCountIsGone);
-  }
+        val sentEnvelope = messageThreadsEnvelope()
+            .toBuilder()
+            .messageThreads(listOf(messageThread(), messageThread()))
+            .build()
 
-  @Test
-  public void testMessageThreadsEmit_NoProjectIntent() {
-    final CurrentUserType currentUser = new MockCurrentUser();
-    currentUser.login(UserFactory.user().toBuilder().unreadMessagesCount(0).build(), "beefbod5");
+        val apiClient: ApiClientType = object : MockApiClient() {
+            override fun fetchMessageThreads(
+                project: Project?,
+                mailbox: Mailbox
+            ): Observable<MessageThreadsEnvelope> {
+                return Observable.just(if (mailbox === Mailbox.INBOX) inboxEnvelope else sentEnvelope)
+            }
+        }
 
-    final MessageThreadsEnvelope inboxEnvelope = MessageThreadsEnvelopeFactory.messageThreadsEnvelope()
-      .toBuilder()
-      .messageThreads(Collections.singletonList(MessageThreadFactory.messageThread()))
-      .build();
+        setUpEnvironment(
+            environment().toBuilder().apiClient(apiClient).currentUser(currentUser).build()
+        )
 
-    final MessageThreadsEnvelope sentEnvelope = MessageThreadsEnvelopeFactory.messageThreadsEnvelope()
-      .toBuilder()
-      .messageThreads(Arrays.asList(MessageThreadFactory.messageThread(), MessageThreadFactory.messageThread()))
-      .build();
+        val intent = Intent().putExtra(IntentKey.PROJECT, Empty.INSTANCE)
+        vm.intent(intent)
 
-    final ApiClientType apiClient = new MockApiClient() {
-      @Override public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project,
-        final @NonNull Mailbox mailbox) {
-        return  Observable.just(mailbox == Mailbox.INBOX ? inboxEnvelope : sentEnvelope);
-      }
-    };
+        messageThreadList.assertValueCount(2)
+        messageThreadListCount.assertValues(0, 1)
 
-    setUpEnvironment(
-      environment().toBuilder().apiClient(apiClient).currentUser(currentUser).build()
-    );
+        // Same message threads should not emit again.
+        vm.inputs.onResume()
 
-    final Intent intent = new Intent().putExtra(IntentKey.PROJECT, Empty.INSTANCE);
-    this.vm.intent(intent);
-    this.messageThreadList.assertValueCount(2);
-    this.messageThreadListCount.assertValues(0, 1);
+        messageThreadList.assertValueCount(2)
+        messageThreadListCount.assertValues(0, 1)
 
-    // Same message threads should not emit again.
-    this.vm.inputs.onResume();
-    this.messageThreadList.assertValueCount(2);
-    this.messageThreadListCount.assertValues(0, 1);
+        vm.inputs.mailbox(Mailbox.SENT)
 
-    this.vm.inputs.mailbox(Mailbox.SENT);
-    this.messageThreadList.assertValueCount(4);
-    this.messageThreadListCount.assertValues(0, 1, 0, 2);
-  }
+        messageThreadList.assertValueCount(4)
+        messageThreadListCount.assertValues(0, 1, 0, 2)
+    }
 
-  @Test
-  public void testMessageThreadsEmit_WithProjectIntent() {
-    final CurrentUserType currentUser = new MockCurrentUser();
-    currentUser.login(UserFactory.user().toBuilder().unreadMessagesCount(0).build(), "beefbod5");
+    @Test
+    fun testMessageThreadsEmit_WithProjectIntent() {
+        val currentUser: CurrentUserType = MockCurrentUser()
+        currentUser.login(user().toBuilder().unreadMessagesCount(0).build(), "beefbod5")
 
-    final MessageThreadsEnvelope inboxEnvelope = MessageThreadsEnvelopeFactory.messageThreadsEnvelope()
-      .toBuilder()
-      .messageThreads(Collections.singletonList(MessageThreadFactory.messageThread()))
-      .build();
+        val inboxEnvelope = messageThreadsEnvelope()
+            .toBuilder()
+            .messageThreads(listOf(messageThread()))
+            .build()
 
-    final MessageThreadsEnvelope sentEnvelope = MessageThreadsEnvelopeFactory.messageThreadsEnvelope()
-      .toBuilder()
-      .messageThreads(Arrays.asList(MessageThreadFactory.messageThread(), MessageThreadFactory.messageThread()))
-      .build();
+        val sentEnvelope = messageThreadsEnvelope()
+            .toBuilder()
+            .messageThreads(listOf(messageThread(), messageThread()))
+            .build()
 
-    final Project project = ProjectFactory.project().toBuilder().unreadMessagesCount(5).build();
+        val project = project().toBuilder().unreadMessagesCount(5).build()
 
-    final ApiClientType apiClient = new MockApiClient() {
-      @Override public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project,
-        final @NonNull Mailbox mailbox) {
-        return  Observable.just(mailbox == Mailbox.INBOX ? inboxEnvelope : sentEnvelope);
-      }
-      @Override public @NonNull Observable<Project> fetchProject(final @NonNull String param) {
-        return Observable.just(project);
-      }
-    };
+        val apiClient: ApiClientType = object : MockApiClient() {
+            override fun fetchMessageThreads(
+                project: Project?,
+                mailbox: Mailbox
+            ): Observable<MessageThreadsEnvelope> {
+                return Observable.just(if (mailbox === Mailbox.INBOX) inboxEnvelope else sentEnvelope)
+            }
 
-    setUpEnvironment(
-      environment().toBuilder().apiClient(apiClient).currentUser(currentUser).build()
-    );
+            override fun fetchProject(param: String): Observable<Project> {
+                return Observable.just(project)
+            }
+        }
 
-    final Intent intent = new Intent().putExtra(IntentKey.PROJECT, project);
-    this.vm.intent(intent);
-    this.messageThreadList.assertValueCount(2);
-    this.messageThreadListCount.assertValues(0, 1);
+        setUpEnvironment(
+            environment().toBuilder().apiClient(apiClient).currentUser(currentUser).build()
+        )
 
-    // Same message threads should not emit again.
-    this.vm.inputs.onResume();
-    this.messageThreadList.assertValueCount(2);
-    this.messageThreadListCount.assertValues(0, 1);
+        val intent = Intent().putExtra(IntentKey.PROJECT, project)
+        vm.intent(intent)
 
-    this.vm.inputs.mailbox(Mailbox.SENT);
-    this.messageThreadList.assertValueCount(4);
-    this.messageThreadListCount.assertValues(0, 1, 0, 2);
-  }
+        messageThreadList.assertValueCount(2)
+        messageThreadListCount.assertValues(0, 1)
 
-  @Test
-  public void testHasUnreadMessages() {
-    final User user = UserFactory.user().toBuilder().unreadMessagesCount(3).build();
+        // Same message threads should not emit again.
+        vm.inputs.onResume()
 
-    final ApiClientType apiClient = new MockApiClient() {
-      @Override public @NonNull Observable<User> fetchCurrentUser() {
-        return Observable.just(user);
-      }
-    };
+        messageThreadList.assertValueCount(2)
+        messageThreadListCount.assertValues(0, 1)
 
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-    this.vm.intent(new Intent());
-    this.vm.inputs.onResume();
+        vm.inputs.mailbox(Mailbox.SENT)
 
-    // Unread count text view is shown.
-    this.unreadMessagesCount.assertValues(user.unreadMessagesCount());
-    this.unreadMessagesCountIsGone.assertValues(false);
-    this.hasNoUnreadMessages.assertValues(false);
-    this.unreadCountTextViewColorInt.assertValues(R.color.accent);
-    this.unreadCountTextViewTypefaceInt.assertValues(Typeface.BOLD);
-    this.unreadCountToolbarTextViewIsGone.assertValues(false);
+        messageThreadList.assertValueCount(4)
+        messageThreadListCount.assertValues(0, 1, 0, 2)
+    }
 
-    this.vm.inputs.mailbox(Mailbox.SENT);
-    this.unreadMessagesCountIsGone.assertValues(false, true);
-  }
+    @Test
+    fun testHasUnreadMessages() {
+        val user = user().toBuilder().unreadMessagesCount(3).build()
+        val apiClient: ApiClientType = object : MockApiClient() {
+            override fun fetchCurrentUser(): Observable<User> {
+                return Observable.just(user)
+            }
+        }
 
-  @Test
-  public void testNoMessages() {
-    final User user = UserFactory.user().toBuilder().unreadMessagesCount(null).build();
+        setUpEnvironment(environment().toBuilder().apiClient(apiClient).build())
 
-    final ApiClientType apiClient = new MockApiClient() {
-      @Override public @NonNull Observable<User> fetchCurrentUser() {
-        return Observable.just(user);
-      }
-    };
+        vm.intent(Intent())
+        vm.inputs.onResume()
 
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-    this.vm.intent(new Intent());
-    this.vm.inputs.onResume();
+        // Unread count text view is shown.
+        unreadMessagesCount.assertValues(user.unreadMessagesCount())
+        unreadMessagesCountIsGone.assertValues(false)
+        hasNoUnreadMessages.assertValues(false)
+        unreadCountTextViewColorInt.assertValues(R.color.accent)
+        unreadCountTextViewTypefaceInt.assertValues(Typeface.BOLD)
+        unreadCountToolbarTextViewIsGone.assertValues(false)
 
-    this.hasNoMessages.assertValues(true);
-    this.unreadMessagesCount.assertNoValues();
-    this.unreadMessagesCountIsGone.assertValue(false);
-    this.unreadCountTextViewColorInt.assertValues(R.color.kds_support_400);
-    this.unreadCountTextViewTypefaceInt.assertValues(Typeface.NORMAL);
-    this.unreadCountToolbarTextViewIsGone.assertValues(true);
+        vm.inputs.mailbox(Mailbox.SENT)
 
-    this.vm.inputs.mailbox(Mailbox.SENT);
-    this.unreadMessagesCountIsGone.assertValues(false, true);
-  }
+        unreadMessagesCountIsGone.assertValues(false, true)
+    }
 
-  @Test
-  public void testNoUnreadMessages() {
-    final User user = UserFactory.user().toBuilder().unreadMessagesCount(0).build();
+    @Test
+    fun testNoMessages() {
+        val user = user().toBuilder().unreadMessagesCount(null).build()
+        val apiClient: ApiClientType = object : MockApiClient() {
+            override fun fetchCurrentUser(): Observable<User> {
+                return Observable.just(user)
+            }
+        }
 
-    final ApiClientType apiClient = new MockApiClient() {
-      @Override public @NonNull Observable<User> fetchCurrentUser() {
-        return Observable.just(user);
-      }
-    };
+        setUpEnvironment(environment().toBuilder().apiClient(apiClient).build())
 
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-    this.vm.intent(new Intent());
-    this.vm.inputs.onResume();
+        vm.intent(Intent())
+        vm.inputs.onResume()
 
-    this.hasNoUnreadMessages.assertValues(true);
-    this.unreadMessagesCount.assertNoValues();
-    this.unreadMessagesCountIsGone.assertValue(false);
-    this.unreadCountTextViewColorInt.assertValues(R.color.kds_support_400);
-    this.unreadCountTextViewTypefaceInt.assertValues(Typeface.NORMAL);
-    this.unreadCountToolbarTextViewIsGone.assertValues(true);
+        hasNoMessages.assertValues(true)
+        unreadMessagesCount.assertNoValues()
+        unreadMessagesCountIsGone.assertValue(false)
+        unreadCountTextViewColorInt.assertValues(R.color.kds_support_400)
+        unreadCountTextViewTypefaceInt.assertValues(Typeface.NORMAL)
+        unreadCountToolbarTextViewIsGone.assertValues(true)
 
-    this.vm.inputs.mailbox(Mailbox.SENT);
-    this.unreadMessagesCountIsGone.assertValues(false, true);
-  }
+        vm.inputs.mailbox(Mailbox.SENT)
 
-  @Test
-  public void testMailboxTitle() {
-    final User user = UserFactory.user();
+        unreadMessagesCountIsGone.assertValues(false, true)
+    }
 
-    final ApiClientType apiClient = new MockApiClient() {
-      @Override public @NonNull Observable<User> fetchCurrentUser() {
-        return Observable.just(user);
-      }
-    };
+    @Test
+    fun testNoUnreadMessages() {
+        val user = user().toBuilder().unreadMessagesCount(0).build()
+        val apiClient: ApiClientType = object : MockApiClient() {
+            override fun fetchCurrentUser(): Observable<User> {
+                return Observable.just(user)
+            }
+        }
 
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-    this.vm.intent(new Intent());
-    this.vm.inputs.onResume();
+        setUpEnvironment(environment().toBuilder().apiClient(apiClient).build())
 
-    this.mailboxTitle.assertValue(R.string.messages_navigation_inbox);
+        vm.intent(Intent())
+        vm.inputs.onResume()
 
-    this.vm.inputs.mailbox(Mailbox.SENT);
-    this.mailboxTitle.assertValues(R.string.messages_navigation_inbox, R.string.messages_navigation_sent);
-  }
+        hasNoUnreadMessages.assertValues(true)
+        unreadMessagesCount.assertNoValues()
+        unreadMessagesCountIsGone.assertValue(false)
+        unreadCountTextViewColorInt.assertValues(R.color.kds_support_400)
+        unreadCountTextViewTypefaceInt.assertValues(Typeface.NORMAL)
+        unreadCountToolbarTextViewIsGone.assertValues(true)
+
+        vm.inputs.mailbox(Mailbox.SENT)
+
+        unreadMessagesCountIsGone.assertValues(false, true)
+    }
+
+    @Test
+    fun testMailboxTitle() {
+        val user = user()
+        val apiClient: ApiClientType = object : MockApiClient() {
+            override fun fetchCurrentUser(): Observable<User> {
+                return Observable.just(user)
+            }
+        }
+
+        setUpEnvironment(environment().toBuilder().apiClient(apiClient).build())
+
+        vm.intent(Intent())
+        vm.inputs.onResume()
+
+        mailboxTitle.assertValue(R.string.messages_navigation_inbox)
+
+        vm.inputs.mailbox(Mailbox.SENT)
+        mailboxTitle.assertValues(
+            R.string.messages_navigation_inbox,
+            R.string.messages_navigation_sent
+        )
+    }
 }

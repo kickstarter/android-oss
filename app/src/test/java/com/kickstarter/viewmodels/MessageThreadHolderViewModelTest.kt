@@ -1,151 +1,152 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.NumberUtils;
-import com.kickstarter.mock.factories.MessageThreadFactory;
-import com.kickstarter.models.MessageThread;
+import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.mock.factories.MessageThreadFactory.messageThread
+import com.kickstarter.models.MessageThread
+import org.joda.time.DateTime
+import org.junit.Test
+import rx.observers.TestSubscriber
 
-import org.joda.time.DateTime;
-import org.junit.Test;
+class MessageThreadHolderViewModelTest : KSRobolectricTestCase() {
 
-import androidx.annotation.NonNull;
-import rx.observers.TestSubscriber;
+    private lateinit var vm: MessageThreadHolderViewModel.ViewModel
 
-public final class MessageThreadHolderViewModelTest extends KSRobolectricTestCase {
-  private MessageThreadHolderViewModel.ViewModel vm;
-  private final TestSubscriber<Boolean> cardViewIsElevated = new TestSubscriber<>();
-  private final TestSubscriber<DateTime> dateDateTime = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> dateTextViewIsBold = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> messageBodyTextIsBold = new TestSubscriber<>();
-  private final TestSubscriber<String> messageBodyTextViewText = new TestSubscriber<>();
-  private final TestSubscriber<String> participantAvatarUrl = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> participantNameTextViewIsBold = new TestSubscriber<>();
-  private final TestSubscriber<String> participantNameTextViewText = new TestSubscriber<>();
-  private final TestSubscriber<MessageThread> startMessagesActivity = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> unreadCountTextViewIsGone = new TestSubscriber<>();
-  private final TestSubscriber<String> unreadCountTextViewText = new TestSubscriber<>();
+    private val cardViewIsElevated = TestSubscriber<Boolean>()
+    private val dateDateTime = TestSubscriber<DateTime>()
+    private val dateTextViewIsBold = TestSubscriber<Boolean>()
+    private val messageBodyTextIsBold = TestSubscriber<Boolean>()
+    private val messageBodyTextViewText = TestSubscriber<String>()
+    private val participantAvatarUrl = TestSubscriber<String>()
+    private val participantNameTextViewIsBold = TestSubscriber<Boolean>()
+    private val participantNameTextViewText = TestSubscriber<String>()
+    private val startMessagesActivity = TestSubscriber<MessageThread>()
+    private val unreadCountTextViewIsGone = TestSubscriber<Boolean>()
+    private val unreadCountTextViewText = TestSubscriber<String>()
 
-  private void setUpEnvironment(final @NonNull Environment env) {
-    this.vm = new MessageThreadHolderViewModel.ViewModel(env);
+    private fun setUpEnvironment(env: Environment) {
+        vm = MessageThreadHolderViewModel.ViewModel(env)
+        vm.outputs.cardViewIsElevated().subscribe(cardViewIsElevated)
+        vm.outputs.dateDateTime().subscribe(dateDateTime)
+        vm.outputs.dateTextViewIsBold().subscribe(dateTextViewIsBold)
+        vm.outputs.messageBodyTextIsBold().subscribe(messageBodyTextIsBold)
+        vm.outputs.messageBodyTextViewText().subscribe(messageBodyTextViewText)
+        vm.outputs.participantAvatarUrl().subscribe(participantAvatarUrl)
+        vm.outputs.participantNameTextViewIsBold().subscribe(participantNameTextViewIsBold)
+        vm.outputs.participantNameTextViewText().subscribe(participantNameTextViewText)
+        vm.outputs.startMessagesActivity().subscribe(startMessagesActivity)
+        vm.outputs.unreadCountTextViewIsGone().subscribe(unreadCountTextViewIsGone)
+        vm.outputs.unreadCountTextViewText().subscribe(unreadCountTextViewText)
+    }
 
-    this.vm.outputs.cardViewIsElevated().subscribe(this.cardViewIsElevated);
-    this.vm.outputs.dateDateTime().subscribe(this.dateDateTime);
-    this.vm.outputs.dateTextViewIsBold().subscribe(this.dateTextViewIsBold);
-    this.vm.outputs.messageBodyTextIsBold().subscribe(this.messageBodyTextIsBold);
-    this.vm.outputs.messageBodyTextViewText().subscribe(this.messageBodyTextViewText);
-    this.vm.outputs.participantAvatarUrl().subscribe(this.participantAvatarUrl);
-    this.vm.outputs.participantNameTextViewIsBold().subscribe(this.participantNameTextViewIsBold);
-    this.vm.outputs.participantNameTextViewText().subscribe(this.participantNameTextViewText);
-    this.vm.outputs.startMessagesActivity().subscribe(this.startMessagesActivity);
-    this.vm.outputs.unreadCountTextViewIsGone().subscribe(this.unreadCountTextViewIsGone);
-    this.vm.outputs.unreadCountTextViewText().subscribe(this.unreadCountTextViewText);
-  }
+    @Test
+    fun testEmitsDateTime() {
+        val messageThread = messageThread()
+        setUpEnvironment(environment())
 
-  @Test
-  public void testEmitsDateTime() {
-    final MessageThread messageThread = MessageThreadFactory.messageThread();
-    setUpEnvironment(environment());
+        // Configure the view model with a message thread.
+        vm.inputs.configureWith(messageThread)
+        dateDateTime.assertValues(messageThread.lastMessage()?.createdAt()!!)
+    }
 
-    // Configure the view model with a message thread.
-    this.vm.inputs.configureWith(messageThread);
+    @Test
+    fun testEmitsMessageBodyTextViewText() {
+        val messageThread = messageThread()
+        setUpEnvironment(environment())
 
-    this.dateDateTime.assertValues(messageThread.lastMessage().createdAt());
-  }
+        // Configure the view model with a message thread.
+        vm.inputs.configureWith(messageThread)
+        messageBodyTextViewText.assertValues(messageThread.lastMessage()?.body()!!)
+    }
 
-  @Test
-  public void testEmitsMessageBodyTextViewText() {
-    final MessageThread messageThread = MessageThreadFactory.messageThread();
-    setUpEnvironment(environment());
+    @Test
+    fun testEmitsParticipantData() {
+        val messageThread = messageThread()
+        setUpEnvironment(environment())
 
-    // Configure the view model with a message thread.
-    this.vm.inputs.configureWith(messageThread);
+        // Configure the view model with a message thread.
+        vm.inputs.configureWith(messageThread)
 
-    this.messageBodyTextViewText.assertValues(messageThread.lastMessage().body());
-  }
+        // Emits participant's avatar url and name.
+        participantAvatarUrl.assertValues(messageThread.participant()?.avatar()?.medium()!!)
+        participantNameTextViewText.assertValues(messageThread.participant()?.name()!!)
+    }
 
-  @Test
-  public void testEmitsParticipantData() {
-    final MessageThread messageThread = MessageThreadFactory.messageThread();
-    setUpEnvironment(environment());
+    @Test
+    fun testMessageThread_Clicked() {
+        val messageThread = messageThread()
+            .toBuilder()
+            .id(12345)
+            .unreadMessagesCount(1)
+            .build()
 
-    // Configure the view model with a message thread.
-    this.vm.inputs.configureWith(messageThread);
+        setUpEnvironment(environment())
 
-    // Emits participant's avatar url and name.
-    this.participantAvatarUrl.assertValues(messageThread.participant().avatar().medium());
-    this.participantNameTextViewText.assertValues(messageThread.participant().name());
-  }
+        vm.inputs.configureWith(messageThread)
 
-  @Test
-  public void testMessageThread_Clicked() {
-    final MessageThread messageThread = MessageThreadFactory.messageThread()
-      .toBuilder()
-      .id(12345)
-      .unreadMessagesCount(1)
-      .build();
-    setUpEnvironment(environment());
+        cardViewIsElevated.assertValues(true)
+        dateTextViewIsBold.assertValues(true)
+        messageBodyTextIsBold.assertValues(true)
+        unreadCountTextViewIsGone.assertValues(false)
 
-    this.vm.inputs.configureWith(messageThread);
-    this.cardViewIsElevated.assertValues(true);
-    this.dateTextViewIsBold.assertValues(true);
-    this.messageBodyTextIsBold.assertValues(true);
-    this.unreadCountTextViewIsGone.assertValues(false);
+        vm.inputs.messageThreadCardViewClicked()
 
-    this.vm.inputs.messageThreadCardViewClicked();
-    this.cardViewIsElevated.assertValues(true, false);
-    this.dateTextViewIsBold.assertValues(true, false);
-    this.messageBodyTextIsBold.assertValues(true, false);
-    this.unreadCountTextViewIsGone.assertValues(false, true);
-  }
+        cardViewIsElevated.assertValues(true, false)
+        dateTextViewIsBold.assertValues(true, false)
+        messageBodyTextIsBold.assertValues(true, false)
+        unreadCountTextViewIsGone.assertValues(false, true)
+    }
 
-  @Test
-  public void testMessageThread_HasNoUnreadMessages() {
-    final MessageThread messageThreadWithNoUnread = MessageThreadFactory.messageThread()
-      .toBuilder()
-      .unreadMessagesCount(0)
-      .build();
+    @Test
+    fun testMessageThread_HasNoUnreadMessages() {
+        val messageThreadWithNoUnread = messageThread()
+            .toBuilder()
+            .unreadMessagesCount(0)
+            .build()
 
-    setUpEnvironment(environment());
+        setUpEnvironment(environment())
 
-    // Configure the view model with a message thread with no unread messages.
-    this.vm.inputs.configureWith(messageThreadWithNoUnread);
+        // Configure the view model with a message thread with no unread messages.
+        vm.inputs.configureWith(messageThreadWithNoUnread)
 
-    this.dateTextViewIsBold.assertValues(false);
-    this.messageBodyTextIsBold.assertValues(false);
-    this.participantNameTextViewIsBold.assertValues(false);
-    this.unreadCountTextViewIsGone.assertValues(true);
-    this.unreadCountTextViewText.assertValues(NumberUtils.format(messageThreadWithNoUnread.unreadMessagesCount()));
-  }
+        dateTextViewIsBold.assertValues(false)
+        messageBodyTextIsBold.assertValues(false)
+        participantNameTextViewIsBold.assertValues(false)
+        unreadCountTextViewIsGone.assertValues(true)
+        unreadCountTextViewText.assertValues(NumberUtils.format(messageThreadWithNoUnread.unreadMessagesCount()!!))
+    }
 
-  @Test
-  public void testMessageThread_HasUnreadMessages() {
-    final MessageThread messageThreadWithUnread = MessageThreadFactory.messageThread()
-      .toBuilder()
-      .unreadMessagesCount(2)
-      .build();
+    @Test
+    fun testMessageThread_HasUnreadMessages() {
+        val messageThreadWithUnread = messageThread()
+            .toBuilder()
+            .unreadMessagesCount(2)
+            .build()
 
-    setUpEnvironment(environment());
+        setUpEnvironment(environment())
 
-    // Configure the view model with a message thread with unread messages.
-    this.vm.inputs.configureWith(messageThreadWithUnread);
+        // Configure the view model with a message thread with unread messages.
+        vm.inputs.configureWith(messageThreadWithUnread)
 
-    this.dateTextViewIsBold.assertValues(true);
-    this.messageBodyTextIsBold.assertValues(true);
-    this.participantNameTextViewIsBold.assertValues(true);
-    this.unreadCountTextViewIsGone.assertValues(false);
-    this.unreadCountTextViewText.assertValues(NumberUtils.format(messageThreadWithUnread.unreadMessagesCount()));
-  }
+        dateTextViewIsBold.assertValues(true)
+        messageBodyTextIsBold.assertValues(true)
+        participantNameTextViewIsBold.assertValues(true)
+        unreadCountTextViewIsGone.assertValues(false)
 
-  @Test
-  public void testStartMessagesActivity() {
-    final MessageThread messageThread = MessageThreadFactory.messageThread();
-    setUpEnvironment(environment());
+        unreadCountTextViewText.assertValues(NumberUtils.format(messageThreadWithUnread.unreadMessagesCount()!!))
+    }
 
-    // Configure the view model with a message thread.
-    this.vm.inputs.configureWith(messageThread);
-    this.vm.inputs.messageThreadCardViewClicked();
+    @Test
+    fun testStartMessagesActivity() {
+        val messageThread = messageThread()
 
-    this.startMessagesActivity.assertValues(messageThread);
-  }
+        setUpEnvironment(environment())
+
+        // Configure the view model with a message thread.
+        vm.inputs.configureWith(messageThread)
+        vm.inputs.messageThreadCardViewClicked()
+
+        startMessagesActivity.assertValues(messageThread)
+    }
 }

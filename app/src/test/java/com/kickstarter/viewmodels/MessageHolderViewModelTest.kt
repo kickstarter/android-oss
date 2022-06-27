@@ -18,7 +18,6 @@ class MessageHolderViewModelTest : KSRobolectricTestCase() {
     private val participantAvatarImageUrl = TestSubscriber<String>()
     private val deliveryStatusTextViewIsGone = TestSubscriber<Boolean>()
 
-
     private fun setUpEnvironment(environment: Environment) {
         vm = MessageHolderViewModel.ViewModel(environment)
 
@@ -81,7 +80,6 @@ class MessageHolderViewModelTest : KSRobolectricTestCase() {
         messageBodySenderCardViewIsGone.assertValues(false)
         messageBodySenderTextViewText.assertValues(message.body())
         deliveryStatusTextViewIsGone.assertNoValues()
-
 
         vm.inputs.isLastPosition(true)
         deliveryStatusTextViewIsGone.assertValues(false)

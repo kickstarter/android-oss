@@ -43,11 +43,11 @@ class MessageThreadsActivity : BaseActivity<MessageThreadsViewModel.ViewModel>()
         binding.messageThreadsRecyclerView.adapter = adapter
         binding.messageThreadsRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        recyclerViewPaginator = RecyclerViewPaginator(binding.messageThreadsRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingMessageThreads)
+        recyclerViewPaginator = RecyclerViewPaginator(binding.messageThreadsRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingMessageThreads())
 
         SwipeRefresher(
             this, binding.messageThreadsSwipeRefreshLayout, { viewModel.inputs.swipeRefresh() }
-        ) { viewModel.outputs.isFetchingMessageThreads }
+        ) { viewModel.outputs.isFetchingMessageThreads() }
 
         fadeToolbarTitleOnExpand(binding.messageThreadsAppBarLayout, binding.messageThreadsToolbar.messageThreadsCollapsedToolbarTitle)
 
@@ -97,7 +97,7 @@ class MessageThreadsActivity : BaseActivity<MessageThreadsViewModel.ViewModel>()
             .compose(Transformers.observeForUI())
             .subscribe { ViewUtils.setGone(binding.unreadCountTextView, it) }
 
-        viewModel.outputs.isFetchingMessageThreads
+        viewModel.outputs.isFetchingMessageThreads()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { binding.messageThreadsSwipeRefreshLayout.isRefreshing = it }

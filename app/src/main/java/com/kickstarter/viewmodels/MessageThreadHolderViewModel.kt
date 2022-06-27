@@ -1,192 +1,213 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import android.content.SharedPreferences;
+import android.content.SharedPreferences
+import com.kickstarter.libs.ActivityViewModel
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.negate
+import com.kickstarter.models.MessageThread
+import com.kickstarter.ui.SharedPreferenceKey
+import com.kickstarter.ui.viewholders.MessageThreadViewHolder
+import org.joda.time.DateTime
+import rx.Observable
+import rx.subjects.PublishSubject
 
-import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.extensions.BoolenExtKt;
-import com.kickstarter.libs.utils.NumberUtils;
-import com.kickstarter.models.Message;
-import com.kickstarter.models.MessageThread;
-import com.kickstarter.models.User;
-import com.kickstarter.ui.SharedPreferenceKey;
-import com.kickstarter.ui.viewholders.MessageThreadViewHolder;
+interface MessageThreadHolderViewModel {
+    interface Inputs {
+        /** Call to configure with a MessageThread.  */
+        fun configureWith(messageThread: MessageThread)
 
-import org.joda.time.DateTime;
-
-import androidx.annotation.NonNull;
-import rx.Observable;
-import rx.subjects.PublishSubject;
-
-import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
-import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
-
-public interface MessageThreadHolderViewModel {
-
-  interface Inputs {
-    /** Call to configure with a MessageThread. */
-    void configureWith(MessageThread messageThread);
-
-    /** Call when the the message thread card view has been clicked. */
-    void messageThreadCardViewClicked();
-  }
-
-  interface Outputs {
-    /** Emits when the card view should be elevated. */
-    Observable<Boolean> cardViewIsElevated();
-
-    /** Emits the date to display. */
-    Observable<DateTime> dateDateTime();
-
-    /** Emits a boolean determining if the date typeface is bold. */
-    Observable<Boolean> dateTextViewIsBold();
-
-    /** Emits the message body to display. */
-    Observable<String> messageBodyTextViewText();
-
-    /** Emits a boolean determining if the message body typeface is bold. */
-    Observable<Boolean> messageBodyTextIsBold();
-
-    /** Emits the participant's avatar url to display. */
-    Observable<String> participantAvatarUrl();
-
-    /** Emits a boolean determining if the participant name typeface is bold. */
-    Observable<Boolean> participantNameTextViewIsBold();
-
-    /** Emits the participant name to display. */
-    Observable<String> participantNameTextViewText();
-
-    /** Emits when we want to start the {@link com.kickstarter.ui.activities.MessagesActivity}. */
-    Observable<MessageThread> startMessagesActivity();
-
-    /** Emits a boolean to determine if the unread count text view should be gone. */
-    Observable<Boolean> unreadCountTextViewIsGone();
-
-    /** Emits the unread count text view text to be displayed. */
-    Observable<String> unreadCountTextViewText();
-  }
-
-  final class ViewModel extends ActivityViewModel<MessageThreadViewHolder> implements Inputs, Outputs {
-    private final SharedPreferences sharedPreferences;
-
-    public ViewModel(final @NonNull Environment environment) {
-      super(environment);
-
-      this.sharedPreferences = environment.sharedPreferences();
-
-      // Store the correct initial hasUnreadMessages value.
-      this.messageThread
-        .compose(observeForUI())
-        .subscribe(thread -> setHasUnreadMessagesPreference(thread, this.sharedPreferences));
-
-      final Observable<Boolean> hasUnreadMessages = Observable.merge(
-        this.messageThread.map(thread -> hasUnreadMessages(thread, this.sharedPreferences)),
-        this.messageThreadCardViewClicked.map(__ -> false)
-      );
-
-      final Observable<Message> lastMessage = this.messageThread.map(MessageThread::lastMessage);
-      final Observable<User> participant = this.messageThread.map(MessageThread::participant);
-
-      this.cardViewIsElevated = hasUnreadMessages;
-      this.dateDateTime = lastMessage.map(Message::createdAt);
-      this.dateTextViewIsBold = hasUnreadMessages;
-      this.messageBodyTextIsBold = hasUnreadMessages;
-      this.messageBodyTextViewText = lastMessage.map(Message::body);
-      this.participantAvatarUrl = participant.map(p -> p.avatar().medium());
-      this.participantNameTextViewIsBold = hasUnreadMessages;
-      this.participantNameTextViewText = participant.map(User::name);
-      this.startMessagesActivity = this.messageThread.compose(takeWhen(this.messageThreadCardViewClicked));
-      this.unreadCountTextViewIsGone = hasUnreadMessages.map(BoolenExtKt::negate);
-      this.unreadCountTextViewText = this.messageThread
-        .map(MessageThread::unreadMessagesCount)
-        .map(NumberUtils::format);
-
-      this.messageThread
-        .compose(takeWhen(this.messageThreadCardViewClicked))
-        .subscribe(thread -> markedAsRead(thread, this.sharedPreferences));
+        /** Call when the the message thread card view has been clicked.  */
+        fun messageThreadCardViewClicked()
     }
 
-    private static @NonNull String cacheKey(final @NonNull MessageThread messageThread) {
-      return SharedPreferenceKey.MESSAGE_THREAD_HAS_UNREAD_MESSAGES + messageThread.id();
+    interface Outputs {
+        /** Emits when the card view should be elevated.  */
+        fun cardViewIsElevated(): Observable<Boolean>
+
+        /** Emits the date to display.  */
+        fun dateDateTime(): Observable<DateTime>
+
+        /** Emits a boolean determining if the date typeface is bold.  */
+        fun dateTextViewIsBold(): Observable<Boolean>
+
+        /** Emits the message body to display.  */
+        fun messageBodyTextViewText(): Observable<String>
+
+        /** Emits a boolean determining if the message body typeface is bold.  */
+        fun messageBodyTextIsBold(): Observable<Boolean>
+
+        /** Emits the participant's avatar url to display.  */
+        fun participantAvatarUrl(): Observable<String>
+
+        /** Emits a boolean determining if the participant name typeface is bold.  */
+        fun participantNameTextViewIsBold(): Observable<Boolean>
+
+        /** Emits the participant name to display.  */
+        fun participantNameTextViewText(): Observable<String>
+
+        /** Emits when we want to start the [com.kickstarter.ui.activities.MessagesActivity].  */
+        fun startMessagesActivity(): Observable<MessageThread>
+
+        /** Emits a boolean to determine if the unread count text view should be gone.  */
+        fun unreadCountTextViewIsGone(): Observable<Boolean>
+
+        /** Emits the unread count text view text to be displayed.  */
+        fun unreadCountTextViewText(): Observable<String>
     }
 
-    private static boolean hasUnreadMessages(final @NonNull MessageThread messageThread,
-      final @NonNull SharedPreferences sharedPreferences) {
-      return sharedPreferences.getBoolean(cacheKey(messageThread), messageThread.unreadMessagesCount() > 0);
-    }
+    class ViewModel(environment: Environment) :
+        ActivityViewModel<MessageThreadViewHolder?>(environment), Inputs, Outputs {
 
-    private static void markedAsRead(final @NonNull MessageThread messageThread,
-      final @NonNull SharedPreferences sharedPreferences) {
-      final SharedPreferences.Editor editor = sharedPreferences.edit();
-      editor.putBoolean(cacheKey(messageThread), false);
-      editor.apply();
-    }
+        private val sharedPreferences: SharedPreferences?
+        private val messageThread = PublishSubject.create<MessageThread?>()
+        private val messageThreadCardViewClicked = PublishSubject.create<Void?>()
+        private val cardViewIsElevated: Observable<Boolean>
+        private val dateDateTime: Observable<DateTime>
+        private val dateTextViewIsBold: Observable<Boolean>
+        private val messageBodyTextIsBold: Observable<Boolean>
+        private val messageBodyTextViewText: Observable<String>
+        private val participantAvatarUrl: Observable<String>
+        private val participantNameTextViewIsBold: Observable<Boolean>
+        private val participantNameTextViewText: Observable<String>
+        private val startMessagesActivity: Observable<MessageThread>
+        private val unreadCountTextViewIsGone: Observable<Boolean>
+        private val unreadCountTextViewText: Observable<String>
 
-    private static void setHasUnreadMessagesPreference(final @NonNull MessageThread messageThread,
-      final @NonNull SharedPreferences sharedPreferences) {
+        val inputs: Inputs = this
+        val outputs: Outputs = this
 
-      final SharedPreferences.Editor editor = sharedPreferences.edit();
-      editor.putBoolean(cacheKey(messageThread), messageThread.unreadMessagesCount() > 0);
-      editor.apply();
-    }
+        init {
+            sharedPreferences = requireNotNull(environment.sharedPreferences())
 
-    private final PublishSubject<MessageThread> messageThread = PublishSubject.create();
-    private final PublishSubject<Void> messageThreadCardViewClicked = PublishSubject.create();
+            // Store the correct initial hasUnreadMessages value.
+            messageThread
+                .compose(Transformers.observeForUI())
+                .subscribe { thread: MessageThread ->
+                    setHasUnreadMessagesPreference(
+                        thread,
+                        sharedPreferences
+                    )
+                }
 
-    private final Observable<Boolean> cardViewIsElevated;
-    private final Observable<DateTime> dateDateTime;
-    private final Observable<Boolean> dateTextViewIsBold;
-    private final Observable<Boolean> messageBodyTextIsBold;
-    private final Observable<String> messageBodyTextViewText;
-    private final Observable<String> participantAvatarUrl;
-    private final Observable<Boolean> participantNameTextViewIsBold;
-    private final Observable<String> participantNameTextViewText;
-    private final Observable<MessageThread> startMessagesActivity;
-    private final Observable<Boolean> unreadCountTextViewIsGone;
-    private final Observable<String> unreadCountTextViewText;
+            val hasUnreadMessages = Observable.merge(
+                messageThread.map { thread: MessageThread ->
+                    hasUnreadMessages(
+                        thread,
+                        sharedPreferences
+                    )
+                },
+                messageThreadCardViewClicked.map { false }
+            )
 
-    public final Inputs inputs = this;
-    public final Outputs outputs = this;
+            val lastMessage = messageThread.map { it.lastMessage() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
 
-    @Override public void configureWith(final @NonNull MessageThread messageThread) {
-      this.messageThread.onNext(messageThread);
-    }
-    @Override public void messageThreadCardViewClicked() {
-      this.messageThreadCardViewClicked.onNext(null);
-    }
+            val participant = messageThread.map { it.participant() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
 
-    @Override public @NonNull Observable<Boolean> cardViewIsElevated() {
-      return this.cardViewIsElevated;
+            cardViewIsElevated = hasUnreadMessages
+
+            dateDateTime = lastMessage.map { it.createdAt() }
+
+            dateTextViewIsBold = hasUnreadMessages
+
+            messageBodyTextIsBold = hasUnreadMessages
+
+            messageBodyTextViewText = lastMessage.map { it.body() }
+
+            participantAvatarUrl = participant.map { it.avatar().medium() }
+
+            participantNameTextViewIsBold = hasUnreadMessages
+
+            participantNameTextViewText = participant.map { it.name() }
+
+            startMessagesActivity = messageThread.compose(
+                Transformers.takeWhen(
+                    messageThreadCardViewClicked
+                )
+            )
+            unreadCountTextViewIsGone = hasUnreadMessages.map { it.negate() }
+
+            unreadCountTextViewText = messageThread
+                .map { it.unreadMessagesCount() }
+                .map {
+                    NumberUtils.format(
+                        it
+                    )
+                }
+
+            messageThread
+                .compose(Transformers.takeWhen(messageThreadCardViewClicked))
+                .subscribe { markedAsRead(it, sharedPreferences) }
+        }
+
+        override fun configureWith(messageThread: MessageThread) {
+            this.messageThread.onNext(messageThread)
+        }
+
+        override fun messageThreadCardViewClicked() {
+            messageThreadCardViewClicked.onNext(null)
+        }
+
+        override fun cardViewIsElevated(): Observable<Boolean> = cardViewIsElevated
+
+        override fun dateDateTime(): Observable<DateTime> = dateDateTime
+
+        override fun dateTextViewIsBold(): Observable<Boolean> = dateTextViewIsBold
+
+        override fun messageBodyTextViewText(): Observable<String> = messageBodyTextViewText
+
+        override fun messageBodyTextIsBold(): Observable<Boolean> = messageBodyTextIsBold
+
+        override fun participantAvatarUrl(): Observable<String> = participantAvatarUrl
+
+        override fun participantNameTextViewIsBold(): Observable<Boolean> = participantNameTextViewIsBold
+
+        override fun participantNameTextViewText(): Observable<String> = participantNameTextViewText
+
+        override fun startMessagesActivity(): Observable<MessageThread> = startMessagesActivity
+
+        override fun unreadCountTextViewIsGone(): Observable<Boolean> = unreadCountTextViewIsGone
+
+        override fun unreadCountTextViewText(): Observable<String> = unreadCountTextViewText
+
+        companion object {
+            private fun cacheKey(messageThread: MessageThread): String {
+                return SharedPreferenceKey.MESSAGE_THREAD_HAS_UNREAD_MESSAGES + messageThread.id()
+            }
+
+            private fun hasUnreadMessages(
+                messageThread: MessageThread,
+                sharedPreferences: SharedPreferences
+            ): Boolean {
+                return sharedPreferences.getBoolean(
+                    cacheKey(messageThread),
+                    messageThread.unreadMessagesCount() > 0
+                )
+            }
+
+            private fun markedAsRead(
+                messageThread: MessageThread,
+                sharedPreferences: SharedPreferences
+            ) {
+                val editor = sharedPreferences.edit()
+                editor.putBoolean(cacheKey(messageThread), false)
+                editor.apply()
+            }
+
+            private fun setHasUnreadMessagesPreference(
+                messageThread: MessageThread,
+                sharedPreferences: SharedPreferences
+            ) {
+                val editor = sharedPreferences.edit()
+                editor.putBoolean(cacheKey(messageThread), messageThread.unreadMessagesCount() > 0)
+                editor.apply()
+            }
+        }
     }
-    @Override public @NonNull Observable<DateTime> dateDateTime() {
-      return this.dateDateTime;
-    }
-    @Override public @NonNull Observable<Boolean> dateTextViewIsBold() {
-      return this.dateTextViewIsBold;
-    }
-    @Override public @NonNull Observable<String> messageBodyTextViewText() {
-      return this.messageBodyTextViewText;
-    }
-    @Override public @NonNull Observable<Boolean> messageBodyTextIsBold() {
-      return this.messageBodyTextIsBold;
-    }
-    @Override public @NonNull Observable<String> participantAvatarUrl() {
-      return this.participantAvatarUrl;
-    }
-    @Override public @NonNull Observable<Boolean> participantNameTextViewIsBold() {
-      return this.participantNameTextViewIsBold;
-    }
-    @Override public @NonNull Observable<String> participantNameTextViewText() {
-      return this.participantNameTextViewText;
-    }
-    @Override public @NonNull Observable<MessageThread> startMessagesActivity() {
-      return this.startMessagesActivity;
-    }
-    @Override public @NonNull Observable<Boolean> unreadCountTextViewIsGone() {
-      return this.unreadCountTextViewIsGone;
-    }
-    @Override public @NonNull Observable<String> unreadCountTextViewText() {
-      return this.unreadCountTextViewText;
-    }
-  }
 }

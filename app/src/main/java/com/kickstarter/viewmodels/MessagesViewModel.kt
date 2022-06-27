@@ -1,526 +1,578 @@
-package com.kickstarter.viewmodels;
-
-import android.util.Pair;
-
-import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.CurrentUserType;
-import com.kickstarter.libs.Either;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.MessagePreviousScreenType;
-import com.kickstarter.libs.utils.ListUtils;
-import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.PairUtils;
-import com.kickstarter.libs.utils.extensions.IntExtKt;
-import com.kickstarter.libs.utils.extensions.StringExt;
-import com.kickstarter.models.Backing;
-import com.kickstarter.models.BackingWrapper;
-import com.kickstarter.models.Message;
-import com.kickstarter.models.MessageThread;
-import com.kickstarter.models.Project;
-import com.kickstarter.models.User;
-import com.kickstarter.services.ApiClientType;
-import com.kickstarter.services.apiresponses.ErrorEnvelope;
-import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.activities.BackingActivity;
-import com.kickstarter.ui.activities.MessagesActivity;
-import com.kickstarter.ui.data.MessageSubject;
-import com.kickstarter.ui.data.MessagesData;
-
-import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import rx.Notification;
-import rx.Observable;
-import rx.subjects.BehaviorSubject;
-import rx.subjects.PublishSubject;
-
-import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
-import static com.kickstarter.libs.rx.transformers.Transformers.errors;
-import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
-import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
-import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
-import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
-import static com.kickstarter.libs.rx.transformers.Transformers.values;
-import com.kickstarter.libs.utils.extensions.BoolenExtKt;
-
-public interface MessagesViewModel {
-
-  interface Inputs {
-    /** Call with the app bar's vertical offset value. */
-    void appBarOffset(final int verticalOffset);
-
-    /** Call with the app bar's total scroll range. */
-    void appBarTotalScrollRange(final int totalScrollRange);
-
-    /** Call when the back or close button has been clicked. */
-    void backOrCloseButtonClicked();
-
-    /** Call when the message edit text changes. */
-    void messageEditTextChanged(String messageBody);
-
-    /** Call when the message edit text is in focus. */
-    void messageEditTextIsFocused(boolean isFocused);
-
-    /** Call when the send message button has been clicked. */
-    void sendMessageButtonClicked();
-
-    /** Call when the view pledge button is clicked. */
-    void viewPledgeButtonClicked();
-  }
-
-  interface Outputs {
-    /** Emits a boolean that determines if the back button should be gone. */
-    Observable<Boolean> backButtonIsGone();
-
-    /** Emits the backing and project to populate the backing info header. */
-    Observable<Pair<Backing, Project>> backingAndProject();
-
-    /** Emits a boolean that determines if the backing info view should be gone. */
-    Observable<Boolean> backingInfoViewIsGone();
-
-    /** Emits a boolean that determines if the close button should be gone. */
-    Observable<Boolean> closeButtonIsGone();
-
-    /** Emits the creator name to be displayed. */
-    Observable<String> creatorNameTextViewText();
-
-    /** Emits when we should navigate back. */
-    Observable<Void> goBack();
-
-    /** Emits a boolean to determine if the loading indicator should be gone. */
-    Observable<Boolean> loadingIndicatorViewIsGone();
-
-    /** Emits a string to display as the message edit text hint. */
-    Observable<String> messageEditTextHint();
-
-    /** Emits when the edit text should request focus. */
-    Observable<Void> messageEditTextShouldRequestFocus();
-
-    /** Emits a list of messages to be displayed. */
-    Observable<List<Message>> messageList();
-
-    /** Emits the project name to be displayed. */
-    Observable<String> projectNameTextViewText();
-
-    /** Emits the project name to be displayed in the toolbar. */
-    Observable<String> projectNameToolbarTextViewText();
-
-    /** Emits the bottom padding for the recycler view. */
-    Observable<Void> recyclerViewDefaultBottomPadding();
-
-    /** Emits the initial bottom padding for the recycler view to account for the app bar scroll range. */
-    Observable<Integer> recyclerViewInitialBottomPadding();
-
-    /** Emits when the RecyclerView should be scrolled to the bottom. */
-    Observable<Void> scrollRecyclerViewToBottom();
-
-    /** Emits a boolean that determines if the Send button should be enabled. */
-    Observable<Boolean> sendMessageButtonIsEnabled();
-
-    /** Emits a string to set the message edit text to. */
-    Observable<String> setMessageEditText();
-
-    /** Emits a string to display in the message error toast. */
-    Observable<String> showMessageErrorToast();
-
-    /** Emits when we should start the {@link BackingActivity}. */
-    Observable<BackingWrapper> startBackingActivity();
-
-    /** Emits when the thread has been marked as read. */
-    Observable<Void> successfullyMarkedAsRead();
-
-    /** Emits a boolean to determine when the toolbar should be expanded. */
-    Observable<Boolean> toolbarIsExpanded();
-
-    /** Emits a boolean that determines if the View pledge button should be gone. */
-    Observable<Boolean> viewPledgeButtonIsGone();
-  }
-
-  final class ViewModel extends ActivityViewModel<MessagesActivity> implements Inputs, Outputs {
-    private final ApiClientType client;
-    private final CurrentUserType currentUser;
-
-    public ViewModel(final @NonNull Environment environment) {
-      super(environment);
-
-      this.client = environment.apiClient();
-      this.currentUser = environment.currentUser();
-
-      final Observable<Either<MessageThread, Pair<Project, Backing>>> configData = intent()
-        .map(i -> {
-          final MessageThread messageThread = i.getParcelableExtra(IntentKey.MESSAGE_THREAD);
-          return messageThread != null
-            ? new Either.Left<>(messageThread)
-            : new Either.Right<>(
-            Pair.create(i.getParcelableExtra(IntentKey.PROJECT), i.getParcelableExtra(IntentKey.BACKING))
-          );
-        });
-
-      final Observable<MessagePreviousScreenType> messageAccountTypeObservable = intent()
-        .map(i -> i.getSerializableExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT))
-        .ofType(MessagePreviousScreenType.class);
-
-      final Observable<Backing> configBacking = configData
-        .map(Either::right)
-        .filter(ObjectUtils::isNotNull)
-        .map(PairUtils::second);
-
-      final Observable<MessageThread> configThread = configData
-        .map(Either::left)
-        .filter(ObjectUtils::isNotNull);
-
-      final Observable<Either<Backing, MessageThread>> backingOrThread = Observable.merge(
-        configBacking.map(Either.Left::new),
-        configThread.map(Either.Right::new)
-      );
-
-      final PublishSubject<Boolean> messageIsSending = PublishSubject.create();
-      final PublishSubject<Boolean> messagesAreLoading = PublishSubject.create();
-
-      final Observable<Project> project = configData
-        .map(data -> data.either(MessageThread::project, projectAndBacking -> projectAndBacking.first));
-
-      final Observable<MessageThreadEnvelope> initialMessageThreadEnvelope = backingOrThread
-        .switchMap(bOrT -> {
-          final Observable<MessageThreadEnvelope> response = bOrT.either(
-            this.client::fetchMessagesForBacking,
-            this.client::fetchMessagesForThread
-          );
-
-          return response
-            .doOnSubscribe(() -> messagesAreLoading.onNext(true))
-            .doAfterTerminate(() -> messagesAreLoading.onNext(false))
-            .compose(neverError())
-            .share();
-        });
-
-      this.loadingIndicatorViewIsGone = messagesAreLoading
-        .map(BoolenExtKt::negate)
-        .distinctUntilChanged();
-
-      // If view model was not initialized with a MessageThread, participant is
-      // the project creator.
-      final Observable<User> participant = Observable.combineLatest(
-        initialMessageThreadEnvelope.map(MessageThreadEnvelope::messageThread),
-        project,
-        Pair::create
-      )
-        .map(threadAndProject ->
-          threadAndProject.first != null
-            ? threadAndProject.first.participant()
-            : threadAndProject.second.creator()
-        )
-        .take(1);
-
-      participant
-        .map(User::name)
-        .compose(bindToLifecycle())
-        .subscribe(this.messageEditTextHint);
-
-      final Observable<MessagesData> messagesData = Observable.combineLatest(
-        backingOrThread,
-        project,
-        participant,
-        this.currentUser.observable(),
-        MessagesData::new
-      );
-
-      final Observable<MessageSubject> messageSubject = messagesData
-        .map(data ->
-          data.getBackingOrThread().either(
-            // Message subject is the project if the current user is the backer,
-            // otherwise the current user is the creator and will send a message to the backing.
-            backing -> backing.backerId() == data.getCurrentUser().id()
-              ? new MessageSubject.Project(data.getProject())
-              : new MessageSubject.Backing(backing),
-            // If instantiated with a message thread the thread is the subject.
-            MessageSubject.MessageThread::new
-          )
-        );
-
-      final Observable<Notification<Message>> messageNotification = messageSubject
-        .compose(combineLatestPair(this.messageEditTextChanged))
-        .compose(takeWhen(this.sendMessageButtonClicked))
-        .switchMap(messageSubjectAndBody ->
-          this.client.sendMessage(messageSubjectAndBody.first, messageSubjectAndBody.second)
-            .doOnSubscribe(() -> messageIsSending.onNext(true))
-        )
-        .materialize()
-        .share();
-
-      final Observable<Message> messageSent = messageNotification.compose(values()).ofType(Message.class);
-
-      final Observable<MessageThreadEnvelope> sentMessageThreadEnvelope = backingOrThread
-        .compose(takeWhen(messageSent))
-        .switchMap(bOrT -> bOrT.either(this.client::fetchMessagesForBacking, this.client::fetchMessagesForThread))
-        .compose(neverError())
-        .share();
-
-      final Observable<MessageThreadEnvelope> messageThreadEnvelope = Observable.merge(
-        initialMessageThreadEnvelope,
-        sentMessageThreadEnvelope
-      )
-        .distinctUntilChanged();
-
-      final Observable<Boolean> messageHasBody = this.messageEditTextChanged
-        .map(it -> !ObjectUtils.isNull(it) && StringExt.isPresent(it));
-
-      messageThreadEnvelope
-        .map(MessageThreadEnvelope::messageThread)
-        .filter(ObjectUtils::isNotNull)
-        .switchMap(this.client::markAsRead)
-        .materialize()
-        .compose(ignoreValues())
-        .compose(bindToLifecycle())
-        .subscribe(this.successfullyMarkedAsRead::onNext);
-
-      final Observable<List<Message>> initialMessages = initialMessageThreadEnvelope
-        .map(MessageThreadEnvelope::messages);
-
-      final Observable<List<Message>> newMessages = sentMessageThreadEnvelope
-        .map(MessageThreadEnvelope::messages);
-
-      // Concat distinct messages to initial message list. Return just the new messages if
-      // initial list is null, i.e. a new message thread.
-      final Observable<List<Message>> updatedMessages = initialMessages
-        .compose(takePairWhen(newMessages))
-        .map(mm -> mm.first == null ? mm.second : ListUtils.concatDistinct(mm.first, mm.second));
-
-      // Load the initial messages once, subsequently load newer messages if any.
-      initialMessages
-        .filter(ObjectUtils::isNotNull)
-        .take(1)
-        .compose(bindToLifecycle())
-        .subscribe(this.messageList::onNext);
-
-      updatedMessages
-        .compose(bindToLifecycle())
-        .subscribe(this.messageList::onNext);
-
-      project
-        .map(p -> p.creator().name())
-        .compose(bindToLifecycle())
-        .subscribe(this.creatorNameTextViewText::onNext);
-
-      initialMessageThreadEnvelope
-        .map(MessageThreadEnvelope::messages)
-        .filter(ObjectUtils::isNull)
-        .take(1)
-        .compose(ignoreValues())
-        .compose(bindToLifecycle())
-        .subscribe(this.messageEditTextShouldRequestFocus::onNext);
-
-      final Observable<Pair<Backing, Project>> backingAndProject = messagesData
-        .switchMap(data -> backingAndProjectFromData(data, this.client));
-
-      backingAndProject
-        .filter(ObjectUtils::isNotNull)
-        .compose(bindToLifecycle())
-        .subscribe(this.backingAndProject::onNext);
-
-      backingAndProject
-        .map(ObjectUtils::isNull)
-        .compose(bindToLifecycle())
-        .subscribe(this.backingInfoViewIsGone::onNext);
-
-      messageAccountTypeObservable
-        .map(c -> c.equals(MessagePreviousScreenType.BACKER_MODAL))
-        .compose(bindToLifecycle())
-        .subscribe(this.viewPledgeButtonIsGone::onNext);
-
-      this.backButtonIsGone = this.viewPledgeButtonIsGone.map(BoolenExtKt::negate);
-      this.closeButtonIsGone = this.backButtonIsGone.map(BoolenExtKt::negate);
-      this.goBack = this.backOrCloseButtonClicked;
-      this.projectNameToolbarTextViewText = this.projectNameTextViewText;
-      this.scrollRecyclerViewToBottom = updatedMessages.compose(ignoreValues());
-      this.sendMessageButtonIsEnabled = Observable.merge(messageHasBody, messageIsSending.map(BoolenExtKt::negate));
-      this.setMessageEditText = messageSent.map(__ -> "");
-
-      this.toolbarIsExpanded = this.messageList
-        .compose(takePairWhen(this.messageEditTextIsFocused))
-        .map(PairUtils::second)
-        .map(BoolenExtKt::negate);
-
-      messageNotification
-        .compose(errors())
-        .map(ErrorEnvelope::fromThrowable)
-        .map(ErrorEnvelope::errorMessage)
-        .compose(bindToLifecycle())
-        .subscribe(this.showMessageErrorToast::onNext);
-
-      project
-        .map(Project::name)
-        .compose(bindToLifecycle())
-        .subscribe(this.projectNameTextViewText::onNext);
-
-      messageThreadEnvelope
-        .compose(combineLatestPair(messagesData))
-        .compose(takeWhen(this.viewPledgeButtonClicked))
-        .map(this::projectAndBacker)
-        .compose(combineLatestPair(backingAndProject))
-        .map(it -> new BackingWrapper(it.second.first, it.first.second, it.first.first))
-        .compose(bindToLifecycle())
-        .subscribe(this.startBackingActivity::onNext);
-
-
-      // Set only the initial padding once to counteract the appbar offset.
-      this.recyclerViewInitialBottomPadding = this.appBarTotalScrollRange.take(1);
-
-      // Take only the first instance in which the offset changes.
-      this.recyclerViewDefaultBottomPadding = this.appBarOffset
-        .filter(IntExtKt::isNonZero)
-        .compose(ignoreValues())
-        .take(1);
+package com.kickstarter.viewmodels
+
+import android.content.Intent
+import android.util.Pair
+import com.kickstarter.libs.ActivityViewModel
+import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.Either
+import com.kickstarter.libs.Either.Left
+import com.kickstarter.libs.Either.Right
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MessagePreviousScreenType
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.ListUtils
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.PairUtils
+import com.kickstarter.libs.utils.extensions.isNonZero
+import com.kickstarter.libs.utils.extensions.isPresent
+import com.kickstarter.libs.utils.extensions.negate
+import com.kickstarter.models.Backing
+import com.kickstarter.models.BackingWrapper
+import com.kickstarter.models.Message
+import com.kickstarter.models.MessageThread
+import com.kickstarter.models.Project
+import com.kickstarter.models.User
+import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.apiresponses.ErrorEnvelope
+import com.kickstarter.services.apiresponses.MessageThreadEnvelope
+import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.activities.MessagesActivity
+import com.kickstarter.ui.data.MessageSubject
+import com.kickstarter.ui.data.MessagesData
+import rx.Observable
+import rx.subjects.BehaviorSubject
+import rx.subjects.PublishSubject
+
+interface MessagesViewModel {
+    interface Inputs {
+        /** Call with the app bar's vertical offset value.  */
+        fun appBarOffset(verticalOffset: Int)
+
+        /** Call with the app bar's total scroll range.  */
+        fun appBarTotalScrollRange(totalScrollRange: Int)
+
+        /** Call when the back or close button has been clicked.  */
+        fun backOrCloseButtonClicked()
+
+        /** Call when the message edit text changes.  */
+        fun messageEditTextChanged(messageBody: String)
+
+        /** Call when the message edit text is in focus.  */
+        fun messageEditTextIsFocused(isFocused: Boolean)
+
+        /** Call when the send message button has been clicked.  */
+        fun sendMessageButtonClicked()
+
+        /** Call when the view pledge button is clicked.  */
+        fun viewPledgeButtonClicked()
     }
 
-    private static @Nullable Observable<Pair<Backing, Project>> backingAndProjectFromData(final @NonNull MessagesData data,
-      final @NonNull ApiClientType client) {
+    interface Outputs {
+        /** Emits a boolean that determines if the back button should be gone.  */
+        fun backButtonIsGone(): Observable<Boolean>
 
-      return data.getBackingOrThread().either(
-        backing -> Observable.just(Pair.create(backing, data.getProject())),
-        thread -> {
-          final Observable<Notification<Backing>> backingNotification = data.getProject().isBacking()
-            ? client.fetchProjectBacking(data.getProject(), data.getCurrentUser()).materialize().share()
-            : client.fetchProjectBacking(data.getProject(), data.getParticipant()).materialize().share();
+        /** Emits the backing and project to populate the backing info header.  */
+        fun backingAndProject(): Observable<Pair<Backing, Project>>
 
-          return Observable.merge(
-            backingNotification.compose(errors()).map(__ -> null),
-            backingNotification.compose(values()).map(b -> Pair.create(b, data.getProject()))
-          )
-            .take(1);
+        /** Emits a boolean that determines if the backing info view should be gone.  */
+        fun backingInfoViewIsGone(): Observable<Boolean>
+
+        /** Emits a boolean that determines if the close button should be gone.  */
+        fun closeButtonIsGone(): Observable<Boolean>
+
+        /** Emits the creator name to be displayed.  */
+        fun creatorNameTextViewText(): Observable<String>
+
+        /** Emits when we should navigate back.  */
+        fun goBack(): Observable<Void>
+
+        /** Emits a boolean to determine if the loading indicator should be gone.  */
+        fun loadingIndicatorViewIsGone(): Observable<Boolean>
+
+        /** Emits a string to display as the message edit text hint.  */
+        fun messageEditTextHint(): Observable<String>
+
+        /** Emits when the edit text should request focus.  */
+        fun messageEditTextShouldRequestFocus(): Observable<Void>
+
+        /** Emits a list of messages to be displayed.  */
+        fun messageList(): Observable<List<Message>?>
+
+        /** Emits the project name to be displayed.  */
+        fun projectNameTextViewText(): Observable<String>
+
+        /** Emits the project name to be displayed in the toolbar.  */
+        fun projectNameToolbarTextViewText(): Observable<String>
+
+        /** Emits the bottom padding for the recycler view.  */
+        fun recyclerViewDefaultBottomPadding(): Observable<Void>
+
+        /** Emits the initial bottom padding for the recycler view to account for the app bar scroll range.  */
+        fun recyclerViewInitialBottomPadding(): Observable<Int>
+
+        /** Emits when the RecyclerView should be scrolled to the bottom.  */
+        fun scrollRecyclerViewToBottom(): Observable<Void>
+
+        /** Emits a boolean that determines if the Send button should be enabled.  */
+        fun sendMessageButtonIsEnabled(): Observable<Boolean>
+
+        /** Emits a string to set the message edit text to.  */
+        fun setMessageEditText(): Observable<String>
+
+        /** Emits a string to display in the message error toast.  */
+        fun showMessageErrorToast(): Observable<String>
+
+        /** Emits when we should start the [BackingActivity].  */
+        fun startBackingActivity(): Observable<BackingWrapper>
+
+        /** Emits when the thread has been marked as read.  */
+        fun successfullyMarkedAsRead(): Observable<Void>
+
+        /** Emits a boolean to determine when the toolbar should be expanded.  */
+        fun toolbarIsExpanded(): Observable<Boolean>
+
+        /** Emits a boolean that determines if the View pledge button should be gone.  */
+        fun viewPledgeButtonIsGone(): Observable<Boolean>
+    }
+
+    class ViewModel(environment: Environment) :
+        ActivityViewModel<MessagesActivity?>(environment),
+        Inputs,
+        Outputs {
+        private val client: ApiClientType
+        private val currentUser: CurrentUserType
+
+        private fun projectAndBacker(envelopeAndData: Pair<MessageThreadEnvelope, MessagesData>): Pair<Project, User> {
+            val project = envelopeAndData.second.project
+            val backer =
+                if (project.isBacking()) envelopeAndData.second.currentUser else envelopeAndData.first.messageThread()
+                    ?.participant()
+            return Pair.create(project, backer)
         }
-      );
-    }
 
-    private Pair<Project, User> projectAndBacker(final @NonNull Pair<MessageThreadEnvelope, MessagesData> envelopeAndData) {
-      final Project project = envelopeAndData.second.getProject();
-      final User backer = project.isBacking() ? envelopeAndData.second.getCurrentUser() : envelopeAndData.first.messageThread().participant();
-      return Pair.create(project, backer);
-    }
+        private val appBarOffset = PublishSubject.create<Int>()
+        private val appBarTotalScrollRange = PublishSubject.create<Int>()
+        private val backOrCloseButtonClicked = PublishSubject.create<Void>()
+        private val messageEditTextChanged = PublishSubject.create<String>()
+        private val messageEditTextIsFocused = PublishSubject.create<Boolean?>()
+        private val sendMessageButtonClicked = PublishSubject.create<Void>()
+        private val viewPledgeButtonClicked = PublishSubject.create<Void>()
+        private val backButtonIsGone: Observable<Boolean>
+        private val backingAndProject = BehaviorSubject.create<Pair<Backing, Project>?>()
+        private val backingInfoViewIsGone = BehaviorSubject.create<Boolean>()
+        private val closeButtonIsGone: Observable<Boolean>
+        private val creatorNameTextViewText = BehaviorSubject.create<String>()
+        private val goBack: Observable<Void>
+        private val loadingIndicatorViewIsGone: Observable<Boolean>
+        private val messageEditTextHint = BehaviorSubject.create<String>()
+        private val messageEditTextShouldRequestFocus = PublishSubject.create<Void>()
+        private val messageList = BehaviorSubject.create<List<Message>?>()
+        private val projectNameTextViewText = BehaviorSubject.create<String>()
+        private val projectNameToolbarTextViewText: Observable<String>
+        private val recyclerViewDefaultBottomPadding: Observable<Void>
+        private val recyclerViewInitialBottomPadding: Observable<Int>
+        private val scrollRecyclerViewToBottom: Observable<Void>
+        private val showMessageErrorToast = PublishSubject.create<String>()
+        private val sendMessageButtonIsEnabled: Observable<Boolean>
+        private val setMessageEditText: Observable<String>
+        private val startBackingActivity = PublishSubject.create<BackingWrapper>()
+        private val successfullyMarkedAsRead = BehaviorSubject.create<Void>()
+        private val toolbarIsExpanded: Observable<Boolean>
+        private val viewPledgeButtonIsGone = BehaviorSubject.create<Boolean>()
 
-    private final PublishSubject<Integer> appBarOffset = PublishSubject.create();
-    private final PublishSubject<Integer> appBarTotalScrollRange = PublishSubject.create();
-    private final PublishSubject<Void> backOrCloseButtonClicked = PublishSubject.create();
-    private final PublishSubject<String> messageEditTextChanged = PublishSubject.create();
-    private final PublishSubject<Boolean> messageEditTextIsFocused = PublishSubject.create();
-    private final PublishSubject<Void> sendMessageButtonClicked = PublishSubject.create();
-    private final PublishSubject<Void> viewPledgeButtonClicked = PublishSubject.create();
+        val inputs: Inputs = this
+        val outputs: Outputs = this
 
-    private final Observable<Boolean> backButtonIsGone;
-    private final BehaviorSubject<Pair<Backing, Project>> backingAndProject = BehaviorSubject.create();
-    private final BehaviorSubject<Boolean> backingInfoViewIsGone = BehaviorSubject.create();
-    private final Observable<Boolean> closeButtonIsGone;
-    private final BehaviorSubject<String> creatorNameTextViewText = BehaviorSubject.create();
-    private final Observable<Void> goBack;
-    private final Observable<Boolean> loadingIndicatorViewIsGone;
-    private final BehaviorSubject<String> messageEditTextHint = BehaviorSubject.create();
-    private final PublishSubject<Void> messageEditTextShouldRequestFocus = PublishSubject.create();
-    private final BehaviorSubject<List<Message>> messageList = BehaviorSubject.create();
-    private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
-    private final Observable<String> projectNameToolbarTextViewText;
-    private final Observable<Void> recyclerViewDefaultBottomPadding;
-    private final Observable<Integer> recyclerViewInitialBottomPadding;
-    private final Observable<Void> scrollRecyclerViewToBottom;
-    private final PublishSubject<String> showMessageErrorToast = PublishSubject.create();
-    private final Observable<Boolean> sendMessageButtonIsEnabled;
-    private final Observable<String> setMessageEditText;
-    private final PublishSubject<BackingWrapper> startBackingActivity = PublishSubject.create();
-    private final BehaviorSubject<Void> successfullyMarkedAsRead = BehaviorSubject.create();
-    private final Observable<Boolean> toolbarIsExpanded;
-    private final BehaviorSubject<Boolean> viewPledgeButtonIsGone = BehaviorSubject.create();
+        override fun appBarOffset(verticalOffset: Int) {
+            appBarOffset.onNext(verticalOffset)
+        }
 
-    public final Inputs inputs = this;
-    public final Outputs outputs = this;
+        override fun appBarTotalScrollRange(totalScrollRange: Int) {
+            appBarTotalScrollRange.onNext(totalScrollRange)
+        }
 
-    @Override public void appBarOffset(final int verticalOffset) {
-      this.appBarOffset.onNext(verticalOffset);
-    }
-    @Override public void appBarTotalScrollRange(final int totalScrollRange) {
-      this.appBarTotalScrollRange.onNext(totalScrollRange);
-    }
-    @Override public void backOrCloseButtonClicked() {
-      this.backOrCloseButtonClicked.onNext(null);
-    }
-    @Override public void messageEditTextChanged(final @NonNull String messageBody) {
-      this.messageEditTextChanged.onNext(messageBody);
-    }
-    @Override public void messageEditTextIsFocused(final boolean isFocused) {
-      this.messageEditTextIsFocused.onNext(isFocused);
-    }
-    @Override public void sendMessageButtonClicked() {
-      this.sendMessageButtonClicked.onNext(null);
-    }
-    @Override public void viewPledgeButtonClicked() {
-      this.viewPledgeButtonClicked.onNext(null);
-    }
+        override fun backOrCloseButtonClicked() {
+            backOrCloseButtonClicked.onNext(null)
+        }
 
-    @Override public @NonNull Observable<Boolean> backButtonIsGone() {
-      return this.backButtonIsGone;
+        override fun messageEditTextChanged(messageBody: String) {
+            messageEditTextChanged.onNext(messageBody)
+        }
+
+        override fun messageEditTextIsFocused(isFocused: Boolean) {
+            messageEditTextIsFocused.onNext(isFocused)
+        }
+
+        override fun sendMessageButtonClicked() {
+            sendMessageButtonClicked.onNext(null)
+        }
+
+        override fun viewPledgeButtonClicked() {
+            viewPledgeButtonClicked.onNext(null)
+        }
+
+        override fun backButtonIsGone(): Observable<Boolean> = backButtonIsGone
+        override fun backingAndProject(): Observable<Pair<Backing, Project>> = backingAndProject
+        override fun backingInfoViewIsGone(): Observable<Boolean> = backingInfoViewIsGone
+        override fun closeButtonIsGone(): Observable<Boolean> = closeButtonIsGone
+        override fun goBack(): Observable<Void> = goBack
+        override fun loadingIndicatorViewIsGone(): Observable<Boolean> = loadingIndicatorViewIsGone
+        override fun messageEditTextHint(): Observable<String> = messageEditTextHint
+        override fun messageEditTextShouldRequestFocus(): Observable<Void> = messageEditTextShouldRequestFocus
+        override fun messageList(): Observable<List<Message>?> = messageList
+        override fun creatorNameTextViewText(): Observable<String> = creatorNameTextViewText
+        override fun projectNameTextViewText(): Observable<String> = projectNameTextViewText
+        override fun projectNameToolbarTextViewText(): Observable<String> = projectNameToolbarTextViewText
+        override fun recyclerViewDefaultBottomPadding(): Observable<Void> = recyclerViewDefaultBottomPadding
+        override fun recyclerViewInitialBottomPadding(): Observable<Int> = recyclerViewInitialBottomPadding
+        override fun scrollRecyclerViewToBottom(): Observable<Void> = scrollRecyclerViewToBottom
+        override fun showMessageErrorToast(): Observable<String> = showMessageErrorToast
+        override fun sendMessageButtonIsEnabled(): Observable<Boolean> = sendMessageButtonIsEnabled
+        override fun setMessageEditText(): Observable<String> = setMessageEditText
+        override fun startBackingActivity(): Observable<BackingWrapper> = startBackingActivity
+        override fun successfullyMarkedAsRead(): Observable<Void> = successfullyMarkedAsRead
+        override fun toolbarIsExpanded(): Observable<Boolean> = toolbarIsExpanded
+        override fun viewPledgeButtonIsGone(): Observable<Boolean> = viewPledgeButtonIsGone
+
+        companion object {
+            private fun backingAndProjectFromData(
+                data: MessagesData,
+                client: ApiClientType
+            ): Observable<Pair<Backing, Project>?>? {
+                return data.backingOrThread.either(
+                    { Observable.just(Pair.create(it, data.project)) }
+                ) {
+                    val backingNotification =
+                        if (data.project.isBacking()) client.fetchProjectBacking(
+                            data.project,
+                            data.currentUser
+                        ).materialize().share() else client.fetchProjectBacking(
+                            data.project,
+                            data.participant
+                        ).materialize().share()
+
+                    Observable.merge(
+                        backingNotification.compose(Transformers.errors())
+                            .map { null },
+                        backingNotification.compose(Transformers.values())
+                            .map { Pair.create(it, data.project) }
+                    )
+                        .take(1)
+                }
+            }
+        }
+
+        init {
+            client = requireNotNull(environment.apiClient())
+            currentUser = requireNotNull(environment.currentUser())
+
+            val configData = intent()
+                .map { i: Intent ->
+                    val messageThread =
+                        i.getParcelableExtra<MessageThread>(IntentKey.MESSAGE_THREAD)
+                    messageThread?.let { Left(it) }
+                        ?: Right<MessageThread, Pair<Project?, Backing?>>(
+                            Pair.create(
+                                i.getParcelableExtra(IntentKey.PROJECT),
+                                i.getParcelableExtra(IntentKey.BACKING)
+                            )
+                        )
+                }
+
+            val messageAccountTypeObservable = intent()
+                .map { it.getSerializableExtra(IntentKey.MESSAGE_SCREEN_SOURCE_CONTEXT) }
+                .ofType(MessagePreviousScreenType::class.java)
+
+            val configBacking = configData
+                .map { it.right() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .map { PairUtils.second(it) }
+                .map { requireNotNull(it) }
+
+            val configThread = configData
+                .map { it.left() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+
+            val backingOrThread: Observable<Either<Backing, MessageThread>> = Observable.merge(
+                configBacking.map { Left(it) },
+                configThread.map { Right(it) }
+            )
+
+            val messageIsSending = PublishSubject.create<Boolean>()
+            val messagesAreLoading = PublishSubject.create<Boolean>()
+
+            val project = configData
+                .map { data: Either<MessageThread, Pair<Project?, Backing?>> ->
+                    data.either({ obj: MessageThread -> obj.project() }) {
+                            projectAndBacking: Pair<Project?, Backing?> ->
+                        projectAndBacking.first
+                    }
+                }.filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+
+            val initialMessageThreadEnvelope = backingOrThread
+                .switchMap {
+                    val response = it.either({ backing ->
+                        client.fetchMessagesForBacking(
+                            backing
+                        )
+                    }) { messageThread ->
+                        client.fetchMessagesForThread(
+                            messageThread
+                        )
+                    }
+                    response
+                        .doOnSubscribe { messagesAreLoading.onNext(true) }
+                        .doAfterTerminate { messagesAreLoading.onNext(false) }
+                        .compose(Transformers.neverError())
+                        .share()
+                }
+
+            loadingIndicatorViewIsGone = messagesAreLoading
+                .map { it.negate() }
+                .distinctUntilChanged()
+
+            // If view model was not initialized with a MessageThread, participant is
+            // the project creator.
+            val participant =
+                Observable.combineLatest(
+                    initialMessageThreadEnvelope.map { it.messageThread() },
+                    project
+                ) { a: MessageThread?, b: Project? -> Pair.create(a, b) }
+                    .map {
+                        if (it.first != null)
+                            it?.first?.participant()
+                        else
+                            it.second?.creator()
+                    }.filter { ObjectUtils.isNotNull(it) }
+                    .map { requireNotNull(it) }
+                    .take(1)
+
+            participant
+                .map { it.name() }
+                .compose(bindToLifecycle())
+                .subscribe(messageEditTextHint)
+
+            val messagesData = Observable.combineLatest(
+                backingOrThread,
+                project,
+                participant,
+                currentUser.observable()
+            ) { backingOrThread: Either<Backing, MessageThread>, project: Project, participant: User, currentUser: User ->
+                MessagesData(
+                    backingOrThread,
+                    project,
+                    participant,
+                    currentUser
+                )
+            }
+
+            val messageSubject = messagesData
+                .map { (backingOrThread1, project1, _, currentUser1): MessagesData ->
+                    backingOrThread1.either( // Message subject is the project if the current user is the backer,
+                        // otherwise the current user is the creator and will send a message to the backing.
+                        { backing: Backing ->
+                            if (backing.backerId() == currentUser1.id()) MessageSubject.Project(
+                                project1
+                            ) else MessageSubject.Backing(backing)
+                        }) { messageThread: MessageThread ->
+                        MessageSubject.MessageThread(
+                            messageThread
+                        )
+                    }
+                }
+
+            val messageNotification = messageSubject
+                .compose(Transformers.combineLatestPair(messageEditTextChanged))
+                .compose(
+                    Transformers.takeWhen(
+                        sendMessageButtonClicked
+                    )
+                )
+                .switchMap {
+                    client.sendMessage(
+                        it.first, it.second
+                    )
+                        .doOnSubscribe { messageIsSending.onNext(true) }
+                }
+                .materialize()
+                .share()
+
+            val messageSent = messageNotification.compose(Transformers.values()).ofType(
+                Message::class.java
+            )
+
+            val sentMessageThreadEnvelope = backingOrThread
+                .compose(Transformers.takeWhen(messageSent))
+                .switchMap {
+                    it.either({ backing: Backing ->
+                        client.fetchMessagesForBacking(
+                            backing
+                        )
+                    }) { messageThread: MessageThread ->
+                        client.fetchMessagesForThread(
+                            messageThread
+                        )
+                    }
+                }
+                .compose(Transformers.neverError())
+                .share()
+
+            val messageThreadEnvelope = Observable.merge(
+                initialMessageThreadEnvelope,
+                sentMessageThreadEnvelope
+            )
+                .distinctUntilChanged()
+
+            val messageHasBody = messageEditTextChanged
+                .map { !ObjectUtils.isNull(it) && it.isPresent() }
+
+            messageThreadEnvelope
+                .map { it.messageThread() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .switchMap {
+                    client.markAsRead(
+                        it
+                    )
+                }
+                .materialize()
+                .compose(Transformers.ignoreValues())
+                .compose(bindToLifecycle())
+                .subscribe { successfullyMarkedAsRead.onNext(it) }
+
+            val initialMessages = initialMessageThreadEnvelope
+                .map { it.messages() }
+
+            val newMessages = sentMessageThreadEnvelope
+                .map { it.messages() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+
+            // Concat distinct messages to initial message list. Return just the new messages if
+            // initial list is null, i.e. a new message thread.
+            val updatedMessages = initialMessages
+                .compose(
+                    Transformers.takePairWhen(
+                        newMessages
+                    )
+                )
+                .map {
+                    if (it?.first == null)
+                        it?.second
+                    else {
+                        it?.first?.let {
+                                initialMessages ->
+                            ListUtils.concatDistinct(
+                                initialMessages, it?.second
+                            )
+                        }
+                    }
+                }
+
+            // Load the initial messages once, subsequently load newer messages if any.
+            initialMessages
+                .filter { ObjectUtils.isNotNull(it) }
+                .take(1)
+                .compose(bindToLifecycle())
+                .subscribe { v: List<Message>? -> messageList.onNext(v) }
+
+            updatedMessages
+                .compose(bindToLifecycle())
+                .subscribe { v: List<Message>? -> messageList.onNext(v) }
+
+            project
+                .map { it.creator().name() }
+                .compose(bindToLifecycle())
+                .subscribe { v: String -> creatorNameTextViewText.onNext(v) }
+
+            initialMessageThreadEnvelope
+                .map { it.messages() }
+                .filter { ObjectUtils.isNull(it) }
+                .take(1)
+                .compose(Transformers.ignoreValues())
+                .compose(bindToLifecycle())
+                .subscribe { messageEditTextShouldRequestFocus.onNext(it) }
+
+            val backingAndProject = messagesData
+                .switchMap { backingAndProjectFromData(it, client) }
+
+            backingAndProject
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
+                .subscribe { this.backingAndProject.onNext(it) }
+
+            backingAndProject
+                .map { ObjectUtils.isNull(it) }
+                .compose(bindToLifecycle())
+                .subscribe { backingInfoViewIsGone.onNext(it) }
+
+            messageAccountTypeObservable
+                .map { c: MessagePreviousScreenType -> c == MessagePreviousScreenType.BACKER_MODAL }
+                .compose(bindToLifecycle())
+                .subscribe { v: Boolean -> viewPledgeButtonIsGone.onNext(v) }
+
+            backButtonIsGone = viewPledgeButtonIsGone.map { it.negate() }
+
+            closeButtonIsGone = backButtonIsGone.map { it.negate() }
+
+            goBack = backOrCloseButtonClicked
+
+            projectNameToolbarTextViewText = projectNameTextViewText
+
+            scrollRecyclerViewToBottom = updatedMessages.compose(Transformers.ignoreValues())
+
+            sendMessageButtonIsEnabled = Observable.merge(
+                messageHasBody, messageIsSending.map { it.negate() }
+            )
+
+            setMessageEditText = messageSent.map { "" }
+
+            toolbarIsExpanded = messageList
+                .compose(
+                    Transformers.takePairWhen(
+                        messageEditTextIsFocused
+                    )
+                )
+                .map { PairUtils.second(it) }
+                .map { it.negate() }
+
+            messageNotification
+                .compose(Transformers.errors())
+                .map { ErrorEnvelope.fromThrowable(it) }
+                .map { it?.errorMessage() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .compose(bindToLifecycle())
+                .subscribe { showMessageErrorToast.onNext(it) }
+
+            project
+                .map { it.name() }
+                .compose(bindToLifecycle())
+                .subscribe { projectNameTextViewText.onNext(it) }
+
+            messageThreadEnvelope
+                .compose(Transformers.combineLatestPair(messagesData))
+                .compose(Transformers.takeWhen(viewPledgeButtonClicked))
+                .map {
+                    projectAndBacker(
+                        it
+                    )
+                }
+                .compose(
+                    Transformers.combineLatestPair(
+                        backingAndProject.filter { ObjectUtils.isNotNull(it) }
+                            .map { requireNotNull(it) }
+                    )
+                )
+                .map {
+                    BackingWrapper(
+                        it.second.first, it.first.second, it.first.first
+                    )
+                }
+                .compose(bindToLifecycle())
+                .subscribe { v: BackingWrapper -> startBackingActivity.onNext(v) }
+
+            // Set only the initial padding once to counteract the appbar offset.
+            recyclerViewInitialBottomPadding = appBarTotalScrollRange.take(1)
+
+            // Take only the first instance in which the offset changes.
+            recyclerViewDefaultBottomPadding = appBarOffset
+                .filter { it.isNonZero() }
+                .compose(Transformers.ignoreValues())
+                .take(1)
+        }
     }
-    @Override public @NonNull Observable<Pair<Backing, Project>> backingAndProject() {
-      return this.backingAndProject;
-    }
-    @Override public @NonNull Observable<Boolean> backingInfoViewIsGone() {
-      return this.backingInfoViewIsGone;
-    }
-    @Override public @NonNull Observable<Boolean> closeButtonIsGone() {
-      return this.closeButtonIsGone;
-    }
-    @Override public @NonNull Observable<Void> goBack() {
-      return this.goBack;
-    }
-    @Override public @NonNull Observable<Boolean> loadingIndicatorViewIsGone() {
-      return this.loadingIndicatorViewIsGone;
-    }
-    @Override public @NonNull Observable<String> messageEditTextHint() {
-      return this.messageEditTextHint;
-    }
-    @Override public @NonNull Observable<Void> messageEditTextShouldRequestFocus() {
-      return this.messageEditTextShouldRequestFocus;
-    }
-    @Override public @NonNull Observable<List<Message>> messageList() {
-      return this.messageList;
-    }
-    @Override public @NonNull Observable<String> creatorNameTextViewText() {
-      return this.creatorNameTextViewText;
-    }
-    @Override public @NonNull Observable<String> projectNameTextViewText() {
-      return this.projectNameTextViewText;
-    }
-    @Override public @NonNull Observable<String> projectNameToolbarTextViewText() {
-      return this.projectNameToolbarTextViewText;
-    }
-    @Override public @NonNull Observable<Void> recyclerViewDefaultBottomPadding() {
-      return this.recyclerViewDefaultBottomPadding;
-    }
-    @Override public @NonNull Observable<Integer> recyclerViewInitialBottomPadding() {
-      return this.recyclerViewInitialBottomPadding;
-    }
-    @Override public @NonNull Observable<Void> scrollRecyclerViewToBottom() {
-      return this.scrollRecyclerViewToBottom;
-    }
-    @Override public @NonNull Observable<String> showMessageErrorToast() {
-      return this.showMessageErrorToast;
-    }
-    @Override public @NonNull Observable<Boolean> sendMessageButtonIsEnabled() {
-      return this.sendMessageButtonIsEnabled;
-    }
-    @Override public @NonNull Observable<String> setMessageEditText() {
-      return this.setMessageEditText;
-    }
-    @Override public @NonNull Observable<BackingWrapper> startBackingActivity() {
-      return this.startBackingActivity;
-    }
-    @Override public @NonNull Observable<Void> successfullyMarkedAsRead() {
-      return this.successfullyMarkedAsRead;
-    }
-    @Override public @NonNull Observable<Boolean> toolbarIsExpanded() {
-      return this.toolbarIsExpanded;
-    }
-    @Override public @NonNull Observable<Boolean> viewPledgeButtonIsGone() {
-      return this.viewPledgeButtonIsGone;
-    }
-  }
 }

@@ -67,8 +67,10 @@ class MessageThreadsActivity : BaseActivity<MessageThreadsViewModel.ViewModel>()
             .subscribe { binding.unreadCountTextView.text = getString(R.string.No_unread_messages) }
         viewModel.outputs.messageThreadList()
             .compose(bindToLifecycle())
-            .compose<List<MessageThread?>>(Transformers.observeForUI())
-            .subscribe { adapter.messageThreads(it) }
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                adapter.messageThreads(it)
+            }
 
         viewModel.outputs.unreadCountTextViewColorInt()
             .compose(bindToLifecycle())

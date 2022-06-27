@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import android.content.Intent
 import android.graphics.Typeface
 import android.util.Pair
 import com.kickstarter.R
@@ -73,8 +74,16 @@ interface MessageThreadsViewModel {
 
     class ViewModel(environment: Environment) :
         ActivityViewModel<MessageThreadsActivity?>(environment), Inputs, Outputs {
-        private val client: ApiClientType
-        private val currentUser: CurrentUserType
+        private val client: ApiClientType?
+        private val currentUser: CurrentUserType?
+        private fun getStringResForMailbox(mailbox: Mailbox): Int {
+            return if (mailbox === Mailbox.INBOX) {
+                R.string.messages_navigation_inbox
+            } else {
+                R.string.messages_navigation_sent
+            }
+        }
+
         private val mailbox = PublishSubject.create<Mailbox>()
         private val nextPage = PublishSubject.create<Void?>()
         private val onResume = PublishSubject.create<Void?>()
@@ -93,156 +102,6 @@ interface MessageThreadsViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        init {
-            client = requireNotNull(environment.apiClient())
-            currentUser = requireNotNull(environment.currentUser())
-
-            // NB: project from intent can be null.
-            val initialProject = intent()
-                .map { it.getParcelableExtra<Project>(IntentKey.PROJECT) }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
-
-            val refreshUserOrProject = Observable.merge(onResume, swipeRefresh)
-
-            val freshUser = intent()
-                .compose(Transformers.takeWhen(refreshUserOrProject))
-                .switchMap { client.fetchCurrentUser() }
-                .retry(2)
-                .compose(Transformers.neverError())
-
-            freshUser.subscribe {
-                currentUser.refresh(it)
-            }
-
-            val project = Observable.merge(
-                initialProject,
-                initialProject
-                    .compose(Transformers.takeWhen(refreshUserOrProject))
-                    .map { it.param() }
-                    .switchMap {
-                        client.fetchProject(
-                            it
-                        )
-                    }
-                    .compose(Transformers.neverError())
-                    .share()
-            )
-
-            // Use project unread messages count if configured with a project,
-            // in the case of a creator viewing their project's messages.
-            val unreadMessagesCount =
-                Observable.combineLatest<Project, User, Pair<Project, User>>(
-                    project,
-                    currentUser.loggedInUser()
-                ) { a: Project, b: User -> Pair.create(a, b) }
-                    .map {
-                        if (it.first != null)
-                            it.first.unreadMessagesCount()
-                        else
-                            it.second.unreadMessagesCount()
-                    }
-                    .distinctUntilChanged()
-
-            // todo: MessageSubject switch will also trigger refresh
-            val refreshMessageThreads = Observable.merge(
-                unreadMessagesCount.compose(Transformers.ignoreValues()),
-                swipeRefresh
-            )
-
-            val mailbox = mailbox
-                .startWith(Mailbox.INBOX)
-                .distinctUntilChanged()
-
-            mailbox
-                .map { getStringResForMailbox(it) }
-                .compose(bindToLifecycle())
-                .subscribe(mailboxTitle)
-
-            val projectAndMailbox =
-                Observable.combineLatest<Project, Mailbox, Pair<Project, Mailbox>>(
-                    project.distinctUntilChanged(), mailbox.distinctUntilChanged()
-                ) { a: Project, b: Mailbox -> Pair.create(a, b) }
-
-            val startOverWith =
-                Observable.combineLatest<Pair<Project, Mailbox>, Void, Pair<Pair<Project, Mailbox>, Void>>(
-                    projectAndMailbox,
-                    refreshMessageThreads
-                ) { a: Pair<Project, Mailbox>, b: Void -> Pair.create(a, b) }
-                    .map { PairUtils.first(it) }
-
-            val paginator =
-                ApiPaginator.builder<MessageThread, MessageThreadsEnvelope, Pair<Project, Mailbox>>()
-                    .nextPage(nextPage)
-                    .startOverWith(startOverWith)
-                    .envelopeToListOfData { it.messageThreads() }
-                    .envelopeToMoreUrl {
-                        it.urls().api().moreMessageThreads()
-                    }
-                    .loadWithParams { pm: Pair<Project, Mailbox> ->
-                        client.fetchMessageThreads(
-                            pm.first,
-                            pm.second
-                        )
-                    }
-                    .loadWithPaginationPath {
-                        client.fetchMessageThreadsWithPaginationPath(
-                            it
-                        )
-                    }
-                    .clearWhenStartingOver(true)
-                    .build()
-
-            paginator.isFetching
-                .compose(bindToLifecycle())
-                .subscribe(isFetchingMessageThreads)
-
-            paginator.paginatedData()
-                .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(messageThreadList)
-
-            unreadMessagesCount
-                .map { it.isZero() }
-                .subscribe(hasNoMessages)
-
-            unreadMessagesCount
-                .map { it.isZero() }
-                .subscribe(hasNoUnreadMessages)
-
-            unreadMessagesCount
-                .map {
-                    if (it.intValueOrZero() > 0)
-                        R.color.accent
-                    else
-                        R.color.kds_support_400
-                }
-                .subscribe(unreadCountTextViewColorInt)
-
-            unreadMessagesCount
-                .map { if (it.intValueOrZero() > 0) Typeface.BOLD else Typeface.NORMAL }
-                .subscribe(unreadCountTextViewTypefaceInt)
-
-            unreadCountToolbarTextViewIsGone =
-                Observable.zip<Boolean, Boolean, Pair<Boolean, Boolean>>(
-                    hasNoMessages,
-                    hasNoUnreadMessages
-                ) { a: Boolean, b: Boolean ->
-                    Pair.create(a, b)
-                }
-                    .map { it.first || it.second }
-                    .compose(Transformers.combineLatestPair(mailbox))
-                    .map { it.first || it.second == Mailbox.SENT }
-
-            unreadMessagesCount
-                .filter { ObjectUtils.isNotNull(it) }
-                .filter { it.isNonZero() }
-                .subscribe(this.unreadMessagesCount)
-
-            unreadMessagesCountIsGone = mailbox
-                .map { it == Mailbox.SENT }
-        }
-
         override fun mailbox(mailbox: Mailbox) {
             this.mailbox.onNext(mailbox)
         }
@@ -259,32 +118,176 @@ interface MessageThreadsViewModel {
             swipeRefresh.onNext(null)
         }
 
-        private fun getStringResForMailbox(mailbox: Mailbox): Int {
-            return if (mailbox === Mailbox.INBOX) {
-                R.string.messages_navigation_inbox
-            } else {
-                R.string.messages_navigation_sent
-            }
+        override fun hasNoMessages(): Observable<Boolean> {
+            return hasNoMessages
         }
 
-        override fun hasNoMessages(): Observable<Boolean> = hasNoMessages
+        override fun hasNoUnreadMessages(): Observable<Boolean> {
+            return hasNoUnreadMessages
+        }
 
-        override fun hasNoUnreadMessages(): Observable<Boolean> = hasNoUnreadMessages
+        override fun isFetchingMessageThreads(): Observable<Boolean> {
+            return isFetchingMessageThreads
+        }
 
-        override fun isFetchingMessageThreads(): Observable<Boolean> = isFetchingMessageThreads
+        override fun mailboxTitle(): Observable<Int> {
+            return mailboxTitle
+        }
 
-        override fun mailboxTitle(): Observable<Int> = mailboxTitle
+        override fun messageThreadList(): Observable<List<MessageThread>> {
+            return messageThreadList
+        }
 
-        override fun messageThreadList(): Observable<List<MessageThread>> = messageThreadList
+        override fun unreadCountTextViewColorInt(): Observable<Int> {
+            return unreadCountTextViewColorInt
+        }
 
-        override fun unreadCountTextViewColorInt(): Observable<Int> = unreadCountTextViewColorInt
+        override fun unreadCountTextViewTypefaceInt(): Observable<Int> {
+            return unreadCountTextViewTypefaceInt
+        }
 
-        override fun unreadCountTextViewTypefaceInt(): Observable<Int> = unreadCountTextViewTypefaceInt
+        override fun unreadCountToolbarTextViewIsGone(): Observable<Boolean> {
+            return unreadCountToolbarTextViewIsGone
+        }
 
-        override fun unreadCountToolbarTextViewIsGone(): Observable<Boolean> = unreadCountToolbarTextViewIsGone
+        override fun unreadMessagesCount(): Observable<Int> {
+            return unreadMessagesCount
+        }
 
-        override fun unreadMessagesCount(): Observable<Int> = unreadMessagesCount
+        override fun unreadMessagesCountIsGone(): Observable<Boolean> {
+            return unreadMessagesCountIsGone
+        }
 
-        override fun unreadMessagesCountIsGone(): Observable<Boolean> = unreadMessagesCountIsGone
+        init {
+            client = requireNotNull(environment.apiClient())
+            currentUser = requireNotNull(environment.currentUser())
+
+            // NB: project from intent can be null.
+            val initialProject = intent()
+                .map { i: Intent -> i.getParcelableExtra<Project>(IntentKey.PROJECT) }
+
+            val refreshUserOrProject = Observable.merge(onResume, swipeRefresh)
+            val freshUser = intent()
+                .compose(Transformers.takeWhen(refreshUserOrProject))
+                .switchMap { client.fetchCurrentUser() }
+                .retry(2)
+                .compose(Transformers.neverError())
+
+            freshUser.subscribe {
+                currentUser.refresh(
+                    it
+                )
+            }
+            val project = Observable.merge(
+                initialProject,
+                initialProject
+                    .compose(Transformers.takeWhen(refreshUserOrProject))
+                    .map { it?.param() }
+                    .switchMap {
+                        it?.let {
+                            client.fetchProject(
+                                it
+                            )
+                        }
+                    }
+                    .compose(Transformers.neverError())
+                    .share()
+            )
+
+            // Use project unread messages count if configured with a project,
+            // in the case of a creator viewing their project's messages.
+            val unreadMessagesCount =
+                Observable.combineLatest<Project?, User, Pair<Project?, User>>(
+                    project,
+                    currentUser.loggedInUser()
+                ) { a: Project?, b: User? -> Pair.create(a, b) }
+                    .map {
+                        if (it.first != null)
+                            it.first?.unreadMessagesCount()
+                        else
+                            it.second.unreadMessagesCount()
+                    }
+                    .distinctUntilChanged()
+
+            // todo: MessageSubject switch will also trigger refresh
+            val refreshMessageThreads = Observable.merge(
+                unreadMessagesCount.compose(Transformers.ignoreValues()),
+                swipeRefresh
+            )
+            val mailbox = mailbox
+                .startWith(Mailbox.INBOX)
+                .distinctUntilChanged()
+            mailbox
+                .map { mailbox: Mailbox -> getStringResForMailbox(mailbox) }
+                .compose(bindToLifecycle())
+                .subscribe(mailboxTitle)
+
+            val projectAndMailbox =
+                Observable.combineLatest<Project?, Mailbox, Pair<Project, Mailbox>>(
+                    project.distinctUntilChanged(), mailbox.distinctUntilChanged()
+                ) { a: Project?, b: Mailbox? -> Pair.create(a, b) }
+
+            val startOverWith =
+                Observable.combineLatest(
+                    projectAndMailbox,
+                    refreshMessageThreads
+                ) { a: Pair<Project, Mailbox>?, b: Void? -> Pair.create(a, b) }
+                    .map { PairUtils.first(it) }
+
+            val paginator =
+                ApiPaginator.builder<MessageThread, MessageThreadsEnvelope, Pair<Project, Mailbox>>()
+                    .nextPage(nextPage)
+                    .startOverWith(startOverWith)
+                    .envelopeToListOfData { obj: MessageThreadsEnvelope -> obj.messageThreads() }
+                    .envelopeToMoreUrl { env: MessageThreadsEnvelope ->
+                        env.urls().api().moreMessageThreads()
+                    }
+                    .loadWithParams { pm: Pair<Project, Mailbox> ->
+                        client.fetchMessageThreads(
+                            pm.first,
+                            pm.second
+                        )
+                    }
+                    .loadWithPaginationPath {
+                        client.fetchMessageThreadsWithPaginationPath(
+                            it
+                        )
+                    }
+                    .clearWhenStartingOver(true)
+                    .build()
+            paginator.isFetching
+                .compose(bindToLifecycle())
+                .subscribe(isFetchingMessageThreads)
+            paginator.paginatedData()
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(messageThreadList)
+            unreadMessagesCount
+                .map { it.isZero() }
+                .subscribe(hasNoMessages)
+            unreadMessagesCount
+                .map { it.isZero() }
+                .subscribe(hasNoUnreadMessages)
+            unreadMessagesCount
+                .map { if (it?.intValueOrZero()!! > 0) R.color.accent else R.color.kds_support_400 }
+                .subscribe(unreadCountTextViewColorInt)
+            unreadMessagesCount
+                .map { if (it?.intValueOrZero()!! > 0) Typeface.BOLD else Typeface.NORMAL }
+                .subscribe(unreadCountTextViewTypefaceInt)
+            unreadCountToolbarTextViewIsGone =
+                Observable.zip<Boolean, Boolean, Pair<Boolean, Boolean>>(
+                    hasNoMessages,
+                    hasNoUnreadMessages
+                ) { a: Boolean?, b: Boolean? -> Pair.create(a, b) }
+                    .map { noMessagesAndNoUnread: Pair<Boolean, Boolean> -> noMessagesAndNoUnread.first || noMessagesAndNoUnread.second }
+                    .compose(Transformers.combineLatestPair(mailbox))
+                    .map { noMessagesAndMailbox: Pair<Boolean, Mailbox> -> noMessagesAndMailbox.first || noMessagesAndMailbox.second == Mailbox.SENT }
+            unreadMessagesCount
+                .filter { `object`: Int? -> ObjectUtils.isNotNull(`object`) }
+                .filter { it.isNonZero() }
+                .subscribe(this.unreadMessagesCount)
+            unreadMessagesCountIsGone = mailbox
+                .map { m: Mailbox -> m == Mailbox.SENT }
+        }
     }
 }

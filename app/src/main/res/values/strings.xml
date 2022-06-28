@@ -71,6 +71,8 @@
 
   <!-- Comments -->
   <string name="FPO_this_comment_is_under_review">This comment is under review.</string>
+  <string name="FPO_this_comment_is_under_review_for_potentially_violating">This comment is under review for potentially violating</string>
+  <string name="FPO_kickstarters_community_guidelines">Kickstarter’s Community Guidelines.</string>
 
   <!--  Qualtrics -->
   <string name="Take_our_survey_to_help_us_make_a_better_app_for_you">Take our survey to help us make a better app for you.</string>

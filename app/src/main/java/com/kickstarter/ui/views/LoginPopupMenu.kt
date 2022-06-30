@@ -1,13 +1,13 @@
 package com.kickstarter.ui.views
 
 import android.content.Context
-import com.kickstarter.R
-import com.kickstarter.libs.BaseActivity
 import android.content.Intent
 import android.net.Uri
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
+import com.kickstarter.R
+import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.ui.activities.HelpActivity
 import com.kickstarter.ui.activities.HelpActivity.Terms

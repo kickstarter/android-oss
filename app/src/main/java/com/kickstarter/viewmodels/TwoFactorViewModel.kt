@@ -162,13 +162,9 @@ interface TwoFactorViewModel {
 
             val fbAccessToken = intent()
                 .map { it.getStringExtra(IntentKey.FACEBOOK_TOKEN) }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
 
             val isFacebookLogin = intent()
                 .map { it.getBooleanExtra(IntentKey.FACEBOOK_LOGIN, false) }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
 
             val password = intent()
                 .map { it.getStringExtra(IntentKey.PASSWORD) }
@@ -177,10 +173,10 @@ interface TwoFactorViewModel {
 
             val tfaData = Observable.combineLatest(
                 email, fbAccessToken, isFacebookLogin, password
-            ) { email: String, fbAccessToken: String, isFacebookLogin: Boolean, password: String ->
+            ) { email: String, fbAccessToken: String?, isFacebookLogin: Boolean, password: String ->
                 TfaData(
                     email,
-                    fbAccessToken,
+                    fbAccessToken ?: "",
                     isFacebookLogin,
                     password
                 )

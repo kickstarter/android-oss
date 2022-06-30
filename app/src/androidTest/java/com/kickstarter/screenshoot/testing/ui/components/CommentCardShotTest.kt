@@ -86,6 +86,11 @@ class CommentCardShotTest : ScreenshotTest {
     @Test
     fun commentCardScreenshotTest_FLAGGED_MESSAGE() {
         commentCard.setCommentCardStatus(CommentCardStatus.FLAGGED_COMMENT)
+        commentCard.setFlaggedMessage(
+            getInstrumentation().targetContext.getString(R.string.FPO_this_comment_is_under_review_for_potentially_violating) +
+                " " +
+                getInstrumentation().targetContext.getString(R.string.FPO_kickstarters_community_guidelines)
+        )
         compareScreenshot(commentCard)
     }
 }

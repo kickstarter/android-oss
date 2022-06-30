@@ -35,7 +35,7 @@ class CommentCard @JvmOverloads constructor(
         obtainStyledAttributes(context, attrs, defStyleAttr)
 
         bindCommunityGuidelines(binding.removedMessage, onCommentCardClickedListener)
-        bindCommunityGuidelines(binding.flaggedMessage, onCommentCardClickedListener)
+        bindFlaggedCommunityGuidelines(binding.flaggedMessage, onCommentCardClickedListener)
 
         binding.retryButtonGroup.setAllOnClickListener {
             onCommentCardClickedListener?.onRetryViewClicked(it)
@@ -59,6 +59,21 @@ class CommentCard @JvmOverloads constructor(
         textView.makeLinks(
             Pair(
                 context.resources.getString(R.string.Learn_more_about_comment_guidelines).parseHtmlTag(),
+                OnClickListener {
+                    onCommentCardClickedListener?.onCommentGuideLinesClicked(it)
+                },
+
+            ),
+            linkColor = R.color.kds_create_500,
+            isUnderlineText = false
+        )
+    }
+
+    private fun bindFlaggedCommunityGuidelines(textView: AppCompatTextView, onCommentCardClickedListener: OnCommentCardClickedListener?) {
+        textView.parseHtmlTag()
+        textView.makeLinks(
+            Pair(
+                context.resources.getString(R.string.FPO_kickstarters_community_guidelines).parseHtmlTag(),
                 OnClickListener {
                     onCommentCardClickedListener?.onCommentGuideLinesClicked(it)
                 },
@@ -236,7 +251,7 @@ class CommentCard @JvmOverloads constructor(
 
     fun setFlaggedMessage(message: String) {
         binding.flaggedMessage.text = message
-        bindCommunityGuidelines(binding.flaggedMessage, onCommentCardClickedListener)
+        bindFlaggedCommunityGuidelines(binding.flaggedMessage, onCommentCardClickedListener)
     }
 
     fun setCancelPledgeMessage(message: String) {

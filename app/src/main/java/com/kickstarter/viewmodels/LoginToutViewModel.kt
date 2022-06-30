@@ -278,10 +278,11 @@ interface LoginToutViewModel {
             facebookLoginClick
                 .compose(Transformers.ignoreValues())
                 .compose(bindToLifecycle())
-                .subscribe { analyticEvents.trackLoginOrSignUpCtaClicked(
-                    ContextTypeName.FACEBOOK.contextName,
-                    ContextPageName.LOGIN_SIGN_UP.contextName
-                )
+                .subscribe {
+                    analyticEvents.trackLoginOrSignUpCtaClicked(
+                        ContextTypeName.FACEBOOK.contextName,
+                        ContextPageName.LOGIN_SIGN_UP.contextName
+                    )
                 }
 
             loginClick

@@ -14,20 +14,20 @@ import rx.Observable
 import rx.observers.TestSubscriber
 
 class TwoFactorViewModelTest : KSRobolectricTestCase() {
-  
+
     private lateinit var vm: TwoFactorViewModel.ViewModel
-  
+
     private val formIsValid = TestSubscriber<Boolean>()
     private val formSubmitting = TestSubscriber<Boolean>()
     private val genericTfaError = TestSubscriber<Void>()
     private val showResendCodeConfirmation = TestSubscriber<Void>()
     private val tfaCodeMismatchError = TestSubscriber<Void>()
     private val tfaSuccess = TestSubscriber<Void>()
-   
+
     @Test
     fun testTwoFactorViewModel_FormValidation() {
         val intent = Intent()
-    
+
         intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com")
         intent.putExtra(IntentKey.PASSWORD, "hello")
         intent.putExtra(IntentKey.FACEBOOK_LOGIN, false)
@@ -140,7 +140,8 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
     fun testTwoFactorViewModel_GenericError() {
         val apiClient: ApiClientType = object : MockApiClient() {
             override fun login(
-                email: String, password: String,
+                email: String,
+                password: String,
                 code: String
             ): Observable<AccessTokenEnvelope> {
                 return Observable.error(
@@ -181,7 +182,8 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
     fun testTwoFactorViewModel_CodeMismatchError() {
         val apiClient: ApiClientType = object : MockApiClient() {
             override fun login(
-                email: String, password: String,
+                email: String,
+                password: String,
                 code: String
             ): Observable<AccessTokenEnvelope> {
                 return Observable.error(ApiExceptionFactory.tfaFailed())

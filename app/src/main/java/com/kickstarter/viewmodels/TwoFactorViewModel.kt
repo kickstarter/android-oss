@@ -45,18 +45,21 @@ interface TwoFactorViewModel {
         fun tfaSuccess(): Observable<Void>
     }
 
-    class ViewModel(environment: Environment) : ActivityViewModel<TwoFactorActivity?>(environment),
-        Inputs, Outputs {
+    class ViewModel(environment: Environment) :
+        ActivityViewModel<TwoFactorActivity?>(environment),
+        Inputs,
+        Outputs {
         private val client: ApiClientType
         private val currentUser: CurrentUserType
-       
+
         private fun success(envelope: AccessTokenEnvelope) {
             currentUser.login(envelope.user(), envelope.accessToken())
             tfaSuccess.onNext(null)
         }
 
         private fun login(
-            code: String, email: String,
+            code: String,
+            email: String,
             password: String
         ): Observable<AccessTokenEnvelope> {
             return client.login(email, password, code)
@@ -100,10 +103,10 @@ interface TwoFactorViewModel {
 
         val inputs: Inputs = this
         val outputs: Outputs = this
-      
+
         override fun formIsValid(): Observable<Boolean> = formIsValid
 
-        override fun formSubmitting(): Observable<Boolean> =formSubmitting
+        override fun formSubmitting(): Observable<Boolean> = formSubmitting
 
         override fun genericTfaError(): Observable<Void> {
             return tfaError
@@ -136,7 +139,9 @@ interface TwoFactorViewModel {
         }
 
         protected inner class TfaData(
-            val email: String, val fbAccessToken: String, val isFacebookLogin: Boolean,
+            val email: String,
+            val fbAccessToken: String,
+            val isFacebookLogin: Boolean,
             val password: String
         )
 
@@ -149,27 +154,27 @@ interface TwoFactorViewModel {
         init {
             currentUser = requireNotNull(environment.currentUser())
             client = requireNotNull(environment.apiClient())
-           
+
             val email = intent()
                 .map { it.getStringExtra(IntentKey.EMAIL) }
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
-            
+
             val fbAccessToken = intent()
                 .map { it.getStringExtra(IntentKey.FACEBOOK_TOKEN) }
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
-          
+
             val isFacebookLogin = intent()
                 .map { it.getBooleanExtra(IntentKey.FACEBOOK_LOGIN, false) }
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
-            
+
             val password = intent()
                 .map { it.getStringExtra(IntentKey.PASSWORD) }
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
-           
+
             val tfaData = Observable.combineLatest(
                 email, fbAccessToken, isFacebookLogin, password
             ) { email: String, fbAccessToken: String, isFacebookLogin: Boolean, password: String ->
@@ -180,36 +185,34 @@ interface TwoFactorViewModel {
                     password
                 )
             }
-         
+
             this.code
                 .map { code: String? -> isCodeValid(code) }
                 .compose(bindToLifecycle())
                 .subscribe(formIsValid)
-         
+
             this.code
                 .compose(Transformers.combineLatestPair(tfaData))
                 .compose(Transformers.takeWhen(loginClick))
-                .filter {  !it.second.isFacebookLogin }
-                .switchMap { 
-                    login(
-                        it.first, it.second.email, it.second.password
-                    )
+                .filter { !it.second.isFacebookLogin }
+                .switchMap { login(
+                    it.first, it.second.email, it.second.password
+                )
                 }
                 .compose(bindToLifecycle())
-                .subscribe {success(it) }
-            
+                .subscribe { success(it) }
+
             this.code
                 .compose(Transformers.combineLatestPair(tfaData))
                 .compose(Transformers.takeWhen(loginClick))
                 .filter { it.second.isFacebookLogin }
-                .switchMap { 
-                    loginWithFacebook(
-                        it.first, it.second.fbAccessToken
-                    )
+                .switchMap { loginWithFacebook(
+                    it.first, it.second.fbAccessToken
+                )
                 }
                 .compose(bindToLifecycle())
                 .subscribe { success(it) }
-           
+
             tfaData
                 .compose(Transformers.takeWhen(resendClick))
                 .filter { !it.isFacebookLogin }
@@ -218,16 +221,15 @@ interface TwoFactorViewModel {
                 }
                 .compose(bindToLifecycle())
                 .subscribe()
-           
+
             tfaData
                 .compose(Transformers.takeWhen(resendClick))
                 .filter { it.isFacebookLogin }
-                .flatMap { 
-                    resendCodeWithFacebook(it.fbAccessToken)
+                .flatMap { resendCodeWithFacebook(it.fbAccessToken)
                 }
                 .compose(bindToLifecycle())
                 .subscribe()
-           
+
             analyticEvents.trackTwoFactorAuthPageViewed()
         }
     }

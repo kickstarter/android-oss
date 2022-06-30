@@ -1,209 +1,215 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import android.content.Intent;
+import android.content.Intent
+import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.utils.EventName
+import com.kickstarter.mock.factories.ApiExceptionFactory
+import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.apiresponses.AccessTokenEnvelope
+import com.kickstarter.services.apiresponses.ErrorEnvelope.Companion.builder
+import com.kickstarter.ui.IntentKey
+import org.junit.Test
+import rx.Observable
+import rx.observers.TestSubscriber
 
-import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.EventName;
-import com.kickstarter.mock.factories.ApiExceptionFactory;
-import com.kickstarter.mock.services.MockApiClient;
-import com.kickstarter.services.ApiClientType;
-import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
-import com.kickstarter.services.apiresponses.ErrorEnvelope;
-import com.kickstarter.ui.IntentKey;
+class TwoFactorViewModelTest : KSRobolectricTestCase() {
+  
+    private lateinit var vm: TwoFactorViewModel.ViewModel
+  
+    private val formIsValid = TestSubscriber<Boolean>()
+    private val formSubmitting = TestSubscriber<Boolean>()
+    private val genericTfaError = TestSubscriber<Void>()
+    private val showResendCodeConfirmation = TestSubscriber<Void>()
+    private val tfaCodeMismatchError = TestSubscriber<Void>()
+    private val tfaSuccess = TestSubscriber<Void>()
+   
+    @Test
+    fun testTwoFactorViewModel_FormValidation() {
+        val intent = Intent()
+    
+        intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com")
+        intent.putExtra(IntentKey.PASSWORD, "hello")
+        intent.putExtra(IntentKey.FACEBOOK_LOGIN, false)
+        intent.putExtra(IntentKey.FACEBOOK_TOKEN, "")
 
-import org.junit.Test;
+        vm = TwoFactorViewModel.ViewModel(environment())
+        vm.intent(intent)
 
-import androidx.annotation.NonNull;
-import rx.Observable;
-import rx.observers.TestSubscriber;
+        vm.outputs.formIsValid().subscribe(formIsValid)
+        formIsValid.assertNoValues()
 
-public class TwoFactorViewModelTest extends KSRobolectricTestCase {
-  private TwoFactorViewModel.ViewModel vm;
-  private final TestSubscriber<Boolean> formIsValid = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> formSubmitting = new TestSubscriber<>();
-  private final TestSubscriber<Void> genericTfaError = new TestSubscriber<>();
-  private final TestSubscriber<Void> showResendCodeConfirmation = new TestSubscriber<>();
-  private final TestSubscriber<Void> tfaCodeMismatchError = new TestSubscriber<>();
-  private final TestSubscriber<Void> tfaSuccess = new TestSubscriber<>();
+        vm.inputs.code("444444")
+        formIsValid.assertValue(true)
 
-  @Test
-  public void testTwoFactorViewModel_FormValidation() {
-    final Intent intent = new Intent();
-    intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com");
-    intent.putExtra(IntentKey.PASSWORD, "hello");
-    intent.putExtra(IntentKey.FACEBOOK_LOGIN, false);
-    intent.putExtra(IntentKey.FACEBOOK_TOKEN, "");
+        vm.inputs.code("")
 
-    this.vm = new TwoFactorViewModel.ViewModel(environment());
-    this.vm.intent(intent);
+        formIsValid.assertValues(true, false)
+        segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
 
-    this.vm.outputs.formIsValid().subscribe(this.formIsValid);
+    @Test
+    fun testTwoFactorViewModel_TfaSuccess() {
+        val intent = Intent()
 
-    this.formIsValid.assertNoValues();
+        intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com")
+        intent.putExtra(IntentKey.PASSWORD, "hello")
+        intent.putExtra(IntentKey.FACEBOOK_LOGIN, false)
+        intent.putExtra(IntentKey.FACEBOOK_TOKEN, "")
 
-    this.vm.inputs.code("444444");
-    this.formIsValid.assertValue(true);
+        vm = TwoFactorViewModel.ViewModel(environment())
+        vm.intent(intent)
 
-    this.vm.inputs.code("");
-    this.formIsValid.assertValues(true, false);
+        vm.outputs.tfaSuccess().subscribe(tfaSuccess)
+        vm.outputs.formSubmitting().subscribe(formSubmitting)
 
-    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
-  }
+        vm.inputs.code("88888")
+        vm.inputs.loginClick()
 
-  @Test
-  public void testTwoFactorViewModel_TfaSuccess() {
-    final Intent intent = new Intent();
-    intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com");
-    intent.putExtra(IntentKey.PASSWORD, "hello");
-    intent.putExtra(IntentKey.FACEBOOK_LOGIN, false);
-    intent.putExtra(IntentKey.FACEBOOK_TOKEN, "");
+        formSubmitting.assertValues(true, false)
+        tfaSuccess.assertValueCount(1)
 
-    this.vm = new TwoFactorViewModel.ViewModel(environment());
-    this.vm.intent(intent);
+        segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
 
-    this.vm.outputs.tfaSuccess().subscribe(this.tfaSuccess);
-    this.vm.outputs.formSubmitting().subscribe(this.formSubmitting);
+    @Test
+    fun testTwoFactorViewModel_TfaSuccessFacebook() {
+        val intent = Intent()
 
-    this.vm.inputs.code("88888");
-    this.vm.inputs.loginClick();
+        intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com")
+        intent.putExtra(IntentKey.PASSWORD, "hello")
+        intent.putExtra(IntentKey.FACEBOOK_LOGIN, true)
+        intent.putExtra(IntentKey.FACEBOOK_TOKEN, "pajamas1234")
 
-    this.formSubmitting.assertValues(true, false);
-    this.tfaSuccess.assertValueCount(1);
+        vm = TwoFactorViewModel.ViewModel(environment())
+        vm.intent(intent)
 
-    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
-  }
+        vm.outputs.tfaSuccess().subscribe(tfaSuccess)
+        vm.outputs.formSubmitting().subscribe(formSubmitting)
 
-  @Test
-  public void testTwoFactorViewModel_TfaSuccessFacebook() {
-    final Intent intent = new Intent();
-    intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com");
-    intent.putExtra(IntentKey.PASSWORD, "hello");
-    intent.putExtra(IntentKey.FACEBOOK_LOGIN, true);
-    intent.putExtra(IntentKey.FACEBOOK_TOKEN, "pajamas1234");
+        vm.inputs.code("88888")
+        vm.inputs.loginClick()
 
-    this.vm = new TwoFactorViewModel.ViewModel(environment());
-    this.vm.intent(intent);
+        formSubmitting.assertValues(true, false)
+        tfaSuccess.assertValueCount(1)
 
-    this.vm.outputs.tfaSuccess().subscribe(this.tfaSuccess);
-    this.vm.outputs.formSubmitting().subscribe(this.formSubmitting);
+        segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
 
-    this.vm.inputs.code("88888");
-    this.vm.inputs.loginClick();
+    @Test
+    fun testTwoFactorViewModel_ResendCode() {
+        val intent = Intent()
 
-    this.formSubmitting.assertValues(true, false);
-    this.tfaSuccess.assertValueCount(1);
+        intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com")
+        intent.putExtra(IntentKey.PASSWORD, "hello")
+        intent.putExtra(IntentKey.FACEBOOK_LOGIN, false)
+        intent.putExtra(IntentKey.FACEBOOK_TOKEN, "")
 
-    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
-  }
+        vm = TwoFactorViewModel.ViewModel(environment())
+        vm.intent(intent)
 
-  @Test
-   public void testTwoFactorViewModel_ResendCode() {
-    final Intent intent = new Intent();
-    intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com");
-    intent.putExtra(IntentKey.PASSWORD, "hello");
-    intent.putExtra(IntentKey.FACEBOOK_LOGIN, false);
-    intent.putExtra(IntentKey.FACEBOOK_TOKEN, "");
+        vm.outputs.showResendCodeConfirmation().subscribe(showResendCodeConfirmation)
 
-    this.vm = new TwoFactorViewModel.ViewModel(environment());
-    this.vm.intent(intent);
+        vm.inputs.resendClick()
 
-    this.vm.outputs.showResendCodeConfirmation().subscribe(this.showResendCodeConfirmation);
+        showResendCodeConfirmation.assertValueCount(1)
+        segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
 
-    this.vm.inputs.resendClick();
+    @Test
+    fun testTwoFactorViewModel_ResendCodeFacebook() {
+        val intent = Intent()
 
-    this.showResendCodeConfirmation.assertValueCount(1);
-    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
-  }
+        intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com")
+        intent.putExtra(IntentKey.PASSWORD, "hello")
+        intent.putExtra(IntentKey.FACEBOOK_LOGIN, true)
+        intent.putExtra(IntentKey.FACEBOOK_TOKEN, "pajamas1234")
 
-  @Test
-  public void testTwoFactorViewModel_ResendCodeFacebook() {
-    final Intent intent = new Intent();
-    intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com");
-    intent.putExtra(IntentKey.PASSWORD, "hello");
-    intent.putExtra(IntentKey.FACEBOOK_LOGIN, true);
-    intent.putExtra(IntentKey.FACEBOOK_TOKEN, "pajamas1234");
+        vm = TwoFactorViewModel.ViewModel(environment())
+        vm.intent(intent)
 
-    this.vm = new TwoFactorViewModel.ViewModel(environment());
-    this.vm.intent(intent);
+        vm.outputs.showResendCodeConfirmation().subscribe(showResendCodeConfirmation)
 
-    this.vm.outputs.showResendCodeConfirmation().subscribe(this.showResendCodeConfirmation);
+        vm.inputs.resendClick()
 
-    this.vm.inputs.resendClick();
+        showResendCodeConfirmation.assertValueCount(1)
+        segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
 
-    this.showResendCodeConfirmation.assertValueCount(1);
-    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
-  }
+    @Test
+    fun testTwoFactorViewModel_GenericError() {
+        val apiClient: ApiClientType = object : MockApiClient() {
+            override fun login(
+                email: String, password: String,
+                code: String
+            ): Observable<AccessTokenEnvelope> {
+                return Observable.error(
+                    ApiExceptionFactory.apiError(
+                        builder().httpCode(400).build()
+                    )
+                )
+            }
+        }
 
-  @Test
-  public void testTwoFactorViewModel_GenericError() {
-    final ApiClientType apiClient = new MockApiClient() {
-      @Override
-      public @NonNull
-        Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password,
-        final @NonNull String code) {
-        return Observable.error(ApiExceptionFactory.apiError(
-          ErrorEnvelope.builder().httpCode(400).build()
-        ));
-      }
-    };
+        val environment = environment().toBuilder().apiClient(apiClient).build()
 
-    final Environment environment = environment().toBuilder().apiClient(apiClient).build();
+        val intent = Intent()
 
-    final Intent intent = new Intent();
-    intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com");
-    intent.putExtra(IntentKey.PASSWORD, "hello");
-    intent.putExtra(IntentKey.FACEBOOK_LOGIN, false);
-    intent.putExtra(IntentKey.FACEBOOK_TOKEN, "");
+        intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com")
+        intent.putExtra(IntentKey.PASSWORD, "hello")
+        intent.putExtra(IntentKey.FACEBOOK_LOGIN, false)
+        intent.putExtra(IntentKey.FACEBOOK_TOKEN, "")
 
-    this.vm = new TwoFactorViewModel.ViewModel(environment);
-    this.vm.intent(intent);
+        vm = TwoFactorViewModel.ViewModel(environment)
 
-    this.vm.outputs.tfaSuccess().subscribe(this.tfaSuccess);
-    this.vm.outputs.formSubmitting().subscribe(this.formSubmitting);
-    this.vm.outputs.genericTfaError().subscribe(this.genericTfaError);
+        vm.intent(intent)
 
-    this.vm.inputs.code("88888");
-    this.vm.inputs.loginClick();
+        vm.outputs.tfaSuccess().subscribe(tfaSuccess)
+        vm.outputs.formSubmitting().subscribe(formSubmitting)
+        vm.outputs.genericTfaError().subscribe(genericTfaError)
 
-    this.formSubmitting.assertValues(true, false);
-    this.tfaSuccess.assertNoValues();
-    this.genericTfaError.assertValueCount(1);
-    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
-  }
+        vm.inputs.code("88888")
+        vm.inputs.loginClick()
 
-  @Test
-  public void testTwoFactorViewModel_CodeMismatchError() {
-    final ApiClientType apiClient = new MockApiClient() {
-      @Override
-      public @NonNull
-        Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password,
-        final @NonNull String code) {
-        return Observable.error(ApiExceptionFactory.tfaFailed());
-      }
-    };
+        formSubmitting.assertValues(true, false)
+        tfaSuccess.assertNoValues()
+        genericTfaError.assertValueCount(1)
+        segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
 
-    final Environment environment = environment().toBuilder().apiClient(apiClient).build();
+    @Test
+    fun testTwoFactorViewModel_CodeMismatchError() {
+        val apiClient: ApiClientType = object : MockApiClient() {
+            override fun login(
+                email: String, password: String,
+                code: String
+            ): Observable<AccessTokenEnvelope> {
+                return Observable.error(ApiExceptionFactory.tfaFailed())
+            }
+        }
 
-    final Intent intent = new Intent();
-    intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com");
-    intent.putExtra(IntentKey.PASSWORD, "hello");
-    intent.putExtra(IntentKey.FACEBOOK_LOGIN, false);
-    intent.putExtra(IntentKey.FACEBOOK_TOKEN, "");
+        val environment = environment().toBuilder().apiClient(apiClient).build()
+        val intent = Intent()
 
-    this.vm = new TwoFactorViewModel.ViewModel(environment);
-    this.vm.intent(intent);
+        intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com")
+        intent.putExtra(IntentKey.PASSWORD, "hello")
+        intent.putExtra(IntentKey.FACEBOOK_LOGIN, false)
+        intent.putExtra(IntentKey.FACEBOOK_TOKEN, "")
 
-    this.vm.outputs.tfaSuccess().subscribe(this.tfaSuccess);
-    this.vm.outputs.formSubmitting().subscribe(this.formSubmitting);
-    this.vm.outputs.tfaCodeMismatchError().subscribe(this.tfaCodeMismatchError);
+        vm = TwoFactorViewModel.ViewModel(environment)
 
-    this.vm.inputs.code("88888");
-    this.vm.inputs.loginClick();
+        vm.intent(intent)
 
-    this.formSubmitting.assertValues(true, false);
-    this.tfaSuccess.assertNoValues();
-    this.tfaCodeMismatchError.assertValueCount(1);
-    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
-  }
+        vm.outputs.tfaSuccess().subscribe(tfaSuccess)
+        vm.outputs.formSubmitting().subscribe(formSubmitting)
+        vm.outputs.tfaCodeMismatchError().subscribe(tfaCodeMismatchError)
+
+        vm.inputs.code("88888")
+        vm.inputs.loginClick()
+
+        formSubmitting.assertValues(true, false)
+        tfaSuccess.assertNoValues()
+        tfaCodeMismatchError.assertValueCount(1)
+        segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
 }

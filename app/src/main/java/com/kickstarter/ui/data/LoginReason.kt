@@ -1,21 +1,19 @@
-package com.kickstarter.ui.data;
+package com.kickstarter.ui.data
 
-public enum LoginReason {
-  DEFAULT,
-  ACTIVITY_FEED,
-  CHANGE_PASSWORD,
-  COMMENT_FEED,
-  CREATE_PASSWORD,
-  BACK_PROJECT,
-  MESSAGE_CREATOR,
-  RESET_PASSWORD,
-  STAR_PROJECT;
+enum class LoginReason {
+    DEFAULT,
+    ACTIVITY_FEED,
+    CHANGE_PASSWORD,
+    COMMENT_FEED,
+    CREATE_PASSWORD,
+    BACK_PROJECT,
+    MESSAGE_CREATOR,
+    RESET_PASSWORD,
+    STAR_PROJECT;
 
-  public boolean isDefaultFlow() {
-    return this == DEFAULT;
-  }
+    val isDefaultFlow: Boolean
+        get() = this == DEFAULT
 
-  public boolean isContextualFlow() {
-    return !isDefaultFlow();
-  }
+    val isContextualFlow: Boolean
+        get() = !isDefaultFlow
 }

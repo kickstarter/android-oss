@@ -1,210 +1,234 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.CurrentUserType;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.services.ApiClientType;
-import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
-import com.kickstarter.services.apiresponses.ErrorEnvelope;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.activities.TwoFactorActivity;
+import com.kickstarter.libs.ActivityViewModel
+import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.apiresponses.AccessTokenEnvelope
+import com.kickstarter.services.apiresponses.ErrorEnvelope
+import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.activities.TwoFactorActivity
+import rx.Observable
+import rx.subjects.PublishSubject
 
-import androidx.annotation.NonNull;
-import rx.Observable;
-import rx.subjects.PublishSubject;
+interface TwoFactorViewModel {
+    interface Inputs {
+        /** Call when the 2FA code has been submitted.  */
+        fun code(code: String)
 
-public interface TwoFactorViewModel {
+        /** Call when the log in button has been clicked.  */
+        fun loginClick()
 
-  interface Inputs {
-    /** Call when the 2FA code has been submitted. */
-    void code(String __);
-
-    /** Call when the log in button has been clicked. */
-    void loginClick();
-
-    /** Call when the resend button has been clicked. */
-    void resendClick();
-  }
-
-  interface Outputs {
-    /** Emits when submitting TFA code errored for an unknown reason. */
-    Observable<Void> genericTfaError();
-
-    /** Emits when TFA code was submitted. */
-    Observable<Boolean> formSubmitting();
-
-    /** Emits when TFA code submission has completed. */
-    Observable<Boolean> formIsValid();
-
-    /** Emits when resend code confirmation should be shown. */
-    Observable<Void> showResendCodeConfirmation();
-
-    /** Emits when a submitted TFA code does not match. */
-    Observable<Void> tfaCodeMismatchError();
-
-    /** Emits when submitting TFA code was successful. */
-    Observable<Void> tfaSuccess();
-  }
-
-  final class ViewModel extends ActivityViewModel<TwoFactorActivity> implements Inputs, Outputs{
-    private final ApiClientType client;
-    private final CurrentUserType currentUser;
-
-    public ViewModel(final @NonNull Environment environment) {
-      super(environment);
-
-      this.currentUser = environment.currentUser();
-      this.client = environment.apiClient();
-
-      final Observable<String> email = intent()
-        .map(i -> i.getStringExtra(IntentKey.EMAIL));
-      final Observable<String> fbAccessToken = intent()
-        .map(i -> i.getStringExtra(IntentKey.FACEBOOK_TOKEN));
-      final Observable<Boolean> isFacebookLogin = intent()
-        .map(i -> i.getBooleanExtra(IntentKey.FACEBOOK_LOGIN, false));
-      final Observable<String> password = intent()
-        .map(i -> i.getStringExtra(IntentKey.PASSWORD));
-
-      final Observable<TfaData> tfaData = Observable.combineLatest(
-        email, fbAccessToken, isFacebookLogin, password, TfaData::new
-      );
-
-      this.code
-        .map(TwoFactorViewModel.ViewModel::isCodeValid)
-        .compose(bindToLifecycle())
-        .subscribe(this.formIsValid);
-
-      this.code
-        .compose(Transformers.combineLatestPair(tfaData))
-        .compose(Transformers.takeWhen(this.loginClick))
-        .filter(cd -> !cd.second.isFacebookLogin)
-        .switchMap(cd -> this.login(cd.first, cd.second.email, cd.second.password))
-        .compose(bindToLifecycle())
-        .subscribe(this::success);
-
-      this.code
-        .compose(Transformers.combineLatestPair(tfaData))
-        .compose(Transformers.takeWhen(this.loginClick))
-        .filter(cd -> cd.second.isFacebookLogin)
-        .switchMap(cd -> this.loginWithFacebook(cd.first, cd.second.fbAccessToken))
-        .compose(bindToLifecycle())
-        .subscribe(this::success);
-
-      tfaData
-        .compose(Transformers.takeWhen(this.resendClick))
-        .filter(d -> !d.isFacebookLogin)
-        .flatMap(d -> resendCode(d.email, d.password))
-        .compose(bindToLifecycle())
-        .subscribe();
-
-      tfaData
-        .compose(Transformers.takeWhen(this.resendClick))
-        .filter(d -> d.isFacebookLogin)
-        .flatMap(d -> resendCodeWithFacebook(d.fbAccessToken))
-        .compose(bindToLifecycle())
-        .subscribe();
-
-      this.analyticEvents.trackTwoFactorAuthPageViewed();
+        /** Call when the resend button has been clicked.  */
+        fun resendClick()
     }
 
-    private void success(final @NonNull AccessTokenEnvelope envelope) {
-      this.currentUser.login(envelope.user(), envelope.accessToken());
-      this.tfaSuccess.onNext(null);
+    interface Outputs {
+        /** Emits when submitting TFA code errored for an unknown reason.  */
+        fun genericTfaError(): Observable<Void>
+
+        /** Emits when TFA code was submitted.  */
+        fun formSubmitting(): Observable<Boolean>
+
+        /** Emits when TFA code submission has completed.  */
+        fun formIsValid(): Observable<Boolean>
+
+        /** Emits when resend code confirmation should be shown.  */
+        fun showResendCodeConfirmation(): Observable<Void>
+
+        /** Emits when a submitted TFA code does not match.  */
+        fun tfaCodeMismatchError(): Observable<Void>
+
+        /** Emits when submitting TFA code was successful.  */
+        fun tfaSuccess(): Observable<Void>
     }
 
-    private @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String code, final @NonNull String email,
-      final @NonNull String password) {
-      return this.client.login(email, password, code)
-        .compose(Transformers.pipeApiErrorsTo(this.tfaError))
-        .compose(Transformers.neverError())
-        .doOnSubscribe(() -> this.formSubmitting.onNext(true))
-        .doAfterTerminate(() -> this.formSubmitting.onNext(false));
-    }
+    class ViewModel(environment: Environment) : ActivityViewModel<TwoFactorActivity?>(environment),
+        Inputs, Outputs {
+        private val client: ApiClientType
+        private val currentUser: CurrentUserType
+       
+        private fun success(envelope: AccessTokenEnvelope) {
+            currentUser.login(envelope.user(), envelope.accessToken())
+            tfaSuccess.onNext(null)
+        }
 
-    private @NonNull Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String code, final @NonNull String fbAccessToken) {
-      return this.client.loginWithFacebook(fbAccessToken, code)
-        .compose(Transformers.pipeApiErrorsTo(this.tfaError))
-        .compose(Transformers.neverError())
-        .doOnSubscribe(() -> this.formSubmitting.onNext(true))
-        .doAfterTerminate(() -> this.formSubmitting.onNext(false));
-    }
+        private fun login(
+            code: String, email: String,
+            password: String
+        ): Observable<AccessTokenEnvelope> {
+            return client.login(email, password, code)
+                .compose(Transformers.pipeApiErrorsTo(tfaError))
+                .compose(Transformers.neverError())
+                .doOnSubscribe { formSubmitting.onNext(true) }
+                .doAfterTerminate { formSubmitting.onNext(false) }
+        }
 
-    private @NonNull Observable<AccessTokenEnvelope> resendCode(final @NonNull String email, final @NonNull String password) {
-      return this.client.login(email, password)
-        .compose(Transformers.neverError())
-        .doOnSubscribe(() -> this.showResendCodeConfirmation.onNext(null));
-    }
+        private fun loginWithFacebook(
+            code: String,
+            fbAccessToken: String
+        ): Observable<AccessTokenEnvelope> {
+            return client.loginWithFacebook(fbAccessToken, code)
+                .compose(Transformers.pipeApiErrorsTo(tfaError))
+                .compose(Transformers.neverError())
+                .doOnSubscribe { formSubmitting.onNext(true) }
+                .doAfterTerminate { formSubmitting.onNext(false) }
+        }
 
-    private @NonNull Observable<AccessTokenEnvelope> resendCodeWithFacebook(final @NonNull String fbAccessToken) {
-      return this.client.loginWithFacebook(fbAccessToken)
-        .compose(Transformers.neverError())
-        .doOnSubscribe(() -> this.showResendCodeConfirmation.onNext(null));
-    }
+        private fun resendCode(email: String, password: String): Observable<AccessTokenEnvelope> {
+            return client.login(email, password)
+                .compose(Transformers.neverError())
+                .doOnSubscribe { showResendCodeConfirmation.onNext(null) }
+        }
 
-    private static boolean isCodeValid(final String code) {
-      return code != null && code.length() > 0;
-    }
+        private fun resendCodeWithFacebook(fbAccessToken: String): Observable<AccessTokenEnvelope> {
+            return client.loginWithFacebook(fbAccessToken)
+                .compose(Transformers.neverError())
+                .doOnSubscribe { showResendCodeConfirmation.onNext(null) }
+        }
 
-    private final PublishSubject<String> code = PublishSubject.create();
-    private final PublishSubject<Void> loginClick = PublishSubject.create();
-    private final PublishSubject<Void> resendClick = PublishSubject.create();
+        private val code = PublishSubject.create<String>()
+        private val loginClick = PublishSubject.create<Void>()
+        private val resendClick = PublishSubject.create<Void>()
+        private val formIsValid = PublishSubject.create<Boolean>()
+        private val formSubmitting = PublishSubject.create<Boolean>()
+        private val showResendCodeConfirmation = PublishSubject.create<Void>()
+        private val tfaError = PublishSubject.create<ErrorEnvelope>()
+        private val tfaSuccess = PublishSubject.create<Void>()
 
-    private final PublishSubject<Boolean> formIsValid = PublishSubject.create();
-    private final PublishSubject<Boolean> formSubmitting = PublishSubject.create();
-    private final PublishSubject<Void> showResendCodeConfirmation = PublishSubject.create();
-    private final PublishSubject<ErrorEnvelope> tfaError = PublishSubject.create();
-    private final PublishSubject<Void> tfaSuccess = PublishSubject.create();
+        val inputs: Inputs = this
+        val outputs: Outputs = this
+      
+        override fun formIsValid(): Observable<Boolean> = formIsValid
 
-    public final Inputs inputs = this;
-    public final Outputs outputs = this;
+        override fun formSubmitting(): Observable<Boolean> =formSubmitting
 
-    @Override public Observable<Boolean> formIsValid() {
-      return this.formIsValid;
-    }
-    @Override public Observable<Boolean> formSubmitting() {
-      return this.formSubmitting;
-    }
-    @Override public Observable<Void> genericTfaError() {
-      return this.tfaError
-        .filter(env -> !env.isTfaFailedError())
-        .map(__ -> null);
-    }
-    @Override public Observable<Void> showResendCodeConfirmation() {
-      return this.showResendCodeConfirmation;
-    }
-    @Override public Observable<Void> tfaCodeMismatchError() {
-      return this.tfaError
-        .filter(ErrorEnvelope::isTfaFailedError)
-        .map(__ -> null);
-    }
-    @Override public Observable<Void> tfaSuccess() {
-      return this.tfaSuccess;
-    }
+        override fun genericTfaError(): Observable<Void> {
+            return tfaError
+                .filter { env: ErrorEnvelope -> !env.isTfaFailedError }
+                .map { null }
+        }
 
-    @Override public void code(final @NonNull String s) {
-      this.code.onNext(s);
-    }
-    @Override public void loginClick() {
-      this.loginClick.onNext(null);
-    }
-    @Override public void resendClick() {
-      this.resendClick.onNext(null);
-    }
+        override fun showResendCodeConfirmation(): Observable<Void> = showResendCodeConfirmation
 
-    protected final class TfaData {
-      final @NonNull String email;
-      final @NonNull String fbAccessToken;
-      final boolean isFacebookLogin;
-      final @NonNull String password;
+        override fun tfaCodeMismatchError(): Observable<Void> {
+            return tfaError
+                .filter(ErrorEnvelope::isTfaFailedError)
+                .map { null }
+        }
 
-      protected TfaData(final @NonNull String email, final @NonNull String fbAccessToken, final boolean isFacebookLogin,
-        final @NonNull String password) {
-        this.email = email;
-        this.fbAccessToken = fbAccessToken;
-        this.isFacebookLogin = isFacebookLogin;
-        this.password = password;
-      }
+        override fun tfaSuccess(): Observable<Void> {
+            return tfaSuccess
+        }
+
+        override fun code(s: String) {
+            this.code.onNext(s)
+        }
+
+        override fun loginClick() {
+            loginClick.onNext(null)
+        }
+
+        override fun resendClick() {
+            resendClick.onNext(null)
+        }
+
+        protected inner class TfaData(
+            val email: String, val fbAccessToken: String, val isFacebookLogin: Boolean,
+            val password: String
+        )
+
+        companion object {
+            private fun isCodeValid(code: String?): Boolean {
+                return code != null && code.isNotEmpty()
+            }
+        }
+
+        init {
+            currentUser = requireNotNull(environment.currentUser())
+            client = requireNotNull(environment.apiClient())
+           
+            val email = intent()
+                .map { it.getStringExtra(IntentKey.EMAIL) }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+            
+            val fbAccessToken = intent()
+                .map { it.getStringExtra(IntentKey.FACEBOOK_TOKEN) }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+          
+            val isFacebookLogin = intent()
+                .map { it.getBooleanExtra(IntentKey.FACEBOOK_LOGIN, false) }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+            
+            val password = intent()
+                .map { it.getStringExtra(IntentKey.PASSWORD) }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+           
+            val tfaData = Observable.combineLatest(
+                email, fbAccessToken, isFacebookLogin, password
+            ) { email: String, fbAccessToken: String, isFacebookLogin: Boolean, password: String ->
+                TfaData(
+                    email,
+                    fbAccessToken,
+                    isFacebookLogin,
+                    password
+                )
+            }
+         
+            this.code
+                .map { code: String? -> isCodeValid(code) }
+                .compose(bindToLifecycle())
+                .subscribe(formIsValid)
+         
+            this.code
+                .compose(Transformers.combineLatestPair(tfaData))
+                .compose(Transformers.takeWhen(loginClick))
+                .filter {  !it.second.isFacebookLogin }
+                .switchMap { 
+                    login(
+                        it.first, it.second.email, it.second.password
+                    )
+                }
+                .compose(bindToLifecycle())
+                .subscribe {success(it) }
+            
+            this.code
+                .compose(Transformers.combineLatestPair(tfaData))
+                .compose(Transformers.takeWhen(loginClick))
+                .filter { it.second.isFacebookLogin }
+                .switchMap { 
+                    loginWithFacebook(
+                        it.first, it.second.fbAccessToken
+                    )
+                }
+                .compose(bindToLifecycle())
+                .subscribe { success(it) }
+           
+            tfaData
+                .compose(Transformers.takeWhen(resendClick))
+                .filter { !it.isFacebookLogin }
+                .flatMap {
+                    resendCode(it.email, it.password)
+                }
+                .compose(bindToLifecycle())
+                .subscribe()
+           
+            tfaData
+                .compose(Transformers.takeWhen(resendClick))
+                .filter { it.isFacebookLogin }
+                .flatMap { 
+                    resendCodeWithFacebook(it.fbAccessToken)
+                }
+                .compose(bindToLifecycle())
+                .subscribe()
+           
+            analyticEvents.trackTwoFactorAuthPageViewed()
+        }
     }
-  }
 }

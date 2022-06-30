@@ -1,139 +1,143 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import android.content.Intent;
+import android.content.Intent
+import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.utils.EventName
+import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.models.User
+import com.kickstarter.services.apiresponses.AccessTokenEnvelope
+import com.kickstarter.services.apiresponses.ErrorEnvelope
+import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.activities.DisclaimerItems
+import com.kickstarter.ui.data.LoginReason
+import org.junit.Test
+import rx.Observable
+import rx.observers.TestSubscriber
 
-import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.MockCurrentUser;
-import com.kickstarter.libs.utils.EventName;
-import com.kickstarter.mock.services.MockApiClient;
-import com.kickstarter.models.User;
-import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
-import com.kickstarter.services.apiresponses.ErrorEnvelope;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.activities.DisclaimerItems;
-import com.kickstarter.ui.data.LoginReason;
+class LoginToutViewModelTest : KSRobolectricTestCase() {
+    private lateinit var vm: LoginToutViewModel.ViewModel
+    private val finishWithSuccessfulResult = TestSubscriber<Void>()
+    private val loginError = TestSubscriber<ErrorEnvelope>()
+    private val startLoginActivity = TestSubscriber<Void>()
+    private val startSignupActivity = TestSubscriber<Void>()
+    private val currentUser = TestSubscriber<User?>()
+    private val showDisclaimerActivity = TestSubscriber<DisclaimerItems>()
 
-import org.junit.Test;
+    private fun setUpEnvironment(environment: Environment, loginReason: LoginReason) {
+        vm = LoginToutViewModel.ViewModel(environment)
+        vm.outputs.finishWithSuccessfulResult().subscribe(finishWithSuccessfulResult)
+        vm.loginError.subscribe(loginError)
+        vm.outputs.startSignupActivity().subscribe(startSignupActivity)
+        vm.outputs.startLoginActivity().subscribe(startLoginActivity)
+        vm.outputs.showDisclaimerActivity().subscribe(showDisclaimerActivity)
+        environment.currentUser()?.observable()?.subscribe(currentUser)
+        vm.intent(Intent().putExtra(IntentKey.LOGIN_REASON, loginReason))
+    }
 
-import java.util.Arrays;
+    @Test
+    fun testLoginButtonClicked() {
+        setUpEnvironment(environment(), LoginReason.DEFAULT)
 
-import androidx.annotation.NonNull;
-import rx.Observable;
-import rx.observers.TestSubscriber;
+        startLoginActivity.assertNoValues()
 
-public class LoginToutViewModelTest extends KSRobolectricTestCase {
-  private LoginToutViewModel.ViewModel vm;
-  private final TestSubscriber<Void> finishWithSuccessfulResult = new TestSubscriber<>();
-  private final TestSubscriber<ErrorEnvelope> loginError = new TestSubscriber<>();
-  private final TestSubscriber<Void> startLoginActivity = new TestSubscriber<>();
-  private final TestSubscriber<Void> startSignupActivity = new TestSubscriber<>();
-  private final TestSubscriber<User> currentUser = new TestSubscriber<>();
-  private final TestSubscriber<DisclaimerItems> showDisclaimerActivity = new TestSubscriber<>();
+        vm.inputs.loginClick()
 
-  private void setUpEnvironment(final @NonNull Environment environment, final @NonNull LoginReason loginReason) {
-    this.vm = new LoginToutViewModel.ViewModel(environment);
+        startLoginActivity.assertValueCount(1)
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+    }
 
-    this.vm.outputs.finishWithSuccessfulResult().subscribe(this.finishWithSuccessfulResult);
-    this.vm.loginError.subscribe(this.loginError);
-    this.vm.outputs.startSignupActivity().subscribe(this.startSignupActivity);
-    this.vm.outputs.startLoginActivity().subscribe(this.startLoginActivity);
-    this.vm.outputs.showDisclaimerActivity().subscribe(this.showDisclaimerActivity);
-    environment.currentUser().observable().subscribe(this.currentUser);
+    @Test
+    fun testSignupButtonClicked() {
+        setUpEnvironment(environment(), LoginReason.DEFAULT)
+        startSignupActivity.assertNoValues()
 
-    this.vm.intent(new Intent().putExtra(IntentKey.LOGIN_REASON, loginReason));
-  }
+        vm.inputs.signupClick()
 
-  @Test
-  public void testLoginButtonClicked() {
-    setUpEnvironment(environment(), LoginReason.DEFAULT);
+        startSignupActivity.assertValueCount(1)
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+    }
 
-    this.startLoginActivity.assertNoValues();
+    @Test
+    fun facebookLogin_success() {
+        val currentUser = MockCurrentUser()
+        val environment = environment()
+            .toBuilder()
+            .currentUser(currentUser)
+            .build()
+        setUpEnvironment(environment, LoginReason.DEFAULT)
 
-    this.vm.inputs.loginClick();
-    this.startLoginActivity.assertValueCount(1);
-    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CTA_CLICKED.getEventName());
-  }
+        this.currentUser.assertValuesAndClear(null)
 
-  @Test
-  public void testSignupButtonClicked() {
-    setUpEnvironment(environment(), LoginReason.DEFAULT);
+        vm.inputs.facebookLoginClick(
+            null,
+            listOf("public_profile", "user_friends", "email")
+        )
 
-    this.startSignupActivity.assertNoValues();
+        vm.facebookAccessToken.onNext("token")
 
-    this.vm.inputs.signupClick();
-    this.startSignupActivity.assertValueCount(1);
-    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CTA_CLICKED.getEventName());
-  }
+        this.currentUser.assertValueCount(1)
+        finishWithSuccessfulResult.assertValueCount(1)
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+    }
 
-  @Test
-  public void facebookLogin_success() {
-    final MockCurrentUser currentUser = new MockCurrentUser();
-    final Environment environment = environment()
-      .toBuilder()
-      .currentUser(currentUser)
-      .build();
-    setUpEnvironment(environment, LoginReason.DEFAULT);
+    @Test
+    fun facebookLogin_error() {
+        val currentUser = MockCurrentUser()
+        val environment = environment()
+            .toBuilder()
+            .currentUser(currentUser)
+            .apiClient(object : MockApiClient() {
+                override fun loginWithFacebook(accessToken: String): Observable<AccessTokenEnvelope> {
+                    return Observable.error(Throwable("error"))
+                }
+            })
+            .build()
+        setUpEnvironment(environment, LoginReason.DEFAULT)
 
-    this.currentUser.assertValuesAndClear(null);
-    this.vm.inputs.facebookLoginClick(null, Arrays.asList("public_profile", "user_friends", "email"));
-    this.vm.facebookAccessToken.onNext("token");
-    this.currentUser.assertValueCount(1);
-    this.finishWithSuccessfulResult.assertValueCount(1);
-    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CTA_CLICKED.getEventName());
-  }
+        this.currentUser.assertValuesAndClear(null)
 
-  @Test
-  public void facebookLogin_error() {
-    final MockCurrentUser currentUser = new MockCurrentUser();
-    final Environment environment = environment()
-      .toBuilder()
-      .currentUser(currentUser)
-      .apiClient(new MockApiClient() {
-        @Override
-        public @NonNull Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String accessToken) {
-          return Observable.error(new Throwable("error"));
-        }
-      })
-      .build();
+        vm.inputs.facebookLoginClick(
+            null,
+            listOf("public_profile", "user_friends", "email")
+        )
 
-    setUpEnvironment(environment, LoginReason.DEFAULT);
+        vm.facebookAccessToken.onNext("token")
 
-    this.currentUser.assertValuesAndClear(null);
-    this.vm.inputs.facebookLoginClick(null, Arrays.asList("public_profile", "user_friends", "email"));
-    this.vm.facebookAccessToken.onNext("token");
-    this.currentUser.assertNoValues();
-    this.finishWithSuccessfulResult.assertNoValues();
-    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CTA_CLICKED.getEventName());
-  }
+        this.currentUser.assertNoValues()
+        finishWithSuccessfulResult.assertNoValues()
 
-  @Test
-  public void testTermsDisclaimerClicked() {
-    setUpEnvironment(environment(), LoginReason.DEFAULT);
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+    }
 
-    this.showDisclaimerActivity.assertNoValues();
+    @Test
+    fun testTermsDisclaimerClicked() {
+        setUpEnvironment(environment(), LoginReason.DEFAULT)
 
-    this.vm.inputs.disclaimerItemClicked(DisclaimerItems.TERMS);
-    this.showDisclaimerActivity.assertValue(DisclaimerItems.TERMS);
-  }
+        showDisclaimerActivity.assertNoValues()
 
-  @Test
-  public void testPrivacyDisclaimerClicked() {
-    setUpEnvironment(environment(), LoginReason.DEFAULT);
+        vm.inputs.disclaimerItemClicked(DisclaimerItems.TERMS)
+        showDisclaimerActivity.assertValue(DisclaimerItems.TERMS)
+    }
 
-    this.showDisclaimerActivity.assertNoValues();
+    @Test
+    fun testPrivacyDisclaimerClicked() {
+        setUpEnvironment(environment(), LoginReason.DEFAULT)
 
-    this.vm.inputs.disclaimerItemClicked(DisclaimerItems.PRIVACY);
-    this.showDisclaimerActivity.assertValue(DisclaimerItems.PRIVACY);
-  }
+        showDisclaimerActivity.assertNoValues()
 
-  @Test
-  public void testCookiesDisclaimerClicked() {
-    setUpEnvironment(environment(), LoginReason.DEFAULT);
+        vm.inputs.disclaimerItemClicked(DisclaimerItems.PRIVACY)
+        showDisclaimerActivity.assertValue(DisclaimerItems.PRIVACY)
+    }
 
-    this.showDisclaimerActivity.assertNoValues();
+    @Test
+    fun testCookiesDisclaimerClicked() {
+        setUpEnvironment(environment(), LoginReason.DEFAULT)
 
-    this.vm.inputs.disclaimerItemClicked(DisclaimerItems.COOKIES);
-    this.showDisclaimerActivity.assertValue(DisclaimerItems.COOKIES);
-  }
+        showDisclaimerActivity.assertNoValues()
+
+        vm.inputs.disclaimerItemClicked(DisclaimerItems.COOKIES)
+        showDisclaimerActivity.assertValue(DisclaimerItems.COOKIES)
+    }
 }

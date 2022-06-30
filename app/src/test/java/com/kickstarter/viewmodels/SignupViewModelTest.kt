@@ -1,144 +1,158 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.EventName;
-import com.kickstarter.mock.factories.ApiExceptionFactory;
-import com.kickstarter.mock.factories.ConfigFactory;
-import com.kickstarter.mock.services.MockApiClient;
-import com.kickstarter.services.ApiClientType;
-import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
-import com.kickstarter.services.apiresponses.ErrorEnvelope;
+import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.utils.EventName
+import com.kickstarter.mock.factories.ApiExceptionFactory
+import com.kickstarter.mock.factories.ConfigFactory.config
+import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.apiresponses.AccessTokenEnvelope
+import com.kickstarter.services.apiresponses.ErrorEnvelope.Companion.builder
+import org.junit.Test
+import rx.Observable
+import rx.observers.TestSubscriber
 
-import org.junit.Test;
+class SignupViewModelTest : KSRobolectricTestCase() {
 
-import androidx.annotation.NonNull;
-import rx.Observable;
-import rx.observers.TestSubscriber;
+    @Test
+    fun testSignupViewModel_FormValidation() {
+        val environment = environment()
 
-public class SignupViewModelTest extends KSRobolectricTestCase {
+        environment.currentConfig()?.config(config())
 
-  @Test
-  public void testSignupViewModel_FormValidation() {
-    final Environment environment = environment();
-    environment.currentConfig().config(ConfigFactory.config());
-    final SignupViewModel.ViewModel vm = new SignupViewModel.ViewModel(environment);
+        val vm = SignupViewModel.ViewModel(environment)
+        val formIsValidTest = TestSubscriber<Boolean>()
 
-    final TestSubscriber<Boolean> formIsValidTest = new TestSubscriber<>();
-    vm.outputs.formIsValid().subscribe(formIsValidTest);
+        vm.outputs.formIsValid().subscribe(formIsValidTest)
 
-    vm.inputs.name("brandon");
-    formIsValidTest.assertNoValues();
+        vm.inputs.name("brandon")
 
-    vm.inputs.email("incorrect@kickstarter");
-    formIsValidTest.assertNoValues();
+        formIsValidTest.assertNoValues()
 
-    vm.inputs.password("danisawesome");
-    formIsValidTest.assertValues(false);
+        vm.inputs.email("incorrect@kickstarter")
 
-    vm.inputs.email("hello@kickstarter.com");
-    formIsValidTest.assertValues(false, true);
-  }
+        formIsValidTest.assertNoValues()
 
-  @Test
-  public void testSignupViewModel_SuccessfulSignup() {
-    final Environment environment = environment();
-    environment.currentConfig().config(ConfigFactory.config());
+        vm.inputs.password("danisawesome")
 
-    final SignupViewModel.ViewModel vm = new SignupViewModel.ViewModel(environment);
+        formIsValidTest.assertValues(false)
 
-    final TestSubscriber<Void> signupSuccessTest = new TestSubscriber<>();
-    vm.outputs.signupSuccess().subscribe(signupSuccessTest);
+        vm.inputs.email("hello@kickstarter.com")
 
-    final TestSubscriber<Boolean> formSubmittingTest = new TestSubscriber<>();
-    vm.outputs.formSubmitting().subscribe(formSubmittingTest);
+        formIsValidTest.assertValues(false, true)
+    }
 
-    vm.inputs.name("brandon");
-    vm.inputs.email("hello@kickstarter.com");
-    vm.inputs.email("incorrect@kickstarter");
-    vm.inputs.password("danisawesome");
-    vm.inputs.sendNewslettersClick(true);
+    @Test
+    fun testSignupViewModel_SuccessfulSignup() {
+        val environment = environment()
+        environment.currentConfig()?.config(config())
 
-    vm.inputs.signupClick();
+        val vm = SignupViewModel.ViewModel(environment)
+        val signupSuccessTest = TestSubscriber<Void>()
 
-    formSubmittingTest.assertValues(true, false);
-    signupSuccessTest.assertValueCount(1);
+        vm.outputs.signupSuccess().subscribe(signupSuccessTest)
 
-    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CTA_CLICKED.getEventName());
-  }
+        val formSubmittingTest = TestSubscriber<Boolean>()
 
-  @Test
-  public void testSignupViewModel_ApiValidationError() {
-    final ApiClientType apiClient = new MockApiClient() {
-      @Override
-      public @NonNull Observable<AccessTokenEnvelope> signup(final @NonNull String name, final @NonNull String email,
-        final @NonNull String password, final @NonNull String passwordConfirmation, final boolean sendNewsletters) {
-        return Observable.error(ApiExceptionFactory.apiError(
-          ErrorEnvelope.builder().httpCode(422).build()
-        ));
-      }
-    };
+        vm.outputs.formSubmitting().subscribe(formSubmittingTest)
 
-    final Environment environment = environment().toBuilder().apiClient(apiClient).build();
-    final SignupViewModel.ViewModel vm = new SignupViewModel.ViewModel(environment);
+        vm.inputs.name("brandon")
+        vm.inputs.email("hello@kickstarter.com")
+        vm.inputs.email("incorrect@kickstarter")
+        vm.inputs.password("danisawesome")
+        vm.inputs.sendNewslettersClick(true)
+        vm.inputs.signupClick()
 
-    final TestSubscriber<Void> signupSuccessTest = new TestSubscriber<>();
-    vm.outputs.signupSuccess().subscribe(signupSuccessTest);
+        formSubmittingTest.assertValues(true, false)
+        signupSuccessTest.assertValueCount(1)
 
-    final TestSubscriber<String> signupErrorTest = new TestSubscriber<>();
-    vm.outputs.errorString().subscribe(signupErrorTest);
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+    }
 
-    final TestSubscriber<Boolean> formSubmittingTest = new TestSubscriber<>();
-    vm.outputs.formSubmitting().subscribe(formSubmittingTest);
+    @Test
+    fun testSignupViewModel_ApiValidationError() {
+        val apiClient: ApiClientType = object : MockApiClient() {
+            override fun signup(
+                name: String,
+                email: String,
+                password: String,
+                passwordConfirmation: String,
+                sendNewsletters: Boolean
+            ): Observable<AccessTokenEnvelope> {
+                return Observable.error(
+                    ApiExceptionFactory.apiError(
+                        builder().httpCode(422).build()
+                    )
+                )
+            }
+        }
 
-    vm.inputs.name("brandon");
-    vm.inputs.email("hello@kickstarter.com");
-    vm.inputs.email("incorrect@kickstarter");
-    vm.inputs.password("danisawesome");
-    vm.inputs.sendNewslettersClick(true);
+        val environment = environment().toBuilder().apiClient(apiClient).build()
+        val vm = SignupViewModel.ViewModel(environment)
+        val signupSuccessTest = TestSubscriber<Void>()
 
-    vm.inputs.signupClick();
+        vm.outputs.signupSuccess().subscribe(signupSuccessTest)
 
-    formSubmittingTest.assertValues(true, false);
-    signupSuccessTest.assertValueCount(0);
-    signupErrorTest.assertValueCount(1);
-    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CTA_CLICKED.getEventName());
-  }
+        val signupErrorTest = TestSubscriber<String>()
 
-  @Test
-  public void testSignupViewModel_ApiError() {
-    final ApiClientType apiClient = new MockApiClient() {
-      @Override
-      public @NonNull Observable<AccessTokenEnvelope> signup(final @NonNull String name, final @NonNull String email,
-        final @NonNull String password, final @NonNull String passwordConfirmation, final boolean sendNewsletters) {
-        return Observable.error(ApiExceptionFactory.badRequestException());
-      }
-    };
+        vm.outputs.errorString().subscribe(signupErrorTest)
 
-    final Environment environment = environment().toBuilder().apiClient(apiClient).build();
-    final SignupViewModel.ViewModel vm = new SignupViewModel.ViewModel(environment);
+        val formSubmittingTest = TestSubscriber<Boolean>()
 
-    final TestSubscriber<Void> signupSuccessTest = new TestSubscriber<>();
-    vm.outputs.signupSuccess().subscribe(signupSuccessTest);
+        vm.outputs.formSubmitting().subscribe(formSubmittingTest)
 
-    final TestSubscriber<String> signupErrorTest = new TestSubscriber<>();
-    vm.outputs.errorString().subscribe(signupErrorTest);
+        vm.inputs.name("brandon")
+        vm.inputs.email("hello@kickstarter.com")
+        vm.inputs.email("incorrect@kickstarter")
+        vm.inputs.password("danisawesome")
+        vm.inputs.sendNewslettersClick(true)
+        vm.inputs.signupClick()
 
-    final TestSubscriber<Boolean> formSubmittingTest = new TestSubscriber<>();
-    vm.outputs.formSubmitting().subscribe(formSubmittingTest);
+        formSubmittingTest.assertValues(true, false)
+        signupSuccessTest.assertValueCount(0)
+        signupErrorTest.assertValueCount(1)
 
-    vm.inputs.name("brandon");
-    vm.inputs.email("hello@kickstarter.com");
-    vm.inputs.email("incorrect@kickstarter");
-    vm.inputs.password("danisawesome");
-    vm.inputs.sendNewslettersClick(true);
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+    }
 
-    vm.inputs.signupClick();
+    @Test
+    fun testSignupViewModel_ApiError() {
+        val apiClient: ApiClientType = object : MockApiClient() {
+            override fun signup(
+                name: String,
+                email: String,
+                password: String,
+                passwordConfirmation: String,
+                sendNewsletters: Boolean
+            ): Observable<AccessTokenEnvelope> {
+                return Observable.error(ApiExceptionFactory.badRequestException())
+            }
+        }
 
-    formSubmittingTest.assertValues(true, false);
-    signupSuccessTest.assertValueCount(0);
-    signupErrorTest.assertValueCount(1);
-    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CTA_CLICKED.getEventName());
-  }
+        val environment = environment().toBuilder().apiClient(apiClient).build()
+        val vm = SignupViewModel.ViewModel(environment)
+        val signupSuccessTest = TestSubscriber<Void>()
 
+        vm.outputs.signupSuccess().subscribe(signupSuccessTest)
+
+        val signupErrorTest = TestSubscriber<String>()
+        vm.outputs.errorString().subscribe(signupErrorTest)
+
+        val formSubmittingTest = TestSubscriber<Boolean>()
+
+        vm.outputs.formSubmitting().subscribe(formSubmittingTest)
+
+        vm.inputs.name("brandon")
+        vm.inputs.email("hello@kickstarter.com")
+        vm.inputs.email("incorrect@kickstarter")
+        vm.inputs.password("danisawesome")
+        vm.inputs.sendNewslettersClick(true)
+        vm.inputs.signupClick()
+
+        formSubmittingTest.assertValues(true, false)
+        signupSuccessTest.assertValueCount(0)
+        signupErrorTest.assertValueCount(1)
+
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+    }
 }

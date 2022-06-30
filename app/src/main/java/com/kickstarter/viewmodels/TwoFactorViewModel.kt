@@ -195,9 +195,10 @@ interface TwoFactorViewModel {
                 .compose(Transformers.combineLatestPair(tfaData))
                 .compose(Transformers.takeWhen(loginClick))
                 .filter { !it.second.isFacebookLogin }
-                .switchMap { login(
-                    it.first, it.second.email, it.second.password
-                )
+                .switchMap {
+                    login(
+                        it.first, it.second.email, it.second.password
+                    )
                 }
                 .compose(bindToLifecycle())
                 .subscribe { success(it) }
@@ -206,9 +207,10 @@ interface TwoFactorViewModel {
                 .compose(Transformers.combineLatestPair(tfaData))
                 .compose(Transformers.takeWhen(loginClick))
                 .filter { it.second.isFacebookLogin }
-                .switchMap { loginWithFacebook(
-                    it.first, it.second.fbAccessToken
-                )
+                .switchMap {
+                    loginWithFacebook(
+                        it.first, it.second.fbAccessToken
+                    )
                 }
                 .compose(bindToLifecycle())
                 .subscribe { success(it) }
@@ -225,7 +227,8 @@ interface TwoFactorViewModel {
             tfaData
                 .compose(Transformers.takeWhen(resendClick))
                 .filter { it.isFacebookLogin }
-                .flatMap { resendCodeWithFacebook(it.fbAccessToken)
+                .flatMap {
+                    resendCodeWithFacebook(it.fbAccessToken)
                 }
                 .compose(bindToLifecycle())
                 .subscribe()

@@ -87,7 +87,7 @@ class CancelPledgeFragment : BaseFragment<CancelPledgeViewModel.ViewModel>() {
     }
 
     private fun dismiss() {
-        fragmentManager?.popBackStack(CancelPledgeFragment::class.java.simpleName, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        parentFragmentManager?.popBackStack(CancelPledgeFragment::class.java.simpleName, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
     private fun setPromptText(amountAndProjectName: Pair<String, String>) {

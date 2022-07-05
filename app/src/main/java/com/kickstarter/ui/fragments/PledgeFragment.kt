@@ -285,12 +285,12 @@ class PledgeFragment :
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {
-                fragmentManager
-                    ?.beginTransaction()
-                    ?.setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
-                    ?.add(R.id.secondary_container, NewCardFragment.newInstance(true, it), NewCardFragment::class.java.simpleName)
-                    ?.addToBackStack(NewCardFragment::class.java.simpleName)
-                    ?.commit()
+                parentFragmentManager
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
+                    .add(R.id.secondary_container, NewCardFragment.newInstance(true, it), NewCardFragment::class.java.simpleName)
+                    .addToBackStack(NewCardFragment::class.java.simpleName)
+                    .commit()
             }
 
         this.viewModel.outputs.selectedShippingRule()

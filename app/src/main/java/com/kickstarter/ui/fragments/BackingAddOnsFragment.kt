@@ -160,12 +160,12 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
     }
 
     private fun showPledgeFragment(pledgeData: PledgeData, pledgeReason: PledgeReason) {
-        fragmentManager
-            ?.beginTransaction()
-            ?.setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
-            ?.add(R.id.fragment_container, PledgeFragment.newInstance(pledgeData, pledgeReason), PledgeFragment::class.java.simpleName)
-            ?.addToBackStack(NewCardFragment::class.java.simpleName)
-            ?.commit()
+        parentFragmentManager
+            .beginTransaction()
+            .setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
+            .add(R.id.fragment_container, PledgeFragment.newInstance(pledgeData, pledgeReason), PledgeFragment::class.java.simpleName)
+            .addToBackStack(NewCardFragment::class.java.simpleName)
+            .commit()
     }
 
     private fun setupErrorDialog() {

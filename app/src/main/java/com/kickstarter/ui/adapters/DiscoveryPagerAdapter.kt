@@ -16,7 +16,7 @@ class DiscoveryPagerAdapter(
     private val fragments: MutableList<DiscoveryFragment>,
     private val pageTitles: List<String>,
     private val delegate: Delegate
-) : FragmentPagerAdapter(fragmentManager) {
+) : FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     interface Delegate {
         fun discoveryPagerAdapterSetPrimaryPage(adapter: DiscoveryPagerAdapter, position: Int)
     }

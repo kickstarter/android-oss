@@ -21,11 +21,15 @@ class DiscoveryActivitySampleAdapter(private val delegate: Delegate) : KSListAda
         ActivitySampleFriendBackingViewHolder.Delegate,
         ActivitySampleProjectViewHolder.Delegate
 
+    init {
+        insertSection(SECTION_ACTIVITY_SAMPLE_VIEW, emptyList<Activity>())
+    }
+
     fun takeActivity(activity: Activity?) {
         activity?.let {
             setSection(SECTION_ACTIVITY_SAMPLE_VIEW, listOf(activity))
+            submitList(items())
         }
-        submitList(items())
     }
 
     @LayoutRes
@@ -87,9 +91,5 @@ class DiscoveryActivitySampleAdapter(private val delegate: Delegate) : KSListAda
 
     companion object {
         private const val SECTION_ACTIVITY_SAMPLE_VIEW = 0
-    }
-
-    init {
-        insertSection(SECTION_ACTIVITY_SAMPLE_VIEW, emptyList<Activity>())
     }
 }

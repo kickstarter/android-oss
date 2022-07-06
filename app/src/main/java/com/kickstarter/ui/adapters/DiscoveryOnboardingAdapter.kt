@@ -12,13 +12,15 @@ class DiscoveryOnboardingAdapter(private val delegate: Delegate) : KSListAdapter
     interface Delegate :
         DiscoveryOnboardingViewHolder.Delegate
 
+    init {
+        insertSection(SECTION_ONBOARDING_VIEW, emptyList<Boolean>())
+    }
+
     fun setShouldShowOnboardingView(shouldShowOnboardingView: Boolean) {
         if (shouldShowOnboardingView) {
             setSection(SECTION_ONBOARDING_VIEW, listOf(true))
-        } else {
-            setSection(SECTION_ONBOARDING_VIEW, emptyList<Boolean>())
+            submitList(items())
         }
-        submitList(items())
     }
 
     override fun layout(sectionRow: SectionRow): Int = R.layout.discovery_onboarding_view
@@ -36,9 +38,5 @@ class DiscoveryOnboardingAdapter(private val delegate: Delegate) : KSListAdapter
 
     companion object {
         private const val SECTION_ONBOARDING_VIEW = 0
-    }
-
-    init {
-        insertSection(SECTION_ONBOARDING_VIEW, emptyList<Boolean>())
     }
 }

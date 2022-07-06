@@ -15,10 +15,17 @@ class DiscoveryProjectCardAdapter(private val delegate: Delegate) : KSListAdapte
     interface Delegate :
         ProjectCardViewHolder.Delegate
 
-    fun takeProjects(projects: List<Pair<Project, DiscoveryParams>>) {
-        setSection(SECTION_PROJECT_CARD_VIEW, projects)
-        submitList(items())
+    init {
+        insertSection(SECTION_PROJECT_CARD_VIEW, emptyList<Pair<Project, DiscoveryParams>>())
     }
+
+    fun takeProjects(projects: List<Pair<Project, DiscoveryParams>>) {
+        projects.filterNotNull().let {
+            setSection(SECTION_PROJECT_CARD_VIEW, it)
+            submitList(items())
+        }
+    }
+
     override fun layout(sectionRow: SectionRow): Int = R.layout.project_card_view
 
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
@@ -34,9 +41,5 @@ class DiscoveryProjectCardAdapter(private val delegate: Delegate) : KSListAdapte
 
     companion object {
         private const val SECTION_PROJECT_CARD_VIEW = 0
-    }
-
-    init {
-        insertSection(SECTION_PROJECT_CARD_VIEW, emptyList<Pair<Project, DiscoveryParams>>())
     }
 }

@@ -102,7 +102,6 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
 
         this.viewModel.outputs.projectList()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { discoveryProjectCardAdapter.takeProjects(it) }
@@ -181,7 +180,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
 
     override fun onDetach() {
         super.onDetach()
-        binding?.discoveryRecyclerView ?.adapter = null
+        binding?.discoveryRecyclerView?.adapter = null
         recyclerViewPaginator?.stop()
     }
 

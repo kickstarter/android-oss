@@ -90,7 +90,6 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
 
         this.viewModel.outputs.activity()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { discoveryActivitySampleAdapter.takeActivity(it) }
@@ -110,7 +109,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
 
         this.viewModel.outputs.shouldShowEditorial()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { discoveryEditorialAdapter.setShouldShowEditorial(it) }
 
         this.viewModel.outputs.shouldShowEmptySavedView()
@@ -122,32 +121,32 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
 
         this.viewModel.outputs.shouldShowOnboardingView()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { discoveryOnboardingAdapter.setShouldShowOnboardingView(it) }
 
         this.viewModel.outputs.showActivityFeed()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startActivityFeedActivity() }
 
         this.viewModel.outputs.startEditorialActivity()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startEditorialActivity(it) }
 
         this.viewModel.outputs.startUpdateActivity()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startUpdateActivity(it) }
 
         this.viewModel.outputs.startProjectActivity()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startProjectActivity(it.first, it.second) }
 
         this.viewModel.outputs.showLoginTout()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startLoginToutActivity() }
 
         binding?.discoveryHeartsContainer?.let {

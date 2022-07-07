@@ -1,42 +1,39 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import android.content.Intent;
+import android.content.Intent
+import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.Environment
+import com.kickstarter.ui.IntentKey
+import org.junit.Test
+import rx.observers.TestSubscriber
 
-import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.ui.IntentKey;
+class WebViewViewModelTest : KSRobolectricTestCase() {
+    private lateinit var vm: WebViewViewModel.ViewModel
+    private val toolbarTitle = TestSubscriber<String>()
+    private val url = TestSubscriber<String>()
 
-import org.junit.Test;
+    private fun setUpEnvironment(environment: Environment) {
+        vm = WebViewViewModel.ViewModel(environment)
 
-import androidx.annotation.NonNull;
-import rx.observers.TestSubscriber;
+        vm.outputs.toolbarTitle().subscribe(toolbarTitle)
+        vm.outputs.url().subscribe(url)
+    }
 
-public final class WebViewViewModelTest extends KSRobolectricTestCase {
-  private WebViewViewModel.ViewModel vm;
-  private final TestSubscriber<String> toolbarTitle = new TestSubscriber<>();
-  private final TestSubscriber<String> url = new TestSubscriber<>();
+    @Test
+    fun testToolbarTitle() {
+        val toolbarTitle = "some body once told me"
+        setUpEnvironment(environment())
 
-  private void setUpEnvironment(final @NonNull Environment environment) {
-    this.vm = new WebViewViewModel.ViewModel(environment);
-    this.vm.outputs.toolbarTitle().subscribe(this.toolbarTitle);
-    this.vm.outputs.url().subscribe(this.url);
-  }
+        vm.intent(Intent().putExtra(IntentKey.TOOLBAR_TITLE, toolbarTitle))
+        this.toolbarTitle.assertValues(toolbarTitle)
+    }
 
-  @Test
-  public void testToolbarTitle() {
-    final String toolbarTitle = "some body once told me";
-    setUpEnvironment(environment());
+    @Test
+    fun testUrl() {
+        val url = "d.rip"
+        setUpEnvironment(environment())
 
-    this.vm.intent(new Intent().putExtra(IntentKey.TOOLBAR_TITLE, toolbarTitle));
-    this.toolbarTitle.assertValues(toolbarTitle);
-  }
-
-  @Test
-  public void testUrl() {
-    final String url = "d.rip";
-    setUpEnvironment(environment());
-
-    this.vm.intent(new Intent().putExtra(IntentKey.URL, url));
-    this.url.assertValues(url);
-  }
+        vm.intent(Intent().putExtra(IntentKey.URL, url))
+        this.url.assertValues(url)
+    }
 }

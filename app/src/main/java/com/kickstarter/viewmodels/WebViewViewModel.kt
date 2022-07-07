@@ -1,52 +1,50 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.activities.WebViewActivity;
+import com.kickstarter.libs.ActivityViewModel
+import com.kickstarter.libs.Environment
+import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.activities.WebViewActivity
+import rx.Observable
+import rx.subjects.BehaviorSubject
 
-import androidx.annotation.NonNull;
-import rx.Observable;
-import rx.subjects.BehaviorSubject;
+interface WebViewViewModel {
+    interface Outputs {
+        /** Emits a string to display in the toolbar. */
+        fun toolbarTitle(): Observable<String>
 
-public interface WebViewViewModel {
-
-  interface Outputs {
-    /** Emits a string to display in the toolbar.*/
-    Observable<String> toolbarTitle();
-
-    /** Emits a URL to load in the web view. */
-    Observable<String> url();
-  }
-
-  final class ViewModel extends ActivityViewModel<WebViewActivity> implements Outputs {
-
-    public ViewModel(final @NonNull Environment environment) {
-      super(environment);
-
-      intent()
-        .map(i -> i.getStringExtra(IntentKey.TOOLBAR_TITLE))
-        .ofType(String.class)
-        .compose(bindToLifecycle())
-        .subscribe(this.toolbarTitle::onNext);
-
-      intent()
-        .map(i -> i.getStringExtra(IntentKey.URL))
-        .ofType(String.class)
-        .compose(bindToLifecycle())
-        .subscribe(this.url::onNext);
+        /** Emits a URL to load in the web view.  */
+        fun url(): Observable<String>
     }
 
-    private final BehaviorSubject<String> toolbarTitle = BehaviorSubject.create();
-    private final BehaviorSubject<String> url = BehaviorSubject.create();
+    class ViewModel(environment: Environment) :
+        ActivityViewModel<WebViewActivity >(environment),
+        Outputs {
 
-    public final Outputs outputs = this;
+        private val toolbarTitle = BehaviorSubject.create<String>()
+        private val url = BehaviorSubject.create<String>()
 
-    @Override public @NonNull Observable<String> toolbarTitle() {
-      return this.toolbarTitle;
+        val outputs: Outputs = this
+
+        override fun toolbarTitle(): Observable<String> {
+            return toolbarTitle
+        }
+
+        override fun url(): Observable<String> {
+            return url
+        }
+
+        init {
+            intent()
+                .map { it.getStringExtra(IntentKey.TOOLBAR_TITLE) }
+                .ofType(String::class.java)
+                .compose(bindToLifecycle())
+                .subscribe { toolbarTitle.onNext(it) }
+
+            intent()
+                .map { it.getStringExtra(IntentKey.URL) }
+                .ofType(String::class.java)
+                .compose(bindToLifecycle())
+                .subscribe { url.onNext(it) }
+        }
     }
-    @Override public @NonNull Observable<String> url() {
-      return this.url;
-    }
-  }
 }

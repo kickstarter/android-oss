@@ -1,35 +1,33 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.activities.DownloadBetaActivity;
-import com.kickstarter.viewmodels.inputs.DownloadBetaViewModelInputs;
-import com.kickstarter.viewmodels.outputs.DownloadBetaViewModelOutputs;
+import com.kickstarter.libs.ActivityViewModel
+import com.kickstarter.libs.Environment
+import com.kickstarter.services.apiresponses.InternalBuildEnvelope
+import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.activities.DownloadBetaActivity
+import com.kickstarter.viewmodels.inputs.DownloadBetaViewModelInputs
+import com.kickstarter.viewmodels.outputs.DownloadBetaViewModelOutputs
+import rx.Observable
+import rx.subjects.BehaviorSubject
 
-import androidx.annotation.NonNull;
-import rx.Observable;
-import rx.subjects.BehaviorSubject;
+class DownloadBetaViewModel(environment: Environment) :
+    ActivityViewModel<DownloadBetaActivity>(environment),
+    DownloadBetaViewModelInputs,
+    DownloadBetaViewModelOutputs {
 
-public final class DownloadBetaViewModel extends ActivityViewModel<DownloadBetaActivity> implements DownloadBetaViewModelInputs,
-  DownloadBetaViewModelOutputs {
+    private val internalBuildEnvelope = BehaviorSubject.create<InternalBuildEnvelope>()
 
-  private final BehaviorSubject<InternalBuildEnvelope> internalBuildEnvelope = BehaviorSubject.create();
-  @Override
-  public Observable<InternalBuildEnvelope> internalBuildEnvelope() {
-    return this.internalBuildEnvelope;
-  }
+    override fun internalBuildEnvelope(): Observable<InternalBuildEnvelope> {
+        return internalBuildEnvelope
+    }
 
-  public final DownloadBetaViewModelOutputs outputs = this;
+    val outputs: DownloadBetaViewModelOutputs = this
 
-  public DownloadBetaViewModel(final @NonNull Environment environment) {
-    super(environment);
-
-    intent()
-      .map(i -> i.getParcelableExtra(IntentKey.INTERNAL_BUILD_ENVELOPE))
-      .ofType(InternalBuildEnvelope.class)
-      .compose(bindToLifecycle())
-      .subscribe(this.internalBuildEnvelope);
-  }
+    init {
+        intent()
+            .map<InternalBuildEnvelope> { it.getParcelableExtra(IntentKey.INTERNAL_BUILD_ENVELOPE) }
+            .ofType(InternalBuildEnvelope::class.java)
+            .compose(bindToLifecycle())
+            .subscribe(internalBuildEnvelope)
+    }
 }

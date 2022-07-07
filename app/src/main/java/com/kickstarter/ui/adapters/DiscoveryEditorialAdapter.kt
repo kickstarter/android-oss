@@ -11,15 +11,15 @@ import com.kickstarter.ui.viewholders.KSViewHolder
 class DiscoveryEditorialAdapter(private val delegate: Delegate) : KSListAdapter() {
     interface Delegate : EditorialViewHolder.Delegate
 
-    init {
-        insertSection(SECTION_EDITORIAL_VIEW, emptyList<Editorial>())
-    }
-
     fun setShouldShowEditorial(editorial: Editorial?) {
+        clearSections()
+        insertSection(SECTION_EDITORIAL_VIEW, emptyList<Editorial>())
+
         editorial?.let {
             setSection(SECTION_EDITORIAL_VIEW, listOf(editorial))
-            submitList(items())
-        }
+        } ?: setSection(SECTION_EDITORIAL_VIEW, emptyList<Editorial>())
+
+        submitList(items())
     }
 
     override fun layout(sectionRow: SectionRow): Int = R.layout.item_lights_on

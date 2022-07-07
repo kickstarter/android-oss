@@ -17,10 +17,16 @@ class DiscoveryOnboardingAdapter(private val delegate: Delegate) : KSListAdapter
     }
 
     fun setShouldShowOnboardingView(shouldShowOnboardingView: Boolean) {
+        clearSections()
+        insertSection(SECTION_ONBOARDING_VIEW, emptyList<Boolean>())
+
         if (shouldShowOnboardingView) {
             setSection(SECTION_ONBOARDING_VIEW, listOf(true))
-            submitList(items())
+        } else {
+            setSection(SECTION_ONBOARDING_VIEW, emptyList<Boolean>())
         }
+
+        submitList(items())
     }
 
     override fun layout(sectionRow: SectionRow): Int = R.layout.discovery_onboarding_view

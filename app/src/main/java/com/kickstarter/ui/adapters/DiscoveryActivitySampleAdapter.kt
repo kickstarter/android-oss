@@ -26,10 +26,13 @@ class DiscoveryActivitySampleAdapter(private val delegate: Delegate) : KSListAda
     }
 
     fun takeActivity(activity: Activity?) {
+        clearSections()
+        insertSection(SECTION_ACTIVITY_SAMPLE_VIEW, emptyList<Activity>())
         activity?.let {
             setSection(SECTION_ACTIVITY_SAMPLE_VIEW, listOf(activity))
-            submitList(items())
-        }
+        } ?: setSection(SECTION_ACTIVITY_SAMPLE_VIEW, emptyList<Activity>())
+
+        submitList(items())
     }
 
     @LayoutRes

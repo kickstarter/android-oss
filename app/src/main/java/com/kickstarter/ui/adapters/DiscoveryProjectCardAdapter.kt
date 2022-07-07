@@ -15,15 +15,13 @@ class DiscoveryProjectCardAdapter(private val delegate: Delegate) : KSListAdapte
     interface Delegate :
         ProjectCardViewHolder.Delegate
 
-    init {
-        insertSection(SECTION_PROJECT_CARD_VIEW, emptyList<Pair<Project, DiscoveryParams>>())
-    }
-
     fun takeProjects(projects: List<Pair<Project, DiscoveryParams>>) {
-        projects.filterNotNull().let {
-            setSection(SECTION_PROJECT_CARD_VIEW, it)
-            submitList(items())
-        }
+        clearSections()
+
+        insertSection(SECTION_PROJECT_CARD_VIEW, emptyList<Pair<Project, DiscoveryParams>>())
+        setSection(SECTION_PROJECT_CARD_VIEW, projects)
+
+        submitList(items())
     }
 
     override fun layout(sectionRow: SectionRow): Int = R.layout.project_card_view

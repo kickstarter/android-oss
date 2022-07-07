@@ -21,10 +21,6 @@ class DiscoveryActivitySampleAdapter(private val delegate: Delegate) : KSListAda
         ActivitySampleFriendBackingViewHolder.Delegate,
         ActivitySampleProjectViewHolder.Delegate
 
-    init {
-        insertSection(SECTION_ACTIVITY_SAMPLE_VIEW, emptyList<Activity>())
-    }
-
     fun takeActivity(activity: Activity?) {
         clearSections()
         insertSection(SECTION_ACTIVITY_SAMPLE_VIEW, emptyList<Activity>())

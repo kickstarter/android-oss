@@ -12,10 +12,6 @@ class DiscoveryOnboardingAdapter(private val delegate: Delegate) : KSListAdapter
     interface Delegate :
         DiscoveryOnboardingViewHolder.Delegate
 
-    init {
-        insertSection(SECTION_ONBOARDING_VIEW, emptyList<Boolean>())
-    }
-
     fun setShouldShowOnboardingView(shouldShowOnboardingView: Boolean) {
         clearSections()
         insertSection(SECTION_ONBOARDING_VIEW, emptyList<Boolean>())

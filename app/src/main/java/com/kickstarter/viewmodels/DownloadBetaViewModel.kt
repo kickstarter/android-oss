@@ -15,13 +15,8 @@ class DownloadBetaViewModel(environment: Environment) :
     DownloadBetaViewModelInputs,
     DownloadBetaViewModelOutputs {
 
-    private val internalBuildEnvelope = BehaviorSubject.create<InternalBuildEnvelope>()
-
-    override fun internalBuildEnvelope(): Observable<InternalBuildEnvelope> {
-        return internalBuildEnvelope
-    }
-
     val outputs: DownloadBetaViewModelOutputs = this
+    private val internalBuildEnvelope = BehaviorSubject.create<InternalBuildEnvelope>()
 
     init {
         intent()
@@ -30,4 +25,5 @@ class DownloadBetaViewModel(environment: Environment) :
             .compose(bindToLifecycle())
             .subscribe(internalBuildEnvelope)
     }
+    override fun internalBuildEnvelope(): Observable<InternalBuildEnvelope> = internalBuildEnvelope
 }

@@ -16,7 +16,8 @@ object ExperimentUtils {
      */
     fun attributes(experimentData: ExperimentData, appVersion: String, OSVersion: String, versionCode: Int, optimizelyEnvironment: OptimizelyEnvironment): Map<String, Any?> {
         return mapOf(
-            Pair("distinct_id", getInstanceId(optimizelyEnvironment)),
+            Pair("distinct_id", FirebaseHelper.identifier),
+            Pair("user_id", experimentData.user?.id() ?: 0L),
             Pair("session_app_release_version", appVersion),
             Pair("session_app_release_version_number", appVersion.replace(".", "").toInt()),
             Pair("app_build_number", versionCode),
@@ -28,13 +29,7 @@ object ExperimentUtils {
             Pair("user_country", experimentData.user?.location()?.country() ?: Locale.getDefault().country)
         )
     }
-
-    private fun getInstanceId(environment: OptimizelyEnvironment) = when (environment) {
-        OptimizelyEnvironment.DEVELOPMENT -> ""
-        OptimizelyEnvironment.PRODUCTION -> null
-        OptimizelyEnvironment.STAGING -> FirebaseHelper.identifier
-    }
 }
 
-data class ExperimentData(val user: User?, val intentRefTag: RefTag?, val cookieRefTag: RefTag?)
+data class ExperimentData(val user: User?, val intentRefTag: RefTag? = null, val cookieRefTag: RefTag? = null)
 data class ExperimentRevenueData(val experimentData: ExperimentData, val checkoutData: CheckoutData, val pledgeData: PledgeData)

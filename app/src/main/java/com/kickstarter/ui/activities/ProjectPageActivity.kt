@@ -47,6 +47,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.hideKeyboard
+import com.kickstarter.ui.extensions.selectPledgeFragment
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.ui.extensions.startRootCommentsActivity
 import com.kickstarter.ui.extensions.startUpdatesActivity
@@ -718,8 +719,8 @@ class ProjectPageActivity :
             .show()
     }
 
-    private fun showPledgeFragment(pledgeDataAndPledgeReason: Pair<PledgeData, PledgeReason>) {
-        val pledgeFragment = PledgeFragment.newInstance(pledgeDataAndPledgeReason.first, pledgeDataAndPledgeReason.second)
+    private fun showPledgeFragment(pledgeDataAndPledgeReason: Triple<PledgeData, PledgeReason, Boolean>) {
+        val pledgeFragment = this.selectPledgeFragment(pledgeDataAndPledgeReason.first, pledgeDataAndPledgeReason.second, pledgeDataAndPledgeReason.third)
         val tag = PledgeFragment::class.java.simpleName
         supportFragmentManager
             .beginTransaction()

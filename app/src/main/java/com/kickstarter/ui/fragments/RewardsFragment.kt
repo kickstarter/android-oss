@@ -11,11 +11,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentRewardsBinding
 import com.kickstarter.libs.BaseFragment
+import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.RewardDecoration
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.selectPledgeFragment
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.adapters.RewardsAdapter
 import com.kickstarter.ui.data.PledgeData
@@ -28,6 +30,7 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
 
     private var rewardsAdapter = RewardsAdapter(this)
     private lateinit var dialog: AlertDialog
+    private var optimizelyClient: ExperimentsClientType? = null
     private var binding: FragmentRewardsBinding? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -40,6 +43,8 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         createDialog()
+
+        optimizelyClient = this.viewModel.environment.optimizely()
 
         this.viewModel.outputs.projectData()
             .compose(bindToLifecycle())
@@ -56,7 +61,7 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
             .compose(observeForUI())
             .subscribe {
                 dialog.dismiss()
-                showPledgeFragment(it.first, it.second)
+                showPledgeFragment(it.first, it.second, it.third)
             }
 
         this.viewModel.outputs.showAddOnsFragment()
@@ -146,33 +151,39 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
         addItemDecorator()
     }
 
-    private fun showPledgeFragment(pledgeData: PledgeData, pledgeReason: PledgeReason) {
-        if (this.isVisible && this.fragmentManager?.findFragmentByTag(PledgeFragment::class.java.simpleName) == null) {
-            val pledgeFragment = PledgeFragment.newInstance(pledgeData, pledgeReason)
-            this.fragmentManager?.beginTransaction()
-                ?.setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
-                ?.add(
+    private fun showPledgeFragment(
+        pledgeData: PledgeData,
+        pledgeReason: PledgeReason,
+        shouldShowLegacy: Boolean
+    ) {
+        if (this.isVisible && this.parentFragmentManager.findFragmentByTag(PledgeFragment::class.java.simpleName) == null) {
+            val fragment = this.selectPledgeFragment(pledgeData, pledgeReason, shouldShowLegacy)
+
+            this.parentFragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
+                .add(
                     R.id.fragment_container,
-                    pledgeFragment,
-                    PledgeFragment::class.java.simpleName
+                    fragment,
+                    fragment::class.java.simpleName
                 )
-                ?.addToBackStack(PledgeFragment::class.java.simpleName)
-                ?.commit()
+                .addToBackStack(fragment::class.java.simpleName)
+                .commit()
         }
     }
 
     private fun showAddonsFragment(pledgeDataAndReason: Pair<PledgeData, PledgeReason>) {
-        if (this.isVisible && this.fragmentManager?.findFragmentByTag(BackingAddOnsFragment::class.java.simpleName) == null) {
+        if (this.isVisible && this.parentFragmentManager.findFragmentByTag(BackingAddOnsFragment::class.java.simpleName) == null) {
             val addOnsFragment = BackingAddOnsFragment.newInstance(pledgeDataAndReason)
-            this.fragmentManager?.beginTransaction()
-                ?.setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
-                ?.add(
+            this.parentFragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
+                .add(
                     R.id.fragment_container,
                     addOnsFragment,
                     BackingAddOnsFragment::class.java.simpleName
                 )
-                ?.addToBackStack(BackingAddOnsFragment::class.java.simpleName)
-                ?.commit()
+                .addToBackStack(BackingAddOnsFragment::class.java.simpleName)
+                .commit()
         }
     }
 }

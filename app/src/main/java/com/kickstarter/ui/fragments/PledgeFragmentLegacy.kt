@@ -62,7 +62,7 @@ import com.stripe.android.SetupIntentResult
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresFragmentViewModel(PledgeFragmentViewModel.ViewModel::class)
-class PledgeFragment :
+class PledgeFragmentLegacy :
     BaseFragment<PledgeFragmentViewModel.ViewModel>(),
     RewardCardAdapter
     .Delegate,
@@ -702,11 +702,11 @@ class PledgeFragment :
             requestCode, data,
             object : ApiResultCallback<SetupIntentResult> {
                 override fun onSuccess(result: SetupIntentResult) {
-                    this@PledgeFragment.viewModel.inputs.stripeSetupResultSuccessful(result.outcome)
+                    this@PledgeFragmentLegacy.viewModel.inputs.stripeSetupResultSuccessful(result.outcome)
                 }
 
                 override fun onError(e: Exception) {
-                    this@PledgeFragment.viewModel.inputs.stripeSetupResultUnsuccessful(e)
+                    this@PledgeFragmentLegacy.viewModel.inputs.stripeSetupResultUnsuccessful(e)
                 }
             }
         )
@@ -856,7 +856,7 @@ class PledgeFragment :
         for (urlSpan in urlSpans) {
             val clickableSpan = object : ClickableSpan() {
                 override fun onClick(widget: View) {
-                    this@PledgeFragment.viewModel.inputs.linkClicked(urlSpan.url)
+                    this@PledgeFragmentLegacy.viewModel.inputs.linkClicked(urlSpan.url)
                 }
 
                 override fun updateDrawState(ds: TextPaint) {

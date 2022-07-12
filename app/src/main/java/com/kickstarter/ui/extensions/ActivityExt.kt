@@ -7,6 +7,7 @@ import android.util.Pair
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.ActivityResultLauncher
+import androidx.fragment.app.Fragment
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.kickstarter.R
@@ -18,8 +19,13 @@ import com.kickstarter.libs.utils.extensions.getProjectUpdatesActivityIntent
 import com.kickstarter.libs.utils.extensions.getRootCommentsActivityIntent
 import com.kickstarter.libs.utils.extensions.getUpdatesActivityIntent
 import com.kickstarter.libs.utils.extensions.getVideoActivityIntent
+import com.kickstarter.libs.utils.extensions.withData
 import com.kickstarter.models.Project
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.fragments.PledgeFragment
+import com.kickstarter.ui.fragments.PledgeFragmentLegacy
 import timber.log.Timber
 
 fun Activity.hideKeyboard() {
@@ -28,6 +34,16 @@ fun Activity.hideKeyboard() {
         inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
         currentFocus?.clearFocus()
     }
+}
+
+fun Activity.selectPledgeFragment(
+    pledgeData: PledgeData,
+    pledgeReason: PledgeReason,
+    shouldShowLegacy: Boolean
+): Fragment {
+
+    return if (shouldShowLegacy) PledgeFragmentLegacy().withData(pledgeData, pledgeReason)
+    else PledgeFragment().withData(pledgeData, pledgeReason)
 }
 
 fun Activity.showSnackbar(anchor: View, stringResId: Int) {

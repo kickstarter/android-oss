@@ -723,7 +723,7 @@ class ProjectPageActivity :
 
     private fun showPledgeFragment(pledgeDataAndPledgeReason: Triple<PledgeData, PledgeReason, Boolean>) {
         val pledgeFragment = this.selectPledgeFragment(pledgeDataAndPledgeReason.first, pledgeDataAndPledgeReason.second, pledgeDataAndPledgeReason.third)
-        val tag = PledgeFragment::class.java.simpleName
+        val tag = pledgeFragment::class.java.simpleName
         supportFragmentManager
             .beginTransaction()
             .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)

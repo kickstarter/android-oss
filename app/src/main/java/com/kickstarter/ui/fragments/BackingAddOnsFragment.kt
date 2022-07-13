@@ -159,8 +159,8 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
         }
     }
 
-    private fun showPledgeFragment(pledgeData: PledgeData, pledgeReason: PledgeReason, shouldShowLegacy: Boolean) {
-        val fragment = this.selectPledgeFragment(pledgeData, pledgeReason, shouldShowLegacy)
+    private fun showPledgeFragment(pledgeData: PledgeData, pledgeReason: PledgeReason, shouldShowPaymentSheet: Boolean) {
+        val fragment = this.selectPledgeFragment(pledgeData, pledgeReason, shouldShowPaymentSheet)
         parentFragmentManager
             .beginTransaction()
             .setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)

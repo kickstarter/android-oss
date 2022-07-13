@@ -17,7 +17,7 @@ object ExperimentUtils {
     fun attributes(experimentData: ExperimentData, appVersion: String, OSVersion: String, versionCode: Int, optimizelyEnvironment: OptimizelyEnvironment): Map<String, Any?> {
         return mapOf(
             Pair("distinct_id", FirebaseHelper.identifier),
-            Pair("user_id", experimentData.user?.id() ?: 0L),
+            Pair("user_id", experimentData.user?.id()?.toInt() ?: 0),
             Pair("session_app_release_version", appVersion),
             Pair("session_app_release_version_number", appVersion.replace(".", "").toInt()),
             Pair("app_build_number", versionCode),

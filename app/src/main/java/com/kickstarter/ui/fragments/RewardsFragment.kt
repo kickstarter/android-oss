@@ -154,9 +154,9 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
     private fun showPledgeFragment(
         pledgeData: PledgeData,
         pledgeReason: PledgeReason,
-        shouldShowLegacy: Boolean
+        shouldShowPaymentSheet: Boolean
     ) {
-        val fragment = this.selectPledgeFragment(pledgeData, pledgeReason, shouldShowLegacy)
+        val fragment = this.selectPledgeFragment(pledgeData, pledgeReason, shouldShowPaymentSheet)
 
         if (this.isVisible && this.parentFragmentManager.findFragmentByTag(fragment::class.java.simpleName) == null) {
             this.parentFragmentManager

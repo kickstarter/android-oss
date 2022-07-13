@@ -11,10 +11,10 @@ import com.kickstarter.ui.fragments.PledgeFragmentLegacy
 fun Fragment.selectPledgeFragment(
     pledgeData: PledgeData,
     pledgeReason: PledgeReason,
-    shouldShowLegacy: Boolean
+    shouldShowPaymentSheet: Boolean
 ): Fragment {
-    return if (shouldShowLegacy) PledgeFragmentLegacy().withData(pledgeData, pledgeReason)
-    else PledgeFragment().withData(pledgeData, pledgeReason)
+    return if (shouldShowPaymentSheet) PledgeFragment().withData(pledgeData, pledgeReason)
+    else PledgeFragmentLegacy().withData(pledgeData, pledgeReason)
 }
 
 fun Fragment.withData(pledgeData: PledgeData?, pledgeReason: PledgeReason?): Fragment {

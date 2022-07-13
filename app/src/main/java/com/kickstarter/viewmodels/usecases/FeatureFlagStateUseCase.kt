@@ -17,7 +17,7 @@ class FeatureFlagStateUseCase(
     private val key: OptimizelyFeature.Key
 ) {
 
-    fun status(): Boolean {
+    fun isActive(): Boolean {
         return currentUser?.let {
             this.optimizely.isFeatureEnabled(key, ExperimentData(it))
         } ?: this.optimizely.isFeatureEnabled(key)

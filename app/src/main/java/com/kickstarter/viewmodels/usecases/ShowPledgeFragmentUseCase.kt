@@ -22,7 +22,7 @@ class ShowPledgeFragmentUseCase(private val pledgeFragmentData: Observable<Pair<
                     FeatureFlagStateUseCase(
                         optimizely, user,
                         OptimizelyFeature.Key.ANDROID_PAYMENTSHEET
-                    ).status()
+                    ).isActive()
                 )
             }
     }

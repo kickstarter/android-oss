@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentRewardsBinding
 import com.kickstarter.libs.BaseFragment
-import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.NumberUtils
@@ -30,7 +29,6 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
 
     private var rewardsAdapter = RewardsAdapter(this)
     private lateinit var dialog: AlertDialog
-    private var optimizelyClient: ExperimentsClientType? = null
     private var binding: FragmentRewardsBinding? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -43,8 +41,6 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         createDialog()
-
-        optimizelyClient = this.viewModel.environment.optimizely()
 
         this.viewModel.outputs.projectData()
             .compose(bindToLifecycle())

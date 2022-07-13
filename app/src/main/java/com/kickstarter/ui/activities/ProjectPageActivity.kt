@@ -55,6 +55,7 @@ import com.kickstarter.ui.fragments.BackingFragment
 import com.kickstarter.ui.fragments.CancelPledgeFragment
 import com.kickstarter.ui.fragments.NewCardFragment
 import com.kickstarter.ui.fragments.PledgeFragment
+import com.kickstarter.ui.fragments.PledgeFragmentLegacy
 import com.kickstarter.ui.fragments.RewardsFragment
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import com.stripe.android.view.CardInputWidget
@@ -67,6 +68,7 @@ class ProjectPageActivity :
     CancelPledgeFragment.CancelPledgeDelegate,
     NewCardFragment.OnCardSavedListener,
     PledgeFragment.PledgeDelegate,
+    PledgeFragmentLegacy.PledgeDelegate,
     BackingFragment.BackingDelegate {
     private lateinit var ksString: KSString
 

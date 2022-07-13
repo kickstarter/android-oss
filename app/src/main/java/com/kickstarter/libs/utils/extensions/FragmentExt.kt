@@ -13,7 +13,6 @@ fun Fragment.selectPledgeFragment(
     pledgeReason: PledgeReason,
     shouldShowLegacy: Boolean
 ): Fragment {
-
     return if (shouldShowLegacy) PledgeFragmentLegacy().withData(pledgeData, pledgeReason)
     else PledgeFragment().withData(pledgeData, pledgeReason)
 }

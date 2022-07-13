@@ -156,9 +156,9 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
         pledgeReason: PledgeReason,
         shouldShowLegacy: Boolean
     ) {
-        if (this.isVisible && this.parentFragmentManager.findFragmentByTag(PledgeFragment::class.java.simpleName) == null) {
-            val fragment = this.selectPledgeFragment(pledgeData, pledgeReason, shouldShowLegacy)
+        val fragment = this.selectPledgeFragment(pledgeData, pledgeReason, shouldShowLegacy)
 
+        if (this.isVisible && this.parentFragmentManager.findFragmentByTag(fragment::class.java.simpleName) == null) {
             this.parentFragmentManager
                 .beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)

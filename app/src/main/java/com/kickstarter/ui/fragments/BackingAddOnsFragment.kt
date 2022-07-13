@@ -160,10 +160,11 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
     }
 
     private fun showPledgeFragment(pledgeData: PledgeData, pledgeReason: PledgeReason, shouldShowLegacy: Boolean) {
+        val fragment = this.selectPledgeFragment(pledgeData, pledgeReason, shouldShowLegacy)
         parentFragmentManager
             .beginTransaction()
             .setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
-            .add(R.id.fragment_container, this.selectPledgeFragment(pledgeData, pledgeReason, shouldShowLegacy), PledgeFragment::class.java.simpleName)
+            .add(R.id.fragment_container, fragment, fragment::class.java.simpleName)
             .addToBackStack(NewCardFragment::class.java.simpleName)
             .commit()
     }

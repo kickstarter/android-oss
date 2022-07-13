@@ -7,9 +7,10 @@ import com.kickstarter.models.User
 
 /**
  * Use case meant to check if a [given] feature flag is current state.
- * - When user provided the feature flag will be able to de filtered
- * - by audiences attached to any of the ExperimentData properties.
- * - IE: user_ID or user_logged_in
+ * When user provided the feature flag will be able to de filtered
+ * by audiences attached to any of the ExperimentData properties.
+ * - as example: user_ID or user_country, take a look into [ExperimentUtils]
+ * in case of needing more details.
  */
 class FeatureFlagStateUseCase(
     private val optimizely: ExperimentsClientType,

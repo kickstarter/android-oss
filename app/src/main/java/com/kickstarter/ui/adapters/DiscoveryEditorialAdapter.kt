@@ -12,13 +12,16 @@ class DiscoveryEditorialAdapter(private val delegate: Delegate) : KSListAdapter(
     interface Delegate : EditorialViewHolder.Delegate
 
     fun setShouldShowEditorial(editorial: Editorial?) {
-        if (editorial == null) {
-            setSection(SECTION_EDITORIAL_VIEW, emptyList<Any>())
-        } else {
+        clearSections()
+        insertSection(SECTION_EDITORIAL_VIEW, emptyList<Editorial>())
+
+        editorial?.let {
             setSection(SECTION_EDITORIAL_VIEW, listOf(editorial))
-        }
+        } ?: setSection(SECTION_EDITORIAL_VIEW, emptyList<Editorial>())
+
         submitList(items())
     }
+
     override fun layout(sectionRow: SectionRow): Int = R.layout.item_lights_on
 
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
@@ -34,9 +37,5 @@ class DiscoveryEditorialAdapter(private val delegate: Delegate) : KSListAdapter(
 
     companion object {
         private const val SECTION_EDITORIAL_VIEW = 0
-    }
-
-    init {
-        insertSection(SECTION_EDITORIAL_VIEW, emptyList<Editorial>())
     }
 }

@@ -234,11 +234,13 @@ class BackingAddOnsFragmentViewModel {
                         }
                         .onErrorResumeNext(Observable.empty())
                 }
+                .filter { ObjectUtils.isNotNull(it) }
                 .switchMap { it }
                 .map { it.shippingRules() }
+                .filter { ObjectUtils.isNotNull(it) }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    shippingRules.onNext(it)
+                    shippingRules.onNext(it.filterNotNull())
                 }
 
             val location = this.shippingRuleSelected

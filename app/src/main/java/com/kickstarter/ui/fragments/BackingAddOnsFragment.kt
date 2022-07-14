@@ -13,7 +13,6 @@ import com.kickstarter.R
 import com.kickstarter.databinding.FragmentBackingAddonsBinding
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -27,6 +26,7 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.viewholders.BackingAddOnViewHolder
 import com.kickstarter.viewmodels.BackingAddOnsFragmentViewModel
+import rx.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
 
 @RequiresFragmentViewModel(BackingAddOnsFragmentViewModel.ViewModel::class)
@@ -51,41 +51,40 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
 
         this.viewModel.outputs.showPledgeFragment()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showPledgeFragment(it.first, it.second) }
 
         this.viewModel.outputs.addOnsList()
             .compose(bindToLifecycle())
             .throttleWithTimeout(50, TimeUnit.MILLISECONDS)
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 populateAddOns(it)
             }
 
         this.viewModel.outputs.isEmptyState()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showEmptyState(it) }
 
         this.viewModel.outputs.selectedShippingRule()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding?.fragmentBackingAddonsShippingRules?.setText(it.toString()) }
 
         this.viewModel.outputs.showErrorDialog()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showErrorDialog() }
 
         this.viewModel.outputs.shippingRulesAndProject()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .filter { ObjectUtils.isNotNull(context) }
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { displayShippingRules(it.first, it.second) }
 
         this.viewModel.outputs.totalSelectedAddOns()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .filter { ObjectUtils.isNotNull(it) }
             .subscribe { total ->
                 binding?.fragmentBackingAddonsSectionFooterLayout?.backingAddonsFooterButton ?.text = selectProperString(total)
@@ -93,7 +92,7 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
 
         this.viewModel.outputs.shippingSelectorIsGone()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding?.fragmentBackingAddonsShippingRules?.isGone = it
                 binding?.fragmentBackingAddonsCallOut?.isGone = it
@@ -101,7 +100,7 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
 
         this.viewModel.outputs.isEnabledCTAButton()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding?.fragmentBackingAddonsSectionFooterLayout?.backingAddonsFooterButton ?.isEnabled = it
             }
@@ -160,12 +159,12 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
     }
 
     private fun showPledgeFragment(pledgeData: PledgeData, pledgeReason: PledgeReason) {
-        fragmentManager
-            ?.beginTransaction()
-            ?.setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
-            ?.add(R.id.fragment_container, PledgeFragment.newInstance(pledgeData, pledgeReason), PledgeFragment::class.java.simpleName)
-            ?.addToBackStack(NewCardFragment::class.java.simpleName)
-            ?.commit()
+        parentFragmentManager
+            .beginTransaction()
+            .setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
+            .add(R.id.fragment_container, PledgeFragment.newInstance(pledgeData, pledgeReason), PledgeFragment::class.java.simpleName)
+            .addToBackStack(NewCardFragment::class.java.simpleName)
+            .commit()
     }
 
     private fun setupErrorDialog() {

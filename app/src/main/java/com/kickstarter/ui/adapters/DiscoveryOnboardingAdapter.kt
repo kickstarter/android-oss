@@ -13,11 +13,15 @@ class DiscoveryOnboardingAdapter(private val delegate: Delegate) : KSListAdapter
         DiscoveryOnboardingViewHolder.Delegate
 
     fun setShouldShowOnboardingView(shouldShowOnboardingView: Boolean) {
+        clearSections()
+        insertSection(SECTION_ONBOARDING_VIEW, emptyList<Boolean>())
+
         if (shouldShowOnboardingView) {
             setSection(SECTION_ONBOARDING_VIEW, listOf(true))
         } else {
             setSection(SECTION_ONBOARDING_VIEW, emptyList<Boolean>())
         }
+
         submitList(items())
     }
 
@@ -36,9 +40,5 @@ class DiscoveryOnboardingAdapter(private val delegate: Delegate) : KSListAdapter
 
     companion object {
         private const val SECTION_ONBOARDING_VIEW = 0
-    }
-
-    init {
-        insertSection(SECTION_ONBOARDING_VIEW, emptyList<Boolean>())
     }
 }

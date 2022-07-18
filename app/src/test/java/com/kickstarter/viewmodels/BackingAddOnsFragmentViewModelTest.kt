@@ -35,7 +35,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: BackingAddOnsFragmentViewModel.ViewModel
     private val shippingSelectorIsGone = TestSubscriber.create<Boolean>()
     private val addOnsList = TestSubscriber.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
-    private val showPledgeFragment = TestSubscriber.create<Pair<PledgeData, PledgeReason>>()
+    private val showPledgeFragment = TestSubscriber.create<Triple<PledgeData, PledgeReason, Boolean>>()
     private val isEnabledButton = TestSubscriber.create<Boolean>()
     private val totalSelectedAddOns = TestSubscriber.create<Int>()
     private val isEmptyState = TestSubscriber.create<Boolean>()

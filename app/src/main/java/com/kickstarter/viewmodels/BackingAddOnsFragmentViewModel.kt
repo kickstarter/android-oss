@@ -21,6 +21,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.BackingAddOnsFragment
+import com.kickstarter.viewmodels.usecases.ShowPledgeFragmentUseCase
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -49,7 +50,7 @@ class BackingAddOnsFragmentViewModel {
 
     interface Outputs {
         /** Emits a Pair containing the projectData and the pledgeReason. */
-        fun showPledgeFragment(): Observable<Pair<PledgeData, PledgeReason>>
+        fun showPledgeFragment(): Observable<Triple<PledgeData, PledgeReason, Boolean>>
 
         /** Emits a Pair containing the projectData and the list for Add-ons associated to that project. */
         fun addOnsList(): Observable<Triple<ProjectData, List<Reward>, ShippingRule>>
@@ -89,21 +90,25 @@ class BackingAddOnsFragmentViewModel {
         private val projectAndReward: Observable<Pair<Project, Reward>>
         private val retryButtonPressed = BehaviorSubject.create<Boolean>()
 
-        private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
+        private val pledgeFragmentData = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
+        private val showPledgeFragment = PublishSubject.create<Triple<PledgeData, PledgeReason, Boolean>>()
         private val shippingSelectorIsGone = BehaviorSubject.create<Boolean>()
         private val addOnsListFiltered = PublishSubject.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
         private val isEmptyState = PublishSubject.create<Boolean>()
         private val showErrorDialog = BehaviorSubject.create<Boolean>()
         private val continueButtonPressed = BehaviorSubject.create<Void>()
         private val isEnabledCTAButton = BehaviorSubject.create<Boolean>()
-        private val apolloClient = requireNotNull(this.environment.apolloClient())
-        private val currentConfig = requireNotNull(environment.currentConfig())
-        private val ksString = requireNotNull(this.environment.ksString())
 
         // - Current addOns selection
         private val totalSelectedAddOns = BehaviorSubject.create(0)
         private val quantityPerId = PublishSubject.create<Pair<Int, Long>>()
         private val currentSelection = BehaviorSubject.create(mutableMapOf<Long, Int>())
+
+        // - Environment Objects
+        private val currentUser = requireNotNull(this.environment.currentUser()?.observable())
+        private val optimizely = requireNotNull(this.environment.optimizely())
+        private val apolloClient = requireNotNull(this.environment.apolloClient())
+        private val currentConfig = requireNotNull(environment.currentConfig())
 
         init {
 
@@ -327,6 +332,13 @@ class BackingAddOnsFragmentViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.analyticEvents.trackAddOnsContinueCTA(it.first)
+                    this.pledgeFragmentData.onNext(it)
+                }
+
+            ShowPledgeFragmentUseCase(this.pledgeFragmentData)
+                .data(this.currentUser, this.optimizely)
+                .compose(bindToLifecycle())
+                .subscribe {
                     this.showPledgeFragment.onNext(it)
                 }
         }
@@ -593,7 +605,7 @@ class BackingAddOnsFragmentViewModel {
 
         // - Outputs
         @NonNull
-        override fun showPledgeFragment(): Observable<Pair<PledgeData, PledgeReason>> = this.showPledgeFragment
+        override fun showPledgeFragment(): Observable<Triple<PledgeData, PledgeReason, Boolean>> = this.showPledgeFragment
         override fun addOnsList(): Observable<Triple<ProjectData, List<Reward>, ShippingRule>> = this.addOnsListFiltered
         override fun selectedShippingRule(): Observable<ShippingRule> = this.shippingRuleSelected
         override fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>> = this.shippingRulesAndProject

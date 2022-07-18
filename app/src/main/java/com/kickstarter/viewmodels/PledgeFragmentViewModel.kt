@@ -464,14 +464,6 @@ interface PledgeFragmentViewModel {
                 .filter { it }
                 .switchMap {
                     this.apolloClient.createSetupIntent()
-                        .doOnSubscribe {
-                            this.pledgeProgressIsGone.onNext(false)
-                            this.pledgeButtonIsEnabled.onNext(false)
-                        }
-                        .doOnCompleted {
-                            this.pledgeProgressIsGone.onNext(true)
-                            this.pledgeButtonIsEnabled.onNext(true)
-                        }
                         .materialize()
                 }
                 .share()

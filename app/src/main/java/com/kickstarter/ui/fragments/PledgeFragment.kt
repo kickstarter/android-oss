@@ -555,7 +555,7 @@ class PledgeFragment :
             .compose(observeForUI())
             .compose(bindToLifecycle())
             .subscribe {
-               // TODO: will be continued on PAY-1762
+                // TODO: will be continued on PAY-1762
             }
 
         binding?.pledgeSectionPledgeAmount?. pledgeAmount?.setOnTouchListener { _, _ ->

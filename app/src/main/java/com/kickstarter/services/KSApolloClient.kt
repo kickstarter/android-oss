@@ -95,6 +95,29 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
+    override fun createSetupIntent(): Observable<String> {
+        return Observable.defer {
+            val createSetupIntentMut = CreateSetupIntentMutation.builder().build()
+
+            val ps = PublishSubject.create<String>()
+            this.service.mutate(createSetupIntentMut)
+                .enqueue(object : ApolloCall.Callback<CreateSetupIntentMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<CreateSetupIntentMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                        }
+                        ps.onNext(response.data?.createSetupIntent()?.clientSecret())
+                        ps.onCompleted()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
     override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
         return Observable.defer {
             val createBackingMutation = CreateBackingMutation.builder()

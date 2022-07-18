@@ -279,18 +279,6 @@ class PledgeFragment :
             .compose(observeForUI())
             .subscribe { startActivity(Intent(this.context, LoginToutActivity::class.java)) }
 
-        this.viewModel.outputs.showNewCardFragment()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
-            .subscribe {
-                parentFragmentManager
-                    .beginTransaction()
-                    .setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
-                    .add(R.id.secondary_container, NewCardFragment.newInstance(true, it), NewCardFragment::class.java.simpleName)
-                    .addToBackStack(NewCardFragment::class.java.simpleName)
-                    .commit()
-            }
-
         this.viewModel.outputs.selectedShippingRule()
             .compose(bindToLifecycle())
             .compose(observeForUI())
@@ -561,6 +549,13 @@ class PledgeFragment :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 this.binding?.pledgeSectionPickupLocation?.localPickupLocationName?.text = it
+            }
+
+        this.viewModel.outputs.presentPaymentSheet()
+            .compose(observeForUI())
+            .compose(bindToLifecycle())
+            .subscribe {
+               // TODO: will be continued on PAY-1762
             }
 
         binding?.pledgeSectionPledgeAmount?. pledgeAmount?.setOnTouchListener { _, _ ->

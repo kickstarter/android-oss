@@ -33,7 +33,7 @@ interface ApolloClientType {
 
     fun createBacking(createBackingData: CreateBackingData): Observable<Checkout>
 
-    fun createSetupIntent(): Observable<String>
+    fun createSetupIntent(project: Project): Observable<String>
 
     fun getBacking(backingId: String): Observable<Backing>
 

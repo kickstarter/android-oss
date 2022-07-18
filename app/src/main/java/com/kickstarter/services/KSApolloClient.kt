@@ -95,9 +95,11 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun createSetupIntent(): Observable<String> {
+    override fun createSetupIntent(project: Project): Observable<String> {
         return Observable.defer {
-            val createSetupIntentMut = CreateSetupIntentMutation.builder().build()
+            val createSetupIntentMut = CreateSetupIntentMutation.builder()
+                .projectId(encodeRelayId(project))
+                .build()
 
             val ps = PublishSubject.create<String>()
             this.service.mutate(createSetupIntentMut)
@@ -108,7 +110,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                     override fun onResponse(response: Response<CreateSetupIntentMutation.Data>) {
                         if (response.hasErrors()) ps.onError(java.lang.Exception(response.errors?.first()?.message))
-                        else ps.onNext(response.data?.createSetupIntent()?.clientSecret())
+                        else {
+                            ps.onNext(response.data?.createSetupIntent()?.clientSecret())
+                        }
                         ps.onCompleted()
                     }
                 })

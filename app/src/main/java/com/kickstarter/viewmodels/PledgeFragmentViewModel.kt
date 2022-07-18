@@ -459,19 +459,6 @@ interface PledgeFragmentViewModel {
             val userIsLoggedIn = this.currentUser.isLoggedIn
                 .distinctUntilChanged()
 
-            // - Create stripe's setupIntent on first load if user logged in
-            val setUpIntent = userIsLoggedIn
-                .filter { it }
-                .switchMap {
-                    this.apolloClient.createSetupIntent()
-                        .materialize()
-                }
-                .share()
-                .filter { it.hasValue() }
-                .map {
-                    it.value
-                }
-
             val pledgeData = arguments()
                 .map { it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData? }
                 .ofType(PledgeData::class.java)
@@ -486,6 +473,19 @@ interface PledgeFragmentViewModel {
 
             val project = projectData
                 .map { it.project() }
+
+            // - Create stripe's setupIntent on first load if user logged in, and the project
+            val setUpIntentNotification = userIsLoggedIn
+                .filter { it }
+                .compose<Pair<Boolean, Project>>(combineLatestPair(project))
+                .switchMap {
+                    this.apolloClient.createSetupIntent(it.second)
+                        .materialize()
+                }
+                .share()
+
+            val setUpIntent = setUpIntentNotification
+                .compose(values())
 
             // Shipping rules section
             val shippingRules = this.selectedReward

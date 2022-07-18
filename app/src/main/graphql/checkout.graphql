@@ -34,8 +34,8 @@ query GetBacking($backingId: ID!) {
   }
 }
 
-mutation CreateSetupIntent {
-  createSetupIntent(input: {}) {
+mutation CreateSetupIntent($projectId: ID!) {
+  createSetupIntent(input: { projectId: $projectId } ) {
     clientSecret
   }
 }

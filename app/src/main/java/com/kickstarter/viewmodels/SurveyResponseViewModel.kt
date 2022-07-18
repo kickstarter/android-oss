@@ -1,114 +1,110 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import android.util.Pair;
+import android.util.Pair
+import com.kickstarter.libs.ActivityViewModel
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.models.SurveyResponse
+import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.activities.SurveyResponseActivity
+import okhttp3.Request
+import rx.Observable
+import rx.subjects.BehaviorSubject
+import rx.subjects.PublishSubject
 
-import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.models.SurveyResponse;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.activities.SurveyResponseActivity;
+interface SurveyResponseViewModel {
+    interface Inputs {
+        /** Call when the dialog's OK button has been clicked.  */
+        fun okButtonClicked()
 
-import androidx.annotation.NonNull;
-import okhttp3.Request;
-import rx.Observable;
-import rx.subjects.BehaviorSubject;
-import rx.subjects.PublishSubject;
+        /** Call when a project uri request has been made.  */
+        fun projectUriRequest(request: Request)
 
-import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
-
-public interface SurveyResponseViewModel {
-
-  interface Inputs {
-    /** Call when the dialog's OK button has been clicked. */
-    void okButtonClicked();
-
-    /** Call when a project uri request has been made. */
-    void projectUriRequest(Request request);
-
-    /** Call when a project survey uri request has been made. */
-    void projectSurveyUriRequest(Request request);
-  }
-
-  interface Outputs {
-    /** Emits when we should navigate back. */
-    Observable<Void> goBack();
-
-    /** Emits when we should show a confirmation dialog. */
-    Observable<Void> showConfirmationDialog();
-
-    /** Emits a url to load in the web view. */
-    Observable<String> webViewUrl();
-  }
-
-  final class ViewModel extends ActivityViewModel<SurveyResponseActivity> implements Inputs, Outputs {
-
-    public ViewModel(final @NonNull Environment environment) {
-      super(environment);
-
-      final Observable<SurveyResponse> surveyResponse = intent()
-        .map(i -> i.getParcelableExtra(IntentKey.SURVEY_RESPONSE))
-        .ofType(SurveyResponse.class);
-
-      final Observable<String> surveyWebUrl = surveyResponse
-        .map(r -> r.urls().web().survey());
-
-      surveyWebUrl
-        .compose(bindToLifecycle())
-        .subscribe(this.webViewUrl);
-
-      final Observable<Pair<Request, String>> projectRequestAndSurveyUrl = Observable.combineLatest(
-        this.projectUriRequest,
-        surveyWebUrl,
-        Pair::create
-      );
-
-      projectRequestAndSurveyUrl
-        .filter(this::requestTagUrlIsSurveyUrl)
-        .compose(ignoreValues())
-        .compose(bindToLifecycle())
-        .subscribe(this.showConfirmationDialog);
-
-      this.goBack = this.okButtonClicked;
+        /** Call when a project survey uri request has been made.  */
+        fun projectSurveyUriRequest(request: Request)
     }
 
-    /**
-     * Returns if a project request tag's url is a survey url,
-     * which indicates a redirect from a successful submit.
-     */
-    private boolean requestTagUrlIsSurveyUrl(final @NonNull Pair<Request, String> projectRequestAndSurveyUrl) {
-      final Request tag = (Request) projectRequestAndSurveyUrl.first.tag();
-      return tag == null || tag.url().toString().equals(projectRequestAndSurveyUrl.second);
+    interface Outputs {
+        /** Emits when we should navigate back.  */
+        fun goBack(): Observable<Void>
+
+        /** Emits when we should show a confirmation dialog.  */
+        fun showConfirmationDialog(): Observable<Void>
+
+        /** Emits a url to load in the web view.  */
+        fun webViewUrl(): Observable<String?>
     }
 
-    private final PublishSubject<Void> okButtonClicked = PublishSubject.create();
-    private final PublishSubject<Request> projectUriRequest = PublishSubject.create();
-    private final PublishSubject<Request> projectSurveyUriRequest = PublishSubject.create();
+    class ViewModel(environment: Environment) :
+        ActivityViewModel<SurveyResponseActivity>(environment), Inputs, Outputs {
+        /**
+         * Returns if a project request tag's url is a survey url,
+         * which indicates a redirect from a successful submit.
+         */
+        private fun requestTagUrlIsSurveyUrl(projectRequestAndSurveyUrl: Pair<Request, String>): Boolean {
+            val tag = projectRequestAndSurveyUrl.first.tag() as Request?
+            return tag == null || tag.url.toString() == projectRequestAndSurveyUrl.second
+        }
 
-    private final Observable<Void> goBack;
-    private final PublishSubject<Void> showConfirmationDialog = PublishSubject.create();
-    private final BehaviorSubject<String> webViewUrl = BehaviorSubject.create();
+        private val okButtonClicked = PublishSubject.create<Void>()
+        private val projectUriRequest = PublishSubject.create<Request>()
+        private val projectSurveyUriRequest = PublishSubject.create<Request>()
+        private val goBack: Observable<Void>
+        private val showConfirmationDialog = PublishSubject.create<Void>()
+        private val webViewUrl = BehaviorSubject.create<String?>()
 
-    public final Inputs inputs = this;
-    public final Outputs outputs = this;
+        val inputs: Inputs = this
+        val outputs: Outputs = this
 
-    @Override public void okButtonClicked() {
-      this.okButtonClicked.onNext(null);
-    }
-    @Override public void projectUriRequest(final @NonNull Request request) {
-      this.projectUriRequest.onNext(request);
-    }
-    @Override public void projectSurveyUriRequest(final @NonNull Request request) {
-      this.projectSurveyUriRequest.onNext(request);
-    }
+        init {
+            val surveyResponse = intent()
+                .map<Any?> { it.getParcelableExtra(IntentKey.SURVEY_RESPONSE) }
+                .ofType(SurveyResponse::class.java)
 
-    @Override public @NonNull Observable<Void> goBack() {
-      return this.goBack;
+            val surveyWebUrl = surveyResponse
+                .map {
+                    it.urls()?.web()?.survey()
+                }
+
+            surveyWebUrl
+                .compose(bindToLifecycle())
+                .subscribe(webViewUrl)
+
+            val projectRequestAndSurveyUrl =
+                Observable.combineLatest<Request, String?, Pair<Request, String>>(
+                    projectUriRequest,
+                    surveyWebUrl
+                ) { a: Request?, b: String? -> Pair.create(a, b) }
+
+            projectRequestAndSurveyUrl
+                .filter { projectRequestAndSurveyUrl: Pair<Request, String> ->
+                    requestTagUrlIsSurveyUrl(
+                        projectRequestAndSurveyUrl
+                    )
+                }
+                .compose(Transformers.ignoreValues())
+                .compose(bindToLifecycle())
+                .subscribe(showConfirmationDialog)
+
+            goBack = okButtonClicked
+        }
+
+        override fun okButtonClicked() {
+            okButtonClicked.onNext(null)
+        }
+
+        override fun projectUriRequest(request: Request) {
+            projectUriRequest.onNext(request)
+        }
+
+        override fun projectSurveyUriRequest(request: Request) {
+            projectSurveyUriRequest.onNext(request)
+        }
+
+        override fun goBack(): Observable<Void> = goBack
+
+        override fun showConfirmationDialog(): Observable<Void> = showConfirmationDialog
+
+        override fun webViewUrl(): Observable<String?> = webViewUrl
     }
-    @Override public @NonNull Observable<Void> showConfirmationDialog() {
-      return this.showConfirmationDialog;
-    }
-    @Override public @NonNull Observable<String> webViewUrl() {
-      return this.webViewUrl;
-    }
-  }
 }

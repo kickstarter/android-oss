@@ -1,64 +1,69 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.mock.factories.SurveyResponseFactory;
-import com.kickstarter.models.Project;
-import com.kickstarter.models.SurveyResponse;
+import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.Environment
+import com.kickstarter.mock.factories.SurveyResponseFactory.surveyResponse
+import com.kickstarter.models.Project
+import com.kickstarter.models.SurveyResponse
+import org.junit.Test
+import rx.observers.TestSubscriber
 
-import org.junit.Test;
+class SurveyHolderViewModelTest : KSRobolectricTestCase() {
 
-import androidx.annotation.NonNull;
-import rx.observers.TestSubscriber;
+    private lateinit var vm: SurveyHolderViewModel.ViewModel
 
-public class SurveyHolderViewModelTest extends KSRobolectricTestCase {
-  private SurveyHolderViewModel.ViewModel vm;
-  private final TestSubscriber<String> creatorAvatarImageUrl = new TestSubscriber<>();
-  private final TestSubscriber<String> creatorNameTextViewText = new TestSubscriber<>();
-  private final TestSubscriber<Project> projectForSurveyDescription = new TestSubscriber<>();
-  private final TestSubscriber<SurveyResponse> startSurveyResponseActivity = new TestSubscriber<>();
+    private val creatorAvatarImageUrl = TestSubscriber<String>()
+    private val creatorNameTextViewText = TestSubscriber<String>()
+    private val projectForSurveyDescription = TestSubscriber<Project?>()
+    private val startSurveyResponseActivity = TestSubscriber<SurveyResponse>()
 
-  private void setUpEnvironment(final @NonNull Environment environment) {
-    this.vm = new SurveyHolderViewModel.ViewModel(environment);
+    private fun setUpEnvironment(environment: Environment) {
+        vm = SurveyHolderViewModel.ViewModel(environment)
+        vm.outputs.creatorAvatarImageUrl().subscribe(creatorAvatarImageUrl)
+        vm.outputs.creatorNameTextViewText().subscribe(creatorNameTextViewText)
+        vm.outputs.projectForSurveyDescription().subscribe(projectForSurveyDescription)
+        vm.outputs.startSurveyResponseActivity().subscribe(startSurveyResponseActivity)
+    }
 
-    this.vm.outputs.creatorAvatarImageUrl().subscribe(this.creatorAvatarImageUrl);
-    this.vm.outputs.creatorNameTextViewText().subscribe(this.creatorNameTextViewText);
-    this.vm.outputs.projectForSurveyDescription().subscribe(this.projectForSurveyDescription);
-    this.vm.outputs.startSurveyResponseActivity().subscribe(this.startSurveyResponseActivity);
-  }
+    @Test
+    fun testCreatorAvatarImageUrl() {
+        val surveyResponse = surveyResponse()
+        setUpEnvironment(environment())
 
-  @Test
-  public void testCreatorAvatarImageUrl() {
-    final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(surveyResponse);
-    this.creatorAvatarImageUrl.assertValues(surveyResponse.project().creator().avatar().small());
-  }
+        vm.inputs.configureWith(surveyResponse)
 
-  @Test
-  public void testCreatorNameEmits() {
-    final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(surveyResponse);
-    this.creatorNameTextViewText.assertValues(surveyResponse.project().creator().name());
-  }
+        creatorAvatarImageUrl.assertValues(surveyResponse.project()?.creator()?.avatar()?.small())
+    }
 
-  @Test
-  public void testSurveyDescription() {
-    final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(surveyResponse);
-    this.projectForSurveyDescription.assertValues(surveyResponse.project());
-  }
+    @Test
+    fun testCreatorNameEmits() {
+        val surveyResponse = surveyResponse()
+        setUpEnvironment(environment())
 
-  @Test
-  public void testStartSurveyResponseActivity() {
-    final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
-    setUpEnvironment(environment());
+        vm.inputs.configureWith(surveyResponse)
 
-    this.vm.inputs.configureWith(surveyResponse);
-    this.vm.inputs.surveyClicked();
+        creatorNameTextViewText.assertValues(surveyResponse.project()?.creator()?.name())
+    }
 
-    this.startSurveyResponseActivity.assertValue(surveyResponse);
-  }
+    @Test
+    fun testSurveyDescription() {
+        val surveyResponse = surveyResponse()
+        setUpEnvironment(environment())
+
+        vm.inputs.configureWith(surveyResponse)
+
+        projectForSurveyDescription.assertValues(surveyResponse.project())
+    }
+
+    @Test
+    fun testStartSurveyResponseActivity() {
+        val surveyResponse = surveyResponse()
+
+        setUpEnvironment(environment())
+
+        vm.inputs.configureWith(surveyResponse)
+        vm.inputs.surveyClicked()
+
+        startSurveyResponseActivity.assertValue(surveyResponse)
+    }
 }

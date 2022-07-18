@@ -1,111 +1,108 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import android.content.Intent;
+import android.content.Intent
+import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.Environment
+import com.kickstarter.mock.factories.SurveyResponseFactory.surveyResponse
+import com.kickstarter.models.SurveyResponse
+import com.kickstarter.ui.IntentKey
+import okhttp3.Request
+import org.junit.Test
+import rx.observers.TestSubscriber
 
-import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.mock.factories.SurveyResponseFactory;
-import com.kickstarter.models.SurveyResponse;
-import com.kickstarter.ui.IntentKey;
+class SurveyResponseViewModelTest : KSRobolectricTestCase() {
+    private lateinit var vm: SurveyResponseViewModel.ViewModel
+    private val goBack = TestSubscriber<Void>()
+    private val showConfirmationDialog = TestSubscriber<Void>()
+    private val webViewUrl = TestSubscriber<String?>()
 
-import org.junit.Test;
+    protected fun setUpEnvironment(environment: Environment) {
+        vm = SurveyResponseViewModel.ViewModel(environment)
 
-import androidx.annotation.NonNull;
-import okhttp3.Request;
-import rx.observers.TestSubscriber;
+        vm.outputs.goBack().subscribe(goBack)
+        vm.outputs.showConfirmationDialog().subscribe(showConfirmationDialog)
+        vm.outputs.webViewUrl().subscribe(webViewUrl)
+    }
 
-public class SurveyResponseViewModelTest extends KSRobolectricTestCase {
-  private SurveyResponseViewModel.ViewModel vm;
-  private final TestSubscriber<Void> goBack = new TestSubscriber<>();
-  private final TestSubscriber<Void> showConfirmationDialog = new TestSubscriber<>();
-  private final TestSubscriber<String> webViewUrl = new TestSubscriber<>();
+    @Test
+    fun testGoBack() {
+        setUpEnvironment(environment())
+        vm.inputs.okButtonClicked()
+        goBack.assertValueCount(1)
+    }
 
-  protected void setUpEnvironment(final @NonNull Environment environment) {
-    this.vm = new SurveyResponseViewModel.ViewModel(environment);
-    this.vm.outputs.goBack().subscribe(this.goBack);
-    this.vm.outputs.showConfirmationDialog().subscribe(this.showConfirmationDialog);
-    this.vm.outputs.webViewUrl().subscribe(this.webViewUrl);
-  }
+    @Test
+    fun testSubmitSuccessful_Redirect_ShowConfirmationDialog() {
+        val surveyUrl = "https://kck.str/projects/param/heyo/surveys/123"
 
-  @Test
-  public void testGoBack() {
-    setUpEnvironment(environment());
-    this.vm.inputs.okButtonClicked();
-    this.goBack.assertValueCount(1);
-  }
+        val urlsEnvelope = SurveyResponse.Urls.builder()
+            .web(SurveyResponse.Urls.Web.builder().survey(surveyUrl).build())
+            .build()
 
-  @Test
-  public void testSubmitSuccessful_Redirect_ShowConfirmationDialog() {
-    final String surveyUrl = "https://kck.str/projects/param/heyo/surveys/123";
+        val surveyResponse = surveyResponse()
+            .toBuilder()
+            .urls(urlsEnvelope)
+            .build()
 
-    final SurveyResponse.Urls urlsEnvelope = SurveyResponse.Urls.builder()
-      .web(SurveyResponse.Urls.Web.builder().survey(surveyUrl).build())
-      .build();
+        val projectSurveyRequest: Request = Request.Builder()
+            .url(surveyUrl)
+            .build()
 
-    final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse()
-      .toBuilder()
-      .urls(urlsEnvelope)
-      .build();
+        val projectRequest: Request = Request.Builder()
+            .url("https://kck.str/projects/param/heyo")
+            .tag(projectSurveyRequest)
+            .build()
 
-    final Request projectSurveyRequest = new Request.Builder()
-      .url(surveyUrl)
-      .build();
+        setUpEnvironment(environment())
+        vm.intent(Intent().putExtra(IntentKey.SURVEY_RESPONSE, surveyResponse))
 
-    final Request projectRequest = new Request.Builder()
-      .url("https://kck.str/projects/param/heyo")
-      .tag(projectSurveyRequest)
-      .build();
+        // Survey loads. Successful submit redirects to project uri.
+        vm.inputs.projectSurveyUriRequest(projectSurveyRequest)
+        vm.inputs.projectUriRequest(projectRequest)
 
-    setUpEnvironment(environment());
-    this.vm.intent(new Intent().putExtra(IntentKey.SURVEY_RESPONSE, surveyResponse));
+        // Success confirmation dialog is shown.
+        showConfirmationDialog.assertValueCount(1)
+    }
 
-    // Survey loads. Successful submit redirects to project uri.
-    this.vm.inputs.projectSurveyUriRequest(projectSurveyRequest);
-    this.vm.inputs.projectUriRequest(projectRequest);
+    @Test
+    fun testSubmitSuccessful_NullTag_ShowConfirmationDialog() {
+        val surveyUrl = "https://kck.str/projects/param/heyo/surveys/123"
 
-    // Success confirmation dialog is shown.
-    this.showConfirmationDialog.assertValueCount(1);
-  }
+        val urlsEnvelope = SurveyResponse.Urls.builder()
+            .web(SurveyResponse.Urls.Web.builder().survey(surveyUrl).build())
+            .build()
 
-  @Test
-  public void testSubmitSuccessful_NullTag_ShowConfirmationDialog() {
-    final String surveyUrl = "https://kck.str/projects/param/heyo/surveys/123";
+        val surveyResponse = surveyResponse()
+            .toBuilder()
+            .urls(urlsEnvelope)
+            .build()
 
-    final SurveyResponse.Urls urlsEnvelope = SurveyResponse.Urls.builder()
-      .web(SurveyResponse.Urls.Web.builder().survey(surveyUrl).build())
-      .build();
+        val projectSurveyRequest: Request = Request.Builder()
+            .url(surveyUrl)
+            .build()
 
-    final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse()
-      .toBuilder()
-      .urls(urlsEnvelope)
-      .build();
+        val projectRequest: Request = Request.Builder()
+            .url("https://kck.str/projects/param/heyo")
+            .build()
 
-    final Request projectSurveyRequest = new Request.Builder()
-      .url(surveyUrl)
-      .build();
+        setUpEnvironment(environment())
+        vm.intent(Intent().putExtra(IntentKey.SURVEY_RESPONSE, surveyResponse))
 
-    final Request projectRequest = new Request.Builder()
-      .url("https://kck.str/projects/param/heyo")
-      .build();
+        // Survey loads. Successful submit redirects to project uri.
+        vm.inputs.projectSurveyUriRequest(projectSurveyRequest)
+        vm.inputs.projectUriRequest(projectRequest)
 
-    setUpEnvironment(environment());
-    this.vm.intent(new Intent().putExtra(IntentKey.SURVEY_RESPONSE, surveyResponse));
+        // Success confirmation dialog is shown.
+        showConfirmationDialog.assertValueCount(1)
+    }
 
-    // Survey loads. Successful submit redirects to project uri.
-    this.vm.inputs.projectSurveyUriRequest(projectSurveyRequest);
-    this.vm.inputs.projectUriRequest(projectRequest);
+    @Test
+    fun testWebViewUrl() {
+        val surveyResponse = surveyResponse()
 
-    // Success confirmation dialog is shown.
-    this.showConfirmationDialog.assertValueCount(1);
-  }
+        setUpEnvironment(environment())
+        vm.intent(Intent().putExtra(IntentKey.SURVEY_RESPONSE, surveyResponse))
 
-  @Test
-  public void testWebViewUrl() {
-    final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
-
-    setUpEnvironment(environment());
-    this.vm.intent(new Intent().putExtra(IntentKey.SURVEY_RESPONSE, surveyResponse));
-
-    this.webViewUrl.assertValues(surveyResponse.urls().web().survey());
-  }
+        webViewUrl.assertValues(surveyResponse.urls()?.web()?.survey())
+    }
 }

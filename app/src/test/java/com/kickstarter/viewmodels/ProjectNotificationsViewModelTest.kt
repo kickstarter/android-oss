@@ -13,11 +13,11 @@ import rx.observers.TestSubscriber
 
 class ProjectNotificationsViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: ProjectNotificationViewModel.ViewModel
-    
+
     private val enabledSwitchTest = TestSubscriber<Boolean>()
     private val projectNameTest = TestSubscriber<String>()
     private val showUnableToSaveNotificationErrorTest = TestSubscriber<Void>()
-    
+
     @Test
     fun testNotificationsEmitProjectNameAndEnabledSwitch() {
         vm = ProjectNotificationViewModel.ViewModel(environment())

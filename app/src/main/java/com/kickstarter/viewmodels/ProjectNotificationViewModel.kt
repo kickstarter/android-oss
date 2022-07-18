@@ -38,10 +38,8 @@ interface ProjectNotificationViewModel {
         private val enabledSwitch = BehaviorSubject.create<Boolean>()
         private val showUnableToSaveProjectNotificationError = PublishSubject.create<Void>()
 
-
         var inputs: Inputs = this
         var outputs: Outputs = this
-
 
         init {
             val client = requireNotNull(environment.apiClient())
@@ -59,7 +57,7 @@ interface ProjectNotificationViewModel {
             updateNotification
                 .compose(Transformers.values())
                 .compose(bindToLifecycle())
-                .subscribe {  projectNotification.onNext(it) }
+                .subscribe { projectNotification.onNext(it) }
 
             updateNotification
                 .compose(Transformers.errors())
@@ -70,13 +68,13 @@ interface ProjectNotificationViewModel {
             projectNotification
                 .map { it.project().name() }
                 .compose(bindToLifecycle())
-                .subscribe {projectName.onNext(it) }
+                .subscribe { projectName.onNext(it) }
 
             // Update the enabled switch when a project notification emits.
             projectNotification
                 .map { it.email() && it.mobile() }
                 .compose(bindToLifecycle())
-                .subscribe {enabledSwitch.onNext(it) }
+                .subscribe { enabledSwitch.onNext(it) }
         }
 
         override fun enabledSwitchClick(enabled: Boolean) {
@@ -91,7 +89,6 @@ interface ProjectNotificationViewModel {
 
         override fun enabledSwitch(): Observable<Boolean> = enabledSwitch
 
-
-        override fun showUnableToSaveProjectNotificationError(): Observable<Void> =showUnableToSaveProjectNotificationError
+        override fun showUnableToSaveProjectNotificationError(): Observable<Void> = showUnableToSaveProjectNotificationError
     }
 }

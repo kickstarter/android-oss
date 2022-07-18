@@ -107,10 +107,8 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     }
 
                     override fun onResponse(response: Response<CreateSetupIntentMutation.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
-                        }
-                        ps.onNext(response.data?.createSetupIntent()?.clientSecret())
+                        if (response.hasErrors()) ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                        else ps.onNext(response.data?.createSetupIntent()?.clientSecret())
                         ps.onCompleted()
                     }
                 })

@@ -468,7 +468,9 @@ interface PledgeFragmentViewModel {
                 }
                 .share()
                 .filter { it.hasValue() }
-                .map { it.value }
+                .map {
+                    it.value
+                }
 
             val pledgeData = arguments()
                 .map { it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData? }

@@ -56,14 +56,14 @@ import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.setTextAndSelection
 import com.kickstarter.ui.extensions.showErrorToast
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
-import com.kickstarter.viewmodels.PledgeFragmentViewModel
+import com.kickstarter.viewmodels.PledgeFragmentLegacyViewModel
 import com.stripe.android.ApiResultCallback
 import com.stripe.android.SetupIntentResult
 import rx.android.schedulers.AndroidSchedulers
 
-@RequiresFragmentViewModel(PledgeFragmentViewModel.ViewModel::class)
+@RequiresFragmentViewModel(PledgeFragmentLegacyViewModel.ViewModel::class)
 class PledgeFragmentLegacy :
-    BaseFragment<PledgeFragmentViewModel.ViewModel>(),
+    BaseFragment<PledgeFragmentLegacyViewModel.ViewModel>(),
     RewardCardAdapter
     .Delegate,
     ShippingRulesAdapter.Delegate,

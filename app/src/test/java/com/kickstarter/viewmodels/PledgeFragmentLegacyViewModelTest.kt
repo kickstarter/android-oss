@@ -60,7 +60,7 @@ import java.util.Collections
 
 class PledgeFragmentLegacyViewModelTest : KSRobolectricTestCase() {
 
-    private lateinit var vm: PledgeFragmentViewModel.ViewModel
+    private lateinit var vm: PledgeFragmentLegacyViewModel.ViewModel
     private val deadline = DateTime.parse("2020-10-23T18:13:09Z")
 
     private val addedCard = TestSubscriber<Pair<StoredCard, Project>>()
@@ -137,7 +137,7 @@ class PledgeFragmentLegacyViewModelTest : KSRobolectricTestCase() {
         pledgeReason: PledgeReason = PledgeReason.PLEDGE,
         addOns: List<Reward>? = null
     ) {
-        this.vm = PledgeFragmentViewModel.ViewModel(environment)
+        this.vm = PledgeFragmentLegacyViewModel.ViewModel(environment)
 
         this.vm.outputs.addedCard().subscribe(this.addedCard)
         this.vm.outputs.additionalPledgeAmount().subscribe(this.additionalPledgeAmount)

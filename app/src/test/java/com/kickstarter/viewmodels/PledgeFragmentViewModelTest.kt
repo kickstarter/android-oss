@@ -129,7 +129,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val changePledgeSectionAccountabilityFragmentVisiablity = TestSubscriber<Boolean>()
     private val localPickUpIsGone = TestSubscriber<Boolean>()
     private val localPickupName = TestSubscriber<String>()
-    private val setUpIntentError = TestSubscriber<String>()
+    private val showError = TestSubscriber<String>()
 
     private fun setUpEnvironment(
         environment: Environment,
@@ -206,7 +206,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.changePledgeSectionAccountabilityFragmentVisiablity().subscribe(this.changePledgeSectionAccountabilityFragmentVisiablity)
         this.vm.outputs.localPickUpIsGone().subscribe(this.localPickUpIsGone)
         this.vm.outputs.localPickUpName().subscribe(this.localPickupName)
-        this.vm.outputs.errorSetupIntentCreation().subscribe(this.setUpIntentError)
+        this.vm.outputs.showError().subscribe(this.showError)
 
         val projectData = project.backing()?.let {
             return@let ProjectData.builder()
@@ -1683,7 +1683,15 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.newCardButtonClicked()
         this.presentPaymentSheet.assertNoValues()
-        this.setUpIntentError.assertValue("Error Message")
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeProgressIsGone.assertValue(true)
+        this.showError.assertValue("Error Message")
+
+        // - User hit button for second time
+        this.vm.inputs.newCardButtonClicked()
+        this.pledgeButtonIsEnabled.assertValues(true, false, false)
+        this.pledgeProgressIsGone.assertValues(true, true)
+        this.showError.assertValues("Error Message", "Error Message")
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 

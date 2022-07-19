@@ -569,7 +569,7 @@ class PledgeFragment :
                 flowControllerPresentPaymentOption(it)
             }
 
-        this.viewModel.outputs.errorSetupIntentCreation()
+        this.viewModel.outputs.showError()
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {

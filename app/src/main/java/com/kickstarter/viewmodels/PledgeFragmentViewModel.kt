@@ -334,7 +334,7 @@ interface PledgeFragmentViewModel {
         /** Emits the String with the SetupIntent ClientID to present the PaymentSheet **/
         fun presentPaymentSheet(): Observable<String>
 
-        fun errorSetupIntentCreation(): Observable<String>
+        fun showError(): Observable<String>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
@@ -460,6 +460,7 @@ interface PledgeFragmentViewModel {
         private val errorSetupIntentCreation = PublishSubject.create<String>()
         private val paymentSheetResult = PublishSubject.create<PaymentSheetResult>()
         private val paySheetPresented = PublishSubject.create<Boolean>()
+        private val showError = PublishSubject.create<String>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -1207,6 +1208,17 @@ interface PledgeFragmentViewModel {
                 .subscribe {
                     this.presentPaymentSheet.onNext(it)
                     this.pledgeProgressIsGone.onNext(false)
+                    this.pledgeButtonIsEnabled.onNext(false)
+                }
+
+            // - Display error snackbar in case the SetupIntent was not successfully created
+            this.newCardButtonClicked
+                .compose(combineLatestPair(errorSetupIntentCreation))
+                .map { it.second }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.showError.onNext(it)
+                    this.pledgeProgressIsGone.onNext(true)
                     this.pledgeButtonIsEnabled.onNext(false)
                 }
 
@@ -2042,7 +2054,7 @@ interface PledgeFragmentViewModel {
             this.presentPaymentSheet
 
         @Override
-        override fun errorSetupIntentCreation(): Observable<String> =
-            this.errorSetupIntentCreation
+        override fun showError(): Observable<String> =
+            this.showError
     }
 }

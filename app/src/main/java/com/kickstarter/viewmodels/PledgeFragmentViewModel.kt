@@ -328,6 +328,8 @@ interface PledgeFragmentViewModel {
 
         /** Emits the String with the SetupIntent ClientID to present the PaymentSheet **/
         fun presentPaymentSheet(): Observable<String>
+
+        fun errorSetupIntentCreation(): Observable<String>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
@@ -450,6 +452,7 @@ interface PledgeFragmentViewModel {
         private val localPickUpName = BehaviorSubject.create<String>()
 
         private val presentPaymentSheet = BehaviorSubject.create<String>()
+        private val errorSetupIntentCreation = BehaviorSubject.create<String>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -486,6 +489,13 @@ interface PledgeFragmentViewModel {
 
             val setUpIntent = setUpIntentNotification
                 .compose(values())
+
+            setUpIntentNotification
+                .compose(errors())
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.errorSetupIntentCreation.onNext(it.message)
+                }
 
             // Shipping rules section
             val shippingRules = this.selectedReward
@@ -2006,5 +2016,9 @@ interface PledgeFragmentViewModel {
         @Override
         override fun presentPaymentSheet(): Observable<String> =
             this.presentPaymentSheet
+
+        @Override
+        override fun errorSetupIntentCreation(): Observable<String> =
+            this.errorSetupIntentCreation
     }
 }

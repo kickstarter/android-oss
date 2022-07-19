@@ -569,6 +569,17 @@ class PledgeFragment :
                 flowControllerPresentPaymentOption(it)
             }
 
+        this.viewModel.outputs.errorSetupIntentCreation()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                binding?.pledgeContent?.let { pledgeContent ->
+                    context?.let {
+                        showErrorToast(it, pledgeContent, getString(R.string.general_error_something_wrong))
+                    }
+                }
+            }
+
         binding?.pledgeSectionPledgeAmount?. pledgeAmount?.setOnTouchListener { _, _ ->
             binding?.pledgeSectionPledgeAmount?. pledgeAmount?.post {
                 binding?.pledgeRoot?.let { pledgeRoot ->
@@ -650,18 +661,20 @@ class PledgeFragment :
             }
     }
 
+    // Update the UI with the returned PaymentOption
     private fun onPaymentOption(paymentOption: PaymentOption?) {
-        Timber.d("onPaymentOption with $paymentOption")
-        if (paymentOption != null) {
-        } else {
+        paymentOption?.let {
+            // TODO: add input to viewModel with the paymentOption to populate the UI for the new payment method in PAY-1764
+            Timber.d(" ${this.javaClass.canonicalName} onPaymentOption with $paymentOption")
+            flowController.confirm()
         }
     }
 
-    fun flowControllerPresentPaymentOption(clientSecret: String) {
+    private fun flowControllerPresentPaymentOption(clientSecret: String) {
         flowController.configureWithSetupIntent(
             setupIntentClientSecret = clientSecret,
             configuration = PaymentSheet.Configuration(
-                merchantDisplayName = "Kickstarter",
+                merchantDisplayName = getString(R.string.app_name),
                 allowsDelayedPaymentMethods = true
             ),
             callback = ::onConfigured
@@ -671,24 +684,33 @@ class PledgeFragment :
     private fun onConfigured(success: Boolean, error: Throwable?) {
         if (success) {
             flowController.presentPaymentOptions()
-            Timber.d("PaymentSheetFlowController presented successfully")
         } else {
-            Timber.d("Failed to configure PaymentSheetFlowController: ${error?.message}")
+            binding?.pledgeContent?.let { pledgeContent ->
+                context?.let {
+                    showErrorToast(it, pledgeContent, getString(R.string.general_error_something_wrong))
+                }
+            }
         }
     }
 
     fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
         when (paymentSheetResult) {
             is PaymentSheetResult.Canceled -> {
-                Timber.d("${this.javaClass.canonicalName} :onPaymentSheetResult -> PaymentSheetResult.Canceled")
+                binding?.pledgeContent?.let { pledgeContent ->
+                    context?.let {
+                        showErrorToast(it, pledgeContent, getString(R.string.general_error_oops))
+                    }
+                }
             }
             is PaymentSheetResult.Failed -> {
-                Timber.d("${this.javaClass.canonicalName} :onPaymentSheetResult -> PaymentSheetResult.Failed with error ${paymentSheetResult.error}")
+                binding?.pledgeContent?.let { pledgeContent ->
+                    context?.let {
+                        showErrorToast(it, pledgeContent, getString(R.string.general_error_something_wrong))
+                    }
+                }
             }
             is PaymentSheetResult.Completed -> {
-                Timber.d("${this.javaClass.canonicalName} :onPaymentSheetResult -> PaymentSheetResult.Completed")
-                flowController.getPaymentOption()
-                flowController.confirm()
+                // TODO: input to the ViewModel with the PaymentSheetResult successful on PAY-1764
             }
         }
     }

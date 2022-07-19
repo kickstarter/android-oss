@@ -59,7 +59,11 @@ import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
 import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import com.stripe.android.ApiResultCallback
 import com.stripe.android.SetupIntentResult
+import com.stripe.android.paymentsheet.PaymentSheet
+import com.stripe.android.paymentsheet.PaymentSheetResult
+import com.stripe.android.paymentsheet.model.PaymentOption
 import rx.android.schedulers.AndroidSchedulers
+import timber.log.Timber
 
 @RequiresFragmentViewModel(PledgeFragmentViewModel.ViewModel::class)
 class PledgeFragment :
@@ -78,6 +82,7 @@ class PledgeFragment :
     private lateinit var adapter: ShippingRulesAdapter
     private var headerAdapter = ExpandableHeaderAdapter()
     private var isExpanded = false
+    private lateinit var flowController: PaymentSheet.FlowController
 
     private var binding: FragmentPledgeBinding? = null
 
@@ -98,6 +103,12 @@ class PledgeFragment :
         binding?.pledgeSectionPledgeAmount?.pledgeAmount?.onChange { this.viewModel.inputs.pledgeInput(it) }
 
         binding?.pledgeSectionBonusSupport?.bonusAmount?.onChange { this.viewModel.inputs.bonusInput(it) }
+
+        flowController = PaymentSheet.FlowController.create(
+            fragment = this,
+            paymentOptionCallback = ::onPaymentOption,
+            paymentResultCallback = ::onPaymentSheetResult
+        )
 
         this.viewModel.outputs.additionalPledgeAmountIsGone()
             .compose(bindToLifecycle())
@@ -555,7 +566,7 @@ class PledgeFragment :
             .compose(observeForUI())
             .compose(bindToLifecycle())
             .subscribe {
-                // TODO: will be continued on PAY-1762
+                flowControllerPresentPaymentOption(it)
             }
 
         binding?.pledgeSectionPledgeAmount?. pledgeAmount?.setOnTouchListener { _, _ ->
@@ -637,6 +648,49 @@ class PledgeFragment :
             .subscribe {
                 binding?.pledgeSectionAccountability?.root?.isGone = it
             }
+    }
+
+    private fun onPaymentOption(paymentOption: PaymentOption?) {
+        Timber.d("onPaymentOption with $paymentOption")
+        if (paymentOption != null) {
+        } else {
+        }
+    }
+
+    fun flowControllerPresentPaymentOption(clientSecret: String) {
+        flowController.configureWithSetupIntent(
+            setupIntentClientSecret = clientSecret,
+            configuration = PaymentSheet.Configuration(
+                merchantDisplayName = "Kickstarter",
+                allowsDelayedPaymentMethods = true
+            ),
+            callback = ::onConfigured
+        )
+    }
+
+    private fun onConfigured(success: Boolean, error: Throwable?) {
+        if (success) {
+            flowController.presentPaymentOptions()
+            Timber.d("PaymentSheetFlowController presented successfully")
+        } else {
+            Timber.d("Failed to configure PaymentSheetFlowController: ${error?.message}")
+        }
+    }
+
+    fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
+        when (paymentSheetResult) {
+            is PaymentSheetResult.Canceled -> {
+                Timber.d("${this.javaClass.canonicalName} :onPaymentSheetResult -> PaymentSheetResult.Canceled")
+            }
+            is PaymentSheetResult.Failed -> {
+                Timber.d("${this.javaClass.canonicalName} :onPaymentSheetResult -> PaymentSheetResult.Failed with error ${paymentSheetResult.error}")
+            }
+            is PaymentSheetResult.Completed -> {
+                Timber.d("${this.javaClass.canonicalName} :onPaymentSheetResult -> PaymentSheetResult.Completed")
+                flowController.getPaymentOption()
+                flowController.confirm()
+            }
+        }
     }
 
     private fun showRiskMessageDialog() {

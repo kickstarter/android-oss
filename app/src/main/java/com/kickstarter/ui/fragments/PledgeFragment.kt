@@ -691,9 +691,11 @@ class PledgeFragment :
                 }
             }
         }
+        this.viewModel.inputs.paymentSheetPresented(success)
     }
 
     fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
+        this.viewModel.inputs.paymentSheetResult(paymentSheetResult)
         when (paymentSheetResult) {
             is PaymentSheetResult.Canceled -> {
                 binding?.pledgeContent?.let { pledgeContent ->
@@ -710,7 +712,6 @@ class PledgeFragment :
                 }
             }
             is PaymentSheetResult.Completed -> {
-                // TODO: input to the ViewModel with the PaymentSheetResult successful on PAY-1764
             }
         }
     }

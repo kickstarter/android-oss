@@ -1054,33 +1054,6 @@
               "deprecationReason": null
             },
             {
-              "name": "pushProject",
-              "description": "Push project created on kickstarter",
-              "args": [
-                {
-                  "name": "id",
-                  "description": "",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "PushProject",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "quizProjects",
               "description": "Editorialized quiz projects for the taste profile quiz.",
               "args": [
@@ -1530,6 +1503,26 @@
               "deprecationReason": null
             },
             {
+              "name": "addOnsWithQuantity",
+              "description": "The add-ons that the backer selected",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "BackingAddon",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "amount",
               "description": "Total amount pledged by the backer to the project, including shipping.",
               "args": [],
@@ -1569,6 +1562,18 @@
                   "name": "Boolean",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "backingUrl",
+              "description": "A link to the backing information",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -1637,6 +1642,22 @@
                 "kind": "ENUM",
                 "name": "FulfillmentStatusSelectOptions",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "hasFlaggings",
+              "description": "Whether or not the backing has any open flaggings",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -1730,6 +1751,22 @@
               "deprecationReason": null
             },
             {
+              "name": "removalRequestIsNonissue",
+              "description": "Whether or not a removal request task is marked as nonissue",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "requiresAction",
               "description": "Whether this checkout requires additional client-side authentication steps\n(e.g. 3DS2) to complete the on-session pledge flow",
               "args": [],
@@ -1800,6 +1837,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Money",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "shippingSummary",
+              "description": "A brief description of shipping selections for backing",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -1926,21 +1975,6 @@
             },
             {
               "kind": "OBJECT",
-              "name": "PushProject",
-              "ofType": null
-            },
-            {
-              "kind": "OBJECT",
-              "name": "AttachedAudio",
-              "ofType": null
-            },
-            {
-              "kind": "OBJECT",
-              "name": "AttachedVideo",
-              "ofType": null
-            },
-            {
-              "kind": "OBJECT",
               "name": "UserUrl",
               "ofType": null
             },
@@ -1977,6 +2011,16 @@
             {
               "kind": "OBJECT",
               "name": "ProjectProfile",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "AttachedAudio",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "AttachedVideo",
               "ofType": null
             },
             {
@@ -5535,6 +5579,22 @@
               "deprecationReason": null
             },
             {
+              "name": "userWasRemoved",
+              "description": "Was the current user removed from this project?",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "verifiedCreatorName",
               "description": "Name of user on verified account",
               "args": [],
@@ -5902,12 +5962,12 @@
               "deprecationReason": null
             },
             {
-              "name": "authorBackingUrl",
-              "description": "A link to the author's backing information",
+              "name": "authorBacking",
+              "description": "The author's backing information",
               "args": [],
               "type": {
-                "kind": "SCALAR",
-                "name": "String",
+                "kind": "OBJECT",
+                "name": "Backing",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -5964,6 +6024,22 @@
             {
               "name": "canDelete",
               "description": "Whether the current user can delete the comment",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "canPin",
+              "description": "Whether current user can pin a comment",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -6076,6 +6152,18 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pinnedAt",
+              "description": "When the comment was pinned",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "ISO8601DateTime",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -7481,26 +7569,6 @@
                   "ofType": {
                     "kind": "OBJECT",
                     "name": "Notification",
-                    "ofType": null
-                  }
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "pushProjects",
-              "description": "A user's Push projects",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "PushProject",
                     "ofType": null
                   }
                 }
@@ -11004,6 +11072,12 @@
               "deprecationReason": null
             },
             {
+              "name": "backing_info_modal_comments_2022",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "cat_physical_goods_2022",
               "description": "",
               "isDeprecated": false,
@@ -11016,7 +11090,7 @@
               "deprecationReason": null
             },
             {
-              "name": "comment_moderation_2022",
+              "name": "comment_pinning",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -11029,6 +11103,12 @@
             },
             {
               "name": "creator_onboarding_flow_2021",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "creator_osat_survey_2022",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -11064,12 +11144,6 @@
               "deprecationReason": null
             },
             {
-              "name": "drip_sunset_pledging",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "embedded_rewards",
               "description": "",
               "isDeprecated": false,
@@ -11095,6 +11169,12 @@
             },
             {
               "name": "go_rewardless",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "hk_bank_account_holder_name",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -11382,6 +11462,12 @@
               "deprecationReason": null
             },
             {
+              "name": "remove_a_backer_2022",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "reward_images",
               "description": "",
               "isDeprecated": false,
@@ -11442,12 +11528,6 @@
               "deprecationReason": null
             },
             {
-              "name": "stripe_connect_onboarding_skeleton_poc",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "track_define_namespace",
               "description": "",
               "isDeprecated": false,
@@ -11455,12 +11535,6 @@
             },
             {
               "name": "updated_risks_flow",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "use_reward_inventories",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -12205,22 +12279,6 @@
               "deprecationReason": null
             },
             {
-              "name": "dripNewsletter",
-              "description": "The subscription to the DripNewsletter newsletter",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Boolean",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "filmNewsletter",
               "description": "The subscription to the FilmNewsletter newsletter",
               "args": [],
@@ -12412,7 +12470,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "String",
                   "ofType": null
                 }
               },
@@ -12441,7 +12499,7 @@
               "args": [],
               "type": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -12805,727 +12863,6 @@
             }
           ],
           "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "PushProject",
-          "description": "A Push project on Kickstarter",
-          "fields": [
-            {
-              "name": "deadline",
-              "description": "When the push project is scheduled to end",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "ISO8601DateTime",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "description",
-              "description": "Description of a Push project",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "fundingGoal",
-              "description": "The funding goal amount of a push project",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "prompt1",
-              "description": "what_is_the_project prompt to describe about push project",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "Prompt",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "pushReward",
-              "description": "Reward associated with push project",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "PushReward",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "state",
-              "description": "State of a Push project",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "ENUM",
-                  "name": "PushProjectState",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "title",
-              "description": "Title of a Push project",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "updatedAt",
-              "description": "When is the push project updated",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "DateTime",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "user",
-              "description": "Creator associated with the push project",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "User",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-            {
-              "kind": "INTERFACE",
-              "name": "Node",
-              "ofType": null
-            }
-          ],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "SCALAR",
-          "name": "ISO8601DateTime",
-          "description": "An ISO 8601-encoded datetime",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "Prompt",
-          "description": "",
-          "fields": [
-            {
-              "name": "assets",
-              "description": "Assets related to the question's response",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "LIST",
-                  "name": null,
-                  "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "OBJECT",
-                      "name": "PromptMedia",
-                      "ofType": null
-                    }
-                  }
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "question",
-              "description": "A question prompt for the creator to summarize their push project",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "ENUM",
-                  "name": "PushProjectPromptQuestion",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "text",
-              "description": "Response to a push project question that summarizes the project",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "PromptMedia",
-          "description": "",
-          "fields": [
-            {
-              "name": "asset",
-              "description": "Attached asset",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "UNION",
-                  "name": "AttachedMedia",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "position",
-              "description": "Position of the asset",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "UNION",
-          "name": "AttachedMedia",
-          "description": "Attached Media",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": [
-            {
-              "kind": "OBJECT",
-              "name": "AttachedAudio",
-              "ofType": null
-            },
-            {
-              "kind": "OBJECT",
-              "name": "AttachedVideo",
-              "ofType": null
-            },
-            {
-              "kind": "OBJECT",
-              "name": "Photo",
-              "ofType": null
-            }
-          ]
-        },
-        {
-          "kind": "OBJECT",
-          "name": "AttachedAudio",
-          "description": "",
-          "fields": [
-            {
-              "name": "id",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "status",
-              "description": "Upload status of the audio",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "ENUM",
-                  "name": "AssetEncodingState",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "url",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-            {
-              "kind": "INTERFACE",
-              "name": "Node",
-              "ofType": null
-            }
-          ],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "AssetEncodingState",
-          "description": "All available asset upload states",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "ENCODED",
-              "description": "Processing the asset successfully completed",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "ENCODING",
-              "description": "Initial, incomplete status of an asset upload",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "FAILED",
-              "description": "Processing the asset failed",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "AttachedVideo",
-          "description": "",
-          "fields": [
-            {
-              "name": "formats",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "AttachedVideoFormat",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "poster",
-              "description": "Image preview url",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "renderedHtml",
-              "description": "The rendered HTML player for a video asset",
-              "args": [
-                {
-                  "name": "assetWidth",
-                  "description": "The width of the video asset in pixels.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "status",
-              "description": "Upload status of the video",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "ENUM",
-                  "name": "AssetEncodingState",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "url",
-              "description": "Original video url",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-            {
-              "kind": "INTERFACE",
-              "name": "Node",
-              "ofType": null
-            }
-          ],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "AttachedVideoFormat",
-          "description": "",
-          "fields": [
-            {
-              "name": "encoding",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "height",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "profile",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "url",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "width",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "PushProjectPromptQuestion",
-          "description": "Question prompts for the creator to summarize their push project",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "WHAT_IS_THE_PROJECT",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "WHAT_WILL_YOU_DO_WITH_THE_MONEY",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "WHO_ARE_YOU",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "PushReward",
-          "description": "",
-          "fields": [
-            {
-              "name": "amount",
-              "description": "Push project reward amount",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "assetId",
-              "description": "Asset for push project reward",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "blurb",
-              "description": "Description about push project reward",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "estimatedDeliveryOn",
-              "description": "Push project reward delivery date",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Date",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id",
-              "description": "Id of a push reward",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "PushProjectState",
-          "description": "Various push project states.",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "DRAFT",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
           "possibleTypes": null
         },
         {
@@ -14434,6 +13771,16 @@
               "deprecationReason": null
             }
           ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "ISO8601DateTime",
+          "description": "An ISO 8601-encoded datetime",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
           "possibleTypes": null
         },
         {
@@ -17106,6 +16453,30 @@
             {
               "name": "ABUSE",
               "description": "abuse",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BACKING_ABUSE",
+              "description": "backing-abuse",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BACKING_DOXXING",
+              "description": "backing-doxxing",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BACKING_FRAUD",
+              "description": "backing-fraud",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BACKING_SPAM",
+              "description": "backing-spam",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -20324,6 +19695,96 @@
         },
         {
           "kind": "OBJECT",
+          "name": "AttachedAudio",
+          "description": "",
+          "fields": [
+            {
+              "name": "id",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "status",
+              "description": "Upload status of the audio",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "AssetEncodingState",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "url",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "Node",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "AssetEncodingState",
+          "description": "All available asset upload states",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "ENCODED",
+              "description": "Processing the asset successfully completed",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ENCODING",
+              "description": "Initial, incomplete status of an asset upload",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FAILED",
+              "description": "Processing the asset failed",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "RichTextHeader1",
           "description": "A Header 1. <h1>",
           "fields": [
@@ -20919,6 +20380,209 @@
             },
             {
               "name": "url",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "AttachedVideo",
+          "description": "",
+          "fields": [
+            {
+              "name": "formats",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "AttachedVideoFormat",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "poster",
+              "description": "Image preview url",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "renderedHtml",
+              "description": "The rendered HTML player for a video asset",
+              "args": [
+                {
+                  "name": "assetWidth",
+                  "description": "The width of the video asset in pixels.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "status",
+              "description": "Upload status of the video",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "AssetEncodingState",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "url",
+              "description": "Original video url",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "Node",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "AttachedVideoFormat",
+          "description": "",
+          "fields": [
+            {
+              "name": "encoding",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "height",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "profile",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "url",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "width",
               "description": "",
               "args": [],
               "type": {
@@ -23881,6 +23545,77 @@
           "possibleTypes": null
         },
         {
+          "kind": "OBJECT",
+          "name": "BackingAddon",
+          "description": "An add-on reward included in a backing.",
+          "fields": [
+            {
+              "name": "description",
+              "description": "The add-on description.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "The add-on name.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "quantity",
+              "description": "The quantity of the add-on included in a backing",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "ENUM",
           "name": "FulfillmentStatusSelectOptions",
           "description": "Values for backing fulfillment status",
@@ -24177,6 +23912,22 @@
           "name": "Checkout",
           "description": "Intermediary set of changes that have yet to be applied to a backing",
           "fields": [
+            {
+              "name": "action",
+              "description": "The action that the backer is attempting to complete with this checkout",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "CheckoutAction",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "addOns",
               "description": "The addons that the backer has chosen",
@@ -24496,6 +24247,47 @@
             }
           ],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "CheckoutAction",
+          "description": "All actions a user may attempt to complete with a checkout",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "ADJUSTMENT",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "AUTHENTICATE",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PLEDGE",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "REAUTH",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SOURCE",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {
@@ -29675,33 +29467,6 @@
               "deprecationReason": null
             },
             {
-              "name": "createAdditionalOwner",
-              "description": "Registers an AdditionalOwner with a given DepositAccount",
-              "args": [
-                {
-                  "name": "input",
-                  "description": "",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "CreateAdditionalOwnerInput",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "CreateAdditionalOwnerPayload",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "createAddress",
               "description": "Save a new shipping address.",
               "args": [
@@ -30026,60 +29791,6 @@
               "deprecationReason": null
             },
             {
-              "name": "createIdentityDocument",
-              "description": "Create identity document.",
-              "args": [
-                {
-                  "name": "input",
-                  "description": "",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "CreateIdentityDocumentInput",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "CreateIdentityDocumentPayload",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "createJapanAdditionalOwner",
-              "description": "Registers an AdditionalOwner in Japan with a given DepositAccount",
-              "args": [
-                {
-                  "name": "input",
-                  "description": "",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "CreateJapanAdditionalOwnerInput",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "CreateJapanAdditionalOwnerPayload",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "createPaymentSource",
               "description": "Create a payment source",
               "args": [
@@ -30290,33 +30001,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "CreateProjectVideoPayload",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "createPushProject",
-              "description": "Creates a new Push Project",
-              "args": [
-                {
-                  "name": "input",
-                  "description": "",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "CreatePushProjectInput",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "CreatePushProjectPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -30614,33 +30298,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "DeactivateProjectCollaboratorPayload",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "deleteAdditionalOwners",
-              "description": "De-registers and deletes all AdditionalOwners associated with a given DepositAccount",
-              "args": [
-                {
-                  "name": "input",
-                  "description": "",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "DeleteAdditionalOwnersInput",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "DeleteAdditionalOwnersPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -31619,60 +31276,6 @@
               "deprecationReason": null
             },
             {
-              "name": "submitIdentityVerification",
-              "description": "Submit a person's identity for verification.",
-              "args": [
-                {
-                  "name": "input",
-                  "description": "",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "SubmitIdentityVerificationInput",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "SubmitIdentityVerificationPayload",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "submitJapanIdentityVerification",
-              "description": "Submit a person's identity for Japan verification.",
-              "args": [
-                {
-                  "name": "input",
-                  "description": "",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "SubmitJapanIdentityVerificationInput",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "SubmitJapanIdentityVerificationPayload",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "submitProject",
               "description": "",
               "args": [
@@ -31748,6 +31351,33 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "SubmitVatNumberPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "toggleCommentPin",
+              "description": "Toggle whether a comment is pinned.",
+              "args": [
+                {
+                  "name": "input",
+                  "description": "",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "ToggleCommentPinInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ToggleCommentPinPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -32024,33 +31654,6 @@
               "deprecationReason": null
             },
             {
-              "name": "updateAdditionalOwner",
-              "description": "Updates attributes of an AdditionalOwner of the given DepositAccount",
-              "args": [
-                {
-                  "name": "input",
-                  "description": "",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "UpdateAdditionalOwnerInput",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "UpdateAdditionalOwnerPayload",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "updateBackerCompleted",
               "description": "Update the backing completed at field with a backing_completed toggle",
               "args": [
@@ -32153,33 +31756,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "UpdateCreatorInterviewPayload",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "updateDepositAccount",
-              "description": "Updates attributes of a DepositAccount",
-              "args": [
-                {
-                  "name": "input",
-                  "description": "",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "UpdateDepositAccountInput",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "UpdateDepositAccountPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -32342,33 +31918,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "UpdateProjectVerifiedCreatorNamePayload",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "updatePushProject",
-              "description": "Updates a Push Project",
-              "args": [
-                {
-                  "name": "input",
-                  "description": "",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "UpdatePushProjectInput",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "UpdatePushProjectPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -33347,358 +32896,6 @@
         },
         {
           "kind": "INPUT_OBJECT",
-          "name": "CreateAdditionalOwnerInput",
-          "description": "Autogenerated input type of CreateAdditionalOwner",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "identity",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "IdentityInput",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "phoneNumber",
-              "description": "",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "projectId",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "role",
-              "description": "",
-              "type": {
-                "kind": "ENUM",
-                "name": "DepositAccountRole",
-                "ofType": null
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
-          "name": "IdentityInput",
-          "description": "An identity's information.",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "birthdate",
-              "description": "The birthdate for this identity",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "BirthdateInput",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "firstName",
-              "description": "The first name for this identity",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "lastName",
-              "description": "The last name for this identity",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "nationalId",
-              "description": "The number of a personal identity document",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "secondLastName",
-              "description": "The second last name for this identity - Mexico",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "streetAddress",
-              "description": "The address for this identity",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "AddressInput",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
-          "name": "BirthdateInput",
-          "description": "A representation of a birthdate.",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "day",
-              "description": "The birthdate's day",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "month",
-              "description": "The birthdate's month",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "year",
-              "description": "The birthdate's year",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
-          "name": "AddressInput",
-          "description": "A physical address.",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "country",
-              "description": "Country of the address",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "locality",
-              "description": "Locality of the address, e.g. city",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "postalCode",
-              "description": "Postal code of the address",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "region",
-              "description": "Region of the address, e.g. state",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "street1",
-              "description": "First line of the street address",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "street2",
-              "description": "Second line of the street address",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "DepositAccountRole",
-          "description": "The role that the account opener plays in a legal entity that has created a project",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "director",
-              "description": "A member of the governing board of the company or responsible for ensuring the company meets its regulatory obligations.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "executive",
-              "description": "An executive, senior manager or someone who otherwise has significant\nresponsibility for the control and management of the business.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "owner",
-              "description": "An individual who owns 25% or more of the company.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CreateAdditionalOwnerPayload",
-          "description": "Autogenerated return type of CreateAdditionalOwner",
-          "fields": [
-            {
-              "name": "additionalOwner",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "AdditionalOwner",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
           "name": "CreateAddressInput",
           "description": "Autogenerated input type of CreateAddress",
           "fields": null,
@@ -34257,6 +33454,32 @@
           "interfaces": [],
           "enumValues": null,
           "possibleTypes": null
+        },
+        {
+          "kind": "UNION",
+          "name": "AttachedMedia",
+          "description": "Attached Media",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": [
+            {
+              "kind": "OBJECT",
+              "name": "AttachedAudio",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "AttachedVideo",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "Photo",
+              "ofType": null
+            }
+          ]
         },
         {
           "kind": "INPUT_OBJECT",
@@ -35692,551 +34915,6 @@
         },
         {
           "kind": "INPUT_OBJECT",
-          "name": "CreateIdentityDocumentInput",
-          "description": "Autogenerated input type of CreateIdentityDocument",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "foreignKey",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "foreignKeyBack",
-              "description": "",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "projectId",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CreateIdentityDocumentPayload",
-          "description": "Autogenerated return type of CreateIdentityDocument",
-          "fields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "document",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "IdentityDocument",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "isSuccessful",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Boolean",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
-          "name": "CreateJapanAdditionalOwnerInput",
-          "description": "Autogenerated input type of CreateJapanAdditionalOwner",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "identity",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "JapanIdentityInput",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "phoneNumber",
-              "description": "",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "projectId",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "role",
-              "description": "",
-              "type": {
-                "kind": "ENUM",
-                "name": "DepositAccountRole",
-                "ofType": null
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
-          "name": "JapanIdentityInput",
-          "description": "An identity's information for Japan.",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "birthdate",
-              "description": "The birthdate for this identity",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "BirthdateInput",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "firstName",
-              "description": "The first name for this identity",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "firstNameKana",
-              "description": "The first name for this identity in Kana",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "firstNameKanji",
-              "description": "The first name for this identity in Kanji",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "gender",
-              "description": "The gender for this identity",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "ENUM",
-                  "name": "JapanIdentityGender",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "lastName",
-              "description": "The last name for this identity",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "lastNameKana",
-              "description": "The last name for this identity in Kana",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "lastNameKanji",
-              "description": "The last name for this identity in Kanji",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "streetAddress",
-              "description": "The address for this identity",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "JapanAddressInput",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "JapanIdentityGender",
-          "description": "The gender in which an individual has identified as",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "female",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "male",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
-          "name": "JapanAddressInput",
-          "description": "A physical address for Japan.",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "addressKanaCity",
-              "description": "City/Ward of the address",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "addressKanaLine1",
-              "description": "First line of the street address",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "addressKanaLine2",
-              "description": "Second line of the street address",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "addressKanaPostalCode",
-              "description": "Postal code of the address",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "addressKanaState",
-              "description": "Prefecture of the address",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "addressKanaTown",
-              "description": "Town of the address",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "addressKanjiCity",
-              "description": "City/Ward of the address",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "addressKanjiLine1",
-              "description": "First line of the street address",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "addressKanjiLine2",
-              "description": "Second line of the street address",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "addressKanjiPostalCode",
-              "description": "Postal code of the address",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "addressKanjiState",
-              "description": "Prefecture of the address",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "addressKanjiTown",
-              "description": "Town of the address",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CreateJapanAdditionalOwnerPayload",
-          "description": "Autogenerated return type of CreateJapanAdditionalOwner",
-          "fields": [
-            {
-              "name": "additionalOwner",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "AdditionalOwner",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
           "name": "CreatePaymentSourceInput",
           "description": "Autogenerated input type of CreatePaymentSource",
           "fields": null,
@@ -37187,62 +35865,6 @@
         },
         {
           "kind": "INPUT_OBJECT",
-          "name": "CreatePushProjectInput",
-          "description": "Autogenerated input type of CreatePushProject",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CreatePushProjectPayload",
-          "description": "Autogenerated return type of CreatePushProject",
-          "fields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "pushProject",
-              "description": "Newly created PushProject for current user",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "PushProject",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
           "name": "CreateRewardInput",
           "description": "Autogenerated input type of CreateReward",
           "fields": null,
@@ -37680,6 +36302,20 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "projectId",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
               },
               "defaultValue": null
             }
@@ -38463,80 +37099,6 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "Project",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
-          "name": "DeleteAdditionalOwnersInput",
-          "description": "Autogenerated input type of DeleteAdditionalOwners",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "projectId",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "DeleteAdditionalOwnersPayload",
-          "description": "Autogenerated return type of DeleteAdditionalOwners",
-          "fields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "isSuccessful",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Boolean",
                   "ofType": null
                 }
               },
@@ -41541,452 +40103,6 @@
         },
         {
           "kind": "INPUT_OBJECT",
-          "name": "SubmitIdentityVerificationInput",
-          "description": "Autogenerated input type of SubmitIdentityVerification",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "company",
-              "description": "",
-              "type": {
-                "kind": "INPUT_OBJECT",
-                "name": "CompanyInput",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "identity",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "IdentityInput",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "phoneNumber",
-              "description": "",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "projectId",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "role",
-              "description": "",
-              "type": {
-                "kind": "ENUM",
-                "name": "DepositAccountOpenerRole",
-                "ofType": null
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
-          "name": "CompanyInput",
-          "description": "A company's information.",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "businessId",
-              "description": "The legal entity's ID",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "businessName",
-              "description": "The legal entity's name",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "businessType",
-              "description": "The legal entity's business type",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "ENUM",
-                  "name": "BusinessType",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "phoneNumber",
-              "description": "The legal entity's phone number",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "streetAddress",
-              "description": "The legal entity's address",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "AddressInput",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "taxId",
-              "description": "The legal entity's tax ID",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "BusinessType",
-          "description": "A business type",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "CORPORATION",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "LLC",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "NON_PROFIT",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "PARTNERSHIP",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "SOLE_PROP",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "DepositAccountOpenerRole",
-          "description": "The role that the account opener plays in a legal entity that has created a project",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "executive",
-              "description": "An executive, senior manager or someone who otherwise has significant\nresponsibility for the control and management of the business.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "owner",
-              "description": "An individual who owns 25% or more of the company.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "SubmitIdentityVerificationPayload",
-          "description": "Autogenerated return type of SubmitIdentityVerification",
-          "fields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "project",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "Project",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
-          "name": "SubmitJapanIdentityVerificationInput",
-          "description": "Autogenerated input type of SubmitJapanIdentityVerification",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "company",
-              "description": "",
-              "type": {
-                "kind": "INPUT_OBJECT",
-                "name": "JapanCompanyInput",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "identity",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "JapanIdentityInput",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "phoneNumber",
-              "description": "",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "projectId",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "role",
-              "description": "",
-              "type": {
-                "kind": "ENUM",
-                "name": "DepositAccountOpenerRole",
-                "ofType": null
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
-          "name": "JapanCompanyInput",
-          "description": "A company's information in Japan.",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "businessName",
-              "description": "The legal entity's name",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "businessNameKana",
-              "description": "The legal entity's name in Kana",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "businessNameKanji",
-              "description": "The legal entity's name in Kanji",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "taxId",
-              "description": "The legal entity's tax ID",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "SubmitJapanIdentityVerificationPayload",
-          "description": "Autogenerated return type of SubmitJapanIdentityVerification",
-          "fields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "project",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "Project",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
           "name": "SubmitProjectInput",
           "description": "Autogenerated input type of SubmitProject",
           "fields": null,
@@ -42233,6 +40349,94 @@
                 "kind": "OBJECT",
                 "name": "Project",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "ToggleCommentPinInput",
+          "description": "Autogenerated input type of ToggleCommentPin",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "commentId",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "pinned",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ToggleCommentPinPayload",
+          "description": "Autogenerated return type of ToggleCommentPin",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "comment",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Comment",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -43057,110 +41261,6 @@
         },
         {
           "kind": "INPUT_OBJECT",
-          "name": "UpdateAdditionalOwnerInput",
-          "description": "Autogenerated input type of UpdateAdditionalOwner",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "additionalOwnerId",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "document",
-              "description": "",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "documentBack",
-              "description": "",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "projectId",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "UpdateAdditionalOwnerPayload",
-          "description": "Autogenerated return type of UpdateAdditionalOwner",
-          "fields": [
-            {
-              "name": "additionalOwner",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "AdditionalOwner",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
           "name": "UpdateBackerCompletedInput",
           "description": "Autogenerated input type of UpdateBackerCompleted",
           "fields": null,
@@ -43649,106 +41749,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "CreatorInterview",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
-          "name": "UpdateDepositAccountInput",
-          "description": "Autogenerated input type of UpdateDepositAccount",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "company",
-              "description": "",
-              "type": {
-                "kind": "INPUT_OBJECT",
-                "name": "CompanyInput",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "depositAccountId",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "personalIdNumber",
-              "description": "",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "phoneNumber",
-              "description": "",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "UpdateDepositAccountPayload",
-          "description": "Autogenerated return type of UpdateDepositAccount",
-          "fields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "depositAccount",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "DepositAccount",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -44560,120 +42560,6 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "Project",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
-          "name": "UpdatePushProjectInput",
-          "description": "Autogenerated input type of UpdatePushProject",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "description",
-              "description": "Dscription of the project",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "fundingGoal",
-              "description": "Funding goal of the project",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "id",
-              "description": "Push Project relay ID",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "prompt1AssetId",
-              "description": "Relay ID for asset for prompt 1",
-              "type": {
-                "kind": "SCALAR",
-                "name": "ID",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "title",
-              "description": "Title of the project",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "UpdatePushProjectPayload",
-          "description": "Autogenerated return type of UpdatePushProject",
-          "fields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "pushProject",
-              "description": "Updated PushProject",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PushProject",
                   "ofType": null
                 }
               },

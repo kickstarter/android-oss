@@ -229,9 +229,6 @@ interface PledgeFragmentViewModel {
         /** Emits the displayable name of the backing's location. */
         fun shippingSummaryLocation(): Observable<String>
 
-        /** Emits when we should show the [com.kickstarter.ui.fragments.NewCardFragment]. */
-        fun showNewCardFragment(): Observable<Project>
-
         /**  Emits when the pledge call was unsuccessful. */
         fun showPledgeError(): Observable<Void>
 
@@ -328,6 +325,9 @@ interface PledgeFragmentViewModel {
 
         /** Emits the String with the Local Pickup Displayable name **/
         fun localPickUpName(): Observable<String>
+
+        /** Emits the String with the SetupIntent ClientID to present the PaymentSheet **/
+        fun presentPaymentSheet(): Observable<String>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
@@ -392,7 +392,6 @@ interface PledgeFragmentViewModel {
         private val shippingSummaryAmount = BehaviorSubject.create<CharSequence>()
         private val shippingSummaryIsGone = BehaviorSubject.create<Boolean>()
         private val shippingSummaryLocation = BehaviorSubject.create<String>()
-        private val showNewCardFragment = PublishSubject.create<Project>()
         private val showPledgeError = PublishSubject.create<Void>()
         private val showPledgeSuccess = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
         private val showSelectedCard = BehaviorSubject.create<Pair<Int, CardState>>()
@@ -450,6 +449,8 @@ interface PledgeFragmentViewModel {
         private val localPickUpIsGone = BehaviorSubject.create<Boolean>()
         private val localPickUpName = BehaviorSubject.create<String>()
 
+        private val presentPaymentSheet = BehaviorSubject.create<String>()
+
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -472,6 +473,19 @@ interface PledgeFragmentViewModel {
 
             val project = projectData
                 .map { it.project() }
+
+            // - Create stripe's setupIntent on first load if user logged in, and the project
+            val setUpIntentNotification = userIsLoggedIn
+                .filter { it }
+                .compose<Pair<Boolean, Project>>(combineLatestPair(project))
+                .switchMap {
+                    this.apolloClient.createSetupIntent(it.second)
+                        .materialize()
+                }
+                .share()
+
+            val setUpIntent = setUpIntentNotification
+                .compose(values())
 
             // Shipping rules section
             val shippingRules = this.selectedReward
@@ -1168,10 +1182,12 @@ interface PledgeFragmentViewModel {
                 .compose(bindToLifecycle())
                 .subscribe { this.showSelectedCard.onNext(Pair(it, CardState.SELECTED)) }
 
-            project
-                .compose<Project>(takeWhen(this.newCardButtonClicked))
+            // - Present PaymentSheet if user logged in, and add card button pressed
+            this.newCardButtonClicked
+                .compose(combineLatestPair(setUpIntent))
+                .map { it.second }
                 .compose(bindToLifecycle())
-                .subscribe(this.showNewCardFragment)
+                .subscribe(this.presentPaymentSheet)
 
             this.continueButtonClicked
                 .compose(bindToLifecycle())
@@ -1882,9 +1898,6 @@ interface PledgeFragmentViewModel {
         override fun shippingSummaryIsGone(): Observable<Boolean> = this.shippingSummaryIsGone
 
         @NonNull
-        override fun showNewCardFragment(): Observable<Project> = this.showNewCardFragment
-
-        @NonNull
         override fun showPledgeError(): Observable<Void> = this.showPledgeError
 
         @NonNull
@@ -1989,5 +2002,9 @@ interface PledgeFragmentViewModel {
         @Override
         override fun localPickUpName(): Observable<String> =
             localPickUpName
+
+        @Override
+        override fun presentPaymentSheet(): Observable<String> =
+            this.presentPaymentSheet
     }
 }

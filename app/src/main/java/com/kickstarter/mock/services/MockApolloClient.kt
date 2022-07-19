@@ -50,6 +50,10 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(BackingFactory.backing())
     }
 
+    override fun createSetupIntent(project: Project): Observable<String> {
+        return Observable.just("")
+    }
+
     override fun getProject(project: Project): Observable<Project> {
         return Observable.just(project)
     }

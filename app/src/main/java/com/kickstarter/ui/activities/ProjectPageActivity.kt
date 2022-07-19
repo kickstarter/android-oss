@@ -47,6 +47,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.hideKeyboard
+import com.kickstarter.ui.extensions.selectPledgeFragment
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.ui.extensions.startRootCommentsActivity
 import com.kickstarter.ui.extensions.startUpdatesActivity
@@ -54,6 +55,7 @@ import com.kickstarter.ui.fragments.BackingFragment
 import com.kickstarter.ui.fragments.CancelPledgeFragment
 import com.kickstarter.ui.fragments.NewCardFragment
 import com.kickstarter.ui.fragments.PledgeFragment
+import com.kickstarter.ui.fragments.PledgeFragmentLegacy
 import com.kickstarter.ui.fragments.RewardsFragment
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import com.stripe.android.view.CardInputWidget
@@ -66,6 +68,7 @@ class ProjectPageActivity :
     CancelPledgeFragment.CancelPledgeDelegate,
     NewCardFragment.OnCardSavedListener,
     PledgeFragment.PledgeDelegate,
+    PledgeFragmentLegacy.PledgeDelegate,
     BackingFragment.BackingDelegate {
     private lateinit var ksString: KSString
 
@@ -718,9 +721,9 @@ class ProjectPageActivity :
             .show()
     }
 
-    private fun showPledgeFragment(pledgeDataAndPledgeReason: Pair<PledgeData, PledgeReason>) {
-        val pledgeFragment = PledgeFragment.newInstance(pledgeDataAndPledgeReason.first, pledgeDataAndPledgeReason.second)
-        val tag = PledgeFragment::class.java.simpleName
+    private fun showPledgeFragment(pledgeDataAndPledgeReason: Triple<PledgeData, PledgeReason, Boolean>) {
+        val pledgeFragment = this.selectPledgeFragment(pledgeDataAndPledgeReason.first, pledgeDataAndPledgeReason.second, pledgeDataAndPledgeReason.third)
+        val tag = pledgeFragment::class.java.simpleName
         supportFragmentManager
             .beginTransaction()
             .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)

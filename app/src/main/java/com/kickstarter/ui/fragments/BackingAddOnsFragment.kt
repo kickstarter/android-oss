@@ -14,6 +14,7 @@ import com.kickstarter.databinding.FragmentBackingAddonsBinding
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.selectPledgeFragment
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -52,7 +53,7 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
         this.viewModel.outputs.showPledgeFragment()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { showPledgeFragment(it.first, it.second) }
+            .subscribe { showPledgeFragment(it.first, it.second, it.third) }
 
         this.viewModel.outputs.addOnsList()
             .compose(bindToLifecycle())
@@ -158,11 +159,12 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
         }
     }
 
-    private fun showPledgeFragment(pledgeData: PledgeData, pledgeReason: PledgeReason) {
+    private fun showPledgeFragment(pledgeData: PledgeData, pledgeReason: PledgeReason, shouldShowPaymentSheet: Boolean) {
+        val fragment = this.selectPledgeFragment(pledgeData, pledgeReason, shouldShowPaymentSheet)
         parentFragmentManager
             .beginTransaction()
             .setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
-            .add(R.id.fragment_container, PledgeFragment.newInstance(pledgeData, pledgeReason), PledgeFragment::class.java.simpleName)
+            .add(R.id.fragment_container, fragment, fragment::class.java.simpleName)
             .addToBackStack(NewCardFragment::class.java.simpleName)
             .commit()
     }

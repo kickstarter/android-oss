@@ -1,116 +1,122 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import android.util.Pair;
+import android.util.Pair
+import com.kickstarter.libs.ActivityViewModel
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.RefTag.Companion.thanksFacebookShare
+import com.kickstarter.libs.RefTag.Companion.thanksShare
+import com.kickstarter.libs.RefTag.Companion.thanksTwitterShare
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.UrlUtils.appendRefTag
+import com.kickstarter.models.Project
+import com.kickstarter.ui.viewholders.ThanksShareViewHolder
+import rx.Observable
+import rx.subjects.BehaviorSubject
+import rx.subjects.PublishSubject
 
-import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.utils.UrlUtils;
-import com.kickstarter.models.Project;
-import com.kickstarter.ui.viewholders.ThanksShareViewHolder;
+interface ThanksShareHolderViewModel {
+    interface Inputs {
+        /** Call to configure the view model with a project.  */
+        fun configureWith(project: Project)
 
-import androidx.annotation.NonNull;
-import rx.Observable;
-import rx.subjects.BehaviorSubject;
-import rx.subjects.PublishSubject;
+        /** Call when the share button is clicked.  */
+        fun shareClick()
 
-import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+        /** Call when the share on Facebook button is clicked.  */
+        fun shareOnFacebookClick()
 
-public interface ThanksShareHolderViewModel {
-
-  interface Inputs {
-    /** Call to configure the view model with a project. */
-    void configureWith(Project project);
-
-    /** Call when the share button is clicked. */
-    void shareClick();
-
-    /** Call when the share on Facebook button is clicked. */
-    void shareOnFacebookClick();
-
-    /** Call when the share on Twitter button is clicked. */
-    void shareOnTwitterClick();
-  }
-
-  interface Outputs {
-    /** Emits the backing's project name. */
-    Observable<String> projectName();
-
-    /** Emits the project name and url to share using Android's default share behavior. */
-    Observable<Pair<String, String>> startShare();
-
-    /** Emits the project and url to share using Facebook. */
-    Observable<Pair<Project, String>> startShareOnFacebook();
-
-    /** Emits the project name and url to share using Twitter. */
-    Observable<Pair<String, String>> startShareOnTwitter();
-  }
-
-  final class ViewModel extends ActivityViewModel<ThanksShareViewHolder> implements Inputs, Outputs {
-    public ViewModel(final @NonNull Environment environment) {
-      super(environment);
-
-      this.project
-        .map(Project::name)
-        .compose(bindToLifecycle())
-        .subscribe(this.projectName::onNext);
-
-      this.project
-        .map(p -> Pair.create(p.name(), UrlUtils.INSTANCE.appendRefTag(p.webProjectUrl(), RefTag.thanksShare().tag())))
-        .compose(takeWhen(this.shareClick))
-        .compose(bindToLifecycle())
-        .subscribe(this.startShare::onNext);
-
-      this.project
-        .map(p -> Pair.create(p, UrlUtils.INSTANCE.appendRefTag(p.webProjectUrl(), RefTag.thanksFacebookShare().tag())))
-        .compose(takeWhen(this.shareOnFacebookClick))
-        .compose(bindToLifecycle())
-        .subscribe(this.startShareOnFacebook::onNext);
-
-      this.project
-        .map(p -> Pair.create(p.name(), UrlUtils.INSTANCE.appendRefTag(p.webProjectUrl(), RefTag.thanksTwitterShare().tag())))
-        .compose(takeWhen(this.shareOnTwitterClick))
-        .compose(bindToLifecycle())
-        .subscribe(this.startShareOnTwitter::onNext);
+        /** Call when the share on Twitter button is clicked.  */
+        fun shareOnTwitterClick()
     }
 
-    private final PublishSubject<Project> project = PublishSubject.create();
-    private final PublishSubject<Void> shareClick = PublishSubject.create();
-    private final PublishSubject<Void> shareOnFacebookClick = PublishSubject.create();
-    private final PublishSubject<Void> shareOnTwitterClick = PublishSubject.create();
+    interface Outputs {
+        /** Emits the backing's project name.  */
+        fun projectName(): Observable<String>
 
-    private final BehaviorSubject<String> projectName = BehaviorSubject.create();
-    private final PublishSubject<Pair<String, String>> startShare = PublishSubject.create();
-    private final PublishSubject<Pair<Project, String>> startShareOnFacebook = PublishSubject.create();
-    private final PublishSubject<Pair<String, String>> startShareOnTwitter = PublishSubject.create();
+        /** Emits the project name and url to share using Android's default share behavior.  */
+        fun startShare(): Observable<Pair<String, String>>
 
-    public final Inputs inputs = this;
-    public final Outputs outputs = this;
+        /** Emits the project and url to share using Facebook.  */
+        fun startShareOnFacebook(): Observable<Pair<Project, String>>
 
-    @Override public void configureWith(final @NonNull Project project) {
-      this.project.onNext(project);
-    }
-    @Override public void shareClick() {
-      this.shareClick.onNext(null);
-    }
-    @Override public void shareOnFacebookClick() {
-      this.shareOnFacebookClick.onNext(null);
-    }
-    @Override public void shareOnTwitterClick() {
-      this.shareOnTwitterClick.onNext(null);
+        /** Emits the project name and url to share using Twitter.  */
+        fun startShareOnTwitter(): Observable<Pair<String, String>>
     }
 
-    @Override public @NonNull Observable<Pair<String, String>> startShare() {
-      return this.startShare;
+    class ViewModel(environment: Environment) :
+        ActivityViewModel<ThanksShareViewHolder?>(environment), Inputs, Outputs {
+
+        private val project = PublishSubject.create<Project>()
+        private val shareClick = PublishSubject.create<Void>()
+        private val shareOnFacebookClick = PublishSubject.create<Void>()
+        private val shareOnTwitterClick = PublishSubject.create<Void>()
+        private val projectName = BehaviorSubject.create<String>()
+        private val startShare = PublishSubject.create<Pair<String, String>>()
+        private val startShareOnFacebook = PublishSubject.create<Pair<Project, String>>()
+        private val startShareOnTwitter = PublishSubject.create<Pair<String, String>>()
+
+        val inputs: Inputs = this
+        val outputs: Outputs = this
+
+        init {
+            project
+                .map { it.name() }
+                .compose(bindToLifecycle())
+                .subscribe { projectName.onNext(it) }
+
+            project
+                .map {
+                    Pair.create(
+                        it.name(),
+                        appendRefTag(it.webProjectUrl(), thanksShare().tag())
+                    )
+                }
+                .compose(Transformers.takeWhen(shareClick))
+                .compose(bindToLifecycle())
+                .subscribe { startShare.onNext(it) }
+
+            project
+                .map {
+                    Pair.create(
+                        it,
+                        appendRefTag(it.webProjectUrl(), thanksFacebookShare().tag())
+                    )
+                }
+                .compose(Transformers.takeWhen(shareOnFacebookClick))
+                .compose(bindToLifecycle())
+                .subscribe { startShareOnFacebook.onNext(it) }
+
+            project
+                .map {
+                    Pair.create(
+                        it.name(),
+                        appendRefTag(it.webProjectUrl(), thanksTwitterShare().tag())
+                    )
+                }
+                .compose(Transformers.takeWhen(shareOnTwitterClick))
+                .compose(bindToLifecycle())
+                .subscribe { startShareOnTwitter.onNext(it) }
+        }
+
+        override fun configureWith(project: Project) {
+            this.project.onNext(project)
+        }
+
+        override fun shareClick() {
+            shareClick.onNext(null)
+        }
+
+        override fun shareOnFacebookClick() {
+            shareOnFacebookClick.onNext(null)
+        }
+
+        override fun shareOnTwitterClick() {
+            shareOnTwitterClick.onNext(null)
+        }
+
+        override fun startShare(): Observable<Pair<String, String>> = startShare
+        override fun startShareOnFacebook(): Observable<Pair<Project, String>> = startShareOnFacebook
+        override fun startShareOnTwitter(): Observable<Pair<String, String>> = startShareOnTwitter
+        override fun projectName(): Observable<String> = projectName
     }
-    @Override public @NonNull Observable<Pair<Project, String>> startShareOnFacebook() {
-      return this.startShareOnFacebook;
-    }
-    @Override public @NonNull Observable<Pair<String, String>> startShareOnTwitter() {
-      return this.startShareOnTwitter;
-    }
-    @Override public @NonNull Observable<String> projectName() {
-      return this.projectName;
-    }
-  }
 }

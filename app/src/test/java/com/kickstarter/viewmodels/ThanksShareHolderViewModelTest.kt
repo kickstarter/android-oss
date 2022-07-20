@@ -1,100 +1,99 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import android.util.Pair;
+import android.util.Pair
+import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.Environment
+import com.kickstarter.mock.factories.ProjectFactory.project
+import com.kickstarter.mock.factories.UserFactory.creator
+import com.kickstarter.models.Project
+import com.kickstarter.models.Urls
+import com.kickstarter.models.Web
+import org.junit.Test
+import rx.observers.TestSubscriber
 
-import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.mock.factories.ProjectFactory;
-import com.kickstarter.mock.factories.UserFactory;
-import com.kickstarter.models.Project;
-import com.kickstarter.models.User;
-import com.kickstarter.models.Urls;
-import com.kickstarter.models.Web;
+class ThanksShareHolderViewModelTest : KSRobolectricTestCase() {
+    private lateinit var vm: ThanksShareHolderViewModel.ViewModel
 
-import org.junit.Test;
+    private val projectName = TestSubscriber<String>()
+    private val startShare = TestSubscriber<Pair<String, String>>()
+    private val startShareOnFacebook = TestSubscriber<Pair<Project, String>>()
+    private val startShareOnTwitter = TestSubscriber<Pair<String, String>>()
 
-import androidx.annotation.NonNull;
-import rx.observers.TestSubscriber;
+    protected fun setUpEnvironment(environment: Environment) {
+        vm = ThanksShareHolderViewModel.ViewModel(environment)
+        vm.outputs.projectName().subscribe(projectName)
+        vm.outputs.startShare().subscribe(startShare)
+        vm.outputs.startShareOnFacebook().subscribe(startShareOnFacebook)
+        vm.outputs.startShareOnTwitter().subscribe(startShareOnTwitter)
+    }
 
-public final class ThanksShareHolderViewModelTest extends KSRobolectricTestCase {
-  private ThanksShareHolderViewModel.ViewModel vm;
-  private final TestSubscriber<String> projectName = new TestSubscriber<>();
-  private final TestSubscriber<Pair<String, String>> startShare = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Project, String>> startShareOnFacebook = new TestSubscriber<>();
-  private final TestSubscriber<Pair<String, String>> startShareOnTwitter = new TestSubscriber<>();
+    @Test
+    fun testProjectName() {
+        val project = project()
+        setUpEnvironment(environment())
 
-  protected void setUpEnvironment(final @NonNull Environment environment) {
-    this.vm = new ThanksShareHolderViewModel.ViewModel(environment);
-    this.vm.outputs.projectName().subscribe(this.projectName);
-    this.vm.outputs.startShare().subscribe(this.startShare);
-    this.vm.outputs.startShareOnFacebook().subscribe(this.startShareOnFacebook);
-    this.vm.outputs.startShareOnTwitter().subscribe(this.startShareOnTwitter);
-  }
+        vm.configureWith(project)
 
-  @Test
-  public void testProjectName() {
-    final Project project = ProjectFactory.project();
-    setUpEnvironment(environment());
+        projectName.assertValues(project.name())
+    }
 
-    this.vm.configureWith(project);
-    this.projectName.assertValues(project.name());
-  }
+    @Test
+    fun testStartShare() {
+        setUpEnvironment(environment())
 
-  @Test
-  public void testStartShare() {
-    setUpEnvironment(environment());
+        val project = setUpProjectWithWebUrls()
 
-    final Project project = setUpProjectWithWebUrls();
-    this.vm.configureWith(project);
+        vm.configureWith(project)
+        vm.inputs.shareClick()
+        val expectedShareUrl =
+            "https://www.kck.str/projects/15/best-project-2k19?ref=android_thanks_share"
 
-    this.vm.inputs.shareClick();
-    final String expectedShareUrl = "https://www.kck.str/projects/15/best-project-2k19?ref=android_thanks_share";
-    this.startShare.assertValue(Pair.create("Best Project 2K19", expectedShareUrl));
-  }
+        startShare.assertValue(Pair.create("Best Project 2K19", expectedShareUrl))
+    }
 
-  @Test
-  public void testStartShareOnFacebook() {
-    setUpEnvironment(environment());
+    @Test
+    fun testStartShareOnFacebook() {
+        setUpEnvironment(environment())
 
-    final Project project = setUpProjectWithWebUrls();
-    this.vm.configureWith(project);
+        val project = setUpProjectWithWebUrls()
+        vm.configureWith(project)
+        vm.inputs.shareOnFacebookClick()
+        val expectedShareUrl =
+            "https://www.kck.str/projects/15/best-project-2k19?ref=android_thanks_facebook_share"
 
-    this.vm.inputs.shareOnFacebookClick();
-    final String expectedShareUrl = "https://www.kck.str/projects/15/best-project-2k19?ref=android_thanks_facebook_share";
-    this.startShareOnFacebook.assertValue(Pair.create(project, expectedShareUrl));
-  }
+        startShareOnFacebook.assertValue(Pair.create(project, expectedShareUrl))
+    }
 
-  @Test
-  public void testStartShareOnTwitter() {
-    setUpEnvironment(environment());
+    @Test
+    fun testStartShareOnTwitter() {
+        setUpEnvironment(environment())
 
-    final Project project = setUpProjectWithWebUrls();
-    this.vm.configureWith(project);
+        val project = setUpProjectWithWebUrls()
+        vm.configureWith(project)
+        vm.inputs.shareOnTwitterClick()
+        val expectedShareUrl =
+            "https://www.kck.str/projects/15/best-project-2k19?ref=android_thanks_twitter_share"
 
-    this.vm.inputs.shareOnTwitterClick();
-    final String expectedShareUrl = "https://www.kck.str/projects/15/best-project-2k19?ref=android_thanks_twitter_share";
-    this.startShareOnTwitter.assertValue(Pair.create("Best Project 2K19", expectedShareUrl));
-  }
+        startShareOnTwitter.assertValue(Pair.create("Best Project 2K19", expectedShareUrl))
+    }
 
-  private Project setUpProjectWithWebUrls() {
-    final Long creatorId = 15L;
-    final User creator = UserFactory.creator()
-      .toBuilder()
-      .id(creatorId)
-      .build();
-    final String slug = "best-project-2k19";
-    final String projectUrl = "https://www.kck.str/projects/"  + creator.id() + "/" + slug;
-
-    final Web webUrls = Web.builder()
-      .project(projectUrl)
-      .rewards("$projectUrl/rewards")
-      .updates("$projectUrl/posts")
-      .build();
-
-    return ProjectFactory.project()
-      .toBuilder()
-      .name("Best Project 2K19")
-      .urls(Urls.builder().web(webUrls).build())
-      .build();
-  }
+    private fun setUpProjectWithWebUrls(): Project {
+        val creatorId = 15L
+        val creator = creator()
+            .toBuilder()
+            .id(creatorId)
+            .build()
+        val slug = "best-project-2k19"
+        val projectUrl = "https://www.kck.str/projects/" + creator.id() + "/" + slug
+        val webUrls = Web.builder()
+            .project(projectUrl)
+            .rewards("\$projectUrl/rewards")
+            .updates("\$projectUrl/posts")
+            .build()
+        return project()
+            .toBuilder()
+            .name("Best Project 2K19")
+            .urls(Urls.builder().web(webUrls).build())
+            .build()
+    }
 }

@@ -129,6 +129,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val changePledgeSectionAccountabilityFragmentVisiablity = TestSubscriber<Boolean>()
     private val localPickUpIsGone = TestSubscriber<Boolean>()
     private val localPickupName = TestSubscriber<String>()
+    private val showError = TestSubscriber<String>()
 
     private fun setUpEnvironment(
         environment: Environment,
@@ -205,6 +206,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.changePledgeSectionAccountabilityFragmentVisiablity().subscribe(this.changePledgeSectionAccountabilityFragmentVisiablity)
         this.vm.outputs.localPickUpIsGone().subscribe(this.localPickUpIsGone)
         this.vm.outputs.localPickUpName().subscribe(this.localPickupName)
+        this.vm.outputs.showError().subscribe(this.showError)
 
         val projectData = project.backing()?.let {
             return@let ProjectData.builder()
@@ -1626,10 +1628,17 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
             .build()
         setUpEnvironment(environment, RewardFactory.noReward(), project)
 
+        // - Configure PaymentSheet
         this.vm.inputs.newCardButtonClicked()
         this.presentPaymentSheet.assertValue(clientSecretID)
-        this.pledgeButtonIsEnabled.assertValue(true)
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeProgressIsGone.assertValue(false)
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+
+        // - PaymentSheet presented
+        this.vm.inputs.paymentSheetPresented(true)
+        this.pledgeButtonIsEnabled.assertValues(true, false, true)
+        this.pledgeProgressIsGone.assertValues(false, true)
     }
 
     @Test
@@ -1666,7 +1675,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .apolloClient(object : MockApolloClient() {
                 override fun createSetupIntent(project: Project): Observable<String> {
-                    return Observable.error(Exception())
+                    return Observable.error(Exception("Error Message"))
                 }
             })
             .build()
@@ -1674,6 +1683,15 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.newCardButtonClicked()
         this.presentPaymentSheet.assertNoValues()
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeProgressIsGone.assertValue(true)
+        this.showError.assertValue("Error Message")
+
+        // - User hit button for second time
+        this.vm.inputs.newCardButtonClicked()
+        this.pledgeButtonIsEnabled.assertValues(true, false, false)
+        this.pledgeProgressIsGone.assertValues(true, true)
+        this.showError.assertValues("Error Message", "Error Message")
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 

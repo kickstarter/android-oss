@@ -78,9 +78,10 @@ interface LoginToutViewModel {
     }
 
     class ViewModel(environment: Environment) :
-        ActivityViewModel<LoginToutActivity?>(environment),
+        ActivityViewModel<LoginToutActivity>(environment),
         Inputs,
         Outputs {
+
         private var callbackManager: CallbackManager? = null
         private val currentUser: CurrentUserType
         private val client: ApiClientType

@@ -1,154 +1,144 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import android.content.Intent;
-import android.util.Pair;
+import android.content.Intent
+import android.util.Pair
+import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.EventName
+import com.kickstarter.mock.factories.ProjectDataFactory.project
+import com.kickstarter.mock.factories.ProjectFactory.project
+import com.kickstarter.mock.factories.UpdateFactory.update
+import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.models.Project
+import com.kickstarter.models.Update
+import com.kickstarter.services.apiresponses.UpdatesEnvelope
+import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.data.ProjectData
+import org.junit.Test
+import rx.Observable
+import rx.observers.TestSubscriber
 
-import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.EventName;
-import com.kickstarter.mock.factories.ProjectDataFactory;
-import com.kickstarter.mock.factories.ProjectFactory;
-import com.kickstarter.mock.factories.UpdateFactory;
-import com.kickstarter.mock.services.MockApiClient;
-import com.kickstarter.models.Project;
-import com.kickstarter.models.Update;
-import com.kickstarter.services.apiresponses.UpdatesEnvelope;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.data.ProjectData;
+class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
+    private lateinit var vm: ProjectUpdatesViewModel.ViewModel
+   
+    private val horizontalProgressBarIsGone = TestSubscriber<Boolean>()
+    private val isFetchingUpdates = TestSubscriber<Boolean>()
+    private val projectAndUpdates = TestSubscriber<Pair<Project, List<Update>>>()
+    private val startUpdateActivity = TestSubscriber<Pair<Project, Update>>()
+  
+    private fun setUpEnvironment(env: Environment, project: Project, projectData: ProjectData) {
+        vm = ProjectUpdatesViewModel.ViewModel(env)
+        vm.outputs.horizontalProgressBarIsGone().subscribe(horizontalProgressBarIsGone)
+        vm.outputs.isFetchingUpdates().subscribe(isFetchingUpdates)
+        vm.outputs.projectAndUpdates().subscribe(projectAndUpdates)
+        vm.outputs.startUpdateActivity().subscribe(startUpdateActivity)
 
-import org.junit.Test;
+        // Configure the view model with a project intent.
+        vm.intent(
+            Intent().putExtra(IntentKey.PROJECT, project)
+                .putExtra(IntentKey.PROJECT_DATA, projectData)
+        )
+    }
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+    @Test
+    fun init_whenViewModelInstantiated_shouldTrackPageViewEvent() {
+        val project = project()
+        setUpEnvironment(environment(), project, project(project))
 
-import androidx.annotation.NonNull;
-import rx.Observable;
-import rx.observers.TestSubscriber;
+        segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
 
-public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
-  private ProjectUpdatesViewModel.ViewModel vm;
-  private final TestSubscriber<Boolean> horizontalProgressBarIsGone = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> isFetchingUpdates = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Project, List<Update>>> projectAndUpdates = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Project, Update>> startUpdateActivity = new TestSubscriber<>();
+    @Test
+    fun testHorizontalProgressBarIsGone() {
+        val project = project()
+        setUpEnvironment(environment(), project, project(project))
 
-  private void setUpEnvironment(final @NonNull Environment env, final @NonNull Project project, final @NonNull ProjectData projectData) {
-    this.vm = new ProjectUpdatesViewModel.ViewModel(env);
-    this.vm.outputs.horizontalProgressBarIsGone().subscribe(this.horizontalProgressBarIsGone);
-    this.vm.outputs.isFetchingUpdates().subscribe(this.isFetchingUpdates);
-    this.vm.outputs.projectAndUpdates().subscribe(this.projectAndUpdates);
-    this.vm.outputs.startUpdateActivity().subscribe(this.startUpdateActivity);
+        horizontalProgressBarIsGone.assertValues(false, true)
+    }
 
-    // Configure the view model with a project intent.
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project).putExtra(IntentKey.PROJECT_DATA, projectData));
-  }
+    @Test
+    fun testIsFetchingUpdates() {
+        val project = project()
+        setUpEnvironment(environment(), project, project(project))
 
-  @Test
-  public void init_whenViewModelInstantiated_shouldTrackPageViewEvent() {
-    final Project project = ProjectFactory.project();
-    setUpEnvironment(environment(), project, ProjectDataFactory.project(project));
+        isFetchingUpdates.assertValues(true, false)
+    }
 
-    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
-  }
+    @Test
+    fun testProjectAndUpdates() {
+        val updates = listOf(
+            update(),
+            update()
+        )
+        val project = project()
 
-  @Test
-  public void testHorizontalProgressBarIsGone() {
-    final Project project = ProjectFactory.project();
-    setUpEnvironment(environment(), project, ProjectDataFactory.project(project));
-
-    this.horizontalProgressBarIsGone.assertValues(false, true);
-  }
-
-  @Test
-  public void testIsFetchingUpdates() {
-    final Project project = ProjectFactory.project();
-    setUpEnvironment(environment(), project, ProjectDataFactory.project(project));
-
-    this.isFetchingUpdates.assertValues(true, false);
-  }
-
-  @Test
-  public void testProjectAndUpdates() {
-    final List<Update> updates = Arrays.asList(
-      UpdateFactory.update(),
-      UpdateFactory.update()
-    );
-
-    final Project project = ProjectFactory.project();
-    setUpEnvironment(environment().toBuilder().apiClient(new MockApiClient() {
-      @NonNull
-      @Override
-      public Observable<UpdatesEnvelope> fetchUpdates(final @NonNull Project project) {
-        return Observable.just(
-          UpdatesEnvelope
-            .builder()
-            .updates(updates)
-            .urls(urlsEnvelope())
-            .build()
-        );
-      }
-    }).build(), project, ProjectDataFactory.project(project));
-
-    this.projectAndUpdates.assertValues(Pair.create(project, updates));
-  }
-
-  @Test
-  public void test_projectAndUpdates_whenUpdatesListIsEmpty() {
-    final Project project = ProjectFactory.project();
-    setUpEnvironment(environment().toBuilder().apiClient(new MockApiClient() {
-      @NonNull
-      @Override
-      public Observable<UpdatesEnvelope> fetchUpdates(final @NonNull Project project) {
-        return Observable.just(
-                UpdatesEnvelope
+        setUpEnvironment(environment().toBuilder().apiClient(object : MockApiClient() {
+            override fun fetchUpdates(project: Project): Observable<UpdatesEnvelope> {
+                return Observable.just(
+                    UpdatesEnvelope
                         .builder()
-                        .updates(Collections.emptyList())
+                        .updates(updates)
                         .urls(urlsEnvelope())
                         .build()
-        );
-      }
-    }).build(), project, ProjectDataFactory.project(project));
+                )
+            }
+        }).build(), project, project(project))
 
-    this.projectAndUpdates.assertValues(Pair.create(project, Collections.emptyList()));
-    this.isFetchingUpdates.assertValues(true, false);
-    this.horizontalProgressBarIsGone.assertValues(false, true);
-  }
+        projectAndUpdates.assertValues(Pair.create(project, updates))
+    }
 
-  @Test
-  public void testStartUpdateActivity() {
-    final Update update = UpdateFactory.update();
-    final List<Update> updates = Collections.singletonList(update);
+    @Test
+    fun test_projectAndUpdates_whenUpdatesListIsEmpty() {
+        val project = project()
 
-    final Project project = ProjectFactory.project();
-    setUpEnvironment(environment().toBuilder().apiClient(new MockApiClient() {
-      @NonNull
-      @Override
-      public Observable<UpdatesEnvelope> fetchUpdates(final @NonNull Project project) {
-        return Observable.just(
-          UpdatesEnvelope
+        setUpEnvironment(environment().toBuilder().apiClient(object : MockApiClient() {
+            override fun fetchUpdates(project: Project): Observable<UpdatesEnvelope> {
+                return Observable.just(
+                    UpdatesEnvelope
+                        .builder()
+                        .updates(emptyList())
+                        .urls(urlsEnvelope())
+                        .build()
+                )
+            }
+        }).build(), project, project(project))
+
+        projectAndUpdates.assertValues(Pair.create(project, emptyList()))
+        isFetchingUpdates.assertValues(true, false)
+        horizontalProgressBarIsGone.assertValues(false, true)
+    }
+
+    @Test
+    fun testStartUpdateActivity() {
+        val update = update()
+        val updates = listOf(update)
+        val project = project()
+
+        setUpEnvironment(environment().toBuilder().apiClient(object : MockApiClient() {
+            override fun fetchUpdates(project: Project): Observable<UpdatesEnvelope> {
+                return Observable.just(
+                    UpdatesEnvelope
+                        .builder()
+                        .updates(updates)
+                        .urls(urlsEnvelope())
+                        .build()
+                )
+            }
+        }).build(), project, project(project))
+
+        vm.inputs.updateClicked(update)
+        startUpdateActivity.assertValues(Pair.create(project, update))
+    }
+
+    private fun urlsEnvelope(): UpdatesEnvelope.UrlsEnvelope {
+        return UpdatesEnvelope.UrlsEnvelope
             .builder()
-            .updates(updates)
-            .urls(urlsEnvelope())
+            .api(
+                UpdatesEnvelope.UrlsEnvelope.ApiEnvelope
+                    .builder()
+                    .moreUpdates("http://more.updates.please")
+                    .build()
+            )
             .build()
-        );
-      }
-    }).build(), project, ProjectDataFactory.project(project));
-
-    this.vm.inputs.updateClicked(update);
-
-    this.startUpdateActivity.assertValues(Pair.create(project, update));
-  }
-
-  private UpdatesEnvelope.UrlsEnvelope urlsEnvelope() {
-    return UpdatesEnvelope.UrlsEnvelope
-      .builder()
-      .api(
-        UpdatesEnvelope.UrlsEnvelope.ApiEnvelope
-          .builder()
-          .moreUpdates("http://more.updates.please")
-          .build()
-      )
-      .build();
-  }
+    }
 }

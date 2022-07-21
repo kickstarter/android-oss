@@ -1,165 +1,162 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import android.content.SharedPreferences;
-import android.util.Pair;
+import android.content.SharedPreferences
+import android.util.Pair
+import com.kickstarter.libs.ActivityViewModel
+import com.kickstarter.libs.ApiPaginator
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.EventContextValues
+import com.kickstarter.libs.utils.ListUtils
+import com.kickstarter.libs.utils.extensions.negate
+import com.kickstarter.libs.utils.extensions.storeCurrentCookieRefTag
+import com.kickstarter.models.Project
+import com.kickstarter.models.Update
+import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.apiresponses.UpdatesEnvelope
+import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.activities.ProjectUpdatesActivity
+import com.kickstarter.ui.data.ProjectData
+import rx.Observable
+import rx.subjects.BehaviorSubject
+import rx.subjects.PublishSubject
+import java.net.CookieManager
 
-import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.ApiPaginator;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.extensions.BoolenExtKt;
-import com.kickstarter.libs.utils.EventContextValues;
-import com.kickstarter.libs.utils.ListUtils;
-import com.kickstarter.libs.utils.extensions.ProjectDataExtKt;
-import com.kickstarter.models.Project;
-import com.kickstarter.models.Update;
-import com.kickstarter.services.ApiClientType;
-import com.kickstarter.services.apiresponses.UpdatesEnvelope;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.activities.ProjectUpdatesActivity;
-import com.kickstarter.ui.data.ProjectData;
+interface ProjectUpdatesViewModel {
+    interface Inputs {
+        /** Call when pagination should happen. */
+        fun nextPage()
 
-import java.net.CookieManager;
-import java.util.List;
+        /** Call when the feed should be refreshed.  */
+        fun refresh()
 
-import androidx.annotation.NonNull;
-import rx.Observable;
-import rx.subjects.BehaviorSubject;
-import rx.subjects.PublishSubject;
-
-import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
-import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
-import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
-
-public interface ProjectUpdatesViewModel {
-
-  interface Inputs {
-    /** Call when pagination should happen.*/
-    void nextPage();
-
-    /** Call when the feed should be refreshed. */
-    void refresh();
-
-    /** Call when an Update is clicked. */
-    void updateClicked(Update update);
-  }
-
-  interface Outputs {
-    /** Emits a boolean indicating whether the horizontal ProgressBar is visible. */
-    Observable<Boolean> horizontalProgressBarIsGone();
-
-    /** Emits a boolean indicating whether updates are being fetched from the API. */
-    Observable<Boolean> isFetchingUpdates();
-
-    /** Emits the current project and its updates. */
-    Observable<Pair<Project, List<Update>>> projectAndUpdates();
-
-    /** Emits a project and an update to start the update activity with. */
-    Observable<Pair<Project, Update>> startUpdateActivity();
-  }
-
-  final class ViewModel extends ActivityViewModel<ProjectUpdatesActivity> implements Inputs, Outputs {
-    private final ApiClientType client;
-    private final CookieManager cookieManager;
-    private final SharedPreferences sharedPreferences;
-
-    public ViewModel(final @NonNull Environment environment) {
-      super(environment);
-
-      this.client = environment.apiClient();
-      this.cookieManager = environment.cookieManager();
-      this.sharedPreferences = environment.sharedPreferences();
-
-      final Observable<Project> project = intent()
-        .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
-        .ofType(Project.class)
-        .take(1);
-
-      final Observable<ProjectData> projectData = intent()
-        .map(i -> i.getParcelableExtra(IntentKey.PROJECT_DATA))
-        .ofType(ProjectData.class)
-        .take(1);
-
-      projectData
-        .map(it -> ProjectDataExtKt.storeCurrentCookieRefTag(it, this.cookieManager, this.sharedPreferences))
-        .compose(bindToLifecycle())
-        .subscribe(
-          projectAndData -> this.analyticEvents.trackProjectScreenViewed(projectAndData, EventContextValues.ContextSectionName.UPDATES.getContextName())
-        );
-
-      final Observable<Project> startOverWith = Observable.merge(
-        project,
-        project.compose(takeWhen(this.refresh))
-      );
-
-      final ApiPaginator<Update, UpdatesEnvelope, Project> paginator =
-        ApiPaginator.<Update, UpdatesEnvelope, Project>builder()
-          .nextPage(this.nextPage)
-          .startOverWith(startOverWith)
-          .envelopeToListOfData(UpdatesEnvelope::updates)
-          .envelopeToMoreUrl(env -> env.urls().api().moreUpdates())
-          .loadWithParams(this.client::fetchUpdates)
-          .loadWithPaginationPath(this.client::fetchUpdates)
-          .clearWhenStartingOver(false)
-          .concater(ListUtils::concatDistinct)
-          .build();
-
-      project
-        .compose(combineLatestPair(paginator.paginatedData().share()))
-        .compose(bindToLifecycle())
-        .subscribe(this.projectAndUpdates);
-
-      paginator
-        .isFetching()
-        .distinctUntilChanged()
-        .take(2)
-        .map(BoolenExtKt::negate)
-        .compose(bindToLifecycle())
-        .subscribe(this.horizontalProgressBarIsGone);
-
-      paginator
-        .isFetching()
-        .compose(bindToLifecycle())
-        .subscribe(this.isFetchingUpdates);
-
-      project
-        .compose(takePairWhen(this.updateClicked))
-        .compose(bindToLifecycle())
-        .subscribe(this.startUpdateActivity::onNext);
+        /** Call when an Update is clicked.  */
+        fun updateClicked(update: Update)
     }
 
-    private final PublishSubject<Void> nextPage = PublishSubject.create();
-    private final PublishSubject<Void> refresh = PublishSubject.create();
-    private final PublishSubject<Update> updateClicked = PublishSubject.create();
+    interface Outputs {
+        /** Emits a boolean indicating whether the horizontal ProgressBar is visible.  */
+        fun horizontalProgressBarIsGone(): Observable<Boolean>
 
-    private final BehaviorSubject<Boolean> horizontalProgressBarIsGone = BehaviorSubject.create();
-    private final BehaviorSubject<Boolean> isFetchingUpdates = BehaviorSubject.create();
-    private final BehaviorSubject<Pair<Project, List<Update>>> projectAndUpdates = BehaviorSubject.create();
-    private final PublishSubject<Pair<Project, Update>> startUpdateActivity = PublishSubject.create();
+        /** Emits a boolean indicating whether updates are being fetched from the API.  */
+        fun isFetchingUpdates(): Observable<Boolean>
 
-    public final Inputs inputs = this;
-    public final Outputs outputs = this;
+        /** Emits the current project and its updates.  */
+        fun projectAndUpdates(): Observable<Pair<Project, List<Update>>>
 
-    @Override public void nextPage() {
-      this.nextPage.onNext(null);
-    }
-    @Override public void refresh() {
-      this.refresh.onNext(null);
-    }
-    @Override public void updateClicked(final @NonNull Update update) {
-      this.updateClicked.onNext(update);
+        /** Emits a project and an update to start the update activity with.  */
+        fun startUpdateActivity(): Observable<Pair<Project, Update>>
     }
 
-    @Override public @NonNull Observable<Boolean> horizontalProgressBarIsGone() {
-      return this.horizontalProgressBarIsGone;
+    class ViewModel(environment: Environment) :
+        ActivityViewModel<ProjectUpdatesActivity>(environment), Inputs, Outputs {
+        private val client: ApiClientType?
+        private val cookieManager: CookieManager?
+        private val sharedPreferences: SharedPreferences?
+        private val nextPage = PublishSubject.create<Void>()
+        private val refresh = PublishSubject.create<Void>()
+        private val updateClicked = PublishSubject.create<Update>()
+        private val horizontalProgressBarIsGone = BehaviorSubject.create<Boolean>()
+        private val isFetchingUpdates = BehaviorSubject.create<Boolean>()
+        private val projectAndUpdates = BehaviorSubject.create<Pair<Project, List<Update>>>()
+        private val startUpdateActivity = PublishSubject.create<Pair<Project, Update>>()
+
+        val inputs: Inputs = this
+        val outputs: Outputs = this
+
+        init {
+            client = requireNotNull(environment.apiClient())
+            cookieManager = requireNotNull(environment.cookieManager())
+            sharedPreferences = requireNotNull(environment.sharedPreferences())
+            
+            val project = intent()
+                .map<Any?> { it.getParcelableExtra(IntentKey.PROJECT) }
+                .ofType(Project::class.java)
+                .take(1)
+           
+            val projectData = intent()
+                .map<Any?> { it.getParcelableExtra(IntentKey.PROJECT_DATA) }
+                .ofType(ProjectData::class.java)
+                .take(1)
+          
+            projectData
+                .map {
+                    it.storeCurrentCookieRefTag(
+                        cookieManager, sharedPreferences
+                    )
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    analyticEvents.trackProjectScreenViewed(
+                        it, EventContextValues.ContextSectionName.UPDATES.contextName
+                    )
+                }
+           
+            val startOverWith = Observable.merge(
+                project,
+                project.compose(Transformers.takeWhen(refresh))
+            )
+           
+            val paginator = ApiPaginator.builder<Update, UpdatesEnvelope, Project?>()
+                .nextPage(nextPage)
+                .startOverWith(startOverWith)
+                .envelopeToListOfData { it.updates() }
+                .envelopeToMoreUrl {  it.urls().api().moreUpdates() }
+                .loadWithParams {
+                    client.fetchUpdates(
+                        it
+                    )
+                }
+                .loadWithPaginationPath {
+                    client.fetchUpdates(
+                        it
+                    )
+                }
+                .clearWhenStartingOver(false)
+                .concater { xs: List<Update>, ys: List<Update> ->
+                    ListUtils.concatDistinct( xs, ys)
+                }
+                .build()
+            
+            project
+                .compose(Transformers.combineLatestPair(paginator.paginatedData().share()))
+                .compose(bindToLifecycle())
+                .subscribe(projectAndUpdates)
+            
+            paginator
+                .isFetching
+                .distinctUntilChanged()
+                .take(2)
+                .map{ it.negate() }
+                .compose(bindToLifecycle())
+                .subscribe(horizontalProgressBarIsGone)
+            
+            paginator
+                .isFetching
+                .compose(bindToLifecycle())
+                .subscribe(isFetchingUpdates)
+            
+            project
+                .compose(Transformers.takePairWhen(updateClicked))
+                .compose(bindToLifecycle())
+                .subscribe {startUpdateActivity.onNext(it) }
+        }
+
+        override fun nextPage() {
+            nextPage.onNext(null)
+        }
+
+        override fun refresh() {
+            refresh.onNext(null)
+        }
+
+        override fun updateClicked(update: Update) {
+            updateClicked.onNext(update)
+        }
+
+        override fun horizontalProgressBarIsGone(): Observable<Boolean> =horizontalProgressBarIsGone
+        override fun isFetchingUpdates(): Observable<Boolean> = isFetchingUpdates
+        override fun projectAndUpdates(): Observable<Pair<Project, List<Update>>>  = projectAndUpdates
+        override fun startUpdateActivity(): Observable<Pair<Project, Update>>  =startUpdateActivity
     }
-    @Override public @NonNull Observable<Boolean> isFetchingUpdates() {
-      return this.isFetchingUpdates;
-    }
-    @Override public @NonNull Observable<Pair<Project, List<Update>>> projectAndUpdates() {
-      return this.projectAndUpdates;
-    }
-    @Override public @NonNull Observable<Pair<Project, Update>> startUpdateActivity() {
-      return this.startUpdateActivity;
-    }
-  }
 }

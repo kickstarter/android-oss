@@ -48,6 +48,7 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.PledgeFragment
 import com.stripe.android.StripeIntentResult
+import com.stripe.android.paymentsheet.PaymentSheetResult
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -112,6 +113,10 @@ interface PledgeFragmentViewModel {
         fun stripeSetupResultUnsuccessful(exception: Exception)
 
         fun onRiskMessageDismissed()
+
+        fun paymentSheetResult(paymentSheetResult: PaymentSheetResult)
+
+        fun paymentSheetPresented(isSuccesfullyPresented: Boolean)
     }
 
     interface Outputs {
@@ -328,6 +333,8 @@ interface PledgeFragmentViewModel {
 
         /** Emits the String with the SetupIntent ClientID to present the PaymentSheet **/
         fun presentPaymentSheet(): Observable<String>
+
+        fun showError(): Observable<String>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
@@ -449,7 +456,11 @@ interface PledgeFragmentViewModel {
         private val localPickUpIsGone = BehaviorSubject.create<Boolean>()
         private val localPickUpName = BehaviorSubject.create<String>()
 
-        private val presentPaymentSheet = BehaviorSubject.create<String>()
+        private val presentPaymentSheet = PublishSubject.create<String>()
+        private val errorSetupIntentCreation = PublishSubject.create<String>()
+        private val paymentSheetResult = PublishSubject.create<PaymentSheetResult>()
+        private val paySheetPresented = PublishSubject.create<Boolean>()
+        private val showError = PublishSubject.create<String>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -486,6 +497,13 @@ interface PledgeFragmentViewModel {
 
             val setUpIntent = setUpIntentNotification
                 .compose(values())
+
+            setUpIntentNotification
+                .compose(errors())
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.errorSetupIntentCreation.onNext(it.message)
+                }
 
             // Shipping rules section
             val shippingRules = this.selectedReward
@@ -1187,7 +1205,29 @@ interface PledgeFragmentViewModel {
                 .compose(combineLatestPair(setUpIntent))
                 .map { it.second }
                 .compose(bindToLifecycle())
-                .subscribe(this.presentPaymentSheet)
+                .subscribe {
+                    this.presentPaymentSheet.onNext(it)
+                    this.pledgeProgressIsGone.onNext(false)
+                    this.pledgeButtonIsEnabled.onNext(false)
+                }
+
+            // - Display error snackbar in case the SetupIntent was not successfully created
+            this.newCardButtonClicked
+                .compose(combineLatestPair(errorSetupIntentCreation))
+                .map { it.second }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.showError.onNext(it)
+                    this.pledgeProgressIsGone.onNext(true)
+                    this.pledgeButtonIsEnabled.onNext(false)
+                }
+
+            this.paySheetPresented
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.pledgeProgressIsGone.onNext(it)
+                    this.pledgeButtonIsEnabled.onNext(it)
+                }
 
             this.continueButtonClicked
                 .compose(bindToLifecycle())
@@ -1785,6 +1825,12 @@ interface PledgeFragmentViewModel {
 
         override fun bonusInput(amount: String) = this.bonusInput.onNext(amount)
 
+        override fun paymentSheetResult(paymentResult: PaymentSheetResult) = this.paymentSheetResult.onNext(
+            paymentResult
+        )
+
+        override fun paymentSheetPresented(isSuccesfullyPresented: Boolean) = this.paySheetPresented.onNext(isSuccesfullyPresented)
+
         // - Outputs
         @NonNull
         override fun addedCard(): Observable<Pair<StoredCard, Project>> = this.addedCard
@@ -2006,5 +2052,9 @@ interface PledgeFragmentViewModel {
         @Override
         override fun presentPaymentSheet(): Observable<String> =
             this.presentPaymentSheet
+
+        @Override
+        override fun showError(): Observable<String> =
+            this.showError
     }
 }

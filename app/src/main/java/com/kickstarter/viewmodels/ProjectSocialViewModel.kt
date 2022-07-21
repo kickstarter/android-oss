@@ -1,39 +1,32 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.models.Project;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.activities.ProjectSocialActivity;
+import com.kickstarter.libs.ActivityViewModel
+import com.kickstarter.libs.Environment
+import com.kickstarter.models.Project
+import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.activities.ProjectSocialActivity
+import rx.Observable
+import rx.subjects.BehaviorSubject
 
-import androidx.annotation.NonNull;
-import rx.Observable;
-import rx.subjects.BehaviorSubject;
-
-public interface ProjectSocialViewModel {
-
-  interface Outputs {
-    Observable<Project> project();
-  }
-
-  final class ViewModel extends ActivityViewModel<ProjectSocialActivity> implements Outputs {
-
-    public ViewModel(final @NonNull Environment environment) {
-      super(environment);
-
-      intent()
-        .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
-        .ofType(Project.class)
-        .compose(bindToLifecycle())
-        .subscribe(this.project);
+interface ProjectSocialViewModel {
+    interface Outputs {
+        fun project(): Observable<Project>
     }
 
-    private final BehaviorSubject<Project> project = BehaviorSubject.create();
+    class ViewModel(environment: Environment) :
+        ActivityViewModel<ProjectSocialActivity>(environment), Outputs {
 
-    public final Outputs outputs = this;
+        private val project = BehaviorSubject.create<Project>()
+        val outputs: Outputs = this
 
-    @Override public @NonNull Observable<Project> project() {
-      return this.project;
+        init {
+            intent()
+                .map<Any> { it.getParcelableExtra(IntentKey.PROJECT) }
+                .ofType(Project::class.java)
+                .compose(bindToLifecycle())
+                .subscribe(project)
+        }
+
+        override fun project(): Observable<Project> = project
     }
-  }
 }

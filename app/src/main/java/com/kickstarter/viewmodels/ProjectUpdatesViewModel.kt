@@ -68,17 +68,17 @@ interface ProjectUpdatesViewModel {
             client = requireNotNull(environment.apiClient())
             cookieManager = requireNotNull(environment.cookieManager())
             sharedPreferences = requireNotNull(environment.sharedPreferences())
-            
+
             val project = intent()
                 .map<Any?> { it.getParcelableExtra(IntentKey.PROJECT) }
                 .ofType(Project::class.java)
                 .take(1)
-           
+
             val projectData = intent()
                 .map<Any?> { it.getParcelableExtra(IntentKey.PROJECT_DATA) }
                 .ofType(ProjectData::class.java)
                 .take(1)
-          
+
             projectData
                 .map {
                     it.storeCurrentCookieRefTag(
@@ -91,17 +91,17 @@ interface ProjectUpdatesViewModel {
                         it, EventContextValues.ContextSectionName.UPDATES.contextName
                     )
                 }
-           
+
             val startOverWith = Observable.merge(
                 project,
                 project.compose(Transformers.takeWhen(refresh))
             )
-           
+
             val paginator = ApiPaginator.builder<Update, UpdatesEnvelope, Project?>()
                 .nextPage(nextPage)
                 .startOverWith(startOverWith)
                 .envelopeToListOfData { it.updates() }
-                .envelopeToMoreUrl {  it.urls().api().moreUpdates() }
+                .envelopeToMoreUrl { it.urls().api().moreUpdates() }
                 .loadWithParams {
                     client.fetchUpdates(
                         it
@@ -114,32 +114,32 @@ interface ProjectUpdatesViewModel {
                 }
                 .clearWhenStartingOver(false)
                 .concater { xs: List<Update>, ys: List<Update> ->
-                    ListUtils.concatDistinct( xs, ys)
+                    ListUtils.concatDistinct(xs, ys)
                 }
                 .build()
-            
+
             project
                 .compose(Transformers.combineLatestPair(paginator.paginatedData().share()))
                 .compose(bindToLifecycle())
                 .subscribe(projectAndUpdates)
-            
+
             paginator
                 .isFetching
                 .distinctUntilChanged()
                 .take(2)
-                .map{ it.negate() }
+                .map { it.negate() }
                 .compose(bindToLifecycle())
                 .subscribe(horizontalProgressBarIsGone)
-            
+
             paginator
                 .isFetching
                 .compose(bindToLifecycle())
                 .subscribe(isFetchingUpdates)
-            
+
             project
                 .compose(Transformers.takePairWhen(updateClicked))
                 .compose(bindToLifecycle())
-                .subscribe {startUpdateActivity.onNext(it) }
+                .subscribe { startUpdateActivity.onNext(it) }
         }
 
         override fun nextPage() {
@@ -154,9 +154,9 @@ interface ProjectUpdatesViewModel {
             updateClicked.onNext(update)
         }
 
-        override fun horizontalProgressBarIsGone(): Observable<Boolean> =horizontalProgressBarIsGone
+        override fun horizontalProgressBarIsGone(): Observable<Boolean> = horizontalProgressBarIsGone
         override fun isFetchingUpdates(): Observable<Boolean> = isFetchingUpdates
-        override fun projectAndUpdates(): Observable<Pair<Project, List<Update>>>  = projectAndUpdates
-        override fun startUpdateActivity(): Observable<Pair<Project, Update>>  =startUpdateActivity
+        override fun projectAndUpdates(): Observable<Pair<Project, List<Update>>> = projectAndUpdates
+        override fun startUpdateActivity(): Observable<Pair<Project, Update>> = startUpdateActivity
     }
 }

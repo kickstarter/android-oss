@@ -20,12 +20,12 @@ import rx.observers.TestSubscriber
 
 class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: ProjectUpdatesViewModel.ViewModel
-   
+
     private val horizontalProgressBarIsGone = TestSubscriber<Boolean>()
     private val isFetchingUpdates = TestSubscriber<Boolean>()
     private val projectAndUpdates = TestSubscriber<Pair<Project, List<Update>>>()
     private val startUpdateActivity = TestSubscriber<Pair<Project, Update>>()
-  
+
     private fun setUpEnvironment(env: Environment, project: Project, projectData: ProjectData) {
         vm = ProjectUpdatesViewModel.ViewModel(env)
         vm.outputs.horizontalProgressBarIsGone().subscribe(horizontalProgressBarIsGone)
@@ -72,17 +72,20 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
         )
         val project = project()
 
-        setUpEnvironment(environment().toBuilder().apiClient(object : MockApiClient() {
-            override fun fetchUpdates(project: Project): Observable<UpdatesEnvelope> {
-                return Observable.just(
-                    UpdatesEnvelope
-                        .builder()
-                        .updates(updates)
-                        .urls(urlsEnvelope())
-                        .build()
-                )
-            }
-        }).build(), project, project(project))
+        setUpEnvironment(
+            environment().toBuilder().apiClient(object : MockApiClient() {
+                override fun fetchUpdates(project: Project): Observable<UpdatesEnvelope> {
+                    return Observable.just(
+                        UpdatesEnvelope
+                            .builder()
+                            .updates(updates)
+                            .urls(urlsEnvelope())
+                            .build()
+                    )
+                }
+            }).build(),
+            project, project(project)
+        )
 
         projectAndUpdates.assertValues(Pair.create(project, updates))
     }
@@ -91,17 +94,20 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
     fun test_projectAndUpdates_whenUpdatesListIsEmpty() {
         val project = project()
 
-        setUpEnvironment(environment().toBuilder().apiClient(object : MockApiClient() {
-            override fun fetchUpdates(project: Project): Observable<UpdatesEnvelope> {
-                return Observable.just(
-                    UpdatesEnvelope
-                        .builder()
-                        .updates(emptyList())
-                        .urls(urlsEnvelope())
-                        .build()
-                )
-            }
-        }).build(), project, project(project))
+        setUpEnvironment(
+            environment().toBuilder().apiClient(object : MockApiClient() {
+                override fun fetchUpdates(project: Project): Observable<UpdatesEnvelope> {
+                    return Observable.just(
+                        UpdatesEnvelope
+                            .builder()
+                            .updates(emptyList())
+                            .urls(urlsEnvelope())
+                            .build()
+                    )
+                }
+            }).build(),
+            project, project(project)
+        )
 
         projectAndUpdates.assertValues(Pair.create(project, emptyList()))
         isFetchingUpdates.assertValues(true, false)
@@ -114,17 +120,20 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
         val updates = listOf(update)
         val project = project()
 
-        setUpEnvironment(environment().toBuilder().apiClient(object : MockApiClient() {
-            override fun fetchUpdates(project: Project): Observable<UpdatesEnvelope> {
-                return Observable.just(
-                    UpdatesEnvelope
-                        .builder()
-                        .updates(updates)
-                        .urls(urlsEnvelope())
-                        .build()
-                )
-            }
-        }).build(), project, project(project))
+        setUpEnvironment(
+            environment().toBuilder().apiClient(object : MockApiClient() {
+                override fun fetchUpdates(project: Project): Observable<UpdatesEnvelope> {
+                    return Observable.just(
+                        UpdatesEnvelope
+                            .builder()
+                            .updates(updates)
+                            .urls(urlsEnvelope())
+                            .build()
+                    )
+                }
+            }).build(),
+            project, project(project)
+        )
 
         vm.inputs.updateClicked(update)
         startUpdateActivity.assertValues(Pair.create(project, update))

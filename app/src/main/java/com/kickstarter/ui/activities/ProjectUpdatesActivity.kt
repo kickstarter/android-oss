@@ -38,12 +38,12 @@ class ProjectUpdatesActivity : BaseActivity<ProjectUpdatesViewModel.ViewModel>()
         recyclerViewPaginator = RecyclerViewPaginator(
             binding.updatesRecyclerView,
             { viewModel.inputs.nextPage() },
-            viewModel.outputs.isFetchingUpdates
+            viewModel.outputs.isFetchingUpdates()
         )
 
         swipeRefresher = SwipeRefresher(
             this, binding.updatesSwipeRefreshLayout, { viewModel.inputs.refresh() }
-        ) { viewModel.outputs.isFetchingUpdates }
+        ) { viewModel.outputs.isFetchingUpdates() }
 
         binding.updatesToolbar.commentsToolbar.setTitle(getString(R.string.project_subpages_menu_buttons_updates))
 

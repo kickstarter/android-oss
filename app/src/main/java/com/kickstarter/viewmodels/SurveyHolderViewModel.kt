@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -33,7 +34,7 @@ interface SurveyHolderViewModel {
         fun startSurveyResponseActivity(): Observable<SurveyResponse>
     }
 
-    class ViewModel(environment: Environment) :
+    class ViewModel(@NonNull environment: Environment) :
         ActivityViewModel<SurveyViewHolder>(environment),
         Inputs,
         Outputs {

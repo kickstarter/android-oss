@@ -51,7 +51,7 @@ interface SignupViewModel {
     }
 
     class ViewModel(environment: Environment) :
-        ActivityViewModel<SignupActivity?>(environment),
+        ActivityViewModel<SignupActivity>(environment),
         Inputs,
         Outputs {
         private val client: ApiClientType

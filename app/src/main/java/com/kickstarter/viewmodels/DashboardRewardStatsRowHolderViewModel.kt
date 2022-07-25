@@ -33,7 +33,7 @@ interface DashboardRewardStatsRowHolderViewModel {
     }
 
     class ViewModel(environment: Environment) :
-        ActivityViewModel<CreatorDashboardRewardStatsRowViewHolder?>(environment), Inputs, Outputs {
+        ActivityViewModel<CreatorDashboardRewardStatsRowViewHolder>(environment), Inputs, Outputs {
 
         val inputs: Inputs = this
         val outputs: Outputs = this

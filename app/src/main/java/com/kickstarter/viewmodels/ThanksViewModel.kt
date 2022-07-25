@@ -71,7 +71,7 @@ interface ThanksViewModel {
     }
 
     class ViewModel(environment: Environment) :
-        ActivityViewModel<ThanksActivity?>(environment),
+        ActivityViewModel<ThanksActivity>(environment),
         Inputs,
         Outputs {
         private val apiClient = requireNotNull(environment.apiClient())

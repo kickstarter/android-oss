@@ -69,7 +69,7 @@ interface CreatorDashboardReferrerBreakdownHolderViewModel {
     }
 
     class ViewModel(environment: Environment) :
-        ActivityViewModel<CreatorDashboardReferrerBreakdownViewHolder?>(environment),
+        ActivityViewModel<CreatorDashboardReferrerBreakdownViewHolder>(environment),
         Inputs,
         Outputs {
 

@@ -73,7 +73,7 @@ interface MessageThreadsViewModel {
     }
 
     class ViewModel(environment: Environment) :
-        ActivityViewModel<MessageThreadsActivity?>(environment), Inputs, Outputs {
+        ActivityViewModel<MessageThreadsActivity>(environment), Inputs, Outputs {
         private val client: ApiClientType?
         private val currentUser: CurrentUserType?
         private fun getStringResForMailbox(mailbox: Mailbox): Int {

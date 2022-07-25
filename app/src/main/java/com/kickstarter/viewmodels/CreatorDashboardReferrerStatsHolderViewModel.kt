@@ -31,7 +31,7 @@ interface CreatorDashboardReferrerStatsHolderViewModel {
     }
 
     class ViewModel(environment: Environment) :
-        ActivityViewModel<CreatorDashboardReferrerStatsViewHolder?>(environment), Inputs, Outputs {
+        ActivityViewModel<CreatorDashboardReferrerStatsViewHolder>(environment), Inputs, Outputs {
 
         private val projectAndReferrerStatsInput =
             PublishSubject.create<Pair<Project, List<ReferrerStats>>>()

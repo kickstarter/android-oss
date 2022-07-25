@@ -1,112 +1,100 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import android.util.Pair;
+import android.util.Pair
+import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.mock.factories.PhotoFactory.photo
+import com.kickstarter.mock.factories.ProjectFactory.project
+import com.kickstarter.models.Project
+import org.joda.time.DateTime
+import org.junit.Test
+import rx.observers.TestSubscriber
 
-import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.NumberUtils;
-import com.kickstarter.mock.factories.PhotoFactory;
-import com.kickstarter.mock.factories.ProjectFactory;
-import com.kickstarter.models.Project;
+class ProjectSearchResultHolderViewModelTest : KSRobolectricTestCase() {
+    private lateinit var vm: ProjectSearchResultHolderViewModel.ViewModel
+    private val notifyDelegateOfResultClick = TestSubscriber<Project>()
+    private val percentFundedTextViewText = TestSubscriber<String>()
+    private val projectForDeadlineCountdownUnitTextView = TestSubscriber<Project>()
+    private val projectNameTextViewText = TestSubscriber<String>()
+    private val projectPhotoUrl = TestSubscriber<String>()
 
-import org.joda.time.DateTime;
-import org.junit.Test;
+    private fun setUpEnvironment(environment: Environment) {
+        vm = ProjectSearchResultHolderViewModel.ViewModel(environment)
+        vm.outputs.notifyDelegateOfResultClick().subscribe(notifyDelegateOfResultClick)
+        vm.outputs.percentFundedTextViewText().subscribe(percentFundedTextViewText)
+        vm.outputs.projectForDeadlineCountdownUnitTextView().subscribe(
+            projectForDeadlineCountdownUnitTextView
+        )
+        vm.outputs.projectNameTextViewText().subscribe(projectNameTextViewText)
+        vm.outputs.projectPhotoUrl().subscribe(projectPhotoUrl)
+    }
 
-import androidx.annotation.NonNull;
-import rx.observers.TestSubscriber;
+    @Test
+    fun testEmitsProjectImage() {
+        val project = project()
+            .toBuilder()
+            .photo(
+                photo()
+                    .toBuilder()
+                    .med("http://www.kickstarter.com/med.jpg")
+                    .build()
+            )
+            .build()
+        setUpEnvironment(environment())
+        vm.inputs.configureWith(Pair.create(project, false))
 
-public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricTestCase {
-  private ProjectSearchResultHolderViewModel.ViewModel vm;
-  private final TestSubscriber<Project> notifyDelegateOfResultClick = new TestSubscriber<>();
-  private final TestSubscriber<String> percentFundedTextViewText = new TestSubscriber<>();
-  private final TestSubscriber<Project> projectForDeadlineCountdownUnitTextView = new TestSubscriber<>();
-  private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
-  private final TestSubscriber<String> projectPhotoUrl = new TestSubscriber<>();
+        projectPhotoUrl.assertValues("http://www.kickstarter.com/med.jpg")
+    }
 
-  private void setUpEnvironment(final @NonNull Environment environment) {
-    this.vm = new ProjectSearchResultHolderViewModel.ViewModel(environment);
+    @Test
+    fun testEmitsFeaturedProjectImage() {
+        val project = project()
+            .toBuilder()
+            .photo(
+                photo()
+                    .toBuilder()
+                    .full("http://www.kickstarter.com/full.jpg")
+                    .build()
+            )
+            .build()
+        setUpEnvironment(environment())
+        vm.inputs.configureWith(Pair.create(project, true))
 
-    this.vm.outputs.notifyDelegateOfResultClick().subscribe(this.notifyDelegateOfResultClick);
-    this.vm.outputs.percentFundedTextViewText().subscribe(this.percentFundedTextViewText);
-    this.vm.outputs.projectForDeadlineCountdownUnitTextView().subscribe(this.projectForDeadlineCountdownUnitTextView);
-    this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
-    this.vm.outputs.projectPhotoUrl().subscribe(this.projectPhotoUrl);
-  }
+        projectPhotoUrl.assertValues("http://www.kickstarter.com/full.jpg")
+    }
 
-  @Test
-  public void testEmitsProjectImage() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .photo(
-        PhotoFactory.photo()
-          .toBuilder()
-          .med("http://www.kickstarter.com/med.jpg")
-          .build()
-      )
-      .build();
+    @Test
+    fun testEmitsProjectName() {
+        val project = project()
+        setUpEnvironment(environment())
+        vm.inputs.configureWith(Pair.create(project, true))
 
-    setUpEnvironment(environment());
+        projectNameTextViewText.assertValues(project.name())
+    }
 
-    this.vm.inputs.configureWith(Pair.create(project, false));
+    @Test
+    fun testEmitsProjectStats() {
+        val project = project()
+            .toBuilder()
+            .pledged(100.0)
+            .goal(200.0)
+            .deadline(DateTime().plusHours(24 * 10 + 1))
+            .build()
+        setUpEnvironment(environment())
+        vm.inputs.configureWith(Pair.create(project, true))
 
-    this.projectPhotoUrl.assertValues("http://www.kickstarter.com/med.jpg");
-  }
+        percentFundedTextViewText.assertValues(NumberUtils.flooredPercentage(project.percentageFunded()))
+        projectForDeadlineCountdownUnitTextView.assertValues(project)
+    }
 
-  @Test
-  public void testEmitsFeaturedProjectImage() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .photo(
-        PhotoFactory.photo()
-          .toBuilder()
-          .full("http://www.kickstarter.com/full.jpg")
-          .build()
-      )
-      .build();
+    @Test
+    fun testEmitsProjectClicked() {
+        val project = project()
+        setUpEnvironment(environment())
+        vm.inputs.configureWith(Pair.create(project, true))
+        vm.inputs.projectClicked()
 
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, true));
-
-    this.projectPhotoUrl.assertValues("http://www.kickstarter.com/full.jpg");
-  }
-
-  @Test
-  public void testEmitsProjectName() {
-    final Project project = ProjectFactory.project();
-
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, true));
-    this.projectNameTextViewText.assertValues(project.name());
-  }
-
-  @Test
-  public void testEmitsProjectStats() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .pledged(100.0)
-      .goal(200.0)
-      .deadline(new DateTime().plusHours(24 * 10 + 1))
-      .build();
-
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, true));
-
-    this.percentFundedTextViewText.assertValues(NumberUtils.flooredPercentage(project.percentageFunded()));
-    this.projectForDeadlineCountdownUnitTextView.assertValues(project);
-  }
-
-  @Test
-  public void testEmitsProjectClicked() {
-    final Project project = ProjectFactory.project();
-
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, true));
-    this.vm.inputs.projectClicked();
-
-    this.notifyDelegateOfResultClick.assertValues(project);
-  }
+        notifyDelegateOfResultClick.assertValues(project)
+    }
 }

@@ -1,116 +1,120 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import android.util.Pair;
+import android.util.Pair
+import com.kickstarter.libs.ActivityViewModel
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.PairUtils
+import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
+import com.kickstarter.models.Project
+import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder
+import rx.Observable
+import rx.subjects.PublishSubject
 
-import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.NumberUtils;
-import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.PairUtils;
-import com.kickstarter.libs.utils.extensions.ProjectExt;
-import com.kickstarter.models.Project;
-import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
+interface ProjectSearchResultHolderViewModel {
+    interface Inputs {
+        /** Call to configure the view model with a project and isFeatured data.  */
+        fun configureWith(projectAndIsFeatured: Pair<Project, Boolean>)
 
-import androidx.annotation.NonNull;
-import rx.Observable;
-import rx.subjects.PublishSubject;
-
-import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
-
-public interface ProjectSearchResultHolderViewModel {
-
-  interface Inputs {
-    /** Call to configure the view model with a project and isFeatured data. */
-    void configureWith(Pair<Project, Boolean> projectAndIsFeatured);
-
-    /** Call to say user clicked a project */
-    void projectClicked();
-  }
-
-  interface Outputs {
-    /** Emits the formatted days to go text to be displayed. */
-    Observable<String> deadlineCountdownValueTextViewText();
-
-    /** Emits the project clicked by the user. */
-    Observable<Project> notifyDelegateOfResultClick();
-
-    /** Emits the percent funded text to be displayed. */
-    Observable<String> percentFundedTextViewText();
-
-    /** Emits the project be used to display the deadline countdown detail. */
-    Observable<Project> projectForDeadlineCountdownUnitTextView();
-
-    /** Emits the project title to be displayed. */
-    Observable<String> projectNameTextViewText();
-
-    /** Emits the project photo url to be displayed. */
-    Observable<String> projectPhotoUrl();
-  }
-
-  final class ViewModel extends ActivityViewModel<ProjectSearchResultViewHolder> implements Inputs, Outputs {
-
-    public ViewModel(final @NonNull Environment environment) {
-      super(environment);
-
-      this.deadlineCountdownValueTextViewText = this.projectAndIsFeatured
-        .map(pb -> NumberUtils.format(ProjectExt.deadlineCountdownValue(pb.first)));
-
-      this.percentFundedTextViewText = this.projectAndIsFeatured
-        .map(pb -> NumberUtils.flooredPercentage(pb.first.percentageFunded()));
-
-      this.projectForDeadlineCountdownDetail = this.projectAndIsFeatured
-        .map(pb -> pb.first);
-
-      this.projectPhotoUrl = this.projectAndIsFeatured
-        .map(pb -> Pair.create(pb.first.photo(), pb.second))
-        .filter(pb -> ObjectUtils.isNotNull(pb.first))
-        .map(pb -> pb.second ? pb.first.full() : pb.first.med());
-
-      this.projectNameTextViewText = this.projectAndIsFeatured
-        .map(pb -> pb.first.name());
-
-      this.notifyDelegateOfResultClick = this.projectAndIsFeatured
-        .map(PairUtils::first)
-        .compose(takeWhen(this.projectClicked));
+        /** Call to say user clicked a project  */
+        fun projectClicked()
     }
 
-    private final PublishSubject<Pair<Project, Boolean>> projectAndIsFeatured = PublishSubject.create();
-    private final PublishSubject<Void> projectClicked = PublishSubject.create();
+    interface Outputs {
+        /** Emits the formatted days to go text to be displayed.  */
+        fun deadlineCountdownValueTextViewText(): Observable<String>
 
-    private final Observable<String> deadlineCountdownValueTextViewText;
-    private final Observable<Project> notifyDelegateOfResultClick;
-    private final Observable<String> percentFundedTextViewText;
-    private final Observable<Project> projectForDeadlineCountdownDetail;
-    private final Observable<String> projectNameTextViewText;
-    private final Observable<String> projectPhotoUrl;
+        /** Emits the project clicked by the user.  */
+        fun notifyDelegateOfResultClick(): Observable<Project>
 
-    public final Inputs inputs = this;
-    public final Outputs outputs = this;
+        /** Emits the percent funded text to be displayed.  */
+        fun percentFundedTextViewText(): Observable<String>
 
-    @Override public void configureWith(final @NonNull Pair<Project, Boolean> projectAndIsFeatured) {
-      this.projectAndIsFeatured.onNext(projectAndIsFeatured);
-    }
-    @Override public void projectClicked() {
-      this.projectClicked.onNext(null);
+        /** Emits the project be used to display the deadline countdown detail.  */
+        fun projectForDeadlineCountdownUnitTextView(): Observable<Project>
+
+        /** Emits the project title to be displayed.  */
+        fun projectNameTextViewText(): Observable<String>
+
+        /** Emits the project photo url to be displayed.  */
+        fun projectPhotoUrl(): Observable<String>
     }
 
-    @Override public @NonNull Observable<String> deadlineCountdownValueTextViewText() {
-      return this.deadlineCountdownValueTextViewText;
+    class ViewModel(environment: Environment) :
+        ActivityViewModel<ProjectSearchResultViewHolder>(environment), Inputs, Outputs {
+
+        private val projectAndIsFeatured = PublishSubject.create<Pair<Project, Boolean>>()
+        private val projectClicked = PublishSubject.create<Void>()
+        private val deadlineCountdownValueTextViewText: Observable<String>
+        private val notifyDelegateOfResultClick: Observable<Project>
+        private val percentFundedTextViewText: Observable<String>
+        private val projectForDeadlineCountdownDetail: Observable<Project>
+        private val projectNameTextViewText: Observable<String>
+        private val projectPhotoUrl: Observable<String>
+
+        val inputs: Inputs = this
+        val outputs: Outputs = this
+
+        init {
+            deadlineCountdownValueTextViewText = projectAndIsFeatured
+                .map {
+                    NumberUtils.format(
+                        it.first.deadlineCountdownValue()
+                    )
+                }
+
+            percentFundedTextViewText = projectAndIsFeatured
+                .map {
+                    NumberUtils.flooredPercentage(
+                        it.first.percentageFunded()
+                    )
+                }
+
+            projectForDeadlineCountdownDetail = projectAndIsFeatured
+                .map { it.first }
+
+            projectPhotoUrl = projectAndIsFeatured
+                .map {
+                    Pair.create(
+                        it.first.photo(), it.second
+                    )
+                }
+                .filter { ObjectUtils.isNotNull(it.first) }
+                .map {
+                    if (it.second)
+                        it.first?.full()
+                    else
+                        it.first?.med()
+                }
+
+            projectNameTextViewText = projectAndIsFeatured
+                .map { it.first.name() }
+
+            notifyDelegateOfResultClick = projectAndIsFeatured
+                .map { PairUtils.first(it) }
+                .compose(Transformers.takeWhen(projectClicked))
+        }
+
+        override fun configureWith(projectAndIsFeatured: Pair<Project, Boolean>) {
+            this.projectAndIsFeatured.onNext(projectAndIsFeatured)
+        }
+
+        override fun projectClicked() {
+            projectClicked.onNext(null)
+        }
+
+        override fun deadlineCountdownValueTextViewText(): Observable<String> = deadlineCountdownValueTextViewText
+
+        override fun notifyDelegateOfResultClick(): Observable<Project> = notifyDelegateOfResultClick
+
+        override fun percentFundedTextViewText(): Observable<String> = percentFundedTextViewText
+
+        override fun projectForDeadlineCountdownUnitTextView(): Observable<Project> = projectForDeadlineCountdownDetail
+
+        override fun projectPhotoUrl(): Observable<String> = projectPhotoUrl
+
+        override fun projectNameTextViewText(): Observable<String> = projectNameTextViewText
     }
-    @Override public @NonNull Observable<Project> notifyDelegateOfResultClick() {
-      return this.notifyDelegateOfResultClick;
-    }
-    @Override public @NonNull Observable<String> percentFundedTextViewText() {
-      return this.percentFundedTextViewText;
-    }
-    @Override public @NonNull Observable<Project> projectForDeadlineCountdownUnitTextView() {
-      return this.projectForDeadlineCountdownDetail;
-    }
-    @Override public @NonNull Observable<String> projectPhotoUrl() {
-      return this.projectPhotoUrl;
-    }
-    @Override public @NonNull Observable<String> projectNameTextViewText() {
-      return this.projectNameTextViewText;
-    }
-  }
 }

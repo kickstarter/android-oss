@@ -20,6 +20,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT
+import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.CAMPAIGN
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.ENVIRONMENT
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.FAQS
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.OVERVIEW
@@ -920,7 +921,7 @@ interface ProjectPageViewModel {
 
         private fun getSelectedTabContextName(selectedTabIndex: Int): String = when (selectedTabIndex) {
             ProjectPagerTabs.OVERVIEW.ordinal -> OVERVIEW.contextName
-            // ProjectPagerTabs.CAMPAIGN.ordinal -> STORY.contextName
+            ProjectPagerTabs.CAMPAIGN.ordinal -> CAMPAIGN.contextName
             ProjectPagerTabs.FAQS.ordinal -> FAQS.contextName
             ProjectPagerTabs.RISKS.ordinal -> RISKS.contextName
             ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal -> ENVIRONMENT.contextName

@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels
 
 import android.util.Pair
+import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -42,7 +43,7 @@ interface ProjectSearchResultHolderViewModel {
         fun projectPhotoUrl(): Observable<String>
     }
 
-    class ViewModel(environment: Environment) :
+    class ViewModel(@NonNull environment: Environment) :
         ActivityViewModel<ProjectSearchResultViewHolder>(environment), Inputs, Outputs {
 
         private val projectAndIsFeatured = PublishSubject.create<Pair<Project, Boolean>>()

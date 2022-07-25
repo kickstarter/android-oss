@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels
 
 import android.util.Pair
+import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -35,7 +36,7 @@ interface SurveyResponseViewModel {
         fun webViewUrl(): Observable<String?>
     }
 
-    class ViewModel(environment: Environment) :
+    class ViewModel(@NonNull environment: Environment) :
         ActivityViewModel<SurveyResponseActivity>(environment), Inputs, Outputs {
         /**
          * Returns if a project request tag's url is a survey url,

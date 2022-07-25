@@ -34,7 +34,7 @@ interface CreatorDashboardReferrerStatsRowHolderViewModel {
     }
 
     class ViewModel(environment: Environment) :
-        ActivityViewModel<CreatorDashboardReferrerStatsViewHolder?>(environment), Inputs, Outputs {
+        ActivityViewModel<CreatorDashboardReferrerStatsViewHolder>(environment), Inputs, Outputs {
 
         val inputs: Inputs = this
         val outputs: Outputs = this

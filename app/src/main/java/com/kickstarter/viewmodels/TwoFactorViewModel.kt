@@ -46,7 +46,7 @@ interface TwoFactorViewModel {
     }
 
     class ViewModel(environment: Environment) :
-        ActivityViewModel<TwoFactorActivity?>(environment),
+        ActivityViewModel<TwoFactorActivity>(environment),
         Inputs,
         Outputs {
         private val client: ApiClientType

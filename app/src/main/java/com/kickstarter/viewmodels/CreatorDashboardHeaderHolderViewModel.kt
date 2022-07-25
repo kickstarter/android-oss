@@ -68,7 +68,7 @@ interface CreatorDashboardHeaderHolderViewModel {
     }
 
     class ViewModel(environment: Environment) :
-        ActivityViewModel<CreatorDashboardHeaderViewHolder?>(environment), Inputs, Outputs {
+        ActivityViewModel<CreatorDashboardHeaderViewHolder>(environment), Inputs, Outputs {
         private val currentUser = requireNotNull(environment.currentUser())
 
         val inputs: Inputs = this

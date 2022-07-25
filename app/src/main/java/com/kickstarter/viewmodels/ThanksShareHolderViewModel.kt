@@ -44,7 +44,7 @@ interface ThanksShareHolderViewModel {
     }
 
     class ViewModel(environment: Environment) :
-        ActivityViewModel<ThanksShareViewHolder?>(environment), Inputs, Outputs {
+        ActivityViewModel<ThanksShareViewHolder>(environment), Inputs, Outputs {
 
         private val project = PublishSubject.create<Project>()
         private val shareClick = PublishSubject.create<Void>()

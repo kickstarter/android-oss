@@ -7,9 +7,12 @@ import com.kickstarter.models.StoredCard
 import type.CreditCardTypes
 
 fun StoredCard.getCardTypeDrawable(): Int {
-    return this.type()?.let {
-        getCardTypeDrawable(it)
+    val cardType = this.type() ?: CreditCardTypes.`$UNKNOWN`
+    val resourceId = this.expiration()?.let {
+        getCardTypeDrawable(cardType)
     } ?: this.resourceId() ?: R.drawable.generic_bank_md
+
+    return resourceId
 }
 
 fun PaymentSource.getCardTypeDrawable(): Int {

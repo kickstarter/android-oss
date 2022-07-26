@@ -664,7 +664,7 @@ class PledgeFragment :
     // Update the UI with the returned PaymentOption
     private fun onPaymentOption(paymentOption: PaymentOption?) {
         paymentOption?.let {
-            val storedCard = StoredCard.Builder(lastFourDigits = paymentOption.label, resourceId = paymentOption.drawableResourceId).build()
+            val storedCard = StoredCard.Builder(lastFourDigits = paymentOption.label.takeLast(4), resourceId = paymentOption.drawableResourceId).build()
             this.viewModel.inputs.cardSaved(storedCard)
             Timber.d(" ${this.javaClass.canonicalName} onPaymentOption with $paymentOption")
             flowController.confirm()

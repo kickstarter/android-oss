@@ -335,6 +335,7 @@ with friends.</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" formatted="false">Kickstarter is not a store. It\'s a way to bring creative projects to life.</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Kickstarter is not a store. It\'s a way to bring creative projects to life.&lt;br/>&lt;a href="%{trust_link}">Learn more about accountability&lt;/a></string>
   <string name="Kickstarter_on_Film" formatted="false">Kickstarter on Film</string>
+  <string name="Kickstarters_community_guidelines" formatted="false">Kickstarter’s Community Guidelines.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Know when creators and backers message you by enabling notifications.</string>
   <string name="Learn_about_accountability_on_Kickstarter" formatted="false">Learn about accountability on Kickstarter</string>
   <string name="Learn_more_about_accountability" formatted="false">Learn more about accountability</string>
@@ -648,6 +649,9 @@ catch your eye?</string>
   <string name="These_projects_could_use_your_support" formatted="false">These projects could use your support.</string>
   <string name="This_allows_you_to_see_project_goal_and_pledge_amounts_in_your_preferred_currency" formatted="false">This allows you to see project goal and pledge amounts in your preferred currency.</string>
   <string name="This_comment_has_been_removed_by_Kickstarter" formatted="false">This comment has been removed by Kickstarter.</string>
+  <string name="This_comment_is_under_review" formatted="false">This comment is under review.</string>
+  <string name="This_comment_is_under_review_for_potentially_violating" formatted="false">This comment is under review for potentially violating</string>
+  <string name="This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines" formatted="false">This comment is under review for potentially violating &lt;a href="%{community_guidelines}">Kickstarter’s Community Guidelines.&lt;/a></string>
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">This Facebook account is already linked to another Kickstarter user.</string>
   <string name="This_holiday_season_support_a_project_for_no_reward" formatted="false">This holiday season, support a project for no reward, just because it speaks to you.</string>
   <string name="This_person_canceled_their_pledge" formatted="false">This person has canceled their pledge.</string>

@@ -187,7 +187,7 @@
         android:id="@+id/flagged_message"
         style="@style/CommentCardFlaggedMessage"
         android:visibility="gone"
-        android:text="@string/FPO_this_comment_is_under_review_for_potentially_violating"
+        android:text="@string/This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/info_button"
         app:layout_constraintTop_toBottomOf="@id/avatar"

@@ -55,6 +55,8 @@ class CommentCard @JvmOverloads constructor(
     }
 
     private fun bindCommunityGuidelines(textView: AppCompatTextView, onCommentCardClickedListener: OnCommentCardClickedListener?) {
+
+
         textView.parseHtmlTag()
         textView.makeLinks(
             Pair(
@@ -73,7 +75,7 @@ class CommentCard @JvmOverloads constructor(
         textView.parseHtmlTag()
         textView.makeLinks(
             Pair(
-                context.resources.getString(R.string.FPO_kickstarters_community_guidelines).parseHtmlTag(),
+                context.resources.getString(R.string.This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines).parseHtmlTag(),
                 OnClickListener {
                     onCommentCardClickedListener?.onCommentGuideLinesClicked(it)
                 },

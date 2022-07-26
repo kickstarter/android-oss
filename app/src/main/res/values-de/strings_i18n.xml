@@ -334,6 +334,7 @@ Antippen und erneut versuchen</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" formatted="false">Kickstarter ist kein Geschäft, sondern eine Plattform, um kreative Projekte zu verwirklichen.</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Kickstarter ist kein Geschäft, sondern eine Plattform, um kreative Projekte zu verwirklichen. &lt;br/>&lt;a href="%{trust_link}">Hier findest du mehr Info zur Rechenschftspflicht&lt;/a></string>
   <string name="Kickstarter_on_Film" formatted="false">Kickstarter on Film</string>
+  <string name="Kickstarters_community_guidelines" formatted="false">die Community-Richtlinien von Kickstarter.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Aktiviere Benachrichtigungen, damit du über eingehende Nachrichten von Projektgründern und Unterstützern Bescheid weißt.</string>
   <string name="Learn_about_accountability_on_Kickstarter" formatted="false">Näheres zur Rechenschaftspflicht auf Kickstarter</string>
   <string name="Learn_more_about_accountability" formatted="false">Weitere Informationen zur Rechenschaftspflicht</string>
@@ -644,6 +645,9 @@ Antippen und erneut versuchen</string>
   <string name="These_projects_could_use_your_support" formatted="false">Diese Projekte könnten mit deiner Unterstützung verwirklicht werden.</string>
   <string name="This_allows_you_to_see_project_goal_and_pledge_amounts_in_your_preferred_currency" formatted="false">Hier kannst du das Finanzierungsziel und die Finanzierungsbeiträge in deiner bevorzugten Währung ansehen.</string>
   <string name="This_comment_has_been_removed_by_Kickstarter" formatted="false">Dieser Kommentar wurde von Kickstarter entfernt.</string>
+  <string name="This_comment_is_under_review" formatted="false">Dieser Kommentar wird gerade überprüft.</string>
+  <string name="This_comment_is_under_review_for_potentially_violating" formatted="false">Dieser Kommentar wird gerade geprüft, weil er möglicherweise gegen Folgendes verstößt:</string>
+  <string name="This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines" formatted="false">Dieser Kommentar wird gerade geprüft, weil er möglicherweise gegen die &lt;a href="%{community_guidelines}">Community-Richtlinien von Kickstarter&lt;/a> verstößt.</string>
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">Dieses Facebook-Konto ist bereits einem anderen Kickstarter-Nutzer zugeordnet.</string>
   <string name="This_holiday_season_support_a_project_for_no_reward" formatted="false">Weihnachten steht kurz vor der Tür - unterstütze ein Projekt ohne Belohnung. Einfach, weil es dich anspricht.</string>
   <string name="This_person_canceled_their_pledge" formatted="false">Diese Person hat ihren Finanzierungsbeitrag zurückgezogen.</string>
@@ -1708,7 +1712,7 @@ gespeichert</string>
   <string name="rewards_info_shipping" formatted="false">Versand</string>
   <string name="rewards_info_shipping_destinations" formatted="false">Versandziele</string>
   <string name="rewards_info_ships_to" formatted="false">Versandziel</string>
-  <string name="rewards_info_time_left" formatted="false">%{time} verbleibend</string>
+  <string name="rewards_info_time_left" formatted="false">{{time}} verbleibend</string>
   <string name="rewards_selected_label_you_selected" formatted="false">Deine Auswahl</string>
   <string name="rewards_shipping_preferences_location_unrestricted" formatted="false">Weltweiter Versand</string>
   <string name="rewards_title_about_amount_usd" formatted="false">Ungefähr %{reward_amount} USD</string>

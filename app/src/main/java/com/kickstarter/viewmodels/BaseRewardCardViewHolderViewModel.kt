@@ -4,10 +4,12 @@ import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
+import com.kickstarter.models.extensions.getCardTypeDrawable
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.stripe.android.model.Card
 import rx.Observable
@@ -57,6 +59,7 @@ interface BaseRewardCardViewHolderViewModel {
 
             card
                 .map { it.expiration() }
+                .filter { ObjectUtils.isNotNull(it) }
                 .map { sdf.format(it).toString() }
                 .subscribe(this.expirationDate)
 
@@ -65,12 +68,14 @@ interface BaseRewardCardViewHolderViewModel {
                 .subscribe(this.lastFour)
 
             card
-                .map { it.type() }
-                .map { StoredCard.getCardTypeDrawable(it) }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { it.getCardTypeDrawable() }
                 .subscribe(this.issuerImage)
 
             card
                 .map { it.type() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
                 .map { StoredCard.issuer(it) }
                 .subscribe(this.issuer)
 

@@ -26,6 +26,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
+import com.kickstarter.models.extensions.getCardTypeDrawable
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.BackingFragment
@@ -507,7 +508,7 @@ interface BackingFragmentViewModel {
             return when (CreditCardPaymentType.safeValueOf(paymentSource.paymentType())) {
                 CreditCardPaymentType.ANDROID_PAY -> R.drawable.google_pay_mark
                 CreditCardPaymentType.APPLE_PAY -> R.drawable.apple_pay_mark
-                CreditCardPaymentType.CREDIT_CARD -> StoredCard.getCardTypeDrawable(CreditCardTypes.safeValueOf(paymentSource.type()))
+                CreditCardPaymentType.CREDIT_CARD -> paymentSource.getCardTypeDrawable()
                 else -> R.drawable.generic_bank_md
             }
         }

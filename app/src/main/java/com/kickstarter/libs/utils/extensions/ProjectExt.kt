@@ -56,7 +56,7 @@ fun Project.updateProjectWith(config: Config, user: User?): Project {
  *
  * @return boolean that represents if the card type is available
  */
-fun Project.acceptedCardType(cardType: CreditCardTypes) = this.availableCardTypes()?.contains(cardType.rawValue()) ?: false
+fun Project.acceptedCardType(cardType: CreditCardTypes?) = this.availableCardTypes()?.contains(cardType?.rawValue()) ?: false
 
 /**
  * Combines each project in the list with the discovery param

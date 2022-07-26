@@ -78,12 +78,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.cardLogo()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { binding?.rewardCardDetails?.rewardCardLogo?.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                it,
-                0,
-                0,
-                0
-            ) }
+            .subscribe { binding?.rewardCardDetails?.rewardCardLogo?.setImageResource(it) }
 
         this.viewModel.outputs.cardExpiration()
             .compose(bindToLifecycle())

@@ -24,10 +24,12 @@ class StoredCardTest : TestCase() {
             .type(CreditCardTypes.DISCOVER)
             .build()
 
+        val resourceID = storedCard.getCardTypeDrawable()
         assertEquals(storedCard.id(), id)
         assertEquals(storedCard.expiration(), expiration)
         assertEquals(storedCard.lastFourDigits(), "1234")
         assertEquals(storedCard.type(), CreditCardTypes.DISCOVER)
+        assertEquals(resourceID, R.drawable.discover_md)
     }
 
     @Test

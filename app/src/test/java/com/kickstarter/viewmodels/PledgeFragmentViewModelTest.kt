@@ -1631,37 +1631,14 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         // - Configure PaymentSheet
         this.vm.inputs.newCardButtonClicked()
         this.presentPaymentSheet.assertValue(clientSecretID)
-        this.pledgeButtonIsEnabled.assertValues(true, false)
-        this.pledgeProgressIsGone.assertValue(false)
+        this.pledgeButtonIsEnabled.assertValues(true, false, false)
+        this.pledgeProgressIsGone.assertValues(false, false)
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
 
         // - PaymentSheet presented
         this.vm.inputs.paymentSheetPresented(true)
-        this.pledgeButtonIsEnabled.assertValues(true, false, true)
-        this.pledgeProgressIsGone.assertValues(false, true)
-    }
-
-    @Test
-    fun testPresentPaymentSheet_ForNoUser() {
-        val project = ProjectFactory
-            .project().toBuilder()
-            .deadline(this.deadline)
-            .build()
-
-        val clientSecretID = "clientSecretId"
-        val environment = environment()
-            .toBuilder()
-            .apolloClient(object : MockApolloClient() {
-                override fun createSetupIntent(project: Project): Observable<String> {
-                    return Observable.just(clientSecretID)
-                }
-            })
-            .build()
-        setUpEnvironment(environment, RewardFactory.noReward(), project)
-
-        this.vm.inputs.newCardButtonClicked()
-        this.presentPaymentSheet.assertNoValues()
-        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        this.pledgeButtonIsEnabled.assertValues(true, false, false, true)
+        this.pledgeProgressIsGone.assertValues(false, false, true)
     }
 
     @Test
@@ -1683,14 +1660,15 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.newCardButtonClicked()
         this.presentPaymentSheet.assertNoValues()
-        this.pledgeButtonIsEnabled.assertValues(true, false)
-        this.pledgeProgressIsGone.assertValue(true)
+        this.pledgeButtonIsEnabled.assertValues(true, false, false, true)
+        this.pledgeProgressIsGone.assertValues(false, false, true)
         this.showError.assertValue("Error Message")
 
         // - User hit button for second time
         this.vm.inputs.newCardButtonClicked()
-        this.pledgeButtonIsEnabled.assertValues(true, false, false)
-        this.pledgeProgressIsGone.assertValues(true, true)
+        this.presentPaymentSheet.assertNoValues()
+        this.pledgeButtonIsEnabled.assertValues(true, false, false, true, false, false, true)
+        this.pledgeProgressIsGone.assertValues(false, false, true, false, false, true)
         this.showError.assertValues("Error Message", "Error Message")
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }

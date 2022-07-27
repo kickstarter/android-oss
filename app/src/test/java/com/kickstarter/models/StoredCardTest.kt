@@ -33,6 +33,21 @@ class StoredCardTest : TestCase() {
     }
 
     @Test
+    fun testCardFomPaymentSheet() {
+
+        val storedCard = StoredCard.builder()
+            .lastFourDigits("1234")
+            .clientSetupId("ClientSetupID")
+            .resourceId(1234)
+            .build()
+
+        val resourceID = storedCard.getCardTypeDrawable()
+        assertEquals(storedCard.lastFourDigits(), "1234")
+        assertEquals(storedCard.type(), CreditCardTypes.`$UNKNOWN`)
+        assertEquals(resourceID, 1234)
+    }
+
+    @Test
     fun testStoredCard_equalFalse() {
         val expiration = Date()
 

@@ -1181,7 +1181,7 @@ interface PledgeFragmentViewModel {
                 .subscribe { this.showSelectedCard.onNext(Pair(it, CardState.SELECTED)) }
 
             // - Present PaymentSheet if user logged in, and add card button pressed
-            this.newCardButtonClicked
+            val shouldPresentPaymentSheet = this.newCardButtonClicked
                 .doOnNext {
                     this.pledgeProgressIsGone.onNext(false)
                     this.pledgeButtonIsEnabled.onNext(false)
@@ -1189,19 +1189,25 @@ interface PledgeFragmentViewModel {
                 .compose<Pair<Void, Project>>(combineLatestPair(project))
                 .switchMap {
                     this.apolloClient.createSetupIntent(it.second)
-                        .doOnError {
-                            // - Display error snackbar in case the SetupIntent was not successfully created
-                            this.showError.onNext(it.message)
-                            this.pledgeProgressIsGone.onNext(true)
-                            this.pledgeButtonIsEnabled.onNext(false)
-                        }
                         .materialize()
                         .share()
                 }
+
+            shouldPresentPaymentSheet
                 .compose(values())
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.presentPaymentSheet.onNext(it)
+                }
+
+            shouldPresentPaymentSheet
+                .compose(errors())
+                .compose(bindToLifecycle())
+                .subscribe {
+                    // - Display error snackbar in case the SetupIntent was not successfully created
+                    this.showError.onNext(it.message)
+                    this.pledgeProgressIsGone.onNext(true)
+                    this.pledgeButtonIsEnabled.onNext(true)
                 }
 
             this.paySheetPresented

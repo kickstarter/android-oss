@@ -646,7 +646,7 @@
   <string name="This_comment_has_been_removed_by_Kickstarter" formatted="false">このコメントは Kickstarter によって削除されました。</string>
   <string name="This_comment_is_under_review" formatted="false">このコメントは現在審査中です。</string>
   <string name="This_comment_is_under_review_for_potentially_violating" formatted="false">This comment is under review for potentially violating</string>
-  <string name="This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines" formatted="false">This comment is under review for potentially violating &lt;a href="%{community_guidelines}">Kickstarter’s Community Guidelines.&lt;/a></string>
+  <string name="This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines" formatted="false">このコメントは &lt;a href="%{community_guidelines}">Kickstarter のコミュニティガイドライン&lt;/a>に違反している可能性があるとして現在審査中です。</string>
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">このFacebookアカウントはすでに他のKickstarterユーザーとつながっています</string>
   <string name="This_holiday_season_support_a_project_for_no_reward" formatted="false">このホリデーシーズンはぜひ、リワード無しでも「支援したい！」と思わせてくれるような、あなたの心に訴えかけるプロジェクトをサポートしてみませんか？</string>
   <string name="This_person_canceled_their_pledge" formatted="false">このユーザーはプレッジをキャンセルしました。</string>

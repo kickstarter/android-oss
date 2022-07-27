@@ -53,6 +53,7 @@ import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.extensions.onChange
+import com.kickstarter.ui.extensions.parseAndSpanHtmlTag
 import com.kickstarter.ui.extensions.setTextAndSelection
 import com.kickstarter.ui.extensions.showErrorToast
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration

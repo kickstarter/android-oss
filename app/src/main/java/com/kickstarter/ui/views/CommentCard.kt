@@ -1,6 +1,8 @@
 package com.kickstarter.ui.views
 
 import android.content.Context
+import android.text.TextPaint
+import android.text.style.ClickableSpan
 import android.text.util.Linkify
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -17,6 +19,7 @@ import com.kickstarter.libs.utils.extensions.parseHtmlTag
 import com.kickstarter.libs.utils.extensions.setAllOnClickListener
 import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.ui.extensions.makeLinks
+import com.kickstarter.ui.extensions.parseAndSpanHtmlTag
 import com.kickstarter.ui.extensions.parseHtmlTag
 import com.kickstarter.ui.extensions.urlSpanWithoutUnderlines
 
@@ -35,7 +38,11 @@ class CommentCard @JvmOverloads constructor(
         obtainStyledAttributes(context, attrs, defStyleAttr)
 
         bindCommunityGuidelines(binding.removedMessage, onCommentCardClickedListener)
-        bindFlaggedCommunityGuidelines(binding.flaggedMessage, onCommentCardClickedListener)
+        bindFlaggedCommunityGuidelines(
+            context.resources.getString(R.string.This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines),
+            binding.flaggedMessage,
+            onCommentCardClickedListener
+        )
 
         binding.retryButtonGroup.setAllOnClickListener {
             onCommentCardClickedListener?.onRetryViewClicked(it)
@@ -55,8 +62,6 @@ class CommentCard @JvmOverloads constructor(
     }
 
     private fun bindCommunityGuidelines(textView: AppCompatTextView, onCommentCardClickedListener: OnCommentCardClickedListener?) {
-
-
         textView.parseHtmlTag()
         textView.makeLinks(
             Pair(
@@ -71,19 +76,18 @@ class CommentCard @JvmOverloads constructor(
         )
     }
 
-    private fun bindFlaggedCommunityGuidelines(textView: AppCompatTextView, onCommentCardClickedListener: OnCommentCardClickedListener?) {
-        textView.parseHtmlTag()
-        textView.makeLinks(
-            Pair(
-                context.resources.getString(R.string.This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines).parseHtmlTag(),
-                OnClickListener {
-                    onCommentCardClickedListener?.onCommentGuideLinesClicked(it)
-                },
+    private fun bindFlaggedCommunityGuidelines(message: String, textView: AppCompatTextView, onCommentCardClickedListener: OnCommentCardClickedListener?) {
+        textView.parseAndSpanHtmlTag(
+            message,
+            clickableSpan = object : ClickableSpan() {
+                override fun onClick(widget: View) {
+                    onCommentCardClickedListener?.onCommentGuideLinesClicked(widget)
+                }
 
-            ),
-            linkColor = R.color.kds_create_500,
-            isUnderlineText = false
-        )
+                override fun updateDrawState(ds: TextPaint) {
+                    ds.color = ContextCompat.getColor(binding.flaggedMessage.context, R.color.kds_create_500)
+                }
+            })
     }
 
     private fun bindCancelPledgeMessage() {
@@ -252,8 +256,7 @@ class CommentCard @JvmOverloads constructor(
     }
 
     fun setFlaggedMessage(message: String) {
-        binding.flaggedMessage.text = message
-        bindFlaggedCommunityGuidelines(binding.flaggedMessage, onCommentCardClickedListener)
+        bindFlaggedCommunityGuidelines(message, binding.flaggedMessage, onCommentCardClickedListener)
     }
 
     fun setCancelPledgeMessage(message: String) {

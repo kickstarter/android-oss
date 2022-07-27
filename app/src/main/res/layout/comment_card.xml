@@ -191,6 +191,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/info_button"
         app:layout_constraintTop_toBottomOf="@id/avatar"
+        app:layout_constraintBottom_toTopOf="@id/replies"
         tools:visibility="visible"/>
 
     <androidx.appcompat.widget.AppCompatTextView

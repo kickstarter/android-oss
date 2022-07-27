@@ -15,7 +15,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
-import com.kickstarter.R
 import com.kickstarter.libs.utils.ViewUtils
 import org.jsoup.Jsoup
 import java.util.Locale
@@ -81,7 +80,7 @@ fun TextView.urlSpanWithoutUnderlines() {
     text = spannable
 }
 
-fun TextView.parseAndSpanHtmlTag(text: String, clickableSpan: ClickableSpan){
+fun TextView.parseAndSpanHtmlTag(text: String, clickableSpan: ClickableSpan) {
     val spannableBuilder = SpannableStringBuilder(ViewUtils.html(text))
     // https://stackoverflow.com/a/19989677
     val urlSpans = spannableBuilder.getSpans(0, text.length, URLSpan::class.java)

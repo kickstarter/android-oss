@@ -87,7 +87,8 @@ class CommentCard @JvmOverloads constructor(
                 override fun updateDrawState(ds: TextPaint) {
                     ds.color = ContextCompat.getColor(binding.flaggedMessage.context, R.color.kds_create_500)
                 }
-            })
+            }
+        )
     }
 
     private fun bindCancelPledgeMessage() {

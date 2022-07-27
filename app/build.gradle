@@ -41,12 +41,12 @@ if (file('signing.gradle').exists()) {
 
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId "com.kickstarter"
         minSdkVersion 23
-        targetSdkVersion 32
+        targetSdkVersion 33
         testApplicationId "com.kickstarter.internal.debug.test"
         testInstrumentationRunner "com.kickstarter.screenshoot.testing.KSScreenShotTestRunner"
 

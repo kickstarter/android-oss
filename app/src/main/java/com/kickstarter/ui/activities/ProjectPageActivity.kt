@@ -488,13 +488,13 @@ class ProjectPageActivity :
                 .setDuration(200L)
                 .setListener(object : AnimatorListenerAdapter() {
 
-                    override fun onAnimationEnd(animation: Animator?) {
+                    override fun onAnimationEnd(animation: Animator) {
                         if (!show) {
                             binding.pledgeContainerLayout.scrim.visibility = View.GONE
                         }
                     }
 
-                    override fun onAnimationStart(animation: Animator?) {
+                    override fun onAnimationStart(animation: Animator) {
                         if (show) {
                             binding.pledgeContainerLayout.scrim.visibility = View.VISIBLE
                         }
@@ -541,10 +541,10 @@ class ProjectPageActivity :
             duration = animDuration
 
             addListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(animation: Animator?) {}
-                override fun onAnimationCancel(animation: Animator?) {}
+                override fun onAnimationRepeat(animation: Animator) {}
+                override fun onAnimationCancel(animation: Animator) {}
 
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     setFragmentsState(expand)
                     if (expand) {
                         binding.pledgeContainerLayout.pledgeActionButtonsLayout.visibility = View.GONE
@@ -559,7 +559,7 @@ class ProjectPageActivity :
                     }
                 }
 
-                override fun onAnimationStart(animation: Animator?) {
+                override fun onAnimationStart(animation: Animator) {
                     if (expand) {
                         binding.pledgeContainerLayout.pledgeContainer.visibility = View.VISIBLE
                     } else if (animate) {

@@ -151,9 +151,7 @@ class CommentCardViewHolder(
         })
 
         binding.commentsCardView.setFlaggedMessage(
-            context().getString(R.string.FPO_this_comment_is_under_review_for_potentially_violating) +
-                " " +
-                context().getString(R.string.FPO_kickstarters_community_guidelines)
+            context().getString(R.string.This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines)
         )
 
         binding.commentsCardView.setRemovedMessage(

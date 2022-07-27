@@ -335,6 +335,7 @@ Toca para intentar de nuevo.</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" formatted="false">Kickstarter no es una tienda. Es una forma de dar vida a proyectos creativos.</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Kickstarter no es una tienda. Es una forma de dar vida a proyectos creativos.&lt;br/>&lt;a href="%{trust_link}">Más información sobre las responsabilidades&lt;/a></string>
   <string name="Kickstarter_on_Film" formatted="false">Kickstarter on Film</string>
+  <string name="Kickstarters_community_guidelines" formatted="false">Kickstarter’s Community Guidelines.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Entérate cuando los creadores y patrocinadores te envíen mensajes habilitando las notificaciones.</string>
   <string name="Learn_about_accountability_on_Kickstarter" formatted="false">Más información sobre el concepto de responsabilidad en Kickstarter</string>
   <string name="Learn_more_about_accountability" formatted="false">Más información sobre las responsabilidades</string>
@@ -645,6 +646,9 @@ Toca para intentar de nuevo.</string>
   <string name="These_projects_could_use_your_support" formatted="false">A estos proyectos les vendría bien tu apoyo.</string>
   <string name="This_allows_you_to_see_project_goal_and_pledge_amounts_in_your_preferred_currency" formatted="false">Esto te permite ver la meta del proyecto y los montos de las contribuciones en la moneda de tu preferencia.</string>
   <string name="This_comment_has_been_removed_by_Kickstarter" formatted="false">Este comentario ha sido eliminado por Kickstarter.</string>
+  <string name="This_comment_is_under_review" formatted="false">Este comentario está en revisión.</string>
+  <string name="This_comment_is_under_review_for_potentially_violating" formatted="false">This comment is under review for potentially violating</string>
+  <string name="This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines" formatted="false">Este comentario está en revisión por una posible infracción de las &lt;a href="%{community_guidelines}">Reglas de la comunidad de Kickstarter.&lt;/a></string>
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">Esta cuenta de Facebook ya está asociada a otro usuario de Kickstarter.</string>
   <string name="This_holiday_season_support_a_project_for_no_reward" formatted="false">Esta temporada de fiestas, apoya un proyecto sin recompensa, simplemente porque te resulta interesante.</string>
   <string name="This_person_canceled_their_pledge" formatted="false">Esta persona canceló su contribución.</string>
@@ -1710,7 +1714,7 @@ guardados</string>
   <string name="rewards_info_shipping" formatted="false">Envío</string>
   <string name="rewards_info_shipping_destinations" formatted="false">Destinos de envío</string>
   <string name="rewards_info_ships_to" formatted="false">Envío a</string>
-  <string name="rewards_info_time_left" formatted="false">Tiempo restante: %{time}</string>
+  <string name="rewards_info_time_left" formatted="false">Tiempo restante: {{time}}</string>
   <string name="rewards_selected_label_you_selected" formatted="false">Seleccionaste</string>
   <string name="rewards_shipping_preferences_location_unrestricted" formatted="false">Envíos a cualquier lugar del mundo</string>
   <string name="rewards_title_about_amount_usd" formatted="false">Aprox. %{reward_amount} USD</string>

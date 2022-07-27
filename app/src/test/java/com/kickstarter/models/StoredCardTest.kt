@@ -3,6 +3,7 @@ package com.kickstarter.models
 import com.kickstarter.R
 import com.kickstarter.mock.factories.IdFactory
 import com.kickstarter.mock.factories.StoredCardFactory
+import com.kickstarter.models.extensions.getCardTypeDrawable
 import com.stripe.android.model.CardBrand
 import junit.framework.TestCase
 import org.junit.Test
@@ -77,13 +78,13 @@ class StoredCardTest : TestCase() {
 
     @Test
     fun testStoredCardGetCardTypeDrawable() {
-        assertEquals(StoredCard.getCardTypeDrawable(CreditCardTypes.AMEX), R.drawable.amex_md)
-        assertEquals(StoredCard.getCardTypeDrawable(CreditCardTypes.DINERS), R.drawable.diners_md)
-        assertEquals(StoredCard.getCardTypeDrawable(CreditCardTypes.DISCOVER), R.drawable.discover_md)
-        assertEquals(StoredCard.getCardTypeDrawable(CreditCardTypes.JCB), R.drawable.jcb_md)
-        assertEquals(StoredCard.getCardTypeDrawable(CreditCardTypes.MASTERCARD), R.drawable.mastercard_md)
-        assertEquals(StoredCard.getCardTypeDrawable(CreditCardTypes.UNION_PAY), R.drawable.union_pay_md)
-        assertEquals(StoredCard.getCardTypeDrawable(CreditCardTypes.VISA), R.drawable.visa_md)
-        assertEquals(StoredCard.getCardTypeDrawable(CreditCardTypes.`$UNKNOWN`), R.drawable.generic_bank_md)
+        assertEquals(getCardTypeDrawable(CreditCardTypes.AMEX), R.drawable.amex_md)
+        assertEquals(getCardTypeDrawable(CreditCardTypes.DINERS), R.drawable.diners_md)
+        assertEquals(getCardTypeDrawable(CreditCardTypes.DISCOVER), R.drawable.discover_md)
+        assertEquals(getCardTypeDrawable(CreditCardTypes.JCB), R.drawable.jcb_md)
+        assertEquals(getCardTypeDrawable(CreditCardTypes.MASTERCARD), R.drawable.mastercard_md)
+        assertEquals(getCardTypeDrawable(CreditCardTypes.UNION_PAY), R.drawable.union_pay_md)
+        assertEquals(getCardTypeDrawable(CreditCardTypes.VISA), R.drawable.visa_md)
+        assertEquals(getCardTypeDrawable(CreditCardTypes.`$UNKNOWN`), R.drawable.generic_bank_md)
     }
 }

@@ -22,9 +22,12 @@ class DiscoveryActivitySampleAdapter(private val delegate: Delegate) : KSListAda
         ActivitySampleProjectViewHolder.Delegate
 
     fun takeActivity(activity: Activity?) {
+        clearSections()
+        insertSection(SECTION_ACTIVITY_SAMPLE_VIEW, emptyList<Activity>())
         activity?.let {
             setSection(SECTION_ACTIVITY_SAMPLE_VIEW, listOf(activity))
-        }
+        } ?: setSection(SECTION_ACTIVITY_SAMPLE_VIEW, emptyList<Activity>())
+
         submitList(items())
     }
 
@@ -87,9 +90,5 @@ class DiscoveryActivitySampleAdapter(private val delegate: Delegate) : KSListAda
 
     companion object {
         private const val SECTION_ACTIVITY_SAMPLE_VIEW = 0
-    }
-
-    init {
-        insertSection(SECTION_ACTIVITY_SAMPLE_VIEW, emptyList<Activity>())
     }
 }

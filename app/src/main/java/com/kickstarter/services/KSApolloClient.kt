@@ -95,6 +95,31 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
+    override fun createSetupIntent(project: Project): Observable<String> {
+        return Observable.defer {
+            val createSetupIntentMut = CreateSetupIntentMutation.builder()
+                .projectId(encodeRelayId(project))
+                .build()
+
+            val ps = PublishSubject.create<String>()
+            this.service.mutate(createSetupIntentMut)
+                .enqueue(object : ApolloCall.Callback<CreateSetupIntentMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<CreateSetupIntentMutation.Data>) {
+                        if (response.hasErrors()) ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                        else {
+                            ps.onNext(response.data?.createSetupIntent()?.clientSecret())
+                        }
+                        ps.onCompleted()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
     override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
         return Observable.defer {
             val createBackingMutation = CreateBackingMutation.builder()
@@ -765,16 +790,17 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                     override fun onResponse(response: Response<GetShippingRulesForRewardIdQuery.Data>) {
                         response.data?.let { data ->
-                            val rulesExpanded =
-                                (data?.node() as? GetShippingRulesForRewardIdQuery.AsReward)
-                                    ?.shippingRulesExpanded()?.nodes()
-                                    ?.mapNotNull {
-                                        it.fragments().shippingRule()
-                                    } ?: emptyList()
-
-                            Observable.just(shippingRulesListTransformer(rulesExpanded))
-                                .subscribe {
-                                    ps.onNext(it)
+                            Observable.just(data?.node() as? GetShippingRulesForRewardIdQuery.AsReward)
+                                .filter { !it?.shippingRulesExpanded()?.nodes().isNullOrEmpty() }
+                                .map {
+                                    it?.shippingRulesExpanded()?.nodes()?.mapNotNull { node ->
+                                        node.fragments().shippingRule()
+                                    }
+                                }
+                                .filter { ObjectUtils.isNotNull(it) }
+                                .subscribe { shippingList ->
+                                    val shippingEnvelope = shippingRulesListTransformer(shippingList ?: emptyList())
+                                    ps.onNext(shippingEnvelope)
                                     ps.onCompleted()
                                 }
                         }

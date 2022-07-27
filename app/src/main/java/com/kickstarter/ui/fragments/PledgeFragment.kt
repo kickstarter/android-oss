@@ -43,7 +43,6 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
-import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.activities.HelpActivity
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.adapters.ExpandableHeaderAdapter
@@ -52,7 +51,6 @@ import com.kickstarter.ui.adapters.ShippingRulesAdapter
 import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.setTextAndSelection
@@ -61,7 +59,11 @@ import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
 import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import com.stripe.android.ApiResultCallback
 import com.stripe.android.SetupIntentResult
+import com.stripe.android.paymentsheet.PaymentSheet
+import com.stripe.android.paymentsheet.PaymentSheetResult
+import com.stripe.android.paymentsheet.model.PaymentOption
 import rx.android.schedulers.AndroidSchedulers
+import timber.log.Timber
 
 @RequiresFragmentViewModel(PledgeFragmentViewModel.ViewModel::class)
 class PledgeFragment :
@@ -80,6 +82,7 @@ class PledgeFragment :
     private lateinit var adapter: ShippingRulesAdapter
     private var headerAdapter = ExpandableHeaderAdapter()
     private var isExpanded = false
+    private lateinit var flowController: PaymentSheet.FlowController
 
     private var binding: FragmentPledgeBinding? = null
 
@@ -100,6 +103,12 @@ class PledgeFragment :
         binding?.pledgeSectionPledgeAmount?.pledgeAmount?.onChange { this.viewModel.inputs.pledgeInput(it) }
 
         binding?.pledgeSectionBonusSupport?.bonusAmount?.onChange { this.viewModel.inputs.bonusInput(it) }
+
+        flowController = PaymentSheet.FlowController.create(
+            fragment = this,
+            paymentOptionCallback = ::onPaymentOption,
+            paymentResultCallback = ::onPaymentSheetResult
+        )
 
         this.viewModel.outputs.additionalPledgeAmountIsGone()
             .compose(bindToLifecycle())
@@ -280,18 +289,6 @@ class PledgeFragment :
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe { startActivity(Intent(this.context, LoginToutActivity::class.java)) }
-
-        this.viewModel.outputs.showNewCardFragment()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
-            .subscribe {
-                fragmentManager
-                    ?.beginTransaction()
-                    ?.setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
-                    ?.add(R.id.secondary_container, NewCardFragment.newInstance(true, it), NewCardFragment::class.java.simpleName)
-                    ?.addToBackStack(NewCardFragment::class.java.simpleName)
-                    ?.commit()
-            }
 
         this.viewModel.outputs.selectedShippingRule()
             .compose(bindToLifecycle())
@@ -565,6 +562,24 @@ class PledgeFragment :
                 this.binding?.pledgeSectionPickupLocation?.localPickupLocationName?.text = it
             }
 
+        this.viewModel.outputs.presentPaymentSheet()
+            .compose(observeForUI())
+            .compose(bindToLifecycle())
+            .subscribe {
+                flowControllerPresentPaymentOption(it)
+            }
+
+        this.viewModel.outputs.showError()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                binding?.pledgeContent?.let { pledgeContent ->
+                    context?.let {
+                        showErrorToast(it, pledgeContent, getString(R.string.general_error_something_wrong))
+                    }
+                }
+            }
+
         binding?.pledgeSectionPledgeAmount?. pledgeAmount?.setOnTouchListener { _, _ ->
             binding?.pledgeSectionPledgeAmount?. pledgeAmount?.post {
                 binding?.pledgeRoot?.let { pledgeRoot ->
@@ -644,6 +659,61 @@ class PledgeFragment :
             .subscribe {
                 binding?.pledgeSectionAccountability?.root?.isGone = it
             }
+    }
+
+    // Update the UI with the returned PaymentOption
+    private fun onPaymentOption(paymentOption: PaymentOption?) {
+        paymentOption?.let {
+            // TODO: add input to viewModel with the paymentOption to populate the UI for the new payment method in PAY-1764
+            Timber.d(" ${this.javaClass.canonicalName} onPaymentOption with $paymentOption")
+            flowController.confirm()
+        }
+    }
+
+    private fun flowControllerPresentPaymentOption(clientSecret: String) {
+        flowController.configureWithSetupIntent(
+            setupIntentClientSecret = clientSecret,
+            configuration = PaymentSheet.Configuration(
+                merchantDisplayName = getString(R.string.app_name),
+                allowsDelayedPaymentMethods = true
+            ),
+            callback = ::onConfigured
+        )
+    }
+
+    private fun onConfigured(success: Boolean, error: Throwable?) {
+        if (success) {
+            flowController.presentPaymentOptions()
+        } else {
+            binding?.pledgeContent?.let { pledgeContent ->
+                context?.let {
+                    showErrorToast(it, pledgeContent, getString(R.string.general_error_something_wrong))
+                }
+            }
+        }
+        this.viewModel.inputs.paymentSheetPresented(success)
+    }
+
+    fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
+        this.viewModel.inputs.paymentSheetResult(paymentSheetResult)
+        when (paymentSheetResult) {
+            is PaymentSheetResult.Canceled -> {
+                binding?.pledgeContent?.let { pledgeContent ->
+                    context?.let {
+                        showErrorToast(it, pledgeContent, getString(R.string.general_error_oops))
+                    }
+                }
+            }
+            is PaymentSheetResult.Failed -> {
+                binding?.pledgeContent?.let { pledgeContent ->
+                    context?.let {
+                        showErrorToast(it, pledgeContent, getString(R.string.general_error_something_wrong))
+                    }
+                }
+            }
+            is PaymentSheetResult.Completed -> {
+            }
+        }
     }
 
     private fun showRiskMessageDialog() {
@@ -939,16 +1009,5 @@ class PledgeFragment :
 
     override fun onDialogConfirmButtonClicked() {
         viewModel.inputs.onRiskManagementConfirmed()
-    }
-
-    companion object {
-        fun newInstance(pledgeData: PledgeData, pledgeReason: PledgeReason): PledgeFragment {
-            val fragment = PledgeFragment()
-            val argument = Bundle()
-            argument.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, pledgeData)
-            argument.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, pledgeReason)
-            fragment.arguments = argument
-            return fragment
-        }
     }
 }

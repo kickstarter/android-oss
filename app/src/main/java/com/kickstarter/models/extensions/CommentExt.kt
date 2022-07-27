@@ -85,9 +85,14 @@ fun Comment.updateCanceledPledgeComment(
     return listOfComments
 }
 
-fun Comment.cardStatus() = when {
+fun Comment.cardStatus(currentUser: User?, isCommentModerationFeatureEnabled: Boolean?) = when {
+    this.isCommentPendingReview() && !this.isCurrentUserAuthor(currentUser) && (isCommentModerationFeatureEnabled ?: false) -> CommentCardStatus.FLAGGED_COMMENT
     this.deleted() ?: false -> CommentCardStatus.DELETED_COMMENT
     this.authorCanceledPledge() ?: false -> CommentCardStatus.CANCELED_PLEDGE_MESSAGE
     this.repliesCount() ?: 0 != 0 -> CommentCardStatus.COMMENT_WITH_REPLIES
     else -> CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS
 }.commentCardStatus
+
+fun Comment.isCommentPendingReview() = this.hasFlaggings() && !this.deleted() && !this.sustained()
+
+fun Comment.isCurrentUserAuthor(user: User?) = user?.let { it.id() == this.author().id() } ?: false

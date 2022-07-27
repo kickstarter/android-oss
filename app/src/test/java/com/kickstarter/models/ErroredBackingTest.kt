@@ -76,5 +76,6 @@ class ErroredBackingTest : KSRobolectricTestCase() {
         val erroredBacking2 = ErroredBacking.builder().project(project).build()
 
         assertEquals(erroredBacking1, erroredBacking2)
+        assertEquals(erroredBacking1.project().finalCollectionDate(), erroredBacking2.project().finalCollectionDate())
     }
 }

@@ -3,6 +3,7 @@ package com.kickstarter.ui.viewholders
 import android.view.View
 import com.kickstarter.R
 import com.kickstarter.databinding.ItemRootCommentCardBinding
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.ui.data.CommentCardData
@@ -18,16 +19,30 @@ class RootCommentViewHolder(
     private val vm: RootCommentViewHolderViewModel.ViewModel = RootCommentViewHolderViewModel.ViewModel(environment())
     private val ksString = requireNotNull(environment().ksString())
     init {
+
+        binding.commentsCardView.setFlaggedMessage(
+            context().getString(R.string.FPO_this_comment_is_under_review_for_potentially_violating) +
+                " " +
+                context().getString(R.string.FPO_kickstarters_community_guidelines)
+        )
+
         this.vm.outputs.bindRootComment()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { commentCardData ->
                 CommentCardStatus.values().firstOrNull { commentCardData.commentCardState == it.commentCardStatus }?.let {
-                    if (it == CommentCardStatus.CANCELED_PLEDGE_MESSAGE) {
+                    if (it == CommentCardStatus.CANCELED_PLEDGE_MESSAGE || it == CommentCardStatus.FLAGGED_COMMENT) {
                         binding.commentsCardView.setCommentCardStatus(it)
-                        binding.commentsCardView.setCancelPledgeMessage(
-                            context().getString(R.string.This_person_canceled_their_pledge).plus(" ").plus(context().getString(R.string.Show_comment))
-                        )
+
+                        if (this.environment().optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_COMMENT_MODERATION) == true) {
+                            context().getString(R.string.This_person_canceled_their_pledge)
+                        } else {
+                            context().getString(R.string.This_person_canceled_their_pledge).plus(" ")
+                                .plus(context().getString(R.string.Show_comment))
+                        }.also {
+                            binding.commentsCardView.setCancelPledgeMessage(it)
+                        }
+
                         binding.commentsCardView.setCommentCardClickedListener(object :
                                 OnCommentCardClickedListener {
                                 override fun onRetryViewClicked(view: View) {

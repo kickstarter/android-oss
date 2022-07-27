@@ -622,7 +622,6 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     logUserIn(currentUser);
 
     this.activityTest.assertValueCount(1);
-    this.activityTest.assertError(throwableError);
     this.activityTest.assertValue(null);
   }
 

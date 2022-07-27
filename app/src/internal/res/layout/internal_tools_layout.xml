@@ -104,6 +104,7 @@
 
               <TextView
                 android:id="@+id/device_id"
+                android:textIsSelectable="true"
                 style="@style/BodyPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

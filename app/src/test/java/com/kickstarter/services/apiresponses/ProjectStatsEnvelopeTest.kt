@@ -109,6 +109,15 @@ class ProjectStatsEnvelopeTest : TestCase() {
     }
 
     @Test
+    fun cumulativeStatsNull() {
+        val projectStats = ProjectStatsEnvelopeFactory.projectStatsEnvelope().toBuilder()
+            .cumulative(null)
+            .build()
+
+        assertEquals(projectStats.cumulative(), null)
+    }
+
+    @Test
     fun testProjectStatsEnvelopeEquals_whenFieldsDontMatch_shouldReturnFalse() {
         val cumulativeStats1 = ProjectStatsEnvelopeFactory.CumulativeStatsFactory.cumulativeStats()
 

@@ -124,7 +124,7 @@ class CommentFactory {
                 .build()
         }
 
-        fun liveCommentCardData(comment: String = "Some Comment", createdAt: DateTime, currentUser: User, isDelete: Boolean = false, repliesCount: Int = 0): CommentCardData {
+        fun liveCommentCardData(comment: String = "Some Comment", createdAt: DateTime, currentUser: User, isDelete: Boolean = false, hasFlaggings: Boolean = false, sustained: Boolean = false, repliesCount: Int = 0): CommentCardData {
             val project = ProjectFactory.project().toBuilder().creator(UserFactory.creator().toBuilder().id(278438049L).build()).build()
             return CommentCardData(
                 Comment.builder()
@@ -134,6 +134,8 @@ class CommentFactory {
                     .createdAt(createdAt)
                     .cursor("")
                     .deleted(isDelete)
+                    .hasFlaggings(hasFlaggings)
+                    .sustained(sustained)
                     .id(-1)
                     .repliesCount(repliesCount)
                     .author(currentUser)

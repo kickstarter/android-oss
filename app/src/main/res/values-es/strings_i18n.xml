@@ -1710,7 +1710,7 @@ guardados</string>
   <string name="rewards_info_shipping" formatted="false">Envío</string>
   <string name="rewards_info_shipping_destinations" formatted="false">Destinos de envío</string>
   <string name="rewards_info_ships_to" formatted="false">Envío a</string>
-  <string name="rewards_info_time_left" formatted="false">Tiempo restante: {{time}}</string>
+  <string name="rewards_info_time_left" formatted="false">Tiempo restante: %{time}</string>
   <string name="rewards_selected_label_you_selected" formatted="false">Seleccionaste</string>
   <string name="rewards_shipping_preferences_location_unrestricted" formatted="false">Envíos a cualquier lugar del mundo</string>
   <string name="rewards_title_about_amount_usd" formatted="false">Aprox. %{reward_amount} USD</string>

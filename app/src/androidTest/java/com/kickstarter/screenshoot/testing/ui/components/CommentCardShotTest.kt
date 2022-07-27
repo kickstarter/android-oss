@@ -77,8 +77,19 @@ class CommentCardShotTest : ScreenshotTest {
         commentCard.setCommentCardStatus(CommentCardStatus.CANCELED_PLEDGE_MESSAGE)
         commentCard.setCancelPledgeMessage(
 
-            getInstrumentation().targetContext.getString(R.string.This_person_canceled_their_pledge).plus(" ").plus(getInstrumentation().targetContext.getString(R.string.Show_comment))
+            getInstrumentation().targetContext.getString(R.string.This_person_canceled_their_pledge)
 
+        )
+        compareScreenshot(commentCard)
+    }
+
+    @Test
+    fun commentCardScreenshotTest_FLAGGED_MESSAGE() {
+        commentCard.setCommentCardStatus(CommentCardStatus.FLAGGED_COMMENT)
+        commentCard.setFlaggedMessage(
+            getInstrumentation().targetContext.getString(R.string.FPO_this_comment_is_under_review_for_potentially_violating) +
+                " " +
+                getInstrumentation().targetContext.getString(R.string.FPO_kickstarters_community_guidelines)
         )
         compareScreenshot(commentCard)
     }

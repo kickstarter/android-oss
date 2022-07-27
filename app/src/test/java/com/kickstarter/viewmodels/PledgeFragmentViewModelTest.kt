@@ -99,7 +99,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val shippingSummaryAmount = TestSubscriber<CharSequence>()
     private val shippingSummaryIsGone = TestSubscriber<Boolean>()
     private val shippingSummaryLocation = TestSubscriber<String>()
-    private val showNewCardFragment = TestSubscriber<Project>()
+    private val presentPaymentSheet = TestSubscriber<String>()
     private val showPledgeError = TestSubscriber<Void>()
     private val showPledgeSuccess = TestSubscriber<Pair<CheckoutData, PledgeData>>()
     private val showSelectedCard = TestSubscriber<Pair<Int, CardState>>()
@@ -129,6 +129,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val changePledgeSectionAccountabilityFragmentVisiablity = TestSubscriber<Boolean>()
     private val localPickUpIsGone = TestSubscriber<Boolean>()
     private val localPickupName = TestSubscriber<String>()
+    private val showError = TestSubscriber<String>()
 
     private fun setUpEnvironment(
         environment: Environment,
@@ -175,7 +176,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.shippingSummaryAmount().map { normalizeCurrency(it) }.subscribe(this.shippingSummaryAmount)
         this.vm.outputs.shippingSummaryIsGone().subscribe(this.shippingSummaryIsGone)
         this.vm.outputs.shippingSummaryLocation().subscribe(this.shippingSummaryLocation)
-        this.vm.outputs.showNewCardFragment().subscribe(this.showNewCardFragment)
+        this.vm.outputs.presentPaymentSheet().subscribe(this.presentPaymentSheet)
         this.vm.outputs.showPledgeError().subscribe(this.showPledgeError)
         this.vm.outputs.showPledgeSuccess().subscribe(this.showPledgeSuccess)
         this.vm.outputs.showSelectedCard().subscribe(this.showSelectedCard)
@@ -205,6 +206,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.changePledgeSectionAccountabilityFragmentVisiablity().subscribe(this.changePledgeSectionAccountabilityFragmentVisiablity)
         this.vm.outputs.localPickUpIsGone().subscribe(this.localPickUpIsGone)
         this.vm.outputs.localPickUpName().subscribe(this.localPickupName)
+        this.vm.outputs.showError().subscribe(this.showError)
 
         val projectData = project.backing()?.let {
             return@let ProjectData.builder()
@@ -1609,35 +1611,107 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShowNewCardFragment() {
+    fun testPresentPaymentSheet_ForLoggedInUser() {
         val project = ProjectFactory
             .project().toBuilder()
             .deadline(this.deadline)
             .build()
-        setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), RewardFactory.noReward(), project)
+
+        val clientSecretID = "clientSecretId"
+        val environment = environmentForLoggedInUser(UserFactory.user())
+            .toBuilder()
+            .apolloClient(object : MockApolloClient() {
+                override fun createSetupIntent(project: Project): Observable<String> {
+                    return Observable.just(clientSecretID)
+                }
+            })
+            .build()
+        setUpEnvironment(environment, RewardFactory.noReward(), project)
+
+        // - Configure PaymentSheet
+        this.vm.inputs.newCardButtonClicked()
+        this.presentPaymentSheet.assertValue(clientSecretID)
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeProgressIsGone.assertValue(false)
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+
+        // - PaymentSheet presented
+        this.vm.inputs.paymentSheetPresented(true)
+        this.pledgeButtonIsEnabled.assertValues(true, false, true)
+        this.pledgeProgressIsGone.assertValues(false, true)
+    }
+
+    @Test
+    fun testPresentPaymentSheet_ForNoUser() {
+        val project = ProjectFactory
+            .project().toBuilder()
+            .deadline(this.deadline)
+            .build()
+
+        val clientSecretID = "clientSecretId"
+        val environment = environment()
+            .toBuilder()
+            .apolloClient(object : MockApolloClient() {
+                override fun createSetupIntent(project: Project): Observable<String> {
+                    return Observable.just(clientSecretID)
+                }
+            })
+            .build()
+        setUpEnvironment(environment, RewardFactory.noReward(), project)
 
         this.vm.inputs.newCardButtonClicked()
-        this.showNewCardFragment.assertValue(project)
+        this.presentPaymentSheet.assertNoValues()
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
-    fun testShowNewCardFragment_whenFixingPaymentMethod() {
+    fun testPresentPaymentSheet_Error() {
+        val project = ProjectFactory
+            .project().toBuilder()
+            .deadline(this.deadline)
+            .build()
+
+        val environment = environmentForLoggedInUser(UserFactory.user())
+            .toBuilder()
+            .apolloClient(object : MockApolloClient() {
+                override fun createSetupIntent(project: Project): Observable<String> {
+                    return Observable.error(Exception("Error Message"))
+                }
+            })
+            .build()
+        setUpEnvironment(environment, RewardFactory.noReward(), project)
+
+        this.vm.inputs.newCardButtonClicked()
+        this.presentPaymentSheet.assertNoValues()
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeProgressIsGone.assertValue(true)
+        this.showError.assertValue("Error Message")
+
+        // - User hit button for second time
+        this.vm.inputs.newCardButtonClicked()
+        this.pledgeButtonIsEnabled.assertValues(true, false, false)
+        this.pledgeProgressIsGone.assertValues(true, true)
+        this.showError.assertValues("Error Message", "Error Message")
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
+
+    @Test
+    fun testPresentPaymentSheet_whenFixingPaymentMethod() {
         val backedProject = ProjectFactory.backedProject()
         setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), RewardFactory.noReward(), backedProject, PledgeReason.FIX_PLEDGE)
 
         this.vm.inputs.newCardButtonClicked()
-        this.showNewCardFragment.assertValue(backedProject)
+        this.presentPaymentSheet.assertValue("")
         this.segmentTrack.assertNoValues()
     }
 
     @Test
-    fun testShowNewCardFragment_whenUpdatingPaymentMethod() {
+    fun testPresentPaymentSheet_whenUpdatingPaymentMethod() {
         val backedProject = ProjectFactory.backedProjectWithNoReward()
         setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), RewardFactory.noReward(), backedProject, PledgeReason.UPDATE_PAYMENT)
 
         this.vm.inputs.newCardButtonClicked()
-        this.showNewCardFragment.assertValue(backedProject)
+        this.presentPaymentSheet.assertValue("")
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 

@@ -20,6 +20,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT
+import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.CAMPAIGN
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.ENVIRONMENT
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.FAQS
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.OVERVIEW
@@ -51,6 +52,7 @@ import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
+import com.kickstarter.viewmodels.usecases.ShowPledgeFragmentUseCase
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -202,7 +204,7 @@ interface ProjectPageViewModel {
         fun showShareSheet(): Observable<Pair<String, String>>
 
         /** Emits when we should show the [com.kickstarter.ui.fragments.PledgeFragment]. */
-        fun showUpdatePledge(): Observable<Pair<PledgeData, PledgeReason>>
+        fun showUpdatePledge(): Observable<Triple<PledgeData, PledgeReason, Boolean>>
 
         /** Emits when the backing has successfully been updated. */
         fun showUpdatePledgeSuccess(): Observable<Void>
@@ -255,7 +257,7 @@ interface ProjectPageViewModel {
         private val cookieManager = requireNotNull(environment.cookieManager())
         private val currentUser = requireNotNull(environment.currentUser())
         private val ksCurrency = requireNotNull(environment.ksCurrency())
-        private val optimizely = environment.optimizely()
+        private val optimizely = requireNotNull(environment.optimizely())
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val apolloClient = requireNotNull(environment.apolloClient())
         private val currentConfig = requireNotNull(environment.currentConfig())
@@ -306,7 +308,8 @@ interface ProjectPageViewModel {
         private val showPledgeNotCancelableDialog = PublishSubject.create<Void>()
         private val showShareSheet = PublishSubject.create<Pair<String, String>>()
         private val showSavedPrompt = PublishSubject.create<Void>()
-        private val showUpdatePledge = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
+        private val updatePledgeData = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
+        private val showUpdatePledge = PublishSubject.create<Triple<PledgeData, PledgeReason, Boolean>>()
         private val showUpdatePledgeSuccess = PublishSubject.create<Void>()
         private val startRootCommentsActivity = PublishSubject.create<Pair<Project, ProjectData>>()
         private val startRootCommentsForCommentsThreadActivity = PublishSubject.create<Pair<String, Pair<Project, ProjectData>>>()
@@ -748,14 +751,14 @@ interface ProjectPageViewModel {
                 .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.fixPaymentMethodButtonClicked))
                 .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.FIX_ERRORED_PLEDGE), PledgeReason.FIX_PLEDGE) }
                 .compose(bindToLifecycle())
-                .subscribe(this.showUpdatePledge)
+                .subscribe(this.updatePledgeData)
 
             projectDataAndBackedReward
                 .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.updatePaymentClicked))
                 .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.UPDATE_PAYMENT) }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.showUpdatePledge.onNext(it)
+                    this.updatePledgeData.onNext(it)
                     this.analyticEvents.trackChangePaymentMethod(it.first)
                 }
 
@@ -763,7 +766,7 @@ interface ProjectPageViewModel {
                 .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.updatePledgeClicked))
                 .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.UPDATE_PLEDGE) }
                 .compose(bindToLifecycle())
-                .subscribe(this.showUpdatePledge)
+                .subscribe(this.updatePledgeData)
 
             this.viewRewardsClicked
                 .compose(bindToLifecycle())
@@ -907,11 +910,18 @@ interface ProjectPageViewModel {
                 .map { ProjectMetadata.BACKING == it }
                 .compose(bindToLifecycle())
                 .subscribe(backingViewGroupIsVisible)
+
+            ShowPledgeFragmentUseCase(this.updatePledgeData)
+                .data(currentUser.observable(), this.optimizely)
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.showUpdatePledge.onNext(it)
+                }
         }
 
         private fun getSelectedTabContextName(selectedTabIndex: Int): String = when (selectedTabIndex) {
             ProjectPagerTabs.OVERVIEW.ordinal -> OVERVIEW.contextName
-            // ProjectPagerTabs.CAMPAIGN.ordinal -> STORY.contextName
+            ProjectPagerTabs.CAMPAIGN.ordinal -> CAMPAIGN.contextName
             ProjectPagerTabs.FAQS.ordinal -> FAQS.contextName
             ProjectPagerTabs.RISKS.ordinal -> RISKS.contextName
             ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal -> ENVIRONMENT.contextName
@@ -1121,7 +1131,7 @@ interface ProjectPageViewModel {
         override fun showShareSheet(): Observable<Pair<String, String>> = this.showShareSheet
 
         @NonNull
-        override fun showUpdatePledge(): Observable<Pair<PledgeData, PledgeReason>> = this.showUpdatePledge
+        override fun showUpdatePledge(): Observable<Triple<PledgeData, PledgeReason, Boolean>> = this.showUpdatePledge
 
         @NonNull
         override fun showUpdatePledgeSuccess(): Observable<Void> = this.showUpdatePledgeSuccess

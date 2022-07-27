@@ -4,6 +4,7 @@ import android.view.View
 import androidx.constraintlayout.widget.Constraints
 import com.kickstarter.R
 import com.kickstarter.databinding.ItemCommentCardBinding
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.models.Comment
@@ -150,13 +151,24 @@ class CommentCardViewHolder(
         })
 
         binding.commentsCardView.setFlaggedMessage(
+            context().getString(R.string.FPO_this_comment_is_under_review_for_potentially_violating) +
+                " " +
+                context().getString(R.string.FPO_kickstarters_community_guidelines)
+        )
+
+        binding.commentsCardView.setRemovedMessage(
             context().getString(R.string.This_comment_has_been_removed_by_Kickstarter) +
                 context().getString(R.string.Learn_more_about_comment_guidelines)
         )
 
-        binding.commentsCardView.setCancelPledgeMessage(
-            context().getString(R.string.This_person_canceled_their_pledge).plus(" ").plus(context().getString(R.string.Show_comment))
-        )
+        if (this.environment().optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_COMMENT_MODERATION) == true) {
+            context().getString(R.string.This_person_canceled_their_pledge)
+        } else {
+            context().getString(R.string.This_person_canceled_their_pledge).plus(" ")
+                .plus(context().getString(R.string.Show_comment))
+        }.also {
+            binding.commentsCardView.setCancelPledgeMessage(it)
+        }
 
         if (isReply) {
             val params = Constraints.LayoutParams(

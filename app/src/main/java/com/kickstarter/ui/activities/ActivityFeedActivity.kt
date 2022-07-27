@@ -48,13 +48,13 @@ class ActivityFeedActivity : BaseActivity<ActivityFeedViewModel.ViewModel>() {
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this@ActivityFeedActivity)
 
-        recyclerViewPaginator = RecyclerViewPaginator(binding.recyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingActivities)
+        recyclerViewPaginator = RecyclerViewPaginator(binding.recyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingActivities())
 
         swipeRefresher = SwipeRefresher(
             this, binding.activityFeedSwipeRefreshLayout, { viewModel.inputs.refresh() }
-        ) { viewModel.outputs.isFetchingActivities }
+        ) { viewModel.outputs.isFetchingActivities() }
 
-        viewModel.outputs.isFetchingActivities
+        viewModel.outputs.isFetchingActivities()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { binding.activityFeedSwipeRefreshLayout.isRefreshing = it }

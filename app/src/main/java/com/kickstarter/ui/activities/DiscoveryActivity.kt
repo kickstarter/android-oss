@@ -63,7 +63,7 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
         )
 
         pagerAdapter = DiscoveryPagerAdapter(
-            supportFragmentManager, createFragments(viewPagerTitles.size), viewPagerTitles, viewModel.inputs
+            supportFragmentManager, createFragments(viewPagerTitles.size).toMutableList(), viewPagerTitles, viewModel.inputs
         )
 
         binding.discoveryViewPager.adapter = pagerAdapter

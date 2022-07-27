@@ -40,5 +40,6 @@ class MessageTest : TestCase() {
         val message2 = message1.toBuilder().body("body2").build()
 
         assertTrue(message1 == message2)
+        assertTrue(message1.recipient() == message2.recipient())
     }
 }

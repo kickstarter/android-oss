@@ -3,7 +3,6 @@ package com.kickstarter
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.filters.SdkSuppress
 import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
@@ -27,10 +26,10 @@ import org.junit.Before
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import rx.observers.TestSubscriber
+import kotlin.jvm.Throws
 
 @RunWith(KSRobolectricGradleTestRunner::class)
 @Config(shadows = [ShadowAndroidXMultiDex::class], sdk = [KSRobolectricGradleTestRunner.DEFAULT_SDK])
-@SdkSuppress(minSdkVersion = KSRobolectricGradleTestRunner.DEFAULT_SDK)
 abstract class KSRobolectricTestCase : TestCase() {
     private val application: Application = ApplicationProvider.getApplicationContext()
     private lateinit var environment: Environment

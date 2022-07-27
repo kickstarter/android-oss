@@ -15,6 +15,12 @@ fun StoredCard.getCardTypeDrawable(): Int {
     return resourceId
 }
 
+fun StoredCard.isFromPaymentSheet(): Boolean {
+    return this.type() == CreditCardTypes.`$UNKNOWN` &&
+        this.lastFourDigits()?.isNotEmpty() ?: false &&
+        this.clientSetupId()?.isNotEmpty() ?: false
+}
+
 fun PaymentSource.getCardTypeDrawable(): Int {
     val type = CreditCardTypes.safeValueOf(this.type())
     return getCardTypeDrawable(type)

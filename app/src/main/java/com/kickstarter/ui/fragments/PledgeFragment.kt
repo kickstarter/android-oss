@@ -82,6 +82,7 @@ class PledgeFragment :
     private lateinit var adapter: ShippingRulesAdapter
     private var headerAdapter = ExpandableHeaderAdapter()
     private var isExpanded = false
+    private var setupClientId: String = ""
     private lateinit var flowController: PaymentSheet.FlowController
 
     private var binding: FragmentPledgeBinding? = null
@@ -566,6 +567,7 @@ class PledgeFragment :
             .compose(observeForUI())
             .compose(bindToLifecycle())
             .subscribe {
+                setupClientId = it
                 flowControllerPresentPaymentOption(it)
             }
 
@@ -664,9 +666,13 @@ class PledgeFragment :
     // Update the UI with the returned PaymentOption
     private fun onPaymentOption(paymentOption: PaymentOption?) {
         paymentOption?.let {
-            val storedCard = StoredCard.Builder(lastFourDigits = paymentOption.label.takeLast(4), resourceId = paymentOption.drawableResourceId).build()
+            val storedCard = StoredCard.Builder(
+                lastFourDigits = paymentOption.label.takeLast(4),
+                resourceId = paymentOption.drawableResourceId,
+                clientSetupId = setupClientId
+            ).build()
             this.viewModel.inputs.cardSaved(storedCard)
-            Timber.d(" ${this.javaClass.canonicalName} onPaymentOption with $paymentOption")
+            Timber.d(" ${this.javaClass.canonicalName} onPaymentOption with ${storedCard.lastFourDigits()} and ${storedCard.clientSetupId()}")
             flowController.confirm()
         }
     }

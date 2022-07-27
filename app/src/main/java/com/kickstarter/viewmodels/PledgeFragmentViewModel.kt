@@ -485,26 +485,6 @@ interface PledgeFragmentViewModel {
             val project = projectData
                 .map { it.project() }
 
-            // - Create stripe's setupIntent on first load if user logged in, and the project
-            val setUpIntentNotification = userIsLoggedIn
-                .filter { it }
-                .compose<Pair<Boolean, Project>>(combineLatestPair(project))
-                .switchMap {
-                    this.apolloClient.createSetupIntent(it.second)
-                        .materialize()
-                }
-                .share()
-
-            val setUpIntent = setUpIntentNotification
-                .compose(values())
-
-            setUpIntentNotification
-                .compose(errors())
-                .compose(bindToLifecycle())
-                .subscribe {
-                    this.errorSetupIntentCreation.onNext(it.message)
-                }
-
             // Shipping rules section
             val shippingRules = this.selectedReward
                 .filter { RewardUtils.isShippable(it) }
@@ -1202,24 +1182,26 @@ interface PledgeFragmentViewModel {
 
             // - Present PaymentSheet if user logged in, and add card button pressed
             this.newCardButtonClicked
-                .compose(combineLatestPair(setUpIntent))
-                .map { it.second }
-                .compose(bindToLifecycle())
-                .subscribe {
-                    this.presentPaymentSheet.onNext(it)
+                .doOnNext {
                     this.pledgeProgressIsGone.onNext(false)
                     this.pledgeButtonIsEnabled.onNext(false)
                 }
-
-            // - Display error snackbar in case the SetupIntent was not successfully created
-            this.newCardButtonClicked
-                .compose(combineLatestPair(errorSetupIntentCreation))
-                .map { it.second }
+                .compose<Pair<Void, Project>>(combineLatestPair(project))
+                .switchMap {
+                    this.apolloClient.createSetupIntent(it.second)
+                        .doOnError {
+                            // - Display error snackbar in case the SetupIntent was not successfully created
+                            this.showError.onNext(it.message)
+                            this.pledgeProgressIsGone.onNext(true)
+                            this.pledgeButtonIsEnabled.onNext(false)
+                        }
+                        .materialize()
+                        .share()
+                }
+                .compose(values())
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.showError.onNext(it)
-                    this.pledgeProgressIsGone.onNext(true)
-                    this.pledgeButtonIsEnabled.onNext(false)
+                    this.presentPaymentSheet.onNext(it)
                 }
 
             this.paySheetPresented

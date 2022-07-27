@@ -12,13 +12,15 @@ class StoredCard private constructor(
     private val expiration: Date?,
     private val lastFourDigits: String?,
     private val type: CreditCardTypes?,
-    private val resourceId: Int?
+    private val resourceId: Int?,
+    private val clientSetupId: String?
 ) : Parcelable {
     fun id() = this.id
     fun expiration() = this.expiration
     fun lastFourDigits() = this.lastFourDigits
     fun type() = this.type
     fun resourceId() = this.resourceId
+    fun clientSetupId() = this.clientSetupId
 
     @Parcelize
     data class Builder(
@@ -26,19 +28,22 @@ class StoredCard private constructor(
         private var lastFourDigits: String? = "",
         private var expiration: Date? = null,
         private var type: CreditCardTypes? = CreditCardTypes.`$UNKNOWN`,
-        private var resourceId: Int? = null
+        private var resourceId: Int? = null,
+        private var clientSetupId: String? = null
     ) : Parcelable {
         fun id(id: String?) = apply { this.id = id }
         fun lastFourDigits(lastFourDigits: String?) = apply { this.lastFourDigits = lastFourDigits }
         fun expiration(expiration: Date?) = apply { this.expiration = expiration }
         fun type(type: CreditCardTypes?) = apply { this.type = type }
         fun resourceId(resourceId: Int?) = apply { this.resourceId = resourceId }
+        fun clientSetupId(clientSetupId: String?) = apply { this.clientSetupId = clientSetupId }
         fun build() = StoredCard(
             id = id,
             lastFourDigits = lastFourDigits,
             expiration = expiration,
             type = type,
-            resourceId = resourceId
+            resourceId = resourceId,
+            clientSetupId = clientSetupId
         )
     }
 
@@ -49,7 +54,8 @@ class StoredCard private constructor(
                 lastFourDigits() == obj.lastFourDigits() &&
                 expiration() == obj.expiration() &&
                 type() == obj.type() &&
-                resourceId() == obj.resourceId()
+                resourceId() == obj.resourceId() &&
+                clientSetupId() == obj.clientSetupId()
         }
         return equals
     }

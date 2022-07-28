@@ -455,7 +455,7 @@ class ProjectPageActivity :
     }
 
     override fun cardSaved(storedCard: StoredCard) {
-        pledgeFragment()?.cardAdded(storedCard)
+        pledgeFragmentLegacy()?.cardAdded(storedCard)
         supportFragmentManager.popBackStack()
     }
 
@@ -599,8 +599,8 @@ class ProjectPageActivity :
         finish()
     }
 
-    private fun pledgeFragment() = supportFragmentManager
-        .findFragmentByTag(PledgeFragment::class.java.simpleName) as PledgeFragment?
+    private fun pledgeFragmentLegacy() = supportFragmentManager
+        .findFragmentByTag(PledgeFragmentLegacy::class.java.simpleName) as PledgeFragmentLegacy?
 
     private fun renderProject(backingFragment: BackingFragment, rewardsFragment: RewardsFragment, projectData: ProjectData) {
         rewardsFragment.configureWith(projectData)

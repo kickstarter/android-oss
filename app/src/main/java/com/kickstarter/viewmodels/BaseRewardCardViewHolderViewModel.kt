@@ -4,10 +4,12 @@ import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
+import com.kickstarter.models.extensions.getCardTypeDrawable
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.stripe.android.model.Card
 import rx.Observable
@@ -25,6 +27,9 @@ interface BaseRewardCardViewHolderViewModel {
     interface Outputs {
         /** Emits the expiration date for a credit card. */
         fun expirationDate(): Observable<String>
+
+        /** Emits when the expiration date label should be gone. */
+        fun expirationIsGone(): Observable<Boolean>
 
         /** Emits the name of the card issuer from [Card.CardBrand]. */
         fun issuer(): Observable<String>
@@ -47,6 +52,7 @@ interface BaseRewardCardViewHolderViewModel {
         private val issuerImage = BehaviorSubject.create<Int>()
         private val lastFour = BehaviorSubject.create<String>()
         private val retryCopyIsVisible = PublishSubject.create<Boolean>()
+        private val expirationIsGone = PublishSubject.create<Boolean>()
 
         private val sdf = SimpleDateFormat(StoredCard.DATE_FORMAT, Locale.getDefault())
 
@@ -57,20 +63,29 @@ interface BaseRewardCardViewHolderViewModel {
 
             card
                 .map { it.expiration() }
+                .filter { ObjectUtils.isNotNull(it) }
                 .map { sdf.format(it).toString() }
                 .subscribe(this.expirationDate)
+
+            card
+                .map { it.expiration() }
+                .subscribe {
+                    this.expirationIsGone.onNext(it == null)
+                }
 
             card
                 .map { it.lastFourDigits() }
                 .subscribe(this.lastFour)
 
             card
-                .map { it.type() }
-                .map { StoredCard.getCardTypeDrawable(it) }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { it.getCardTypeDrawable() }
                 .subscribe(this.issuerImage)
 
             card
                 .map { it.type() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
                 .map { StoredCard.issuer(it) }
                 .subscribe(this.issuer)
 
@@ -100,5 +115,7 @@ interface BaseRewardCardViewHolderViewModel {
         override fun lastFour(): Observable<String> = this.lastFour
 
         override fun retryCopyIsVisible(): Observable<Boolean> = this.retryCopyIsVisible
+
+        override fun expirationIsGone(): Observable<Boolean> = this.expirationIsGone
     }
 }

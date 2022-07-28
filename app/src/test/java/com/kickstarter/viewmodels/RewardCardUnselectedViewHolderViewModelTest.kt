@@ -74,6 +74,16 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testIsClickable_whenCardIsFromPaymentSheet() {
+        setUpEnvironment(environment())
+        val creditCard = StoredCardFactory.fromPaymentSheetCard()
+
+        this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
+
+        this.isClickable.assertValue(true)
+    }
+
+    @Test
     fun testIsClickable_whenCardIsNotAllowedType() {
         setUpEnvironment(environment())
         val creditCard = StoredCardFactory.discoverCard()

@@ -4791,6 +4791,18 @@
               "deprecationReason": null
             },
             {
+              "name": "metaPixelId",
+              "description": "The unique identifier for the project's Meta Pixel ID",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "milestoneCategories",
               "description": "List of milestones available to project, empty array if project has no possible milestones",
               "args": [],
@@ -11090,12 +11102,6 @@
               "deprecationReason": null
             },
             {
-              "name": "comment_pinning",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "creator_demographics_survey",
               "description": "",
               "isDeprecated": false,
@@ -11151,6 +11157,12 @@
             },
             {
               "name": "emoji_locale",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "facebook_pixel_2022",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -33608,6 +33620,16 @@
                 }
               },
               "defaultValue": null
+            },
+            {
+              "name": "setupIntentClientSecret",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
             }
           ],
           "interfaces": null,
@@ -41990,6 +42012,16 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "metaPixelId",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               },
               "defaultValue": null

@@ -37,6 +37,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
+import com.kickstarter.models.extensions.isFromPaymentSheet
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.ui.ArgumentsKey
@@ -1299,7 +1300,7 @@ interface PledgeFragmentViewModel {
                 .ofType(Backing::class.java)
                 .distinctUntilChanged()
 
-            val paymentMethodId: Observable<String> = selectedCardAndPosition.map { it.first.id() }
+            val paymentMethod: Observable<StoredCard> = selectedCardAndPosition.map { it.first }
 
             val extendedListForCheckOut = rewardAndAddOns
                 .map { extendAddOns(it) }
@@ -1307,12 +1308,30 @@ interface PledgeFragmentViewModel {
             val createBackingNotification = Observable.combineLatest(
                 project,
                 total.map { it.toString() },
-                paymentMethodId,
+                paymentMethod,
                 locationId,
                 extendedListForCheckOut,
                 cookieRefTag
-            ) { p, a, id, l, r, c ->
-                CreateBackingData(p, a, id, l, rewardsIds = r, refTag = c)
+            ) { proj, amount, paymentMethod, locationId, rewards, cookieRefTag ->
+                if (paymentMethod.isFromPaymentSheet()) {
+                    CreateBackingData(
+                        project = proj,
+                        amount = amount,
+                        setupIntentClientSecret = paymentMethod.clientSetupId(),
+                        locationId = locationId,
+                        rewardsIds = rewards,
+                        refTag = cookieRefTag
+                    )
+                } else {
+                    CreateBackingData(
+                        project = proj,
+                        amount = amount,
+                        paymentSourceId = paymentMethod.id(),
+                        locationId = locationId,
+                        rewardsIds = rewards,
+                        refTag = cookieRefTag
+                    )
+                }
             }
                 .compose<CreateBackingData>(takeWhen(pledgeButtonClicked))
                 .switchMap {
@@ -1344,7 +1363,8 @@ interface PledgeFragmentViewModel {
                 .filter { it == PledgeReason.UPDATE_PLEDGE || it == PledgeReason.UPDATE_REWARD }
                 .compose(ignoreValues())
 
-            val optionalPaymentMethodId: Observable<String?> = paymentMethodId
+            // TODO: UpdateBacking mutation will be updated to hold the setupIntentClientSecret
+            val optionalPaymentMethodId: Observable<String?> = paymentMethod.map { it.id() }
                 .startWith(null as String?)
 
             val updateBackingNotification = Observable.combineLatest(

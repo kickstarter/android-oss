@@ -37,7 +37,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
-import com.kickstarter.models.extensions.isFromPaymentSheet
+import com.kickstarter.models.extensions.getBackingData
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.ui.ArgumentsKey
@@ -1313,25 +1313,7 @@ interface PledgeFragmentViewModel {
                 extendedListForCheckOut,
                 cookieRefTag
             ) { proj, amount, paymentMethod, locationId, rewards, cookieRefTag ->
-                if (paymentMethod.isFromPaymentSheet()) {
-                    CreateBackingData(
-                        project = proj,
-                        amount = amount,
-                        setupIntentClientSecret = paymentMethod.clientSetupId(),
-                        locationId = locationId,
-                        rewardsIds = rewards,
-                        refTag = cookieRefTag
-                    )
-                } else {
-                    CreateBackingData(
-                        project = proj,
-                        amount = amount,
-                        paymentSourceId = paymentMethod.id(),
-                        locationId = locationId,
-                        rewardsIds = rewards,
-                        refTag = cookieRefTag
-                    )
-                }
+                paymentMethod.getBackingData(proj, amount, locationId, rewards, cookieRefTag)
             }
                 .compose<CreateBackingData>(takeWhen(pledgeButtonClicked))
                 .switchMap {

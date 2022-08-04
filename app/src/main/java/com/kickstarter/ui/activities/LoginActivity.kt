@@ -9,11 +9,13 @@ import com.kickstarter.databinding.LoginLayoutBinding
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.getResetPasswordIntent
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.extensions.onChange
@@ -101,8 +103,12 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
             .subscribe({ this.setLoginButtonEnabled(it) })
 
         binding.loginFormView.forgotYourPasswordTextView.setOnClickListener {
-            val intent = Intent(this, ResetPasswordActivity::class.java)
-                .putExtra(IntentKey.EMAIL, binding.loginFormView.email.text.toString())
+            val intent = if (environment().optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE) == true) {
+                Intent().getResetPasswordIntent(this, email = binding.loginFormView.email.text.toString())
+            } else {
+                Intent(this, ResetPasswordActivity::class.java)
+                    .putExtra(IntentKey.EMAIL, binding.loginFormView.email.text.toString())
+            }
             startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
         }
 

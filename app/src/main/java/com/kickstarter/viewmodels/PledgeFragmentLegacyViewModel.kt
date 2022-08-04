@@ -1268,7 +1268,7 @@ interface PledgeFragmentLegacyViewModel {
                 extendedListForCheckOut,
                 cookieRefTag
             ) { p, a, id, l, r, c ->
-                CreateBackingData(p, a, id, l, rewardsIds = r, refTag = c)
+                CreateBackingData(p, a, id, locationId = l, rewardsIds = r, refTag = c)
             }
                 .compose<CreateBackingData>(takeWhen(pledgeButtonClicked))
                 .switchMap {

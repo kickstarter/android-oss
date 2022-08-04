@@ -2,8 +2,12 @@
 package com.kickstarter.models.extensions
 
 import com.kickstarter.R
+import com.kickstarter.libs.RefTag
 import com.kickstarter.models.PaymentSource
+import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
+import com.kickstarter.services.mutations.CreateBackingData
 import type.CreditCardTypes
 
 fun StoredCard.getCardTypeDrawable(): Int {
@@ -19,6 +23,34 @@ fun StoredCard.isFromPaymentSheet(): Boolean {
     return this.type() == CreditCardTypes.`$UNKNOWN` &&
         this.lastFourDigits()?.isNotEmpty() ?: false &&
         this.clientSetupId()?.isNotEmpty() ?: false
+}
+
+fun StoredCard.getBackingData(
+    proj: Project,
+    amount: String,
+    locationId: String?,
+    rewards: List<Reward>,
+    cookieRefTag: RefTag?
+): CreateBackingData {
+    return if (this.isFromPaymentSheet()) {
+        CreateBackingData(
+            project = proj,
+            amount = amount,
+            setupIntentClientSecret = this.clientSetupId(),
+            locationId = locationId,
+            rewardsIds = rewards,
+            refTag = cookieRefTag
+        )
+    } else {
+        CreateBackingData(
+            project = proj,
+            amount = amount,
+            paymentSourceId = this.id(),
+            locationId = locationId,
+            rewardsIds = rewards,
+            refTag = cookieRefTag
+        )
+    }
 }
 
 fun PaymentSource.getCardTypeDrawable(): Int {

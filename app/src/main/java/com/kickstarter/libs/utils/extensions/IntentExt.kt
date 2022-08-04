@@ -11,6 +11,7 @@ import com.kickstarter.ui.activities.CreatorBioActivity
 import com.kickstarter.ui.activities.CreatorDashboardActivity
 import com.kickstarter.ui.activities.ProjectPageActivity
 import com.kickstarter.ui.activities.ProjectUpdatesActivity
+import com.kickstarter.ui.activities.ResetPasswordActivity
 import com.kickstarter.ui.activities.UpdateActivity
 import com.kickstarter.ui.activities.VideoActivity
 import com.kickstarter.ui.data.ProjectData
@@ -125,4 +126,24 @@ fun Intent.getVideoActivityIntent(
     return this.setClass(context, VideoActivity::class.java)
         .putExtra(IntentKey.VIDEO_URL_SOURCE, videoSource)
         .putExtra(IntentKey.VIDEO_SEEK_POSITION, videoSeekPosition)
+}
+
+/**
+ * Return a Intent ready to launch the ResetPasswordIntent with extras:
+ * @param context
+ * @param isResetPasswordFacebook
+ * @param email ->  email for reset account
+ */
+fun Intent.getResetPasswordIntent(
+    context: Context,
+    isResetPasswordFacebook: Boolean = false,
+    email: String? = null
+): Intent {
+    return this.setClass(context, ResetPasswordActivity::class.java).apply {
+        this.putExtra(IntentKey.RESET_PASSWORD_FACEBOOK_LOGIN, isResetPasswordFacebook)
+        // ForgetPassword
+        email?.let {
+            this.putExtra(IntentKey.EMAIL, it)
+        }
+    }
 }

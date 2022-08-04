@@ -65,8 +65,9 @@ class ProjectDataTest : KSRobolectricTestCase() {
 
     @Test
     fun testProjectData_equalTrue() {
-        val projectData1 = ProjectData.builder().build()
-        val projectData2 = ProjectData.builder().build()
+        val project = ProjectFactory.project()
+        val projectData1 = ProjectData.builder().project(project).build()
+        val projectData2 = ProjectData.builder().project(project).build()
 
         assertEquals(projectData1, projectData2)
     }

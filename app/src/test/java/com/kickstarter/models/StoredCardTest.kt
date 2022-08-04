@@ -2,7 +2,10 @@ package com.kickstarter.models
 
 import com.kickstarter.R
 import com.kickstarter.mock.factories.IdFactory
+import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.StoredCardFactory
+import com.kickstarter.models.extensions.getBackingData
 import com.kickstarter.models.extensions.getCardTypeDrawable
 import com.stripe.android.model.CardBrand
 import junit.framework.TestCase
@@ -103,5 +106,19 @@ class StoredCardTest : TestCase() {
         assertEquals(getCardTypeDrawable(CreditCardTypes.UNION_PAY), R.drawable.union_pay_md)
         assertEquals(getCardTypeDrawable(CreditCardTypes.VISA), R.drawable.visa_md)
         assertEquals(getCardTypeDrawable(CreditCardTypes.`$UNKNOWN`), R.drawable.generic_bank_md)
+    }
+
+    @Test
+    fun getBackingDataFromPaymentInfo() {
+        val storedCard = StoredCardFactory.visa()
+        val backingData = storedCard.getBackingData(ProjectFactory.project(), "", locationId = null, rewards = listOf(RewardFactory.reward()), cookieRefTag = null)
+
+        assertEquals(backingData.setupIntentClientSecret, null)
+        assertEquals(backingData.paymentSourceId, storedCard.id())
+
+        val storedCardFromPaymentSheet = StoredCardFactory.fromPaymentSheetCard()
+        val backingDataFromPaymentSheet = storedCard.getBackingData(ProjectFactory.project(), "", locationId = null, rewards = listOf(RewardFactory.reward()), cookieRefTag = null)
+        assertEquals(backingDataFromPaymentSheet.setupIntentClientSecret, storedCardFromPaymentSheet.clientSetupId())
+        assertEquals(backingDataFromPaymentSheet.paymentSourceId, null)
     }
 }

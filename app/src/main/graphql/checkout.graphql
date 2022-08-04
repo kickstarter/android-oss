@@ -1,5 +1,5 @@
-mutation CreateBacking($projectId: ID!, $amount: String!, $paymentType: String!, $paymentSourceId: String!, $locationId: String, $rewardIds: [ID!], $refParam: String) {
-  createBacking(input: {projectId: $projectId, amount: $amount, paymentType: $paymentType, paymentSourceId: $paymentSourceId, locationId: $locationId, rewardIds: $rewardIds, refParam: $refParam}) {
+mutation CreateBacking($projectId: ID!, $amount: String!, $paymentType: String!, $paymentSourceId: String, $setupIntentClientSecret: String, $locationId: String, $rewardIds: [ID!], $refParam: String) {
+  createBacking(input: {projectId: $projectId, amount: $amount, paymentType: $paymentType, paymentSourceId: $paymentSourceId, setupIntentClientSecret: $setupIntentClientSecret, locationId: $locationId, rewardIds: $rewardIds, refParam: $refParam}) {
     checkout {
       id
       backing {

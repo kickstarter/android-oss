@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
+import androidx.core.view.isVisible
 import com.kickstarter.R
 import com.kickstarter.databinding.ResetPasswordLayoutBinding
 import com.kickstarter.libs.BaseActivity
@@ -32,12 +33,12 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
 
         setContentView(binding.root)
 
-        binding.resetPasswordToolbar.loginToolbar.setTitle(getString(this.forgotPasswordString))
-
-        this.viewModel.outputs.resetSuccess()
+        this.viewModel.outputs.resetLoginPasswordSuccess()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { onResetSuccess() }
+            .subscribe {
+                onResetSuccess()
+            }
 
         this.viewModel.outputs.isFormSubmitting()
             .compose(bindToLifecycle())
@@ -63,6 +64,25 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
             .compose(Transformers.observeForUI())
             .subscribe {
                 binding.resetPasswordFormView.email.setText(it)
+            }
+
+        this.viewModel.outputs.resetPasswordScreenStatus()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                binding.resetPasswordToolbar.loginToolbar.setTitle(getString(it.title))
+                it.hint?.let { hint ->
+                    binding.resetPasswordHint.setText(hint)
+                    binding.resetPasswordHint.isVisible = true
+                }
+            }
+
+        this.viewModel.outputs.resetFacebookLoginPasswordSuccess()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                setFormEnabled(false)
+                finish()
             }
     }
 

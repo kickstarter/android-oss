@@ -9,10 +9,12 @@ import com.kickstarter.R
 import com.kickstarter.databinding.LoginToutLayoutBinding
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.KSString
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.getResetPasswordIntent
 import com.kickstarter.services.apiresponses.ErrorEnvelope.FacebookUser
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.HelpActivity.Terms
@@ -26,11 +28,13 @@ import rx.android.schedulers.AndroidSchedulers
 class LoginToutActivity : BaseActivity<LoginToutViewModel.ViewModel>() {
 
     private lateinit var binding: LoginToutLayoutBinding
+    private lateinit var ksString: KSString
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = LoginToutLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        this.ksString = requireNotNull(environment().ksString())
         binding.loginToolbar.loginToolbar.title = getString(R.string.login_tout_navbar_title)
 
         viewModel.outputs.finishWithSuccessfulResult()
@@ -79,6 +83,14 @@ class LoginToutActivity : BaseActivity<LoginToutViewModel.ViewModel>() {
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { ViewUtils.showDialog(this, getString(R.string.login_tout_navbar_title), it) }
+
+        viewModel.outputs.startResetPasswordActivity()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                val intent = Intent().getResetPasswordIntent(this, isResetPasswordFacebook = true)
+                startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+            }
 
         binding.facebookLoginButton.setOnClickListener {
             facebookLoginClick()

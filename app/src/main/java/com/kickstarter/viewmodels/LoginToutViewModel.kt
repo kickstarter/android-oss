@@ -13,6 +13,7 @@ import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName
@@ -75,9 +76,12 @@ interface LoginToutViewModel {
 
         /** Emits when click one of disclaimer items  */
         fun showDisclaimerActivity(): Observable<DisclaimerItems>
+
+        /** Emits when the resetPassword should be started.  */
+        fun startResetPasswordActivity(): Observable<Void>
     }
 
-    class ViewModel(environment: Environment) :
+    class ViewModel(val environment: Environment) :
         ActivityViewModel<LoginToutActivity>(environment),
         Inputs,
         Outputs {
@@ -129,6 +133,7 @@ interface LoginToutViewModel {
         private val disclaimerItemClicked = PublishSubject.create<DisclaimerItems>()
         private val facebookAuthorizationError = BehaviorSubject.create<FacebookException>()
         private val finishWithSuccessfulResult = BehaviorSubject.create<Void>()
+        private val startResetPasswordActivity = BehaviorSubject.create<Void>()
         private val startFacebookConfirmationActivity: Observable<Pair<ErrorEnvelope.FacebookUser, String>>
         private val startLoginActivity: Observable<Void>
         private val startSignupActivity: Observable<Void>
@@ -141,9 +146,14 @@ interface LoginToutViewModel {
             activity: LoginToutActivity?,
             facebookPermissions: List<String>
         ) {
-            facebookLoginClick.onNext(facebookPermissions)
-            if (activity != null) {
-                LoginManager.getInstance().logInWithReadPermissions(activity, facebookPermissions)
+            if (environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE) == true) {
+                startResetPasswordActivity.onNext(null)
+            } else {
+                facebookLoginClick.onNext(facebookPermissions)
+                if (activity != null) {
+                    LoginManager.getInstance()
+                        .logInWithReadPermissions(activity, facebookPermissions)
+                }
             }
         }
 
@@ -206,6 +216,10 @@ interface LoginToutViewModel {
 
         override fun showDisclaimerActivity(): Observable<DisclaimerItems> {
             return showDisclaimerActivity
+        }
+
+        override fun startResetPasswordActivity(): Observable<Void> {
+            return startResetPasswordActivity
         }
 
         init {

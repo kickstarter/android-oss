@@ -82,4 +82,7 @@
   <!-- Campaign -->
   <string name="Story">Story</string>
 
+  <!-- facebook remove -->
+  <string name="FPO_reset_your_password_title">Reset your password</string>
+  <string name="FPO_reset_your_password_hint">FPO We’ve discontinued logging in through Facebook.  To access your Kickstarter account, enter the email associated to your Facebook account and we’ll send you a link to reset your password.</string>
 </resources>

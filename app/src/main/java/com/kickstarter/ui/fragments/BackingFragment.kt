@@ -364,7 +364,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
     }
 
     private fun setPledgeStatusText(pledgeStatusData: PledgeStatusData) {
-        val ksString = this.viewModel.ksString
+        val ksString = requireNotNull(this.viewModel.ksString)
         val pledgeStatusText = pledgeStatusData.statusStringRes?.let {
             when (pledgeStatusData.statusStringRes) {
                 R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline -> {

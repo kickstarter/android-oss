@@ -75,7 +75,8 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
         val intent = Intent(this, LoginActivity::class.java)
             .putExtra(IntentKey.EMAIL, binding.resetPasswordFormView.email.text())
             .putExtra(IntentKey.LOGIN_REASON, LoginReason.RESET_PASSWORD)
-        startActivityWithTransition(intent, R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
+        setResult(RESULT_OK, intent)
+        finish()
     }
 
     private fun setFormEnabled(isEnabled: Boolean) {

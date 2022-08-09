@@ -96,4 +96,15 @@ class IntentExtTest : KSRobolectricTestCase() {
         assertEquals(intent.extras?.get(IntentKey.IS_UPDATE_COMMENT), isCommentForUpdate)
         assertEquals(intent.extras?.get(IntentKey.COMMENT), comment)
     }
+
+    @Test
+    fun testResetPasswordIntent() {
+        val intent = Intent().getResetPasswordIntent(context())
+        assertEquals(intent.component?.className, "com.kickstarter.ui.activities.ResetPasswordActivity")
+        assertEquals(intent.extras?.get(IntentKey.EMAIL), null)
+
+        val intent2 = Intent().getResetPasswordIntent(context(), email = "test@kickstarter.com")
+        assertEquals(intent2.component?.className, "com.kickstarter.ui.activities.ResetPasswordActivity")
+        assertEquals(intent2.extras?.get(IntentKey.EMAIL), "test@kickstarter.com")
+    }
 }

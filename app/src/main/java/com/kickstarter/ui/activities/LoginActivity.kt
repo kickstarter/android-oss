@@ -14,6 +14,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.getResetPasswordIntent
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.extensions.onChange
@@ -167,8 +168,7 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
     }
 
     private fun startResetPasswordActivity() {
-        val intent = Intent(this, ResetPasswordActivity::class.java)
-            .putExtra(IntentKey.EMAIL, binding.loginFormView.email.text.toString())
+        val intent = Intent().getResetPasswordIntent(this, email = binding.loginFormView.email.text.toString())
         startActivityForResult(intent, ActivityRequestCodes.RESET_FLOW)
         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }

@@ -99,10 +99,14 @@ class IntentExtTest : KSRobolectricTestCase() {
 
     @Test
     fun testResetPasswordIntent() {
-        val intent = Intent().getResetPasswordIntent(context(), true)
+        val intent = Intent().getResetPasswordIntent(context())
         assertEquals(intent.component?.className, "com.kickstarter.ui.activities.ResetPasswordActivity")
         assertEquals(intent.extras?.get(IntentKey.EMAIL), null)
-        assertEquals(intent.extras?.get(IntentKey.RESET_PASSWORD_FACEBOOK_LOGIN), true)
+
+        val intent1 = Intent().getResetPasswordIntent(context(), true)
+        assertEquals(intent1.component?.className, "com.kickstarter.ui.activities.ResetPasswordActivity")
+        assertEquals(intent1.extras?.get(IntentKey.EMAIL), null)
+        assertEquals(intent1.extras?.get(IntentKey.RESET_PASSWORD_FACEBOOK_LOGIN), true)
 
         val intent2 = Intent().getResetPasswordIntent(context(), email = "test@kickstarter.com")
         assertEquals(intent2.component?.className, "com.kickstarter.ui.activities.ResetPasswordActivity")

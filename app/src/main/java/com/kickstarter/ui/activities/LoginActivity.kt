@@ -167,14 +167,6 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
     }
 
     private fun startResetPasswordActivity() {
-        val intent = if (environment().optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE) == true) {
-            Intent().getResetPasswordIntent(this, email = binding.loginFormView.email.text.toString())
-        } else {
-            Intent(this, ResetPasswordActivity::class.java)
-                .putExtra(IntentKey.EMAIL, binding.loginFormView.email.text.toString())
-        }
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
-
         val intent = Intent().getResetPasswordIntent(this, email = binding.loginFormView.email.text.toString())
         startActivityForResult(intent, ActivityRequestCodes.RESET_FLOW)
         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)

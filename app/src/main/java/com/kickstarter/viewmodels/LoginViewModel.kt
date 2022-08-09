@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import android.content.Intent
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
@@ -34,6 +35,9 @@ interface LoginViewModel {
 
         /** Call when the user cancels or dismisses the reset password success confirmation dialog.  */
         fun resetPasswordConfirmationDialogDismissed()
+
+        /** Reset Password Intent  */
+        fun resetPasswordResultIntent(intent: Intent)
     }
 
     interface Outputs {
@@ -71,6 +75,7 @@ interface LoginViewModel {
         private val logInButtonClicked = BehaviorSubject.create<Void>()
         private val passwordEditTextChanged = PublishSubject.create<String>()
         private val resetPasswordConfirmationDialogDismissed = PublishSubject.create<Boolean>()
+        private val resetPasswordResultIntent = BehaviorSubject.create<Intent>()
 
         private val genericLoginError: Observable<String>
         private val invalidloginError: Observable<String>
@@ -205,6 +210,12 @@ interface LoginViewModel {
                 .map { null }
 
             this.analyticEvents.trackLoginPagedViewed()
+
+            this.resetPasswordResultIntent
+                .compose(bindToLifecycle())
+                .subscribe {
+                    intent(it)
+                }
         }
 
         private fun unwrapNotificationEnvelopeError(notification: Notification<AccessTokenEnvelope>) =
@@ -229,6 +240,8 @@ interface LoginViewModel {
         override fun password(password: String) = this.passwordEditTextChanged.onNext(password)
 
         override fun resetPasswordConfirmationDialogDismissed() = this.resetPasswordConfirmationDialogDismissed.onNext(true)
+
+        override fun resetPasswordResultIntent(intent: Intent) = this.resetPasswordResultIntent.onNext(intent)
 
         override fun genericLoginError() = this.genericLoginError
 

@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import android.util.Pair
 import androidx.annotation.NonNull
+import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
@@ -15,6 +16,7 @@ import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.LoginActivity
+import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.LoginReason
 import rx.Notification
 import rx.Observable
@@ -35,9 +37,6 @@ interface LoginViewModel {
 
         /** Call when the user cancels or dismisses the reset password success confirmation dialog.  */
         fun resetPasswordConfirmationDialogDismissed()
-
-        /** Reset Password Intent  */
-        fun resetPasswordResultIntent(intent: Intent)
     }
 
     interface Outputs {
@@ -75,7 +74,6 @@ interface LoginViewModel {
         private val logInButtonClicked = BehaviorSubject.create<Void>()
         private val passwordEditTextChanged = PublishSubject.create<String>()
         private val resetPasswordConfirmationDialogDismissed = PublishSubject.create<Boolean>()
-        private val resetPasswordResultIntent = BehaviorSubject.create<Intent>()
 
         private val genericLoginError: Observable<String>
         private val invalidloginError: Observable<String>
@@ -211,10 +209,14 @@ interface LoginViewModel {
 
             this.analyticEvents.trackLoginPagedViewed()
 
-            this.resetPasswordResultIntent
+            activityResult()
+                .filter { it.isRequestCode(ActivityRequestCodes.RESET_FLOW) }
+                .filter(ActivityResult::isOk)
                 .compose(bindToLifecycle())
                 .subscribe {
-                    intent(it)
+                    it.intent?.let { intent ->
+                        intent(intent)
+                    }
                 }
         }
 
@@ -240,8 +242,6 @@ interface LoginViewModel {
         override fun password(password: String) = this.passwordEditTextChanged.onNext(password)
 
         override fun resetPasswordConfirmationDialogDismissed() = this.resetPasswordConfirmationDialogDismissed.onNext(true)
-
-        override fun resetPasswordResultIntent(intent: Intent) = this.resetPasswordResultIntent.onNext(intent)
 
         override fun genericLoginError() = this.genericLoginError
 

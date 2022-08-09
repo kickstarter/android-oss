@@ -1,7 +1,9 @@
 package com.kickstarter.viewmodels
 
+import android.app.Activity
 import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockCurrentConfig
@@ -10,6 +12,7 @@ import com.kickstarter.mock.factories.ConfigFactory.config
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.LoginReason
 import org.junit.Test
 import rx.Observable
@@ -258,7 +261,11 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         this.vm.loginClick()
 
         // Start the view model with an email to prefill.
-        this.vm.resetPasswordResultIntent(Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com").putExtra(IntentKey.LOGIN_REASON, LoginReason.RESET_PASSWORD))
+        this.vm.activityResult(ActivityResult(
+            ActivityRequestCodes.RESET_FLOW,
+            Activity.RESULT_OK,
+            Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com").putExtra(IntentKey.LOGIN_REASON, LoginReason.RESET_PASSWORD)
+        ))
 
         this.preFillEmail.assertValue("hello@kickstarter.com")
         this.showChangedPasswordSnackbar.assertNoValues()

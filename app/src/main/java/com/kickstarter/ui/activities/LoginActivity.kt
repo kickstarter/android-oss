@@ -142,11 +142,9 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
             return
         }
 
-        setResult(resultCode, intent)
         if (requestCode != ActivityRequestCodes.RESET_FLOW) {
+            setResult(resultCode, intent)
             finish()
-        } else {
-            intent?.let { this.viewModel.inputs.resetPasswordResultIntent(it) }
         }
     }
 

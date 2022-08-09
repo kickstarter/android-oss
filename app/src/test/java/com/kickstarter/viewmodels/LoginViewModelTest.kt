@@ -261,11 +261,13 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         this.vm.loginClick()
 
         // Start the view model with an email to prefill.
-        this.vm.activityResult(ActivityResult(
-            ActivityRequestCodes.RESET_FLOW,
-            Activity.RESULT_OK,
-            Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com").putExtra(IntentKey.LOGIN_REASON, LoginReason.RESET_PASSWORD)
-        ))
+        this.vm.activityResult(
+            ActivityResult(
+                ActivityRequestCodes.RESET_FLOW,
+                Activity.RESULT_OK,
+                Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com").putExtra(IntentKey.LOGIN_REASON, LoginReason.RESET_PASSWORD)
+            )
+        )
 
         this.preFillEmail.assertValue("hello@kickstarter.com")
         this.showChangedPasswordSnackbar.assertNoValues()

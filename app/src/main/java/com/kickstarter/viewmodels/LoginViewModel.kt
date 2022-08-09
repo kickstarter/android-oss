@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels
 
-import android.content.Intent
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityRequestCodes

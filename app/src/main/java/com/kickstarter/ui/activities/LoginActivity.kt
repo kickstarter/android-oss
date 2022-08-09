@@ -9,7 +9,6 @@ import com.kickstarter.databinding.LoginLayoutBinding
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils
@@ -104,7 +103,7 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
 
         binding.loginFormView.forgotYourPasswordTextView.setOnClickListener {
             startResetPasswordActivity()
-               }
+        }
 
         binding.loginFormView.loginButton.setOnClickListener {
             this.viewModel.inputs.loginClick()

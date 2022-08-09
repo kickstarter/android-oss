@@ -194,7 +194,7 @@ interface BackingFragmentViewModel {
         private val apiClient = requireNotNull(this.environment.apiClient())
         private val apolloClient = requireNotNull(this.environment.apolloClient())
         private val ksCurrency = requireNotNull(this.environment.ksCurrency())
-        val ksString: KSString = requireNotNull(this.environment.ksString())
+        val ksString: KSString? = this.environment.ksString()
         private val currentUser = requireNotNull(this.environment.currentUser())
 
         val inputs: Inputs = this

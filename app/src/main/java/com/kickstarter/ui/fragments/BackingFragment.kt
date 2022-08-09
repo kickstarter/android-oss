@@ -263,7 +263,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
     private fun stylizedTextViews(it: String) {
         binding?.receivedSectionLayout?.estimatedDeliveryLabel?.apply {
             val totalCharacters = text.length
-            text = viewModel.ksString.format(
+            text = viewModel.ksString?.format(
                 getString(R.string.estimated_delivery_data),
                 "title", text.toString(),
                 "estimated_delivery_data", it
@@ -272,7 +272,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
         }
 
         binding?.estimatedDeliveryLabel2?.apply {
-            text = viewModel.ksString.format(
+            text = viewModel.ksString?.format(
                 getString(R.string.estimated_delivery_data),
                 "title", text.toString(),
                 "estimated_delivery_data", it
@@ -335,11 +335,11 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
     }
 
     private fun setBackerNumberText(it: String?) {
-        binding?.backerNumber?.text = this.viewModel.ksString.format(getString(R.string.backer_modal_backer_number), "backer_number", it)
+        binding?.backerNumber?.text = this.viewModel.ksString?.format(getString(R.string.backer_modal_backer_number), "backer_number", it)
     }
 
     private fun setCardExpirationText(expiration: String) {
-        binding?.rewardCardDetails?.rewardCardExpirationDate?.text = this.viewModel.ksString.format(
+        binding?.rewardCardDetails?.rewardCardExpirationDate?.text = this.viewModel.ksString?.format(
             getString(R.string.Credit_card_expiration),
             "expiration_date", expiration
         )
@@ -352,7 +352,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
     }
 
     private fun setCardLastFourText(lastFour: String) {
-        binding?.rewardCardDetails?.rewardCardLastFour?.text = this.viewModel.ksString.format(
+        binding?.rewardCardDetails?.rewardCardLastFour?.text = this.viewModel.ksString?.format(
             getString(R.string.payment_method_last_four),
             "last_four",
             lastFour
@@ -360,27 +360,30 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
     }
 
     private fun setPledgeDateText(pledgeDate: String) {
-        binding?.backingDate?.text = this.viewModel.ksString.format(getString(R.string.As_of_pledge_date), "pledge_date", pledgeDate)
+        binding?.backingDate?.text = this.viewModel.ksString?.format(getString(R.string.As_of_pledge_date), "pledge_date", pledgeDate)
     }
 
     private fun setPledgeStatusText(pledgeStatusData: PledgeStatusData) {
-        val ksString = requireNotNull(this.viewModel.ksString)
         val pledgeStatusText = pledgeStatusData.statusStringRes?.let {
             when (pledgeStatusData.statusStringRes) {
                 R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline -> {
-                    ksString.format(
-                        getString(it),
-                        "total", pledgeStatusData.pledgeTotal,
-                        "project_deadline", pledgeStatusData.projectDeadline
-                    )
+                    this.viewModel.ksString?.let { ksString ->
+                        ksString.format(
+                            getString(it),
+                            "total", pledgeStatusData.pledgeTotal,
+                            "project_deadline", pledgeStatusData.projectDeadline
+                        )
+                    }
                 }
 
                 R.string.If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_total_on_project_deadline -> {
-                    ksString.format(
-                        getString(it),
-                        "total", pledgeStatusData.pledgeTotal,
-                        "project_deadline", pledgeStatusData.projectDeadline
-                    )
+                    this.viewModel.ksString?.let { ksString ->
+                        ksString.format(
+                            getString(it),
+                            "total", pledgeStatusData.pledgeTotal,
+                            "project_deadline", pledgeStatusData.projectDeadline
+                        )
+                    }
                 }
 
                 else -> getString(it)

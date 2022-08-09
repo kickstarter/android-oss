@@ -18,6 +18,7 @@ import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.ui.viewholders.RewardAddCardViewHolder
 import com.kickstarter.ui.viewholders.RewardCardSelectedViewHolder
 import com.kickstarter.ui.viewholders.RewardCardUnselectedViewHolder
+import com.kickstarter.ui.viewholders.State
 import rx.Observable
 
 class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
@@ -85,5 +86,11 @@ class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
         notifyItemInserted(position)
 
         return position
+    }
+
+    fun updateState(state: State) {
+        sections().last().clear()
+        sections().last().add(0, state)
+        notifyDataSetChanged()
     }
 }

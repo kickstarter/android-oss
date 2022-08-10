@@ -133,8 +133,6 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
         startLoginActivity.assertNoValues()
         startResetPasswordActivity.assertValueCount(1)
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
-
-
     }
 
     @Test
@@ -180,9 +178,6 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
 
         startResetPasswordActivity.assertNoValues()
         startLoginActivity.assertValueCount(1)
-        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
-
-
     }
 
     @Test

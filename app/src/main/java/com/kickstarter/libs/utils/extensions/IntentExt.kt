@@ -5,7 +5,16 @@ import android.content.Intent
 import android.util.Pair
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.activities.*
+import com.kickstarter.ui.activities.CampaignDetailsActivity
+import com.kickstarter.ui.activities.CommentsActivity
+import com.kickstarter.ui.activities.CreatorBioActivity
+import com.kickstarter.ui.activities.CreatorDashboardActivity
+import com.kickstarter.ui.activities.LoginActivity
+import com.kickstarter.ui.activities.ProjectPageActivity
+import com.kickstarter.ui.activities.ProjectUpdatesActivity
+import com.kickstarter.ui.activities.ResetPasswordActivity
+import com.kickstarter.ui.activities.UpdateActivity
+import com.kickstarter.ui.activities.VideoActivity
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.data.ProjectData
 

@@ -1,21 +1,9 @@
 package com.kickstarter.screenshoot.testing.ui.components
 
-import android.view.LayoutInflater
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.test.platform.app.InstrumentationRegistry
 import com.karumi.shot.ScreenshotTest
-import com.kickstarter.ApplicationComponent
-import com.kickstarter.R
-import com.kickstarter.libs.htmlparser.HTMLParser
-import com.kickstarter.libs.htmlparser.TextViewElement
-import com.kickstarter.libs.htmlparser.getStyledComponents
-import com.kickstarter.screenshoot.testing.InstrumentedApp
-import org.junit.Before
-import org.junit.Test
 
 class TextViewElementShotTest : ScreenshotTest {
-
+/*
     lateinit var component: ApplicationComponent
     lateinit var app: InstrumentedApp
     private var headerSize: Int = 0
@@ -142,4 +130,5 @@ class TextViewElementShotTest : ScreenshotTest {
         textView.text = element.getStyledComponents(body, headerSize, app)
         compareScreenshot(textView)
     }
+ */
 }

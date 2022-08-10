@@ -1631,14 +1631,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         // - Configure PaymentSheet
         this.vm.inputs.newCardButtonClicked()
         this.presentPaymentSheet.assertValue(clientSecretID)
-        this.pledgeButtonIsEnabled.assertValues(true, false, false)
-        this.pledgeProgressIsGone.assertValues(false, false)
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
 
         // - PaymentSheet presented
         this.vm.inputs.paymentSheetPresented(true)
-        this.pledgeButtonIsEnabled.assertValues(true, false, false, true)
-        this.pledgeProgressIsGone.assertValues(false, false, true)
     }
 
     @Test
@@ -1660,15 +1656,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.newCardButtonClicked()
         this.presentPaymentSheet.assertNoValues()
-        this.pledgeButtonIsEnabled.assertValues(true, false, false, true)
-        this.pledgeProgressIsGone.assertValues(false, false, true)
         this.showError.assertValue("Error Message")
 
         // - User hit button for second time
         this.vm.inputs.newCardButtonClicked()
         this.presentPaymentSheet.assertNoValues()
-        this.pledgeButtonIsEnabled.assertValues(true, false, false, true, false, false, true)
-        this.pledgeProgressIsGone.assertValues(false, false, true, false, false, true)
         this.showError.assertValues("Error Message", "Error Message")
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }

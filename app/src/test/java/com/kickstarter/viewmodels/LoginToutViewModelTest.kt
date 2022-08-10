@@ -7,6 +7,7 @@ import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockExperimentsClientType
+import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
@@ -100,6 +101,15 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .currentUser(currentUser)
             .optimizely(mockExperimentsClientType)
+            .apiClient(object : MockApiClient() {
+                override fun loginWithFacebook(accessToken: String): Observable<AccessTokenEnvelope> {
+                    return Observable.error(
+                        ApiExceptionFactory.apiError(
+                            ErrorEnvelope.builder().httpCode(400).build()
+                        )
+                    )
+                }
+            })
             .build()
         setUpEnvironment(environment, LoginReason.DEFAULT)
 
@@ -110,10 +120,13 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
             listOf("public_profile", "user_friends", "email")
         )
 
-        startResetPasswordActivity.assertValueCount(1)
+        vm.facebookAccessToken.onNext("token")
+
+        this.currentUser.assertNoValues()
         finishWithSuccessfulResult.assertNoValues()
 
-        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
+        startResetPasswordActivity.assertValueCount(1)
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -141,7 +154,7 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
 
         this.currentUser.assertNoValues()
         finishWithSuccessfulResult.assertNoValues()
-
+        startResetPasswordActivity.assertNoValues()
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 

@@ -146,14 +146,11 @@ interface LoginToutViewModel {
             activity: LoginToutActivity?,
             facebookPermissions: List<String>
         ) {
-            if (environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE) == true) {
-                startResetPasswordActivity.onNext(null)
-            } else {
-                facebookLoginClick.onNext(facebookPermissions)
-                if (activity != null) {
-                    LoginManager.getInstance()
-                        .logInWithReadPermissions(activity, facebookPermissions)
-                }
+
+            facebookLoginClick.onNext(facebookPermissions)
+            if (activity != null) {
+                LoginManager.getInstance()
+                    .logInWithReadPermissions(activity, facebookPermissions)
             }
         }
 
@@ -175,24 +172,28 @@ interface LoginToutViewModel {
 
         override fun showFacebookAuthorizationErrorDialog(): Observable<String> {
             return facebookAuthorizationError
+                .filter { environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE) == false }
                 .map { it.localizedMessage }
         }
 
         override fun showFacebookInvalidAccessTokenErrorToast(): Observable<String?> {
             return loginError
                 .filter(ErrorEnvelope::isFacebookInvalidAccessTokenError)
+                .filter { environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE) == false }
                 .map { it.errorMessage() }
         }
 
         override fun showMissingFacebookEmailErrorToast(): Observable<String?> {
             return loginError
                 .filter(ErrorEnvelope::isMissingFacebookEmailError)
+                .filter { environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE) == false }
                 .map { it.errorMessage() }
         }
 
         override fun showUnauthorizedErrorDialog(): Observable<String> {
             return loginError
                 .filter(ErrorEnvelope::isUnauthorizedError)
+                .filter { environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE) == false }
                 .map { it.errorMessage() }
         }
 
@@ -285,6 +286,16 @@ interface LoginToutViewModel {
                 .filter(ErrorEnvelope::isConfirmFacebookSignupError)
                 .map { it.facebookUser() }
                 .compose(Transformers.combineLatestPair(facebookAccessToken))
+
+            Observable.merge(facebookAuthorizationError, loginError)
+                .filter {
+                    environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE) == true
+                }
+                .compose(bindToLifecycle())
+                .distinctUntilChanged()
+                .subscribe {
+                    startResetPasswordActivity.onNext(null)
+                }
 
             startLoginActivity = loginClick
             startSignupActivity = signupClick

@@ -5,15 +5,8 @@ import android.content.Intent
 import android.util.Pair
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.activities.CampaignDetailsActivity
-import com.kickstarter.ui.activities.CommentsActivity
-import com.kickstarter.ui.activities.CreatorBioActivity
-import com.kickstarter.ui.activities.CreatorDashboardActivity
-import com.kickstarter.ui.activities.ProjectPageActivity
-import com.kickstarter.ui.activities.ProjectUpdatesActivity
-import com.kickstarter.ui.activities.ResetPasswordActivity
-import com.kickstarter.ui.activities.UpdateActivity
-import com.kickstarter.ui.activities.VideoActivity
+import com.kickstarter.ui.activities.*
+import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.data.ProjectData
 
 fun Intent.getProjectIntent(context: Context): Intent {
@@ -142,6 +135,27 @@ fun Intent.getResetPasswordIntent(
     return this.setClass(context, ResetPasswordActivity::class.java).apply {
         this.putExtra(IntentKey.RESET_PASSWORD_FACEBOOK_LOGIN, isResetPasswordFacebook)
         // ForgetPassword
+        email?.let {
+            this.putExtra(IntentKey.EMAIL, it)
+        }
+    }
+}
+
+/**
+ * Return a Intent ready to launch the LoginActivity with extras:
+ * @param context
+ * @param isResetPasswordFacebook
+ * @param email ->  email for reset account
+ */
+fun Intent.getLoginActivityIntent(
+    context: Context,
+    email: String? = null,
+    loginReason: LoginReason? = null
+): Intent {
+    return this.setClass(context, LoginActivity::class.java).apply {
+        loginReason?.let {
+            this.putExtra(IntentKey.LOGIN_REASON, it)
+        }
         email?.let {
             this.putExtra(IntentKey.EMAIL, it)
         }

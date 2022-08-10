@@ -11,7 +11,7 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
 import com.kickstarter.libs.utils.ViewUtils
-import com.kickstarter.ui.IntentKey
+import com.kickstarter.libs.utils.extensions.getLoginActivityIntent
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.text
@@ -81,8 +81,7 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                setFormEnabled(false)
-                finish()
+                navigateToLoginActivity()
             }
     }
 
@@ -92,13 +91,18 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
 
     private fun onResetSuccess() {
         setFormEnabled(false)
-        val intent = Intent(this, LoginActivity::class.java)
-            .putExtra(IntentKey.EMAIL, binding.resetPasswordFormView.email.text())
-            .putExtra(IntentKey.LOGIN_REASON, LoginReason.RESET_PASSWORD)
+        val intent =
+            Intent().getLoginActivityIntent(this, binding.resetPasswordFormView.email.text(), LoginReason.RESET_PASSWORD)
         setResult(RESULT_OK, intent)
         finish()
     }
 
+    private fun navigateToLoginActivity() {
+        setFormEnabled(false)
+        val intent = Intent().getLoginActivityIntent(this, binding.resetPasswordFormView.email.text(), LoginReason.RESET_PASSWORD)
+        startActivityWithTransition(intent, R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
+        finish()
+    }
     private fun setFormEnabled(isEnabled: Boolean) {
         binding.resetPasswordFormView.resetPasswordButton.isEnabled = isEnabled
     }

@@ -5,6 +5,15 @@ import type.CreditCardTypes
 import java.util.Date
 
 object StoredCardFactory {
+
+    fun fromPaymentSheetCard(): StoredCard {
+        return StoredCard.builder()
+            .lastFourDigits("1234")
+            .resourceId(1234)
+            .clientSetupId("ClientSetupId")
+            .build()
+    }
+
     @JvmStatic
     fun discoverCard(): StoredCard {
         return StoredCard.builder()

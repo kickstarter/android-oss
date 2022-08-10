@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders
 
 import android.util.Pair
+import androidx.core.view.isGone
 import com.kickstarter.R
 import com.kickstarter.databinding.ItemRewardSelectedCardBinding
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
@@ -23,6 +24,13 @@ class RewardCardSelectedViewHolder(val binding: ItemRewardSelectedCardBinding) :
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe { setExpirationDateTextView(it) }
+
+        this.viewModel.outputs.expirationIsGone()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                binding.rewardCardDetails.rewardCardExpirationDate.isGone = it
+            }
 
         this.viewModel.outputs.issuerImage()
             .compose(bindToLifecycle())

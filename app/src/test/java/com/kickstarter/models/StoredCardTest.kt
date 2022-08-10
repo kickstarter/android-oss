@@ -2,7 +2,11 @@ package com.kickstarter.models
 
 import com.kickstarter.R
 import com.kickstarter.mock.factories.IdFactory
+import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.StoredCardFactory
+import com.kickstarter.models.extensions.getBackingData
+import com.kickstarter.models.extensions.getCardTypeDrawable
 import com.stripe.android.model.CardBrand
 import junit.framework.TestCase
 import org.junit.Test
@@ -23,10 +27,27 @@ class StoredCardTest : TestCase() {
             .type(CreditCardTypes.DISCOVER)
             .build()
 
+        val resourceID = storedCard.getCardTypeDrawable()
         assertEquals(storedCard.id(), id)
         assertEquals(storedCard.expiration(), expiration)
         assertEquals(storedCard.lastFourDigits(), "1234")
         assertEquals(storedCard.type(), CreditCardTypes.DISCOVER)
+        assertEquals(resourceID, R.drawable.discover_md)
+    }
+
+    @Test
+    fun testCardFomPaymentSheet() {
+
+        val storedCard = StoredCard.builder()
+            .lastFourDigits("1234")
+            .clientSetupId("ClientSetupID")
+            .resourceId(1234)
+            .build()
+
+        val resourceID = storedCard.getCardTypeDrawable()
+        assertEquals(storedCard.lastFourDigits(), "1234")
+        assertEquals(storedCard.type(), CreditCardTypes.`$UNKNOWN`)
+        assertEquals(resourceID, 1234)
     }
 
     @Test
@@ -77,13 +98,27 @@ class StoredCardTest : TestCase() {
 
     @Test
     fun testStoredCardGetCardTypeDrawable() {
-        assertEquals(StoredCard.getCardTypeDrawable(CreditCardTypes.AMEX), R.drawable.amex_md)
-        assertEquals(StoredCard.getCardTypeDrawable(CreditCardTypes.DINERS), R.drawable.diners_md)
-        assertEquals(StoredCard.getCardTypeDrawable(CreditCardTypes.DISCOVER), R.drawable.discover_md)
-        assertEquals(StoredCard.getCardTypeDrawable(CreditCardTypes.JCB), R.drawable.jcb_md)
-        assertEquals(StoredCard.getCardTypeDrawable(CreditCardTypes.MASTERCARD), R.drawable.mastercard_md)
-        assertEquals(StoredCard.getCardTypeDrawable(CreditCardTypes.UNION_PAY), R.drawable.union_pay_md)
-        assertEquals(StoredCard.getCardTypeDrawable(CreditCardTypes.VISA), R.drawable.visa_md)
-        assertEquals(StoredCard.getCardTypeDrawable(CreditCardTypes.`$UNKNOWN`), R.drawable.generic_bank_md)
+        assertEquals(getCardTypeDrawable(CreditCardTypes.AMEX), R.drawable.amex_md)
+        assertEquals(getCardTypeDrawable(CreditCardTypes.DINERS), R.drawable.diners_md)
+        assertEquals(getCardTypeDrawable(CreditCardTypes.DISCOVER), R.drawable.discover_md)
+        assertEquals(getCardTypeDrawable(CreditCardTypes.JCB), R.drawable.jcb_md)
+        assertEquals(getCardTypeDrawable(CreditCardTypes.MASTERCARD), R.drawable.mastercard_md)
+        assertEquals(getCardTypeDrawable(CreditCardTypes.UNION_PAY), R.drawable.union_pay_md)
+        assertEquals(getCardTypeDrawable(CreditCardTypes.VISA), R.drawable.visa_md)
+        assertEquals(getCardTypeDrawable(CreditCardTypes.`$UNKNOWN`), R.drawable.generic_bank_md)
+    }
+
+    @Test
+    fun getBackingDataFromPaymentInfo() {
+        val storedCard = StoredCardFactory.visa()
+        val backingData = storedCard.getBackingData(ProjectFactory.project(), "", locationId = null, rewards = listOf(RewardFactory.reward()), cookieRefTag = null)
+
+        assertEquals(backingData.setupIntentClientSecret, null)
+        assertEquals(backingData.paymentSourceId, storedCard.id())
+
+        val storedCardFromPaymentSheet = StoredCardFactory.fromPaymentSheetCard()
+        val backingDataFromPaymentSheet = storedCard.getBackingData(ProjectFactory.project(), "", locationId = null, rewards = listOf(RewardFactory.reward()), cookieRefTag = null)
+        assertEquals(backingDataFromPaymentSheet.setupIntentClientSecret, storedCardFromPaymentSheet.clientSetupId())
+        assertEquals(backingDataFromPaymentSheet.paymentSourceId, null)
     }
 }

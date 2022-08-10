@@ -4,6 +4,7 @@ import android.text.Editable
 import android.text.Selection
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.TextWatcher
@@ -14,6 +15,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
+import com.kickstarter.libs.utils.ViewUtils
 import org.jsoup.Jsoup
 import java.util.Locale
 
@@ -76,6 +78,22 @@ fun TextView.urlSpanWithoutUnderlines() {
         spannable.setSpan(newSpan, start, end, 0)
     }
     text = spannable
+}
+
+fun TextView.parseAndSpanHtmlTag(text: String, clickableSpan: ClickableSpan) {
+    val spannableBuilder = SpannableStringBuilder(ViewUtils.html(text))
+    // https://stackoverflow.com/a/19989677
+    val urlSpans = spannableBuilder.getSpans(0, text.length, URLSpan::class.java)
+    for (urlSpan in urlSpans) {
+        val spanStart = spannableBuilder.getSpanStart(urlSpan)
+        val spanEnd = spannableBuilder.getSpanEnd(urlSpan)
+        val spanFlags = spannableBuilder.getSpanFlags(urlSpan)
+        spannableBuilder.setSpan(clickableSpan, spanStart, spanEnd, spanFlags)
+        spannableBuilder.removeSpan(urlSpan)
+    }
+
+    this.text = spannableBuilder
+    this.movementMethod = LinkMovementMethod.getInstance()
 }
 
 fun TextView.getUpdatedText() {

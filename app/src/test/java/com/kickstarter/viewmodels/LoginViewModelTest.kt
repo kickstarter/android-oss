@@ -1,7 +1,9 @@
 package com.kickstarter.viewmodels
 
+import android.app.Activity
 import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockCurrentConfig
@@ -10,6 +12,7 @@ import com.kickstarter.mock.factories.ConfigFactory.config
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.LoginReason
 import org.junit.Test
 import rx.Observable
@@ -248,6 +251,54 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         // Dialog should not be shown.
         rotatedShowResetPasswordSuccessDialog.assertNoValues()
+    }
+
+    @Test
+    fun testPrefillEmailAndResetPassword() {
+        setUpEnvironment(environment())
+        // Start the view model with an email to prefill.
+        this.vm.email("test@kickstarter.com")
+        this.vm.loginClick()
+
+        // Start the view model with an email to prefill.
+        this.vm.activityResult(
+            ActivityResult(
+                ActivityRequestCodes.RESET_FLOW,
+                Activity.RESULT_OK,
+                Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com").putExtra(IntentKey.LOGIN_REASON, LoginReason.RESET_PASSWORD)
+            )
+        )
+
+        this.preFillEmail.assertValue("hello@kickstarter.com")
+        this.showChangedPasswordSnackbar.assertNoValues()
+        this.showResetPasswordSuccessDialog.assertValue(true)
+
+        // Dismiss the confirmation dialog.
+        this.vm.inputs.resetPasswordConfirmationDialogDismissed()
+        this.showChangedPasswordSnackbar.assertNoValues()
+        this.showResetPasswordSuccessDialog.assertValues(true, false)
+
+        // Simulate rotating the device, first by sending a new intent (similar to what happens after rotation).
+        this.vm.intent(Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com"))
+
+        // Create new test subscribers – this emulates a new activity subscribing to the vm's outputs.
+        val rotatedPrefillEmail = TestSubscriber<String>()
+        this.vm.outputs.prefillEmail().subscribe(rotatedPrefillEmail)
+        val rotatedShowChangedPasswordSnackbar = TestSubscriber<Void>()
+        this.vm.outputs.showChangedPasswordSnackbar().subscribe(rotatedShowChangedPasswordSnackbar)
+        val rotatedShowResetPasswordSuccessDialog = TestSubscriber<Boolean>()
+        this.vm.outputs.showResetPasswordSuccessDialog()
+            .map { showAndEmail -> showAndEmail.first }
+            .subscribe(rotatedShowResetPasswordSuccessDialog)
+
+        // Email should still be pre-filled.
+        rotatedPrefillEmail.assertValue("hello@kickstarter.com")
+
+        // Dialog should not be shown again – the user has already dismissed it.
+        rotatedShowResetPasswordSuccessDialog.assertValue(false)
+
+        // Snackbar should not be shown.
+        rotatedShowChangedPasswordSnackbar.assertNoValues()
     }
 
     @Test

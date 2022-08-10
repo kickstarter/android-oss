@@ -3,7 +3,9 @@ package com.kickstarter.viewmodels
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.StoredCard
+import com.kickstarter.models.extensions.getCardTypeDrawable
 import com.kickstarter.ui.viewholders.PaymentMethodsViewHolder
 import com.stripe.android.model.Card
 import rx.Observable
@@ -58,6 +60,7 @@ interface PaymentMethodsViewHolderViewModel {
         init {
             this.card
                 .map { it.expiration() }
+                .filter { ObjectUtils.isNotNull(it) }
                 .map { sdf.format(it).toString() }
                 .subscribe(this.expirationDate)
 
@@ -71,12 +74,14 @@ interface PaymentMethodsViewHolderViewModel {
                 .subscribe(this.lastFour)
 
             this.card
-                .map { it.type() }
-                .map { StoredCard.getCardTypeDrawable(it) }
+                .map { requireNotNull(it) }
+                .map { it.getCardTypeDrawable() }
                 .subscribe(this.issuerImage)
 
             this.card
                 .map { it.type() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
                 .map { StoredCard.issuer(it) }
                 .subscribe(this.issuer)
         }

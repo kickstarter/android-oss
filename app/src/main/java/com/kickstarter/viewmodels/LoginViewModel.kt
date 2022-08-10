@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import android.util.Pair
 import androidx.annotation.NonNull
+import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
@@ -14,6 +15,7 @@ import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.LoginActivity
+import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.LoginReason
 import rx.Notification
 import rx.Observable
@@ -205,6 +207,16 @@ interface LoginViewModel {
                 .map { null }
 
             this.analyticEvents.trackLoginPagedViewed()
+
+            activityResult()
+                .filter { it.isRequestCode(ActivityRequestCodes.RESET_FLOW) }
+                .filter(ActivityResult::isOk)
+                .compose(bindToLifecycle())
+                .subscribe {
+                    it.intent?.let { intent ->
+                        intent(intent)
+                    }
+                }
         }
 
         private fun unwrapNotificationEnvelopeError(notification: Notification<AccessTokenEnvelope>) =

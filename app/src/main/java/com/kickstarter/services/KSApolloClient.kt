@@ -127,6 +127,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                 .amount(createBackingData.amount)
                 .paymentType(PaymentTypes.CREDIT_CARD.rawValue())
                 .paymentSourceId(createBackingData.paymentSourceId)
+                .setupIntentClientSecret(createBackingData.setupIntentClientSecret)
                 .locationId(createBackingData.locationId?.let { it })
                 .rewardIds(createBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
                 .refParam(createBackingData.refTag?.tag())

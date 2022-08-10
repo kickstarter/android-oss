@@ -7,6 +7,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.utils.extensions.acceptedCardType
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.StoredCard
+import com.kickstarter.models.extensions.isFromPaymentSheet
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -52,29 +53,29 @@ interface RewardCardUnselectedViewHolderViewModel : BaseRewardCardViewHolderView
 
         init {
 
-            val allowedCardType = this.cardAndProject
-                .map { it.second.acceptedCardType(it.first.type()) }
+            val card = this.cardAndProject
+                .map { it.second.acceptedCardType(it.first.type()) || it.first.isFromPaymentSheet() }
 
-            allowedCardType
+            card
                 .compose(bindToLifecycle())
                 .subscribe(this.isClickable)
 
-            allowedCardType
+            card
                 .map { if (it) 1.0f else .5f }
                 .compose(bindToLifecycle())
                 .subscribe(this.issuerImageAlpha)
 
-            allowedCardType
+            card
                 .map { if (it) R.color.text_primary else R.color.text_secondary }
                 .compose(bindToLifecycle())
                 .subscribe(this.lastFourTextColor)
 
-            allowedCardType
+            card
                 .map { it.negate() }
                 .compose(bindToLifecycle())
                 .subscribe(this.notAvailableCopyIsVisible)
 
-            allowedCardType
+            card
                 .compose(bindToLifecycle())
                 .subscribe(this.selectImageIsVisible)
 

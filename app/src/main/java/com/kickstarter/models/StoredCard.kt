@@ -1,7 +1,6 @@
 package com.kickstarter.models
 
 import android.os.Parcelable
-import com.kickstarter.R
 import com.stripe.android.model.CardBrand
 import kotlinx.parcelize.Parcelize
 import type.CreditCardTypes
@@ -9,32 +8,42 @@ import java.util.Date
 
 @Parcelize
 class StoredCard private constructor(
-    private val id: String,
-    private val expiration: Date,
-    private val lastFourDigits: String,
-    private val type: CreditCardTypes
+    private val id: String?,
+    private val expiration: Date?,
+    private val lastFourDigits: String?,
+    private val type: CreditCardTypes?,
+    private val resourceId: Int?,
+    private val clientSetupId: String?
 ) : Parcelable {
     fun id() = this.id
     fun expiration() = this.expiration
     fun lastFourDigits() = this.lastFourDigits
     fun type() = this.type
+    fun resourceId() = this.resourceId
+    fun clientSetupId() = this.clientSetupId
 
     @Parcelize
     data class Builder(
-        private var id: String = "0L",
-        private var lastFourDigits: String = "",
-        private var expiration: Date = Date(),
-        private var type: CreditCardTypes = CreditCardTypes.`$UNKNOWN`
+        private var id: String? = "0L",
+        private var lastFourDigits: String? = "",
+        private var expiration: Date? = null,
+        private var type: CreditCardTypes? = CreditCardTypes.`$UNKNOWN`,
+        private var resourceId: Int? = null,
+        private var clientSetupId: String? = null
     ) : Parcelable {
-        fun id(id: String) = apply { this.id = id }
-        fun lastFourDigits(lastFourDigits: String) = apply { this.lastFourDigits = lastFourDigits }
-        fun expiration(expiration: Date) = apply { this.expiration = expiration }
-        fun type(type: CreditCardTypes) = apply { this.type = type }
+        fun id(id: String?) = apply { this.id = id }
+        fun lastFourDigits(lastFourDigits: String?) = apply { this.lastFourDigits = lastFourDigits }
+        fun expiration(expiration: Date?) = apply { this.expiration = expiration }
+        fun type(type: CreditCardTypes?) = apply { this.type = type }
+        fun resourceId(resourceId: Int?) = apply { this.resourceId = resourceId }
+        fun clientSetupId(clientSetupId: String?) = apply { this.clientSetupId = clientSetupId }
         fun build() = StoredCard(
             id = id,
             lastFourDigits = lastFourDigits,
             expiration = expiration,
-            type = type
+            type = type,
+            resourceId = resourceId,
+            clientSetupId = clientSetupId
         )
     }
 
@@ -44,7 +53,9 @@ class StoredCard private constructor(
             equals = id() == obj.id() &&
                 lastFourDigits() == obj.lastFourDigits() &&
                 expiration() == obj.expiration() &&
-                type() == obj.type()
+                type() == obj.type() &&
+                resourceId() == obj.resourceId() &&
+                clientSetupId() == obj.clientSetupId()
         }
         return equals
     }
@@ -64,19 +75,6 @@ class StoredCard private constructor(
 
         fun builder(): Builder {
             return Builder()
-        }
-
-        internal fun getCardTypeDrawable(cardType: CreditCardTypes): Int {
-            return when (cardType) {
-                CreditCardTypes.AMEX -> R.drawable.amex_md
-                CreditCardTypes.DINERS -> R.drawable.diners_md
-                CreditCardTypes.DISCOVER -> R.drawable.discover_md
-                CreditCardTypes.JCB -> R.drawable.jcb_md
-                CreditCardTypes.MASTERCARD -> R.drawable.mastercard_md
-                CreditCardTypes.UNION_PAY -> R.drawable.union_pay_md
-                CreditCardTypes.VISA -> R.drawable.visa_md
-                else -> R.drawable.generic_bank_md
-            }
         }
 
         internal fun issuer(cardType: CreditCardTypes): String {

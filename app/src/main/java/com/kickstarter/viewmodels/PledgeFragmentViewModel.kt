@@ -37,6 +37,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
+import com.kickstarter.models.extensions.getBackingData
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.ui.ArgumentsKey
@@ -484,26 +485,6 @@ interface PledgeFragmentViewModel {
 
             val project = projectData
                 .map { it.project() }
-
-            // - Create stripe's setupIntent on first load if user logged in, and the project
-            val setUpIntentNotification = userIsLoggedIn
-                .filter { it }
-                .compose<Pair<Boolean, Project>>(combineLatestPair(project))
-                .switchMap {
-                    this.apolloClient.createSetupIntent(it.second)
-                        .materialize()
-                }
-                .share()
-
-            val setUpIntent = setUpIntentNotification
-                .compose(values())
-
-            setUpIntentNotification
-                .compose(errors())
-                .compose(bindToLifecycle())
-                .subscribe {
-                    this.errorSetupIntentCreation.onNext(it.message)
-                }
 
             // Shipping rules section
             val shippingRules = this.selectedReward
@@ -1201,32 +1182,27 @@ interface PledgeFragmentViewModel {
                 .subscribe { this.showSelectedCard.onNext(Pair(it, CardState.SELECTED)) }
 
             // - Present PaymentSheet if user logged in, and add card button pressed
-            this.newCardButtonClicked
-                .compose(combineLatestPair(setUpIntent))
-                .map { it.second }
+            val shouldPresentPaymentSheet = this.newCardButtonClicked
+                .compose<Pair<Void, Project>>(combineLatestPair(project))
+                .switchMap {
+                    this.apolloClient.createSetupIntent(it.second)
+                        .materialize()
+                        .share()
+                }
+
+            shouldPresentPaymentSheet
+                .compose(values())
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.presentPaymentSheet.onNext(it)
-                    this.pledgeProgressIsGone.onNext(false)
-                    this.pledgeButtonIsEnabled.onNext(false)
                 }
 
-            // - Display error snackbar in case the SetupIntent was not successfully created
-            this.newCardButtonClicked
-                .compose(combineLatestPair(errorSetupIntentCreation))
-                .map { it.second }
+            shouldPresentPaymentSheet
+                .compose(errors())
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.showError.onNext(it)
-                    this.pledgeProgressIsGone.onNext(true)
-                    this.pledgeButtonIsEnabled.onNext(false)
-                }
-
-            this.paySheetPresented
-                .compose(bindToLifecycle())
-                .subscribe {
-                    this.pledgeProgressIsGone.onNext(it)
-                    this.pledgeButtonIsEnabled.onNext(it)
+                    // - Display error snackbar in case the SetupIntent was not successfully created
+                    this.showError.onNext(it.message)
                 }
 
             this.continueButtonClicked
@@ -1311,7 +1287,7 @@ interface PledgeFragmentViewModel {
                 .ofType(Backing::class.java)
                 .distinctUntilChanged()
 
-            val paymentMethodId: Observable<String> = selectedCardAndPosition.map { it.first.id() }
+            val paymentMethod: Observable<StoredCard> = selectedCardAndPosition.map { it.first }
 
             val extendedListForCheckOut = rewardAndAddOns
                 .map { extendAddOns(it) }
@@ -1319,12 +1295,12 @@ interface PledgeFragmentViewModel {
             val createBackingNotification = Observable.combineLatest(
                 project,
                 total.map { it.toString() },
-                paymentMethodId,
+                paymentMethod,
                 locationId,
                 extendedListForCheckOut,
                 cookieRefTag
-            ) { p, a, id, l, r, c ->
-                CreateBackingData(p, a, id, l, rewardsIds = r, refTag = c)
+            ) { proj, amount, paymentMethod, locationId, rewards, cookieRefTag ->
+                paymentMethod.getBackingData(proj, amount, locationId, rewards, cookieRefTag)
             }
                 .compose<CreateBackingData>(takeWhen(pledgeButtonClicked))
                 .switchMap {
@@ -1356,7 +1332,8 @@ interface PledgeFragmentViewModel {
                 .filter { it == PledgeReason.UPDATE_PLEDGE || it == PledgeReason.UPDATE_REWARD }
                 .compose(ignoreValues())
 
-            val optionalPaymentMethodId: Observable<String?> = paymentMethodId
+            // TODO: UpdateBacking mutation will be updated to hold the setupIntentClientSecret
+            val optionalPaymentMethodId: Observable<String?> = paymentMethod.map { it.id() }
                 .startWith(null as String?)
 
             val updateBackingNotification = Observable.combineLatest(

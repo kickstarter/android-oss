@@ -56,6 +56,7 @@ import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.setTextAndSelection
 import com.kickstarter.ui.extensions.showErrorToast
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
+import com.kickstarter.ui.viewholders.State
 import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import com.stripe.android.ApiResultCallback
 import com.stripe.android.SetupIntentResult
@@ -82,6 +83,7 @@ class PledgeFragment :
     private lateinit var adapter: ShippingRulesAdapter
     private var headerAdapter = ExpandableHeaderAdapter()
     private var isExpanded = false
+    private var setupClientId: String = ""
     private lateinit var flowController: PaymentSheet.FlowController
 
     private var binding: FragmentPledgeBinding? = null
@@ -566,6 +568,7 @@ class PledgeFragment :
             .compose(observeForUI())
             .compose(bindToLifecycle())
             .subscribe {
+                setupClientId = it
                 flowControllerPresentPaymentOption(it)
             }
 
@@ -664,8 +667,13 @@ class PledgeFragment :
     // Update the UI with the returned PaymentOption
     private fun onPaymentOption(paymentOption: PaymentOption?) {
         paymentOption?.let {
-            // TODO: add input to viewModel with the paymentOption to populate the UI for the new payment method in PAY-1764
-            Timber.d(" ${this.javaClass.canonicalName} onPaymentOption with $paymentOption")
+            val storedCard = StoredCard.Builder(
+                lastFourDigits = paymentOption.label.takeLast(4),
+                resourceId = paymentOption.drawableResourceId,
+                clientSetupId = setupClientId
+            ).build()
+            this.viewModel.inputs.cardSaved(storedCard)
+            Timber.d(" ${this.javaClass.canonicalName} onPaymentOption with ${storedCard.lastFourDigits()} and ${storedCard.clientSetupId()}")
             flowController.confirm()
         }
     }
@@ -692,9 +700,11 @@ class PledgeFragment :
             }
         }
         this.viewModel.inputs.paymentSheetPresented(success)
+        (binding?.pledgeSectionPayment?.cardsRecycler?.adapter as? RewardCardAdapter)?.updateState(State.DEFAULT)
     }
 
     fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
+        (binding?.pledgeSectionPayment?.cardsRecycler?.adapter as? RewardCardAdapter)?.updateState(State.DEFAULT)
         this.viewModel.inputs.paymentSheetResult(paymentSheetResult)
         when (paymentSheetResult) {
             is PaymentSheetResult.Canceled -> {
@@ -793,6 +803,7 @@ class PledgeFragment :
 
     override fun addNewCardButtonClicked() {
         this.viewModel.inputs.newCardButtonClicked()
+        (binding?.pledgeSectionPayment?.cardsRecycler?.adapter as? RewardCardAdapter)?.updateState(State.LOADING)
     }
 
     fun cardAdded(storedCard: StoredCard) {

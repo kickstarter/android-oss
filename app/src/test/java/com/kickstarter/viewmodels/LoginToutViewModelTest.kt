@@ -28,6 +28,7 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
     private val currentUser = TestSubscriber<User?>()
     private val showDisclaimerActivity = TestSubscriber<DisclaimerItems>()
     private val startResetPasswordActivity = TestSubscriber<Void>()
+    private val showFacebookErrorDialog = TestSubscriber<Void>()
 
     private fun setUpEnvironment(environment: Environment, loginReason: LoginReason) {
         vm = LoginToutViewModel.ViewModel(environment)
@@ -35,6 +36,7 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
         vm.loginError.subscribe(loginError)
         vm.outputs.startSignupActivity().subscribe(startSignupActivity)
         vm.outputs.startLoginActivity().subscribe(startLoginActivity)
+        vm.outputs.showFacebookErrorDialog().subscribe(showFacebookErrorDialog)
         vm.outputs.startResetPasswordActivity().subscribe(startResetPasswordActivity)
         vm.outputs.showDisclaimerActivity().subscribe(showDisclaimerActivity)
         environment.currentUser()?.observable()?.subscribe(currentUser)
@@ -88,7 +90,7 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun facebookLoginWithFeatureFlag_Enabled() {
+    fun facebookLogin_error_reset_password_WithFeatureFlag_Enabled() {
         val currentUser = MockCurrentUser()
         val mockExperimentsClientType: MockExperimentsClientType =
             object : MockExperimentsClientType() {
@@ -124,9 +126,63 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
 
         this.currentUser.assertNoValues()
         finishWithSuccessfulResult.assertNoValues()
+        showFacebookErrorDialog.assertValueCount(1)
 
+        vm.inputs.onResetPasswordFacebookErrorDialogClicked()
+
+        startLoginActivity.assertNoValues()
         startResetPasswordActivity.assertValueCount(1)
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+
+
+    }
+
+    @Test
+    fun facebookLogin_error_login_WithFeatureFlag_Enabled() {
+        val currentUser = MockCurrentUser()
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+
+        val environment = environment()
+            .toBuilder()
+            .currentUser(currentUser)
+            .optimizely(mockExperimentsClientType)
+            .apiClient(object : MockApiClient() {
+                override fun loginWithFacebook(accessToken: String): Observable<AccessTokenEnvelope> {
+                    return Observable.error(
+                        ApiExceptionFactory.apiError(
+                            ErrorEnvelope.builder().httpCode(400).build()
+                        )
+                    )
+                }
+            })
+            .build()
+        setUpEnvironment(environment, LoginReason.DEFAULT)
+
+        this.currentUser.assertValuesAndClear(null)
+
+        vm.inputs.facebookLoginClick(
+            null,
+            listOf("public_profile", "user_friends", "email")
+        )
+
+        vm.facebookAccessToken.onNext("token")
+
+        this.currentUser.assertNoValues()
+        finishWithSuccessfulResult.assertNoValues()
+        showFacebookErrorDialog.assertValueCount(1)
+
+        vm.inputs.onLoginFacebookErrorDialogClicked()
+
+        startResetPasswordActivity.assertNoValues()
+        startLoginActivity.assertValueCount(1)
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+
+
     }
 
     @Test

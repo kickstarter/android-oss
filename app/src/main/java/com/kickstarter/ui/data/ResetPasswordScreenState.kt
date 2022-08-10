@@ -8,7 +8,7 @@ enum class ResetPasswordScreenState(
     @StringRes val hint: Int?
 ) {
     ResetPassword(
-        title = R.string.FPO_reset_your_password_title,
+        title = R.string.FPO_reset_your_password,
         hint = R.string.FPO_reset_your_password_hint
     ),
     ForgetPassword(

@@ -15,6 +15,7 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.getResetPasswordIntent
+import com.kickstarter.libs.utils.extensions.showAlertDialog
 import com.kickstarter.services.apiresponses.ErrorEnvelope.FacebookUser
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.HelpActivity.Terms
@@ -84,12 +85,22 @@ class LoginToutActivity : BaseActivity<LoginToutViewModel.ViewModel>() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { ViewUtils.showDialog(this, getString(R.string.login_tout_navbar_title), it) }
 
-        viewModel.outputs.startResetPasswordActivity()
+        viewModel.outputs.showFacebookErrorDialog()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                val intent = Intent().getResetPasswordIntent(this, isResetPasswordFacebook = true)
-                startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+                this.showAlertDialog(
+                    message = getString(R.string.FPO_reset_your_password_dialog_msg),
+                    positiveActionTitle = getString(R.string.FPO_Set_new_password),
+                    negativeActionTitle = getString(R.string.FPO_login_with_kickstarter),
+                    isCancelable = false,
+                    positiveAction = {
+                        viewModel.inputs.onResetPasswordFacebookErrorDialogClicked()
+                    },
+                    negativeAction = {
+                        viewModel.inputs.onLoginFacebookErrorDialogClicked()
+                    }
+                )
             }
 
         binding.facebookLoginButton.setOnClickListener {
@@ -109,6 +120,13 @@ class LoginToutActivity : BaseActivity<LoginToutViewModel.ViewModel>() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 startActivity(it)
+            }
+
+        viewModel.outputs.startResetPasswordActivity()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                startResetActivity()
             }
 
         // create clickable disclaimer spannable
@@ -169,6 +187,11 @@ class LoginToutActivity : BaseActivity<LoginToutViewModel.ViewModel>() {
     private fun finishWithSuccessfulResult() {
         setResult(RESULT_OK)
         finish()
+    }
+
+    private fun startResetActivity() {
+        val intent = Intent().getResetPasswordIntent(this, isResetPasswordFacebook = true)
+        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun startFacebookConfirmationActivity(

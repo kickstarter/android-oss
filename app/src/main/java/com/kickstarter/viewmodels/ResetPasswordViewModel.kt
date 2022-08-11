@@ -2,14 +2,17 @@ package com.kickstarter.viewmodels
 
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.values
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isEmail
 import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ResetPasswordActivity
+import com.kickstarter.ui.data.ResetPasswordScreenState
 import rx.Notification
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -33,13 +36,19 @@ interface ResetPasswordViewModel {
         fun isFormValid(): Observable<Boolean>
 
         /** Emits when password reset is completed successfully. */
-        fun resetSuccess(): Observable<Void>
+        fun resetLoginPasswordSuccess(): Observable<Void>
+
+        /** Emits when password reset is completed successfully. */
+        fun resetFacebookLoginPasswordSuccess(): Observable<Void>
 
         /** Emits when password reset fails. */
         fun resetError(): Observable<String>
 
         /** Fill the view's email address when it's supplied from the intent.  */
         fun prefillEmail(): Observable<String>
+
+        /** Fill the view's for forget or reset password state   */
+        fun resetPasswordScreenStatus(): Observable<ResetPasswordScreenState>
     }
 
     class ViewModel(val environment: Environment) : ActivityViewModel<ResetPasswordActivity>(environment), Inputs, Outputs {
@@ -50,23 +59,57 @@ interface ResetPasswordViewModel {
 
         private val isFormSubmitting = PublishSubject.create<Boolean>()
         private val isFormValid = PublishSubject.create<Boolean>()
-        private val resetSuccess = PublishSubject.create<Void>()
+        private val resetLoginPasswordSuccess = PublishSubject.create<Void>()
+        private val resetFacebookLoginPasswordSuccess = PublishSubject.create<Void>()
         private val resetError = PublishSubject.create<ErrorEnvelope>()
         private val prefillEmail = BehaviorSubject.create<String>()
+        private val resetPasswordScreenStatus = BehaviorSubject.create<ResetPasswordScreenState>()
 
         private val ERROR_GENERIC = "Something went wrong, please try again."
 
         val inputs: Inputs = this
         val outputs: Outputs = this
 
+        // TODO removed with feature flag ANDROID_FACEBOOK_LOGIN_REMOVE
+        private var resetPasswordScreenState: ResetPasswordScreenState? = null
+
         init {
+
             intent()
                 .filter { it.hasExtra(IntentKey.EMAIL) }
                 .map {
                     it.getStringExtra(IntentKey.EMAIL)
                 }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
                 .compose(bindToLifecycle())
-                .subscribe(this.prefillEmail)
+                .subscribe {
+                    this.prefillEmail.onNext(it)
+                    resetPasswordScreenState = ResetPasswordScreenState.ForgetPassword
+                    resetPasswordScreenStatus.onNext(ResetPasswordScreenState.ForgetPassword)
+                }
+
+            val resetFacebookPasswordFlag = intent()
+                .filter {
+                    it.hasExtra(IntentKey.RESET_PASSWORD_FACEBOOK_LOGIN) && environment.optimizely()?.isFeatureEnabled(
+                        OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE
+                    ) == true
+                }
+                .map {
+                    it.getBooleanExtra(IntentKey.RESET_PASSWORD_FACEBOOK_LOGIN, false)
+                }
+
+            resetFacebookPasswordFlag
+                .compose(bindToLifecycle())
+                .subscribe {
+                    if (it) {
+                        resetPasswordScreenState = ResetPasswordScreenState.ResetPassword
+                        resetPasswordScreenStatus.onNext(ResetPasswordScreenState.ResetPassword)
+                    } else {
+                        resetPasswordScreenState = ResetPasswordScreenState.ForgetPassword
+                        resetPasswordScreenStatus.onNext(ResetPasswordScreenState.ForgetPassword)
+                    }
+                }
 
             this.email
                 .map { it.isEmail() }
@@ -81,7 +124,14 @@ interface ResetPasswordViewModel {
             resetPasswordNotification
                 .compose(values())
                 .compose(bindToLifecycle())
-                .subscribe { success() }
+                .subscribe {
+                    when (resetPasswordScreenState) {
+                        ResetPasswordScreenState.ResetPassword -> resetFacebookLoginPasswordSuccess.onNext(
+                            null
+                        )
+                        else -> success()
+                    }
+                }
 
             resetPasswordNotification
                 .compose(errors())
@@ -91,7 +141,7 @@ interface ResetPasswordViewModel {
         }
 
         private fun success() {
-            this.resetSuccess.onNext(null)
+            this.resetLoginPasswordSuccess.onNext(null)
         }
 
         private fun submitEmail(email: String): Observable<Notification<User>> {
@@ -118,16 +168,22 @@ interface ResetPasswordViewModel {
             return this.isFormValid
         }
 
-        override fun resetSuccess(): Observable<Void> {
-            return this.resetSuccess
+        override fun resetLoginPasswordSuccess(): Observable<Void> {
+            return this.resetLoginPasswordSuccess
+        }
+
+        override fun resetFacebookLoginPasswordSuccess(): Observable<Void> {
+            return this.resetFacebookLoginPasswordSuccess
         }
 
         override fun resetError(): Observable<String> {
             return this.resetError
-                .takeUntil(this.resetSuccess)
+                .takeUntil(this.resetLoginPasswordSuccess)
                 .map { it?.errorMessage() ?: ERROR_GENERIC }
         }
 
         override fun prefillEmail(): BehaviorSubject<String> = this.prefillEmail
+
+        override fun resetPasswordScreenStatus(): Observable<ResetPasswordScreenState> = this.resetPasswordScreenStatus
     }
 }

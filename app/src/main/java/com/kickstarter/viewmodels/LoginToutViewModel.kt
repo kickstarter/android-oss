@@ -13,6 +13,7 @@ import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName
@@ -43,6 +44,12 @@ interface LoginToutViewModel {
 
         /** Call when the disclaimer Item  is clicked.  */
         fun disclaimerItemClicked(disclaimerItem: DisclaimerItems)
+
+        /** call with facebook error dialog reset password button*/
+        fun onResetPasswordFacebookErrorDialogClicked()
+
+        /** call with facebook error dialog login button*/
+        fun onLoginFacebookErrorDialogClicked()
     }
 
     interface Outputs {
@@ -75,9 +82,15 @@ interface LoginToutViewModel {
 
         /** Emits when click one of disclaimer items  */
         fun showDisclaimerActivity(): Observable<DisclaimerItems>
+
+        /** Emits when the there is error with facebook login  */
+        fun showFacebookErrorDialog(): Observable<Void>
+
+        /** Emits when the resetPassword should be started.  */
+        fun startResetPasswordActivity(): Observable<Void>
     }
 
-    class ViewModel(environment: Environment) :
+    class ViewModel(val environment: Environment) :
         ActivityViewModel<LoginToutActivity>(environment),
         Inputs,
         Outputs {
@@ -122,6 +135,8 @@ interface LoginToutViewModel {
         @VisibleForTesting val facebookAccessToken = PublishSubject.create<String>()
         private val facebookLoginClick = PublishSubject.create<List<String>>()
         private val loginClick = PublishSubject.create<Void>()
+        private val onResetPasswordFacebookErrorDialogClicked = PublishSubject.create<Void>()
+        private val onLoginFacebookErrorDialogClicked = PublishSubject.create<Void>()
 
         @VisibleForTesting val loginError = PublishSubject.create<ErrorEnvelope?>()
         private val loginReason = PublishSubject.create<LoginReason>()
@@ -129,6 +144,8 @@ interface LoginToutViewModel {
         private val disclaimerItemClicked = PublishSubject.create<DisclaimerItems>()
         private val facebookAuthorizationError = BehaviorSubject.create<FacebookException>()
         private val finishWithSuccessfulResult = BehaviorSubject.create<Void>()
+        private val showFacebookErrorDialog = BehaviorSubject.create<Void>()
+        private val startResetPasswordActivity = BehaviorSubject.create<Void>()
         private val startFacebookConfirmationActivity: Observable<Pair<ErrorEnvelope.FacebookUser, String>>
         private val startLoginActivity: Observable<Void>
         private val startSignupActivity: Observable<Void>
@@ -141,10 +158,20 @@ interface LoginToutViewModel {
             activity: LoginToutActivity?,
             facebookPermissions: List<String>
         ) {
+
             facebookLoginClick.onNext(facebookPermissions)
             if (activity != null) {
-                LoginManager.getInstance().logInWithReadPermissions(activity, facebookPermissions)
+                LoginManager.getInstance()
+                    .logInWithReadPermissions(activity, facebookPermissions)
             }
+        }
+
+        override fun onLoginFacebookErrorDialogClicked() {
+            onLoginFacebookErrorDialogClicked.onNext(null)
+        }
+
+        override fun onResetPasswordFacebookErrorDialogClicked() {
+            onResetPasswordFacebookErrorDialogClicked.onNext(null)
         }
 
         override fun loginClick() {
@@ -165,24 +192,28 @@ interface LoginToutViewModel {
 
         override fun showFacebookAuthorizationErrorDialog(): Observable<String> {
             return facebookAuthorizationError
+                .filter { environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE) == false }
                 .map { it.localizedMessage }
         }
 
         override fun showFacebookInvalidAccessTokenErrorToast(): Observable<String?> {
             return loginError
                 .filter(ErrorEnvelope::isFacebookInvalidAccessTokenError)
+                .filter { environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE) == false }
                 .map { it.errorMessage() }
         }
 
         override fun showMissingFacebookEmailErrorToast(): Observable<String?> {
             return loginError
                 .filter(ErrorEnvelope::isMissingFacebookEmailError)
+                .filter { environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE) == false }
                 .map { it.errorMessage() }
         }
 
         override fun showUnauthorizedErrorDialog(): Observable<String> {
             return loginError
                 .filter(ErrorEnvelope::isUnauthorizedError)
+                .filter { environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE) == false }
                 .map { it.errorMessage() }
         }
 
@@ -206,6 +237,14 @@ interface LoginToutViewModel {
 
         override fun showDisclaimerActivity(): Observable<DisclaimerItems> {
             return showDisclaimerActivity
+        }
+
+        override fun showFacebookErrorDialog(): Observable<Void> {
+            return showFacebookErrorDialog
+        }
+
+        override fun startResetPasswordActivity(): Observable<Void> {
+            return startResetPasswordActivity
         }
 
         init {
@@ -272,6 +311,15 @@ interface LoginToutViewModel {
                 .map { it.facebookUser() }
                 .compose(Transformers.combineLatestPair(facebookAccessToken))
 
+            Observable.merge(facebookAuthorizationError, loginError)
+                .filter {
+                    environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE) == true
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    showFacebookErrorDialog.onNext(null)
+                }
+
             startLoginActivity = loginClick
             startSignupActivity = signupClick
             showDisclaimerActivity = disclaimerItemClicked
@@ -293,6 +341,14 @@ interface LoginToutViewModel {
             signupClick
                 .compose(bindToLifecycle())
                 .subscribe { analyticEvents.trackSignUpInitiateCtaClicked() }
+
+            onResetPasswordFacebookErrorDialogClicked
+                .compose(bindToLifecycle())
+                .subscribe { startResetPasswordActivity.onNext(null) }
+
+            onLoginFacebookErrorDialogClicked
+                .compose(bindToLifecycle())
+                .subscribe { startLoginActivity.onNext(null) }
         }
     }
 }

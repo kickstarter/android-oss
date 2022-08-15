@@ -5,9 +5,9 @@ import android.content.Context
 import android.util.Log
 import com.appboy.Appboy
 import com.appboy.AppboyFirebaseMessagingService
-import com.appboy.support.AppboyLogger
 import com.braze.BrazeActivityLifecycleCallbackListener
 import com.braze.configuration.BrazeConfig
+import com.braze.support.BrazeLogger
 import com.braze.ui.inappmessage.BrazeInAppMessageManager
 import com.google.firebase.messaging.RemoteMessage
 import com.kickstarter.libs.Build
@@ -99,7 +99,7 @@ open class BrazeClient(
             Appboy.configure(context, appBoyConfig)
 
             if (this.build.isDebug || Build.isInternal()) {
-                AppboyLogger.setLogLevel(Log.VERBOSE)
+                BrazeLogger.logLevel = Log.VERBOSE
             }
 
             initialized = true

@@ -22,171 +22,68 @@ class InAppCustomListenerHandlerTest : KSRobolectricTestCase() {
     lateinit var build: Build
 
     private val mockInAppMessage = object : IInAppMessage {
+        override var animateIn: Boolean
+            get() = TODO("Not yet implemented")
+            set(value) {}
+        override var animateOut: Boolean
+            get() = TODO("Not yet implemented")
+            set(value) {}
+        override var backgroundColor: Int
+            get() = TODO("Not yet implemented")
+            set(value) {}
+        override val clickAction: ClickAction
+            get() = TODO("Not yet implemented")
+        override var cropType: CropType
+            get() = TODO("Not yet implemented")
+            set(value) {}
+        override var dismissType: DismissType
+            get() = TODO("Not yet implemented")
+            set(value) {}
+        override var durationInMilliseconds: Int
+            get() = TODO("Not yet implemented")
+            set(value) {}
+        override var expirationTimestamp: Long
+            get() = TODO("Not yet implemented")
+            set(value) {}
+        override var extras: Map<String, String>
+            get() = TODO("Not yet implemented")
+            set(value) {}
+        override var icon: String?
+            get() = TODO("Not yet implemented")
+            set(value) {}
+        override var iconBackgroundColor: Int
+            get() = TODO("Not yet implemented")
+            set(value) {}
+        override var iconColor: Int
+            get() = TODO("Not yet implemented")
+            set(value) {}
+        override val isControl: Boolean
+            get() = TODO("Not yet implemented")
+        override var message: String?
+            get() = TODO("Not yet implemented")
+            set(value) {}
+        override var messageTextAlign: TextAlign
+            get() = TODO("Not yet implemented")
+            set(value) {}
+        override var messageTextColor: Int
+            get() = TODO("Not yet implemented")
+            set(value) {}
+        override val messageType: MessageType
+            get() = TODO("Not yet implemented")
+        override var openUriInWebView: Boolean
+            get() = TODO("Not yet implemented")
+            set(value) {}
+        override var orientation: Orientation
+            get() = TODO("Not yet implemented")
+            set(value) {}
+        override val uri: Uri?
+            get() = TODO("Not yet implemented")
+
         override fun forJsonPut(): JSONObject {
             TODO("Not yet implemented")
         }
 
-        override fun getMessage(): String {
-            TODO("Not yet implemented")
-        }
-
-        override fun getExtras(): MutableMap<String, String>? {
-            TODO("Not yet implemented")
-        }
-
-        override fun setExtras(p0: MutableMap<String, String>?) {
-            TODO("Not yet implemented")
-        }
-
-        override fun getDurationInMilliseconds(): Int {
-            TODO("Not yet implemented")
-        }
-
-        override fun getBackgroundColor(): Int {
-            TODO("Not yet implemented")
-        }
-
-        override fun getIconColor(): Int {
-            TODO("Not yet implemented")
-        }
-
-        override fun getIconBackgroundColor(): Int {
-            TODO("Not yet implemented")
-        }
-
-        override fun getMessageTextColor(): Int {
-            TODO("Not yet implemented")
-        }
-
-        override fun getIcon(): String {
-            TODO("Not yet implemented")
-        }
-
-        override fun getAnimateIn(): Boolean {
-            TODO("Not yet implemented")
-        }
-
-        override fun getAnimateOut(): Boolean {
-            TODO("Not yet implemented")
-        }
-
-        override fun getClickAction(): ClickAction {
-            TODO("Not yet implemented")
-        }
-
-        override fun getUri(): Uri {
-            TODO("Not yet implemented")
-        }
-
-        override fun getDismissType(): DismissType {
-            TODO("Not yet implemented")
-        }
-
-        override fun getRemoteAssetPathsForPrefetch(): MutableList<String> {
-            TODO("Not yet implemented")
-        }
-
-        override fun getOrientation(): Orientation {
-            TODO("Not yet implemented")
-        }
-
-        override fun getCropType(): CropType {
-            TODO("Not yet implemented")
-        }
-
-        override fun getMessageTextAlign(): TextAlign {
-            TODO("Not yet implemented")
-        }
-
-        override fun getExpirationTimestamp(): Long {
-            TODO("Not yet implemented")
-        }
-
-        override fun getOpenUriInWebView(): Boolean {
-            TODO("Not yet implemented")
-        }
-
-        override fun getMessageType(): MessageType {
-            TODO("Not yet implemented")
-        }
-
-        override fun setOpenUriInWebView(p0: Boolean) {
-            TODO("Not yet implemented")
-        }
-
-        override fun setExpirationTimestamp(p0: Long) {
-            TODO("Not yet implemented")
-        }
-
-        override fun setMessageTextAlign(p0: TextAlign?) {
-            TODO("Not yet implemented")
-        }
-
-        override fun setCropType(p0: CropType?) {
-            TODO("Not yet implemented")
-        }
-
-        override fun setOrientation(p0: Orientation?) {
-            TODO("Not yet implemented")
-        }
-
-        override fun setMessage(p0: String?) {
-            TODO("Not yet implemented")
-        }
-
-        override fun setAnimateIn(p0: Boolean) {
-            TODO("Not yet implemented")
-        }
-
-        override fun setAnimateOut(p0: Boolean) {
-            TODO("Not yet implemented")
-        }
-
-        override fun setClickAction(p0: ClickAction?): Boolean {
-            TODO("Not yet implemented")
-        }
-
-        override fun setClickAction(p0: ClickAction?, p1: Uri?): Boolean {
-            TODO("Not yet implemented")
-        }
-
-        override fun setDismissType(p0: DismissType?) {
-            TODO("Not yet implemented")
-        }
-
-        override fun setDurationInMilliseconds(p0: Int) {
-            TODO("Not yet implemented")
-        }
-
-        override fun setBackgroundColor(p0: Int) {
-            TODO("Not yet implemented")
-        }
-
-        override fun setIconBackgroundColor(p0: Int) {
-            TODO("Not yet implemented")
-        }
-
-        override fun setIconColor(p0: Int) {
-            TODO("Not yet implemented")
-        }
-
-        override fun setMessageTextColor(p0: Int) {
-            TODO("Not yet implemented")
-        }
-
-        override fun setIcon(p0: String?) {
-            TODO("Not yet implemented")
-        }
-
-        override fun setLocalPrefetchedAssetPaths(p0: MutableMap<String, String>) {
-            TODO("Not yet implemented")
-        }
-
-        override fun getLocalPrefetchedAssetPaths(): MutableMap<String, String> {
-            TODO("Not yet implemented")
-        }
-
-        override fun logImpression(): Boolean {
+        override fun getRemoteAssetPathsForPrefetch(): List<String> {
             TODO("Not yet implemented")
         }
 
@@ -194,7 +91,11 @@ class InAppCustomListenerHandlerTest : KSRobolectricTestCase() {
             TODO("Not yet implemented")
         }
 
-        override fun logDisplayFailure(p0: InAppMessageFailureType?): Boolean {
+        override fun logDisplayFailure(failureType: InAppMessageFailureType): Boolean {
+            TODO("Not yet implemented")
+        }
+
+        override fun logImpression(): Boolean {
             TODO("Not yet implemented")
         }
 
@@ -202,7 +103,15 @@ class InAppCustomListenerHandlerTest : KSRobolectricTestCase() {
             TODO("Not yet implemented")
         }
 
-        override fun isControl(): Boolean {
+        override fun setClickBehavior(clickAction: ClickAction) {
+            TODO("Not yet implemented")
+        }
+
+        override fun setClickBehavior(clickAction: ClickAction, uri: Uri?) {
+            TODO("Not yet implemented")
+        }
+
+        override fun setLocalPrefetchedAssetPaths(remotePathToLocalAssetMap: Map<String, String>) {
             TODO("Not yet implemented")
         }
     }

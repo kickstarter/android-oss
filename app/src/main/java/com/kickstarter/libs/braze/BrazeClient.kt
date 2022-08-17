@@ -4,9 +4,9 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.appboy.Appboy
-import com.appboy.AppboyFirebaseMessagingService
 import com.braze.BrazeActivityLifecycleCallbackListener
 import com.braze.configuration.BrazeConfig
+import com.braze.push.BrazeFirebaseMessagingService
 import com.braze.support.BrazeLogger
 import com.braze.ui.inappmessage.BrazeInAppMessageManager
 import com.google.firebase.messaging.RemoteMessage
@@ -131,7 +131,7 @@ open class BrazeClient(
     override fun handleRemoteMessages(context: Context, message: RemoteMessage): Boolean {
         var handleMessage = false
         if (isSDKEnabled())
-            handleMessage = AppboyFirebaseMessagingService.handleBrazeRemoteMessage(context, message)
+            handleMessage = BrazeFirebaseMessagingService.handleBrazeRemoteMessage(context, message)
 
         return handleMessage
     }

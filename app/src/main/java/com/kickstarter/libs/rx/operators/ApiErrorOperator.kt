@@ -40,7 +40,7 @@ class ApiErrorOperator<T>(private val gson: Gson?) : Observable.Operator<T, Resp
                 }
 
                 response?.let {
-                    if (!response?.isSuccessful) {
+                    if (response != null && !response.isSuccessful) {
                         val envelope: ErrorEnvelope? = try {
                             gson?.fromJson(response.errorBody()?.string(), ErrorEnvelope::class.java)
                         } catch (e: Exception) {

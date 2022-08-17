@@ -230,6 +230,7 @@ fun TextViewElement.getStyledComponents(
                     spannable.size(headerSize)
                     spannable.boldStyle()
                 }
+                else -> {}
             }
         }
 

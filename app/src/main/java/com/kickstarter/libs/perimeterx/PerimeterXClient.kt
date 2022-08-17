@@ -118,6 +118,7 @@ open class PerimeterXClient(private val build: Build) : PerimeterXClientType {
                             this.captchaCanceled.onNext(cancelReason.name)
                         }
                     }
+                    else -> {}
                 }
             }
         }

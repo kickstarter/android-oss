@@ -705,9 +705,9 @@ fun locationTransformer(locationGR: fragment.Location?): Location {
 
 fun shippingRulesListTransformer(shippingRulesExpanded: List<fragment.ShippingRule>): ShippingRulesEnvelope {
 
-    val shippingRulesList = shippingRulesExpanded?.mapNotNull { shippingRule ->
+    val shippingRulesList: List<ShippingRule> = shippingRulesExpanded?.mapNotNull { shippingRule ->
         shippingRuleTransformer(shippingRule)
-    }
+    } ?: emptyList<ShippingRule>()
 
     return ShippingRulesEnvelope
         .builder()

@@ -1,17 +1,26 @@
 buildscript {
     repositories {
+        google()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
         maven { url 'https://maven.fabric.io/public' }
     }
 
     dependencies {
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.1'
+        classpath 'com.apollographql.apollo:apollo-gradle-plugin:2.5.12'
+        classpath 'com.karumi:shot:5.13.0'
     }
 }
 
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.google.firebase.firebase-perf'
-apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.apollographql.apollo'
@@ -161,19 +170,6 @@ android {
 
 }
 
-buildscript {
-    repositories {
-        google()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath 'com.apollographql.apollo:apollo-gradle-plugin:2.5.11'
-        classpath 'com.karumi:shot:5.13.0'
-    }
-}
-
 apollo {
     customTypeMapping = [
             "Date" : "java.util.Date",
@@ -202,14 +198,14 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.work:work-runtime-ktx:2.7.1'
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
-    implementation 'com.apollographql.apollo:apollo-runtime:2.5.11'
+    implementation 'com.apollographql.apollo:apollo-runtime:2.5.12'
     implementation 'com.facebook.android:facebook-android-sdk:12.0.1'
     implementation 'com.google.android.play:core-ktx:1.8.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "com.google.android.exoplayer:exoplayer:2.17.1"
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'com.google.android.material:material:1.6.1'
-    final dagger_version = "2.41"
+    final dagger_version = "2.43"
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     implementation 'com.jakewharton:process-phoenix:2.1.2'

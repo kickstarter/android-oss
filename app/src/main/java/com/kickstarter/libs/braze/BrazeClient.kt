@@ -3,7 +3,7 @@ package com.kickstarter.libs.braze
 import android.app.Application
 import android.content.Context
 import android.util.Log
-import com.appboy.Appboy
+import com.braze.Braze
 import com.braze.BrazeActivityLifecycleCallbackListener
 import com.braze.configuration.BrazeConfig
 import com.braze.push.BrazeFirebaseMessagingService
@@ -96,7 +96,7 @@ open class BrazeClient(
                 // .setDefaultNotificationChannelDescription("Braze related push")
                 .setHandlePushDeepLinksAutomatically(true)
                 .build()
-            Appboy.configure(context, appBoyConfig)
+            Braze.configure(context, appBoyConfig)
 
             if (this.build.isDebug || Build.isInternal()) {
                 BrazeLogger.logLevel = Log.VERBOSE
@@ -125,7 +125,7 @@ open class BrazeClient(
 
     override fun registerPushMessages(context: Context, token: String) {
         if (isSDKEnabled())
-            Appboy.getInstance(context).registerAppboyPushMessages(token)
+            Braze.getInstance(context).registeredPushToken = token
     }
 
     override fun handleRemoteMessages(context: Context, message: RemoteMessage): Boolean {

@@ -9,7 +9,7 @@ enum class ResetPasswordScreenState(
 ) {
     ResetPassword(
         title = R.string.FPO_reset_your_password,
-        hint = R.string.FPO_reset_your_password_hint
+        hint = R.string.FPO_we_discontinued_logging_in_through_Facebook
     ),
     ForgetPassword(
         title = R.string.forgot_password_title,

@@ -49,6 +49,7 @@ class User private constructor(
     private val promoNewsletter: Boolean,
     private val publishingNewsletter: Boolean,
     private val showPublicProfile: Boolean,
+    private val needsPassword: Boolean?,
     private val social: Boolean,
     private val starredProjectsCount: Int,
     private val unreadMessagesCount: Int,
@@ -98,6 +99,7 @@ class User private constructor(
     fun promoNewsletter() = this.promoNewsletter
     fun publishingNewsletter() = this.publishingNewsletter
     fun showPublicProfile() = this.showPublicProfile
+    fun needsPassword() = this.needsPassword
     fun social() = this.social
     fun starredProjectsCount() = this.starredProjectsCount
     fun unreadMessagesCount() = this.unreadMessagesCount
@@ -148,6 +150,7 @@ class User private constructor(
         private var promoNewsletter: Boolean = false,
         private var publishingNewsletter: Boolean = false,
         private var showPublicProfile: Boolean = false,
+        private var needsPassword: Boolean? = false,
         private var social: Boolean = false,
         private var starredProjectsCount: Int = 0,
         private var unreadMessagesCount: Int = 0,
@@ -202,6 +205,8 @@ class User private constructor(
         fun unreadMessagesCount(unreadMessagesCount: Int?) = apply { this.unreadMessagesCount = unreadMessagesCount ?: 0 }
         fun unseenActivityCount(unseenActivityCount: Int?) = apply { this.unseenActivityCount = unseenActivityCount ?: 0 }
         fun weeklyNewsletter(weeklyNewsletter: Boolean?) = apply { this.weeklyNewsletter = weeklyNewsletter ?: false }
+        fun needsPassword(needsPassword: Boolean?) = apply { this.needsPassword = needsPassword ?: false }
+
         fun build() = User(
             alumniNewsletter = alumniNewsletter,
             artsCultureNewsletter = artsCultureNewsletter,
@@ -249,7 +254,9 @@ class User private constructor(
             starredProjectsCount = starredProjectsCount,
             unreadMessagesCount = unreadMessagesCount,
             unseenActivityCount = unseenActivityCount,
-            weeklyNewsletter = weeklyNewsletter
+            weeklyNewsletter = weeklyNewsletter,
+            needsPassword = needsPassword
+
         )
     }
 
@@ -309,7 +316,8 @@ class User private constructor(
         starredProjectsCount = starredProjectsCount,
         unreadMessagesCount = unreadMessagesCount,
         unseenActivityCount = unseenActivityCount,
-        weeklyNewsletter = weeklyNewsletter
+        weeklyNewsletter = weeklyNewsletter,
+        needsPassword = needsPassword
     )
 
     enum class EmailFrequency(private val stringResId: Int) {
@@ -379,6 +387,7 @@ class User private constructor(
                 unreadMessagesCount() == obj.unreadMessagesCount() &&
                 unseenActivityCount() == obj.unseenActivityCount() &&
                 weeklyNewsletter() == obj.weeklyNewsletter()
+            needsPassword() == obj.needsPassword()
         }
         return equals
     }

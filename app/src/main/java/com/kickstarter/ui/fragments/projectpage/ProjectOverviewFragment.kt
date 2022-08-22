@@ -319,7 +319,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                activity?.startProjectUpdatesActivity(Pair(it.project(), it))
+                activity?.startProjectUpdatesActivity(it)
             }
 
         viewModel.outputs.startCreatorView()

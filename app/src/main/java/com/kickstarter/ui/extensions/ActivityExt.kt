@@ -158,7 +158,7 @@ fun Activity.startUpdatesActivity(
  * the Transition occurs slide_in_right -> fade_out_slide_out_left
  * @param projectAndData
  */
-fun Activity.startProjectUpdatesActivity(projectAndData: Pair<Project, ProjectData>) {
+fun Activity.startProjectUpdatesActivity(projectAndData: ProjectData) {
     startActivity(Intent().getProjectUpdatesActivityIntent(this, projectAndData))
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
 }

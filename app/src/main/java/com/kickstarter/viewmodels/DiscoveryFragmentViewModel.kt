@@ -109,6 +109,9 @@ interface DiscoveryFragmentViewModel {
 
         /** Emits when the success prompt for saving should be displayed.  */
         fun showSavedPrompt(): Observable<Void>
+
+        /** Emits when the setPassword should be started.  */
+        fun startSetPasswordActivity(): Observable<Void>
     }
 
     class ViewModel(environment: Environment) :
@@ -148,6 +151,7 @@ interface DiscoveryFragmentViewModel {
         private val shouldShowEditorial = BehaviorSubject.create<Editorial?>()
         private val shouldShowEmptySavedView = BehaviorSubject.create<Boolean>()
         private val shouldShowOnboardingView = BehaviorSubject.create<Boolean>()
+        private val startSetPasswordActivity = BehaviorSubject.create<Void>()
         private val startEditorialActivity = PublishSubject.create<Editorial>()
         private val startProjectActivity: Observable<Pair<Project, RefTag>>
         private val startUpdateActivity: Observable<Activity>
@@ -324,6 +328,22 @@ interface DiscoveryFragmentViewModel {
                 }
                 .compose(bindToLifecycle())
                 .subscribe(shouldShowOnboardingView)
+
+            paramsFromActivity
+                .compose(Transformers.combineLatestPair(userIsLoggedIn))
+                .filter {
+                    it.second && optimizely?.isFeatureEnabled(
+                        OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE
+                    ) == true
+                }
+                .compose(Transformers.combineLatestPair(currentUser.loggedInUser()))
+                .filter {
+                    it.second.needsPassword() == true
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    startSetPasswordActivity.onNext(null)
+                }
 
             paramsFromActivity
                 .map { params: DiscoveryParams -> isSavedVisible(params) }
@@ -571,5 +591,6 @@ interface DiscoveryFragmentViewModel {
         override fun startLoginToutActivityToSaveProject(): Observable<Project> = this.startLoginToutActivityToSaveProject
         override fun scrollToSavedProjectPosition(): Observable<Int> = this.scrollToSavedProjectPosition
         override fun showSavedPrompt(): Observable<Void> = this.showSavedPrompt
+        override fun startSetPasswordActivity(): Observable<Void> = this.startSetPasswordActivity
     }
 }

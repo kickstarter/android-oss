@@ -1500,6 +1500,7 @@ interface PledgeFragmentLegacyViewModel {
                                 this.pledgeSummaryIsGone.onNext(false)
                             }
                         }
+                        else -> {}
                     }
                 }
 
@@ -1534,6 +1535,7 @@ interface PledgeFragmentLegacyViewModel {
                             if (!isNoReward)
                                 this.bonusSummaryIsGone.onNext(!hasBonus)
                         }
+                        else -> {}
                     }
                 }
         }

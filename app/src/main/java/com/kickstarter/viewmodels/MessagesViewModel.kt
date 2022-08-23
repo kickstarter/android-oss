@@ -450,16 +450,16 @@ interface MessagesViewModel {
                     )
                 )
                 .map {
-                    if (it?.first == null)
-                        it?.second
-                    else {
-                        it?.first?.let {
-                                initialMessages ->
+                    val messagesList = it?.first
+                    val message = it?.second?.toList()
+
+                    messagesList?.let { initialMessages ->
+                        message?.let {
                             ListUtils.concatDistinct(
-                                initialMessages, it?.second
+                                initialMessages, it
                             )
                         }
-                    }
+                    } ?: it.second
                 }
 
             // Load the initial messages once, subsequently load newer messages if any.

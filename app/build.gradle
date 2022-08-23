@@ -268,7 +268,7 @@ dependencies {
 
     //
     implementation("androidx.activity:activity:1.5.1")
-    implementation("androidx.fragment:fragment:1.5.1")
+    implementation("androidx.fragment:fragment:1.5.2")
 
 
     // Testing

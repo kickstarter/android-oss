@@ -10,4 +10,5 @@ object SharedPreferenceKey {
     const val MESSAGE_THREAD_HAS_UNREAD_MESSAGES = "message_thread_has_unread_messages"
     const val USER = "user"
     const val FEATURE_FLAG = "feature_flags"
+    const val HAS_SEEN_NOTIF_PERMISSIONS = "has_seen_notif_permissions"
 }

@@ -15,7 +15,6 @@ import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.CategoryFactory.artCategory
 import com.kickstarter.mock.factories.CategoryFactory.musicCategory
 import com.kickstarter.mock.factories.InternalBuildEnvelopeFactory.newerBuildAvailable
-import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.factories.UserFactory.noRecommendations
 import com.kickstarter.mock.factories.UserFactory.user
 import com.kickstarter.mock.services.MockApiClient
@@ -66,7 +65,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     private val showErrorMessage = TestSubscriber<String>()
     private val showNotifPermissionRequest = TestSubscriber<Void>()
 
-    private fun setUpEnvironment(environment: Environment){
+    private fun setUpEnvironment(environment: Environment) {
         vm = DiscoveryViewModel.ViewModel(environment)
     }
 
@@ -102,7 +101,8 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         vm.inputs.discoveryPagerAdapterSetPrimaryPage(
             Mockito.mock(
                 DiscoveryPagerAdapter::class.java
-            ), 0
+            ),
+            0
         )
 
         // Drawer data should emit. Drawer should be closed.
@@ -115,7 +115,8 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         vm.inputs.topFilterViewHolderRowClick(
             Mockito.mock(
                 TopFilterViewHolder::class.java
-            ), NavigationDrawerData.Section.Row
+            ),
+            NavigationDrawerData.Section.Row
                 .builder()
                 .params(DiscoveryParams.builder().staffPicks(true).build())
                 .build()
@@ -131,7 +132,8 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         vm.inputs.childFilterViewHolderRowClick(
             Mockito.mock(
                 ChildFilterViewHolder::class.java
-            ), NavigationDrawerData.Section.Row
+            ),
+            NavigationDrawerData.Section.Row
                 .builder()
                 .params(
                     DiscoveryParams
@@ -162,7 +164,8 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         vm.inputs.discoveryPagerAdapterSetPrimaryPage(
             Mockito.mock(
                 DiscoveryPagerAdapter::class.java
-            ), 0
+            ),
+            0
         )
 
         // Sort tab should be expanded.
@@ -178,7 +181,8 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         vm.inputs.discoveryPagerAdapterSetPrimaryPage(
             Mockito.mock(
                 DiscoveryPagerAdapter::class.java
-            ), 1
+            ),
+            1
         )
         segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
 
@@ -233,7 +237,8 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         vm.inputs.discoveryPagerAdapterSetPrimaryPage(
             Mockito.mock(
                 DiscoveryPagerAdapter::class.java
-            ), 1
+            ),
+            1
         )
 
         // Sort tab and toolbar params should emit again with same params.
@@ -301,12 +306,14 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         vm.inputs.loggedInViewHolderProfileClick(
             Mockito.mock(
                 LoggedInViewHolder::class.java
-            ), user()
+            ),
+            user()
         )
         vm.inputs.loggedInViewHolderSettingsClick(
             Mockito.mock(
                 LoggedInViewHolder::class.java
-            ), user()
+            ),
+            user()
         )
         showActivityFeed.assertValueCount(2)
         showCreatorDashboard.assertValueCount(1)
@@ -334,7 +341,8 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         vm.inputs.discoveryPagerAdapterSetPrimaryPage(
             Mockito.mock(
                 DiscoveryPagerAdapter::class.java
-            ), 0
+            ),
+            0
         )
 
         // Initial params should emit. Page should not be updated yet.
@@ -348,7 +356,8 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         vm.inputs.discoveryPagerAdapterSetPrimaryPage(
             Mockito.mock(
                 DiscoveryPagerAdapter::class.java
-            ), 1
+            ),
+            1
         )
 
         // Params and page should update with new POPULAR sort values.
@@ -385,7 +394,8 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         vm.inputs.discoveryPagerAdapterSetPrimaryPage(
             Mockito.mock(
                 DiscoveryPagerAdapter::class.java
-            ), 0
+            ),
+            0
         )
 
         // Params and page should update with new MAGIC sort value.
@@ -457,13 +467,15 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         vm.inputs.discoveryPagerAdapterSetPrimaryPage(
             Mockito.mock(
                 DiscoveryPagerAdapter::class.java
-            ), 1
+            ),
+            1
         )
         clearPages.assertNoValues()
         vm.inputs.discoveryPagerAdapterSetPrimaryPage(
             Mockito.mock(
                 DiscoveryPagerAdapter::class.java
-            ), 3
+            ),
+            3
         )
         clearPages.assertNoValues()
 
@@ -480,7 +492,8 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         vm.inputs.discoveryPagerAdapterSetPrimaryPage(
             Mockito.mock(
                 DiscoveryPagerAdapter::class.java
-            ), 1
+            ),
+            1
         )
 
         // Select MUSIC category from the drawer.
@@ -500,11 +513,11 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         vm.outputs.rootCategoriesAndPosition()
-            .map{ cp -> cp.first }
+            .map { cp -> cp.first }
             .subscribe(rootCategories)
 
         vm.outputs.rootCategoriesAndPosition()
-            .map{ cp -> cp.second }
+            .map { cp -> cp.second }
             .subscribe(position)
 
         // Start initial activity.
@@ -514,7 +527,8 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         vm.inputs.discoveryPagerAdapterSetPrimaryPage(
             Mockito.mock(
                 DiscoveryPagerAdapter::class.java
-            ), 0
+            ),
+            0
         )
 
         // Root categories should emit for the initial MAGIC sort this.position.
@@ -525,7 +539,8 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         vm.inputs.discoveryPagerAdapterSetPrimaryPage(
             Mockito.mock(
                 DiscoveryPagerAdapter::class.java
-            ), 1
+            ),
+            1
         )
 
         // Root categories should emit for the POPULAR sort position.
@@ -587,7 +602,8 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testDrawerMenuIcon_whenUserHasNoUnreadMessagesOrUnseenActivityOrErroredBackings() {
         val currentUser = MockCurrentUser(user())
-        setUpEnvironment(environment()
+        setUpEnvironment(
+            environment()
                 .toBuilder()
                 .currentUser(currentUser)
                 .build()
@@ -666,7 +682,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testNotificationPermissionRequest_whenUserHasSeenRequest_shouldNotEmit(){
+    fun testNotificationPermissionRequest_whenUserHasSeenRequest_shouldNotEmit() {
         var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
         var user: User = user()
         val currentUser: CurrentUserType = MockCurrentUser(user)
@@ -677,7 +693,8 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
                 .toBuilder()
                 .sharedPreferences(sharedPreferences)
                 .currentUser(currentUser)
-                .build())
+                .build()
+        )
 
         vm.outputs.showNotifPermissionsRequest().subscribe(showNotifPermissionRequest)
 
@@ -685,7 +702,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testNotificationPermissionRequest_whenLoggedInAndHasNotSeeRequest_shouldEmit(){
+    fun testNotificationPermissionRequest_whenLoggedInAndHasNotSeeRequest_shouldEmit() {
         var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
         var user: User = user()
         val currentUser: CurrentUserType = MockCurrentUser(user)
@@ -696,7 +713,8 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
                 .toBuilder()
                 .sharedPreferences(sharedPreferences)
                 .currentUser(currentUser)
-                .build())
+                .build()
+        )
 
         vm.outputs.showNotifPermissionsRequest().subscribe(showNotifPermissionRequest)
 
@@ -721,7 +739,8 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         vm.inputs.discoveryPagerAdapterSetPrimaryPage(
             Mockito.mock(
                 DiscoveryPagerAdapter::class.java
-            ), 0
+            ),
+            0
         )
     }
 }

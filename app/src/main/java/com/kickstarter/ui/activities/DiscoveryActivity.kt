@@ -33,9 +33,9 @@ import com.kickstarter.ui.extensions.showSuccessSnackBar
 import com.kickstarter.ui.fragments.DiscoveryFragment
 import com.kickstarter.ui.fragments.DiscoveryFragment.Companion.newInstance
 import com.kickstarter.viewmodels.DiscoveryViewModel
-import java.util.concurrent.TimeUnit
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 @RequiresActivityViewModel(DiscoveryViewModel.ViewModel::class)
@@ -101,8 +101,8 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
         viewModel.outputs.showNotifPermissionsRequest()
             .distinctUntilChanged()
             .filter {
-                android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU
-                        && this.checkPermissions(Manifest.permission.POST_NOTIFICATIONS)
+                android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
+                    this.checkPermissions(Manifest.permission.POST_NOTIFICATIONS)
             }
             .delay(2000, TimeUnit.MILLISECONDS)
             .compose(bindToLifecycle())

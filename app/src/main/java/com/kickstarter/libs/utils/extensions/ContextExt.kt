@@ -1,7 +1,6 @@
 @file:JvmName("ContextExt")
 package com.kickstarter.libs.utils.extensions
 
-import android.Manifest
 import android.app.AlertDialog
 import android.app.Application
 import android.content.Context
@@ -23,7 +22,7 @@ fun Context.registerActivityLifecycleCallbacks(callbacks: Application.ActivityLi
     }
 }
 
-fun Context.checkPermissions(permission: String) : Boolean {
+fun Context.checkPermissions(permission: String): Boolean {
     return ContextCompat.checkSelfPermission(
         this,
         permission

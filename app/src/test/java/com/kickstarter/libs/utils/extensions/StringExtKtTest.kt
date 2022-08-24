@@ -160,6 +160,11 @@ class StringExtKtTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun maskEmail() {
+        assertEquals("nati*******@kickstarter.com", "native.team@kickstarter.com".maskEmail())
+    }
+
+    @Test
     fun isValidMP3Format() {
         val url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
         assertTrue(url.isMP3Url())

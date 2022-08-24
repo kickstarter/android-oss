@@ -105,3 +105,11 @@ fun String.isGif(): Boolean {
     val gifPattern = "(?:\\/\\/.*\\.(?:gif))"
     return gifPattern.toRegex().find(this) != null
 }
+
+/**
+ * Mask Email
+ */
+fun String.maskEmail(): String {
+    val regex = """(?:\G(?!^)|(?<=^[^@]{4}))[^@](?!\.[^.]+${'$'})""".toRegex()
+    return this.replace(regex, "*")
+}

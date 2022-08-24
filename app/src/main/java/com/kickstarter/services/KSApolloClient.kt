@@ -1185,6 +1185,36 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
+    override fun setUserPassword(
+        newPassword: String,
+        confirmPassword: String
+    ): Observable<UpdateUserPasswordMutation.Data> {
+        return Observable.defer {
+            val ps = PublishSubject.create<UpdateUserPasswordMutation.Data>()
+            service.mutate(
+                UpdateUserPasswordMutation.builder()
+                    // .currentPassword(currentPassword)
+                    .password(newPassword)
+                    .passwordConfirmation(confirmPassword)
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<UpdateUserPasswordMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<UpdateUserPasswordMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message))
+                        }
+                        ps.onNext(response.data)
+                        ps.onCompleted()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
     override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
         return Observable.defer {
             val ps = PublishSubject.create<UserPrivacyQuery.Data>()

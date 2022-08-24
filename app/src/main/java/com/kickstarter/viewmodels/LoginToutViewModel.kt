@@ -88,6 +88,9 @@ interface LoginToutViewModel {
 
         /** Emits when the resetPassword should be started.  */
         fun startResetPasswordActivity(): Observable<Void>
+
+        /** Emits when the setPassword should be started.  */
+        fun startSetPasswordActivity(): Observable<String>
     }
 
     class ViewModel(val environment: Environment) :
@@ -96,8 +99,9 @@ interface LoginToutViewModel {
         Outputs {
 
         private var callbackManager: CallbackManager? = null
-        private val currentUser: CurrentUserType
-        private val client: ApiClientType
+        private val currentUser: CurrentUserType = requireNotNull(environment.currentUser())
+        private val client: ApiClientType = requireNotNull(environment.apiClient())
+        private val apolloClient = requireNotNull(this.environment.apolloClient())
 
         private fun clearFacebookSession(e: FacebookException) {
             LoginManager.getInstance().logOut()
@@ -150,6 +154,7 @@ interface LoginToutViewModel {
         private val startLoginActivity: Observable<Void>
         private val startSignupActivity: Observable<Void>
         private val showDisclaimerActivity: Observable<DisclaimerItems>
+        private val startSetPasswordActivity = BehaviorSubject.create<String>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -247,9 +252,11 @@ interface LoginToutViewModel {
             return startResetPasswordActivity
         }
 
+        override fun startSetPasswordActivity(): Observable<String> {
+            return startSetPasswordActivity
+        }
+
         init {
-            client = requireNotNull(environment.apiClient())
-            currentUser = requireNotNull(environment.currentUser())
             registerFacebookCallback()
 
             val facebookAccessTokenEnvelope = facebookAccessToken
@@ -311,7 +318,7 @@ interface LoginToutViewModel {
                 .map { it.facebookUser() }
                 .compose(Transformers.combineLatestPair(facebookAccessToken))
 
-            Observable.merge(facebookAuthorizationError, loginError)
+            facebookAuthorizationError
                 .filter {
                     environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE) == true
                 }

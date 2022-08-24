@@ -167,7 +167,12 @@ fun Intent.getLoginActivityIntent(
  * @param context
  */
 fun Intent.getSetPasswordActivity(
-    context: Context
+    context: Context,
+    email: String?
 ): Intent {
-    return this.setClass(context, SetPasswordActivity::class.java)
+    return this.setClass(context, SetPasswordActivity::class.java).apply {
+        email?.let {
+            this.putExtra(IntentKey.EMAIL, it)
+        }
+    }
 }

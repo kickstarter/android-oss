@@ -263,6 +263,11 @@ dependencies {
     // Zoom on Images
     implementation 'io.github.aghajari:ZoomHelper:1.1.0'
 
+    //
+    implementation("androidx.activity:activity:1.5.1")
+    implementation("androidx.fragment:fragment:1.5.2")
+
+
     // Testing
     testImplementation "junit:junit:4.13.2"
     testImplementation 'org.mockito:mockito-core:4.5.1'

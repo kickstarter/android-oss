@@ -1,9 +1,11 @@
 package com.kickstarter.ui.activities
 
+import android.Manifest
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.drawable.Animatable
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -19,6 +21,7 @@ import com.kickstarter.libs.InternalToolsType
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.extensions.checkPermissions
 import com.kickstarter.libs.utils.extensions.positionFromSort
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope
 import com.kickstarter.ui.IntentKey
@@ -32,6 +35,7 @@ import com.kickstarter.ui.fragments.DiscoveryFragment.Companion.newInstance
 import com.kickstarter.viewmodels.DiscoveryViewModel
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 @RequiresActivityViewModel(DiscoveryViewModel.ViewModel::class)
@@ -46,6 +50,8 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
         super.onCreate(savedInstanceState)
         binding = DiscoveryLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        environment()
+        val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
 
         internalTools = environment().internalTools()
 
@@ -63,7 +69,10 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
         )
 
         pagerAdapter = DiscoveryPagerAdapter(
-            supportFragmentManager, createFragments(viewPagerTitles.size).toMutableList(), viewPagerTitles, viewModel.inputs
+            supportFragmentManager,
+            createFragments(viewPagerTitles.size).toMutableList(),
+            viewPagerTitles,
+            viewModel.inputs
         )
 
         binding.discoveryViewPager.adapter = pagerAdapter
@@ -87,6 +96,19 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
             .subscribe {
                 binding.discoveryViewPager.currentItem = it.sort().positionFromSort()
                 pagerAdapter.takeParams(it)
+            }
+
+        viewModel.outputs.showNotifPermissionsRequest()
+            .distinctUntilChanged()
+            .filter {
+                android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
+                    this.checkPermissions(Manifest.permission.POST_NOTIFICATIONS)
+            }
+            .delay(2000, TimeUnit.MILLISECONDS)
+            .compose(bindToLifecycle())
+            .subscribe {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                viewModel.inputs.hasSeenNotificationsPermission(true)
             }
 
         viewModel.outputs.clearPages()

@@ -69,15 +69,13 @@ interface ProjectUpdatesViewModel {
             cookieManager = requireNotNull(environment.cookieManager())
             sharedPreferences = requireNotNull(environment.sharedPreferences())
 
-            val project = intent()
-                .map<Any?> { it.getParcelableExtra(IntentKey.PROJECT) }
-                .ofType(Project::class.java)
-                .take(1)
-
             val projectData = intent()
                 .map<Any?> { it.getParcelableExtra(IntentKey.PROJECT_DATA) }
                 .ofType(ProjectData::class.java)
                 .take(1)
+
+            val project = projectData
+                .map { it.project() }
 
             projectData
                 .map {

@@ -72,12 +72,10 @@ fun Intent.getCreatorBioWebViewActivityIntent(context: Context, project: Project
  * Return a Intent ready to launch the ProjectUpdates activity
  * @param context
  * @param projectAndData
- * @param comment -> to open the comments activity to a specific thread
  */
-fun Intent.getProjectUpdatesActivityIntent(context: Context, projectAndData: Pair<Project, ProjectData>): Intent {
+fun Intent.getProjectUpdatesActivityIntent(context: Context, projectAndData: ProjectData): Intent {
     return this.setClass(context, ProjectUpdatesActivity::class.java)
-        .putExtra(IntentKey.PROJECT, projectAndData.first)
-        .putExtra(IntentKey.PROJECT_DATA, projectAndData.second)
+        .putExtra(IntentKey.PROJECT_DATA, projectAndData)
 }
 
 /**

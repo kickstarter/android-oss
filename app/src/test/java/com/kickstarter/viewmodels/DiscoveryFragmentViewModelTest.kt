@@ -58,7 +58,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     private val startLoginToutActivityToSaveProject = TestSubscriber<Project>()
     private val scrollToSavedProjectIndex = TestSubscriber<Int>()
     private val showSavedPromptTest = TestSubscriber<Void>()
-    private val startSetPasswordActivity = TestSubscriber<Void>()
+    private val startSetPasswordActivity = TestSubscriber<String>()
 
     private fun setUpEnvironment(environment: Environment) {
         vm = DiscoveryFragmentViewModel.ViewModel(environment)
@@ -445,8 +445,24 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
                 }
             }
 
+        val mockApolloClient=   object : MockApolloClient() {
+            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                return Observable.just(
+                    UserPrivacyQuery.Data(
+                        UserPrivacyQuery.Me(
+                            "", "",
+                            "rashad@test.com", true, true, false, false, ""
+                        )
+                    )
+                )
+            }
+
+        }
+
         setUpEnvironment(
-            environment().toBuilder().currentUser(currentUser).optimizely(mockExperimentsClientType)
+            environment().toBuilder().currentUser(currentUser)
+                .optimizely(mockExperimentsClientType)
+                .apolloClient(mockApolloClient)
                 .build()
         )
 
@@ -462,6 +478,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
         currentUser.refresh(userNeedPassword())
         startSetPasswordActivity.assertValueCount(1)
+        startSetPasswordActivity.assertValue("rashad@test.com")
     }
 
     @Test

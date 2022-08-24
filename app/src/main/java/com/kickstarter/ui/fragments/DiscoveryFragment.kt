@@ -132,7 +132,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.startSetPasswordActivity()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { startSetPasswordActivity() }
+            .subscribe { startSetPasswordActivity(it) }
 
         this.viewModel.outputs.startEditorialActivity()
             .compose(bindToLifecycle())
@@ -229,8 +229,8 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         startActivity(Intent(activity, ActivityFeedActivity::class.java))
     }
 
-    fun startSetPasswordActivity() {
-        val intent = Intent().getSetPasswordActivity(requireContext())
+    private fun startSetPasswordActivity(email: String) {
+        val intent = Intent().getSetPasswordActivity(requireContext(), email)
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
         TransitionUtils.transition(requireContext(), TransitionUtils.fadeIn())
     }

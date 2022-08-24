@@ -90,9 +90,9 @@ class LoginToutActivity : BaseActivity<LoginToutViewModel.ViewModel>() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 this.showAlertDialog(
-                    message = getString(R.string.FPO_reset_your_password_dialog_msg),
+                    message = getString(R.string.FPO_we_can_no_longer_log_you_in_through_Facebook),
                     positiveActionTitle = getString(R.string.FPO_Set_new_password),
-                    negativeActionTitle = getString(R.string.FPO_login_with_kickstarter),
+                    negativeActionTitle = getString(R.string.accessibility_discovery_buttons_log_in),
                     isCancelable = false,
                     positiveAction = {
                         viewModel.inputs.onResetPasswordFacebookErrorDialogClicked()

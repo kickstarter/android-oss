@@ -445,7 +445,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
                 }
             }
 
-        val mockApolloClient=   object : MockApolloClient() {
+        val mockApolloClient = object : MockApolloClient() {
             override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
                 return Observable.just(
                     UserPrivacyQuery.Data(
@@ -456,7 +456,6 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
                     )
                 )
             }
-
         }
 
         setUpEnvironment(

@@ -101,7 +101,6 @@ interface LoginToutViewModel {
         private var callbackManager: CallbackManager? = null
         private val currentUser: CurrentUserType = requireNotNull(environment.currentUser())
         private val client: ApiClientType = requireNotNull(environment.apiClient())
-        private val apolloClient = requireNotNull(this.environment.apolloClient())
 
         private fun clearFacebookSession(e: FacebookException) {
             LoginManager.getInstance().logOut()
@@ -146,7 +145,7 @@ interface LoginToutViewModel {
         private val loginReason = PublishSubject.create<LoginReason>()
         private val signupClick = PublishSubject.create<Void>()
         private val disclaimerItemClicked = PublishSubject.create<DisclaimerItems>()
-        private val facebookAuthorizationError = BehaviorSubject.create<FacebookException>()
+        @VisibleForTesting val facebookAuthorizationError = BehaviorSubject.create<FacebookException>()
         private val finishWithSuccessfulResult = BehaviorSubject.create<Void>()
         private val showFacebookErrorDialog = BehaviorSubject.create<Void>()
         private val startResetPasswordActivity = BehaviorSubject.create<Void>()
@@ -204,21 +203,18 @@ interface LoginToutViewModel {
         override fun showFacebookInvalidAccessTokenErrorToast(): Observable<String?> {
             return loginError
                 .filter(ErrorEnvelope::isFacebookInvalidAccessTokenError)
-                .filter { environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE) == false }
                 .map { it.errorMessage() }
         }
 
         override fun showMissingFacebookEmailErrorToast(): Observable<String?> {
             return loginError
                 .filter(ErrorEnvelope::isMissingFacebookEmailError)
-                .filter { environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE) == false }
                 .map { it.errorMessage() }
         }
 
         override fun showUnauthorizedErrorDialog(): Observable<String> {
             return loginError
                 .filter(ErrorEnvelope::isUnauthorizedError)
-                .filter { environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE) == false }
                 .map { it.errorMessage() }
         }
 

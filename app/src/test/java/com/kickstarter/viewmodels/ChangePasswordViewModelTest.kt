@@ -106,7 +106,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
                         UpdateUserPasswordMutation.Data(
                             UpdateUserPasswordMutation.UpdateUserAccount(
                                 "",
-                                UpdateUserPasswordMutation.User("", "test@email.com", false,false)
+                                UpdateUserPasswordMutation.User("", "test@email.com", false, false)
                             )
                         )
                     )
@@ -164,7 +164,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
                     UpdateUserPasswordMutation.Data(
                         UpdateUserPasswordMutation.UpdateUserAccount(
                             "",
-                            UpdateUserPasswordMutation.User("", "test@email.com", false,false)
+                            UpdateUserPasswordMutation.User("", "test@email.com", false, false)
                         )
                     )
                 )

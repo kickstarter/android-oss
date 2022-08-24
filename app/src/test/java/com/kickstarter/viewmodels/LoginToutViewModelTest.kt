@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels
 
 import android.content.Intent
+import com.facebook.FacebookAuthorizationException
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
@@ -103,15 +104,6 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .currentUser(currentUser)
             .optimizely(mockExperimentsClientType)
-            .apiClient(object : MockApiClient() {
-                override fun loginWithFacebook(accessToken: String): Observable<AccessTokenEnvelope> {
-                    return Observable.error(
-                        ApiExceptionFactory.apiError(
-                            ErrorEnvelope.builder().httpCode(400).build()
-                        )
-                    )
-                }
-            })
             .build()
         setUpEnvironment(environment, LoginReason.DEFAULT)
 
@@ -122,7 +114,7 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
             listOf("public_profile", "user_friends", "email")
         )
 
-        vm.facebookAccessToken.onNext("token")
+        vm.facebookAuthorizationError.onNext(FacebookAuthorizationException())
 
         this.currentUser.assertNoValues()
         finishWithSuccessfulResult.assertNoValues()
@@ -172,12 +164,7 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
 
         this.currentUser.assertNoValues()
         finishWithSuccessfulResult.assertNoValues()
-        showFacebookErrorDialog.assertValueCount(1)
-
-        vm.inputs.onLoginFacebookErrorDialogClicked()
-
-        startResetPasswordActivity.assertNoValues()
-        startLoginActivity.assertValueCount(1)
+        showFacebookErrorDialog.assertValueCount(0)
     }
 
     @Test

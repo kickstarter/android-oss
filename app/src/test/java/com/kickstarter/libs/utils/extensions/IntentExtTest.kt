@@ -134,7 +134,7 @@ class IntentExtTest : KSRobolectricTestCase() {
 
     @Test
     fun testSetPasswordActivity() {
-        val intent = Intent().getSetPasswordActivity(context(),email = "test@kickstarter.com")
+        val intent = Intent().getSetPasswordActivity(context(), email = "test@kickstarter.com")
         assertEquals(intent.component?.className, "com.kickstarter.ui.activities.SetPasswordActivity")
         assertEquals(intent.extras?.get(IntentKey.EMAIL), null)
     }

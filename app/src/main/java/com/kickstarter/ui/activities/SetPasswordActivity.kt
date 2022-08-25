@@ -9,8 +9,8 @@ import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Logout
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.ui.extensions.onChange
-import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.SetPasswordViewModel
 import rx.android.schedulers.AndroidSchedulers
 
@@ -18,6 +18,7 @@ import rx.android.schedulers.AndroidSchedulers
 class SetPasswordActivity : BaseActivity<SetPasswordViewModel.ViewModel>() {
     private var logout: Logout? = null
     private lateinit var binding: ActivitySetPasswordBinding
+    private var errorTitleString = R.string.general_error_oops
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,13 +28,25 @@ class SetPasswordActivity : BaseActivity<SetPasswordViewModel.ViewModel>() {
         setSupportActionBar(binding.resetPasswordToolbar.loginToolbar)
         binding.resetPasswordToolbar.loginToolbar.setTitle(getString(R.string.FPO_Set_your_password))
         binding.resetPasswordToolbar.backButton.isGone = true
-        this.logout = environment().logout()
+        binding.newPassword.onChange { this.viewModel.inputs.newPassword(it) }
+        binding.confirmPassword.onChange { this.viewModel.inputs.confirmPassword(it) }
+
+        binding.savePasswordButton.setOnClickListener {
+            viewModel.inputs.changePasswordClicked()
+        }
 
         this.viewModel.outputs.progressBarIsVisible()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
                 binding.progressBar.isGone = !it
+            }
+
+        this.viewModel.outputs.setUserEmail()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                binding.setPasswordHint.text = getString(R.string.FPO_We_will_be_discontinuing_the_ability_to_log_in_via_Facebook, it)
             }
 
         this.viewModel.outputs.passwordWarning()
@@ -51,21 +64,23 @@ class SetPasswordActivity : BaseActivity<SetPasswordViewModel.ViewModel>() {
 
         this.viewModel.outputs.error()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { showSnackbar(binding.resetPasswordToolbar.root, it) }
-
-        binding.newPassword.onChange { this.viewModel.inputs.newPassword(it) }
-        binding.confirmPassword.onChange { this.viewModel.inputs.confirmPassword(it) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { ViewUtils.showDialog(this, getString(this.errorTitleString), it) }
 
         this.viewModel.outputs.isFormSubmitting()
             .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
+            .compose(Transformers.observeForUI())
             .subscribe { this.setFormDisabled(it) }
 
         this.viewModel.outputs.saveButtonIsEnabled()
             .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
+            .compose(Transformers.observeForUI())
             .subscribe { this.setFormEnabled(it) }
+
+        this.viewModel.outputs.success()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { finish() }
     }
 
     private fun setFormEnabled(isEnabled: Boolean) {
@@ -77,6 +92,6 @@ class SetPasswordActivity : BaseActivity<SetPasswordViewModel.ViewModel>() {
     }
 
     override fun back() {
-        //Disable back action Gesture
+        // Disable back action Gesture
     }
 }

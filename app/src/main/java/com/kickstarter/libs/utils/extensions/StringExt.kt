@@ -2,6 +2,7 @@
 package com.kickstarter.libs.utils.extensions
 
 import android.util.Patterns
+import com.kickstarter.R
 import org.jsoup.Jsoup
 import java.util.Locale
 import java.util.regex.Matcher
@@ -112,4 +113,20 @@ fun String.isGif(): Boolean {
 fun String.maskEmail(): String {
     val regex = """(?:\G(?!^)|(?<=^[^@]{4}))[^@](?!\.[^.]+${'$'})""".toRegex()
     return this.replace(regex, "*")
+}
+
+/**
+ * validate password isNotEmptyAndAtLeast6Chars
+ */
+fun String.isNotEmptyAndAtLeast6Chars() = this.isNotEmpty() && this.length >= MINIMUM_PASSWORD_LENGTH
+
+/**
+ * new Password Validation Warnings message
+ */
+fun String.newPasswordValidationWarnings(confirmPassword: String): Int? {
+    return if (this.isNotEmpty() && this.length in 1 until MINIMUM_PASSWORD_LENGTH)
+        R.string.Password_min_length_message
+    else if (confirmPassword.isNotEmpty() && confirmPassword != this)
+        R.string.Passwords_matching_message
+    else null
 }

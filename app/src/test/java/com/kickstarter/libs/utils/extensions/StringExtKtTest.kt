@@ -162,7 +162,9 @@ class StringExtKtTest : KSRobolectricTestCase() {
 
     @Test
     fun maskEmail() {
-        assertEquals("nati*******@kickstarter.com", "native.team@kickstarter.com".maskEmail())
+        assertEquals("native.****@kickstarter.com", "native.team@kickstarter.com".maskEmail())
+        assertEquals("****@kickstarter.com", "test@kickstarter.com".maskEmail())
+        assertEquals("****@kickstarter.com", "had@kickstarter.com".maskEmail())
     }
 
     @Test

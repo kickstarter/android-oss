@@ -111,8 +111,8 @@ fun String.isGif(): Boolean {
  * Mask Email
  */
 fun String.maskEmail(): String {
-    val regex = """(?:\G(?!^)|(?<=^[^@]{4}))[^@](?!\.[^.]+${'$'})""".toRegex()
-    return this.replace(regex, "*")
+    val regex = """(.{1,4}@)""".toRegex()
+    return this.replace(regex, "****@")
 }
 
 /**

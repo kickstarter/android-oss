@@ -88,9 +88,6 @@ interface LoginToutViewModel {
 
         /** Emits when the resetPassword should be started.  */
         fun startResetPasswordActivity(): Observable<Void>
-
-        /** Emits when the setPassword should be started.  */
-        fun startSetPasswordActivity(): Observable<String>
     }
 
     class ViewModel(val environment: Environment) :
@@ -153,7 +150,6 @@ interface LoginToutViewModel {
         private val startLoginActivity: Observable<Void>
         private val startSignupActivity: Observable<Void>
         private val showDisclaimerActivity: Observable<DisclaimerItems>
-        private val startSetPasswordActivity = BehaviorSubject.create<String>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -246,10 +242,6 @@ interface LoginToutViewModel {
 
         override fun startResetPasswordActivity(): Observable<Void> {
             return startResetPasswordActivity
-        }
-
-        override fun startSetPasswordActivity(): Observable<String> {
-            return startSetPasswordActivity
         }
 
         init {

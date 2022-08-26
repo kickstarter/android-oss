@@ -67,9 +67,8 @@ class IntentExtTest : KSRobolectricTestCase() {
     @Test
     fun testGetProjectUpdatesIntent() {
         val projectData = ProjectDataFactory.project(ProjectFactory.project())
-        val intent = Intent().getProjectUpdatesActivityIntent(context(), Pair(projectData.project(), projectData))
+        val intent = Intent().getProjectUpdatesActivityIntent(context(), projectData)
         assertEquals(intent.component?.className, "com.kickstarter.ui.activities.ProjectUpdatesActivity")
-        assertEquals(intent.extras?.get(IntentKey.PROJECT), projectData.project())
         assertEquals(intent.extras?.get(IntentKey.PROJECT_DATA), projectData)
     }
 

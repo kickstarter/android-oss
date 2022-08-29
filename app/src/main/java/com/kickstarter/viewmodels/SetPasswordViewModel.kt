@@ -109,12 +109,24 @@ interface SetPasswordViewModel {
                 .compose(bindToLifecycle())
                 .share()
 
-            setNewPasswordNotification
+            val apiError = setNewPasswordNotification
+                .compose(Transformers.errors())
+                .filter { ObjectUtils.isNotNull(it.localizedMessage) }
+                .map {
+                    requireNotNull(it.localizedMessage)
+                }
+
+            val error = setNewPasswordNotification
                 .compose(Transformers.errors())
                 .map { ErrorEnvelope.fromThrowable(it) }
                 .map { it?.errorMessage() }
                 .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
+                .map {
+                    requireNotNull(it)
+                }
+
+            Observable.merge(apiError, error)
+                .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.error.onNext(it)

@@ -1,5 +1,7 @@
 package com.kickstarter.ui.activities
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isGone
@@ -7,16 +9,17 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivitySettingsPaymentMethodsBinding
+import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
 import com.kickstarter.ui.extensions.showSnackbar
-import com.kickstarter.viewmodels.PaymentMethodsViewModel
+import com.kickstarter.viewmodels.PaymentMethodsViewModelLegacy
 import rx.android.schedulers.AndroidSchedulers
 
-@RequiresActivityViewModel(PaymentMethodsViewModel.ViewModel::class)
-class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.ViewModel>() {
+@RequiresActivityViewModel(PaymentMethodsViewModelLegacy.ViewModel::class)
+class PaymentMethodsSettingsActivityLegacy : BaseActivity<PaymentMethodsViewModelLegacy.ViewModel>() {
 
     private lateinit var adapter: PaymentMethodsAdapter
     private var showDeleteCardDialog: AlertDialog? = null
@@ -66,7 +69,18 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
             .subscribe { showSnackbar(binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, R.string.Got_it_your_changes_have_been_saved) }
 
         binding.addNewCard.setOnClickListener {
-            // TODO Present paymentSheet
+            startActivityForResult(
+                Intent(this, NewCardActivity::class.java),
+                ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD
+            )
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intent)
+        if (requestCode == ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD && resultCode == Activity.RESULT_OK) {
+            showSnackbar(binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, R.string.Got_it_your_changes_have_been_saved)
+            this@PaymentMethodsSettingsActivityLegacy.viewModel.inputs.refreshCards()
         }
     }
 

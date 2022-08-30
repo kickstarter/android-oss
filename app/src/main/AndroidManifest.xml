@@ -161,6 +161,9 @@
             android:name=".ui.activities.NotificationsActivity"
             android:theme="@style/SettingsActivity" />
         <activity
+            android:name=".ui.activities.PaymentMethodsSettingsActivityLegacy"
+            android:theme="@style/SettingsActivity" />
+        <activity
             android:name=".ui.activities.PaymentMethodsSettingsActivity"
             android:theme="@style/SettingsActivity" />
         <activity

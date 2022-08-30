@@ -7,6 +7,7 @@ class OptimizelyFeature {
         ANDROID_LOCAL_PICKUP("android_local_pickup"),
         ANDROID_COMMENT_MODERATION("android_comment_moderation"),
         ANDROID_PAYMENTSHEET("android_paymentsheet"),
-        ANDROID_FACEBOOK_LOGIN_REMOVE("android_facebook_login_remove")
+        ANDROID_FACEBOOK_LOGIN_REMOVE("android_facebook_login_remove"),
+        ANDROID_PAYMENTSHEET_SETTINGS("android_paymentsheet_user_settings")
     }
 }

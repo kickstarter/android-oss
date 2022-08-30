@@ -162,7 +162,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                binding?.receivedSectionLayout?.root?.setGone(it)
+                binding?.receivedSectionLayout?.receivedSectionLayoutContainer?.setGone(it)
             }
 
         this.viewModel.outputs.receivedSectionCreatorIsGone()
@@ -222,7 +222,6 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
             .compose(Transformers.observeForUI())
             .subscribe {
                 binding?.pledgeDetailsLabel?.text = getString(R.string.Pledge_details)
-                binding?.receivedSectionLayout?.root?.setGone(true)
                 binding?.deliveryDisclaimerSection?.root?.setGone(it)
                 binding?.estimatedDeliveryLabel2?.setGone(true)
             }

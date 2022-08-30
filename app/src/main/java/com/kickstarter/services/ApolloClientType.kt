@@ -94,9 +94,7 @@ interface ApolloClientType {
 
     fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data>
 
-    fun updateUserPassword(currentPassword: String, newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data>
-
-    fun setUserPassword(newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data>
+    fun updateUserPassword(currentPassword: String = "", newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data>
 
     fun userPrivacy(): Observable<UserPrivacyQuery.Data>
 }

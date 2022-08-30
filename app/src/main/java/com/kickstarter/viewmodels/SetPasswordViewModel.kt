@@ -151,7 +151,7 @@ interface SetPasswordViewModel {
         }
 
         private fun submit(setNewPassword: SetNewPassword): Observable<UpdateUserPasswordMutation.Data> {
-            return this.apolloClient.setUserPassword(setNewPassword.newPassword, setNewPassword.confirmPassword)
+            return this.apolloClient.updateUserPassword("", setNewPassword.newPassword, setNewPassword.confirmPassword)
                 .doOnSubscribe {
                     this.progressBarIsVisible.onNext(true)
                     this.isFormSubmitting.onNext(true)

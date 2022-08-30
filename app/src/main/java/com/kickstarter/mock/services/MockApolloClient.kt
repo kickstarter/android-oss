@@ -257,17 +257,6 @@ open class MockApolloClient : ApolloClientType {
         )
     }
 
-    override fun setUserPassword(newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data> {
-        return Observable.just(
-            UpdateUserPasswordMutation.Data(
-                UpdateUserPasswordMutation.UpdateUserAccount(
-                    "",
-                    UpdateUserPasswordMutation.User("", "some@email.com", true, true)
-                )
-            )
-        )
-    }
-
     override fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data> {
         return Observable.just(
             UpdateUserEmailMutation.Data(

@@ -41,7 +41,8 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
     fun testApiError() {
         setUpEnvironment(
             environment().toBuilder().apolloClient(object : MockApolloClient() {
-                override fun setUserPassword(
+                override fun updateUserPassword(
+                    currentPassword: String,
                     newPassword: String,
                     confirmPassword: String
                 ): Observable<UpdateUserPasswordMutation.Data> {
@@ -61,7 +62,8 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
     fun testError() {
         setUpEnvironment(
             environment().toBuilder().apolloClient(object : MockApolloClient() {
-                override fun setUserPassword(
+                override fun updateUserPassword(
+                    currentPassword: String,
                     newPassword: String,
                     confirmPassword: String
                 ): Observable<UpdateUserPasswordMutation.Data> {
@@ -127,7 +129,11 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(
             environment().toBuilder().apolloClient(object : MockApolloClient() {
-                override fun setUserPassword(newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data> {
+                override fun updateUserPassword(
+                    currentPassword: String,
+                    newPassword: String,
+                    confirmPassword: String
+                ): Observable<UpdateUserPasswordMutation.Data> {
                     return Observable.just(
                         UpdateUserPasswordMutation.Data(
                             UpdateUserPasswordMutation.UpdateUserAccount(

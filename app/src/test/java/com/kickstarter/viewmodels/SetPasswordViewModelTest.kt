@@ -1,5 +1,7 @@
 package com.kickstarter.viewmodels
 
+import UpdateUserPasswordMutation
+import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
@@ -7,7 +9,7 @@ import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient
-import com.kickstarter.models.User
+import com.kickstarter.ui.IntentKey
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -119,8 +121,9 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSuccess() {
-
-        val mockUser = MockCurrentUser(UserFactory.userNeedPassword())
+        val user = UserFactory.userNeedPassword()
+        val mockUser = MockCurrentUser(user)
+        mockUser.login(user, "token")
 
         setUpEnvironment(
             environment().toBuilder().apolloClient(object : MockApolloClient() {
@@ -142,6 +145,17 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.newPassword("password")
         this.vm.inputs.confirmPassword("password")
         this.vm.inputs.changePasswordClicked()
+
         this.success.assertValue("test@email.com")
+
+        assertEquals(false, mockUser.user?.needsPassword())
+    }
+
+    @Test
+    fun testSetUserEmail() {
+        setUpEnvironment(environment())
+        vm.intent(Intent().putExtra(IntentKey.EMAIL, "test@email.com"))
+
+        this.setUserEmail.assertValue("****@email.com")
     }
 }

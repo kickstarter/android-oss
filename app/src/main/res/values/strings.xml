@@ -88,6 +88,6 @@
   <string name="FPO_we_can_no_longer_log_you_in_through_Facebook">FPO: We can no longer log you in through Facebook. Please log in with your Kickstarter password, or set a new password with your Facebook email.</string>
   <string name="FPO_Set_new_password">Set new password</string>
   <string name="FPO_Set_your_password">Set your password</string>
-  <string name="FPO_We_will_be_discontinuing_the_ability_to_log_in_via_Facebook">We ’re simplifying our login process. To log into your account with the email %s, please set a password.</string>
-  <string name="FPO_Please_enter_a_password_that_is_at_least_6_characters_long">Please enter a password that is at least 6 characters long.</string>
+  <string name="FPO_We_will_be_discontinuing_the_ability_to_log_in_via_Facebook">We will be discontinuing the ability to log in via Facebook. To log in to your account using the email %s.</string>
+  <string name="FPO_Please_enter_a_password_that_is_at_least_6_characters_long">Please set a password that is at least 6 characters long.</string>
 </resources>

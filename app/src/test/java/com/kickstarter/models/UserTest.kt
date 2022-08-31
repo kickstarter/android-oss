@@ -45,4 +45,11 @@ class UserTest : TestCase() {
 
         assertFalse(locA == locB)
     }
+
+    fun testEquals_whenNeedPasswordIsDifferent_returnFalse() {
+        val locA = UserFactory.user().toBuilder().needsPassword(false).build()
+        val locB = UserFactory.user().toBuilder().needsPassword(true).build()
+
+        assertFalse(locA == locB)
+    }
 }

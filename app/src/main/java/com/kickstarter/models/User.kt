@@ -386,8 +386,8 @@ class User private constructor(
                 starredProjectsCount() == obj.starredProjectsCount() &&
                 unreadMessagesCount() == obj.unreadMessagesCount() &&
                 unseenActivityCount() == obj.unseenActivityCount() &&
-                weeklyNewsletter() == obj.weeklyNewsletter()
-            needsPassword() == obj.needsPassword()
+                weeklyNewsletter() == obj.weeklyNewsletter() &&
+                needsPassword() == obj.needsPassword()
         }
         return equals
     }

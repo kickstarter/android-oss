@@ -6,7 +6,6 @@ import androidx.core.view.isVisible
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivitySetPasswordBinding
 import com.kickstarter.libs.BaseActivity
-import com.kickstarter.libs.Logout
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ViewUtils
@@ -16,7 +15,6 @@ import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(SetPasswordViewModel.ViewModel::class)
 class SetPasswordActivity : BaseActivity<SetPasswordViewModel.ViewModel>() {
-    private var logout: Logout? = null
     private lateinit var binding: ActivitySetPasswordBinding
     private var errorTitleString = R.string.general_error_oops
 

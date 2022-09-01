@@ -221,6 +221,17 @@ interface BackingFragmentViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .share()
 
+            val rewardA = backing
+                .filter { ObjectUtils.isNotNull(it.reward()) }
+                .map { requireNotNull(it.reward()) }
+
+            val rewardB = projectDataAndReward
+                .filter { ObjectUtils.isNotNull(it.second) }
+                .map { requireNotNull(it.second) }
+
+            val reward = Observable.merge(rewardA, rewardB)
+                .distinctUntilChanged()
+
             val isCreator = Observable.combineLatest(this.currentUser.observable(), backedProject) { user, project ->
                 Pair(user, project)
             }
@@ -395,12 +406,15 @@ interface BackingFragmentViewModel {
                     this.analyticEvents.trackManagePledgePageViewed(it.first, it.second)
                 }
 
-            val rewardIsReceivable = backing
-                .map { ObjectUtils.isNotNull(it.rewardId()) }
+            val rewardIsReceivable = reward
+                .map {
+                    RewardUtils.isReward(it) && ObjectUtils.isNotNull(it.estimatedDeliveryOn())
+                }
 
             val backingIsCollected = backing
                 .map { it.status() }
                 .map { it == Backing.STATUS_COLLECTED }
+                .distinctUntilChanged()
 
             val sectionShouldBeGone = rewardIsReceivable
                 .compose(combineLatestPair<Boolean, Boolean>(backingIsCollected))
@@ -456,9 +470,6 @@ interface BackingFragmentViewModel {
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(this.bonusSupport)
-
-            val reward = this.projectDataAndReward
-                .map { it.second }
 
             reward
                 .filter { RewardUtils.isReward(it) && ObjectUtils.isNotNull(it.estimatedDeliveryOn()) }

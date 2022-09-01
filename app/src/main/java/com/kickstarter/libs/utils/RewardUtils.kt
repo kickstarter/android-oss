@@ -81,8 +81,10 @@ object RewardUtils {
     /**
      * Returns `true` if the reward is considered the 'non-reward' option, i.e. the reward is the option
      * backers select when they want to pledge to a project without selecting a particular reward.
+     * reward.id == 0L -> in case the data was obtained from API V1
+     * reward.id == null -> in case the data was obtained from API GraphQL
      */
-    fun isNoReward(reward: Reward) = reward.id() == 0L
+    fun isNoReward(reward: Reward) = reward.id() == 0L || reward.id() == null
 
     /**
      * Returns `true` if the reward is a specific reward for a project, i.e. it is not the 'no-reward' option.

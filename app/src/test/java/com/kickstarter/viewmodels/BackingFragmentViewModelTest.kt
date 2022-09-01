@@ -481,15 +481,28 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testNotifyDelegateToRefreshProject() {
+        val backing = BackingFactory.backing()
+            .toBuilder()
+            .status(Backing.STATUS_COLLECTED)
+            .build()
+        val project = ProjectFactory.backedProject()
+            .toBuilder()
+            .backing(backing)
+            .build()
+        val projectData = ProjectDataFactory.project(project).toBuilder()
+            .backing(backing)
+            .build()
+
         val environment = environment()
             .toBuilder()
-            .apolloClient(mockApolloClientForBacking(BackingFactory.backing()))
+            .apolloClient(mockApolloClientForBacking(backing))
             .build()
         setUpEnvironment(environment)
-        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
+        this.vm.inputs.configureWith(projectData)
 
         this.vm.inputs.refreshProject()
         this.notifyDelegateToRefreshProject.assertValueCount(1)
+        this.receivedSectionIsGone.assertValues(false)
     }
 
     @Test
@@ -970,9 +983,11 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testReceivedSectionIsGone_whenBackingIsCollectedNoCreator_actualReward() {
+        val reward = RewardFactory.reward()
         val backing = BackingFactory.backing()
             .toBuilder()
-            .rewardId(3L)
+            .reward(reward)
+            .rewardId(reward.id())
             .status(Backing.STATUS_COLLECTED)
             .build()
 
@@ -990,6 +1005,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testReceivedSectionIsGone_whenBackingIsCollectedAndUserIsCreator_actualReward() {
         val user = UserFactory.creator()
+        val reward = RewardFactory.reward()
 
         val project = ProjectFactory.backedProject()
             .toBuilder()
@@ -999,7 +1015,8 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         val backing = BackingFactory.backing()
             .toBuilder()
             .project(project)
-            .rewardId(3L)
+            .reward(reward)
+            .rewardId(reward.id())
             .status(Backing.STATUS_COLLECTED)
             .build()
 
@@ -1020,10 +1037,12 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testReceivedSectionIsGone_whenBackingIsCollectedNoCreator_noReward() {
+        val reward = RewardFactory.noReward()
         val backing = BackingFactory.backing()
             .toBuilder()
             .backer(UserFactory.user())
-            .rewardId(null)
+            .reward(reward)
+            .rewardId(reward.id())
             .status(Backing.STATUS_COLLECTED)
             .build()
 

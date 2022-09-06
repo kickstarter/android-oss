@@ -13,6 +13,7 @@ import com.kickstarter.libs.KSString
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.getPaymentMethodsIntent
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.AccountViewModel
 import rx.android.schedulers.AndroidSchedulers
@@ -102,7 +103,7 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
         binding.createPasswordRow.setOnClickListener { startActivity(Intent(this, CreatePasswordActivity::class.java)) }
         binding.changeEmailRow.setOnClickListener { startActivity(Intent(this, ChangeEmailActivity::class.java)) }
         binding.changePasswordRow.setOnClickListener { startActivity(Intent(this, ChangePasswordActivity::class.java)) }
-        binding.paymentMethodsRow.setOnClickListener { startActivity(Intent(this, PaymentMethodsSettingsActivity::class.java)) }
+        binding.paymentMethodsRow.setOnClickListener { startActivity(Intent().getPaymentMethodsIntent(this, this.environment().optimizely())) }
         binding.privacyRow.setOnClickListener { startActivity(Intent(this, PrivacyActivity::class.java)) }
     }
 

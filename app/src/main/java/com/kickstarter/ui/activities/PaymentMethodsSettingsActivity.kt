@@ -9,6 +9,7 @@ import com.kickstarter.R
 import com.kickstarter.databinding.ActivitySettingsPaymentMethodsBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
 import com.kickstarter.ui.extensions.showErrorToast
@@ -18,7 +19,6 @@ import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import com.stripe.android.paymentsheet.model.PaymentOption
 import rx.android.schedulers.AndroidSchedulers
-import timber.log.Timber
 
 @RequiresActivityViewModel(PaymentMethodsViewModel.ViewModel::class)
 class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.ViewModel>() {
@@ -27,7 +27,7 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
     private var showDeleteCardDialog: AlertDialog? = null
 
     private lateinit var binding: ActivitySettingsPaymentMethodsBinding
-    private var setupClientId: String = "seti_1Lf6P94VvJ2PtfhK4gRRmdhC_secret_MNs9wOTbJ1CTWBFfV9uWoP3uPeaSYhy" // TODO: delete once the real network call takes place
+    private var setupClientId: String = "seti_1KbABk4VvJ2PtfhKV8E7dvGe_secret_LHjfXxFl9UDucYtsL5a3WtySqjgqf5F" // TODO: delete once the real network call takes place
     private lateinit var flowController: PaymentSheet.FlowController
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,39 +96,10 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
     }
 
     private fun flowControllerPresentPaymentOption(clientSecret: String) {
-        val appearance = PaymentSheet.Appearance(
-            colorsLight = PaymentSheet.Colors(
-                primary = getColor(R.color.primary),
-                surface = getColor(R.color.kds_white),
-                component = getColor(R.color.kds_white),
-                componentBorder = getColor(R.color.kds_transparent),
-                componentDivider = getColor(R.color.kds_black),
-                onComponent = getColor(R.color.kds_black),
-                subtitle = getColor(R.color.kds_black),
-                placeholderText = getColor(R.color.kds_support_500),
-                onSurface = getColor(R.color.kds_black),
-                appBarIcon = getColor(R.color.kds_black),
-                error = getColor(R.color.kds_alert),
-            ),
-            shapes = PaymentSheet.Shapes(
-                cornerRadiusDp = 12.0f,
-                borderStrokeWidthDp = 0.5f
-            ),
-            primaryButton = PaymentSheet.PrimaryButton(
-                shape = PaymentSheet.PrimaryButtonShape(
-                    cornerRadiusDp = 20f
-                ),
-            )
-        )
-
         flowController.configureWithSetupIntent(
             setupIntentClientSecret = clientSecret,
-            configuration = PaymentSheet.Configuration(
-                merchantDisplayName = getString(R.string.app_name),
-                allowsDelayedPaymentMethods = true,
-                appearance = appearance
-            ),
-            callback = ::onConfigured,
+            configuration = this.getPaymentSheetConfiguration(),
+            callback = ::onConfigured
         )
     }
 
@@ -142,12 +113,6 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
 
     private fun onPaymentOption(paymentOption: PaymentOption?) {
         paymentOption?.let {
-            val storedCard = StoredCard.Builder(
-                lastFourDigits = paymentOption.label.takeLast(4),
-                resourceId = paymentOption.drawableResourceId,
-                clientSetupId = setupClientId
-            ).build()
-            Timber.d(" ${this.javaClass.canonicalName} onPaymentOption with ${storedCard.lastFourDigits()} and ${storedCard.clientSetupId()}")
             flowController.confirm()
         }
     }
@@ -155,12 +120,10 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
     fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
         when (paymentSheetResult) {
             is PaymentSheetResult.Canceled -> {
-                binding.paymentMethodsContent.let { content ->
-                    showErrorToast(this, content, getString(R.string.general_error_oops))
-                }
+                showErrorToast(this, binding.paymentMethodsContent, getString(R.string.general_error_oops))
             }
             is PaymentSheetResult.Failed -> {
-                        showErrorToast(this, binding.paymentMethodsContent, getString(R.string.general_error_something_wrong))
+                showErrorToast(this, binding.paymentMethodsContent, getString(R.string.general_error_something_wrong))
             }
             is PaymentSheetResult.Completed -> {
             }

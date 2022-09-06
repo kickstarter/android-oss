@@ -17,6 +17,7 @@ import com.kickstarter.ui.activities.PaymentMethodsSettingsActivityLegacy
 import com.kickstarter.ui.activities.ProjectPageActivity
 import com.kickstarter.ui.activities.ProjectUpdatesActivity
 import com.kickstarter.ui.activities.ResetPasswordActivity
+import com.kickstarter.ui.activities.SetPasswordActivity
 import com.kickstarter.ui.activities.UpdateActivity
 import com.kickstarter.ui.activities.VideoActivity
 import com.kickstarter.ui.data.LoginReason
@@ -175,6 +176,21 @@ fun Intent.getLoginActivityIntent(
         loginReason?.let {
             this.putExtra(IntentKey.LOGIN_REASON, it)
         }
+        email?.let {
+            this.putExtra(IntentKey.EMAIL, it)
+        }
+    }
+}
+
+/**
+ * Return a Intent ready to launch the SetPasswordActivity with extras:
+ * @param context
+ */
+fun Intent.getSetPasswordActivity(
+    context: Context,
+    email: String?
+): Intent {
+    return this.setClass(context, SetPasswordActivity::class.java).apply {
         email?.let {
             this.putExtra(IntentKey.EMAIL, it)
         }

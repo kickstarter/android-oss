@@ -140,11 +140,14 @@ interface TwoFactorViewModel {
 
         protected inner class TfaData(
             val email: String,
-            val fbAccessToken: String,
             val isFacebookLogin: Boolean,
             val password: String
         )
 
+        protected inner class TfaDataForFacebook(
+            val fbAccessToken: String,
+            val isFacebookLogin: Boolean,
+        )
         companion object {
             private fun isCodeValid(code: String?): Boolean {
                 return code != null && code.isNotEmpty()
@@ -172,13 +175,21 @@ interface TwoFactorViewModel {
                 .map { requireNotNull(it) }
 
             val tfaData = Observable.combineLatest(
-                email, fbAccessToken, isFacebookLogin, password
-            ) { email: String, fbAccessToken: String?, isFacebookLogin: Boolean, password: String ->
+                email, isFacebookLogin, password
+            ) { email: String, isFacebookLogin: Boolean, password: String ->
                 TfaData(
                     email,
-                    fbAccessToken ?: "",
                     isFacebookLogin,
                     password
+                )
+            }
+
+            val tfaFacebookData = Observable.combineLatest(
+                fbAccessToken, isFacebookLogin
+            ) { fbAccessToken: String?, isFacebookLogin: Boolean ->
+                TfaDataForFacebook(
+                    fbAccessToken = fbAccessToken ?: "",
+                    isFacebookLogin = isFacebookLogin,
                 )
             }
 
@@ -200,7 +211,7 @@ interface TwoFactorViewModel {
                 .subscribe { success(it) }
 
             this.code
-                .compose(Transformers.combineLatestPair(tfaData))
+                .compose(Transformers.combineLatestPair(tfaFacebookData))
                 .compose(Transformers.takeWhen(loginClick))
                 .filter { it.second.isFacebookLogin }
                 .switchMap {
@@ -220,7 +231,7 @@ interface TwoFactorViewModel {
                 .compose(bindToLifecycle())
                 .subscribe()
 
-            tfaData
+            tfaFacebookData
                 .compose(Transformers.takeWhen(resendClick))
                 .filter { it.isFacebookLogin }
                 .flatMap {

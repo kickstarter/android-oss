@@ -25,6 +25,7 @@ import com.kickstarter.libs.utils.AnimationUtils.crossFadeAndReverse
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.getProjectIntent
+import com.kickstarter.libs.utils.extensions.getSetPasswordActivity
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Category
 import com.kickstarter.models.Project
@@ -128,6 +129,11 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startActivityFeedActivity() }
 
+        this.viewModel.outputs.startSetPasswordActivity()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { startSetPasswordActivity(it) }
+
         this.viewModel.outputs.startEditorialActivity()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
@@ -221,6 +227,12 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
 
     private fun startActivityFeedActivity() {
         startActivity(Intent(activity, ActivityFeedActivity::class.java))
+    }
+
+    private fun startSetPasswordActivity(email: String) {
+        val intent = Intent().getSetPasswordActivity(requireContext(), email)
+        startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
+        TransitionUtils.transition(requireContext(), TransitionUtils.fadeIn())
     }
 
     private fun showStarToast() {

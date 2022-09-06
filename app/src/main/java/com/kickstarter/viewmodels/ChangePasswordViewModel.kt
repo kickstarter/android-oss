@@ -2,13 +2,13 @@ package com.kickstarter.viewmodels
 
 import UpdateUserPasswordMutation
 import androidx.annotation.NonNull
-import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
-import com.kickstarter.libs.utils.extensions.MINIMUM_PASSWORD_LENGTH
+import com.kickstarter.libs.utils.extensions.isNotEmptyAndAtLeast6Chars
+import com.kickstarter.libs.utils.extensions.newPasswordValidationWarnings
 import com.kickstarter.ui.activities.ChangePasswordActivity
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -150,21 +150,14 @@ interface ChangePasswordViewModel {
 
         data class ChangePassword(val currentPassword: String, val newPassword: String, val confirmPassword: String) {
             fun isValid(): Boolean {
-                return isNotEmptyAndAtLeast6Chars(this.currentPassword) &&
-                    isNotEmptyAndAtLeast6Chars(this.newPassword) &&
-                    isNotEmptyAndAtLeast6Chars(this.confirmPassword) &&
+                return this.currentPassword.isNotEmptyAndAtLeast6Chars() &&
+                    this.newPassword.isNotEmptyAndAtLeast6Chars() &&
+                    this.confirmPassword.isNotEmptyAndAtLeast6Chars() &&
                     this.confirmPassword == this.newPassword
             }
 
-            fun warning(): Int? {
-                return if (newPassword.isNotEmpty() && newPassword.length in 1 until MINIMUM_PASSWORD_LENGTH)
-                    R.string.Password_min_length_message
-                else if (confirmPassword.isNotEmpty() && confirmPassword != newPassword)
-                    R.string.Passwords_matching_message
-                else null
-            }
-
-            private fun isNotEmptyAndAtLeast6Chars(password: String) = !password.isEmpty() && password.length >= MINIMUM_PASSWORD_LENGTH
+            fun warning(): Int? =
+                newPassword.newPasswordValidationWarnings(confirmPassword)
         }
     }
 }

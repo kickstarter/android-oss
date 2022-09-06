@@ -1,6 +1,7 @@
 package com.kickstarter.libs.utils.extensions
 
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.R
 import org.junit.Test
 
 class StringExtKtTest : KSRobolectricTestCase() {
@@ -160,9 +161,33 @@ class StringExtKtTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun maskEmail() {
+        assertEquals("native.****@kickstarter.com", "native.team@kickstarter.com".maskEmail())
+        assertEquals("****@kickstarter.com", "test@kickstarter.com".maskEmail())
+        assertEquals("****@kickstarter.com", "had@kickstarter.com".maskEmail())
+    }
+
+    @Test
     fun isValidMP3Format() {
         val url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
         assertTrue(url.isMP3Url())
+    }
+
+    @Test
+    fun isNotEmptyAndAtLeast6Chars() {
+        assertTrue("123456".isNotEmptyAndAtLeast6Chars())
+        assertFalse("1236".isNotEmptyAndAtLeast6Chars())
+        assertFalse("".isNotEmptyAndAtLeast6Chars())
+    }
+
+    @Test
+    fun newPasswordValidationWarnings() {
+        assertEquals(R.string.Password_min_length_message, "12345".newPasswordValidationWarnings("12345"))
+        assertEquals(R.string.Passwords_matching_message, "".newPasswordValidationWarnings("12345"))
+        assertEquals(R.string.Password_min_length_message, "12345".newPasswordValidationWarnings(""))
+        assertEquals(null, "123456".newPasswordValidationWarnings(""))
+        assertEquals(R.string.Passwords_matching_message, "123456".newPasswordValidationWarnings("12346"))
+        assertEquals(null, "123456".newPasswordValidationWarnings("123456"))
     }
 
     companion object {

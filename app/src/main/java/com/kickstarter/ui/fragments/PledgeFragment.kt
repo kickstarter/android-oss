@@ -679,14 +679,42 @@ class PledgeFragment :
     }
 
     private fun flowControllerPresentPaymentOption(clientSecret: String) {
-        flowController.configureWithSetupIntent(
-            setupIntentClientSecret = clientSecret,
-            configuration = PaymentSheet.Configuration(
-                merchantDisplayName = getString(R.string.app_name),
-                allowsDelayedPaymentMethods = true
-            ),
-            callback = ::onConfigured
-        )
+        context?.let {
+            val appearance = PaymentSheet.Appearance(
+                colorsLight = PaymentSheet.Colors(
+                    primary = it.getColor(R.color.primary),
+                    surface = it.getColor(R.color.kds_white),
+                    component = it.getColor(R.color.kds_white),
+                    componentBorder = it.getColor(R.color.kds_transparent),
+                    componentDivider = it.getColor(R.color.kds_black),
+                    onComponent = it.getColor(R.color.kds_black),
+                    subtitle = it.getColor(R.color.kds_black),
+                    placeholderText = it.getColor(R.color.kds_support_500),
+                    onSurface = it.getColor(R.color.kds_black),
+                    appBarIcon = it.getColor(R.color.kds_black),
+                    error = it.getColor(R.color.kds_alert),
+                ),
+                shapes = PaymentSheet.Shapes(
+                    cornerRadiusDp = 12.0f,
+                    borderStrokeWidthDp = 0.5f
+                ),
+                primaryButton = PaymentSheet.PrimaryButton(
+                    shape = PaymentSheet.PrimaryButtonShape(
+                        cornerRadiusDp = 20f
+                    ),
+                )
+            )
+
+            flowController.configureWithSetupIntent(
+                setupIntentClientSecret = clientSecret,
+                configuration = PaymentSheet.Configuration(
+                    merchantDisplayName = getString(R.string.app_name),
+                    allowsDelayedPaymentMethods = true,
+                    appearance = appearance
+                ),
+                callback = ::onConfigured
+            )
+        }
     }
 
     private fun onConfigured(success: Boolean, error: Throwable?) {

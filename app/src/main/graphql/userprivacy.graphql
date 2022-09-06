@@ -41,6 +41,7 @@ mutation UpdateUserPassword($currentPassword: String!, $password: String!, $pass
     user {
       email
       isEmailVerified
+      hasPassword
     }
   }
 }

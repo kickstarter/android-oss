@@ -1,8 +1,5 @@
 package com.kickstarter.ui.viewholders
 
-// import com.facebook.share.model.ShareOpenGraphAction
-// import com.facebook.share.model.ShareOpenGraphContent
-// import com.facebook.share.model.ShareOpenGraphObject
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri

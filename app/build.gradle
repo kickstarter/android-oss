@@ -202,7 +202,6 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
     implementation 'com.apollographql.apollo:apollo-runtime:2.5.11'
     implementation 'com.facebook.android:facebook-android-sdk:14.1.1'
-    implementation 'com.facebook.android:facebook-share:13.0.0 '
     implementation 'com.google.android.play:core-ktx:1.8.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "com.google.android.exoplayer:exoplayer:2.17.1"

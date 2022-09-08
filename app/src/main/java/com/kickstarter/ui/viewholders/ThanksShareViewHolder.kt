@@ -1,14 +1,14 @@
 package com.kickstarter.ui.viewholders
 
+// import com.facebook.share.model.ShareOpenGraphAction
+// import com.facebook.share.model.ShareOpenGraphContent
+// import com.facebook.share.model.ShareOpenGraphObject
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.text.Html
 import android.util.Pair
 import com.facebook.share.model.ShareLinkContent
-import com.facebook.share.model.ShareOpenGraphAction
-import com.facebook.share.model.ShareOpenGraphContent
-import com.facebook.share.model.ShareOpenGraphObject
 import com.facebook.share.widget.ShareDialog
 import com.kickstarter.R
 import com.kickstarter.databinding.ThanksShareViewBinding
@@ -96,21 +96,11 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
         val project = projectAndShareUrl.first
         val shareUrl = projectAndShareUrl.second
         val photo = project.photo()
-        val shareOpenGraphObject = ShareOpenGraphObject.Builder()
-            .putString("og:type", "kickstarter:project")
-            .putString("og:title", project.name())
-            .putString("og:description", project.blurb())
-            .putString("og:image", photo?.small())
-            .putString("og:url", shareUrl)
+
+        val content = ShareLinkContent.Builder()
+            .setContentUrl(Uri.parse(shareUrl))
             .build()
-        val action = ShareOpenGraphAction.Builder()
-            .setActionType("kickstarter:back")
-            .putObject("project", shareOpenGraphObject)
-            .build()
-        val content = ShareOpenGraphContent.Builder()
-            .setPreviewPropertyName("project")
-            .setAction(action)
-            .build()
+
         shareDialog.show(content)
     }
 

@@ -285,10 +285,13 @@
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider${applicationId}"
             android:exported="true"
-            tools:ignore="ExportedContentProvider" /> <!-- META-DATA -->
+            tools:ignore="ExportedContentProvider" />
+        <!-- META-DATA -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
+        <meta-data android:name="com.facebook.sdk.ClientToken"
+            android:value="@string/facebook_client_token"/>
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
             android:value="true" />

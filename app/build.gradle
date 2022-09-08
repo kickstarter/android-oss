@@ -201,7 +201,8 @@ dependencies {
     implementation 'androidx.work:work-runtime-ktx:2.7.1'
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
     implementation 'com.apollographql.apollo:apollo-runtime:2.5.11'
-    implementation 'com.facebook.android:facebook-android-sdk:12.0.1'
+    implementation 'com.facebook.android:facebook-android-sdk:14.1.1'
+    implementation 'com.facebook.android:facebook-share:13.0.0 '
     implementation 'com.google.android.play:core-ktx:1.8.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "com.google.android.exoplayer:exoplayer:2.17.1"
@@ -217,7 +218,7 @@ dependencies {
     implementation "com.jakewharton.rxbinding:rxbinding-support-v4:$rx_binding_version"
     implementation "com.jakewharton.timber:timber:5.0.1"
     implementation 'com.optimizely.ab:android-sdk:3.13.2'
-    implementation 'com.stripe:stripe-android:20.11.0'
+    implementation 'com.stripe:stripe-android:20.5.0'
     final okhttp_version = '4.10.+'
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
     implementation "com.squareup.okhttp3:okhttp-urlconnection:$okhttp_version"

@@ -36,6 +36,11 @@ object UserFactory {
     }
 
     @JvmStatic
+    fun userNeedPassword(): User {
+        return user().toBuilder().needsPassword(true).build()
+    }
+
+    @JvmStatic
     fun collaborator(): User {
         return user()
             .toBuilder()

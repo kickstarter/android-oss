@@ -109,6 +109,9 @@ interface DiscoveryFragmentViewModel {
 
         /** Emits when the success prompt for saving should be displayed.  */
         fun showSavedPrompt(): Observable<Void>
+
+        /** Emits when the setPassword should be started.  */
+        fun startSetPasswordActivity(): Observable<String>
     }
 
     class ViewModel(environment: Environment) :
@@ -148,6 +151,7 @@ interface DiscoveryFragmentViewModel {
         private val shouldShowEditorial = BehaviorSubject.create<Editorial?>()
         private val shouldShowEmptySavedView = BehaviorSubject.create<Boolean>()
         private val shouldShowOnboardingView = BehaviorSubject.create<Boolean>()
+        private val startSetPasswordActivity = BehaviorSubject.create<String>()
         private val startEditorialActivity = PublishSubject.create<Editorial>()
         private val startProjectActivity: Observable<Pair<Project, RefTag>>
         private val startUpdateActivity: Observable<Activity>
@@ -159,8 +163,10 @@ interface DiscoveryFragmentViewModel {
         init {
             val changedUser = currentUser.observable()
                 .distinctUntilChanged()
+
             val userIsLoggedIn = currentUser.isLoggedIn
                 .distinctUntilChanged()
+
             val selectedParams = Observable.combineLatest(
                 changedUser,
                 paramsFromActivity.distinctUntilChanged()
@@ -326,6 +332,26 @@ interface DiscoveryFragmentViewModel {
                 .subscribe(shouldShowOnboardingView)
 
             paramsFromActivity
+                .compose(Transformers.combineLatestPair(userIsLoggedIn))
+                .filter {
+                    it.second && optimizely?.isFeatureEnabled(
+                        OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE
+                    ) == true
+                }
+                .compose(Transformers.combineLatestPair(currentUser.loggedInUser()))
+                .filter {
+                    it.second.needsPassword() == true
+                }
+                .switchMap {
+                    fetchUserEmail()
+                }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe {
+                    startSetPasswordActivity.onNext(it)
+                }
+
+            paramsFromActivity
                 .map { params: DiscoveryParams -> isSavedVisible(params) }
                 .compose(Transformers.combineLatestPair(projectList))
                 .map { it.first && it.second.isEmpty() }
@@ -487,6 +513,19 @@ interface DiscoveryFragmentViewModel {
                 .onErrorResumeNext(Observable.empty())
         }
 
+        private fun fetchUserEmail(): Observable<String> {
+            return this.apolloClient.userPrivacy()
+                .distinctUntilChanged()
+                .materialize()
+                .share()
+                .filter { it.hasValue() }
+                .map { it.value }
+                .map { it.me()?.email() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .onErrorResumeNext(Observable.empty())
+        }
+
         private fun isDefaultParams(userAndParams: Pair<User, DiscoveryParams>): Boolean {
             val discoveryParams = userAndParams.second
             val user = userAndParams.first
@@ -571,5 +610,6 @@ interface DiscoveryFragmentViewModel {
         override fun startLoginToutActivityToSaveProject(): Observable<Project> = this.startLoginToutActivityToSaveProject
         override fun scrollToSavedProjectPosition(): Observable<Int> = this.scrollToSavedProjectPosition
         override fun showSavedPrompt(): Observable<Void> = this.showSavedPrompt
+        override fun startSetPasswordActivity(): Observable<String> = this.startSetPasswordActivity
     }
 }

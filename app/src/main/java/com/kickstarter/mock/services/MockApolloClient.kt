@@ -251,7 +251,7 @@ open class MockApolloClient : ApolloClientType {
             UpdateUserPasswordMutation.Data(
                 UpdateUserPasswordMutation.UpdateUserAccount(
                     "",
-                    UpdateUserPasswordMutation.User("", "some@email.com", true)
+                    UpdateUserPasswordMutation.User("", "some@email.com", true, true)
                 )
             )
         )

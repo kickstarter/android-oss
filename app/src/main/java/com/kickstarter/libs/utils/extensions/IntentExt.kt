@@ -3,6 +3,8 @@ package com.kickstarter.libs.utils.extensions
 import android.content.Context
 import android.content.Intent
 import android.util.Pair
+import com.kickstarter.libs.ExperimentsClientType
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CampaignDetailsActivity
@@ -10,9 +12,12 @@ import com.kickstarter.ui.activities.CommentsActivity
 import com.kickstarter.ui.activities.CreatorBioActivity
 import com.kickstarter.ui.activities.CreatorDashboardActivity
 import com.kickstarter.ui.activities.LoginActivity
+import com.kickstarter.ui.activities.PaymentMethodsSettingsActivity
+import com.kickstarter.ui.activities.PaymentMethodsSettingsActivityLegacy
 import com.kickstarter.ui.activities.ProjectPageActivity
 import com.kickstarter.ui.activities.ProjectUpdatesActivity
 import com.kickstarter.ui.activities.ResetPasswordActivity
+import com.kickstarter.ui.activities.SetPasswordActivity
 import com.kickstarter.ui.activities.UpdateActivity
 import com.kickstarter.ui.activities.VideoActivity
 import com.kickstarter.ui.data.LoginReason
@@ -23,11 +28,19 @@ fun Intent.getProjectIntent(context: Context): Intent {
 }
 
 /**
- * Return a Intent ready to launch the CommentsActivity with extras:
+ * Retruns the Intent for start the PaymentMethodsSettigns activity
  * @param context
- * @param projectAndData
- * @param comment -> to open the comments activity to a specific thread
+ * @param optimizely
+ *
+ * - If feature flag is on PaymentMethodsSettingsActivity is presented (uses new PaymentSheet)
+ * - If feature flag is off PaymentMethodsSettingsActivityLegacy is presented (uses legacy CardInputWidget)
  */
+fun Intent.getPaymentMethodsIntent(context: Context, optimizely: ExperimentsClientType?): Intent {
+    val isFFEnabled = optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_PAYMENTSHEET_SETTINGS) ?: false
+    return if (isFFEnabled) this.setClass(context, PaymentMethodsSettingsActivity::class.java)
+    else this.setClass(context, PaymentMethodsSettingsActivityLegacy::class.java)
+}
+
 fun Intent.getRootCommentsActivityIntent(
     context: Context,
     projectAndData: Pair<Project, ProjectData>,
@@ -163,6 +176,21 @@ fun Intent.getLoginActivityIntent(
         loginReason?.let {
             this.putExtra(IntentKey.LOGIN_REASON, it)
         }
+        email?.let {
+            this.putExtra(IntentKey.EMAIL, it)
+        }
+    }
+}
+
+/**
+ * Return a Intent ready to launch the SetPasswordActivity with extras:
+ * @param context
+ */
+fun Intent.getSetPasswordActivity(
+    context: Context,
+    email: String?
+): Intent {
+    return this.setClass(context, SetPasswordActivity::class.java).apply {
         email?.let {
             this.putExtra(IntentKey.EMAIL, it)
         }

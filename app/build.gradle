@@ -199,7 +199,7 @@ dependencies {
     implementation 'androidx.work:work-runtime-ktx:2.7.1'
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
     implementation 'com.apollographql.apollo:apollo-runtime:2.5.12'
-    implementation 'com.facebook.android:facebook-android-sdk:12.0.1'
+    implementation 'com.facebook.android:facebook-android-sdk:14.1.1'
     implementation 'com.google.android.play:core-ktx:1.8.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "com.google.android.exoplayer:exoplayer:2.17.1"

@@ -23,7 +23,6 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.BackingAddOnsFragment
 import com.kickstarter.viewmodels.usecases.ShowPledgeFragmentUseCase
 import rx.Observable
-import rx.schedulers.Schedulers
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.util.Locale
@@ -101,7 +100,7 @@ class BackingAddOnsFragmentViewModel {
         private val isEnabledCTAButton = BehaviorSubject.create<Boolean>()
 
         // - Current addOns selection
-        private val totalSelectedAddOns = PublishSubject.create<Int>()
+        private val totalSelectedAddOns = BehaviorSubject.create(0)
         private val quantityPerId = PublishSubject.create<Pair<Int, Long>>()
         private val currentSelection = BehaviorSubject.create(mutableMapOf<Long, Int>())
 

@@ -13,7 +13,6 @@ import com.kickstarter.R
 import com.kickstarter.databinding.FragmentBackingAddonsBinding
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.selectPledgeFragment
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -28,7 +27,6 @@ import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.viewholders.BackingAddOnViewHolder
 import com.kickstarter.viewmodels.BackingAddOnsFragmentViewModel
 import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
 @RequiresFragmentViewModel(BackingAddOnsFragmentViewModel.ViewModel::class)

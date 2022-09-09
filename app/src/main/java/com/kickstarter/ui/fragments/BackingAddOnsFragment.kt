@@ -28,6 +28,7 @@ import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.viewholders.BackingAddOnViewHolder
 import com.kickstarter.viewmodels.BackingAddOnsFragmentViewModel
 import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
 @RequiresFragmentViewModel(BackingAddOnsFragmentViewModel.ViewModel::class)
@@ -85,8 +86,8 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
 
         this.viewModel.outputs.totalSelectedAddOns()
             .compose(bindToLifecycle())
+            .onBackpressureBuffer()
             .observeOn(AndroidSchedulers.mainThread())
-            .filter { ObjectUtils.isNotNull(it) }
             .subscribe { total ->
                 binding?.fragmentBackingAddonsSectionFooterLayout?.backingAddonsFooterButton ?.text = selectProperString(total)
             }

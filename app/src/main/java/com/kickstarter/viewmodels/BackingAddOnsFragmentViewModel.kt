@@ -23,6 +23,7 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.BackingAddOnsFragment
 import com.kickstarter.viewmodels.usecases.ShowPledgeFragmentUseCase
 import rx.Observable
+import rx.schedulers.Schedulers
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.util.Locale
@@ -100,7 +101,7 @@ class BackingAddOnsFragmentViewModel {
         private val isEnabledCTAButton = BehaviorSubject.create<Boolean>()
 
         // - Current addOns selection
-        private val totalSelectedAddOns = BehaviorSubject.create(0)
+        private val totalSelectedAddOns = PublishSubject.create<Int>()
         private val quantityPerId = PublishSubject.create<Pair<Int, Long>>()
         private val currentSelection = BehaviorSubject.create(mutableMapOf<Long, Int>())
 
@@ -515,10 +516,15 @@ class BackingAddOnsFragmentViewModel {
         private fun calculateTotal(list: List<Reward>) =
             this.currentSelection
                 .take(1)
-                .subscribe { map ->
+                .map { map ->
                     var total = 0
                     list.map { total += map[it.id()] ?: 0 }
-                    this.totalSelectedAddOns.onNext(total)
+                    return@map total
+                }
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.totalSelectedAddOns.onNext(it)
                 }
 
         private fun joinSelectedWithAvailableAddOns(backingList: List<Reward>, graphList: List<Reward>): List<Reward> {

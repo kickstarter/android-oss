@@ -13,7 +13,6 @@ import com.kickstarter.R
 import com.kickstarter.databinding.FragmentBackingAddonsBinding
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.selectPledgeFragment
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -85,8 +84,8 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
 
         this.viewModel.outputs.totalSelectedAddOns()
             .compose(bindToLifecycle())
+            .onBackpressureBuffer()
             .observeOn(AndroidSchedulers.mainThread())
-            .filter { ObjectUtils.isNotNull(it) }
             .subscribe { total ->
                 binding?.fragmentBackingAddonsSectionFooterLayout?.backingAddonsFooterButton ?.text = selectProperString(total)
             }

@@ -515,10 +515,15 @@ class BackingAddOnsFragmentViewModel {
         private fun calculateTotal(list: List<Reward>) =
             this.currentSelection
                 .take(1)
-                .subscribe { map ->
+                .map { map ->
                     var total = 0
                     list.map { total += map[it.id()] ?: 0 }
-                    this.totalSelectedAddOns.onNext(total)
+                    return@map total
+                }
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.totalSelectedAddOns.onNext(it)
                 }
 
         private fun joinSelectedWithAvailableAddOns(backingList: List<Reward>, graphList: List<Reward>): List<Reward> {

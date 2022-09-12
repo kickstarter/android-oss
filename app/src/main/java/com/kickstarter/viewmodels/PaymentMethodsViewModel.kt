@@ -18,6 +18,10 @@ import rx.subjects.PublishSubject
 interface PaymentMethodsViewModel {
 
     interface Inputs {
+
+        /** Call when the user hits add new card button. */
+        fun newCardButtonClicked()
+
         /** Call when the user confirms they want to delete card. */
         fun confirmDeleteCardClicked()
 
@@ -46,6 +50,12 @@ interface PaymentMethodsViewModel {
 
         /** Emits when the card was successfully deleted. */
         fun success(): Observable<String>
+
+        /** Emits after calling CreateSetupIntent mutation with the SetupClientId. */
+        fun presentPaymentSheet(): Observable<String>
+
+        /** Emits in case something went wrong with CreateSetupIntent mutation  */
+        fun showError(): Observable<String>
     }
 
     class ViewModel(environment: Environment) : ActivityViewModel<PaymentMethodsSettingsActivity>(environment), PaymentMethodsAdapter.Delegate, Inputs, Outputs {
@@ -53,6 +63,7 @@ interface PaymentMethodsViewModel {
         private val confirmDeleteCardClicked = PublishSubject.create<Void>()
         private val deleteCardClicked = PublishSubject.create<String>()
         private val refreshCards = PublishSubject.create<Void>()
+        private val newCardButtonPressed = PublishSubject.create<Void>()
 
         private val cards = BehaviorSubject.create<List<StoredCard>>()
         private val dividerIsVisible = BehaviorSubject.create<Boolean>()
@@ -60,6 +71,8 @@ interface PaymentMethodsViewModel {
         private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
         private val showDeleteCardDialog = BehaviorSubject.create<Void>()
         private val success = BehaviorSubject.create<String>()
+        private val presentPaymentSheet = PublishSubject.create<String>()
+        private val showError = PublishSubject.create<String>()
 
         private val apolloClient = requireNotNull(environment.apolloClient())
 
@@ -99,13 +112,44 @@ interface PaymentMethodsViewModel {
             this.refreshCards
                 .switchMap { getListOfStoredCards() }
                 .subscribe { this.cards.onNext(it) }
+
+            val shouldPresentPaymentSheet = this.newCardButtonPressed
+                .switchMap {
+                    this.apolloClient.createSetupIntent()
+                        .doOnRequest {
+                            this.progressBarIsVisible.onNext(true)
+                        }
+                        .doAfterTerminate {
+                            this.progressBarIsVisible.onNext(false)
+                        }
+                        .materialize()
+                        .share()
+                }
+
+            shouldPresentPaymentSheet
+                .compose(values())
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.presentPaymentSheet.onNext(it)
+                }
+
+            shouldPresentPaymentSheet
+                .compose(errors())
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.showError.onNext(it.message)
+                }
         }
+
+        override fun newCardButtonClicked() = this.newCardButtonPressed.onNext(null)
 
         override fun deleteCardButtonClicked(paymentMethodsViewHolder: PaymentMethodsViewHolder, paymentSourceId: String) {
             deleteCardClicked(paymentSourceId)
         }
 
-        override fun confirmDeleteCardClicked() = this.confirmDeleteCardClicked.onNext(null)
+        @Override
+        override fun confirmDeleteCardClicked() =
+            this.confirmDeleteCardClicked.onNext(null)
 
         override fun deleteCardClicked(paymentSourceId: String) = this.deleteCardClicked.onNext(paymentSourceId)
 
@@ -122,6 +166,14 @@ interface PaymentMethodsViewModel {
         override fun showDeleteCardDialog(): Observable<Void> = this.showDeleteCardDialog
 
         override fun success(): Observable<String> = this.success
+
+        @Override
+        override fun presentPaymentSheet(): Observable<String> =
+            this.presentPaymentSheet
+
+        @Override
+        override fun showError(): Observable<String> =
+            this.showError
 
         private fun getListOfStoredCards(): Observable<List<StoredCard>> {
             return this.apolloClient.getStoredCards()

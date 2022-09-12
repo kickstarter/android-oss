@@ -79,20 +79,23 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
             .subscribe { showSnackbar(binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, R.string.Got_it_your_changes_have_been_saved) }
 
         binding.addNewCard.setOnClickListener {
-            // - TODO, sent input to viewModel for the real networking call once CreateSetupIntent mutation project parameter becomes optional
-            flowControllerPresentPaymentOption(setupClientId) // TODO: testing presenting the paymentSheet delete once
+            this.viewModel.inputs.newCardButtonClicked()
         }
 
-        /*
-        // - TODO, present paymentSheet with the setpUpclientID
         this.viewModel.outputs.presentPaymentSheet()
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .compose(bindToLifecycle())
             .subscribe {
                 setupClientId = it
                 flowControllerPresentPaymentOption(it)
             }
-         */
+
+        this.viewModel.showError()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                showErrorToast(this, binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, getString(R.string.general_error_something_wrong))
+            }
     }
 
     private fun flowControllerPresentPaymentOption(clientSecret: String) {

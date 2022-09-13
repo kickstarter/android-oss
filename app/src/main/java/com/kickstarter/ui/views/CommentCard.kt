@@ -280,6 +280,7 @@ class CommentCard @JvmOverloads constructor(
             CommentCardBadge.SUPERBACKER -> setBadgesVisibility(false, true, false)
             CommentCardBadge.CREATOR -> setBadgesVisibility(false, false, true, context.getString(R.string.Creator))
             CommentCardBadge.COLLABORATOR -> setBadgesVisibility(false, false, true, context.getString(R.string.Collaborator))
+            else -> {}
         }
     }
 

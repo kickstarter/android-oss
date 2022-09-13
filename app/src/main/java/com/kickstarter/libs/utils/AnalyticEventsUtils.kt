@@ -96,7 +96,7 @@ object AnalyticEventsUtils {
             put("everything", params.isAllProjects.isTrue())
             put("pwl", params.staffPicks().isTrue())
             put("recommended", params.recommended()?.isTrue() ?: false)
-            put("ref_tag", params.refTag()?.tag())
+            params.refTag()?.tag()?.let { put("ref_tag", it) }
             params.term()?.let { put("search_term", it) }
             put("social", params.social().isNonZero())
             put(

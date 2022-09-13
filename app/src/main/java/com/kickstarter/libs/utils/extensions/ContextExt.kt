@@ -4,6 +4,8 @@ package com.kickstarter.libs.utils.extensions
 import android.app.AlertDialog
 import android.app.Application
 import android.content.Context
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
 import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.stripe.android.paymentsheet.PaymentSheet
@@ -20,6 +22,13 @@ fun Context.registerActivityLifecycleCallbacks(callbacks: Application.ActivityLi
     if (this is Application) {
         this.registerActivityLifecycleCallbacks(callbacks)
     }
+}
+
+fun Context.checkPermissions(permission: String): Boolean {
+    return ContextCompat.checkSelfPermission(
+        this,
+        permission
+    ) == PackageManager.PERMISSION_DENIED
 }
 
 fun Context.showAlertDialog(

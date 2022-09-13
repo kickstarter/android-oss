@@ -131,6 +131,7 @@ class RewardsFragmentViewModel {
                             else
                                 this.pledgeData.onNext(pledgeAndData)
                         }
+                        else -> {}
                     }
                     this.rewardClicked.onNext(defaultRewardClicked)
                 }
@@ -169,6 +170,7 @@ class RewardsFragmentViewModel {
                                 this.showAddOnsFragment.onNext(pledgeAndData)
                             }
                         }
+                        else -> {}
                     }
                     this.rewardClicked.onNext(defaultRewardClicked)
                 }

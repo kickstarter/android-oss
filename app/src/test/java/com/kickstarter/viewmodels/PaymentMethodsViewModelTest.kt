@@ -5,6 +5,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import org.junit.Test
 import rx.Observable
@@ -21,6 +22,8 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     private val progressBarIsVisible = TestSubscriber<Boolean>()
     private val showDeleteCardDialog = TestSubscriber<Void>()
     private val success = TestSubscriber<String>()
+    private val presentPaymentSheet = TestSubscriber<String>()
+    private val showError = TestSubscriber<String>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = PaymentMethodsViewModel.ViewModel(environment)
@@ -31,6 +34,8 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.progressBarIsVisible().subscribe(this.progressBarIsVisible)
         this.vm.outputs.showDeleteCardDialog().subscribe(this.showDeleteCardDialog)
         this.vm.outputs.success().subscribe(this.success)
+        this.vm.outputs.presentPaymentSheet().subscribe(this.presentPaymentSheet)
+        this.vm.outputs.showError().subscribe(this.showError)
     }
 
     @Test
@@ -126,5 +131,42 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.confirmDeleteCardClicked()
         this.success.assertValueCount(1)
         this.cards.assertValueCount(2)
+    }
+
+    @Test
+    fun testPresentPaymentSheetSuccess() {
+        val setupClientId = "seti_1KbABk4VvJ2PtfhKV8E7dvGe_secret_LHjfXxFl9UDucYtsL5a3WtySqjgqf5F"
+
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun createSetupIntent(project: Project?): Observable<String> {
+                    return Observable.just(setupClientId)
+                }
+            }).build()
+        )
+
+        this.vm.inputs.newCardButtonClicked()
+
+        this.presentPaymentSheet.assertValue(setupClientId)
+        this.progressBarIsVisible.assertValues(false, true, false, true, false)
+        this.showError.assertNoValues()
+    }
+
+    @Test
+    fun testPresentPaymentSheetError() {
+        val errorString = "Something went wrong"
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun createSetupIntent(project: Project?): Observable<String> {
+                    return Observable.error(Exception(errorString))
+                }
+            }).build()
+        )
+
+        this.vm.inputs.newCardButtonClicked()
+
+        this.presentPaymentSheet.assertNoValues()
+        this.progressBarIsVisible.assertValues(false, true, false, true, false)
+        this.showError.assertValue(errorString)
     }
 }

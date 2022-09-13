@@ -27,7 +27,6 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
     private var showDeleteCardDialog: AlertDialog? = null
 
     private lateinit var binding: ActivitySettingsPaymentMethodsBinding
-    private var setupClientId: String = "seti_1KbABk4VvJ2PtfhKV8E7dvGe_secret_LHjfXxFl9UDucYtsL5a3WtySqjgqf5F" // TODO: delete once the real network call takes place
     private lateinit var flowController: PaymentSheet.FlowController
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,7 +85,6 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindToLifecycle())
             .subscribe {
-                setupClientId = it
                 flowControllerPresentPaymentOption(it)
             }
 

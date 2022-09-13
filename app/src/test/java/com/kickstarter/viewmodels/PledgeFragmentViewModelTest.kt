@@ -1621,7 +1621,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForLoggedInUser(UserFactory.user())
             .toBuilder()
             .apolloClient(object : MockApolloClient() {
-                override fun createSetupIntent(project: Project): Observable<String> {
+                override fun createSetupIntent(project: Project?): Observable<String> {
                     return Observable.just(clientSecretID)
                 }
             })
@@ -1647,7 +1647,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForLoggedInUser(UserFactory.user())
             .toBuilder()
             .apolloClient(object : MockApolloClient() {
-                override fun createSetupIntent(project: Project): Observable<String> {
+                override fun createSetupIntent(project: Project?): Observable<String> {
                     return Observable.error(Exception("Error Message"))
                 }
             })

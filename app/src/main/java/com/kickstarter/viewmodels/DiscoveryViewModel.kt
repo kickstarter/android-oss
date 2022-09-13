@@ -21,6 +21,7 @@ import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope
+import com.kickstarter.ui.SharedPreferenceKey.HAS_SEEN_NOTIF_PERMISSIONS
 import com.kickstarter.ui.activities.DiscoveryActivity
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter
 import com.kickstarter.ui.adapters.DiscoveryPagerAdapter
@@ -45,6 +46,9 @@ interface DiscoveryViewModel {
 
         /** Call when the user selects a sort tab.  */
         fun sortClicked(sortPosition: Int)
+
+        /** Call when the user has seen the notifications permission request.  */
+        fun hasSeenNotificationsPermission(hasShown: Boolean)
     }
 
     interface Outputs {
@@ -102,6 +106,9 @@ interface DiscoveryViewModel {
         /** Emits the success message from verify endpoint  */
         fun showSuccessMessage(): Observable<String>
 
+        /** Emits if the user should be shown the notification permission request  */
+        fun showNotifPermissionsRequest(): Observable<Void?>
+
         /** Emits the error message from verify endpoint  */
         fun showErrorMessage(): Observable<String?>
     }
@@ -115,6 +122,7 @@ interface DiscoveryViewModel {
         private val buildCheck = requireNotNull(environment.buildCheck())
         private val currentUserType = requireNotNull(environment.currentUser())
         private val currentConfigType = requireNotNull(environment.currentConfig())
+        private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val webClient = requireNotNull(environment.webClient())
 
         private fun currentDrawerMenuIcon(user: User?): Int {
@@ -143,8 +151,10 @@ interface DiscoveryViewModel {
         private val pagerSetPrimaryPage = PublishSubject.create<Int>()
         private val parentFilterRowClick = PublishSubject.create<NavigationDrawerData.Section.Row>()
         private val profileClick = PublishSubject.create<Void?>()
+        private val showNotifPermissionRequest = BehaviorSubject.create<Void?>()
         private val settingsClick = PublishSubject.create<Void?>()
         private val sortClicked = PublishSubject.create<Int>()
+        private val hasSeenNotificationsPermission = PublishSubject.create<Boolean>()
         private val topFilterRowClick = PublishSubject.create<NavigationDrawerData.Section.Row?>()
         private val clearPages = BehaviorSubject.create<List<Int>>()
         private val drawerIsOpen = BehaviorSubject.create<Boolean>()
@@ -226,6 +236,18 @@ interface DiscoveryViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .compose(bindToLifecycle())
                 .subscribe(messageError)
+
+            currentUserType.isLoggedIn
+                .filter { it }
+                .distinctUntilChanged()
+                .take(1)
+                .filter { !sharedPreferences.getBoolean(HAS_SEEN_NOTIF_PERMISSIONS, false) }
+                .compose(bindToLifecycle())
+                .subscribe { showNotifPermissionRequest.onNext(null) }
+
+            hasSeenNotificationsPermission
+                .compose(bindToLifecycle())
+                .subscribe { sharedPreferences.edit().putBoolean(HAS_SEEN_NOTIF_PERMISSIONS, it).apply() }
 
             val paramsFromIntent = intent()
                 .flatMap { DiscoveryIntentMapper.params(it, apiClient, apolloClient) }
@@ -407,6 +429,7 @@ interface DiscoveryViewModel {
             parentFilterRowClick.onNext(row)
         }
         override fun sortClicked(sortPosition: Int) { sortClicked.onNext(sortPosition) }
+        override fun hasSeenNotificationsPermission(hasShown: Boolean) { hasSeenNotificationsPermission.onNext(hasShown) }
 
         // - Outputs
         override fun clearPages(): Observable<List<Int>> { return clearPages }
@@ -428,5 +451,6 @@ interface DiscoveryViewModel {
         override fun updateToolbarWithParams(): Observable<DiscoveryParams> { return updateToolbarWithParams }
         override fun showSuccessMessage(): Observable<String> { return successMessage }
         override fun showErrorMessage(): Observable<String?> { return messageError }
+        override fun showNotifPermissionsRequest(): Observable<Void?> { return showNotifPermissionRequest }
     }
 }

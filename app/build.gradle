@@ -1,20 +1,30 @@
 buildscript {
     repositories {
+        google()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
         maven { url 'https://maven.fabric.io/public' }
     }
 
     dependencies {
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.0'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.1'
+        classpath 'com.apollographql.apollo:apollo-gradle-plugin:2.5.12'
+        classpath 'com.karumi:shot:5.13.0'
     }
 }
 
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.google.firebase.firebase-perf'
-apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.apollographql.apollo'
+apply plugin: 'jacoco'
 apply from: 'quality.gradle'
 apply from: "$project.rootDir/jacoco.gradle"
 
@@ -40,12 +50,12 @@ if (file('signing.gradle').exists()) {
 
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId "com.kickstarter"
         minSdkVersion 23
-        targetSdkVersion 32
+        targetSdkVersion 33
         testApplicationId "com.kickstarter.internal.debug.test"
         testInstrumentationRunner "com.kickstarter.screenshoot.testing.KSScreenShotTestRunner"
 
@@ -121,6 +131,7 @@ android {
     }
 
     kotlinOptions {
+        freeCompilerArgs = ['-Xjvm-default=all']
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
@@ -159,19 +170,6 @@ android {
 
 }
 
-buildscript {
-    repositories {
-        google()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath 'com.apollographql.apollo:apollo-gradle-plugin:2.5.11'
-        classpath 'com.karumi:shot:5.13.0'
-    }
-}
-
 apollo {
     customTypeMapping = [
             "Date" : "java.util.Date",
@@ -200,14 +198,14 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.work:work-runtime-ktx:2.7.1'
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
-    implementation 'com.apollographql.apollo:apollo-runtime:2.5.11'
+    implementation 'com.apollographql.apollo:apollo-runtime:2.5.12'
     implementation 'com.facebook.android:facebook-android-sdk:14.1.1'
     implementation 'com.google.android.play:core-ktx:1.8.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "com.google.android.exoplayer:exoplayer:2.17.1"
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'com.google.android.material:material:1.6.1'
-    final dagger_version = "2.41"
+    final dagger_version = "2.43"
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     implementation 'com.jakewharton:process-phoenix:2.1.2'
@@ -239,7 +237,7 @@ dependencies {
 
     // Analytics Segment-Braze
     implementation 'com.segment.analytics.android:analytics:4.10.4'
-    implementation 'com.appboy:appboy-segment-integration:11.0.1'
+    implementation 'com.appboy:appboy-segment-integration:13.0.0'
 
     // Security
     implementation 'com.perimeterx.sdk:msdk:1.16.7'
@@ -251,19 +249,24 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
 
     // GLIDE
-    implementation 'com.github.bumptech.glide:glide:4.13.1'
-    kapt 'com.github.bumptech.glide:compiler:4.13.1'
+    implementation 'com.github.bumptech.glide:glide:4.13.2'
+    kapt 'com.github.bumptech.glide:compiler:4.13.2'
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:29.2.1')
+    implementation platform('com.google.firebase:firebase-bom:30.3.2')
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics-ktx'
-    implementation "com.google.firebase:firebase-messaging"
+    implementation 'com.google.firebase:firebase-messaging'
     implementation 'com.google.firebase:firebase-inappmessaging-display'
     implementation 'com.google.firebase:firebase-perf'
 
     // Zoom on Images
     implementation 'io.github.aghajari:ZoomHelper:1.1.0'
+
+    //
+    implementation("androidx.activity:activity:1.5.1")
+    implementation("androidx.fragment:fragment:1.5.2")
+
 
     // Testing
     testImplementation "junit:junit:4.13.2"

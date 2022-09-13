@@ -971,6 +971,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     .stripeToken(savePaymentMethodData.stripeToken)
                     .stripeCardId(savePaymentMethodData.stripeCardId)
                     .reusable(savePaymentMethodData.reusable)
+                    .intentClientSecret(savePaymentMethodData.intentClientSecret)
                     .build()
             )
                 .enqueue(object : ApolloCall.Callback<SavePaymentMethodMutation.Data>() {

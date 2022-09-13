@@ -19,8 +19,8 @@ mutation DeletePaymentSource($paymentSourceId: String!)  {
   }
 }
 
-mutation SavePaymentMethod($paymentType: PaymentTypes!, $stripeToken: String!, $stripeCardId: String!, $reusable: Boolean) {
-  createPaymentSource(input: {paymentType: $paymentType, stripeToken: $stripeToken, stripeCardId: $stripeCardId, reusable: $reusable}) {
+mutation SavePaymentMethod($paymentType: PaymentTypes, $stripeToken: String, $stripeCardId: String, $reusable: Boolean, $intentClientSecret: String) {
+  createPaymentSource(input: {paymentType: $paymentType, stripeToken: $stripeToken, stripeCardId: $stripeCardId, reusable: $reusable, intentClientSecret: $intentClientSecret}) {
     paymentSource {
       id
       expirationDate

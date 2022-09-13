@@ -7,6 +7,7 @@ import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
+import com.kickstarter.services.mutations.SavePaymentMethodData
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -168,5 +169,93 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         this.presentPaymentSheet.assertNoValues()
         this.progressBarIsVisible.assertValues(false, true, false, true, false)
         this.showError.assertValue(errorString)
+    }
+
+    @Test
+    fun testSavePaymentMethodSuccess() {
+        val setupClientId = "seti_1KbABk4VvJ2PtfhKV8E7dvGe_secret_LHjfXxFl9UDucYtsL5a3WtySqjgqf5F"
+        val card = StoredCardFactory.visa()
+        val cardsList = listOf(StoredCardFactory.discoverCard())
+        val cardsListUpdated = listOf(StoredCardFactory.discoverCard(), card)
+        var numberOfCalls = 1
+
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun createSetupIntent(project: Project?): Observable<String> {
+                    return Observable.just(setupClientId)
+                }
+
+                override fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard> {
+                    return Observable.just(card)
+                }
+
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    if (numberOfCalls == 1) {
+                        numberOfCalls++
+                        return Observable.just(cardsList)
+                    } else {
+                        return Observable.just(cardsListUpdated)
+                    }
+                }
+            }).build()
+        )
+
+        // - Button clicked
+        this.vm.inputs.newCardButtonClicked()
+
+        this.presentPaymentSheet.assertValue(setupClientId)
+        this.progressBarIsVisible.assertValues(false, true, false, true, false)
+        this.showError.assertNoValues()
+
+        // - User added correct payment method to paymentSheet
+        this.vm.inputs.savePaymentOption()
+        this.cards.assertValueCount(2)
+        this.cards.assertValues(cardsList, cardsListUpdated)
+        this.progressBarIsVisible.assertValues(false, true, false, true, false, true, false, true, false, true, false)
+        this.showError.assertNoValues()
+    }
+
+    @Test
+    fun testSavePaymentMethodError() {
+        val setupClientId = "seti_1KbABk4VvJ2PtfhKV8E7dvGe_secret_LHjfXxFl9UDucYtsL5a3WtySqjgqf5F"
+        val card = StoredCardFactory.visa()
+        val cardsList = listOf(StoredCardFactory.discoverCard())
+        var numberOfCalls = 1
+        val errorString = "Something went wrong"
+
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun createSetupIntent(project: Project?): Observable<String> {
+                    return Observable.just(setupClientId)
+                }
+
+                override fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard> {
+                    return Observable.error(Exception(errorString))
+                }
+
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    if (numberOfCalls == 1) {
+                        numberOfCalls++
+                        return Observable.just(cardsList)
+                    } else {
+                        return Observable.error(Exception(errorString))
+                    }
+                }
+            }).build()
+        )
+
+        // - Button clicked
+        this.vm.inputs.newCardButtonClicked()
+
+        this.presentPaymentSheet.assertValue(setupClientId)
+        this.progressBarIsVisible.assertValues(false, true, false, true, false)
+        this.showError.assertNoValues()
+
+        // - User added correct payment method using paymentSheet
+        this.vm.inputs.savePaymentOption()
+        this.cards.assertValueCount(1)
+        this.cards.assertValues(cardsList)
+        this.progressBarIsVisible.assertValues(false, true, false, true, false, true, false, true, false)
+        this.showError.assertValues(errorString)
     }
 }

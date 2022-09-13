@@ -8,9 +8,11 @@ import com.kickstarter.libs.rx.transformers.Transformers.neverError
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.models.StoredCard
+import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.ui.activities.PaymentMethodsSettingsActivity
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
 import com.kickstarter.ui.viewholders.PaymentMethodsViewHolder
+import com.stripe.android.paymentsheet.model.PaymentOption
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -30,6 +32,9 @@ interface PaymentMethodsViewModel {
 
         /** Call when a card has been added or removed and the list needs to be updated. */
         fun refreshCards()
+
+        /** Call when the user has introduced a  new paymentOption via PaymentSheet */
+        fun savePaymentOption()
     }
 
     interface Outputs {
@@ -64,6 +69,7 @@ interface PaymentMethodsViewModel {
         private val deleteCardClicked = PublishSubject.create<String>()
         private val refreshCards = PublishSubject.create<Void>()
         private val newCardButtonPressed = PublishSubject.create<Void>()
+        private val savePaymentOption = PublishSubject.create<Void>()
 
         private val cards = BehaviorSubject.create<List<StoredCard>>()
         private val dividerIsVisible = BehaviorSubject.create<Boolean>()
@@ -115,15 +121,7 @@ interface PaymentMethodsViewModel {
 
             val shouldPresentPaymentSheet = this.newCardButtonPressed
                 .switchMap {
-                    this.apolloClient.createSetupIntent()
-                        .doOnRequest {
-                            this.progressBarIsVisible.onNext(true)
-                        }
-                        .doAfterTerminate {
-                            this.progressBarIsVisible.onNext(false)
-                        }
-                        .materialize()
-                        .share()
+                    createSetupIntent()
                 }
 
             shouldPresentPaymentSheet
@@ -139,9 +137,76 @@ interface PaymentMethodsViewModel {
                 .subscribe {
                     this.showError.onNext(it.message)
                 }
+
+            val savedPaymentOption = this.savePaymentOption
+                .withLatestFrom(this.presentPaymentSheet){ _, setupClientId ->
+                    setupClientId
+                }
+                .map {
+                    SavePaymentMethodData(
+                        reusable = true,
+                        intentClientSecret = it
+                    ) }
+                .switchMap {
+                    savePaymentMethod(it)
+                }
+
+            savedPaymentOption
+                .compose(values())
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.refreshCards.onNext(null)
+                }
+
+            savedPaymentOption
+                .compose(errors())
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.showError.onNext(it.message)
+                }
         }
 
+        private fun createSetupIntent() =
+            this.apolloClient.createSetupIntent()
+            .doOnRequest {
+                this.progressBarIsVisible.onNext(true)
+            }
+            .doAfterTerminate {
+                this.progressBarIsVisible.onNext(false)
+            }
+            .materialize()
+            .share()
+
+        private fun savePaymentMethod(it: SavePaymentMethodData) =
+            this.apolloClient.savePaymentMethod(it)
+                .doOnRequest {
+                    this.progressBarIsVisible.onNext(true)
+                }
+                .doAfterTerminate {
+                    this.progressBarIsVisible.onNext(false)
+                }
+                .materialize()
+                .share()
+
+
+        private fun getListOfStoredCards(): Observable<List<StoredCard>> {
+            return this.apolloClient.getStoredCards()
+                .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
+                .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
+                .compose(bindToLifecycle())
+                .compose(neverError())
+        }
+
+        private fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
+            return this.apolloClient.deletePaymentSource(paymentSourceId)
+                .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
+                .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
+        }
+
+        // - Inputs
         override fun newCardButtonClicked() = this.newCardButtonPressed.onNext(null)
+
+        override fun savePaymentOption() = this.savePaymentOption.onNext(null)
 
         override fun deleteCardButtonClicked(paymentMethodsViewHolder: PaymentMethodsViewHolder, paymentSourceId: String) {
             deleteCardClicked(paymentSourceId)
@@ -155,6 +220,7 @@ interface PaymentMethodsViewModel {
 
         override fun refreshCards() = this.refreshCards.onNext(null)
 
+        // - Outputs
         override fun cards(): Observable<List<StoredCard>> = this.cards
 
         override fun dividerIsVisible(): Observable<Boolean> = this.dividerIsVisible
@@ -174,19 +240,5 @@ interface PaymentMethodsViewModel {
         @Override
         override fun showError(): Observable<String> =
             this.showError
-
-        private fun getListOfStoredCards(): Observable<List<StoredCard>> {
-            return this.apolloClient.getStoredCards()
-                .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
-                .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
-                .compose(bindToLifecycle())
-                .compose(neverError())
-        }
-
-        private fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
-            return this.apolloClient.deletePaymentSource(paymentSourceId)
-                .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
-                .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
-        }
     }
 }

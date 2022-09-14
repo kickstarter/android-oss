@@ -9,10 +9,15 @@ import com.kickstarter.R
 import com.kickstarter.databinding.ActivitySettingsPaymentMethodsBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
+import com.kickstarter.ui.extensions.showErrorToast
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.PaymentMethodsViewModel
+import com.stripe.android.paymentsheet.PaymentSheet
+import com.stripe.android.paymentsheet.PaymentSheetResult
+import com.stripe.android.paymentsheet.model.PaymentOption
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(PaymentMethodsViewModel.ViewModel::class)
@@ -22,6 +27,7 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
     private var showDeleteCardDialog: AlertDialog? = null
 
     private lateinit var binding: ActivitySettingsPaymentMethodsBinding
+    private lateinit var flowController: PaymentSheet.FlowController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +36,12 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
         setContentView(binding.root)
 
         setUpRecyclerView()
+
+        flowController = PaymentSheet.FlowController.create(
+            activity = this,
+            paymentOptionCallback = ::onPaymentOption,
+            paymentResultCallback = ::onPaymentSheetResult
+        )
 
         this.viewModel.outputs.cards()
             .compose(bindToLifecycle())
@@ -66,7 +78,56 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
             .subscribe { showSnackbar(binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, R.string.Got_it_your_changes_have_been_saved) }
 
         binding.addNewCard.setOnClickListener {
-            // TODO Present paymentSheet
+            this.viewModel.inputs.newCardButtonClicked()
+        }
+
+        this.viewModel.outputs.presentPaymentSheet()
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(bindToLifecycle())
+            .subscribe {
+                flowControllerPresentPaymentOption(it)
+            }
+
+        this.viewModel.showError()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                showErrorToast(this, binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, getString(R.string.general_error_something_wrong))
+            }
+    }
+
+    private fun flowControllerPresentPaymentOption(clientSecret: String) {
+        flowController.configureWithSetupIntent(
+            setupIntentClientSecret = clientSecret,
+            configuration = this.getPaymentSheetConfiguration(),
+            callback = ::onConfigured
+        )
+    }
+
+    private fun onConfigured(success: Boolean, error: Throwable?) {
+        if (success) {
+            flowController.presentPaymentOptions()
+        } else {
+            showErrorToast(this, binding.paymentMethodsContent, getString(R.string.general_error_something_wrong))
+        }
+    }
+
+    private fun onPaymentOption(paymentOption: PaymentOption?) {
+        paymentOption?.let {
+            flowController.confirm()
+        }
+    }
+
+    fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
+        when (paymentSheetResult) {
+            is PaymentSheetResult.Canceled -> {
+                showErrorToast(this, binding.paymentMethodsContent, getString(R.string.general_error_oops))
+            }
+            is PaymentSheetResult.Failed -> {
+                showErrorToast(this, binding.paymentMethodsContent, getString(R.string.general_error_something_wrong))
+            }
+            is PaymentSheetResult.Completed -> {
+            }
         }
     }
 

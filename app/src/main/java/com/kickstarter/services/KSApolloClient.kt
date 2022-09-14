@@ -95,10 +95,12 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun createSetupIntent(project: Project): Observable<String> {
+    override fun createSetupIntent(project: Project?): Observable<String> {
         return Observable.defer {
             val createSetupIntentMut = CreateSetupIntentMutation.builder()
-                .projectId(encodeRelayId(project))
+                .apply {
+                    if (project != null) this.projectId(encodeRelayId(project))
+                }
                 .build()
 
             val ps = PublishSubject.create<String>()

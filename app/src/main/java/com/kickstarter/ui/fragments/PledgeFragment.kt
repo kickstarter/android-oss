@@ -37,6 +37,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
 import com.kickstarter.libs.utils.extensions.setGone
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -679,14 +680,13 @@ class PledgeFragment :
     }
 
     private fun flowControllerPresentPaymentOption(clientSecret: String) {
-        flowController.configureWithSetupIntent(
-            setupIntentClientSecret = clientSecret,
-            configuration = PaymentSheet.Configuration(
-                merchantDisplayName = getString(R.string.app_name),
-                allowsDelayedPaymentMethods = true
-            ),
-            callback = ::onConfigured
-        )
+        context?.let {
+            flowController.configureWithSetupIntent(
+                setupIntentClientSecret = clientSecret,
+                configuration = it.getPaymentSheetConfiguration(),
+                callback = ::onConfigured
+            )
+        }
     }
 
     private fun onConfigured(success: Boolean, error: Throwable?) {

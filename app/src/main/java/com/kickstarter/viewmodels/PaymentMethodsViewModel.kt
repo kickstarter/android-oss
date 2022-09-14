@@ -138,14 +138,15 @@ interface PaymentMethodsViewModel {
                 }
 
             val savedPaymentOption = this.savePaymentOption
-                .withLatestFrom(this.presentPaymentSheet){ _, setupClientId ->
+                .withLatestFrom(this.presentPaymentSheet) { _, setupClientId ->
                     setupClientId
                 }
                 .map {
                     SavePaymentMethodData(
                         reusable = true,
                         intentClientSecret = it
-                    ) }
+                    )
+                }
                 .switchMap {
                     savePaymentMethod(it)
                 }
@@ -186,7 +187,6 @@ interface PaymentMethodsViewModel {
                 }
                 .materialize()
                 .share()
-
 
         private fun getListOfStoredCards(): Observable<List<StoredCard>> {
             return this.apolloClient.getStoredCards()

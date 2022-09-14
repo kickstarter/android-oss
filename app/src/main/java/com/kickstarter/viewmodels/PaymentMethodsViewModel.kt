@@ -12,7 +12,6 @@ import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.ui.activities.PaymentMethodsSettingsActivity
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
 import com.kickstarter.ui.viewholders.PaymentMethodsViewHolder
-import com.stripe.android.paymentsheet.model.PaymentOption
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -168,14 +167,14 @@ interface PaymentMethodsViewModel {
 
         private fun createSetupIntent() =
             this.apolloClient.createSetupIntent()
-            .doOnRequest {
-                this.progressBarIsVisible.onNext(true)
-            }
-            .doAfterTerminate {
-                this.progressBarIsVisible.onNext(false)
-            }
-            .materialize()
-            .share()
+                .doOnRequest {
+                    this.progressBarIsVisible.onNext(true)
+                }
+                .doAfterTerminate {
+                    this.progressBarIsVisible.onNext(false)
+                }
+                .materialize()
+                .share()
 
         private fun savePaymentMethod(it: SavePaymentMethodData) =
             this.apolloClient.savePaymentMethod(it)

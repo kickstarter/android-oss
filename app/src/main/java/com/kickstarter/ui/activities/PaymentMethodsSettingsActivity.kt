@@ -123,12 +123,13 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
     fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
         when (paymentSheetResult) {
             is PaymentSheetResult.Canceled -> {
-                showErrorToast(this, binding.paymentMethodsContent, getString(R.string.general_error_oops))
+                showErrorSnackBar(binding.paymentMethodsContent, getString(R.string.general_error_oops))
             }
             is PaymentSheetResult.Failed -> {
-                showErrorToast(this, binding.paymentMethodsContent, getString(R.string.general_error_something_wrong))
+                showErrorSnackBar(binding.paymentMethodsContent, getString(R.string.general_error_something_wrong))
             }
             is PaymentSheetResult.Completed -> {
+                showSnackbar(binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, R.string.Got_it_your_changes_have_been_saved)
             }
         }
     }

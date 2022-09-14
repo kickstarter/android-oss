@@ -218,7 +218,6 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testSavePaymentMethodError() {
         val setupClientId = "seti_1KbABk4VvJ2PtfhKV8E7dvGe_secret_LHjfXxFl9UDucYtsL5a3WtySqjgqf5F"
-        val card = StoredCardFactory.visa()
         val cardsList = listOf(StoredCardFactory.discoverCard())
         var numberOfCalls = 1
         val errorString = "Something went wrong"
@@ -234,11 +233,11 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
                 }
 
                 override fun getStoredCards(): Observable<List<StoredCard>> {
-                    if (numberOfCalls == 1) {
+                    return if (numberOfCalls == 1) {
                         numberOfCalls++
-                        return Observable.just(cardsList)
+                        Observable.just(cardsList)
                     } else {
-                        return Observable.error(Exception(errorString))
+                        Observable.error(Exception(errorString))
                     }
                 }
             }).build()
@@ -251,7 +250,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         this.progressBarIsVisible.assertValues(false, true, false, true, false)
         this.showError.assertNoValues()
 
-        // - User added correct payment method using paymentSheet
+        // - User added correct payment method using paymentSheet, but some error happen during the process
         this.vm.inputs.savePaymentOption()
         this.cards.assertValueCount(1)
         this.cards.assertValues(cardsList)

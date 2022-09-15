@@ -15,7 +15,7 @@ import java.util.Collections
 
 class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
 
-    private lateinit var vm: PaymentMethodsViewModel.ViewModel
+    private lateinit var vm: PaymentMethodsViewModel
 
     private val cards = TestSubscriber<List<StoredCard>>()
     private val dividerIsVisible = TestSubscriber<Boolean>()
@@ -27,7 +27,8 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     private val showError = TestSubscriber<String>()
 
     private fun setUpEnvironment(environment: Environment) {
-        this.vm = PaymentMethodsViewModel.ViewModel(environment)
+
+        this.vm = PaymentMethodsViewModel.Factory(environment).create(PaymentMethodsViewModel::class.java)
 
         this.vm.outputs.error().subscribe(this.error)
         this.vm.outputs.cards().subscribe(this.cards)

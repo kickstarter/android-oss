@@ -12,6 +12,7 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
+import com.kickstarter.ui.extensions.showErrorSnackBar
 import com.kickstarter.ui.extensions.showErrorToast
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.PaymentMethodsViewModel
@@ -92,7 +93,7 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                showErrorToast(this, binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, getString(R.string.general_error_something_wrong))
+                showErrorSnackBar(binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, getString(R.string.general_error_something_wrong))
             }
     }
 
@@ -114,6 +115,7 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
 
     private fun onPaymentOption(paymentOption: PaymentOption?) {
         paymentOption?.let {
+            this.viewModel.inputs.savePaymentOption()
             flowController.confirm()
         }
     }
@@ -121,12 +123,13 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
     fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
         when (paymentSheetResult) {
             is PaymentSheetResult.Canceled -> {
-                showErrorToast(this, binding.paymentMethodsContent, getString(R.string.general_error_oops))
+                showErrorSnackBar(binding.paymentMethodsContent, getString(R.string.general_error_oops))
             }
             is PaymentSheetResult.Failed -> {
-                showErrorToast(this, binding.paymentMethodsContent, getString(R.string.general_error_something_wrong))
+                showErrorSnackBar(binding.paymentMethodsContent, getString(R.string.general_error_something_wrong))
             }
             is PaymentSheetResult.Completed -> {
+                showSnackbar(binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, R.string.Got_it_your_changes_have_been_saved)
             }
         }
     }

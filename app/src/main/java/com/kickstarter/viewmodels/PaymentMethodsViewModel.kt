@@ -4,17 +4,14 @@ import DeletePaymentSourceMutation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.rx.transformers.Transformers.errors
-import com.kickstarter.libs.rx.transformers.Transformers.neverError
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
-import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.models.StoredCard
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
 import com.kickstarter.ui.viewholders.PaymentMethodsViewHolder
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 interface Inputs {
 
@@ -48,7 +45,7 @@ interface Outputs {
     fun progressBarIsVisible(): Observable<Boolean>
 
     /** Emits whenever the user tries to delete a card.  */
-    fun showDeleteCardDialog(): Observable<Void>
+    fun showDeleteCardDialog(): Observable<Unit>
 
     /** Emits when the card was successfully deleted. */
     fun success(): Observable<String>
@@ -62,75 +59,98 @@ interface Outputs {
 
 class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMethodsAdapter.Delegate, Inputs, Outputs {
 
-    private val confirmDeleteCardClicked = PublishSubject.create<Void>()
+    private val confirmDeleteCardClicked = PublishSubject.create<Unit>()
     private val deleteCardClicked = PublishSubject.create<String>()
-    private val refreshCards = PublishSubject.create<Void>()
-    private val newCardButtonPressed = PublishSubject.create<Void>()
-    private val savePaymentOption = PublishSubject.create<Void>()
+    private val refreshCards = PublishSubject.create<Unit>()
+    private val newCardButtonPressed = PublishSubject.create<Unit>()
+    private val savePaymentOption = PublishSubject.create<Unit>()
 
     private val cards = BehaviorSubject.create<List<StoredCard>>()
     private val dividerIsVisible = BehaviorSubject.create<Boolean>()
     private val error = BehaviorSubject.create<String>()
     private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
-    private val showDeleteCardDialog = BehaviorSubject.create<Void>()
+    private val showDeleteCardDialog = BehaviorSubject.create<Unit>()
     private val success = BehaviorSubject.create<String>()
     private val presentPaymentSheet = PublishSubject.create<String>()
     private val showError = PublishSubject.create<String>()
 
-    private val apolloClient = requireNotNull(environment.apolloClient())
+    private val apolloClient = requireNotNull(environment.apolloClientV2())
+    private val compositeDisposable = CompositeDisposable()
 
     val inputs: Inputs = this
     val outputs: Outputs = this
 
     init {
 
+        compositeDisposable.add(
         getListOfStoredCards()
-            .subscribe { this.cards.onNext(it) }
+            .subscribe { this.cards.onNext(it) })
 
+        compositeDisposable.add(
         this.cards
             .map { it.isNotEmpty() }
             .subscribe { this.dividerIsVisible.onNext(it) }
+        )
 
+        compositeDisposable.add(
         this.deleteCardClicked
-            .subscribe { this.showDeleteCardDialog.onNext(null) }
+            .subscribe { this.showDeleteCardDialog.onNext(Unit) }
+        )
+
 
         val deleteCardNotification = this.deleteCardClicked
-            .compose<String>(takeWhen(this.confirmDeleteCardClicked))
+            .withLatestFrom(this.confirmDeleteCardClicked) { id, _ ->
+                id
+            }
             .switchMap { deletePaymentSource(it).materialize() }
             .share()
 
+        compositeDisposable.add(
         deleteCardNotification
-            .compose(values())
-            .map { it.paymentSourceDelete()?.clientMutationId() }
+            .filter { it.value != null}
+            .map { requireNotNull(it.value) }
+            .map { it.paymentSourceDelete()?.clientMutationId() ?: "" }
             .subscribe {
-                this.refreshCards.onNext(null)
+                this.refreshCards.onNext(Unit)
                 this.success.onNext(it)
             }
+        )
 
+        compositeDisposable.add(
         deleteCardNotification
-            .compose(errors())
+            .filter{ it.error != null}
+            .map { requireNotNull(it.error) }
             .subscribe { this.error.onNext(it.localizedMessage) }
+        )
 
+        compositeDisposable.add(
         this.refreshCards
             .switchMap { getListOfStoredCards() }
             .subscribe { this.cards.onNext(it) }
+        )
 
         val shouldPresentPaymentSheet = this.newCardButtonPressed
             .switchMap {
                 createSetupIntent()
             }
 
+        compositeDisposable.add(
         shouldPresentPaymentSheet
-            .compose(values())
+            .filter { it.value != null}
+            .map { requireNotNull(it.value) }
             .subscribe {
                 this.presentPaymentSheet.onNext(it)
             }
+        )
 
+        compositeDisposable.add(
         shouldPresentPaymentSheet
-            .compose(errors())
+            .filter{ it.error?.message != null}
+            .map { requireNotNull(it.error?.message) }
             .subscribe {
-                this.showError.onNext(it.message)
+                this.showError.onNext(it)
             }
+        )
 
         val savedPaymentOption = this.savePaymentOption
             .withLatestFrom(this.presentPaymentSheet) { _, setupClientId ->
@@ -146,22 +166,33 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
                 savePaymentMethod(it)
             }
 
+        compositeDisposable.add(
         savedPaymentOption
-            .compose(values())
+            .filter { it.value != null}
+            .map { requireNotNull(it.value) }
             .subscribe {
-                this.refreshCards.onNext(null)
+                this.refreshCards.onNext(Unit)
             }
+        )
 
+        compositeDisposable.add(
         savedPaymentOption
-            .compose(errors())
+            .filter{ it.error?.message != null}
+            .map { requireNotNull(it.error?.message) }
             .subscribe {
-                this.showError.onNext(it.message)
+                this.showError.onNext(it)
             }
+        )
+    }
+
+    override fun onCleared() {
+        compositeDisposable.clear()
+        super.onCleared()
     }
 
     private fun createSetupIntent() =
         this.apolloClient.createSetupIntent()
-            .doOnRequest {
+            .doOnSubscribe {
                 this.progressBarIsVisible.onNext(true)
             }
             .doAfterTerminate {
@@ -172,7 +203,7 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
 
     private fun savePaymentMethod(it: SavePaymentMethodData) =
         this.apolloClient.savePaymentMethod(it)
-            .doOnRequest {
+            .doOnSubscribe {
                 this.progressBarIsVisible.onNext(true)
             }
             .doAfterTerminate {
@@ -185,7 +216,9 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
         return this.apolloClient.getStoredCards()
             .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
             .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
-            .compose(neverError())
+            .doOnError {
+
+            }
     }
 
     private fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
@@ -195,9 +228,9 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
     }
 
     // - Inputs
-    override fun newCardButtonClicked() = this.newCardButtonPressed.onNext(null)
+    override fun newCardButtonClicked() = this.newCardButtonPressed.onNext(Unit)
 
-    override fun savePaymentOption() = this.savePaymentOption.onNext(null)
+    override fun savePaymentOption() = this.savePaymentOption.onNext(Unit)
 
     override fun deleteCardButtonClicked(paymentMethodsViewHolder: PaymentMethodsViewHolder, paymentSourceId: String) {
         deleteCardClicked(paymentSourceId)
@@ -205,11 +238,11 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
 
     @Override
     override fun confirmDeleteCardClicked() =
-        this.confirmDeleteCardClicked.onNext(null)
+        this.confirmDeleteCardClicked.onNext(Unit)
 
     override fun deleteCardClicked(paymentSourceId: String) = this.deleteCardClicked.onNext(paymentSourceId)
 
-    override fun refreshCards() = this.refreshCards.onNext(null)
+    override fun refreshCards() = this.refreshCards.onNext(Unit)
 
     // - Outputs
     override fun cards(): Observable<List<StoredCard>> = this.cards
@@ -220,7 +253,7 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
 
     override fun progressBarIsVisible(): Observable<Boolean> = this.progressBarIsVisible.distinctUntilChanged()
 
-    override fun showDeleteCardDialog(): Observable<Void> = this.showDeleteCardDialog
+    override fun showDeleteCardDialog(): Observable<Unit> = this.showDeleteCardDialog
 
     override fun success(): Observable<String> = this.success
 

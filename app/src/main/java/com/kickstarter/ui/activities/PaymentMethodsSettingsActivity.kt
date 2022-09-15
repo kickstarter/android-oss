@@ -20,7 +20,9 @@ import com.kickstarter.viewmodels.PaymentMethodsViewModel
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import com.stripe.android.paymentsheet.model.PaymentOption
-import rx.android.schedulers.AndroidSchedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 
 class PaymentMethodsSettingsActivity : AppCompatActivity() {
 
@@ -33,8 +35,12 @@ class PaymentMethodsSettingsActivity : AppCompatActivity() {
     private lateinit var viewModelFactory: PaymentMethodsViewModel.Factory
     private val viewModel: PaymentMethodsViewModel by viewModels { viewModelFactory }
 
+    private lateinit var compositeDisposable:CompositeDisposable
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        compositeDisposable = CompositeDisposable()
 
         this.getEnvironment()?.let { env ->
             viewModelFactory = PaymentMethodsViewModel.Factory(env)
@@ -51,49 +57,79 @@ class PaymentMethodsSettingsActivity : AppCompatActivity() {
             paymentResultCallback = ::onPaymentSheetResult
         )
 
-        this.viewModel.outputs.cards()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { setCards(it) }
+        compositeDisposable.add(
+            this.viewModel.outputs.cards()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { setCards(it) }
+        )
 
-        this.viewModel.outputs.dividerIsVisible()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                binding.paymentsDivider.isGone = !it
-            }
+        compositeDisposable.add(
+            this.viewModel.outputs.dividerIsVisible()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    binding.paymentsDivider.isGone = !it
+                }
+        )
 
-        this.viewModel.outputs.error()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { showSnackbar(binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, it) }
+        compositeDisposable.add(
+            this.viewModel.outputs.error()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { showSnackbar(binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, it) }
+        )
 
+        compositeDisposable.add(
         this.viewModel.outputs.progressBarIsVisible()
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.progressBar.isGone = !it
             }
+        )
 
+        compositeDisposable.add(
         this.viewModel.outputs.showDeleteCardDialog()
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { lazyDeleteCardConfirmationDialog().show() }
+        )
 
+        compositeDisposable.add(
         this.viewModel.success()
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showSnackbar(binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, R.string.Got_it_your_changes_have_been_saved) }
+        )
 
         binding.addNewCard.setOnClickListener {
             this.viewModel.inputs.newCardButtonClicked()
         }
 
+        compositeDisposable.add(
         this.viewModel.outputs.presentPaymentSheet()
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 flowControllerPresentPaymentOption(it)
             }
+        )
 
+        compositeDisposable.add(
         this.viewModel.showError()
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 showErrorSnackBar(binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, getString(R.string.general_error_something_wrong))
             }
+        )
+    }
+
+    @Override
+    override fun onDestroy() {
+        compositeDisposable.clear()
+        super.onDestroy()
     }
 
     private fun flowControllerPresentPaymentOption(clientSecret: String) {

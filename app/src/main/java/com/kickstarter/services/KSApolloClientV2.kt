@@ -18,7 +18,7 @@ interface ApolloClientTypeV2 {
     fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data>
 }
 
-class KSApolloClientV2(val service: ApolloClient): ApolloClientTypeV2 {
+class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
 
     override fun createSetupIntent(project: Project?): Observable<String> {
         return Observable.defer {
@@ -110,7 +110,6 @@ class KSApolloClientV2(val service: ApolloClient): ApolloClientTypeV2 {
                                         .build()
                                     cardsList.add(card)
                                 }
-
                             }
                             ps.onNext(cardsList)
                             ps.onComplete()

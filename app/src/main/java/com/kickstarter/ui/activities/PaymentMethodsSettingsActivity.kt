@@ -35,7 +35,7 @@ class PaymentMethodsSettingsActivity : AppCompatActivity() {
     private lateinit var viewModelFactory: PaymentMethodsViewModel.Factory
     private val viewModel: PaymentMethodsViewModel by viewModels { viewModelFactory }
 
-    private lateinit var compositeDisposable:CompositeDisposable
+    private lateinit var compositeDisposable: CompositeDisposable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,26 +81,26 @@ class PaymentMethodsSettingsActivity : AppCompatActivity() {
         )
 
         compositeDisposable.add(
-        this.viewModel.outputs.progressBarIsVisible()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                binding.progressBar.isGone = !it
-            }
+            this.viewModel.outputs.progressBarIsVisible()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    binding.progressBar.isGone = !it
+                }
         )
 
         compositeDisposable.add(
-        this.viewModel.outputs.showDeleteCardDialog()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { lazyDeleteCardConfirmationDialog().show() }
+            this.viewModel.outputs.showDeleteCardDialog()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { lazyDeleteCardConfirmationDialog().show() }
         )
 
         compositeDisposable.add(
-        this.viewModel.success()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { showSnackbar(binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, R.string.Got_it_your_changes_have_been_saved) }
+            this.viewModel.success()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { showSnackbar(binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, R.string.Got_it_your_changes_have_been_saved) }
         )
 
         binding.addNewCard.setOnClickListener {
@@ -108,21 +108,21 @@ class PaymentMethodsSettingsActivity : AppCompatActivity() {
         }
 
         compositeDisposable.add(
-        this.viewModel.outputs.presentPaymentSheet()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                flowControllerPresentPaymentOption(it)
-            }
+            this.viewModel.outputs.presentPaymentSheet()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    flowControllerPresentPaymentOption(it)
+                }
         )
 
         compositeDisposable.add(
-        this.viewModel.showError()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                showErrorSnackBar(binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, getString(R.string.general_error_something_wrong))
-            }
+            this.viewModel.showError()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    showErrorSnackBar(binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, getString(R.string.general_error_something_wrong))
+                }
         )
     }
 

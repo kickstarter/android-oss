@@ -8,6 +8,7 @@ import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.services.mutations.SavePaymentMethodData
+import io.reactivex.disposables.CompositeDisposable
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -21,23 +22,24 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     private val dividerIsVisible = TestSubscriber<Boolean>()
     private val error = TestSubscriber<String>()
     private val progressBarIsVisible = TestSubscriber<Boolean>()
-    private val showDeleteCardDialog = TestSubscriber<Void>()
+    private val showDeleteCardDialog = TestSubscriber<Unit>()
     private val success = TestSubscriber<String>()
     private val presentPaymentSheet = TestSubscriber<String>()
     private val showError = TestSubscriber<String>()
+    private val compositeDisposable = CompositeDisposable()
 
     private fun setUpEnvironment(environment: Environment) {
 
         this.vm = PaymentMethodsViewModel.Factory(environment).create(PaymentMethodsViewModel::class.java)
 
-        this.vm.outputs.error().subscribe(this.error)
-        this.vm.outputs.cards().subscribe(this.cards)
-        this.vm.outputs.dividerIsVisible().subscribe(this.dividerIsVisible)
-        this.vm.outputs.progressBarIsVisible().subscribe(this.progressBarIsVisible)
-        this.vm.outputs.showDeleteCardDialog().subscribe(this.showDeleteCardDialog)
-        this.vm.outputs.success().subscribe(this.success)
-        this.vm.outputs.presentPaymentSheet().subscribe(this.presentPaymentSheet)
-        this.vm.outputs.showError().subscribe(this.showError)
+        compositeDisposable.add(this.vm.outputs.error().subscribe { this.error.onNext(it) })
+        compositeDisposable.add(this.vm.outputs.cards().subscribe { this.cards.onNext(it) })
+        compositeDisposable.add(this.vm.outputs.dividerIsVisible().subscribe { this.dividerIsVisible.onNext(it) })
+        compositeDisposable.add(this.vm.outputs.progressBarIsVisible().subscribe { this.progressBarIsVisible.onNext(it) })
+        compositeDisposable.add(this.vm.outputs.showDeleteCardDialog().subscribe { this.showDeleteCardDialog.onNext(it) })
+        compositeDisposable.add(this.vm.outputs.success().subscribe { this.success.onNext(it) })
+        compositeDisposable.add(this.vm.outputs.presentPaymentSheet().subscribe { this.presentPaymentSheet.onNext(it) })
+        compositeDisposable.add(this.vm.outputs.showError().subscribe { this.showError.onNext(it) })
     }
 
     @Test

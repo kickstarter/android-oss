@@ -83,20 +83,20 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
     init {
 
         compositeDisposable.add(
-        getListOfStoredCards()
-            .subscribe { this.cards.onNext(it) })
-
-        compositeDisposable.add(
-        this.cards
-            .map { it.isNotEmpty() }
-            .subscribe { this.dividerIsVisible.onNext(it) }
+            getListOfStoredCards()
+                .subscribe { this.cards.onNext(it) }
         )
 
         compositeDisposable.add(
-        this.deleteCardClicked
-            .subscribe { this.showDeleteCardDialog.onNext(Unit) }
+            this.cards
+                .map { it.isNotEmpty() }
+                .subscribe { this.dividerIsVisible.onNext(it) }
         )
 
+        compositeDisposable.add(
+            this.deleteCardClicked
+                .subscribe { this.showDeleteCardDialog.onNext(Unit) }
+        )
 
         val deleteCardNotification = this.deleteCardClicked
             .withLatestFrom(this.confirmDeleteCardClicked) { id, _ ->
@@ -106,27 +106,27 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
             .share()
 
         compositeDisposable.add(
-        deleteCardNotification
-            .filter { it.value != null}
-            .map { requireNotNull(it.value) }
-            .map { it.paymentSourceDelete()?.clientMutationId() ?: "" }
-            .subscribe {
-                this.refreshCards.onNext(Unit)
-                this.success.onNext(it)
-            }
+            deleteCardNotification
+                .filter { it.value != null }
+                .map { requireNotNull(it.value) }
+                .map { it.paymentSourceDelete()?.clientMutationId() ?: "" }
+                .subscribe {
+                    this.refreshCards.onNext(Unit)
+                    this.success.onNext(it)
+                }
         )
 
         compositeDisposable.add(
-        deleteCardNotification
-            .filter{ it.error != null}
-            .map { requireNotNull(it.error) }
-            .subscribe { this.error.onNext(it.localizedMessage) }
+            deleteCardNotification
+                .filter { it.error != null }
+                .map { requireNotNull(it.error) }
+                .subscribe { this.error.onNext(it.localizedMessage) }
         )
 
         compositeDisposable.add(
-        this.refreshCards
-            .switchMap { getListOfStoredCards() }
-            .subscribe { this.cards.onNext(it) }
+            this.refreshCards
+                .switchMap { getListOfStoredCards() }
+                .subscribe { this.cards.onNext(it) }
         )
 
         val shouldPresentPaymentSheet = this.newCardButtonPressed
@@ -135,21 +135,21 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
             }
 
         compositeDisposable.add(
-        shouldPresentPaymentSheet
-            .filter { it.value != null}
-            .map { requireNotNull(it.value) }
-            .subscribe {
-                this.presentPaymentSheet.onNext(it)
-            }
+            shouldPresentPaymentSheet
+                .filter { it.value != null }
+                .map { requireNotNull(it.value) }
+                .subscribe {
+                    this.presentPaymentSheet.onNext(it)
+                }
         )
 
         compositeDisposable.add(
-        shouldPresentPaymentSheet
-            .filter{ it.error?.message != null}
-            .map { requireNotNull(it.error?.message) }
-            .subscribe {
-                this.showError.onNext(it)
-            }
+            shouldPresentPaymentSheet
+                .filter { it.error?.message != null }
+                .map { requireNotNull(it.error?.message) }
+                .subscribe {
+                    this.showError.onNext(it)
+                }
         )
 
         val savedPaymentOption = this.savePaymentOption
@@ -167,21 +167,21 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
             }
 
         compositeDisposable.add(
-        savedPaymentOption
-            .filter { it.value != null}
-            .map { requireNotNull(it.value) }
-            .subscribe {
-                this.refreshCards.onNext(Unit)
-            }
+            savedPaymentOption
+                .filter { it.value != null }
+                .map { requireNotNull(it.value) }
+                .subscribe {
+                    this.refreshCards.onNext(Unit)
+                }
         )
 
         compositeDisposable.add(
-        savedPaymentOption
-            .filter{ it.error?.message != null}
-            .map { requireNotNull(it.error?.message) }
-            .subscribe {
-                this.showError.onNext(it)
-            }
+            savedPaymentOption
+                .filter { it.error?.message != null }
+                .map { requireNotNull(it.error?.message) }
+                .subscribe {
+                    this.showError.onNext(it)
+                }
         )
     }
 
@@ -217,7 +217,6 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
             .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
             .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
             .doOnError {
-
             }
     }
 

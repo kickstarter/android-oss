@@ -220,7 +220,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.savePaymentOption()
         this.cards.assertValueCount(2)
         this.cards.assertValues(cardsList, cardsListUpdated)
-        this.progressBarIsVisible.assertValues(false, true, false, true, false, true, false, true, false, true, false)
+        this.progressBarIsVisible.assertValues(false, true, false, true, false, true, false, true, false)
         this.showError.assertNoValues()
     }
 

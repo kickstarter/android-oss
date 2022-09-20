@@ -4,8 +4,9 @@ import DeletePaymentSourceMutation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
+import com.kickstarter.libs.rx.transformers.Transformers.neverErrorV2
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
 import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
 import com.kickstarter.models.StoredCard
 import com.kickstarter.services.mutations.SavePaymentMethodData
@@ -104,26 +105,28 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
         )
 
         val deleteCardNotification = this.deleteCardClicked
-            .withLatestFrom(this.confirmDeleteCardClicked) { id, _ ->
-                id
-            }
+            .compose<String>(takeWhenV2(this.confirmDeleteCardClicked))
             .switchMap { deletePaymentSource(it).materialize() }
             .share()
 
         compositeDisposable.add(
             deleteCardNotification
                 .compose(valuesV2())
-                .map { it.paymentSourceDelete()?.clientMutationId() }
+                .map {
+                    it.paymentSourceDelete()?.clientMutationId() ?: ""
+                }
                 .subscribe {
                     this.refreshCards.onNext(Unit)
-                    this.success.onNext(it ?: "")
+                    this.success.onNext(it)
                 }
         )
 
         compositeDisposable.add(
             deleteCardNotification
                 .compose(errorsV2())
-                .subscribe { this.error.onNext(it?.localizedMessage ?: "") }
+                .subscribe {
+                    this.error.onNext(it?.localizedMessage ?: "")
+                }
         )
 
         compositeDisposable.add(
@@ -215,7 +218,7 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
         return this.apolloClient.getStoredCards()
             .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
             .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
-            .compose(Transformers.neverErrorV2())
+            .compose(neverErrorV2())
     }
 
     private fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {

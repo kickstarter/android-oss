@@ -96,6 +96,16 @@ public final class Transformers {
   }
 
   /**
+   * Emits the latest value of the source observable whenever the `when`
+   * observable emits.
+   *
+   * Adapted to RxJava 2
+   */
+  public static <S, T> TakeWhenTransformerV2<S, T> takeWhenV2(final @NonNull io.reactivex.Observable<T> when) {
+    return new TakeWhenTransformerV2<>(when);
+  }
+
+  /**
    * Emits the latest value of the source `when` observable whenever the
    * `when` observable emits.
    */

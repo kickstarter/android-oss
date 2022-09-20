@@ -138,10 +138,8 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                             ps.onError(Exception(response.errors?.first()?.message))
                         }
 
-                        response.data?.let {
-                            ps.onNext(it)
-                            ps.onComplete()
-                        } ?: ps.onError(Exception())
+                        response.data?.let { ps.onNext(it) }
+                        ps.onComplete()
                     }
                 })
             return@defer ps

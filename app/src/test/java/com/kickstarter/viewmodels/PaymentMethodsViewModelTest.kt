@@ -4,15 +4,15 @@ import DeletePaymentSourceMutation
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.StoredCardFactory
-import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.services.mutations.SavePaymentMethodData
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import org.junit.After
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
 import java.util.Collections
 
 class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
@@ -53,7 +53,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         val card = StoredCardFactory.discoverCard()
 
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun getStoredCards(): Observable<List<StoredCard>> {
                     return Observable.just(Collections.singletonList(card))
                 }
@@ -73,7 +73,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testDividerIsVisible_noCards() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun getStoredCards(): Observable<List<StoredCard>> {
                     return Observable.just(Collections.emptyList())
                 }
@@ -86,7 +86,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testErrorGettingCards() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun getStoredCards(): Observable<List<StoredCard>> {
                     return Observable.error(Exception("oops"))
                 }
@@ -100,7 +100,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testErrorDeletingCard() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
                     return Observable.error(Throwable("eek"))
                 }
@@ -148,7 +148,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         val setupClientId = "seti_1KbABk4VvJ2PtfhKV8E7dvGe_secret_LHjfXxFl9UDucYtsL5a3WtySqjgqf5F"
 
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun createSetupIntent(project: Project?): Observable<String> {
                     return Observable.just(setupClientId)
                 }
@@ -166,7 +166,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     fun testPresentPaymentSheetError() {
         val errorString = "Something went wrong"
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun createSetupIntent(project: Project?): Observable<String> {
                     return Observable.error(Exception(errorString))
                 }
@@ -189,7 +189,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         var numberOfCalls = 1
 
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun createSetupIntent(project: Project?): Observable<String> {
                     return Observable.just(setupClientId)
                 }
@@ -232,7 +232,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         val errorString = "Something went wrong"
 
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun createSetupIntent(project: Project?): Observable<String> {
                     return Observable.just(setupClientId)
                 }

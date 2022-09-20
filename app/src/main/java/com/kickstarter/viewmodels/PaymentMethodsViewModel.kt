@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
 import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
 import com.kickstarter.models.StoredCard
 import com.kickstarter.services.mutations.SavePaymentMethodData
@@ -115,15 +116,14 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
                 .map { it.paymentSourceDelete()?.clientMutationId() }
                 .subscribe {
                     this.refreshCards.onNext(Unit)
-                    this.success.onNext(it?:"")
+                    this.success.onNext(it ?: "")
                 }
         )
 
         compositeDisposable.add(
             deleteCardNotification
-                .filter { it.error != null }
-                .map { requireNotNull(it.error) }
-                .subscribe { this.error.onNext(it.localizedMessage) }
+                .compose(errorsV2())
+                .subscribe { this.error.onNext(it?.localizedMessage ?: "") }
         )
 
         compositeDisposable.add(
@@ -147,10 +147,9 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
 
         compositeDisposable.add(
             shouldPresentPaymentSheet
-                .filter { it.error?.message != null }
-                .map { requireNotNull(it.error?.message) }
+                .compose(errorsV2())
                 .subscribe {
-                    this.showError.onNext(it)
+                    this.showError.onNext(it?.localizedMessage ?: "")
                 }
         )
 
@@ -178,10 +177,9 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
 
         compositeDisposable.add(
             savedPaymentOption
-                .filter { it.error?.message != null }
-                .map { requireNotNull(it.error?.message) }
+                .compose(errorsV2())
                 .subscribe {
-                    this.showError.onNext(it)
+                    this.showError.onNext(it?.localizedMessage ?: "")
                 }
         )
     }

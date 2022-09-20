@@ -2,8 +2,8 @@ package com.kickstarter.libs.rx.transformers
 
 import io.reactivex.Notification
 import io.reactivex.Observable
-import io.reactivex.ObservableTransformer
 import io.reactivex.ObservableSource
+import io.reactivex.ObservableTransformer
 
 class ValuesTransformerV2<T> : ObservableTransformer<Notification<T>, T?> {
     override fun apply(upstream: Observable<Notification<T>>): ObservableSource<T?> {

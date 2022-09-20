@@ -33,6 +33,14 @@ public final class Transformers {
   }
 
   /**
+   * Emits when an error is thrown in a materialized stream.
+   * Adapted to RxJava 2
+   */
+  public static @NonNull <T> ErrorsTransformerV2<T> errorsV2() {
+    return new ErrorsTransformerV2<>();
+  }
+
+  /**
    * Prevents an observable from erroring by chaining `onErrorResumeNext`.
    */
   public static <T> NeverErrorTransformer<T> neverError() {

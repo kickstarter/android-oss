@@ -40,6 +40,14 @@ public final class Transformers {
   }
 
   /**
+   * Prevents an observable from erroring by chaining `onErrorResumeNext`.
+   * Adapted to RxJava 2
+   */
+  public static <T> NeverErrorTransformerV2<T> neverErrorV2() {
+    return new NeverErrorTransformerV2<>();
+  }
+
+  /**
    * Prevents an observable from erroring on any {@link ApiException} exceptions.
    */
   public static <T> NeverApiErrorTransformer<T> neverApiError() {
@@ -146,6 +154,14 @@ public final class Transformers {
    */
   public static @NonNull <T> ValuesTransformer<T> values() {
     return new ValuesTransformer<>();
+  }
+
+  /**
+   * Emits an observable of values from a materialized stream.
+   * Adapted to RxJava 2
+   */
+  public static @NonNull <T> ValuesTransformerV2<T> valuesV2() {
+    return new ValuesTransformerV2<>();
   }
 
   /**

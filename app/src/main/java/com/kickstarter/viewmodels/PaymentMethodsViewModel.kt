@@ -4,6 +4,8 @@ import DeletePaymentSourceMutation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
 import com.kickstarter.models.StoredCard
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
@@ -95,7 +97,9 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
 
         compositeDisposable.add(
             this.deleteCardClicked
-                .subscribe { this.showDeleteCardDialog.onNext(Unit) }
+                .subscribe {
+                    this.showDeleteCardDialog.onNext(Unit)
+                }
         )
 
         val deleteCardNotification = this.deleteCardClicked
@@ -107,12 +111,11 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
 
         compositeDisposable.add(
             deleteCardNotification
-                .filter { it.value != null }
-                .map { requireNotNull(it.value) }
-                .map { it.paymentSourceDelete()?.clientMutationId() ?: "" }
+                .compose(valuesV2())
+                .map { it.paymentSourceDelete()?.clientMutationId() }
                 .subscribe {
                     this.refreshCards.onNext(Unit)
-                    this.success.onNext(it)
+                    this.success.onNext(it?:"")
                 }
         )
 
@@ -136,8 +139,7 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
 
         compositeDisposable.add(
             shouldPresentPaymentSheet
-                .filter { it.value != null }
-                .map { requireNotNull(it.value) }
+                .compose(valuesV2())
                 .subscribe {
                     this.presentPaymentSheet.onNext(it)
                 }
@@ -168,8 +170,7 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
 
         compositeDisposable.add(
             savedPaymentOption
-                .filter { it.value != null }
-                .map { requireNotNull(it.value) }
+                .compose(valuesV2())
                 .subscribe {
                     this.refreshCards.onNext(Unit)
                 }
@@ -216,8 +217,7 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
         return this.apolloClient.getStoredCards()
             .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
             .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
-            .doOnError {
-            }
+            .compose(Transformers.neverErrorV2())
     }
 
     private fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {

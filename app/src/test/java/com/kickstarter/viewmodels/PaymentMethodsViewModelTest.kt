@@ -9,6 +9,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import io.reactivex.disposables.CompositeDisposable
+import org.junit.After
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -40,6 +41,11 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         compositeDisposable.add(this.vm.outputs.success().subscribe { this.success.onNext(it) })
         compositeDisposable.add(this.vm.outputs.presentPaymentSheet().subscribe { this.presentPaymentSheet.onNext(it) })
         compositeDisposable.add(this.vm.outputs.showError().subscribe { this.showError.onNext(it) })
+    }
+
+    @After
+    fun cleanUp() {
+        compositeDisposable.clear()
     }
 
     @Test

@@ -33,10 +33,26 @@ public final class Transformers {
   }
 
   /**
+   * Emits when an error is thrown in a materialized stream.
+   * Adapted to RxJava 2
+   */
+  public static @NonNull <T> ErrorsTransformerV2<T> errorsV2() {
+    return new ErrorsTransformerV2<>();
+  }
+
+  /**
    * Prevents an observable from erroring by chaining `onErrorResumeNext`.
    */
   public static <T> NeverErrorTransformer<T> neverError() {
     return new NeverErrorTransformer<>();
+  }
+
+  /**
+   * Prevents an observable from erroring by chaining `onErrorResumeNext`.
+   * Adapted to RxJava 2
+   */
+  public static <T> NeverErrorTransformerV2<T> neverErrorV2() {
+    return new NeverErrorTransformerV2<>();
   }
 
   /**
@@ -77,6 +93,16 @@ public final class Transformers {
    */
   public static <S, T> TakeWhenTransformer<S, T> takeWhen(final @NonNull Observable<T> when) {
     return new TakeWhenTransformer<>(when);
+  }
+
+  /**
+   * Emits the latest value of the source observable whenever the `when`
+   * observable emits.
+   *
+   * Adapted to RxJava 2
+   */
+  public static <S, T> TakeWhenTransformerV2<S, T> takeWhenV2(final @NonNull io.reactivex.Observable<T> when) {
+    return new TakeWhenTransformerV2<>(when);
   }
 
   /**
@@ -146,6 +172,14 @@ public final class Transformers {
    */
   public static @NonNull <T> ValuesTransformer<T> values() {
     return new ValuesTransformer<>();
+  }
+
+  /**
+   * Emits an observable of values from a materialized stream.
+   * Adapted to RxJava 2
+   */
+  public static @NonNull <T> ValuesTransformerV2<T> valuesV2() {
+    return new ValuesTransformerV2<>();
   }
 
   /**

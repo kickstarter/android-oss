@@ -32,6 +32,7 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
 import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.DiscoverEnvelope
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
@@ -43,6 +44,24 @@ import com.kickstarter.services.mutations.UpdateBackingData
 import rx.Observable
 import type.CurrencyCode
 import java.util.Collections
+
+open class MockApolloClientV2 : ApolloClientTypeV2 {
+    override fun createSetupIntent(project: Project?): io.reactivex.Observable<String> {
+        return io.reactivex.Observable.just("")
+    }
+
+    override fun getStoredCards(): io.reactivex.Observable<List<StoredCard>> {
+        return io.reactivex.Observable.just(Collections.singletonList(StoredCardFactory.discoverCard()))
+    }
+
+    override fun deletePaymentSource(paymentSourceId: String): io.reactivex.Observable<DeletePaymentSourceMutation.Data> {
+        return io.reactivex.Observable.just(DeletePaymentSourceMutation.Data(DeletePaymentSourceMutation.PaymentSourceDelete("", "")))
+    }
+
+    override fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): io.reactivex.Observable<StoredCard> {
+        return io.reactivex.Observable.just(StoredCardFactory.discoverCard())
+    }
+}
 
 open class MockApolloClient : ApolloClientType {
 

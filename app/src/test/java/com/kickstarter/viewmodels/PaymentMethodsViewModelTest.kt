@@ -4,39 +4,48 @@ import DeletePaymentSourceMutation
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.StoredCardFactory
-import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.services.mutations.SavePaymentMethodData
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
 import java.util.Collections
 
 class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
 
-    private lateinit var vm: PaymentMethodsViewModel.ViewModel
+    private lateinit var vm: PaymentMethodsViewModel
 
     private val cards = TestSubscriber<List<StoredCard>>()
     private val dividerIsVisible = TestSubscriber<Boolean>()
     private val error = TestSubscriber<String>()
     private val progressBarIsVisible = TestSubscriber<Boolean>()
-    private val showDeleteCardDialog = TestSubscriber<Void>()
+    private val showDeleteCardDialog = TestSubscriber<Unit>()
     private val success = TestSubscriber<String>()
     private val presentPaymentSheet = TestSubscriber<String>()
     private val showError = TestSubscriber<String>()
+    private val compositeDisposable = CompositeDisposable()
 
     private fun setUpEnvironment(environment: Environment) {
-        this.vm = PaymentMethodsViewModel.ViewModel(environment)
 
-        this.vm.outputs.error().subscribe(this.error)
-        this.vm.outputs.cards().subscribe(this.cards)
-        this.vm.outputs.dividerIsVisible().subscribe(this.dividerIsVisible)
-        this.vm.outputs.progressBarIsVisible().subscribe(this.progressBarIsVisible)
-        this.vm.outputs.showDeleteCardDialog().subscribe(this.showDeleteCardDialog)
-        this.vm.outputs.success().subscribe(this.success)
-        this.vm.outputs.presentPaymentSheet().subscribe(this.presentPaymentSheet)
-        this.vm.outputs.showError().subscribe(this.showError)
+        this.vm = PaymentMethodsViewModel.Factory(environment).create(PaymentMethodsViewModel::class.java)
+
+        compositeDisposable.add(this.vm.outputs.error().subscribe { this.error.onNext(it) })
+        compositeDisposable.add(this.vm.outputs.cards().subscribe { this.cards.onNext(it) })
+        compositeDisposable.add(this.vm.outputs.dividerIsVisible().subscribe { this.dividerIsVisible.onNext(it) })
+        compositeDisposable.add(this.vm.outputs.progressBarIsVisible().subscribe { this.progressBarIsVisible.onNext(it) })
+        compositeDisposable.add(this.vm.outputs.showDeleteCardDialog().subscribe { this.showDeleteCardDialog.onNext(it) })
+        compositeDisposable.add(this.vm.outputs.success().subscribe { this.success.onNext(it) })
+        compositeDisposable.add(this.vm.outputs.presentPaymentSheet().subscribe { this.presentPaymentSheet.onNext(it) })
+        compositeDisposable.add(this.vm.outputs.showError().subscribe { this.showError.onNext(it) })
+    }
+
+    @After
+    fun cleanUp() {
+        compositeDisposable.clear()
     }
 
     @Test
@@ -44,7 +53,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         val card = StoredCardFactory.discoverCard()
 
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun getStoredCards(): Observable<List<StoredCard>> {
                     return Observable.just(Collections.singletonList(card))
                 }
@@ -64,7 +73,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testDividerIsVisible_noCards() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun getStoredCards(): Observable<List<StoredCard>> {
                     return Observable.just(Collections.emptyList())
                 }
@@ -77,7 +86,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testErrorGettingCards() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun getStoredCards(): Observable<List<StoredCard>> {
                     return Observable.error(Exception("oops"))
                 }
@@ -91,7 +100,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testErrorDeletingCard() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
                     return Observable.error(Throwable("eek"))
                 }
@@ -139,7 +148,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         val setupClientId = "seti_1KbABk4VvJ2PtfhKV8E7dvGe_secret_LHjfXxFl9UDucYtsL5a3WtySqjgqf5F"
 
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun createSetupIntent(project: Project?): Observable<String> {
                     return Observable.just(setupClientId)
                 }
@@ -157,7 +166,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     fun testPresentPaymentSheetError() {
         val errorString = "Something went wrong"
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun createSetupIntent(project: Project?): Observable<String> {
                     return Observable.error(Exception(errorString))
                 }
@@ -180,7 +189,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         var numberOfCalls = 1
 
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun createSetupIntent(project: Project?): Observable<String> {
                     return Observable.just(setupClientId)
                 }
@@ -211,7 +220,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.savePaymentOption()
         this.cards.assertValueCount(2)
         this.cards.assertValues(cardsList, cardsListUpdated)
-        this.progressBarIsVisible.assertValues(false, true, false, true, false, true, false, true, false, true, false)
+        this.progressBarIsVisible.assertValues(false, true, false, true, false, true, false, true, false)
         this.showError.assertNoValues()
     }
 
@@ -223,7 +232,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         val errorString = "Something went wrong"
 
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun createSetupIntent(project: Project?): Observable<String> {
                     return Observable.just(setupClientId)
                 }

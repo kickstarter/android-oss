@@ -197,6 +197,15 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.work:work-runtime-ktx:2.7.1'
+
+    // Architecture components
+    def lifecycle_version = "2.2.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    def activity_fragment_version = "1.5.1"
+    implementation "androidx.activity:activity-ktx:$activity_fragment_version"
+    implementation "androidx.fragment:fragment-ktx:$activity_fragment_version"
+
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
     implementation 'com.apollographql.apollo:apollo-runtime:2.5.12'
     implementation 'com.facebook.android:facebook-android-sdk:14.1.1'
@@ -262,11 +271,6 @@ dependencies {
 
     // Zoom on Images
     implementation 'io.github.aghajari:ZoomHelper:1.1.0'
-
-    //
-    implementation("androidx.activity:activity:1.5.1")
-    implementation("androidx.fragment:fragment:1.5.2")
-
 
     // Testing
     testImplementation "junit:junit:4.13.2"

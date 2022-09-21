@@ -14,11 +14,14 @@ import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.mock.services.MockApolloClient;
+import com.kickstarter.mock.services.MockApolloClientV2;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiService;
 import com.kickstarter.services.ApolloClientType;
+import com.kickstarter.services.ApolloClientTypeV2;
 import com.kickstarter.services.KSApolloClient;
+import com.kickstarter.services.KSApolloClientV2;
 
 import javax.inject.Singleton;
 
@@ -58,6 +61,13 @@ public final class InternalApplicationModule {
   @NonNull
   static ApolloClientType provideApolloClientType(final @NonNull ApolloClient apolloClient) {
     return Secrets.IS_OSS ? new MockApolloClient() : new KSApolloClient(apolloClient);
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
+  static ApolloClientTypeV2 provideApolloClientTypeV2(final @NonNull ApolloClient apolloClient) {
+    return Secrets.IS_OSS ? new MockApolloClientV2() : new KSApolloClientV2(apolloClient);
   }
 
   @Provides

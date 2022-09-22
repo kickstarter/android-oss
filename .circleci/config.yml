@@ -1,7 +1,8 @@
 base_job: &base_job
   executor:
-      name: android/android-machine
-      resource-class: xlarge
+    name: android/android-machine
+    resource-class: xlarge
+    tag: 2022.09.2
   working_directory: '~/project'
   environment:
     TERM: dumb
@@ -10,8 +11,8 @@ base_job: &base_job
 
 version: 2.1
 orbs:
-  codecov: codecov/codecov@1.1.5
-  android: circleci/android@1.0.3
+  codecov: codecov/codecov@3.2.3
+  android: circleci/android@2.1.2
 
 jobs:
   build:

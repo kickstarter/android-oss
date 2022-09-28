@@ -126,7 +126,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testThanksViewModel_showRatingDialog_if_feature_flag_diabled() {
+    fun testThanksViewModel_hideRatingDialog_if_feature_flag_disabled() {
         val hasSeenAppRatingPreference = MockBooleanPreference(false)
         val hasSeenGamesNewsletterPreference = MockBooleanPreference(true)
         val mockExperimentsClientType: MockExperimentsClientType =

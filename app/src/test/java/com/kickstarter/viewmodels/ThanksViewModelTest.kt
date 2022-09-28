@@ -1,411 +1,455 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import android.content.Intent;
-import android.util.Pair;
+import android.content.Intent
+import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.RefTag.Companion.thanks
+import com.kickstarter.libs.models.OptimizelyFeature
+import com.kickstarter.libs.preferences.MockBooleanPreference
+import com.kickstarter.libs.utils.EventName
+import com.kickstarter.mock.MockExperimentsClientType
+import com.kickstarter.mock.factories.CategoryFactory.artCategory
+import com.kickstarter.mock.factories.CategoryFactory.category
+import com.kickstarter.mock.factories.CategoryFactory.ceramicsCategory
+import com.kickstarter.mock.factories.CategoryFactory.tabletopGamesCategory
+import com.kickstarter.mock.factories.CheckoutDataFactory.checkoutData
+import com.kickstarter.mock.factories.LocationFactory.germany
+import com.kickstarter.mock.factories.ProjectDataFactory.project
+import com.kickstarter.mock.factories.ProjectFactory.project
+import com.kickstarter.mock.factories.RewardFactory.reward
+import com.kickstarter.mock.factories.UserFactory.user
+import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.models.Project
+import com.kickstarter.models.User
+import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.services.DiscoveryParams.Companion.builder
+import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.adapters.data.ThanksData
+import com.kickstarter.ui.data.PledgeData.Companion.with
+import com.kickstarter.ui.data.PledgeFlowContext
+import org.junit.Test
+import rx.observers.TestSubscriber
+import java.util.Arrays
 
-import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.CurrentUserType;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.MockCurrentUser;
-import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.models.OptimizelyFeature;
-import com.kickstarter.libs.preferences.MockBooleanPreference;
-import com.kickstarter.libs.utils.EventName;
-import com.kickstarter.mock.MockExperimentsClientType;
-import com.kickstarter.mock.factories.CategoryFactory;
-import com.kickstarter.mock.factories.CheckoutDataFactory;
-import com.kickstarter.mock.factories.LocationFactory;
-import com.kickstarter.mock.factories.ProjectDataFactory;
-import com.kickstarter.mock.factories.ProjectFactory;
-import com.kickstarter.mock.factories.RewardFactory;
-import com.kickstarter.mock.factories.UserFactory;
-import com.kickstarter.mock.services.MockApiClient;
-import com.kickstarter.models.Category;
-import com.kickstarter.models.Project;
-import com.kickstarter.models.User;
-import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.adapters.data.ThanksData;
-import com.kickstarter.ui.data.CheckoutData;
-import com.kickstarter.ui.data.PledgeData;
-import com.kickstarter.ui.data.PledgeFlowContext;
+class ThanksViewModelTest : KSRobolectricTestCase() {
+    private lateinit var vm: ThanksViewModel.ViewModel
+    private val adapterData = TestSubscriber<ThanksData>()
+    private val finish = TestSubscriber<Void>()
+    private val showGamesNewsletterDialogTest = TestSubscriber<Void>()
+    private val showRatingDialogTest = TestSubscriber<Void>()
+    private val showConfirmGamesNewsletterDialogTest = TestSubscriber.create<Void>()
+    private val startDiscoveryTest = TestSubscriber<DiscoveryParams>()
+    private val startProjectTest = TestSubscriber<android.util.Pair<Project, RefTag>>()
+    private val showSavedPromptTest = TestSubscriber<Void>()
 
-import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
+    private fun setUpEnvironment(environment: Environment) {
+        vm = ThanksViewModel.ViewModel(environment)
+        vm.outputs.adapterData().subscribe(adapterData)
+        vm.outputs.finish().subscribe(finish)
+        vm.outputs.showGamesNewsletterDialog().subscribe(showGamesNewsletterDialogTest)
+        vm.outputs.showRatingDialog().subscribe(showRatingDialogTest)
+        vm.outputs.showConfirmGamesNewsletterDialog().subscribe(
+            showConfirmGamesNewsletterDialogTest
+        )
+        vm.outputs.startDiscoveryActivity().subscribe(startDiscoveryTest)
+        vm.outputs.startProjectActivity().subscribe(startProjectTest)
+        vm.outputs.showSavedPrompt().subscribe(showSavedPromptTest)
+    }
 
-import java.util.Arrays;
-import java.util.Collections;
-
-import androidx.annotation.NonNull;
-
-import rx.observers.TestSubscriber;
-
-public final class ThanksViewModelTest extends KSRobolectricTestCase {
-  private ThanksViewModel.ViewModel vm;
-  private final TestSubscriber<ThanksData> adapterData = new TestSubscriber<>();
-  private final TestSubscriber<Void> finish = new TestSubscriber<>();
-  private final TestSubscriber<Void> showGamesNewsletterDialogTest = new TestSubscriber<>();
-  private final TestSubscriber<Void> showRatingDialogTest = new TestSubscriber<>();
-  private final TestSubscriber<Void> showConfirmGamesNewsletterDialogTest = TestSubscriber.create();
-  private final TestSubscriber<DiscoveryParams> startDiscoveryTest = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Project, RefTag>> startProjectTest = new TestSubscriber<>();
-  private final TestSubscriber<Void> showSavedPromptTest = new TestSubscriber<>();
-
-  protected void setUpEnvironment(final @NonNull Environment environment) {
-    this.vm = new ThanksViewModel.ViewModel(environment);
-    this.vm.outputs.adapterData().subscribe(this.adapterData);
-    this.vm.outputs.finish().subscribe(this.finish);
-    this.vm.outputs.showGamesNewsletterDialog().subscribe(this.showGamesNewsletterDialogTest);
-    this.vm.outputs.showRatingDialog().subscribe(this.showRatingDialogTest);
-    this.vm.outputs.showConfirmGamesNewsletterDialog().subscribe(this.showConfirmGamesNewsletterDialogTest);
-    this.vm.outputs.startDiscoveryActivity().subscribe(this.startDiscoveryTest);
-    this.vm.outputs.startProjectActivity().subscribe(this.startProjectTest);
-    this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest);
-  }
-
-  @Test
-  public void testSaveProject() {
-    final Project project = ProjectFactory.project()
+    @Test
+    fun testSaveProject() {
+        val project = project()
             .toBuilder()
-            .category(CategoryFactory.artCategory())
-            .build();
+            .category(artCategory())
+            .build()
+        setUpEnvironment(environment())
 
-    setUpEnvironment(environment());
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-    this.adapterData.assertValueCount(1);
+        adapterData.assertValueCount(1)
+        vm.inputs.onHeartButtonClicked(project)
+        adapterData.assertValueCount(2)
+        showSavedPromptTest.assertValueCount(1)
+        segmentTrack.assertValues(EventName.CTA_CLICKED.eventName)
+    }
 
-    this.vm.inputs.onHeartButtonClicked(project);
+    @Test
+    fun testThanksViewModel_adapterData() {
+        val project = project()
+            .toBuilder()
+            .category(artCategory())
+            .build()
 
-    this.adapterData.assertValueCount(2);
-    this.showSavedPromptTest.assertValueCount(1);
-    this.segmentTrack.assertValues(EventName.CTA_CLICKED.getEventName());
-  }
+        setUpEnvironment(environment())
 
-  @Test
-  public void testThanksViewModel_adapterData() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .category(CategoryFactory.artCategory())
-      .build();
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        adapterData.assertValueCount(1)
+    }
 
-    setUpEnvironment(environment());
+    @Test
+    fun testFinishEmits() {
+        setUpEnvironment(environment())
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-    this.adapterData.assertValueCount(1);
-  }
+        val intent = Intent()
+            .putExtra(IntentKey.PROJECT, project())
 
-  @Test
-  public void testFinishEmits() {
-    setUpEnvironment(environment());
+        vm.intent(intent)
+        vm.inputs.closeButtonClicked()
+        finish.assertValueCount(1)
+    }
 
-    final Intent intent = new Intent()
-      .putExtra(IntentKey.PROJECT, ProjectFactory.project());
-    this.vm.intent(intent);
-    this.vm.inputs.closeButtonClicked();
+    @Test
+    fun testThanksViewModel_showRatingDialog() {
+        val hasSeenAppRatingPreference = MockBooleanPreference(false)
+        val hasSeenGamesNewsletterPreference = MockBooleanPreference(true)
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
 
-    this.finish.assertValueCount(1);
-  }
+        val environment = environment()
+            .toBuilder()
+            .optimizely(mockExperimentsClientType)
+            .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
+            .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
+            .build()
 
-  @Test
-  public void testThanksViewModel_showRatingDialog() {
-    final MockBooleanPreference hasSeenAppRatingPreference = new MockBooleanPreference(false);
-    final MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(true);
+        setUpEnvironment(environment)
 
-    final Environment environment = environment()
-      .toBuilder()
-      .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
-      .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
-      .build();
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, project()))
+        showRatingDialogTest.assertValueCount(0)
+    }
 
-    setUpEnvironment(environment);
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
-    this.showRatingDialogTest.assertValueCount(1);
-  }
+    @Test
+    fun testThanksViewModel_showRatingDialog_if_feature_flag_diabled() {
+        val hasSeenAppRatingPreference = MockBooleanPreference(false)
+        val hasSeenGamesNewsletterPreference = MockBooleanPreference(true)
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return false
+                }
+            }
 
-  @Test
-  public void testThanksViewModel_dontShowRatingDialogIfAlreadySeen() {
-    final MockBooleanPreference hasSeenAppRatingPreference = new MockBooleanPreference(true);
-    final MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(true);
+        val environment = environment()
+            .toBuilder()
+            .optimizely(mockExperimentsClientType)
+            .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
+            .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
+            .build()
 
-    final Environment environment = environment()
-      .toBuilder()
-      .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
-      .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
-      .build();
+        setUpEnvironment(environment)
 
-    setUpEnvironment(environment);
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
-    this.showRatingDialogTest.assertValueCount(0);
-  }
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, project()))
+        showRatingDialogTest.assertValueCount(1)
+    }
 
-  @Test
-  public void testThanksViewModel_dontShowRatingDialogIfGamesNewsletterWillDisplay() {
-    final MockBooleanPreference hasSeenAppRatingPreference = new MockBooleanPreference(false);
-    final MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(false);
+    @Test
+    fun testThanksViewModel_dontShowRatingDialogIfAlreadySeen() {
+        val hasSeenAppRatingPreference = MockBooleanPreference(true)
+        val hasSeenGamesNewsletterPreference = MockBooleanPreference(true)
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return false
+                }
+            }
 
-    final User user = UserFactory.user().toBuilder().gamesNewsletter(false).build();
-    final CurrentUserType currentUser = new MockCurrentUser(user);
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .category(CategoryFactory.tabletopGamesCategory())
-      .build();
+        val environment = environment()
+            .toBuilder()
+            .optimizely(mockExperimentsClientType)
+            .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
+            .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
+            .build()
 
-    final Environment environment = environment()
-      .toBuilder()
-      .currentUser(currentUser)
-      .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
-      .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
-      .build();
+        setUpEnvironment(environment)
 
-    setUpEnvironment(environment);
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-    this.showRatingDialogTest.assertValueCount(0);
-  }
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, project()))
+        showRatingDialogTest.assertValueCount(0)
+    }
 
-  @Test
-  public void testThanksViewModel_showGamesNewsletterDialog() {
-    final MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(false);
+    @Test
+    fun testThanksViewModel_dontShowRatingDialogIfGamesNewsletterWillDisplay() {
+        val hasSeenAppRatingPreference = MockBooleanPreference(false)
+        val hasSeenGamesNewsletterPreference = MockBooleanPreference(false)
+        val user = user().toBuilder().gamesNewsletter(false).build()
+        val currentUser: CurrentUserType = MockCurrentUser(user)
+        val project = project()
+            .toBuilder()
+            .category(tabletopGamesCategory())
+            .build()
 
-    final User user = UserFactory.user().toBuilder().gamesNewsletter(false).build();
-    final CurrentUserType currentUser = new MockCurrentUser(user);
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return false
+                }
+            }
 
-    final Environment environment = environment()
-      .toBuilder()
-      .currentUser(currentUser)
-      .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
-      .build();
+        val environment = environment()
+            .toBuilder()
+            .currentUser(currentUser)
+            .optimizely(mockExperimentsClientType)
+            .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
+            .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
+            .build()
 
-    setUpEnvironment(environment);
+        setUpEnvironment(environment)
 
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .category(CategoryFactory.tabletopGamesCategory())
-      .build();
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        showRatingDialogTest.assertValueCount(0)
+    }
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    @Test
+    fun testThanksViewModel_showGamesNewsletterDialog() {
+        val hasSeenGamesNewsletterPreference = MockBooleanPreference(false)
+        val user = user().toBuilder().gamesNewsletter(false).build()
+        val currentUser: CurrentUserType = MockCurrentUser(user)
+        val environment = environment()
+            .toBuilder()
+            .currentUser(currentUser)
+            .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
+            .build()
 
-    this.showGamesNewsletterDialogTest.assertValueCount(1);
-    assertEquals(Arrays.asList(false, true), hasSeenGamesNewsletterPreference.values());
-  }
+        setUpEnvironment(environment)
 
-  @Test
-  public void testThanksViewModel_dontShowGamesNewsletterDialogIfRootCategoryIsNotGames() {
-    final MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(false);
-    final User user = UserFactory.user().toBuilder().gamesNewsletter(false).build();
-    final CurrentUserType currentUser = new MockCurrentUser(user);
+        val project = project()
+            .toBuilder()
+            .category(tabletopGamesCategory())
+            .build()
 
-    final Environment environment = environment()
-      .toBuilder()
-      .currentUser(currentUser)
-      .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
-      .build();
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
-    setUpEnvironment(environment);
+        showGamesNewsletterDialogTest.assertValueCount(1)
+        assertEquals(Arrays.asList(false, true), hasSeenGamesNewsletterPreference.values())
+    }
 
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .category(CategoryFactory.ceramicsCategory())
-      .build();
+    @Test
+    fun testThanksViewModel_dontShowGamesNewsletterDialogIfRootCategoryIsNotGames() {
+        val hasSeenGamesNewsletterPreference = MockBooleanPreference(false)
+        val user = user().toBuilder().gamesNewsletter(false).build()
+        val currentUser: CurrentUserType = MockCurrentUser(user)
+        val environment = environment()
+            .toBuilder()
+            .currentUser(currentUser)
+            .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
+            .build()
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-    this.showGamesNewsletterDialogTest.assertValueCount(0);
-  }
+        setUpEnvironment(environment)
 
-  @Test
-  public void testThanksViewModel_dontShowGamesNewsletterDialogIfUserHasAlreadySeen() {
-    final MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(true);
-    final User user = UserFactory.user().toBuilder().gamesNewsletter(false).build();
-    final CurrentUserType currentUser = new MockCurrentUser(user);
+        val project = project()
+            .toBuilder()
+            .category(ceramicsCategory())
+            .build()
 
-    final Environment environment = environment()
-      .toBuilder()
-      .currentUser(currentUser)
-      .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
-      .build();
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
-    setUpEnvironment(environment);
+        showGamesNewsletterDialogTest.assertValueCount(0)
+    }
 
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .category(CategoryFactory.tabletopGamesCategory())
-      .build();
+    @Test
+    fun testThanksViewModel_dontShowGamesNewsletterDialogIfUserHasAlreadySeen() {
+        val hasSeenGamesNewsletterPreference = MockBooleanPreference(true)
+        val user = user().toBuilder().gamesNewsletter(false).build()
+        val currentUser: CurrentUserType = MockCurrentUser(user)
+        val environment = environment()
+            .toBuilder()
+            .currentUser(currentUser)
+            .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
+            .build()
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-    this.showGamesNewsletterDialogTest.assertValueCount(0);
-  }
+        setUpEnvironment(environment)
 
-  @Test
-  public void testThanksViewModel_dontShowGamesNewsletterDialogIfUserHasAlreadySignedUp() {
-    final MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(false);
-    final User user = UserFactory.user().toBuilder().gamesNewsletter(true).build();
-    final CurrentUserType currentUser = new MockCurrentUser(user);
+        val project = project()
+            .toBuilder()
+            .category(tabletopGamesCategory())
+            .build()
 
-    final Environment environment = environment()
-      .toBuilder()
-      .currentUser(currentUser)
-      .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
-      .build();
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        showGamesNewsletterDialogTest.assertValueCount(0)
+    }
 
-    setUpEnvironment(environment);
+    @Test
+    fun testThanksViewModel_dontShowGamesNewsletterDialogIfUserHasAlreadySignedUp() {
+        val hasSeenGamesNewsletterPreference = MockBooleanPreference(false)
+        val user = user().toBuilder().gamesNewsletter(true).build()
+        val currentUser: CurrentUserType = MockCurrentUser(user)
+        val environment = environment()
+            .toBuilder()
+            .currentUser(currentUser)
+            .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
+            .build()
 
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .category(CategoryFactory.tabletopGamesCategory())
-      .build();
+        setUpEnvironment(environment)
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-    this.showGamesNewsletterDialogTest.assertValueCount(0);
-  }
+        val project = project()
+            .toBuilder()
+            .category(tabletopGamesCategory())
+            .build()
 
-  @Test
-  public void testThanksViewModel_signupToGamesNewsletterOnClick() {
-    final User user = UserFactory.user().toBuilder().gamesNewsletter(false).build();
-    final CurrentUserType currentUser = new MockCurrentUser(user);
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        showGamesNewsletterDialogTest.assertValueCount(0)
+    }
 
-    final Environment environment = environment().toBuilder()
-      .currentUser(currentUser)
-      .build();
+    @Test
+    fun testThanksViewModel_signupToGamesNewsletterOnClick() {
+        val user = user().toBuilder().gamesNewsletter(false).build()
+        val currentUser: CurrentUserType = MockCurrentUser(user)
+        val environment = environment().toBuilder()
+            .currentUser(currentUser)
+            .build()
 
-    setUpEnvironment(environment);
+        setUpEnvironment(environment)
 
-    final TestSubscriber<User> updateUserSettingsTest = new TestSubscriber<>();
-    ((MockApiClient) environment.apiClient()).observable()
-      .filter(e -> "update_user_settings".equals(e.getFirst()))
-      .map(e -> (User) e.getSecond().get("user"))
-      .subscribe(updateUserSettingsTest);
+        val updateUserSettingsTest = TestSubscriber<User>()
+        (environment.apiClient() as? MockApiClient)?.observable()
+            ?.filter { "update_user_settings" == it.first }
+            ?.map { it.second["user"] as? User }
+            ?.subscribe(updateUserSettingsTest)
 
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .category(CategoryFactory.tabletopGamesCategory())
-      .build();
+        val project = project()
+            .toBuilder()
+            .category(tabletopGamesCategory())
+            .build()
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-    this.vm.signupToGamesNewsletterClick();
-    updateUserSettingsTest.assertValues(user.toBuilder().gamesNewsletter(true).build());
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        vm.signupToGamesNewsletterClick()
 
-    this.showConfirmGamesNewsletterDialogTest.assertValueCount(0);
-  }
+        updateUserSettingsTest.assertValues(user.toBuilder().gamesNewsletter(true).build())
+        showConfirmGamesNewsletterDialogTest.assertValueCount(0)
+    }
 
-  @Test
-  public void testThanksViewModel_showNewsletterConfirmationPromptAfterSignupForGermanUser() {
-    final User user = UserFactory.user().toBuilder()
-      .gamesNewsletter(false)
-      .location(LocationFactory.germany())
-      .build();
-    final CurrentUserType currentUser = new MockCurrentUser(user);
+    @Test
+    fun testThanksViewModel_showNewsletterConfirmationPromptAfterSignupForGermanUser() {
+        val user = user().toBuilder()
+            .gamesNewsletter(false)
+            .location(germany())
+            .build()
+        val currentUser: CurrentUserType = MockCurrentUser(user)
+        val environment = environment().toBuilder()
+            .currentUser(currentUser)
+            .build()
 
-    final Environment environment = environment().toBuilder()
-      .currentUser(currentUser)
-      .build();
+        setUpEnvironment(environment)
 
-    setUpEnvironment(environment);
+        val project = project().toBuilder().category(tabletopGamesCategory()).build()
 
-    final Project project = ProjectFactory.project().toBuilder().category(CategoryFactory.tabletopGamesCategory()).build();
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        vm.signupToGamesNewsletterClick()
+        showConfirmGamesNewsletterDialogTest.assertValueCount(1)
+    }
 
-    this.vm.signupToGamesNewsletterClick();
-    this.showConfirmGamesNewsletterDialogTest.assertValueCount(1);
-  }
+    @Test
+    fun testThanksViewModel_startDiscovery() {
+        setUpEnvironment(environment())
 
-  @Test
-  public void testThanksViewModel_startDiscovery() {
-    setUpEnvironment(environment());
-    final Category category = CategoryFactory.category();
+        val category = category()
 
-    this.vm.inputs.categoryViewHolderClicked(category);
-    this.startDiscoveryTest.assertValues(DiscoveryParams.builder().category(category).build());
-  }
+        vm.inputs.categoryViewHolderClicked(category)
+        startDiscoveryTest.assertValues(builder().category(category).build())
+    }
 
-  @Test
-  public void testThanksViewModel_startProject() {
-    setUpEnvironment(environment());
-
-    final Project project = ProjectFactory.project();
-    final CheckoutData checkoutData = CheckoutDataFactory.checkoutData(3L,
-            20.0, 30.0);
-    final PledgeData pledgeData = PledgeData.Companion.with(PledgeFlowContext.NEW_PLEDGE,
-            ProjectDataFactory.project(project), RewardFactory.reward(), Collections.emptyList(), null);
-    final Intent intent = new Intent()
+    @Test
+    fun testThanksViewModel_startProject() {
+        setUpEnvironment(environment())
+        val project = project()
+        val checkoutData = checkoutData(
+            3L,
+            20.0, 30.0
+        )
+        val pledgeData = with(
+            PledgeFlowContext.NEW_PLEDGE,
+            project(project), reward(), emptyList(), null
+        )
+        val intent = Intent()
             .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
             .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
-            .putExtra(IntentKey.PROJECT, project);
+            .putExtra(IntentKey.PROJECT, project)
 
-    this.vm.intent(intent);
+        vm.intent(intent)
+        vm.inputs.projectCardViewHolderClicked(project)
 
-    this.vm.inputs.projectCardViewHolderClicked(project);
+        val projectPageParams = startProjectTest.onNextEvents[0]
 
-    final Pair<Project, RefTag> projectPageParams= this.startProjectTest.getOnNextEvents().get(0);
-    assertEquals(projectPageParams.first, project);
-    assertEquals(projectPageParams.second, RefTag.thanks());
+        assertEquals(projectPageParams.first, project)
+        assertEquals(projectPageParams.second, thanks())
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+    }
 
-    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CTA_CLICKED.getEventName());
-  }
-
-  @Test
-  public void testThanksViewModel_whenFeatureFlagOn_shouldEmitProjectPage() {
-    final MockCurrentUser user = new MockCurrentUser();
-    final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
-      @Override
-      public boolean isFeatureEnabled(final @NotNull OptimizelyFeature.Key feature) {
-        return true;
-      }
-    };
-
-    final Environment environment = environment().toBuilder()
+    @Test
+    fun testThanksViewModel_whenFeatureFlagOn_shouldEmitProjectPage() {
+        val user = MockCurrentUser()
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+        val environment = environment().toBuilder()
             .currentUser(user)
             .optimizely(mockExperimentsClientType)
-            .build();
+            .build()
 
-    setUpEnvironment(environment);
+        setUpEnvironment(environment)
 
-    final Project project = ProjectFactory.project();
-    final CheckoutData checkoutData = CheckoutDataFactory.checkoutData(3L,
-            20.0, 30.0);
-    final PledgeData pledgeData = PledgeData.Companion.with(PledgeFlowContext.NEW_PLEDGE,
-            ProjectDataFactory.project(project), RewardFactory.reward(), Collections.emptyList(), null);
-    final Intent intent = new Intent()
+        val project = project()
+        val checkoutData = checkoutData(
+            3L,
+            20.0, 30.0
+        )
+        val pledgeData = with(
+            PledgeFlowContext.NEW_PLEDGE,
+            project(project), reward(), emptyList(), null
+        )
+        val intent = Intent()
             .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
             .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
-            .putExtra(IntentKey.PROJECT, project);
+            .putExtra(IntentKey.PROJECT, project)
 
-    this.vm.intent(intent);
+        vm.intent(intent)
+        vm.inputs.projectCardViewHolderClicked(project)
 
-    this.vm.inputs.projectCardViewHolderClicked(project);
+        val projectPageParams = startProjectTest.onNextEvents[0]
+        assertEquals(projectPageParams.first, project)
+        assertEquals(projectPageParams.second, thanks())
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+    }
 
-    final Pair<Project, RefTag> projectPageParams= this.startProjectTest.getOnNextEvents().get(0);
-    assertEquals(projectPageParams.first, project);
-    assertEquals(projectPageParams.second, RefTag.thanks());
+    @Test
+    fun testTracking_whenCheckoutDataAndPledgeDataExtrasPresent() {
+        setUpEnvironment(environment())
 
-    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), EventName.CTA_CLICKED.getEventName());
-  }
-
-  @Test
-  public void testTracking_whenCheckoutDataAndPledgeDataExtrasPresent() {
-    setUpEnvironment(environment());
-
-    final Project project = ProjectFactory.project();
-    final CheckoutData checkoutData = CheckoutDataFactory.checkoutData(3L,
-            20.0, 30.0);
-    final PledgeData pledgeData = PledgeData.Companion.with(PledgeFlowContext.NEW_PLEDGE,
-            ProjectDataFactory.project(project), RewardFactory.reward(), Collections.emptyList(), null);
-    final Intent intent = new Intent()
+        val project = project()
+        val checkoutData = checkoutData(
+            3L,
+            20.0, 30.0
+        )
+        val pledgeData = with(
+            PledgeFlowContext.NEW_PLEDGE,
+            project(project), reward(), emptyList(), null
+        )
+        val intent = Intent()
             .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
             .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
-            .putExtra(IntentKey.PROJECT, project);
-    this.vm.intent(intent);
+            .putExtra(IntentKey.PROJECT, project)
 
-    this.segmentTrack.assertValue(EventName.PAGE_VIEWED.getEventName());
-  }
+        vm.intent(intent)
+        segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
 
-  @Test
-  public void testTracking_whenCheckoutDataAndPledgeDataExtrasNull() {
-    setUpEnvironment(environment());
+    @Test
+    fun testTracking_whenCheckoutDataAndPledgeDataExtrasNull() {
+        setUpEnvironment(environment())
 
-    final Intent intent = new Intent()
-            .putExtra(IntentKey.PROJECT, ProjectFactory.project());
-    this.vm.intent(intent);
+        val intent = Intent()
+            .putExtra(IntentKey.PROJECT, project())
 
-    this.segmentTrack.assertNoValues();
-  }
+        vm.intent(intent)
+        segmentTrack.assertNoValues()
+    }
 }

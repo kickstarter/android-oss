@@ -42,7 +42,7 @@ class CommentCardViewHolder(
         this.vm.outputs.commentAuthorName()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { binding.commentsCardView.setCommentUserName("Short") }
+            .subscribe { binding.commentsCardView.setCommentUserName(it) }
 
         this.vm.outputs.commentRepliesCount()
             .compose(bindToLifecycle())

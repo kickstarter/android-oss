@@ -25,7 +25,6 @@
         app:layout_constrainedWidth="true"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintWidth_default="spread"
-        tools:text="dfredrwerwejjjjjjj fgdfgdfg fgdfyteryerttr fghh"
         android:layout_marginStart="@dimen/grid_2"
         app:layout_constraintEnd_toStartOf="@+id/cl_badge"
         app:layout_constraintBottom_toTopOf="@+id/comment_post_time"

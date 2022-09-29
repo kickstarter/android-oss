@@ -393,7 +393,7 @@ interface DiscoveryFragmentViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(activity)
 
-            paginator.loadingPage()?.distinctUntilChanged()?.let { loadingPageObserver ->
+            paginator.loadingPage()?.let { loadingPageObserver ->
                 paramsFromActivity
                     .compose(
                         Transformers.combineLatestPair(
@@ -401,6 +401,8 @@ interface DiscoveryFragmentViewModel {
                         )
                     )
                     .filter { it.second == 1 }
+                    .distinctUntilChanged()
+                    .delay(1, TimeUnit.SECONDS, environment.scheduler())
                     .compose(bindToLifecycle())
                     .subscribe {
                         analyticEvents.trackDiscoveryPageViewed(it.first)

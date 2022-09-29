@@ -4,6 +4,7 @@ import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.ListUtils
@@ -214,6 +215,7 @@ interface ThanksViewModel {
                 .take(1)
                 .compose(Transformers.combineLatestPair(showGamesNewsletter))
                 .filter { !it.first && !it.second }
+                .filter { environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_HIDE_APP_RATING_DIALOG) == false }
                 .compose(Transformers.ignoreValues())
                 .compose(bindToLifecycle())
                 .subscribe { showRatingDialog.onNext(null) }

@@ -78,8 +78,8 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                                 .type(it.type())
                                 .build()
                             ps.onNext(storedCard)
-                            ps.onComplete()
                         }
+                        ps.onComplete()
                     }
                 })
             return@defer ps

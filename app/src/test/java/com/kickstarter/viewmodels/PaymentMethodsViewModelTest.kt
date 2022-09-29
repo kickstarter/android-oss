@@ -24,9 +24,10 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     private val error = TestSubscriber<String>()
     private val progressBarIsVisible = TestSubscriber<Boolean>()
     private val showDeleteCardDialog = TestSubscriber<Unit>()
-    private val success = TestSubscriber<String>()
+    private val successDeleting = TestSubscriber<String>()
     private val presentPaymentSheet = TestSubscriber<String>()
     private val showError = TestSubscriber<String>()
+    private val successSaving = TestSubscriber<String>()
     private val compositeDisposable = CompositeDisposable()
 
     private fun setUpEnvironment(environment: Environment) {
@@ -38,9 +39,10 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         compositeDisposable.add(this.vm.outputs.dividerIsVisible().subscribe { this.dividerIsVisible.onNext(it) })
         compositeDisposable.add(this.vm.outputs.progressBarIsVisible().subscribe { this.progressBarIsVisible.onNext(it) })
         compositeDisposable.add(this.vm.outputs.showDeleteCardDialog().subscribe { this.showDeleteCardDialog.onNext(it) })
-        compositeDisposable.add(this.vm.outputs.successDeleting().subscribe { this.success.onNext(it) })
+        compositeDisposable.add(this.vm.outputs.successDeleting().subscribe { this.successDeleting.onNext(it) })
         compositeDisposable.add(this.vm.outputs.presentPaymentSheet().subscribe { this.presentPaymentSheet.onNext(it) })
         compositeDisposable.add(this.vm.outputs.showError().subscribe { this.showError.onNext(it) })
+        compositeDisposable.add(this.vm.outputs.successSaving().subscribe { this.successSaving.onNext(it) })
     }
 
     @After
@@ -139,7 +141,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         this.cards.assertValueCount(1)
         this.vm.inputs.deleteCardClicked("id")
         this.vm.inputs.confirmDeleteCardClicked()
-        this.success.assertValueCount(1)
+        this.successDeleting.assertValueCount(1)
         this.cards.assertValueCount(2)
     }
 
@@ -222,6 +224,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         this.cards.assertValues(cardsList, cardsListUpdated)
         this.progressBarIsVisible.assertValues(false, true, false, true, false, true, false, true, false)
         this.showError.assertNoValues()
+        this.successSaving.assertValue(card.toString())
     }
 
     @Test
@@ -265,5 +268,6 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         this.cards.assertValues(cardsList)
         this.progressBarIsVisible.assertValues(false, true, false, true, false, true, false, true, false)
         this.showError.assertValues(errorString)
+        this.successSaving.assertNoValues()
     }
 }

@@ -97,7 +97,7 @@ class PaymentMethodsSettingsActivity : AppCompatActivity() {
         )
 
         compositeDisposable.add(
-            this.viewModel.success()
+            this.viewModel.successDeleting()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showSnackbar(binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, R.string.Got_it_your_changes_have_been_saved) }
@@ -122,6 +122,15 @@ class PaymentMethodsSettingsActivity : AppCompatActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     showErrorSnackBar(binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, getString(R.string.general_error_something_wrong))
+                }
+        )
+
+        compositeDisposable.add(
+            this.viewModel.successSaving()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    showSnackbar(binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, R.string.Got_it_your_changes_have_been_saved)
                 }
         )
     }
@@ -150,12 +159,13 @@ class PaymentMethodsSettingsActivity : AppCompatActivity() {
 
     private fun onPaymentOption(paymentOption: PaymentOption?) {
         paymentOption?.let {
-            this.viewModel.inputs.savePaymentOption()
             flowController.confirm()
+            this.viewModel.inputs.confirmedLoading(true)
         }
     }
 
     fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
+        this.viewModel.inputs.confirmedLoading(false)
         when (paymentSheetResult) {
             is PaymentSheetResult.Canceled -> {
                 showErrorSnackBar(binding.paymentMethodsContent, getString(R.string.general_error_oops))
@@ -164,7 +174,7 @@ class PaymentMethodsSettingsActivity : AppCompatActivity() {
                 showErrorSnackBar(binding.paymentMethodsContent, getString(R.string.general_error_something_wrong))
             }
             is PaymentSheetResult.Completed -> {
-                showSnackbar(binding.settingPaymentMethodsActivityToolbar.paymentMethodsToolbar, R.string.Got_it_your_changes_have_been_saved)
+                this.viewModel.inputs.savePaymentOption()
             }
         }
     }

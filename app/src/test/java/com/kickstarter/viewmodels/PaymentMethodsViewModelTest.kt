@@ -38,7 +38,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         compositeDisposable.add(this.vm.outputs.dividerIsVisible().subscribe { this.dividerIsVisible.onNext(it) })
         compositeDisposable.add(this.vm.outputs.progressBarIsVisible().subscribe { this.progressBarIsVisible.onNext(it) })
         compositeDisposable.add(this.vm.outputs.showDeleteCardDialog().subscribe { this.showDeleteCardDialog.onNext(it) })
-        compositeDisposable.add(this.vm.outputs.success().subscribe { this.success.onNext(it) })
+        compositeDisposable.add(this.vm.outputs.successDeleting().subscribe { this.success.onNext(it) })
         compositeDisposable.add(this.vm.outputs.presentPaymentSheet().subscribe { this.presentPaymentSheet.onNext(it) })
         compositeDisposable.add(this.vm.outputs.showError().subscribe { this.showError.onNext(it) })
     }

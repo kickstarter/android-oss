@@ -19,61 +19,82 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/comment_user_name"
         style="@style/CommentCardTitle"
+        android:layout_width="0dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintWidth_default="spread"
+        tools:text="dfredrwerwejjjjjjj fgdfgdfg fgdfyteryerttr fghh"
         android:layout_marginStart="@dimen/grid_2"
+        app:layout_constraintEnd_toStartOf="@+id/cl_badge"
         app:layout_constraintBottom_toTopOf="@+id/comment_post_time"
         app:layout_constraintStart_toEndOf="@+id/avatar"
         app:layout_constraintTop_toTopOf="@+id/avatar" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/owner_badge"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_badge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_layout"
-        android:backgroundTint="@color/green_alpha_6"
-        android:layout_marginStart="@dimen/grid_1"
-        android:padding="@dimen/grid_1"
-        android:textColor="@color/kds_create_700"
-        android:textStyle="bold"
-        android:visibility="gone"
+        android:layout_marginEnd="@dimen/grid_3"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/comment_user_name"
         app:layout_constraintStart_toEndOf="@+id/comment_user_name"
-        app:layout_constraintTop_toTopOf="@+id/comment_user_name" />
+        app:layout_constraintTop_toTopOf="@+id/comment_user_name">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/you_badge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/grid_1"
-        android:background="@drawable/rounded_layout"
-        android:backgroundTint="@color/blue_alpha_6"
-        android:paddingStart="@dimen/grid_3_half"
-        android:paddingEnd="@dimen/grid_3_half"
-        android:paddingBottom="@dimen/grid_1"
-        android:paddingTop="@dimen/grid_1"
-        android:text="@string/You"
-        android:textColor="@color/blue_darken_10"
-        android:textStyle="bold"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/comment_user_name"
-        app:layout_constraintStart_toEndOf="@+id/comment_user_name"
-        app:layout_constraintTop_toTopOf="@+id/comment_user_name" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/owner_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_layout"
+            android:backgroundTint="@color/green_alpha_6"
+            android:layout_marginStart="@dimen/grid_1"
+            android:padding="@dimen/grid_1"
+            android:textColor="@color/kds_create_700"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/superbacker_badge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/green_alpha_6"
-        android:layout_marginStart="@dimen/grid_1"
-        android:textColor="@color/kds_celebrate_500"
-        android:textSize="@dimen/badge_superbacker"
-        android:letterSpacing="0.05"
-        android:textStyle="bold"
-        android:text="@string/Superbacker"
-        android:textAllCaps="true"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/comment_user_name"
-        app:layout_constraintStart_toEndOf="@+id/comment_user_name"
-        app:layout_constraintTop_toTopOf="@+id/comment_user_name" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/you_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/grid_1"
+            android:background="@drawable/rounded_layout"
+            android:backgroundTint="@color/blue_alpha_6"
+            android:paddingStart="@dimen/grid_3_half"
+            android:paddingEnd="@dimen/grid_3_half"
+            android:paddingBottom="@dimen/grid_1"
+            android:paddingTop="@dimen/grid_1"
+            android:text="@string/You"
+            android:textColor="@color/blue_darken_10"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/superbacker_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/green_alpha_6"
+            android:layout_marginStart="@dimen/grid_1"
+            android:textColor="@color/kds_celebrate_500"
+            android:textSize="@dimen/badge_superbacker"
+            android:letterSpacing="0.05"
+            android:textStyle="bold"
+            android:text="@string/Superbacker"
+            android:textAllCaps="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"
+            tools:visibility="visible"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/comment_post_time"
@@ -81,8 +102,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/kds_support_400"
+        android:layout_marginStart="@dimen/grid_2"
         app:layout_constraintBottom_toBottomOf="@id/avatar"
-        app:layout_constraintStart_toStartOf="@id/comment_user_name"
+        app:layout_constraintStart_toEndOf="@+id/avatar"
         app:layout_constraintTop_toBottomOf="@+id/comment_user_name" />
 
     <androidx.appcompat.widget.AppCompatTextView

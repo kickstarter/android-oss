@@ -31,8 +31,11 @@ interface Inputs {
     /** Call when a card has been added or removed and the list needs to be updated. */
     fun refreshCards()
 
-    /** Call when the user has introduced a  new paymentOption via PaymentSheet */
+    /** Call when the user has introduced a new paymentOption via PaymentSheet */
     fun savePaymentOption()
+
+    /** Loading state taking place between PaymentSheet confirmation and PaymentSheetResult */
+    fun confirmedLoading(isLoading: Boolean)
 }
 
 interface Outputs {
@@ -52,13 +55,16 @@ interface Outputs {
     fun showDeleteCardDialog(): Observable<Unit>
 
     /** Emits when the card was successfully deleted. */
-    fun success(): Observable<String>
+    fun successDeleting(): Observable<String>
 
     /** Emits after calling CreateSetupIntent mutation with the SetupClientId. */
     fun presentPaymentSheet(): Observable<String>
 
     /** Emits in case something went wrong with CreateSetupIntent mutation  */
     fun showError(): Observable<String>
+
+    /** Emits in case SavePaymentMethod returns success output  */
+    fun successSaving(): Observable<String>
 }
 
 class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMethodsAdapter.Delegate, Inputs, Outputs {
@@ -74,9 +80,11 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
     private val error = BehaviorSubject.create<String>()
     private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
     private val showDeleteCardDialog = BehaviorSubject.create<Unit>()
-    private val success = BehaviorSubject.create<String>()
+    private val successDeleting = BehaviorSubject.create<String>()
+    private val successSaving = BehaviorSubject.create<String>()
     private val presentPaymentSheet = PublishSubject.create<String>()
     private val showError = PublishSubject.create<String>()
+    private val loadingConfirmed = PublishSubject.create<Boolean>()
 
     private val apolloClient = requireNotNull(environment.apolloClientV2())
     private val compositeDisposable = CompositeDisposable()
@@ -117,7 +125,7 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
                 }
                 .subscribe {
                     this.refreshCards.onNext(Unit)
-                    this.success.onNext(it)
+                    this.successDeleting.onNext(it)
                 }
         )
 
@@ -175,6 +183,7 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
                 .compose(valuesV2())
                 .subscribe {
                     this.refreshCards.onNext(Unit)
+                    this.successSaving.onNext(it.toString())
                 }
         )
 
@@ -183,6 +192,13 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
                 .compose(errorsV2())
                 .subscribe {
                     this.showError.onNext(it?.localizedMessage ?: "")
+                }
+        )
+
+        compositeDisposable.add(
+            this.loadingConfirmed
+                .subscribe {
+                    this.progressBarIsVisible.onNext(it)
                 }
         )
     }
@@ -244,6 +260,8 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
 
     override fun refreshCards() = this.refreshCards.onNext(Unit)
 
+    override fun confirmedLoading(isLoading: Boolean) = this.loadingConfirmed.onNext(isLoading)
+
     // - Outputs
     override fun cards(): Observable<List<StoredCard>> = this.cards
 
@@ -255,7 +273,7 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
 
     override fun showDeleteCardDialog(): Observable<Unit> = this.showDeleteCardDialog
 
-    override fun success(): Observable<String> = this.success
+    override fun successDeleting(): Observable<String> = this.successDeleting
 
     @Override
     override fun presentPaymentSheet(): Observable<String> =
@@ -264,6 +282,10 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
     @Override
     override fun showError(): Observable<String> =
         this.showError
+
+    @Override
+    override fun successSaving(): Observable<String> =
+        this.successSaving
 
     class Factory(private val environment: Environment) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

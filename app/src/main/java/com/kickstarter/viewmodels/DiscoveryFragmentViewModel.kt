@@ -7,8 +7,11 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.loadmore.ApolloPaginate.Companion.builder
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.*
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.DISCOVER
+import com.kickstarter.libs.utils.ExperimentData
+import com.kickstarter.libs.utils.ListUtils
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.extensions.combineProjectsAndParams
 import com.kickstarter.libs.utils.extensions.fillRootCategoryForFeaturedProjects
 import com.kickstarter.libs.utils.extensions.isTrue
@@ -222,7 +225,7 @@ interface DiscoveryFragmentViewModel {
             projectCardClicked
                 .compose(bindToLifecycle())
                 .subscribe {
-                    analyticEvents.trackProjectCardClicked(it, EventContextValues.ContextPageName.DISCOVER.contextName)
+                    analyticEvents.trackProjectCardClicked(it, DISCOVER.contextName)
                 }
 
             paramsFromActivity
@@ -414,8 +417,7 @@ interface DiscoveryFragmentViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     analyticEvents.trackLoginOrSignUpCtaClicked(
-                        null,
-                        EventContextValues.ContextPageName.DISCOVER.contextName
+                        null, DISCOVER.contextName
                     )
                 }
 

@@ -9,7 +9,7 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:7.2.2'
-        classpath 'com.google.gms:google-services:4.3.13'
+        classpath 'com.google.gms:google-services:4.3.14'
         classpath "org.jacoco:org.jacoco.core:$jacoco_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.firebase:perf-plugin:1.4.1"

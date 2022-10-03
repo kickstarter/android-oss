@@ -7,12 +7,8 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.loadmore.ApolloPaginate.Companion.builder
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.EventContextValues
+import com.kickstarter.libs.utils.*
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.DISCOVER
-import com.kickstarter.libs.utils.ExperimentData
-import com.kickstarter.libs.utils.ListUtils
-import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.extensions.combineProjectsAndParams
 import com.kickstarter.libs.utils.extensions.fillRootCategoryForFeaturedProjects
 import com.kickstarter.libs.utils.extensions.isTrue
@@ -34,6 +30,7 @@ import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder
 import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder
 import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder
+import com.trello.rxlifecycle.FragmentEvent
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -45,6 +42,9 @@ interface DiscoveryFragmentViewModel {
         DiscoveryOnboardingAdapter.Delegate,
         DiscoveryEditorialAdapter.Delegate,
         DiscoveryActivitySampleAdapter.Delegate {
+
+        fun fragmentLifeCycle(lifecycleEvent: FragmentEvent)
+
         /** Call when the page content should be cleared.   */
         fun clearPage()
 
@@ -125,6 +125,7 @@ interface DiscoveryFragmentViewModel {
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val cookieManager = requireNotNull(environment.cookieManager())
         private val currentUser = requireNotNull(environment.currentUser())
+        private val lifecycleObservable = BehaviorSubject.create<FragmentEvent>()
         @JvmField
         val inputs: Inputs = this
         @JvmField
@@ -393,21 +394,21 @@ interface DiscoveryFragmentViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(activity)
 
-            paginator.loadingPage()?.let { loadingPageObserver ->
-                paramsFromActivity
-                    .compose(
-                        Transformers.combineLatestPair(
-                            loadingPageObserver
-                        )
+            paramsFromActivity
+                .compose(
+                    Transformers.combineLatestPair(
+                        this.lifecycleObservable
                     )
-                    .filter { it.second == 1 }
-                    .distinctUntilChanged()
-                    .delay(1, TimeUnit.SECONDS, environment.scheduler())
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        analyticEvents.trackDiscoveryPageViewed(it.first)
-                    }
-            }
+                )
+                .filter {
+                    it.second == FragmentEvent.RESUME
+                }
+                .distinctUntilChanged()
+                .delay(3, TimeUnit.SECONDS, environment.scheduler())
+                .compose(bindToLifecycle())
+                .subscribe {
+                    analyticEvents.trackDiscoveryPageViewed(it.first)
+                }
 
             discoveryOnboardingLoginToutClick
                 .compose(bindToLifecycle())
@@ -595,6 +596,8 @@ interface DiscoveryFragmentViewModel {
         override fun projectCardViewHolderClicked(project: Project?) = projectCardClicked.onNext(project)
         override fun nextPage() = nextPage.onNext(null)
         override fun paramsFromActivity(params: DiscoveryParams) = paramsFromActivity.onNext(params)
+        override fun fragmentLifeCycle(lifecycleEvent: FragmentEvent) =
+            this.lifecycleObservable.onNext(lifecycleEvent)
 
         override fun activity(): Observable<Activity> = activity
         override fun isFetchingProjects(): Observable<Boolean> = isFetchingProjects

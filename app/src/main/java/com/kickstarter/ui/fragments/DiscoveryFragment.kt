@@ -22,6 +22,7 @@ import com.kickstarter.libs.SwipeRefresher
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.AnimationUtils.crossFadeAndReverse
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.getProjectIntent
@@ -64,6 +65,14 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        this.lifecycle()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .filter { ObjectUtils.isNotNull(it) }
+            .subscribe {
+                this.viewModel.inputs.fragmentLifeCycle(it)
+            }
 
         val discoveryActivitySampleAdapter = DiscoveryActivitySampleAdapter(this.viewModel.inputs)
         val discoveryEditorialAdapter = DiscoveryEditorialAdapter(this.viewModel.inputs)

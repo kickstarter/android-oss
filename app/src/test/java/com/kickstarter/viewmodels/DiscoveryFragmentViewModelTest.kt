@@ -35,11 +35,13 @@ import com.kickstarter.services.DiscoveryParams.Companion.getDefaultParams
 import com.kickstarter.services.apiresponses.ActivityEnvelope
 import com.kickstarter.services.apiresponses.DiscoverEnvelope
 import com.kickstarter.ui.data.Editorial
+import com.trello.rxlifecycle.FragmentEvent
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
 import rx.schedulers.TestScheduler
 import rx.subjects.BehaviorSubject
+import java.util.concurrent.TimeUnit
 
 class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: DiscoveryFragmentViewModel.ViewModel
@@ -101,10 +103,12 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testRefresh() {
-        setUpEnvironment(environment())
+        setUpEnvironment(environment().toBuilder().scheduler(testScheduler).build())
 
         // Load initial params and root categories from activity.
         setUpInitialHomeAllProjectsParams()
+        vm.inputs.fragmentLifeCycle(FragmentEvent.RESUME)
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
         // Should emit current fragment's projects.
         hasProjects.assertValues(true)
@@ -118,10 +122,12 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testProjectsEmitWithNewCategoryParams() {
-        setUpEnvironment(environment())
+        setUpEnvironment(environment().toBuilder().scheduler(testScheduler).build())
 
         // Load initial params and root categories from activity.
         setUpInitialHomeAllProjectsParams()
+        vm.inputs.fragmentLifeCycle(FragmentEvent.RESUME)
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
         // Should emit current fragment's projects.
         hasProjects.assertValues(true)
@@ -137,6 +143,8 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
         // New projects load with new params.
         hasProjects.assertValues(true, true, true)
+        vm.inputs.fragmentLifeCycle(FragmentEvent.RESUME)
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.PAGE_VIEWED.eventName)
         vm.inputs.clearPage()
         hasProjects.assertValues(true, true, true, false)
@@ -144,15 +152,20 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testProjectsEmitWithNewSort() {
-        setUpEnvironment(environment())
+        setUpEnvironment(environment().toBuilder().scheduler(testScheduler).build())
 
         // Initial load.
         setUpInitialHomeAllProjectsParams()
+        vm.inputs.fragmentLifeCycle(FragmentEvent.RESUME)
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
+
         projects.assertValueCount(1)
         segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
 
         // Popular tab clicked.
         vm.inputs.paramsFromActivity(builder().sort(DiscoveryParams.Sort.POPULAR).build())
+        vm.inputs.fragmentLifeCycle(FragmentEvent.RESUME)
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
         projects.assertValueCount(3)
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.PAGE_VIEWED.eventName)
     }
@@ -402,6 +415,8 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
         // Initial home all projects params.
         setUpInitialHomeAllProjectsParams()
+        vm.inputs.fragmentLifeCycle(FragmentEvent.RESUME)
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
         // Click on project save
         val project = projects.value[0].first
@@ -497,6 +512,8 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
         // Initial home all projects params.
         setUpInitialHomeAllProjectsParams()
+        vm.inputs.fragmentLifeCycle(FragmentEvent.RESUME)
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
         // Click on project save
         val project = projects.value[0].first
@@ -520,12 +537,15 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testStartEditorialActivity() {
-        setUpEnvironment(environment())
+        setUpEnvironment(environment().toBuilder().scheduler(testScheduler).build())
 
         // Load initial params and root categories from activity.
         setUpInitialHomeAllProjectsParams()
 
         // Click on editorial
+        vm.inputs.fragmentLifeCycle(FragmentEvent.RESUME)
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
+
         vm.inputs.editorialViewHolderClicked(Editorial.GO_REWARDLESS)
         vm.inputs.editorialViewHolderClicked(Editorial.LIGHTS_ON)
         startEditorialActivity.assertValues(Editorial.GO_REWARDLESS, Editorial.LIGHTS_ON)
@@ -534,7 +554,10 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testStartProjectActivity_whenViewingEditorial() {
-        setUpEnvironment(environment())
+        setUpEnvironment(
+            environment().toBuilder()
+                .scheduler(testScheduler).build()
+        )
 
         // Load editorial params and root categories from activity.
         val editorialParams = builder()
@@ -544,12 +567,16 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         vm.inputs.paramsFromActivity(editorialParams)
         vm.inputs.rootCategories(rootCategories())
 
+        vm.inputs.fragmentLifeCycle(FragmentEvent.RESUME)
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
+
         // Click on project
         val project = project()
         vm.inputs.projectCardViewHolderClicked(project)
         startProjectActivity.assertValueCount(1)
         assertEquals(startProjectActivity.onNextEvents[0].first, project)
         assertEquals(startProjectActivity.onNextEvents[0].second, collection(518))
+
         segmentTrack.assertValues(
             EventName.PAGE_VIEWED.eventName,
             EventName.CARD_CLICKED.eventName,
@@ -568,6 +595,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
             }
         setUpEnvironment(
             environment().toBuilder().currentUser(currentUser).optimizely(mockExperimentsClientType)
+                .scheduler(testScheduler)
                 .build()
         )
 
@@ -578,6 +606,8 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
             .build()
         vm.inputs.paramsFromActivity(editorialParams)
         vm.inputs.rootCategories(rootCategories())
+        vm.inputs.fragmentLifeCycle(FragmentEvent.RESUME)
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
         // Click on project
         val project = project()
@@ -594,10 +624,12 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testStartProjectActivity_whenViewingAllProjects() {
-        setUpEnvironment(environment())
+        setUpEnvironment(environment().toBuilder().scheduler(testScheduler).build())
 
         // Load initial params and root categories from activity.
         setUpInitialHomeAllProjectsParams()
+        vm.inputs.fragmentLifeCycle(FragmentEvent.RESUME)
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
         // Click on project
         val project = project()
@@ -624,11 +656,14 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
             }
         setUpEnvironment(
             environment().toBuilder().currentUser(currentUser).optimizely(mockExperimentsClientType)
+                .scheduler(testScheduler)
                 .build()
         )
 
         // Load initial params and root categories from activity.
         setUpInitialHomeAllProjectsParams()
+        vm.inputs.fragmentLifeCycle(FragmentEvent.RESUME)
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
         // Click on project
         val project = project()

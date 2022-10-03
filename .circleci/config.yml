@@ -46,6 +46,7 @@ jobs:
             - v5-android-
       - attach_workspace:
           at: ~/project
+      - run: ./gradlew :app:clean
       - run: ./gradlew checkstyle
       - run: ./gradlew ktlint
       - run: ./gradlew lintExternalRelease

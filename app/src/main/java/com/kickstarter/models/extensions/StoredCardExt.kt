@@ -3,13 +3,11 @@ package com.kickstarter.models.extensions
 
 import com.kickstarter.R
 import com.kickstarter.libs.RefTag
-import com.kickstarter.models.Backing
 import com.kickstarter.models.PaymentSource
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.services.mutations.CreateBackingData
-import com.kickstarter.services.mutations.UpdateBackingData
 import type.CreditCardTypes
 
 fun StoredCard.getCardTypeDrawable(): Int {
@@ -25,12 +23,6 @@ fun StoredCard.isFromPaymentSheet(): Boolean {
     return this.type() == CreditCardTypes.`$UNKNOWN` &&
         this.lastFourDigits()?.isNotEmpty() ?: false &&
         this.clientSetupId()?.isNotEmpty() ?: false
-}
-
-fun StoredCard.getUpdateBackingData(backing: Backing, amount: String? = null, locationId: String? = null, rewardsList: List<Reward>): UpdateBackingData {
-    // - ID for the selected payment method, either the paymentMethod ID or the clientSetupId whichever value is available
-    return if (this.isFromPaymentSheet()) UpdateBackingData(backing, amount, locationId, rewardsList, intentClientSecret = this.clientSetupId())
-    else UpdateBackingData(backing, amount, locationId, rewardsList, paymentSourceId = this.id())
 }
 
 fun StoredCard.getBackingData(

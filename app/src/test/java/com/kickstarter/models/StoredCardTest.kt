@@ -1,14 +1,12 @@
 package com.kickstarter.models
 
 import com.kickstarter.R
-import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.IdFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.models.extensions.getBackingData
 import com.kickstarter.models.extensions.getCardTypeDrawable
-import com.kickstarter.models.extensions.getUpdateBackingData
 import com.stripe.android.model.CardBrand
 import junit.framework.TestCase
 import org.junit.Test
@@ -122,27 +120,5 @@ class StoredCardTest : TestCase() {
         val backingDataFromPaymentSheet = storedCard.getBackingData(ProjectFactory.project(), "", locationId = null, rewards = listOf(RewardFactory.reward()), cookieRefTag = null)
         assertEquals(backingDataFromPaymentSheet.setupIntentClientSecret, storedCardFromPaymentSheet.clientSetupId())
         assertEquals(backingDataFromPaymentSheet.paymentSourceId, null)
-    }
-
-    @Test
-    fun updateBackingDataFromPaymentSheet() {
-        val card = StoredCardFactory.fromPaymentSheetCard()
-        val backing = BackingFactory.backing()
-        val rewards = listOf(RewardFactory.reward(), RewardFactory.addOn())
-        val updateBackingData = card.getUpdateBackingData(backing, rewardsList = rewards)
-
-        assertTrue(updateBackingData.paymentSourceId == null)
-        assertTrue(updateBackingData.intentClientSecret == card.clientSetupId())
-    }
-
-    @Test
-    fun updateBackingDataFromPaymentSource() {
-        val card = StoredCardFactory.visa()
-        val backing = BackingFactory.backing()
-        val rewards = listOf(RewardFactory.reward(), RewardFactory.addOn())
-        val updateBackingData = card.getUpdateBackingData(backing, rewardsList = rewards)
-
-        assertTrue(updateBackingData.paymentSourceId == card.id())
-        assertTrue(updateBackingData.intentClientSecret == card.clientSetupId())
     }
 }

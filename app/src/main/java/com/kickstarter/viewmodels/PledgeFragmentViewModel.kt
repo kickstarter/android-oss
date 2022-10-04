@@ -38,7 +38,7 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.extensions.getBackingData
-import com.kickstarter.models.extensions.getUpdateBackingData
+import com.kickstarter.models.extensions.isFromPaymentSheet
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.ui.ArgumentsKey
@@ -1338,9 +1338,9 @@ interface PledgeFragmentViewModel {
                 totalString,
                 locationId,
                 extendedListForCheckOut,
-                paymentMethod
+                paymentMethod.startWith(null as StoredCard?)
             ) { b, a, l, r, pMethod ->
-                pMethod.getUpdateBackingData(b, a, l, r)
+                this.getUpdateBackingData(b, a, l, r, pMethod)
             }
                 .compose<UpdateBackingData>(takeWhen(Observable.merge(updatePledgeClick, updatePaymentClick, fixPaymentClick)))
                 .switchMap {
@@ -2035,4 +2035,35 @@ interface PledgeFragmentViewModel {
         override fun showError(): Observable<String> =
             this.showError
     }
+}
+
+fun PledgeFragmentViewModel.ViewModel.getUpdateBackingData(
+    backing: Backing,
+    amount: String? = null,
+    locationId: String? = null,
+    rewardsList: List<Reward>,
+    pMethod: StoredCard? = null
+): UpdateBackingData {
+    return pMethod?.let { card ->
+        // - ID for the selected payment method, either the paymentMethod ID or the clientSetupId whichever value is available
+        if (card.isFromPaymentSheet()) UpdateBackingData(
+            backing,
+            amount,
+            locationId,
+            rewardsList,
+            intentClientSecret = card.clientSetupId()
+        )
+        else UpdateBackingData(
+            backing,
+            amount,
+            locationId,
+            rewardsList,
+            paymentSourceId = card.id()
+        )
+    } ?: UpdateBackingData(
+        backing,
+        amount,
+        locationId,
+        rewardsList
+    )
 }

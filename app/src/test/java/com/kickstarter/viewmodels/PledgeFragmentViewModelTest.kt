@@ -2938,6 +2938,46 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         )
     }
 
+    @Test
+    fun updateBackingDataFromPaymentSheet() {
+        setUpEnvironment(environment(), pledgeReason = PledgeReason.UPDATE_PAYMENT)
+
+        val card = StoredCardFactory.fromPaymentSheetCard()
+        val backing = BackingFactory.backing()
+        val rewards = listOf(RewardFactory.reward(), RewardFactory.addOn())
+        val updateBackingData = this.vm.getUpdateBackingData(backing, rewardsList = rewards, pMethod = card)
+
+        assertTrue(updateBackingData.paymentSourceId == null)
+        assertTrue(updateBackingData.intentClientSecret == card.clientSetupId())
+    }
+
+    @Test
+    fun updateBackingDataFromPaymentSource() {
+        setUpEnvironment(environment(), pledgeReason = PledgeReason.UPDATE_PAYMENT)
+
+        val card = StoredCardFactory.visa()
+        val backing = BackingFactory.backing()
+        val rewards = listOf(RewardFactory.reward(), RewardFactory.addOn())
+        val updateBackingData = this.vm.getUpdateBackingData(backing, rewardsList = rewards, pMethod = card)
+
+        assertTrue(updateBackingData.paymentSourceId == card.id())
+        assertTrue(updateBackingData.intentClientSecret == card.clientSetupId())
+    }
+
+    @Test
+    fun updateBackingData_When_UpdatePledge() {
+        setUpEnvironment(environment(), pledgeReason = PledgeReason.UPDATE_PLEDGE)
+
+        val backing = BackingFactory.backing()
+        val locationId = LocationFactory.germany().id()
+        val rewards = listOf(RewardFactory.reward(), RewardFactory.addOn())
+        val updateBackingData = this.vm.getUpdateBackingData(backing, locationId = locationId.toString(), rewardsList = rewards)
+
+        assertTrue(updateBackingData.paymentSourceId == null)
+        assertTrue(updateBackingData.intentClientSecret == null)
+        assertNotNull(updateBackingData.backing)
+    }
+
     private fun assertInitialPledgeCurrencyStates_NoShipping_USProject(environment: Environment, project: Project) {
         this.additionalPledgeAmount.assertValue(expectedCurrency(environment, project, 0.0))
         this.conversionText.assertNoValues()

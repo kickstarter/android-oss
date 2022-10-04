@@ -2037,6 +2037,12 @@ interface PledgeFragmentViewModel {
     }
 }
 
+/**
+ * Obtain the data model input that will be send to UpdateBacking mutation
+ * - When updating payment method with a new payment method throw payment sheet
+ * - When updating payment method with a previously existing payment source
+ * - Updating any other parameter location, amount or rewards
+ */
 fun PledgeFragmentViewModel.ViewModel.getUpdateBackingData(
     backing: Backing,
     amount: String? = null,
@@ -2045,7 +2051,7 @@ fun PledgeFragmentViewModel.ViewModel.getUpdateBackingData(
     pMethod: StoredCard? = null
 ): UpdateBackingData {
     return pMethod?.let { card ->
-        // - ID for the selected payment method, either the paymentMethod ID or the clientSetupId whichever value is available
+        // - Updating the payment method, a new one from PaymentSheet or already existing one
         if (card.isFromPaymentSheet()) UpdateBackingData(
             backing,
             amount,
@@ -2060,6 +2066,7 @@ fun PledgeFragmentViewModel.ViewModel.getUpdateBackingData(
             rewardsList,
             paymentSourceId = card.id()
         )
+        // - Updating amount, location or rewards
     } ?: UpdateBackingData(
         backing,
         amount,

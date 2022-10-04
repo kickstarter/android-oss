@@ -38,6 +38,7 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.extensions.getBackingData
+import com.kickstarter.models.extensions.getUpdateBackingData
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.ui.ArgumentsKey
@@ -1332,17 +1333,15 @@ interface PledgeFragmentViewModel {
                 .filter { it == PledgeReason.UPDATE_PLEDGE || it == PledgeReason.UPDATE_REWARD }
                 .compose(ignoreValues())
 
-            // TODO: UpdateBacking mutation will be updated to hold the setupIntentClientSecret
-            val optionalPaymentMethodId: Observable<String?> = paymentMethod.map { it.id() }
-                .startWith(null as String?)
-
             val updateBackingNotification = Observable.combineLatest(
                 backingToUpdate,
                 totalString,
                 locationId,
                 extendedListForCheckOut,
-                optionalPaymentMethodId
-            ) { b, a, l, r, p -> UpdateBackingData(b, a, l, r, p) }
+                paymentMethod
+            ) { b, a, l, r, pMethod ->
+                pMethod.getUpdateBackingData(b, a, l, r)
+            }
                 .compose<UpdateBackingData>(takeWhen(Observable.merge(updatePledgeClick, updatePaymentClick, fixPaymentClick)))
                 .switchMap {
                     this.apolloClient.updateBacking(it)

@@ -550,7 +550,7 @@ interface ProjectPageViewModel {
                 .withLatestFrom(latestProjectAndProjectData) { _, project ->
                     project
                 }
-                .map{it.second}
+                .map { it.second }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.startRootCommentsActivity.onNext(it)
@@ -566,7 +566,7 @@ interface ProjectPageViewModel {
                 .withLatestFrom(latestProjectAndProjectData) { intent, project ->
                     Pair(intent.getStringExtra(IntentKey.COMMENT) ?: "", project)
                 }
-                .map{Pair(it.first,it.second.second)}
+                .map { Pair(it.first, it.second.second) }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.startRootCommentsForCommentsThreadActivity.onNext(it)

@@ -2039,9 +2039,9 @@ interface PledgeFragmentViewModel {
 
 /**
  * Obtain the data model input that will be send to UpdateBacking mutation
- * - When updating payment method with a new payment method throw payment sheet
+ * - When updating payment method with a new payment method using payment sheet
  * - When updating payment method with a previously existing payment source
- * - Updating any other parameter location, amount or rewards
+ * - Updating any other parameter like location, amount or rewards
  */
 fun PledgeFragmentViewModel.ViewModel.getUpdateBackingData(
     backing: Backing,

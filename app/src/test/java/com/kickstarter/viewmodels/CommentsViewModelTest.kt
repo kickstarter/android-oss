@@ -9,6 +9,7 @@ import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.AvatarFactory
 import com.kickstarter.mock.factories.CommentEnvelopeFactory
 import com.kickstarter.mock.factories.CommentFactory
+import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UpdateFactory
 import com.kickstarter.mock.factories.UserFactory
@@ -53,7 +54,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.outputs.showCommentComposer().subscribe(showCommentComposer)
 
         // Start the view model with a backed project.
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+        vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.backedProject())))
 
         // The comment composer should be shown to backer and enabled to write comments
         commentComposerStatus.assertValue(CommentComposerStatus.ENABLED)
@@ -68,7 +69,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.outputs.showCommentComposer().subscribe(showCommentComposer)
 
         // Start the view model with a backed project.
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project())))
 
         // The comment composer should be hidden and disabled to write comments as no user logged-in
         showCommentComposer.assertValue(false)
@@ -84,7 +85,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.outputs.showCommentComposer().subscribe(showCommentComposer)
 
         // Start the view model with a backed project.
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project())))
 
         // The comment composer should show but in disabled state
         commentComposerStatus.assertValue(CommentComposerStatus.DISABLED)
@@ -106,7 +107,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.outputs.showCommentComposer().subscribe(showCommentComposer)
 
         // Start the view model with a project.
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(project)))
 
         // The comment composer enabled to write comments for creator
         showCommentComposer.assertValues(true, true)
@@ -128,7 +129,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.outputs.showCommentComposer().subscribe(showCommentComposer)
 
         // Start the view model with a project.
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project())))
 
         // The comment composer enabled to write comments for creator
         showCommentComposer.assertValues(true, true)
@@ -152,7 +153,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.outputs.showCommentComposer().subscribe(showCommentComposer)
 
         // Start the view model with a project.
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project())))
 
         // Comment composer should be disabled and shown the disabled msg if not backing and not creator.
         showCommentComposer.assertValues(true, true)
@@ -175,7 +176,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         val currentUserAvatar = TestSubscriber<String?>()
         vm.outputs.currentUserAvatar().subscribe(currentUserAvatar)
         // Start the view model with a project.
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project())))
 
         // set user avatar with small url
         currentUserAvatar.assertValue(userAvatar.small())
@@ -204,7 +205,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         commentsList.assertNoValues()
 
         // Start the view model with a project.
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project())))
         commentsList.assertNoValues()
     }
 
@@ -232,7 +233,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         commentsList.assertNoValues()
 
         // Start the view model with a project.
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project())))
         commentsList.assertNoValues()
     }
 
@@ -242,7 +243,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         val vm = CommentsViewModel.ViewModel(environment())
         vm.outputs.commentsList().subscribe(commentsList)
         // Start the view model with a project.
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project())))
 
         // Comments should emit.
         val commentCardDataList = commentsList.value
@@ -282,7 +283,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         showEmptyState.assertValue(true)
 
         // Start the view model with a project.
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project())))
         showEmptyState.assertValue(true)
     }
 
@@ -307,7 +308,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCommentsViewModel_ProjectRefresh() {
         val vm = CommentsViewModel.ViewModel(environment())
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project())))
 
         // Start the view model with a project.
         vm.inputs.refresh()
@@ -326,7 +327,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         }).build()
 
         val vm = CommentsViewModel.ViewModel(env)
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project())))
         vm.outputs.initialLoadCommentsError().subscribe(initialLoadError)
         vm.outputs.shouldShowInitialLoadErrorUI().subscribe(shouldShowInitialLoadErrorCell)
 
@@ -360,7 +361,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         }).build()
 
         val vm = CommentsViewModel.ViewModel(env)
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project())))
 
         firstCall = false
         // get the next page which is end of page
@@ -507,7 +508,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             .build()
 
         val vm = CommentsViewModel.ViewModel(env)
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project())))
         vm.outputs.commentsList().subscribe(commentsList)
 
         commentsList.assertValueCount(1)
@@ -601,7 +602,8 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             .build()
 
         val vm = CommentsViewModel.ViewModel(env)
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project())))
+
         vm.outputs.commentsList().subscribe(commentsList)
         vm.outputs.hasPendingComments().subscribe(hasPendingComments)
 
@@ -697,7 +699,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             .build()
 
         val vm = CommentsViewModel.ViewModel(env)
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project())))
         vm.outputs.commentsList().subscribe(commentsList)
         vm.outputs.hasPendingComments().subscribe(hasPendingComments)
 
@@ -781,7 +783,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
             .build()
 
         val vm = CommentsViewModel.ViewModel(env)
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project())))
         vm.outputs.commentsList().subscribe(commentsList)
 
         commentsList.assertValueCount(1)
@@ -837,7 +839,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.intent(
             Intent().apply {
                 putExtra(IntentKey.COMMENT, commentID)
-                putExtra(IntentKey.PROJECT, ProjectFactory.project())
+                vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project())))
             }
         )
 
@@ -895,7 +897,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         val vm = CommentsViewModel.ViewModel(env)
 
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project())))
         vm.outputs.commentsList().subscribe(commentsList)
 
         commentsList.assertValueCount(1)

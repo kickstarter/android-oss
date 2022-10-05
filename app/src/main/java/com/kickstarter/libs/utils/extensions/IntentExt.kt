@@ -2,7 +2,6 @@ package com.kickstarter.libs.utils.extensions
 
 import android.content.Context
 import android.content.Intent
-import android.util.Pair
 import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.models.Project
@@ -43,12 +42,11 @@ fun Intent.getPaymentMethodsIntent(context: Context, optimizely: ExperimentsClie
 
 fun Intent.getRootCommentsActivityIntent(
     context: Context,
-    projectAndData: Pair<Project, ProjectData>,
+    projectData: ProjectData,
     commentableId: String? = null
 ): Intent {
     this.setClass(context, CommentsActivity::class.java)
-        .putExtra(IntentKey.PROJECT, projectAndData.first)
-        .putExtra(IntentKey.PROJECT_DATA, projectAndData.second)
+        .putExtra(IntentKey.PROJECT_DATA, projectData)
 
     commentableId?.let { this.putExtra(IntentKey.COMMENT, it) }
 

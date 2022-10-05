@@ -71,8 +71,8 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val showShareSheet = TestSubscriber<Pair<String, String>>()
     private val showUpdatePledge = TestSubscriber<Triple<PledgeData, PledgeReason, Boolean>>()
     private val showUpdatePledgeSuccess = TestSubscriber<Void>()
-    private val startRootCommentsActivity = TestSubscriber<Pair<Project, ProjectData>>()
-    private val startRootCommentsForCommentsThreadActivity = TestSubscriber<Pair<String, Pair<Project, ProjectData>>>()
+    private val startRootCommentsActivity = TestSubscriber<ProjectData>()
+    private val startRootCommentsForCommentsThreadActivity = TestSubscriber<Pair<String, ProjectData>>()
     private val startProjectUpdateActivity = TestSubscriber< Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>()
     private val startProjectUpdateToRepliesDeepLinkActivity = TestSubscriber<Pair<Pair<String, String>, Pair<Project, ProjectData>>>()
     private val startLoginToutActivity = TestSubscriber<Void>()
@@ -691,7 +691,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
-        this.startRootCommentsActivity.assertValues(projectAndData)
+        this.startRootCommentsActivity.assertValues(projectData)
     }
 
     @Test
@@ -700,7 +700,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         val projectData = ProjectDataFactory.project(project)
         val projectAndData = Pair.create(project, projectData)
-        val deepLinkDate = Pair.create(commentableId, projectAndData)
+        val deepLinkDate = Pair.create(commentableId, projectData)
         val testScheduler = TestScheduler()
 
         setUpEnvironment(

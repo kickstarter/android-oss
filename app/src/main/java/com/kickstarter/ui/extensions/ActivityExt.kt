@@ -3,7 +3,6 @@ package com.kickstarter.ui.extensions
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.util.Pair
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.ActivityResultLauncher
@@ -98,12 +97,12 @@ fun Activity.showRatingDialogWidget() {
 
 /**
  * This function starts the RootCommentActivity with Transition animation included
- * @param projectAndData
+ * @param projectData
  * @param commentableId -> specific for deeplinking to a concrete thread
  */
-fun Activity.startRootCommentsActivity(projectAndData: Pair<Project, ProjectData>, commentableId: String? = null) {
+fun Activity.startRootCommentsActivity(projectData: ProjectData, commentableId: String? = null) {
     startActivity(
-        Intent().getRootCommentsActivityIntent(this, projectAndData, commentableId)
+        Intent().getRootCommentsActivityIntent(this, projectData, commentableId)
     )
 
     this.let {

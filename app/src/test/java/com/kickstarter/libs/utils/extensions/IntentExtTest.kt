@@ -1,7 +1,6 @@
 package com.kickstarter.libs.utils.extensions
 
 import android.content.Intent
-import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
@@ -19,9 +18,8 @@ class IntentExtTest : KSRobolectricTestCase() {
     @Test
     fun testGetRootCommentsActivityIntent() {
         val projectData = ProjectDataFactory.project(ProjectFactory.project())
-        val intent = Intent().getRootCommentsActivityIntent(context(), Pair(projectData.project(), projectData))
+        val intent = Intent().getRootCommentsActivityIntent(context(), projectData)
         assertEquals(intent.component?.className, "com.kickstarter.ui.activities.CommentsActivity")
-        assertEquals(intent.extras?.get(IntentKey.PROJECT), projectData.project())
         assertEquals(intent.extras?.get(IntentKey.PROJECT_DATA), projectData)
         assertNull(intent.extras?.get(IntentKey.COMMENT))
     }
@@ -30,9 +28,8 @@ class IntentExtTest : KSRobolectricTestCase() {
     fun testGetRootCommentsActivityIntent_forDeeplinkThread() {
         val projectData = ProjectDataFactory.project(ProjectFactory.project())
         val comment = "SOME ID COMMENT HERE"
-        val intent = Intent().getRootCommentsActivityIntent(context(), Pair(projectData.project(), projectData), comment)
+        val intent = Intent().getRootCommentsActivityIntent(context(), projectData, comment)
         assertEquals(intent.component?.className, "com.kickstarter.ui.activities.CommentsActivity")
-        assertEquals(intent.extras?.get(IntentKey.PROJECT), projectData.project())
         assertEquals(intent.extras?.get(IntentKey.PROJECT_DATA), projectData)
         assertEquals(intent.extras?.get(IntentKey.COMMENT), comment)
     }

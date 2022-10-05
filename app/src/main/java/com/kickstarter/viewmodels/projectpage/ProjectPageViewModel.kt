@@ -210,9 +210,9 @@ interface ProjectPageViewModel {
         fun showUpdatePledgeSuccess(): Observable<Void>
 
         /** Emits when we should start [com.kickstarter.ui.activities.RootCommentsActivity]. */
-        fun startRootCommentsActivity(): Observable<Pair<Project, ProjectData>>
+        fun startRootCommentsActivity(): Observable<ProjectData>
 
-        fun startRootCommentsForCommentsThreadActivity(): Observable<Pair<String, Pair<Project, ProjectData>>>
+        fun startRootCommentsForCommentsThreadActivity(): Observable<Pair<String, ProjectData>>
 
         /** Emits when we should start [com.kickstarter.ui.activities.LoginToutActivity].  */
         fun startLoginToutActivity(): Observable<Void>
@@ -311,8 +311,8 @@ interface ProjectPageViewModel {
         private val updatePledgeData = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showUpdatePledge = PublishSubject.create<Triple<PledgeData, PledgeReason, Boolean>>()
         private val showUpdatePledgeSuccess = PublishSubject.create<Void>()
-        private val startRootCommentsActivity = PublishSubject.create<Pair<Project, ProjectData>>()
-        private val startRootCommentsForCommentsThreadActivity = PublishSubject.create<Pair<String, Pair<Project, ProjectData>>>()
+        private val startRootCommentsActivity = PublishSubject.create<ProjectData>()
+        private val startRootCommentsForCommentsThreadActivity = PublishSubject.create<Pair<String, ProjectData>>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
         private val startMessagesActivity = PublishSubject.create<Project>()
         private val startProjectUpdateActivity = PublishSubject.create< Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>()
@@ -550,6 +550,7 @@ interface ProjectPageViewModel {
                 .withLatestFrom(latestProjectAndProjectData) { _, project ->
                     project
                 }
+                .map { it.second }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.startRootCommentsActivity.onNext(it)
@@ -565,6 +566,7 @@ interface ProjectPageViewModel {
                 .withLatestFrom(latestProjectAndProjectData) { intent, project ->
                     Pair(intent.getStringExtra(IntentKey.COMMENT) ?: "", project)
                 }
+                .map { Pair(it.first, it.second.second) }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.startRootCommentsForCommentsThreadActivity.onNext(it)
@@ -1137,10 +1139,10 @@ interface ProjectPageViewModel {
         override fun showUpdatePledgeSuccess(): Observable<Void> = this.showUpdatePledgeSuccess
 
         @NonNull
-        override fun startRootCommentsActivity(): Observable<Pair<Project, ProjectData>> = this.startRootCommentsActivity
+        override fun startRootCommentsActivity(): Observable<ProjectData> = this.startRootCommentsActivity
 
         @NonNull
-        override fun startRootCommentsForCommentsThreadActivity(): Observable<Pair<String, Pair<Project, ProjectData>>> =
+        override fun startRootCommentsForCommentsThreadActivity(): Observable<Pair<String, ProjectData>> =
             this.startRootCommentsForCommentsThreadActivity
 
         @NonNull

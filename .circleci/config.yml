@@ -11,7 +11,6 @@ base_job: &base_job
 
 version: 2.1
 orbs:
-  codecov: codecov/codecov@3.2.3
   android: circleci/android@2.1.2
 
 jobs:
@@ -46,13 +45,10 @@ jobs:
             - v5-android-
       - attach_workspace:
           at: ~/project
-      - run: ./gradlew :app:clean
       - run: ./gradlew checkstyle
       - run: ./gradlew ktlint
       - run: ./gradlew lintExternalRelease
-      - run: ./gradlew jacocoExternalReleaseReport -PdisablePreDex # jacoco executes internally testExternalRelease
-      - codecov/upload:
-          file:  app/build/reports/jacoco/jacocoExternalReleaseReport/jacocoExternalReleaseReport.xml
+      - run: ./gradlew testExternalRelease -PdisablePreDex
       - store_artifacts:
           path: app/build/reports
           destination: reports

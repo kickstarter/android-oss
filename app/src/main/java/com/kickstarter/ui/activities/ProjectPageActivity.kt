@@ -264,7 +264,6 @@ class ProjectPageActivity :
             .subscribe { showPledgeFragment(it) }
 
         this.viewModel.outputs.startRootCommentsActivity()
-            .map { it.second }
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
@@ -272,11 +271,10 @@ class ProjectPageActivity :
             }
 
         this.viewModel.outputs.startRootCommentsForCommentsThreadActivity()
-            .map { it.second.second }
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                startRootCommentsActivity(it)
+                startRootCommentsActivity(it.second, it.first)
             }
 
         this.viewModel.outputs.startProjectUpdateActivity()

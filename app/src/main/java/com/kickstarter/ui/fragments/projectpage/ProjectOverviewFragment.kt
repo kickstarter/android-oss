@@ -312,7 +312,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                activity?.startRootCommentsActivity(Pair(it.project(), it))
+                activity?.startRootCommentsActivity(it)
             }
 
         viewModel.outputs.startUpdatesView()

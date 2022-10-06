@@ -22,6 +22,7 @@ import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CommentsActivity
 import com.kickstarter.ui.data.CommentCardData
+import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.views.CommentCardStatus
 import com.kickstarter.ui.views.CommentComposerStatus
 import org.joda.time.DateTime
@@ -147,9 +148,9 @@ interface CommentsViewModel {
 
             val projectOrUpdate = intent()
                 .map<Any?> {
-                    val project = it.getParcelableExtra(IntentKey.PROJECT) as? Project
+                    val projectData = it.getParcelableExtra(IntentKey.PROJECT_DATA) as? ProjectData
                     val update = it.getParcelableExtra(IntentKey.UPDATE)as? Update
-                    project?.let {
+                    projectData?.project()?.let {
                         Either.Left<Project?, Update?>(it)
                     }
                         ?: Either.Right<Project?, Update?>(update)

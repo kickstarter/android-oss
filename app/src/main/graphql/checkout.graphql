@@ -17,8 +17,8 @@ mutation CancelBacking($backingId: ID!, $note: String) {
   }
 }
 
-mutation UpdateBacking($backingId: ID!, $amount: String, $locationId: String,$rewardIds: [ID!], $paymentSourceId: String)  {
-  updateBacking(input: { id: $backingId, amount: $amount, locationId: $locationId, rewardIds: $rewardIds, paymentSourceId: $paymentSourceId}) {
+mutation UpdateBacking($backingId: ID!, $amount: String, $locationId: String,$rewardIds: [ID!], $paymentSourceId: String, $intentClientSecret: String)  {
+  updateBacking(input: { id: $backingId, amount: $amount, locationId: $locationId, rewardIds: $rewardIds, paymentSourceId: $paymentSourceId, intentClientSecret: $intentClientSecret}) {
     checkout {
       id
       backing {

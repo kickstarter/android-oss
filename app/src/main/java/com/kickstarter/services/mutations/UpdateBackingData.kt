@@ -8,5 +8,6 @@ data class UpdateBackingData(
     val amount: String? = null,
     val locationId: String? = null,
     val rewardsIds: List<Reward>? = null,
-    val paymentSourceId: String? = null
+    val paymentSourceId: String? = null,
+    val intentClientSecret: String? = null
 )

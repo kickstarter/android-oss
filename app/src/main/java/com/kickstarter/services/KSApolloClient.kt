@@ -1063,7 +1063,10 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                 .amount(updateBackingData.amount.toString())
                 .locationId(updateBackingData.locationId)
                 .rewardIds(updateBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
-                .paymentSourceId(updateBackingData.paymentSourceId)
+                .apply {
+                    updateBackingData.paymentSourceId?.let { this.paymentSourceId(it) }
+                    updateBackingData.intentClientSecret?.let { this.intentClientSecret(it) }
+                }
                 .build()
 
             val ps = PublishSubject.create<Checkout>()

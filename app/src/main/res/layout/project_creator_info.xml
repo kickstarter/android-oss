@@ -17,38 +17,6 @@
     android:showDividers="middle">
 
     <RelativeLayout
-      android:id="@+id/campaign"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:focusable="true"
-      android:foreground="@drawable/click_indicator_light_masked"
-      android:paddingTop="@dimen/grid_2"
-      android:paddingBottom="@dimen/grid_2">
-
-      <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:layout_toStartOf="@+id/campaign_button"
-        android:text="@string/project_menu_buttons_campaign"
-        android:textColor="@color/kds_support_700"
-        android:textSize="@dimen/body" />
-
-      <ImageView
-        android:id="@+id/campaign_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:textIsSelectable="true"
-        android:importantForAccessibility="no"
-        android:src="@drawable/chevron_right"
-        app:tint="@color/kds_support_700" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
       android:id="@+id/updates"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

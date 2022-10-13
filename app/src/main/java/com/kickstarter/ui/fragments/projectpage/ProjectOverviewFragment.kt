@@ -359,6 +359,10 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             this.viewModel.inputs.campaignButtonClicked()
         }
 
+        binding.projectCreatorInfoLayout.comments.setOnClickListener {
+            this.viewModel.inputs.commentsButtonClicked()
+        }
+
         binding.projectCreatorInfoLayout.updates.setOnClickListener {
             this.viewModel.inputs.updatesButtonClicked()
         }

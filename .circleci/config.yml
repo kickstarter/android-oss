@@ -59,8 +59,7 @@ jobs:
           destination: tests
       - run: ./gradlew app:jacocoExternalReleaseReport --stacktrace
       - codecov/upload:
-          file: app/build/reports/jacoco/jacocoExternalReleaseReport/jacocoExternalReleaseReport.xml
-
+          file: app/build/reports/tests/testExternalReleaseUnitTest/index.html
 
   snapshot-test:
     <<: *base_job

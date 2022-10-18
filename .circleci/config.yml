@@ -11,7 +11,8 @@ base_job: &base_job
 
 version: 2.1
 orbs:
-  android: circleci/android@2.1.2
+  codecov: codecov/codecov@1.1.5
+  android: circleci/android@1.0.3
 
 jobs:
   build:

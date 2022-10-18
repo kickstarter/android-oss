@@ -57,7 +57,6 @@ jobs:
       - store_artifacts:
           path: app/build/outputs
           destination: tests
-      - run: ./gradlew app:jacocoExternalReleaseReport --stacktrace
       - codecov/upload:
           file: app/build/reports/tests/testExternalReleaseUnitTest/index.html
 

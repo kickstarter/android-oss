@@ -48,6 +48,9 @@ jobs:
       - run: ./gradlew checkstyle
       - run: ./gradlew ktlint
       - run: ./gradlew lintExternalRelease
+      - run: ./gradlew jacocoExternalReleaseReport -PdisablePreDex # jacoco executes internally testExternalRelease
+      - codecov/upload:
+          file:  app/build/reports/jacoco/jacocoExternalReleaseReport/jacocoExternalReleaseReport.xml
       - run:
           command: ./gradlew testExternalRelease -PdisablePreDex
           no_output_timeout: 30m

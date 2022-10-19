@@ -343,14 +343,6 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
                 activity?.startCampaignWebViewActivity(it)
             }
 
-        viewModel.outputs.hideOldCampaignLink()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe {
-                binding.readMoreCampaignLink.setGone(it)
-                binding.projectCreatorInfoLayout.campaign.setGone(it)
-            }
-
         binding.projectCreatorDashboardHeader.projectDashboardButton.setOnClickListener {
             this.viewModel.inputs.creatorDashboardClicked()
         }
@@ -367,12 +359,10 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             this.viewModel.inputs.campaignButtonClicked()
         }
 
-        binding.projectCreatorInfoLayout.campaign.setOnClickListener {
-            this.viewModel.inputs.campaignButtonClicked()
-        }
         binding.projectCreatorInfoLayout.comments.setOnClickListener {
             this.viewModel.inputs.commentsButtonClicked()
         }
+
         binding.projectCreatorInfoLayout.updates.setOnClickListener {
             this.viewModel.inputs.updatesButtonClicked()
         }

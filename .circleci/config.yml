@@ -49,7 +49,7 @@ jobs:
       - run: ./gradlew ktlint
       - run: ./gradlew lintExternalRelease
       - run:
-          command: ./gradlew testExternalRelease -PdisablePreDex
+          command: ./gradlew testExternalReleaseUnitTestCoverage -PdisablePreDex
           no_output_timeout: 30m
       - store_artifacts:
           path: app/build/reports

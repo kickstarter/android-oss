@@ -6,7 +6,6 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.loadmore.ApolloPaginate
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
@@ -237,7 +236,7 @@ interface CommentsViewModel {
                     CommentCardData.builder()
                         .comment(it.first.first.first)
                         .project(this.project)
-                        .commentCardState(it.first.first.first.cardStatus(it.second, environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_COMMENT_MODERATION)))
+                        .commentCardState(it.first.first.first.cardStatus(it.second))
                         .commentableId(it.first.second)
                         .build()
                 }.withLatestFrom(projectOrUpdateComment) { commentData, projectOrUpdate ->
@@ -515,19 +514,13 @@ interface CommentsViewModel {
                 CommentCardData.builder()
                     .comment(comment)
                     .project(it.second)
-                    .commentCardState(comment.cardStatus(currentUser, environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_COMMENT_MODERATION)))
+                    .commentCardState(comment.cardStatus(currentUser))
                     .commentableId(it.first.commentableId)
                     .build()
             } ?: emptyList()
 
         private fun filterCancelledPledgeWithoutRepliesComment(item: Comment) =
-            if (environment.optimizely()
-                ?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_COMMENT_MODERATION) == true
-            ) {
-                !(item.authorCanceledPledge() && item.repliesCount() == 0)
-            } else {
-                true
-            }
+            !(item.authorCanceledPledge() && item.repliesCount() == 0)
 
         private fun buildCommentBody(it: Pair<User, Pair<String, DateTime>>): Comment {
             return Comment.builder()

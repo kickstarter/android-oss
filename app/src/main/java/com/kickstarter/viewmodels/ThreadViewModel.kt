@@ -5,7 +5,6 @@ import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.loadmore.ApolloPaginate
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.toCommentCardList
@@ -395,10 +394,7 @@ interface ThreadViewModel {
 
         private fun mapListToData(it: CommentEnvelope, project: Project, currentUser: User?) =
             it.comments?.toCommentCardList(
-                project, currentUser,
-                environment.optimizely()?.isFeatureEnabled(
-                    OptimizelyFeature.Key.ANDROID_COMMENT_MODERATION
-                )
+                project, currentUser
             )
 
         private fun loadWithProjectReplies(

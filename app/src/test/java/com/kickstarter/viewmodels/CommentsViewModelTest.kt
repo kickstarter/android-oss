@@ -786,7 +786,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project())))
         vm.outputs.commentsList().subscribe(commentsList)
 
-        commentsList.assertValueCount(1)
+        commentsList.assertValueCount(0)
         vm.outputs.commentsList().take(0).subscribe {
             val newList = it
             assertTrue(newList[0].comment?.body() == commentCardData1.comment?.body())

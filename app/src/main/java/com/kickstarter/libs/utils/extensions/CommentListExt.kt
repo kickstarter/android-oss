@@ -6,6 +6,6 @@ import com.kickstarter.models.User
 import com.kickstarter.models.extensions.cardStatus
 import com.kickstarter.ui.data.CommentCardData
 
-fun List<Comment>.toCommentCardList(project: Project?, user: User?, isCommentModerationFeatureEnabled: Boolean?): List<CommentCardData> = this.map { comment: Comment ->
-    CommentCardData.builder().comment(comment).commentCardState(comment.cardStatus(user, isCommentModerationFeatureEnabled)).project(project).build()
+fun List<Comment>.toCommentCardList(project: Project?, user: User?): List<CommentCardData> = this.map { comment: Comment ->
+    CommentCardData.builder().comment(comment).commentCardState(comment.cardStatus(user)).project(project).build()
 }

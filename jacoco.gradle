@@ -89,6 +89,7 @@ def createVariantCoverage(variant) {
         ]))
 
         getExecutionData().setFrom(files("${project.buildDir}/outputs/unit_test_code_coverage/${variantName}UnitTest/${testTaskName}.exec"))
+
         doLast {
             def m = new File("${project.buildDir}/reports/jacoco/${testTaskName}Coverage/html/index.html")
                     .text =~ /Total[^%]*>(\d?\d?\d?%)/

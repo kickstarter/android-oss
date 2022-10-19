@@ -5,7 +5,6 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.models.OptimizelyExperiment
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ExperimentData
@@ -177,7 +176,6 @@ interface ProjectOverviewViewModel {
         fun startUpdatesView(): Observable<ProjectData>
         fun startCampaignView(): Observable<ProjectData>
         fun startCreatorDashboardView(): Observable<ProjectData>
-        fun hideOldCampaignLink(): Observable<Boolean>
     }
 
     class ViewModel(environment: Environment) : FragmentViewModel<ProjectOverviewFragment?>(environment), Inputs, Outputs {
@@ -244,7 +242,6 @@ interface ProjectOverviewViewModel {
         private val startUpdatesView: Observable<ProjectData>
         private val startCampaignView: Observable<ProjectData>
         private val creatorDashBoardView: Observable<ProjectData>
-        private val hideOldCampaignLink: Observable<Boolean>
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -449,15 +446,7 @@ interface ProjectOverviewViewModel {
             return this.creatorDashBoardView
         }
 
-        override fun hideOldCampaignLink(): Observable<Boolean> {
-            return hideOldCampaignLink
-        }
-
         init {
-            hideOldCampaignLink = Observable.just(optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_STORY_TAB) == true)
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
-
             val project = projectData
                 .distinctUntilChanged()
                 .map { it.project() }

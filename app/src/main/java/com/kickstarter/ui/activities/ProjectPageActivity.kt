@@ -81,6 +81,7 @@ class ProjectPageActivity :
 
     private val pagerAdapterList = mutableListOf(
         ProjectPagerTabs.OVERVIEW,
+        ProjectPagerTabs.CAMPAIGN,
         ProjectPagerTabs.FAQS,
         ProjectPagerTabs.RISKS,
     )
@@ -357,17 +358,8 @@ class ProjectPageActivity :
         }
     }
 
-    private fun configureTabs(updateTabs: Pair<Boolean, Boolean>) {
-        if (updateTabs.first) {
-            // - avoid adding Campaign tab if it already exists
-            if (!pagerAdapterList.contains(ProjectPagerTabs.CAMPAIGN)) {
-                pagerAdapterList.add(
-                    ProjectPagerTabs.CAMPAIGN.ordinal,
-                    ProjectPagerTabs.CAMPAIGN
-                )
-            }
-        }
-        if (updateTabs.second) {
+    private fun configureTabs(updateTabs: Boolean) {
+        if (updateTabs) {
             // - avoid adding Env tab if it already exists
             if (!pagerAdapterList.contains(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT)) {
                 pagerAdapterList.add(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT)

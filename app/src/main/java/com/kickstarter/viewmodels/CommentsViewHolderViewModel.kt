@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels
 import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
@@ -87,7 +86,7 @@ interface CommentsViewHolderViewModel {
         /** Emits the current [Comment] when view replies clicked.. */
         fun viewCommentReplies(): Observable<Comment>
 
-        /** Emits the current [OptimizelyFeature.Key.COMMENT_ENABLE_THREADS] status to the CommentCard UI*/
+        /** Emits the current status to the CommentCard UI*/
         fun isCommentEnableThreads(): Observable<Boolean>
 
         /** Emits if the comment is a reply to root comment */
@@ -155,7 +154,7 @@ interface CommentsViewHolderViewModel {
                 .distinctUntilChanged()
                 .filter { ObjectUtils.isNotNull(it) }
                 .map {
-                    val commentCardState = cardStatus(it.first, it.second, environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_COMMENT_MODERATION))
+                    val commentCardState = cardStatus(it.first, it.second)
                     it.first.toBuilder().commentCardState(commentCardState?.commentCardStatus ?: 0)
                         .build()
                 }
@@ -198,7 +197,7 @@ interface CommentsViewHolderViewModel {
                 .compose(combineLatestPair(currentUser.observable()))
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.commentCardStatus.onNext(cardStatus(it.first, it.second, environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_COMMENT_MODERATION)))
+                    this.commentCardStatus.onNext(cardStatus(it.first, it.second))
                 }
 
             commentCardStatus
@@ -392,11 +391,10 @@ interface CommentsViewHolderViewModel {
          * Checks if the current user is backing the current project,
          * or the current user is the creator of the project
          *  @param commentCardData
-         *  @param featureFlagActive
          *  @param user
          *
          *  @return
-         *  true -> if current user is backer and the feature flag is active and the comment is not a reply
+         *  true -> if current user is backer and the comment is not a reply
          *  false -> any of the previous conditions fails
          */
         private fun shouldReplyButtonBeVisible(
@@ -416,8 +414,9 @@ interface CommentsViewHolderViewModel {
          * Updates the status of the current comment card.
          * everytime the state changes.
          */
-        private fun cardStatus(commentCardData: CommentCardData, currentUser: User?, isCommentModerationFeatureFlagEnabled: Boolean?) = when {
-            commentCardData.comment?.isCommentPendingReview() ?: false && commentCardData.comment?.isCurrentUserAuthor(currentUser) == false && (isCommentModerationFeatureFlagEnabled ?: false) -> CommentCardStatus.FLAGGED_COMMENT
+        private fun cardStatus(commentCardData: CommentCardData, currentUser: User?) = when {
+            commentCardData.comment?.isCommentPendingReview() ?: false &&
+                commentCardData.comment?.isCurrentUserAuthor(currentUser) == false -> CommentCardStatus.FLAGGED_COMMENT
             commentCardData.comment?.deleted() ?: false -> CommentCardStatus.DELETED_COMMENT
             commentCardData.comment?.authorCanceledPledge() ?: false -> checkCanceledPledgeCommentStatus(commentCardData)
             (commentCardData.comment?.repliesCount() ?: 0 != 0) -> CommentCardStatus.COMMENT_WITH_REPLIES

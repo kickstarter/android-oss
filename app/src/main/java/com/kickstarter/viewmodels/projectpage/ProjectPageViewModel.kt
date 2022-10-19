@@ -11,7 +11,6 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.OptimizelyExperiment
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
@@ -244,7 +243,7 @@ interface ProjectPageViewModel {
         fun backingViewGroupIsVisible(): Observable<Boolean>
 
         /** Will emmit the need to show/hide the Campaign Tab and the Environmental Tab. */
-        fun updateTabs(): Observable<Pair<Boolean, Boolean>>
+        fun updateTabs(): Observable<Boolean>
 
         fun hideVideoPlayer(): Observable<Boolean>
     }
@@ -325,7 +324,7 @@ interface ProjectPageViewModel {
         private val projectPhoto = PublishSubject.create<String>()
         private val playButtonIsVisible = PublishSubject.create<Boolean>()
         private val backingViewGroupIsVisible = PublishSubject.create<Boolean>()
-        private val updateTabs = PublishSubject.create<Pair<Boolean, Boolean>>()
+        private val updateTabs = PublishSubject.create< Boolean>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -528,8 +527,7 @@ interface ProjectPageViewModel {
                 .subscribe {
                     this.projectData.onNext(it)
                     val showEnvironmentalTab = it.project().envCommitments()?.isNotEmpty() ?: false
-                    val showCampaignTab = this.optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_STORY_TAB)
-                    this.updateTabs.onNext(Pair(showCampaignTab, showEnvironmentalTab))
+                    this.updateTabs.onNext(showEnvironmentalTab)
                 }
 
             currentProject
@@ -1165,7 +1163,7 @@ interface ProjectPageViewModel {
         override fun startVideoActivity(): Observable<Project> = this.startVideoActivity
 
         @NonNull
-        override fun updateTabs(): Observable<Pair<Boolean, Boolean>> = this.updateTabs
+        override fun updateTabs(): Observable<Boolean> = this.updateTabs
 
         @NonNull
         override fun hideVideoPlayer(): Observable<Boolean> = this.hideVideoPlayer

@@ -56,7 +56,8 @@ jobs:
           path: app/build/outputs
           destination: tests
       - codecov/upload:
-          file: app/build/reports/tests/testExternalReleaseUnitTest/index.html
+          file: app/build/reports/tests/testExternalReleaseUnitTest/index.html 
+          token: CODECOV_TOKEN 
 
   snapshot-test:
     <<: *base_job

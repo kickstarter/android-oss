@@ -572,19 +572,6 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCommentsViewModel_whenCommentModFFDisabled_shouldNotSetStatusToFlagged() {
-
-        val env = environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build()
-        setUpEnvironment(env)
-
-        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser, isDelete = false, hasFlaggings = true, sustained = false)
-
-        this.vm.inputs.configureWith(commentCardData)
-
-        this.commentCardStatus.assertValue(CommentCardStatus.FLAGGED_COMMENT)
-    }
-
-    @Test
     fun testPostReply_Successful() {
         val reply = CommentFactory.reply(createdAt = createdAt)
         val currentUser = UserFactory.user().toBuilder().id(1).build()

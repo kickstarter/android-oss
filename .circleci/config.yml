@@ -56,7 +56,7 @@ jobs:
           path: app/build/outputs
           destination: tests
       - codecov/upload:
-          file: app/build/reports/jacoco/testExternalReleaseUnitTestCoverage/html/index.html
+          file: app/build/reports/tests/testExternalReleaseUnitTest/index.html
 
   snapshot-test:
     <<: *base_job

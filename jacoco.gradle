@@ -60,7 +60,28 @@ ext.excludes = [
         '**/*_MembersInjector.class',
         '**/*_Factory*.*',
         '**/*_Provide*Factory*.*',
-        '**/*Extensions*.*'
+        '**/*Extensions*.*',
+        //KSR
+        '**/KSApplication.*',
+        '**/viewmodels/*.*',
+        '**/libs/utils/ApplicationLifecycleUtil.*',
+        '**/libs/utils/ApplicationUtils.*',
+        '**/ApplicationModule.*',
+        '**/*Activity*.*',
+        '**/*Fragment*.*',
+        '**/*ViewHolder*.*',
+        '**/*Toolbar*.*',
+        '**/*Dialog*.*',
+        '**/ui/*.*',
+        '**/ui/views/*.*',
+        '**/ui/adapters/*.*',
+        '**/ui/adapters/data/*.*',
+        '**/ui/adapters/projectcampaign/*.*',
+        '**/databinding/*.*',
+        '**/mock/*.*',
+        '**/services/*.*',
+        '**/firebase/*.*',
+        '**/fragment/*.*'
 ]
 
 def createVariantCoverage(variant) {

@@ -8,7 +8,7 @@ import com.kickstarter.libs.htmlparser.VideoViewElement
 import com.kickstarter.libs.htmlparser.ViewElement
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.fragments.projectpage.ProjectOverviewFragment
+import com.kickstarter.ui.fragments.projectpage.ProjectCampaignFragment
 import rx.Observable
 import rx.subjects.BehaviorSubject
 
@@ -29,7 +29,7 @@ class ProjectCampaignViewModel {
     }
 
     class ViewModel(@NonNull val environment: Environment) :
-        FragmentViewModel<ProjectOverviewFragment>(environment), Inputs, Outputs {
+        FragmentViewModel<ProjectCampaignFragment >(environment), Inputs, Outputs {
         val inputs: Inputs = this
         val outputs: Outputs = this
 

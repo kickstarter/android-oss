@@ -3,11 +3,15 @@ package com.kickstarter.ui.views
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.isGone
 import com.kickstarter.R
 import com.kickstarter.databinding.MediaHeaderBinding
-import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.htmlparser.VideoViewElement
+import com.kickstarter.libs.utils.ViewUtils.getScreenDensity
+import com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp
 import com.kickstarter.libs.utils.extensions.photoHeightFromWidthRatio
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.squareup.picasso.Picasso
@@ -22,43 +26,76 @@ class MediaHeader @JvmOverloads constructor(
     private var binding: MediaHeaderBinding =
         MediaHeaderBinding.inflate(LayoutInflater.from(context), this, true)
     private var playButtonClicks = PublishSubject.create<Void>()
+    private var onFullScreenClicked = PublishSubject.create<Pair<String, Long>>()
 
     interface Inputs {
         /**
          * Sets the visibility of the play button
          */
-        fun setProjectPhoto(photo: String?)
+        fun setProjectPhoto(photo: VideoViewElement?)
 
         /**
          * Sets the visibility of the play button
          */
         fun setPlayButtonVisibility(isVisible: Boolean)
+
+        /**
+         * set media player video start
+         */
+
+        fun initializePlayer()
+
+        /**
+         * set media player video pause
+         */
+
+        fun pausePlayer()
+
+        /**
+         * set media player video release
+         */
+        fun releasePlayer()
+
+        /**
+         * set seek postion
+         */
+        fun setPlayerSeekPosition(seekPosition: Long)
     }
 
     interface Outputs {
 
         fun playButtonClicks(): Observable<Void>
+        fun onFullScreenClicked(): Observable<Pair<String, Long>>
     }
 
     val inputs: Inputs = object : Inputs {
+
         override fun setPlayButtonVisibility(isVisible: Boolean) {
-            binding.videoPlayButtonOverlay.visibility = isVisible.toVisibility()
+            binding.videoPlayButtonOverlay.visibility = (isVisible).toVisibility()
         }
 
-        override fun setProjectPhoto(photo: String?) {
+        override fun setProjectPhoto(photo: VideoViewElement?) {
             val targetImageWidth =
-                (ViewUtils.getScreenWidthDp(context) * ViewUtils.getScreenDensity(context)).toInt() - context.resources.getDimension(
+                (getScreenWidthDp(context) * getScreenDensity(context)).toInt() - context.resources.getDimension(
                     R.dimen.grid_2
                 ).toInt() * 2
             val targetImageHeight = photoHeightFromWidthRatio(targetImageWidth)
+
             binding.videoProjectPhoto.maxHeight =
                 photoHeightFromWidthRatio(targetImageWidth)
 
-            if (photo != null) {
+            binding.videoProjectVideo.maxHeight =
+                photoHeightFromWidthRatio(targetImageWidth)
+
+            if (photo?.sourceUrl?.isNotEmpty() == true) {
+                binding.videoProjectVideo.setVideoViewElement(photo)
+            }
+
+            if (photo?.thumbnailUrl != null) {
                 ResourcesCompat.getDrawable(context.resources, R.drawable.gray_gradient, null)
                     ?.let {
                         Picasso.get()
-                            .load(photo)
+                            .load(photo.thumbnailUrl)
                             .resize(targetImageWidth, targetImageHeight)
                             .centerCrop()
                             .placeholder(it)
@@ -66,15 +103,42 @@ class MediaHeader @JvmOverloads constructor(
                     }
             }
         }
-    }
 
+        override fun initializePlayer() {
+            binding.videoProjectVideo.initializePlayer()
+        }
+
+        override fun releasePlayer() {
+            binding.videoProjectVideo.releasePlayer()
+        }
+
+        override fun setPlayerSeekPosition(seekPosition: Long) {
+            binding.videoProjectVideo.setPlayerSeekPosition(seekPosition)
+        }
+
+        override fun pausePlayer() {
+            binding.videoProjectVideo.pausePlayer()
+        }
+    }
     val outputs: Outputs = object : Outputs {
         override fun playButtonClicks(): Observable<Void> = playButtonClicks
+        override fun onFullScreenClicked(): Observable<Pair<String, Long>> = onFullScreenClicked
     }
 
     init {
         binding.videoPlayButtonOverlay.setOnClickListener {
-            playButtonClicks.onNext(null)
+            binding.videoProjectPhoto.isGone = true
+            binding.videoPlayButtonOverlay.isGone = true
         }
+
+        binding.videoProjectVideo.setOnFullScreenClickedListener(object : OnFullScreenClickedListener {
+            override fun onFullScreenOpenedViewClicked(
+                view: View,
+                url: String,
+                seekPosition: Long
+            ) {
+                onFullScreenClicked.onNext(Pair(url, seekPosition))
+            }
+        })
     }
 }

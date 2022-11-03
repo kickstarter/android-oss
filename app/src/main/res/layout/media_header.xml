@@ -8,6 +8,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
+    <com.kickstarter.ui.views.VideoViewer
+        android:id="@+id/video_project_video"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:adjustViewBounds="true"
+        android:layout_centerInParent="true"
+        android:background="@drawable/gray_gradient"
+        tools:ignore="ContentDescription"
+        />
+
     <ImageView
         android:id="@+id/video_project_photo"
         android:layout_width="match_parent"

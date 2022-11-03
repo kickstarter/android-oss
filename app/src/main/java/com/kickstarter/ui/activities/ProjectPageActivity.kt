@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Rect
@@ -14,6 +15,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.MenuRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
@@ -46,11 +48,7 @@ import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.extensions.hideKeyboard
-import com.kickstarter.ui.extensions.selectPledgeFragment
-import com.kickstarter.ui.extensions.showSnackbar
-import com.kickstarter.ui.extensions.startRootCommentsActivity
-import com.kickstarter.ui.extensions.startUpdatesActivity
+import com.kickstarter.ui.extensions.*
 import com.kickstarter.ui.fragments.BackingFragment
 import com.kickstarter.ui.fragments.CancelPledgeFragment
 import com.kickstarter.ui.fragments.NewCardFragment
@@ -85,6 +83,16 @@ class ProjectPageActivity :
         ProjectPagerTabs.FAQS,
         ProjectPagerTabs.RISKS,
     )
+
+    var startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data = result.data?.getLongExtra(IntentKey.VIDEO_SEEK_POSITION, 0)
+            data?.let {
+                viewModel.inputs.closeFullScreenVideo(it)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -327,10 +335,24 @@ class ProjectPageActivity :
             .compose(Transformers.observeForUI())
             .subscribe { binding.mediaHeader.inputs.setPlayButtonVisibility(it) }
 
-        binding.mediaHeader.outputs.playButtonClicks()
+        viewModel.outputs.updateVideoCloseSeekPosition()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { viewModel.inputs.playVideoButtonClicked() }
+            .subscribe { binding.mediaHeader.inputs.setPlayerSeekPosition(it) }
+
+        binding.mediaHeader.outputs.onFullScreenClicked()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { viewModel.inputs.fullScreenVideoButtonClicked(it) }
+
+        this.viewModel.outputs.onOpenVideoInFullScreen()
+            .subscribeOn(Schedulers.io())
+            .distinctUntilChanged()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                startVideoActivity(startForResult, it.first, it.second)
+            }
 
         viewModel.outputs.backingViewGroupIsVisible()
             .compose(bindToLifecycle())
@@ -355,6 +377,14 @@ class ProjectPageActivity :
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             binding.projectAppBarLayout.setExpanded(false)
+        }
+
+        binding.projectAppBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+
+            // not Fully expanded
+            if (verticalOffset != 0) {
+                binding.mediaHeader.inputs.pausePlayer()
+            }
         }
     }
 
@@ -397,11 +427,16 @@ class ProjectPageActivity :
 
     override fun onResume() {
         super.onResume()
-
+        binding.mediaHeader.inputs.initializePlayer()
         this.viewModel.outputs.updateFragments()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { updateFragments(it) }
+    }
+
+    public override fun onPause() {
+        super.onPause()
+        binding.mediaHeader.inputs.releasePlayer()
     }
 
     override fun back() {
@@ -824,6 +859,7 @@ class ProjectPageActivity :
 
     override fun onDestroy() {
         binding.projectPager.adapter = null
+        binding.mediaHeader.inputs.releasePlayer()
         this.viewModel = null
         super.onDestroy()
     }

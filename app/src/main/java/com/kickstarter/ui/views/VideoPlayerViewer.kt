@@ -20,21 +20,21 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.util.Util
 import com.kickstarter.R
-import com.kickstarter.databinding.VideoViewLayoutBinding
-import com.kickstarter.libs.htmlparser.VideoViewElement
+import com.kickstarter.databinding.VideoPlayerLayoutBinding
+import com.kickstarter.ui.data.VideoModelElement
 
-class VideoViewer @JvmOverloads constructor(
+class VideoPlayerViewer @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
-    private var binding: VideoViewLayoutBinding =
-        VideoViewLayoutBinding.inflate(LayoutInflater.from(context), this, true)
+    private var binding: VideoPlayerLayoutBinding =
+        VideoPlayerLayoutBinding.inflate(LayoutInflater.from(context), this, true)
 
     private val loadingIndicator = binding.loadingIndicator
     private val videoPlayerView = binding.playerView
-    private var element: VideoViewElement? = null
+    private var element: VideoModelElement? = null
 
     private var player: ExoPlayer? = null
 
@@ -52,16 +52,10 @@ class VideoViewer @JvmOverloads constructor(
             super.onPlaybackStateChanged(playbackState)
 
             if (playbackState == Player.STATE_BUFFERING) {
-
-                // Buffering..
-                // set progress bar visible here
-                // set thumbnail visible
-                // thumbnail.visibility = VISIBLE
                 loadingIndicator.visibility = VISIBLE
             }
 
             if (playbackState == Player.STATE_READY) {
-                // [PlayerView] has fetched the video duration so this is the block to hide the buffering progress bar
                 loadingIndicator.visibility = GONE
             }
         }
@@ -72,7 +66,7 @@ class VideoViewer @JvmOverloads constructor(
         }
     }
 
-    fun setVideoViewElement(element: VideoViewElement) {
+    fun setVideoModelElement(element: VideoModelElement) {
         this.element = element
         initializePlayer()
     }
@@ -94,17 +88,13 @@ class VideoViewer @JvmOverloads constructor(
             trackSelector?.let { setTrackSelector(it) }
         }.build()
             .also { exoPlayer ->
-                videoPlayerView.player = exoPlayer
                 element?.sourceUrl?.let {
                     exoPlayer.setMediaItem(MediaItem.fromUri(it))
                     val playerIsResuming = (playbackPosition != 0L)
                     exoPlayer.setMediaSource(getMediaSource(it), playerIsResuming)
                 }
                 exoPlayer.addListener(playbackStateListener)
-
-                playbackPosition?.let {
-                    exoPlayer.seekTo(it)
-                }
+                exoPlayer.seekTo(playbackPosition)
                 exoPlayer.playWhenReady = true
                 exoPlayer.prepare()
             }
@@ -116,6 +106,12 @@ class VideoViewer @JvmOverloads constructor(
                 onFullScreenClickedListener?.onFullScreenOpenedViewClicked(this, url, player?.currentPosition ?: 0)
             }
         }
+    }
+
+    fun setfullscreenButtonDrawableResource(closeFullScreen: Boolean = false) {
+        fullscreenButton?.setImageResource(R.drawable.ic_fullscreen_open)
+        if (closeFullScreen)
+            fullscreenButton?.setImageResource(R.drawable.ic_fullscreen_close)
     }
 
     private fun getMediaSource(videoUrl: String): MediaSource {

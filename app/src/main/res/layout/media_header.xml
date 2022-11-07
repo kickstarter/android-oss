@@ -8,7 +8,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <com.kickstarter.ui.views.VideoViewer
+    <com.kickstarter.ui.views.VideoPlayerViewer
         android:id="@+id/video_project_video"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

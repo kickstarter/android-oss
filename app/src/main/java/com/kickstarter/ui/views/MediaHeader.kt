@@ -9,11 +9,11 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isGone
 import com.kickstarter.R
 import com.kickstarter.databinding.MediaHeaderBinding
-import com.kickstarter.libs.htmlparser.VideoViewElement
 import com.kickstarter.libs.utils.ViewUtils.getScreenDensity
 import com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp
 import com.kickstarter.libs.utils.extensions.photoHeightFromWidthRatio
 import com.kickstarter.libs.utils.extensions.toVisibility
+import com.kickstarter.ui.data.MediaElement
 import com.squareup.picasso.Picasso
 import rx.Observable
 import rx.subjects.PublishSubject
@@ -32,7 +32,7 @@ class MediaHeader @JvmOverloads constructor(
         /**
          * Sets the visibility of the play button
          */
-        fun setProjectPhoto(photo: VideoViewElement?)
+        fun setProjectMedia(photo: MediaElement?)
 
         /**
          * Sets the visibility of the play button
@@ -74,7 +74,7 @@ class MediaHeader @JvmOverloads constructor(
             binding.videoPlayButtonOverlay.visibility = (isVisible).toVisibility()
         }
 
-        override fun setProjectPhoto(photo: VideoViewElement?) {
+        override fun setProjectMedia(element: MediaElement?) {
             val targetImageWidth =
                 (getScreenWidthDp(context) * getScreenDensity(context)).toInt() - context.resources.getDimension(
                     R.dimen.grid_2
@@ -87,15 +87,15 @@ class MediaHeader @JvmOverloads constructor(
             binding.videoProjectVideo.maxHeight =
                 photoHeightFromWidthRatio(targetImageWidth)
 
-            if (photo?.sourceUrl?.isNotEmpty() == true) {
-                binding.videoProjectVideo.setVideoViewElement(photo)
+            if (element?.videoModelElement?.sourceUrl?.isNotEmpty() == true) {
+                binding.videoProjectVideo.setVideoModelElement(element.videoModelElement)
             }
 
-            if (photo?.thumbnailUrl != null) {
+            if (element?.thumbnailUrl != null) {
                 ResourcesCompat.getDrawable(context.resources, R.drawable.gray_gradient, null)
                     ?.let {
                         Picasso.get()
-                            .load(photo.thumbnailUrl)
+                            .load(element.thumbnailUrl)
                             .resize(targetImageWidth, targetImageHeight)
                             .centerCrop()
                             .placeholder(it)

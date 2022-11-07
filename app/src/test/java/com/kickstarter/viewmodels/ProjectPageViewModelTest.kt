@@ -1808,7 +1808,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         // Start the view model with a project.
         val intent = Intent().apply {
-            data = "ksr://www.kickstarter.com/projects/1186238668/skull-graphic-tee?save=true".toUri()
+            data = Uri.parse("ksr://www.kickstarter.com/projects/1186238668/skull-graphic-tee?save=true")
         }
         currentUser.refresh(UserFactory.user())
         this.vm.intent(intent)

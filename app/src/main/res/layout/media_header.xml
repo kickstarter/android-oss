@@ -5,36 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/media_header"
+    android:background="@drawable/gray_gradient"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <com.kickstarter.ui.views.VideoPlayerViewer
-        android:id="@+id/video_project_video"
+        android:id="@+id/video_project_View"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="match_parent"
         android:adjustViewBounds="true"
-        android:layout_centerInParent="true"
-        android:background="@drawable/gray_gradient"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription"
-        />
+        android:visibility="invisible" />
 
     <ImageView
         android:id="@+id/video_project_photo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:src="@drawable/rectangle_grey"
         android:adjustViewBounds="true"
-        android:background="@drawable/gray_gradient"
         android:scaleType="centerCrop"
-        tools:ignore="ContentDescription" />
+        android:src="@drawable/rectangle_grey"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription,ImageContrastCheck"
+        tools:visibility="invisible" />
 
     <ImageButton
         android:id="@+id/video_play_button_overlay"

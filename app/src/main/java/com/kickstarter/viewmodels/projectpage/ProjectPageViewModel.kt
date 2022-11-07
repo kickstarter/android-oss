@@ -229,8 +229,8 @@ interface ProjectPageViewModel {
         /** Emits when we the pledge was successful and should start the [com.kickstarter.ui.activities.ThanksActivity]. */
         fun startThanksActivity(): Observable<Pair<CheckoutData, PledgeData>>
 
-        /** Emits when we should start the [com.kickstarter.ui.activities.VideoActivity].  */
-        fun startVideoActivity(): Observable<Project>
+//        /** Emits when we should start the [com.kickstarter.ui.activities.VideoActivity].  */
+//        fun startVideoActivity(): Observable<Project>
 
         /** Emits when we should update the [com.kickstarter.ui.fragments.BackingFragment] and [com.kickstarter.ui.fragments.RewardsFragment].  */
         fun updateFragments(): Observable<ProjectData>
@@ -324,7 +324,6 @@ interface ProjectPageViewModel {
         private val startProjectUpdateActivity = PublishSubject.create< Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>()
         private val startProjectUpdateToRepliesDeepLinkActivity = PublishSubject.create< Pair<Pair<String, String>, Pair<Project, ProjectData>>>()
         private val startThanksActivity = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
-        private val startVideoActivity = PublishSubject.create<Project>()
         private val updateFragments = BehaviorSubject.create<ProjectData>()
         private val hideVideoPlayer = BehaviorSubject.create<Boolean>()
         private val tabSelected = PublishSubject.create<Int>()
@@ -617,10 +616,10 @@ interface ProjectPageViewModel {
                 .compose(bindToLifecycle())
                 .subscribe { this.startProjectUpdateToRepliesDeepLinkActivity.onNext(it) }
 
-            currentProject
-                .compose(takeWhen(this.playVideoButtonClicked))
-                .compose(bindToLifecycle())
-                .subscribe(this.startVideoActivity)
+//            currentProject
+//                .compose(takeWhen(this.playVideoButtonClicked))
+//                .compose(bindToLifecycle())
+//                .subscribe(this.startVideoActivity)
 
             fullScreenVideoButtonClicked
                 .compose(bindToLifecycle())
@@ -1202,8 +1201,8 @@ interface ProjectPageViewModel {
         @NonNull
         override fun onOpenVideoInFullScreen(): Observable<kotlin.Pair<String, Long>> = this.onOpenVideoInFullScreen
 
-        @NonNull
-        override fun startVideoActivity(): Observable<Project> = this.startVideoActivity
+//        @NonNull
+//        override fun startVideoActivity(): Observable<Project> = this.startVideoActivity
 
         @NonNull
         override fun updateTabs(): Observable<Boolean> = this.updateTabs

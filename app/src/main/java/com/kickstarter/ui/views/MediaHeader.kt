@@ -7,6 +7,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import com.kickstarter.R
 import com.kickstarter.databinding.MediaHeaderBinding
 import com.kickstarter.libs.utils.ViewUtils.getScreenDensity
@@ -71,25 +72,18 @@ class MediaHeader @JvmOverloads constructor(
     val inputs: Inputs = object : Inputs {
 
         override fun setPlayButtonVisibility(isVisible: Boolean) {
-            binding.videoPlayButtonOverlay.visibility = (isVisible).toVisibility()
+            binding.videoPlayButtonOverlay.visibility = isVisible.toVisibility()
         }
 
         override fun setProjectMedia(element: MediaElement?) {
-            val targetImageWidth =
-                (getScreenWidthDp(context) * getScreenDensity(context)).toInt() - context.resources.getDimension(
-                    R.dimen.grid_2
-                ).toInt() * 2
-            val targetImageHeight = photoHeightFromWidthRatio(targetImageWidth)
+            val (targetImageWidth, targetImageHeight) = getTargetImageSize()
+
+            val lp = binding.mediaHeader.layoutParams as LayoutParams
+            lp.height = photoHeightFromWidthRatio(targetImageWidth)
+            binding.mediaHeader.layoutParams = lp
 
             binding.videoProjectPhoto.maxHeight =
                 photoHeightFromWidthRatio(targetImageWidth)
-
-            binding.videoProjectVideo.maxHeight =
-                photoHeightFromWidthRatio(targetImageWidth)
-
-            if (element?.videoModelElement?.sourceUrl?.isNotEmpty() == true) {
-                binding.videoProjectVideo.setVideoModelElement(element.videoModelElement)
-            }
 
             if (element?.thumbnailUrl != null) {
                 ResourcesCompat.getDrawable(context.resources, R.drawable.gray_gradient, null)
@@ -102,22 +96,36 @@ class MediaHeader @JvmOverloads constructor(
                             .into(binding.videoProjectPhoto)
                     }
             }
+
+            if (element?.videoModelElement?.sourceUrl?.isNotEmpty() == true) {
+                binding.videoProjectView.setVideoModelElement(element.videoModelElement)
+            }
+        }
+
+        private fun getTargetImageSize(): Pair<Int, Int> {
+            val targetImageWidth =
+                (getScreenWidthDp(context) * getScreenDensity(context)).toInt() - context.resources.getDimension(
+                    R.dimen.grid_2
+                ).toInt() * 2
+
+            val targetImageHeight = photoHeightFromWidthRatio(targetImageWidth)
+            return Pair(targetImageWidth, targetImageHeight)
         }
 
         override fun initializePlayer() {
-            binding.videoProjectVideo.initializePlayer()
+            binding.videoProjectView.initializePlayer()
         }
 
         override fun releasePlayer() {
-            binding.videoProjectVideo.releasePlayer()
+            binding.videoProjectView.releasePlayer()
         }
 
         override fun setPlayerSeekPosition(seekPosition: Long) {
-            binding.videoProjectVideo.setPlayerSeekPosition(seekPosition)
+            binding.videoProjectView.setPlayerSeekPosition(seekPosition)
         }
 
         override fun pausePlayer() {
-            binding.videoProjectVideo.pausePlayer()
+            binding.videoProjectView.pausePlayer()
         }
     }
     val outputs: Outputs = object : Outputs {
@@ -129,9 +137,11 @@ class MediaHeader @JvmOverloads constructor(
         binding.videoPlayButtonOverlay.setOnClickListener {
             binding.videoProjectPhoto.isGone = true
             binding.videoPlayButtonOverlay.isGone = true
+            binding.videoProjectView.isVisible = true
+            binding.videoProjectView.setPlayerPlayWhenReadyFlag(true)
         }
 
-        binding.videoProjectVideo.setOnFullScreenClickedListener(object : OnFullScreenOpenedClickedListener {
+        binding.videoProjectView.setOnFullScreenClickedListener(object : OnFullScreenOpenedClickedListener {
             override fun onFullScreenViewClicked(
                 view: View,
                 url: String,

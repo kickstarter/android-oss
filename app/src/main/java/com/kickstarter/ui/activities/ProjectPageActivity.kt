@@ -48,7 +48,12 @@ import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.extensions.*
+import com.kickstarter.ui.extensions.hideKeyboard
+import com.kickstarter.ui.extensions.selectPledgeFragment
+import com.kickstarter.ui.extensions.showSnackbar
+import com.kickstarter.ui.extensions.startRootCommentsActivity
+import com.kickstarter.ui.extensions.startUpdatesActivity
+import com.kickstarter.ui.extensions.startVideoActivity
 import com.kickstarter.ui.fragments.BackingFragment
 import com.kickstarter.ui.fragments.CancelPledgeFragment
 import com.kickstarter.ui.fragments.NewCardFragment
@@ -320,10 +325,10 @@ class ProjectPageActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showCreatePledgeSuccess(it) }
 
-        this.viewModel.outputs.startVideoActivity()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { this.startVideoActivity(it) }
+//        this.viewModel.outputs.startVideoActivity()
+//            .compose(bindToLifecycle())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe { this.startVideoActivity(it) }
 
         this.viewModel.outputs.projectMedia()
             .compose(bindToLifecycle())
@@ -351,7 +356,7 @@ class ProjectPageActivity :
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                startVideoActivity(startForResult, it.first, it.second)
+                this.startVideoActivity(startForResult, it.first, it.second)
             }
 
         viewModel.outputs.backingViewGroupIsVisible()
@@ -800,12 +805,6 @@ class ProjectPageActivity :
                 .putExtra(IntentKey.PROJECT, project)
                 .putExtra(IntentKey.BACKING, project.backing())
         )
-    }
-
-    private fun startVideoActivity(project: Project) {
-        val intent = Intent(this, VideoActivity::class.java)
-            .putExtra(IntentKey.PROJECT, project)
-        startActivity(intent)
     }
 
     private fun styleProjectActionButton(detailsAreVisible: Boolean) {

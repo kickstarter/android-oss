@@ -41,7 +41,7 @@ class VideoPlayerViewer @JvmOverloads constructor(
     private var fullscreenButton: ImageView? = null
     private var trackSelector: DefaultTrackSelector? = null
 
-    private var playWhenReady = true
+    private var playWhenReady = false
     private var currentItem = 0
     private var playbackPosition = 0L
 
@@ -76,6 +76,11 @@ class VideoPlayerViewer @JvmOverloads constructor(
         playbackPosition = seekPosition
     }
 
+    fun setPlayerPlayWhenReadyFlag(playWhenReady: Boolean) {
+        this.playWhenReady = playWhenReady
+        videoPlayerView.player?.playWhenReady =this.playWhenReady
+    }
+
     fun initializePlayer() {
         if (element == null)
             return
@@ -88,6 +93,7 @@ class VideoPlayerViewer @JvmOverloads constructor(
             trackSelector?.let { setTrackSelector(it) }
         }.build()
             .also { exoPlayer ->
+                videoPlayerView.player = exoPlayer
                 element?.sourceUrl?.let {
                     exoPlayer.setMediaItem(MediaItem.fromUri(it))
                     val playerIsResuming = (playbackPosition != 0L)
@@ -95,7 +101,7 @@ class VideoPlayerViewer @JvmOverloads constructor(
                 }
                 exoPlayer.addListener(playbackStateListener)
                 exoPlayer.seekTo(playbackPosition)
-                exoPlayer.playWhenReady = true
+                exoPlayer.playWhenReady = playWhenReady
                 exoPlayer.prepare()
             }
 
@@ -108,7 +114,7 @@ class VideoPlayerViewer @JvmOverloads constructor(
         }
     }
 
-    fun setfullscreenButtonDrawableResource(closeFullScreen: Boolean = false) {
+    fun setFullscreenButtonDrawableResource(closeFullScreen: Boolean = false) {
         fullscreenButton?.setImageResource(R.drawable.ic_fullscreen_open)
         if (closeFullScreen)
             fullscreenButton?.setImageResource(R.drawable.ic_fullscreen_close)

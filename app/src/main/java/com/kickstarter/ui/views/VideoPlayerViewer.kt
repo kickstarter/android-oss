@@ -45,7 +45,7 @@ class VideoPlayerViewer @JvmOverloads constructor(
     private var currentItem = 0
     private var playbackPosition = 0L
 
-    private var onFullScreenClickedListener: OnFullScreenClickedListener? = null
+    private var onFullScreenOpenedClickedListener: OnFullScreenOpenedClickedListener? = null
 
     private val playbackStateListener = object : Player.Listener {
         override fun onPlaybackStateChanged(playbackState: Int) {
@@ -103,7 +103,7 @@ class VideoPlayerViewer @JvmOverloads constructor(
 
         fullscreenButton?.setOnClickListener {
             element?.sourceUrl?.let { url ->
-                onFullScreenClickedListener?.onFullScreenOpenedViewClicked(this, url, player?.currentPosition ?: 0)
+                onFullScreenOpenedClickedListener?.onFullScreenViewClicked(this, url, player?.currentPosition ?: 0)
             }
         }
     }
@@ -138,8 +138,8 @@ class VideoPlayerViewer @JvmOverloads constructor(
         player = null
     }
 
-    fun setOnFullScreenClickedListener(onFullScreenClickedListener: OnFullScreenClickedListener) {
-        this.onFullScreenClickedListener = onFullScreenClickedListener
+    fun setOnFullScreenClickedListener(onFullScreenOpenedClickedListener: OnFullScreenOpenedClickedListener) {
+        this.onFullScreenOpenedClickedListener = onFullScreenOpenedClickedListener
     }
 
     fun pausePlayer() {
@@ -147,6 +147,6 @@ class VideoPlayerViewer @JvmOverloads constructor(
     }
 }
 
-interface OnFullScreenClickedListener {
-    fun onFullScreenOpenedViewClicked(view: View, url: String, seekPosition: Long = 0L)
+interface OnFullScreenOpenedClickedListener {
+    fun onFullScreenViewClicked(view: View, url: String, seekPosition: Long = 0L)
 }

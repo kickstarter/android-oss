@@ -27,17 +27,13 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Urls
 import com.kickstarter.models.Web
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.data.ActivityResult
-import com.kickstarter.ui.data.CheckoutData
-import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.PledgeFlowContext
-import com.kickstarter.ui.data.PledgeReason
-import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.data.*
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
 import rx.schedulers.TestScheduler
+import rx.subjects.BehaviorSubject
 import java.math.RoundingMode
 import java.util.concurrent.TimeUnit
 
@@ -79,11 +75,13 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val startThanksActivity = TestSubscriber<Pair<CheckoutData, PledgeData>>()
     private val startVideoActivity = TestSubscriber<Project>()
     private val updateFragments = TestSubscriber<ProjectData>()
-    private val projectPhoto = TestSubscriber<String>()
+    private val projectMedia = BehaviorSubject.create<MediaElement>()
     private val playButtonIsVisible = TestSubscriber<Boolean>()
     private val backingViewGroupIsVisible = TestSubscriber<Boolean>()
     private val updateTabs = TestSubscriber< Boolean>()
     private val hideVideoPlayer = TestSubscriber<Boolean>()
+    private val onOpenVideoInFullScreen = TestSubscriber<kotlin.Pair<String, Long>>()
+    private val updateVideoCloseSeekPosition = TestSubscriber<Long>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = ProjectPageViewModel.ViewModel(environment)
@@ -124,14 +122,16 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startRootCommentsForCommentsThreadActivity().subscribe(this.startRootCommentsForCommentsThreadActivity)
         this.vm.outputs.startProjectUpdateToRepliesDeepLinkActivity().subscribe(this.startProjectUpdateToRepliesDeepLinkActivity)
         this.vm.outputs.updateTabs().subscribe(this.updateTabs)
-        this.vm.outputs.projectPhoto().subscribe(this.projectPhoto)
+        this.vm.outputs.projectMedia().subscribe(this.projectMedia)
         this.vm.outputs.playButtonIsVisible().subscribe(this.playButtonIsVisible)
         this.vm.outputs.backingViewGroupIsVisible().subscribe(this.backingViewGroupIsVisible)
         this.vm.outputs.hideVideoPlayer().subscribe(this.hideVideoPlayer)
+        this.vm.outputs.onOpenVideoInFullScreen().subscribe(this.onOpenVideoInFullScreen)
+        this.vm.outputs.updateVideoCloseSeekPosition().subscribe(this.updateVideoCloseSeekPosition)
     }
 
     @Test
-    fun testProjectPhoto_whenPhotoNull_shouldNotEmit() {
+    fun testProjectMedia_whenPhotoNull_shouldNotEmit() {
         val project = ProjectFactory.initialProject().toBuilder().photo(null).build()
         val currentUser = MockCurrentUser()
         val environment = environment()
@@ -146,11 +146,12 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         // Start the view model with an almost completed project
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
-        projectPhoto.assertNoValues()
+        val media= projectMedia.value
+        assertEquals(null,media)
     }
 
     @Test
-    fun testProjectPhoto_whenNotNull_shouldEmitPhoto() {
+    fun testProjectMedia_whenNotNull_shouldEmitPhoto() {
         val project = ProjectFactory.initialProject()
         val currentUser = MockCurrentUser()
         val environment = environment()
@@ -164,8 +165,56 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
-        projectPhoto.assertValue("https://ksr-ugc.imgix.net/assets/012/032/069/46817a8c099133d5bf8b64aad282a696_original.png?crop=faces&w=1552&h=873&fit=crop&v=1463725702&auto=format&q=92&s=72501d155e4a5e399276632687c77959")
+        val media= projectMedia.value
+        assertEquals("https://ksr-ugc.imgix.net/assets/012/032/069/46817a8c099133d5bf8b64aad282a696_original.png?crop=faces&w=1552&h=873&fit=crop&v=1463725702&auto=format&q=92&s=72501d155e4a5e399276632687c77959"
+            ,media.thumbnailUrl)
+        assertEquals( "https://ksr-video.imgix.net/projects/1657474/video-506369-h264_high.mp4"
+            ,media.videoModelElement?.sourceUrl)
+        assertEquals( 0L
+            ,media.videoModelElement?.seekPosition)
     }
+
+    @Test
+    fun testProjectMedia_whenFullScreenOpened_shouldEmitOpenVideoInFullScreen() {
+        val project = ProjectFactory.initialProject()
+        val currentUser = MockCurrentUser()
+        val environment = environment()
+            .toBuilder()
+            .currentUser(currentUser)
+            .build()
+
+        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        val videoInfo= kotlin.Pair("https://ksr-video.imgix.net/projects/1657474/video-506369-h264_high.mp4",12L)
+        this.vm.fullScreenVideoButtonClicked(videoInfo )
+
+        onOpenVideoInFullScreen.assertValue(videoInfo)
+    }
+
+    @Test
+    fun testProjectMedia_whenCloseFullScreenVideo_shouldEmitUpdateVideoCloseSeekPosition() {
+        val project = ProjectFactory.initialProject()
+        val currentUser = MockCurrentUser()
+        val environment = environment()
+            .toBuilder()
+            .currentUser(currentUser)
+            .build()
+
+        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.vm.closeFullScreenVideo(15L )
+
+        updateVideoCloseSeekPosition.assertValue(15L)
+    }
+
+
 
     @Test
     fun testMediaPlayButton_whenHasVideoFalse_shouldEmitFalse() {

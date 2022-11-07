@@ -325,10 +325,10 @@ class ProjectPageActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { this.startVideoActivity(it) }
 
-        this.viewModel.outputs.projectPhoto()
+        this.viewModel.outputs.projectMedia()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { binding.mediaHeader.inputs.setProjectPhoto(it) }
+            .subscribe { binding.mediaHeader.inputs.setProjectMedia(it) }
 
         viewModel.outputs.playButtonIsVisible()
             .compose(bindToLifecycle())

@@ -10,7 +10,6 @@ import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.RefTag
-import com.kickstarter.libs.htmlparser.VideoViewElement
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errors
@@ -46,11 +45,7 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ProjectPageActivity
-import com.kickstarter.ui.data.CheckoutData
-import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.PledgeFlowContext
-import com.kickstarter.ui.data.PledgeReason
-import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.data.*
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import com.kickstarter.viewmodels.usecases.ShowPledgeFragmentUseCase
 import rx.Observable
@@ -240,7 +235,7 @@ interface ProjectPageViewModel {
         /** Emits when we should update the [com.kickstarter.ui.fragments.BackingFragment] and [com.kickstarter.ui.fragments.RewardsFragment].  */
         fun updateFragments(): Observable<ProjectData>
 
-        fun projectPhoto(): Observable<VideoViewElement>
+        fun projectMedia(): Observable<MediaElement>
 
         /** Emits when the play button should be gone.  */
         fun playButtonIsVisible(): Observable<Boolean>
@@ -333,7 +328,7 @@ interface ProjectPageViewModel {
         private val updateFragments = BehaviorSubject.create<ProjectData>()
         private val hideVideoPlayer = BehaviorSubject.create<Boolean>()
         private val tabSelected = PublishSubject.create<Int>()
-        private val projectPhoto = PublishSubject.create<VideoViewElement>()
+        private val projectMedia = PublishSubject.create<MediaElement>()
         private val playButtonIsVisible = PublishSubject.create<Boolean>()
         private val backingViewGroupIsVisible = PublishSubject.create<Boolean>()
         private val updateTabs = PublishSubject.create< Boolean>()
@@ -880,19 +875,18 @@ interface ProjectPageViewModel {
             val projectPhoto = currentProject
                 .map { it.photo()?.full() }
                 .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
 
             val projectVideo = currentProject.map { it.video() }
                 .map { it?.hls() ?: it?.high() }
                 .distinctUntilChanged()
                 .take(1)
-            //  .compose(bindToLifecycle())
-            // .subscribe { preparePlayerWithUrl.onNext(it) }
+
             projectPhoto
                 .compose(combineLatestPair(projectVideo))
-                // .compose(combineLatestPair(projectVidoe)
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.projectPhoto.onNext(VideoViewElement(it.second ?: "", it.first, 0))
+                    this.projectMedia.onNext(MediaElement( VideoModelElement(it.second),it.first ))
                 }
 
             currentProject
@@ -1221,7 +1215,7 @@ interface ProjectPageViewModel {
         override fun updateFragments(): Observable<ProjectData> = this.updateFragments
 
         @NonNull
-        override fun projectPhoto(): Observable<VideoViewElement> = this.projectPhoto
+        override fun projectMedia(): Observable<MediaElement> = this.projectMedia
 
         @NonNull
         override fun playButtonIsVisible(): Observable<Boolean> = this.playButtonIsVisible

@@ -78,7 +78,7 @@ class VideoPlayerViewer @JvmOverloads constructor(
 
     fun setPlayerPlayWhenReadyFlag(playWhenReady: Boolean) {
         this.playWhenReady = playWhenReady
-        videoPlayerView.player?.playWhenReady =this.playWhenReady
+        videoPlayerView.player?.playWhenReady = this.playWhenReady
     }
 
     fun initializePlayer() {

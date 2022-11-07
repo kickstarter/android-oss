@@ -325,11 +325,6 @@ class ProjectPageActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showCreatePledgeSuccess(it) }
 
-//        this.viewModel.outputs.startVideoActivity()
-//            .compose(bindToLifecycle())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe { this.startVideoActivity(it) }
-
         this.viewModel.outputs.projectMedia()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())

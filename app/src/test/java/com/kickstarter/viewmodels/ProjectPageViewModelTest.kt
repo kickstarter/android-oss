@@ -27,7 +27,13 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Urls
 import com.kickstarter.models.Web
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.data.*
+import com.kickstarter.ui.data.ActivityResult
+import com.kickstarter.ui.data.CheckoutData
+import com.kickstarter.ui.data.MediaElement
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeFlowContext
+import com.kickstarter.ui.data.PledgeReason
+import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import org.junit.Test
 import rx.Observable
@@ -73,7 +79,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val startLoginToutActivity = TestSubscriber<Void>()
     private val startMessagesActivity = TestSubscriber<Project>()
     private val startThanksActivity = TestSubscriber<Pair<CheckoutData, PledgeData>>()
-    private val startVideoActivity = TestSubscriber<Project>()
     private val updateFragments = TestSubscriber<ProjectData>()
     private val projectMedia = BehaviorSubject.create<MediaElement>()
     private val playButtonIsVisible = TestSubscriber<Boolean>()
@@ -117,7 +122,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startProjectUpdateActivity().subscribe(this.startProjectUpdateActivity)
         this.vm.outputs.startMessagesActivity().subscribe(this.startMessagesActivity)
         this.vm.outputs.startThanksActivity().subscribe(this.startThanksActivity)
-        this.vm.outputs.startVideoActivity().subscribe(this.startVideoActivity)
         this.vm.outputs.updateFragments().subscribe(this.updateFragments)
         this.vm.outputs.startRootCommentsForCommentsThreadActivity().subscribe(this.startRootCommentsForCommentsThreadActivity)
         this.vm.outputs.startProjectUpdateToRepliesDeepLinkActivity().subscribe(this.startProjectUpdateToRepliesDeepLinkActivity)
@@ -839,18 +843,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
 
         this.startProjectUpdateActivity.assertValues(updateProjectAndData)
-    }
-
-    @Test
-    fun testStartVideoActivity() {
-        val project = ProjectFactory.project()
-        setUpEnvironment(environment())
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.vm.inputs.playVideoButtonClicked()
-        this.startVideoActivity.assertValues(project)
     }
 
     @Test

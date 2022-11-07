@@ -886,7 +886,7 @@ interface ProjectPageViewModel {
                 .compose(combineLatestPair(projectVideo))
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.projectMedia.onNext(MediaElement( VideoModelElement(it.second),it.first ))
+                    this.projectMedia.onNext(MediaElement(VideoModelElement(it.second), it.first))
                 }
 
             currentProject

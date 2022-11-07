@@ -1,7 +1,7 @@
 package com.kickstarter.ui.data
 
 data class MediaElement(
-    val videoModelElement:VideoModelElement?,
+    val videoModelElement: VideoModelElement?,
     val thumbnailUrl: String?
 )
 

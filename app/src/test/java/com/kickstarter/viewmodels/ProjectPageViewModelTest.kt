@@ -146,8 +146,8 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         // Start the view model with an almost completed project
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
-        val media= projectMedia.value
-        assertEquals(null,media)
+        val media = projectMedia.value
+        assertEquals(null, media)
     }
 
     @Test
@@ -165,13 +165,16 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
-        val media= projectMedia.value
-        assertEquals("https://ksr-ugc.imgix.net/assets/012/032/069/46817a8c099133d5bf8b64aad282a696_original.png?crop=faces&w=1552&h=873&fit=crop&v=1463725702&auto=format&q=92&s=72501d155e4a5e399276632687c77959"
-            ,media.thumbnailUrl)
-        assertEquals( "https://ksr-video.imgix.net/projects/1657474/video-506369-h264_high.mp4"
-            ,media.videoModelElement?.sourceUrl)
-        assertEquals( 0L
-            ,media.videoModelElement?.seekPosition)
+        val media = projectMedia.value
+        assertEquals(
+            "https://ksr-ugc.imgix.net/assets/012/032/069/46817a8c099133d5bf8b64aad282a696_original.png?crop=faces&w=1552&h=873&fit=crop&v=1463725702&auto=format&q=92&s=72501d155e4a5e399276632687c77959", media.thumbnailUrl
+        )
+        assertEquals(
+            "https://ksr-video.imgix.net/projects/1657474/video-506369-h264_high.mp4", media.videoModelElement?.sourceUrl
+        )
+        assertEquals(
+            0L, media.videoModelElement?.seekPosition
+        )
     }
 
     @Test
@@ -188,8 +191,8 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment)
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-        val videoInfo= kotlin.Pair("https://ksr-video.imgix.net/projects/1657474/video-506369-h264_high.mp4",12L)
-        this.vm.fullScreenVideoButtonClicked(videoInfo )
+        val videoInfo = kotlin.Pair("https://ksr-video.imgix.net/projects/1657474/video-506369-h264_high.mp4", 12L)
+        this.vm.fullScreenVideoButtonClicked(videoInfo)
 
         onOpenVideoInFullScreen.assertValue(videoInfo)
     }
@@ -209,12 +212,10 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
-        this.vm.closeFullScreenVideo(15L )
+        this.vm.closeFullScreenVideo(15L)
 
         updateVideoCloseSeekPosition.assertValue(15L)
     }
-
-
 
     @Test
     fun testMediaPlayButton_whenHasVideoFalse_shouldEmitFalse() {

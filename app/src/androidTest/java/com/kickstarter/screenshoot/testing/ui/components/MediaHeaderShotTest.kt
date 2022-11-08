@@ -29,7 +29,7 @@ class MediaHeaderShotTest : ScreenshotTest {
             ) as ConstraintLayout
             ).findViewById(R.id.media_header)
 
-        mediaHeader.inputs.setProjectPhoto(null)
+        mediaHeader.inputs.setProjectMedia(null)
     }
 
     @Test

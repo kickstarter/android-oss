@@ -46,10 +46,12 @@ import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ProjectPageActivity
 import com.kickstarter.ui.data.CheckoutData
+import com.kickstarter.ui.data.MediaElement
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.data.VideoModelElement
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import com.kickstarter.viewmodels.usecases.ShowPledgeFragmentUseCase
 import rx.Observable
@@ -85,8 +87,8 @@ interface ProjectPageViewModel {
         /** Call when the view has been laid out. */
         fun onGlobalLayout()
 
-        /** Call when the play video button is clicked.  */
-        fun playVideoButtonClicked()
+        /** Call when the fullscreen video button is clicked.  */
+        fun fullScreenVideoButtonClicked(videoInfo: kotlin.Pair<String, Long>)
 
         /** Call when the pledge's payment method has been successfully updated. */
         fun pledgePaymentSuccessfullyUpdated()
@@ -126,6 +128,8 @@ interface ProjectPageViewModel {
 
         /** Call when some tab on the Tablayout has been pressed, with the position  */
         fun tabSelected(position: Int)
+
+        fun closeFullScreenVideo(seekPosition: Long)
     }
 
     interface Outputs {
@@ -228,13 +232,10 @@ interface ProjectPageViewModel {
         /** Emits when we the pledge was successful and should start the [com.kickstarter.ui.activities.ThanksActivity]. */
         fun startThanksActivity(): Observable<Pair<CheckoutData, PledgeData>>
 
-        /** Emits when we should start the [com.kickstarter.ui.activities.VideoActivity].  */
-        fun startVideoActivity(): Observable<Project>
-
         /** Emits when we should update the [com.kickstarter.ui.fragments.BackingFragment] and [com.kickstarter.ui.fragments.RewardsFragment].  */
         fun updateFragments(): Observable<ProjectData>
 
-        fun projectPhoto(): Observable<String>
+        fun projectMedia(): Observable<MediaElement>
 
         /** Emits when the play button should be gone.  */
         fun playButtonIsVisible(): Observable<Boolean>
@@ -246,6 +247,10 @@ interface ProjectPageViewModel {
         fun updateTabs(): Observable<Boolean>
 
         fun hideVideoPlayer(): Observable<Boolean>
+
+        fun onOpenVideoInFullScreen(): Observable<kotlin.Pair<String, Long>>
+
+        fun updateVideoCloseSeekPosition(): Observable<Long>
     }
 
     class ViewModel(@NonNull val environment: Environment) :
@@ -260,6 +265,7 @@ interface ProjectPageViewModel {
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val apolloClient = requireNotNull(environment.apolloClient())
         private val currentConfig = requireNotNull(environment.currentConfig())
+        private val closeFullScreenVideo = BehaviorSubject.create<Long>()
 
         private val cancelPledgeClicked = PublishSubject.create<Void>()
         private val commentsTextViewClicked = PublishSubject.create<Void>()
@@ -269,7 +275,7 @@ interface ProjectPageViewModel {
         private val heartButtonClicked = PublishSubject.create<Void>()
         private val nativeProjectActionButtonClicked = PublishSubject.create<Void>()
         private val onGlobalLayout = PublishSubject.create<Void>()
-        private val playVideoButtonClicked = PublishSubject.create<Void>()
+        private val fullScreenVideoButtonClicked = PublishSubject.create<kotlin.Pair<String, Long>>()
         private val pledgePaymentSuccessfullyUpdated = PublishSubject.create<Void>()
         private val pledgeSuccessfullyCancelled = PublishSubject.create<Void>()
         private val pledgeSuccessfullyCreated = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
@@ -317,14 +323,15 @@ interface ProjectPageViewModel {
         private val startProjectUpdateActivity = PublishSubject.create< Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>()
         private val startProjectUpdateToRepliesDeepLinkActivity = PublishSubject.create< Pair<Pair<String, String>, Pair<Project, ProjectData>>>()
         private val startThanksActivity = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
-        private val startVideoActivity = PublishSubject.create<Project>()
         private val updateFragments = BehaviorSubject.create<ProjectData>()
         private val hideVideoPlayer = BehaviorSubject.create<Boolean>()
         private val tabSelected = PublishSubject.create<Int>()
-        private val projectPhoto = PublishSubject.create<String>()
+        private val projectMedia = PublishSubject.create<MediaElement>()
         private val playButtonIsVisible = PublishSubject.create<Boolean>()
         private val backingViewGroupIsVisible = PublishSubject.create<Boolean>()
         private val updateTabs = PublishSubject.create< Boolean>()
+        private val onOpenVideoInFullScreen = PublishSubject.create<kotlin.Pair<String, Long>>()
+        private val updateVideoCloseSeekPosition = BehaviorSubject.create< Long>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -608,10 +615,15 @@ interface ProjectPageViewModel {
                 .compose(bindToLifecycle())
                 .subscribe { this.startProjectUpdateToRepliesDeepLinkActivity.onNext(it) }
 
-            currentProject
-                .compose(takeWhen(this.playVideoButtonClicked))
+            fullScreenVideoButtonClicked
                 .compose(bindToLifecycle())
-                .subscribe(this.startVideoActivity)
+                .subscribe(this.onOpenVideoInFullScreen)
+
+            closeFullScreenVideo
+                .compose(bindToLifecycle())
+                .subscribe {
+                    updateVideoCloseSeekPosition.onNext(it)
+                }
 
             this.onGlobalLayout
                 .compose(bindToLifecycle())
@@ -853,10 +865,22 @@ interface ProjectPageViewModel {
                 .map { p -> if (p.isStarred()) R.drawable.icon__heart else R.drawable.icon__heart_outline }
                 .subscribe(this.heartDrawableId)
 
-            currentProject
+            val projectPhoto = currentProject
                 .map { it.photo()?.full() }
                 .filter { ObjectUtils.isNotNull(it) }
-                .subscribe(this.projectPhoto)
+                .map { requireNotNull(it) }
+
+            val projectVideo = currentProject.map { it.video() }
+                .map { it?.hls() ?: it?.high() }
+                .distinctUntilChanged()
+                .take(1)
+
+            projectPhoto
+                .compose(combineLatestPair(projectVideo))
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.projectMedia.onNext(MediaElement(VideoModelElement(it.second), it.first))
+                }
 
             currentProject
                 .map { it.hasVideo() }
@@ -1006,10 +1030,6 @@ interface ProjectPageViewModel {
             this.onGlobalLayout.onNext(null)
         }
 
-        override fun playVideoButtonClicked() {
-            this.playVideoButtonClicked.onNext(null)
-        }
-
         override fun pledgePaymentSuccessfullyUpdated() {
             this.pledgePaymentSuccessfullyUpdated.onNext(null)
         }
@@ -1057,6 +1077,15 @@ interface ProjectPageViewModel {
         override fun viewRewardsClicked() {
             this.viewRewardsClicked.onNext(null)
         }
+
+        override fun fullScreenVideoButtonClicked(videoInfo: kotlin.Pair<String, Long>) {
+            fullScreenVideoButtonClicked.onNext(videoInfo)
+        }
+
+        override fun closeFullScreenVideo(position: Long) = closeFullScreenVideo.onNext(position)
+
+        override fun updateVideoCloseSeekPosition(): Observable< Long> =
+            updateVideoCloseSeekPosition
 
         @NonNull
         override fun backingDetailsSubtitle(): Observable<Either<String, Int>?> = this.backingDetailsSubtitle
@@ -1160,7 +1189,7 @@ interface ProjectPageViewModel {
             this.startProjectUpdateToRepliesDeepLinkActivity
 
         @NonNull
-        override fun startVideoActivity(): Observable<Project> = this.startVideoActivity
+        override fun onOpenVideoInFullScreen(): Observable<kotlin.Pair<String, Long>> = this.onOpenVideoInFullScreen
 
         @NonNull
         override fun updateTabs(): Observable<Boolean> = this.updateTabs
@@ -1172,7 +1201,7 @@ interface ProjectPageViewModel {
         override fun updateFragments(): Observable<ProjectData> = this.updateFragments
 
         @NonNull
-        override fun projectPhoto(): Observable<String> = this.projectPhoto
+        override fun projectMedia(): Observable<MediaElement> = this.projectMedia
 
         @NonNull
         override fun playButtonIsVisible(): Observable<Boolean> = this.playButtonIsVisible

@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.1'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
         classpath 'com.apollographql.apollo:apollo-gradle-plugin:2.5.12'
         classpath 'com.karumi:shot:5.13.0'
     }
@@ -262,7 +262,7 @@ dependencies {
     kapt 'com.github.bumptech.glide:compiler:4.13.2'
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:30.3.2')
+    implementation platform('com.google.firebase:firebase-bom:31.0.2')
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-messaging'

@@ -10,7 +10,7 @@ buildscript {
     dependencies {
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
         classpath 'com.apollographql.apollo:apollo-gradle-plugin:2.5.12'
-        classpath 'com.karumi:shot:5.14.1'
+        classpath 'com.karumi:shot:5.13.0'
     }
 }
 

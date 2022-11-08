@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -16,6 +17,7 @@ import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.util.Util
+import com.kickstarter.R
 import com.kickstarter.databinding.VideoPlayerLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Build
@@ -40,6 +42,13 @@ class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
         setContentView(binding.root)
 
         build = requireNotNull(environment().build())
+
+        val fullscreenButton: ImageView = binding.playerView.findViewById(R.id.exo_fullscreen_icon)
+        fullscreenButton.setImageResource(R.drawable.ic_fullscreen_close)
+
+        fullscreenButton.setOnClickListener {
+            back()
+        }
 
         viewModel.outputs.preparePlayerWithUrl()
             .compose(Transformers.takeWhen(lifecycle().filter { other: ActivityEvent? -> ActivityEvent.RESUME.equals(other) }))

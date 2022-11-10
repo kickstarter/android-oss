@@ -275,6 +275,25 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testBackingViewGroup_whenPlayButtonClicked_shouldEmitFalse() {
+        val project = ProjectFactory.initialProject().toBuilder().isBacking(true).build()
+        val currentUser = MockCurrentUser()
+        val environment = environment()
+            .toBuilder()
+            .currentUser(currentUser)
+            .build()
+
+        requireNotNull(environment.currentConfig()).config(ConfigFactory.config())
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        this.vm.inputs.onVideoPlayButtonClicked()
+
+        backingViewGroupIsVisible.assertValues(true, false)
+    }
+
+    @Test
     fun testBackingViewGroup_whenNotBacking_shouldEmitFalse() {
         val project = ProjectFactory.initialProject().toBuilder().isBacking(false).build()
         val currentUser = MockCurrentUser()

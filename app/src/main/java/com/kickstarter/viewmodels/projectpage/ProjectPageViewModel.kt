@@ -130,6 +130,8 @@ interface ProjectPageViewModel {
         fun tabSelected(position: Int)
 
         fun closeFullScreenVideo(seekPosition: Long)
+
+        fun onVideoPlayButtonClicked()
     }
 
     interface Outputs {
@@ -288,6 +290,7 @@ interface ProjectPageViewModel {
         private val updatePledgeClicked = PublishSubject.create<Void>()
         private val updatesTextViewClicked = PublishSubject.create<Void>()
         private val viewRewardsClicked = PublishSubject.create<Void>()
+        private val onVideoPlayButtonClicked = PublishSubject.create<Void>()
 
         private val backingDetailsIsVisible = BehaviorSubject.create<Boolean>()
         private val backingDetailsSubtitle = BehaviorSubject.create<Either<String, Int>?>()
@@ -941,6 +944,13 @@ interface ProjectPageViewModel {
                 .subscribe {
                     this.showUpdatePledge.onNext(it)
                 }
+
+            onVideoPlayButtonClicked
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe {
+                    backingViewGroupIsVisible.onNext(false)
+                }
         }
 
         private fun getSelectedTabContextName(selectedTabIndex: Int): String = when (selectedTabIndex) {
@@ -1083,6 +1093,8 @@ interface ProjectPageViewModel {
         }
 
         override fun closeFullScreenVideo(position: Long) = closeFullScreenVideo.onNext(position)
+
+        override fun onVideoPlayButtonClicked() = onVideoPlayButtonClicked.onNext(null)
 
         override fun updateVideoCloseSeekPosition(): Observable< Long> =
             updateVideoCloseSeekPosition

@@ -49,6 +49,7 @@ import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.PledgeFragment
+import com.kickstarter.ui.viewholders.State
 import com.stripe.android.StripeIntentResult
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import rx.Observable
@@ -337,6 +338,9 @@ interface PledgeFragmentViewModel {
         fun presentPaymentSheet(): Observable<String>
 
         fun showError(): Observable<String>
+
+        /** Emits the state LOADONG | DEFAULT when createSetupIntent mutation is called **/
+        fun setState(): Observable<State>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
@@ -459,16 +463,16 @@ interface PledgeFragmentViewModel {
         private val localPickUpName = BehaviorSubject.create<String>()
 
         private val presentPaymentSheet = PublishSubject.create<String>()
-        private val errorSetupIntentCreation = PublishSubject.create<String>()
         private val paymentSheetResult = PublishSubject.create<PaymentSheetResult>()
         private val paySheetPresented = PublishSubject.create<Boolean>()
         private val showError = PublishSubject.create<String>()
+
+        private val loadingState = PublishSubject.create<State>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
 
         init {
-
             val userIsLoggedIn = this.currentUser.isLoggedIn
                 .distinctUntilChanged()
 
@@ -1184,9 +1188,15 @@ interface PledgeFragmentViewModel {
 
             // - Present PaymentSheet if user logged in, and add card button pressed
             val shouldPresentPaymentSheet = this.newCardButtonClicked
-                .compose<Pair<Void, Project>>(combineLatestPair(project))
+                .withLatestFrom(project) { _, latestProject -> latestProject }
                 .switchMap {
-                    this.apolloClient.createSetupIntent(it.second)
+                    this.apolloClient.createSetupIntent(it)
+                        .doOnSubscribe {
+                            this.loadingState.onNext(State.LOADING)
+                        }
+                        .doOnError {
+                            this.loadingState.onNext(State.DEFAULT)
+                        }
                         .materialize()
                         .share()
                 }
@@ -1204,6 +1214,12 @@ interface PledgeFragmentViewModel {
                 .subscribe {
                     // - Display error snackbar in case the SetupIntent was not successfully created
                     this.showError.onNext(it.message)
+                }
+
+            this.paySheetPresented
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.loadingState.onNext(State.DEFAULT)
                 }
 
             this.continueButtonClicked
@@ -1241,7 +1257,7 @@ interface PledgeFragmentViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.changeCheckoutRiskMessageBottomSheetStatus.onNext(true)
-                    // To disable reopen on change orianataion landscape
+                    // To disable reopen on change orientation landscape
                     this.changeCheckoutRiskMessageBottomSheetStatus.onNext(false)
                 }
 
@@ -1444,6 +1460,9 @@ interface PledgeFragmentViewModel {
             this.baseUrlForTerms.onNext(this.environment.webEndpoint())
 
             this.linkClicked
+                .withLatestFrom(this.loadingState.startWith(State.DEFAULT)) { link, state -> Pair(link, state) }
+                .filter { it.second == State.DEFAULT }
+                .map { it.first }
                 .compose(bindToLifecycle())
                 .subscribe(this.startChromeTab)
 
@@ -2034,6 +2053,9 @@ interface PledgeFragmentViewModel {
         @Override
         override fun showError(): Observable<String> =
             this.showError
+
+        @Override
+        override fun setState(): Observable<State> = this.loadingState
     }
 }
 

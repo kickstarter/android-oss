@@ -57,7 +57,6 @@ import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.setTextAndSelection
 import com.kickstarter.ui.extensions.showErrorToast
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
-import com.kickstarter.ui.viewholders.State
 import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import com.stripe.android.ApiResultCallback
 import com.stripe.android.SetupIntentResult
@@ -663,6 +662,13 @@ class PledgeFragment :
             .subscribe {
                 binding?.pledgeSectionAccountability?.root?.isGone = it
             }
+
+        this.viewModel.outputs.setState()
+            .compose(observeForUI())
+            .compose(bindToLifecycle())
+            .subscribe {
+                (binding?.pledgeSectionPayment?.cardsRecycler?.adapter as? RewardCardAdapter)?.updateState(it)
+            }
     }
 
     // Update the UI with the returned PaymentOption
@@ -700,11 +706,9 @@ class PledgeFragment :
             }
         }
         this.viewModel.inputs.paymentSheetPresented(success)
-        (binding?.pledgeSectionPayment?.cardsRecycler?.adapter as? RewardCardAdapter)?.updateState(State.DEFAULT)
     }
 
     fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
-        (binding?.pledgeSectionPayment?.cardsRecycler?.adapter as? RewardCardAdapter)?.updateState(State.DEFAULT)
         this.viewModel.inputs.paymentSheetResult(paymentSheetResult)
         when (paymentSheetResult) {
             is PaymentSheetResult.Canceled -> {
@@ -803,7 +807,6 @@ class PledgeFragment :
 
     override fun addNewCardButtonClicked() {
         this.viewModel.inputs.newCardButtonClicked()
-        (binding?.pledgeSectionPayment?.cardsRecycler?.adapter as? RewardCardAdapter)?.updateState(State.LOADING)
     }
 
     fun cardAdded(storedCard: StoredCard) {

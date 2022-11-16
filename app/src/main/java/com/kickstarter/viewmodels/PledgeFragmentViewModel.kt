@@ -599,9 +599,6 @@ interface PledgeFragmentViewModel {
                     this.bonusAmount.onNext(it.toString())
                 }
 
-            val projectDataAndReward = projectData
-                .compose<Pair<ProjectData, Reward>>(combineLatestPair(this.selectedReward))
-
             this.selectedReward
                 .compose<Pair<Reward, PledgeReason>>(combineLatestPair(pledgeReason))
                 .filter { it.second == PledgeReason.PLEDGE || it.second == PledgeReason.UPDATE_REWARD }
@@ -1254,6 +1251,9 @@ interface PledgeFragmentViewModel {
                 .filter { !it }
                 .compose(combineLatestPair(pledgeReason))
                 .filter { it.second == PledgeReason.PLEDGE }
+                .withLatestFrom(this.loadingState.startWith(State.DEFAULT)) { link, state -> Pair(link, state) }
+                .filter { it.second == State.DEFAULT }
+                .map { it.first }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.changeCheckoutRiskMessageBottomSheetStatus.onNext(true)
@@ -1277,6 +1277,9 @@ interface PledgeFragmentViewModel {
                 .filter { !it }
                 .compose(combineLatestPair(pledgeReason))
                 .filter { it.second == PledgeReason.PLEDGE }
+                .withLatestFrom(this.loadingState.startWith(State.DEFAULT)) { link, state -> Pair(link, state) }
+                .filter { it.second == State.DEFAULT }
+                .map { it.first }
                 .compose(bindToLifecycle())
                 .subscribe { this.riskConfirmationFlag.onNext(true) }
 

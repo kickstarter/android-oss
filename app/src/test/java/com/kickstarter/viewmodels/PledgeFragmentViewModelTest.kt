@@ -48,6 +48,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.viewholders.State
 import com.stripe.android.StripeIntentResult
 import junit.framework.TestCase
 import org.joda.time.DateTime
@@ -130,6 +131,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val localPickUpIsGone = TestSubscriber<Boolean>()
     private val localPickupName = TestSubscriber<String>()
     private val showError = TestSubscriber<String>()
+    private val loadingState = TestSubscriber<State>()
 
     private fun setUpEnvironment(
         environment: Environment,
@@ -207,6 +209,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.localPickUpIsGone().subscribe(this.localPickUpIsGone)
         this.vm.outputs.localPickUpName().subscribe(this.localPickupName)
         this.vm.outputs.showError().subscribe(this.showError)
+        this.vm.outputs.setState().subscribe(this.loadingState)
 
         val projectData = project.backing()?.let {
             return@let ProjectData.builder()
@@ -1628,13 +1631,19 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
             .build()
         setUpEnvironment(environment, RewardFactory.noReward(), project)
 
+        this.loadingState.assertNoValues()
+
         // - Configure PaymentSheet
         this.vm.inputs.newCardButtonClicked()
         this.presentPaymentSheet.assertValue(clientSecretID)
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        this.pledgeButtonIsEnabled.assertValues(true, false, false)
+        this.loadingState.assertValues(State.LOADING, State.LOADING)
 
         // - PaymentSheet presented
         this.vm.inputs.paymentSheetPresented(true)
+        this.pledgeButtonIsEnabled.assertValues(true, false, false, true)
+        this.loadingState.assertValues(State.LOADING, State.LOADING, State.DEFAULT)
     }
 
     @Test
@@ -1657,12 +1666,16 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.newCardButtonClicked()
         this.presentPaymentSheet.assertNoValues()
         this.showError.assertValue("Error Message")
+        this.pledgeButtonIsEnabled.assertValues(true, false, true, false, true)
+        this.loadingState.assertValues(State.LOADING, State.DEFAULT, State.LOADING, State.DEFAULT)
 
         // - User hit button for second time
         this.vm.inputs.newCardButtonClicked()
         this.presentPaymentSheet.assertNoValues()
         this.showError.assertValues("Error Message", "Error Message")
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        this.pledgeButtonIsEnabled.assertValues(true, false, true, false, true, false, true, false, true)
+        this.loadingState.assertValues(State.LOADING, State.DEFAULT, State.LOADING, State.DEFAULT, State.LOADING, State.DEFAULT, State.LOADING, State.DEFAULT)
     }
 
     @Test
@@ -1673,6 +1686,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.newCardButtonClicked()
         this.presentPaymentSheet.assertValue("")
         this.segmentTrack.assertNoValues()
+        this.pledgeButtonIsEnabled.assertValues(true, false, false)
+        this.loadingState.assertValues(State.LOADING, State.LOADING)
+
+        // - PaymentSheet presented
+        this.vm.inputs.paymentSheetPresented(true)
+        this.pledgeButtonIsEnabled.assertValues(true, false, false, true)
+        this.loadingState.assertValues(State.LOADING, State.LOADING, State.DEFAULT)
     }
 
     @Test
@@ -1683,6 +1703,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.newCardButtonClicked()
         this.presentPaymentSheet.assertValue("")
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+        this.pledgeButtonIsEnabled.assertValues(true, false, false)
+        this.loadingState.assertValues(State.LOADING, State.LOADING)
+
+        // - PaymentSheet presented
+        this.vm.inputs.paymentSheetPresented(true)
+        this.pledgeButtonIsEnabled.assertValues(true, false, false, true)
+        this.loadingState.assertValues(State.LOADING, State.LOADING, State.DEFAULT)
     }
 
     @Test

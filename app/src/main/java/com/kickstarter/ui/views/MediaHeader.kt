@@ -139,6 +139,7 @@ class MediaHeader @JvmOverloads constructor(
             binding.videoPlayButtonOverlay.isGone = true
             binding.videoProjectView.isVisible = true
             binding.videoProjectView.setPlayerPlayWhenReadyFlag(true)
+            playButtonClicks.onNext(null)
         }
 
         binding.videoProjectView.setOnFullScreenClickedListener(object : OnFullScreenOpenedClickedListener {

@@ -345,6 +345,11 @@ class ProjectPageActivity :
             .compose(Transformers.observeForUI())
             .subscribe { viewModel.inputs.fullScreenVideoButtonClicked(it) }
 
+        binding.mediaHeader.outputs.playButtonClicks()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { viewModel.inputs.onVideoPlayButtonClicked() }
+
         this.viewModel.outputs.onOpenVideoInFullScreen()
             .subscribeOn(Schedulers.io())
             .distinctUntilChanged()

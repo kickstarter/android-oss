@@ -1190,9 +1190,11 @@ interface PledgeFragmentViewModel {
                     this.apolloClient.createSetupIntent(it)
                         .doOnSubscribe {
                             this.loadingState.onNext(State.LOADING)
+                            this.pledgeButtonIsEnabled.onNext(false)
                         }
                         .doOnError {
                             this.loadingState.onNext(State.DEFAULT)
+                            this.pledgeButtonIsEnabled.onNext(true)
                         }
                         .materialize()
                         .share()
@@ -1216,6 +1218,7 @@ interface PledgeFragmentViewModel {
             this.paySheetPresented
                 .compose(bindToLifecycle())
                 .subscribe {
+                    this.pledgeButtonIsEnabled.onNext(true)
                     this.loadingState.onNext(State.DEFAULT)
                 }
 
@@ -1251,9 +1254,6 @@ interface PledgeFragmentViewModel {
                 .filter { !it }
                 .compose(combineLatestPair(pledgeReason))
                 .filter { it.second == PledgeReason.PLEDGE }
-                .withLatestFrom(this.loadingState.startWith(State.DEFAULT)) { link, state -> Pair(link, state) }
-                .filter { it.second == State.DEFAULT }
-                .map { it.first }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.changeCheckoutRiskMessageBottomSheetStatus.onNext(true)
@@ -1277,9 +1277,6 @@ interface PledgeFragmentViewModel {
                 .filter { !it }
                 .compose(combineLatestPair(pledgeReason))
                 .filter { it.second == PledgeReason.PLEDGE }
-                .withLatestFrom(this.loadingState.startWith(State.DEFAULT)) { link, state -> Pair(link, state) }
-                .filter { it.second == State.DEFAULT }
-                .map { it.first }
                 .compose(bindToLifecycle())
                 .subscribe { this.riskConfirmationFlag.onNext(true) }
 

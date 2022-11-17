@@ -6,7 +6,6 @@ import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.DateTimeUtils
@@ -372,9 +371,7 @@ interface RewardViewHolderViewModel {
             reward
                 .filter { !RewardUtils.isShippable(it) }
                 .map {
-                    RewardUtils.isLocalPickup(it) && optimizely?.isFeatureEnabled(
-                        OptimizelyFeature.Key.ANDROID_LOCAL_PICKUP
-                    ) == true
+                    RewardUtils.isLocalPickup(it)
                 }
                 .compose(bindToLifecycle())
                 .subscribe {

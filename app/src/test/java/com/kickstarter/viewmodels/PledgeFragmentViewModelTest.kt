@@ -11,7 +11,6 @@ import com.kickstarter.libs.MockSharedPreferences
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.models.OptimizelyExperiment
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.RefTagUtils
@@ -444,12 +443,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPaymentLoggingInUser_whenLocalPickupReward_FFOn() {
+    fun testPaymentLoggingInUser_whenLocalPickupReward() {
         val mockCurrentUser = MockCurrentUser()
-        val optimizelyMock = getMockOptimizelyFFOn()
         val environment = environment().toBuilder()
             .currentUser(mockCurrentUser)
-            .optimizely(optimizelyMock)
             .build()
 
         setUpEnvironment(environment, RewardFactory.localReceiptLocation())
@@ -468,34 +465,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.paymentContainerIsGone.assertValues(true, false)
         this.pledgeButtonIsGone.assertValues(true, false)
         this.localPickUpIsGone.assertValue(false)
-        this.localPickupName.assertValue(RewardFactory.localReceiptLocation().localReceiptLocation()?.displayableName())
-    }
-
-    @Test
-    fun testPaymentLoggingInUser_whenLocalPickupReward_FFOff() {
-        val mockCurrentUser = MockCurrentUser()
-        val optimizelyMock = getMockOptimizelyFFOff()
-        val environment = environment().toBuilder()
-            .currentUser(mockCurrentUser)
-            .optimizely(optimizelyMock)
-            .build()
-
-        setUpEnvironment(environment, RewardFactory.localReceiptLocation())
-
-        this.cardsAndProject.assertNoValues()
-        this.continueButtonIsGone.assertValue(false)
-        this.paymentContainerIsGone.assertValue(true)
-        this.pledgeButtonIsGone.assertValue(true)
-        this.localPickupName.assertValue(RewardFactory.localReceiptLocation().localReceiptLocation()?.displayableName())
-        this.localPickUpIsGone.assertValue(true)
-
-        mockCurrentUser.refresh(UserFactory.user())
-
-        this.cardsAndProject.assertValueCount(1)
-        this.continueButtonIsGone.assertValues(false, true)
-        this.paymentContainerIsGone.assertValues(true, false)
-        this.pledgeButtonIsGone.assertValues(true, false)
-        this.localPickUpIsGone.assertValue(true)
         this.localPickupName.assertValue(RewardFactory.localReceiptLocation().localReceiptLocation()?.displayableName())
     }
 
@@ -623,12 +592,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeScreenConfiguration_whenPledgingLocalPickupRewardAndLoggedInAndFFon() {
+    fun testPledgeScreenConfiguration_whenPledgingLocalPickupRewardAndLoggedIn() {
         val reward = RewardFactory.localReceiptLocation()
         val locationName = reward.localReceiptLocation()?.displayableName()
         val environment = environmentForLoggedInUser(UserFactory.user())
             .toBuilder()
-            .optimizely(getMockOptimizelyFFOn())
             .build()
         setUpEnvironment(environment, reward)
 
@@ -647,36 +615,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingSummaryIsGone.assertNoValues()
         this.totalDividerIsGone.assertValue(false)
         this.localPickUpIsGone.assertValue(false)
-        this.localPickupName.assertValue(locationName)
-
-        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-    }
-
-    @Test
-    fun testPledgeScreenConfiguration_whenPledgingLocalPickupRewardAndLoggedInAndFFOff() {
-        val reward = RewardFactory.localReceiptLocation()
-        val locationName = reward.localReceiptLocation()?.displayableName()
-        val environment = environmentForLoggedInUser(UserFactory.user())
-            .toBuilder()
-            .optimizely(getMockOptimizelyFFOff())
-            .build()
-        setUpEnvironment(environment, reward)
-
-        this.continueButtonIsEnabled.assertNoValues()
-        this.continueButtonIsGone.assertValue(true)
-        this.paymentContainerIsGone.assertValue(false)
-        this.pledgeButtonCTA.assertValue(R.string.Pledge)
-        this.pledgeButtonIsEnabled.assertValue(true)
-        this.pledgeButtonIsGone.assertValue(false)
-        this.pledgeMaximumIsGone.assertValue(true)
-        this.pledgeProgressIsGone.assertNoValues()
-        this.pledgeSectionIsGone.assertValue(true)
-        this.pledgeSummaryIsGone.assertValue(true)
-        this.bonusSectionIsGone.assertValue(false)
-        this.headerSectionIsGone.assertValue(false)
-        this.shippingSummaryIsGone.assertNoValues()
-        this.totalDividerIsGone.assertValue(false)
-        this.localPickUpIsGone.assertValue(true)
         this.localPickupName.assertValue(locationName)
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
@@ -750,14 +688,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeScreenConfiguration_whenUpdatingPledgeOfLocalReceiptRewardAndFFOn() {
+    fun testPledgeScreenConfiguration_whenUpdatingPledgeOfLocalReceiptReward() {
         val testData = setUpBackedLocalPickUpTestData()
         val backedProject = testData.project
         val reward = testData.reward
         val pickupName = reward.localReceiptLocation()?.displayableName()
         val environment = environmentForLoggedInUser(UserFactory.user())
             .toBuilder()
-            .optimizely(getMockOptimizelyFFOn())
             .build()
 
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
@@ -849,14 +786,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeScreenConfiguration_whenUpdatingPaymentOfLocalReceiptRewardAndFFOn() {
+    fun testPledgeScreenConfiguration_whenUpdatingPaymentOfLocalReceiptReward() {
         val testData = setUpBackedLocalPickUpTestData()
         val backedProject = testData.project
         val reward = testData.reward
         val pickupName = reward.localReceiptLocation()?.displayableName()
         val environment = environmentForLoggedInUser(UserFactory.user())
             .toBuilder()
-            .optimizely(getMockOptimizelyFFOn())
             .build()
 
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PAYMENT)
@@ -3248,16 +3184,4 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     private fun normalizeCurrency(spannedCurrencyString: CharSequence) =
         spannedCurrencyString.toString().replace("\u00A0", " ")
-
-    private fun getMockOptimizelyFFOn() = object : MockExperimentsClientType() {
-        override fun isFeatureEnabled(key: OptimizelyFeature.Key): Boolean {
-            return true
-        }
-    }
-
-    private fun getMockOptimizelyFFOff() = object : MockExperimentsClientType() {
-        override fun isFeatureEnabled(key: OptimizelyFeature.Key): Boolean {
-            return false
-        }
-    }
 }

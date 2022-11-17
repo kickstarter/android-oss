@@ -5,8 +5,6 @@ import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.models.OptimizelyFeature
-import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
@@ -117,7 +115,6 @@ class AddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     fun testReward_LocalReceiptGroup_Visible_FF_On() {
         val env = environment()
             .toBuilder()
-            .optimizely(getMockOptimizelyFFOn())
             .build()
         setUpEnvironment(env)
 
@@ -130,10 +127,9 @@ class AddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testReward_LocalReceiptGroup_Visible_FF_On_When_RewardNotLocal() {
+    fun testReward_LocalReceiptGroup_Visible_When_RewardNotLocal() {
         val env = environment()
             .toBuilder()
-            .optimizely(getMockOptimizelyFFOn())
             .build()
         setUpEnvironment(env)
 
@@ -143,33 +139,5 @@ class AddOnViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.localPickUpName.assertNoValues()
         this.localPickUpIsGone.assertNoValues()
-    }
-
-    @Test
-    fun testReward_LocalReceipt_Group_Not_Visible_FF_Off() {
-        val env = environment()
-            .toBuilder()
-            .optimizely(getMockOptimizelyFFOff())
-            .build()
-        setUpEnvironment(env)
-
-        val project = ProjectFactory.project()
-        val reward = RewardFactory.localReceiptLocation()
-        this.vm.inputs.configureWith(ProjectDataFactory.project(project), reward)
-
-        this.localPickUpName.assertValue(reward.localReceiptLocation()?.displayableName())
-        this.localPickUpIsGone.assertValue(true)
-    }
-
-    private fun getMockOptimizelyFFOn() = object : MockExperimentsClientType() {
-        override fun isFeatureEnabled(key: OptimizelyFeature.Key): Boolean {
-            return true
-        }
-    }
-
-    private fun getMockOptimizelyFFOff() = object : MockExperimentsClientType() {
-        override fun isFeatureEnabled(key: OptimizelyFeature.Key): Boolean {
-            return false
-        }
     }
 }

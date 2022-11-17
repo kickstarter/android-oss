@@ -112,7 +112,7 @@ class AddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testReward_LocalReceiptGroup_Visible_FF_On() {
+    fun testReward_LocalReceiptGroup_Visible() {
         val env = environment()
             .toBuilder()
             .build()

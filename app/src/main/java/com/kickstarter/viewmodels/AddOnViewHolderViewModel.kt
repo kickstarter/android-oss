@@ -6,7 +6,6 @@ import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.models.Country
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.negate
@@ -170,9 +169,7 @@ interface AddOnViewHolderViewModel {
             reward
                 .filter { !RewardUtils.isShippable(it) }
                 .map {
-                    RewardUtils.isLocalPickup(it) && optimizely?.isFeatureEnabled(
-                        OptimizelyFeature.Key.ANDROID_LOCAL_PICKUP
-                    ) == true
+                    RewardUtils.isLocalPickup(it)
                 }
                 .compose(bindToLifecycle())
                 .subscribe {

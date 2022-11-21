@@ -10,7 +10,6 @@ import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.NumberOptions
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.models.OptimizelyExperiment
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
@@ -634,9 +633,7 @@ interface PledgeFragmentLegacyViewModel {
             this.selectedReward
                 .filter { !RewardUtils.isShippable(it) }
                 .map {
-                    RewardUtils.isLocalPickup(it) && optimizely?.isFeatureEnabled(
-                        OptimizelyFeature.Key.ANDROID_LOCAL_PICKUP
-                    ) == true
+                    RewardUtils.isLocalPickup(it)
                 }
                 .compose(bindToLifecycle())
                 .subscribe {

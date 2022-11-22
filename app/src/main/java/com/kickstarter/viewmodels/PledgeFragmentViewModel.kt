@@ -1164,6 +1164,17 @@ interface PledgeFragmentViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { it as Pair<StoredCard, Int> }
 
+            // - When setupIntent finishes with error reload the payment methods
+            this.paymentSheetResult
+                .filter {
+                    it != PaymentSheetResult.Completed
+                }
+                .withLatestFrom(cardsAndProject) { _, cardsAndProject ->
+                    return@withLatestFrom cardsAndProject
+                }
+                .compose(bindToLifecycle())
+                .subscribe(this.cardsAndProject)
+
             this.cardSaved
                 .compose<Pair<StoredCard, Project>>(combineLatestPair(project))
                 .compose(bindToLifecycle())

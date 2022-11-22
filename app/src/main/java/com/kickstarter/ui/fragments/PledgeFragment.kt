@@ -721,7 +721,8 @@ class PledgeFragment :
             is PaymentSheetResult.Failed -> {
                 binding?.pledgeContent?.let { pledgeContent ->
                     context?.let {
-                        showErrorToast(it, pledgeContent, getString(R.string.general_error_something_wrong))
+                        val errorMessage = paymentSheetResult.error.localizedMessage ?: getString(R.string.general_error_something_wrong)
+                        showErrorToast(it, pledgeContent, errorMessage)
                     }
                 }
             }

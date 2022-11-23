@@ -14,7 +14,6 @@ import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
 import com.kickstarter.libs.rx.transformers.Transformers.neverError
-import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.rx.transformers.Transformers.zipPair
@@ -1255,9 +1254,9 @@ interface PledgeFragmentViewModel {
 
             val experimentData = Observable.combineLatest(this.currentUser.observable(), projectData) { u, p -> ExperimentData(u, p.refTagFromIntent(), p.refTagFromCookie()) }
 
-            this.pledgeButtonClicked
-                .compose(combineLatestPair(experimentData))
-                .filter { this.optimizely?.variant(OptimizelyExperiment.Key.NATIVE_RISK_MESSAGING, it.second) != OptimizelyExperiment.Variant.CONTROL }
+            experimentData
+                .compose(takeWhen(this.pledgeButtonClicked))
+                .filter { this.optimizely?.variant(OptimizelyExperiment.Key.NATIVE_RISK_MESSAGING, it) != OptimizelyExperiment.Variant.CONTROL }
                 .withLatestFrom(riskConfirmationFlag) { _, flag -> flag }
                 .filter { !it }
                 .compose(combineLatestPair(pledgeReason))
@@ -1278,23 +1277,15 @@ interface PledgeFragmentViewModel {
                     changePledgeSectionAccountabilityFragmentVisiablity.onNext(it.first)
                 }
 
-            this.pledgeButtonClicked
-                .compose(combineLatestPair(experimentData))
-                .filter { this.optimizely?.variant(OptimizelyExperiment.Key.NATIVE_RISK_MESSAGING, it.second) == OptimizelyExperiment.Variant.CONTROL }
+            experimentData
+                .compose(takeWhen(this.pledgeButtonClicked))
+                .filter { this.optimizely?.variant(OptimizelyExperiment.Key.NATIVE_RISK_MESSAGING, it) == OptimizelyExperiment.Variant.CONTROL }
                 .withLatestFrom(riskConfirmationFlag) { _, flag -> flag }
                 .filter { !it }
                 .compose(combineLatestPair(pledgeReason))
                 .filter { it.second == PledgeReason.PLEDGE }
                 .compose(bindToLifecycle())
                 .subscribe { this.riskConfirmationFlag.onNext(true) }
-
-            val pledgeButtonClicked = userIsLoggedIn
-                .compose(takePairWhen(this.riskConfirmationFlag))
-                .compose(combineLatestPair(pledgeReason))
-                .filter {
-                    it.first.first && it.second == PledgeReason.PLEDGE && it.first.second
-                }
-                .compose(ignoreValues())
 
             // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
             val cookieRefTag = project
@@ -1327,7 +1318,7 @@ interface PledgeFragmentViewModel {
             ) { proj, amount, paymentMethod, locationId, rewards, cookieRefTag ->
                 paymentMethod.getBackingData(proj, amount, locationId, rewards, cookieRefTag)
             }
-                .compose<CreateBackingData>(takeWhen(pledgeButtonClicked))
+                .compose<CreateBackingData>(takeWhen(this.pledgeButtonClicked))
                 .switchMap {
                     this.apolloClient.createBacking(it)
                         .doOnSubscribe {

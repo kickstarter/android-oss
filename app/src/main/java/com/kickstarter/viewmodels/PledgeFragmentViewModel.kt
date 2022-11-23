@@ -523,6 +523,7 @@ interface PledgeFragmentViewModel {
 
             backing
                 .map { it.locationId() == null }
+                .compose(bindToLifecycle())
                 .subscribe {
                     this.shouldLoadDefaultLocation.onNext(it)
                 }
@@ -561,6 +562,7 @@ interface PledgeFragmentViewModel {
 
             pledgeData
                 .map { it.shippingRule() == null && RewardUtils.isShippable(it.reward()) }
+                .compose(bindToLifecycle())
                 .subscribe { this.shouldLoadDefaultLocation.onNext(it) }
 
             val preSelectedShippingRule = Observable.merge(initShippingRule, backingShippingRule, backingShippingRuleUpdate)
@@ -586,7 +588,6 @@ interface PledgeFragmentViewModel {
 
             backing
                 .compose<Pair<Backing, Reward>>(combineLatestPair(this.selectedReward))
-                .compose(bindToLifecycle())
                 .filter { it.first != null && it.second != null }
 
             backing
@@ -829,6 +830,7 @@ interface PledgeFragmentViewModel {
 
             Observable.merge(this.decreaseBonusButtonClicked, this.decreasePledgeButtonClicked, this.increaseBonusButtonClicked, this.increasePledgeButtonClicked)
                 .distinctUntilChanged()
+                .compose(bindToLifecycle())
                 .subscribe {
                     this.bonusAmountHasChanged.onNext(true)
                 }
@@ -876,8 +878,8 @@ interface PledgeFragmentViewModel {
 
             shippingAmount
                 .compose<Pair<Double, Project>>(combineLatestPair(project))
-                .compose(bindToLifecycle())
                 .distinctUntilChanged()
+                .compose(bindToLifecycle())
                 .subscribe {
                     shippingAmountSelectedRw.onNext(it.first)
                     this.shippingAmount.onNext(ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency))
@@ -1092,6 +1094,7 @@ interface PledgeFragmentViewModel {
                 return@combineLatest rule.id() != dfRule.id()
             }
                 .distinctUntilChanged()
+                .compose(bindToLifecycle())
                 .subscribe(this.shippingRuleUpdated)
 
             val shippingOrAmountChanged = Observable.combineLatest(shippingRuleUpdated, this.bonusAmountHasChanged, amountUpdated, pledgeReason) { shippingUpdated, bHasChanged, aUpdated, pReason ->
@@ -1308,6 +1311,11 @@ interface PledgeFragmentViewModel {
             val extendedListForCheckOut = rewardAndAddOns
                 .map { extendAddOns(it) }
 
+            val pledgeButtonClicked = pledgeReason
+                .compose<PledgeReason>(takeWhen(this.pledgeButtonClicked))
+                .filter { it == PledgeReason.PLEDGE }
+                .compose(ignoreValues())
+
             val createBackingNotification = Observable.combineLatest(
                 project,
                 total.map { it.toString() },
@@ -1318,7 +1326,7 @@ interface PledgeFragmentViewModel {
             ) { proj, amount, paymentMethod, locationId, rewards, cookieRefTag ->
                 paymentMethod.getBackingData(proj, amount, locationId, rewards, cookieRefTag)
             }
-                .compose<CreateBackingData>(takeWhen(this.pledgeButtonClicked))
+                .compose<CreateBackingData>(takeWhen(pledgeButtonClicked))
                 .switchMap {
                     this.apolloClient.createBacking(it)
                         .doOnSubscribe {

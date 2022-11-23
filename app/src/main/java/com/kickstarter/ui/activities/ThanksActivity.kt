@@ -144,7 +144,7 @@ class ThanksActivity : BaseActivity<ThanksViewModel.ViewModel>() {
 
     private fun startProjectActivity(projectAndRefTagAndIsFfEnabled: Pair<Project, RefTag>) {
         val intent = Intent().getProjectIntent(this)
-            .putExtra(IntentKey.PROJECT, projectAndRefTagAndIsFfEnabled.first)
+            .putExtra(IntentKey.PROJECT_PARAM, projectAndRefTagAndIsFfEnabled.first?.slug())
             .putExtra(IntentKey.REF_TAG, projectAndRefTagAndIsFfEnabled.second)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }

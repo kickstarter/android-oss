@@ -17,6 +17,7 @@ import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.RewardDecoration
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.selectPledgeFragment
+import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.adapters.RewardsAdapter
 import com.kickstarter.ui.data.PledgeData
@@ -170,7 +171,30 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
 
     private fun showAddonsFragment(pledgeDataAndReason: Pair<PledgeData, PledgeReason>) {
         if (this.isVisible && this.parentFragmentManager.findFragmentByTag(BackingAddOnsFragment::class.java.simpleName) == null) {
-            val addOnsFragment = BackingAddOnsFragment.newInstance(pledgeDataAndReason)
+
+            val reducedProject = Project.Builder()
+                .id(pledgeDataAndReason.first.projectData().project().id())
+                .slug(pledgeDataAndReason.first.projectData().project().slug())
+                .name(pledgeDataAndReason.first.projectData().project().name())
+                .location(pledgeDataAndReason.first.projectData().project().location())
+                .deadline(pledgeDataAndReason.first.projectData().project().deadline())
+                .staticUsdRate(pledgeDataAndReason.first.projectData().project().staticUsdRate())
+                .fxRate(pledgeDataAndReason.first.projectData().project().fxRate())
+                .country(pledgeDataAndReason.first.projectData().project().country())
+                .currentCurrency(pledgeDataAndReason.first.projectData().project().currentCurrency())
+                .currency(pledgeDataAndReason.first.projectData().project().currency())
+                .currencySymbol(pledgeDataAndReason.first.projectData().project().currencySymbol())
+                .currencyTrailingCode(pledgeDataAndReason.first.projectData().project().currencyTrailingCode())
+                .isBacking(pledgeDataAndReason.first.projectData().project().isBacking())
+                .availableCardTypes(pledgeDataAndReason.first.projectData().project().availableCardTypes())
+                .category(pledgeDataAndReason.first.projectData().project().category())
+                .build()
+
+            val reducedProjectData = pledgeDataAndReason.first.projectData().toBuilder().project(reducedProject).build()
+            val reducedPledgeData = pledgeDataAndReason.first.toBuilder().projectData(reducedProjectData).build()
+
+            val addOnsFragment = BackingAddOnsFragment.newInstance(Pair(reducedPledgeData, pledgeDataAndReason.second))
+
             this.parentFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
                 .add(

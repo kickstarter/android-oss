@@ -736,7 +736,6 @@ class ProjectPageActivity :
         val pledgeData = checkoutDatandProjectData.second
         val projectData = pledgeData.projectData()
         if (clearFragmentBackStack()) {
-            updateFragments(projectData)
             startActivity(
                 Intent(this, ThanksActivity::class.java)
                     .putExtra(IntentKey.PROJECT, projectData.project())

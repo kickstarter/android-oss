@@ -386,17 +386,16 @@ interface ThreadViewModel {
             apolloPaginate
                 .paginatedData()
                 ?.map { it.reversed() }
+                ?.compose(Transformers.combineLatestPair(this.hasPreviousElements))
+                ?.distinctUntilChanged()
+                ?.share()
                 ?.map {
                     if (this.newlyPostedRepliesList.isNotEmpty()) {
-                        this.newlyPostedRepliesList + it
+                        Pair(this.newlyPostedRepliesList + it.first, it.second)
                     } else {
                         it
                     }
                 }
-                ?.compose(Transformers.combineLatestPair(this.hasPreviousElements))
-                ?.distinctUntilChanged()
-                ?.share()
-
                 ?.subscribe {
                     this.onCommentReplies.onNext(it)
                 }

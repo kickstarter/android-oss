@@ -372,6 +372,61 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     }
 
     /*
+* test Pagination
+*/
+    @Test
+    fun testCommentsViewModel_ProjectLoadingMore_AndInsertNewComment() {
+        val currentUser = UserFactory.user()
+            .toBuilder()
+            .id(1)
+            .avatar(AvatarFactory.avatar())
+            .build()
+
+        val createdAt = DateTime.now()
+
+        var firstCall = true
+
+        val commentsList = BehaviorSubject.create<List<CommentCardData>>()
+        val testScheduler = TestScheduler()
+
+        val env = environment().toBuilder().currentUser(MockCurrentUser(currentUser))
+            .apolloClient(object : MockApolloClient() {
+                override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+                    return if (firstCall)
+                        Observable.just(CommentEnvelopeFactory.commentsEnvelope())
+                    else
+                        Observable.just(CommentEnvelopeFactory.emptyCommentsEnvelope())
+                }
+            })
+            .scheduler(testScheduler).build()
+
+        val vm = CommentsViewModel.ViewModel(env)
+        vm.outputs.commentsList().subscribe(commentsList)
+        vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project())))
+
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser)
+        vm.outputs.scrollToTop().subscribe(scrollToTop)
+
+        // post a comment
+        vm.inputs.insertNewCommentToList(commentCardData.comment?.body()!!, createdAt)
+        assertEquals(1, vm.newlyPostedCommentsList.size)
+        assertEquals(2, commentsList.value?.size)
+        assertEquals(CommentFactory.comment(), commentsList.value?.last()?.comment)
+
+        firstCall = false
+        // get the next page which is end of page
+        vm.inputs.nextPage()
+        vm.outputs.commentsList().subscribe(commentsList)
+
+        assertEquals(1, vm.newlyPostedCommentsList.size)
+        assertEquals(2, commentsList.value?.size)
+
+        vm.inputs.refresh()
+        assertEquals(0, vm.newlyPostedCommentsList.size)
+        assertEquals(1, commentsList.value?.size)
+    }
+
+    /*
      * test when comment(s) available
      */
     @Test

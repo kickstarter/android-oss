@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import android.util.Pair
 import androidx.annotation.NonNull
+import androidx.annotation.VisibleForTesting
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
@@ -123,7 +124,8 @@ interface CommentsViewModel {
 
         private var openedThreadActivityFromDeepLink = false
 
-        private val newlyPostedCommentsList = mutableListOf<CommentCardData>()
+        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        val newlyPostedCommentsList = mutableListOf<CommentCardData>()
         init {
 
             this.currentUserStream.observable()
@@ -280,13 +282,12 @@ interface CommentsViewModel {
                     this.scrollToTop.onNext(true)
                 }
                 .withLatestFrom(this.commentsList) { it, list ->
+                    newlyPostedCommentsList.add(0, it.second)
                     list.toMutableList().apply {
                         add(0, it.second)
-                        newlyPostedCommentsList.add(0, it.second)
                     }.toList()
                 }.compose(bindToLifecycle())
                 .subscribe {
-
                     commentsList.onNext(it)
                 }
 
@@ -381,7 +382,6 @@ interface CommentsViewModel {
                 }
                 .compose(bindToLifecycle())
                 .subscribe {
-
                     this.commentsList.onNext(it)
                 }
 

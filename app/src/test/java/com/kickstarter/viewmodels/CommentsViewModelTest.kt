@@ -372,8 +372,8 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     }
 
     /*
-* test Pagination
-*/
+    * test Pagination
+    */
     @Test
     fun testCommentsViewModel_ProjectLoadingMore_AndInsertNewComment() {
         val currentUser = UserFactory.user()

@@ -506,7 +506,6 @@ interface CommentsViewModel {
                 }.compose(bindToLifecycle())
                 .subscribe {
                     this.newlyPostedCommentsList.clear()
-                    println("newlyPostedCommentsList size with refresh ${newlyPostedCommentsList.size}")
                 }
 
             this.internalError

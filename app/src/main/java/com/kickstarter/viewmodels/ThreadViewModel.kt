@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import android.util.Pair
 import androidx.annotation.NonNull
+import androidx.annotation.VisibleForTesting
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.loadmore.ApolloPaginate
@@ -112,6 +113,8 @@ interface ThreadViewModel {
         private val initialError = BehaviorSubject.create<Throwable>()
         private val paginationError = BehaviorSubject.create<Throwable>()
 
+        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        val newlyPostedCommentsList = mutableListOf<CommentCardData>()
         init {
 
             val commentData = getCommentCardDataFromIntent()
@@ -171,6 +174,7 @@ interface ThreadViewModel {
                 .withLatestFrom(this.onCommentReplies) { reply, pair ->
                     Pair(
                         pair.first.toMutableList().apply {
+                            newlyPostedCommentsList.add(0, reply)
                             /** bind new reply at the top of list to as list is reversed  **/
                             add(0, reply)
                         }.toList(),
@@ -256,7 +260,9 @@ interface ThreadViewModel {
             this.onCommentReplies
                 .compose(Transformers.combineLatestPair(this.failedCommentCardToRefresh))
                 .map {
-                    Pair(it.second.first.updateCommentFailedToPost(it.first.first, it.second.second), it.first.second)
+                    val mappedList = it.second.first.updateCommentFailedToPost(it.first.first, it.second.second)
+                    updateNewlyPostedCommentWithNewStatus(mappedList[it.second.second])
+                    Pair(mappedList, it.first.second)
                 }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
@@ -283,7 +289,9 @@ interface ThreadViewModel {
             this.onCommentReplies
                 .compose(Transformers.combineLatestPair(this.successfullyPostedCommentCardToRefresh))
                 .map {
-                    Pair(it.second.first.updateCommentAfterSuccessfulPost(it.first.first, it.second.second), it.first.second)
+                    val mappedList = it.second.first.updateCommentAfterSuccessfulPost(it.first.first, it.second.second)
+                    updateNewlyPostedCommentWithNewStatus(mappedList[it.second.second])
+                    Pair(mappedList, it.first.second)
                 }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
@@ -330,6 +338,16 @@ interface ThreadViewModel {
                 }
         }
 
+        private fun updateNewlyPostedCommentWithNewStatus(
+            updatedComment: CommentCardData
+        ) {
+            this.newlyPostedCommentsList.indexOfFirst { item ->
+                item.commentableId == updatedComment.commentableId
+            }.also { index ->
+                newlyPostedCommentsList[index] = updatedComment
+            }
+        }
+
         private fun loadCommentListFromProjectOrUpdate(comment: Observable<Comment>) {
             val startOverWith =
                 Observable.merge(
@@ -368,9 +386,17 @@ interface ThreadViewModel {
             apolloPaginate
                 .paginatedData()
                 ?.map { it.reversed() }
+                ?.map {
+                    if (this.newlyPostedCommentsList.isNotEmpty()) {
+                        this.newlyPostedCommentsList + it
+                    } else {
+                        it
+                    }
+                }
                 ?.compose(Transformers.combineLatestPair(this.hasPreviousElements))
                 ?.distinctUntilChanged()
                 ?.share()
+
                 ?.subscribe {
                     this.onCommentReplies.onNext(it)
                 }

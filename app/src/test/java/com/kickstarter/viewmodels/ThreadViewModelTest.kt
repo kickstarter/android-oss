@@ -6,12 +6,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.utils.EventName
-import com.kickstarter.mock.factories.AvatarFactory
-import com.kickstarter.mock.factories.CommentCardDataFactory
-import com.kickstarter.mock.factories.CommentEnvelopeFactory
-import com.kickstarter.mock.factories.CommentFactory
-import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.mock.factories.*
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Comment
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
@@ -297,6 +292,73 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         openCommentGuideLines.assertValueCount(1)
     }
 
+    /*
+    * test Pagination
+    */
+    @Test
+    fun testThreadViewModel_ProjectLoadingMore_AndInsertNewReplay() {
+        val currentUser = UserFactory.user()
+            .toBuilder()
+            .id(1)
+            .avatar(AvatarFactory.avatar())
+            .build()
+
+        val createdAt = DateTime.now()
+
+        var firstCall = true
+
+        val testScheduler = TestScheduler()
+
+        val comment1 = CommentFactory.commentToPostWithUser(currentUser).toBuilder().id(1).body("comment1").build()
+        val comment2 = CommentFactory.commentToPostWithUser(currentUser).toBuilder().id(2).body("comment2").build()
+        val newPostedComment = CommentFactory.commentToPostWithUser(currentUser).toBuilder().id(3).body("comment3").build()
+
+        val commentEnvelope = CommentEnvelopeFactory.commentsEnvelope().toBuilder()
+            .comments(listOf(comment1, comment2))
+            .build()
+
+        val env = environment().toBuilder().currentUser(MockCurrentUser(currentUser))
+            .apolloClient(object : MockApolloClient() {
+
+                override fun getRepliesForComment(
+                    comment: Comment,
+                    cursor: String?,
+                    pageSize: Int
+                ): Observable<CommentEnvelope> {
+                    return if (firstCall)
+                        Observable.just(commentEnvelope)
+                    else
+                        Observable.just(CommentEnvelopeFactory.emptyCommentsEnvelope())
+                }
+            })
+            .scheduler(testScheduler).build()
+
+        val onReplies = BehaviorSubject.create<Pair<List<CommentCardData>, Boolean>>()
+        val vm = ThreadViewModel.ViewModel(env)
+        vm.intent(Intent().putExtra(IntentKey.COMMENT_CARD_DATA, CommentCardDataFactory.commentCardData()))
+        vm.outputs.onCommentReplies().subscribe(onReplies)
+
+        assertEquals(2, onReplies.value?.first?.size)
+
+        // post a comment
+        vm.inputs.insertNewReplyToList(newPostedComment.body(), DateTime.now())
+
+        assertEquals(3, onReplies.value?.first?.size)
+        assertEquals(1, vm.newlyPostedCommentsList.size)
+
+        firstCall = false
+        // get the next page which is end of page
+        vm.inputs.nextPage()
+
+        vm.outputs.onCommentReplies().take(0).subscribe {
+            assertEquals(2, it.first.size)
+            assertEquals(CommentFactory.comment(), it.first.last()?.comment)
+        }
+
+        assertEquals(3, onReplies.value?.first?.size)
+        assertEquals(1, vm.newlyPostedCommentsList.size)
+    }
+
     @Test
     fun testComments_UpdateCommentStateAfterPost() {
         val currentUser = UserFactory.user()
@@ -365,6 +427,9 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         vm.inputs.insertNewReplyToList(newPostedComment.body(), DateTime.now())
         testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
         onReplies.assertValueCount(2)
+        assertEquals(1, vm.newlyPostedCommentsList.size)
+        assertEquals(CommentCardStatus.TRYING_TO_POST.commentCardStatus, vm.newlyPostedCommentsList[0].commentCardState)
+
         vm.outputs.onCommentReplies().take(0).subscribe {
             val newList = it.first
             assertTrue(newList.size == 3)
@@ -396,6 +461,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
             assertTrue(newList[2].commentCardState == commentCardData2.commentCardState)
         }
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+        assertEquals(1, vm.newlyPostedCommentsList.size)
+        assertEquals(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus, vm.newlyPostedCommentsList[0].commentCardState)
     }
 
     @Test
@@ -472,6 +539,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         vm.inputs.insertNewReplyToList(newPostedComment.body(), DateTime.now())
         testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
         onReplies.assertValueCount(2)
+        assertEquals(1, vm.newlyPostedCommentsList.size)
+
         vm.outputs.onCommentReplies().take(0).subscribe {
             val newList = it.first
             assertTrue(newList.size == 3)
@@ -489,7 +558,13 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         vm.inputs.refreshCommentCardInCaseFailedPosted(newPostedComment, 0)
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
+        assertEquals(1, vm.newlyPostedCommentsList.size)
+        assertEquals(
+            CommentCardStatus.FAILED_TO_SEND_COMMENT.commentCardStatus,
+            vm.newlyPostedCommentsList[0].commentCardState
+        )
         onReplies.assertValueCount(3)
+        assertEquals(1, vm.newlyPostedCommentsList.size)
         vm.outputs.onCommentReplies().take(0).subscribe {
             val newList = it.first
             assertTrue(newList.size == 3)
@@ -520,6 +595,12 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
             assertTrue(newList[2].commentCardState == commentCardData2.commentCardState)
         }
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+
+        assertEquals(1, vm.newlyPostedCommentsList.size)
+        assertEquals(
+            CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus,
+            vm.newlyPostedCommentsList[0].commentCardState
+        )
     }
 
     @Test
@@ -611,6 +692,9 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         vm.inputs.insertNewReplyToList(newPostedComment.body(), DateTime.now())
         testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
         onReplies.assertValueCount(2)
+        assertEquals(1, vm.newlyPostedCommentsList.size)
+        assertEquals(CommentCardStatus.TRYING_TO_POST.commentCardStatus, vm.newlyPostedCommentsList[0].commentCardState)
+
         vm.outputs.onCommentReplies().take(0).subscribe {
             val newList = it.first
             assertTrue(newList.size == 3)

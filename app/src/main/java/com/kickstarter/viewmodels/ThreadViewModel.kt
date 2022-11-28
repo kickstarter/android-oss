@@ -114,7 +114,7 @@ interface ThreadViewModel {
         private val paginationError = BehaviorSubject.create<Throwable>()
 
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-        val newlyPostedCommentsList = mutableListOf<CommentCardData>()
+        val newlyPostedRepliesList = mutableListOf<CommentCardData>()
         init {
 
             val commentData = getCommentCardDataFromIntent()
@@ -174,7 +174,7 @@ interface ThreadViewModel {
                 .withLatestFrom(this.onCommentReplies) { reply, pair ->
                     Pair(
                         pair.first.toMutableList().apply {
-                            newlyPostedCommentsList.add(0, reply)
+                            newlyPostedRepliesList.add(0, reply)
                             /** bind new reply at the top of list to as list is reversed  **/
                             add(0, reply)
                         }.toList(),
@@ -341,10 +341,10 @@ interface ThreadViewModel {
         private fun updateNewlyPostedCommentWithNewStatus(
             updatedComment: CommentCardData
         ) {
-            this.newlyPostedCommentsList.indexOfFirst { item ->
+            this.newlyPostedRepliesList.indexOfFirst { item ->
                 item.commentableId == updatedComment.commentableId
             }.also { index ->
-                newlyPostedCommentsList[index] = updatedComment
+                newlyPostedRepliesList[index] = updatedComment
             }
         }
 
@@ -387,8 +387,8 @@ interface ThreadViewModel {
                 .paginatedData()
                 ?.map { it.reversed() }
                 ?.map {
-                    if (this.newlyPostedCommentsList.isNotEmpty()) {
-                        this.newlyPostedCommentsList + it
+                    if (this.newlyPostedRepliesList.isNotEmpty()) {
+                        this.newlyPostedRepliesList + it
                     } else {
                         it
                     }

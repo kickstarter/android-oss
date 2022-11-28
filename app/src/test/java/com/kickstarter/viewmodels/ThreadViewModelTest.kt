@@ -344,7 +344,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         vm.inputs.insertNewReplyToList(newPostedComment.body(), DateTime.now())
 
         assertEquals(3, onReplies.value?.first?.size)
-        assertEquals(1, vm.newlyPostedCommentsList.size)
+        assertEquals(1, vm.newlyPostedRepliesList.size)
 
         firstCall = false
         // get the next page which is end of page
@@ -356,7 +356,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         }
 
         assertEquals(3, onReplies.value?.first?.size)
-        assertEquals(1, vm.newlyPostedCommentsList.size)
+        assertEquals(1, vm.newlyPostedRepliesList.size)
     }
 
     @Test
@@ -427,8 +427,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         vm.inputs.insertNewReplyToList(newPostedComment.body(), DateTime.now())
         testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
         onReplies.assertValueCount(2)
-        assertEquals(1, vm.newlyPostedCommentsList.size)
-        assertEquals(CommentCardStatus.TRYING_TO_POST.commentCardStatus, vm.newlyPostedCommentsList[0].commentCardState)
+        assertEquals(1, vm.newlyPostedRepliesList.size)
+        assertEquals(CommentCardStatus.TRYING_TO_POST.commentCardStatus, vm.newlyPostedRepliesList[0].commentCardState)
 
         vm.outputs.onCommentReplies().take(0).subscribe {
             val newList = it.first
@@ -461,8 +461,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
             assertTrue(newList[2].commentCardState == commentCardData2.commentCardState)
         }
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
-        assertEquals(1, vm.newlyPostedCommentsList.size)
-        assertEquals(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus, vm.newlyPostedCommentsList[0].commentCardState)
+        assertEquals(1, vm.newlyPostedRepliesList.size)
+        assertEquals(CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus, vm.newlyPostedRepliesList[0].commentCardState)
     }
 
     @Test
@@ -539,7 +539,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         vm.inputs.insertNewReplyToList(newPostedComment.body(), DateTime.now())
         testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
         onReplies.assertValueCount(2)
-        assertEquals(1, vm.newlyPostedCommentsList.size)
+        assertEquals(1, vm.newlyPostedRepliesList.size)
 
         vm.outputs.onCommentReplies().take(0).subscribe {
             val newList = it.first
@@ -558,13 +558,13 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         vm.inputs.refreshCommentCardInCaseFailedPosted(newPostedComment, 0)
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
-        assertEquals(1, vm.newlyPostedCommentsList.size)
+        assertEquals(1, vm.newlyPostedRepliesList.size)
         assertEquals(
             CommentCardStatus.FAILED_TO_SEND_COMMENT.commentCardStatus,
-            vm.newlyPostedCommentsList[0].commentCardState
+            vm.newlyPostedRepliesList[0].commentCardState
         )
         onReplies.assertValueCount(3)
-        assertEquals(1, vm.newlyPostedCommentsList.size)
+        assertEquals(1, vm.newlyPostedRepliesList.size)
         vm.outputs.onCommentReplies().take(0).subscribe {
             val newList = it.first
             assertTrue(newList.size == 3)
@@ -596,10 +596,10 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         }
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
 
-        assertEquals(1, vm.newlyPostedCommentsList.size)
+        assertEquals(1, vm.newlyPostedRepliesList.size)
         assertEquals(
             CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus,
-            vm.newlyPostedCommentsList[0].commentCardState
+            vm.newlyPostedRepliesList[0].commentCardState
         )
     }
 
@@ -692,8 +692,8 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
         vm.inputs.insertNewReplyToList(newPostedComment.body(), DateTime.now())
         testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
         onReplies.assertValueCount(2)
-        assertEquals(1, vm.newlyPostedCommentsList.size)
-        assertEquals(CommentCardStatus.TRYING_TO_POST.commentCardStatus, vm.newlyPostedCommentsList[0].commentCardState)
+        assertEquals(1, vm.newlyPostedRepliesList.size)
+        assertEquals(CommentCardStatus.TRYING_TO_POST.commentCardStatus, vm.newlyPostedRepliesList[0].commentCardState)
 
         vm.outputs.onCommentReplies().take(0).subscribe {
             val newList = it.first

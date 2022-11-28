@@ -275,7 +275,7 @@ class ThreadViewModelTest : KSRobolectricTestCase() {
 
         val onRepliesResult = onReplies.value
 
-        assertEquals(true,onRepliesResult?.second)
+        assertEquals(true, onRepliesResult?.second)
         assertEquals(replies.comments?.size, onRepliesResult?.first?.size)
         assertEquals(true, onRepliesResult?.second)
 

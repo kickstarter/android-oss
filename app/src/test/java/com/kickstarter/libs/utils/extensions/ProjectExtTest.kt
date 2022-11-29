@@ -8,6 +8,9 @@ import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
+import com.kickstarter.models.ProjectFaq
+import com.kickstarter.models.Reward
+import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import org.joda.time.DateTime
 import org.junit.Test
@@ -348,5 +351,35 @@ class ProjectExtTest : KSRobolectricTestCase() {
         val secondProject = project
 
         assertTrue(project.deadline() == secondProject.deadline())
+    }
+
+    @Test
+    fun testReduce_project() {
+        val project = ProjectFactory.project()
+        val reducedProject = project.reduce()
+
+        assertEquals(project.id(), reducedProject.id())
+        assertEquals(project.name(), reducedProject.name())
+        assertEquals(project.slug(), reducedProject.slug())
+        assertEquals(project.location(), reducedProject.location())
+        assertEquals(project.deadline(), reducedProject.deadline())
+        assertEquals(project.staticUsdRate(), reducedProject.staticUsdRate())
+        assertEquals(project.fxRate(), reducedProject.fxRate())
+        assertEquals(project.country(), reducedProject.country())
+        assertEquals(project.currency(), reducedProject.currency())
+        assertEquals(project.currentCurrency(), reducedProject.currentCurrency())
+        assertEquals(project.currencySymbol(), reducedProject.currencySymbol())
+        assertEquals(project.currencyTrailingCode(), reducedProject.currencyTrailingCode())
+        assertEquals(project.currencyTrailingCode(), reducedProject.currencyTrailingCode())
+        assertEquals(project.isBacking(), reducedProject.isBacking())
+        assertEquals(project.availableCardTypes(), reducedProject.availableCardTypes())
+        assertEquals(project.category(), reducedProject.category())
+
+        assertEquals(reducedProject.rewards(), emptyList<Reward>()) // Default builder value
+        assertEquals(reducedProject.creator(), User.builder().build()) // Default builder value
+        assertEquals(reducedProject.video(), null) // Default builder value
+        assertEquals(reducedProject.projectFaqs(), emptyList<ProjectFaq>()) // Default builder value
+        assertEquals(reducedProject.photo(), null) // Default builder value
+        assertEquals(reducedProject.story(), "") // Default builder value
     }
 }

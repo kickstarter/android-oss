@@ -1836,7 +1836,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.pledgeButtonClicked()
         this.pledgeButtonIsEnabled.assertValues(true, false)
-        this.pledgeProgressIsGone.assertValue(false)
+        this.pledgeProgressIsGone.assertValues(false)
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePaymentError.assertNoValues()
         this.showUpdatePaymentSuccess.assertNoValues()
@@ -1844,7 +1844,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.SUCCEEDED)
 
         this.pledgeButtonIsEnabled.assertValues(true, false)
-        this.pledgeProgressIsGone.assertValue(false)
+        this.pledgeProgressIsGone.assertValues(false)
         this.showSelectedCard.assertValues(Pair(1, CardState.SELECTED), Pair(0, CardState.SELECTED))
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePaymentError.assertNoValues()
@@ -1880,7 +1880,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.pledgeButtonClicked()
         this.pledgeButtonIsEnabled.assertValues(true, false)
-        this.pledgeProgressIsGone.assertValue(false)
+        this.pledgeProgressIsGone.assertValues(false)
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePaymentError.assertNoValues()
         this.showUpdatePaymentSuccess.assertNoValues()
@@ -2320,12 +2320,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
+        this.pledgeButtonIsEnabled.assertValues(true)
         this.vm.inputs.pledgeButtonClicked()
 
         // Successfully pledging with a valid amount should show the thanks page
-        this.pledgeButtonIsEnabled.assertValues(true)
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
-        this.showPledgeSuccess.assertNoValues()
+        this.showPledgeSuccess.assertValueCount(1)
         this.showPledgeError.assertNoValues()
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
@@ -2339,12 +2339,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
+        this.pledgeButtonIsEnabled.assertValues(true)
         this.vm.inputs.pledgeButtonClicked()
 
         // Successfully pledging with a valid amount should show the thanks page
-        this.pledgeButtonIsEnabled.assertValues(true)
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
-        this.showPledgeSuccess.assertNoValues()
+        this.showPledgeSuccess.assertValueCount(1)
         this.showPledgeError.assertNoValues()
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
@@ -2363,12 +2363,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
-        this.vm.inputs.pledgeButtonClicked()
-
         // Successfully pledging with a valid amount should show the thanks page
-        this.pledgeButtonIsEnabled.assertValues(true)
+        this.pledgeButtonIsEnabled.assertValue(true)
+
+        this.vm.inputs.pledgeButtonClicked()
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
-        this.showPledgeSuccess.assertNoValues()
+        this.showPledgeSuccess.assertValueCount(1)
         this.showPledgeError.assertNoValues()
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
@@ -2392,10 +2392,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.pledgeButtonClicked()
 
-        this.pledgeButtonIsEnabled.assertValues(true)
-        this.pledgeProgressIsGone.assertNoValues()
+        this.pledgeButtonIsEnabled.assertValues(true, false, true)
+        this.pledgeProgressIsGone.assertValueCount(2)
         this.showPledgeSuccess.assertNoValues()
-        this.showPledgeError.assertNoValues()
+        this.showPledgeError.assertValueCount(1)
 
         this.vm.inputs.onRiskManagementConfirmed()
 
@@ -2430,10 +2430,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
+        this.pledgeButtonIsEnabled.assertValues(true)
         this.vm.inputs.pledgeButtonClicked()
 
-        this.pledgeButtonIsEnabled.assertValues(true)
-        this.pledgeProgressIsGone.assertNoValues()
+        this.pledgeProgressIsGone.assertValue(false)
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertNoValues()
 
@@ -2473,8 +2473,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.pledgeButtonClicked()
 
-        this.pledgeButtonIsEnabled.assertValues(true)
-        this.pledgeProgressIsGone.assertNoValues()
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeProgressIsGone.assertValue(false)
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertNoValues()
 
@@ -2514,10 +2514,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
+        this.pledgeButtonIsEnabled.assertValues(true)
         this.vm.inputs.pledgeButtonClicked()
 
-        this.pledgeButtonIsEnabled.assertValues(true)
-        this.pledgeProgressIsGone.assertNoValues()
+        this.pledgeProgressIsGone.assertValue(false)
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertNoValues()
 

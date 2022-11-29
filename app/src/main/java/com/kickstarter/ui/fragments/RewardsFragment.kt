@@ -16,6 +16,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.RewardDecoration
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.reduce
 import com.kickstarter.libs.utils.extensions.selectPledgeFragment
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.adapters.RewardsAdapter
@@ -170,7 +171,14 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
 
     private fun showAddonsFragment(pledgeDataAndReason: Pair<PledgeData, PledgeReason>) {
         if (this.isVisible && this.parentFragmentManager.findFragmentByTag(BackingAddOnsFragment::class.java.simpleName) == null) {
-            val addOnsFragment = BackingAddOnsFragment.newInstance(pledgeDataAndReason)
+
+            val reducedProject = pledgeDataAndReason.first.projectData().project().reduce()
+
+            val reducedProjectData = pledgeDataAndReason.first.projectData().toBuilder().project(reducedProject).build()
+            val reducedPledgeData = pledgeDataAndReason.first.toBuilder().projectData(reducedProjectData).build()
+
+            val addOnsFragment = BackingAddOnsFragment.newInstance(Pair(reducedPledgeData, pledgeDataAndReason.second))
+
             this.parentFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
                 .add(

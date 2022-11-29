@@ -272,7 +272,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
     private fun startProjectActivity(project: Project, refTag: RefTag) {
         context?.let {
             val intent = Intent().getProjectIntent(it)
-                .putExtra(IntentKey.PROJECT, project)
+                .putExtra(IntentKey.PROJECT_PARAM, project.slug())
                 .putExtra(IntentKey.REF_TAG, refTag)
             startActivity(intent)
             TransitionUtils.transition(it, TransitionUtils.slideInFromRight())

@@ -14,7 +14,6 @@ import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
 import com.kickstarter.libs.rx.transformers.Transformers.neverError
-import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.rx.transformers.Transformers.zipPair
@@ -524,6 +523,7 @@ interface PledgeFragmentViewModel {
 
             backing
                 .map { it.locationId() == null }
+                .compose(bindToLifecycle())
                 .subscribe {
                     this.shouldLoadDefaultLocation.onNext(it)
                 }
@@ -562,6 +562,7 @@ interface PledgeFragmentViewModel {
 
             pledgeData
                 .map { it.shippingRule() == null && RewardUtils.isShippable(it.reward()) }
+                .compose(bindToLifecycle())
                 .subscribe { this.shouldLoadDefaultLocation.onNext(it) }
 
             val preSelectedShippingRule = Observable.merge(initShippingRule, backingShippingRule, backingShippingRuleUpdate)
@@ -587,7 +588,6 @@ interface PledgeFragmentViewModel {
 
             backing
                 .compose<Pair<Backing, Reward>>(combineLatestPair(this.selectedReward))
-                .compose(bindToLifecycle())
                 .filter { it.first != null && it.second != null }
 
             backing
@@ -830,6 +830,7 @@ interface PledgeFragmentViewModel {
 
             Observable.merge(this.decreaseBonusButtonClicked, this.decreasePledgeButtonClicked, this.increaseBonusButtonClicked, this.increasePledgeButtonClicked)
                 .distinctUntilChanged()
+                .compose(bindToLifecycle())
                 .subscribe {
                     this.bonusAmountHasChanged.onNext(true)
                 }
@@ -877,8 +878,8 @@ interface PledgeFragmentViewModel {
 
             shippingAmount
                 .compose<Pair<Double, Project>>(combineLatestPair(project))
-                .compose(bindToLifecycle())
                 .distinctUntilChanged()
+                .compose(bindToLifecycle())
                 .subscribe {
                     shippingAmountSelectedRw.onNext(it.first)
                     this.shippingAmount.onNext(ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency))
@@ -1093,6 +1094,7 @@ interface PledgeFragmentViewModel {
                 return@combineLatest rule.id() != dfRule.id()
             }
                 .distinctUntilChanged()
+                .compose(bindToLifecycle())
                 .subscribe(this.shippingRuleUpdated)
 
             val shippingOrAmountChanged = Observable.combineLatest(shippingRuleUpdated, this.bonusAmountHasChanged, amountUpdated, pledgeReason) { shippingUpdated, bHasChanged, aUpdated, pReason ->
@@ -1163,6 +1165,17 @@ interface PledgeFragmentViewModel {
                 .map { initialCardSelection(it.first, it.second) }
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { it as Pair<StoredCard, Int> }
+
+            // - When setupIntent finishes with error reload the payment methods
+            this.paymentSheetResult
+                .filter {
+                    it != PaymentSheetResult.Completed
+                }
+                .withLatestFrom(cardsAndProject) { _, cardsAndProject ->
+                    return@withLatestFrom cardsAndProject
+                }
+                .compose(bindToLifecycle())
+                .subscribe(this.cardsAndProject)
 
             this.cardSaved
                 .compose<Pair<StoredCard, Project>>(combineLatestPair(project))
@@ -1244,9 +1257,9 @@ interface PledgeFragmentViewModel {
 
             val experimentData = Observable.combineLatest(this.currentUser.observable(), projectData) { u, p -> ExperimentData(u, p.refTagFromIntent(), p.refTagFromCookie()) }
 
-            this.pledgeButtonClicked
-                .compose(combineLatestPair(experimentData))
-                .filter { this.optimizely?.variant(OptimizelyExperiment.Key.NATIVE_RISK_MESSAGING, it.second) != OptimizelyExperiment.Variant.CONTROL }
+            experimentData
+                .compose(takeWhen(this.pledgeButtonClicked))
+                .filter { this.optimizely?.variant(OptimizelyExperiment.Key.NATIVE_RISK_MESSAGING, it) != OptimizelyExperiment.Variant.CONTROL }
                 .withLatestFrom(riskConfirmationFlag) { _, flag -> flag }
                 .filter { !it }
                 .compose(combineLatestPair(pledgeReason))
@@ -1267,23 +1280,15 @@ interface PledgeFragmentViewModel {
                     changePledgeSectionAccountabilityFragmentVisiablity.onNext(it.first)
                 }
 
-            this.pledgeButtonClicked
-                .compose(combineLatestPair(experimentData))
-                .filter { this.optimizely?.variant(OptimizelyExperiment.Key.NATIVE_RISK_MESSAGING, it.second) == OptimizelyExperiment.Variant.CONTROL }
+            experimentData
+                .compose(takeWhen(this.pledgeButtonClicked))
+                .filter { this.optimizely?.variant(OptimizelyExperiment.Key.NATIVE_RISK_MESSAGING, it) == OptimizelyExperiment.Variant.CONTROL }
                 .withLatestFrom(riskConfirmationFlag) { _, flag -> flag }
                 .filter { !it }
                 .compose(combineLatestPair(pledgeReason))
                 .filter { it.second == PledgeReason.PLEDGE }
                 .compose(bindToLifecycle())
                 .subscribe { this.riskConfirmationFlag.onNext(true) }
-
-            val pledgeButtonClicked = userIsLoggedIn
-                .compose(takePairWhen(this.riskConfirmationFlag))
-                .compose(combineLatestPair(pledgeReason))
-                .filter {
-                    it.first.first && it.second == PledgeReason.PLEDGE && it.first.second
-                }
-                .compose(ignoreValues())
 
             // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
             val cookieRefTag = project
@@ -1305,6 +1310,11 @@ interface PledgeFragmentViewModel {
 
             val extendedListForCheckOut = rewardAndAddOns
                 .map { extendAddOns(it) }
+
+            val pledgeButtonClicked = pledgeReason
+                .compose<PledgeReason>(takeWhen(this.pledgeButtonClicked))
+                .filter { it == PledgeReason.PLEDGE }
+                .compose(ignoreValues())
 
             val createBackingNotification = Observable.combineLatest(
                 project,

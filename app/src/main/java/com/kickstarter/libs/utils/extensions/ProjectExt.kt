@@ -262,3 +262,31 @@ fun Project.updateStartedProjectAndDiscoveryParamsList(
 
     return listOfProjects
 }
+
+/**
+ * Extension function that will return a reduced copy of the the target project, the fields available
+ * on the reduce copy are those ones required on the next Screens: BackingAddons, PledgeFragment, ThanksActivity
+ *
+ * The end goal is to reduce to the bare minimum the amount of memory required to be serialized on Intents
+ * when presenting screens in order to avoid `android.os.TransactionTooLargeException`
+ */
+fun Project.reduce(): Project {
+    return Project.Builder()
+        .id(this.id())
+        .slug(this.slug())
+        .name(this.name())
+        .location(this.location())
+        .deadline(this.deadline())
+        .staticUsdRate(this.staticUsdRate())
+        .fxRate(this.fxRate())
+        .country(this.country())
+        .currentCurrency(this.currentCurrency())
+        .currency(this.currency())
+        .currencySymbol(this.currencySymbol())
+        .currencyTrailingCode(this.currencyTrailingCode())
+        .isBacking(this.isBacking())
+        .backing(backing())
+        .availableCardTypes(this.availableCardTypes())
+        .category(this.category())
+        .build()
+}

@@ -160,14 +160,14 @@ class ActivityFeedActivity : BaseActivity<ActivityFeedViewModel.ViewModel>() {
 
     private fun startProjectActivity(project: Project) {
         val intent = Intent().getProjectIntent(this)
-            .putExtra(IntentKey.PROJECT, project)
+            .putExtra(IntentKey.PROJECT_PARAM, project.slug())
             .putExtra(IntentKey.REF_TAG, RefTag.activity())
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun startUpdateActivity(activity: Activity) {
         val intent = Intent(this, UpdateActivity::class.java)
-            .putExtra(IntentKey.PROJECT, activity.project())
+            .putExtra(IntentKey.PROJECT_PARAM, activity.project()?.slug())
             .putExtra(IntentKey.UPDATE, activity.update())
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }

@@ -285,6 +285,7 @@ fun Project.reduce(): Project {
         .currencySymbol(this.currencySymbol())
         .currencyTrailingCode(this.currencyTrailingCode())
         .isBacking(this.isBacking())
+        .backing(backing())
         .availableCardTypes(this.availableCardTypes())
         .category(this.category())
         .build()

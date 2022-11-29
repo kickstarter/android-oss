@@ -372,6 +372,61 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
     }
 
     /*
+    * test Pagination
+    */
+    @Test
+    fun testCommentsViewModel_ProjectLoadingMore_AndInsertNewComment() {
+        val currentUser = UserFactory.user()
+            .toBuilder()
+            .id(1)
+            .avatar(AvatarFactory.avatar())
+            .build()
+
+        val createdAt = DateTime.now()
+
+        var firstCall = true
+
+        val commentsList = BehaviorSubject.create<List<CommentCardData>>()
+        val testScheduler = TestScheduler()
+
+        val env = environment().toBuilder().currentUser(MockCurrentUser(currentUser))
+            .apolloClient(object : MockApolloClient() {
+                override fun getProjectComments(slug: String, cursor: String?, limit: Int): Observable<CommentEnvelope> {
+                    return if (firstCall)
+                        Observable.just(CommentEnvelopeFactory.commentsEnvelope())
+                    else
+                        Observable.just(CommentEnvelopeFactory.emptyCommentsEnvelope())
+                }
+            })
+            .scheduler(testScheduler).build()
+
+        val vm = CommentsViewModel.ViewModel(env)
+        vm.outputs.commentsList().subscribe(commentsList)
+        vm.intent(Intent().putExtra(IntentKey.PROJECT_DATA, ProjectDataFactory.project(ProjectFactory.project())))
+
+        val commentCardData = CommentFactory.liveCommentCardData(createdAt = createdAt, currentUser = currentUser)
+        vm.outputs.scrollToTop().subscribe(scrollToTop)
+
+        // post a comment
+        vm.inputs.insertNewCommentToList(commentCardData.comment?.body()!!, createdAt)
+        assertEquals(1, vm.newlyPostedCommentsList.size)
+        assertEquals(2, commentsList.value?.size)
+        assertEquals(CommentFactory.comment(), commentsList.value?.last()?.comment)
+
+        firstCall = false
+        // get the next page which is end of page
+        vm.inputs.nextPage()
+        vm.outputs.commentsList().subscribe(commentsList)
+
+        assertEquals(1, vm.newlyPostedCommentsList.size)
+        assertEquals(2, commentsList.value?.size)
+
+        vm.inputs.refresh()
+        assertEquals(0, vm.newlyPostedCommentsList.size)
+        assertEquals(1, commentsList.value?.size)
+    }
+
+    /*
      * test when comment(s) available
      */
     @Test
@@ -397,6 +452,7 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
 
         // post a comment
         vm.inputs.insertNewCommentToList(commentCardData.comment?.body()!!, createdAt)
+        assertEquals(1, vm.newlyPostedCommentsList.size)
         assertEquals(2, commentsList.value?.size)
         assertEquals(CommentFactory.comment(), commentsList.value?.last()?.comment)
     }
@@ -525,7 +581,10 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // - New posted comment with status "TRYING_TO_POST"
         vm.inputs.insertNewCommentToList(newPostedComment.body(), DateTime.now())
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+
+        assertEquals(1, vm.newlyPostedCommentsList.size)
         commentsList.assertValueCount(2)
+
         vm.outputs.commentsList().take(1).subscribe {
             val newList = it
             assertTrue(newList.size == 3)
@@ -624,7 +683,11 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         // - New posted comment with status "TRYING_TO_POST"
         vm.inputs.insertNewCommentToList(newPostedComment.body(), DateTime.now())
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+
+        assertEquals(1, vm.newlyPostedCommentsList.size)
+        assertEquals(CommentCardStatus.TRYING_TO_POST.commentCardStatus, vm.newlyPostedCommentsList[0].commentCardState)
         commentsList.assertValueCount(2)
+
         vm.outputs.commentsList().take(1).subscribe {
             val newList = it
             assertTrue(newList.size == 3)
@@ -651,6 +714,12 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
         this.hasPendingComments.assertValues(Pair(false, false), Pair(true, false), Pair(false, false))
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+
+        assertEquals(1, vm.newlyPostedCommentsList.size)
+        assertEquals(
+            CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus,
+            vm.newlyPostedCommentsList[0].commentCardState
+        )
 
         vm.onResumeActivity()
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
@@ -747,6 +816,12 @@ class CommentsViewModelTest : KSRobolectricTestCase() {
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
         this.hasPendingComments.assertValues(Pair(false, true), Pair(true, true), Pair(false, true))
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+
+        assertEquals(1, vm.newlyPostedCommentsList.size)
+        assertEquals(
+            CommentCardStatus.COMMENT_FOR_LOGIN_BACKED_USERS.commentCardStatus,
+            vm.newlyPostedCommentsList[0].commentCardState
+        )
     }
 
     @Test

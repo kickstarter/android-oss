@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import android.util.Pair
 import androidx.annotation.NonNull
+import androidx.annotation.VisibleForTesting
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
@@ -123,6 +124,8 @@ interface CommentsViewModel {
 
         private var openedThreadActivityFromDeepLink = false
 
+        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        val newlyPostedCommentsList = mutableListOf<CommentCardData>()
         init {
 
             this.currentUserStream.observable()
@@ -249,7 +252,6 @@ interface CommentsViewModel {
                 }
 
             this.insertNewCommentToList
-                .distinctUntilChanged()
                 .withLatestFrom(this.currentUserStream.loggedInUser()) {
                         comment, user ->
                     Pair(comment, user)
@@ -273,8 +275,14 @@ interface CommentsViewModel {
                             .build()
                     )
                 }
-                .doOnNext { scrollToTop.onNext(true) }
+                .distinctUntilChanged { prev, curr ->
+                    prev.first.first.second.equals(curr.first.first.second)
+                }
+                .doOnNext {
+                    this.scrollToTop.onNext(true)
+                }
                 .withLatestFrom(this.commentsList) { it, list ->
+                    newlyPostedCommentsList.add(0, it.second)
                     list.toMutableList().apply {
                         add(0, it.second)
                     }.toList()
@@ -364,9 +372,14 @@ interface CommentsViewModel {
             this.commentsList
                 .compose(takePairWhen(this.commentToRefresh))
                 .map {
-                    it.second.first.updateCommentAfterSuccessfulPost(it.first, it.second.second)
+                    val mappedList = it.second.first.updateCommentAfterSuccessfulPost(it.first, it.second.second)
+                    updateNewlyPostedCommentWithNewStatus(mappedList[it.second.second])
+                    mappedList
                 }
                 .distinctUntilChanged()
+                .doOnNext {
+                    this.scrollToTop.onNext(false)
+                }
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.commentsList.onNext(it)
@@ -383,7 +396,9 @@ interface CommentsViewModel {
             this.commentsList
                 .compose(takePairWhen(this.failedCommentCardToRefresh))
                 .map {
-                    it.second.first.updateCommentFailedToPost(it.first, it.second.second)
+                    val mappedList = it.second.first.updateCommentFailedToPost(it.first, it.second.second)
+                    updateNewlyPostedCommentWithNewStatus(mappedList[it.second.second])
+                    mappedList
                 }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
@@ -401,6 +416,16 @@ interface CommentsViewModel {
                 .subscribe {
                     this.commentsList.onNext(it)
                 }
+        }
+
+        private fun updateNewlyPostedCommentWithNewStatus(
+            updatedComment: CommentCardData
+        ) {
+            this.newlyPostedCommentsList.indexOfFirst { item ->
+                item.commentableId == updatedComment.commentableId
+            }.also { index ->
+                newlyPostedCommentsList[index] = updatedComment
+            }
         }
 
         private fun trackRootCommentPageViewEvent(it: Pair<Project, Update?>) {
@@ -445,6 +470,13 @@ interface CommentsViewModel {
 
             apolloPaginate.paginatedData()
                 ?.share()
+                ?.map {
+                    if (this.newlyPostedCommentsList.isNotEmpty()) {
+                        this.newlyPostedCommentsList + it
+                    } else {
+                        it
+                    }
+                }
                 ?.subscribe {
                     this.commentsList.onNext(it)
                 }
@@ -471,6 +503,9 @@ interface CommentsViewModel {
             this.refresh
                 .doOnNext {
                     this.isRefreshing.onNext(true)
+                }.compose(bindToLifecycle())
+                .subscribe {
+                    this.newlyPostedCommentsList.clear()
                 }
 
             this.internalError

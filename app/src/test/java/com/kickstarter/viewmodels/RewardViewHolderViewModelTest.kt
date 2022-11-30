@@ -20,7 +20,8 @@ import org.joda.time.DateTime
 import org.junit.Test
 import rx.observers.TestSubscriber
 import java.math.RoundingMode
-import java.util.Date
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
@@ -55,6 +56,8 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val selectedRewardTagIsGone = TestSubscriber<Boolean>()
     private val localPickUpIsGone = TestSubscriber<Boolean>()
     private val localPickUpName = TestSubscriber<String>()
+
+    private val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = RewardViewHolderViewModel.ViewModel(environment)
@@ -644,7 +647,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         val reward = RewardFactory.reward()
             .toBuilder()
-            .estimatedDeliveryOn(Date("2019-09-11T20:12:47+00:00"))
+            .estimatedDeliveryOn(DATE_FORMAT.parse(("2019-09-11T20:12:47+00:00")))
             .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), reward)
 

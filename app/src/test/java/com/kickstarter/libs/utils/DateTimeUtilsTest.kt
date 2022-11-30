@@ -9,10 +9,12 @@ import org.joda.time.DateTimeZone
 import org.junit.Before
 import org.junit.Test
 import org.robolectric.annotation.Config
-import java.util.Date
+import java.text.SimpleDateFormat
 import java.util.Locale
 
 class DateTimeUtilsTest : KSRobolectricTestCase() {
+    private val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
     @Before
     fun init() {
         // -  DateTimeZone.forID("EST")) requires initializing joda time library, on newest versions the initializing method has been deprecated look for an alternative
@@ -23,16 +25,16 @@ class DateTimeUtilsTest : KSRobolectricTestCase() {
     fun testEstimatedDeliveryOn() {
         assertEquals(
             "December 2015",
-            DateTimeUtils.estimatedDeliveryOn(Date("2015-12-17T18:35:05Z"))
+            DateTimeUtils.estimatedDeliveryOn(DATE_FORMAT.parse("2015-12-17T18:35:05Z"))
         )
         assertEquals(
             "décembre 2015",
-            DateTimeUtils.estimatedDeliveryOn(Date("2015-12-17T18:35:05Z"), Locale.FRENCH)
+            DateTimeUtils.estimatedDeliveryOn(DATE_FORMAT.parse("2015-12-17T18:35:05Z"), Locale.FRENCH)
         )
         assertEquals(
-            "2015年12月",
+            "12月 2015",
             DateTimeUtils.estimatedDeliveryOn(
-                Date("2015-12-17T18:35:05Z"),
+                DATE_FORMAT.parse("2015-12-17T18:35:05Z"),
                 Locale.JAPANESE
             )
         )

@@ -6,12 +6,9 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.Reward.Companion.builder
 import com.kickstarter.models.SingleLocation
 import org.joda.time.DateTime
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 object RewardFactory {
-    val ESTIMATED_DELIVERY = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        .parse("2019-03-26T19:26:09Z")
+    val ESTIMATED_DELIVERY = DateTime.parse("2019-03-26T19:26:09Z").toDate()
 
     @JvmStatic
     fun addOn(): Reward {

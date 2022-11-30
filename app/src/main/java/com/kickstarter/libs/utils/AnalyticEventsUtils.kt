@@ -33,6 +33,7 @@ import com.kickstarter.models.extensions.getCreatedAndDraftProjectsCount
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
+import org.joda.time.DateTime
 import java.util.Locale
 import kotlin.math.ceil
 import kotlin.math.roundToInt
@@ -192,7 +193,7 @@ object AnalyticEventsUtils {
         val project = pledgeData.projectData().project()
         val properties = HashMap<String, Any>().apply {
             reward.estimatedDeliveryOn()?.let { deliveryDate ->
-                put("estimated_delivery_on", deliveryDate)
+                put("estimated_delivery_on", DateTime(deliveryDate.time))
             }
             put("has_items", isItemized(reward))
             put("id", reward.id().toString())

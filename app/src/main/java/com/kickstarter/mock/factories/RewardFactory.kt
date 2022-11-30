@@ -50,7 +50,7 @@ object RewardFactory {
             .convertedMinimum(20.0)
             .id(IdFactory.id().toLong())
             .description(description)
-            .estimatedDeliveryOn(ESTIMATED_DELIVERY)
+            .estimatedDeliveryOn(ESTIMATED_DELIVERY.toDate())
             .minimum(20.0)
             .shippingPreference("unrestricted")
             .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING)
@@ -144,7 +144,7 @@ object RewardFactory {
     fun multipleLocationShipping(): Reward {
         return reward().toBuilder()
             .shippingType(Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS)
-            .estimatedDeliveryOn(ESTIMATED_DELIVERY)
+            .estimatedDeliveryOn(ESTIMATED_DELIVERY.toDate())
             .build()
     }
 
@@ -152,7 +152,7 @@ object RewardFactory {
         return reward().toBuilder()
             .shippingPreference("unrestricted")
             .shippingType(Reward.SHIPPING_TYPE_ANYWHERE)
-            .estimatedDeliveryOn(ESTIMATED_DELIVERY)
+            .estimatedDeliveryOn(ESTIMATED_DELIVERY.toDate())
             .build()
     }
 
@@ -165,7 +165,7 @@ object RewardFactory {
                     .localizedName(localizedLocationName)
                     .build()
             )
-            .estimatedDeliveryOn(ESTIMATED_DELIVERY)
+            .estimatedDeliveryOn(ESTIMATED_DELIVERY.toDate())
             .build()
     }
 

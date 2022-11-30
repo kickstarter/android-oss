@@ -20,6 +20,7 @@ import org.joda.time.DateTime
 import org.junit.Test
 import rx.observers.TestSubscriber
 import java.math.RoundingMode
+import java.util.Date
 
 class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
@@ -643,7 +644,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         val reward = RewardFactory.reward()
             .toBuilder()
-            .estimatedDeliveryOn(DateTime.parse("2019-09-11T20:12:47+00:00"))
+            .estimatedDeliveryOn(Date("2019-09-11T20:12:47+00:00"))
             .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), reward)
 

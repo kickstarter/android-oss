@@ -6,9 +6,13 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.Reward.Companion.builder
 import com.kickstarter.models.SingleLocation
 import org.joda.time.DateTime
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 object RewardFactory {
-    val ESTIMATED_DELIVERY = DateTime.parse("2019-03-26T19:26:09Z")
+    val ESTIMATED_DELIVERY = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        .parse("2019-03-26T19:26:09Z")
+
     @JvmStatic
     fun addOn(): Reward {
         return reward().toBuilder()
@@ -50,7 +54,7 @@ object RewardFactory {
             .convertedMinimum(20.0)
             .id(IdFactory.id().toLong())
             .description(description)
-            .estimatedDeliveryOn(ESTIMATED_DELIVERY.toDate())
+            .estimatedDeliveryOn(ESTIMATED_DELIVERY)
             .minimum(20.0)
             .shippingPreference("unrestricted")
             .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING)
@@ -144,7 +148,7 @@ object RewardFactory {
     fun multipleLocationShipping(): Reward {
         return reward().toBuilder()
             .shippingType(Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS)
-            .estimatedDeliveryOn(ESTIMATED_DELIVERY.toDate())
+            .estimatedDeliveryOn(ESTIMATED_DELIVERY)
             .build()
     }
 
@@ -152,7 +156,7 @@ object RewardFactory {
         return reward().toBuilder()
             .shippingPreference("unrestricted")
             .shippingType(Reward.SHIPPING_TYPE_ANYWHERE)
-            .estimatedDeliveryOn(ESTIMATED_DELIVERY.toDate())
+            .estimatedDeliveryOn(ESTIMATED_DELIVERY)
             .build()
     }
 
@@ -165,7 +169,7 @@ object RewardFactory {
                     .localizedName(localizedLocationName)
                     .build()
             )
-            .estimatedDeliveryOn(ESTIMATED_DELIVERY.toDate())
+            .estimatedDeliveryOn(ESTIMATED_DELIVERY)
             .build()
     }
 

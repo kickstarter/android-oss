@@ -9,6 +9,7 @@ import org.joda.time.DateTimeZone
 import org.junit.Before
 import org.junit.Test
 import org.robolectric.annotation.Config
+import java.util.Date
 import java.util.Locale
 
 class DateTimeUtilsTest : KSRobolectricTestCase() {
@@ -22,16 +23,16 @@ class DateTimeUtilsTest : KSRobolectricTestCase() {
     fun testEstimatedDeliveryOn() {
         assertEquals(
             "December 2015",
-            DateTimeUtils.estimatedDeliveryOn(DateTime.parse("2015-12-17T18:35:05Z"))
+            DateTimeUtils.estimatedDeliveryOn(Date("2015-12-17T18:35:05Z"))
         )
         assertEquals(
             "décembre 2015",
-            DateTimeUtils.estimatedDeliveryOn(DateTime.parse("2015-12-17T18:35:05Z"), Locale.FRENCH)
+            DateTimeUtils.estimatedDeliveryOn(Date("2015-12-17T18:35:05Z"), Locale.FRENCH)
         )
         assertEquals(
             "2015年12月",
             DateTimeUtils.estimatedDeliveryOn(
-                DateTime.parse("2015-12-17T18:35:05Z"),
+                Date("2015-12-17T18:35:05Z"),
                 Locale.JAPANESE
             )
         )

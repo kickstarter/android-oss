@@ -5,6 +5,7 @@ import androidx.annotation.StringDef
 import com.kickstarter.libs.utils.extensions.isZero
 import kotlinx.parcelize.Parcelize
 import org.joda.time.DateTime
+import java.util.Date
 
 @Parcelize
 class Reward private constructor(
@@ -15,7 +16,7 @@ class Reward private constructor(
     private val id: Long,
     private val limit: Int?,
     private val minimum: Double,
-    private val estimatedDeliveryOn: DateTime?,
+    private val estimatedDeliveryOn: Date?,
     private val remaining: Int?,
     private val rewardsItems: List<RewardsItem>?,
     private val shippingPreference: String?,
@@ -85,7 +86,7 @@ class Reward private constructor(
         private var id: Long = 0L,
         private var limit: Int? = null,
         private var minimum: Double = 0.0,
-        private var estimatedDeliveryOn: DateTime? = null,
+        private var estimatedDeliveryOn: Date? = null,
         private var remaining: Int? = null,
         private var rewardsItems: List<RewardsItem>? = emptyList(),
         private var shippingPreference: String? = null,
@@ -110,7 +111,7 @@ class Reward private constructor(
         fun id(id: Long?) = apply { this.id = id ?: -1L }
         fun limit(limit: Int?) = apply { this.limit = limit }
         fun minimum(minimum: Double?) = apply { this.minimum = minimum ?: 0.0 }
-        fun estimatedDeliveryOn(estimatedDeliveryOn: DateTime?) = apply { this.estimatedDeliveryOn = estimatedDeliveryOn }
+        fun estimatedDeliveryOn(estimatedDeliveryOn: Date?) = apply { this.estimatedDeliveryOn = estimatedDeliveryOn }
         fun remaining(remaining: Int?) = apply { this.remaining = remaining }
         fun rewardsItems(rewardsItems: List<RewardsItem>?) = apply { this.rewardsItems = rewardsItems ?: emptyList() }
         fun shippingPreference(shippingPreference: String?) = apply { this.shippingPreference = shippingPreference }

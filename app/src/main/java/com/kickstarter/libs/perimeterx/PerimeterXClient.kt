@@ -60,6 +60,7 @@ open class PerimeterXClient(private val build: Build) : PerimeterXClientType {
         val headers = httpHeaders()?.toMap() ?: emptyMap()
 
         headers.forEach { (key, value) ->
+            builder?.removeHeader(key)
             builder?.addHeader(key, value)
         }
 

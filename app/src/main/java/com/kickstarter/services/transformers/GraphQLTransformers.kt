@@ -113,7 +113,7 @@ fun rewardTransformer(
         rewardGr.convertedAmount().fragments().amount().amount()?.toDouble() ?: 0.0
     val desc = rewardGr.description()
     val title = rewardGr.name()
-    val estimatedDelivery = rewardGr.estimatedDeliveryOn()?.let { DateTime(it) }
+    val estimatedDelivery = rewardGr.estimatedDeliveryOn()
     val remaining = rewardGr.remainingQuantity()
     val endsAt = rewardGr.endsAt()?.let { DateTime(it) }
     val startsAt = rewardGr.startsAt()?.let { DateTime(it) }

@@ -32,13 +32,13 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.BackingFragment
 import com.stripe.android.model.Card
 import com.stripe.android.model.CardBrand
-import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import type.CreditCardPaymentType
 import type.CreditCardTypes
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
@@ -473,7 +473,7 @@ interface BackingFragmentViewModel {
 
             reward
                 .filter { RewardUtils.isReward(it) && ObjectUtils.isNotNull(it.estimatedDeliveryOn()) }
-                .map<DateTime> { it.estimatedDeliveryOn() }
+                .map<Date> { it.estimatedDeliveryOn() }
                 .map { DateTimeUtils.estimatedDeliveryOn(it) }
                 .compose(bindToLifecycle())
                 .subscribe(this.estimatedDelivery)

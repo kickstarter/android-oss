@@ -23,11 +23,11 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.RewardViewHolder
-import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
+import java.util.Date
 
 interface RewardViewHolderViewModel {
     interface Inputs {
@@ -423,7 +423,7 @@ interface RewardViewHolderViewModel {
 
             reward
                 .filter { RewardUtils.isReward(it) && ObjectUtils.isNotNull(it.estimatedDeliveryOn()) }
-                .map<DateTime> { it.estimatedDeliveryOn() }
+                .map<Date> { it.estimatedDeliveryOn() }
                 .map { DateTimeUtils.estimatedDeliveryOn(it) }
                 .compose(bindToLifecycle())
                 .subscribe(this.estimatedDelivery)

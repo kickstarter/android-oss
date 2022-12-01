@@ -8,7 +8,8 @@ import com.kickstarter.models.SingleLocation
 import org.joda.time.DateTime
 
 object RewardFactory {
-    val ESTIMATED_DELIVERY = DateTime.parse("2019-03-26T19:26:09Z")
+    val ESTIMATED_DELIVERY = DateTime.parse("2019-03-26T19:26:09Z").toDate()
+
     @JvmStatic
     fun addOn(): Reward {
         return reward().toBuilder()

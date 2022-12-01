@@ -1947,7 +1947,7 @@ class PledgeFragmentLegacyViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.increasePledgeButtonClicked()
         this.vm.inputs.pledgeButtonClicked()
 
-        this.pledgeButtonIsEnabled.assertValues(false, false, true)
+        this.pledgeButtonIsEnabled.assertValues(false, true, false, true)
         this.pledgeProgressIsGone.assertValues(false, true)
         this.showUpdatePledgeError.assertValueCount(1)
     }
@@ -2057,7 +2057,7 @@ class PledgeFragmentLegacyViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.increasePledgeButtonClicked()
         this.vm.inputs.pledgeButtonClicked()
 
-        this.pledgeButtonIsEnabled.assertValues(false, false)
+        this.pledgeButtonIsEnabled.assertValues(false, true, false)
         this.pledgeProgressIsGone.assertValue(false)
     }
 
@@ -3056,6 +3056,7 @@ class PledgeFragmentLegacyViewModelTest : KSRobolectricTestCase() {
             )
             .reward(reward)
             .rewardId(reward.id())
+            .amount(reward.convertedMinimum())
             .build()
         val backedProject = ProjectFactory.backedProject()
             .toBuilder()

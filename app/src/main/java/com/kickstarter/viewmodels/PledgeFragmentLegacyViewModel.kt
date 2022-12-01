@@ -1670,7 +1670,7 @@ interface PledgeFragmentLegacyViewModel {
 
             if (pReason == PledgeReason.PLEDGE) updated = true
             else if (pReason == PledgeReason.UPDATE_PLEDGE) {
-                updated = (bHasChanged && aUpdated) || shippingUpdated
+                updated = (bHasChanged || aUpdated) || shippingUpdated
             }
 
             return updated

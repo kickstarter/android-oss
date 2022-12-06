@@ -81,7 +81,4 @@
 
   <!-- Campaign -->
   <string name="Story">Story</string>
-
-  <!-- facebook remove -->
-  <string name="FPO_we_sent_an_email_to_email_address_with_instructions_to_set_your_password">FPO : We’ve sent an email to %s with instructions to reset your password</string>
 </resources>

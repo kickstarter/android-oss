@@ -83,12 +83,5 @@
   <string name="Story">Story</string>
 
   <!-- facebook remove -->
-  <string name="FPO_reset_your_password">Reset your password</string>
   <string name="FPO_we_sent_an_email_to_email_address_with_instructions_to_set_your_password">FPO : We’ve sent an email to %s with instructions to reset your password</string>
-  <string name="FPO_we_re_simplifying_our_login_process_To_log_in">FPO : We’re simplifying our login process.  To access your Kickstarter account, enter the email associated to your Facebook account and we’ll send you a link to set a password.</string>
-  <string name="FPO_we_can_no_longer_log_you_in_through_Facebook">FPO: We can no longer log you in through Facebook. Please log in with your Kickstarter password, or set a new password with your Facebook email.</string>
-  <string name="FPO_Set_new_password">Set new password</string>
-  <string name="FPO_Set_your_password">Set your password</string>
-  <string name="FPO_We_will_be_discontinuing_the_ability_to_log_in_via_Facebook">We will be discontinuing the ability to log in via Facebook. To log in to your account using the email %s.</string>
-  <string name="FPO_Please_enter_a_password_that_is_at_least_6_characters_long">Please set a password that is at least 6 characters long.</string>
 </resources>

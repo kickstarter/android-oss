@@ -16,6 +16,7 @@ import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.getResetPasswordIntent
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.showSnackbar
@@ -31,6 +32,7 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
 
     private val forgotPasswordString = R.string.login_buttons_forgot_password_html
     private val forgotPasswordSentEmailString = R.string.forgot_password_we_sent_an_email_to_email_address_with_instructions_to_reset_your_password
+    private val resetPasswordSentEmailString = R.string.forgot_password_we_sent_an_email_to_email_address_with_instructions_to_set_your_password
     private val loginDoesNotMatchString = R.string.login_errors_does_not_match
     private val unableToLoginString = R.string.login_errors_unable_to_log_in
     private val loginString = R.string.login_buttons_log_in
@@ -90,9 +92,9 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
                 val show = showAndEmail.first
                 val email = showAndEmail.second
                 if (show) {
-                    resetPasswordSuccessDialog(email).show()
+                    resetPasswordSuccessDialog(email.first, showAndEmail.second.second).show()
                 } else {
-                    resetPasswordSuccessDialog(email).dismiss()
+                    resetPasswordSuccessDialog(email.first, showAndEmail.second.second).dismiss()
                 }
             }
 
@@ -114,9 +116,14 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
     /**
      * Lazily creates a reset password success confirmation dialog and stores it in an instance variable.
      */
-    private fun resetPasswordSuccessDialog(email: String): ConfirmDialog {
+    private fun resetPasswordSuccessDialog(email: String, loginReason: LoginReason): ConfirmDialog {
         if (this.confirmResetPasswordSuccessDialog == null) {
-            val message = this.ksString.format(getString(this.forgotPasswordSentEmailString), "email", email)
+            val message = if (loginReason == LoginReason.RESET_FACEBOOK_PASSWORD) {
+                this.ksString.format(getString(this.resetPasswordSentEmailString), "email", email)
+            } else {
+                this.ksString.format(getString(this.resetPasswordSentEmailString), "email", email)
+            }
+
             this.confirmResetPasswordSuccessDialog = ConfirmDialog(this, null, message)
 
             this.confirmResetPasswordSuccessDialog!!

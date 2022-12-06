@@ -61,7 +61,7 @@ interface LoginViewModel {
         fun showCreatedPasswordSnackbar(): Observable<Void>
 
         /** Emits a boolean to determine whether reset password dialog should be shown.  */
-        fun showResetPasswordSuccessDialog(): Observable<Pair<Boolean, String>>
+        fun showResetPasswordSuccessDialog(): Observable<Pair<Boolean, Pair<String, LoginReason>>>
 
         /** Start two factor activity for result.  */
         fun tfaChallenge(): Observable<Void>
@@ -81,7 +81,7 @@ interface LoginViewModel {
         private val prefillEmail = BehaviorSubject.create<String>()
         private val showChangedPasswordSnackbar = BehaviorSubject.create<Void>()
         private val showCreatedPasswordSnackbar = BehaviorSubject.create<Void>()
-        private val showResetPasswordSuccessDialog = BehaviorSubject.create<Pair<Boolean, String>>()
+        private val showResetPasswordSuccessDialog = BehaviorSubject.create<Pair<Boolean, Pair<String, LoginReason>>>()
         private val tfaChallenge: Observable<Void>
 
         private val loginError = PublishSubject.create<ErrorEnvelope>()
@@ -144,8 +144,12 @@ interface LoginViewModel {
 
             emailAndReason
                 .filter { it.second == LoginReason.RESET_PASSWORD }
-                .map { it.first }
-                .ofType(String::class.java)
+                .map { e -> Pair.create(true, e) }
+                .compose(bindToLifecycle())
+                .subscribe(this.showResetPasswordSuccessDialog)
+
+            emailAndReason
+                .filter { it.second == LoginReason.RESET_FACEBOOK_PASSWORD }
                 .map { e -> Pair.create(true, e) }
                 .compose(bindToLifecycle())
                 .subscribe(this.showResetPasswordSuccessDialog)
@@ -169,7 +173,7 @@ interface LoginViewModel {
             this.resetPasswordConfirmationDialogDismissed
                 .map<Boolean> { it.negate() }
                 .compose<Pair<Boolean, Pair<String, LoginReason>>>(combineLatestPair(emailAndReason))
-                .map { Pair.create(it.first, it.second.first) }
+                .map { Pair.create(it.first, it.second) }
                 .compose(bindToLifecycle())
                 .subscribe(this.showResetPasswordSuccessDialog)
 
@@ -256,7 +260,7 @@ interface LoginViewModel {
 
         override fun showCreatedPasswordSnackbar(): Observable<Void> = this.showCreatedPasswordSnackbar
 
-        override fun showResetPasswordSuccessDialog(): BehaviorSubject<Pair<Boolean, String>> = this.showResetPasswordSuccessDialog
+        override fun showResetPasswordSuccessDialog(): BehaviorSubject<Pair<Boolean, Pair<String, LoginReason>>> = this.showResetPasswordSuccessDialog
 
         override fun tfaChallenge() = this.tfaChallenge
     }

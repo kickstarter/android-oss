@@ -24,7 +24,7 @@ class SetPasswordActivity : BaseActivity<SetPasswordViewModel.ViewModel>() {
 
         setContentView(binding.root)
         setSupportActionBar(binding.resetPasswordToolbar.loginToolbar)
-        binding.resetPasswordToolbar.loginToolbar.setTitle(getString(R.string.FPO_Set_your_password))
+        binding.resetPasswordToolbar.loginToolbar.setTitle(getString(R.string.Set_your_password))
         binding.resetPasswordToolbar.backButton.isGone = true
         binding.newPassword.onChange { this.viewModel.inputs.newPassword(it) }
         binding.confirmPassword.onChange { this.viewModel.inputs.confirmPassword(it) }
@@ -44,7 +44,7 @@ class SetPasswordActivity : BaseActivity<SetPasswordViewModel.ViewModel>() {
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                binding.setPasswordHint.text = getString(R.string.FPO_We_will_be_discontinuing_the_ability_to_log_in_via_Facebook, it)
+                binding.setPasswordHint.text = this.environment().ksString()?.format(getString(R.string.We_will_be_discontinuing_the_ability_to_log_in_via_FB), "email", it)
             }
 
         this.viewModel.outputs.passwordWarning()

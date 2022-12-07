@@ -22,7 +22,6 @@ public final class RecyclerViewPaginator {
   private final @NonNull Action0 nextPage;
   private final Observable<Boolean> isLoading;
   private Subscription subscription;
-  private static final int DIRECTION_DOWN = 1;
   private Subscription retrySubscription;
   private final PublishSubject<Void> retryLoadingNextPageSubject =  PublishSubject.create();
 

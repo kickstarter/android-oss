@@ -9,6 +9,7 @@ enum class LoginReason {
     BACK_PROJECT,
     MESSAGE_CREATOR,
     RESET_PASSWORD,
+    RESET_FACEBOOK_PASSWORD,
     STAR_PROJECT;
 
     val isDefaultFlow: Boolean

@@ -99,7 +99,7 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
 
     private fun navigateToLoginActivity() {
         setFormEnabled(false)
-        val intent = Intent().getLoginActivityIntent(this, binding.resetPasswordFormView.email.text(), LoginReason.RESET_PASSWORD)
+        val intent = Intent().getLoginActivityIntent(this, binding.resetPasswordFormView.email.text(), LoginReason.RESET_FACEBOOK_PASSWORD)
         startActivityWithTransition(intent, R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
         finish()
     }

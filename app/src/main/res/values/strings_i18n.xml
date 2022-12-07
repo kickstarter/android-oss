@@ -335,7 +335,6 @@ with friends.</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" formatted="false">Kickstarter is not a store. It\'s a way to bring creative projects to life.</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Kickstarter is not a store. It\'s a way to bring creative projects to life.&lt;br/>&lt;a href="%{trust_link}">Learn more about accountability&lt;/a></string>
   <string name="Kickstarter_on_Film" formatted="false">Kickstarter on Film</string>
-  <string name="Kickstarters_community_guidelines" formatted="false">Kickstarter’s Community Guidelines.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Know when creators and backers message you by enabling notifications.</string>
   <string name="Learn_about_accountability_on_Kickstarter" formatted="false">Learn about accountability on Kickstarter</string>
   <string name="Learn_more_about_accountability" formatted="false">Learn more about accountability</string>
@@ -514,6 +513,7 @@ daring ideas.</string>
   <string name="Request_my_personal_data" formatted="false">Request my personal data</string>
   <string name="Resend_email" formatted="false">Resend email</string>
   <string name="Resend_verification_email" formatted="false">Re-send verification email</string>
+  <string name="Reset_your_password" formatted="false">Reset your password</string>
   <string name="Retry" formatted="false">Retry</string>
   <string name="Retry_or_select_another_method" formatted="false">Retry or select another method.</string>
   <string name="Reusability_and_recyclability" formatted="false">Reusability and recyclability</string>
@@ -570,6 +570,8 @@ daring ideas.</string>
   <string name="Selected_reward" formatted="false">Selected reward</string>
   <string name="Send" formatted="false">Send</string>
   <string name="Send_verfication_email" formatted="false">Send verification email</string>
+  <string name="Set_new_password" formatted="false">Set new password</string>
+  <string name="Set_your_password" formatted="false">Set your password</string>
   <string name="Share" formatted="false">Share</string>
   <string name="Share_an_update_about_your_project" formatted="false">Share an update about your project…</string>
   <string name="Share_this_live_stream" formatted="false">Share this live stream.</string>
@@ -650,7 +652,6 @@ catch your eye?</string>
   <string name="This_allows_you_to_see_project_goal_and_pledge_amounts_in_your_preferred_currency" formatted="false">This allows you to see project goal and pledge amounts in your preferred currency.</string>
   <string name="This_comment_has_been_removed_by_Kickstarter" formatted="false">This comment has been removed by Kickstarter.</string>
   <string name="This_comment_is_under_review" formatted="false">This comment is under review.</string>
-  <string name="This_comment_is_under_review_for_potentially_violating" formatted="false">This comment is under review for potentially violating</string>
   <string name="This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines" formatted="false">This comment is under review for potentially violating &lt;a href="%{community_guidelines}">Kickstarter’s Community Guidelines.&lt;/a></string>
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">This Facebook account is already linked to another Kickstarter user.</string>
   <string name="This_holiday_season_support_a_project_for_no_reward" formatted="false">This holiday season, support a project for no reward, just because it speaks to you.</string>
@@ -709,6 +710,7 @@ catch your eye?</string>
   <string name="Visit_our_Environmental_Resources_Center" formatted="false">Visit our Environmental Resources Center</string>
   <string name="Visit_our_Environmental_Resources_Center_Alternative" formatted="false">&lt;a href="%{environment_link}">Visit our Environmental Resources Center&lt;/a></string>
   <string name="Watch_live" formatted="false">Watch live</string>
+  <string name="We_can_no_longer_log_you_in_through_Facebook" formatted="false">We can no longer log you in through Facebook. Please log in with your Kickstarter password, or set a new password with your Facebook email.</string>
   <string name="We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method" formatted="false">We can’t process this pledge because of a problem with the backer’s payment method.</string>
   <string name="We_cant_process_your_pledge" formatted="false">We can\'t process your pledge.</string>
   <string name="We_cant_process_your_pledge_Please_update_your_payment_method" formatted="false">We can’t process your pledge. Please update your payment method.</string>
@@ -720,12 +722,14 @@ catch your eye?</string>
   <string name="We_dont_allow_cancelations_that_will_cause_a_project_to_fall_short_of_its_goal_within_the_last_24_hours" formatted="false">We don’t allow cancelations that will cause a project to fall short of its goal within the last 24 hours.</string>
   <string name="We_re_processing_this_pledge_pull_to_refresh" formatted="false">We\'re processing this pledge—pull to refresh.</string>
   <string name="We_re_processing_your_pledge_pull_to_refresh" formatted="false">We\'re processing your pledge—pull to refresh.</string>
+  <string name="We_re_simplifying_our_login_process_To_log_in" formatted="false">We’re simplifying our login process. To access your Kickstarter account, enter the email associated to your Facebook account and we’ll send you a link to set a password</string>
   <string name="We_think_youll_like_these_too" formatted="false">We think you’ll like these, too</string>
   <string name="We_use_your_activity_internally_to_make_recommendations_for_you" formatted="false">We use your activity internally to make recommendations for you. Turn recommendations off to opt out of this.</string>
   <string name="We_ve_been_unable_to_send_email" formatted="false">We\'ve been unable to send email to this address. Please make sure it is typed correctly.</string>
   <string name="We_were_unable_to_connect_to_the_live_stream_chat" formatted="false">We were unable to connect to the live stream chat.</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">We were unable to load the shipping destinations.\n
 Please try again later.</string>
+  <string name="We_will_be_discontinuing_the_ability_to_log_in_via_FB" formatted="false">We will be discontinuing the ability to log in via Facebook. To log in to your account using the email %{email}, please set a password that’s at least 6 characters long.</string>
   <string name="We_wont_share_this_with_the_creator" formatted="false">We won’t share this with the creator.</string>
   <string name="Websites" formatted="false">Websites</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Welcome to our library. Peruse the stacks with us.</string>
@@ -1333,6 +1337,7 @@ Please try again later.</string>
   <string name="forgot_password_placeholder_email" formatted="false">Email address</string>
   <string name="forgot_password_title" formatted="false">Forgot your password?</string>
   <string name="forgot_password_we_sent_an_email_to_email_address_with_instructions_to_reset_your_password" formatted="false">We’ve sent an email to %{email} with instructions to reset your password.</string>
+  <string name="forgot_password_we_sent_an_email_to_email_address_with_instructions_to_set_your_password" formatted="false">We’ve sent an email to %{email} with instructions to set your password.</string>
   <string name="general_accessibility_kickstarter" formatted="false">Kickstarter</string>
   <string name="general_alert_buttons_ok" formatted="false">OK</string>
   <string name="general_backer_count_backers_few" formatted="false">%{backer_count} backers</string>

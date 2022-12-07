@@ -51,7 +51,6 @@ public final class RecyclerViewPaginator {
 
     final Observable<Pair<Integer, Integer>> lastVisibleAndCount = RxRecyclerView.scrollEvents(this.recyclerView)
       .filter(__ -> BoolenExtKt.isFalse(Secrets.IS_OSS))
-      .filter(__ -> this.recyclerView.canScrollVertically(DIRECTION_DOWN))
       .map(__ -> this.recyclerView.getLayoutManager())
       .ofType(LinearLayoutManager.class)
       .map(this::displayedItemFromLinearLayout)

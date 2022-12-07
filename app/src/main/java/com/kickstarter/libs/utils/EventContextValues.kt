@@ -70,6 +70,7 @@ class EventContextValues {
         ADD_ONS("add_ons"),
         CHANGE_PAYMENT("change_payment"),
         CHECKOUT("checkout"),
+        CREATOR_DASHBOARD("creator_dashboard"),
         DISCOVER("discover"),
         LOGIN_SIGN_UP("log_in_sign_up"),
         PROFILE("profile"),

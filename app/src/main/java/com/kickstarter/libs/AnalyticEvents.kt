@@ -16,6 +16,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FE
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ADD_ONS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CHANGE_PAYMENT
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CHECKOUT
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CREATOR_DASHBOARD
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN_SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.MANAGE_PLEDGE
@@ -675,6 +676,11 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
         props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
         client.track(CTA_CLICKED.eventName, props)
+    }
+
+    fun trackCreatorDashboardPageViewed(){
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to CREATOR_DASHBOARD.contextName)
+        client.track(PAGE_VIEWED.eventName, props)
     }
 
     private fun createCommentPropMap(

@@ -12,7 +12,6 @@ import org.joda.time.DateTimeZone
 import org.joda.time.Seconds
 import org.joda.time.format.DateTimeFormat
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.floor
@@ -22,9 +21,9 @@ object DateTimeUtils {
      * e.g.: December 2015.
      */
     @JvmOverloads
-    fun estimatedDeliveryOn(date: Date, locale: Locale = Locale.getDefault()): String {
+    fun estimatedDeliveryOn(date: DateTime, locale: Locale = Locale.getDefault()): String {
         val formatter = SimpleDateFormat("MMMM yyyy", locale)
-        return formatter.format(date)
+        return formatter.format(date.toDate())
     }
 
     fun isDateToday(dateTime: DateTime): Boolean {

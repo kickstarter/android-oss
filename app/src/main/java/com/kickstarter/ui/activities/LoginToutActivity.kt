@@ -90,8 +90,8 @@ class LoginToutActivity : BaseActivity<LoginToutViewModel.ViewModel>() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 this.showAlertDialog(
-                    message = getString(R.string.FPO_we_can_no_longer_log_you_in_through_Facebook),
-                    positiveActionTitle = getString(R.string.FPO_Set_new_password),
+                    message = getString(R.string.We_can_no_longer_log_you_in_through_Facebook),
+                    positiveActionTitle = getString(R.string.Set_new_password),
                     negativeActionTitle = getString(R.string.accessibility_discovery_buttons_log_in),
                     isCancelable = false,
                     positiveAction = {

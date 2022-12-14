@@ -1,42 +1,47 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/search_layout"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:background="@color/kds_support_100"
-  android:orientation="vertical"
-  tools:context=".ui.activities.ProjectUpdatesActivity">
-
-  <com.google.android.material.appbar.AppBarLayout
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/search_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:background="@color/kds_support_100"
+    android:orientation="vertical"
+    tools:context=".ui.activities.ProjectUpdatesActivity">
 
-    <include
-      android:id="@+id/updates_toolbar"
-      layout="@layout/updates_toolbar" />
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/updates_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
 
-  </com.google.android.material.appbar.AppBarLayout>
+        <include
+            android:id="@+id/updates_toolbar"
+            layout="@layout/updates_toolbar" />
 
-  <ProgressBar
-    android:id="@+id/updates_progress_bar"
-    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/indeterminate_horizontal_progress_bar_margin_top"
-    android:indeterminate="true" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-  <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-    android:id="@+id/updates_swipe_refresh_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    <ProgressBar
+        android:id="@+id/updates_progress_bar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/indeterminate_horizontal_progress_bar_margin_top"
+        android:indeterminate="true"
+        app:layout_constraintTop_toBottomOf="@+id/updates_app_bar" />
 
-    <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/updates_recycler_view"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:clipToPadding="false"
-      android:paddingTop="@dimen/grid_1"
-      tools:listitem="@layout/item_update_card" />
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/updates_swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/updates_progress_bar">
 
-  </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-</LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/updates_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingTop="@dimen/grid_1"
+            tools:listitem="@layout/item_update_card" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

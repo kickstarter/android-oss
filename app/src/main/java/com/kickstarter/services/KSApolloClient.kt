@@ -44,19 +44,12 @@ import com.kickstarter.services.apiresponses.DiscoverEnvelope
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
+import com.kickstarter.services.apiresponses.updatesresponse.UpdatesGraphQlEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
-import com.kickstarter.services.transformers.backingTransformer
-import com.kickstarter.services.transformers.categoryTransformer
-import com.kickstarter.services.transformers.commentTransformer
-import com.kickstarter.services.transformers.complexRewardItemsTransformer
-import com.kickstarter.services.transformers.decodeRelayId
-import com.kickstarter.services.transformers.encodeRelayId
-import com.kickstarter.services.transformers.projectTransformer
-import com.kickstarter.services.transformers.rewardTransformer
-import com.kickstarter.services.transformers.shippingRulesListTransformer
+import com.kickstarter.services.transformers.*
 import rx.Observable
 import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
@@ -232,6 +225,62 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                 })
             return@defer ps
         }
+    }
+
+    override fun getProjectUpdates(
+        slug: String,
+        cursor: String?,
+        limit: Int
+    ): Observable<UpdatesGraphQlEnvelope> {
+        return Observable.defer {
+            val ps = PublishSubject.create<UpdatesGraphQlEnvelope>()
+
+            this.service.query(
+                GetProjectUpdatesQuery.builder()
+                    .cursor(cursor)
+                    .slug(slug)
+                    .limit(limit)
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<GetProjectUpdatesQuery.Data>() {
+                    override fun onFailure(e: ApolloException) {
+                        ps.onError(e)
+                    }
+
+                    override fun onResponse(response: Response<GetProjectUpdatesQuery.Data>) {
+                        response.data?.let { data ->
+                            Observable.just(data.project())
+                                .filter { it?.posts() != null }
+                                .map { project ->
+
+                                    val updates = project?.posts()?.edges()?.map { edge ->
+                                        updateTransformer(
+                                            edge?.node()?.fragments()?.post(),
+                                        ).toBuilder()
+                                            .build()
+                                    }
+
+                                    UpdatesGraphQlEnvelope.builder()
+                                        .updates(updates)
+                                        .totalCount(project?.posts()?.totalCount() ?: 0)
+                                        .pageInfoEnvelope(
+                                            createPageInfoObject(
+                                                project?.posts()?.pageInfo()?.fragments()
+                                                    ?.pageInfo()
+                                            )
+                                        )
+                                        .build()
+                                }
+                                .filter { ObjectUtils.isNotNull(it) }
+                                .subscribe {
+                                    ps.onNext(it)
+                                    ps.onCompleted()
+                                }
+                        }
+                    }
+                })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
     }
 
     override fun getProjectComments(

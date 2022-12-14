@@ -105,28 +105,22 @@ class Update private constructor(
 
     @Parcelize
     class Urls private constructor(
-        private val web: Web,
-        private val api: Api?
+        private val web: Web
     ) : Parcelable {
         fun web() = this.web
-        fun api() = this.api
 
         @Parcelize
         data class Builder(
             private var web: Web = Web.builder().build(),
-            private var api: Api? = null
         ) : Parcelable {
             fun web(web: Web?) = apply { this.web = web ?: Web.builder().build() }
-            fun api(api: Api?) = apply { this.api = api }
             fun build() = Urls(
-                web = web,
-                api = api
+                web = web
             )
         }
 
         fun toBuilder() = Builder(
-            web = web,
-            api = api
+            web = web
         )
 
         companion object {
@@ -137,8 +131,7 @@ class Update private constructor(
         override fun equals(obj: Any?): Boolean {
             var equals = super.equals(obj)
             if (obj is Urls) {
-                equals = web() == obj.web() &&
-                    api() == obj.api()
+                equals = web() == obj.web()
             }
             return equals
         }

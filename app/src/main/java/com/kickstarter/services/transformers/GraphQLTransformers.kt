@@ -19,6 +19,7 @@ import com.kickstarter.models.Relay
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
 import com.kickstarter.models.ShippingRule
+import com.kickstarter.models.Update
 import com.kickstarter.models.Urls
 import com.kickstarter.models.User
 import com.kickstarter.models.Video
@@ -511,6 +512,54 @@ private fun getPhoto(photoUrl: @Nullable String?): Photo? {
     }
 
     return photo
+}
+
+fun updateTransformer(post: fragment.Post?): Update {
+    val id = decodeRelayId(post?.id()) ?: -1
+    val author = User.builder()
+        .id(decodeRelayId(post?.author()?.fragments()?.user()?.id()) ?: -1)
+        .name(post?.author()?.fragments()?.user()?.name() ?: "")
+        .avatar(
+            Avatar.builder()
+                .medium(post?.author()?.fragments()?.user()?.imageUrl())
+                .build()
+        )
+        .build()
+
+    val projectId = decodeRelayId(post?.project()?.id()) ?: -1
+
+    val title = post?.title() ?: ""
+
+    val publishedAt = post?.publishedAt()
+    val updatedAt = post?.updatedAt()
+    val sequence = post?.number() ?: 0
+
+    val url = post?.project()?.url()
+    val urlsWeb = Update.Urls.Web.builder()
+        .update("$url/posts/$id")
+        .build()
+    val updateUrl = Update.Urls.builder().web(urlsWeb).build()
+
+    val updateFreeformPost = post?.fragments()?.updateFreeformPost()
+    val commentsCount = updateFreeformPost?.commentsCount()
+    val body = updateFreeformPost?.body() as? String
+
+    return Update.builder()
+        .body(body)
+        .commentsCount(commentsCount)
+        .hasLiked(post?.isLiked)
+        .id(id)
+        .isPublic(post?.isPublic)
+        .likesCount(post?.likesCount())
+        .projectId(projectId)
+        .publishedAt(publishedAt)
+        .sequence(sequence)
+        .title(title)
+        .updatedAt(updatedAt)
+        .urls(updateUrl)
+        .user(author)
+        .visible(post?.isVisible)
+        .build()
 }
 
 fun commentTransformer(commentFr: fragment.Comment?): Comment {

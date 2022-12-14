@@ -20,6 +20,7 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.ShippingRulesEnvelopeFactory
 import com.kickstarter.mock.factories.StoredCardFactory
+import com.kickstarter.mock.factories.UpdateFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Category
 import com.kickstarter.models.Checkout
@@ -37,6 +38,7 @@ import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.DiscoverEnvelope
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.apiresponses.commentresponse.CommentEnvelope
+import com.kickstarter.services.apiresponses.updatesresponse.UpdatesGraphQlEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
@@ -166,6 +168,22 @@ open class MockApolloClient : ApolloClientType {
                     PageInfoEnvelopeFactory.pageInfoEnvelope()
                 )
                 .comments(listOf(CommentFactory.comment()))
+                .totalCount(1)
+                .build()
+        )
+    }
+
+    override fun getProjectUpdates(
+        slug: String,
+        cursor: String?,
+        limit: Int
+    ): Observable<UpdatesGraphQlEnvelope> {
+        return Observable.just(
+            UpdatesGraphQlEnvelope.builder()
+                .pageInfoEnvelope(
+                    PageInfoEnvelopeFactory.pageInfoEnvelope()
+                )
+                .updates(listOf(UpdateFactory.update()))
                 .totalCount(1)
                 .build()
         )

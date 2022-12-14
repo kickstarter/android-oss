@@ -49,7 +49,16 @@ import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
-import com.kickstarter.services.transformers.*
+import com.kickstarter.services.transformers.backingTransformer
+import com.kickstarter.services.transformers.categoryTransformer
+import com.kickstarter.services.transformers.commentTransformer
+import com.kickstarter.services.transformers.complexRewardItemsTransformer
+import com.kickstarter.services.transformers.decodeRelayId
+import com.kickstarter.services.transformers.encodeRelayId
+import com.kickstarter.services.transformers.projectTransformer
+import com.kickstarter.services.transformers.rewardTransformer
+import com.kickstarter.services.transformers.shippingRulesListTransformer
+import com.kickstarter.services.transformers.updateTransformer
 import rx.Observable
 import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject

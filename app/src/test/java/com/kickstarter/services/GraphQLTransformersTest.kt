@@ -4,6 +4,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.services.transformers.decodeRelayId
 import com.kickstarter.services.transformers.environmentalCommitmentTransformer
 import com.kickstarter.services.transformers.projectFaqTransformer
+import com.kickstarter.services.transformers.updateTransformer
 import com.kickstarter.services.transformers.userTransformer
 import fragment.EnvironmentalCommitment
 import fragment.Faq
@@ -87,5 +88,31 @@ class GraphQLTransformersTest : KSRobolectricTestCase() {
         assertTrue(user.id() == 237961243L)
         assertTrue(user.name() == "Brotherwise Games")
         assertTrue(user.avatar().medium() == "https://ksr-qa-ugc.imgix.net/assets/005/791/327/f120c4cfe49495849b526b2cc6da44f9_original.png")
+    }
+
+    @Test
+    fun testUpdateTransformer() {
+        val post = mock(fragment.Post::class.java)
+        `when`(post.id()).thenReturn("VXNlci0yMzc5NjEyNDM=")
+        `when`(post.title()).thenReturn("Updated Add-on list")
+        `when`(post.isPublic).thenReturn(true)
+        `when`(post.isVisible).thenReturn(true)
+        `when`(post.isLiked).thenReturn(true)
+        `when`(post.number()).thenReturn(5)
+
+        val date = DateTime.now().plusMillis(300)
+        `when`(post.publishedAt()).thenReturn(date)
+        `when`(post.updatedAt()).thenReturn(date)
+
+        val user = updateTransformer(post)
+        assertTrue(user.id() == 237961243L)
+        assertTrue(user.projectId() == -1L)
+        assertTrue(user.title() == "Updated Add-on list")
+        assertTrue(user.isPublic() == true)
+        assertTrue(user.visible() == true)
+        assertTrue(user.hasLiked() == true)
+        assertTrue(user.sequence() == 5)
+        assertTrue(post.publishedAt() == date)
+        assertTrue(post.updatedAt() == date)
     }
 }

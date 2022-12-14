@@ -3984,6 +3984,18 @@
               "deprecationReason": null
             },
             {
+              "name": "convertedWatchesCount",
+              "description": "Number of watchers who went on to back the project.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "country",
               "description": "The project's country",
               "args": [],
@@ -7169,6 +7181,22 @@
               "deprecationReason": null
             },
             {
+              "name": "isRegistered",
+              "description": "Whether the user is registered",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "isSepaEligible",
               "description": "Whether the user can create SEPA account payment sources",
               "args": [],
@@ -7223,6 +7251,22 @@
                 "kind": "SCALAR",
                 "name": "Boolean",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "isSuperbacker",
+              "description": "Whether the user is a superbacker",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -11020,19 +11064,25 @@
               "deprecationReason": null
             },
             {
+              "name": "backer_report_header_rewrite_2022",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "backing_info_modal_comments_2022",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "cat_physical_goods_2022",
+              "name": "ch_currency_selector",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "ch_currency_selector",
+              "name": "consent_management",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -11092,7 +11142,7 @@
               "deprecationReason": null
             },
             {
-              "name": "embedded_rewards",
+              "name": "easyship_mvp_2022",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -11111,6 +11161,12 @@
             },
             {
               "name": "featured_project_mobile_optimizations",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "fulfillment_report_exports",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -11350,6 +11406,12 @@
               "deprecationReason": null
             },
             {
+              "name": "payment_element_errored_pledge_2022",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "payment_element_pledge_update_2022",
               "description": "",
               "isDeprecated": false,
@@ -11362,13 +11424,7 @@
               "deprecationReason": null
             },
             {
-              "name": "payment_element_user_settings_2022",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "payment_element_web_checkout_2022",
+              "name": "payment_element_refunds_2022",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -11476,12 +11532,6 @@
               "deprecationReason": null
             },
             {
-              "name": "shipping_preference_local_pickup_2022",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "show_posts_feed",
               "description": "",
               "isDeprecated": false,
@@ -11495,6 +11545,12 @@
             },
             {
               "name": "track_define_namespace",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "uk_created_projects_accept_usd_currency",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -25254,30 +25310,6 @@
               "deprecationReason": null
             },
             {
-              "name": "projectCollections",
-              "description": "Collections of projects based on common queries",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "LIST",
-                  "name": null,
-                  "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "OBJECT",
-                      "name": "ProjectCollection",
-                      "ofType": null
-                    }
-                  }
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "projectId",
               "description": "The project id (pid) of the featured project",
               "args": [],
@@ -28620,6 +28652,22 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "stripePaymentSetupRedirectUrl",
+              "description": "The full URL to redirect to after payment setup via Stripe in refunds",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -32056,20 +32104,6 @@
               "defaultValue": null
             },
             {
-              "name": "location",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "ENUM",
-                  "name": "ProjectFeedbackLocation",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
               "name": "questionAnswer",
               "description": "",
               "type": {
@@ -32100,29 +32134,6 @@
           ],
           "interfaces": null,
           "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "ProjectFeedbackLocation",
-          "description": "",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "backed_projects",
-              "description": "Project Feedback from the Backed Projects user profile page",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "project_header",
-              "description": "Project Feedback from the backer bar in the project header",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
           "possibleTypes": null
         },
         {
@@ -35342,9 +35353,13 @@
               "name": "contentsType",
               "description": "",
               "type": {
-                "kind": "ENUM",
-                "name": "ContentsType",
-                "ofType": null
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "ContentsType",
+                  "ofType": null
+                }
               },
               "defaultValue": null
             },

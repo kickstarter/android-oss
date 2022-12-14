@@ -380,3 +380,29 @@ fragment freeformPost on FreeformPost {
         totalCount
     }
 }
+
+fragment post on Postable {
+    id
+    project {
+        id
+        url
+    }
+    author {
+        ...user
+    }
+    authorRole
+    isLiked
+    title
+    number
+    isPublic
+    isVisible
+    publishedAt
+    updatedAt
+    likesCount
+    ...updateFreeformPost
+}
+
+fragment updateFreeformPost on FreeformPost {
+    commentsCount(withReplies:true)
+    body
+}

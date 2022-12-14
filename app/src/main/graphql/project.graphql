@@ -143,3 +143,20 @@ query FetchCategory($categoryParam: String!) {
     }
   }
 }
+
+query GetProjectUpdates($slug: String!, $limit: Int!, $cursor: String) {
+  project(slug: $slug) {
+    posts(first: $limit, after: $cursor) {
+      edges {
+        node {
+          ...post
+        }
+        cursor
+      }
+      pageInfo {
+        ...pageInfo
+      }
+      totalCount
+    }
+  }
+}

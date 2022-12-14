@@ -8,10 +8,11 @@ import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.factories.ProjectDataFactory.project
 import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.UpdateFactory.update
-import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
 import com.kickstarter.services.apiresponses.UpdatesEnvelope
+import com.kickstarter.services.apiresponses.updatesresponse.UpdatesGraphQlEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.ProjectData
 import org.junit.Test
@@ -74,13 +75,16 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
         val project = project()
 
         setUpEnvironment(
-            environment().toBuilder().apiClient(object : MockApiClient() {
-                override fun fetchUpdates(project: Project): Observable<UpdatesEnvelope> {
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun getProjectUpdates(
+                    slug: String,
+                    cursor: String?,
+                    limit: Int
+                ): Observable<UpdatesGraphQlEnvelope> {
                     return Observable.just(
-                        UpdatesEnvelope
+                        UpdatesGraphQlEnvelope
                             .builder()
                             .updates(updates)
-                            .urls(urlsEnvelope())
                             .build()
                     )
                 }
@@ -100,13 +104,16 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
         val project = project()
 
         setUpEnvironment(
-            environment().toBuilder().apiClient(object : MockApiClient() {
-                override fun fetchUpdates(project: Project): Observable<UpdatesEnvelope> {
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun getProjectUpdates(
+                    slug: String,
+                    cursor: String?,
+                    limit: Int
+                ): Observable<UpdatesGraphQlEnvelope> {
                     return Observable.just(
-                        UpdatesEnvelope
+                        UpdatesGraphQlEnvelope
                             .builder()
                             .updates(emptyList())
-                            .urls(urlsEnvelope())
                             .build()
                     )
                 }
@@ -131,13 +138,16 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
         val project = project()
 
         setUpEnvironment(
-            environment().toBuilder().apiClient(object : MockApiClient() {
-                override fun fetchUpdates(project: Project): Observable<UpdatesEnvelope> {
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun getProjectUpdates(
+                    slug: String,
+                    cursor: String?,
+                    limit: Int
+                ): Observable<UpdatesGraphQlEnvelope> {
                     return Observable.just(
-                        UpdatesEnvelope
+                        UpdatesGraphQlEnvelope
                             .builder()
                             .updates(updates)
-                            .urls(urlsEnvelope())
                             .build()
                     )
                 }

@@ -93,7 +93,6 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
 
         assertEquals(project, projectAndUpdates.value.first)
         assertEquals(updates[0], projectAndUpdates.value.second[0])
-        assertEquals(updates[1], projectAndUpdates.value.second[1])
     }
 
     @Test
@@ -119,7 +118,7 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
         vm.outputs.projectAndUpdates().subscribe(projectAndUpdates)
 
         assertEquals(project, projectAndUpdates.value.first)
-        assertTrue( projectAndUpdates.value.second.isEmpty())
+        assertTrue(projectAndUpdates.value.second.isEmpty())
 
         isFetchingUpdates.assertValues(true, false)
         horizontalProgressBarIsGone.assertValues(false, true)

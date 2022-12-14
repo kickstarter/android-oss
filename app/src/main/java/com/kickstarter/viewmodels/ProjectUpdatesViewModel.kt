@@ -118,7 +118,7 @@ interface ProjectUpdatesViewModel {
                 .isFetching()
                 .compose(bindToLifecycle<Boolean>())
                 .subscribe {
-                    horizontalProgressBarIsGone.onNext(it)
+                    horizontalProgressBarIsGone.onNext(!it)
                 }
 
             paginator

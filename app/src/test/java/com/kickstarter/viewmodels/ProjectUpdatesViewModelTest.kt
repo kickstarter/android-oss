@@ -17,6 +17,7 @@ import com.kickstarter.ui.data.ProjectData
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
+import rx.subjects.BehaviorSubject
 
 class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: ProjectUpdatesViewModel.ViewModel
@@ -87,7 +88,11 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
             project, project(project)
         )
 
-        projectAndUpdates.assertValues(Pair.create(project, updates))
+        val projectAndUpdates = BehaviorSubject.create<Pair<Project, List<Update>>>()
+        vm.outputs.projectAndUpdates().subscribe(projectAndUpdates)
+
+        assertEquals(project, projectAndUpdates.value.first)
+        assertEquals(updates, projectAndUpdates.value.second)
     }
 
     @Test
@@ -109,7 +114,12 @@ class ProjectUpdatesViewModelTest : KSRobolectricTestCase() {
             project, project(project)
         )
 
-        projectAndUpdates.assertValues(Pair.create(project, emptyList()))
+        val projectAndUpdates = BehaviorSubject.create<Pair<Project, List<Update>>>()
+        vm.outputs.projectAndUpdates().subscribe(projectAndUpdates)
+
+        assertEquals(project, projectAndUpdates.value.first)
+        assertEquals(emptyList<Update>(), projectAndUpdates.value.second)
+
         isFetchingUpdates.assertValues(true, false)
         horizontalProgressBarIsGone.assertValues(false, true)
     }

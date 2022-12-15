@@ -3,17 +3,15 @@ package com.kickstarter.viewmodels
 import android.content.SharedPreferences
 import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.ApiPaginator
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.loadmore.ApolloPaginate
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventContextValues
-import com.kickstarter.libs.utils.ListUtils
-import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.libs.utils.extensions.storeCurrentCookieRefTag
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
-import com.kickstarter.services.ApiClientType
-import com.kickstarter.services.apiresponses.UpdatesEnvelope
+import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.apiresponses.updatesresponse.UpdatesGraphQlEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ProjectUpdatesActivity
 import com.kickstarter.ui.data.ProjectData
@@ -50,7 +48,7 @@ interface ProjectUpdatesViewModel {
 
     class ViewModel(environment: Environment) :
         ActivityViewModel<ProjectUpdatesActivity>(environment), Inputs, Outputs {
-        private val client: ApiClientType?
+        private val client: ApolloClientType?
         private val cookieManager: CookieManager?
         private val sharedPreferences: SharedPreferences?
         private val nextPage = PublishSubject.create<Void>()
@@ -65,7 +63,7 @@ interface ProjectUpdatesViewModel {
         val outputs: Outputs = this
 
         init {
-            client = requireNotNull(environment.apiClient())
+            client = requireNotNull(environment.apolloClient())
             cookieManager = requireNotNull(environment.cookieManager())
             sharedPreferences = requireNotNull(environment.sharedPreferences())
 
@@ -95,42 +93,36 @@ interface ProjectUpdatesViewModel {
                 project.compose(Transformers.takeWhen(refresh))
             )
 
-            val paginator = ApiPaginator.builder<Update, UpdatesEnvelope, Project?>()
-                .nextPage(nextPage)
-                .startOverWith(startOverWith)
-                .envelopeToListOfData { it.updates() }
-                .envelopeToMoreUrl { it.urls().api().moreUpdates() }
-                .loadWithParams {
-                    client.fetchUpdates(
-                        it
-                    )
-                }
-                .loadWithPaginationPath {
-                    client.fetchUpdates(
-                        it
-                    )
-                }
-                .clearWhenStartingOver(false)
-                .concater { xs: List<Update>, ys: List<Update> ->
-                    ListUtils.concatDistinct(xs, ys)
-                }
-                .build()
+            val paginator =
+                ApolloPaginate.builder<Update, UpdatesGraphQlEnvelope, Project?>()
+                    .nextPage(nextPage)
+                    .distinctUntilChanged(true)
+                    .startOverWith(startOverWith)
+                    .envelopeToListOfData { it.updates }
+                    .loadWithParams {
+                        loadWithProjectUpdatesList(Observable.just(it.first), it.second)
+                    }
+                    .clearWhenStartingOver(false)
+                    .build()
 
-            project
-                .compose(Transformers.combineLatestPair(paginator.paginatedData().share()))
-                .compose(bindToLifecycle())
-                .subscribe(projectAndUpdates)
+            paginator.paginatedData()
+                ?.share()
+                ?.let {
+                    project
+                        .compose<Pair<Project, List<Update>>>(Transformers.combineLatestPair(it))
+                        .compose(bindToLifecycle())
+                        .subscribe(projectAndUpdates)
+                }
 
             paginator
-                .isFetching
-                .distinctUntilChanged()
-                .take(2)
-                .map { it.negate() }
-                .compose(bindToLifecycle())
-                .subscribe(horizontalProgressBarIsGone)
+                .isFetching()
+                .compose(bindToLifecycle<Boolean>())
+                .subscribe {
+                    horizontalProgressBarIsGone.onNext(!it)
+                }
 
             paginator
-                .isFetching
+                .isFetching()
                 .compose(bindToLifecycle())
                 .subscribe(isFetchingUpdates)
 
@@ -140,6 +132,14 @@ interface ProjectUpdatesViewModel {
                 .subscribe { startUpdateActivity.onNext(it) }
         }
 
+        private fun loadWithProjectUpdatesList(
+            project: Observable<Project>,
+            cursor: String?
+        ): Observable<UpdatesGraphQlEnvelope> {
+            return project.switchMap {
+                return@switchMap client ?.getProjectUpdates(it.slug() ?: "", cursor)
+            }.onErrorResumeNext(Observable.empty())
+        }
         override fun nextPage() {
             nextPage.onNext(null)
         }

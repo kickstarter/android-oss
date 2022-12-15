@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.core.view.isGone
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityUpdatesBinding
@@ -11,7 +12,6 @@ import com.kickstarter.libs.SwipeRefresher
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.TransitionUtils
-import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
 import com.kickstarter.ui.IntentKey
@@ -50,7 +50,9 @@ class ProjectUpdatesActivity : BaseActivity<ProjectUpdatesViewModel.ViewModel>()
         viewModel.outputs.horizontalProgressBarIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe(ViewUtils.setGone(binding.updatesProgressBar))
+            .subscribe {
+                binding.updatesProgressBar.isGone = it
+            }
 
         viewModel.outputs.startUpdateActivity()
             .compose(bindToLifecycle())

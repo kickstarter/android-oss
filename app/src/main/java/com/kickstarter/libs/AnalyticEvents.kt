@@ -31,6 +31,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.REPLY
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.ROOT
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.UNWATCH
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.WATCH
+import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.DASHBOARD
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.ADD_ONS_CONTINUE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CAMPAIGN_DETAILS
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.COMMENT_POST
@@ -678,8 +679,12 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(CTA_CLICKED.eventName, props)
     }
 
-    fun trackCreatorDashboardPageViewed(){
+    fun trackCreatorDashboardPageViewed(project: Project) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to CREATOR_DASHBOARD.contextName)
+
+        props[CONTEXT_SECTION.contextName] = DASHBOARD.contextName
+        props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
+
         client.track(PAGE_VIEWED.eventName, props)
     }
 

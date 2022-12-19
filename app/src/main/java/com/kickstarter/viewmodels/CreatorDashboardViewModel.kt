@@ -70,8 +70,6 @@ interface CreatorDashboardViewModel {
         init {
             client = requireNotNull(environment.apiClient())
 
-            analyticEvents.trackCreatorDashboardPageViewed()
-
             val isViewingSingleProject = intent()
                 .map { it.hasExtra(IntentKey.PROJECT) }
 
@@ -103,6 +101,10 @@ interface CreatorDashboardViewModel {
                 .map { it.name() }
                 .compose(bindToLifecycle())
                 .subscribe(projectName)
+
+            currentProject
+                .compose(bindToLifecycle())
+                .subscribe{ analyticEvents.trackCreatorDashboardPageViewed(it) }
 
             val projectStatsEnvelopeNotification = currentProject
                 .switchMap {

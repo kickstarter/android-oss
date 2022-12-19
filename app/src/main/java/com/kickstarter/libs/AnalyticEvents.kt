@@ -26,12 +26,12 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.TWO_FACTOR_AUTH
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.UPDATE_PLEDGE
+import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.DASHBOARD
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.CREDIT_CARD
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.REPLY
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.ROOT
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.UNWATCH
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.WATCH
-import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.DASHBOARD
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.ADD_ONS_CONTINUE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CAMPAIGN_DETAILS
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.COMMENT_POST

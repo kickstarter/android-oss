@@ -12,6 +12,7 @@ import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_SECTION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_SECTION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.PROJECT_UPDATE_ID
 import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
@@ -28,6 +29,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.DASHBOAR
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_FILTER
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_SORT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PROJECT_SELECT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.ALL
@@ -1567,6 +1569,29 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("hello world", properties["discover_search_term"])
         assertEquals("ending_soon", properties["discover_sort"])
         assertEquals(123, properties["discover_tag"])
+    }
+
+    @Test
+    fun trackCreatorDashboardSelectAnotherProjectCTA() {
+        val user = user()
+        val project = project()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedUser.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackCreatorDashboardSelectAnotherProjectCTA(project)
+
+        val expectedProperties = propertiesTest.value
+
+        assertUserProperties(false)
+        assertSessionProperties(user)
+        assertEquals(PROJECT_SELECT.contextName, expectedProperties[CONTEXT_CTA.contextName])
+        assertEquals(CREATOR_DASHBOARD.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+        assertEquals(DASHBOARD.contextName, expectedProperties[CONTEXT_SECTION.contextName])
+        assertProjectProperties(project)
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
     }
 
     private fun client(user: User?) = MockTrackingClient(

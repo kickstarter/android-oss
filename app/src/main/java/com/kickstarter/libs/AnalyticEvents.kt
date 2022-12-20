@@ -32,6 +32,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.REPLY
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.ROOT
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.UNWATCH
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.WATCH
+import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.DASHBOARD
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.ADD_ONS_CONTINUE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CAMPAIGN_DETAILS
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.COMMENT_POST
@@ -45,6 +46,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_CONFIRM
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_SUBMIT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PROJECT_SELECT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.REWARD_CONTINUE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INITIATE
@@ -597,14 +599,15 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     /**
-     * Sends data to the client when the creator details CTA is clicked on the project screen.
+     * Sends data to the client when the select another project button is tapped on the creator dashboard screen.
      *
      * @param projectData: The data for the current project.
      */
-    fun trackCreatorDashboardSelectAnotherProjectCTA(projectData: ProjectData) {
-        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to CREATOR_DETAILS.contextName)
-        props[CONTEXT_PAGE.contextName] = PROJECT.contextName
-        props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
+    fun trackCreatorDashboardSelectAnotherProjectCTA(project: Project) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to PROJECT_SELECT.contextName)
+        props[CONTEXT_PAGE.contextName] = CREATOR_DASHBOARD.contextName
+        props[CONTEXT_SECTION.contextName] = DASHBOARD.contextName
+        props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
         client.track(CTA_CLICKED.eventName, props)
     }
 

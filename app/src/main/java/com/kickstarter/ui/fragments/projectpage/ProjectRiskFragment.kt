@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.paddingFromBaseline
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
@@ -31,6 +34,10 @@ import com.kickstarter.viewmodels.projectpage.ProjectRiskViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 
 class ProjectRiskFragment :
     Fragment(),
@@ -57,36 +64,77 @@ class ProjectRiskFragment :
             setContent {
                 // In Compose world
                 MaterialTheme {
-                    ProjectRiskElement()
+                    RisksScreen()
                 }
             }
         }
         //return binding?.root
     }
 
-
     @Composable
-    fun ProjectRiskElement(
-        modifier: Modifier = Modifier
+    fun RisksScreen(
+        modifier: Modifier = Modifier,
+        riskDescription: String = ""
     ) {
-        Surface(
-            color = Color.Green,
+        Column(
             modifier = Modifier
                 .fillMaxHeight()
                 .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
         ) {
-            Text(text = "First UI loading built with Compose YAI!!!",
+            Text(
+                text = stringResource(id = R.string.Risks_and_challenges),
                 style = MaterialTheme.typography.headlineLarge,
                 modifier = Modifier
-                    .paddingFromBaseline(top = 200.dp)
+                    .paddingFromBaseline(
+                        top = dimensionResource(id = R.dimen.grid_3),
+                        bottom = dimensionResource(id = R.dimen.grid_4)
+                    )
+                    .padding(horizontal = dimensionResource(id = R.dimen.grid_3))
+            )
+            Text(
+                text = riskDescription,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier
+                    .paddingFromBaseline(
+                        top = dimensionResource(id = R.dimen.grid_3),
+                        bottom = dimensionResource(id = R.dimen.grid_4)
+                    )
+                    .padding(horizontal = dimensionResource(id = R.dimen.grid_3))
+            )
+            Spacer(
+                modifier = Modifier
+                    .height(3.dp)
+                    .fillMaxWidth()
+                    .padding(
+                        top = dimensionResource(id = R.dimen.grid_3)
+                    )
+                    .background(
+                        color = colorResource(id = R.color.kds_support_300)
+                    )
+            )
+            ClickableText(
+                text = AnnotatedString(stringResource(id = R.string.Learn_about_accountability_on_Kickstarter)),
+                onClick = {
+                    viewModel.onLearnAboutAccountabilityOnKickstarterClicked()
+                },
+                modifier = Modifier
+                    .padding(horizontal = dimensionResource(id = R.dimen.grid_3))
+                    .paddingFromBaseline(
+                        top = dimensionResource(id = R.dimen.grid_3),
+                        bottom = dimensionResource(id = R.dimen.grid_5)
+                    )
             )
         }
     }
 
+
     @Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
     @Composable
     fun ProjectRisksPreview() {
-        ProjectRiskElement()
+        RisksScreen(
+            riskDescription = "blablablabla blablablabblabla"
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

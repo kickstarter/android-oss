@@ -679,6 +679,12 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(CTA_CLICKED.eventName, props)
     }
 
+    /**
+     * Sends data to the client when the creator dashboard screen is viewed.
+     *
+     * @param project: The current project being viewed in the dashboard.
+     *
+     */
     fun trackCreatorDashboardPageViewed(project: Project) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to CREATOR_DASHBOARD.contextName)
 

@@ -10,10 +10,12 @@ import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_CHARACTER_COUNT
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_SECTION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.PROJECT_UPDATE_ID
 import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CREATOR_DASHBOARD
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN_SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.MANAGE_PLEDGE
@@ -22,6 +24,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.TWO_FACTOR_AUTH
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.UPDATE_PLEDGE
+import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.DASHBOARD
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_FILTER
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_SORT
@@ -1040,7 +1043,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertUserProperties(false)
 
         val expectedProperties = this.propertiesTest.value
-        assertEquals(UPDATE_PLEDGE.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+        assertEquals(EventContextValues.ContextPageName.UPDATE_PLEDGE.contextName, expectedProperties[CONTEXT_PAGE.contextName])
 
         this.segmentTrack.assertValue(PAGE_VIEWED.eventName)
     }
@@ -1412,6 +1415,60 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(reply.length, expectedProperties[COMMENT_CHARACTER_COUNT.contextName])
         assertNull(expectedProperties[PROJECT_UPDATE_ID.contextName])
         this.segmentTrack.assertValue(CTA_CLICKED.eventName)
+    }
+
+    @Test
+    fun testCreatorDashboardPageViewed() {
+        val user = user()
+        val project = project()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedUser.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackCreatorDashboardPageViewed(project)
+        this.segmentIdentify.assertValue(user)
+
+        assertSessionProperties(user)
+        assertContextProperties()
+        assertPageContextProperty(CREATOR_DASHBOARD.contextName)
+        assertUserProperties(false)
+
+        val expectedProperties = propertiesTest.value
+        assertEquals(100, expectedProperties["project_backers_count"])
+        assertEquals("subcategoryName", expectedProperties["project_subcategory"])
+        assertEquals("categoryName", expectedProperties["project_category"])
+        assertEquals(3, expectedProperties["project_comments_count"])
+        assertEquals("US", expectedProperties["project_country"])
+        assertEquals("3", expectedProperties["project_creator_uid"])
+        assertEquals("USD", expectedProperties["project_currency"])
+        assertNotNull(expectedProperties["project_prelaunch_activated"])
+        assertEquals(50.0, expectedProperties["project_current_pledge_amount"])
+        assertEquals(50.0, expectedProperties["project_current_amount_pledged_usd"])
+        assertEquals(project.deadline(), expectedProperties["project_deadline"])
+        assertEquals(20, expectedProperties["project_duration"])
+        assertEquals(100.0, expectedProperties["project_goal"])
+        assertEquals(100.0, expectedProperties["project_goal_usd"])
+        assertEquals(true, expectedProperties["project_has_video"])
+        assertEquals(10 * 24, expectedProperties["project_hours_remaining"])
+        assertEquals(true, expectedProperties["project_is_repeat_creator"])
+        assertEquals(project.launchedAt(), expectedProperties["project_launched_at"])
+        assertEquals("Brooklyn", expectedProperties["project_location"])
+        assertEquals("Some Name", expectedProperties["project_name"])
+        assertEquals(50, expectedProperties["project_percent_raised"])
+        assertEquals("4", expectedProperties["project_pid"])
+        assertEquals(50.0, expectedProperties["project_current_pledge_amount"])
+        assertEquals(1, expectedProperties["project_rewards_count"])
+        assertEquals("live", expectedProperties["project_state"])
+        assertEquals(1.0f, expectedProperties["project_static_usd_rate"])
+        assertEquals(5, expectedProperties["project_updates_count"])
+        assertEquals("tag1, tag2, tag3", expectedProperties["project_tags"])
+        assertEquals(PhotoFactory.photo().full(), expectedProperties["project_image_url"])
+        assertEquals("https://www.kickstarter.com/projects/${expectedProperties["project_creator_uid"]}/slug-1", expectedProperties["project_url"])
+        assertEquals(false, expectedProperties["project_has_add_ons"])
+        assertEquals(DASHBOARD.contextName, expectedProperties[CONTEXT_SECTION.contextName])
+        this.segmentTrack.assertValue(PAGE_VIEWED.eventName)
     }
 
     @Test

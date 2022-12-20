@@ -4,6 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.paddingFromBaseline
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.kickstarter.R
@@ -36,9 +49,56 @@ class ProjectRiskFragment :
             viewModelFactory = ProjectRiskViewModel.Factory(env)
         }
 
-        binding = FragmentProjectRisksBinding.inflate(inflater, container, false)
-        return binding?.root
+        //val view = binding?.root
+        return ComposeView(requireContext()).apply {
+            // Dispose of the Composition when the view's LifecycleOwner
+            // is destroyed
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                // In Compose world
+                MaterialTheme {
+                    Surface(
+                        color = Color.Blue,
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .fillMaxWidth()
+                    ) {
+                        Text(text = "First UI loading built with Compose YAI!!!",
+                            style = MaterialTheme.typography.headlineLarge,
+                            modifier = Modifier
+                                .paddingFromBaseline(top = 200.dp)
+                        )
+                    }
+                }
+            }
+        }
+        //return binding?.root
     }
+
+    /*
+    @Composable
+    fun ProjectRiskElement(
+        modifier: Modifier = Modifier
+    ) {
+        Surface(
+            color = Color.Blue,
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+        ) {
+            Text(text = "First UI loading built with Compose YAI!!!",
+                style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier
+                    .paddingFromBaseline(top = 40.dp)
+            )
+        }
+    }
+
+    @Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
+    @Composable
+    fun ProjectRisksPreview() {
+        ProjectRiskElement()
+    }*/
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

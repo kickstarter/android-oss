@@ -22,6 +22,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.aghajari.zoomhelper.ZoomHelper
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -384,13 +385,11 @@ class ProjectPageActivity :
             binding.projectAppBarLayout.setExpanded(false)
         }
 
-        binding.projectAppBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-
-            // not Fully expanded
+        binding.projectAppBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             if (verticalOffset != 0) {
                 binding.mediaHeader.inputs.pausePlayer()
             }
-        }
+        })
     }
 
     private fun configureTabs(updateTabs: Boolean) {

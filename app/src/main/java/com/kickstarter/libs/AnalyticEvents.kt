@@ -16,6 +16,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FE
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ADD_ONS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CHANGE_PAYMENT
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CHECKOUT
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CREATOR_DASHBOARD
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN_SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.MANAGE_PLEDGE
@@ -25,6 +26,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.TWO_FACTOR_AUTH
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.UPDATE_PLEDGE
+import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.DASHBOARD
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.CREDIT_CARD
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.REPLY
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.ROOT
@@ -675,6 +677,21 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
         props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
         client.track(CTA_CLICKED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client when the creator dashboard screen is viewed.
+     *
+     * @param project: The current project being viewed in the dashboard.
+     *
+     */
+    fun trackCreatorDashboardPageViewed(project: Project) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to CREATOR_DASHBOARD.contextName)
+
+        props[CONTEXT_SECTION.contextName] = DASHBOARD.contextName
+        props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
+
+        client.track(PAGE_VIEWED.eventName, props)
     }
 
     private fun createCommentPropMap(

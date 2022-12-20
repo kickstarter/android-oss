@@ -601,6 +601,18 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      *
      * @param projectData: The data for the current project.
      */
+    fun trackCreatorDashboardSelectAnotherProjectCTA(projectData: ProjectData) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to CREATOR_DETAILS.contextName)
+        props[CONTEXT_PAGE.contextName] = PROJECT.contextName
+        props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client when the creator details CTA is clicked on the project screen.
+     *
+     * @param projectData: The data for the current project.
+     */
     fun trackCreatorDetailsCTA(projectData: ProjectData) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to CREATOR_DETAILS.contextName)
         props[CONTEXT_PAGE.contextName] = PROJECT.contextName

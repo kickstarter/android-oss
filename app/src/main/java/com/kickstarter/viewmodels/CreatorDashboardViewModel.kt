@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import android.util.Log
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -146,7 +147,15 @@ interface CreatorDashboardViewModel {
             projectsListButtonClicked
                 .map { true }
                 .compose(bindToLifecycle())
-                .subscribe(bottomSheetShouldExpand)
+                .subscribe {
+                    bottomSheetShouldExpand.onNext(it)
+                }
+            projectsListButtonClicked
+                .map { true }
+                .compose(bindToLifecycle())
+                .subscribe{
+                    Log.d("Leigh", "select another project button clicked")
+                }
 
             Observable.merge(backClicked, scrimClicked, projectSelectionInput)
                 .map { false }

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
@@ -31,6 +30,7 @@ import com.kickstarter.ui.extensions.parseHtmlTag
 import com.kickstarter.viewmodels.projectpage.ProjectRiskViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import androidx.compose.runtime.Composable
 
 class ProjectRiskFragment :
     Fragment(),
@@ -57,31 +57,20 @@ class ProjectRiskFragment :
             setContent {
                 // In Compose world
                 MaterialTheme {
-                    Surface(
-                        color = Color.Blue,
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .fillMaxWidth()
-                    ) {
-                        Text(text = "First UI loading built with Compose YAI!!!",
-                            style = MaterialTheme.typography.headlineLarge,
-                            modifier = Modifier
-                                .paddingFromBaseline(top = 200.dp)
-                        )
-                    }
+                    ProjectRiskElement()
                 }
             }
         }
         //return binding?.root
     }
 
-    /*
+
     @Composable
     fun ProjectRiskElement(
         modifier: Modifier = Modifier
     ) {
         Surface(
-            color = Color.Blue,
+            color = Color.Green,
             modifier = Modifier
                 .fillMaxHeight()
                 .fillMaxWidth()
@@ -89,7 +78,7 @@ class ProjectRiskFragment :
             Text(text = "First UI loading built with Compose YAI!!!",
                 style = MaterialTheme.typography.headlineLarge,
                 modifier = Modifier
-                    .paddingFromBaseline(top = 40.dp)
+                    .paddingFromBaseline(top = 200.dp)
             )
         }
     }
@@ -98,7 +87,7 @@ class ProjectRiskFragment :
     @Composable
     fun ProjectRisksPreview() {
         ProjectRiskElement()
-    }*/
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

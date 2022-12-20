@@ -4,22 +4,34 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.viewmodels.projectpage.ProjectRiskViewModel
+import com.kickstarter.viewmodels.projectpage.ProjectRiskViewModel.ProjectRiskViewModel
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.observers.TestSubscriber
 
 class ProjectRiskViewModelTest : KSRobolectricTestCase() {
 
-    private lateinit var vm: ProjectRiskViewModel.ViewModel
+    private lateinit var vm: ProjectRiskViewModel
 
     private val projectRisks = TestSubscriber.create<String>()
     private val openLearnAboutAccountabilityOnKickstarter = TestSubscriber.create<String>()
+    private val disposables = CompositeDisposable()
 
     private fun setUpEnvironment(environment: Environment) {
-        this.vm = ProjectRiskViewModel.ViewModel(environment)
+        this.vm = ProjectRiskViewModel(environment)
 
-        this.vm.outputs.projectRisks().subscribe(this.projectRisks)
-        this.vm.outputs.openLearnAboutAccountabilityOnKickstarter().subscribe(this.openLearnAboutAccountabilityOnKickstarter)
+        disposables.add(this.vm.outputs.projectRisks().subscribe { this.projectRisks.onNext(it) })
+        disposables.add(
+            this.vm.outputs.openLearnAboutAccountabilityOnKickstarter().subscribe {
+                this.openLearnAboutAccountabilityOnKickstarter.onNext(it)
+            }
+        )
+    }
+
+    @After
+    fun cleanUp() {
+        disposables.clear()
     }
 
     @Test

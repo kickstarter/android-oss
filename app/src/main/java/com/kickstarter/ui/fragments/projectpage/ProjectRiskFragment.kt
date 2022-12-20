@@ -4,27 +4,38 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentProjectRisksBinding
-import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Configure
-import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.makeLinks
 import com.kickstarter.ui.extensions.parseHtmlTag
 import com.kickstarter.viewmodels.projectpage.ProjectRiskViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
-@RequiresFragmentViewModel(ProjectRiskViewModel.ViewModel::class)
 class ProjectRiskFragment :
-    BaseFragment<ProjectRiskViewModel.ViewModel>(),
+    Fragment(),
     Configure {
     private var binding: FragmentProjectRisksBinding? = null
 
+    private lateinit var viewModelFactory: ProjectRiskViewModel.Factory
+    private val viewModel: ProjectRiskViewModel.ProjectRiskViewModel by viewModels { viewModelFactory }
+
+    private var disposables = CompositeDisposable()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
+
+        this.context?.getEnvironment()?.let { env ->
+            viewModelFactory = ProjectRiskViewModel.Factory(env)
+        }
+
         binding = FragmentProjectRisksBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -33,21 +44,23 @@ class ProjectRiskFragment :
         super.onViewCreated(view, savedInstanceState)
         setupLearnAboutAccountabilityOnKickstarter()
 
-        this.viewModel.outputs.projectRisks()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe {
-                binding?.riskSectionDescription?.text = it
-            }
-
-        this.viewModel.outputs.openLearnAboutAccountabilityOnKickstarter()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe {
-                context?.let { context ->
-                    ApplicationUtils.openUrlExternally(context, it)
+        disposables.add(
+            this.viewModel.outputs.projectRisks()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    binding?.riskSectionDescription?.text = it
                 }
-            }
+        )
+
+        disposables.add(
+            this.viewModel.outputs.openLearnAboutAccountabilityOnKickstarter()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    context?.let { context ->
+                        ApplicationUtils.openUrlExternally(context, it)
+                    }
+                }
+        )
     }
 
     private fun setupLearnAboutAccountabilityOnKickstarter() {
@@ -65,7 +78,12 @@ class ProjectRiskFragment :
     }
 
     override fun configureWith(projectData: ProjectData) {
-        this.viewModel?.inputs?.configureWith(projectData)
+        this.viewModel.inputs.configureWith(projectData)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        disposables.clear()
     }
 
     companion object {

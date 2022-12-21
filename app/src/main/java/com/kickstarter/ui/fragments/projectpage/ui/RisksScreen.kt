@@ -37,7 +37,7 @@ import com.kickstarter.R
  * @param riskDescState mutable state holding the risks description state, this is the only dynamic piece
  * for this UI.
  *
- * @param callback callback attached to an [onClick] event
+ * @param callback callback attached to an onClick event
  */
 @Composable
 fun RisksScreen(
@@ -113,7 +113,8 @@ fun ProjectRisksPreview() {
         val desc = stringResource(id = R.string.risk_description)
         val riskDesc = remember { mutableStateOf(desc) }
         RisksScreen(
-            riskDescState = riskDesc
-        ) {}
+            riskDescState = riskDesc,
+            callback = {}
+        )
     }
 }

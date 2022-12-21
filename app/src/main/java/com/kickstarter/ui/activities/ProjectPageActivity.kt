@@ -384,9 +384,7 @@ class ProjectPageActivity :
             binding.projectAppBarLayout.setExpanded(false)
         }
 
-        binding.projectAppBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-
-            // not Fully expanded
+        binding.projectAppBarLayout.addOnOffsetChangedListener { _, verticalOffset ->
             if (verticalOffset != 0) {
                 binding.mediaHeader.inputs.pausePlayer()
             }

@@ -69,10 +69,6 @@
   <string name="stripe_publishable_key">pk_live_zjuK52lEUYcvBhIXEUnOEJzk</string>
   <string name="stripe_version" tools:ignore="TypographyDashes">2015-08-07</string>
 
-  <!--  Qualtrics -->
-  <string name="Take_our_survey_to_help_us_make_a_better_app_for_you">Take our survey to help us make a better app for you.</string>
-  <string name="No_thanks">No thanks</string>
-  <string name="Let_s_go">Let\'s go</string>
 
   <!--  Interstitial Internal Tools -->
   <string name="email_verification_interstitial" formatted="false">Email Verification Interstitial</string>
@@ -81,4 +77,7 @@
 
   <!-- Campaign -->
   <string name="Story">Story</string>
+
+  <!-- Risks Mock String-->
+  <string name="risk_description">"The largest risk comes from the creation/manufacturing of the pins at the pin factory. We are working with a vendor in China, who has lots of experience in projects for us. Still, there is a chance that something may go wrong during the manufacturing process and if that happens it could cause a delay in shipping. It can be common in the pin-making world that manus are delayed or make mistakes with an order. However, we don’t anticipate this being an issue, as our vendor has done many similar projects with us, but there is always a possibility. These items are handmade! If anything does happen, we will make sure to keep everyone informed and up to date regarding where we are in the process. The timeline for shipping is NOT solid due to these factors but we will keep all backers updated each step of the way. Also- Please be aware, there might be a delay due to the situation with the COVID-19 virus. This is causing delays all over the world as shipping gets limited, cities shutting down services and other issues arise. At this point, we do not think this will impact our project timeline. However, we cannot predict how things will go and our pin factory is located in China (they are all back at work now and we have gotten pins from them within the last month, so things appear to be going well now.) If this will affect our production, I will inform everyone through an update as soon as I know."</string>
 </resources>

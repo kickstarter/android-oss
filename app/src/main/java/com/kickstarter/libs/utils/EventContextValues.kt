@@ -43,6 +43,7 @@ class EventContextValues {
         SIGN_UP_SUBMIT("sign_up_submit"),
         SIGN_UP_INITIATE("sign_up_initiate"),
         COMMENT_POST("comment_post"),
+        PROJECT_SELECT("project_select"),
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -147,6 +148,14 @@ interface CreatorDashboardViewModel {
                 .map { true }
                 .compose(bindToLifecycle())
                 .subscribe(bottomSheetShouldExpand)
+
+            projectsListButtonClicked
+                .map { true }
+                .compose<Pair<Boolean, Project>>(Transformers.combineLatestPair(currentProject))
+                .compose(bindToLifecycle())
+                .subscribe {
+                    analyticEvents.trackCreatorDashboardSelectAnotherProjectCTA(it.second)
+                }
 
             Observable.merge(backClicked, scrimClicked, projectSelectionInput)
                 .map { false }

@@ -102,6 +102,10 @@ interface CreatorDashboardViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(projectName)
 
+            currentProject
+                .compose(bindToLifecycle())
+                .subscribe { analyticEvents.trackCreatorDashboardPageViewed(it) }
+
             val projectStatsEnvelopeNotification = currentProject
                 .switchMap {
                     client.fetchProjectStats(it)

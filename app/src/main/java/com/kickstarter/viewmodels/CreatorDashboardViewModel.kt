@@ -152,7 +152,7 @@ interface CreatorDashboardViewModel {
                 .subscribe {
                     bottomSheetShouldExpand.onNext(it.first)
                     analyticEvents.trackCreatorDashboardSelectAnotherProjectCTA(it.second)
-                    Log.d("leigh", "select project event fired")
+                    Log.d("leigh", it.first.toString())
                 }
 
             Observable.merge(backClicked, scrimClicked, projectSelectionInput)

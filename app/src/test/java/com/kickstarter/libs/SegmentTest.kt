@@ -28,6 +28,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.DASHBOAR
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_FILTER
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_SORT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PROJECT_SELECT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.ALL
@@ -1567,6 +1568,60 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("hello world", properties["discover_search_term"])
         assertEquals("ending_soon", properties["discover_sort"])
         assertEquals(123, properties["discover_tag"])
+    }
+
+    @Test
+    fun trackCreatorDashboardSelectAnotherProjectCTA() {
+        val user = user()
+        val project = project()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedUser.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackCreatorDashboardSelectAnotherProjectCTA(project)
+
+        val expectedProperties = propertiesTest.value
+
+        assertUserProperties(false)
+        assertSessionProperties(user)
+        assertEquals(PROJECT_SELECT.contextName, expectedProperties[CONTEXT_CTA.contextName])
+        assertEquals(CREATOR_DASHBOARD.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+        assertEquals(DASHBOARD.contextName, expectedProperties[CONTEXT_SECTION.contextName])
+        assertEquals(100, expectedProperties["project_backers_count"])
+        assertEquals("subcategoryName", expectedProperties["project_subcategory"])
+        assertEquals("categoryName", expectedProperties["project_category"])
+        assertEquals(3, expectedProperties["project_comments_count"])
+        assertEquals("US", expectedProperties["project_country"])
+        assertEquals("3", expectedProperties["project_creator_uid"])
+        assertEquals("USD", expectedProperties["project_currency"])
+        assertNotNull(expectedProperties["project_prelaunch_activated"])
+        assertEquals(50.0, expectedProperties["project_current_pledge_amount"])
+        assertEquals(50.0, expectedProperties["project_current_amount_pledged_usd"])
+        assertEquals(project.deadline(), expectedProperties["project_deadline"])
+        assertEquals(20, expectedProperties["project_duration"])
+        assertEquals(100.0, expectedProperties["project_goal"])
+        assertEquals(100.0, expectedProperties["project_goal_usd"])
+        assertEquals(true, expectedProperties["project_has_video"])
+        assertEquals(10 * 24, expectedProperties["project_hours_remaining"])
+        assertEquals(true, expectedProperties["project_is_repeat_creator"])
+        assertEquals(project.launchedAt(), expectedProperties["project_launched_at"])
+        assertEquals("Brooklyn", expectedProperties["project_location"])
+        assertEquals("Some Name", expectedProperties["project_name"])
+        assertEquals(50, expectedProperties["project_percent_raised"])
+        assertEquals("4", expectedProperties["project_pid"])
+        assertEquals(50.0, expectedProperties["project_current_pledge_amount"])
+        assertEquals(1, expectedProperties["project_rewards_count"])
+        assertEquals("live", expectedProperties["project_state"])
+        assertEquals(1.0f, expectedProperties["project_static_usd_rate"])
+        assertEquals(5, expectedProperties["project_updates_count"])
+        assertEquals("tag1, tag2, tag3", expectedProperties["project_tags"])
+        assertEquals(PhotoFactory.photo().full(), expectedProperties["project_image_url"])
+        assertEquals("https://www.kickstarter.com/projects/${expectedProperties["project_creator_uid"]}/slug-1", expectedProperties["project_url"])
+        assertEquals(false, expectedProperties["project_has_add_ons"])
+
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
     }
 
     private fun client(user: User?) = MockTrackingClient(

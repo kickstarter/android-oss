@@ -45,6 +45,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_CONFIRM
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_SUBMIT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PROJECT_SELECT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.REWARD_CONTINUE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INITIATE
@@ -593,6 +594,19 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         props[CONTEXT_PAGE.contextName] = PROJECT.contextName
         props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
         props.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client when the select another project button is tapped on the creator dashboard screen.
+     *
+     * @param projectData: The data for the current project.
+     */
+    fun trackCreatorDashboardSelectAnotherProjectCTA(project: Project) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to PROJECT_SELECT.contextName)
+        props[CONTEXT_PAGE.contextName] = CREATOR_DASHBOARD.contextName
+        props[CONTEXT_SECTION.contextName] = DASHBOARD.contextName
+        props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
         client.track(CTA_CLICKED.eventName, props)
     }
 

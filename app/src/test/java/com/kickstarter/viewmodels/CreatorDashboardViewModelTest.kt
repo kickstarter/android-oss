@@ -50,9 +50,17 @@ class CreatorDashboardViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testBottomSheetShouldExpand_whenNewProjectSelected() {
-        setUpEnvironment(environment())
+        val project = project()
+        val projectStatsEnvelope = projectStatsEnvelope()
+        val apiClient: MockApiClient = object : MockApiClient() {
+            override fun fetchProjectStats(project: Project): Observable<ProjectStatsEnvelope> {
+                return Observable.just(projectStatsEnvelope)
+            }
+        }
 
-        vm.intent(Intent())
+        setUpEnvironment(environment().toBuilder().apiClient(apiClient).build())
+
+        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
         vm.inputs.projectSelectionInput(project())
         bottomSheetShouldExpand.assertValue(false)
     }

@@ -70,6 +70,12 @@
   <string name="stripe_version" tools:ignore="TypographyDashes">2015-08-07</string>
 
 
+  <!--  Consent Management -->
+  <string name="FPO_allow">Allow</string>
+  <string name="FPO_allow_app_to_track">Allow app to track?</string>
+  <string name="FPO_Allow_Kickstarter_to_track_analytics_to_provide_a_more_personalized_experience">Allow Kickstarter to track analytics to provide a more personalized experience</string>
+  <string name="FPO_deny">Deny</string>
+
   <!--  Interstitial Internal Tools -->
   <string name="email_verification_interstitial" formatted="false">Email Verification Interstitial</string>
 

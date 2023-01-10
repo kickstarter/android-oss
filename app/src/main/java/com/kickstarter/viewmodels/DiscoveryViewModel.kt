@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import android.util.Pair
 import com.google.common.collect.Iterables.filter
 import com.kickstarter.R
@@ -36,10 +35,10 @@ import com.kickstarter.ui.viewholders.discoverydrawer.LoggedInViewHolder
 import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder
 import com.kickstarter.ui.viewholders.discoverydrawer.ParentFilterViewHolder
 import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder
-import java.util.Locale.filter
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
+import java.util.Locale.filter
 
 interface DiscoveryViewModel {
     interface Inputs : DiscoveryDrawerAdapter.Delegate, DiscoveryPagerAdapter.Delegate {

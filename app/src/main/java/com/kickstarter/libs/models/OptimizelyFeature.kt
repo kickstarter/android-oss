@@ -7,6 +7,7 @@ class OptimizelyFeature {
         ANDROID_FACEBOOK_LOGIN_REMOVE("android_facebook_login_remove"),
         ANDROID_PAYMENTSHEET_SETTINGS("android_paymentsheet_user_settings"),
         ANDROID_HIDE_APP_RATING_DIALOG("android_hide_app_rating_dialog"),
-        ANDROID_CONSENT_MANAGEMENT("android_consent_management")
+        ANDROID_CONSENT_MANAGEMENT("android_consent_management"),
+        ANDROID_UGC("android_ugc")
     }
 }

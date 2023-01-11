@@ -366,6 +366,13 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
                 activity?.startLoginActivity()
             }
 
+        viewModel.outputs.shouldShowReportProject()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                binding.projectCreatorInfoLayout.reportProject.setGone(!it)
+            }
+
         binding.projectCreatorDashboardHeader.projectDashboardButton.setOnClickListener {
             this.viewModel.inputs.creatorDashboardClicked()
         }

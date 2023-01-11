@@ -5,6 +5,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.models.OptimizelyExperiment
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ExperimentData
@@ -181,6 +182,7 @@ interface ProjectOverviewViewModel {
         fun startCreatorDashboardView(): Observable<ProjectData>
         fun startReportProjectView(): Observable<ProjectData>
         fun startLoginView(): Observable<Void>
+        fun shouldShowReportProject(): Observable<Boolean>
     }
 
     class ViewModel(environment: Environment) : FragmentViewModel<ProjectOverviewFragment?>(environment), Inputs, Outputs {
@@ -250,6 +252,7 @@ interface ProjectOverviewViewModel {
         private val creatorDashBoardView: Observable<ProjectData>
         private val startReportProjectView: Observable<ProjectData>
         private val startLogin = PublishSubject.create<Void>()
+        private val shouldShowReportProject: Observable<Boolean>
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -462,6 +465,10 @@ interface ProjectOverviewViewModel {
 
         override fun startLoginView(): Observable<Void> {
             return this.startLogin
+        }
+
+        override fun shouldShowReportProject(): Observable<Boolean> {
+            return this.shouldShowReportProject
         }
 
         init {
@@ -755,6 +762,8 @@ interface ProjectOverviewViewModel {
                 .subscribe {
                     this.startLogin.onNext(null)
                 }
+
+            shouldShowReportProject = Observable.just(this.optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_UGC) ?: false)
 
             projectData
                 .compose(Transformers.takePairWhen(campaignClicked))

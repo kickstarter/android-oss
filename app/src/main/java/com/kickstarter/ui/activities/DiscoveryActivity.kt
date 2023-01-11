@@ -30,6 +30,7 @@ import com.kickstarter.ui.adapters.DiscoveryPagerAdapter
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.showErrorSnackBar
 import com.kickstarter.ui.extensions.showSuccessSnackBar
+import com.kickstarter.ui.fragments.ConsentManagementDialogFragment
 import com.kickstarter.ui.fragments.DiscoveryFragment
 import com.kickstarter.ui.fragments.DiscoveryFragment.Companion.newInstance
 import com.kickstarter.viewmodels.DiscoveryViewModel
@@ -43,6 +44,7 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
     private lateinit var drawerAdapter: DiscoveryDrawerAdapter
     private lateinit var drawerLayoutManager: LinearLayoutManager
     private lateinit var pagerAdapter: DiscoveryPagerAdapter
+    private lateinit var consentManagementDialogFragment: ConsentManagementDialogFragment
     private var internalTools: InternalToolsType? = null
     private lateinit var binding: DiscoveryLayoutBinding
 
@@ -109,6 +111,15 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
             .subscribe {
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                 viewModel.inputs.hasSeenNotificationsPermission(true)
+            }
+
+        viewModel.outputs.showConsentManagementDialog()
+            .distinctUntilChanged()
+            .delay(2000, TimeUnit.MILLISECONDS)
+            .subscribe {
+                consentManagementDialogFragment = ConsentManagementDialogFragment()
+                consentManagementDialogFragment.isCancelable = false
+                consentManagementDialogFragment.show(supportFragmentManager, "consentManagementDialogFragment")
             }
 
         viewModel.outputs.clearPages()

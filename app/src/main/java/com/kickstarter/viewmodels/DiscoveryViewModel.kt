@@ -3,9 +3,11 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import android.net.Uri
 import android.util.Pair
+import com.google.common.collect.Iterables.filter
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DiscoveryUtils
 import com.kickstarter.libs.utils.ObjectUtils
@@ -21,6 +23,7 @@ import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope
+import com.kickstarter.ui.SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE
 import com.kickstarter.ui.SharedPreferenceKey.HAS_SEEN_NOTIF_PERMISSIONS
 import com.kickstarter.ui.activities.DiscoveryActivity
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter
@@ -35,6 +38,7 @@ import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
+import java.util.Locale.filter
 
 interface DiscoveryViewModel {
     interface Inputs : DiscoveryDrawerAdapter.Delegate, DiscoveryPagerAdapter.Delegate {
@@ -109,6 +113,9 @@ interface DiscoveryViewModel {
         /** Emits if the user should be shown the notification permission request  */
         fun showNotifPermissionsRequest(): Observable<Void?>
 
+        /** Emits if the user should be shown the consent management dialog  */
+        fun showConsentManagementDialog(): Observable<Void?>
+
         /** Emits the error message from verify endpoint  */
         fun showErrorMessage(): Observable<String?>
     }
@@ -124,6 +131,7 @@ interface DiscoveryViewModel {
         private val currentConfigType = requireNotNull(environment.currentConfig())
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val webClient = requireNotNull(environment.webClient())
+        private val optimizely = environment.optimizely()
 
         private fun currentDrawerMenuIcon(user: User?): Int {
             if (ObjectUtils.isNull(user)) {
@@ -152,6 +160,7 @@ interface DiscoveryViewModel {
         private val parentFilterRowClick = PublishSubject.create<NavigationDrawerData.Section.Row>()
         private val profileClick = PublishSubject.create<Void?>()
         private val showNotifPermissionRequest = BehaviorSubject.create<Void?>()
+        private val showConsentManagementDialog = BehaviorSubject.create<Void?>()
         private val settingsClick = PublishSubject.create<Void?>()
         private val sortClicked = PublishSubject.create<Int>()
         private val hasSeenNotificationsPermission = PublishSubject.create<Boolean>()
@@ -248,6 +257,12 @@ interface DiscoveryViewModel {
             hasSeenNotificationsPermission
                 .compose(bindToLifecycle())
                 .subscribe { sharedPreferences.edit().putBoolean(HAS_SEEN_NOTIF_PERMISSIONS, it).apply() }
+
+            Observable.just(sharedPreferences.contains(CONSENT_MANAGEMENT_PREFERENCE))
+                .filter { !it }
+                .filter { this.optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_CONSENT_MANAGEMENT) }
+                .compose(bindToLifecycle())
+                .subscribe { showConsentManagementDialog.onNext(null) }
 
             val paramsFromIntent = intent()
                 .flatMap { DiscoveryIntentMapper.params(it, apiClient, apolloClient) }
@@ -452,5 +467,6 @@ interface DiscoveryViewModel {
         override fun showSuccessMessage(): Observable<String> { return successMessage }
         override fun showErrorMessage(): Observable<String?> { return messageError }
         override fun showNotifPermissionsRequest(): Observable<Void?> { return showNotifPermissionRequest }
+        override fun showConsentManagementDialog(): Observable<Void?> { return showConsentManagementDialog }
     }
 }

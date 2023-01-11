@@ -739,11 +739,15 @@ interface ProjectOverviewViewModel {
 
             startReportProjectView = projectData
                 .compose(Transformers.takePairWhen(reportProjectButtonClicked))
-                .compose(Transformers.takeWhen(this.currentUser.isLoggedIn))
+                .map { it.first }
+                .withLatestFrom(this.currentUser.isLoggedIn) { pData, isLoggedIn ->
+                    return@withLatestFrom Pair(pData, isLoggedIn)
+                }
+                .filter { it.second }
                 .map { it.first }
 
             reportProjectButtonClicked
-                .withLatestFrom(this.currentUser.isLoggedIn){ _, isUser ->
+                .withLatestFrom(this.currentUser.isLoggedIn) { _, isUser ->
                     return@withLatestFrom isUser
                 }
                 .filter { !it }

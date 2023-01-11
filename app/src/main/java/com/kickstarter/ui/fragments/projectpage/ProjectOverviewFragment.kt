@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.kickstarter.R
@@ -35,7 +36,12 @@ import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ProjectSocialActivity
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.extensions.*
+import com.kickstarter.ui.extensions.startCampaignWebViewActivity
+import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
+import com.kickstarter.ui.extensions.startCreatorDashboardActivity
+import com.kickstarter.ui.extensions.startLoginActivity
+import com.kickstarter.ui.extensions.startProjectUpdatesActivity
+import com.kickstarter.ui.extensions.startRootCommentsActivity
 import com.kickstarter.viewmodels.projectpage.ProjectOverviewViewModel
 import com.squareup.picasso.Picasso
 import org.joda.time.DateTime
@@ -350,7 +356,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                showSnackbar(this.binding.avatar, "Will open next screen soon")
+                Toast.makeText(this.activity, "Will open next screen soon", Toast.LENGTH_SHORT).show()
             }
 
         viewModel.outputs.startLoginView()

@@ -8,9 +8,11 @@ import com.kickstarter.R
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.extensions.positionFromSort
+import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.CategoryFactory.artCategory
 import com.kickstarter.mock.factories.CategoryFactory.musicCategory
@@ -64,6 +66,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     private val showSuccessMessage = TestSubscriber<String>()
     private val showErrorMessage = TestSubscriber<String>()
     private val showNotifPermissionRequest = TestSubscriber<Void>()
+    private val showConsentManagementDialog = TestSubscriber<Void>()
 
     private fun setUpEnvironment(environment: Environment) {
         vm = DiscoveryViewModel.ViewModel(environment)
@@ -719,6 +722,79 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         vm.outputs.showNotifPermissionsRequest().subscribe(showNotifPermissionRequest)
 
         showNotifPermissionRequest.assertValue(null)
+    }
+
+    @Test
+    fun testConsentManagementDialog_whenPreferenceContainsKeyValue_shouldNotEmit() {
+        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        Mockito.`when`(sharedPreferences.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)).thenReturn(true)
+
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .sharedPreferences(sharedPreferences)
+                .optimizely(mockExperimentsClientType)
+                .build()
+        )
+
+        vm.outputs.showConsentManagementDialog().subscribe(showConsentManagementDialog)
+
+        showConsentManagementDialog.assertNoValues()
+    }
+
+    @Test
+    fun testConsentManagementDialog_whenFFOff_shouldNotEmit() {
+        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        Mockito.`when`(sharedPreferences.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)).thenReturn(false)
+
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return false
+                }
+            }
+
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .sharedPreferences(sharedPreferences)
+                .optimizely(mockExperimentsClientType)
+                .build()
+        )
+
+        vm.outputs.showConsentManagementDialog().subscribe(showConsentManagementDialog)
+
+        showConsentManagementDialog.assertNoValues()
+    }
+
+    @Test
+    fun testConsentManagementDialog_preferenceDoesNotContainKeyValueAndFFOn_shouldEmit() {
+        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+
+        Mockito.`when`(sharedPreferences.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)).thenReturn(false)
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .sharedPreferences(sharedPreferences)
+                .optimizely(mockExperimentsClientType)
+                .build()
+        )
+
+        vm.outputs.showConsentManagementDialog().subscribe(showConsentManagementDialog)
+
+        showConsentManagementDialog.assertValue(null)
     }
 
     private fun setUpDefaultParamsTest(user: User?) {

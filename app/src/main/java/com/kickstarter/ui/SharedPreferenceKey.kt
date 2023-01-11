@@ -11,4 +11,5 @@ object SharedPreferenceKey {
     const val USER = "user"
     const val FEATURE_FLAG = "feature_flags"
     const val HAS_SEEN_NOTIF_PERMISSIONS = "has_seen_notif_permissions"
+    const val CONSENT_MANAGEMENT_PREFERENCE = "consent_management_preference"
 }

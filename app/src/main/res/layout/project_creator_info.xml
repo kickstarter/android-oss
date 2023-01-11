@@ -80,6 +80,40 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/report_project"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:paddingTop="@dimen/grid_2"
+        android:paddingBottom="@dimen/grid_2">
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentStart="true"
+          android:layout_centerVertical="true"
+          android:text="@string/FPO_report_project"
+          android:textColor="@color/kds_support_700"
+          android:textSize="@dimen/body" />
+
+      <ImageButton
+          android:id="@+id/dropdownButton"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentEnd="true"
+          android:layout_centerVertical="true"
+          android:contentDescription="@null"
+          android:paddingHorizontal="@dimen/grid_3_half"
+          android:paddingVertical="@dimen/grid_1"
+          android:background="@null"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          app:srcCompat="@drawable/ic_arrow_right" />
+
+    </RelativeLayout>
+
   </LinearLayout>
 
   <TextView

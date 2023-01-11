@@ -45,6 +45,9 @@ interface ProjectOverviewViewModel {
 
         /** Call when the creator dashboard is clicked  */
         fun creatorDashboardClicked()
+
+        /** Called when the report project button  */
+        fun reportProjectButtonClicked()
     }
 
     interface Outputs {
@@ -176,6 +179,8 @@ interface ProjectOverviewViewModel {
         fun startUpdatesView(): Observable<ProjectData>
         fun startCampaignView(): Observable<ProjectData>
         fun startCreatorDashboardView(): Observable<ProjectData>
+        fun startReportProjectView(): Observable<ProjectData>
+        fun startLoginView(): Observable<Void>
     }
 
     class ViewModel(environment: Environment) : FragmentViewModel<ProjectOverviewFragment?>(environment), Inputs, Outputs {
@@ -194,6 +199,7 @@ interface ProjectOverviewViewModel {
         private val commentsClicked = PublishSubject.create<Void>()
         private val updatesClicked = PublishSubject.create<Void>()
         private val creatorDashboardClicked = PublishSubject.create<Void>()
+        private val reportProjectButtonClicked = PublishSubject.create<Void>()
 
         // Outputs
         private val avatarPhotoUrl: Observable<String>
@@ -242,6 +248,8 @@ interface ProjectOverviewViewModel {
         private val startUpdatesView: Observable<ProjectData>
         private val startCampaignView: Observable<ProjectData>
         private val creatorDashBoardView: Observable<ProjectData>
+        private val startReportProjectView: Observable<ProjectData>
+        private val startLogin = PublishSubject.create<Void>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -260,6 +268,8 @@ interface ProjectOverviewViewModel {
         override fun updatesButtonClicked() = this.updatesClicked.onNext(null)
 
         override fun creatorDashboardClicked() = this.creatorDashboardClicked.onNext(null)
+
+        override fun reportProjectButtonClicked() = this.reportProjectButtonClicked.onNext(null)
 
         // - Outputs
         override fun avatarPhotoUrl(): Observable<String> {
@@ -444,6 +454,14 @@ interface ProjectOverviewViewModel {
 
         override fun startCreatorDashboardView(): Observable<ProjectData> {
             return this.creatorDashBoardView
+        }
+
+        override fun startReportProjectView(): Observable<ProjectData> {
+            return this.startReportProjectView
+        }
+
+        override fun startLoginView(): Observable<Void> {
+            return this.startLogin
         }
 
         init {
@@ -718,6 +736,21 @@ interface ProjectOverviewViewModel {
             creatorDashBoardView = projectData
                 .compose(Transformers.takePairWhen(creatorDashboardClicked))
                 .map { it.first }
+
+            startReportProjectView = projectData
+                .compose(Transformers.takePairWhen(reportProjectButtonClicked))
+                .compose(Transformers.takeWhen(this.currentUser.isLoggedIn))
+                .map { it.first }
+
+            reportProjectButtonClicked
+                .withLatestFrom(this.currentUser.isLoggedIn){ _, isUser ->
+                    return@withLatestFrom isUser
+                }
+                .filter { !it }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.startLogin.onNext(null)
+                }
 
             projectData
                 .compose(Transformers.takePairWhen(campaignClicked))

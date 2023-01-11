@@ -35,11 +35,7 @@ import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ProjectSocialActivity
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.extensions.startCampaignWebViewActivity
-import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
-import com.kickstarter.ui.extensions.startCreatorDashboardActivity
-import com.kickstarter.ui.extensions.startProjectUpdatesActivity
-import com.kickstarter.ui.extensions.startRootCommentsActivity
+import com.kickstarter.ui.extensions.*
 import com.kickstarter.viewmodels.projectpage.ProjectOverviewViewModel
 import com.squareup.picasso.Picasso
 import org.joda.time.DateTime
@@ -343,6 +339,27 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
                 activity?.startCampaignWebViewActivity(it)
             }
 
+        viewModel.outputs.startCampaignView()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                activity?.startCampaignWebViewActivity(it)
+            }
+
+        viewModel.outputs.startReportProjectView()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                showSnackbar(this.binding.avatar, "Will open next screen soon")
+            }
+
+        viewModel.outputs.startLoginView()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                activity?.startLoginActivity()
+            }
+
         binding.projectCreatorDashboardHeader.projectDashboardButton.setOnClickListener {
             this.viewModel.inputs.creatorDashboardClicked()
         }
@@ -365,6 +382,10 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
 
         binding.projectCreatorInfoLayout.updates.setOnClickListener {
             this.viewModel.inputs.updatesButtonClicked()
+        }
+
+        binding.projectCreatorInfoLayout.reportProject.setOnClickListener {
+            this.viewModel.inputs.reportProjectButtonClicked()
         }
     }
 

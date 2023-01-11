@@ -345,13 +345,6 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
                 activity?.startCampaignWebViewActivity(it)
             }
 
-        viewModel.outputs.startCampaignView()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe {
-                activity?.startCampaignWebViewActivity(it)
-            }
-
         viewModel.outputs.startReportProjectView()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())

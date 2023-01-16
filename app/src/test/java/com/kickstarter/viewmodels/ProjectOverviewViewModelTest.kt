@@ -7,6 +7,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.models.OptimizelyExperiment
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ProgressBarUtils
@@ -82,6 +83,9 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private val startUpdatesView = TestSubscriber<ProjectData>()
     private val startCampaignView = TestSubscriber<ProjectData>()
     private val startCreatorDashboard = TestSubscriber<ProjectData>()
+    private val startReportProjectView = TestSubscriber<ProjectData>()
+    private val startLoginView = TestSubscriber<Void>()
+    private val shouldShowReportProject = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(environment: Environment, projectData: ProjectData) {
         vm = ProjectOverviewViewModel.ViewModel(environment)
@@ -140,6 +144,9 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         vm.outputs.startCommentsView().subscribe(startCommentsView)
         vm.outputs.startCreatorView().subscribe(startCreatorView)
         vm.outputs.startCreatorDashboardView().subscribe(startCreatorDashboard)
+        vm.outputs.shouldShowReportProject().subscribe(shouldShowReportProject)
+        vm.outputs.startLoginView().subscribe(startLoginView)
+        vm.outputs.startReportProjectView().subscribe(startReportProjectView)
         vm.inputs.configureWith(projectData)
     }
 
@@ -633,14 +640,77 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         conversionTextViewIsGone.assertValue(true)
     }
 
-    private fun environmentForVariant(variant: OptimizelyExperiment.Variant): Environment? {
+    @Test
+    fun testShouldShowReportProject_FFOn() {
+        val env = environmentForFeatureFlag(true)
+
+        setUpEnvironment(env, project(ProjectFactory.project()))
+
+        this.shouldShowReportProject.assertValue(true)
+    }
+
+    @Test
+    fun testShouldShowReportProject_FFOff() {
+        val env = environmentForFeatureFlag(false)
+
+        setUpEnvironment(env, project(ProjectFactory.project()))
+
+        this.shouldShowReportProject.assertValue(false)
+    }
+
+    @Test
+    fun testStartLoginFlow_when_NoUser() {
+        setUpEnvironment(environment(), project(ProjectFactory.project()))
+
+        // -  User hits report project
+        vm.inputs.reportProjectButtonClicked()
+
+        this.startLoginView.assertValueCount(1)
+        this.startLoginView.assertValue(null)
+    }
+
+    @Test
+    fun testProjectReport_when_NoUser() {
+        val envWithUser = environment()
+            .toBuilder()
+            .currentUser(MockCurrentUser(UserFactory.germanUser()))
+            .build()
+
+        val projectData = project(ProjectFactory.project())
+        setUpEnvironment(envWithUser, projectData)
+
+        // -  User hits report project
+        vm.inputs.reportProjectButtonClicked()
+
+        this.startLoginView.assertValueCount(0)
+        this.startLoginView.assertNoValues()
+
+        this.startReportProjectView.assertValueCount(1)
+        this.startReportProjectView.assertValue(projectData)
+    }
+
+    private fun environmentForFeatureFlag(enabled: Boolean): Environment {
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return enabled
+                }
+            }
+
+        return environment()
+            .toBuilder()
+            .optimizely(mockExperimentsClientType)
+            .build()
+    }
+
+    private fun environmentForVariant(variant: OptimizelyExperiment.Variant): Environment {
         return environment()
             .toBuilder()
             .optimizely(MockExperimentsClientType(variant))
             .build()
     }
 
-    private fun environmentWithUnsuccessfulCreatorDetailsQuery(): Environment? {
+    private fun environmentWithUnsuccessfulCreatorDetailsQuery(): Environment {
         return environment()
             .toBuilder()
             .apolloClient(object : MockApolloClient() {

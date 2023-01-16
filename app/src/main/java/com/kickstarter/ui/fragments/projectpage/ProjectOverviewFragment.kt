@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.kickstarter.R
@@ -38,6 +39,7 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.startCampaignWebViewActivity
 import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
 import com.kickstarter.ui.extensions.startCreatorDashboardActivity
+import com.kickstarter.ui.extensions.startLoginActivity
 import com.kickstarter.ui.extensions.startProjectUpdatesActivity
 import com.kickstarter.ui.extensions.startRootCommentsActivity
 import com.kickstarter.viewmodels.projectpage.ProjectOverviewViewModel
@@ -343,6 +345,27 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
                 activity?.startCampaignWebViewActivity(it)
             }
 
+        viewModel.outputs.startReportProjectView()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                Toast.makeText(this.activity, "Will open next screen soon", Toast.LENGTH_SHORT).show()
+            }
+
+        viewModel.outputs.startLoginView()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                activity?.startLoginActivity()
+            }
+
+        viewModel.outputs.shouldShowReportProject()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                binding.projectCreatorInfoLayout.reportProject.setGone(!it)
+            }
+
         binding.projectCreatorDashboardHeader.projectDashboardButton.setOnClickListener {
             this.viewModel.inputs.creatorDashboardClicked()
         }
@@ -365,6 +388,10 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
 
         binding.projectCreatorInfoLayout.updates.setOnClickListener {
             this.viewModel.inputs.updatesButtonClicked()
+        }
+
+        binding.projectCreatorInfoLayout.reportProject.setOnClickListener {
+            this.viewModel.inputs.reportProjectButtonClicked()
         }
     }
 

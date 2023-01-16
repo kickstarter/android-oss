@@ -113,6 +113,42 @@
           app:srcCompat="@drawable/ic_arrow_right" />
 
     </RelativeLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/already_reported_project"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:paddingTop="@dimen/grid_2"
+        android:paddingBottom="@dimen/grid_2">
+
+      <TextView
+          android:id="@+id/text_resported"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:text="@string/FPO_Already_reported"
+          android:textColor="@color/kds_support_700"
+          android:textSize="@dimen/body"
+          app:layout_constraintEnd_toStartOf="@id/check_resported"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"/>
+
+      <ImageButton
+          android:id="@+id/check_resported"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentEnd="true"
+          android:layout_centerVertical="true"
+          android:contentDescription="@null"
+          android:paddingHorizontal="@dimen/grid_3_half"
+          android:paddingVertical="@dimen/grid_1"
+          android:background="@null"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          app:srcCompat="@drawable/icon__check_green"
+          app:layout_constraintBaseline_toBottomOf="@+id/text_resported"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
   </LinearLayout>
 

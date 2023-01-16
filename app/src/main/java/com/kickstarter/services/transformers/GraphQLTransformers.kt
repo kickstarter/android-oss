@@ -311,6 +311,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
     val risks = projectFragment?.risks()
     val story = projectFragment?.story()?.toString() ?: ""
     val userCanComment = projectFragment?.canComment() ?: false
+    val isFlagged = projectFragment?.flagging()?.kind()?.let { true } ?: false
 
     return Project.builder()
         .availableCardTypes(availableCards.map { it.name })
@@ -362,6 +363,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         .envCommitments(eCommitment)
         .risks(risks)
         .story(story)
+        .isFlagged(isFlagged)
         .build()
 }
 

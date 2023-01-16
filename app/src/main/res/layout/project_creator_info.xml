@@ -87,7 +87,8 @@
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
         android:paddingTop="@dimen/grid_2"
-        android:paddingBottom="@dimen/grid_2">
+        android:paddingBottom="@dimen/grid_2"
+        android:visibility="gone">
 
       <TextView
           android:layout_width="match_parent"
@@ -114,13 +115,14 @@
 
     </RelativeLayout>
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/already_reported_project"
+        android:id="@+id/project_flagged"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
         android:paddingTop="@dimen/grid_2"
-        android:paddingBottom="@dimen/grid_2">
+        android:paddingBottom="@dimen/grid_2"
+        android:visibility="gone">
 
       <TextView
           android:id="@+id/text_resported"
@@ -147,7 +149,6 @@
           app:layout_constraintTop_toTopOf="parent"
           app:srcCompat="@drawable/icon__check_green"
           app:layout_constraintBaseline_toBottomOf="@+id/text_resported"/>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
   </LinearLayout>

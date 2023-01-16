@@ -86,6 +86,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private val startReportProjectView = TestSubscriber<ProjectData>()
     private val startLoginView = TestSubscriber<Void>()
     private val shouldShowReportProject = TestSubscriber<Boolean>()
+    private val shouldShowProjectFlagged = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(environment: Environment, projectData: ProjectData) {
         vm = ProjectOverviewViewModel.ViewModel(environment)
@@ -147,6 +148,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         vm.outputs.shouldShowReportProject().subscribe(shouldShowReportProject)
         vm.outputs.startLoginView().subscribe(startLoginView)
         vm.outputs.startReportProjectView().subscribe(startReportProjectView)
+        vm.outputs.shouldShowProjectFlagged().subscribe(shouldShowProjectFlagged)
         vm.inputs.configureWith(projectData)
     }
 
@@ -687,6 +689,18 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
 
         this.startReportProjectView.assertValueCount(1)
         this.startReportProjectView.assertValue(projectData)
+    }
+
+    @Test
+    fun testProjectReported() {
+        val env = environmentForFeatureFlag(true)
+        val project = ProjectFactory.project().toBuilder()
+            .isFlagged(true)
+            .build()
+        setUpEnvironment(env, project(project))
+
+        this.shouldShowProjectFlagged.assertValue(true)
+        this.shouldShowReportProject.assertValue(false)
     }
 
     private fun environmentForFeatureFlag(enabled: Boolean): Environment {

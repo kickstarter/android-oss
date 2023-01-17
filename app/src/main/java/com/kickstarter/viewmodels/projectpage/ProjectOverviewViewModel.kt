@@ -183,6 +183,7 @@ interface ProjectOverviewViewModel {
         fun startReportProjectView(): Observable<ProjectData>
         fun startLoginView(): Observable<Void>
         fun shouldShowReportProject(): Observable<Boolean>
+        fun shouldShowProjectFlagged(): Observable<Boolean>
     }
 
     class ViewModel(environment: Environment) : FragmentViewModel<ProjectOverviewFragment?>(environment), Inputs, Outputs {
@@ -253,6 +254,7 @@ interface ProjectOverviewViewModel {
         private val startReportProjectView: Observable<ProjectData>
         private val startLogin = PublishSubject.create<Void>()
         private val shouldShowReportProject: Observable<Boolean>
+        private val shouldShowProjectFlagged: Observable<Boolean>
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -469,6 +471,10 @@ interface ProjectOverviewViewModel {
 
         override fun shouldShowReportProject(): Observable<Boolean> {
             return this.shouldShowReportProject
+        }
+
+        override fun shouldShowProjectFlagged(): Observable<Boolean> {
+            return this.shouldShowProjectFlagged
         }
 
         init {
@@ -763,7 +769,16 @@ interface ProjectOverviewViewModel {
                     this.startLogin.onNext(null)
                 }
 
-            shouldShowReportProject = Observable.just(this.optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_UGC) ?: false)
+            shouldShowProjectFlagged = project
+                .map { it.isFlagged() ?: false }
+                .withLatestFrom(Observable.just(this.optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_UGC) ?: false)) { isFlagged, isEnabled ->
+                    return@withLatestFrom isEnabled && isFlagged
+                }
+
+            shouldShowReportProject = shouldShowProjectFlagged
+                .withLatestFrom(Observable.just(this.optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_UGC) ?: false)) { isFlagged, isEnabled ->
+                    return@withLatestFrom isEnabled && !isFlagged
+                }
 
             projectData
                 .compose(Transformers.takePairWhen(campaignClicked))

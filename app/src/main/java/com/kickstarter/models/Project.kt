@@ -60,7 +60,8 @@ class Project private constructor(
     private val projectFaqs: List<ProjectFaq>?,
     private val envCommitments: List<EnvironmentalCommitment>?,
     private val risks: String?,
-    private val story: String?
+    private val story: String?,
+    private val isFlagged: Boolean?
 ) : Parcelable, Relay {
     fun availableCardTypes() = this.availableCardTypes
     fun backersCount() = this.backersCount
@@ -111,6 +112,7 @@ class Project private constructor(
     fun envCommitments() = this.envCommitments
     fun risks() = this.risks
     fun story() = this.story
+    fun isFlagged() = this.isFlagged
 
     @Parcelize
     data class Builder(
@@ -163,7 +165,8 @@ class Project private constructor(
         private var projectFaqs: List<ProjectFaq>? = emptyList(),
         private var envCommitments: List<EnvironmentalCommitment>? = emptyList(),
         private var risks: String? = "",
-        private var story: String? = ""
+        private var story: String? = "",
+        private var isFlagged: Boolean? = null
     ) : Parcelable {
         fun availableCardTypes(availableCardTypes: List<String>?) = apply { this.availableCardTypes = availableCardTypes }
         fun backersCount(backersCount: Int?) = apply { this.backersCount = backersCount ?: 0 }
@@ -214,6 +217,7 @@ class Project private constructor(
         fun envCommitments(envCommitments: List<EnvironmentalCommitment>?) = apply { this.envCommitments = envCommitments ?: emptyList() }
         fun risks(risks: String?) = apply { this.risks = risks ?: "" }
         fun story(story: String?) = apply { this.story = story ?: "" }
+        fun isFlagged(isFlagged: Boolean?) = apply { this.isFlagged = isFlagged }
         fun build() = Project(
             availableCardTypes = availableCardTypes,
             backersCount = backersCount,
@@ -263,7 +267,8 @@ class Project private constructor(
             projectFaqs = projectFaqs,
             envCommitments = envCommitments,
             risks = risks,
-            story = story
+            story = story,
+            isFlagged = isFlagged
         )
     }
 
@@ -316,7 +321,8 @@ class Project private constructor(
         projectFaqs = projectFaqs,
         envCommitments = envCommitments,
         risks = risks,
-        story = story
+        story = story,
+        isFlagged = isFlagged
     )
 
     @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
@@ -481,7 +487,9 @@ class Project private constructor(
                 video() == other.video() &&
                 projectFaqs() == other.projectFaqs() &&
                 envCommitments() == other.envCommitments() &&
-                risks() == other.risks()
+                risks() == other.risks() &&
+                story() == other.story() &&
+                isFlagged() == other.isFlagged()
         }
         return equals
     }

@@ -68,6 +68,9 @@ fragment fullProject on Project {
     creator {
         ... user
     }
+    flagging {
+        kind
+    }
     currency
     canComment
     prelaunchActivated

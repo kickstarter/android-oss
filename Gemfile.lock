@@ -1345,7 +1345,7 @@ GEM
       apktools (~> 0.7)
       aws-sdk-s3 (~> 1)
       mime-types (~> 3.3)
-    fastlane-plugin-firebase_app_distribution (0.3.4)
+    fastlane-plugin-firebase_app_distribution (0.3.8)
     gh_inspector (1.1.3)
     google-apis-androidpublisher_v3 (0.32.0)
       google-apis-core (>= 0.9.1, < 2.a)

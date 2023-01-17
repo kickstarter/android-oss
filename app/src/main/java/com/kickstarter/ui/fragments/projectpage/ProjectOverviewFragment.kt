@@ -366,6 +366,13 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
                 binding.projectCreatorInfoLayout.reportProject.setGone(!it)
             }
 
+        viewModel.outputs.shouldShowProjectFlagged()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                binding.projectCreatorInfoLayout.projectFlagged.setGone(!it)
+            }
+
         binding.projectCreatorDashboardHeader.projectDashboardButton.setOnClickListener {
             this.viewModel.inputs.creatorDashboardClicked()
         }

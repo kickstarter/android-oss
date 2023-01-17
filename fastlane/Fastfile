@@ -23,7 +23,7 @@ lane :alpha do
 
   slack(
     slack_url: Milkrun::SlackWebhookExtractor.new.webhook,
-    message: slack_message
+    pretext: slack_message
   )
 end
 
@@ -52,7 +52,7 @@ lane :external do
 
   slack(
     slack_url: Milkrun::SlackWebhookExtractor.new.webhook,
-    message: slack_message
+    pretext: slack_message
   )
 end
 

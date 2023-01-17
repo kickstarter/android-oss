@@ -12,10 +12,10 @@ module Milkrun
 
       File.open(file_path, 'rb') do |file|
         Milkrun.s3_client.put_object(
-          body: file,
-          bucket: Milkrun.bucket,
+          bucket:       Milkrun.bucket,
+          key:          package_key,
+          body:         file,
           content_type: "application/vnd.android.package-archive",
-          key: package_key
         )
       end
 

@@ -9,7 +9,7 @@ import rx.subjects.BehaviorSubject
 interface ConsentManagementDialogFragmentViewModel {
 
     interface Inputs {
-        /** The consent preference of the user represented as a boolean. True if they allow consent, false if they deny consent */
+        /** The consent preference of the user represented as a [Boolean] value. True if they allow consent, false if they deny consent. */
         fun userConsentPreference(consentPreference: Boolean)
     }
 

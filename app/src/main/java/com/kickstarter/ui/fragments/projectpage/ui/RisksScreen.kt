@@ -12,8 +12,8 @@ import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -53,7 +53,7 @@ fun RisksScreen(
     ) {
         Text(
             text = stringResource(id = R.string.Risks_and_challenges),
-            style = MaterialTheme.typography.headlineMedium.copy(
+            style = MaterialTheme.typography.h5.copy(
                 fontWeight = FontWeight.ExtraBold
             ),
             modifier = Modifier
@@ -65,7 +65,7 @@ fun RisksScreen(
         )
         Text(
             text = riskDescState.value,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.body2,
             modifier = Modifier
                 .paddingFromBaseline(
                     top = dimensionResource(id = R.dimen.grid_3)

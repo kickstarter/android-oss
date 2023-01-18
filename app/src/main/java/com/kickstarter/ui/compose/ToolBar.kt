@@ -1,15 +1,16 @@
 package com.kickstarter.ui.compose
 
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import com.kickstarter.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopToolBar(
     title: String,
@@ -44,7 +45,8 @@ fun TopToolBar(
                     )
                 }
             }
-        }
+        },
+        backgroundColor = colorResource(id = R.color.kds_white)
     )
 }
 

@@ -21,6 +21,7 @@ import com.kickstarter.libs.utils.extensions.getVideoActivityIntent
 import com.kickstarter.libs.utils.extensions.withData
 import com.kickstarter.models.Project
 import com.kickstarter.ui.activities.LoginToutActivity
+import com.kickstarter.ui.activities.ReportProjectCategoryActivity
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
@@ -113,6 +114,11 @@ fun Activity.startRootCommentsActivity(projectData: ProjectData, commentableId: 
 
 fun Activity.startLoginActivity() {
     startActivity(Intent(this, LoginToutActivity::class.java))
+}
+
+fun Activity.startReportProjectActivity() {
+    startActivity(Intent(this, ReportProjectCategoryActivity::class.java))
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
 }
 
 fun Activity.startCampaignWebViewActivity(projectData: ProjectData) {

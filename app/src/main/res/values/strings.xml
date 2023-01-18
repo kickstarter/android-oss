@@ -89,4 +89,5 @@
 
   <string name="FPO_Already_reported">It looks like you’ve already reported this project to us. Our Trust and Safety team will screen your report against Our Rules and Community Guidelines. Thanks for your feedback!</string>
   <string name="FPO_report_project">Report this project to Kickstarter</string>
+  <string name="FPO_report_project_title">Report project</string>
 </resources>

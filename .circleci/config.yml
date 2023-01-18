@@ -53,7 +53,7 @@ jobs:
       - run: ./gradlew ktlint
       - run: ./gradlew lintExternalRelease
       - run:
-          command: ./gradlew jacocoExternalDebugReport -PdisablePreDex
+          command: ./gradlew testExternalRelease -PdisablePreDex
           no_output_timeout: 30m
       - store_artifacts:
           path: app/build/reports

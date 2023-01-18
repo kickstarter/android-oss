@@ -17,7 +17,7 @@ class ConsentManagementDialogFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun userConsentPreference_whenUserAllowsConsent_shouldWriteTrueToSharedPrefs(){
+    fun userConsentPreference_whenUserAllowsConsent_shouldWriteTrueToSharedPrefs() {
         setUpEnvironment(environment())
 
         this.vm.inputs.userConsentPreference(true)

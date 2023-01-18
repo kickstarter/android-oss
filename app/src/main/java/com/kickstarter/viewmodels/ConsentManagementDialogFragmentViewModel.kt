@@ -30,7 +30,7 @@ interface ConsentManagementDialogFragmentViewModel {
                 }
         }
 
-        override fun userConsentPreference(consentPreference : Boolean) {
+        override fun userConsentPreference(consentPreference: Boolean) {
             this.userConsentPreference.onNext(consentPreference)
         }
     }

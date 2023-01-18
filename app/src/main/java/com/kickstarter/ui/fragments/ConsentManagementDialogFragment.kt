@@ -20,16 +20,16 @@ class ConsentManagementDialogFragment : DialogFragment() {
         }
 
         return activity?.let {
-                val builder = AlertDialog.Builder(it)
-                builder.setTitle(R.string.FPO_allow_app_to_track)
-                builder.setMessage(R.string.FPO_Allow_Kickstarter_to_track_analytics_to_provide_a_more_personalized_experience)
-                    .setPositiveButton(R.string.FPO_allow) { dialog, id ->
-                        this.viewModel.inputs.userConsentPreference(true)
-                    }
-                    .setNegativeButton(R.string.FPO_deny) { dialog, id ->
-                        this.viewModel.inputs.userConsentPreference(false)
-                    }
-                builder.create()
-            } ?: throw IllegalStateException("Activity cannot be null")
-        }
+            val builder = AlertDialog.Builder(it)
+            builder.setTitle(R.string.FPO_allow_app_to_track)
+            builder.setMessage(R.string.FPO_Allow_Kickstarter_to_track_analytics_to_provide_a_more_personalized_experience)
+                .setPositiveButton(R.string.FPO_allow) { dialog, id ->
+                    this.viewModel.inputs.userConsentPreference(true)
+                }
+                .setNegativeButton(R.string.FPO_deny) { dialog, id ->
+                    this.viewModel.inputs.userConsentPreference(false)
+                }
+            builder.create()
+        } ?: throw IllegalStateException("Activity cannot be null")
+    }
 }

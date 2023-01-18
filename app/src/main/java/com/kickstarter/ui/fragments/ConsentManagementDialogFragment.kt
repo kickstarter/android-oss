@@ -3,19 +3,35 @@ package com.kickstarter.ui.fragments
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.viewModels
 import com.kickstarter.R
+import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.viewmodels.ConsentManagementDialogFragmentViewModel
 
 class ConsentManagementDialogFragment : DialogFragment() {
 
+    private lateinit var viewModelFactory: ConsentManagementDialogFragmentViewModel.Factory
+    private val viewModel: ConsentManagementDialogFragmentViewModel.ConsentManagementDialogFragmentViewModel by viewModels { viewModelFactory }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        this.context?.getEnvironment()?.let { env ->
+            viewModelFactory = ConsentManagementDialogFragmentViewModel.Factory(env)
+        }
+
+        Log.d("leigh", "onCreateDialog: did this work?")
         return activity?.let {
-            val builder = AlertDialog.Builder(it)
-            builder.setTitle(R.string.FPO_allow_app_to_track)
-            builder.setMessage(R.string.FPO_Allow_Kickstarter_to_track_analytics_to_provide_a_more_personalized_experience)
-                .setPositiveButton(R.string.FPO_allow) { dialog, id -> }
-                .setNegativeButton(R.string.FPO_deny) { dialog, id -> }
-            builder.create()
-        } ?: throw IllegalStateException("Activity cannot be null")
-    }
+                val builder = AlertDialog.Builder(it)
+                builder.setTitle(R.string.FPO_allow_app_to_track)
+                builder.setMessage(R.string.FPO_Allow_Kickstarter_to_track_analytics_to_provide_a_more_personalized_experience)
+                    .setPositiveButton(R.string.FPO_allow) { dialog, id ->
+                        this.viewModel.inputs.onAllow()
+                    }
+                    .setNegativeButton(R.string.FPO_deny) { dialog, id ->
+                        this.viewModel.inputs.onDeny()
+                    }
+                builder.create()
+            } ?: throw IllegalStateException("Activity cannot be null")
+        }
 }

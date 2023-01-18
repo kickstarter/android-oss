@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.drawable.Animatable
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.GravityCompat
@@ -115,7 +116,7 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
 
         viewModel.outputs.showConsentManagementDialog()
             .distinctUntilChanged()
-            .delay(2000, TimeUnit.MILLISECONDS)
+//            .delay(2000, TimeUnit.MILLISECONDS)
             .subscribe {
                 consentManagementDialogFragment = ConsentManagementDialogFragment()
                 consentManagementDialogFragment.isCancelable = false

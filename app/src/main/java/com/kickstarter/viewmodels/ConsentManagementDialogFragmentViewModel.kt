@@ -9,39 +9,29 @@ import rx.subjects.BehaviorSubject
 interface ConsentManagementDialogFragmentViewModel {
 
     interface Inputs {
-        fun onAllow()
-        fun onDeny()
+        /** The consent preference of the user represented as a boolean. True if they allow consent, false if they deny consent */
+        fun userConsentPreference(consentPreference: Boolean)
     }
 
-    interface Outputs {}
+    interface Outputs
 
     class ConsentManagementDialogFragmentViewModel(environment: Environment) : ViewModel(), Inputs, Outputs {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        private val onUserTapsAllow = BehaviorSubject.create<Void>()
-        private val onUserTapsDeny = BehaviorSubject.create<Void>()
+        private val userConsentPreference = BehaviorSubject.create<Boolean>()
 
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
 
         init {
-            onUserTapsAllow
+            userConsentPreference
                 .subscribe {
-                    sharedPreferences.edit().putBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, true).apply()
-                }
-
-            onUserTapsDeny
-                .subscribe {
-                    sharedPreferences.edit().putBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false).apply()
+                    sharedPreferences.edit().putBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, it).apply()
                 }
         }
 
-        override fun onAllow() {
-            this.onUserTapsAllow.onNext(null)
-        }
-
-        override fun onDeny() {
-            this.onUserTapsDeny.onNext(null)
+        override fun userConsentPreference(consentPreference : Boolean) {
+            this.userConsentPreference.onNext(consentPreference)
         }
     }
 

@@ -55,16 +55,7 @@ jobs:
       - run:
           command: ./gradlew testExternalRelease -PdisablePreDex
           no_output_timeout: 30m
-      - store_artifacts:
-          path: app/build/reports
-          destination: reports
-      - store_artifacts:
-          path: app/build/outputs
-          destination: tests
-      - codecov/upload:
-          file: app/build/reports/jacoco/jacocoExternalDebugReport/jacocoExternalDebugReport.xml
-          token: CODECOV_TOKEN
-
+          
   snapshot-test:
     <<: *base_job
     steps:

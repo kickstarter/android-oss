@@ -33,6 +33,33 @@ import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.TopToolBar
 
+@Preview(widthDp = 300, heightDp = 300)
+@Composable
+fun ReportProjectScreenPreview() {
+    MaterialTheme {
+        ReportProjectCategoryScreen()
+    }
+}
+
+@Preview(widthDp = 300, heightDp = 300)
+@Composable
+fun CategoryRowPreview() {
+    MaterialTheme {
+        val list = rulesMap().values.first()
+        val list2 = rulesMap().keys.first()
+        CategoryRow(category = list2, rulesList = list)
+    }
+}
+
+@Preview(widthDp = 300, heightDp = 300)
+@Composable
+fun RulesListPreview() {
+    MaterialTheme {
+        val list = rulesMap().values.first()
+        RulesList(rulesList = list)
+    }
+}
+
 @Composable
 fun rulesMap(): Map<Pair<String, String>, List<Pair<String, String>>> {
 
@@ -63,7 +90,7 @@ fun rulesMap(): Map<Pair<String, String>, List<Pair<String, String>>> {
     )
 
     val rulesListIntellectual = listOf(
-        Pair(stringResource(id =  R.string.FPO_Intellectual_property_violation), stringResource(id = R.string.FPO_Intellectual_property_violation_desc)),
+        Pair(stringResource(id = R.string.FPO_Intellectual_property_violation), stringResource(id = R.string.FPO_Intellectual_property_violation_desc)),
     )
 
     return mapOf(
@@ -222,31 +249,4 @@ fun ReportProjectCategoryScreen() {
             }
         }
     )
-}
-
-@Preview(widthDp = 300, heightDp = 300)
-@Composable
-fun ReportProjectScreenPreview() {
-    MaterialTheme {
-        ReportProjectCategoryScreen()
-    }
-}
-
-@Preview(widthDp = 300, heightDp = 300)
-@Composable
-fun CategoryRowPreview() {
-    MaterialTheme {
-        val list = rulesMap().values.first()
-        val list2 = rulesMap().keys.first()
-        CategoryRow(category = list2, rulesList = list)
-    }
-}
-
-@Preview(widthDp = 300, heightDp = 300)
-@Composable
-fun RulesListPreview() {
-    MaterialTheme {
-        val list = rulesMap().values.first()
-        RulesList(rulesList = list)
-    }
 }

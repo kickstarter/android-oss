@@ -115,7 +115,6 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
 
         viewModel.outputs.showConsentManagementDialog()
             .distinctUntilChanged()
-            .delay(2000, TimeUnit.MILLISECONDS)
             .subscribe {
                 consentManagementDialogFragment = ConsentManagementDialogFragment()
                 consentManagementDialogFragment.isCancelable = false

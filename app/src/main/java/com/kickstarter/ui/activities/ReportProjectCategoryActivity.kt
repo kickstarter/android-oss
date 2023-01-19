@@ -5,12 +5,14 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,11 +26,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.TopToolBar
 
@@ -98,7 +102,7 @@ fun Rules(rulePair: Pair<String, String>) {
     ) {
         Column(
             modifier = Modifier
-                .padding(PaddingValues(start = dimensionResource(id = R.dimen.grid_3)))
+                .padding(PaddingValues(start = dimensionResource(id = R.dimen.grid_4)))
                 .weight(1F)
         ) {
             Text(
@@ -122,7 +126,7 @@ fun Rules(rulePair: Pair<String, String>) {
             }
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.arrow_right),
+                painter = painterResource(id = R.drawable.ic_arrow_right),
                 contentDescription = null
             )
         }
@@ -149,7 +153,12 @@ fun CategoryRow(category: Pair<String, String>, rulesList: List<Pair<String, Str
     ) {
         Row(
             modifier = Modifier
-                .padding(dimensionResource(id = R.dimen.grid_2))
+                .padding(
+                    PaddingValues(
+                        start = dimensionResource(id = R.dimen.grid_3),
+                        top = dimensionResource(id = R.dimen.grid_2)
+                    )
+                )
         ) {
             Column(
                 modifier = Modifier
@@ -184,6 +193,19 @@ fun CategoryRow(category: Pair<String, String>, rulesList: List<Pair<String, Str
         if (expanded.value) {
             RulesList(rulesList = rulesList)
         }
+
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = dimensionResource(id = R.dimen.grid_2),
+                    vertical = dimensionResource(id = R.dimen.grid_2)
+                )
+                .background(
+                    color = colorResource(id = R.color.kds_support_300)
+                )
+                .height(1.dp)
+        )
     }
 }
 

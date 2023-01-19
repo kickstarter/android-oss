@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.ui.SharedPreferenceKey
-import rx.subjects.BehaviorSubject
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
 
 interface ConsentManagementDialogFragmentViewModel {
 
@@ -23,11 +24,20 @@ interface ConsentManagementDialogFragmentViewModel {
 
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
 
+        private val disposables = CompositeDisposable()
+
         init {
-            userConsentPreference
-                .subscribe {
-                    sharedPreferences.edit().putBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, it).apply()
-                }
+            disposables.add(
+                userConsentPreference
+                    .subscribe {
+                        sharedPreferences.edit().putBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, it).apply()
+                    }
+            )
+        }
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
         }
 
         override fun userConsentPreference(consentPreference: Boolean) {

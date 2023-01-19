@@ -57,15 +57,19 @@ fun rulesMap(): Map<Pair<String, String>, List<Pair<String, String>>> {
         Pair(stringResource(id = R.string.FPO_Abuse), stringResource(id = R.string.FPO_Abuse_desc)),
     )
 
-    val intelectualCat = Pair(
+    val intellectualCat = Pair(
         stringResource(id = R.string.FPO_Intellectual_property_violation),
         stringResource(id = R.string.FPO_Intellectual_property_violation_Subtitle)
+    )
+
+    val rulesListIntellectual = listOf(
+        Pair(stringResource(id =  R.string.FPO_Intellectual_property_violation), stringResource(id = R.string.FPO_Intellectual_property_violation_desc)),
     )
 
     return mapOf(
         Pair(projectCat, rulesListProject),
         Pair(spamCat, rulesListSpam),
-        Pair(intelectualCat, emptyList())
+        Pair(intellectualCat, rulesListIntellectual)
     )
 }
 
@@ -92,7 +96,9 @@ fun Rules(rulePair: Pair<String, String>) {
         ) {
             Text(
                 text = rulePair.first,
-                style = MaterialTheme.typography.subtitle2
+                style = MaterialTheme.typography.subtitle2.copy(
+                    fontWeight = FontWeight.Bold
+                )
             )
             Text(
                 text = rulePair.second,
@@ -130,7 +136,7 @@ fun RulesList(rulesList: List<Pair<String, String>>) {
 
 @Composable
 fun CategoryRow(category: Pair<String, String>, rulesList: List<Pair<String, String>>) {
-    val expanded = remember { mutableStateOf(true) }
+    val expanded = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -195,7 +201,7 @@ fun CategoryRow(category: Pair<String, String>, rulesList: List<Pair<String, Str
 }
 
 @Composable
-fun ReportProjectScreen() {
+fun ReportProjectCategoryScreen() {
     Scaffold(
         topBar = {
             TopToolBar(
@@ -222,7 +228,7 @@ fun ReportProjectScreen() {
 @Composable
 fun ReportProjectScreenPreview() {
     MaterialTheme {
-        ReportProjectScreen()
+        ReportProjectCategoryScreen()
     }
 }
 

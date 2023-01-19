@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
-import com.kickstarter.ui.activities.compose.ReportProjectScreen
+import com.kickstarter.ui.activities.compose.ReportProjectCategoryScreen
 
 class ReportProjectCategoryActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -12,7 +12,7 @@ class ReportProjectCategoryActivity : ComponentActivity() {
 
         setContent {
             MaterialTheme {
-                ReportProjectScreen()
+                ReportProjectCategoryScreen()
             }
         }
     }

@@ -90,4 +90,25 @@
   <string name="FPO_Already_reported">It looks like you’ve already reported this project to us. Our Trust and Safety team will screen your report against Our Rules and Community Guidelines. Thanks for your feedback!</string>
   <string name="FPO_report_project">Report this project to Kickstarter</string>
   <string name="FPO_report_project_title">Report project</string>
+  <string name="FPO_report_spam_or_abusive">Report spam or abusive behavior</string>
+  <string name="FPO_report_spam_or_abusive_subtitle">Our Community Guidelines prohibit spam and abusive behavior by both creators and backers.</string>
+  <string name="FPO_this_project_breaks_one_of_our_rules">This project breaks one of Our Rules.</string>
+  <string name="FPO_projects_may_not_offer_items">Projects may not offer items mentioned in our prohibited items list.</string>
+  <string name="FPO_Intellectual_property_violation">Intellectual property violation</string>
+  <string name="FPO_Intellectual_property_violation_Subtitle">A project is infringing on your copyright or trademark.</string>
+
+  <string name="FPO_Prohibided_Items">Prohibited items</string>
+  <string name="FPO_Prohibided_Items_desc">Projects may not offer items mentioned in our prohibited items list.</string>
+  <string name="FPO_Copying_reselling_or">Copying, reselling or plagiarism</string>
+  <string name="FPO_Copying_reselling_or_desc">Projects cannot plagiarize, offer items that aren\'t produced by the creator, or repackage a previously-created product without adding anything new.</string>
+  <string name="FPO_prototype_misrepresentation">Prototype misrepresentation</string>
+  <string name="FPO_prototype_misrepresentation_desc">Creators must be transparent and honest in documenting their prototype. Photorealistic renderings are not permitted.</string>
+  <string name="FPO_suspicious_creator">Suspicious creator behavior or pledging activity</string>
+  <string name="FPO_suspicious_creator_desc">Project creators and their collaborators cannot misrepresent themselves, the involvement of third parties, or their project’s level of support.</string>
+  <string name="FPO_Not_raising_for_creative">Not raising funds for a creative project</string>
+  <string name="FPO_Not_raising_for_creative_desc">Projects on Kickstarter must create something to share with others.</string>
+  <string name="FPO_Spam">Spam</string>
+  <string name="FPO_Spam_desc">Ex: Using email lists from outside sources, promoting a project where it shouldn’t be promoted, link bombing.</string>
+  <string name="FPO_Abuse">Spam</string>
+  <string name="FPO_Abuse_desc">Ex: Posting obscene or hateful comments, doxxing or posting personal information in comments or updates.</string>
 </resources>

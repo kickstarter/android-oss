@@ -1,7 +1,7 @@
 require 'rubygems'
 
 require 'active_support/core_ext/string/inflections'
-require 'aws-sdk'
+require 'aws-sdk-s3'
 require 'configs'
 require 'logger'
 require 'pathname'
@@ -70,10 +70,6 @@ module Milkrun
   end
 
   def self.s3_client
-    @s3_client ||= Aws::S3::Client.new({
-       access_key_id:     ENV['AWS_ACCESS_KEY_ID']     || Configs[:s3][:access_key],
-       secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'] || Configs[:s3][:secret_key],
-       region:            ENV['AWS_REGION']            || 'us-east-1'
-     })
+    @s3_client ||= Aws::S3::Client.new
   end
 end

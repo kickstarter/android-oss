@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -56,9 +58,15 @@ fun FormularyScreen() {
                     horizontal = dimensionResource(id = R.dimen.grid_3),
                     vertical = dimensionResource(id = R.dimen.grid_1)
                 ),
+            // TODO: populate from viewModel
             value = "arkariang@gmail.com",
             onValueChange = {},
-            label = { Text(stringResource(id = R.string.email)) }
+            readOnly = true,
+            label = { Text(stringResource(id = R.string.email)) },
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = colorResource(id = R.color.kds_create_700),
+                focusedLabelColor = colorResource(id = R.color.kds_create_700)
+            )
         )
 
         TextField(
@@ -68,9 +76,19 @@ fun FormularyScreen() {
                     horizontal = dimensionResource(id = R.dimen.grid_3),
                     vertical = dimensionResource(id = R.dimen.grid_1)
                 ),
+            // TODO: populate from viewModel
             value = "https://staging.kickstarter.com/projects/weirdcitygames/leaf-1?ref=section-homepage-view-more-recommendations-p1",
             onValueChange = {},
-            label = { Text(stringResource(id = R.string.FPO_Project_url)) }
+            readOnly = true,
+            label = {
+                Text(
+                    text = stringResource(id = R.string.FPO_Project_url)
+                )
+            },
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = colorResource(id = R.color.kds_create_700),
+                focusedLabelColor = colorResource(id = R.color.kds_create_700)
+            )
         )
 
         val focusRequester = remember { FocusRequester() }
@@ -87,8 +105,14 @@ fun FormularyScreen() {
             onValueChange = { details = it },
             label = { Text(stringResource(id = R.string.FPO_Details)) },
             placeholder = {
+                // TODO: populate from viewModel
                 Text("Please provide more details why you are reporting this project")
-            }
+            },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = colorResource(id = R.color.kds_create_700),
+                focusedLabelColor = colorResource(id = R.color.kds_create_700),
+                cursorColor = colorResource(id = R.color.kds_create_700),
+            )
         )
         LaunchedEffect(Unit) {
             focusRequester.requestFocus()
@@ -97,6 +121,10 @@ fun FormularyScreen() {
         Button(
             modifier = Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.grid_3)),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = colorResource(id = R.color.kds_create_700),
+                contentColor = colorResource(id = R.color.kds_white)
+            ),
             onClick = {
                 // TODO: call viewModel to mutation
             }

@@ -27,9 +27,8 @@ class ReportProjectCategoryActivity : ComponentActivity() {
                 val onBack = {
                     if (shouldNavigate)
                         shouldNavigate = false
-                    else {
+                    else
                         finishWithAnimation()
-                    }
                 }
 
                 // - Detect back gesture

@@ -349,7 +349,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                activity?.startReportProjectActivity()
+                activity?.startReportProjectActivity(it.project())
             }
 
         viewModel.outputs.startLoginView()

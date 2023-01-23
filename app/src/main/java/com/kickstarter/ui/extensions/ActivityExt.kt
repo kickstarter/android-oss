@@ -11,17 +11,10 @@ import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.kickstarter.R
 import com.kickstarter.libs.utils.TransitionUtils
-import com.kickstarter.libs.utils.extensions.getCampaignDetailsActivityIntent
-import com.kickstarter.libs.utils.extensions.getCreatorBioWebViewActivityIntent
-import com.kickstarter.libs.utils.extensions.getCreatorDashboardActivityIntent
-import com.kickstarter.libs.utils.extensions.getProjectUpdatesActivityIntent
-import com.kickstarter.libs.utils.extensions.getRootCommentsActivityIntent
-import com.kickstarter.libs.utils.extensions.getUpdatesActivityIntent
-import com.kickstarter.libs.utils.extensions.getVideoActivityIntent
-import com.kickstarter.libs.utils.extensions.withData
+import com.kickstarter.libs.utils.extensions.*
 import com.kickstarter.models.Project
 import com.kickstarter.ui.activities.LoginToutActivity
-import com.kickstarter.ui.activities.ReportProjectCategoryActivity
+import com.kickstarter.ui.activities.ReportProjectActivity
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
@@ -116,8 +109,8 @@ fun Activity.startLoginActivity() {
     startActivity(Intent(this, LoginToutActivity::class.java))
 }
 
-fun Activity.startReportProjectActivity() {
-    startActivity(Intent(this, ReportProjectCategoryActivity::class.java))
+fun Activity.startReportProjectActivity(project: Project) {
+    startActivity(Intent().getReportProjectActivityIntent(this, project = project))
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
 }
 

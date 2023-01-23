@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.getValue
@@ -16,8 +17,13 @@ import com.kickstarter.ui.activities.compose.FormularyScreen
 import com.kickstarter.ui.activities.compose.ReportProjectCategoryScreen
 import com.kickstarter.ui.compose.TopToolBar
 import com.kickstarter.ui.extensions.finishWithAnimation
+import com.kickstarter.viewmodels.ReportProjectViewModel
 
-class ReportProjectCategoryActivity : ComponentActivity() {
+class ReportProjectActivity : ComponentActivity() {
+
+    private lateinit var viewModelFactory: ReportProjectViewModel.Factory
+    private val viewModel: ReportProjectViewModel.ReportProjectViewModel by viewModels { viewModelFactory }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

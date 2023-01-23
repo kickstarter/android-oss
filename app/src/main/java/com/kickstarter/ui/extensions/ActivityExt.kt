@@ -172,3 +172,8 @@ fun Activity.startProjectUpdatesActivity(projectAndData: ProjectData) {
     startActivity(Intent().getProjectUpdatesActivityIntent(this, projectAndData))
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
 }
+
+fun Activity.finishWithAnimation() {
+    finish()
+    TransitionUtils.transition(this, com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft())
+}

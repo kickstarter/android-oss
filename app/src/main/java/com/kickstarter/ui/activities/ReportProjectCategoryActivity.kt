@@ -12,10 +12,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.kickstarter.R
-import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.ui.activities.compose.FormularyScreen
 import com.kickstarter.ui.activities.compose.ReportProjectCategoryScreen
 import com.kickstarter.ui.compose.TopToolBar
+import com.kickstarter.ui.extensions.finishWithAnimation
 
 class ReportProjectCategoryActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,22 +24,24 @@ class ReportProjectCategoryActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 var shouldNavigate by rememberSaveable { mutableStateOf(false) }
-
-                // - Back gesture and icon navigation
-                BackHandler {
+                val onBack = {
                     if (shouldNavigate)
                         shouldNavigate = false
                     else {
-                        finish()
-                        TransitionUtils.transition(this, TransitionUtils.slideInFromLeft())
+                        finishWithAnimation()
                     }
+                }
+
+                // - Detect back gesture
+                BackHandler {
+                    onBack()
                 }
 
                 Scaffold(
                     topBar = {
                         TopToolBar(
                             title = stringResource(id = R.string.FPO_report_project_title),
-                            leftOnClickAction = { shouldNavigate = false }
+                            leftOnClickAction = onBack
                         )
                     },
                     content = { paddingValue ->

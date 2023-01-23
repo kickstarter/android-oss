@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -31,13 +30,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
-import com.kickstarter.ui.compose.TopToolBar
 
 @Preview(widthDp = 300, heightDp = 300)
 @Composable
 fun ReportProjectScreenPreview() {
     MaterialTheme {
-        ReportProjectCategoryScreen()
+        ReportProjectCategoryScreen(PaddingValues())
     }
 }
 
@@ -101,19 +99,13 @@ fun rulesMap(): Map<Pair<String, String>, List<Pair<String, String>>> {
 }
 
 @Composable
-fun Rules(rulePair: Pair<String, String>) {
+fun Rules(rulePair: Pair<String, String>, navigationAction: () -> Unit) {
     val context = LocalContext.current
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.grid_1))
             .clickable {
-                Toast
-                    .makeText(
-                        context,
-                        "Will open a formulary screen on next Story",
-                        Toast.LENGTH_SHORT
-                    )
-                    .show()
+                navigationAction()
             }
     ) {
         Column(
@@ -152,17 +144,24 @@ fun Rules(rulePair: Pair<String, String>) {
 }
 
 @Composable
-fun RulesList(rulesList: List<Pair<String, String>>) {
+fun RulesList(
+    rulesList: List<Pair<String, String>>,
+    navigationAction: () -> Unit = {}
+) {
     // - Do not use LazyColum, will conflict the scroll events with the parent LazyColumn
     Column {
         rulesList.map { rule ->
-            Rules(rulePair = rule)
+            Rules(rulePair = rule, navigationAction)
         }
     }
 }
 
 @Composable
-fun CategoryRow(category: Pair<String, String>, rulesList: List<Pair<String, String>>) {
+fun CategoryRow(
+    category: Pair<String, String>,
+    rulesList: List<Pair<String, String>>,
+    navigationAction: () -> Unit = {}
+) {
     val expanded = remember { mutableStateOf(false) }
 
     Column(
@@ -209,7 +208,7 @@ fun CategoryRow(category: Pair<String, String>, rulesList: List<Pair<String, Str
             }
         }
         if (expanded.value) {
-            RulesList(rulesList = rulesList)
+            RulesList(rulesList = rulesList, navigationAction)
         }
 
         Spacer(
@@ -228,25 +227,21 @@ fun CategoryRow(category: Pair<String, String>, rulesList: List<Pair<String, Str
 }
 
 @Composable
-fun ReportProjectCategoryScreen() {
-    Scaffold(
-        topBar = {
-            TopToolBar(
-                title = stringResource(id = R.string.FPO_report_project_title)
-            )
-        },
-        content = {
-            val categories = rulesMap().keys.toList()
-            Spacer(modifier = Modifier.padding(it))
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                items(items = categories) { key ->
-                    rulesMap()[key]?.let { value ->
-                        CategoryRow(category = key, rulesList = value)
-                    }
-                }
+fun ReportProjectCategoryScreen(
+    padding: PaddingValues,
+    navigationAction: () -> Unit = {}
+) {
+    val categories = rulesMap().keys.toList()
+    Spacer(modifier = Modifier.padding(padding))
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(colorResource(id = R.color.kds_white))
+    ) {
+        items(items = categories) { key ->
+            rulesMap()[key]?.let { value ->
+                CategoryRow(category = key, rulesList = value, navigationAction)
             }
         }
-    )
+    }
 }

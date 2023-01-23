@@ -113,4 +113,7 @@
   <string name="FPO_Abuse">Abuse</string>
   <string name="FPO_Abuse_desc">Ex: Posting obscene or hateful comments, doxxing or posting personal information in comments or updates.</string>
   <string name="FPO_Intellectual_property_violation_desc">Kickstarter takes claims of intellectual property infringement seriously. For more information and instructions on how to report infringement, please visit our Copyright Policy and our Trademark Policy. Only claims filed by the copyright or trademark holder can be processed.</string>
+
+  <string name="FPO_Project_url">Project Url</string>
+  <string name="FPO_Details">More Details</string>
 </resources>

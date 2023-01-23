@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities.compose
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,6 +40,7 @@ fun FormularyScreenPreview() {
 fun FormularyScreen() {
     Column(
         modifier = Modifier
+            .animateContentSize()
             .verticalScroll(rememberScrollState())
             .background(colorResource(id = R.color.kds_white))
             .padding(vertical = dimensionResource(id = R.dimen.grid_2)),
@@ -94,7 +96,7 @@ fun FormularyScreen() {
 
         Button(
             modifier = Modifier
-                .padding(horizontal = dimensionResource(id = R.dimen.grid_2)),
+                .padding(horizontal = dimensionResource(id = R.dimen.grid_3)),
             onClick = {
                 // TODO: call viewModel to mutation
             }

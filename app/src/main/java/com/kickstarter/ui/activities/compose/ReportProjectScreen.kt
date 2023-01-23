@@ -231,16 +231,21 @@ fun ReportProjectCategoryScreen(
     padding: PaddingValues,
     navigationAction: () -> Unit = {}
 ) {
-    val categories = rulesMap().keys.toList()
-    Spacer(modifier = Modifier.padding(padding))
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(colorResource(id = R.color.kds_white))
+    Surface(
+        modifier = Modifier.animateContentSize()
     ) {
-        items(items = categories) { key ->
-            rulesMap()[key]?.let { value ->
-                CategoryRow(category = key, rulesList = value, navigationAction)
+
+        val categories = rulesMap().keys.toList()
+        Spacer(modifier = Modifier.padding(padding))
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(colorResource(id = R.color.kds_white))
+        ) {
+            items(items = categories) { key ->
+                rulesMap()[key]?.let { value ->
+                    CategoryRow(category = key, rulesList = value, navigationAction)
+                }
             }
         }
     }

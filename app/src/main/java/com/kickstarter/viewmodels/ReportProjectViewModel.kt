@@ -5,10 +5,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Project
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import rx.Observable
+
 
 interface ReportProjectViewModel {
 
@@ -28,6 +29,7 @@ interface ReportProjectViewModel {
         val apolloClient = requireNotNull(environment.apolloClient())
         val currentUser = requireNotNull(environment.currentUser()?.observable())
         private val projectInput = BehaviorSubject.create<Project>()
+        private val userEmail = BehaviorSubject.create<String>()
         private val emailAndProjectUrl = PublishSubject.create<Pair<String, String>>()
 
         private val disposables = CompositeDisposable()
@@ -38,10 +40,18 @@ interface ReportProjectViewModel {
                 .map { it }
                 .map { it.urls().api()?.project() }
 
-            val email = currentUser
+            currentUser
                 .filter { ObjectUtils.isNotNull(it) }
-                //.map { it.email }
+                .map { it.email() ?: "email@email.com" }
+                .subscribe {
+                    userEmail.onNext(it)
+                }
 
+            disposables.add(Observable.combineLatest(userEmail, projectUrl) { em, proj ->
+                return@combineLatest Pair(em, proj)
+            }.subscribe {
+                emailAndProjectUrl.onNext(it)
+            })
         }
 
         override fun onCleared() {
@@ -54,7 +64,7 @@ interface ReportProjectViewModel {
             this.projectInput.onNext(project)
 
         // - Outputs
-        override fun emailAndProject() = Observable.empty<Pair<String, String>>()
+        override fun emailAndProject() = emailAndProjectUrl
 
     }
 

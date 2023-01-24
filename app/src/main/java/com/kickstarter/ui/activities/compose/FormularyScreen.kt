@@ -34,12 +34,15 @@ import com.kickstarter.R
 @Composable
 fun FormularyScreenPreview() {
     MaterialTheme {
-        FormularyScreen()
+        val data = remember { mutableStateOf(Pair("email@email.com", "https://staging.kiskctarter.com/project/project-1")) }
+        FormularyScreen(data)
     }
 }
 
 @Composable
-fun FormularyScreen() {
+fun FormularyScreen(
+    emailAndProjectUrl: State<Pair<String, String>>
+) {
     Column(
         modifier = Modifier
             .animateContentSize()
@@ -58,8 +61,7 @@ fun FormularyScreen() {
                     horizontal = dimensionResource(id = R.dimen.grid_3),
                     vertical = dimensionResource(id = R.dimen.grid_1)
                 ),
-            // TODO: populate from viewModel
-            value = "arkariang@gmail.com",
+            value = emailAndProjectUrl.value.first,
             onValueChange = {},
             readOnly = true,
             label = { Text(stringResource(id = R.string.email)) },
@@ -76,8 +78,7 @@ fun FormularyScreen() {
                     horizontal = dimensionResource(id = R.dimen.grid_3),
                     vertical = dimensionResource(id = R.dimen.grid_1)
                 ),
-            // TODO: populate from viewModel
-            value = "https://staging.kickstarter.com/projects/weirdcitygames/leaf-1?ref=section-homepage-view-more-recommendations-p1",
+            value = emailAndProjectUrl.value.second,
             onValueChange = {},
             readOnly = true,
             label = {

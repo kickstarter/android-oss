@@ -9,10 +9,12 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.kickstarter.R
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.activities.compose.FormularyScreen
 import com.kickstarter.ui.activities.compose.ReportProjectCategoryScreen
 import com.kickstarter.ui.compose.TopToolBar
@@ -26,6 +28,10 @@ class ReportProjectActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        this.getEnvironment()?.let { env ->
+            viewModelFactory = ReportProjectViewModel.Factory(env)
+        }
 
         setContent {
             MaterialTheme {
@@ -57,7 +63,9 @@ class ReportProjectActivity : ComponentActivity() {
                                 navigationAction = { shouldNavigate = true }
                             )
                         else
-                            FormularyScreen()
+                            FormularyScreen(
+                                emailAndProjectUrl = viewModel.emailAndProject().subscribeAsState(initial = Pair("", ""))
+                            )
                     }
                 )
             }

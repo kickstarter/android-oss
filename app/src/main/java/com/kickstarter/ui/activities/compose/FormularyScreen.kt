@@ -20,7 +20,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.State
 import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,8 +43,12 @@ fun FormularyScreenPreview() {
 
 @Composable
 fun FormularyScreen(
-    viewModel: ReportProjectViewModel.ReportProjectViewModel
+    viewModel: ReportProjectViewModel.ReportProjectViewModel,
+    callback: () -> Unit = {}
 ) {
+    if (viewModel.outputs.finish().subscribeAsState(initial = false).value) {
+        callback()
+    }
 
     Column(
         modifier = Modifier
@@ -107,10 +110,12 @@ fun FormularyScreen(
                 )
                 .fillMaxWidth(),
             value = details,
-            onValueChange = { details = it },
+            onValueChange = {
+                viewModel.inputs.inputDetails(it)
+                details = it
+            },
             label = { Text(stringResource(id = R.string.FPO_Details)) },
             placeholder = {
-                // TODO: populate from viewModel
                 Text("Please provide more details why you are reporting this project")
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(

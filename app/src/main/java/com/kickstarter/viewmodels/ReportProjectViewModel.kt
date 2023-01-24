@@ -18,11 +18,14 @@ interface ReportProjectViewModel {
 
     interface Inputs {
         fun createFlagging()
+        fun inputDetails(s: String)
+        fun kind(kind: String)
     }
 
     interface Outputs {
         fun projectUrl(): Observable<String>
         fun email(): Observable<String>
+        fun finish(): Observable<Boolean>
     }
 
     class ReportProjectViewModel(
@@ -31,12 +34,14 @@ interface ReportProjectViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        val apolloClient = requireNotNull(environment.apolloClientV2())
-        val currentUser = requireNotNull(environment.currentUser()?.observable())
+        private val apolloClient = requireNotNull(environment.apolloClientV2())
         private val userEmail = BehaviorSubject.create<String>()
         private val projectUrl = BehaviorSubject.create<String>()
+        private val finish = PublishSubject.create<Boolean>()
 
         private val sendButtonPressed = PublishSubject.create<Unit>()
+        private val inputDetails = PublishSubject.create<String>()
+        private val flaggingKind = PublishSubject.create<String>()
 
         private fun arguments() = Observable.just(this.arguments).filter { ObjectUtils.isNotNull(it) }.map { requireNotNull(it) }
         private val disposables = CompositeDisposable()
@@ -57,27 +62,30 @@ interface ReportProjectViewModel {
                     projectUrl.onNext(it)
                 })
 
-            currentUser
+            disposables.add(
+                apolloClient.userPrivacy()
                 .filter { ObjectUtils.isNotNull(it) }
-                .map { it.email() ?: "email@email.com" }
+                .map { it.me()?.email() ?: "" }
                 .subscribe {
                     userEmail.onNext(it)
-                }
+                })
 
             val notification = sendButtonPressed
-                .map {
-                    it
-                }
                 .withLatestFrom(project){_, project ->
                     return@withLatestFrom project
                 }
+                .withLatestFrom(inputDetails) { project, details ->
+                    return@withLatestFrom Pair(project, details)
+                }
+                .withLatestFrom(flaggingKind) { pair, flaggingKind ->
+                    return@withLatestFrom Triple(pair.first, pair.second, flaggingKind)
+                }
                 .switchMap {
-                    this.apolloClient.createFlagging(it)
+                    this.apolloClient.createFlagging(it.first, it.second, it.third)
                         .doOnSubscribe {
-                            userEmail.onNext("second@email.com")
                         }
                         .doAfterTerminate {
-                            userEmail.onNext("third@email.com")
+                            finish.onNext(true)
                         }
                         .materialize()
                 }
@@ -86,11 +94,8 @@ interface ReportProjectViewModel {
             disposables.add(
                 notification
                     .compose(Transformers.valuesV2())
-                    .map {
-                        it
-                    }
                     .subscribe {
-                        this.userEmail.onNext("fourth@gmail.com")
+                        finish.onNext(true)
                     }
             )
         }
@@ -104,9 +109,19 @@ interface ReportProjectViewModel {
             this.userEmail
         override fun projectUrl(): Observable<String> =
             this.projectUrl
+        override fun finish(): Observable<Boolean> =
+            this.finish
 
         override fun createFlagging() {
             sendButtonPressed.onNext(Unit)
+        }
+
+        override fun inputDetails(s: String) {
+            inputDetails.onNext(s)
+        }
+
+        override fun kind(kind: String) {
+            flaggingKind.onNext(kind)
         }
 
     }

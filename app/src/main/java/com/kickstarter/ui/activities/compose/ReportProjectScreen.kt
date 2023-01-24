@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
+import type.FlaggingKind
 
 @Preview(widthDp = 300, heightDp = 300)
 @Composable
@@ -60,18 +61,18 @@ fun RulesListPreview() {
 }
 
 @Composable
-fun rulesMap(): Map<Pair<String, String>, List<Pair<String, String>>> {
+fun rulesMap(): Map<Pair<String, String>, List<Triple<String, String, String>>> {
 
     val projectCat = Pair(
         stringResource(id = R.string.FPO_this_project_breaks_one_of_our_rules),
         stringResource(id = R.string.FPO_projects_may_not_offer_items)
     )
     val rulesListProject = listOf(
-        Pair(stringResource(id = R.string.FPO_Prohibided_Items), stringResource(id = R.string.FPO_Prohibided_Items_desc)),
-        Pair(stringResource(id = R.string.FPO_Copying_reselling_or), stringResource(id = R.string.FPO_Copying_reselling_or_desc)),
-        Pair(stringResource(id = R.string.FPO_prototype_misrepresentation), stringResource(id = R.string.FPO_prototype_misrepresentation_desc)),
-        Pair(stringResource(id = R.string.FPO_suspicious_creator), stringResource(id = R.string.FPO_suspicious_creator_desc)),
-        Pair(stringResource(id = R.string.FPO_Not_raising_for_creative), stringResource(id = R.string.FPO_Not_raising_for_creative_desc))
+        Triple(stringResource(id = R.string.FPO_Prohibided_Items), stringResource(id = R.string.FPO_Prohibided_Items_desc), FlaggingKind.PROHIBITED_ITEMS.rawValue()),
+        Triple(stringResource(id = R.string.FPO_Copying_reselling_or), stringResource(id = R.string.FPO_Copying_reselling_or_desc), FlaggingKind.RESALE.rawValue()),
+        Triple(stringResource(id = R.string.FPO_prototype_misrepresentation), stringResource(id = R.string.FPO_prototype_misrepresentation_desc), FlaggingKind.PROTOTYPE_MISREPRESENTATION.rawValue()),
+        Triple(stringResource(id = R.string.FPO_suspicious_creator), stringResource(id = R.string.FPO_suspicious_creator_desc), FlaggingKind.POST_FUNDING_SUSPICIOUS_THIRD_PARTY.rawValue()), //TODO check this one on web
+        Triple(stringResource(id = R.string.FPO_Not_raising_for_creative), stringResource(id = R.string.FPO_Not_raising_for_creative_desc), FlaggingKind.NOT_PROJECT.rawValue()) // TODO check on web
     )
 
     val spamCat = Pair(
@@ -79,8 +80,8 @@ fun rulesMap(): Map<Pair<String, String>, List<Pair<String, String>>> {
         stringResource(id = R.string.FPO_report_spam_or_abusive_subtitle)
     )
     val rulesListSpam = listOf(
-        Pair(stringResource(id = R.string.FPO_Spam), stringResource(id = R.string.FPO_Spam_desc)),
-        Pair(stringResource(id = R.string.FPO_Abuse), stringResource(id = R.string.FPO_Abuse_desc)),
+        Triple(stringResource(id = R.string.FPO_Spam), stringResource(id = R.string.FPO_Spam_desc), FlaggingKind.ABUSE.rawValue()),
+        Triple(stringResource(id = R.string.FPO_Abuse), stringResource(id = R.string.FPO_Abuse_desc), FlaggingKind.SPAM.rawValue()),
     )
 
     val intellectualCat = Pair(
@@ -89,7 +90,7 @@ fun rulesMap(): Map<Pair<String, String>, List<Pair<String, String>>> {
     )
 
     val rulesListIntellectual = listOf(
-        Pair(stringResource(id = R.string.FPO_Intellectual_property_violation), stringResource(id = R.string.FPO_Intellectual_property_violation_desc)),
+        Triple(stringResource(id = R.string.FPO_Intellectual_property_violation), stringResource(id = R.string.FPO_Intellectual_property_violation_desc), FlaggingKind.NOT_PROJECT.rawValue()), // TODO check on web
     )
 
     return mapOf(
@@ -100,13 +101,13 @@ fun rulesMap(): Map<Pair<String, String>, List<Pair<String, String>>> {
 }
 
 @Composable
-fun Rules(rulePair: Pair<String, String>, navigationAction: () -> Unit) {
+fun Rules(rule: Triple<String, String, String>, navigationAction: (String) -> Unit) {
     val context = LocalContext.current
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.grid_1))
             .clickable {
-                navigationAction()
+                navigationAction(rule.third)
             }
     ) {
         Column(
@@ -115,25 +116,18 @@ fun Rules(rulePair: Pair<String, String>, navigationAction: () -> Unit) {
                 .weight(1F)
         ) {
             Text(
-                text = rulePair.first,
+                text = rule.first,
                 style = MaterialTheme.typography.subtitle2.copy(
                     fontWeight = FontWeight.Bold
                 )
             )
             Text(
-                text = rulePair.second,
+                text = rule.second,
                 style = MaterialTheme.typography.body2
             )
         }
         IconButton(
             onClick = {
-                Toast
-                    .makeText(
-                        context,
-                        "Will open a formulary screen on next Story",
-                        Toast.LENGTH_SHORT
-                    )
-                    .show()
             }
         ) {
             Icon(
@@ -146,13 +140,13 @@ fun Rules(rulePair: Pair<String, String>, navigationAction: () -> Unit) {
 
 @Composable
 fun RulesList(
-    rulesList: List<Pair<String, String>>,
-    navigationAction: () -> Unit = {}
+    rulesList: List<Triple<String, String, String>>,
+    navigationAction: (String) -> Unit = {}
 ) {
     // - Do not use LazyColum, will conflict the scroll events with the parent LazyColumn
     Column {
         rulesList.map { rule ->
-            Rules(rulePair = rule, navigationAction)
+            Rules(rule = rule, navigationAction)
         }
     }
 }
@@ -160,8 +154,8 @@ fun RulesList(
 @Composable
 fun CategoryRow(
     category: Pair<String, String>,
-    rulesList: List<Pair<String, String>>,
-    navigationAction: () -> Unit = {}
+    rulesList: List<Triple<String, String, String>>,
+    navigationAction: (String) -> Unit = {}
 ) {
     val expanded = remember { mutableStateOf(false) }
 
@@ -230,7 +224,7 @@ fun CategoryRow(
 @Composable
 fun ReportProjectCategoryScreen(
     padding: PaddingValues,
-    navigationAction: () -> Unit = {}
+    navigationAction: (String) -> Unit = {}
 ) {
     Surface(
         modifier = Modifier.animateContentSize()

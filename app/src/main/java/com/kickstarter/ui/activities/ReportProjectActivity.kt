@@ -59,11 +59,15 @@ class ReportProjectActivity : ComponentActivity() {
                         if (!shouldNavigate)
                             ReportProjectCategoryScreen(
                                 padding = paddingValue,
-                                navigationAction = { shouldNavigate = true }
+                                navigationAction = {
+                                    viewModel.inputs.kind(it)
+                                    shouldNavigate = true
+                                }
                             )
                         else {
                             FormularyScreen(
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                callback = { finishWithAnimation() }
                             )
                         }
                     }

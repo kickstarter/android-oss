@@ -64,8 +64,12 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.just(StoredCardFactory.discoverCard())
     }
 
-    override fun createFlagging(project: Project?): io.reactivex.Observable<CreateFlaggingMutation.Data>{
+    override fun createFlagging(project: Project?, details: String, flaggingKind: String): io.reactivex.Observable<CreateFlaggingMutation.Data>{
         return io.reactivex.Observable.empty<CreateFlaggingMutation.Data>()
+    }
+
+    override fun userPrivacy(): io.reactivex.Observable<UserPrivacyQuery.Data> {
+        return io.reactivex.Observable.empty<UserPrivacyQuery.Data>()
     }
 }
 

@@ -63,6 +63,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     override fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): io.reactivex.Observable<StoredCard> {
         return io.reactivex.Observable.just(StoredCardFactory.discoverCard())
     }
+
+    override fun createFlagging(project: Project?): io.reactivex.Observable<CreateFlaggingMutation.Data>{
+        return io.reactivex.Observable.empty<CreateFlaggingMutation.Data>()
+    }
 }
 
 open class MockApolloClient : ApolloClientType {

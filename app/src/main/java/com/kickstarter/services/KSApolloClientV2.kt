@@ -10,12 +10,14 @@ import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.transformers.encodeRelayId
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
+import type.FlaggingKind
 
 interface ApolloClientTypeV2 {
     fun createSetupIntent(project: Project? = null): Observable<String>
     fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard>
     fun getStoredCards(): Observable<List<StoredCard>>
     fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data>
+    fun createFlagging(project: Project? = null): Observable<CreateFlaggingMutation.Data>
 }
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
@@ -143,6 +145,35 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                     }
                 })
             return@defer ps
+        }
+    }
+
+    override fun createFlagging(project: Project?): Observable<CreateFlaggingMutation.Data> {
+        return Observable.defer {
+            project?.let {
+                val ps = PublishSubject.create<CreateFlaggingMutation.Data>()
+                service.mutate(
+                    CreateFlaggingMutation.builder()
+                        .contentId(encodeRelayId(it))
+                        .details("Details here, hardcoded for now")
+                        .kind(FlaggingKind.BACKING_ABUSE)
+                        .build()
+                )
+                    .enqueue(object : ApolloCall.Callback<CreateFlaggingMutation.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
+
+                        override fun onResponse(response: Response<CreateFlaggingMutation.Data>) {
+                            if (response.hasErrors()) {
+                                ps.onError(Exception(response.errors?.first()?.message))
+                            }
+
+                            ps.onComplete()
+                        }
+                    })
+                return@defer ps
+            }
         }
     }
 }

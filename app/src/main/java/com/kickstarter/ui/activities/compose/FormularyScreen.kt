@@ -19,8 +19,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.State
+import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -43,10 +44,8 @@ fun FormularyScreenPreview() {
 
 @Composable
 fun FormularyScreen(
-    viewModel: ReportProjectViewModel.Outputs
+    viewModel: ReportProjectViewModel.ReportProjectViewModel
 ) {
-    val projectUrl = viewModel.projectUrl().subscribeAsState(initial = "new")
-    val email = viewModel.projectUrl().subscribeAsState(initial = "email")
 
     Column(
         modifier = Modifier
@@ -66,7 +65,7 @@ fun FormularyScreen(
                     horizontal = dimensionResource(id = R.dimen.grid_3),
                     vertical = dimensionResource(id = R.dimen.grid_1)
                 ),
-            value = email.value,
+            value = viewModel.outputs.email().subscribeAsState(initial = "").value,
             onValueChange = {},
             readOnly = true,
             label = { Text(stringResource(id = R.string.email)) },
@@ -83,7 +82,7 @@ fun FormularyScreen(
                     horizontal = dimensionResource(id = R.dimen.grid_3),
                     vertical = dimensionResource(id = R.dimen.grid_1)
                 ),
-            value = projectUrl.value,
+            value = viewModel.outputs.projectUrl().subscribeAsState(initial = "").value,
             onValueChange = {},
             readOnly = true,
             label = {
@@ -132,7 +131,7 @@ fun FormularyScreen(
                 contentColor = colorResource(id = R.color.kds_white)
             ),
             onClick = {
-                // TODO: call viewModel to mutation
+                viewModel.inputs.createFlagging()
             }
         ) {
             Text(

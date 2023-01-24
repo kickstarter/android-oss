@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
@@ -13,17 +14,15 @@ import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
 
-//abstract class BaseReportProjectViewModel(val environment: Environment, val arguments: Bundle?): ViewModel() {
-//    abstract fun projectUrl(): Observable<String>
-//}
 interface ReportProjectViewModel {
 
     interface Inputs {
+        fun createFlagging()
     }
 
     interface Outputs {
-        fun projectUrl(): PublishSubject<String>
-        fun email(): PublishSubject<String>
+        fun projectUrl(): Observable<String>
+        fun email(): Observable<String>
     }
 
     class ReportProjectViewModel(
@@ -32,21 +31,25 @@ interface ReportProjectViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        val apolloClient = requireNotNull(environment.apolloClient())
+        val apolloClient = requireNotNull(environment.apolloClientV2())
         val currentUser = requireNotNull(environment.currentUser()?.observable())
-        private val projectInput = BehaviorSubject.create<Project>()
-        private val userEmail = PublishSubject.create<String>()
-        private val projectUrl = PublishSubject.create<String>()
+        private val userEmail = BehaviorSubject.create<String>()
+        private val projectUrl = BehaviorSubject.create<String>()
+
+        private val sendButtonPressed = PublishSubject.create<Unit>()
 
         private fun arguments() = Observable.just(this.arguments).filter { ObjectUtils.isNotNull(it) }.map { requireNotNull(it) }
         private val disposables = CompositeDisposable()
 
         init {
-            disposables.add(arguments()
+
+            val project = arguments()
                 .map {
                     it.getParcelable(IntentKey.PROJECT) as Project?
                 }
                 .ofType(Project::class.java)
+
+            disposables.add(project
                 .map {
                     it.urls().web().project()
                 }
@@ -60,6 +63,36 @@ interface ReportProjectViewModel {
                 .subscribe {
                     userEmail.onNext(it)
                 }
+
+            val notification = sendButtonPressed
+                .map {
+                    it
+                }
+                .withLatestFrom(project){_, project ->
+                    return@withLatestFrom project
+                }
+                .switchMap {
+                    this.apolloClient.createFlagging(it)
+                        .doOnSubscribe {
+                            userEmail.onNext("second@email.com")
+                        }
+                        .doAfterTerminate {
+                            userEmail.onNext("third@email.com")
+                        }
+                        .materialize()
+                }
+                .share()
+
+            disposables.add(
+                notification
+                    .compose(Transformers.valuesV2())
+                    .map {
+                        it
+                    }
+                    .subscribe {
+                        this.userEmail.onNext("fourth@gmail.com")
+                    }
+            )
         }
 
         override fun onCleared() {
@@ -67,8 +100,14 @@ interface ReportProjectViewModel {
             super.onCleared()
         }
 
-        override fun email(): PublishSubject<String> = this.userEmail
-        override fun projectUrl(): PublishSubject<String> = this.projectUrl
+        override fun email(): Observable<String> =
+            this.userEmail
+        override fun projectUrl(): Observable<String> =
+            this.projectUrl
+
+        override fun createFlagging() {
+            sendButtonPressed.onNext(Unit)
+        }
 
     }
 

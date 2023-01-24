@@ -61,10 +61,11 @@ class ReportProjectActivity : ComponentActivity() {
                                 padding = paddingValue,
                                 navigationAction = { shouldNavigate = true }
                             )
-                        else
+                        else {
                             FormularyScreen(
-                                viewModel = viewModel.outputs
+                                viewModel = viewModel
                             )
+                        }
                     }
                 )
             }

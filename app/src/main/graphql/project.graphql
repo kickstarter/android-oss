@@ -160,3 +160,15 @@ query GetProjectUpdates($slug: String!, $limit: Int!, $cursor: String) {
     }
   }
 }
+
+mutation CreateFlagging($contentId: ID!, $details: String, $kind: FlaggingKind!) {
+  createFlagging(input: {
+    contentId: $contentId,
+    details: $details,
+    kind: $kind
+  }) {
+    flagging {
+      kind
+    }
+  }
+}

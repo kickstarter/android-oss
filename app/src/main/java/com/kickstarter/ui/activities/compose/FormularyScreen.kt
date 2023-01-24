@@ -19,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,20 +30,24 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
+import com.kickstarter.viewmodels.ReportProjectViewModel
 
 @Preview(widthDp = 300, heightDp = 300)
 @Composable
 fun FormularyScreenPreview() {
     MaterialTheme {
         val data = remember { mutableStateOf(Pair("email@email.com", "https://staging.kiskctarter.com/project/project-1")) }
-        FormularyScreen(data)
+        //FormularyScreen(data, )
     }
 }
 
 @Composable
 fun FormularyScreen(
-    emailAndProjectUrl: State<Pair<String, String>>
+    viewModel: ReportProjectViewModel.Outputs
 ) {
+    val projectUrl = viewModel.projectUrl().subscribeAsState(initial = "new")
+    val email = viewModel.projectUrl().subscribeAsState(initial = "email")
+
     Column(
         modifier = Modifier
             .animateContentSize()
@@ -61,7 +66,7 @@ fun FormularyScreen(
                     horizontal = dimensionResource(id = R.dimen.grid_3),
                     vertical = dimensionResource(id = R.dimen.grid_1)
                 ),
-            value = emailAndProjectUrl.value.first,
+            value = email.value,
             onValueChange = {},
             readOnly = true,
             label = { Text(stringResource(id = R.string.email)) },
@@ -78,7 +83,7 @@ fun FormularyScreen(
                     horizontal = dimensionResource(id = R.dimen.grid_3),
                     vertical = dimensionResource(id = R.dimen.grid_1)
                 ),
-            value = emailAndProjectUrl.value.second,
+            value = projectUrl.value,
             onValueChange = {},
             readOnly = true,
             label = {

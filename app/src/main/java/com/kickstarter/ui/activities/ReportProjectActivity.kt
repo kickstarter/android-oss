@@ -9,7 +9,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
@@ -30,7 +29,7 @@ class ReportProjectActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         this.getEnvironment()?.let { env ->
-            viewModelFactory = ReportProjectViewModel.Factory(env)
+            viewModelFactory = ReportProjectViewModel.Factory(env, arguments = intent.extras)
         }
 
         setContent {
@@ -64,7 +63,7 @@ class ReportProjectActivity : ComponentActivity() {
                             )
                         else
                             FormularyScreen(
-                                emailAndProjectUrl = viewModel.emailAndProject().subscribeAsState(initial = Pair("", ""))
+                                viewModel = viewModel.outputs
                             )
                     }
                 )

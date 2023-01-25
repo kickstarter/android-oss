@@ -90,7 +90,7 @@
   <!-- UGC Mock String-->
   <string name="FPO_Already_reported">It looks like you’ve already reported this project to us. Our Trust and Safety team will screen your report against Our Rules and Community Guidelines. Thanks for your feedback!</string>
   <string name="FPO_report_project">Report this project to Kickstarter</string>
-  <string name="FPO_report_project_title">Report project</string>
+  <string name="FPO_report_project_title">Report this project</string>
   <string name="FPO_report_spam_or_abusive">Report spam or abusive behavior</string>
   <string name="FPO_report_spam_or_abusive_subtitle">Our Community Guidelines prohibit spam and abusive behavior by both creators and backers.</string>
   <string name="FPO_this_project_breaks_one_of_our_rules">This project breaks one of Our Rules.</string>
@@ -114,7 +114,6 @@
   <string name="FPO_Abuse_desc">Ex: Posting obscene or hateful comments, doxxing or posting personal information in comments or updates.</string>
   <string name="FPO_Intellectual_property_violation_desc">Kickstarter takes claims of intellectual property infringement seriously. For more information and instructions on how to report infringement, please visit our Copyright Policy and our Trademark Policy. Only claims filed by the copyright or trademark holder can be processed.</string>
 
-  <string name="FPO_Project_url">Project Url</string>
-  <string name="FPO_Details">More Details</string>
-  <string name="FPO_Details_placeholder">Provide here additional information why the project is reported</string>
+  <string name="FPO_Project_url">Project URL</string>
+  <string name="FPO_Details">Tell us more details</string>
 </resources>

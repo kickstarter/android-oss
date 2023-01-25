@@ -150,9 +150,6 @@ fun FormularyScreen(
                 details = it
             },
             label = { Text(stringResource(id = R.string.FPO_Details)) },
-            placeholder = {
-                Text(stringResource(id = R.string.FPO_Details_placeholder))
-            },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = colorResource(id = R.color.kds_create_700),
                 focusedLabelColor = colorResource(id = R.color.kds_create_700),

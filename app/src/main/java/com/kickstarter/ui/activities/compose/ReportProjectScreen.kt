@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities.compose
 
-import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -71,7 +70,7 @@ fun rulesMap(): Map<Pair<String, String>, List<Triple<String, String, String>>> 
         Triple(stringResource(id = R.string.FPO_Prohibided_Items), stringResource(id = R.string.FPO_Prohibided_Items_desc), FlaggingKind.PROHIBITED_ITEMS.rawValue()),
         Triple(stringResource(id = R.string.FPO_Copying_reselling_or), stringResource(id = R.string.FPO_Copying_reselling_or_desc), FlaggingKind.RESALE.rawValue()),
         Triple(stringResource(id = R.string.FPO_prototype_misrepresentation), stringResource(id = R.string.FPO_prototype_misrepresentation_desc), FlaggingKind.PROTOTYPE_MISREPRESENTATION.rawValue()),
-        Triple(stringResource(id = R.string.FPO_suspicious_creator), stringResource(id = R.string.FPO_suspicious_creator_desc), FlaggingKind.POST_FUNDING_SUSPICIOUS_THIRD_PARTY.rawValue()), //TODO check this one on web
+        Triple(stringResource(id = R.string.FPO_suspicious_creator), stringResource(id = R.string.FPO_suspicious_creator_desc), FlaggingKind.POST_FUNDING_SUSPICIOUS_THIRD_PARTY.rawValue()), // TODO check this one on web
         Triple(stringResource(id = R.string.FPO_Not_raising_for_creative), stringResource(id = R.string.FPO_Not_raising_for_creative_desc), FlaggingKind.NOT_PROJECT.rawValue()) // TODO check on web
     )
 
@@ -80,8 +79,8 @@ fun rulesMap(): Map<Pair<String, String>, List<Triple<String, String, String>>> 
         stringResource(id = R.string.FPO_report_spam_or_abusive_subtitle)
     )
     val rulesListSpam = listOf(
-        Triple(stringResource(id = R.string.FPO_Spam), stringResource(id = R.string.FPO_Spam_desc), FlaggingKind.ABUSE.rawValue()),
-        Triple(stringResource(id = R.string.FPO_Abuse), stringResource(id = R.string.FPO_Abuse_desc), FlaggingKind.SPAM.rawValue()),
+        Triple(stringResource(id = R.string.FPO_Spam), stringResource(id = R.string.FPO_Spam_desc), FlaggingKind.SPAM.rawValue()),
+        Triple(stringResource(id = R.string.FPO_Abuse), stringResource(id = R.string.FPO_Abuse_desc), FlaggingKind.ABUSE.rawValue()),
     )
 
     val intellectualCat = Pair(

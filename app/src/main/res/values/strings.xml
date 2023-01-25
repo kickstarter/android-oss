@@ -116,4 +116,5 @@
 
   <string name="FPO_Project_url">Project Url</string>
   <string name="FPO_Details">More Details</string>
+  <string name="FPO_Details_placeholder">Provide here additional information why the project is reported</string>
 </resources>

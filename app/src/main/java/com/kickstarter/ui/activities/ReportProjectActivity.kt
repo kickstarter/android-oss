@@ -66,7 +66,8 @@ class ReportProjectActivity : ComponentActivity() {
                             )
                         else {
                             FormularyScreen(
-                                viewModel = viewModel,
+                                outputs = viewModel.outputs,
+                                inputs = viewModel.inputs,
                                 callback = { finishWithAnimation() }
                             )
                         }

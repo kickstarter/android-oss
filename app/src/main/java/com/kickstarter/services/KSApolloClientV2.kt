@@ -153,28 +153,30 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
         return Observable.defer {
             project?.let {
                 val ps = PublishSubject.create<CreateFlaggingMutation.Data>()
+                val flagging = FlaggingKind.safeValueOf(flaggingKind)
                 val mutation = CreateFlaggingMutation.builder()
                     .contentId(encodeRelayId(it))
                     .details(details)
-                    .kind(FlaggingKind.safeValueOf(flaggingKind))
+                    .kind(flagging)
                     .build()
 
                 service.mutate(
                     mutation
-                )
-                    .enqueue(object : ApolloCall.Callback<CreateFlaggingMutation.Data>() {
-                        override fun onFailure(exception: ApolloException) {
-                            ps.onError(exception)
-                        }
+                ).enqueue(object : ApolloCall.Callback<CreateFlaggingMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
 
-                        override fun onResponse(response: Response<CreateFlaggingMutation.Data>) {
-                            if (response.hasErrors()) {
-                                ps.onError(Exception(response.errors?.first()?.message))
-                            }
-
-                            ps.onComplete()
+                    override fun onResponse(response: Response<CreateFlaggingMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message))
                         }
-                    })
+                        response.data?.let { data ->
+                            ps.onNext(data)
+                        }
+                        ps.onComplete()
+                    }
+                })
                 return@defer ps
             }
         }

@@ -3,14 +3,18 @@ package com.kickstarter.ui.activities.compose
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.ProgressIndicatorDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
@@ -19,8 +23,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.rxjava2.subscribeAsState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -31,22 +35,41 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.viewmodels.ReportProjectViewModel
+import io.reactivex.Observable
 
 @Preview(widthDp = 300, heightDp = 300)
 @Composable
 fun FormularyScreenPreview() {
     MaterialTheme {
-        val data = remember { mutableStateOf(Pair("email@email.com", "https://staging.kiskctarter.com/project/project-1")) }
-        //FormularyScreen(data, )
+
+        val inputs = object : ReportProjectViewModel.Inputs {
+            override fun createFlagging() {}
+            override fun inputDetails(s: String) {}
+            override fun kind(kind: String) {}
+        }
+
+        val outputs = object : ReportProjectViewModel.Outputs {
+            override fun projectUrl(): Observable<String> = Observable.empty()
+            override fun email(): Observable<String> = Observable.empty()
+            override fun finish(): Observable<Boolean> = Observable.empty()
+            override fun progressBarIsVisible(): Observable<Boolean> = Observable.empty()
+        }
+
+        FormularyScreen(
+            callback = {},
+            inputs = inputs,
+            outputs = outputs
+        )
     }
 }
 
 @Composable
 fun FormularyScreen(
-    viewModel: ReportProjectViewModel.ReportProjectViewModel,
-    callback: () -> Unit = {}
+    callback: () -> Unit = {},
+    inputs: ReportProjectViewModel.Inputs,
+    outputs: ReportProjectViewModel.Outputs
 ) {
-    if (viewModel.outputs.finish().subscribeAsState(initial = false).value) {
+    if (outputs.finish().subscribeAsState(initial = false).value) {
         callback()
     }
 
@@ -54,11 +77,23 @@ fun FormularyScreen(
         modifier = Modifier
             .animateContentSize()
             .verticalScroll(rememberScrollState())
-            .background(colorResource(id = R.color.kds_white))
-            .padding(vertical = dimensionResource(id = R.dimen.grid_2)),
+            .background(colorResource(id = R.color.kds_white)),
         horizontalAlignment = Alignment.End
     ) {
-        var details by remember { mutableStateOf("") }
+
+        if (outputs.progressBarIsVisible().subscribeAsState(initial = false).value) {
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth(),
+                color = colorResource(id = R.color.kds_create_700),
+                backgroundColor = colorResource(id = R.color.kds_create_300)
+            )
+        } else {
+            Spacer(
+                modifier = Modifier
+                    .height(ProgressIndicatorDefaults.StrokeWidth)
+                    .background(colorResource(id = R.color.kds_white))
+            )
+        }
 
         TextField(
             modifier =
@@ -66,9 +101,9 @@ fun FormularyScreen(
                 .fillMaxWidth()
                 .padding(
                     horizontal = dimensionResource(id = R.dimen.grid_3),
-                    vertical = dimensionResource(id = R.dimen.grid_1)
+                    vertical = dimensionResource(id = R.dimen.grid_3)
                 ),
-            value = viewModel.outputs.email().subscribeAsState(initial = "").value,
+            value = outputs.email().subscribeAsState(initial = "").value,
             onValueChange = {},
             readOnly = true,
             label = { Text(stringResource(id = R.string.email)) },
@@ -85,7 +120,7 @@ fun FormularyScreen(
                     horizontal = dimensionResource(id = R.dimen.grid_3),
                     vertical = dimensionResource(id = R.dimen.grid_1)
                 ),
-            value = viewModel.outputs.projectUrl().subscribeAsState(initial = "").value,
+            value = outputs.projectUrl().subscribeAsState(initial = "").value,
             onValueChange = {},
             readOnly = true,
             label = {
@@ -99,10 +134,10 @@ fun FormularyScreen(
             )
         )
 
+        var details by remember { mutableStateOf("") }
         val focusRequester = remember { FocusRequester() }
         OutlinedTextField(
-            modifier =
-            Modifier
+            modifier = Modifier
                 .focusRequester(focusRequester)
                 .padding(
                     horizontal = dimensionResource(id = R.dimen.grid_3),
@@ -111,18 +146,18 @@ fun FormularyScreen(
                 .fillMaxWidth(),
             value = details,
             onValueChange = {
-                viewModel.inputs.inputDetails(it)
+                inputs.inputDetails(it)
                 details = it
             },
             label = { Text(stringResource(id = R.string.FPO_Details)) },
             placeholder = {
-                Text("Please provide more details why you are reporting this project")
+                Text(stringResource(id = R.string.FPO_Details_placeholder))
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = colorResource(id = R.color.kds_create_700),
                 focusedLabelColor = colorResource(id = R.color.kds_create_700),
                 cursorColor = colorResource(id = R.color.kds_create_700),
-            )
+            ),
         )
         LaunchedEffect(Unit) {
             focusRequester.requestFocus()
@@ -135,8 +170,9 @@ fun FormularyScreen(
                 backgroundColor = colorResource(id = R.color.kds_create_700),
                 contentColor = colorResource(id = R.color.kds_white)
             ),
+            enabled = details.isNotEmpty(),
             onClick = {
-                viewModel.inputs.createFlagging()
+                inputs.createFlagging()
             }
         ) {
             Text(

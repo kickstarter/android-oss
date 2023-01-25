@@ -9,6 +9,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
@@ -65,10 +66,13 @@ class ReportProjectActivity : ComponentActivity() {
                                 }
                             )
                         else {
+                            val finishResult = viewModel.outputs.finish().subscribeAsState(initial = Pair(false, "")).value.second
                             FormularyScreen(
                                 outputs = viewModel.outputs,
                                 inputs = viewModel.inputs,
-                                callback = { finishWithAnimation() }
+                                callback = {
+                                    finishWithAnimation(finishResult)
+                                }
                             )
                         }
                     }

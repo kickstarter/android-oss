@@ -1,5 +1,6 @@
 package com.kickstarter.ui.fragments.projectpage
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -12,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.kickstarter.R
@@ -56,6 +58,17 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         super.onCreateView(inflater, container, savedInstanceState)
         binding = FragmentProjectOverviewBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    var startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data = result.data?.getStringExtra(IntentKey.FLAGGINGKIND)
+            data?.let {
+                if (it.isNotEmpty()) {
+                    this.viewModel.refreshFlaggedState(it)
+                }
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -349,7 +362,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                activity?.startReportProjectActivity(it.project())
+                activity?.startReportProjectActivity(it.project(), startForResult)
             }
 
         viewModel.outputs.startLoginView()

@@ -51,7 +51,7 @@ fun FormularyScreenPreview() {
         val outputs = object : ReportProjectViewModel.Outputs {
             override fun projectUrl(): Observable<String> = Observable.empty()
             override fun email(): Observable<String> = Observable.empty()
-            override fun finish(): Observable<Boolean> = Observable.empty()
+            override fun finish(): Observable<Pair<Boolean, String>> = Observable.empty()
             override fun progressBarIsVisible(): Observable<Boolean> = Observable.empty()
         }
 
@@ -69,7 +69,7 @@ fun FormularyScreen(
     inputs: ReportProjectViewModel.Inputs,
     outputs: ReportProjectViewModel.Outputs
 ) {
-    if (outputs.finish().subscribeAsState(initial = false).value) {
+    if (outputs.finish().subscribeAsState(initial = Pair(false, "")).value.first) {
         callback()
     }
 

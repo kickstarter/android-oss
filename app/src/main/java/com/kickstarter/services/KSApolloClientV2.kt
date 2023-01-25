@@ -17,7 +17,7 @@ interface ApolloClientTypeV2 {
     fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard>
     fun getStoredCards(): Observable<List<StoredCard>>
     fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data>
-    fun createFlagging(project: Project? = null, details: String, flaggingKind: String): Observable<CreateFlaggingMutation.Data>
+    fun createFlagging(project: Project? = null, details: String, flaggingKind: String): Observable<String>
     fun userPrivacy(): Observable<UserPrivacyQuery.Data>
 }
 
@@ -149,10 +149,10 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
         }
     }
 
-    override fun createFlagging(project: Project?, details: String, flaggingKind: String): Observable<CreateFlaggingMutation.Data> {
+    override fun createFlagging(project: Project?, details: String, flaggingKind: String): Observable<String> {
         return Observable.defer {
             project?.let {
-                val ps = PublishSubject.create<CreateFlaggingMutation.Data>()
+                val ps = PublishSubject.create<String>()
                 val flagging = FlaggingKind.safeValueOf(flaggingKind)
                 val mutation = CreateFlaggingMutation.builder()
                     .contentId(encodeRelayId(it))
@@ -172,7 +172,9 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                             ps.onError(Exception(response.errors?.first()?.message))
                         }
                         response.data?.let { data ->
-                            ps.onNext(data)
+                            data.createFlagging()?.flagging()?.kind()?.name?.let { kindString ->
+                                ps.onNext(kindString)
+                            }
                         }
                         ps.onComplete()
                     }

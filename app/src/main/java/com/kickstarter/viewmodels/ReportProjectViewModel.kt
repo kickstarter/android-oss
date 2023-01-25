@@ -24,7 +24,7 @@ interface ReportProjectViewModel {
     interface Outputs {
         fun projectUrl(): Observable<String>
         fun email(): Observable<String>
-        fun finish(): Observable<Boolean>
+        fun finish(): Observable<Pair<Boolean, String>>
         fun progressBarIsVisible(): Observable<Boolean>
     }
 
@@ -39,7 +39,7 @@ interface ReportProjectViewModel {
 
         private val userEmail = BehaviorSubject.create<String>()
         private val projectUrl = BehaviorSubject.create<String>()
-        private val finish = PublishSubject.create<Boolean>()
+        private val finish = PublishSubject.create<Pair<Boolean, String>>()
         private val progressBarVisible = PublishSubject.create<Boolean>()
 
         private val sendButtonPressed = PublishSubject.create<Unit>()
@@ -102,7 +102,7 @@ interface ReportProjectViewModel {
                 notification
                     .compose(Transformers.valuesV2())
                     .subscribe {
-                        finish.onNext(true)
+                        finish.onNext(Pair(true, it))
                     }
             )
         }
@@ -119,7 +119,7 @@ interface ReportProjectViewModel {
         override fun projectUrl(): Observable<String> =
             this.projectUrl
 
-        override fun finish(): Observable<Boolean> =
+        override fun finish(): Observable<Pair<Boolean, String>> =
             this.finish
 
         override fun progressBarIsVisible(): Observable<Boolean> =

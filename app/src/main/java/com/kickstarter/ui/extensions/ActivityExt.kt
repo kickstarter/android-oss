@@ -21,6 +21,7 @@ import com.kickstarter.libs.utils.extensions.getUpdatesActivityIntent
 import com.kickstarter.libs.utils.extensions.getVideoActivityIntent
 import com.kickstarter.libs.utils.extensions.withData
 import com.kickstarter.models.Project
+import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
@@ -116,8 +117,11 @@ fun Activity.startLoginActivity() {
     startActivity(Intent(this, LoginToutActivity::class.java))
 }
 
-fun Activity.startReportProjectActivity(project: Project) {
-    startActivity(Intent().getReportProjectActivityIntent(this, project = project))
+fun Activity.startReportProjectActivity(
+    project: Project,
+    startForResult: ActivityResultLauncher<Intent>
+) {
+    startForResult.launch(Intent().getReportProjectActivityIntent(this, project = project))
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
 }
 
@@ -173,7 +177,11 @@ fun Activity.startProjectUpdatesActivity(projectAndData: ProjectData) {
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
 }
 
-fun Activity.finishWithAnimation() {
+fun Activity.finishWithAnimation(withResult: String? = null) {
+    withResult?.let {
+        val intent = Intent().putExtra(IntentKey.FLAGGINGKIND, withResult)
+        setResult(Activity.RESULT_OK, intent)
+    }
     finish()
-    TransitionUtils.transition(this, com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft())
+    TransitionUtils.transition(this, TransitionUtils.slideInFromLeft())
 }

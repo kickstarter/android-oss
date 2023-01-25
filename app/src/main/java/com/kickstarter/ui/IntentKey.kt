@@ -52,4 +52,5 @@ object IntentKey {
     const val VIDEO_SEEK_POSITION = "com.kickstarter.kickstarter.intent_video_seek_position"
     const val VIDEO_URL_SOURCE = "com.kickstarter.kickstarter.intent_video_SOURCE"
     const val RESET_PASSWORD_FACEBOOK_LOGIN = "com.kickstarter.kickstarter.intent_reset_password_facebook"
+    const val FLAGGINGKIND = "com.kickstarter.kickstarter.intent_report_project"
 }

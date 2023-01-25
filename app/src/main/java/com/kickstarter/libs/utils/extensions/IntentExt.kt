@@ -6,7 +6,20 @@ import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.activities.*
+import com.kickstarter.ui.activities.CampaignDetailsActivity
+import com.kickstarter.ui.activities.CommentsActivity
+import com.kickstarter.ui.activities.CreatorBioActivity
+import com.kickstarter.ui.activities.CreatorDashboardActivity
+import com.kickstarter.ui.activities.LoginActivity
+import com.kickstarter.ui.activities.PaymentMethodsSettingsActivity
+import com.kickstarter.ui.activities.PaymentMethodsSettingsActivityLegacy
+import com.kickstarter.ui.activities.ProjectPageActivity
+import com.kickstarter.ui.activities.ProjectUpdatesActivity
+import com.kickstarter.ui.activities.ReportProjectActivity
+import com.kickstarter.ui.activities.ResetPasswordActivity
+import com.kickstarter.ui.activities.SetPasswordActivity
+import com.kickstarter.ui.activities.UpdateActivity
+import com.kickstarter.ui.activities.VideoActivity
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.data.ProjectData
 

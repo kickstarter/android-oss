@@ -29,7 +29,7 @@ open class SegmentTrackingClient(
     currentUser: CurrentUserType,
     optimizely: ExperimentsClientType,
     preference: SharedPreferences
-) : TrackingClient(context, currentUser, build, currentConfig, optimizely) {
+) : TrackingClient(context, currentUser, build, currentConfig, optimizely, preference) {
 
     override var isInitialized = false
     override var loggedInUser: User? = null

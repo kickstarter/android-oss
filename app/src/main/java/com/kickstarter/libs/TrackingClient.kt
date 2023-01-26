@@ -1,6 +1,7 @@
 package com.kickstarter.libs
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -25,7 +26,8 @@ abstract class TrackingClient(
     @set:Inject var currentUser: CurrentUserType,
     @set:Inject var build: Build,
     @set:Inject var currentConfig: CurrentConfigType,
-    @set:Inject var optimizely: ExperimentsClientType
+    @set:Inject var optimizely: ExperimentsClientType,
+    @set:Inject var sharedPreferences: SharedPreferences
 ) : TrackingClientType() {
 
     override val isGooglePlayServicesAvailable: Boolean

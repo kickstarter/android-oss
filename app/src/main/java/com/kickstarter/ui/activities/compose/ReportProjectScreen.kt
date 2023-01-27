@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -21,16 +22,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
+import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.stringsFromHtmlTranslation
 import type.FlaggingKind
+
+@Preview(widthDp = 300, heightDp = 300)
+@Composable
+fun PreviewTextLinks() {
+    MaterialTheme {
+        TextWithClickableLink(html = stringResource(id = R.string.FPO_projects_may_not_offer_items))
+    }
+}
 
 @Preview(widthDp = 300, heightDp = 300)
 @Composable
@@ -60,11 +74,12 @@ fun RulesListPreview() {
 }
 
 @Composable
-fun rulesMap(): Map<Pair<String, String>, List<Triple<String, String, String>>> {
+fun rulesMap(): Map<Triple<String, String, Boolean>, List<Triple<String, String, String>>> {
 
-    val projectCat = Pair(
+    val projectCat = Triple(
         stringResource(id = R.string.FPO_this_project_breaks_one_of_our_rules),
-        stringResource(id = R.string.FPO_projects_may_not_offer_items)
+        stringResource(id = R.string.FPO_projects_may_not_offer_items),
+        true // Has a link om the subtitle
     )
     val rulesListProject = listOf(
         Triple(stringResource(id = R.string.FPO_Prohibided_Items), stringResource(id = R.string.FPO_Prohibided_Items_desc), FlaggingKind.PROHIBITED_ITEMS.rawValue()),
@@ -74,18 +89,20 @@ fun rulesMap(): Map<Pair<String, String>, List<Triple<String, String, String>>> 
         Triple(stringResource(id = R.string.FPO_Not_raising_for_creative), stringResource(id = R.string.FPO_Not_raising_for_creative_desc), FlaggingKind.NOT_PROJECT.rawValue()) // TODO check on web
     )
 
-    val spamCat = Pair(
+    val spamCat = Triple(
         stringResource(id = R.string.FPO_report_spam_or_abusive),
-        stringResource(id = R.string.FPO_report_spam_or_abusive_subtitle)
+        stringResource(id = R.string.FPO_report_spam_or_abusive_subtitle),
+        true // Has a link om the subtitle
     )
     val rulesListSpam = listOf(
         Triple(stringResource(id = R.string.FPO_Spam), stringResource(id = R.string.FPO_Spam_desc), FlaggingKind.SPAM.rawValue()),
         Triple(stringResource(id = R.string.FPO_Abuse), stringResource(id = R.string.FPO_Abuse_desc), FlaggingKind.ABUSE.rawValue()),
     )
 
-    val intellectualCat = Pair(
+    val intellectualCat = Triple(
         stringResource(id = R.string.FPO_Intellectual_property_violation),
-        stringResource(id = R.string.FPO_Intellectual_property_violation_Subtitle)
+        stringResource(id = R.string.FPO_Intellectual_property_violation_Subtitle),
+        false // Has a link om the subtitle
     )
 
     val rulesListIntellectual = listOf(
@@ -101,7 +118,6 @@ fun rulesMap(): Map<Pair<String, String>, List<Triple<String, String, String>>> 
 
 @Composable
 fun Rules(rule: Triple<String, String, String>, navigationAction: (String) -> Unit) {
-    val context = LocalContext.current
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.grid_1))
@@ -152,7 +168,7 @@ fun RulesList(
 
 @Composable
 fun CategoryRow(
-    category: Pair<String, String>,
+    category: Triple<String, String, Boolean>,
     rulesList: List<Triple<String, String, String>>,
     navigationAction: (String) -> Unit = {}
 ) {
@@ -181,10 +197,15 @@ fun CategoryRow(
                         fontWeight = FontWeight.Bold
                     )
                 )
-                Text(
-                    text = category.second,
-                    style = MaterialTheme.typography.body1
-                )
+                if (!category.third) { // Subtitles without links
+                    val text = ViewUtils.html(category.second).toString()
+                    Text(
+                        text = text,
+                        style = MaterialTheme.typography.body1
+                    )
+                } else {
+                    TextWithClickableLink(html = category.second)
+                }
             }
             IconButton(
                 onClick = {
@@ -242,5 +263,50 @@ fun ReportProjectCategoryScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun TextWithClickableLink(html: String) {
+
+    val stringList = html.stringsFromHtmlTranslation()
+    if (stringList.size == 3) {
+        val annotatedText = buildAnnotatedString {
+            append(stringList.first())
+            pushStringAnnotation(
+                tag = stringList[1],
+                annotation = "https://developer.android.com"
+            )
+            withStyle(
+                style = SpanStyle(
+                    color = colorResource(id = R.color.kds_create_700),
+                    textDecoration = TextDecoration.Underline
+                )
+            ) {
+                append(stringList[1])
+            }
+            append(stringList.last())
+
+            pop()
+        }
+// https://developer.android.com/jetpack/compose/text#click-with-annotation
+        ClickableText(
+            text = annotatedText,
+            style = MaterialTheme.typography.body1,
+            onClick = {
+                annotatedText.getStringAnnotations(
+                    tag = stringList[1], start = it,
+                    end = it
+                )
+                    .firstOrNull()?.let { annotation ->
+//                    if(annotation.equals(stringResource(id = R.string.FPO_report_spam_or_abusive_subtitle))) {
+//                        // Open community guidelines annotation
+//                    }
+//                    if(annotation.equals(stringResource(id = R.string.FPO_projects_may_not_offer_items))) {
+//                        // Open prohibited items link
+//                    }
+                    }
+            }
+        )
     }
 }

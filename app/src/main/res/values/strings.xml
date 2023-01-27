@@ -92,9 +92,9 @@
   <string name="FPO_report_project">Report this project to Kickstarter</string>
   <string name="FPO_report_project_title">Report this project</string>
   <string name="FPO_report_spam_or_abusive">Report spam or abusive behavior</string>
-  <string name="FPO_report_spam_or_abusive_subtitle">Our Community Guidelines prohibit spam and abusive behavior by both creators and backers.</string>
+  <string name="FPO_report_spam_or_abusive_subtitle">Our &lt;a href="%{community_guidelines_link}">Community Guidelines&lt;/a> prohibit spam and abusive behavior by both creators and backers.</string>
   <string name="FPO_this_project_breaks_one_of_our_rules">This project breaks one of Our Rules.</string>
-  <string name="FPO_projects_may_not_offer_items">Projects may not offer items mentioned in our prohibited items list.</string>
+  <string name="FPO_projects_may_not_offer_items">Projects may not offer items mentioned in our &lt;a href="%{prohibited_items_link}">prohibited items&lt;/a> list.</string>
   <string name="FPO_Intellectual_property_violation">Intellectual property violation</string>
   <string name="FPO_Intellectual_property_violation_Subtitle">A project is infringing on your copyright or trademark.</string>
 

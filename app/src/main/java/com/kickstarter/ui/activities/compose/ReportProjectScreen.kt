@@ -44,7 +44,7 @@ import type.FlaggingKind
 @Composable
 fun PreviewTextLinks() {
     MaterialTheme {
-        TextWithClickableLink(html = stringResource(id = R.string.FPO_projects_may_not_offer_items))
+        TextWithClickableLink(html = stringResource(id = R.string.Projects_may_not_offer))
     }
 }
 
@@ -79,36 +79,36 @@ fun RulesListPreview() {
 fun rulesMap(): Map<Triple<String, String, Boolean>, List<Triple<String, String, String>>> {
 
     val projectCat = Triple(
-        stringResource(id = R.string.FPO_this_project_breaks_one_of_our_rules),
-        stringResource(id = R.string.FPO_projects_may_not_offer_items),
+        stringResource(id = R.string.This_project_breaks),
+        stringResource(id = R.string.Projects_may_not_offer),
         true // Has a link om the subtitle
     )
     val rulesListProject = listOf(
-        Triple(stringResource(id = R.string.FPO_Prohibided_Items), stringResource(id = R.string.FPO_Prohibided_Items_desc), FlaggingKind.PROHIBITED_ITEMS.rawValue()),
-        Triple(stringResource(id = R.string.FPO_Copying_reselling_or), stringResource(id = R.string.FPO_Copying_reselling_or_desc), FlaggingKind.RESALE.rawValue()),
-        Triple(stringResource(id = R.string.FPO_prototype_misrepresentation), stringResource(id = R.string.FPO_prototype_misrepresentation_desc), FlaggingKind.PROTOTYPE_MISREPRESENTATION.rawValue()),
-        Triple(stringResource(id = R.string.FPO_suspicious_creator), stringResource(id = R.string.FPO_suspicious_creator_desc), FlaggingKind.POST_FUNDING_SUSPICIOUS_THIRD_PARTY.rawValue()), // TODO check this one on web
-        Triple(stringResource(id = R.string.FPO_Not_raising_for_creative), stringResource(id = R.string.FPO_Not_raising_for_creative_desc), FlaggingKind.NOT_PROJECT.rawValue()) // TODO check on web
+        Triple(stringResource(id = R.string.Prohibited_items), stringResource(id = R.string.Projects_may_not_offer), FlaggingKind.PROHIBITED_ITEMS.rawValue()),
+        Triple(stringResource(id = R.string.Copying_reselling), stringResource(id = R.string.Projects_cannot_plagiarize), FlaggingKind.RESALE.rawValue()),
+        Triple(stringResource(id = R.string.Prototype_misrepresentation), stringResource(id = R.string.Creators_must_be_transparent), FlaggingKind.PROTOTYPE_MISREPRESENTATION.rawValue()),
+        Triple(stringResource(id = R.string.Suspicious_creator_behavior), stringResource(id = R.string.Project_creators_and_their), FlaggingKind.POST_FUNDING_SUSPICIOUS_THIRD_PARTY.rawValue()), // TODO check this one on web
+        Triple(stringResource(id = R.string.Not_raising_funds), stringResource(id = R.string.Projects_on), FlaggingKind.NOT_PROJECT.rawValue()) // TODO check on web
     )
 
     val spamCat = Triple(
-        stringResource(id = R.string.FPO_report_spam_or_abusive),
-        stringResource(id = R.string.FPO_report_spam_or_abusive_subtitle),
+        stringResource(id = R.string.Report_spam),
+        stringResource(id = R.string.Our),
         true // Has a link om the subtitle
     )
     val rulesListSpam = listOf(
-        Triple(stringResource(id = R.string.FPO_Spam), stringResource(id = R.string.FPO_Spam_desc), FlaggingKind.SPAM.rawValue()),
-        Triple(stringResource(id = R.string.FPO_Abuse), stringResource(id = R.string.FPO_Abuse_desc), FlaggingKind.ABUSE.rawValue()),
+        Triple(stringResource(id = R.string.Spam), stringResource(id = R.string.Ex_using), FlaggingKind.SPAM.rawValue()),
+        Triple(stringResource(id = R.string.Abuse), stringResource(id = R.string.Ex_posting), FlaggingKind.ABUSE.rawValue()),
     )
 
     val intellectualCat = Triple(
-        stringResource(id = R.string.FPO_Intellectual_property_violation),
-        stringResource(id = R.string.FPO_Intellectual_property_violation_Subtitle),
+        stringResource(id = R.string.Intellectual_property_violation),
+        stringResource(id = R.string.A_project_is_infringing),
         false // Has a link om the subtitle
     )
 
     val rulesListIntellectual = listOf(
-        Triple(stringResource(id = R.string.FPO_Intellectual_property_violation), stringResource(id = R.string.FPO_Intellectual_property_violation_desc), FlaggingKind.NOT_PROJECT.rawValue()), // TODO check on web
+        Triple(stringResource(id = R.string.Intellectual_property_violation), stringResource(id = R.string.Kickstarter_takes_claims), FlaggingKind.NOT_PROJECT.rawValue()), // TODO check on web
     )
 
     return mapOf(

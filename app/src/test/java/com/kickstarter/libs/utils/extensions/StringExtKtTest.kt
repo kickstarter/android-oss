@@ -193,11 +193,11 @@ class StringExtKtTest : KSRobolectricTestCase() {
 
     @Test
     fun testRegexToSplitStringResourceWithLink() {
-        val html = RuntimeEnvironment.getApplication().getString(R.string.FPO_projects_may_not_offer_items)
+        val html = RuntimeEnvironment.getApplication().getString(R.string.Projects_may_not_offer)
         val list = html.stringsFromHtmlTranslation()
         assertEquals(list.size, 3)
 
-        val html2 = RuntimeEnvironment.getApplication().getString(R.string.FPO_report_spam_or_abusive_subtitle)
+        val html2 = RuntimeEnvironment.getApplication().getString(R.string.Our)
         val list2 = html2.stringsFromHtmlTranslation()
         assertEquals(list2.size, 3)
 

@@ -125,7 +125,7 @@ fun FormularyScreen(
             readOnly = true,
             label = {
                 Text(
-                    text = stringResource(id = R.string.FPO_Project_url)
+                    text = stringResource(id = R.string.Project_url)
                 )
             },
             colors = TextFieldDefaults.textFieldColors(
@@ -149,7 +149,7 @@ fun FormularyScreen(
                 inputs.inputDetails(it)
                 details = it
             },
-            label = { Text(stringResource(id = R.string.FPO_Details)) },
+            label = { Text(stringResource(id = R.string.Tell_us_more_details)) },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = colorResource(id = R.color.kds_create_700),
                 focusedLabelColor = colorResource(id = R.color.kds_create_700),

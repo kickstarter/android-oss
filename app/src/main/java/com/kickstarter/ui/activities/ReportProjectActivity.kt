@@ -51,7 +51,7 @@ class ReportProjectActivity : ComponentActivity() {
                 Scaffold(
                     topBar = {
                         TopToolBar(
-                            title = stringResource(id = R.string.FPO_report_project_title),
+                            title = stringResource(id = R.string.Report_this_projec),
                             leftOnClickAction = onBack
                         )
                     },

@@ -16,8 +16,13 @@ import io.reactivex.subjects.PublishSubject
 interface ReportProjectViewModel {
 
     interface Inputs {
+        /** Emits when the user hits send button on [FormularyScreen]*/
         fun createFlagging()
+
+        /** Emits when the user introduces text on the input text in [FormularyScreen]*/
         fun inputDetails(s: String)
+
+        /** The category selected by the user in [ReportProjectScreen]*/
         fun kind(kind: String)
     }
 

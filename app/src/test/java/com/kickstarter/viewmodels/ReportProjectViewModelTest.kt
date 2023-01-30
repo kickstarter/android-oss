@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import android.os.Bundle
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
@@ -23,34 +24,38 @@ class ReportProjectViewModelTest : KSRobolectricTestCase() {
     private val progressBarVisible = TestSubscriber.create<Boolean>()
     private val disposables = CompositeDisposable()
 
-    private fun setUpEnvironment() {
-
-        val environment = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                return Observable.just(
-                    UserPrivacyQuery.Data(
-                        UserPrivacyQuery.Me(
-                            "", "Some Name",
-                            "some@email.com", true, true, true, true, "USD"
-                        )
+    private fun getEnvironment() = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
+        override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+            return Observable.just(
+                UserPrivacyQuery.Data(
+                    UserPrivacyQuery.Me(
+                        "", "Some Name",
+                        "some@email.com", true, true, true, true, "USD"
                     )
                 )
-            }
+            )
+        }
 
-            override fun createFlagging(
-                project: Project?,
-                details: String,
-                flaggingKind: String
-            ): Observable<String> {
-                return Observable.just(FlaggingKind.SPAM.rawValue())
-            }
-        }).build()
+        override fun createFlagging(
+            project: Project?,
+            details: String,
+            flaggingKind: String
+        ): Observable<String> {
+            return Observable.just(FlaggingKind.SPAM.rawValue())
+        }
+    }).build()
 
+    private fun getBundle(project: Project): Bundle {
         val bundle = Bundle()
         bundle.putParcelable(
             IntentKey.PROJECT,
-            ProjectFactory.project()
+            project
         )
+
+        return bundle
+    }
+
+    private fun setUpEnvironment(environment: Environment, bundle: Bundle) {
 
         this.vm = ReportProjectViewModel.ReportProjectViewModel(environment, bundle)
 
@@ -62,28 +67,30 @@ class ReportProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testEmailUSer() {
-        setUpEnvironment()
+        val project = ProjectFactory.project()
+
+        setUpEnvironment(getEnvironment(), getBundle(project))
         email.assertValue("some@email.com")
     }
 
     @Test
     fun testProjectUrl() {
-        setUpEnvironment()
-        projectUrl.assertValue(ProjectFactory.project().webProjectUrl())
+        val project = ProjectFactory.project()
+        val url = project.webProjectUrl()
+
+        setUpEnvironment(getEnvironment(), getBundle(project))
+        projectUrl.assertValue(url)
     }
 
     @Test
     fun testFinishNavigationSuccess_When_ProjectReported() {
-        setUpEnvironment()
+        val project = ProjectFactory.project()
+        setUpEnvironment(getEnvironment(), getBundle(project))
 
-        vm.inputs.createFlagging()
         vm.inputs.inputDetails(FlaggingKind.SPAM.rawValue())
+        vm.inputs.kind(FlaggingKind.SPAM.rawValue())
+        vm.inputs.createFlagging()
         finish.assertValue(ReportProjectViewModel.ReportProjectViewModel.NavigationResult(true, FlaggingKind.SPAM.rawValue()))
-    }
-
-    @Test
-    fun testFinishNavigationSuccess_When_UserNavigatedBack() {
-        setUpEnvironment()
     }
 
     @After

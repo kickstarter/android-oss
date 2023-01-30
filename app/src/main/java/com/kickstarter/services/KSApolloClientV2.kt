@@ -8,17 +8,51 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.transformers.encodeRelayId
+import com.kickstarter.services.transformers.projectTransformer
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
 interface ApolloClientTypeV2 {
+    fun getProject(project: Project): Observable<Project>
+    fun getProject(slug: String): Observable<Project>
     fun createSetupIntent(project: Project? = null): Observable<String>
     fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard>
     fun getStoredCards(): Observable<List<StoredCard>>
     fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data>
+
+    fun watchProject(project: Project): Observable<Project>
+
+    fun unWatchProject(project: Project): Observable<Project>
 }
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
+    override fun getProject(project: Project): Observable<Project> {
+        return getProject(project.slug() ?: "")
+    }
+    override fun getProject(slug: String): Observable<Project> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Project>()
+            this.service.query(
+                FetchProjectQuery.builder()
+                    .slug(slug)
+                    .build()
+            ).enqueue(object : ApolloCall.Callback<FetchProjectQuery.Data>() {
+                override fun onFailure(e: ApolloException) {
+                    ps.onError(e)
+                }
+
+                override fun onResponse(response: Response<FetchProjectQuery.Data>) {
+                    response.data?.let { responseData ->
+                        ps.onNext(projectTransformer(
+                            responseData.project()?.fragments()?.fullProject()
+                        ))
+                        ps.onComplete()
+                    }
+                }
+            })
+            return@defer ps
+        }
+    }
 
     override fun createSetupIntent(project: Project?): Observable<String> {
         return Observable.defer {
@@ -139,6 +173,68 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                         }
 
                         response.data?.let { ps.onNext(it) }
+                        ps.onComplete()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun watchProject(project: Project): Observable<Project> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Project>()
+            this.service.mutate(
+                WatchProjectMutation.builder().id(encodeRelayId(project)).build()
+            )
+                .enqueue(object : ApolloCall.Callback<WatchProjectMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<WatchProjectMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                        }
+                        /* make a copy of what you posted. just in case
+                         * we want to update the list without doing
+                         * a full refresh.
+                         */
+                        ps.onNext(
+                            projectTransformer(
+                                response.data?.watchProject()?.project()?.fragments()?.fullProject()
+                            )
+                        )
+                        ps.onComplete()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun unWatchProject(project: Project): Observable<Project> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Project>()
+            this.service.mutate(
+                UnwatchProjectMutation.builder().id(encodeRelayId(project)).build()
+            )
+                .enqueue(object : ApolloCall.Callback<UnwatchProjectMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<UnwatchProjectMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                        }
+                        /* make a copy of what you posted. just in case
+                         * we want to update the list without doing
+                         * a full refresh.
+                         */
+                        ps.onNext(
+                            projectTransformer(
+                                response.data?.watchProject()?.project()?.fragments()?.fullProject()
+                            )
+                        )
                         ps.onComplete()
                     }
                 })

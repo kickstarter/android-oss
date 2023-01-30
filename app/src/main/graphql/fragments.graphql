@@ -138,6 +138,7 @@ fragment fullProject on Project {
     environmentalCommitments {
         ... environmentalCommitment
     }
+    watchesCount
 }
 
 fragment backing on Backing {

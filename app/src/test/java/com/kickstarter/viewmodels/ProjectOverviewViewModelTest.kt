@@ -31,6 +31,7 @@ import org.joda.time.DateTimeUtils
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
+import type.FlaggingKind
 import java.util.Arrays
 
 class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
@@ -699,8 +700,9 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
             .build()
         setUpEnvironment(env, project(project))
 
-        this.shouldShowProjectFlagged.assertValue(true)
-        this.shouldShowReportProject.assertValue(false)
+        vm.inputs.refreshFlaggedState(FlaggingKind.NOT_PROJECT.rawValue())
+        this.shouldShowProjectFlagged.assertValues(true, true)
+        this.shouldShowReportProject.assertValues(false, false)
     }
 
     private fun environmentForFeatureFlag(enabled: Boolean): Environment {

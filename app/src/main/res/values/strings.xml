@@ -88,7 +88,7 @@
   <string name="risk_description">"The largest risk comes from the creation/manufacturing of the pins at the pin factory. We are working with a vendor in China, who has lots of experience in projects for us. Still, there is a chance that something may go wrong during the manufacturing process and if that happens it could cause a delay in shipping. It can be common in the pin-making world that manus are delayed or make mistakes with an order. However, we don’t anticipate this being an issue, as our vendor has done many similar projects with us, but there is always a possibility. These items are handmade! If anything does happen, we will make sure to keep everyone informed and up to date regarding where we are in the process. The timeline for shipping is NOT solid due to these factors but we will keep all backers updated each step of the way. Also- Please be aware, there might be a delay due to the situation with the COVID-19 virus. This is causing delays all over the world as shipping gets limited, cities shutting down services and other issues arise. At this point, we do not think this will impact our project timeline. However, we cannot predict how things will go and our pin factory is located in China (they are all back at work now and we have gotten pins from them within the last month, so things appear to be going well now.) If this will affect our production, I will inform everyone through an update as soon as I know."</string>
 
   <!-- UGC Mock String-->
-  <string name="FPO_Already_reported">It looks like you’ve already reported this project to us. Our Trust and Safety team will screen your report against Our Rules and Community Guidelines. Thanks for your feedback!</string>
+  <string name="FPO_Already_reported">It looks like you’ve already reported this project to us. Our Trust and Safety team will screen your report against Our Rules and Community Guidelines. Thanks for your feedback</string>
   <string name="FPO_report_project">Report this project to Kickstarter</string>
   <string name="FPO_report_project_title">Report this project</string>
   <string name="FPO_report_spam_or_abusive">Report spam or abusive behavior</string>
@@ -109,7 +109,7 @@
   <string name="FPO_Not_raising_for_creative">Not raising funds for a creative project</string>
   <string name="FPO_Not_raising_for_creative_desc">Projects on Kickstarter must create something to share with others.</string>
   <string name="FPO_Spam">Spam</string>
-  <string name="FPO_Spam_desc">Ex: Using email lists from outside sources, promoting a project where it shouldn’t be promoted, link bombing.</string>
+  <string name="FPO_Spam_desc">Ex: Using email lists from outside sources, promoting a project where it shouldn\'t be promoted, link bombing.</string>
   <string name="FPO_Abuse">Abuse</string>
   <string name="FPO_Abuse_desc">Ex: Posting obscene or hateful comments, doxxing or posting personal information in comments or updates.</string>
   <string name="FPO_Intellectual_property_violation_desc">Kickstarter takes claims of intellectual property infringement seriously. For more information and instructions on how to report infringement, please visit our Copyright Policy and our Trademark Policy. Only claims filed by the copyright or trademark holder can be processed.</string>

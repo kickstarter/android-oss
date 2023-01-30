@@ -24,7 +24,7 @@ interface ReportProjectViewModel {
     interface Outputs {
         fun projectUrl(): Observable<String>
         fun email(): Observable<String>
-        fun finish(): Observable<Pair<Boolean, String>>
+        fun finish(): Observable<ReportProjectViewModel.NavigationResult>
         fun progressBarIsVisible(): Observable<Boolean>
     }
 
@@ -35,11 +35,13 @@ interface ReportProjectViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
+        data class NavigationResult(val hasFinished: Boolean, val flaggingKind: String)
+
         private val apolloClient = requireNotNull(environment.apolloClientV2())
 
         private val userEmail = BehaviorSubject.create<String>()
         private val projectUrl = BehaviorSubject.create<String>()
-        private val finish = PublishSubject.create<Pair<Boolean, String>>()
+        private val finish = PublishSubject.create<NavigationResult>()
         private val progressBarVisible = PublishSubject.create<Boolean>()
 
         private val sendButtonPressed = PublishSubject.create<Unit>()
@@ -60,7 +62,7 @@ interface ReportProjectViewModel {
             disposables.add(
                 project
                     .map {
-                        it.urls().web().project()
+                        it.webProjectUrl()
                     }
                     .subscribe {
                         projectUrl.onNext(it)
@@ -102,7 +104,7 @@ interface ReportProjectViewModel {
                 notification
                     .compose(Transformers.valuesV2())
                     .subscribe {
-                        finish.onNext(Pair(true, it))
+                        finish.onNext(NavigationResult(true, it))
                     }
             )
         }
@@ -119,7 +121,7 @@ interface ReportProjectViewModel {
         override fun projectUrl(): Observable<String> =
             this.projectUrl
 
-        override fun finish(): Observable<Pair<Boolean, String>> =
+        override fun finish(): Observable<NavigationResult> =
             this.finish
 
         override fun progressBarIsVisible(): Observable<Boolean> =

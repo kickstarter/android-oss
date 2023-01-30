@@ -66,7 +66,11 @@ class ReportProjectActivity : ComponentActivity() {
                                 }
                             )
                         else {
-                            val finishResult = viewModel.outputs.finish().subscribeAsState(initial = Pair(false, "")).value.second
+                            val finishResult = viewModel.outputs.finish().subscribeAsState(
+                                initial =
+                                ReportProjectViewModel.ReportProjectViewModel.NavigationResult(false, "")
+                            ).value.flaggingKind
+
                             FormularyScreen(
                                 outputs = viewModel.outputs,
                                 inputs = viewModel.inputs,

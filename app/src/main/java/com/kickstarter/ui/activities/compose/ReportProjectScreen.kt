@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities.compose
 
+import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -275,7 +277,7 @@ fun TextWithClickableLink(html: String) {
             append(stringList.first())
             pushStringAnnotation(
                 tag = stringList[1],
-                annotation = "https://developer.android.com"
+                annotation = ""
             )
             withStyle(
                 style = SpanStyle(
@@ -289,7 +291,8 @@ fun TextWithClickableLink(html: String) {
 
             pop()
         }
-// https://developer.android.com/jetpack/compose/text#click-with-annotation
+
+        val context = LocalContext.current
         ClickableText(
             text = annotatedText,
             style = MaterialTheme.typography.body1,
@@ -299,12 +302,13 @@ fun TextWithClickableLink(html: String) {
                     end = it
                 )
                     .firstOrNull()?.let { annotation ->
-//                    if(annotation.equals(stringResource(id = R.string.FPO_report_spam_or_abusive_subtitle))) {
-//                        // Open community guidelines annotation
-//                    }
-//                    if(annotation.equals(stringResource(id = R.string.FPO_projects_may_not_offer_items))) {
-//                        // Open prohibited items link
-//                    }
+                        Toast
+                            .makeText(
+                                context,
+                                "Will open a formulary screen on next Story",
+                                Toast.LENGTH_SHORT
+                            )
+                            .show()
                     }
             }
         )

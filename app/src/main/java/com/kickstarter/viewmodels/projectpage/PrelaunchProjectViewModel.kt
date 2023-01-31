@@ -131,7 +131,7 @@ interface PrelaunchProjectViewModel {
             val loggedOutUserOnHeartClick = this.currentUser.observable()
                 .compose(TakeWhenTransformerV2(this.heartButtonClicked))
                 .filter { u -> u == null }
-            
+
 //            val savedProjectOnLoginSuccess = this.startLoginToutActivity
 //                .compose<Pair<Unit, User?>>(Transformers.combineLatestPair(this.currentUser.observable()))
 //                .filter { su ->

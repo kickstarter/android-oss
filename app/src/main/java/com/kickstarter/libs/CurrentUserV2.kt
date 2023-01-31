@@ -58,7 +58,7 @@ abstract class CurrentUserTypeV2 {
      */
     val isLoggedIn: Observable<Boolean>
         get() = observable().map {
-           it.isPresent()
+            it.isPresent()
         }
 
     /**

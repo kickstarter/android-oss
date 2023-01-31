@@ -26,7 +26,7 @@ class KsOptional<T> {
     fun isPresent() = value != null
 
     fun getValue() = value
-    
+
     companion object {
         fun <T> empty(): KsOptional<T> {
             return KsOptional()

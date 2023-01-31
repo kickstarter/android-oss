@@ -22,7 +22,9 @@ class Environment private constructor(
     private val buildCheck: BuildCheck?,
     private val cookieManager: CookieManager?,
     private val currentConfig: CurrentConfigType?,
+    private val currentConfigV2: CurrentConfigTypeV2?,
     private val currentUser: CurrentUserType?,
+    private val currentUserV2: CurrentUserTypeV2?,
     private val firstSessionPreference: BooleanPreferenceType?,
     private val gson: Gson?,
     private val hasSeenAppRatingPreference: BooleanPreferenceType?,
@@ -48,7 +50,9 @@ class Environment private constructor(
     fun buildCheck() = this.buildCheck
     fun cookieManager() = this.cookieManager
     fun currentConfig() = this.currentConfig
+    fun currentConfigV2() = this.currentConfigV2
     fun currentUser() = this.currentUser
+    fun currentUserV2() = this.currentUserV2
     fun firstSessionPreference() = this.firstSessionPreference
     fun gson() = this.gson
     fun hasSeenAppRatingPreference() = this.hasSeenAppRatingPreference
@@ -75,7 +79,9 @@ class Environment private constructor(
         private var buildCheck: BuildCheck? = null,
         private var cookieManager: CookieManager? = null,
         private var currentConfig: CurrentConfigType? = null,
+        private var currentConfigV2: CurrentConfigTypeV2? = null,
         private var currentUser: CurrentUserType? = null,
+        private var currentUserV2: CurrentUserTypeV2? = null,
         private var firstSessionPreference: BooleanPreferenceType? = null,
         private var gson: Gson? = null,
         private var hasSeenAppRatingPreference: BooleanPreferenceType? = null,
@@ -101,7 +107,9 @@ class Environment private constructor(
         fun buildCheck(buildCheck: BuildCheck) = apply { this.buildCheck = buildCheck }
         fun cookieManager(cookieManager: CookieManager) = apply { this.cookieManager = cookieManager }
         fun currentConfig(currentConfig: CurrentConfigType) = apply { this.currentConfig = currentConfig }
+        fun currentConfig2(currentConfig2: CurrentConfigTypeV2) = apply { this.currentConfigV2 = currentConfig2 }
         fun currentUser(currentUser: CurrentUserType) = apply { this.currentUser = currentUser }
+        fun currentUser2(currentUser2: CurrentUserTypeV2) = apply { this.currentUserV2 = currentUser2 }
         fun firstSessionPreference(firstSessionPreference: BooleanPreferenceType) = apply { this.firstSessionPreference = firstSessionPreference }
         fun gson(gson: Gson) = apply { this.gson = gson }
         fun hasSeenAppRatingPreference(hasSeenAppRatingPreference: BooleanPreferenceType) = apply { this.hasSeenAppRatingPreference = hasSeenAppRatingPreference }
@@ -128,7 +136,9 @@ class Environment private constructor(
             buildCheck = buildCheck,
             cookieManager = cookieManager,
             currentConfig = currentConfig,
+            currentConfigV2 = currentConfigV2,
             currentUser = currentUser,
+            currentUserV2 = currentUserV2,
             firstSessionPreference = firstSessionPreference,
             gson = gson,
             hasSeenAppRatingPreference = hasSeenAppRatingPreference,
@@ -156,7 +166,9 @@ class Environment private constructor(
         buildCheck = buildCheck,
         cookieManager = cookieManager,
         currentConfig = currentConfig,
+        currentConfigV2 = currentConfigV2,
         currentUser = currentUser,
+        currentUserV2 = currentUserV2,
         firstSessionPreference = firstSessionPreference,
         gson = gson,
         hasSeenAppRatingPreference = hasSeenAppRatingPreference,

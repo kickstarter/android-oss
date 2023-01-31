@@ -11,7 +11,7 @@ import timber.log.Timber
 import java.io.IOException
 import java.io.InputStream
 
-interface CurrentConfigType2 {
+interface CurrentConfigTypeV2 {
     /**
      * Returns the config as an observable.
      */
@@ -27,7 +27,7 @@ class CurrentConfigV2(
     assetManager: AssetManager,
     gson: Gson,
     configPreference: StringPreferenceType
-) : CurrentConfigType2 {
+) : CurrentConfigTypeV2 {
     private val config = BehaviorSubject.create<Config>()
     private val disposables = CompositeDisposable()
     init {

@@ -13,7 +13,6 @@ import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 
-
 interface ApolloClientTypeV2 {
     fun getProject(project: Project): Observable<Project>
     fun getProject(slug: String): Observable<Project>

@@ -13,8 +13,6 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.updateProjectWith
 import com.kickstarter.models.Project
-import com.kickstarter.models.User
-import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -69,7 +67,7 @@ interface PrelaunchProjectViewModel {
         fun showShareSheet(): Observable<Pair<String, String>>
 
         /** Emits when we should start [com.kickstarter.ui.activities.LoginToutActivity].  */
-        fun startLoginToutActivity(): Observable<Void>
+        fun startLoginToutActivity(): Observable<Unit>
 
         /** Emits when the success prompt for saving should be displayed.  */
         fun showSavedPrompt(): Observable<Void>
@@ -80,11 +78,7 @@ interface PrelaunchProjectViewModel {
         val outputs: Outputs = this
         private val disposables = CompositeDisposable()
 
-        private val cookieManager = requireNotNull(environment.cookieManager())
         private val currentUser = requireNotNull(environment.currentUserV2())
-        private val ksCurrency = requireNotNull(environment.ksCurrency())
-        private val optimizely = requireNotNull(environment.optimizely())
-        private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val apolloClient = requireNotNull(environment.apolloClientV2())
         private val currentConfig = requireNotNull(environment.currentConfigV2())
 
@@ -104,8 +98,7 @@ interface PrelaunchProjectViewModel {
         private val showShareSheet = PublishSubject.create<Pair<String, String>>()
         private val blurbTextViewText: Observable<String>
         private val locationTextViewText: Observable<String>
-        private val startLoginToutActivity = PublishSubject.create<Void>()
-        private val projectData = BehaviorSubject.create<ProjectData>()
+        private val startLoginToutActivity = PublishSubject.create<Unit>()
         private val showSavedPrompt = PublishSubject.create<Void>()
         init {
 
@@ -136,48 +129,50 @@ interface PrelaunchProjectViewModel {
                 .filter { u -> u != null }
 
             val loggedOutUserOnHeartClick = this.currentUser.observable()
-                .compose<User>(TakeWhenTransformerV2(this.heartButtonClicked))
+                .compose(TakeWhenTransformerV2(this.heartButtonClicked))
                 .filter { u -> u == null }
+            
+//            val savedProjectOnLoginSuccess = this.startLoginToutActivity
+//                .compose<Pair<Unit, User?>>(Transformers.combineLatestPair(this.currentUser.observable()))
+//                .filter { su ->
+//                    su.second != null
+//                }.withLatestFrom<Project, Project>(initialProject) { _, p -> p }
+//                .take(1)
+//                .switchMap {
+//                    this.saveProject(it)
+//                }
 
-            loggedOutUserOnHeartClick
-                .compose(Transformers.ignoreValuesV2())
-                .subscribe(this.startLoginToutActivity)
+//            val projectOnUserChangeSave = initialProject
+//                .compose(Transformers.takePairWhenV2(loggedInUserOnHeartClick))
+//                .switchMap {
+//                    this.toggleProjectSave(it.second.second)
+//                }
+//                .share()
+//                .filter { ObjectUtils.isNotNull(it) }
+//                .map { it }
 
-            val savedProjectOnLoginSuccess = this.startLoginToutActivity
-                .compose<Pair<Void, User?>>(Transformers.combineLatestPair(this.currentUser.observable()))
-                .filter { su -> su.second != null }
-                .withLatestFrom<Project, Project>(initialProject) { _, p -> p }
-                .take(1)
-                .switchMap {
-                    this.saveProject(it)
-                }
+//            disposables.add(
+//                loggedOutUserOnHeartClick
+//                    .compose(Transformers.ignoreValuesV2())
+//                    .subscribe { this.startLoginToutActivity.onNext(Unit) }
+//            )
+//            disposables.add(
+//                savedProjectOnLoginSuccess
+//                    .filter { ObjectUtils.isNotNull(it) }
+//                    .map { it }
+//                    .subscribe {
+//                        this.project.onNext(it)
+//                    }
+//            )
 
-            val projectOnUserChangeSave = initialProject
-                .compose(Transformers.takePairWhenV2(loggedInUserOnHeartClick))
-                .switchMap {
-                    this.toggleProjectSave(it.second.second)
-                }
-                .share()
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { it }
-
-            disposables.add(
-                savedProjectOnLoginSuccess
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .map { it }
-                    .subscribe {
-                        this.project.onNext(it)
-                    }
-            )
-
-            disposables.add(
-                projectOnUserChangeSave
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .map { it }
-                    .subscribe {
-                        this.project.onNext(it)
-                    }
-            )
+//            disposables.add(
+//                projectOnUserChangeSave
+//                    .filter { ObjectUtils.isNotNull(it) }
+//                    .map { it }
+//                    .subscribe {
+//                        this.project.onNext(it)
+//                    }
+//            )
 
             locationTextViewText = initialProject
                 .map { it.location() }
@@ -224,22 +219,17 @@ interface PrelaunchProjectViewModel {
             }
         }
 
-        private fun projectData(refTagFromIntent: RefTag?, refTagFromCookie: RefTag?, project: Project): ProjectData {
-            return ProjectData
-                .builder()
-                .refTagFromIntent(refTagFromIntent)
-                .refTagFromCookie(refTagFromCookie)
-                .project(project)
-                .build()
-        }
-
         private fun loadProject(intent: Intent) = ProjectIntentMapper
             .project(intent, this.apolloClient)
             .withLatestFrom(
                 currentConfig.observable(),
                 currentUser.observable()
             ) { project, config, user ->
-                return@withLatestFrom project.updateProjectWith(config, user)
+                if (user.isPresent()) {
+                    return@withLatestFrom project.updateProjectWith(config, user.getValue())
+                } else {
+                    return@withLatestFrom project.updateProjectWith(config, null)
+                }
             }
 
         override fun onCleared() {
@@ -265,7 +255,7 @@ interface PrelaunchProjectViewModel {
         override fun blurbVariantIsVisible(): Observable<Boolean> = blurbVariantIsVisible
         override fun categoryTextViewText(): Observable<String> = categoryTextViewText
         override fun showShareSheet(): Observable<Pair<String, String>> = this.showShareSheet
-        override fun startLoginToutActivity(): Observable<Void> = this.startLoginToutActivity
+        override fun startLoginToutActivity(): Observable<Unit> = this.startLoginToutActivity
         override fun showSavedPrompt(): Observable<Void> = this.showSavedPrompt
     }
 

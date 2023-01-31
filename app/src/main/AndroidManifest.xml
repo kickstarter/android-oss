@@ -38,6 +38,16 @@
         <activity
             android:name=".ui.activities.CampaignDetailsActivity"
             android:parentActivityName=".ui.activities.ProjectPageActivity" />
+
+        <activity android:name=".ui.activities.PreLaunchProjectPageActivity"
+            android:parentActivityName=".ui.activities.DiscoveryActivity"
+            android:theme="@style/ProjectActivity"
+            android:screenOrientation="portrait"
+            android:exported="true"
+            android:configChanges="screenSize|orientation"
+            android:windowSoftInputMode="adjustResize"
+            tools:ignore="LockedOrientationActivity"/>
+
         <activity
             android:name=".ui.activities.ChangeEmailActivity"
             android:theme="@style/SettingsActivity" />

@@ -13,6 +13,8 @@ import com.kickstarter.libs.RecyclerViewPaginator
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.InputUtils
+import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.extensions.getPreLaunchProjectActivity
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
@@ -58,8 +60,20 @@ class SearchActivity : BaseActivity<SearchViewModel.ViewModel>(), SearchAdapter.
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startProjectActivity(it) }
+
+        this.viewModel.outputs.startPreLaunchProjectActivity()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { startPreLaunchProjectActivity(it.first, it.second) }
     }
 
+    private fun startPreLaunchProjectActivity(project: Project, refTag: RefTag) {
+        val intent = Intent().getPreLaunchProjectActivity(this)
+            .putExtra(IntentKey.PROJECT_PARAM, project.slug())
+            .putExtra(IntentKey.REF_TAG, refTag)
+        startActivity(intent)
+        TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
+    }
     private fun startProjectActivity(projectAndRefTagAndIsFfEnabled: Pair<Project, RefTag>) {
         val intent = Intent().getProjectIntent(this)
             .putExtra(IntentKey.PROJECT, projectAndRefTagAndIsFfEnabled.first)

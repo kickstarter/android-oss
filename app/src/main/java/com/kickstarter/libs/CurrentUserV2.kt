@@ -2,6 +2,7 @@ package com.kickstarter.libs
 
 import com.google.gson.Gson
 import com.kickstarter.libs.preferences.StringPreferenceType
+import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.User
 import io.reactivex.Observable
@@ -34,7 +35,7 @@ abstract class CurrentUserTypeV2 {
      * Returns an observable representing the current user. It emits immediately
      * with the current user, and then again each time the user is updated.
      */
-    abstract fun observable(): Observable<User?>
+    abstract fun observable(): Observable<KsOptional<User>>
 
     /**
      * Returns the most recently emitted user from the user observable.
@@ -56,32 +57,19 @@ abstract class CurrentUserTypeV2 {
      * each time the current user is updated.
      */
     val isLoggedIn: Observable<Boolean>
-        get() = observable().map { `object`: User? ->
-            ObjectUtils.isNotNull(
-                `object`
-            )
+        get() = observable().map {
+           it.isPresent()
         }
 
     /**
      * Emits only values of a logged in user. The returned observable may never emit.
      */
     fun loggedInUser(): Observable<User> {
-        return observable().filter { `object`: User? ->
+        return observable().filter {
             ObjectUtils.isNotNull(
-                `object`
+                it.getValue()
             )
-        }.map { it }
-    }
-
-    /**
-     * Emits only values of a logged out user. The returned observable may never emit.
-     */
-    fun loggedOutUser(): Observable<User> {
-        return observable().filter { `object`: User? ->
-            ObjectUtils.isNull(
-                `object`
-            )
-        }.map { it }
+        }.map { it.getValue() }
     }
 }
 
@@ -91,22 +79,25 @@ class CurrentUserV2(
     gson: Gson,
     private val userPreference: StringPreferenceType
 ) : CurrentUserTypeV2() {
-    val user = BehaviorSubject.create<User?>()
+    val user = BehaviorSubject.create<KsOptional<User>>()
     init {
-
         user
+            .map { it.getValue() }
             .skip(1)
             .filter { `object`: User? -> ObjectUtils.isNotNull(`object`) }
             .subscribe { u: User? ->
                 userPreference.set(gson.toJson(u, User::class.java))
             }.dispose()
-        gson.fromJson(userPreference.get(), User::class.java)?.let {
-            user.onNext(it)
+
+        if (gson.fromJson(userPreference.get(), User::class.java) != null) {
+            user.onNext(KsOptional.of(gson.fromJson(userPreference.get(), User::class.java)))
+        } else {
+            user.onNext(KsOptional.empty())
         }
     }
 
     override fun getUser(): User? {
-        return user.value
+        return user.value?.getValue()
     }
 
     override fun exists(): Boolean {
@@ -119,7 +110,7 @@ class CurrentUserV2(
     override fun login(newUser: User, accessToken: String) {
         Timber.d("Login user %s", newUser.name())
         accessTokenPreference.set(accessToken)
-        user.onNext(newUser)
+        user.onNext(KsOptional.of(newUser))
         deviceRegistrar.registerDevice()
     }
 
@@ -132,10 +123,10 @@ class CurrentUserV2(
     }
 
     override fun refresh(freshUser: User) {
-        user.onNext(freshUser)
+        user.onNext(KsOptional.of(freshUser))
     }
 
-    override fun observable(): Observable<User?> {
+    override fun observable(): Observable<KsOptional<User>> {
         return user
     }
 }

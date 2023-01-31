@@ -15,6 +15,7 @@ import com.kickstarter.ui.activities.PaymentMethodsSettingsActivity
 import com.kickstarter.ui.activities.PaymentMethodsSettingsActivityLegacy
 import com.kickstarter.ui.activities.ProjectPageActivity
 import com.kickstarter.ui.activities.ProjectUpdatesActivity
+import com.kickstarter.ui.activities.ReportProjectActivity
 import com.kickstarter.ui.activities.ResetPasswordActivity
 import com.kickstarter.ui.activities.SetPasswordActivity
 import com.kickstarter.ui.activities.UpdateActivity
@@ -60,6 +61,11 @@ fun Intent.getRootCommentsActivityIntent(
  */
 fun Intent.getCreatorDashboardActivityIntent(context: Context, project: Project): Intent {
     return this.setClass(context, CreatorDashboardActivity::class.java)
+        .putExtra(IntentKey.PROJECT, project)
+}
+
+fun Intent.getReportProjectActivityIntent(context: Context, project: Project): Intent {
+    return this.setClass(context, ReportProjectActivity::class.java)
         .putExtra(IntentKey.PROJECT, project)
 }
 

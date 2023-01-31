@@ -10,12 +10,15 @@ import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.transformers.encodeRelayId
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
+import type.FlaggingKind
 
 interface ApolloClientTypeV2 {
     fun createSetupIntent(project: Project? = null): Observable<String>
     fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard>
     fun getStoredCards(): Observable<List<StoredCard>>
     fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data>
+    fun createFlagging(project: Project? = null, details: String, flaggingKind: String): Observable<String>
+    fun userPrivacy(): Observable<UserPrivacyQuery.Data>
 }
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
@@ -139,6 +142,61 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                         }
 
                         response.data?.let { ps.onNext(it) }
+                        ps.onComplete()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun createFlagging(project: Project?, details: String, flaggingKind: String): Observable<String> {
+        return Observable.defer {
+            project?.let {
+                val ps = PublishSubject.create<String>()
+                val flagging = FlaggingKind.safeValueOf(flaggingKind)
+                val mutation = CreateFlaggingMutation.builder()
+                    .contentId(encodeRelayId(it))
+                    .details(details)
+                    .kind(flagging)
+                    .build()
+
+                service.mutate(
+                    mutation
+                ).enqueue(object : ApolloCall.Callback<CreateFlaggingMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<CreateFlaggingMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message))
+                        }
+                        response.data?.let { data ->
+                            data.createFlagging()?.flagging()?.kind()?.name?.let { kindString ->
+                                ps.onNext(kindString)
+                            }
+                        }
+                        ps.onComplete()
+                    }
+                })
+                return@defer ps
+            }
+        }
+    }
+
+    override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+        return Observable.defer {
+            val ps = PublishSubject.create<UserPrivacyQuery.Data>()
+            service.query(UserPrivacyQuery.builder().build())
+                .enqueue(object : ApolloCall.Callback<UserPrivacyQuery.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<UserPrivacyQuery.Data>) {
+                        response.data?.let {
+                            ps.onNext(it)
+                        }
                         ps.onComplete()
                     }
                 })

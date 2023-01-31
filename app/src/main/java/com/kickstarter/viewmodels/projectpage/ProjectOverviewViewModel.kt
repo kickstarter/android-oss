@@ -49,6 +49,9 @@ interface ProjectOverviewViewModel {
 
         /** Called when the report project button  */
         fun reportProjectButtonClicked()
+
+        /** Called when the report project flow is completed with flaggingKind  */
+        fun refreshFlaggedState(flaggingKind: String)
     }
 
     interface Outputs {
@@ -203,6 +206,7 @@ interface ProjectOverviewViewModel {
         private val updatesClicked = PublishSubject.create<Void>()
         private val creatorDashboardClicked = PublishSubject.create<Void>()
         private val reportProjectButtonClicked = PublishSubject.create<Void>()
+        private val refreshFlagged = PublishSubject.create<String>()
 
         // Outputs
         private val avatarPhotoUrl: Observable<String>
@@ -275,6 +279,8 @@ interface ProjectOverviewViewModel {
         override fun creatorDashboardClicked() = this.creatorDashboardClicked.onNext(null)
 
         override fun reportProjectButtonClicked() = this.reportProjectButtonClicked.onNext(null)
+
+        override fun refreshFlaggedState(flaggingKind: String) = this.refreshFlagged.onNext(flaggingKind)
 
         // - Outputs
         override fun avatarPhotoUrl(): Observable<String> {
@@ -771,8 +777,15 @@ interface ProjectOverviewViewModel {
 
             shouldShowProjectFlagged = project
                 .map { it.isFlagged() ?: false }
-                .withLatestFrom(Observable.just(this.optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_UGC) ?: false)) { isFlagged, isEnabled ->
-                    return@withLatestFrom isEnabled && isFlagged
+                .compose(Transformers.combineLatestPair(refreshFlagged.startWith("")))
+                .withLatestFrom(Observable.just(this.optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_UGC) ?: false)) { pair, isEnabled ->
+                    val isFlagged = pair.first
+                    val shouldRefresh = pair.second
+
+                    if (shouldRefresh.isNotEmpty()) {
+                        return@withLatestFrom isEnabled && true
+                    } else
+                        return@withLatestFrom isEnabled && isFlagged
                 }
 
             shouldShowReportProject = shouldShowProjectFlagged

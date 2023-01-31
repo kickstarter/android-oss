@@ -256,7 +256,6 @@ class User private constructor(
             unseenActivityCount = unseenActivityCount,
             weeklyNewsletter = weeklyNewsletter,
             needsPassword = needsPassword
-
         )
     }
 

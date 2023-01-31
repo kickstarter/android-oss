@@ -24,6 +24,9 @@ interface ReportProjectViewModel {
 
         /** The category selected by the user in [ReportProjectScreen]*/
         fun kind(kind: String)
+
+        /** The tag associated a ClickableText onClickCallback in [ReportProjectScreen]*/
+        fun openExternalBrowser(tag: String)
     }
 
     interface Outputs {
@@ -31,6 +34,7 @@ interface ReportProjectViewModel {
         fun email(): Observable<String>
         fun finish(): Observable<ReportProjectViewModel.NavigationResult>
         fun progressBarIsVisible(): Observable<Boolean>
+        fun openExternalBrowserWithUrl(): Observable<String>
     }
 
     class ReportProjectViewModel(
@@ -48,10 +52,12 @@ interface ReportProjectViewModel {
         private val projectUrl = BehaviorSubject.create<String>()
         private val finish = PublishSubject.create<NavigationResult>()
         private val progressBarVisible = PublishSubject.create<Boolean>()
+        private val openExternal = BehaviorSubject.create<String>()
 
         private val sendButtonPressed = PublishSubject.create<Unit>()
         private val inputDetails = PublishSubject.create<String>()
         private val flaggingKind = PublishSubject.create<String>()
+        private val urlTag = PublishSubject.create<String>()
 
         private fun arguments() = Observable.just(this.arguments).filter { ObjectUtils.isNotNull(it) }.map { requireNotNull(it) }
         private val disposables = CompositeDisposable()
@@ -112,6 +118,21 @@ interface ReportProjectViewModel {
                         finish.onNext(NavigationResult(true, it))
                     }
             )
+
+            disposables.add(
+                urlTag
+                    .map {
+                        when (it) {
+                            PROHIBITED_ITEMS_TAG -> "${environment.webEndpoint()}$PROHIBITED_ITEMS"
+                            COMMUNITY_GUIDELINES_TAG -> "${environment.webEndpoint()}$COMMUNITY_GUIDELINES"
+                            else -> ""
+                        }
+                    }
+                    .filter { it.isNotEmpty() }
+                    .subscribe {
+                        openExternal.onNext(it)
+                    }
+            )
         }
 
         override fun onCleared() {
@@ -132,6 +153,9 @@ interface ReportProjectViewModel {
         override fun progressBarIsVisible(): Observable<Boolean> =
             this.progressBarVisible
 
+        override fun openExternalBrowserWithUrl(): Observable<String> =
+            this.openExternal
+
         // - Inputs
         override fun createFlagging() {
             sendButtonPressed.onNext(Unit)
@@ -144,6 +168,17 @@ interface ReportProjectViewModel {
         override fun kind(kind: String) {
             flaggingKind.onNext(kind)
         }
+
+        override fun openExternalBrowser(tag: String) {
+            urlTag.onNext(tag)
+        }
+    }
+
+    companion object {
+        const val PROHIBITED_ITEMS = "/rules/prohibited"
+        const val PROHIBITED_ITEMS_TAG = "{prohibited_items}"
+        const val COMMUNITY_GUIDELINES = "/help/community"
+        const val COMMUNITY_GUIDELINES_TAG = "{community_guidelines}"
     }
 
     class Factory(private val environment: Environment, private val arguments: Bundle?) : ViewModelProvider.Factory {

@@ -789,7 +789,7 @@ interface ProjectOverviewViewModel {
                 }
 
             shouldShowReportProject = shouldShowProjectFlagged
-                .withLatestFrom(Observable.just(this.optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_UGC) ?: false)) { isFlagged, isEnabled ->
+                .withLatestFrom(Observable.just(true)) { isFlagged, isEnabled ->
                     return@withLatestFrom isEnabled && !isFlagged
                 }
 

@@ -93,9 +93,9 @@
   <string name="Report_this_project">Report this project</string>
   <string name="It_looks">It looks like you\'ve already reported this project to us. Our Trust and Safety team will screen your report against &lt;a href="%{our_rules}">Our Rules&lt;a/> and &lt;a href="%{community_guidelines}">Community Guidelines&lt;/a>. Thanks for your feedback</string>
   <string name="Report_spam">Report spam or abusive behavior</string>
-  <string name="Our">Our &lt;a href="%{community_guidelines_link}">Community Guidelines&lt;/a> prohibit spam and abusive behavior by both creators and backers.</string>
+  <string name="Our">Our &lt;a href="%{community_guidelines}">Community Guidelines&lt;/a> prohibit spam and abusive behavior by both creators and backers.</string>
   <string name="This_project_breaks">This project breaks one of Our Rules.</string>
-  <string name="Projects_may_not_offer">Projects may not offer items mentioned in our &lt;a href="%{prohibited_items_link}">prohibited items&lt;/a> list.</string>
+  <string name="Projects_may_not_offer">Projects may not offer items mentioned in our &lt;a href="%{prohibited_items}">prohibited items&lt;/a> list.</string>
   <string name="Intellectual_property_violation">Intellectual property violation</string>
   <string name="A_project_is_infringing">A project is infringing on your copyright or trademark.</string>
   <string name="Prohibited_items">Prohibited items</string>

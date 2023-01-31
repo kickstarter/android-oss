@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities.compose
 
-import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -37,7 +35,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.hrefUrlFromTranslation
 import com.kickstarter.libs.utils.extensions.stringsFromHtmlTranslation
+import com.kickstarter.viewmodels.ReportProjectViewModel
 import type.FlaggingKind
 
 @Preview(widthDp = 300, heightDp = 300)
@@ -172,7 +172,8 @@ fun RulesList(
 fun CategoryRow(
     category: Triple<String, String, Boolean>,
     rulesList: List<Triple<String, String, String>>,
-    navigationAction: (String) -> Unit = {}
+    navigationAction: (String) -> Unit = {},
+    inputs: ReportProjectViewModel.Inputs? = null,
 ) {
     val expanded = remember { mutableStateOf(false) }
 
@@ -206,7 +207,12 @@ fun CategoryRow(
                         style = MaterialTheme.typography.body1
                     )
                 } else {
-                    TextWithClickableLink(html = category.second)
+                    TextWithClickableLink(
+                        html = category.second,
+                        onClickCallback = { tag ->
+                            tag?.let { inputs?.openExternalBrowser(tag) }
+                        }
+                    )
                 }
             }
             IconButton(
@@ -246,7 +252,8 @@ fun CategoryRow(
 @Composable
 fun ReportProjectCategoryScreen(
     padding: PaddingValues,
-    navigationAction: (String) -> Unit = {}
+    navigationAction: (String) -> Unit = {},
+    inputs: ReportProjectViewModel.Inputs? = null
 ) {
     Surface(
         modifier = Modifier.animateContentSize()
@@ -261,7 +268,7 @@ fun ReportProjectCategoryScreen(
         ) {
             items(items = categories) { key ->
                 rulesMap()[key]?.let { value ->
-                    CategoryRow(category = key, rulesList = value, navigationAction)
+                    CategoryRow(category = key, rulesList = value, navigationAction, inputs)
                 }
             }
         }
@@ -269,15 +276,19 @@ fun ReportProjectCategoryScreen(
 }
 
 @Composable
-fun TextWithClickableLink(html: String) {
+fun TextWithClickableLink(
+    html: String,
+    onClickCallback: (String?) -> Unit = {}
+) {
 
     val stringList = html.stringsFromHtmlTranslation()
+    val annotation = html.hrefUrlFromTranslation()
     if (stringList.size == 3) {
         val annotatedText = buildAnnotatedString {
             append(stringList.first())
             pushStringAnnotation(
-                tag = stringList[1],
-                annotation = ""
+                tag = annotation,
+                annotation = stringList[1]
             )
             withStyle(
                 style = SpanStyle(
@@ -292,24 +303,17 @@ fun TextWithClickableLink(html: String) {
             pop()
         }
 
-        val context = LocalContext.current
         ClickableText(
             text = annotatedText,
             style = MaterialTheme.typography.body1,
             onClick = {
                 annotatedText.getStringAnnotations(
-                    tag = stringList[1], start = it,
+                    tag = annotation, start = it,
                     end = it
                 )
                     .firstOrNull()?.let { annotation ->
-                        Toast
-                            .makeText(
-                                context,
-                                "Will open a formulary screen on next Story",
-                                Toast.LENGTH_SHORT
-                            )
-                            .show()
-                    }
+                        onClickCallback(annotation.tag)
+                    } ?: onClickCallback(null)
             }
         )
     }

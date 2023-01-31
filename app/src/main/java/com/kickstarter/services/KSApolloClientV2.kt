@@ -10,7 +10,9 @@ import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.services.transformers.projectTransformer
 import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+
 
 interface ApolloClientTypeV2 {
     fun getProject(project: Project): Observable<Project>
@@ -42,16 +44,25 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                 }
 
                 override fun onResponse(response: Response<FetchProjectQuery.Data>) {
-                    response.data?.let { responseData ->
-                        ps.onNext(projectTransformer(
-                            responseData.project()?.fragments()?.fullProject()
-                        ))
-                        ps.onComplete()
+                    if (response.hasErrors()) ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                    else {
+                        response.data?.let { responseData ->
+                            Observable.just(
+                                projectTransformer(
+                                    responseData.project()?.fragments()?.fullProject()
+                                )
+                            )
+                                .subscribeOn(Schedulers.io())
+                                .subscribe {
+                                    ps.onNext(it)
+                                    ps.onComplete()
+                                }
+                        }
                     }
                 }
             })
             return@defer ps
-        }
+        }.subscribeOn(Schedulers.io())
     }
 
     override fun createSetupIntent(project: Project?): Observable<String> {

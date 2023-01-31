@@ -49,11 +49,11 @@ import java.util.Collections
 
 open class MockApolloClientV2 : ApolloClientTypeV2 {
 
-    override fun watchProject(project: Project):  io.reactivex.Observable<Project> {
+    override fun watchProject(project: Project): io.reactivex.Observable<Project> {
         return io.reactivex.Observable.just(project.toBuilder().isStarred(true).build())
     }
 
-    override fun unWatchProject(project: Project):  io.reactivex.Observable<Project> {
+    override fun unWatchProject(project: Project): io.reactivex.Observable<Project> {
         return io.reactivex.Observable.just(project.toBuilder().isStarred(false).build())
     }
 

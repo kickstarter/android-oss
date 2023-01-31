@@ -28,7 +28,6 @@ class ReportProjectActivity : ComponentActivity() {
 
     private lateinit var viewModelFactory: ReportProjectViewModel.Factory
     private val viewModel: ReportProjectViewModel.ReportProjectViewModel by viewModels { viewModelFactory }
-
     private var disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,5 +96,10 @@ class ReportProjectActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    override fun onDestroy() {
+        disposables.clear()
+        super.onDestroy()
     }
 }

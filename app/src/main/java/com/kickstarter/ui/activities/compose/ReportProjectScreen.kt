@@ -13,10 +13,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -27,17 +28,31 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
-import com.kickstarter.ui.compose.TopToolBar
+import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.stringsFromHtmlTranslation
+import type.FlaggingKind
+
+@Preview(widthDp = 300, heightDp = 300)
+@Composable
+fun PreviewTextLinks() {
+    MaterialTheme {
+        TextWithClickableLink(html = stringResource(id = R.string.Projects_may_not_offer))
+    }
+}
 
 @Preview(widthDp = 300, heightDp = 300)
 @Composable
 fun ReportProjectScreenPreview() {
     MaterialTheme {
-        ReportProjectCategoryScreen()
+        ReportProjectCategoryScreen(PaddingValues())
     }
 }
 
@@ -61,36 +76,39 @@ fun RulesListPreview() {
 }
 
 @Composable
-fun rulesMap(): Map<Pair<String, String>, List<Pair<String, String>>> {
+fun rulesMap(): Map<Triple<String, String, Boolean>, List<Triple<String, String, String>>> {
 
-    val projectCat = Pair(
-        stringResource(id = R.string.FPO_this_project_breaks_one_of_our_rules),
-        stringResource(id = R.string.FPO_projects_may_not_offer_items)
+    val projectCat = Triple(
+        stringResource(id = R.string.This_project_breaks),
+        stringResource(id = R.string.Projects_may_not_offer),
+        true // Has a link om the subtitle
     )
     val rulesListProject = listOf(
-        Pair(stringResource(id = R.string.FPO_Prohibided_Items), stringResource(id = R.string.FPO_Prohibided_Items_desc)),
-        Pair(stringResource(id = R.string.FPO_Copying_reselling_or), stringResource(id = R.string.FPO_Copying_reselling_or_desc)),
-        Pair(stringResource(id = R.string.FPO_prototype_misrepresentation), stringResource(id = R.string.FPO_prototype_misrepresentation_desc)),
-        Pair(stringResource(id = R.string.FPO_suspicious_creator), stringResource(id = R.string.FPO_suspicious_creator_desc)),
-        Pair(stringResource(id = R.string.FPO_Not_raising_for_creative), stringResource(id = R.string.FPO_Not_raising_for_creative_desc))
+        Triple(stringResource(id = R.string.Prohibited_items), stringResource(id = R.string.Projects_may_not_offer), FlaggingKind.PROHIBITED_ITEMS.rawValue()),
+        Triple(stringResource(id = R.string.Copying_reselling), stringResource(id = R.string.Projects_cannot_plagiarize), FlaggingKind.RESALE.rawValue()),
+        Triple(stringResource(id = R.string.Prototype_misrepresentation), stringResource(id = R.string.Creators_must_be_transparent), FlaggingKind.PROTOTYPE_MISREPRESENTATION.rawValue()),
+        Triple(stringResource(id = R.string.Suspicious_creator_behavior), stringResource(id = R.string.Project_creators_and_their), FlaggingKind.POST_FUNDING_SUSPICIOUS_THIRD_PARTY.rawValue()), // TODO check this one on web
+        Triple(stringResource(id = R.string.Not_raising_funds), stringResource(id = R.string.Projects_on), FlaggingKind.NOT_PROJECT.rawValue()) // TODO check on web
     )
 
-    val spamCat = Pair(
-        stringResource(id = R.string.FPO_report_spam_or_abusive),
-        stringResource(id = R.string.FPO_report_spam_or_abusive_subtitle)
+    val spamCat = Triple(
+        stringResource(id = R.string.Report_spam),
+        stringResource(id = R.string.Our),
+        true // Has a link om the subtitle
     )
     val rulesListSpam = listOf(
-        Pair(stringResource(id = R.string.FPO_Spam), stringResource(id = R.string.FPO_Spam_desc)),
-        Pair(stringResource(id = R.string.FPO_Abuse), stringResource(id = R.string.FPO_Abuse_desc)),
+        Triple(stringResource(id = R.string.Spam), stringResource(id = R.string.Ex_using), FlaggingKind.SPAM.rawValue()),
+        Triple(stringResource(id = R.string.Abuse), stringResource(id = R.string.Ex_posting), FlaggingKind.ABUSE.rawValue()),
     )
 
-    val intellectualCat = Pair(
-        stringResource(id = R.string.FPO_Intellectual_property_violation),
-        stringResource(id = R.string.FPO_Intellectual_property_violation_Subtitle)
+    val intellectualCat = Triple(
+        stringResource(id = R.string.Intellectual_property_violation),
+        stringResource(id = R.string.A_project_is_infringing),
+        false // Has a link om the subtitle
     )
 
     val rulesListIntellectual = listOf(
-        Pair(stringResource(id = R.string.FPO_Intellectual_property_violation), stringResource(id = R.string.FPO_Intellectual_property_violation_desc)),
+        Triple(stringResource(id = R.string.Intellectual_property_violation), stringResource(id = R.string.Kickstarter_takes_claims), FlaggingKind.NOT_PROJECT.rawValue()), // TODO check on web
     )
 
     return mapOf(
@@ -101,19 +119,12 @@ fun rulesMap(): Map<Pair<String, String>, List<Pair<String, String>>> {
 }
 
 @Composable
-fun Rules(rulePair: Pair<String, String>) {
-    val context = LocalContext.current
+fun Rules(rule: Triple<String, String, String>, navigationAction: (String) -> Unit) {
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.grid_1))
             .clickable {
-                Toast
-                    .makeText(
-                        context,
-                        "Will open a formulary screen on next Story",
-                        Toast.LENGTH_SHORT
-                    )
-                    .show()
+                navigationAction(rule.third)
             }
     ) {
         Column(
@@ -122,25 +133,18 @@ fun Rules(rulePair: Pair<String, String>) {
                 .weight(1F)
         ) {
             Text(
-                text = rulePair.first,
+                text = rule.first,
                 style = MaterialTheme.typography.subtitle2.copy(
                     fontWeight = FontWeight.Bold
                 )
             )
             Text(
-                text = rulePair.second,
+                text = rule.second,
                 style = MaterialTheme.typography.body2
             )
         }
         IconButton(
             onClick = {
-                Toast
-                    .makeText(
-                        context,
-                        "Will open a formulary screen on next Story",
-                        Toast.LENGTH_SHORT
-                    )
-                    .show()
             }
         ) {
             Icon(
@@ -152,17 +156,24 @@ fun Rules(rulePair: Pair<String, String>) {
 }
 
 @Composable
-fun RulesList(rulesList: List<Pair<String, String>>) {
+fun RulesList(
+    rulesList: List<Triple<String, String, String>>,
+    navigationAction: (String) -> Unit = {}
+) {
     // - Do not use LazyColum, will conflict the scroll events with the parent LazyColumn
     Column {
         rulesList.map { rule ->
-            Rules(rulePair = rule)
+            Rules(rule = rule, navigationAction)
         }
     }
 }
 
 @Composable
-fun CategoryRow(category: Pair<String, String>, rulesList: List<Pair<String, String>>) {
+fun CategoryRow(
+    category: Triple<String, String, Boolean>,
+    rulesList: List<Triple<String, String, String>>,
+    navigationAction: (String) -> Unit = {}
+) {
     val expanded = remember { mutableStateOf(false) }
 
     Column(
@@ -188,10 +199,15 @@ fun CategoryRow(category: Pair<String, String>, rulesList: List<Pair<String, Str
                         fontWeight = FontWeight.Bold
                     )
                 )
-                Text(
-                    text = category.second,
-                    style = MaterialTheme.typography.body1
-                )
+                if (!category.third) { // Subtitles without links
+                    val text = ViewUtils.html(category.second).toString()
+                    Text(
+                        text = text,
+                        style = MaterialTheme.typography.body1
+                    )
+                } else {
+                    TextWithClickableLink(html = category.second)
+                }
             }
             IconButton(
                 onClick = {
@@ -209,7 +225,7 @@ fun CategoryRow(category: Pair<String, String>, rulesList: List<Pair<String, Str
             }
         }
         if (expanded.value) {
-            RulesList(rulesList = rulesList)
+            RulesList(rulesList = rulesList, navigationAction)
         }
 
         Spacer(
@@ -228,25 +244,73 @@ fun CategoryRow(category: Pair<String, String>, rulesList: List<Pair<String, Str
 }
 
 @Composable
-fun ReportProjectCategoryScreen() {
-    Scaffold(
-        topBar = {
-            TopToolBar(
-                title = stringResource(id = R.string.FPO_report_project_title)
-            )
-        },
-        content = {
-            val categories = rulesMap().keys.toList()
-            Spacer(modifier = Modifier.padding(it))
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                items(items = categories) { key ->
-                    rulesMap()[key]?.let { value ->
-                        CategoryRow(category = key, rulesList = value)
-                    }
+fun ReportProjectCategoryScreen(
+    padding: PaddingValues,
+    navigationAction: (String) -> Unit = {}
+) {
+    Surface(
+        modifier = Modifier.animateContentSize()
+    ) {
+
+        val categories = rulesMap().keys.toList()
+        Spacer(modifier = Modifier.padding(padding))
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(colorResource(id = R.color.kds_white))
+        ) {
+            items(items = categories) { key ->
+                rulesMap()[key]?.let { value ->
+                    CategoryRow(category = key, rulesList = value, navigationAction)
                 }
             }
         }
-    )
+    }
+}
+
+@Composable
+fun TextWithClickableLink(html: String) {
+
+    val stringList = html.stringsFromHtmlTranslation()
+    if (stringList.size == 3) {
+        val annotatedText = buildAnnotatedString {
+            append(stringList.first())
+            pushStringAnnotation(
+                tag = stringList[1],
+                annotation = ""
+            )
+            withStyle(
+                style = SpanStyle(
+                    color = colorResource(id = R.color.kds_create_700),
+                    textDecoration = TextDecoration.Underline
+                )
+            ) {
+                append(stringList[1])
+            }
+            append(stringList.last())
+
+            pop()
+        }
+
+        val context = LocalContext.current
+        ClickableText(
+            text = annotatedText,
+            style = MaterialTheme.typography.body1,
+            onClick = {
+                annotatedText.getStringAnnotations(
+                    tag = stringList[1], start = it,
+                    end = it
+                )
+                    .firstOrNull()?.let { annotation ->
+                        Toast
+                            .makeText(
+                                context,
+                                "Will open a formulary screen on next Story",
+                                Toast.LENGTH_SHORT
+                            )
+                            .show()
+                    }
+            }
+        )
+    }
 }

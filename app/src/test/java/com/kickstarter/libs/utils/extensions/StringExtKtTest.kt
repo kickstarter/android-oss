@@ -3,6 +3,7 @@ package com.kickstarter.libs.utils.extensions
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import org.junit.Test
+import org.robolectric.RuntimeEnvironment
 
 class StringExtKtTest : KSRobolectricTestCase() {
 
@@ -188,6 +189,21 @@ class StringExtKtTest : KSRobolectricTestCase() {
         assertEquals(null, "123456".newPasswordValidationWarnings(""))
         assertEquals(R.string.Passwords_matching_message, "123456".newPasswordValidationWarnings("12346"))
         assertEquals(null, "123456".newPasswordValidationWarnings("123456"))
+    }
+
+    @Test
+    fun testRegexToSplitStringResourceWithLink() {
+        val html = RuntimeEnvironment.getApplication().getString(R.string.Projects_may_not_offer)
+        val list = html.stringsFromHtmlTranslation()
+        assertEquals(list.size, 3)
+
+        val html2 = RuntimeEnvironment.getApplication().getString(R.string.Our)
+        val list2 = html2.stringsFromHtmlTranslation()
+        assertEquals(list2.size, 3)
+
+        val html3 = RuntimeEnvironment.getApplication().getString(R.string.This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines)
+        val list3 = html3.stringsFromHtmlTranslation()
+        assertEquals(list3.size, 3)
     }
 
     companion object {

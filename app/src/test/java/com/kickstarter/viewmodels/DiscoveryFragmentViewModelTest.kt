@@ -20,6 +20,7 @@ import com.kickstarter.mock.factories.ActivityFactory.updateActivity
 import com.kickstarter.mock.factories.CategoryFactory.artCategory
 import com.kickstarter.mock.factories.CategoryFactory.rootCategories
 import com.kickstarter.mock.factories.DiscoverEnvelopeFactory
+import com.kickstarter.mock.factories.ProjectFactory.prelaunchProject
 import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.UserFactory.user
 import com.kickstarter.mock.factories.UserFactory.userNeedPassword
@@ -61,6 +62,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     private val scrollToSavedProjectIndex = TestSubscriber<Int>()
     private val showSavedPromptTest = TestSubscriber<Void>()
     private val startSetPasswordActivity = TestSubscriber<String>()
+    private val startPreLaunchProjectActivity = TestSubscriber<Pair<Project, RefTag>>()
 
     private fun setUpEnvironment(environment: Environment) {
         vm = DiscoveryFragmentViewModel.ViewModel(environment)
@@ -92,6 +94,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         vm.outputs.scrollToSavedProjectPosition().subscribe(scrollToSavedProjectIndex)
         vm.outputs.showSavedPrompt().subscribe(showSavedPromptTest)
         vm.outputs.startSetPasswordActivity().subscribe(startSetPasswordActivity)
+        vm.outputs.startPreLaunchProjectActivity().subscribe(startPreLaunchProjectActivity)
     }
 
     private fun setUpInitialHomeAllProjectsParams() {
@@ -465,8 +468,14 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
                 return Observable.just(
                     UserPrivacyQuery.Data(
                         UserPrivacyQuery.Me(
-                            "", "",
-                            "rashad@test.com", true, true, false, false, ""
+                            "",
+                            "",
+                            "rashad@test.com",
+                            true,
+                            true,
+                            false,
+                            false,
+                            ""
                         )
                     )
                 )
@@ -676,6 +685,35 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
             EventName.CARD_CLICKED.eventName,
             EventName.CTA_CLICKED.eventName
         )
+    }
+
+    @Test
+    fun testStartPelaunchProjectActivity_whenDisplayPelaunchEnabled_shouldEmitPelaunchProjectPageActivity() {
+        val currentUser: CurrentUserType = MockCurrentUser()
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+        setUpEnvironment(
+            environment().toBuilder().currentUser(currentUser).optimizely(mockExperimentsClientType)
+                .scheduler(testScheduler)
+                .build()
+        )
+
+        // Load initial params and root categories from activity.
+        setUpInitialHomeAllProjectsParams()
+        vm.inputs.fragmentLifeCycle(FragmentEvent.RESUME)
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
+
+        // Click on project
+        val project = prelaunchProject("")
+        vm.inputs.projectCardViewHolderClicked(project)
+        startProjectActivity.assertValueCount(0)
+        startPreLaunchProjectActivity.assertValueCount(1)
+        assertEquals(startPreLaunchProjectActivity.onNextEvents[0].first, project)
+        assertEquals(startPreLaunchProjectActivity.onNextEvents[0].second, discovery())
     }
 
     @Test

@@ -68,8 +68,7 @@ class SearchActivity : BaseActivity<SearchViewModel.ViewModel>(), SearchAdapter.
     }
 
     private fun startPreLaunchProjectActivity(project: Project, refTag: RefTag) {
-        val intent = Intent().getPreLaunchProjectActivity(this)
-            .putExtra(IntentKey.PROJECT_PARAM, project.slug())
+        val intent = Intent().getPreLaunchProjectActivity(this, project.slug())
             .putExtra(IntentKey.REF_TAG, refTag)
         startActivity(intent)
         TransitionUtils.transition(this, TransitionUtils.slideInFromRight())

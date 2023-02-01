@@ -1,338 +1,362 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.MockCurrentUser;
-import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.models.OptimizelyFeature;
-import com.kickstarter.mock.MockExperimentsClientType;
-import com.kickstarter.mock.factories.DiscoverEnvelopeFactory;
-import com.kickstarter.mock.factories.ProjectFactory;
-import com.kickstarter.mock.services.MockApiClient;
-import com.kickstarter.models.Project;
-import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.services.apiresponses.DiscoverEnvelope;
-import com.kickstarter.libs.utils.EventName;
+import android.util.Pair
+import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.RefTag.Companion.search
+import com.kickstarter.libs.RefTag.Companion.searchFeatured
+import com.kickstarter.libs.RefTag.Companion.searchPopular
+import com.kickstarter.libs.RefTag.Companion.searchPopularFeatured
+import com.kickstarter.libs.models.OptimizelyFeature
+import com.kickstarter.libs.utils.EventName
+import com.kickstarter.mock.MockExperimentsClientType
+import com.kickstarter.mock.factories.DiscoverEnvelopeFactory
+import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.ProjectFactory.allTheWayProject
+import com.kickstarter.mock.factories.ProjectFactory.almostCompletedProject
+import com.kickstarter.mock.factories.ProjectFactory.backedProject
+import com.kickstarter.mock.factories.ProjectFactory.project
+import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.models.Project
+import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.services.apiresponses.DiscoverEnvelope
+import org.junit.Test
+import rx.Observable
+import rx.observers.TestSubscriber
+import rx.schedulers.TestScheduler
+import java.util.Arrays
+import java.util.concurrent.TimeUnit
 
-import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
+class SearchViewModelTest : KSRobolectricTestCase() {
+    private lateinit var vm: SearchViewModel.ViewModel
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+    private val goToProject = TestSubscriber<Project>()
+    private val goToRefTag = TestSubscriber<RefTag>()
+    private val popularProjects = TestSubscriber<List<Project>>()
+    private val popularProjectsPresent = TestSubscriber<Boolean>()
+    private val searchProjects = TestSubscriber<List<Project>>()
+    private val searchProjectsPresent = TestSubscriber<Boolean>()
+    private val startPreLaunchProjectActivity = TestSubscriber<Pair<Project, RefTag>>()
 
-import androidx.annotation.NonNull;
+    private fun setUpEnvironment(environment: Environment) {
+        vm = SearchViewModel.ViewModel(environment)
+        vm.outputs.startProjectActivity()
+            .map { it.first }
+            .subscribe(
+                goToProject
+            )
+        vm.outputs.startProjectActivity()
+            .map { it.second }
+            .subscribe(
+                goToRefTag
+            )
+        vm.outputs.popularProjects().subscribe(popularProjects)
+        vm.outputs.startPreLaunchProjectActivity().subscribe(startPreLaunchProjectActivity)
+        vm.outputs.searchProjects().subscribe(searchProjects)
+        vm.outputs.popularProjects().map { ps: List<Project?> -> ps.size > 0 }
+            .subscribe(popularProjectsPresent)
+        vm.outputs.searchProjects().map { ps: List<Project?> -> ps.size > 0 }
+            .subscribe(searchProjectsPresent)
+    }
 
-import rx.Observable;
-import rx.observers.TestSubscriber;
-import rx.schedulers.TestScheduler;
+    @Test
+    fun testPopularProjectsLoadImmediately() {
+        setUpEnvironment(environment())
 
-public class SearchViewModelTest extends KSRobolectricTestCase {
-  private SearchViewModel.ViewModel vm;
-  private final TestSubscriber<Project> goToProject = new TestSubscriber<>();
-  private final TestSubscriber<RefTag> goToRefTag = new TestSubscriber<>();
-  private final TestSubscriber<List<Project>> popularProjects = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> popularProjectsPresent = new TestSubscriber<>();
-  private final TestSubscriber<List<Project>> searchProjects = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> searchProjectsPresent = new TestSubscriber<>();
+        popularProjectsPresent.assertValues(true)
+        searchProjectsPresent.assertNoValues()
+    }
 
-  private void setUpEnvironment(final @NonNull Environment environment) {
-    this.vm = new SearchViewModel.ViewModel(environment);
+    @Test
+    fun testSearchProjectsWhenEnterSearchTerm() {
+        val scheduler = TestScheduler()
+        val env = environment().toBuilder()
+            .scheduler(scheduler)
+            .build()
+        setUpEnvironment(env)
 
-    this.vm.outputs.startProjectActivity().map(p -> p.first).subscribe(this.goToProject);
-    this.vm.outputs.startProjectActivity().map(p -> p.second).subscribe(this.goToRefTag);
-    this.vm.outputs.popularProjects().subscribe(this.popularProjects);
-    this.vm.outputs.searchProjects().subscribe(this.searchProjects);
-    this.vm.outputs.popularProjects().map(ps -> ps.size() > 0).subscribe(this.popularProjectsPresent);
-    this.vm.outputs.searchProjects().map(ps -> ps.size() > 0).subscribe(this.searchProjectsPresent);
-  }
+        // Popular projects emit immediately.
+        popularProjectsPresent.assertValues(true)
+        searchProjectsPresent.assertNoValues()
+        segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
 
+        // Searching shouldn't emit values immediately
+        vm.inputs.search("hello")
+        searchProjectsPresent.assertNoValues()
+        segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
 
-  @Test
-  public void testPopularProjectsLoadImmediately() {
-    setUpEnvironment(environment());
+        // Waiting a small amount time shouldn't emit values
+        scheduler.advanceTimeBy(200, TimeUnit.MILLISECONDS)
+        searchProjectsPresent.assertNoValues()
+        segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
 
-    this.popularProjectsPresent.assertValues(true);
-    this.searchProjectsPresent.assertNoValues();
-  }
+        // Waiting the rest of the time makes the search happen
+        scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS)
+        searchProjectsPresent.assertValues(false, true)
+        scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS)
+        segmentTrack.assertValues(EventName.CTA_CLICKED.eventName)
 
-  @Test
-  public void testSearchProjectsWhenEnterSearchTerm() {
-    final TestScheduler scheduler = new TestScheduler();
-    final Environment env = environment().toBuilder()
-      .scheduler(scheduler)
-      .build();
+        // Typing more search terms doesn't emit more values
+        vm.inputs.search("hello world!")
 
-    setUpEnvironment(env);
+        searchProjectsPresent.assertValues(false, true)
+        scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS)
+        segmentTrack.assertValues(EventName.CTA_CLICKED.eventName, EventName.PAGE_VIEWED.eventName)
 
-    // Popular projects emit immediately.
-    this.popularProjectsPresent.assertValues(true);
-    this.searchProjectsPresent.assertNoValues();
-    this.segmentTrack.assertValue(EventName.CTA_CLICKED.getEventName());
+        // Waiting enough time emits search results
+        scheduler.advanceTimeBy(500, TimeUnit.MILLISECONDS)
+        searchProjectsPresent.assertValues(false, true, false, true)
 
-    // Searching shouldn't emit values immediately
-    this.vm.inputs.search("hello");
-    this.searchProjectsPresent.assertNoValues();
-    this.segmentTrack.assertValue(EventName.CTA_CLICKED.getEventName());
+        // Clearing search terms brings back popular projects.
+        vm.inputs.search("")
+        searchProjectsPresent.assertValues(false, true, false, true, false)
+        popularProjectsPresent.assertValues(true, false, true)
+    }
 
-    // Waiting a small amount time shouldn't emit values
-    scheduler.advanceTimeBy(200, TimeUnit.MILLISECONDS);
-    this.searchProjectsPresent.assertNoValues();
-    this.segmentTrack.assertValue(EventName.CTA_CLICKED.getEventName());
+    @Test
+    fun testSearchPagination() {
+        val scheduler = TestScheduler()
+        val env = environment().toBuilder()
+            .scheduler(scheduler)
+            .build()
 
-    // Waiting the rest of the time makes the search happen
-    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    this.searchProjectsPresent.assertValues(false, true);
-    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    this.segmentTrack.assertValues(EventName.CTA_CLICKED.getEventName());
+        setUpEnvironment(env)
 
-    // Typing more search terms doesn't emit more values
-    this.vm.inputs.search("hello world!");
-    this.searchProjectsPresent.assertValues(false, true);
-    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    this.segmentTrack.assertValues(EventName.CTA_CLICKED.getEventName(), EventName.PAGE_VIEWED.getEventName());
+        searchProjectsPresent.assertNoValues()
+        segmentTrack.assertValues(EventName.CTA_CLICKED.eventName)
 
-    // Waiting enough time emits search results
-    scheduler.advanceTimeBy(500, TimeUnit.MILLISECONDS);
-    this.searchProjectsPresent.assertValues(false, true, false, true);
+        vm.inputs.search("cats")
 
-    // Clearing search terms brings back popular projects.
-    this.vm.inputs.search("");
+        scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS)
+        searchProjectsPresent.assertValues(false, true)
 
-    this.searchProjectsPresent.assertValues(false, true, false, true, false);
-    this.popularProjectsPresent.assertValues(true, false, true);
-  }
+        vm.inputs.nextPage()
 
-  @Test
-  public void testSearchPagination() {
-    final TestScheduler scheduler = new TestScheduler();
-    final Environment env = environment().toBuilder()
-      .scheduler(scheduler)
-      .build();
+        searchProjectsPresent.assertValues(false, true)
+    }
 
-    setUpEnvironment(env);
+    @Test
+    fun testFeaturedSearchRefTags() {
+        val scheduler = TestScheduler()
+        val projects = Arrays.asList(
+            allTheWayProject(),
+            almostCompletedProject(),
+            backedProject()
+        )
+        val apiClient: MockApiClient = object : MockApiClient() {
+            override fun fetchProjects(params: DiscoveryParams): Observable<DiscoverEnvelope> {
+                return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects))
+            }
+        }
 
-    this.searchProjectsPresent.assertNoValues();
-    this.segmentTrack.assertValues(EventName.CTA_CLICKED.getEventName());
+        val env = environment().toBuilder()
+            .scheduler(scheduler)
+            .apiClient(apiClient)
+            .build()
 
-    this.vm.inputs.search("cats");
+        setUpEnvironment(env)
 
-    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
+        vm.inputs.search("cat")
+        scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS)
 
-    this.searchProjectsPresent.assertValues(false, true);
+        vm.inputs.projectClicked(projects[0])
 
-    this.vm.inputs.nextPage();
-    this.searchProjectsPresent.assertValues(false, true);
-  }
+        goToRefTag.assertValues(searchFeatured())
+        goToProject.assertValues(projects[0])
+    }
 
-  @Test
-  public void testFeaturedSearchRefTags() {
-    final TestScheduler scheduler = new TestScheduler();
+    @Test
+    fun testSearchRefTags() {
+        val scheduler = TestScheduler()
+        val projects = Arrays.asList(
+            allTheWayProject(),
+            almostCompletedProject(),
+            backedProject()
+        )
+        val apiClient: MockApiClient = object : MockApiClient() {
+            override fun fetchProjects(params: DiscoveryParams): Observable<DiscoverEnvelope> {
+                return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects))
+            }
+        }
+        val env = environment().toBuilder()
+            .scheduler(scheduler)
+            .apiClient(apiClient)
+            .build()
+        setUpEnvironment(env)
 
-    final List<Project> projects = Arrays.asList(
-      ProjectFactory.allTheWayProject(),
-      ProjectFactory.almostCompletedProject(),
-      ProjectFactory.backedProject()
-    );
+        // populate search and overcome debounce
+        vm.inputs.search("cat")
+        scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS)
 
-    final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull
-      Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
-        return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects));
-      }
-    };
+        vm.inputs.projectClicked(projects[1])
 
-    final Environment env = environment().toBuilder()
-      .scheduler(scheduler)
-      .apiClient(apiClient)
-      .build();
+        goToRefTag.assertValues(search())
+        goToProject.assertValues(projects[1])
+    }
 
-    setUpEnvironment(env);
+    @Test
+    fun testFeaturedPopularRefTags() {
+        val scheduler = TestScheduler()
+        val projects = Arrays.asList(
+            allTheWayProject(),
+            almostCompletedProject(),
+            backedProject()
+        )
+        val apiClient: MockApiClient = object : MockApiClient() {
+            override fun fetchProjects(params: DiscoveryParams): Observable<DiscoverEnvelope> {
+                return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects))
+            }
+        }
+        val env = environment().toBuilder()
+            .scheduler(scheduler)
+            .apiClient(apiClient)
+            .build()
+        setUpEnvironment(env)
 
-    this.vm.inputs.search("cat");
-    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    this.vm.inputs.projectClicked(projects.get(0));
+        // populate search and overcome debounce
+        vm.inputs.search("")
+        scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS)
 
-    this.goToRefTag.assertValues(RefTag.searchFeatured());
-    this.goToProject.assertValues(projects.get(0));
-  }
+        vm.inputs.projectClicked(projects[0])
 
-  @Test
-  public void testSearchRefTags() {
-    final TestScheduler scheduler = new TestScheduler();
+        goToRefTag.assertValues(searchPopularFeatured())
+        goToProject.assertValues(projects[0])
+    }
 
-    final List<Project> projects = Arrays.asList(
-      ProjectFactory.allTheWayProject(),
-      ProjectFactory.almostCompletedProject(),
-      ProjectFactory.backedProject()
-    );
+    @Test
+    fun testPopularRefTags() {
+        val scheduler = TestScheduler()
+        val projects = Arrays.asList(
+            allTheWayProject(),
+            almostCompletedProject(),
+            backedProject()
+        )
+        val apiClient: MockApiClient = object : MockApiClient() {
+            override fun fetchProjects(params: DiscoveryParams): Observable<DiscoverEnvelope> {
+                return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects))
+            }
+        }
+        val env = environment().toBuilder()
+            .scheduler(scheduler)
+            .apiClient(apiClient)
+            .build()
+        setUpEnvironment(env)
 
-    final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
-        return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects));
-      }
-    };
+        // populate search and overcome debounce
+        vm.inputs.search("")
+        scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS)
 
-    final Environment env = environment().toBuilder()
-      .scheduler(scheduler)
-      .apiClient(apiClient)
-      .build();
+        vm.inputs.projectClicked(projects[2])
 
-    setUpEnvironment(env);
+        goToRefTag.assertValues(searchPopular())
+        goToProject.assertValues(projects[2])
+    }
 
-    // populate search and overcome debounce
-    this.vm.inputs.search("cat");
-    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    this.vm.inputs.projectClicked(projects.get(1));
+    @Test
+    fun testPopularRefTags_WithPreLaunchProject() {
+        val scheduler = TestScheduler()
+        val projects = Arrays.asList(
+            allTheWayProject(),
+            almostCompletedProject(),
+            ProjectFactory.prelaunchProject("")
+        )
+        val apiClient: MockApiClient = object : MockApiClient() {
+            override fun fetchProjects(params: DiscoveryParams): Observable<DiscoverEnvelope> {
+                return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects))
+            }
+        }
+        val env = environment().toBuilder()
+            .scheduler(scheduler)
+            .apiClient(apiClient)
+            .build()
+        setUpEnvironment(env)
 
-    this.goToRefTag.assertValues(RefTag.search());
-    this.goToProject.assertValues(projects.get(1));
-  }
+        // populate search and overcome debounce
+        vm.inputs.search("")
+        scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS)
 
-  @Test
-  public void testFeaturedPopularRefTags() {
-    final TestScheduler scheduler = new TestScheduler();
+        vm.inputs.projectClicked(projects[2])
 
-    final List<Project> projects = Arrays.asList(
-      ProjectFactory.allTheWayProject(),
-      ProjectFactory.almostCompletedProject(),
-      ProjectFactory.backedProject()
-    );
+        goToRefTag.assertNoValues()
+        goToProject.assertValueCount(0)
+        startPreLaunchProjectActivity.assertValueCount(1)
+        assertEquals(startPreLaunchProjectActivity.onNextEvents[0].first, projects[2])
+    }
 
-    final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
-        return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects));
-      }
-    };
-
-    final Environment env = environment().toBuilder()
-      .scheduler(scheduler)
-      .apiClient(apiClient)
-      .build();
-
-    setUpEnvironment(env);
-
-    // populate search and overcome debounce
-    this.vm.inputs.search("");
-    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    this.vm.inputs.projectClicked(projects.get(0));
-
-    this.goToRefTag.assertValues(RefTag.searchPopularFeatured());
-    this.goToProject.assertValues(projects.get(0));
-  }
-
-  @Test
-  public void testPopularRefTags() {
-    final TestScheduler scheduler = new TestScheduler();
-
-    final List<Project> projects = Arrays.asList(
-      ProjectFactory.allTheWayProject(),
-      ProjectFactory.almostCompletedProject(),
-      ProjectFactory.backedProject()
-    );
-
-    final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
-        return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects));
-      }
-    };
-
-    final Environment env = environment().toBuilder()
-      .scheduler(scheduler)
-      .apiClient(apiClient)
-      .build();
-
-    setUpEnvironment(env);
-
-    // populate search and overcome debounce
-    this.vm.inputs.search("");
-    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    this.vm.inputs.projectClicked(projects.get(2));
-
-    this.goToRefTag.assertValues(RefTag.searchPopular());
-    this.goToProject.assertValues(projects.get(2));
-  }
-
-  @Test
-  public void testProjectPage_whenFeatureFlagOn_shouldEmitProjectPage() {
-    final MockCurrentUser user = new MockCurrentUser();
-    final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
-      @Override
-      public boolean isFeatureEnabled(final @NotNull OptimizelyFeature.Key feature) {
-        return true;
-      }
-    };
-    final TestScheduler scheduler = new TestScheduler();
-
-    final List<Project> projects = Arrays.asList(
-      ProjectFactory.allTheWayProject(),
-      ProjectFactory.almostCompletedProject(),
-      ProjectFactory.backedProject()
-    );
-
-    final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
-        return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects));
-      }
-    };
-
-    final Environment env = environment().toBuilder()
+    @Test
+    fun testProjectPage_whenFeatureFlagOn_shouldEmitProjectPage() {
+        val user = MockCurrentUser()
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+        val scheduler = TestScheduler()
+        val projects = listOf(
+            allTheWayProject(),
+            almostCompletedProject(),
+            backedProject()
+        )
+        val apiClient: MockApiClient = object : MockApiClient() {
+            override fun fetchProjects(params: DiscoveryParams): Observable<DiscoverEnvelope> {
+                return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects))
+            }
+        }
+        val env = environment().toBuilder()
             .currentUser(user)
             .optimizely(mockExperimentsClientType)
             .scheduler(scheduler)
-      .apiClient(apiClient)
-      .build();
+            .apiClient(apiClient)
+            .build()
+        setUpEnvironment(env)
 
-    setUpEnvironment(env);
+        // populate search and overcome debounce
+        vm.inputs.search("")
+        scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS)
 
-    // populate search and overcome debounce
-    this.vm.inputs.search("");
-    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    this.vm.inputs.projectClicked(projects.get(2));
+        vm.inputs.projectClicked(projects[2])
 
-    this.goToProject.assertValues(projects.get(2));
-  }
+        goToProject.assertValues(projects[2])
+    }
 
-  @Test
-  public void testNoResults() {
-    final TestScheduler scheduler = new TestScheduler();
-
-    final List<Project> projects = Arrays.asList(
-    );
-
-    final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
-        return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects));
-      }
-    };
-
-    final Environment env = environment().toBuilder()
-      .scheduler(scheduler)
-      .apiClient(apiClient)
-      .build();
-
-    setUpEnvironment(env);
-
-    // populate search and overcome debounce
-    this.vm.inputs.search("__");
-    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-
-    this.searchProjects.assertValueCount(2);
-  }
-
-  @Test
-  public void init_whenProjectCardClicked_shouldTrackProjectEvent() {
-    final TestScheduler scheduler = new TestScheduler();
-    final Environment env = environment().toBuilder()
+    @Test
+    fun testNoResults() {
+        val scheduler = TestScheduler()
+        val projects = Arrays.asList<Project>()
+        val apiClient: MockApiClient = object : MockApiClient() {
+            override fun fetchProjects(params: DiscoveryParams): Observable<DiscoverEnvelope> {
+                return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects))
+            }
+        }
+        val env = environment().toBuilder()
             .scheduler(scheduler)
-            .build();
+            .apiClient(apiClient)
+            .build()
+        setUpEnvironment(env)
 
-    setUpEnvironment(env);
+        // populate search and overcome debounce
+        vm.inputs.search("__")
+        scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS)
 
-    this.vm.inputs.search("hello");
-    this.segmentTrack.assertValues(EventName.CTA_CLICKED.getEventName());
+        searchProjects.assertValueCount(2)
+    }
 
-    this.vm.inputs.projectClicked(ProjectFactory.project());
-    this.segmentTrack.assertValues(EventName.CTA_CLICKED.getEventName(), EventName.CTA_CLICKED.getEventName());
-  }
+    @Test
+    fun init_whenProjectCardClicked_shouldTrackProjectEvent() {
+        val scheduler = TestScheduler()
+        val env = environment().toBuilder()
+            .scheduler(scheduler)
+            .build()
+        setUpEnvironment(env)
+        vm.inputs.search("hello")
+
+        segmentTrack.assertValues(EventName.CTA_CLICKED.eventName)
+
+        vm.inputs.projectClicked(project())
+
+        segmentTrack.assertValues(EventName.CTA_CLICKED.eventName, EventName.CTA_CLICKED.eventName)
+    }
 }

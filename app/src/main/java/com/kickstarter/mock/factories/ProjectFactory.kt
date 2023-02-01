@@ -1,5 +1,7 @@
 package com.kickstarter.mock.factories
 
+import com.apollographql.apollo.api.CustomTypeValue
+import com.kickstarter.libs.graphql.DateTimeAdapter
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -503,6 +505,7 @@ object ProjectFactory {
             .build()
         return project()
             .toBuilder()
+            .launchedAt(DateTimeAdapter().decode(CustomTypeValue.fromRawValue(0)))
             .displayPrelaunch(true)
             .urls(Urls.builder().web(web).build())
             .build()

@@ -28,8 +28,9 @@ fun Intent.getProjectIntent(context: Context): Intent {
     return this.setClass(context, ProjectPageActivity::class.java)
 }
 
-fun Intent.getPreLaunchProjectActivity(context: Context): Intent {
+fun Intent.getPreLaunchProjectActivity(context: Context, slug: String?): Intent {
     return this.setClass(context, PreLaunchProjectPageActivity::class.java)
+        .putExtra(IntentKey.PROJECT_PARAM, slug)
 }
 
 /**
@@ -115,7 +116,6 @@ fun Intent.getUpdatesActivityIntent(
     isUpdateComment: Boolean? = null,
     comment: String? = null
 ): Intent {
-
     this.setClass(context, UpdateActivity::class.java)
         .putExtra(IntentKey.PROJECT, project)
 

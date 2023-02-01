@@ -45,9 +45,11 @@ class CurrentConfigV2(
             .filter { `object`: Config? -> ObjectUtils.isNotNull(`object`) }
 
         // Seed config observable with what's cached
-        Observable.concat(prefConfig, diskConfig)
-            .take(1)
-            .subscribe { v: Config -> config.onNext(v) }.dispose()
+        disposables.add(
+            Observable.concat(prefConfig, diskConfig)
+                .take(1)
+                .subscribe { v: Config -> config.onNext(v) }
+        )
 
         // Cache any new values to preferences
         config.skip(1)

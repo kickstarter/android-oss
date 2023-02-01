@@ -10,14 +10,19 @@ import com.kickstarter.mock.factories.PushNotificationEnvelopeFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
+import io.reactivex.disposables.CompositeDisposable
+import org.junit.After
 import org.junit.Test
 import rx.observers.TestSubscriber
 
 class ProjectIntentMapperTest : KSRobolectricTestCase() {
+    private val disposables = CompositeDisposable()
+
     @Test
     fun testProject_creatorProjectIntent() {
         val resultTest = TestSubscriber.create<Project>()
@@ -37,18 +42,24 @@ class ProjectIntentMapperTest : KSRobolectricTestCase() {
     fun testProject_emitsFromProjectParamExtra() {
         val intent = Intent().putExtra(IntentKey.PROJECT_PARAM, "skull-graphic-tee")
         val resultTest = TestSubscriber.create<Project>()
-        ProjectIntentMapper.project(intent, MockApiClient())
-            .subscribe(resultTest)
+        val resultTestV2 = io.reactivex.subscribers.TestSubscriber.create<Project>()
+        
+        attacheTestResultSubscriber(intent, resultTest, resultTestV2)
+
         resultTest.assertValueCount(1)
+        resultTestV2.assertValueCount(1)
     }
 
     @Test
     fun testProject_emitsFromProjectParamExtraApollo() {
         val intent = Intent().putExtra(IntentKey.PROJECT_PARAM, "skull-graphic-tee")
         val resultTest = TestSubscriber.create<Project>()
-        ProjectIntentMapper.project(intent, MockApolloClient())
-            .subscribe(resultTest)
+        val resultTestV2 = io.reactivex.subscribers.TestSubscriber.create<Project>()
+
+        attacheTestResultSubscriber(intent, resultTest, resultTestV2)
+
         resultTest.assertValueCount(1)
+        resultTestV2.assertValueCount(1)
     }
 
     @Test
@@ -76,9 +87,12 @@ class ProjectIntentMapperTest : KSRobolectricTestCase() {
         val uri = Uri.parse("ksr://www.kickstarter.com/projects/1186238668/skull-graphic-tee")
         val intent = Intent(Intent.ACTION_VIEW, uri)
         val resultTest = TestSubscriber.create<Project>()
-        ProjectIntentMapper.project(intent, MockApiClient())
-            .subscribe(resultTest)
+        val resultTestV2 = io.reactivex.subscribers.TestSubscriber.create<Project>()
+
+        attacheTestResultSubscriber(intent, resultTest, resultTestV2)
+
         resultTest.assertValueCount(1)
+        resultTestV2.assertValueCount(1)
     }
 
     @Test
@@ -150,5 +164,24 @@ class ProjectIntentMapperTest : KSRobolectricTestCase() {
     fun testProjectHasSaveQueryFromUri() {
         assertTrue(ProjectIntentMapper.hasSaveQueryFromUri("ksr://www.kickstarter.com/projects/1186238668/skull-graphic-tee?save=true".toUri()))
         assertFalse(ProjectIntentMapper.hasSaveQueryFromUri("ksr://www.kickstarter.com/projects/1186238668/skull-graphic-tee".toUri()))
+    }
+
+    @After
+    fun cleanUp() {
+        disposables.clear()
+    }
+    private fun attacheTestResultSubscriber(
+        intent: Intent,
+        resultTest: TestSubscriber<Project>?,
+        resultTestV2: io.reactivex.subscribers.TestSubscriber<Project>
+    ) {
+        ProjectIntentMapper.project(intent, MockApolloClient())
+            .subscribe(resultTest)
+
+        disposables.add(
+            ProjectIntentMapper.project(intent, MockApolloClientV2()).subscribe {
+                resultTestV2.onNext(it)
+            }
+        )
     }
 }

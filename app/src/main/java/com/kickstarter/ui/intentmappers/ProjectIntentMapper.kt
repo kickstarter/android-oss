@@ -98,24 +98,10 @@ object ProjectIntentMapper {
     }
 
     /**
-     * Returns a [RefTag] observable. If there is no parceled RefTag, emit `null`.
-     */
-    fun refTagV2(intent: Intent): io.reactivex.Observable<RefTag> {
-        return io.reactivex.Observable.just(intent.getParcelableExtra(IntentKey.REF_TAG))
-    }
-
-    /**
      * Returns a [deepLinkSaveFlag] observable. If there is no deepLink Save Flag
      */
     fun deepLinkSaveFlag(intent: Intent): Observable<Boolean> {
         return Observable.just(intent.getBooleanExtra(IntentKey.SAVE_FLAG_VALUE, false))
-    }
-
-    /**
-     * Returns a [deepLinkSaveFlag] observable. If there is no deepLink Save Flag
-     */
-    fun deepLinkSaveFlagV2(intent: Intent): io.reactivex.Observable<Boolean> {
-        return io.reactivex.Observable.just(intent.getBooleanExtra(IntentKey.SAVE_FLAG_VALUE, false))
     }
 
     /**

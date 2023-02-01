@@ -31,11 +31,10 @@ fun KsCreatorLayout(
     modifier: Modifier = Modifier,
     onClickAction: () -> Unit = {}
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier.clickable { onClickAction() }) {
         CircleImageFromURl(
             imageUrl = (imageUrl),
             modifier = Modifier.size(dimensionResource(id = R.dimen.project_avatar_height))
-                .clickable { onClickAction() }
         )
         Column(modifier = Modifier.padding(start = dimensionResource(id = R.dimen.grid_1))) {
             TextCaptionStyle(

@@ -62,6 +62,7 @@ fun PreLaunchProjectPageScreen(
     leftOnClickAction: () -> Unit = {},
     rightOnClickAction: () -> Unit = {},
     middleRightClickAction: () -> Unit = {},
+    onCreatorLayoutClicked: () -> Unit = {},
     onButtonClicked: () -> Unit = {}
 ) {
     val project = projectState.value
@@ -135,6 +136,7 @@ fun PreLaunchProjectPageScreen(
                         dimensionResource(id = R.dimen.grid_1)
                     ),
                 onClickAction = {
+                    onCreatorLayoutClicked.invoke()
                 }
             )
 

@@ -30,7 +30,8 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
     private val showShareSheet = BehaviorSubject.create<Pair<String, String>>()
     private val startLoginToutActivity = TestSubscriber.create<Unit>()
     private val showSavedPrompt = TestSubscriber.create<Unit>()
-    val resultTest = TestSubscriber.create<Project>()
+    private val startCreatorView = BehaviorSubject.create<Project>()
+    private val resultTest = TestSubscriber.create<Project>()
 
     private val disposables = CompositeDisposable()
 
@@ -99,6 +100,10 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.outputs
             .showSavedPrompt().subscribe { this.showSavedPrompt.onNext(it) }
+            .addToDisposable(disposables)
+
+        this.vm.outputs
+            .startCreatorView().subscribe { this.startCreatorView.onNext(it) }
             .addToDisposable(disposables)
 
         ProjectIntentMapper.project(intent, MockApolloClientV2()).subscribe {
@@ -190,6 +195,18 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
         vm.inputs.bookmarkButtonClicked()
         assertEquals(false, project.value.isStarred())
         this.showSavedPrompt.assertValueCount(1)
+    }
+
+    @Test
+    fun testCreatorDetailsClicked() {
+        setUpEnvironment(getEnvironment())
+
+        val intent = Intent().putExtra(IntentKey.PROJECT_PARAM, "skull-graphic-tee")
+
+        vm.inputs.configureWith(intent = intent)
+        this.vm.inputs.creatorInfoButtonClicked()
+
+        assertEquals(project.value, prelaunchProject)
     }
 
     @After

@@ -36,6 +36,9 @@ interface PrelaunchProjectViewModel {
 
         /** Call when the share button is clicked.  */
         fun shareButtonClicked()
+
+        /** Call when the creator Info is clicked  */
+        fun creatorInfoClicked()
     }
 
     interface Outputs {
@@ -49,6 +52,8 @@ interface PrelaunchProjectViewModel {
 
         /** Emits when the success prompt for saving should be displayed.  */
         fun showSavedPrompt(): Observable<Unit>
+
+        fun startCreatorView(): Observable<Project>
     }
 
     class PrelaunchProjectViewModel(environment: Environment) : ViewModel(), Inputs, Outputs {
@@ -67,9 +72,11 @@ interface PrelaunchProjectViewModel {
         private val projectData = BehaviorSubject.create<ProjectData>()
 
         private val project = PublishSubject.create<Project>()
+        private val startCreatorView = PublishSubject.create<Project>()
         private val showShareSheet = PublishSubject.create<Pair<String, String>>()
         private val startLoginToutActivity = PublishSubject.create<Unit>()
         private val showSavedPrompt = PublishSubject.create<Unit>()
+
         init {
 
             val initialProject = intent
@@ -118,7 +125,11 @@ interface PrelaunchProjectViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { it }
 
-            var currentProject = Observable.merge(initialProject, savedProjectOnLoginSuccess, projectOnUserChangeSave)
+            var currentProject = Observable.merge(
+                initialProject,
+                savedProjectOnLoginSuccess,
+                projectOnUserChangeSave
+            )
 
             val currentProjectData = currentProject.map {
                 projectData(null, null, it)
@@ -148,6 +159,13 @@ interface PrelaunchProjectViewModel {
                 .distinctUntilChanged()
                 .subscribe {
                     this.projectData.onNext(it)
+                }.addToDisposable(disposables)
+
+            currentProject
+                .compose(Transformers.takePairWhenV2(creatorInfoClicked))
+                .map { it.first }
+                .subscribe {
+                    startCreatorView.onNext(it)
                 }.addToDisposable(disposables)
 
             loggedOutUserOnHeartClick
@@ -206,7 +224,12 @@ interface PrelaunchProjectViewModel {
                 saveProject(project)
             }
         }
-        private fun projectData(refTagFromIntent: RefTag?, refTagFromCookie: RefTag?, project: Project): ProjectData {
+
+        private fun projectData(
+            refTagFromIntent: RefTag?,
+            refTagFromCookie: RefTag?,
+            project: Project
+        ): ProjectData {
             return ProjectData
                 .builder()
                 .refTagFromIntent(refTagFromIntent)
@@ -214,6 +237,7 @@ interface PrelaunchProjectViewModel {
                 .project(project)
                 .build()
         }
+
         private fun loadProject(intent: Intent) = ProjectIntentMapper
             .project(intent, this.apolloClient)
             .withLatestFrom(
@@ -237,12 +261,14 @@ interface PrelaunchProjectViewModel {
         override fun creatorInfoButtonClicked() = this.creatorInfoClicked.onNext(Unit)
         override fun bookmarkButtonClicked() = this.bookmarkButtonClicked.onNext(Unit)
         override fun shareButtonClicked() = shareButtonClicked.onNext(Unit)
+        override fun creatorInfoClicked() = creatorInfoClicked.onNext(Unit)
 
         // - Outputs
         override fun project(): Observable<Project> = this.project
         override fun showShareSheet(): Observable<Pair<String, String>> = this.showShareSheet
         override fun startLoginToutActivity(): Observable<Unit> = this.startLoginToutActivity
         override fun showSavedPrompt(): Observable<Unit> = this.showSavedPrompt
+        override fun startCreatorView(): Observable<Project> = this.startCreatorView
     }
 
     class Factory(private val environment: Environment) : ViewModelProvider.Factory {

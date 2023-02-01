@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
@@ -13,10 +14,13 @@ import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getCreatorBioWebViewActivityIntent
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreen
 import com.kickstarter.ui.data.LoginReason
+import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
 import com.kickstarter.viewmodels.projectpage.PrelaunchProjectViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -54,6 +58,7 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
                         projectState.value?.let { this.viewModel.inputs.bookmarkButtonClicked() }
                     },
                     middleRightClickAction = { this.viewModel.inputs.shareButtonClicked() },
+                    onCreatorLayoutClicked = { this.viewModel.inputs.creatorInfoClicked() },
                     onButtonClicked = {
                         projectState.value?.let { this.viewModel.inputs.bookmarkButtonClicked() }
                     }
@@ -79,6 +84,13 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { this.showStarToast() }
             .addToDisposable(compositeDisposable)
+
+        viewModel.outputs.startCreatorView()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                startCreatorBioWebViewActivity(it)
+            }.addToDisposable(compositeDisposable)
     }
 
     private fun showStarToast() {
@@ -100,6 +112,11 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
         val intent = Intent(this, LoginToutActivity::class.java)
             .putExtra(IntentKey.LOGIN_REASON, LoginReason.STAR_PROJECT)
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
+    }
+
+    fun Activity.startCreatorBioWebViewActivity(project: Project) {
+        startActivity(Intent().getCreatorBioWebViewActivityIntent(this, project))
+        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     @Override

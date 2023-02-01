@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
@@ -10,6 +9,7 @@ import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.TwoFactorActivity
+import com.kickstarter.viewmodels.usecases.LoginUseCase
 import rx.Observable
 import rx.subjects.PublishSubject
 
@@ -50,11 +50,10 @@ interface TwoFactorViewModel {
         Inputs,
         Outputs {
         private val client: ApiClientType
-        private val currentUser: CurrentUserType
-        private val currentUserV2 = requireNotNull(environment.currentUserV2())
+        private val loginUserCase = LoginUseCase(environment)
+
         private fun success(envelope: AccessTokenEnvelope) {
-            currentUser.login(envelope.user(), envelope.accessToken())
-            currentUserV2.login(envelope.user(), envelope.accessToken())
+            this.loginUserCase.login(envelope.user(), envelope.accessToken())
             tfaSuccess.onNext(null)
         }
 
@@ -156,7 +155,6 @@ interface TwoFactorViewModel {
         }
 
         init {
-            currentUser = requireNotNull(environment.currentUser())
             client = requireNotNull(environment.apiClient())
 
             val email = intent()

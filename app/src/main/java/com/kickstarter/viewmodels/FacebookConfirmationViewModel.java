@@ -11,6 +11,7 @@ import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.FacebookConfirmationActivity;
+import com.kickstarter.viewmodels.usecases.LoginUseCase;
 
 import androidx.annotation.NonNull;
 import rx.Notification;
@@ -49,7 +50,7 @@ public interface FacebookConfirmationViewModel {
 
   final class ViewModel extends ActivityViewModel<FacebookConfirmationActivity> implements Inputs, Outputs {
     private final ApiClientType client;
-    private final CurrentUserType currentUser;
+    private final LoginUseCase loginUserCase;
     private final CurrentConfigType currentConfig;
 
     public ViewModel(final @NonNull Environment environment) {
@@ -57,7 +58,7 @@ public interface FacebookConfirmationViewModel {
 
       this.client = environment.apiClient();
       this.currentConfig = environment.currentConfig();
-      this.currentUser = environment.currentUser();
+      this.loginUserCase = new LoginUseCase(environment);
 
       final Observable<String> facebookAccessToken = intent()
         .map(i -> i.getStringExtra(IntentKey.FACEBOOK_TOKEN))
@@ -104,7 +105,7 @@ public interface FacebookConfirmationViewModel {
     }
 
     private void registerWithFacebookSuccess(final @NonNull AccessTokenEnvelope envelope) {
-      this.currentUser.login(envelope.user(), envelope.accessToken());
+      this.loginUserCase.login(envelope.user(), envelope.accessToken());
       this.signupSuccess.onNext(null);
     }
 

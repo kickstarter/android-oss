@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels
 
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
@@ -12,6 +11,7 @@ import com.kickstarter.libs.utils.extensions.newPasswordValidationWarnings
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.SetPasswordActivity
+import com.kickstarter.viewmodels.usecases.LoginUseCase
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -70,9 +70,8 @@ interface SetPasswordViewModel {
         val outputs: Outputs = this
 
         private val apolloClient = requireNotNull(this.environment.apolloClient())
-        private val currentUser: CurrentUserType = requireNotNull(environment.currentUser())
-        private val currentUserV2 = requireNotNull(environment.currentUserV2())
-
+        private val currentUser = requireNotNull(environment.currentUser())
+        private val loginUserCase = LoginUseCase(environment)
         init {
             intent()
                 .filter { it.hasExtra(IntentKey.EMAIL) }
@@ -141,14 +140,10 @@ interface SetPasswordViewModel {
                 .compose(Transformers.takePairWhen(userHasPassword))
                 .distinctUntilChanged()
                 .subscribe {
-                    currentUser.accessToken?.let { it1 ->
-                        currentUser.login(
+                    currentUser.accessToken?.let { accessToken ->
+                        loginUserCase.login(
                             it.first.toBuilder().needsPassword(false).build(),
-                            it1
-                        )
-                        currentUserV2.login(
-                            it.first.toBuilder().needsPassword(false).build(),
-                            it1
+                            accessToken
                         )
                     }
                     this.success.onNext(it.second.updateUserAccount()?.user()?.email())

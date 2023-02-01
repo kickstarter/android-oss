@@ -164,7 +164,7 @@ public class ApplicationModule {
       .currentConfig(currentConfig)
       .currentConfig2(currentConfig2)
       .currentUser(currentUser)
-      .currentUser2(currentUser2)
+      .currentUserV2(currentUser2)
       .firstSessionPreference(firstSessionPreference)
       .gson(gson)
       .hasSeenAppRatingPreference(hasSeenAppRatingPreference)

@@ -109,7 +109,7 @@ class Environment private constructor(
         fun currentConfig(currentConfig: CurrentConfigType) = apply { this.currentConfig = currentConfig }
         fun currentConfig2(currentConfig2: CurrentConfigTypeV2) = apply { this.currentConfigV2 = currentConfig2 }
         fun currentUser(currentUser: CurrentUserType) = apply { this.currentUser = currentUser }
-        fun currentUser2(currentUser2: CurrentUserTypeV2) = apply { this.currentUserV2 = currentUser2 }
+        fun currentUserV2(currentUserV2: CurrentUserTypeV2) = apply { this.currentUserV2 = currentUserV2 }
         fun firstSessionPreference(firstSessionPreference: BooleanPreferenceType) = apply { this.firstSessionPreference = firstSessionPreference }
         fun gson(gson: Gson) = apply { this.gson = gson }
         fun hasSeenAppRatingPreference(hasSeenAppRatingPreference: BooleanPreferenceType) = apply { this.hasSeenAppRatingPreference = hasSeenAppRatingPreference }

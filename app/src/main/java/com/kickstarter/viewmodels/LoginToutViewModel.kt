@@ -11,7 +11,6 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -26,6 +25,7 @@ import com.kickstarter.ui.activities.DisclaimerItems
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.LoginReason
+import com.kickstarter.viewmodels.usecases.LoginUseCase
 import rx.Notification
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -96,8 +96,6 @@ interface LoginToutViewModel {
         Outputs {
 
         private var callbackManager: CallbackManager? = null
-        private val currentUser: CurrentUserType = requireNotNull(environment.currentUser())
-        private val currentUserV2 = requireNotNull(environment.currentUserV2())
         private val client: ApiClientType = requireNotNull(environment.apiClient())
 
         private fun clearFacebookSession(e: FacebookException) {
@@ -143,6 +141,7 @@ interface LoginToutViewModel {
         private val loginReason = PublishSubject.create<LoginReason>()
         private val signupClick = PublishSubject.create<Void>()
         private val disclaimerItemClicked = PublishSubject.create<DisclaimerItems>()
+
         @VisibleForTesting val facebookAuthorizationError = BehaviorSubject.create<FacebookException>()
         private val finishWithSuccessfulResult = BehaviorSubject.create<Void>()
         private val showFacebookErrorDialog = BehaviorSubject.create<Void>()
@@ -154,12 +153,12 @@ interface LoginToutViewModel {
 
         val inputs: Inputs = this
         val outputs: Outputs = this
+        private val loginUserCase = LoginUseCase(environment)
 
         override fun facebookLoginClick(
             activity: LoginToutActivity?,
             facebookPermissions: List<String>
         ) {
-
             facebookLoginClick.onNext(facebookPermissions)
             if (activity != null) {
                 LoginManager.getInstance()
@@ -291,8 +290,7 @@ interface LoginToutViewModel {
                 .map { requireNotNull(it) }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    currentUser.login(it.user(), it.accessToken())
-                    currentUserV2.login(it.user(), it.accessToken())
+                    loginUserCase.login(it.user(), it.accessToken())
                     finishWithSuccessfulResult.onNext(null)
                 }
 

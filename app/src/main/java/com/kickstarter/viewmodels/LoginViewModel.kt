@@ -91,7 +91,7 @@ interface LoginViewModel {
 
         private val client = requireNotNull(environment.apiClient())
         private val currentUser = requireNotNull(environment.currentUser())
-
+        private val currentUserV2 = requireNotNull(environment.currentUserV2())
         init {
 
             val emailAndPassword = this.emailEditTextChanged
@@ -233,6 +233,7 @@ interface LoginViewModel {
 
         private fun success(envelope: AccessTokenEnvelope) {
             this.currentUser.login(envelope.user(), envelope.accessToken())
+            this.currentUserV2.login(envelope.user(), envelope.accessToken())
             this.loginSuccess.onNext(null)
         }
 

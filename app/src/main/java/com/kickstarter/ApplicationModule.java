@@ -577,8 +577,8 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  static Logout provideLogout(final @NonNull CookieManager cookieManager, final @NonNull CurrentUserType currentUser) {
-    return new Logout(cookieManager, currentUser);
+  static Logout provideLogout(final @NonNull CookieManager cookieManager, final @NonNull CurrentUserType currentUser, final @NonNull CurrentUserTypeV2 currentUserV2) {
+    return new Logout(cookieManager, currentUser, currentUserV2);
   }
 
   @Provides

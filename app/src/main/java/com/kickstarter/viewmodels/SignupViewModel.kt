@@ -57,6 +57,7 @@ interface SignupViewModel {
         private val client: ApiClientType
         private val currentUser: CurrentUserType
         private val currentConfig: CurrentConfigType
+        private val currentUserV2 = requireNotNull(environment.currentUserV2())
         private fun submit(data: SignupData): Observable<AccessTokenEnvelope> {
             return client.signup(
                 data.name,
@@ -73,6 +74,7 @@ interface SignupViewModel {
 
         private fun success(envelope: AccessTokenEnvelope) {
             currentUser.login(envelope.user(), envelope.accessToken())
+            currentUserV2.login(envelope.user(), envelope.accessToken())
             signupSuccess.onNext(null)
         }
 

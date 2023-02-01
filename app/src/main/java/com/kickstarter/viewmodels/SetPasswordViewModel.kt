@@ -71,6 +71,7 @@ interface SetPasswordViewModel {
 
         private val apolloClient = requireNotNull(this.environment.apolloClient())
         private val currentUser: CurrentUserType = requireNotNull(environment.currentUser())
+        private val currentUserV2 = requireNotNull(environment.currentUserV2())
 
         init {
             intent()
@@ -142,6 +143,10 @@ interface SetPasswordViewModel {
                 .subscribe {
                     currentUser.accessToken?.let { it1 ->
                         currentUser.login(
+                            it.first.toBuilder().needsPassword(false).build(),
+                            it1
+                        )
+                        currentUserV2.login(
                             it.first.toBuilder().needsPassword(false).build(),
                             it1
                         )

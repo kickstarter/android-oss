@@ -97,6 +97,7 @@ interface LoginToutViewModel {
 
         private var callbackManager: CallbackManager? = null
         private val currentUser: CurrentUserType = requireNotNull(environment.currentUser())
+        private val currentUserV2 = requireNotNull(environment.currentUserV2())
         private val client: ApiClientType = requireNotNull(environment.apiClient())
 
         private fun clearFacebookSession(e: FacebookException) {
@@ -291,6 +292,7 @@ interface LoginToutViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     currentUser.login(it.user(), it.accessToken())
+                    currentUserV2.login(it.user(), it.accessToken())
                     finishWithSuccessfulResult.onNext(null)
                 }
 

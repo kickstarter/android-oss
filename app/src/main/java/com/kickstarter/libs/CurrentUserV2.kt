@@ -118,7 +118,7 @@ class CurrentUserV2(
         Timber.d("Logout current user")
         userPreference.delete()
         accessTokenPreference.delete()
-        //  user.onNext(null)
+        user.onNext(KsOptional.empty())
         deviceRegistrar.unregisterDevice()
     }
 

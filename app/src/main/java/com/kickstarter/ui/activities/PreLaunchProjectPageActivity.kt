@@ -58,6 +58,7 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.startLoginToutActivity() }
         )
+
         setContent {
             MaterialTheme {
                 val projectState = viewModel.project().subscribeAsState(initial = null)
@@ -65,11 +66,11 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
                     projectState = projectState,
                     leftOnClickAction = { finish() },
                     rightOnClickAction = {
-                        projectState.value?.let { this.viewModel.inputs.heartButtonClicked(it) }
+                        projectState.value?.let { this.viewModel.inputs.heartButtonClicked() }
                     },
                     middleRightClickAction = { this.viewModel.inputs.shareButtonClicked() },
                     onButtonClicked = {
-                        projectState.value?.let { this.viewModel.inputs.heartButtonClicked(it) }
+                        projectState.value?.let { this.viewModel.inputs.heartButtonClicked() }
                     }
                 )
             }

@@ -51,9 +51,10 @@ interface TwoFactorViewModel {
         Outputs {
         private val client: ApiClientType
         private val currentUser: CurrentUserType
-
+        private val currentUserV2 = requireNotNull(environment.currentUserV2())
         private fun success(envelope: AccessTokenEnvelope) {
             currentUser.login(envelope.user(), envelope.accessToken())
+            currentUserV2.login(envelope.user(), envelope.accessToken())
             tfaSuccess.onNext(null)
         }
 
@@ -146,7 +147,7 @@ interface TwoFactorViewModel {
 
         protected inner class TfaDataForFacebook(
             val fbAccessToken: String,
-            val isFacebookLogin: Boolean,
+            val isFacebookLogin: Boolean
         )
         companion object {
             private fun isCodeValid(code: String?): Boolean {
@@ -175,7 +176,9 @@ interface TwoFactorViewModel {
                 .map { requireNotNull(it) }
 
             val tfaData = Observable.combineLatest(
-                email, isFacebookLogin, password
+                email,
+                isFacebookLogin,
+                password
             ) { email: String, isFacebookLogin: Boolean, password: String ->
                 TfaData(
                     email,
@@ -185,11 +188,12 @@ interface TwoFactorViewModel {
             }
 
             val tfaFacebookData = Observable.combineLatest(
-                fbAccessToken, isFacebookLogin
+                fbAccessToken,
+                isFacebookLogin
             ) { fbAccessToken: String?, isFacebookLogin: Boolean ->
                 TfaDataForFacebook(
                     fbAccessToken = fbAccessToken ?: "",
-                    isFacebookLogin = isFacebookLogin,
+                    isFacebookLogin = isFacebookLogin
                 )
             }
 
@@ -204,7 +208,9 @@ interface TwoFactorViewModel {
                 .filter { !it.second.isFacebookLogin }
                 .switchMap {
                     login(
-                        it.first, it.second.email, it.second.password
+                        it.first,
+                        it.second.email,
+                        it.second.password
                     )
                 }
                 .compose(bindToLifecycle())
@@ -216,7 +222,8 @@ interface TwoFactorViewModel {
                 .filter { it.second.isFacebookLogin }
                 .switchMap {
                     loginWithFacebook(
-                        it.first, it.second.fbAccessToken
+                        it.first,
+                        it.second.fbAccessToken
                     )
                 }
                 .compose(bindToLifecycle())

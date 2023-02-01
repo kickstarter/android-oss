@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.core.net.toUri
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.PushNotificationEnvelopeFactory
 import com.kickstarter.mock.factories.UserFactory
@@ -178,10 +179,8 @@ class ProjectIntentMapperTest : KSRobolectricTestCase() {
         ProjectIntentMapper.project(intent, MockApolloClient())
             .subscribe(resultTest)
 
-        disposables.add(
-            ProjectIntentMapper.project(intent, MockApolloClientV2()).subscribe {
-                resultTestV2.onNext(it)
-            }
-        )
+        ProjectIntentMapper.project(intent, MockApolloClientV2()).subscribe {
+            resultTestV2.onNext(it)
+        }.addToDisposable(disposables)
     }
 }

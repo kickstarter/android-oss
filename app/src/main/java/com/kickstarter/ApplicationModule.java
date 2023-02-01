@@ -148,6 +148,7 @@ public class ApplicationModule {
     final @NonNull ExperimentsClientType optimizely,
     final @NonNull PlayServicesCapability playServicesCapability,
     final @NonNull Scheduler scheduler,
+    final @NonNull io.reactivex.Scheduler schedulerV2,
     final @NonNull SharedPreferences sharedPreferences,
     final @NonNull Stripe stripe,
     final @NonNull WebClientType webClient,
@@ -177,6 +178,7 @@ public class ApplicationModule {
       .optimizely(optimizely)
       .playServicesCapability(playServicesCapability)
       .scheduler(scheduler)
+      .schedulerV2(schedulerV2)
       .sharedPreferences(sharedPreferences)
       .stripe(stripe)
       .webClient(webClient)
@@ -448,6 +450,12 @@ public class ApplicationModule {
   @Singleton
   static Scheduler provideScheduler() {
     return Schedulers.computation();
+  }
+
+  @Provides
+  @Singleton
+  static io.reactivex.Scheduler provideSchedulerV2() {
+    return io.reactivex.schedulers.Schedulers.computation();
   }
 
   @Provides

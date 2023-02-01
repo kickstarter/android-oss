@@ -11,6 +11,7 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.UrlUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.updateProjectWith
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -31,7 +32,7 @@ interface PrelaunchProjectViewModel {
         fun creatorInfoButtonClicked()
 
         /** Call when the heart button is clicked.  */
-        fun heartButtonClicked()
+        fun bookmarkButtonClicked()
 
         /** Call when the share button is clicked.  */
         fun shareButtonClicked()
@@ -39,16 +40,6 @@ interface PrelaunchProjectViewModel {
 
     interface Outputs {
         fun project(): Observable<Project>
-        fun projectMedia(): Observable<String>
-
-        /** Emits the creator's avatar photo url for display.  */
-        fun avatarPhotoUrl(): Observable<String>
-
-        /** Emits the project name for display.  */
-        fun projectNameTextViewText(): Observable<String>
-
-        /** Emits a boolean determining if the variant blurb should be visible.  */
-        fun blurbVariantIsVisible(): Observable<Boolean>
 
         /** Emits when we should show the share sheet with the name of the project and share URL.  */
         fun showShareSheet(): Observable<Pair<String, String>>
@@ -57,7 +48,7 @@ interface PrelaunchProjectViewModel {
         fun startLoginToutActivity(): Observable<Unit>
 
         /** Emits when the success prompt for saving should be displayed.  */
-        fun showSavedPrompt(): Observable<Void>
+        fun showSavedPrompt(): Observable<Unit>
     }
 
     class PrelaunchProjectViewModel(environment: Environment) : ViewModel(), Inputs, Outputs {
@@ -68,23 +59,17 @@ interface PrelaunchProjectViewModel {
         private val currentUser = requireNotNull(environment.currentUserV2())
         private val apolloClient = requireNotNull(environment.apolloClientV2())
         private val currentConfig = requireNotNull(environment.currentConfigV2())
-        private val cookieManager = requireNotNull(environment.cookieManager())
-        private val sharedPreferences = requireNotNull(environment.sharedPreferences())
 
         private val intent = BehaviorSubject.create<Intent>()
         private val creatorInfoClicked = PublishSubject.create<Unit>()
         private val shareButtonClicked = PublishSubject.create<Unit>()
-        private val heartButtonClicked = PublishSubject.create<Unit>()
+        private val bookmarkButtonClicked = PublishSubject.create<Unit>()
         private val projectData = BehaviorSubject.create<ProjectData>()
 
-        private val projectPhoto = PublishSubject.create<String>()
         private val project = PublishSubject.create<Project>()
-        private val avatarPhotoUrl = BehaviorSubject.create<String>()
-        private val projectNameTextViewText = BehaviorSubject.create<String>()
-        private val blurbVariantIsVisible = BehaviorSubject.create<Boolean>()
         private val showShareSheet = PublishSubject.create<Pair<String, String>>()
         private val startLoginToutActivity = PublishSubject.create<Unit>()
-        private val showSavedPrompt = PublishSubject.create<Void>()
+        private val showSavedPrompt = PublishSubject.create<Unit>()
         init {
 
             val initialProject = intent
@@ -93,30 +78,14 @@ interface PrelaunchProjectViewModel {
                 }
                 .share()
 
-            disposables.add(
-                initialProject
-                    .subscribe {
-                        project.onNext(it)
-                    }
-            )
-
-            disposables.add(
-                initialProject
-                    .compose(TakeWhenTransformerV2(this.shareButtonClicked))
-                    .map { Pair(it.name(), UrlUtils.appendRefTag(it.webProjectUrl(), RefTag.projectShare().tag())) }
-                    .subscribe {
-                        this.showShareSheet.onNext(it)
-                    }
-            )
-
             val loggedInUserOnHeartClick = this.currentUser.observable()
-                .compose(Transformers.takeWhenV2(this.heartButtonClicked))
+                .compose(Transformers.takeWhenV2(this.bookmarkButtonClicked))
                 .filter {
                     it.isPresent()
                 }
 
             val loggedOutUserOnHeartClick = this.currentUser.observable()
-                .compose(Transformers.takeWhenV2(this.heartButtonClicked))
+                .compose(Transformers.takeWhenV2(this.bookmarkButtonClicked))
                 .filter {
                     !it.isPresent()
                 }.map { !it.isPresent() }
@@ -155,41 +124,59 @@ interface PrelaunchProjectViewModel {
                 projectData(null, null, it)
             }
 
-            disposables.add(
-                currentProjectData
-                    .distinctUntilChanged()
-                    .subscribe {
-                        this.projectData.onNext(it)
-                    }
-            )
+            initialProject
+                .subscribe {
+                    project.onNext(it)
+                }.addToDisposable(disposables)
 
-            disposables.add(
-                loggedOutUserOnHeartClick
-                    .subscribe {
-                        this.startLoginToutActivity.onNext(Unit)
-                    }
-            )
+            initialProject
+                .compose(TakeWhenTransformerV2(this.shareButtonClicked))
+                .map {
+                    Pair(
+                        it.name(),
+                        UrlUtils.appendRefTag(
+                            it.webProjectUrl(),
+                            RefTag.projectShare().tag()
+                        )
+                    )
+                }
+                .subscribe {
+                    this.showShareSheet.onNext(it)
+                }.addToDisposable(disposables)
 
-            disposables.add(
-                savedProjectOnLoginSuccess
-                    .doOnError {
-                        println(it.message)
-                    }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .map { it }
-                    .subscribe {
-                        this.project.onNext(it)
-                    }
-            )
+            currentProjectData
+                .distinctUntilChanged()
+                .subscribe {
+                    this.projectData.onNext(it)
+                }.addToDisposable(disposables)
 
-            disposables.add(
-                projectOnUserChangeSave
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .map { it }
-                    .subscribe {
-                        this.project.onNext(it)
-                    }
-            )
+            loggedOutUserOnHeartClick
+                .subscribe {
+                    this.startLoginToutActivity.onNext(Unit)
+                }.addToDisposable(disposables)
+
+            savedProjectOnLoginSuccess
+                .doOnError {
+                    println(it.message)
+                }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { it }
+                .subscribe {
+                    this.project.onNext(it)
+                }.addToDisposable(disposables)
+
+            projectOnUserChangeSave
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { it }
+                .subscribe {
+                    this.project.onNext(it)
+                }.addToDisposable(disposables)
+
+            projectOnUserChangeSave
+                .filter { p -> p.isStarred() }
+                .subscribe {
+                    this.showSavedPrompt.onNext(Unit)
+                }.addToDisposable(disposables)
         }
 
         private fun mapProject(
@@ -248,21 +235,14 @@ interface PrelaunchProjectViewModel {
         // - Inputs
         override fun configureWith(intent: Intent) = this.intent.onNext(intent)
         override fun creatorInfoButtonClicked() = this.creatorInfoClicked.onNext(Unit)
-        override fun heartButtonClicked() = this.heartButtonClicked.onNext(Unit)
+        override fun bookmarkButtonClicked() = this.bookmarkButtonClicked.onNext(Unit)
         override fun shareButtonClicked() = shareButtonClicked.onNext(Unit)
 
         // - Outputs
-        override fun projectMedia(): Observable<String> = projectPhoto
         override fun project(): Observable<Project> = this.project
-        override fun avatarPhotoUrl(): Observable<String> = avatarPhotoUrl
-
-        override fun projectNameTextViewText(): Observable<String> = projectNameTextViewText
-
-        override fun blurbVariantIsVisible(): Observable<Boolean> = blurbVariantIsVisible
-
         override fun showShareSheet(): Observable<Pair<String, String>> = this.showShareSheet
         override fun startLoginToutActivity(): Observable<Unit> = this.startLoginToutActivity
-        override fun showSavedPrompt(): Observable<Void> = this.showSavedPrompt
+        override fun showSavedPrompt(): Observable<Unit> = this.showSavedPrompt
     }
 
     class Factory(private val environment: Environment) : ViewModelProvider.Factory {

@@ -37,6 +37,7 @@ class Environment private constructor(
     private val optimizely: ExperimentsClientType?,
     private val playServicesCapability: PlayServicesCapability?,
     private val scheduler: Scheduler?,
+    private val schedulerV2: io.reactivex.Scheduler?,
     private val sharedPreferences: SharedPreferences?,
     private val stripe: Stripe?,
     private val webClient: WebClientType?,
@@ -65,6 +66,7 @@ class Environment private constructor(
     fun optimizely() = this.optimizely
     fun playServicesCapability() = this.playServicesCapability
     fun scheduler() = this.scheduler
+    fun schedulerV2() = this.schedulerV2
     fun sharedPreferences() = this.sharedPreferences
     fun stripe() = this.stripe
     fun webClient() = this.webClient
@@ -94,6 +96,7 @@ class Environment private constructor(
         private var optimizely: ExperimentsClientType? = null,
         private var playServicesCapability: PlayServicesCapability? = null,
         private var scheduler: Scheduler? = null,
+        private var schedulerV2: io.reactivex.Scheduler? = null,
         private var sharedPreferences: SharedPreferences? = null,
         private var stripe: Stripe? = null,
         private var webClient: WebClientType? = null,
@@ -122,6 +125,7 @@ class Environment private constructor(
         fun optimizely(optimizely: ExperimentsClientType) = apply { this.optimizely = optimizely }
         fun playServicesCapability(playServicesCapability: PlayServicesCapability) = apply { this.playServicesCapability = playServicesCapability }
         fun scheduler(scheduler: Scheduler) = apply { this.scheduler = scheduler }
+        fun schedulerV2(schedulerV2: io.reactivex.Scheduler) = apply { this.schedulerV2 = schedulerV2 }
         fun sharedPreferences(sharedPreferences: SharedPreferences) = apply { this.sharedPreferences = sharedPreferences }
         fun stripe(stripe: Stripe) = apply { this.stripe = stripe }
         fun webClient(webClient: WebClientType) = apply { this.webClient = webClient }
@@ -151,6 +155,7 @@ class Environment private constructor(
             optimizely = optimizely,
             playServicesCapability = playServicesCapability,
             scheduler = scheduler,
+            schedulerV2 = schedulerV2,
             sharedPreferences = sharedPreferences,
             stripe = stripe,
             webClient = webClient,
@@ -162,6 +167,7 @@ class Environment private constructor(
         activitySamplePreference = activitySamplePreference,
         apiClient = apiClient,
         apolloClient = apolloClient,
+        apolloClientV2 = apolloClientV2,
         build = build,
         buildCheck = buildCheck,
         cookieManager = cookieManager,
@@ -181,6 +187,7 @@ class Environment private constructor(
         optimizely = optimizely,
         playServicesCapability = playServicesCapability,
         scheduler = scheduler,
+        schedulerV2 = schedulerV2,
         sharedPreferences = sharedPreferences,
         stripe = stripe,
         webClient = webClient,

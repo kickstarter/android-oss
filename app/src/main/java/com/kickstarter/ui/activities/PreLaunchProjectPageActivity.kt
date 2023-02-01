@@ -11,6 +11,8 @@ import androidx.compose.runtime.rxjava2.subscribeAsState
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.KSString
+import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreen
@@ -24,12 +26,12 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
 
     private lateinit var viewModelFactory: PrelaunchProjectViewModel.Factory
     private val viewModel: PrelaunchProjectViewModel.PrelaunchProjectViewModel by viewModels { viewModelFactory }
-    private var compositeDisposable: CompositeDisposable? = null
+    private val compositeDisposable = CompositeDisposable()
     private var ksString: KSString? = null
 
     private val projectShareLabelString = R.string.project_accessibility_button_share_label
     private val projectShareCopyString = R.string.project_share_twitter_message
-    private val projectStarConfirmationString = R.string.project_star_confirmation
+    private val projectStarConfirmationString = R.string.FPO_We_will_you_when_this_project_launches_so_you_can_be_one_of_the_first_backers
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,25 +41,8 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
         this.getEnvironment()?.let { env ->
             viewModelFactory = PrelaunchProjectViewModel.Factory(env)
         }
-        compositeDisposable = CompositeDisposable()
 
         viewModel.inputs.configureWith(intent)
-
-        compositeDisposable?.add(
-            this.viewModel.outputs.showShareSheet()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    startShareIntent(it)
-                }
-        )
-
-        compositeDisposable?.add(
-            this.viewModel.outputs.startLoginToutActivity()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startLoginToutActivity() }
-        )
 
         setContent {
             MaterialTheme {
@@ -66,15 +51,38 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
                     projectState = projectState,
                     leftOnClickAction = { finish() },
                     rightOnClickAction = {
-                        projectState.value?.let { this.viewModel.inputs.heartButtonClicked() }
+                        projectState.value?.let { this.viewModel.inputs.bookmarkButtonClicked() }
                     },
                     middleRightClickAction = { this.viewModel.inputs.shareButtonClicked() },
                     onButtonClicked = {
-                        projectState.value?.let { this.viewModel.inputs.heartButtonClicked() }
+                        projectState.value?.let { this.viewModel.inputs.bookmarkButtonClicked() }
                     }
                 )
             }
         }
+
+        this.viewModel.outputs.showShareSheet()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                startShareIntent(it)
+            }.addToDisposable(compositeDisposable)
+
+        this.viewModel.outputs.startLoginToutActivity()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.startLoginToutActivity() }
+            .addToDisposable(compositeDisposable)
+
+        this.viewModel.outputs.showSavedPrompt()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.showStarToast() }
+            .addToDisposable(compositeDisposable)
+    }
+
+    private fun showStarToast() {
+        ViewUtils.showToast(this, getString(this.projectStarConfirmationString))
     }
 
     private fun startShareIntent(projectNameAndShareUrl: Pair<String, String>) {
@@ -96,7 +104,7 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
 
     @Override
     override fun onDestroy() {
-        compositeDisposable?.clear()
+        compositeDisposable.clear()
         super.onDestroy()
     }
 }

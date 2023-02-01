@@ -210,7 +210,7 @@ fun PreLaunchProjectPageScreen(
                 ) {
                     val (button, text) = createRefs()
                     KsButton(
-                        defaultText = stringResource(id = R.string.FPO_notify_me_on_launch),
+                        defaultText = stringResource(id = R.string.FPO_Notify_me_on_launch),
                         pressedText = stringResource(id = R.string.Saved),
                         defaultImageVector = ImageVector.vectorResource(id = R.drawable.ic_bookmark_white_outline),
                         pressedImageVector = ImageVector.vectorResource(id = R.drawable.ic_bookmark_red_filled),

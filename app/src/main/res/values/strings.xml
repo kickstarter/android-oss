@@ -116,5 +116,6 @@
 
   <string name="FPO_Coming_soon">Coming soon</string>
   <string name="FPO_followers">followers %s</string>
-  <string name="FPO_notify_me_on_launch">Notify me on launch</string>
+  <string name="FPO_Notify_me_on_launch">Notify me on launch</string>
+  <string name="FPO_We_will_you_when_this_project_launches_so_you_can_be_one_of_the_first_backers">We’ll email you when this project launches so you can be one of the first backers.</string>
 </resources>

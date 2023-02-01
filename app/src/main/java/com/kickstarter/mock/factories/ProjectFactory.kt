@@ -503,6 +503,7 @@ object ProjectFactory {
             .rewards("$projectUrl/rewards")
             .updates("$projectUrl/posts")
             .build()
+
         return project()
             .toBuilder()
             .launchedAt(DateTimeAdapter().decode(CustomTypeValue.fromRawValue(0)))

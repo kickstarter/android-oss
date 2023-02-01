@@ -130,3 +130,20 @@ fun String.newPasswordValidationWarnings(confirmPassword: String): Int? {
         R.string.Passwords_matching_message
     else null
 }
+
+/**
+ * Takes a String resource with HTMl <a> tag, an splits it
+ */
+fun String.stringsFromHtmlTranslation(): List<String> {
+    val matchResults = "^(.*?)<a.*?>(.*?)</a>(.*)$".toRegex().find(this)
+
+    val list = matchResults?.groups?.map {
+        it?.value ?: ""
+    } ?: emptyList()
+
+    val ret = list.toMutableList()
+
+    // The first group is the entire string, take it out
+    ret.removeAt(0)
+    return ret.toList()
+}

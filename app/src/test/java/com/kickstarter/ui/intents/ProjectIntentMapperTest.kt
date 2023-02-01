@@ -43,7 +43,7 @@ class ProjectIntentMapperTest : KSRobolectricTestCase() {
         val intent = Intent().putExtra(IntentKey.PROJECT_PARAM, "skull-graphic-tee")
         val resultTest = TestSubscriber.create<Project>()
         val resultTestV2 = io.reactivex.subscribers.TestSubscriber.create<Project>()
-        
+
         attacheTestResultSubscriber(intent, resultTest, resultTestV2)
 
         resultTest.assertValueCount(1)

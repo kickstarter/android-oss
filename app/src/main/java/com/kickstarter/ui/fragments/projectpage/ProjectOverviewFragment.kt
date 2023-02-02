@@ -25,6 +25,7 @@ import com.kickstarter.libs.KSString
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
+import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.SocialUtils
@@ -37,6 +38,7 @@ import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ProjectSocialActivity
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.extensions.setClickableHtml
 import com.kickstarter.ui.extensions.startCampaignWebViewActivity
 import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
 import com.kickstarter.ui.extensions.startCreatorDashboardActivity
@@ -386,6 +388,13 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
                 binding.projectCreatorInfoLayout.projectFlagged.setGone(!it)
             }
 
+        viewModel.outputs.openExternallyWithUrl()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                context?.let { it1 -> ApplicationUtils.openUrlExternally(it1, it) }
+            }
+
         binding.projectCreatorDashboardHeader.projectDashboardButton.setOnClickListener {
             this.viewModel.inputs.creatorDashboardClicked()
         }
@@ -410,8 +419,8 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             this.viewModel.inputs.updatesButtonClicked()
         }
 
-        binding.projectCreatorInfoLayout.reportProject.setOnClickListener {
-            this.viewModel.inputs.reportProjectButtonClicked()
+        binding.projectCreatorInfoLayout.textReported.setClickableHtml { url ->
+            this.viewModel.inputs.linkClicked(url)
         }
     }
 

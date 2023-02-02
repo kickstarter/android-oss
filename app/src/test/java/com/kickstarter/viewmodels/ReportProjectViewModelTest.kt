@@ -7,6 +7,10 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.COMMUNITY_GUIDELINES
+import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.COMMUNITY_GUIDELINES_TAG
+import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.PROHIBITED_ITEMS
+import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.PROHIBITED_ITEMS_TAG
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
@@ -22,6 +26,7 @@ class ReportProjectViewModelTest : KSRobolectricTestCase() {
     private val email = TestSubscriber.create<String>()
     private val finish = TestSubscriber.create<ReportProjectViewModel.ReportProjectViewModel.NavigationResult>()
     private val progressBarVisible = TestSubscriber.create<Boolean>()
+    private val openExternal = TestSubscriber.create<String>()
     private val disposables = CompositeDisposable()
 
     private fun getEnvironment() = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
@@ -62,6 +67,7 @@ class ReportProjectViewModelTest : KSRobolectricTestCase() {
         disposables.add(this.vm.outputs.projectUrl().subscribe { this.projectUrl.onNext(it) })
         disposables.add(this.vm.outputs.email().subscribe { this.email.onNext(it) })
         disposables.add(this.vm.outputs.finish().subscribe { this.finish.onNext(it) })
+        disposables.add(this.vm.outputs.openExternalBrowserWithUrl().subscribe { this.openExternal.onNext(it) })
         disposables.add(this.vm.outputs.progressBarIsVisible().subscribe { this.progressBarVisible.onNext(it) })
     }
 
@@ -91,6 +97,39 @@ class ReportProjectViewModelTest : KSRobolectricTestCase() {
         vm.inputs.kind(FlaggingKind.SPAM.rawValue())
         vm.inputs.createFlagging()
         finish.assertValue(ReportProjectViewModel.ReportProjectViewModel.NavigationResult(true, FlaggingKind.SPAM.rawValue()))
+    }
+
+    @Test
+    fun testCommunityGuidelinesClicked() {
+        val project = ProjectFactory.project()
+
+        setUpEnvironment(getEnvironment(), getBundle(project))
+
+        vm.inputs.openExternalBrowser(COMMUNITY_GUIDELINES_TAG)
+        openExternal.assertValueCount(1)
+        openExternal.assertValue("${environment().webEndpoint()}$COMMUNITY_GUIDELINES")
+    }
+
+    @Test
+    fun testProhibitedItemsClicked() {
+        val project = ProjectFactory.project()
+
+        setUpEnvironment(getEnvironment(), getBundle(project))
+
+        vm.inputs.openExternalBrowser(PROHIBITED_ITEMS_TAG)
+        openExternal.assertValueCount(1)
+        openExternal.assertValue("${environment().webEndpoint()}$PROHIBITED_ITEMS")
+    }
+
+    @Test
+    fun testInvalidTag() {
+        val project = ProjectFactory.project()
+
+        setUpEnvironment(getEnvironment(), getBundle(project))
+
+        vm.inputs.openExternalBrowser("")
+        openExternal.assertValueCount(0)
+        openExternal.assertNoValues()
     }
 
     @After

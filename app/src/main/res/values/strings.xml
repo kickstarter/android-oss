@@ -87,35 +87,10 @@
   <!-- Risks Mock String-->
   <string name="risk_description">"The largest risk comes from the creation/manufacturing of the pins at the pin factory. We are working with a vendor in China, who has lots of experience in projects for us. Still, there is a chance that something may go wrong during the manufacturing process and if that happens it could cause a delay in shipping. It can be common in the pin-making world that manus are delayed or make mistakes with an order. However, we don’t anticipate this being an issue, as our vendor has done many similar projects with us, but there is always a possibility. These items are handmade! If anything does happen, we will make sure to keep everyone informed and up to date regarding where we are in the process. The timeline for shipping is NOT solid due to these factors but we will keep all backers updated each step of the way. Also- Please be aware, there might be a delay due to the situation with the COVID-19 virus. This is causing delays all over the world as shipping gets limited, cities shutting down services and other issues arise. At this point, we do not think this will impact our project timeline. However, we cannot predict how things will go and our pin factory is located in China (they are all back at work now and we have gotten pins from them within the last month, so things appear to be going well now.) If this will affect our production, I will inform everyone through an update as soon as I know."</string>
 
-  <!-- UGC Mock String-->
-  <string name="Report_this_project_to">Report this project to Kickstarter</string>
-  <string name="Report_this_project">Report this project</string>
-  <string name="It_looks">It looks like you\'ve already reported this project to us. Our Trust and Safety team will screen your report against &lt;a href="%{our_rules}">Our Rules&lt;a/> and &lt;a href="%{community_guidelines}">Community Guidelines&lt;/a>. Thanks for your feedback</string>
-  <string name="Report_spam">Report spam or abusive behavior</string>
-  <string name="Our">Our &lt;a href="%{community_guidelines_link}">Community Guidelines&lt;/a> prohibit spam and abusive behavior by both creators and backers.</string>
-  <string name="This_project_breaks">This project breaks one of Our Rules.</string>
-  <string name="Projects_may_not_offer">Projects may not offer items mentioned in our &lt;a href="%{prohibited_items_link}">prohibited items&lt;/a> list.</string>
-  <string name="Intellectual_property_violation">Intellectual property violation</string>
-  <string name="A_project_is_infringing">A project is infringing on your copyright or trademark.</string>
-  <string name="Prohibited_items">Prohibited items</string>
-  <string name="Copying_reselling">Copying, reselling or plagiarism</string>
-  <string name="Projects_cannot_plagiarize">Projects cannot plagiarize, offer items that aren\'t produced by the creator, or repackage a previously-created product without adding anything new.</string>
-  <string name="Prototype_misrepresentation">Prototype misrepresentation</string>
-  <string name="Creators_must_be_transparent">Creators must be transparent and honest in documenting their prototype. Photorealistic renderings are not permitted.</string>
-  <string name="Suspicious_creator_behavior">Suspicious creator behavior or pledging activity</string>
-  <string name="Project_creators_and_their">Project creators and their collaborators cannot misrepresent themselves, the involvement of third parties, or their project’s level of support.</string>
-  <string name="Not_raising_funds">Not raising funds for a creative project</string>
-  <string name="Projects_on">Projects on Kickstarter must create something to share with others.</string>
-  <string name="Spam">Spam</string>
-  <string name="Ex_using">Ex: Using email lists from outside sources, promoting a project where it shouldn\'t be promoted, link bombing.</string>
-  <string name="Abuse">Abuse</string>
-  <string name="Ex_posting">Ex: Posting obscene or hateful comments, doxxing or posting personal information in comments or updates.</string>
-  <string name="Kickstarter_takes_claims">Kickstarter takes claims of intellectual property infringement seriously. For more information and instructions on how to report infringement, please visit our Copyright Policy and our Trademark Policy. Only claims filed by the copyright or trademark holder can be processed.</string>
-  <string name="Project_url">Project URL</string>
-  <string name="Tell_us_more_details">Tell us more details</string>
-
+  <!-- New project pre launch -->
   <string name="FPO_Coming_soon">Coming soon</string>
   <string name="FPO_followers">followers %s</string>
   <string name="FPO_Notify_me_on_launch">Notify me on launch</string>
   <string name="FPO_We_will_you_when_this_project_launches_so_you_can_be_one_of_the_first_backers">We’ll email you when this project launches so you can be one of the first backers.</string>
+
 </resources>

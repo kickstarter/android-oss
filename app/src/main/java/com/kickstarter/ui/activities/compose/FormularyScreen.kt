@@ -46,6 +46,7 @@ fun FormularyScreenPreview() {
             override fun createFlagging() {}
             override fun inputDetails(s: String) {}
             override fun kind(kind: String) {}
+            override fun openExternalBrowser(tag: String) {}
         }
 
         val outputs = object : ReportProjectViewModel.Outputs {
@@ -53,6 +54,7 @@ fun FormularyScreenPreview() {
             override fun email(): Observable<String> = Observable.empty()
             override fun finish(): Observable<ReportProjectViewModel.ReportProjectViewModel.NavigationResult> = Observable.empty()
             override fun progressBarIsVisible(): Observable<Boolean> = Observable.empty()
+            override fun openExternalBrowserWithUrl(): Observable<String> = Observable.empty()
         }
 
         FormularyScreen(

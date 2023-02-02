@@ -3,10 +3,12 @@
 <resources>
   <string name="A_little_extra_to_help" formatted="false">プロジェクトを実現させるための追加支援。</string>
   <string name="A_monthly_pep_talk_to_boost_your_creative_practice_for_creators_of_all_types" formatted="false">あらゆるタイプのクリエイターの皆さまに、応援ニュースレターを毎月お届け。クリエイティブな取り組みに向けてやる気を高めましょう！</string>
+  <string name="A_project_is_infringing" formatted="false">A project is infringing on your copyright or trademark.</string>
   <string name="A_successfully_funded_project_will_collect_your_pledge_in_its_native_currency" formatted="false">プロジェクトのファンディングが成功した際には、プレッジ額はプロジェクトをローンチした国の通貨で集められます。表示されている金額はおおよその換算額ですのでご注意ください。</string>
   <string name="A_weekly_mix_of_handpicked_projects" formatted="false">Kickstarter イチオシのプロジェクトを毎週紹介するニュースレター (Kickstarter ニュースも随時送信)</string>
   <string name="A_weekly_roundup_of_the_best_and_brightest" formatted="false">Kickstarter スタッフがセレクトした今週のおすすめプロジェクト総まとめ。</string>
   <string name="About_reward_amount" formatted="false">約 %{reward_amount}　</string>
+  <string name="Abuse" formatted="false">Abuse</string>
   <string name="Accessibility_statement" formatted="false">アクセシビリティ・ステートメント</string>
   <string name="Account" formatted="false">アカウント</string>
   <string name="Add" formatted="false">追加</string>
@@ -136,6 +138,7 @@
   <string name="Continue_with_quantity_count_add_ons_two" formatted="false">%{quantity_count} 個のアドオンで続行する</string>
   <string name="Continue_with_quantity_count_add_ons_zero" formatted="false">%{quantity_count} 個のアドオンで続行する</string>
   <string name="Continue_with_this_reward" formatted="false">このリワードで続けますか？</string>
+  <string name="Copying_reselling" formatted="false">Copying, reselling or plagiarism</string>
   <string name="Couldnt_add_attachment" formatted="false">添付ファイルを追加できませんでした</string>
   <string name="Couldnt_load_more_comments_Tap_to_retry" formatted="false">他のコメントを読み込めませんでした。\n
 タップして再試行してください</string>
@@ -153,6 +156,7 @@
   <string name="Creator_name_was_streaming_live_on_Kickstarter" formatted="false">%{creator_name} はライブ配信を行いました</string>
   <string name="Creator_name_will_be_streaming_live_on_Kickstarter_in_duration" formatted="false">%{creator_name} は%{in_duration} にライブ配信を行います</string>
   <string name="Creator_tips" formatted="false">アドバイス</string>
+  <string name="Creators_must_be_transparent" formatted="false">Creators must be transparent and honest in documenting their prototype. Photorealistic renderings are not permitted.</string>
   <string name="Credit_card_expiration" formatted="false">有効期限 %{expiration_date}</string>
   <string name="Currency" formatted="false">通貨</string>
   <string name="Currency_AUD" formatted="false">$ オーストラリアドル (AUD)</string>
@@ -207,6 +211,8 @@
   <string name="Estimated_delivery" formatted="false">配達予定</string>
   <string name="Estimated_delivery_colon" formatted="false">配達予定:</string>
   <string name="Estimated_delivery_of" formatted="false">配送予定日</string>
+  <string name="Ex_posting" formatted="false">Ex: Posting obscene or hateful comments, doxxing or posting personal information in comments or updates.</string>
+  <string name="Ex_using" formatted="false">Ex: Using email lists from outside sources, promoting a project where it shouldn\'t be promoted, link bombing.</string>
   <string name="Expands_subcategories" formatted="false">サブカテゴリーを表示</string>
   <string name="Expiration" formatted="false">有効期限</string>
   <string name="Expired_date_at_time" formatted="false">有効期限: %{date} %{time}</string>
@@ -307,8 +313,10 @@
   <string name="Increase_pledge" formatted="false">プレッジ額を上げる</string>
   <string name="Individual_Emails" formatted="false">個人メール</string>
   <string name="Info" formatted="false">インフォメーション</string>
+  <string name="Intellectual_property_violation" formatted="false">Intellectual property violation</string>
   <string name="Introduce_yourself" formatted="false">自己紹介</string>
   <string name="Introducing_Lights_On" formatted="false">新企画「Lights On」</string>
+  <string name="It_looks" formatted="false">It looks like you\'ve already reported this project to us. Our Trust and Safety team will screen your report against &lt;a href="%{our_rules}">Our Rules&lt;/a> and &lt;a href="%{community_guidelines}">Community Guidelines&lt;/a>. Thanks for your feedback.</string>
   <string name="It_may_not_offer_some_or_all_of_your_add_ons" formatted="false">このリワードでは、アドオン (追加リワード）の一部または全てが提供されない場合があります。</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">データの収集には最大で24時間かかる場合があります。ダウンロードの準備が整いましたら、このアカウントに登録されているメールアドレス宛てにデータのダウンロード手順が記載されたメールをお送りします。メールが届かなかった場合には、お手数ですがこちらに戻って再試行してください。</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトを実現するためのプラットフォームです。</string>
@@ -332,6 +340,7 @@
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" formatted="false">Kickstarter は普通のお店とは全く違います。クリエイティブなプロジェクトに生命を吹き込む場です。</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Kickstarter は普通のお店とは全く違います。クリエイティブなプロジェクトに生命を吹き込む場です。&lt;br/>&lt;a href="%{trust_link}">アカウンタビリティについて詳しくみる。&lt;/a></string>
   <string name="Kickstarter_on_Film" formatted="false">Kickstarter on Film</string>
+  <string name="Kickstarter_takes_claims" formatted="false">Kickstarter takes claims of intellectual property infringement seriously. For more information and instructions on how to report infringement, please visit our Copyright Policy and our Trademark Policy. Only claims filed by the copyright or trademark holder can be processed.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">クリエイターやバッカ―からメッセージが届いた場合にすぐ分かるように、通知機能を有効にしましょう。</string>
   <string name="Learn_about_accountability_on_Kickstarter" formatted="false">Kickstarter上の説明責任について詳しく知る</string>
   <string name="Learn_more_about_accountability" formatted="false">報告義務に関してさらに詳しく</string>
@@ -403,6 +412,7 @@
   <string name="Not_delivered" formatted="false">未配送</string>
   <string name="Not_followed" formatted="false">フォローしてない</string>
   <string name="Not_now" formatted="false">後で</string>
+  <string name="Not_raising_funds" formatted="false">Not raising funds for a creative project</string>
   <string name="Notification_email_notification_off" formatted="false">%{notification}、メール通知、オフ</string>
   <string name="Notification_email_notification_on" formatted="false">%{notification}、メール通知、オン</string>
   <string name="Notification_push_notification_off" formatted="false">%{notification}、プッシュ通知、オフ</string>
@@ -426,6 +436,7 @@
   <string name="Or_select_a_different_reward_below_colon" formatted="false">別のリワードをみる：</string>
   <string name="Other_payment_methods" formatted="false">その他の支払方法</string>
   <string name="Other_projects_you_might_like" formatted="false">おすすめをさらに見る</string>
+  <string name="Our" formatted="false">Our &lt;a href="%{community_guidelines}">Community Guidelines&lt;/a> prohibit spam and abusive behavior by both creators and backers.</string>
   <string name="Overview" formatted="false">概要</string>
   <string name="Password_min_length_message" formatted="false">パスワードは6文字以上で入力してください。</string>
   <string name="Password_visibility" formatted="false">パスワードの表示/非表示</string>
@@ -465,17 +476,24 @@
   <string name="Private_profile_more_info" formatted="false">プライベート設定のプロフィール詳細</string>
   <string name="Private_profile_more_info_content" formatted="false">Kickstarter でのプロフィールはデフォルト設定ではプライベート (非公開) となっています。プロフィールを公開したい場合はこの設定をオフにしてください。</string>
   <string name="Processing" formatted="false">アップロード中</string>
+  <string name="Prohibited_items" formatted="false">Prohibited items</string>
   <string name="Project_Cancelled" formatted="false">プロジェクトが取り消されました。</string>
   <string name="Project_Suspended" formatted="false">プロジェクトは停止されました。</string>
   <string name="Project_activity" formatted="false">プロジェクトのアクティビティ</string>
   <string name="Project_cancelled" formatted="false">プロジェクトが取り消されました。</string>
+  <string name="Project_creators_and_their" formatted="false">Project creators and their collaborators cannot misrepresent themselves, the involvement of third parties, or their project’s level of support.</string>
   <string name="Project_goal_and_pledge" formatted="false">プロジェクトのゴール額とプレッジ額はおおよその換算金額で表示されます。プロジェクトが成功した場合、プレッジはプロジェクトをローンチした国の通貨で集められます。</string>
   <string name="Project_reminders" formatted="false">プロジェクトのリマインダー</string>
   <string name="Project_saved" formatted="false">プロジェクトを保存しました。</string>
   <string name="Project_updates" formatted="false">プロジェクトの更新情報</string>
+  <string name="Project_url" formatted="false">Project URL</string>
   <string name="Projects_We_Love" formatted="false">Projects We Love</string>
+  <string name="Projects_cannot_plagiarize" formatted="false">Projects cannot plagiarize, offer items that aren\'t produced by the creator, or repackage a previously-created product without adding anything new.</string>
+  <string name="Projects_may_not_offer" formatted="false">Projects may not offer items mentioned in our &lt;a href="%{prohibited_items}">prohibited items&lt;/a> list.</string>
+  <string name="Projects_on" formatted="false">Projects on Kickstarter must create something to share with others.</string>
   <string name="Projects_youve_backed" formatted="false">バック（支援）したプロジェクト</string>
   <string name="Projects_youve_launched" formatted="false">ローンチしたプロジェクト</string>
+  <string name="Prototype_misrepresentation" formatted="false">Prototype misrepresentation</string>
   <string name="Public_comment" formatted="false">公開コメント</string>
   <string name="Pursue_daring_ideas" formatted="false">大胆な\n
 アイディアを。</string>
@@ -505,6 +523,9 @@
   <string name="Replay_past_live_streams" formatted="false">過去のライブ配信をリプレイ</string>
   <string name="Replies" formatted="false">返信</string>
   <string name="Reply_to_user_name" formatted="false">%{user_nameに返信</string>
+  <string name="Report_spam" formatted="false">Report spam or abusive behavior</string>
+  <string name="Report_this_project" formatted="false">Report this project</string>
+  <string name="Report_this_project_to" formatted="false">Report this project to Kickstarter</string>
   <string name="Request_my_data" formatted="false">自分のデータをリクエストする</string>
   <string name="Request_my_personal_data" formatted="false">自分の個人データをリクエストする</string>
   <string name="Resend_email" formatted="false">メールを再送</string>
@@ -602,6 +623,7 @@
   <string name="Something_went_wrong_and_we_were_unable_to_remove_your_payment_method_please_try_again" formatted="false">何らかのエラーにより、お支払い方法を削除できませんでした。もう一度お試しください。</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">なにかが間違っています。もう一度お試しください。</string>
   <string name="Something_went_wrong_pull_to_refresh" formatted="false">何らかのエラーが発生しました。リフレッシュするにはプルダウンしてください。</string>
+  <string name="Spam" formatted="false">Spam</string>
   <string name="Start_the_request" formatted="false">データの収集を開始する</string>
   <string name="Starting_soon" formatted="false">もう少しで始まります。</string>
   <string name="Status" formatted="false">ステータス</string>
@@ -618,12 +640,14 @@
   <string name="Support_creative_independence" formatted="false">クリエイティブな独立プロジェクトをサポートしよう</string>
   <string name="Support_creative_spaces_and_businesses_affected_by" formatted="false">新型コロナウイルス危機によって影響を受けた文化スペースやクリエイティブなビジネスをサポートしましょう。</string>
   <string name="Survey" formatted="false">サーベイ</string>
+  <string name="Suspicious_creator_behavior" formatted="false">Suspicious creator behavior or pledging activity</string>
   <string name="Sustainable_distribution" formatted="false">持続可能な流通</string>
   <string name="Sustainable_materials" formatted="false">持続可能な材料</string>
   <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">終了48時間前に知らせるにはハートのアイコンをタップ！</string>
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">ハートのアイコンを押して保存しましょう。終了48時間前に通知が届きます。</string>
   <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">星のマークを押すと、終了48時間前に通知が届きます。</string>
   <string name="Tap_the_star_on_each_project_page_to_save_it" formatted="false">プロジェクトにスターを押して保存しましょう。プロジェクト終了４８時間前にリマインドします。</string>
+  <string name="Tell_us_more_details" formatted="false">Tell us more details</string>
   <string name="Tell_us_why_optional" formatted="false">理由を教えてください (任意)</string>
   <string name="Ten_is_just_the_beginning" formatted="false">「10年」とはいえ、まだ始まったばかり。</string>
   <string name="Thank_you_exclamation" formatted="false">ありがとうございます！</string>
@@ -653,6 +677,7 @@
   <string name="This_person_canceled_their_pledge" formatted="false">このユーザーはプレッジをキャンセルしました。</string>
   <string name="This_pledge_was_dropped_because_of_payment_errors" formatted="false">支払関連のエラーにより、このプレッジは取り消されました。</string>
   <string name="This_post_is_for_backers_only" formatted="false">この投稿はバッカー向けです</string>
+  <string name="This_project_breaks" formatted="false">This project breaks one of Our Rules.</string>
   <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">このプロジェクトはファンディングゴールに到達しなかったため、お支払い方法への請求は行われませんでした。</string>
   <string name="This_project_has_a_set_currency_that_cant_process_this_option" formatted="false">このプロジェクトには、このオプションを処理できない通貨が設定されています。</string>
   <string name="This_project_will_only_be_funded_on_if_at_least_amount_is_pledged_by_date" formatted="false">%{date} までに %{amount} 以上のプレッジが集まれば、このプロジェクトは資金を得ることができます。</string>

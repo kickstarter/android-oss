@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities.compose
 
-import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -36,8 +34,10 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
-import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.hrefUrlFromTranslation
+import com.kickstarter.libs.utils.extensions.parseHtmlTag
 import com.kickstarter.libs.utils.extensions.stringsFromHtmlTranslation
+import com.kickstarter.viewmodels.ReportProjectViewModel
 import type.FlaggingKind
 
 @Preview(widthDp = 300, heightDp = 300)
@@ -81,20 +81,20 @@ fun rulesMap(): Map<Triple<String, String, Boolean>, List<Triple<String, String,
     val projectCat = Triple(
         stringResource(id = R.string.This_project_breaks),
         stringResource(id = R.string.Projects_may_not_offer),
-        true // Has a link om the subtitle
+        true // Do not  has link on the subtitle
     )
     val rulesListProject = listOf(
         Triple(stringResource(id = R.string.Prohibited_items), stringResource(id = R.string.Projects_may_not_offer), FlaggingKind.PROHIBITED_ITEMS.rawValue()),
         Triple(stringResource(id = R.string.Copying_reselling), stringResource(id = R.string.Projects_cannot_plagiarize), FlaggingKind.RESALE.rawValue()),
         Triple(stringResource(id = R.string.Prototype_misrepresentation), stringResource(id = R.string.Creators_must_be_transparent), FlaggingKind.PROTOTYPE_MISREPRESENTATION.rawValue()),
-        Triple(stringResource(id = R.string.Suspicious_creator_behavior), stringResource(id = R.string.Project_creators_and_their), FlaggingKind.POST_FUNDING_SUSPICIOUS_THIRD_PARTY.rawValue()), // TODO check this one on web
-        Triple(stringResource(id = R.string.Not_raising_funds), stringResource(id = R.string.Projects_on), FlaggingKind.NOT_PROJECT.rawValue()) // TODO check on web
+        Triple(stringResource(id = R.string.Suspicious_creator_behavior), stringResource(id = R.string.Project_creators_and_their), FlaggingKind.POST_FUNDING_ISSUES.rawValue()),
+        Triple(stringResource(id = R.string.Not_raising_funds), stringResource(id = R.string.Projects_on), FlaggingKind.NOT_PROJECT_OTHER.rawValue())
     )
 
     val spamCat = Triple(
         stringResource(id = R.string.Report_spam),
         stringResource(id = R.string.Our),
-        true // Has a link om the subtitle
+        true // Do not  has link on the subtitle
     )
     val rulesListSpam = listOf(
         Triple(stringResource(id = R.string.Spam), stringResource(id = R.string.Ex_using), FlaggingKind.SPAM.rawValue()),
@@ -104,11 +104,11 @@ fun rulesMap(): Map<Triple<String, String, Boolean>, List<Triple<String, String,
     val intellectualCat = Triple(
         stringResource(id = R.string.Intellectual_property_violation),
         stringResource(id = R.string.A_project_is_infringing),
-        false // Has a link om the subtitle
+        false // Do not  has link on the subtitle
     )
 
     val rulesListIntellectual = listOf(
-        Triple(stringResource(id = R.string.Intellectual_property_violation), stringResource(id = R.string.Kickstarter_takes_claims), FlaggingKind.NOT_PROJECT.rawValue()), // TODO check on web
+        Triple(stringResource(id = R.string.Intellectual_property_violation), stringResource(id = R.string.Kickstarter_takes_claims), FlaggingKind.NOT_PROJECT.rawValue()),
     )
 
     return mapOf(
@@ -133,13 +133,13 @@ fun Rules(rule: Triple<String, String, String>, navigationAction: (String) -> Un
                 .weight(1F)
         ) {
             Text(
-                text = rule.first,
+                text = rule.first.parseHtmlTag(),
                 style = MaterialTheme.typography.subtitle2.copy(
                     fontWeight = FontWeight.Bold
                 )
             )
             Text(
-                text = rule.second,
+                text = rule.second.parseHtmlTag(),
                 style = MaterialTheme.typography.body2
             )
         }
@@ -172,7 +172,8 @@ fun RulesList(
 fun CategoryRow(
     category: Triple<String, String, Boolean>,
     rulesList: List<Triple<String, String, String>>,
-    navigationAction: (String) -> Unit = {}
+    navigationAction: (String) -> Unit = {},
+    inputs: ReportProjectViewModel.Inputs? = null,
 ) {
     val expanded = remember { mutableStateOf(false) }
 
@@ -200,13 +201,18 @@ fun CategoryRow(
                     )
                 )
                 if (!category.third) { // Subtitles without links
-                    val text = ViewUtils.html(category.second).toString()
+                    val text = category.second.parseHtmlTag()
                     Text(
                         text = text,
                         style = MaterialTheme.typography.body1
                     )
                 } else {
-                    TextWithClickableLink(html = category.second)
+                    TextWithClickableLink(
+                        html = category.second,
+                        onClickCallback = { tag ->
+                            tag?.let { inputs?.openExternalBrowser(tag) }
+                        }
+                    )
                 }
             }
             IconButton(
@@ -246,7 +252,8 @@ fun CategoryRow(
 @Composable
 fun ReportProjectCategoryScreen(
     padding: PaddingValues,
-    navigationAction: (String) -> Unit = {}
+    navigationAction: (String) -> Unit = {},
+    inputs: ReportProjectViewModel.Inputs? = null
 ) {
     Surface(
         modifier = Modifier.animateContentSize()
@@ -261,7 +268,7 @@ fun ReportProjectCategoryScreen(
         ) {
             items(items = categories) { key ->
                 rulesMap()[key]?.let { value ->
-                    CategoryRow(category = key, rulesList = value, navigationAction)
+                    CategoryRow(category = key, rulesList = value, navigationAction, inputs)
                 }
             }
         }
@@ -269,15 +276,19 @@ fun ReportProjectCategoryScreen(
 }
 
 @Composable
-fun TextWithClickableLink(html: String) {
+fun TextWithClickableLink(
+    html: String,
+    onClickCallback: (String?) -> Unit = {}
+) {
 
     val stringList = html.stringsFromHtmlTranslation()
+    val annotation = html.hrefUrlFromTranslation()
     if (stringList.size == 3) {
         val annotatedText = buildAnnotatedString {
             append(stringList.first())
             pushStringAnnotation(
-                tag = stringList[1],
-                annotation = ""
+                tag = annotation,
+                annotation = stringList[1]
             )
             withStyle(
                 style = SpanStyle(
@@ -292,24 +303,17 @@ fun TextWithClickableLink(html: String) {
             pop()
         }
 
-        val context = LocalContext.current
         ClickableText(
             text = annotatedText,
             style = MaterialTheme.typography.body1,
             onClick = {
                 annotatedText.getStringAnnotations(
-                    tag = stringList[1], start = it,
+                    tag = annotation, start = it,
                     end = it
                 )
                     .firstOrNull()?.let { annotation ->
-                        Toast
-                            .makeText(
-                                context,
-                                "Will open a formulary screen on next Story",
-                                Toast.LENGTH_SHORT
-                            )
-                            .show()
-                    }
+                        onClickCallback(annotation.tag)
+                    } ?: onClickCallback(null)
             }
         )
     }

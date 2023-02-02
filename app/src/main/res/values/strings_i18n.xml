@@ -3,10 +3,12 @@
 <resources>
   <string name="A_little_extra_to_help" formatted="false">A little extra to help bring this project to life.</string>
   <string name="A_monthly_pep_talk_to_boost_your_creative_practice_for_creators_of_all_types" formatted="false">A monthly pep talk to boost your creative practice, for creators of all types.</string>
+  <string name="A_project_is_infringing" formatted="false">A project is infringing on your copyright or trademark.</string>
   <string name="A_successfully_funded_project_will_collect_your_pledge_in_its_native_currency" formatted="false">A successfully funded project will collect your pledge in its native currency. The amounts shown are approximate.</string>
   <string name="A_weekly_mix_of_handpicked_projects" formatted="false">A weekly mix of handpicked projects, plus occasional Kickstarter news</string>
   <string name="A_weekly_roundup_of_the_best_and_brightest" formatted="false">A weekly roundup of the best and brightest projects on Kickstarter, handpicked by our team.</string>
   <string name="About_reward_amount" formatted="false">About %{reward_amount}</string>
+  <string name="Abuse" formatted="false">Abuse</string>
   <string name="Accessibility_statement" formatted="false">Accessibility Statement</string>
   <string name="Account" formatted="false">Account</string>
   <string name="Add" formatted="false">Add</string>
@@ -138,6 +140,7 @@ Please tap to retry.</string>
   <string name="Continue_with_quantity_count_add_ons_two" formatted="false">Continue with %{quantity_count} add-ons</string>
   <string name="Continue_with_quantity_count_add_ons_zero" formatted="false">Continue with %{quantity_count} add-ons</string>
   <string name="Continue_with_this_reward" formatted="false">Continue with this reward?</string>
+  <string name="Copying_reselling" formatted="false">Copying, reselling or plagiarism</string>
   <string name="Couldnt_add_attachment" formatted="false">Couldn\'t add attachment</string>
   <string name="Couldnt_load_more_comments_Tap_to_retry" formatted="false">Couldn\'t load more comments.\n
 Tap to retry</string>
@@ -155,6 +158,7 @@ Tap to retry</string>
   <string name="Creator_name_was_streaming_live_on_Kickstarter" formatted="false">%{creator_name} was streaming live on Kickstarter</string>
   <string name="Creator_name_will_be_streaming_live_on_Kickstarter_in_duration" formatted="false">%{creator_name} will be streaming live on Kickstarter %{in_duration}</string>
   <string name="Creator_tips" formatted="false">Creator tips</string>
+  <string name="Creators_must_be_transparent" formatted="false">Creators must be transparent and honest in documenting their prototype. Photorealistic renderings are not permitted.</string>
   <string name="Credit_card_expiration" formatted="false">Expires %{expiration_date}</string>
   <string name="Currency" formatted="false">Currency</string>
   <string name="Currency_AUD" formatted="false">$ Australian Dollar (AUD)</string>
@@ -209,6 +213,8 @@ Tap to retry</string>
   <string name="Estimated_delivery" formatted="false">Estimated delivery</string>
   <string name="Estimated_delivery_colon" formatted="false">Estimated delivery:</string>
   <string name="Estimated_delivery_of" formatted="false">Estimated delivery of</string>
+  <string name="Ex_posting" formatted="false">Ex: Posting obscene or hateful comments, doxxing or posting personal information in comments or updates.</string>
+  <string name="Ex_using" formatted="false">Ex: Using email lists from outside sources, promoting a project where it shouldn\'t be promoted, link bombing.</string>
   <string name="Expands_subcategories" formatted="false">Expands subcategories.</string>
   <string name="Expiration" formatted="false">Expiration</string>
   <string name="Expired_date_at_time" formatted="false">Expired %{date} at %{time}</string>
@@ -309,8 +315,10 @@ Tap to retry</string>
   <string name="Increase_pledge" formatted="false">Increase pledge</string>
   <string name="Individual_Emails" formatted="false">Individual emails</string>
   <string name="Info" formatted="false">Info</string>
+  <string name="Intellectual_property_violation" formatted="false">Intellectual property violation</string>
   <string name="Introduce_yourself" formatted="false">Introduce yourself</string>
   <string name="Introducing_Lights_On" formatted="false">Introducing Lights On</string>
+  <string name="It_looks" formatted="false">It looks like you\'ve already reported this project to us. Our Trust and Safety team will screen your report against &lt;a href="%{our_rules}">Our Rules&lt;/a> and &lt;a href="%{community_guidelines}">Community Guidelines&lt;/a>. Thanks for your feedback.</string>
   <string name="It_may_not_offer_some_or_all_of_your_add_ons" formatted="false">It may not offer some or all of your add-ons.</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">It may take up to 24 hours to collect your data. When it’s ready, we’ll send instructions to download your data to the email associated with this account. If you don’t hear from us, come back here to try again.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">It\'s a way to bring creative projects to life.</string>
@@ -335,6 +343,7 @@ with friends.</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" formatted="false">Kickstarter is not a store. It\'s a way to bring creative projects to life.</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Kickstarter is not a store. It\'s a way to bring creative projects to life.&lt;br/>&lt;a href="%{trust_link}">Learn more about accountability&lt;/a></string>
   <string name="Kickstarter_on_Film" formatted="false">Kickstarter on Film</string>
+  <string name="Kickstarter_takes_claims" formatted="false">Kickstarter takes claims of intellectual property infringement seriously. For more information and instructions on how to report infringement, please visit our Copyright Policy and our Trademark Policy. Only claims filed by the copyright or trademark holder can be processed.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Know when creators and backers message you by enabling notifications.</string>
   <string name="Learn_about_accountability_on_Kickstarter" formatted="false">Learn about accountability on Kickstarter</string>
   <string name="Learn_more_about_accountability" formatted="false">Learn more about accountability</string>
@@ -407,6 +416,7 @@ from friends yet.</string>
   <string name="Not_delivered" formatted="false">Not delivered</string>
   <string name="Not_followed" formatted="false">Not followed</string>
   <string name="Not_now" formatted="false">Not Now</string>
+  <string name="Not_raising_funds" formatted="false">Not raising funds for a creative project</string>
   <string name="Notification_email_notification_off" formatted="false">%{notification}, email notification, off</string>
   <string name="Notification_email_notification_on" formatted="false">%{notification}, email notification, on</string>
   <string name="Notification_push_notification_off" formatted="false">%{notification}, push notification, off</string>
@@ -430,6 +440,7 @@ from friends yet.</string>
   <string name="Or_select_a_different_reward_below_colon" formatted="false">Or select a different reward below:</string>
   <string name="Other_payment_methods" formatted="false">Other payment methods</string>
   <string name="Other_projects_you_might_like" formatted="false">Other projects you might like.</string>
+  <string name="Our" formatted="false">Our &lt;a href="%{community_guidelines}">Community Guidelines&lt;/a> prohibit spam and abusive behavior by both creators and backers.</string>
   <string name="Overview" formatted="false">Overview</string>
   <string name="Password_min_length_message" formatted="false">Your password must be at least 6 characters long.</string>
   <string name="Password_visibility" formatted="false">Password visibility</string>
@@ -469,17 +480,24 @@ from friends yet.</string>
   <string name="Private_profile_more_info" formatted="false">Private profile more info</string>
   <string name="Private_profile_more_info_content" formatted="false">Kickstarter profiles are private by default. To make your profile public and visible to the world, turn this off.</string>
   <string name="Processing" formatted="false">Processing...</string>
+  <string name="Prohibited_items" formatted="false">Prohibited items</string>
   <string name="Project_Cancelled" formatted="false">Project Cancelled.</string>
   <string name="Project_Suspended" formatted="false">Project Suspended.</string>
   <string name="Project_activity" formatted="false">Project activity</string>
   <string name="Project_cancelled" formatted="false">Project cancelled</string>
+  <string name="Project_creators_and_their" formatted="false">Project creators and their collaborators cannot misrepresent themselves, the involvement of third parties, or their project’s level of support.</string>
   <string name="Project_goal_and_pledge" formatted="false">Project goal and pledge amounts will be shown in approximate conversions. A successfully funded project will collect your pledge in its native currency.</string>
   <string name="Project_reminders" formatted="false">Project reminders</string>
   <string name="Project_saved" formatted="false">Project saved.</string>
   <string name="Project_updates" formatted="false">Project updates</string>
+  <string name="Project_url" formatted="false">Project URL</string>
   <string name="Projects_We_Love" formatted="false">Projects We Love</string>
+  <string name="Projects_cannot_plagiarize" formatted="false">Projects cannot plagiarize, offer items that aren\'t produced by the creator, or repackage a previously-created product without adding anything new.</string>
+  <string name="Projects_may_not_offer" formatted="false">Projects may not offer items mentioned in our &lt;a href="%{prohibited_items}">prohibited items&lt;/a> list.</string>
+  <string name="Projects_on" formatted="false">Projects on Kickstarter must create something to share with others.</string>
   <string name="Projects_youve_backed" formatted="false">Projects you\'ve backed</string>
   <string name="Projects_youve_launched" formatted="false">Projects you\'ve launched</string>
+  <string name="Prototype_misrepresentation" formatted="false">Prototype misrepresentation</string>
   <string name="Public_comment" formatted="false">Public comment</string>
   <string name="Pursue_daring_ideas" formatted="false">Pursue\n
 daring ideas.</string>
@@ -509,6 +527,9 @@ daring ideas.</string>
   <string name="Replay_past_live_streams" formatted="false">Replay past live streams</string>
   <string name="Replies" formatted="false">Replies</string>
   <string name="Reply_to_user_name" formatted="false">Reply to %{user_name}…</string>
+  <string name="Report_spam" formatted="false">Report spam or abusive behavior</string>
+  <string name="Report_this_project" formatted="false">Report this project</string>
+  <string name="Report_this_project_to" formatted="false">Report this project to Kickstarter</string>
   <string name="Request_my_data" formatted="false">Request my data</string>
   <string name="Request_my_personal_data" formatted="false">Request my personal data</string>
   <string name="Resend_email" formatted="false">Resend email</string>
@@ -607,6 +628,7 @@ catch your eye?</string>
   <string name="Something_went_wrong_and_we_were_unable_to_remove_your_payment_method_please_try_again" formatted="false">Something went wrong and we were unable to remove your payment method, please try again.</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Something went wrong, please try again.</string>
   <string name="Something_went_wrong_pull_to_refresh" formatted="false">Something went wrong—pull to refresh.</string>
+  <string name="Spam" formatted="false">Spam</string>
   <string name="Start_the_request" formatted="false">Start the request</string>
   <string name="Starting_soon" formatted="false">Starting soon</string>
   <string name="Status" formatted="false">Status</string>
@@ -623,12 +645,14 @@ catch your eye?</string>
   <string name="Support_creative_independence" formatted="false">Support creative independence</string>
   <string name="Support_creative_spaces_and_businesses_affected_by" formatted="false">Support creative spaces and businesses affected by COVID-19.</string>
   <string name="Survey" formatted="false">Survey</string>
+  <string name="Suspicious_creator_behavior" formatted="false">Suspicious creator behavior or pledging activity</string>
   <string name="Sustainable_distribution" formatted="false">Sustainable distribution</string>
   <string name="Sustainable_materials" formatted="false">Sustainable materials</string>
   <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">Tap the heart icon on a project to get notified 48 hours before it ends.</string>
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Tap the heart on each project page to save it. We’ll remind you 48 hours before the project ends.</string>
   <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">Tap the star icon on a project to get notified 48 hours before it ends.</string>
   <string name="Tap_the_star_on_each_project_page_to_save_it" formatted="false">Tap the star on each project page to save it. We’ll remind you 48 hours before the project ends.</string>
+  <string name="Tell_us_more_details" formatted="false">Tell us more details</string>
   <string name="Tell_us_why_optional" formatted="false">Tell us why (optional)</string>
   <string name="Ten_is_just_the_beginning" formatted="false">Ten is just the beginning.</string>
   <string name="Thank_you_exclamation" formatted="false">Thank you!</string>
@@ -658,6 +682,7 @@ catch your eye?</string>
   <string name="This_person_canceled_their_pledge" formatted="false">This person has canceled their pledge.</string>
   <string name="This_pledge_was_dropped_because_of_payment_errors" formatted="false">This pledge was dropped because of payment errors.</string>
   <string name="This_post_is_for_backers_only" formatted="false">This post is for backers only</string>
+  <string name="This_project_breaks" formatted="false">This project breaks one of Our Rules.</string>
   <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">This project didn’t reach its funding goal, so your payment method was never charged.</string>
   <string name="This_project_has_a_set_currency_that_cant_process_this_option" formatted="false">This project has a set currency that can\'t process this option.</string>
   <string name="This_project_will_only_be_funded_on_if_at_least_amount_is_pledged_by_date" formatted="false">This project will only be funded on if at least %{amount} is pledged by %{date}.</string>

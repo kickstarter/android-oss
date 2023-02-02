@@ -15,6 +15,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
+import com.kickstarter.R
 import com.kickstarter.libs.utils.ViewUtils
 import org.jsoup.Jsoup
 import java.util.Locale
@@ -115,4 +116,29 @@ fun TextView.getUpdatedText() {
             // TODO Auto-generated method stub
         }
     })
+}
+
+fun TextView.setClickableHtml(callback: (String) -> Unit = {}) {
+    val spannableBuilder = SpannableStringBuilder(ViewUtils.html(text.toString()))
+    // https://stackoverflow.com/a/19989677
+    val urlSpans = spannableBuilder.getSpans(0, text.length, URLSpan::class.java)
+    for (urlSpan in urlSpans) {
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                callback(urlSpan.url)
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                ds.color = ContextCompat.getColor(context, R.color.accent)
+            }
+        }
+        val spanStart = spannableBuilder.getSpanStart(urlSpan)
+        val spanEnd = spannableBuilder.getSpanEnd(urlSpan)
+        val spanFlags = spannableBuilder.getSpanFlags(urlSpan)
+        spannableBuilder.setSpan(clickableSpan, spanStart, spanEnd, spanFlags)
+        spannableBuilder.removeSpan(urlSpan)
+    }
+
+    text = spannableBuilder
+    movementMethod = LinkMovementMethod.getInstance()
 }

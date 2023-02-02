@@ -25,6 +25,10 @@ import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.COMMUNITY_GUIDELINES
+import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.COMMUNITY_GUIDELINES_TAG
+import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.OUR_RULES
+import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.OUR_RULES_TAG
 import com.kickstarter.viewmodels.projectpage.ProjectOverviewViewModel
 import org.joda.time.DateTime
 import org.joda.time.DateTimeUtils
@@ -88,6 +92,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private val startLoginView = TestSubscriber<Void>()
     private val shouldShowReportProject = TestSubscriber<Boolean>()
     private val shouldShowProjectFlagged = TestSubscriber<Boolean>()
+    private val urlToOpen = TestSubscriber<String>()
 
     private fun setUpEnvironment(environment: Environment, projectData: ProjectData) {
         vm = ProjectOverviewViewModel.ViewModel(environment)
@@ -150,6 +155,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         vm.outputs.startLoginView().subscribe(startLoginView)
         vm.outputs.startReportProjectView().subscribe(startReportProjectView)
         vm.outputs.shouldShowProjectFlagged().subscribe(shouldShowProjectFlagged)
+        vm.outputs.openExternallyWithUrl().subscribe(urlToOpen)
         vm.inputs.configureWith(projectData)
     }
 
@@ -703,6 +709,23 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         vm.inputs.refreshFlaggedState(FlaggingKind.NOT_PROJECT.rawValue())
         this.shouldShowProjectFlagged.assertValues(true, true)
         this.shouldShowReportProject.assertValues(false, false)
+    }
+
+    @Test
+    fun testProjectReportedClickedLink() {
+        val env = environmentForFeatureFlag(true)
+        val project = ProjectFactory.project().toBuilder()
+            .isFlagged(true)
+            .build()
+        setUpEnvironment(env, project(project))
+
+        vm.inputs.linkClicked(OUR_RULES_TAG)
+        vm.inputs.linkClicked(COMMUNITY_GUIDELINES_TAG)
+
+        this.urlToOpen.assertValues(
+            "${environment().webEndpoint()}$OUR_RULES",
+            "${environment().webEndpoint()}$COMMUNITY_GUIDELINES"
+        )
     }
 
     private fun environmentForFeatureFlag(enabled: Boolean): Environment {

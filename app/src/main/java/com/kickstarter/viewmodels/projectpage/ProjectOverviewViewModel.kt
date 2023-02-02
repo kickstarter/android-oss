@@ -19,6 +19,10 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.projectpage.ProjectOverviewFragment
+import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.COMMUNITY_GUIDELINES
+import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.COMMUNITY_GUIDELINES_TAG
+import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.OUR_RULES
+import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.OUR_RULES_TAG
 import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -52,6 +56,9 @@ interface ProjectOverviewViewModel {
 
         /** Called when the report project flow is completed with flaggingKind  */
         fun refreshFlaggedState(flaggingKind: String)
+
+        /** Called when the user press some of the links on the flagged project text  */
+        fun linkClicked(urlTag: String)
     }
 
     interface Outputs {
@@ -187,6 +194,7 @@ interface ProjectOverviewViewModel {
         fun startLoginView(): Observable<Void>
         fun shouldShowReportProject(): Observable<Boolean>
         fun shouldShowProjectFlagged(): Observable<Boolean>
+        fun openExternallyWithUrl(): Observable<String>
     }
 
     class ViewModel(environment: Environment) : FragmentViewModel<ProjectOverviewFragment?>(environment), Inputs, Outputs {
@@ -207,6 +215,7 @@ interface ProjectOverviewViewModel {
         private val creatorDashboardClicked = PublishSubject.create<Void>()
         private val reportProjectButtonClicked = PublishSubject.create<Void>()
         private val refreshFlagged = PublishSubject.create<String>()
+        private val linkTagClicked = PublishSubject.create<String>()
 
         // Outputs
         private val avatarPhotoUrl: Observable<String>
@@ -259,6 +268,7 @@ interface ProjectOverviewViewModel {
         private val startLogin = PublishSubject.create<Void>()
         private val shouldShowReportProject: Observable<Boolean>
         private val shouldShowProjectFlagged: Observable<Boolean>
+        private val openExternally = PublishSubject.create<String>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -281,6 +291,8 @@ interface ProjectOverviewViewModel {
         override fun reportProjectButtonClicked() = this.reportProjectButtonClicked.onNext(null)
 
         override fun refreshFlaggedState(flaggingKind: String) = this.refreshFlagged.onNext(flaggingKind)
+
+        override fun linkClicked(urlTag: String) = this.linkTagClicked.onNext(urlTag)
 
         // - Outputs
         override fun avatarPhotoUrl(): Observable<String> {
@@ -481,6 +493,10 @@ interface ProjectOverviewViewModel {
 
         override fun shouldShowProjectFlagged(): Observable<Boolean> {
             return this.shouldShowProjectFlagged
+        }
+
+        override fun openExternallyWithUrl(): Observable<String> {
+            return this.openExternally
         }
 
         init {
@@ -791,6 +807,18 @@ interface ProjectOverviewViewModel {
             shouldShowReportProject = shouldShowProjectFlagged
                 .withLatestFrom(Observable.just(this.optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_UGC) ?: false)) { isFlagged, isEnabled ->
                     return@withLatestFrom isEnabled && !isFlagged
+                }
+
+            linkTagClicked
+                .map {
+                    if (it.contains(OUR_RULES_TAG)) "${environment.webEndpoint()}$OUR_RULES"
+                    else if (it.contains(COMMUNITY_GUIDELINES_TAG)) "${environment.webEndpoint()}$COMMUNITY_GUIDELINES"
+                    else ""
+                }
+                .filter { it.isNotEmpty() }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    openExternally.onNext(it)
                 }
 
             projectData

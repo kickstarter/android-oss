@@ -147,3 +147,20 @@ fun String.stringsFromHtmlTranslation(): List<String> {
     ret.removeAt(0)
     return ret.toList()
 }
+
+/**
+ * Takes a String resource with HTMl <a> tag, and takes out the href parameter
+ */
+fun String.hrefUrlFromTranslation(): String {
+    val matchResults = "<a href=%(.*?)>".toRegex().find(this)
+
+    val list = matchResults?.groups?.map {
+        it?.value ?: ""
+    } ?: emptyList()
+
+    val ret = list.toMutableList()
+
+    // The first group is the entire string, take it out
+    ret.removeAt(0)
+    return ret.last()
+}

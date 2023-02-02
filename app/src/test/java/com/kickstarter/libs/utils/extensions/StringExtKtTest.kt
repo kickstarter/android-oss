@@ -206,6 +206,21 @@ class StringExtKtTest : KSRobolectricTestCase() {
         assertEquals(list3.size, 3)
     }
 
+    @Test
+    fun testRegexToGetHrefParameter() {
+        val html = RuntimeEnvironment.getApplication().getString(R.string.Projects_may_not_offer)
+        val href = html.hrefUrlFromTranslation()
+        assertEquals(href, "{prohibited_items}")
+
+        val html2 = RuntimeEnvironment.getApplication().getString(R.string.Our)
+        val href2 = html2.hrefUrlFromTranslation()
+        assertEquals(href2, "{community_guidelines}")
+
+        val html3 = RuntimeEnvironment.getApplication().getString(R.string.This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines)
+        val href3 = html3.hrefUrlFromTranslation()
+        assertEquals(href3, "{community_guidelines}")
+    }
+
     companion object {
         private const val VALID_EMAIL = "hello@kickstarter.com"
         private const val VALID_GIF_URL = "https://ksr-qa-ugc.imgix.net/assets/035/272/960/eae68383730822ffe949f3825600a80a_original.gif?gif-q=50&q=92&s=d0420b019010dc7c21de0454a47902e0"

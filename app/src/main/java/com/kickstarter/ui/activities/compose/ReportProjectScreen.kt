@@ -34,8 +34,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
-import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.hrefUrlFromTranslation
+import com.kickstarter.libs.utils.extensions.parseHtmlTag
 import com.kickstarter.libs.utils.extensions.stringsFromHtmlTranslation
 import com.kickstarter.viewmodels.ReportProjectViewModel
 import type.FlaggingKind
@@ -133,13 +133,13 @@ fun Rules(rule: Triple<String, String, String>, navigationAction: (String) -> Un
                 .weight(1F)
         ) {
             Text(
-                text = rule.first,
+                text = rule.first.parseHtmlTag(),
                 style = MaterialTheme.typography.subtitle2.copy(
                     fontWeight = FontWeight.Bold
                 )
             )
             Text(
-                text = rule.second,
+                text = rule.second.parseHtmlTag(),
                 style = MaterialTheme.typography.body2
             )
         }
@@ -201,7 +201,7 @@ fun CategoryRow(
                     )
                 )
                 if (!category.third) { // Subtitles without links
-                    val text = ViewUtils.html(category.second).toString()
+                    val text = category.second.parseHtmlTag()
                     Text(
                         text = text,
                         style = MaterialTheme.typography.body1

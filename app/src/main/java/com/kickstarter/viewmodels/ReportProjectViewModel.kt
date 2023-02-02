@@ -179,6 +179,8 @@ interface ReportProjectViewModel {
         const val PROHIBITED_ITEMS_TAG = "{prohibited_items}"
         const val COMMUNITY_GUIDELINES = "/help/community"
         const val COMMUNITY_GUIDELINES_TAG = "{community_guidelines}"
+        const val OUR_RULES = "/rules"
+        const val OUR_RULES_TAG = "{our_rules}"
     }
 
     class Factory(private val environment: Environment, private val arguments: Bundle?) : ViewModelProvider.Factory {

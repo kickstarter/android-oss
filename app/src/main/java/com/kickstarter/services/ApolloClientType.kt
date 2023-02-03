@@ -28,6 +28,7 @@ import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
 import rx.Observable
 import type.CurrencyCode
+import type.TriggerCapiEventInput
 
 interface ApolloClientType {
     fun cancelBacking(backing: Backing, note: String): Observable<Any>
@@ -100,6 +101,8 @@ interface ApolloClientType {
     fun updateUserPassword(currentPassword: String = "", newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data>
 
     fun userPrivacy(): Observable<UserPrivacyQuery.Data>
+    
+    fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): Observable<TriggerCapiEventMutation.Data>
 }
 
 private const val PAGE_SIZE = 25

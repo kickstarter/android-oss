@@ -45,6 +45,7 @@ import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
 import rx.Observable
 import type.CurrencyCode
+import type.TriggerCapiEventInput
 import java.util.Collections
 
 open class MockApolloClientV2 : ApolloClientTypeV2 {
@@ -317,9 +318,27 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(
             UserPrivacyQuery.Data(
                 UserPrivacyQuery.Me(
-                    "", "Some Name",
-                    "some@email.com", true, true, true, true, "USD"
+                    "",
+                    "Some Name",
+                    "some@email.com",
+                    true,
+                    true,
+                    true,
+                    true,
+                    "USD"
                 )
+            )
+        )
+    }
+
+    override fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): Observable<TriggerCapiEventMutation.Data> {
+        return Observable.just(
+            TriggerCapiEventMutation.Data(
+                TriggerCapiEventMutation
+                    .TriggerCAPIEvent(
+                        "",
+                        true
+                    )
             )
         )
     }

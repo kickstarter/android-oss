@@ -419,6 +419,10 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             this.viewModel.inputs.updatesButtonClicked()
         }
 
+        binding.projectCreatorInfoLayout.reportProject.setOnClickListener {
+            this.viewModel.inputs.reportProjectButtonClicked()
+        }
+
         binding.projectCreatorInfoLayout.textReported.setClickableHtml { url ->
             this.viewModel.inputs.linkClicked(url)
         }

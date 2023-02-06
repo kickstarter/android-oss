@@ -97,8 +97,8 @@ fun rulesMap(): Map<Triple<String, String, Boolean>, List<Triple<String, String,
         true // Do not  has link on the subtitle
     )
     val rulesListSpam = listOf(
-        Triple(stringResource(id = R.string.Spam), stringResource(id = R.string.Ex_using), FlaggingKind.SPAM.rawValue()),
-        Triple(stringResource(id = R.string.Abuse), stringResource(id = R.string.Ex_posting), FlaggingKind.ABUSE.rawValue()),
+        Triple(stringResource(id = R.string.Spam), stringResource(id = R.string.Ex_using), FlaggingKind.GUIDELINES_SPAM.rawValue()),
+        Triple(stringResource(id = R.string.Abuse), stringResource(id = R.string.Ex_posting), FlaggingKind.GUIDELINES_ABUSE.rawValue()),
     )
 
     val intellectualCat = Triple(

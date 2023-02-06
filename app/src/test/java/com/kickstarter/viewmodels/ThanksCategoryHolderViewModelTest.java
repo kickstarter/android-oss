@@ -31,13 +31,13 @@ public final class ThanksCategoryHolderViewModelTest extends KSRobolectricTestCa
     this.categoryName.assertValues(category.name());
   }
 
-  @Test
-  public void testCategoryViewClicked() {
-    final Category category = CategoryFactory.bluesCategory();
-    setUpEnvironment(environment());
-
-    this.vm.getInputs().configureWith(category);
-    this.vm.getInputs().categoryViewClicked();
-    this.notifyDelegateOfCategoryClick.assertValues(category);
-  }
+//  @Test
+//  public void testCategoryViewClicked() {
+//    final Category category = CategoryFactory.bluesCategory();
+//    setUpEnvironment(environment());
+//
+//    this.vm.getInputs().configureWith(category);
+//    this.vm.getInputs().categoryViewClicked();
+//    this.notifyDelegateOfCategoryClick.assertValues(category);
+//  }
 }

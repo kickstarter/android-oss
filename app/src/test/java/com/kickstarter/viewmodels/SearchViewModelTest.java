@@ -125,15 +125,15 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     this.searchProjectsPresent.assertValues(false, true);
   }
 
-//  @Test
-//  public void testFeaturedSearchRefTags() {
-//    final TestScheduler scheduler = new TestScheduler();
-//
-//    final List<Project> projects = Arrays.asList(
-//      ProjectFactory.allTheWayProject(),
-//      ProjectFactory.almostCompletedProject(),
-//      ProjectFactory.backedProject()
-//    );
+  /*@Test
+  public void testFeaturedSearchRefTags() {
+    final TestScheduler scheduler = new TestScheduler();
+
+    final List<Project> projects = Arrays.asList(
+      ProjectFactory.allTheWayProject(),
+      ProjectFactory.almostCompletedProject(),
+      ProjectFactory.backedProject()
+    );
 
     final MockApiClient apiClient = new MockApiClient() {
       @Override public @NonNull
@@ -155,7 +155,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     this.goToRefTag.assertValues(RefTag.searchFeatured());
     this.goToProject.assertValues(projects.get(0));
-  }
+  }*/
 
   @Test
   public void testSearchRefTags() {
@@ -221,15 +221,15 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     this.goToProject.assertValues(projects.get(0));
   }
 
-//  @Test
-//  public void testPopularRefTags() {
-//    final TestScheduler scheduler = new TestScheduler();
-//
-//    final List<Project> projects = Arrays.asList(
-//      ProjectFactory.allTheWayProject(),
-//      ProjectFactory.almostCompletedProject(),
-//      ProjectFactory.backedProject()
-//    );
+  /*@Test
+  public void testPopularRefTags() {
+    final TestScheduler scheduler = new TestScheduler();
+
+    final List<Project> projects = Arrays.asList(
+      ProjectFactory.allTheWayProject(),
+      ProjectFactory.almostCompletedProject(),
+      ProjectFactory.backedProject()
+    );
 
     final MockApiClient apiClient = new MockApiClient() {
       @Override public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
@@ -251,7 +251,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     this.goToRefTag.assertValues(RefTag.searchPopular());
     this.goToProject.assertValues(projects.get(2));
-  }
+  }*/
 
   @Test
   public void testProjectPage_whenFeatureFlagOn_shouldEmitProjectPage() {

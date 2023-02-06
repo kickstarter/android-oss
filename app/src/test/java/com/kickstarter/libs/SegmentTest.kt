@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.models.OptimizelyEnvironment
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.ContextPropertyKeyName
 import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_BODY
 import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_CHARACTER_COUNT
@@ -23,7 +24,6 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.TWO_FACTOR_AUTH
-import com.kickstarter.libs.utils.EventContextValues.ContextPageName.UPDATE_PLEDGE
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.DASHBOARD
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_FILTER
@@ -63,6 +63,7 @@ import com.kickstarter.models.Urls
 import com.kickstarter.models.User
 import com.kickstarter.models.Web
 import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import org.joda.time.DateTime
@@ -74,9 +75,9 @@ import rx.subjects.BehaviorSubject
 class SegmentTest : KSRobolectricTestCase() {
 
     private val propertiesTest = BehaviorSubject.create<Map<String, Any>>()
-
     lateinit var build: Build
     lateinit var context: Context
+
     private val mockShared: SharedPreferences = MockSharedPreferences()
 
     override fun setUp() {
@@ -93,11 +94,74 @@ class SegmentTest : KSRobolectricTestCase() {
         opt: ExperimentsClientType,
         mockSharedPref: SharedPreferences
     ) : SegmentTrackingClient(build, context, currentConfig, currentUser, opt, mockSharedPref) {
+
         override fun initialize() {
             this.isInitialized = true
         }
-
         override fun isEnabled() = this.isInitialized
+    }
+
+    @Test
+    fun testSegmentClientIsEnabled_whenFeatureNotEnabled_returnIsEnabledTrue() {
+        val user = UserFactory.user()
+        val mockOptimizely = object : MockExperimentsClientType() {
+            override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                return false
+            }
+        }
+
+        val client = SegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockOptimizely, mockShared)
+        client.initialize()
+        assertFalse(mockShared.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE))
+        assertTrue(client.isEnabled())
+    }
+
+    @Test
+    fun testSegmentClientIsEnabled_whenFeatureEnabledAndConsentNotPresent_returnIsEnabledFalse() {
+        val user = UserFactory.user()
+        val mockOptimizely = object : MockExperimentsClientType() {
+            override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                return true
+            }
+        }
+
+        val client = SegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockOptimizely, mockShared)
+        client.initialize()
+        assertFalse(mockShared.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE))
+        assertFalse(client.isEnabled())
+    }
+
+    @Test
+    fun testSegmentClientIsEnabled_whenFeatureEnabledAndConsentPrefTrue_returnIsEnabledTrue() {
+        val user = UserFactory.user()
+        val mockOptimizely = object : MockExperimentsClientType() {
+            override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                return true
+            }
+        }
+
+        mockShared.edit().putBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, true)
+        val client = SegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockOptimizely, mockShared)
+        client.initialize()
+        assertTrue(mockShared.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE))
+        assertTrue(client.isEnabled())
+    }
+
+    @Test
+    fun testSegmentClientIsEnabled_whenFeatureEnabledAndConsentPrefFalse_returnIsEnabledFalse() {
+        val user = UserFactory.user()
+        val mockOptimizely = object : MockExperimentsClientType() {
+            override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                return true
+            }
+        }
+
+        mockShared.edit().putBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)
+
+        val client = SegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockOptimizely, mockShared)
+        client.initialize()
+        assertTrue(mockShared.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE))
+        assertFalse(client.isEnabled())
     }
 
     @Test

@@ -1,6 +1,7 @@
 package com.kickstarter.libs
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -10,11 +11,13 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.BuildConfig
 import com.kickstarter.R
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.qualifiers.ApplicationContext
 import com.kickstarter.libs.utils.WebUtils
 import com.kickstarter.libs.utils.extensions.currentVariants
 import com.kickstarter.libs.utils.extensions.enabledFeatureFlags
 import com.kickstarter.models.User
+import com.kickstarter.ui.SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE
 import org.json.JSONArray
 import org.json.JSONException
 import timber.log.Timber
@@ -25,7 +28,8 @@ abstract class TrackingClient(
     @set:Inject var currentUser: CurrentUserType,
     @set:Inject var build: Build,
     @set:Inject var currentConfig: CurrentConfigType,
-    @set:Inject var optimizely: ExperimentsClientType
+    @set:Inject var optimizely: ExperimentsClientType,
+    @set:Inject var sharedPreferences: SharedPreferences
 ) : TrackingClientType() {
 
     override val isGooglePlayServicesAvailable: Boolean
@@ -55,7 +59,11 @@ abstract class TrackingClient(
         }
     }
 
-    override fun isEnabled(): Boolean = true
+    override fun isEnabled(): Boolean {
+        return if (optimizely.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_CONSENT_MANAGEMENT)) {
+            sharedPreferences.getBoolean(CONSENT_MANAGEMENT_PREFERENCE, false)
+        } else true
+    }
 
     override fun reset() {
         if (isEnabled()) this.loggedInUser = null

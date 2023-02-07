@@ -145,6 +145,7 @@ fun Rules(rule: Triple<String, String, String>, navigationAction: (String) -> Un
         }
         IconButton(
             onClick = {
+                navigationAction(rule.third)
             }
         ) {
             Icon(

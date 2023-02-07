@@ -5,6 +5,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.models.OptimizelyExperiment
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ExperimentData
@@ -793,19 +794,19 @@ interface ProjectOverviewViewModel {
             shouldShowProjectFlagged = project
                 .map { it.isFlagged() ?: false }
                 .compose(Transformers.combineLatestPair(refreshFlagged.startWith("")))
-                .map { pair ->
+                .withLatestFrom(Observable.just(this.optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_UGC) ?: false)) { pair, isEnabled ->
                     val isFlagged = pair.first
                     val shouldRefresh = pair.second
 
                     if (shouldRefresh.isNotEmpty()) {
-                        return@map true
+                        return@withLatestFrom isEnabled && true
                     } else
-                        return@map isFlagged
+                        return@withLatestFrom isEnabled && isFlagged
                 }
 
             shouldShowReportProject = shouldShowProjectFlagged
-                .map { isFlagged ->
-                    return@map !isFlagged
+                .withLatestFrom(Observable.just(this.optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_UGC) ?: false)) { isFlagged, isEnabled ->
+                    return@withLatestFrom isEnabled && !isFlagged
                 }
 
             linkTagClicked

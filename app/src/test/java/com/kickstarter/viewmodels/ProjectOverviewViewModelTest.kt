@@ -7,7 +7,6 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.models.OptimizelyExperiment
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ProgressBarUtils
@@ -651,20 +650,11 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShouldShowReportProject_FFOn() {
-        val env = environmentForFeatureFlag(true)
+        val env = environment()
 
         setUpEnvironment(env, project(ProjectFactory.project()))
 
         this.shouldShowReportProject.assertValue(true)
-    }
-
-    @Test
-    fun testShouldShowReportProject_FFOff() {
-        val env = environmentForFeatureFlag(false)
-
-        setUpEnvironment(env, project(ProjectFactory.project()))
-
-        this.shouldShowReportProject.assertValue(false)
     }
 
     @Test
@@ -700,7 +690,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testProjectReported() {
-        val env = environmentForFeatureFlag(true)
+        val env = environment()
         val project = ProjectFactory.project().toBuilder()
             .isFlagged(true)
             .build()
@@ -713,7 +703,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testProjectReportedClickedLink() {
-        val env = environmentForFeatureFlag(true)
+        val env = environment()
         val project = ProjectFactory.project().toBuilder()
             .isFlagged(true)
             .build()
@@ -726,20 +716,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
             "${environment().webEndpoint()}$OUR_RULES",
             "${environment().webEndpoint()}$COMMUNITY_GUIDELINES"
         )
-    }
-
-    private fun environmentForFeatureFlag(enabled: Boolean): Environment {
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
-                    return enabled
-                }
-            }
-
-        return environment()
-            .toBuilder()
-            .optimizely(mockExperimentsClientType)
-            .build()
     }
 
     private fun environmentForVariant(variant: OptimizelyExperiment.Variant): Environment {

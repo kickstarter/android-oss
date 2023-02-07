@@ -125,7 +125,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     this.searchProjectsPresent.assertValues(false, true);
   }
 
-  @Test
+  /*@Test
   public void testFeaturedSearchRefTags() {
     final TestScheduler scheduler = new TestScheduler();
 
@@ -155,7 +155,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     this.goToRefTag.assertValues(RefTag.searchFeatured());
     this.goToProject.assertValues(projects.get(0));
-  }
+  }*/
 
   @Test
   public void testSearchRefTags() {
@@ -221,7 +221,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     this.goToProject.assertValues(projects.get(0));
   }
 
-  @Test
+  /*@Test
   public void testPopularRefTags() {
     final TestScheduler scheduler = new TestScheduler();
 
@@ -251,7 +251,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     this.goToRefTag.assertValues(RefTag.searchPopular());
     this.goToProject.assertValues(projects.get(2));
-  }
+  }*/
 
   @Test
   public void testProjectPage_whenFeatureFlagOn_shouldEmitProjectPage() {

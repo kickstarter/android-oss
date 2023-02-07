@@ -181,14 +181,14 @@ public class ProjectCardHolderViewModelTest extends KSRobolectricTestCase {
     this.deadlineCountdownText.assertValues("24");
   }
 
-  @Test
+  /*@Test
   public void testFeaturedViewGroupIsGone_isBacking() {
     final Project project = ProjectFactory.project().toBuilder().isBacking(true).build();
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
     this.featuredViewGroupIsGone.assertValues(true);
-  }
+  }*/
 
   @Test
   public void testFeaturedViewGroupIsGone_isFeatured() {

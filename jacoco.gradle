@@ -2,6 +2,8 @@ apply plugin: 'jacoco'
 
 jacoco {
     toolVersion = "$jacoco_version"
+    dumpOnExit = true
+    classDumpDir = null
 }
 
 tasks.withType(Test) {

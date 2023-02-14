@@ -6,8 +6,8 @@ import com.kickstarter.libs.preferences.StringPreferenceType
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import timber.log.Timber
 import java.io.IOException
@@ -40,7 +40,7 @@ class CurrentConfigV2(
             .map { json: String? -> gson.fromJson(json, Config::class.java) }
             .filter { `object`: Config? -> ObjectUtils.isNotNull(`object`) }
             .compose(Transformers.neverErrorV2())
-            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
 
         // Loads config from string preference
         val prefConfig = Observable.just(configPreference)
@@ -48,7 +48,7 @@ class CurrentConfigV2(
             .map { json: String? -> gson.fromJson(json, Config::class.java) }
             .filter { `object`: Config? -> ObjectUtils.isNotNull(`object`) }
             .compose(Transformers.neverErrorV2())
-            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
 
         // Seed config observable with what's cached
         disposables.add(

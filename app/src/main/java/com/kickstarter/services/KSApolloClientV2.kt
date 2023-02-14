@@ -47,17 +47,13 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                     if (response.hasErrors()) ps.onError(java.lang.Exception(response.errors?.first()?.message))
                     else {
                         response.data?.let { responseData ->
-                            Observable.just(
+                            ps.onNext(
                                 projectTransformer(
                                     responseData.project()?.fragments()?.fullProject()
                                 )
                             )
-                                .subscribeOn(Schedulers.io())
-                                .subscribe {
-                                    ps.onNext(it)
-                                    ps.onComplete()
-                                }
                         }
+                        ps.onComplete()
                     }
                 }
             })

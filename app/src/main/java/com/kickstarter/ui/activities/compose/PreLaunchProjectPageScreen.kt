@@ -1,9 +1,6 @@
 package com.kickstarter.ui.activities.compose
 
 import android.annotation.SuppressLint
-import android.os.Build
-import android.text.Html
-import android.text.TextUtils
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.kickstarter.R
+import com.kickstarter.libs.utils.extensions.toHtml
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Project
 import com.kickstarter.ui.compose.KsButton
@@ -141,13 +139,8 @@ fun PreLaunchProjectPageScreen(
             )
 
             project?.blurb()?.let {
-                val desc = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    Html.fromHtml(TextUtils.htmlEncode(it), Html.FROM_HTML_MODE_LEGACY)
-                } else {
-                    Html.fromHtml(TextUtils.htmlEncode(it))
-                }
                 TextBody2Style(
-                    text = desc.toString(),
+                    text = it.toHtml().toString(),
                     modifier = Modifier
                         .fillMaxWidth()
                         .constrainAs(projectDescription) {

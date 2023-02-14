@@ -3,8 +3,10 @@ package com.kickstarter.libs
 import android.content.res.AssetManager
 import com.google.gson.Gson
 import com.kickstarter.libs.preferences.StringPreferenceType
+import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import timber.log.Timber
@@ -37,12 +39,16 @@ class CurrentConfigV2(
             .map { path: String -> configJSONString(path, assetManager) }
             .map { json: String? -> gson.fromJson(json, Config::class.java) }
             .filter { `object`: Config? -> ObjectUtils.isNotNull(`object`) }
+            .compose(Transformers.neverErrorV2())
+            .subscribeOn(AndroidSchedulers.mainThread())
 
         // Loads config from string preference
         val prefConfig = Observable.just(configPreference)
             .map { obj: StringPreferenceType -> obj.get() }
             .map { json: String? -> gson.fromJson(json, Config::class.java) }
             .filter { `object`: Config? -> ObjectUtils.isNotNull(`object`) }
+            .compose(Transformers.neverErrorV2())
+            .subscribeOn(AndroidSchedulers.mainThread())
 
         // Seed config observable with what's cached
         disposables.add(

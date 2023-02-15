@@ -101,6 +101,9 @@ interface DiscoveryFragmentViewModel {
         /** Emits a Project and RefTag pair when we should start the [com.kickstarter.ui.activities.ProjectActivity].  */
         fun startProjectActivity(): Observable<Pair<Project, RefTag>>
 
+        /** Emits a Project and RefTag pair when we should start the [com.kickstarter.ui.activities.PreLaunchProjectPageActivity].  */
+        fun startPreLaunchProjectActivity(): Observable<Pair<Project, RefTag>>
+
         /** Emits an activity when we should start the [com.kickstarter.ui.activities.UpdateActivity].  */
         fun startUpdateActivity(): Observable<Activity>
 
@@ -129,8 +132,10 @@ interface DiscoveryFragmentViewModel {
         private val cookieManager = requireNotNull(environment.cookieManager())
         private val currentUser = requireNotNull(environment.currentUser())
         private val lifecycleObservable = BehaviorSubject.create<FragmentEvent>()
+
         @JvmField
         val inputs: Inputs = this
+
         @JvmField
         val outputs: Outputs = this
 
@@ -157,7 +162,8 @@ interface DiscoveryFragmentViewModel {
         private val shouldShowOnboardingView = BehaviorSubject.create<Boolean>()
         private val startSetPasswordActivity = BehaviorSubject.create<String>()
         private val startEditorialActivity = PublishSubject.create<Editorial>()
-        private val startProjectActivity: Observable<Pair<Project, RefTag>>
+        private val startPreLaunchProjectActivity = PublishSubject.create<Pair<Project, RefTag>>()
+        private val startProjectActivity = PublishSubject.create<Pair<Project, RefTag>>()
         private val startUpdateActivity: Observable<Activity>
         private val startHeartAnimation = BehaviorSubject.create<Void?>()
         private val startLoginToutActivityToSaveProject = PublishSubject.create<Project>()
@@ -279,10 +285,17 @@ interface DiscoveryFragmentViewModel {
             startUpdateActivity = activityUpdateClick
             showLoginTout = discoveryOnboardingLoginToutClick
 
-            startProjectActivity = Observable.merge(
+            val startProject = Observable.merge(
                 activitySampleProjectClick,
                 projectCardClick
             )
+            startProject.subscribe {
+                if (it.first.displayPrelaunch() == true) {
+                    startPreLaunchProjectActivity.onNext(it)
+                } else {
+                    startProjectActivity.onNext(it)
+                }
+            }
 
             clearPage
                 .compose(bindToLifecycle())
@@ -417,7 +430,8 @@ interface DiscoveryFragmentViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     analyticEvents.trackLoginOrSignUpCtaClicked(
-                        null, DISCOVER.contextName
+                        null,
+                        DISCOVER.contextName
                     )
                 }
 
@@ -563,10 +577,11 @@ interface DiscoveryFragmentViewModel {
         }
 
         private fun toggleProjectSave(project: Project): Observable<Project> {
-            return if (project.isStarred())
+            return if (project.isStarred()) {
                 unSaveProject(project)
-            else
+            } else {
                 saveProject(project)
+            }
         }
 
         override fun activitySampleFriendBackingViewHolderSeeActivityClicked(viewHolder: ActivitySampleFriendBackingViewHolder?) =
@@ -611,6 +626,7 @@ interface DiscoveryFragmentViewModel {
         override fun startHeartAnimation(): Observable<Void?> = startHeartAnimation
         override fun startEditorialActivity(): Observable<Editorial> = startEditorialActivity
         override fun startProjectActivity(): Observable<Pair<Project, RefTag>> = startProjectActivity
+        override fun startPreLaunchProjectActivity(): Observable<Pair<Project, RefTag>> = startPreLaunchProjectActivity
         override fun shouldShowOnboardingView(): Observable<Boolean> = shouldShowOnboardingView
         override fun startUpdateActivity(): Observable<Activity> = startUpdateActivity
         override fun onHeartButtonClicked(project: Project) = onHeartButtonClicked.onNext(project)

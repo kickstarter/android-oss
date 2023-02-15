@@ -1,6 +1,11 @@
 @file:JvmName("StringExt")
+
 package com.kickstarter.libs.utils.extensions
 
+import android.os.Build
+import android.text.Html
+import android.text.Spanned
+import android.text.TextUtils
 import android.util.Patterns
 import com.kickstarter.R
 import org.jsoup.Jsoup
@@ -124,11 +129,11 @@ fun String.isNotEmptyAndAtLeast6Chars() = this.isNotEmpty() && this.length >= MI
  * new Password Validation Warnings message
  */
 fun String.newPasswordValidationWarnings(confirmPassword: String): Int? {
-    return if (this.isNotEmpty() && this.length in 1 until MINIMUM_PASSWORD_LENGTH)
+    return if (this.isNotEmpty() && this.length in 1 until MINIMUM_PASSWORD_LENGTH) {
         R.string.Password_min_length_message
-    else if (confirmPassword.isNotEmpty() && confirmPassword != this)
+    } else if (confirmPassword.isNotEmpty() && confirmPassword != this) {
         R.string.Passwords_matching_message
-    else null
+    } else null
 }
 
 /**
@@ -163,4 +168,15 @@ fun String.hrefUrlFromTranslation(): String {
     // The first group is the entire string, take it out
     ret.removeAt(0)
     return ret.last()
+}
+
+/**
+ * Takes a String resource with HTMl Returns displayable styled text from the provided HTML string.
+ */
+fun String.toHtml(): Spanned {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        Html.fromHtml(TextUtils.htmlEncode(this), Html.FROM_HTML_MODE_LEGACY)
+    } else {
+        Html.fromHtml(TextUtils.htmlEncode(this))
+    }
 }

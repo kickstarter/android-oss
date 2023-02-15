@@ -13,6 +13,7 @@ import com.kickstarter.ui.activities.CreatorDashboardActivity
 import com.kickstarter.ui.activities.LoginActivity
 import com.kickstarter.ui.activities.PaymentMethodsSettingsActivity
 import com.kickstarter.ui.activities.PaymentMethodsSettingsActivityLegacy
+import com.kickstarter.ui.activities.PreLaunchProjectPageActivity
 import com.kickstarter.ui.activities.ProjectPageActivity
 import com.kickstarter.ui.activities.ProjectUpdatesActivity
 import com.kickstarter.ui.activities.ReportProjectActivity
@@ -25,6 +26,11 @@ import com.kickstarter.ui.data.ProjectData
 
 fun Intent.getProjectIntent(context: Context): Intent {
     return this.setClass(context, ProjectPageActivity::class.java)
+}
+
+fun Intent.getPreLaunchProjectActivity(context: Context, slug: String?): Intent {
+    return this.setClass(context, PreLaunchProjectPageActivity::class.java)
+        .putExtra(IntentKey.PROJECT_PARAM, slug)
 }
 
 /**
@@ -110,7 +116,6 @@ fun Intent.getUpdatesActivityIntent(
     isUpdateComment: Boolean? = null,
     comment: String? = null
 ): Intent {
-
     this.setClass(context, UpdateActivity::class.java)
         .putExtra(IntentKey.PROJECT, project)
 

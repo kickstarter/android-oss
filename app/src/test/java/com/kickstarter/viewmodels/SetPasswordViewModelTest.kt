@@ -6,10 +6,12 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.viewmodels.usecases.LoginUseCase
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -125,28 +127,33 @@ class SetPasswordViewModelTest : KSRobolectricTestCase() {
     fun testSuccess() {
         val user = UserFactory.userNeedPassword()
         val mockUser = MockCurrentUser(user)
-        mockUser.login(user, "token")
+        val currentUserV2 = MockCurrentUserV2()
 
-        setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
-                override fun updateUserPassword(
-                    currentPassword: String,
-                    newPassword: String,
-                    confirmPassword: String
-                ): Observable<UpdateUserPasswordMutation.Data> {
-                    return Observable.just(
-                        UpdateUserPasswordMutation.Data(
-                            UpdateUserPasswordMutation.UpdateUserAccount(
-                                "",
-                                UpdateUserPasswordMutation.User("", "test@email.com", false, true)
-                            )
+        val environment = environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun updateUserPassword(
+                currentPassword: String,
+                newPassword: String,
+                confirmPassword: String
+            ): Observable<UpdateUserPasswordMutation.Data> {
+                return Observable.just(
+                    UpdateUserPasswordMutation.Data(
+                        UpdateUserPasswordMutation.UpdateUserAccount(
+                            "",
+                            UpdateUserPasswordMutation.User("", "test@email.com", false, true)
                         )
                     )
-                }
-            })
-                .currentUser(mockUser)
-                .build()
-        )
+                )
+            }
+        })
+            .currentUser(mockUser)
+            .currentUserV2(currentUserV2)
+            .build()
+
+        setUpEnvironment(environment)
+
+        val loginUserCase = LoginUseCase(environment)
+
+        loginUserCase.login(user, "token")
 
         this.vm.inputs.newPassword("password")
         this.vm.inputs.confirmPassword("password")

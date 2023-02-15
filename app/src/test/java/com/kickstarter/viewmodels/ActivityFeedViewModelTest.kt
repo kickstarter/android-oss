@@ -4,6 +4,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockExperimentsClientType
@@ -21,6 +22,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.SurveyResponse
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
+import com.kickstarter.viewmodels.usecases.LoginUseCase
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -168,9 +170,10 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testErroredBackings_whenLoggedIn() {
         val currentUser: CurrentUserType = MockCurrentUser()
+        val currentUserV2 = MockCurrentUserV2()
         val initialUser = user()
-        currentUser.login(initialUser, "deadbeef")
         val updatedUser = user()
+
         val environment = environment().toBuilder()
             .apiClient(object : MockApiClient() {
                 override fun fetchCurrentUser(): Observable<User> {
@@ -178,7 +181,13 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
                 }
             })
             .currentUser(currentUser)
+            .currentUserV2(currentUserV2)
             .build()
+
+        val loginUserCase = LoginUseCase(environment)
+
+        loginUserCase.login(initialUser, "deadbeef")
+
         setUpEnvironment(environment)
         erroredBackings.assertValueCount(1)
         vm.inputs.refresh()
@@ -297,13 +306,19 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testSurveys_LoggedIn_SwipeRefreshed() {
         val currentUser: CurrentUserType = MockCurrentUser()
-        currentUser.login(user(), "deadbeef")
+        val currentUserV2 = MockCurrentUserV2()
 
         val environment = environment().toBuilder()
             .currentUser(currentUser)
+            .currentUser(currentUser)
+            .currentUserV2(currentUserV2)
             .build()
 
+        val loginUserCase = LoginUseCase(environment)
+
         setUpEnvironment(environment)
+
+        loginUserCase.login(user(), "deadbeef")
 
         surveys.assertValueCount(1)
 
@@ -316,7 +331,7 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
         val currentUser: CurrentUserType = MockCurrentUser()
         val initialUser = user().toBuilder().unseenActivityCount(3).build()
 
-        currentUser.login(initialUser, "deadbeef")
+        val currentUserV2 = MockCurrentUserV2()
 
         val updatedUser = user()
 
@@ -327,7 +342,12 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
                 }
             })
             .currentUser(currentUser)
+            .currentUserV2(currentUserV2)
             .build()
+
+        val loginUserCase = LoginUseCase(environment)
+
+        loginUserCase.login(initialUser, "deadbeef")
 
         environment.currentUser()?.loggedInUser()?.subscribe(user)
 
@@ -346,12 +366,12 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testUser_whenLoggedInAndResumedWithErroredBackings() {
         val currentUser: CurrentUserType = MockCurrentUser()
+        val currentUserV2 = MockCurrentUserV2()
+
         val initialUser = user()
             .toBuilder()
             .erroredBackingsCount(3)
             .build()
-
-        currentUser.login(initialUser, "token")
 
         val updatedUser = user()
         val environment = environment().toBuilder()
@@ -361,7 +381,11 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
                 }
             })
             .currentUser(currentUser)
+            .currentUserV2(currentUserV2)
             .build()
+
+        val loginUseCase = LoginUseCase(environment)
+        loginUseCase.login(initialUser, "token")
 
         environment.currentUser()?.loggedInUser()?.subscribe(user)
 

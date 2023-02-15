@@ -7,6 +7,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.mock.factories.MessageThreadFactory.messageThread
 import com.kickstarter.mock.factories.MessageThreadsEnvelopeFactory.messageThreadsEnvelope
 import com.kickstarter.mock.factories.ProjectFactory.project
@@ -20,6 +21,7 @@ import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.Mailbox
+import com.kickstarter.viewmodels.usecases.LoginUseCase
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -58,7 +60,7 @@ class MessageThreadsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testMessageThreadsEmit_Pagination() {
         val currentUser: CurrentUserType = MockCurrentUser()
-        currentUser.login(user().toBuilder().unreadMessagesCount(0).build(), "beefbod5")
+        val currentUserV2 = MockCurrentUserV2()
 
         val inboxEnvelope = messageThreadsEnvelope()
             .toBuilder()
@@ -89,9 +91,12 @@ class MessageThreadsViewModelTest : KSRobolectricTestCase() {
             }
         }
 
-        setUpEnvironment(
-            environment().toBuilder().apiClient(apiClient).currentUser(currentUser).build()
-        )
+        val environment = environment().toBuilder().apiClient(apiClient).currentUser(currentUser).currentUserV2(currentUserV2).build()
+        setUpEnvironment(environment)
+
+        val loginUserCase = LoginUseCase(environment)
+
+        loginUserCase.login(user().toBuilder().unreadMessagesCount(0).build(), "beefbod5")
 
         val intent = Intent().putExtra(IntentKey.PROJECT, project)
         vm.intent(intent)
@@ -111,7 +116,7 @@ class MessageThreadsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testMessageThreadsEmit_NoProjectIntent() {
         val currentUser: CurrentUserType = MockCurrentUser()
-        currentUser.login(user().toBuilder().unreadMessagesCount(0).build(), "beefbod5")
+        val currentUserV2 = MockCurrentUserV2()
 
         val inboxEnvelope = messageThreadsEnvelope()
             .toBuilder()
@@ -132,9 +137,12 @@ class MessageThreadsViewModelTest : KSRobolectricTestCase() {
             }
         }
 
-        setUpEnvironment(
-            environment().toBuilder().apiClient(apiClient).currentUser(currentUser).build()
-        )
+        val environment = environment().toBuilder().apiClient(apiClient).currentUser(currentUser).currentUserV2(currentUserV2).build()
+        setUpEnvironment(environment)
+
+        val loginUserCase = LoginUseCase(environment)
+
+        loginUserCase.login(user().toBuilder().unreadMessagesCount(0).build(), "beefbod5")
 
         val intent = Intent().putExtra(IntentKey.PROJECT, Empty.INSTANCE)
         vm.intent(intent)
@@ -157,7 +165,7 @@ class MessageThreadsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testMessageThreadsEmit_WithProjectIntent() {
         val currentUser: CurrentUserType = MockCurrentUser()
-        currentUser.login(user().toBuilder().unreadMessagesCount(0).build(), "beefbod5")
+        val currentUserV2 = MockCurrentUserV2()
 
         val inboxEnvelope = messageThreadsEnvelope()
             .toBuilder()
@@ -184,9 +192,12 @@ class MessageThreadsViewModelTest : KSRobolectricTestCase() {
             }
         }
 
-        setUpEnvironment(
-            environment().toBuilder().apiClient(apiClient).currentUser(currentUser).build()
-        )
+        val environment = environment().toBuilder().apiClient(apiClient).currentUser(currentUser).currentUserV2(currentUserV2).build()
+        setUpEnvironment(environment)
+
+        val loginUserCase = LoginUseCase(environment)
+
+        loginUserCase.login(user().toBuilder().unreadMessagesCount(0).build(), "beefbod5")
 
         val intent = Intent().putExtra(IntentKey.PROJECT, project)
         vm.intent(intent)

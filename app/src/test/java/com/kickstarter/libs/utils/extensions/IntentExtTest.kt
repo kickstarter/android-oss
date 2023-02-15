@@ -16,6 +16,13 @@ class IntentExtTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testPreLaunchProjectActivity_whenFeatureFlagTrue_shouldReturnProjectPageActivity() {
+        val intent = Intent().getPreLaunchProjectActivity(context(), "Game")
+        assertEquals(intent.component?.className, "com.kickstarter.ui.activities.PreLaunchProjectPageActivity")
+        assertEquals(intent.extras?.get(IntentKey.PROJECT_PARAM), "Game")
+    }
+
+    @Test
     fun testGetRootCommentsActivityIntent() {
         val projectData = ProjectDataFactory.project(ProjectFactory.project())
         val intent = Intent().getRootCommentsActivityIntent(context(), projectData)

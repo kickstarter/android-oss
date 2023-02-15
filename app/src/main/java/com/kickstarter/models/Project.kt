@@ -61,7 +61,8 @@ class Project private constructor(
     private val envCommitments: List<EnvironmentalCommitment>?,
     private val risks: String?,
     private val story: String?,
-    private val isFlagged: Boolean?
+    private val isFlagged: Boolean?,
+    private val watchesCount: Int
 ) : Parcelable, Relay {
     fun availableCardTypes() = this.availableCardTypes
     fun backersCount() = this.backersCount
@@ -113,6 +114,7 @@ class Project private constructor(
     fun risks() = this.risks
     fun story() = this.story
     fun isFlagged() = this.isFlagged
+    fun watchesCount() = this.watchesCount
 
     @Parcelize
     data class Builder(
@@ -166,10 +168,12 @@ class Project private constructor(
         private var envCommitments: List<EnvironmentalCommitment>? = emptyList(),
         private var risks: String? = "",
         private var story: String? = "",
-        private var isFlagged: Boolean? = null
+        private var isFlagged: Boolean? = null,
+        private var watchesCount: Int = 0
     ) : Parcelable {
         fun availableCardTypes(availableCardTypes: List<String>?) = apply { this.availableCardTypes = availableCardTypes }
         fun backersCount(backersCount: Int?) = apply { this.backersCount = backersCount ?: 0 }
+        fun watchesCount(watchesCount: Int?) = apply { this.watchesCount = watchesCount ?: 0 }
         fun blurb(blurb: String?) = apply { this.blurb = blurb ?: "" }
         fun backing(backing: Backing?) = apply { this.backing = backing }
         fun category(category: Category?) = apply { this.category = category }
@@ -268,7 +272,8 @@ class Project private constructor(
             envCommitments = envCommitments,
             risks = risks,
             story = story,
-            isFlagged = isFlagged
+            isFlagged = isFlagged,
+            watchesCount = watchesCount
         )
     }
 
@@ -322,7 +327,8 @@ class Project private constructor(
         envCommitments = envCommitments,
         risks = risks,
         story = story,
-        isFlagged = isFlagged
+        isFlagged = isFlagged,
+        watchesCount = watchesCount
     )
 
     @kotlin.annotation.Retention(AnnotationRetention.SOURCE)

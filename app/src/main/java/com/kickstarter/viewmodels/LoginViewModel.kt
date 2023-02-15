@@ -17,6 +17,7 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.LoginActivity
 import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.LoginReason
+import com.kickstarter.viewmodels.usecases.LoginUseCase
 import rx.Notification
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -90,7 +91,7 @@ interface LoginViewModel {
         val outputs: Outputs = this
 
         private val client = requireNotNull(environment.apiClient())
-        private val currentUser = requireNotNull(environment.currentUser())
+        private val loginUserCase = LoginUseCase(environment)
 
         init {
 
@@ -232,7 +233,7 @@ interface LoginViewModel {
         private fun isValid(email: String, password: String) = email.isEmail() && password.isNotEmpty()
 
         private fun success(envelope: AccessTokenEnvelope) {
-            this.currentUser.login(envelope.user(), envelope.accessToken())
+            this.loginUserCase.login(envelope.user(), envelope.accessToken())
             this.loginSuccess.onNext(null)
         }
 

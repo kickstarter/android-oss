@@ -85,7 +85,6 @@ fun projectFaqTransformer(faq: fragment.Faq): ProjectFaq {
  * @return EnvironmentalCommitment
  */
 fun environmentalCommitmentTransformer(envCommit: fragment.EnvironmentalCommitment): EnvironmentalCommitment {
-
     val id = decodeRelayId(envCommit.id()) ?: -1
     val category = envCommit.commitmentCategory().name
     val description = envCommit.description()
@@ -218,7 +217,6 @@ fun complexRewardItemsTransformer(items: fragment.RewardItems?): List<RewardsIte
  * @return Project
  */
 fun projectTransformer(projectFragment: FullProject?): Project {
-
     val availableCards = projectFragment?.availableCardTypes() ?: emptyList()
     val backersCount = projectFragment?.backersCount() ?: 0
     val blurb = projectFragment?.description() ?: ""
@@ -312,6 +310,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
     val story = projectFragment?.story()?.toString() ?: ""
     val userCanComment = projectFragment?.canComment() ?: false
     val isFlagged = projectFragment?.flagging()?.kind()?.let { true } ?: false
+    val watchesCount = projectFragment?.watchesCount() ?: 0
 
     return Project.builder()
         .availableCardTypes(availableCards.map { it.name })
@@ -364,6 +363,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         .risks(risks)
         .story(story)
         .isFlagged(isFlagged)
+        .watchesCount(watchesCount)
         .build()
 }
 
@@ -408,7 +408,6 @@ fun categoryTransformer(categoryFragment: fragment.Category?): Category {
  * @return Project
  */
 fun userTransformer(user: fragment.User?): User {
-
     val id = decodeRelayId(user?.id()) ?: -1
     val name = user?.name()
     val avatar = Avatar.builder()
@@ -430,7 +429,6 @@ fun userTransformer(user: fragment.User?): User {
  * @return Project
  */
 fun projectTransformer(projectFragment: ProjectCard?): Project {
-
     val backersCount = projectFragment?.backersCount() ?: 0
     val blurb = projectFragment?.description() ?: ""
     val category = if (projectFragment?.category()?.fragments()?.category() != null) {
@@ -565,7 +563,6 @@ fun updateTransformer(post: fragment.Post?): Update {
 }
 
 fun commentTransformer(commentFr: fragment.Comment?): Comment {
-
     val badges: List<String> = commentFr?.authorBadges()?.map { badge ->
         badge?.rawValue() ?: ""
     } ?: emptyList()
@@ -684,7 +681,6 @@ fun backingTransformer(backingGr: fragment.Backing?): Backing {
  * and we need to transform it in : D(5),C(1),E(2)
  */
 fun getAddOnsList(addOns: fragment.Backing.AddOns): List<Reward> {
-
     val rewardsList = addOns.nodes()?.map { node ->
         rewardTransformer(node.fragments().reward())
     }
@@ -755,7 +751,6 @@ fun locationTransformer(locationGR: fragment.Location?): Location {
 }
 
 fun shippingRulesListTransformer(shippingRulesExpanded: List<fragment.ShippingRule>): ShippingRulesEnvelope {
-
     val shippingRulesList: List<ShippingRule> = shippingRulesExpanded?.mapNotNull { shippingRule ->
         shippingRuleTransformer(shippingRule)
     } ?: emptyList<ShippingRule>()

@@ -12,6 +12,7 @@ import com.kickstarter.libs.MockTrackingClient
 import com.kickstarter.libs.TrackingClientType
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.mock.MockCurrentConfig
+import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.services.MockApiClient
@@ -45,6 +46,7 @@ abstract class KSRobolectricTestCase : TestCase() {
         super.setUp()
 
         val mockCurrentConfig = MockCurrentConfig()
+        val mockCurrentConfigV2 = MockCurrentConfigV2()
         val experimentsClientType = experimentsClient()
         val segmentTestClient = segmentTrackingClient(mockCurrentConfig, experimentsClientType)
 
@@ -56,6 +58,7 @@ abstract class KSRobolectricTestCase : TestCase() {
             .build()
 
         mockCurrentConfig.config(config)
+        mockCurrentConfigV2.config(config)
 
         environment = component.environment().toBuilder()
             .ksCurrency(KSCurrency(mockCurrentConfig))
@@ -63,6 +66,7 @@ abstract class KSRobolectricTestCase : TestCase() {
             .apolloClient(MockApolloClient())
             .apolloClientV2(MockApolloClientV2())
             .currentConfig(mockCurrentConfig)
+            .currentConfig2(mockCurrentConfigV2)
             .webClient(MockWebClient())
             .stripe(Stripe(context(), Secrets.StripePublishableKey.STAGING))
             .analytics(AnalyticEvents(listOf(segmentTestClient)))

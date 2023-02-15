@@ -22,7 +22,9 @@ class Environment private constructor(
     private val buildCheck: BuildCheck?,
     private val cookieManager: CookieManager?,
     private val currentConfig: CurrentConfigType?,
+    private val currentConfigV2: CurrentConfigTypeV2?,
     private val currentUser: CurrentUserType?,
+    private val currentUserV2: CurrentUserTypeV2?,
     private val firstSessionPreference: BooleanPreferenceType?,
     private val gson: Gson?,
     private val hasSeenAppRatingPreference: BooleanPreferenceType?,
@@ -35,6 +37,7 @@ class Environment private constructor(
     private val optimizely: ExperimentsClientType?,
     private val playServicesCapability: PlayServicesCapability?,
     private val scheduler: Scheduler?,
+    private val schedulerV2: io.reactivex.Scheduler?,
     private val sharedPreferences: SharedPreferences?,
     private val stripe: Stripe?,
     private val webClient: WebClientType?,
@@ -48,7 +51,9 @@ class Environment private constructor(
     fun buildCheck() = this.buildCheck
     fun cookieManager() = this.cookieManager
     fun currentConfig() = this.currentConfig
+    fun currentConfigV2() = this.currentConfigV2
     fun currentUser() = this.currentUser
+    fun currentUserV2() = this.currentUserV2
     fun firstSessionPreference() = this.firstSessionPreference
     fun gson() = this.gson
     fun hasSeenAppRatingPreference() = this.hasSeenAppRatingPreference
@@ -61,6 +66,7 @@ class Environment private constructor(
     fun optimizely() = this.optimizely
     fun playServicesCapability() = this.playServicesCapability
     fun scheduler() = this.scheduler
+    fun schedulerV2() = this.schedulerV2
     fun sharedPreferences() = this.sharedPreferences
     fun stripe() = this.stripe
     fun webClient() = this.webClient
@@ -75,7 +81,9 @@ class Environment private constructor(
         private var buildCheck: BuildCheck? = null,
         private var cookieManager: CookieManager? = null,
         private var currentConfig: CurrentConfigType? = null,
+        private var currentConfigV2: CurrentConfigTypeV2? = null,
         private var currentUser: CurrentUserType? = null,
+        private var currentUserV2: CurrentUserTypeV2? = null,
         private var firstSessionPreference: BooleanPreferenceType? = null,
         private var gson: Gson? = null,
         private var hasSeenAppRatingPreference: BooleanPreferenceType? = null,
@@ -88,6 +96,7 @@ class Environment private constructor(
         private var optimizely: ExperimentsClientType? = null,
         private var playServicesCapability: PlayServicesCapability? = null,
         private var scheduler: Scheduler? = null,
+        private var schedulerV2: io.reactivex.Scheduler? = null,
         private var sharedPreferences: SharedPreferences? = null,
         private var stripe: Stripe? = null,
         private var webClient: WebClientType? = null,
@@ -101,7 +110,9 @@ class Environment private constructor(
         fun buildCheck(buildCheck: BuildCheck) = apply { this.buildCheck = buildCheck }
         fun cookieManager(cookieManager: CookieManager) = apply { this.cookieManager = cookieManager }
         fun currentConfig(currentConfig: CurrentConfigType) = apply { this.currentConfig = currentConfig }
+        fun currentConfig2(currentConfig2: CurrentConfigTypeV2) = apply { this.currentConfigV2 = currentConfig2 }
         fun currentUser(currentUser: CurrentUserType) = apply { this.currentUser = currentUser }
+        fun currentUserV2(currentUserV2: CurrentUserTypeV2) = apply { this.currentUserV2 = currentUserV2 }
         fun firstSessionPreference(firstSessionPreference: BooleanPreferenceType) = apply { this.firstSessionPreference = firstSessionPreference }
         fun gson(gson: Gson) = apply { this.gson = gson }
         fun hasSeenAppRatingPreference(hasSeenAppRatingPreference: BooleanPreferenceType) = apply { this.hasSeenAppRatingPreference = hasSeenAppRatingPreference }
@@ -114,6 +125,7 @@ class Environment private constructor(
         fun optimizely(optimizely: ExperimentsClientType) = apply { this.optimizely = optimizely }
         fun playServicesCapability(playServicesCapability: PlayServicesCapability) = apply { this.playServicesCapability = playServicesCapability }
         fun scheduler(scheduler: Scheduler) = apply { this.scheduler = scheduler }
+        fun schedulerV2(schedulerV2: io.reactivex.Scheduler) = apply { this.schedulerV2 = schedulerV2 }
         fun sharedPreferences(sharedPreferences: SharedPreferences) = apply { this.sharedPreferences = sharedPreferences }
         fun stripe(stripe: Stripe) = apply { this.stripe = stripe }
         fun webClient(webClient: WebClientType) = apply { this.webClient = webClient }
@@ -128,7 +140,9 @@ class Environment private constructor(
             buildCheck = buildCheck,
             cookieManager = cookieManager,
             currentConfig = currentConfig,
+            currentConfigV2 = currentConfigV2,
             currentUser = currentUser,
+            currentUserV2 = currentUserV2,
             firstSessionPreference = firstSessionPreference,
             gson = gson,
             hasSeenAppRatingPreference = hasSeenAppRatingPreference,
@@ -141,6 +155,7 @@ class Environment private constructor(
             optimizely = optimizely,
             playServicesCapability = playServicesCapability,
             scheduler = scheduler,
+            schedulerV2 = schedulerV2,
             sharedPreferences = sharedPreferences,
             stripe = stripe,
             webClient = webClient,
@@ -152,11 +167,14 @@ class Environment private constructor(
         activitySamplePreference = activitySamplePreference,
         apiClient = apiClient,
         apolloClient = apolloClient,
+        apolloClientV2 = apolloClientV2,
         build = build,
         buildCheck = buildCheck,
         cookieManager = cookieManager,
         currentConfig = currentConfig,
+        currentConfigV2 = currentConfigV2,
         currentUser = currentUser,
+        currentUserV2 = currentUserV2,
         firstSessionPreference = firstSessionPreference,
         gson = gson,
         hasSeenAppRatingPreference = hasSeenAppRatingPreference,
@@ -169,6 +187,7 @@ class Environment private constructor(
         optimizely = optimizely,
         playServicesCapability = playServicesCapability,
         scheduler = scheduler,
+        schedulerV2 = schedulerV2,
         sharedPreferences = sharedPreferences,
         stripe = stripe,
         webClient = webClient,

@@ -717,6 +717,35 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testStartPelaunchProjectActivity_whenDisplayPelaunchEnabledAndFeatureFlagDisabled_shouldEmitPelaunchProjectPageActivity() {
+        val currentUser: CurrentUserType = MockCurrentUser()
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return false
+                }
+            }
+        setUpEnvironment(
+            environment().toBuilder().currentUser(currentUser).optimizely(mockExperimentsClientType)
+                .scheduler(testScheduler)
+                .build()
+        )
+
+        // Load initial params and root categories from activity.
+        setUpInitialHomeAllProjectsParams()
+        vm.inputs.fragmentLifeCycle(FragmentEvent.RESUME)
+        testScheduler.advanceTimeBy(3, TimeUnit.SECONDS)
+
+        // Click on project
+        val project = prelaunchProject("")
+        vm.inputs.projectCardViewHolderClicked(project)
+        startProjectActivity.assertValueCount(1)
+        startPreLaunchProjectActivity.assertValueCount(0)
+        assertEquals(startProjectActivity.onNextEvents[0].first, project)
+        assertEquals(startProjectActivity.onNextEvents[0].second, discovery())
+    }
+
+    @Test
     fun testClickingInterfaceElements() {
         setUpEnvironment(environment())
 

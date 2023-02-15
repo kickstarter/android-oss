@@ -30,6 +30,9 @@ import com.kickstarter.ui.activities.BackingActivity
 import com.kickstarter.ui.adapters.RewardAndAddOnsAdapter
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.extensions.loadCircleImage
+import com.kickstarter.ui.extensions.loadGifImage
+import com.kickstarter.ui.extensions.loadImage
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.BackingFragmentViewModel
 import com.squareup.picasso.Picasso
@@ -60,7 +63,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
 
         this.viewModel.outputs.backerAvatar()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe { setBackerImageView(it) }
 
         this.viewModel.outputs.backerName()
@@ -326,10 +329,10 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
     }
 
     private fun setBackerImageView(url: String) {
-        context?.apply {
-            Picasso.get().load(url)
-                .transform(CircleTransformation())
-                .into(binding?.backingAvatar)
+        activity?.runOnUiThread {
+            context?.apply {
+                binding?.backingAvatar?.loadCircleImage(url)
+            }
         }
     }
 

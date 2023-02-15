@@ -9,6 +9,7 @@ class OptimizelyFeature {
         ANDROID_HIDE_APP_RATING_DIALOG("android_hide_app_rating_dialog"),
         ANDROID_CONSENT_MANAGEMENT("android_consent_management"),
         ANDROID_CAPI_INTEGRATION("android_capi_integration"),
+        ANDROID_PRE_LAUNCH_SCREEN("android_pre_launch_screen"),
         ANDROID_UGC("android_ugc")
     }
 }

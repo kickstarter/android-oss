@@ -289,8 +289,11 @@ interface DiscoveryFragmentViewModel {
                 activitySampleProjectClick,
                 projectCardClick
             )
+
             startProject.subscribe {
-                if (it.first.displayPrelaunch() == true) {
+                if (it.first.displayPrelaunch() == true &&
+                    optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_PRE_LAUNCH_SCREEN) == true
+                ) {
                     startPreLaunchProjectActivity.onNext(it)
                 } else {
                     startProjectActivity.onNext(it)

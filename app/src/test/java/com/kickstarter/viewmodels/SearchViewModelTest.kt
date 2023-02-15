@@ -267,9 +267,17 @@ class SearchViewModelTest : KSRobolectricTestCase() {
                 return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects))
             }
         }
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+
         val env = environment().toBuilder()
             .scheduler(scheduler)
             .apiClient(apiClient)
+            .optimizely(mockExperimentsClientType)
             .build()
         setUpEnvironment(env)
 
@@ -283,6 +291,42 @@ class SearchViewModelTest : KSRobolectricTestCase() {
         goToProject.assertValueCount(0)
         startPreLaunchProjectActivity.assertValueCount(1)
         assertEquals(startPreLaunchProjectActivity.onNextEvents[0].first, projects[2])
+    }
+
+    @Test
+    fun testStartPelaunchProjectActivity_whenDisplayPelaunchEnabledAndFeatureFlagDisabled_shouldEmitPelaunchProjectPageActivity() {
+        val scheduler = TestScheduler()
+        val projects = Arrays.asList(
+            allTheWayProject(),
+            almostCompletedProject(),
+            ProjectFactory.prelaunchProject("")
+        )
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return false
+                }
+            }
+        val apiClient: MockApiClient = object : MockApiClient() {
+            override fun fetchProjects(params: DiscoveryParams): Observable<DiscoverEnvelope> {
+                return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects))
+            }
+        }
+        val env = environment().toBuilder()
+            .scheduler(scheduler)
+            .optimizely(mockExperimentsClientType)
+            .apiClient(apiClient)
+            .build()
+        setUpEnvironment(env)
+
+        // populate search and overcome debounce
+        vm.inputs.search("")
+        scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS)
+
+        vm.inputs.projectClicked(projects[2])
+
+        goToProject.assertValues(projects[2])
+        startPreLaunchProjectActivity.assertValueCount(0)
     }
 
     @Test

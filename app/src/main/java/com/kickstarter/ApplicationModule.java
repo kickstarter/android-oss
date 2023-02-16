@@ -18,9 +18,12 @@ import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentConfig;
+import com.kickstarter.libs.CurrentConfigV2;
 import com.kickstarter.libs.CurrentConfigType;
+import com.kickstarter.libs.CurrentConfigTypeV2;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.CurrentUserType;
+import com.kickstarter.libs.CurrentUserTypeV2;
 import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.libs.DeviceRegistrar;
 import com.kickstarter.libs.DeviceRegistrarType;
@@ -32,6 +35,7 @@ import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.AnalyticEvents;
+import com.kickstarter.libs.CurrentUserV2;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.OptimizelyExperimentsClient;
 import com.kickstarter.libs.PushNotifications;
@@ -129,7 +133,9 @@ public class ApplicationModule {
     final @NonNull BuildCheck buildCheck,
     final @NonNull CookieManager cookieManager,
     final @NonNull CurrentConfigType currentConfig,
+    final @NonNull CurrentConfigTypeV2 currentConfig2,
     final @NonNull CurrentUserType currentUser,
+    final @NonNull CurrentUserTypeV2 currentUser2,
     final @NonNull @FirstSessionPreference BooleanPreferenceType firstSessionPreference,
     final @NonNull Gson gson,
     final @NonNull @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference,
@@ -142,6 +148,7 @@ public class ApplicationModule {
     final @NonNull ExperimentsClientType optimizely,
     final @NonNull PlayServicesCapability playServicesCapability,
     final @NonNull Scheduler scheduler,
+    final @NonNull io.reactivex.Scheduler schedulerV2,
     final @NonNull SharedPreferences sharedPreferences,
     final @NonNull Stripe stripe,
     final @NonNull WebClientType webClient,
@@ -156,7 +163,9 @@ public class ApplicationModule {
       .buildCheck(buildCheck)
       .cookieManager(cookieManager)
       .currentConfig(currentConfig)
+      .currentConfig2(currentConfig2)
       .currentUser(currentUser)
+      .currentUserV2(currentUser2)
       .firstSessionPreference(firstSessionPreference)
       .gson(gson)
       .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
@@ -169,6 +178,7 @@ public class ApplicationModule {
       .optimizely(optimizely)
       .playServicesCapability(playServicesCapability)
       .scheduler(scheduler)
+      .schedulerV2(schedulerV2)
       .sharedPreferences(sharedPreferences)
       .stripe(stripe)
       .webClient(webClient)
@@ -444,6 +454,12 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
+  static io.reactivex.Scheduler provideSchedulerV2() {
+    return io.reactivex.schedulers.Schedulers.computation();
+  }
+
+  @Provides
+  @Singleton
   @ApplicationContext
   Context provideApplicationContext() {
     return this.application;
@@ -472,6 +488,14 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
+  static CurrentConfigTypeV2 provideCurrentConfig2(final @NonNull AssetManager assetManager,
+                                                   final @NonNull Gson gson,
+                                                   final @ConfigPreference @NonNull StringPreferenceType configPreference) {
+    return new CurrentConfigV2(assetManager, gson, configPreference);
+  }
+
+  @Provides
+  @Singleton
   static CookieJar provideCookieJar(final @NonNull CookieManager cookieManager) {
     return new JavaNetCookieJar(cookieManager);
   }
@@ -488,6 +512,14 @@ public class ApplicationModule {
     final @NonNull DeviceRegistrarType deviceRegistrar, final @NonNull Gson gson,
     final @NonNull @UserPreference StringPreferenceType userPreference) {
     return new CurrentUser(accessTokenPreference, deviceRegistrar, gson, userPreference);
+  }
+
+  @Provides
+  @Singleton
+  static CurrentUserTypeV2 provideCurrentUser2(final @AccessTokenPreference @NonNull StringPreferenceType accessTokenPreference,
+                                               final @NonNull DeviceRegistrarType deviceRegistrar, final @NonNull Gson gson,
+                                               final @NonNull @UserPreference StringPreferenceType userPreference) {
+    return new CurrentUserV2(accessTokenPreference, deviceRegistrar, gson, userPreference);
   }
 
   @Provides
@@ -553,8 +585,8 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  static Logout provideLogout(final @NonNull CookieManager cookieManager, final @NonNull CurrentUserType currentUser) {
-    return new Logout(cookieManager, currentUser);
+  static Logout provideLogout(final @NonNull CookieManager cookieManager, final @NonNull CurrentUserType currentUser, final @NonNull CurrentUserTypeV2 currentUserV2) {
+    return new Logout(cookieManager, currentUser, currentUserV2);
   }
 
   @Provides

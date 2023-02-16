@@ -65,6 +65,7 @@ import rx.subjects.PublishSubject
 import type.BackingState
 import type.CurrencyCode
 import type.PaymentTypes
+import type.TriggerCapiEventInput
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
@@ -264,7 +265,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                                     val updates = project?.posts()?.edges()?.map { edge ->
                                         updateTransformer(
-                                            edge?.node()?.fragments()?.post(),
+                                            edge?.node()?.fragments()?.post()
                                         ).toBuilder()
                                             .build()
                                     }
@@ -1259,6 +1260,24 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     }
 
                     override fun onResponse(response: Response<UserPrivacyQuery.Data>) {
+                        ps.onNext(response.data)
+                        ps.onCompleted()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): Observable<TriggerCapiEventMutation.Data> {
+        return Observable.defer {
+            val ps = PublishSubject.create<TriggerCapiEventMutation.Data>()
+            service.mutate(TriggerCapiEventMutation.builder().triggerCapiEventInput(triggerCapiEventInput).build())
+                .enqueue(object : ApolloCall.Callback<TriggerCapiEventMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<TriggerCapiEventMutation.Data>) {
                         ps.onNext(response.data)
                         ps.onCompleted()
                     }

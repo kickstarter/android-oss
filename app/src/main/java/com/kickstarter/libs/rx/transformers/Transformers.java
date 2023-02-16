@@ -114,6 +114,13 @@ public final class Transformers {
   }
 
   /**
+   * Emits the latest value of the source `when` observable whenever the
+   * `when` observable emits.
+   */
+  public static <S, T> TakePairWhenTransformerV2<S, T> takePairWhenV2(final @NonNull io.reactivex.Observable<T> when) {
+    return new TakePairWhenTransformerV2<>(when);
+  }
+  /**
    * Zips two observables up into an observable of pairs.
    */
   public static <S, T> ZipPairTransformer<S, T> zipPair(final @NonNull Observable<T> second) {
@@ -127,6 +134,12 @@ public final class Transformers {
     return new CombineLatestPairTransformer<>(second);
   }
 
+  /**
+   * Emits the latest values from two observables whenever either emits.
+   */
+  public static <S, T> CombineLatestPairTransformerV2<S, T> combineLatestPair(final @NonNull io.reactivex.Observable<T> second) {
+    return new CombineLatestPairTransformerV2<>(second);
+  }
   /**
    * Waits until `until` emits one single item and then switches context to the source. This
    * can be useful to delay work until a user logs in:
@@ -158,6 +171,11 @@ public final class Transformers {
   public static @NonNull <S> IgnoreValuesTransformer<S> ignoreValues() {
     return new IgnoreValuesTransformer<>();
   }
+
+  public static @NonNull <S> IgnoreValuesTransformerV2<S> ignoreValuesV2() {
+    return new IgnoreValuesTransformerV2<>();
+  }
+
 
   /**
    * Emits the number of times the source has emitted for every emission of the source. The

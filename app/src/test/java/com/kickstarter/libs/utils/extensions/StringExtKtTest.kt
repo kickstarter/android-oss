@@ -221,6 +221,12 @@ class StringExtKtTest : KSRobolectricTestCase() {
         assertEquals(href3, "{community_guidelines}")
     }
 
+    @Test
+    fun testToHtml() {
+        val value = RuntimeEnvironment.getApplication().getString(R.string.This_comment_is_under_review_for_potentially_violating_kickstarters_community_guidelines)
+        assertEquals(value, value.toHtml().toString())
+    }
+
     companion object {
         private const val VALID_EMAIL = "hello@kickstarter.com"
         private const val VALID_GIF_URL = "https://ksr-qa-ugc.imgix.net/assets/035/272/960/eae68383730822ffe949f3825600a80a_original.gif?gif-q=50&q=92&s=d0420b019010dc7c21de0454a47902e0"

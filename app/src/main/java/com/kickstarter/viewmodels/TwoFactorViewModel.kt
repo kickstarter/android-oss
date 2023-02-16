@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
@@ -10,6 +9,7 @@ import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.TwoFactorActivity
+import com.kickstarter.viewmodels.usecases.LoginUseCase
 import rx.Observable
 import rx.subjects.PublishSubject
 
@@ -50,10 +50,10 @@ interface TwoFactorViewModel {
         Inputs,
         Outputs {
         private val client: ApiClientType
-        private val currentUser: CurrentUserType
+        private val loginUserCase = LoginUseCase(environment)
 
         private fun success(envelope: AccessTokenEnvelope) {
-            currentUser.login(envelope.user(), envelope.accessToken())
+            this.loginUserCase.login(envelope.user(), envelope.accessToken())
             tfaSuccess.onNext(null)
         }
 
@@ -146,7 +146,7 @@ interface TwoFactorViewModel {
 
         protected inner class TfaDataForFacebook(
             val fbAccessToken: String,
-            val isFacebookLogin: Boolean,
+            val isFacebookLogin: Boolean
         )
         companion object {
             private fun isCodeValid(code: String?): Boolean {
@@ -155,7 +155,6 @@ interface TwoFactorViewModel {
         }
 
         init {
-            currentUser = requireNotNull(environment.currentUser())
             client = requireNotNull(environment.apiClient())
 
             val email = intent()
@@ -175,7 +174,9 @@ interface TwoFactorViewModel {
                 .map { requireNotNull(it) }
 
             val tfaData = Observable.combineLatest(
-                email, isFacebookLogin, password
+                email,
+                isFacebookLogin,
+                password
             ) { email: String, isFacebookLogin: Boolean, password: String ->
                 TfaData(
                     email,
@@ -185,11 +186,12 @@ interface TwoFactorViewModel {
             }
 
             val tfaFacebookData = Observable.combineLatest(
-                fbAccessToken, isFacebookLogin
+                fbAccessToken,
+                isFacebookLogin
             ) { fbAccessToken: String?, isFacebookLogin: Boolean ->
                 TfaDataForFacebook(
                     fbAccessToken = fbAccessToken ?: "",
-                    isFacebookLogin = isFacebookLogin,
+                    isFacebookLogin = isFacebookLogin
                 )
             }
 
@@ -204,7 +206,9 @@ interface TwoFactorViewModel {
                 .filter { !it.second.isFacebookLogin }
                 .switchMap {
                     login(
-                        it.first, it.second.email, it.second.password
+                        it.first,
+                        it.second.email,
+                        it.second.password
                     )
                 }
                 .compose(bindToLifecycle())
@@ -216,7 +220,8 @@ interface TwoFactorViewModel {
                 .filter { it.second.isFacebookLogin }
                 .switchMap {
                     loginWithFacebook(
-                        it.first, it.second.fbAccessToken
+                        it.first,
+                        it.second.fbAccessToken
                     )
                 }
                 .compose(bindToLifecycle())

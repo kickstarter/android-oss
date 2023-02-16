@@ -8,6 +8,7 @@ import com.kickstarter.libs.utils.extensions.query
 import com.kickstarter.models.Project
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope
 import com.kickstarter.ui.IntentKey
 import rx.Observable
@@ -24,6 +25,26 @@ object ProjectIntentMapper {
     private val PROJECT_SAVE_QUERY_PATTERN = Pattern.compile(
         "save(\\=[a-zA-Z]+)"
     )
+
+    fun project(intent: Intent, apolloClient: ApolloClientTypeV2): io.reactivex.Observable<Project> {
+        val intentProject = projectFromIntent(intent)
+        val projectFromParceledProject =
+            if (intentProject == null) io.reactivex.Observable.empty() else io.reactivex.Observable.just(intentProject)
+                .switchMap { project: Project? ->
+                    project?.let { apolloClient.getProject(it) }
+                }
+                .startWith(intentProject)
+                .retry(3)
+
+        val projectFromParceledParam = io.reactivex.Observable.just(paramFromIntent(intent))
+            .filter { `object`: String? -> ObjectUtils.isNotNull(`object`) }
+            .switchMap { slug: String? ->
+                slug?.let { apolloClient.getProject(it) }
+            }
+            .retry(3)
+        return projectFromParceledProject
+            .mergeWith(projectFromParceledParam)
+    }
 
     fun project(intent: Intent, apolloClient: ApolloClientType): Observable<Project> {
         val intentProject = projectFromIntent(intent)

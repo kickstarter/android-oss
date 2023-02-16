@@ -45,9 +45,27 @@ import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
 import rx.Observable
 import type.CurrencyCode
+import type.TriggerCapiEventInput
 import java.util.Collections
 
 open class MockApolloClientV2 : ApolloClientTypeV2 {
+
+    override fun watchProject(project: Project): io.reactivex.Observable<Project> {
+        return io.reactivex.Observable.just(project.toBuilder().isStarred(true).build())
+    }
+
+    override fun unWatchProject(project: Project): io.reactivex.Observable<Project> {
+        return io.reactivex.Observable.just(project.toBuilder().isStarred(false).build())
+    }
+
+    override fun getProject(project: Project): io.reactivex.Observable<Project> {
+        return io.reactivex.Observable.just(ProjectFactory.backedProject())
+    }
+
+    override fun getProject(slug: String): io.reactivex.Observable<Project> {
+        return io.reactivex.Observable.just(ProjectFactory.backedProject())
+    }
+
     override fun createSetupIntent(project: Project?): io.reactivex.Observable<String> {
         return io.reactivex.Observable.just("")
     }
@@ -317,9 +335,27 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(
             UserPrivacyQuery.Data(
                 UserPrivacyQuery.Me(
-                    "", "Some Name",
-                    "some@email.com", true, true, true, true, "USD"
+                    "",
+                    "Some Name",
+                    "some@email.com",
+                    true,
+                    true,
+                    true,
+                    true,
+                    "USD"
                 )
+            )
+        )
+    }
+
+    override fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): Observable<TriggerCapiEventMutation.Data> {
+        return Observable.just(
+            TriggerCapiEventMutation.Data(
+                TriggerCapiEventMutation
+                    .TriggerCAPIEvent(
+                        "",
+                        true
+                    )
             )
         )
     }

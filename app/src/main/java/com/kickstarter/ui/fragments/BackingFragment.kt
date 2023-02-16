@@ -21,7 +21,6 @@ import com.kickstarter.libs.Either
 import com.kickstarter.libs.SwipeRefresher
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.setGone
@@ -31,11 +30,8 @@ import com.kickstarter.ui.adapters.RewardAndAddOnsAdapter
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.loadCircleImage
-import com.kickstarter.ui.extensions.loadGifImage
-import com.kickstarter.ui.extensions.loadImage
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.BackingFragmentViewModel
-import com.squareup.picasso.Picasso
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers.io
 

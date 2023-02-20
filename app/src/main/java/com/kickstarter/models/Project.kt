@@ -253,7 +253,7 @@ class Project private constructor(
             pledged = pledged,
             photo = photo,
             prelaunchActivated = prelaunchActivated,
-            sendMetaCapiEvents=sendMetaCapiEvents,
+            sendMetaCapiEvents = sendMetaCapiEvents,
             tags = tags,
             rewards = rewards,
             slug = slug,
@@ -308,7 +308,7 @@ class Project private constructor(
         pledged = pledged,
         photo = photo,
         prelaunchActivated = prelaunchActivated,
-        sendMetaCapiEvents= sendMetaCapiEvents,
+        sendMetaCapiEvents = sendMetaCapiEvents,
         tags = tags,
         rewards = rewards,
         slug = slug,
@@ -476,7 +476,7 @@ class Project private constructor(
                 pledged() == other.pledged() &&
                 photo() == other.photo() &&
                 prelaunchActivated() == other.prelaunchActivated() &&
-                    sendMetaCapiEvents()== other.sendMetaCapiEvents() &&
+                sendMetaCapiEvents() == other.sendMetaCapiEvents() &&
                 rewards() == other.rewards() &&
                 slug() == other.slug() &&
                 staffPick() == other.staffPick() &&

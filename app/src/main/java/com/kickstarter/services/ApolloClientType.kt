@@ -101,7 +101,7 @@ interface ApolloClientType {
     fun updateUserPassword(currentPassword: String = "", newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data>
 
     fun userPrivacy(): Observable<UserPrivacyQuery.Data>
-    
+
     fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): Observable<TriggerCapiEventMutation.Data>
 }
 

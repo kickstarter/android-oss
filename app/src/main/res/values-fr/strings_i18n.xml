@@ -36,6 +36,8 @@
   <string name="All_category_name_Projects" formatted="false">Tous les projets %{category_name}</string>
   <string name="All_gone" formatted="false">Épuisé</string>
   <string name="All_or_nothing" formatted="false">Tout ou rien</string>
+  <string name="Allow" formatted="false">Autoriser</string>
+  <string name="Allow_app_to_track" formatted="false">Autoriser cette application à suivre mes activités ?</string>
   <string name="Almost_there" formatted="false">Vous y êtes presque!</string>
   <string name="Amount_previous_amount" formatted="false">Montant : %{amount}, montant précédant : %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Montant : %{amount}, %{reward}</string>
@@ -182,6 +184,7 @@ Cliquez pour réessayer.</string>
   <string name="Daily_digest" formatted="false">Résumé quotidien</string>
   <string name="Daily_summary" formatted="false">Une fois par jour</string>
   <string name="Data_will_appear_here_once" formatted="false">Ces données seront visibles dès que vous aurez reçu votre première contribution.</string>
+  <string name="Decline" formatted="false">Refuser</string>
   <string name="Decrease_pledge" formatted="false">Diminuer mon engagement</string>
   <string name="Delays_or_changes_are_possible" formatted="false">Des retards ou des changements sont possibles.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Supprimer mon compte Kickstarter</string>
@@ -746,6 +749,7 @@ n\'ont rien soutenu.</string>
   <string name="We_re_processing_your_pledge_pull_to_refresh" formatted="false">Votre engagement est en cours de traitement, veuillez tirer sur la page pour actualiser.</string>
   <string name="We_re_simplifying_our_login_process_To_log_in" formatted="false">Notre procédure de connexion est en cours de simplification. Pour accéder à votre compte Kickstarter, saisissez l\'adresse e-mail associée à votre compte Facebook et nous vous enverrons un lien de réinitialisation.</string>
   <string name="We_think_youll_like_these_too" formatted="false">D\'autres projets qui pourraient vous plaire</string>
+  <string name="We_use_personal_data_to_provide_a_good_experience_on_Kickstarter_and_to_help_connect_you_with_projects_you_ll_love" formatted="false">Les données personnelles nous servent à proposer une expérience de qualité sur Kickstarter et à vous présenter des projets susceptibles de vous plaire.</string>
   <string name="We_use_your_activity_internally_to_make_recommendations_for_you" formatted="false">À l\'interne, nous nous servons de vos activités pour vous faire des recommandations. Si vous ne souhaitez pas participer, nous vous invitons à désactiver vos recommandations.</string>
   <string name="We_ve_been_unable_to_send_email" formatted="false">Échec de l\'envoi. Veuillez vérifier l\'orthographe de votre adresse e-mail.</string>
   <string name="We_were_unable_to_connect_to_the_live_stream_chat" formatted="false">Connexion au chat en direct impossible.</string>

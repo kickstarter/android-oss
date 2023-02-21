@@ -36,6 +36,8 @@
   <string name="All_category_name_Projects" formatted="false">All %{category_name} Projects</string>
   <string name="All_gone" formatted="false">All gone</string>
   <string name="All_or_nothing" formatted="false">All-or-nothing</string>
+  <string name="Allow" formatted="false">Allow</string>
+  <string name="Allow_app_to_track" formatted="false">Allow app to track?</string>
   <string name="Almost_there" formatted="false">Almost there!</string>
   <string name="Amount_previous_amount" formatted="false">Amount: %{amount}, previous amount: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Amount: %{amount}, %{reward}</string>
@@ -182,6 +184,7 @@ Tap to retry</string>
   <string name="Daily_digest" formatted="false">Daily digest</string>
   <string name="Daily_summary" formatted="false">Daily summary</string>
   <string name="Data_will_appear_here_once" formatted="false">Data will appear here once somebody backs your project.</string>
+  <string name="Decline" formatted="false">Decline</string>
   <string name="Decrease_pledge" formatted="false">Decrease pledge</string>
   <string name="Delays_or_changes_are_possible" formatted="false">Delays or changes are possible.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Delete my Kickstarter account</string>
@@ -749,6 +752,7 @@ catch your eye?</string>
   <string name="We_re_processing_your_pledge_pull_to_refresh" formatted="false">We\'re processing your pledge—pull to refresh.</string>
   <string name="We_re_simplifying_our_login_process_To_log_in" formatted="false">We’re simplifying our login process. To access your Kickstarter account, enter the email associated to your Facebook account and we’ll send you a link to set a password</string>
   <string name="We_think_youll_like_these_too" formatted="false">We think you’ll like these, too</string>
+  <string name="We_use_personal_data_to_provide_a_good_experience_on_Kickstarter_and_to_help_connect_you_with_projects_you_ll_love" formatted="false">We use personal data to provide a good experience on Kickstarter, and to help connect you with projects you\'ll love.</string>
   <string name="We_use_your_activity_internally_to_make_recommendations_for_you" formatted="false">We use your activity internally to make recommendations for you. Turn recommendations off to opt out of this.</string>
   <string name="We_ve_been_unable_to_send_email" formatted="false">We\'ve been unable to send email to this address. Please make sure it is typed correctly.</string>
   <string name="We_were_unable_to_connect_to_the_live_stream_chat" formatted="false">We were unable to connect to the live stream chat.</string>

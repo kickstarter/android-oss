@@ -2,10 +2,13 @@ package com.kickstarter.viewmodels
 
 import android.content.SharedPreferences
 import android.util.Pair
+import com.apollographql.apollo.api.CustomTypeValue
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.ApiPaginator
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.graphql.DateTimeAdapter
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
@@ -48,6 +51,9 @@ interface SearchViewModel {
 
         /** Emits a project and ref tag when we should start a project activity.  */
         fun startProjectActivity(): Observable<Pair<Project, RefTag>>
+
+        /** Emits a Project and RefTag pair when we should start the [com.kickstarter.ui.activities.PreLaunchProjectPageActivity].  */
+        fun startPreLaunchProjectActivity(): Observable<Pair<Project, RefTag>>
     }
 
     class ViewModel(environment: Environment) :
@@ -91,10 +97,13 @@ interface SearchViewModel {
         private val isFetchingProjects = BehaviorSubject.create<Boolean>()
         private val popularProjects = BehaviorSubject.create<List<Project>>()
         private val searchProjects = BehaviorSubject.create<List<Project>>()
-        private val startProjectActivity: Observable<Pair<Project, RefTag>>
+        private val startProjectActivity = PublishSubject.create<Pair<Project, RefTag>>()
+        private val startPreLaunchProjectActivity = PublishSubject.create<Pair<Project, RefTag>>()
+        private val optimizely = requireNotNull(environment.optimizely())
 
         @JvmField
         val inputs: Inputs = this
+
         @JvmField
         val outputs: Outputs = this
 
@@ -112,6 +121,10 @@ interface SearchViewModel {
 
         override fun startProjectActivity(): Observable<Pair<Project, RefTag>> {
             return startProjectActivity
+        }
+
+        override fun startPreLaunchProjectActivity(): Observable<Pair<Project, RefTag>> {
+            return startPreLaunchProjectActivity
         }
 
         override fun isFetchingProjects(): Observable<Boolean> {
@@ -226,9 +239,10 @@ interface SearchViewModel {
                     )
                 }
 
-            startProjectActivity =
+            val selectedProject =
                 Observable.combineLatest<String, List<Project>, Pair<String, List<Project>>>(
-                    search, projects
+                    search,
+                    projects
                 ) { a: String, b: List<Project> ->
                     Pair.create(a, b)
                 }
@@ -239,6 +253,16 @@ interface SearchViewModel {
                         val projectClicked = searchTermAndProjectsAndProjectClicked.second
                         projectAndRefTag(searchTerm, currentProjects, projectClicked)
                     }
+
+            selectedProject.subscribe {
+                if (it.first.launchedAt() == DateTimeAdapter().decode(CustomTypeValue.fromRawValue(0)) &&
+                    optimizely.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_PRE_LAUNCH_SCREEN)
+                ) {
+                    startPreLaunchProjectActivity.onNext(it)
+                } else {
+                    startProjectActivity.onNext(it)
+                }
+            }
 
             params
                 .compose(Transformers.takePairWhen(discoverEnvelope))

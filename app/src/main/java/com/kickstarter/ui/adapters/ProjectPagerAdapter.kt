@@ -46,7 +46,9 @@ class ProjectPagerAdapter(
         // - fragmentManager.fragments will iterate over all fragments, we are just interested
         // here in those who implement the Configure interface
         fragmentManager.fragments.filter { fragment -> fragment is Configure }.forEach { fragment ->
-            (fragment as Configure).configureWith(projectData)
+            if (fragment.isAdded) {
+                (fragment as Configure).configureWith(projectData)
+            }
         }
     }
 }

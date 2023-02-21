@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels
 
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentConfigType
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
@@ -11,6 +10,7 @@ import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.activities.SignupActivity
+import com.kickstarter.viewmodels.usecases.LoginUseCase
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -55,8 +55,8 @@ interface SignupViewModel {
         Inputs,
         Outputs {
         private val client: ApiClientType
-        private val currentUser: CurrentUserType
         private val currentConfig: CurrentConfigType
+        private val loginUserCase = LoginUseCase(environment)
         private fun submit(data: SignupData): Observable<AccessTokenEnvelope> {
             return client.signup(
                 data.name,
@@ -72,7 +72,7 @@ interface SignupViewModel {
         }
 
         private fun success(envelope: AccessTokenEnvelope) {
-            currentUser.login(envelope.user(), envelope.accessToken())
+            loginUserCase.login(envelope.user(), envelope.accessToken())
             signupSuccess.onNext(null)
         }
 
@@ -95,10 +95,12 @@ interface SignupViewModel {
         init {
             client = requireNotNull(environment.apiClient())
             currentConfig = requireNotNull(environment.currentConfig())
-            currentUser = requireNotNull(environment.currentUser())
 
             val signupData = Observable.combineLatest(
-                name, email, password, sendNewslettersIsChecked
+                name,
+                email,
+                password,
+                sendNewslettersIsChecked
             ) { name: String, email: String, password: String, sendNewsletters: Boolean ->
                 SignupData(
                     name,

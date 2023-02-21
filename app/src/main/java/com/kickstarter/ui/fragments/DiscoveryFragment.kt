@@ -25,6 +25,7 @@ import com.kickstarter.libs.utils.AnimationUtils.crossFadeAndReverse
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.getPreLaunchProjectActivity
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.getSetPasswordActivity
 import com.kickstarter.models.Activity
@@ -94,7 +95,9 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
 
         binding?.discoverySwipeRefreshLayout?.let {
             SwipeRefresher(
-                this, it, { this.viewModel.inputs.refresh() }
+                this,
+                it,
+                { this.viewModel.inputs.refresh() }
             ) { this.viewModel.outputs.isFetchingProjects() }
         }
 
@@ -157,6 +160,11 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startProjectActivity(it.first, it.second) }
+
+        this.viewModel.outputs.startPreLaunchProjectActivity()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { startPreLaunchProjectActivity(it.first, it.second) }
 
         this.viewModel.outputs.showLoginTout()
             .compose(bindToLifecycle())
@@ -223,7 +231,6 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         }
 
     private fun lazyHeartCrossFadeAnimation(): AnimatorSet? {
-
         if (heartsAnimation == null) {
             binding?.discoveryEmptyHeartOutline?.let { discoveryEmptyHeartOutline ->
                 binding?.discoveryEmptyHeartFilled?.let {
@@ -269,6 +276,12 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         }
     }
 
+    private fun startPreLaunchProjectActivity(project: Project, refTag: RefTag) {
+        val intent = Intent().getPreLaunchProjectActivity(requireContext(), project.slug())
+            .putExtra(IntentKey.REF_TAG, refTag)
+        startActivity(intent)
+        TransitionUtils.transition(requireContext(), TransitionUtils.slideInFromRight())
+    }
     private fun startProjectActivity(project: Project, refTag: RefTag) {
         context?.let {
             val intent = Intent().getProjectIntent(it)

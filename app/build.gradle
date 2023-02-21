@@ -157,6 +157,9 @@ android {
     testOptions {
         unitTests {
             includeAndroidResources = true
+            all {
+                jvmArgs "-Xmx4g"
+            }
         }
     }
 
@@ -262,8 +265,11 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
 
     // GLIDE
-    implementation 'com.github.bumptech.glide:glide:4.13.2'
-    kapt 'com.github.bumptech.glide:compiler:4.13.2'
+    implementation 'com.github.bumptech.glide:glide:4.14.2'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
+    kapt 'com.github.bumptech.glide:compiler:4.14.2'
+    //Compose Glide
+    implementation("io.coil-kt:coil-compose:2.0.0-rc01")
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:31.0.2')
@@ -280,6 +286,7 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:1.4.0-alpha03"
     implementation "androidx.compose.runtime:runtime-rxjava2:$compose_version"
     implementation 'androidx.activity:activity-compose:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout-compose:1.0.1'
 
     // Zoom on Images
     implementation 'io.github.aghajari:ZoomHelper:1.1.0'

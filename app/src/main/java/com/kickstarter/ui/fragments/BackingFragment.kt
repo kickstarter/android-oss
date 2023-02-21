@@ -21,7 +21,6 @@ import com.kickstarter.libs.Either
 import com.kickstarter.libs.SwipeRefresher
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.setGone
@@ -30,9 +29,9 @@ import com.kickstarter.ui.activities.BackingActivity
 import com.kickstarter.ui.adapters.RewardAndAddOnsAdapter
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.BackingFragmentViewModel
-import com.squareup.picasso.Picasso
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers.io
 
@@ -60,7 +59,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
 
         this.viewModel.outputs.backerAvatar()
             .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe { setBackerImageView(it) }
 
         this.viewModel.outputs.backerName()
@@ -326,10 +325,10 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
     }
 
     private fun setBackerImageView(url: String) {
-        context?.apply {
-            Picasso.get().load(url)
-                .transform(CircleTransformation())
-                .into(binding?.backingAvatar)
+        activity?.runOnUiThread {
+            context?.apply {
+                binding?.backingAvatar?.loadCircleImage(url)
+            }
         }
     }
 

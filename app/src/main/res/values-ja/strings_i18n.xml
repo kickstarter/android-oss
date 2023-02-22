@@ -36,6 +36,8 @@
   <string name="All_category_name_Projects" formatted="false">%{category_name} の全プロジェクト</string>
   <string name="All_gone" formatted="false">終了</string>
   <string name="All_or_nothing" formatted="false">All-or-nothing 方式</string>
+  <string name="Allow" formatted="false">許可する</string>
+  <string name="Allow_app_to_track" formatted="false">アプリによる追跡を許可しますか？</string>
   <string name="Almost_there" formatted="false">もう少しです!</string>
   <string name="Amount_previous_amount" formatted="false">金額: %{amount}, 以前の金額: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">金額：%{amount}、%{reward}</string>
@@ -180,6 +182,7 @@
   <string name="Daily_digest" formatted="false">デイリーダイジェスト</string>
   <string name="Daily_summary" formatted="false">1日1回の概要</string>
   <string name="Data_will_appear_here_once" formatted="false">誰かがプロジェクトをバック（支援）すると、ここにデータが表示されます。</string>
+  <string name="Decline" formatted="false">拒否する</string>
   <string name="Decrease_pledge" formatted="false">プレッジ額を下げる</string>
   <string name="Delays_or_changes_are_possible" formatted="false">遅延や変更が発生することもあります。</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Kickstarter アカウントを削除</string>
@@ -744,6 +747,7 @@
   <string name="We_re_processing_your_pledge_pull_to_refresh" formatted="false">プレッジを処理中です。リフレッシュするにはプルしてください。</string>
   <string name="We_re_simplifying_our_login_process_To_log_in" formatted="false">Kickstarter ではログインの手続きが簡素化されます。Kickstarter アカウントにアクセスするには、Facebook アカウントに登録されているメールアドレスを入力してください。パスワードを設定するためのリンクをお送りします。</string>
   <string name="We_think_youll_like_these_too" formatted="false">その他おすすめプロジェクト</string>
+  <string name="We_use_personal_data_to_provide_a_good_experience_on_Kickstarter_and_to_help_connect_you_with_projects_you_ll_love" formatted="false">Kickstarter ではより良いユーザー体験を提供し気に入っていただけそうなプロジェクトにおつなげするために個人データを使用しています。</string>
   <string name="We_use_your_activity_internally_to_make_recommendations_for_you" formatted="false">あなたのアクティビティをもとにおすすめの提供を行っています。オプトアウトするにはおすすめ機能をオフにしてください。</string>
   <string name="We_ve_been_unable_to_send_email" formatted="false">このアドレスにメールを送信できませんでした。メールアドレスが正確に入力されていることをご確認ください。</string>
   <string name="We_were_unable_to_connect_to_the_live_stream_chat" formatted="false">ライブ配信への接続に失敗。</string>

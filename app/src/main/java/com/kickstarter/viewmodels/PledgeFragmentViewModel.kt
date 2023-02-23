@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.text.SpannableString
 import android.util.Pair
 import androidx.annotation.NonNull
+import com.facebook.appevents.cloudbridge.ConversionsAPIEventName
 import com.kickstarter.R
 import com.kickstarter.libs.Config
 import com.kickstarter.libs.Environment
@@ -48,6 +49,7 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.PledgeFragment
 import com.kickstarter.ui.viewholders.State
+import com.kickstarter.viewmodels.usecases.SendCAPIEventUseCase
 import com.stripe.android.StripeIntentResult
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import rx.Observable
@@ -398,6 +400,7 @@ interface PledgeFragmentViewModel {
         private val shippingAmount = BehaviorSubject.create<CharSequence>()
         private val shippingRulesAndProject = BehaviorSubject.create<Pair<List<ShippingRule>, Project>>()
         private val shippingRulesSectionIsGone = BehaviorSubject.create<Boolean>()
+
         // - when having add-ons the shipping location is an static field, no changes allowed in there
         private val shippingRuleStaticIsGone = BehaviorSubject.create<Boolean>()
         private val shippingSummaryAmount = BehaviorSubject.create<CharSequence>()
@@ -433,7 +436,7 @@ interface PledgeFragmentViewModel {
         private val projectTitle = BehaviorSubject.create<String>()
 
         private val apolloClient = requireNotNull(environment.apolloClient())
-        private val optimizely = environment.optimizely()
+        private val optimizely = requireNotNull(environment.optimizely())
         private val cookieManager = requireNotNull(environment.cookieManager())
         private val currentConfig = requireNotNull(environment.currentConfig())
         private val currentUser = requireNotNull(environment.currentUser())
@@ -1193,6 +1196,24 @@ interface PledgeFragmentViewModel {
                 .compose(bindToLifecycle())
                 .subscribe { this.showSelectedCard.onNext(Pair(it, CardState.SELECTED)) }
 
+            val changeCard = Observable.merge(
+                this.cardSelected,
+                this.cardSaved.compose<Pair<StoredCard, Int>>(zipPair(this.addedCardPosition))
+            ).map {
+                it.second
+            }.distinctUntilChanged()
+
+            SendCAPIEventUseCase(optimizely, sharedPreferences)
+                .sendCAPIEvent(
+                    project
+                        .compose(takeWhen(changeCard)),
+                    apolloClient,
+                    ConversionsAPIEventName.ADDED_PAYMENT_INFO
+                )
+                .compose(bindToLifecycle())
+                .subscribe {
+                }
+
             // - Present PaymentSheet if user logged in, and add card button pressed
             val shouldPresentPaymentSheet = this.newCardButtonClicked
                 .withLatestFrom(project) { _, latestProject -> latestProject }
@@ -1590,8 +1611,9 @@ interface PledgeFragmentViewModel {
                         }
                         PledgeReason.UPDATE_PAYMENT,
                         PledgeReason.FIX_PLEDGE -> {
-                            if (!isNoReward)
+                            if (!isNoReward) {
                                 this.bonusSummaryIsGone.onNext(!hasBonus)
+                            }
                         }
                         else -> {}
                     }

@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels.projectpage
 import android.content.Intent
 import android.util.Pair
 import androidx.annotation.NonNull
+import com.facebook.appevents.cloudbridge.ConversionsAPIEventName
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.ActivityViewModel
@@ -53,6 +54,7 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.data.VideoModelElement
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
+import com.kickstarter.viewmodels.usecases.SendCAPIEventUseCase
 import com.kickstarter.viewmodels.usecases.ShowPledgeFragmentUseCase
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -226,10 +228,10 @@ interface ProjectPageViewModel {
         fun startMessagesActivity(): Observable<Project>
 
         /** Emits when we should start [com.kickstarter.ui.activities.UpdateActivity].  */
-        fun startProjectUpdateActivity(): Observable< Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>
+        fun startProjectUpdateActivity(): Observable<Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>
 
         /** Emits when we should start [com.kickstarter.ui.activities.UpdateActivity].  */
-        fun startProjectUpdateToRepliesDeepLinkActivity(): Observable< Pair<Pair<String, String>, Pair<Project, ProjectData>>>
+        fun startProjectUpdateToRepliesDeepLinkActivity(): Observable<Pair<Pair<String, String>, Pair<Project, ProjectData>>>
 
         /** Emits when we the pledge was successful and should start the [com.kickstarter.ui.activities.ThanksActivity]. */
         fun startThanksActivity(): Observable<Pair<CheckoutData, PledgeData>>
@@ -323,8 +325,8 @@ interface ProjectPageViewModel {
         private val startRootCommentsForCommentsThreadActivity = PublishSubject.create<Pair<String, ProjectData>>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
         private val startMessagesActivity = PublishSubject.create<Project>()
-        private val startProjectUpdateActivity = PublishSubject.create< Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>()
-        private val startProjectUpdateToRepliesDeepLinkActivity = PublishSubject.create< Pair<Pair<String, String>, Pair<Project, ProjectData>>>()
+        private val startProjectUpdateActivity = PublishSubject.create<Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>()
+        private val startProjectUpdateToRepliesDeepLinkActivity = PublishSubject.create<Pair<Pair<String, String>, Pair<Project, ProjectData>>>()
         private val startThanksActivity = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
         private val updateFragments = BehaviorSubject.create<ProjectData>()
         private val hideVideoPlayer = BehaviorSubject.create<Boolean>()
@@ -332,9 +334,9 @@ interface ProjectPageViewModel {
         private val projectMedia = PublishSubject.create<MediaElement>()
         private val playButtonIsVisible = PublishSubject.create<Boolean>()
         private val backingViewGroupIsVisible = PublishSubject.create<Boolean>()
-        private val updateTabs = PublishSubject.create< Boolean>()
+        private val updateTabs = PublishSubject.create<Boolean>()
         private val onOpenVideoInFullScreen = PublishSubject.create<kotlin.Pair<String, Long>>()
-        private val updateVideoCloseSeekPosition = BehaviorSubject.create< Long>()
+        private val updateVideoCloseSeekPosition = BehaviorSubject.create<Long>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -439,10 +441,11 @@ interface ProjectPageViewModel {
             val projectOnUserChangeSave = initialProject
                 .compose(takeWhen<Project, User>(loggedInUserOnHeartClick))
                 .withLatestFrom(projectData) { initProject, latestProjectData ->
-                    if (latestProjectData.project().isStarred() != initProject.isStarred())
+                    if (latestProjectData.project().isStarred() != initProject.isStarred()) {
                         latestProjectData.project()
-                    else
+                    } else {
                         initProject
+                    }
                 }
                 .switchMap {
                     this.toggleProjectSave(it)
@@ -514,6 +517,12 @@ interface ProjectPageViewModel {
                 savedProjectOnLoginSuccess,
                 projectOnDeepLinkChangeSave
             )
+
+            SendCAPIEventUseCase(optimizely, sharedPreferences)
+                .sendCAPIEvent(currentProject, apolloClient, ConversionsAPIEventName.VIEWED_CONTENT)
+                .compose(bindToLifecycle())
+                .subscribe {
+                }
 
             val projectSavedStatus = Observable.merge(projectOnUserChangeSave, savedProjectOnLoginSuccess, projectOnDeepLinkChangeSave)
 
@@ -727,9 +736,9 @@ interface ProjectPageViewModel {
                 .filter { it.project().hasRewards() }
                 .compose<Pair<ProjectData, Backing>>(combineLatestPair(backing))
                 .map {
-                    val updatedProject = if (it.first.project().isBacking())
+                    val updatedProject = if (it.first.project().isBacking()) {
                         it.first.project().toBuilder().backing(it.second).build()
-                    else it.first.project()
+                    } else it.first.project()
 
                     projectData(it.first.refTagFromIntent(), it.first.refTagFromCookie(), updatedProject)
                 }
@@ -1096,7 +1105,7 @@ interface ProjectPageViewModel {
 
         override fun onVideoPlayButtonClicked() = onVideoPlayButtonClicked.onNext(null)
 
-        override fun updateVideoCloseSeekPosition(): Observable< Long> =
+        override fun updateVideoCloseSeekPosition(): Observable<Long> =
             updateVideoCloseSeekPosition
 
         @NonNull
@@ -1248,10 +1257,11 @@ interface ProjectPageViewModel {
         }
 
         private fun toggleProjectSave(project: Project): Observable<Project> {
-            return if (project.isStarred())
+            return if (project.isStarred()) {
                 unSaveProject(project)
-            else
+            } else {
                 saveProject(project)
+            }
         }
     }
 }

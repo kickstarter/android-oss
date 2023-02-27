@@ -42,7 +42,7 @@ class SendCAPIEventUseCase(
             .filter {
                 it.sendMetaCapiEvents()
             }
-            // .filter { canSendCAPIEventFlag }
+            .filter { canSendCAPIEventFlag }
             .switchMap {
                 GetUserPrivacyUseCase(apolloClient)
                     .getUserPrivacy()

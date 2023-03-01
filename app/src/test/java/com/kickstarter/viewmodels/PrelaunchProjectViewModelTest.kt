@@ -87,7 +87,7 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     private val testScheduler = io.reactivex.schedulers.TestScheduler()
-    
+
     private fun getEnvironment() = environment()
         .toBuilder()
         .apolloClientV2(mockApolloClientV2)
@@ -126,7 +126,7 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
     fun testProject_loadDeepLinkProject() {
         val user = UserFactory.germanUser().toBuilder().chosenCurrency("CAD").build()
         val deadline = DateTime(DateTimeZone.UTC).plusDays(10)
-    
+
         val reducedProject = ProjectFactory.project().toBuilder()
             .watchesCount(10)
             .isStarred(true)

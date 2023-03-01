@@ -117,7 +117,7 @@ interface DeepLinkViewModel {
                 }
                 .filter { ObjectUtils.isNotNull(it.value) }
                 .map { it.value }
-            
+
             uriFromIntent
                 .filter { ObjectUtils.isNotNull(it) }
                 .filter {

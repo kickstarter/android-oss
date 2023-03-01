@@ -422,7 +422,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
             .apolloClient(mockApolloClientForBacking(project))
             .build()
         setUpEnvironment(environment)
-        
+
         val url =
             "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap?save=true"
         val expectedUrl =

@@ -69,8 +69,8 @@ fun PreLaunchProjectPageScreen(
             TopToolBar(
                 right = {
                     ToolbarIconToggleButton(
-                        icon = ImageVector.vectorResource(id = R.drawable.ic_bookmark_dark_outline),
-                        checkedImageVector = ImageVector.vectorResource(id = R.drawable.ic_bookmark_red_filled),
+                        icon = ImageVector.vectorResource(id = R.drawable.icon__heart_outline),
+                        checkedImageVector = ImageVector.vectorResource(id = R.drawable.icon__heart),
                         clickAction = { rightOnClickAction.invoke() },
                         initialState = project?.isStarred() ?: false
                     )
@@ -207,8 +207,8 @@ fun PreLaunchProjectPageScreen(
                     KsButton(
                         defaultText = stringResource(id = R.string.FPO_Notify_me_on_launch),
                         pressedText = stringResource(id = R.string.Saved),
-                        defaultImageVector = ImageVector.vectorResource(id = R.drawable.ic_bookmark_white_outline),
-                        pressedImageVector = ImageVector.vectorResource(id = R.drawable.ic_bookmark_red_filled),
+                        defaultImageVector = ImageVector.vectorResource(id = R.drawable.ic_discovery_heart),
+                        pressedImageVector = ImageVector.vectorResource(id = R.drawable.icon__heart),
                         pressedButtonColor = kds_white,
                         pressedTextColor = kds_support_500,
                         onClickAction = { onButtonClicked.invoke() },

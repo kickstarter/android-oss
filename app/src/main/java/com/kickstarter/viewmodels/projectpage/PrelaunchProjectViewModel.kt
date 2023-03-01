@@ -15,12 +15,14 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.updateProjectWith
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
+import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 
 interface PrelaunchProjectViewModel {
 
@@ -79,11 +81,31 @@ interface PrelaunchProjectViewModel {
 
         init {
 
-            val initialProject = intent
-                .switchMap { slug ->
-                    loadProject(slug)
+            val reducedProject = this.intent.filter {
+                ObjectUtils.isNotNull(it.getParcelableExtra<Project>(IntentKey.PROJECT))
+            }.map { it.getParcelableExtra(IntentKey.PROJECT) as Project? }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { it }
+                .withLatestFrom(
+                    currentConfig.observable(),
+                    currentUser.observable()
+                ) { project, config, user ->
+                    if (user.isPresent()) {
+                        return@withLatestFrom project.updateProjectWith(config, user.getValue())
+                    } else {
+                        return@withLatestFrom project.updateProjectWith(config, null)
+                    }
+                }.delay(1000, TimeUnit.MILLISECONDS, environment.schedulerV2())
+
+            val loadedProject = intent
+                .filter {
+                    ObjectUtils.isNull(it.getParcelableExtra<Project>(IntentKey.PROJECT))
+                }.switchMap { intent ->
+                    loadProject(intent)
                 }
                 .share()
+
+            val initialProject = Observable.merge(reducedProject, loadedProject)
 
             val loggedInUserOnHeartClick = this.currentUser.observable()
                 .compose(Transformers.takeWhenV2(this.bookmarkButtonClicked))
@@ -250,7 +272,6 @@ interface PrelaunchProjectViewModel {
                     return@withLatestFrom project.updateProjectWith(config, null)
                 }
             }
-
         override fun onCleared() {
             disposables.clear()
             super.onCleared()

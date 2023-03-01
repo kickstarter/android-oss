@@ -1,4 +1,5 @@
 @file:JvmName("ProjectExt")
+
 package com.kickstarter.libs.utils.extensions
 
 import android.content.Context
@@ -165,6 +166,7 @@ fun Project.metadataForProject(): ProjectMetadata? =
         this.isFeaturedToday -> ProjectMetadata.CATEGORY_FEATURED
         else -> null
     }
+
 /**
  * Returns 16:9 height relative to input width.
  */
@@ -210,7 +212,6 @@ enum class ProjectMetadata {
  * data and return a new list of projects.
  */
 fun List<Project>.fillRootCategoryForFeaturedProjects(rootCategories: List<Category>): List<Project> {
-
     // Guard against no projects
     if (this.isEmpty()) {
         return ListUtils.empty()
@@ -248,7 +249,6 @@ fun Project.projectNeedsRootCategory(category: Category): Boolean {
 fun Project.updateStartedProjectAndDiscoveryParamsList(
     listOfProjects: List<Pair<Project, DiscoveryParams>>
 ): List<Pair<Project, DiscoveryParams>> {
-
     val position = listOfProjects.indexOfFirst { item ->
         item.first.id() == this.id()
     }
@@ -288,5 +288,32 @@ fun Project.reduce(): Project {
         .backing(backing())
         .availableCardTypes(this.availableCardTypes())
         .category(this.category())
+        .build()
+}
+
+/**
+ * Extension function that will return a reduced copy of the the target project, the fields available
+ * on the reduce copy are those ones required on the next Screens: BackingAddons, PledgeFragment, ThanksActivity
+ *
+ * The end goal is to reduce to the bare minimum the amount of memory required to be serialized on Intents
+ * when presenting screens in order to avoid `android.os.TransactionTooLargeException`
+ */
+fun Project.reduceToPreLaunchProject(): Project {
+    return Project.Builder()
+        .id(this.id())
+        .slug(this.slug())
+        .name(this.name())
+        .creator(this.creator())
+        .blurb(this.blurb())
+        .location(this.location())
+        .category(this.category())
+        .watchesCount(this.watchesCount())
+        .photo(this.photo())
+        .country(this.country())
+        .currentCurrency(this.currentCurrency())
+        .isStarred(this.isStarred())
+        .currency(this.currency())
+        .currencySymbol(this.currencySymbol())
+        .currencyTrailingCode(this.currencyTrailingCode())
         .build()
 }

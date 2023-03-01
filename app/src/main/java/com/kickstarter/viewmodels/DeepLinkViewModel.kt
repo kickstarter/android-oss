@@ -30,6 +30,7 @@ import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import rx.Notification
 import rx.Observable
 import rx.subjects.BehaviorSubject
+import rx.subjects.PublishSubject
 
 interface DeepLinkViewModel {
     interface Outputs {
@@ -59,6 +60,9 @@ interface DeepLinkViewModel {
 
         /** Emits when we should start the [com.kickstarter.ui.activities.ProjectPageActivity].  */
         fun startProjectActivityToSave(): Observable<Uri>
+
+        /** Emits a Project and RefTag pair when we should start the [com.kickstarter.ui.activities.PreLaunchProjectPageActivity].  */
+        fun startPreLaunchProjectActivity(): Observable<Project>
     }
 
     class ViewModel(environment: Environment) :
@@ -79,6 +83,11 @@ interface DeepLinkViewModel {
         private val currentUser = requireNotNull(environment.currentUser())
         private val webEndpoint = requireNotNull(environment.webEndpoint())
         private val projectObservable: Observable<Project>
+        private val startPreLaunchProjectActivity = PublishSubject.create<Project>()
+
+        override fun startPreLaunchProjectActivity(): Observable<Project> {
+            return startPreLaunchProjectActivity
+        }
 
         val outputs: Outputs = this
 
@@ -96,6 +105,19 @@ interface DeepLinkViewModel {
                     startDiscoveryActivity.onNext(it)
                 }
 
+            projectObservable = uriFromIntent
+                .map { ProjectIntentMapper.paramFromUri(it) }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .switchMap {
+                    getProject(it)
+                        .doOnError {
+                            finishDeeplinkActivity.onNext(null)
+                        }
+                }
+                .filter { ObjectUtils.isNotNull(it.value) }
+                .map { it.value }
+            
             uriFromIntent
                 .filter { ObjectUtils.isNotNull(it) }
                 .filter {
@@ -123,9 +145,14 @@ interface DeepLinkViewModel {
                     it.isProjectUri(webEndpoint)
                 }
                 .map { appendRefTagIfNone(it) }
+                .compose(Transformers.combineLatestPair(projectObservable))
                 .compose(bindToLifecycle())
                 .subscribe {
-                    startProjectActivity.onNext(it)
+                    if (it.second.displayPrelaunch() == false) {
+                        startProjectActivity.onNext(it.first)
+                    } else {
+                        startPreLaunchProjectActivity.onNext(it.second)
+                    }
                 }
 
             uriFromIntent
@@ -134,9 +161,15 @@ interface DeepLinkViewModel {
                     it.isProjectSaveUri(webEndpoint)
                 }
                 .map { appendRefTagIfNone(it) }
+                .compose(Transformers.combineLatestPair(projectObservable))
+                .compose(bindToLifecycle())
                 .compose(bindToLifecycle())
                 .subscribe {
-                    startProjectActivityToSave.onNext(it)
+                    if (it.second.displayPrelaunch() == false) {
+                        startProjectActivityToSave.onNext(it.first)
+                    } else {
+                        startPreLaunchProjectActivity.onNext(it.second)
+                    }
                 }
 
             uriFromIntent
@@ -197,20 +230,6 @@ interface DeepLinkViewModel {
                 .subscribe {
                     refreshUserAndFinishActivity(it, currentUser)
                 }
-
-            projectObservable = uriFromIntent
-                .filter { it.isRewardFulfilledDl() }
-                .map { ProjectIntentMapper.paramFromUri(it) }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
-                .switchMap {
-                    getProject(it)
-                        .doOnError {
-                            finishDeeplinkActivity.onNext(null)
-                        }
-                }
-                .filter { ObjectUtils.isNotNull(it.value) }
-                .map { it.value }
 
             projectObservable
                 .filter { it.backing() == null || !it.canUpdateFulfillment() }

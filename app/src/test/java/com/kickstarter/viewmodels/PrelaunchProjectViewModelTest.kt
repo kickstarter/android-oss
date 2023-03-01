@@ -7,6 +7,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.reduceToPreLaunchProject
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
@@ -19,9 +20,13 @@ import com.kickstarter.viewmodels.projectpage.PrelaunchProjectViewModel
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
+import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
 import org.junit.After
 import org.junit.Test
+import rx.schedulers.TestScheduler
 import rx.subjects.BehaviorSubject
+import java.util.concurrent.TimeUnit
 
 class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: PrelaunchProjectViewModel.PrelaunchProjectViewModel
@@ -81,7 +86,13 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
         }
     }
 
-    private fun getEnvironment() = environment().toBuilder().apolloClientV2(mockApolloClientV2).build()
+    private val testScheduler = io.reactivex.schedulers.TestScheduler()
+    
+    private fun getEnvironment() = environment()
+        .toBuilder()
+        .apolloClientV2(mockApolloClientV2)
+        .schedulerV2(testScheduler)
+        .build()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = PrelaunchProjectViewModel.PrelaunchProjectViewModel(environment)
@@ -109,6 +120,26 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
         ProjectIntentMapper.project(intent, MockApolloClientV2()).subscribe {
             resultTest.onNext(prelaunchProject)
         }.addToDisposable(disposables)
+    }
+
+    @Test
+    fun testProject_loadDeepLinkProject() {
+        val user = UserFactory.germanUser().toBuilder().chosenCurrency("CAD").build()
+        val deadline = DateTime(DateTimeZone.UTC).plusDays(10)
+    
+        val reducedProject = ProjectFactory.project().toBuilder()
+            .watchesCount(10)
+            .isStarred(true)
+            .creator(user)
+            .build()
+            .reduceToPreLaunchProject().toBuilder().deadline(deadline).build()
+
+        setUpEnvironment(getEnvironment())
+
+        vm.inputs.configureWith(intent = intent.putExtra(IntentKey.PROJECT, reducedProject))
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+
+        assertEquals(project.value, reducedProject)
     }
 
     @Test

@@ -28,9 +28,10 @@ fun Intent.getProjectIntent(context: Context): Intent {
     return this.setClass(context, ProjectPageActivity::class.java)
 }
 
-fun Intent.getPreLaunchProjectActivity(context: Context, slug: String?): Intent {
+fun Intent.getPreLaunchProjectActivity(context: Context, slug: String?, project: Project?=null): Intent {
     return this.setClass(context, PreLaunchProjectPageActivity::class.java)
         .putExtra(IntentKey.PROJECT_PARAM, slug)
+        .putExtra(IntentKey.PROJECT, project)
 }
 
 /**

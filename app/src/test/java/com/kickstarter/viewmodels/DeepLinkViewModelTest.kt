@@ -26,22 +26,10 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     private val startProjectActivityForUpdate = TestSubscriber<Uri>()
     private val startProjectActivityToSave = TestSubscriber<Uri>()
     private val startProjectActivityForCommentToUpdate = TestSubscriber<Uri>()
+    private val startPreLaunchProjectActivity = TestSubscriber<Project>()
     private val finishDeeplinkActivity = TestSubscriber<Void>()
 
-    fun setUpEnvironment() {
-        vm = DeepLinkViewModel.ViewModel(environment())
-        vm.outputs.startBrowser().subscribe(startBrowser)
-        vm.outputs.startDiscoveryActivity().subscribe(startDiscoveryActivity)
-        vm.outputs.startProjectActivity().subscribe(startProjectActivity)
-        vm.outputs.startProjectActivityForCheckout().subscribe(startProjectActivityForCheckout)
-        vm.outputs.startProjectActivityForComment().subscribe(startProjectActivityForComment)
-        vm.outputs.startProjectActivityForUpdate().subscribe(startProjectActivityForUpdate)
-        vm.outputs.startProjectActivityForCommentToUpdate().subscribe(startProjectActivityForCommentToUpdate)
-        vm.outputs.startProjectActivityToSave().subscribe(startProjectActivityToSave)
-        vm.outputs.finishDeeplinkActivity().subscribe(finishDeeplinkActivity)
-    }
-
-    fun setUpEnvironment(environment: Environment) {
+    fun setUpEnvironment(environment: Environment = environment()) {
         vm = DeepLinkViewModel.ViewModel(environment)
         vm.outputs.startBrowser().subscribe(startBrowser)
         vm.outputs.startDiscoveryActivity().subscribe(startDiscoveryActivity)
@@ -52,6 +40,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         vm.outputs.startProjectActivityForCommentToUpdate().subscribe(startProjectActivityForCommentToUpdate)
         vm.outputs.startProjectActivityToSave().subscribe(startProjectActivityToSave)
         vm.outputs.finishDeeplinkActivity().subscribe(finishDeeplinkActivity)
+        vm.outputs.startPreLaunchProjectActivity().subscribe(startPreLaunchProjectActivity)
     }
 
     @Test
@@ -66,6 +55,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForCheckout.assertNoValues()
         startProjectActivityForComment.assertNoValues()
         startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
     }
 
     @Test
@@ -80,6 +70,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForCheckout.assertNoValues()
         startProjectActivityForComment.assertNoValues()
         startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
     }
 
     @Test
@@ -94,6 +85,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForComment.assertNoValues()
         startProjectActivityForCheckout.assertValue(Uri.parse(url))
         startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
     }
 
     @Test
@@ -108,6 +100,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForCheckout.assertNoValues()
         startProjectActivityForComment.assertValue(Uri.parse(url))
         startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
     }
 
     @Test
@@ -124,6 +117,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startBrowser.assertNoValues()
         startProjectActivityForComment.assertValue(Uri.parse(url))
         startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
     }
 
     @Test
@@ -139,6 +133,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForComment.assertNoValues()
         startProjectActivityForUpdate.assertValue(Uri.parse(url))
         startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
     }
 
     @Test
@@ -155,6 +150,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startBrowser.assertNoValues()
         startProjectActivityForUpdate.assertValue(Uri.parse(url))
         startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
     }
 
     @Test
@@ -170,6 +166,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForUpdate.assertNoValues()
         startProjectActivityForCommentToUpdate.assertValue(Uri.parse(url))
         startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
     }
 
     @Test
@@ -187,6 +184,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForUpdate.assertNoValues()
         startProjectActivityForCommentToUpdate.assertValue(Uri.parse(url))
         startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
     }
 
     @Test
@@ -203,25 +201,45 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForComment.assertNoValues()
         startProjectActivityForCheckout.assertValue(Uri.parse(expectedUrl))
         startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
     }
 
     @Test
     fun testProjectDeepLinkWithRefTag_startsProjectActivity() {
-        setUpEnvironment()
+        val mockUser = MockCurrentUser()
+        val project = ProjectFactory.backedProject().toBuilder().displayPrelaunch(false)
+            .deadline(DateTime.now().plusDays(2)).build()
+
+        val environment = environment().toBuilder()
+            .apolloClient(mockApolloClientForBacking(project))
+            .currentUser(mockUser)
+            .build()
+        setUpEnvironment(environment)
         val url =
             "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap?ref=discovery"
+
         vm.intent(intentWithData(url))
+
         startProjectActivity.assertValue(Uri.parse(url))
         startBrowser.assertNoValues()
         startDiscoveryActivity.assertNoValues()
         startProjectActivityForComment.assertNoValues()
         startProjectActivityForCheckout.assertNoValues()
         startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
     }
 
     @Test
     fun testProjectDeepLinkWithoutRefTag_startsProjectActivity() {
-        setUpEnvironment()
+        val project = ProjectFactory.backedProject().toBuilder().displayPrelaunch(false)
+            .deadline(DateTime.now().plusDays(2)).build()
+
+        val environment = environment().toBuilder()
+            .apolloClient(mockApolloClientForBacking(project))
+            .build()
+
+        setUpEnvironment(environment)
+
         val url =
             "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap"
         vm.intent(intentWithData(url))
@@ -233,6 +251,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForComment.assertNoValues()
         startProjectActivityForCheckout.assertNoValues()
         startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
     }
 
     @Test
@@ -246,6 +265,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForComment.assertNoValues()
         startProjectActivityForCheckout.assertNoValues()
         startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
     }
 
     @Test
@@ -262,6 +282,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startBrowser.assertNoValues()
         finishDeeplinkActivity.assertValueCount(1)
         startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
     }
 
     @Test
@@ -278,6 +299,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startBrowser.assertNoValues()
         finishDeeplinkActivity.assertValueCount(1)
         startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
     }
 
     @Test
@@ -292,6 +314,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startBrowser.assertNoValues()
         finishDeeplinkActivity.assertNoValues()
         startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
     }
 
     @Test
@@ -318,6 +341,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForUpdate.assertNoValues()
         finishDeeplinkActivity.assertValueCount(1)
         startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
     }
 
     @Test
@@ -344,6 +368,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForUpdate.assertNoValues()
         finishDeeplinkActivity.assertValueCount(1)
         startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
     }
 
     @Test
@@ -368,6 +393,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForUpdate.assertNoValues()
         finishDeeplinkActivity.assertValueCount(1)
         startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
     }
 
     @Test
@@ -384,21 +410,23 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         vm.intent(intentWithData(emails))
         startBrowser.assertValueCount(1)
         startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
     }
 
     @Test
     fun testProjectSaveLink_startsProjectPageActivity() {
+        val project = ProjectFactory.backedProject().toBuilder().displayPrelaunch(false)
+            .deadline(DateTime.now().plusDays(2)).build()
 
+        val environment = environment().toBuilder()
+            .apolloClient(mockApolloClientForBacking(project))
+            .build()
+        setUpEnvironment(environment)
+        
         val url =
             "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap?save=true"
         val expectedUrl =
             "$url&ref=android_deep_link"
-
-        val environment = environment()
-            .toBuilder()
-            .build()
-
-        setUpEnvironment(environment)
 
         vm.intent(intentWithData(url))
         startProjectActivityToSave.assertValue(Uri.parse(expectedUrl))
@@ -407,6 +435,61 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForCheckout.assertNoValues()
         startProjectActivityForComment.assertNoValues()
         startBrowser.assertNoValues()
+    }
+
+    @Test
+    fun testProjectSaveLink_startsPreLaunchProjectPageActivity() {
+        val mockUser = MockCurrentUser()
+        val project = ProjectFactory.backedProject().toBuilder().displayPrelaunch(true)
+            .deadline(DateTime.now().plusDays(2)).build()
+
+        val environment = environment().toBuilder()
+            .apolloClient(mockApolloClientForBacking(project))
+            .build()
+        setUpEnvironment(environment)
+
+        val url =
+            "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap?save=true"
+        val expectedUrl =
+            "$url&ref=android_deep_link"
+
+        vm.intent(intentWithData(url))
+        startProjectActivityToSave.assertNoValues()
+        startDiscoveryActivity.assertNoValues()
+        startProjectActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startBrowser.assertNoValues()
+        finishDeeplinkActivity.assertValueCount(1)
+        startPreLaunchProjectActivity.assertValueCount(1)
+    }
+
+    @Test
+    fun testProjectSaveLink_startPrelauchProjectActivity() {
+        val mockUser = MockCurrentUser()
+        val project = ProjectFactory.backedProject().toBuilder().displayPrelaunch(true)
+            .deadline(DateTime.now().plusDays(2)).build()
+
+        val environment = environment().toBuilder()
+            .apolloClient(mockApolloClientForBacking(project))
+            .currentUser(mockUser)
+            .build()
+        setUpEnvironment(environment)
+
+        val url =
+            "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap?save=true"
+        val expectedUrl =
+            "$url&ref=android_deep_link"
+
+        vm.intent(intentWithData(url))
+        startProjectActivityToSave.assertNoValues()
+        startDiscoveryActivity.assertNoValues()
+        startProjectActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startBrowser.assertNoValues()
+        finishDeeplinkActivity.assertValueCount(1)
+        startPreLaunchProjectActivity.assertValueCount(1)
     }
 
     private fun mockApiSetBacking(backing: Backing, completed: Boolean): MockApiClient {

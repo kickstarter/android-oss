@@ -5,6 +5,8 @@ import android.net.Uri
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.models.OptimizelyFeature
+import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApiClient
@@ -439,13 +441,21 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testProjectSaveLink_startsPreLaunchProjectPageActivity() {
-        val mockUser = MockCurrentUser()
         val project = ProjectFactory.backedProject().toBuilder().displayPrelaunch(true)
             .deadline(DateTime.now().plusDays(2)).build()
 
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+
         val environment = environment().toBuilder()
             .apolloClient(mockApolloClientForBacking(project))
+            .optimizely(mockExperimentsClientType)
             .build()
+
         setUpEnvironment(environment)
 
         val url =
@@ -470,9 +480,17 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.backedProject().toBuilder().displayPrelaunch(true)
             .deadline(DateTime.now().plusDays(2)).build()
 
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+
         val environment = environment().toBuilder()
             .apolloClient(mockApolloClientForBacking(project))
             .currentUser(mockUser)
+            .optimizely(mockExperimentsClientType)
             .build()
         setUpEnvironment(environment)
 

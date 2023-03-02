@@ -8,6 +8,7 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.UrlUtils.appendRefTag
@@ -85,9 +86,7 @@ interface DeepLinkViewModel {
         private val projectObservable: Observable<Project>
         private val startPreLaunchProjectActivity = PublishSubject.create<Project>()
 
-        override fun startPreLaunchProjectActivity(): Observable<Project> {
-            return startPreLaunchProjectActivity
-        }
+        private val optimizely = requireNotNull(environment.optimizely())
 
         val outputs: Outputs = this
 
@@ -148,10 +147,10 @@ interface DeepLinkViewModel {
                 .compose(Transformers.combineLatestPair(projectObservable))
                 .compose(bindToLifecycle())
                 .subscribe {
-                    if (it.second.displayPrelaunch() == false) {
-                        startProjectActivity.onNext(it.first)
-                    } else {
+                    if (it.second.displayPrelaunch() == true && optimizely.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_PRE_LAUNCH_SCREEN)) {
                         startPreLaunchProjectActivity.onNext(it.second)
+                    } else {
+                        startProjectActivity.onNext(it.first)
                     }
                 }
 
@@ -165,10 +164,10 @@ interface DeepLinkViewModel {
                 .compose(bindToLifecycle())
                 .compose(bindToLifecycle())
                 .subscribe {
-                    if (it.second.displayPrelaunch() == false) {
-                        startProjectActivityToSave.onNext(it.first)
-                    } else {
+                    if (it.second.displayPrelaunch() == true && optimizely.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_PRE_LAUNCH_SCREEN)) {
                         startPreLaunchProjectActivity.onNext(it.second)
+                    } else {
+                        startProjectActivityToSave.onNext(it.first)
                     }
                 }
 
@@ -338,5 +337,7 @@ interface DeepLinkViewModel {
         override fun finishDeeplinkActivity(): Observable<Void> = finishDeeplinkActivity
 
         override fun startProjectActivityToSave(): Observable<Uri> = startProjectActivityToSave
+
+        override fun startPreLaunchProjectActivity(): Observable<Project> = startPreLaunchProjectActivity
     }
 }

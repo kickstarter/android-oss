@@ -2,6 +2,8 @@ package com.kickstarter.ui.viewholders
 
 import android.util.Pair
 import android.view.View
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import com.kickstarter.R
 import com.kickstarter.databinding.FeaturedSearchResultViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -24,27 +26,40 @@ class FeaturedSearchResultViewHolder(
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { binding.searchResultDeadlineCountdownTextView.text = it }
+
         viewModel.outputs.notifyDelegateOfResultClick()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { this.delegate.projectSearchResultClick(this, it) }
+
         viewModel.outputs.percentFundedTextViewText()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { binding.searchResultPercentFundedTextView.text = it }
+
         viewModel.outputs.projectForDeadlineCountdownUnitTextView()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { binding.searchResultDeadlineUnitTextView.text = it.deadlineCountdownDetail(context(), ksString) }
+
         viewModel.outputs.projectNameTextViewText()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { binding.projectNameTextView.text = it }
+
         viewModel.outputs.projectPhotoUrl()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { setProjectImageUrl(it) }
         binding.searchResultFundedTextView.setText(R.string.discovery_baseball_card_stats_funded)
+
+        viewModel.outputs.displayPrelaunchProjectBadge()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                binding.searchResultGroup.isGone = it
+                binding.searchResultComingSoon.isVisible = it
+            }
     }
 
     @Throws(Exception::class)

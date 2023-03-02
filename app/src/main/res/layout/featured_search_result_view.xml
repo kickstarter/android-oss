@@ -1,111 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
-  xmlns:card_view="http://schemas.android.com/apk/res-auto"
-  android:id="@+id/featured_search_result_view"
-  android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  android:orientation="vertical"
-  android:paddingEnd="@dimen/search_padding_x"
-  android:paddingStart="@dimen/search_padding_x">
-
-  <androidx.cardview.widget.CardView
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/featured_search_result_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_2"
-    android:adjustViewBounds="true"
-    android:focusable="true"
-    android:foreground="@drawable/click_indicator_light"
-    card_view:cardElevation="@dimen/card_no_elevation"
-    card_view:cardBackgroundColor="@color/kds_transparent"
-    card_view:cardCornerRadius="0dp">
+    android:orientation="vertical"
+    android:paddingStart="@dimen/search_padding_x"
+    android:paddingEnd="@dimen/search_padding_x">
 
-    <RelativeLayout
-      android:background="@drawable/rect_white_grey_stroke"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content">
-
-      <ImageView
-        android:id="@+id/project_image_view"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/search_result_featured_photo_height"
-        android:background="@drawable/gray_gradient"
-        android:scaleType="centerCrop"
-        tools:ignore="ContentDescription" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_2"
+        android:adjustViewBounds="true"
+        android:focusable="true"
+        android:foreground="@drawable/click_indicator_light"
+        card_view:cardBackgroundColor="@color/kds_transparent"
+        card_view:cardCornerRadius="0dp"
+        card_view:cardElevation="@dimen/card_no_elevation">
 
-      <LinearLayout
-        android:layout_alignBottom="@id/project_image_view"
-        android:orientation="vertical"
-        android:background="@color/kds_white"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+      <androidx.constraintlayout.widget.ConstraintLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@drawable/rect_white_grey_stroke"
+          android:paddingBottom="@dimen/grid_2">
 
-        <include layout="@layout/horizontal_line_1dp_view" />
+        <ImageView
+            android:id="@+id/project_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/search_result_featured_photo_height"
+            android:background="@drawable/gray_gradient"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <include
+            layout="@layout/horizontal_line_1dp_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/project_image_view" />
 
         <TextView
-          android:id="@+id/project_name_text_view"
-          style="@style/Headline"
-          android:fontFamily="normal"
-          android:layout_marginStart="@dimen/grid_2"
-          android:layout_marginEnd="@dimen/grid_2"
-          android:layout_marginTop="@dimen/grid_2"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:maxLines="2"
-          android:ellipsize="end"
-          tools:text="Gravity: The Weighted Blanket for Sleep, Stress and Anxiety" />
+            android:id="@+id/project_name_text_view"
+            style="@style/Headline"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/grid_2"
+            android:layout_marginTop="@dimen/grid_2"
+            android:ellipsize="end"
+            android:fontFamily="normal"
+            android:maxLines="2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/project_image_view"
+            tools:text="Gravity: The Weighted Blanket for Sleep, Stress and Anxiety" />
 
-        <LinearLayout
-          android:id="@+id/featured_search_result_stats"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_margin="@dimen/grid_2"
-          android:orientation="horizontal">
+        <TextView
+            android:id="@+id/search_result_coming_soon"
+            style="@style/Caption1PrimaryMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/grid_2"
+            android:layout_marginTop="@dimen/grid_2"
+            android:layout_marginBottom="@dimen/grid_2"
+            android:textColor="@color/kds_create_700"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/project_name_text_view"
+            android:visibility="gone"
+            android:text="@string/FPO_Coming_soon" />
 
-          <TextView
+        <TextView
             android:id="@+id/search_result_percent_funded_text_view"
             style="@style/BodyPrimaryMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/grid_2"
+            android:layout_marginTop="@dimen/grid_2"
+            android:layout_marginBottom="@dimen/grid_2"
             android:textColor="@color/kds_create_700"
-            android:layout_marginEnd="@dimen/grid_1_half"
-            tools:text="8,000%"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/project_name_text_view"
+            tools:text="8,000%" />
 
-          <TextView
+        <TextView
             android:id="@+id/search_result_funded_text_view"
             style="@style/BodySecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/grid_2"
-            tools:text="funded"/>
+            android:layout_marginStart="@dimen/grid_1_half"
+            android:layout_marginEnd="@dimen/grid_5_half"
+            app:layout_constraintStart_toEndOf="@+id/search_result_percent_funded_text_view"
+            app:layout_constraintTop_toTopOf="@+id/search_result_percent_funded_text_view"
+            tools:text="funded" />
 
-          <TextView
+        <TextView
             android:id="@+id/search_result_deadline_countdown_text_view"
             style="@style/BodyPrimaryMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/grid_1_half"
-            tools:text="25"/>
+            android:layout_marginStart="@dimen/grid_5_half"
+            app:layout_constraintStart_toEndOf="@+id/search_result_funded_text_view"
+            app:layout_constraintTop_toTopOf="@+id/search_result_percent_funded_text_view"
+            tools:text="25" />
 
-          <TextView
+        <TextView
             android:id="@+id/search_result_deadline_unit_text_view"
             style="@style/BodySecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="days to go"/>
+            android:layout_marginStart="@dimen/grid_1_half"
+            app:layout_constraintStart_toEndOf="@+id/search_result_deadline_countdown_text_view"
+            app:layout_constraintTop_toTopOf="@+id/search_result_percent_funded_text_view"
+            tools:text="days to go" />
 
-        </LinearLayout>
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/search_result_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="search_result_percent_funded_text_view,search_result_funded_text_view,search_result_deadline_countdown_text_view,search_result_deadline_unit_text_view" />
 
-      </LinearLayout>
+      </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </RelativeLayout>
+    </androidx.cardview.widget.CardView>
 
-  </androidx.cardview.widget.CardView>
-
-  <include layout="@layout/horizontal_line_1dp_view"
-    android:layout_width="match_parent"
-    android:layout_height="1dp"
-    android:layout_marginTop="@dimen/grid_3" />
+    <include
+        layout="@layout/horizontal_line_1dp_view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/grid_3" />
 
 </LinearLayout>

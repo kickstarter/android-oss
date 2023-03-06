@@ -5,6 +5,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.webkit.WebView
 import androidx.appcompat.app.AlertDialog
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.kickstarter.R
 import com.kickstarter.databinding.SurveyResponseLayoutBinding
 import com.kickstarter.libs.BaseActivity
@@ -35,6 +37,7 @@ class SurveyResponseActivity : BaseActivity<SurveyResponseViewModel.ViewModel>()
         super.onCreate(savedInstanceState)
         binding = SurveyResponseLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        Firebase.analytics
 
         binding.surveyResponseWebView.registerRequestHandlers(
             Arrays.asList(

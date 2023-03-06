@@ -30,6 +30,7 @@ import com.kickstarter.libs.DeviceRegistrarType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.ExperimentsClientTypeKt;
+import com.kickstarter.libs.FirebaseAnalyticsTrackingClient;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.KSCurrency;
@@ -152,7 +153,8 @@ public class ApplicationModule {
     final @NonNull SharedPreferences sharedPreferences,
     final @NonNull Stripe stripe,
     final @NonNull WebClientType webClient,
-    final @NonNull @WebEndpoint String webEndpoint) {
+    final @NonNull @WebEndpoint String webEndpoint,
+    final @NonNull FirebaseAnalyticsTrackingClient firebaseAnalyticsClient) {
 
     return Environment.builder()
       .activitySamplePreference(activitySamplePreference)
@@ -183,7 +185,15 @@ public class ApplicationModule {
       .stripe(stripe)
       .webClient(webClient)
       .webEndpoint(webEndpoint)
+      .firebaseAnalyticsTrackingClient(firebaseAnalyticsClient)
       .build();
+  }
+
+  @Provides
+  @Nonnull
+  @Singleton
+  static FirebaseAnalyticsTrackingClient providefirebaseAnalyticsTrackingClient(final @ApplicationContext @NonNull Context context,  final @NonNull ExperimentsClientType experimentsClientType, final @NonNull SharedPreferences sharedPreferences) {
+    return new FirebaseAnalyticsTrackingClient(context, experimentsClientType, sharedPreferences);
   }
 
   @Provides

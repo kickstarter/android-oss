@@ -41,7 +41,8 @@ class Environment private constructor(
     private val sharedPreferences: SharedPreferences?,
     private val stripe: Stripe?,
     private val webClient: WebClientType?,
-    private val webEndpoint: String
+    private val webEndpoint: String,
+    private val firebaseAnalyticsTrackingClient: FirebaseAnalyticsTrackingClient?
 ) {
     fun activitySamplePreference() = this.activitySamplePreference
     fun apiClient() = this.apiClient
@@ -71,6 +72,7 @@ class Environment private constructor(
     fun stripe() = this.stripe
     fun webClient() = this.webClient
     fun webEndpoint() = this.webEndpoint
+    fun firebaseAnalyticsTrackingClient() = this.firebaseAnalyticsTrackingClient
 
     data class Builder(
         private var activitySamplePreference: IntPreferenceType? = null,
@@ -100,7 +102,8 @@ class Environment private constructor(
         private var sharedPreferences: SharedPreferences? = null,
         private var stripe: Stripe? = null,
         private var webClient: WebClientType? = null,
-        private var webEndpoint: String = ""
+        private var webEndpoint: String = "",
+        private var firebaseAnalyticsTrackingClient: FirebaseAnalyticsTrackingClient? = null
     ) {
         fun activitySamplePreference(activitySamplePreference: IntPreferenceType) = apply { this.activitySamplePreference = activitySamplePreference }
         fun apiClient(apiClient: ApiClientType) = apply { this.apiClient = apiClient }
@@ -130,6 +133,7 @@ class Environment private constructor(
         fun stripe(stripe: Stripe) = apply { this.stripe = stripe }
         fun webClient(webClient: WebClientType) = apply { this.webClient = webClient }
         fun webEndpoint(webEndpoint: String) = apply { this.webEndpoint = webEndpoint }
+        fun firebaseAnalyticsTrackingClient(firebaseAnalyticsTrackingClient: FirebaseAnalyticsTrackingClient) = apply { this.firebaseAnalyticsTrackingClient = firebaseAnalyticsTrackingClient }
 
         fun build() = Environment(
             activitySamplePreference = activitySamplePreference,
@@ -159,7 +163,8 @@ class Environment private constructor(
             sharedPreferences = sharedPreferences,
             stripe = stripe,
             webClient = webClient,
-            webEndpoint = webEndpoint
+            webEndpoint = webEndpoint,
+            firebaseAnalyticsTrackingClient = firebaseAnalyticsTrackingClient
         )
     }
 
@@ -191,7 +196,8 @@ class Environment private constructor(
         sharedPreferences = sharedPreferences,
         stripe = stripe,
         webClient = webClient,
-        webEndpoint = webEndpoint
+        webEndpoint = webEndpoint,
+        firebaseAnalyticsTrackingClient = firebaseAnalyticsTrackingClient
     )
 
     companion object {

@@ -12,6 +12,7 @@ import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.NumberOptions
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.models.OptimizelyExperiment
+import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
@@ -456,8 +457,8 @@ interface PledgeFragmentLegacyViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        @VisibleForTesting
-        val onCAPIEventSent = BehaviorSubject.create<Boolean>()
+        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        val onCAPIEventSent = BehaviorSubject.create<Boolean?>()
 
         init {
 
@@ -1192,7 +1193,7 @@ interface PledgeFragmentLegacyViewModel {
                         .compose(takeWhen(changeCard)),
                     apolloClient,
                     ConversionsAPIEventName.ADDED_PAYMENT_INFO
-                )
+                ).compose(Transformers.neverError())
                 .compose(bindToLifecycle())
                 .subscribe {
                     onCAPIEventSent.onNext(it.triggerCAPIEvent()?.success() ?: false)

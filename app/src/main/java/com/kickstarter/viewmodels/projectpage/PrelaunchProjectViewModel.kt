@@ -58,7 +58,7 @@ interface PrelaunchProjectViewModel {
         fun startCreatorView(): Observable<Project>
     }
 
-    class PrelaunchProjectViewModel(environment: Environment) : ViewModel(), Inputs, Outputs {
+    class PrelaunchProjectViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs {
         val inputs: Inputs = this
         val outputs: Outputs = this
         private val disposables = CompositeDisposable()

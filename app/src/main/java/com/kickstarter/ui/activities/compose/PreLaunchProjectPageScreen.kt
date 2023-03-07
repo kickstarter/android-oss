@@ -61,7 +61,8 @@ fun PreLaunchProjectPageScreen(
     rightOnClickAction: () -> Unit = {},
     middleRightClickAction: () -> Unit = {},
     onCreatorLayoutClicked: () -> Unit = {},
-    onButtonClicked: () -> Unit = {}
+    onButtonClicked: () -> Unit = {},
+    numberOfFollowers: String? = null
 ) {
     val project = projectState.value
     Scaffold(
@@ -99,7 +100,7 @@ fun PreLaunchProjectPageScreen(
             )
 
             TextWithKdsSupport700Bg(
-                stringResource(id = R.string.FPO_Coming_soon),
+                stringResource(id = R.string.Coming_soon),
                 Modifier.constrainAs(comingSoonBadge) {
                     top.linkTo(projectImage.bottom)
                     bottom.linkTo(projectImage.bottom)
@@ -205,7 +206,7 @@ fun PreLaunchProjectPageScreen(
                 ) {
                     val (button, text) = createRefs()
                     KsButton(
-                        defaultText = stringResource(id = R.string.FPO_Notify_me_on_launch),
+                        defaultText = stringResource(id = R.string.Notify_me_on_launch),
                         pressedText = stringResource(id = R.string.Saved),
                         defaultImageVector = ImageVector.vectorResource(id = R.drawable.ic_discovery_heart),
                         pressedImageVector = ImageVector.vectorResource(id = R.drawable.icon__heart),
@@ -226,9 +227,9 @@ fun PreLaunchProjectPageScreen(
                             .fillMaxWidth()
                     )
 
-                    project?.watchesCount()?.toString()?.let {
+                    numberOfFollowers?.let {
                         TextCaptionStyle(
-                            text = stringResource(R.string.FPO_followers, it),
+                            text = it,
                             modifier = Modifier
                                 .constrainAs(text) {
                                     top.linkTo(button.bottom, margin = 8.dp)

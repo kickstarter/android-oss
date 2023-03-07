@@ -71,7 +71,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/project_name_text_view"
             android:visibility="gone"
-            android:text="@string/FPO_Coming_soon" />
+            android:text="@string/Coming_soon" />
 
         <TextView
             android:id="@+id/search_result_percent_funded_text_view"

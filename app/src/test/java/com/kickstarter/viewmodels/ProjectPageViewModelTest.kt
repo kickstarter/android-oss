@@ -73,7 +73,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val showUpdatePledgeSuccess = TestSubscriber<Void>()
     private val startRootCommentsActivity = TestSubscriber<ProjectData>()
     private val startRootCommentsForCommentsThreadActivity = TestSubscriber<Pair<String, ProjectData>>()
-    private val startProjectUpdateActivity = TestSubscriber< Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>()
+    private val startProjectUpdateActivity = TestSubscriber<Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>()
     private val startProjectUpdateToRepliesDeepLinkActivity = TestSubscriber<Pair<Pair<String, String>, Pair<Project, ProjectData>>>()
     private val startLoginToutActivity = TestSubscriber<Void>()
     private val startMessagesActivity = TestSubscriber<Project>()
@@ -82,7 +82,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val projectMedia = BehaviorSubject.create<MediaElement>()
     private val playButtonIsVisible = TestSubscriber<Boolean>()
     private val backingViewGroupIsVisible = TestSubscriber<Boolean>()
-    private val updateTabs = TestSubscriber< Boolean>()
+    private val updateTabs = TestSubscriber<Boolean>()
     private val hideVideoPlayer = TestSubscriber<Boolean>()
     private val onOpenVideoInFullScreen = TestSubscriber<kotlin.Pair<String, Long>>()
     private val updateVideoCloseSeekPosition = TestSubscriber<Long>()
@@ -170,13 +170,16 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         val media = projectMedia.value
         assertEquals(
-            "https://ksr-ugc.imgix.net/assets/012/032/069/46817a8c099133d5bf8b64aad282a696_original.png?crop=faces&w=1552&h=873&fit=crop&v=1463725702&auto=format&q=92&s=72501d155e4a5e399276632687c77959", media.thumbnailUrl
+            "https://ksr-ugc.imgix.net/assets/012/032/069/46817a8c099133d5bf8b64aad282a696_original.png?crop=faces&w=1552&h=873&fit=crop&v=1463725702&auto=format&q=92&s=72501d155e4a5e399276632687c77959",
+            media.thumbnailUrl
         )
         assertEquals(
-            "https://ksr-video.imgix.net/projects/1657474/video-506369-h264_high.mp4", media.videoModelElement?.sourceUrl
+            "https://ksr-video.imgix.net/projects/1657474/video-506369-h264_high.mp4",
+            media.videoModelElement?.sourceUrl
         )
         assertEquals(
-            0L, media.videoModelElement?.seekPosition
+            0L,
+            media.videoModelElement?.seekPosition
         )
     }
 
@@ -331,6 +334,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.reloadProgressBarIsGone.assertValues(false, true)
         this.updateFragments.assertValue(ProjectDataFactory.project(refreshedProject))
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
+        assertEquals(null, this.vm.onCAPIEventSent.value)
     }
 
     @Test
@@ -469,7 +473,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testUIOutputs_whenSaveProjectFromDeepLink_isSuccessful() {
-
         val currentUser = MockCurrentUser()
         val project = ProjectFactory.successfulProject()
         val testScheduler = TestScheduler()
@@ -872,6 +875,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.pledgeActionButtonColor.assertValuesAndClear(R.color.button_pledge_manage)
         this.pledgeActionButtonText.assertValuesAndClear(R.string.Manage)
     }
+
     @Test
     fun testPledgeActionButtonUIOutputs_projectIsLiveAndNotBacked() {
         setUpEnvironment(environment())
@@ -1808,7 +1812,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testUIOutputs_whenSaveProjectFromDeepLinkURI_isSuccessful() {
-
         val currentUser = MockCurrentUser()
         val project = ProjectFactory.successfulProject()
         val testScheduler = TestScheduler()

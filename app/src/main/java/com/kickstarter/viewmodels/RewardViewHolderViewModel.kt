@@ -3,10 +3,12 @@ package com.kickstarter.viewmodels
 import android.text.SpannableString
 import android.util.Pair
 import androidx.annotation.NonNull
+import androidx.annotation.VisibleForTesting
 import com.facebook.appevents.cloudbridge.ConversionsAPIEventName
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.DateTimeUtils
@@ -178,6 +180,9 @@ interface RewardViewHolderViewModel {
         private val localPickUpIsGone = BehaviorSubject.create<Boolean>()
         private val localPickUpName = BehaviorSubject.create<String>()
 
+        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        val onCAPIEventSent = BehaviorSubject.create<Boolean?>()
+
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -342,8 +347,10 @@ interface RewardViewHolderViewModel {
 
             SendCAPIEventUseCase(optimizely, sharedPreferences)
                 .sendCAPIEvent(currentProject, apolloClient, ConversionsAPIEventName.INITIATED_CHECKOUT)
+                .compose(Transformers.neverError())
                 .compose(bindToLifecycle())
                 .subscribe {
+                    onCAPIEventSent.onNext(it.triggerCAPIEvent()?.success() ?: false)
                 }
 
             projectAndReward

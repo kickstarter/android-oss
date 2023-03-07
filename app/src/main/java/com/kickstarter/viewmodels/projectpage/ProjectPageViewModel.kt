@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels.projectpage
 import android.content.Intent
 import android.util.Pair
 import androidx.annotation.NonNull
+import androidx.annotation.VisibleForTesting
 import com.facebook.appevents.cloudbridge.ConversionsAPIEventName
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
@@ -341,6 +342,8 @@ interface ProjectPageViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
+        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        val onCAPIEventSent = BehaviorSubject.create<Boolean?>()
         init {
 
             val progressBarIsGone = PublishSubject.create<Boolean>()
@@ -520,8 +523,10 @@ interface ProjectPageViewModel {
 
             SendCAPIEventUseCase(optimizely, sharedPreferences)
                 .sendCAPIEvent(currentProject, apolloClient, ConversionsAPIEventName.VIEWED_CONTENT)
+                .compose(neverError())
                 .compose(bindToLifecycle())
                 .subscribe {
+                    onCAPIEventSent.onNext(it.triggerCAPIEvent()?.success() ?: false)
                 }
 
             val projectSavedStatus = Observable.merge(projectOnUserChangeSave, savedProjectOnLoginSuccess, projectOnDeepLinkChangeSave)

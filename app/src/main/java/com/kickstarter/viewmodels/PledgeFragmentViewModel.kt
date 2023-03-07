@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.text.SpannableString
 import android.util.Pair
 import androidx.annotation.NonNull
+import androidx.annotation.VisibleForTesting
 import com.facebook.appevents.cloudbridge.ConversionsAPIEventName
 import com.kickstarter.R
 import com.kickstarter.libs.Config
@@ -450,6 +451,9 @@ interface PledgeFragmentViewModel {
 
         private val bonusSummaryIsGone = BehaviorSubject.create<Boolean>()
         private val bonusSummaryAmount = BehaviorSubject.create<CharSequence>()
+
+        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        val onCAPIEventSent = BehaviorSubject.create<Boolean?>()
 
         // - Flag to know if the shipping location should be the default one,
         // - meaning we don't have shipping location selected yet
@@ -1210,8 +1214,10 @@ interface PledgeFragmentViewModel {
                     apolloClient,
                     ConversionsAPIEventName.ADDED_PAYMENT_INFO
                 )
+                .compose(neverError())
                 .compose(bindToLifecycle())
                 .subscribe {
+                    onCAPIEventSent.onNext(it.triggerCAPIEvent()?.success() ?: false)
                 }
 
             // - Present PaymentSheet if user logged in, and add card button pressed

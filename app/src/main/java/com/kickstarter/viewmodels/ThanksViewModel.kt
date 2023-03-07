@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels
 
 import android.util.Pair
+import androidx.annotation.VisibleForTesting
 import com.facebook.appevents.cloudbridge.ConversionsAPIEventName
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
@@ -101,6 +102,8 @@ interface ThanksViewModel {
         private val onHeartButtonClicked = PublishSubject.create<Project>()
         private val showSavedPrompt = PublishSubject.create<Void>()
 
+        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        val onCAPIEventSent = BehaviorSubject.create<Boolean?>()
         @JvmField
         val inputs: Inputs = this
 
@@ -287,8 +290,10 @@ interface ThanksViewModel {
                     apolloClient,
                     ConversionsAPIEventName.PURCHASED,
                     cAPIPurchaseValueAndCurrency
-                ).share().compose(bindToLifecycle())
+                ).compose(Transformers.neverError())
+                .compose(bindToLifecycle())
                 .subscribe {
+                    onCAPIEventSent.onNext(it.triggerCAPIEvent()?.success() ?: false)
                 }
 
             checkoutAndPledgeData

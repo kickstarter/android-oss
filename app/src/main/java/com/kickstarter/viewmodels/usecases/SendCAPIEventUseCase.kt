@@ -13,7 +13,6 @@ import com.kickstarter.models.Project
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.ui.SharedPreferenceKey
-import rx.Notification
 import rx.Observable
 import type.AppDataInput
 import type.CustomDataInput
@@ -35,7 +34,7 @@ class SendCAPIEventUseCase(
         apolloClient: ApolloClientType,
         eventName: ConversionsAPIEventName,
         pledgeAmountAndCurrency: Observable<Pair<String?, String?>> = Observable.just(Pair(null, null))
-    ): Observable<Notification<TriggerCapiEventMutation.Data>> {
+    ): Observable<TriggerCapiEventMutation.Data> {
         val androidApp = "a2"
 
         return project
@@ -78,8 +77,7 @@ class SendCAPIEventUseCase(
             .switchMap {
                 apolloClient.triggerCapiEvent(
                     it
-                )
-                    .compose(Transformers.neverError()).materialize()
-            }.share()
+                ).compose(Transformers.neverError()).share()
+            }
     }
 }

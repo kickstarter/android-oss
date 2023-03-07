@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.text.SpannableString
 import android.util.Pair
 import androidx.annotation.NonNull
+import androidx.annotation.VisibleForTesting
 import com.facebook.appevents.cloudbridge.ConversionsAPIEventName
 import com.kickstarter.R
 import com.kickstarter.libs.Config
@@ -454,6 +455,9 @@ interface PledgeFragmentLegacyViewModel {
 
         val inputs: Inputs = this
         val outputs: Outputs = this
+
+        @VisibleForTesting
+        val onCAPIEventSent = BehaviorSubject.create<Boolean>()
 
         init {
 
@@ -1191,6 +1195,7 @@ interface PledgeFragmentLegacyViewModel {
                 )
                 .compose(bindToLifecycle())
                 .subscribe {
+                    onCAPIEventSent.onNext(it.triggerCAPIEvent()?.success() ?: false)
                 }
 
             this.continueButtonClicked

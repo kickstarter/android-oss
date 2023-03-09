@@ -11,6 +11,7 @@ import com.kickstarter.libs.MockSharedPreferences
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.models.OptimizelyExperiment
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.RefTagUtils
@@ -41,6 +42,7 @@ import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.ui.ArgumentsKey
+import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
@@ -52,6 +54,7 @@ import com.stripe.android.StripeIntentResult
 import junit.framework.TestCase
 import org.joda.time.DateTime
 import org.junit.Test
+import org.mockito.Mockito
 import rx.Observable
 import rx.observers.TestSubscriber
 import java.math.RoundingMode
@@ -364,6 +367,50 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.cardsAndProject.assertValue(Pair(Collections.emptyList(), project))
         this.addedCard.assertValue(Pair(visa, project))
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
+    }
+
+    @Test
+    fun testSendCAPIEvent_whenLoggedIn_userHasNoCards() {
+        val mockCurrentUser = MockCurrentUser(UserFactory.user())
+        val project = ProjectFactory.project().toBuilder()
+            .deadline(this.deadline)
+            .sendMetaCapiEvents(true)
+            .build()
+
+        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)).thenReturn(true)
+
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+            .toBuilder()
+            .sharedPreferences(sharedPreferences)
+            .optimizely(mockExperimentsClientType)
+            .currentUser(mockCurrentUser)
+            .apolloClient(object : MockApolloClient() {
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(Collections.emptyList())
+                }
+            }).build()
+
+        setUpEnvironment(environment, project = project)
+
+        this.cardsAndProject.assertValue(Pair(Collections.emptyList(), project))
+        this.showSelectedCard.assertNoValues()
+
+        val visa = StoredCardFactory.visa()
+        this.vm.inputs.cardSaved(visa)
+        this.vm.inputs.addedCardPosition(0)
+
+        this.cardsAndProject.assertValue(Pair(Collections.emptyList(), project))
+        this.addedCard.assertValue(Pair(visa, project))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
+        assertEquals(true, this.vm.onCAPIEventSent.value)
     }
 
     @Test
@@ -1307,6 +1354,45 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.pledgeButtonClicked()
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+    }
+
+    @Test
+    fun testSendCAPEEvent_whenLoggedIn_selectCard() {
+        val mockCurrentUser = MockCurrentUser(UserFactory.user())
+        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)).thenReturn(true)
+
+        val testData = setUpBackedShippableRewardTestData()
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+
+        val storedCards = testData.storedCards
+
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+            .toBuilder()
+            .sharedPreferences(sharedPreferences)
+            .optimizely(mockExperimentsClientType)
+            .currentUser(mockCurrentUser)
+            .apolloClient(object : MockApolloClient() {
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(storedCards)
+                }
+            }).build()
+
+        val project = ProjectFactory.project().toBuilder()
+            .sendMetaCapiEvents(true)
+            .build()
+
+        setUpEnvironment(environment, RewardFactory.noReward(), project)
+
+        this.vm.inputs.cardSelected(StoredCardFactory.visa(), 0)
+
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
+        assertEquals(true, this.vm.onCAPIEventSent.value)
     }
 
     @Test

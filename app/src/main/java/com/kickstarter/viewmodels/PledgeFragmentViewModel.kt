@@ -1217,7 +1217,7 @@ interface PledgeFragmentViewModel {
                 .compose(neverError())
                 .compose(bindToLifecycle())
                 .subscribe {
-                    onCAPIEventSent.onNext(it.triggerCAPIEvent()?.success() ?: false)
+                    onCAPIEventSent.onNext(it.first.triggerCAPIEvent()?.success() ?: false)
                 }
 
             // - Present PaymentSheet if user logged in, and add card button pressed

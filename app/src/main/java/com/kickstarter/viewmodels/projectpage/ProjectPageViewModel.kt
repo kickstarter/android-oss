@@ -526,7 +526,7 @@ interface ProjectPageViewModel {
                 .compose(neverError())
                 .compose(bindToLifecycle())
                 .subscribe {
-                    onCAPIEventSent.onNext(it.triggerCAPIEvent()?.success() ?: false)
+                    onCAPIEventSent.onNext(it.first.triggerCAPIEvent()?.success() ?: false)
                 }
 
             val projectSavedStatus = Observable.merge(projectOnUserChangeSave, savedProjectOnLoginSuccess, projectOnDeepLinkChangeSave)

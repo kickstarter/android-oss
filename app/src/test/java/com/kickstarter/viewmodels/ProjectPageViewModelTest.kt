@@ -371,7 +371,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testUIOutputs_whenFetchProjectFromIntent_sendCAPIEvent_withConsentManagement_off_isFailedl() {
+    fun testUIOutputs_whenFetchProjectFromIntent_sendCAPIEvent_withConsentManagement_off_isFailed() {
         val initialProject = ProjectFactory.initialProject()
         val refreshedProject = ProjectFactory.project().toBuilder().sendMetaCapiEvents(true).build()
         val mockExperimentsClientType: MockExperimentsClientType =

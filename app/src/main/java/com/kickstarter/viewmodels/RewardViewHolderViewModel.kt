@@ -350,7 +350,7 @@ interface RewardViewHolderViewModel {
                 .compose(Transformers.neverError())
                 .compose(bindToLifecycle())
                 .subscribe {
-                    onCAPIEventSent.onNext(it.triggerCAPIEvent()?.success() ?: false)
+                    onCAPIEventSent.onNext(it.first.triggerCAPIEvent()?.success() ?: false)
                 }
 
             projectAndReward

@@ -9,6 +9,7 @@ import com.kickstarter.libs.FirebaseHelper
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.toHashedSHAEmail
 import com.kickstarter.models.Project
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.transformers.encodeRelayId
@@ -17,7 +18,6 @@ import rx.Observable
 import type.AppDataInput
 import type.CustomDataInput
 import type.TriggerCapiEventInput
-import java.security.MessageDigest
 
 class SendCAPIEventUseCase(
     optimizely: ExperimentsClientType,
@@ -34,7 +34,7 @@ class SendCAPIEventUseCase(
         apolloClient: ApolloClientType,
         eventName: ConversionsAPIEventName,
         pledgeAmountAndCurrency: Observable<Pair<String?, String?>> = Observable.just(Pair(null, null))
-    ): Observable<TriggerCapiEventMutation.Data> {
+    ): Observable<Pair<TriggerCapiEventMutation.Data, TriggerCapiEventInput>> {
         val androidApp = "a2"
 
         return project
@@ -50,10 +50,7 @@ class SendCAPIEventUseCase(
                     .map { it.me()?.email() }
                     .map {
                         if (it?.isNotEmpty() == true) {
-                            MessageDigest
-                                .getInstance("SHA-256")
-                                .digest(it.toByteArray())
-                                .fold("") { str, it -> str + "%02x".format(it) }
+                            it.toHashedSHAEmail()
                         } else {
                             it?.emptyToNull()
                         }
@@ -74,10 +71,11 @@ class SendCAPIEventUseCase(
                     )
                     .build()
             }
-            .switchMap {
+            .switchMap { input ->
                 apolloClient.triggerCapiEvent(
-                    it
-                ).compose(Transformers.neverError()).share()
+                    input
+                ).map { Pair(it, input) }
+                    .compose(Transformers.neverError()).share()
             }
     }
 }

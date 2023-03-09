@@ -1,60 +1,70 @@
-package com.kickstarter.models;
+package com.kickstarter.models
 
-import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.mock.factories.ProjectFactory;
+import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.mock.factories.ProjectFactory.allTheWayProject
+import com.kickstarter.mock.factories.ProjectFactory.doubledGoalProject
+import com.kickstarter.mock.factories.ProjectFactory.halfWayProject
+import com.kickstarter.mock.factories.ProjectFactory.project
+import org.joda.time.DateTime
+import org.junit.Test
 
-import org.joda.time.DateTime;
+class ProjectTest : KSRobolectricTestCase() {
 
-import org.junit.Test;
+    fun projectWithSecureUrl(): Project {
+        val projectUrl = "https://www.kickstarter.com/projects/foo/bar"
+        val urls = Urls.builder()
+            .web(Web.builder().project(projectUrl).rewards("$projectUrl/rewards").build())
+            .build()
+        return project().toBuilder().urls(urls).build()
+    }
 
-public class ProjectTest extends KSRobolectricTestCase {
-  Project projectWithSecureUrl() {
-    final String projectUrl = "https://www.kickstarter.com/projects/foo/bar";
-    final Urls urls = Urls.builder()
-      .web(Web.builder().project(projectUrl).rewards(projectUrl + "/rewards").build())
-      .build();
+    @Test
+    fun testSecureWebProjectUrl() {
+        val projectUrl = "http://www.kickstarter.com/projects/foo/bar"
+        val urls = Urls.builder()
+            .web(Web.builder().project(projectUrl).rewards("$projectUrl/rewards").build())
+            .build()
+        val project = project().toBuilder().urls(urls).build()
+        assertEquals("https://www.kickstarter.com/projects/foo/bar", project.secureWebProjectUrl())
+    }
 
-    return ProjectFactory.project().toBuilder().urls(urls).build();
-  }
+    @Test
+    fun testNewPledgeUrl() {
+        assertEquals(
+            "https://www.kickstarter.com/projects/foo/bar/pledge/new",
+            projectWithSecureUrl().newPledgeUrl()
+        )
+    }
 
-  @Test
-  public void testSecureWebProjectUrl() {
-    final String projectUrl = "http://www.kickstarter.com/projects/foo/bar";
+    @Test
+    fun testEditPledgeUrl() {
+        assertEquals(
+            "https://www.kickstarter.com/projects/foo/bar/pledge/edit",
+            projectWithSecureUrl().editPledgeUrl()
+        )
+    }
 
-    final Urls urls = Urls.builder()
-      .web(Web.builder().project(projectUrl).rewards(projectUrl + "/rewards").build())
-      .build();
+    @Test
+    fun testPercentageFunded() {
+        assertEquals(50.0f, halfWayProject().percentageFunded())
+        assertEquals(100.0f, allTheWayProject().percentageFunded())
+        assertEquals(200.0f, doubledGoalProject().percentageFunded())
+    }
 
-    final Project project = ProjectFactory.project().toBuilder().urls(urls).build();
+    @Test
+    fun testIsApproachingDeadline() {
+        val projectApproachingDeadline = project().toBuilder()
+            .deadline(DateTime().plusDays(1)).build()
+        val projectNotApproachingDeadline = project().toBuilder()
+            .deadline(DateTime().plusDays(3)).build()
+        assertTrue(projectApproachingDeadline.isApproachingDeadline)
+        assertFalse(projectNotApproachingDeadline.isApproachingDeadline)
+    }
 
-    assertEquals("https://www.kickstarter.com/projects/foo/bar", project.secureWebProjectUrl());
-  }
+    fun testEquals_whenProjectsEquals_returnTrue() {
+        val projectA = project().toBuilder().id(1).build()
+        val projectB = project().toBuilder().id(1).build()
 
-  @Test
-  public void testNewPledgeUrl() {
-    assertEquals("https://www.kickstarter.com/projects/foo/bar/pledge/new", projectWithSecureUrl().newPledgeUrl());
-  }
-
-  @Test
-  public void testEditPledgeUrl() {
-    assertEquals("https://www.kickstarter.com/projects/foo/bar/pledge/edit", projectWithSecureUrl().editPledgeUrl());
-  }
-
-  @Test
-  public void testPercentageFunded() {
-    assertEquals(50.0f, ProjectFactory.halfWayProject().percentageFunded());
-    assertEquals(100.0f, ProjectFactory.allTheWayProject().percentageFunded());
-    assertEquals(200.0f, ProjectFactory.doubledGoalProject().percentageFunded());
-  }
-
-  @Test
-  public void testIsApproachingDeadline() {
-    final Project projectApproachingDeadline = ProjectFactory.project().toBuilder()
-      .deadline(new DateTime().plusDays(1)).build();
-    final Project projectNotApproachingDeadline = ProjectFactory.project().toBuilder()
-      .deadline(new DateTime().plusDays(3)).build();
-
-    assertTrue(projectApproachingDeadline.isApproachingDeadline());
-    assertFalse(projectNotApproachingDeadline.isApproachingDeadline());
-  }
+        assertTrue(projectA == projectB)
+    }
 }

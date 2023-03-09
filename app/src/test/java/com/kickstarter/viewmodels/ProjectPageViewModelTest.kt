@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
@@ -11,6 +12,7 @@ import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.models.OptimizelyExperiment
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.BackingFactory
@@ -26,6 +28,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Urls
 import com.kickstarter.models.Web
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.MediaElement
@@ -35,6 +38,7 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import org.junit.Test
+import org.mockito.Mockito
 import rx.Observable
 import rx.observers.TestSubscriber
 import rx.schedulers.TestScheduler
@@ -333,6 +337,93 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.reloadProjectContainerIsGone.assertValue(true)
         this.reloadProgressBarIsGone.assertValues(false, true)
         this.updateFragments.assertValue(ProjectDataFactory.project(refreshedProject))
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
+        assertEquals(null, this.vm.onCAPIEventSent.value)
+    }
+
+    @Test
+    fun testUIOutputs_whenFetchProjectFromIntent_sendCAPIEvent_withFeatureFlag_on_isSuccessful() {
+        val initialProject = ProjectFactory.initialProject()
+        val refreshedProject = ProjectFactory.project().toBuilder().sendMetaCapiEvents(true).build()
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+
+        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)).thenReturn(true)
+
+        val environment = environment()
+            .toBuilder()
+            .sharedPreferences(sharedPreferences)
+            .optimizely(mockExperimentsClientType)
+            .apolloClient(apiClientWithSuccessFetchingProject(refreshedProject))
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
+        assertEquals(true, this.vm.onCAPIEventSent.value)
+    }
+
+    @Test
+    fun testUIOutputs_whenFetchProjectFromIntent_sendCAPIEvent_withConsentManagement_off_isFailedl() {
+        val initialProject = ProjectFactory.initialProject()
+        val refreshedProject = ProjectFactory.project().toBuilder().sendMetaCapiEvents(true).build()
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+
+        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)).thenReturn(false)
+
+        val environment = environment()
+            .toBuilder()
+            .sharedPreferences(sharedPreferences)
+            .optimizely(mockExperimentsClientType)
+            .apolloClient(apiClientWithSuccessFetchingProject(refreshedProject))
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
+        assertEquals(null, this.vm.onCAPIEventSent.value)
+    }
+
+    @Test
+    fun testUIOutputs_whenFetchProjectFromIntent_sendCAPIEvent_withProjectmNotHaveCapiData_isFailed() {
+        val initialProject = ProjectFactory.initialProject()
+        val refreshedProject = ProjectFactory.project().toBuilder().sendMetaCapiEvents(false).build()
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+
+        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)).thenReturn(true)
+
+        val environment = environment()
+            .toBuilder()
+            .sharedPreferences(sharedPreferences)
+            .optimizely(mockExperimentsClientType)
+            .apolloClient(apiClientWithSuccessFetchingProject(refreshedProject))
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
         assertEquals(null, this.vm.onCAPIEventSent.value)
     }

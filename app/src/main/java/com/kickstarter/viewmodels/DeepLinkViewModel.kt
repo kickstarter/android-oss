@@ -8,6 +8,7 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.UrlUtils.appendRefTag
@@ -30,6 +31,7 @@ import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import rx.Notification
 import rx.Observable
 import rx.subjects.BehaviorSubject
+import rx.subjects.PublishSubject
 
 interface DeepLinkViewModel {
     interface Outputs {
@@ -59,6 +61,9 @@ interface DeepLinkViewModel {
 
         /** Emits when we should start the [com.kickstarter.ui.activities.ProjectPageActivity].  */
         fun startProjectActivityToSave(): Observable<Uri>
+
+        /** Emits a Project and RefTag pair when we should start the [com.kickstarter.ui.activities.PreLaunchProjectPageActivity].  */
+        fun startPreLaunchProjectActivity(): Observable<Project>
     }
 
     class ViewModel(environment: Environment) :
@@ -79,6 +84,9 @@ interface DeepLinkViewModel {
         private val currentUser = requireNotNull(environment.currentUser())
         private val webEndpoint = requireNotNull(environment.webEndpoint())
         private val projectObservable: Observable<Project>
+        private val startPreLaunchProjectActivity = PublishSubject.create<Project>()
+
+        private val optimizely = requireNotNull(environment.optimizely())
 
         val outputs: Outputs = this
 
@@ -95,6 +103,19 @@ interface DeepLinkViewModel {
                 .subscribe {
                     startDiscoveryActivity.onNext(it)
                 }
+
+            projectObservable = uriFromIntent
+                .map { ProjectIntentMapper.paramFromUri(it) }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .switchMap {
+                    getProject(it)
+                        .doOnError {
+                            finishDeeplinkActivity.onNext(null)
+                        }
+                }
+                .filter { ObjectUtils.isNotNull(it.value) }
+                .map { it.value }
 
             uriFromIntent
                 .filter { ObjectUtils.isNotNull(it) }
@@ -123,9 +144,11 @@ interface DeepLinkViewModel {
                     it.isProjectUri(webEndpoint)
                 }
                 .map { appendRefTagIfNone(it) }
+                .compose(Transformers.combineLatestPair(projectObservable))
                 .compose(bindToLifecycle())
                 .subscribe {
-                    startProjectActivity.onNext(it)
+
+                    onDeepLinkToProjectPage(it, startProjectActivity)
                 }
 
             uriFromIntent
@@ -134,9 +157,10 @@ interface DeepLinkViewModel {
                     it.isProjectSaveUri(webEndpoint)
                 }
                 .map { appendRefTagIfNone(it) }
+                .compose(Transformers.combineLatestPair(projectObservable))
                 .compose(bindToLifecycle())
                 .subscribe {
-                    startProjectActivityToSave.onNext(it)
+                    onDeepLinkToProjectPage(it, startProjectActivityToSave)
                 }
 
             uriFromIntent
@@ -198,20 +222,6 @@ interface DeepLinkViewModel {
                     refreshUserAndFinishActivity(it, currentUser)
                 }
 
-            projectObservable = uriFromIntent
-                .filter { it.isRewardFulfilledDl() }
-                .map { ProjectIntentMapper.paramFromUri(it) }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
-                .switchMap {
-                    getProject(it)
-                        .doOnError {
-                            finishDeeplinkActivity.onNext(null)
-                        }
-                }
-                .filter { ObjectUtils.isNotNull(it.value) }
-                .map { it.value }
-
             projectObservable
                 .filter { it.backing() == null || !it.canUpdateFulfillment() }
                 .subscribe {
@@ -263,6 +273,18 @@ interface DeepLinkViewModel {
                 .subscribe {
                     startBrowser.onNext(it)
                 }
+        }
+
+        private fun onDeepLinkToProjectPage(it: Pair<Uri, Project>, startProjectPage: BehaviorSubject<Uri>) {
+            if (
+                it.second.displayPrelaunch() == true && optimizely.isFeatureEnabled(
+                    OptimizelyFeature.Key.ANDROID_PRE_LAUNCH_SCREEN
+                )
+            ) {
+                startPreLaunchProjectActivity.onNext(it.second)
+            } else {
+                startProjectPage.onNext(it.first)
+            }
         }
 
         private fun postBacking(it: Project) =
@@ -319,5 +341,7 @@ interface DeepLinkViewModel {
         override fun finishDeeplinkActivity(): Observable<Void> = finishDeeplinkActivity
 
         override fun startProjectActivityToSave(): Observable<Uri> = startProjectActivityToSave
+
+        override fun startPreLaunchProjectActivity(): Observable<Project> = startPreLaunchProjectActivity
     }
 }

@@ -13,6 +13,7 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
@@ -380,6 +381,41 @@ class ProjectExtTest : KSRobolectricTestCase() {
         assertEquals(reducedProject.video(), null) // Default builder value
         assertEquals(reducedProject.projectFaqs(), emptyList<ProjectFaq>()) // Default builder value
         assertEquals(reducedProject.photo(), null) // Default builder value
+        assertEquals(reducedProject.story(), "") // Default builder value
+    }
+
+    @Test
+    fun testReduceToPreLaunchProject_project() {
+        val user = UserFactory.germanUser().toBuilder().chosenCurrency("CAD").build()
+        val deadline = DateTime(DateTimeZone.UTC).plusDays(10)
+        val project = ProjectFactory.project().toBuilder().watchesCount(10).isStarred(true).creator(user).build()
+        val reducedProject = project.reduceToPreLaunchProject().toBuilder().deadline(deadline).build()
+
+        assertEquals(project.id(), reducedProject.id())
+        assertEquals(project.name(), reducedProject.name())
+        assertEquals(project.slug(), reducedProject.slug())
+        assertEquals(project.location(), reducedProject.location())
+        assertEquals(project.blurb(), reducedProject.blurb())
+        assertEquals(project.isStarred(), reducedProject.isStarred())
+        assertEquals(10, reducedProject.watchesCount())
+        assertEquals(project.country(), reducedProject.country())
+        assertEquals(project.currency(), reducedProject.currency())
+        assertEquals(project.currentCurrency(), reducedProject.currentCurrency())
+        assertEquals(project.currencySymbol(), reducedProject.currencySymbol())
+        assertEquals(project.currencyTrailingCode(), reducedProject.currencyTrailingCode())
+        assertEquals(project.currencyTrailingCode(), reducedProject.currencyTrailingCode())
+        assertEquals(project.category(), reducedProject.category())
+        assertEquals(reducedProject.creator(), user)
+        assertEquals(project.photo(), reducedProject.photo()) // Default builder value
+
+        assertEquals(deadline, reducedProject.deadline())
+        assertEquals(project.isBacking(), reducedProject.isBacking())
+        assertEquals(null, reducedProject.availableCardTypes())
+        assertEquals(0.0f, reducedProject.staticUsdRate())
+        assertEquals(0.0f, reducedProject.fxRate())
+        assertEquals(reducedProject.rewards(), emptyList<Reward>()) // Default builder value
+        assertEquals(reducedProject.video(), null) // Default builder value
+        assertEquals(reducedProject.projectFaqs(), emptyList<ProjectFaq>()) // Default builder value
         assertEquals(reducedProject.story(), "") // Default builder value
     }
 }

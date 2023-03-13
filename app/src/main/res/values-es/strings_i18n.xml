@@ -121,6 +121,7 @@ patrocinadores</string>
   <string name="Collaborator" formatted="false">Colaborador</string>
   <string name="Collapses_subcategories" formatted="false">Muestra menos subcategorías.</string>
   <string name="Collections" formatted="false">Colecciones</string>
+  <string name="Coming_soon" formatted="false">Próximamente</string>
   <string name="Comment_reply_digest" formatted="false">Resumen de respuestas a comentarios</string>
   <string name="Complete_payment" formatted="false">Completar pago</string>
   <string name="Confirm" formatted="false">Confirmar</string>
@@ -424,6 +425,7 @@ Toca para intentar de nuevo.</string>
   <string name="Notification_push_notification_off" formatted="false">%{notification}, notificación push, desactivada</string>
   <string name="Notification_push_notification_on" formatted="false">%{notification}, notificación push, activada</string>
   <string name="Notifications" formatted="false">Notificaciones</string>
+  <string name="Notify_me_on_launch" formatted="false">Notificarme cuando se publique</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Tu patrocinio de un proyecto nos ayuda a hacerte recomendaciones personalizadas.</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Queda poco tiempo para verlo (%{amount_of_time}).</string>
   <string name="Only_backers_can_post_comments" formatted="false">Sólo los patrocinadores pueden publicar comentarios.</string>
@@ -756,6 +758,7 @@ Toca para intentar de nuevo.</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">No se pudieron cargar los destinos de envío.\n
 Por favor inténtalo de nuevo más tarde.</string>
   <string name="We_will_be_discontinuing_the_ability_to_log_in_via_FB" formatted="false">Descontinuaremos la posibilidad de iniciar sesión a través de Facebook. Para acceder a tu cuenta con el correo electrónico %{email}, configura una contraseña que tenga al menos seis caracteres.</string>
+  <string name="We_will_email_you" formatted="false">Te enviaremos un correo electrónico cuando se publique este proyecto así puedes ser uno de los primeros patrocinadores.</string>
   <string name="We_wont_share_this_with_the_creator" formatted="false">No lo compartiremos con el creador.</string>
   <string name="Websites" formatted="false">Sitios web</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Bienvenidos a nuestra biblioteca. Descubre montones de libros con nosotros.</string>
@@ -873,6 +876,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="activity_empty_state_logged_out_message" formatted="false">Cuando patrocines un proyecto o sigas a un amigo, su actividad se verá aquí.</string>
   <string name="activity_empty_state_logged_out_title" formatted="false">Aún no hay actividades</string>
   <string name="activity_follow_back" formatted="false">¿Le quieres seguir también?</string>
+  <string name="activity_followers" formatted="false">%{number_of_followers} seguidores</string>
   <string name="activity_friend_backed_art_project" formatted="false">%{friend_name} patrocinó un proyecto de Arte.</string>
   <string name="activity_friend_backed_comics_project" formatted="false">%{friend_name} patrocinó un proyecto de Comics.</string>
   <string name="activity_friend_backed_crafts_project" formatted="false">%{friend_name} patrocinó un proyecto de Artesanías.</string>

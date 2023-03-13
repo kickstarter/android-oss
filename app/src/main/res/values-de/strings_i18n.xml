@@ -121,6 +121,7 @@ Unterstützer</string>
   <string name="Collaborator" formatted="false">Mitarbeiter</string>
   <string name="Collapses_subcategories" formatted="false">Reduziert die Anzeige der Unterkategorien.</string>
   <string name="Collections" formatted="false">Sammlungen</string>
+  <string name="Coming_soon" formatted="false">Demnächst</string>
   <string name="Comment_reply_digest" formatted="false">Tägliche Zusammenfassung Kommentare</string>
   <string name="Complete_payment" formatted="false">Zahlung abschließen</string>
   <string name="Confirm" formatted="false">Bestätigen</string>
@@ -423,6 +424,7 @@ Antippen und erneut versuchen</string>
   <string name="Notification_push_notification_off" formatted="false">%{notification}, Push-Benachrichtigung, Aus</string>
   <string name="Notification_push_notification_on" formatted="false">%{notification}, Push-Benachrichtigung, An</string>
   <string name="Notifications" formatted="false">Benachrichtigungen</string>
+  <string name="Notify_me_on_launch" formatted="false">Benachrichtige mich, wenn das Projekt live geht</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Wenn du ein Projekt unterstützt, werden wir dir hier maßgeschneiderte Empfehlungen machen.</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Nur noch %{amount_of_time} live!</string>
   <string name="Only_backers_can_post_comments" formatted="false">Kommentare können nur von Unterstützern hinterlassen werden.</string>
@@ -755,6 +757,7 @@ Antippen und erneut versuchen</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">Das Laden der Versandadressen war leider nicht möglich.\n
 Bitte versuche es später noch einmal.</string>
   <string name="We_will_be_discontinuing_the_ability_to_log_in_via_FB" formatted="false">Wir werden die Anmeldung über Facebook einstellen. Um dich mit der E-Mail-Adresse %{email} in deinem Konto anzumelden, leg bitte ein Passwort fest, das mindestens 6 Zeichen lang ist.</string>
+  <string name="We_will_email_you" formatted="false">Wir schicken dir eine E-Mail, sobald das Projekt live geht, dann kannst du es als einer der ersten unterstützen.</string>
   <string name="We_wont_share_this_with_the_creator" formatted="false">Diese Information wird nicht mit dem Projektgründer geteilt.</string>
   <string name="Websites" formatted="false">Webseiten</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Willkommen in unserer Bibliothek. Viel Spaß beim Stöbern.</string>
@@ -872,6 +875,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="activity_empty_state_logged_out_message" formatted="false">Wenn du ein Projekt unterstützt oder einem Freund folgst, werden diese Aktivitäten hier angezeigt.</string>
   <string name="activity_empty_state_logged_out_title" formatted="false">Noch keine Aktivitäten</string>
   <string name="activity_follow_back" formatted="false">Auch folgen?</string>
+  <string name="activity_followers" formatted="false">%{number_of_followers} Follower</string>
   <string name="activity_friend_backed_art_project" formatted="false">%{friend_name} hat ein Kunst-Projekt unterstützt.</string>
   <string name="activity_friend_backed_comics_project" formatted="false">%{friend_name} hat ein Comics-Projekt unterstützt.</string>
   <string name="activity_friend_backed_crafts_project" formatted="false">%{friend_name} hat ein Kunsthandwerk-Projekt unterstützt.</string>

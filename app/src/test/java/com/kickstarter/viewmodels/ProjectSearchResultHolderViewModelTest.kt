@@ -3,8 +3,11 @@ package com.kickstarter.viewmodels
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.PhotoFactory.photo
+import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.models.Project
 import org.joda.time.DateTime
@@ -18,6 +21,7 @@ class ProjectSearchResultHolderViewModelTest : KSRobolectricTestCase() {
     private val projectForDeadlineCountdownUnitTextView = TestSubscriber<Project>()
     private val projectNameTextViewText = TestSubscriber<String>()
     private val projectPhotoUrl = TestSubscriber<String>()
+    private val displayPrelaunchProjectBadge = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(environment: Environment) {
         vm = ProjectSearchResultHolderViewModel.ViewModel(environment)
@@ -28,6 +32,7 @@ class ProjectSearchResultHolderViewModelTest : KSRobolectricTestCase() {
         )
         vm.outputs.projectNameTextViewText().subscribe(projectNameTextViewText)
         vm.outputs.projectPhotoUrl().subscribe(projectPhotoUrl)
+        vm.outputs.displayPrelaunchProjectBadge().subscribe(displayPrelaunchProjectBadge)
     }
 
     @Test
@@ -74,6 +79,48 @@ class ProjectSearchResultHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testShowComingSoonLabelPrelauncProjects() {
+        val project = ProjectFactory.prelaunchProject("")
+
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+
+        val env = environment().toBuilder()
+            .optimizely(mockExperimentsClientType)
+            .build()
+
+        setUpEnvironment(env)
+        vm.inputs.configureWith(Pair.create(project, true))
+
+        displayPrelaunchProjectBadge.assertValues(true)
+    }
+
+    @Test
+    fun testShowComingSoonLabelPrelauncProjects_feature_flag_disabled() {
+        val project = ProjectFactory.prelaunchProject("")
+
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return false
+                }
+            }
+
+        val env = environment().toBuilder()
+            .optimizely(mockExperimentsClientType)
+            .build()
+
+        setUpEnvironment(env)
+        vm.inputs.configureWith(Pair.create(project, true))
+
+        displayPrelaunchProjectBadge.assertNoValues()
+    }
+
+    @Test
     fun testEmitsProjectStats() {
         val project = project()
             .toBuilder()
@@ -86,6 +133,7 @@ class ProjectSearchResultHolderViewModelTest : KSRobolectricTestCase() {
 
         percentFundedTextViewText.assertValues(NumberUtils.flooredPercentage(project.percentageFunded()))
         projectForDeadlineCountdownUnitTextView.assertValues(project)
+        displayPrelaunchProjectBadge.assertNoValues()
     }
 
     @Test

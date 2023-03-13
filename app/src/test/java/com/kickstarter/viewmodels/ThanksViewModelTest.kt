@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels
 
 import android.content.Intent
+import android.content.SharedPreferences
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
@@ -27,10 +28,12 @@ import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.DiscoveryParams.Companion.builder
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.adapters.data.ThanksData
 import com.kickstarter.ui.data.PledgeData.Companion.with
 import com.kickstarter.ui.data.PledgeFlowContext
 import org.junit.Test
+import org.mockito.Mockito
 import rx.observers.TestSubscriber
 import java.util.Arrays
 
@@ -360,11 +363,15 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         val project = project()
         val checkoutData = checkoutData(
             3L,
-            20.0, 30.0
+            20.0,
+            30.0
         )
         val pledgeData = with(
             PledgeFlowContext.NEW_PLEDGE,
-            project(project), reward(), emptyList(), null
+            project(project),
+            reward(),
+            emptyList(),
+            null
         )
         val intent = Intent()
             .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
@@ -379,6 +386,104 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         assertEquals(projectPageParams.first, project)
         assertEquals(projectPageParams.second, thanks())
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+        assertEquals(null, this.vm.onCAPIEventSent.value)
+    }
+
+    @Test
+    fun testSendCAPIEvent_whenBackedPRoject_sendCAPIEvent_withFeatureFlag__withConsentManagement_off_isFailed() {
+        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false))
+            .thenReturn(false)
+
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+
+        setUpEnvironment(
+            environment().toBuilder()
+                .sharedPreferences(sharedPreferences)
+                .optimizely(mockExperimentsClientType)
+                .build()
+        )
+
+        val project = project().toBuilder().sendMetaCapiEvents(true).build()
+        val checkoutData = checkoutData(
+            3L,
+            20.0,
+            30.0
+        )
+        val pledgeData = with(
+            PledgeFlowContext.NEW_PLEDGE,
+            project(project),
+            reward(),
+            emptyList(),
+            null
+        )
+        val intent = Intent()
+            .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
+            .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
+            .putExtra(IntentKey.PROJECT, project)
+
+        vm.intent(intent)
+        vm.inputs.projectCardViewHolderClicked(project)
+
+        val projectPageParams = startProjectTest.onNextEvents[0]
+
+        assertEquals(projectPageParams.first, project)
+        assertEquals(projectPageParams.second, thanks())
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+        assertEquals(null, this.vm.onCAPIEventSent.value)
+    }
+    @Test
+    fun testSendCAPIEvent_whenBackedPRoject_sendCAPIEvent_withFeatureFlag_on_isSuccessful() {
+        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false))
+            .thenReturn(true)
+
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+
+        setUpEnvironment(
+            environment().toBuilder()
+                .sharedPreferences(sharedPreferences)
+                .optimizely(mockExperimentsClientType)
+                .build()
+        )
+
+        val project = project().toBuilder().sendMetaCapiEvents(true).build()
+        val checkoutData = checkoutData(
+            3L,
+            20.0,
+            30.0
+        )
+        val pledgeData = with(
+            PledgeFlowContext.NEW_PLEDGE,
+            project(project),
+            reward(),
+            emptyList(),
+            null
+        )
+        val intent = Intent()
+            .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
+            .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
+            .putExtra(IntentKey.PROJECT, project)
+
+        vm.intent(intent)
+        vm.inputs.projectCardViewHolderClicked(project)
+
+        val projectPageParams = startProjectTest.onNextEvents[0]
+
+        assertEquals(projectPageParams.first, project)
+        assertEquals(projectPageParams.second, thanks())
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+        assertEquals(true, this.vm.onCAPIEventSent.value)
     }
 
     @Test
@@ -400,11 +505,15 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         val project = project()
         val checkoutData = checkoutData(
             3L,
-            20.0, 30.0
+            20.0,
+            30.0
         )
         val pledgeData = with(
             PledgeFlowContext.NEW_PLEDGE,
-            project(project), reward(), emptyList(), null
+            project(project),
+            reward(),
+            emptyList(),
+            null
         )
         val intent = Intent()
             .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
@@ -427,11 +536,15 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         val project = project()
         val checkoutData = checkoutData(
             3L,
-            20.0, 30.0
+            20.0,
+            30.0
         )
         val pledgeData = with(
             PledgeFlowContext.NEW_PLEDGE,
-            project(project), reward(), emptyList(), null
+            project(project),
+            reward(),
+            emptyList(),
+            null
         )
         val intent = Intent()
             .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)

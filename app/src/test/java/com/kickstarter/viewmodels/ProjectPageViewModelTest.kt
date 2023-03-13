@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
@@ -11,6 +12,7 @@ import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.models.OptimizelyExperiment
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.BackingFactory
@@ -26,6 +28,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Urls
 import com.kickstarter.models.Web
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.MediaElement
@@ -35,6 +38,7 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import org.junit.Test
+import org.mockito.Mockito
 import rx.Observable
 import rx.observers.TestSubscriber
 import rx.schedulers.TestScheduler
@@ -73,7 +77,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val showUpdatePledgeSuccess = TestSubscriber<Void>()
     private val startRootCommentsActivity = TestSubscriber<ProjectData>()
     private val startRootCommentsForCommentsThreadActivity = TestSubscriber<Pair<String, ProjectData>>()
-    private val startProjectUpdateActivity = TestSubscriber< Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>()
+    private val startProjectUpdateActivity = TestSubscriber<Pair<Pair<String, Boolean>, Pair<Project, ProjectData>>>()
     private val startProjectUpdateToRepliesDeepLinkActivity = TestSubscriber<Pair<Pair<String, String>, Pair<Project, ProjectData>>>()
     private val startLoginToutActivity = TestSubscriber<Void>()
     private val startMessagesActivity = TestSubscriber<Project>()
@@ -82,7 +86,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val projectMedia = BehaviorSubject.create<MediaElement>()
     private val playButtonIsVisible = TestSubscriber<Boolean>()
     private val backingViewGroupIsVisible = TestSubscriber<Boolean>()
-    private val updateTabs = TestSubscriber< Boolean>()
+    private val updateTabs = TestSubscriber<Boolean>()
     private val hideVideoPlayer = TestSubscriber<Boolean>()
     private val onOpenVideoInFullScreen = TestSubscriber<kotlin.Pair<String, Long>>()
     private val updateVideoCloseSeekPosition = TestSubscriber<Long>()
@@ -170,13 +174,16 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         val media = projectMedia.value
         assertEquals(
-            "https://ksr-ugc.imgix.net/assets/012/032/069/46817a8c099133d5bf8b64aad282a696_original.png?crop=faces&w=1552&h=873&fit=crop&v=1463725702&auto=format&q=92&s=72501d155e4a5e399276632687c77959", media.thumbnailUrl
+            "https://ksr-ugc.imgix.net/assets/012/032/069/46817a8c099133d5bf8b64aad282a696_original.png?crop=faces&w=1552&h=873&fit=crop&v=1463725702&auto=format&q=92&s=72501d155e4a5e399276632687c77959",
+            media.thumbnailUrl
         )
         assertEquals(
-            "https://ksr-video.imgix.net/projects/1657474/video-506369-h264_high.mp4", media.videoModelElement?.sourceUrl
+            "https://ksr-video.imgix.net/projects/1657474/video-506369-h264_high.mp4",
+            media.videoModelElement?.sourceUrl
         )
         assertEquals(
-            0L, media.videoModelElement?.seekPosition
+            0L,
+            media.videoModelElement?.seekPosition
         )
     }
 
@@ -331,6 +338,94 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.reloadProgressBarIsGone.assertValues(false, true)
         this.updateFragments.assertValue(ProjectDataFactory.project(refreshedProject))
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
+        assertEquals(null, this.vm.onCAPIEventSent.value)
+    }
+
+    @Test
+    fun testUIOutputs_whenFetchProjectFromIntent_sendCAPIEvent_withFeatureFlag_on_isSuccessful() {
+        val initialProject = ProjectFactory.initialProject()
+        val refreshedProject = ProjectFactory.project().toBuilder().sendMetaCapiEvents(true).build()
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+
+        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)).thenReturn(true)
+
+        val environment = environment()
+            .toBuilder()
+            .sharedPreferences(sharedPreferences)
+            .optimizely(mockExperimentsClientType)
+            .apolloClient(apiClientWithSuccessFetchingProject(refreshedProject))
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
+        assertEquals(true, this.vm.onCAPIEventSent.value)
+    }
+
+    @Test
+    fun testUIOutputs_whenFetchProjectFromIntent_sendCAPIEvent_withConsentManagement_off_isFailed() {
+        val initialProject = ProjectFactory.initialProject()
+        val refreshedProject = ProjectFactory.project().toBuilder().sendMetaCapiEvents(true).build()
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+
+        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)).thenReturn(false)
+
+        val environment = environment()
+            .toBuilder()
+            .sharedPreferences(sharedPreferences)
+            .optimizely(mockExperimentsClientType)
+            .apolloClient(apiClientWithSuccessFetchingProject(refreshedProject))
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
+        assertEquals(null, this.vm.onCAPIEventSent.value)
+    }
+
+    @Test
+    fun testUIOutputs_whenFetchProjectFromIntent_sendCAPIEvent_withProjectmNotHaveCapiData_isFailed() {
+        val initialProject = ProjectFactory.initialProject()
+        val refreshedProject = ProjectFactory.project().toBuilder().sendMetaCapiEvents(false).build()
+        val mockExperimentsClientType: MockExperimentsClientType =
+            object : MockExperimentsClientType() {
+                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+                    return true
+                }
+            }
+
+        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)).thenReturn(true)
+
+        val environment = environment()
+            .toBuilder()
+            .sharedPreferences(sharedPreferences)
+            .optimizely(mockExperimentsClientType)
+            .apolloClient(apiClientWithSuccessFetchingProject(refreshedProject))
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
+        assertEquals(null, this.vm.onCAPIEventSent.value)
     }
 
     @Test
@@ -469,7 +564,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testUIOutputs_whenSaveProjectFromDeepLink_isSuccessful() {
-
         val currentUser = MockCurrentUser()
         val project = ProjectFactory.successfulProject()
         val testScheduler = TestScheduler()
@@ -872,6 +966,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.pledgeActionButtonColor.assertValuesAndClear(R.color.button_pledge_manage)
         this.pledgeActionButtonText.assertValuesAndClear(R.string.Manage)
     }
+
     @Test
     fun testPledgeActionButtonUIOutputs_projectIsLiveAndNotBacked() {
         setUpEnvironment(environment())
@@ -1808,7 +1903,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testUIOutputs_whenSaveProjectFromDeepLinkURI_isSuccessful() {
-
         val currentUser = MockCurrentUser()
         val project = ProjectFactory.successfulProject()
         val testScheduler = TestScheduler()

@@ -54,6 +54,7 @@ fragment fullProject on Project {
     description
     minPledge
     isLaunched
+    sendMetaCapiEvents
     backing {
         ... backing
     }

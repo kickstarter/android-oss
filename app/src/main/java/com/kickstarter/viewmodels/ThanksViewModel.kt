@@ -1,6 +1,8 @@
 package com.kickstarter.viewmodels
 
 import android.util.Pair
+import androidx.annotation.VisibleForTesting
+import com.facebook.appevents.cloudbridge.ConversionsAPIEventName
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
@@ -29,6 +31,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ProjectData.Companion.builder
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder
 import com.kickstarter.ui.viewholders.ThanksCategoryViewHolder
+import com.kickstarter.viewmodels.usecases.SendCAPIEventUseCase
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -82,6 +85,7 @@ interface ThanksViewModel {
         private val currentUser = requireNotNull(environment.currentUser())
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val cookieManager = requireNotNull(environment.cookieManager())
+        private val optimizely = requireNotNull(environment.optimizely())
 
         private val categoryCardViewHolderClicked = PublishSubject.create<Category>()
         private val closeButtonClicked = PublishSubject.create<Void?>()
@@ -98,8 +102,11 @@ interface ThanksViewModel {
         private val onHeartButtonClicked = PublishSubject.create<Project>()
         private val showSavedPrompt = PublishSubject.create<Void>()
 
+        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        val onCAPIEventSent = BehaviorSubject.create<Boolean?>()
         @JvmField
         val inputs: Inputs = this
+
         @JvmField
         val outputs: Outputs = this
 
@@ -152,7 +159,8 @@ interface ThanksViewModel {
                 .subscribe {
                     startProjectActivity.onNext(
                         Pair(
-                            it, RefTag.thanks()
+                            it,
+                            RefTag.thanks()
                         )
                     )
                 }
@@ -269,6 +277,25 @@ interface ThanksViewModel {
                     )
                 }
 
+            val cAPIPurchaseValueAndCurrency = checkoutAndPledgeData.map {
+                Pair(
+                    it.first.amount().toString(),
+                    it.second.projectData().project().currency()
+                )
+            }
+
+            SendCAPIEventUseCase(optimizely, sharedPreferences)
+                .sendCAPIEvent(
+                    project,
+                    apolloClient,
+                    ConversionsAPIEventName.PURCHASED,
+                    cAPIPurchaseValueAndCurrency
+                ).compose(Transformers.neverError())
+                .compose(bindToLifecycle())
+                .subscribe {
+                    onCAPIEventSent.onNext(it.first.triggerCAPIEvent()?.success() ?: false)
+                }
+
             checkoutAndPledgeData
                 .compose(Transformers.takePairWhen(projectCardViewHolderClicked))
                 .compose(bindToLifecycle())
@@ -379,10 +406,11 @@ interface ThanksViewModel {
         }
 
         private fun toggleProjectSave(project: Project): Observable<Project> {
-            return if (project.isStarred())
+            return if (project.isStarred()) {
                 unSaveProject(project)
-            else
+            } else {
                 saveProject(project)
+            }
         }
 
         companion object {

@@ -9,6 +9,7 @@ import android.text.TextUtils
 import android.util.Patterns
 import com.kickstarter.R
 import org.jsoup.Jsoup
+import java.security.MessageDigest
 import java.util.Locale
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -179,4 +180,11 @@ fun String.toHtml(): Spanned {
     } else {
         Html.fromHtml(TextUtils.htmlEncode(this))
     }
+}
+
+fun String.toHashedSHAEmail(): String {
+    return MessageDigest
+        .getInstance("SHA-256")
+        .digest(this.toByteArray())
+        .fold("") { str, it -> str + "%02x".format(it) }
 }

@@ -233,6 +233,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
     val currency = projectFragment?.currency()?.name ?: ""
     val currencySymbol = projectFragment?.goal()?.fragments()?.amount()?.symbol()
     val prelaunchActivated = projectFragment?.prelaunchActivated()
+    val sendMetaCapiEvents = projectFragment?.sendMetaCapiEvents()
     val featuredAt = projectFragment?.projectOfTheDayAt()
     val friends =
         projectFragment?.friends()?.nodes()?.map { userTransformer(it.fragments().user()) }
@@ -344,6 +345,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         .pledged(pledged)
         .photo(photo) // - now we get the full size for field from GraphQL, but V1 provided several image sizes
         .prelaunchActivated(prelaunchActivated)
+        .sendMetaCapiEvents(sendMetaCapiEvents)
         .tags(tags)
         .rewards(modifiedRewards)
         .slug(slug)

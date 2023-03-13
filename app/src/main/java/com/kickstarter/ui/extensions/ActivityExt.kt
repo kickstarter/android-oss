@@ -14,11 +14,13 @@ import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.extensions.getCampaignDetailsActivityIntent
 import com.kickstarter.libs.utils.extensions.getCreatorBioWebViewActivityIntent
 import com.kickstarter.libs.utils.extensions.getCreatorDashboardActivityIntent
+import com.kickstarter.libs.utils.extensions.getPreLaunchProjectActivity
 import com.kickstarter.libs.utils.extensions.getProjectUpdatesActivityIntent
 import com.kickstarter.libs.utils.extensions.getReportProjectActivityIntent
 import com.kickstarter.libs.utils.extensions.getRootCommentsActivityIntent
 import com.kickstarter.libs.utils.extensions.getUpdatesActivityIntent
 import com.kickstarter.libs.utils.extensions.getVideoActivityIntent
+import com.kickstarter.libs.utils.extensions.reduceToPreLaunchProject
 import com.kickstarter.libs.utils.extensions.withData
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
@@ -43,7 +45,6 @@ fun Activity.selectPledgeFragment(
     pledgeReason: PledgeReason,
     shouldShowPaymentSheet: Boolean
 ): Fragment {
-
     return if (shouldShowPaymentSheet) PledgeFragment().withData(pledgeData, pledgeReason)
     else PledgeFragmentLegacy().withData(pledgeData, pledgeReason)
 }
@@ -184,4 +185,14 @@ fun Activity.finishWithAnimation(withResult: String? = null) {
     }
     finish()
     TransitionUtils.transition(this, TransitionUtils.slideInFromLeft())
+}
+
+fun Activity.startPreLaunchProjectActivity(project: Project) {
+    val intent = Intent().getPreLaunchProjectActivity(
+        this,
+        project.slug(),
+        project.reduceToPreLaunchProject()
+    )
+    startActivity(intent)
+    TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
 }

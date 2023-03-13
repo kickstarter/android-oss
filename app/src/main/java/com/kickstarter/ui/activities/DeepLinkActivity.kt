@@ -8,15 +8,13 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
-import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.UrlUtils.commentId
 import com.kickstarter.libs.utils.UrlUtils.refTag
 import com.kickstarter.libs.utils.UrlUtils.saveFlag
-import com.kickstarter.libs.utils.extensions.getPreLaunchProjectActivity
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.path
-import com.kickstarter.libs.utils.extensions.reduceToPreLaunchProject
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
 import com.kickstarter.viewmodels.DeepLinkViewModel
 import rx.android.schedulers.AndroidSchedulers
 
@@ -81,13 +79,7 @@ class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                val intent = Intent().getPreLaunchProjectActivity(
-                    this,
-                    it.slug(),
-                    it.reduceToPreLaunchProject()
-                )
-                startActivity(intent)
-                TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
+                startPreLaunchProjectActivity(it)
             }
     }
 

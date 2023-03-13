@@ -147,7 +147,8 @@ interface DeepLinkViewModel {
                 .compose(Transformers.combineLatestPair(projectObservable))
                 .compose(bindToLifecycle())
                 .subscribe {
-                    onDeepLinkToProjectPage(it)
+
+                    onDeepLinkToProjectPage(it, startProjectActivity)
                 }
 
             uriFromIntent
@@ -159,7 +160,7 @@ interface DeepLinkViewModel {
                 .compose(Transformers.combineLatestPair(projectObservable))
                 .compose(bindToLifecycle())
                 .subscribe {
-                    onDeepLinkToProjectPage(it)
+                    onDeepLinkToProjectPage(it, startProjectActivityToSave)
                 }
 
             uriFromIntent
@@ -274,14 +275,15 @@ interface DeepLinkViewModel {
                 }
         }
 
-        private fun onDeepLinkToProjectPage(it: Pair<Uri, Project>) {
-            if (it.second.displayPrelaunch() == true && optimizely.isFeatureEnabled(
+        private fun onDeepLinkToProjectPage(it: Pair<Uri, Project>, startProjectPage: BehaviorSubject<Uri>) {
+            if (
+                it.second.displayPrelaunch() == true && optimizely.isFeatureEnabled(
                     OptimizelyFeature.Key.ANDROID_PRE_LAUNCH_SCREEN
                 )
             ) {
                 startPreLaunchProjectActivity.onNext(it.second)
             } else {
-                startProjectActivityToSave.onNext(it.first)
+                startProjectPage.onNext(it.first)
             }
         }
 

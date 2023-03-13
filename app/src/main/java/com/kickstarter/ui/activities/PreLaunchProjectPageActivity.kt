@@ -35,7 +35,7 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
 
     private val projectShareLabelString = R.string.project_accessibility_button_share_label
     private val projectShareCopyString = R.string.project_share_twitter_message
-    private val projectStarConfirmationString = R.string.FPO_We_will_you_when_this_project_launches_so_you_can_be_one_of_the_first_backers
+    private val projectStarConfirmationString = R.string.We_will_email_you
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +51,7 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 val projectState = viewModel.project().subscribeAsState(initial = null)
+
                 PreLaunchProjectPageScreen(
                     projectState = projectState,
                     leftOnClickAction = { finish() },
@@ -61,7 +62,14 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
                     onCreatorLayoutClicked = { this.viewModel.inputs.creatorInfoClicked() },
                     onButtonClicked = {
                         projectState.value?.let { this.viewModel.inputs.bookmarkButtonClicked() }
-                    }
+                    },
+                    numberOfFollowers =
+                    viewModel.environment.ksString()?.format(
+                        getString(R.string.activity_followers),
+                        "number_of_followers",
+                        projectState.value?.watchesCount()?.toString()
+                    )
+
                 )
             }
         }

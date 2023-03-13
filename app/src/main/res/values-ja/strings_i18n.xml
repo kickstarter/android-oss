@@ -119,6 +119,7 @@
   <string name="Collaborator" formatted="false">コラボレーター（協力者）</string>
   <string name="Collapses_subcategories" formatted="false">サブカテゴリーを閉じる</string>
   <string name="Collections" formatted="false">コレクション</string>
+  <string name="Coming_soon" formatted="false">Coming soon</string>
   <string name="Comment_reply_digest" formatted="false">コメント返信のダイジェスト</string>
   <string name="Complete_payment" formatted="false">支払いを完了</string>
   <string name="Confirm" formatted="false">確定する</string>
@@ -207,7 +208,7 @@
   <string name="Email_notifications" formatted="false">メール通知設定</string>
   <string name="Email_unverified" formatted="false">このメールアドレスは認証されていません。</string>
   <string name="Ending_in_last_four" formatted="false">下の桁が%{last_four} の番号</string>
-  <string name="Ending_soon" formatted="false">終了直前</string>
+  <string name="Ending_soon" formatted="false">まもなく終了</string>
   <string name="Enter_an_amount_less_than_max_pledge" formatted="false">%{max_pledge} 以下の額を入力してください。</string>
   <string name="Environmental_commitments" formatted="false">環境への取り組み</string>
   <string name="Environmentally_friendly_factories" formatted="false">環境に優しい工場</string>
@@ -421,6 +422,7 @@
   <string name="Notification_push_notification_off" formatted="false">%{notification}、プッシュ通知、オフ</string>
   <string name="Notification_push_notification_on" formatted="false">%{notification}、プッシュ通知、オン</string>
   <string name="Notifications" formatted="false">通知</string>
+  <string name="Notify_me_on_launch" formatted="false">Notify me on launch</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">プロジェクトをバックするとこのスペースにあなたへのオススメを表示します</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">あと%{amount_of_time} のみ視聴可能</string>
   <string name="Only_backers_can_post_comments" formatted="false">バッカーのみコメントできます。</string>
@@ -567,8 +569,8 @@
   <string name="Save" formatted="false">保存</string>
   <string name="Save_projects" formatted="false">プロジェクトを保存</string>
   <string name="Save_this_project" formatted="false">プロジェクトを保存</string>
-  <string name="Saved" formatted="false">保存済</string>
-  <string name="Saved_projects" formatted="false">プロジェクトを保存</string>
+  <string name="Saved" formatted="false">保存済み</string>
+  <string name="Saved_projects" formatted="false">保存済みのプロジェクト</string>
   <string name="Saves_project" formatted="false">プロジェクトを保存</string>
   <string name="Say_something_kind" formatted="false">言葉に注意</string>
   <string name="Security_code" formatted="false">セキュリティーコード</string>
@@ -754,6 +756,7 @@
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">配送先の読込に失敗。\n
 再度お試しください。</string>
   <string name="We_will_be_discontinuing_the_ability_to_log_in_via_FB" formatted="false">Facebook 経由でのログイン機能の提供がまもなく終了します。メールアドレス %{email} を使ってアカウントにログインするには、6 文字以上のパスワードを設定してください。</string>
+  <string name="We_will_email_you" formatted="false">We’ll email you when this project launches so you can be one of the first backers.</string>
   <string name="We_wont_share_this_with_the_creator" formatted="false">これはクリエイターには共有されません。</string>
   <string name="Websites" formatted="false">ウェブサイト</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Kickstarter ライブラリーへようこそ。色んなストーリーを一緒に読み漁ろう！</string>
@@ -871,6 +874,7 @@
   <string name="activity_empty_state_logged_out_message" formatted="false">バックしたり友人をフォローした際、こちらに表示されます。</string>
   <string name="activity_empty_state_logged_out_title" formatted="false">アクティビティ無</string>
   <string name="activity_follow_back" formatted="false">フォローバックしますか？</string>
+  <string name="activity_followers" formatted="false">%{number_of_followers} followers</string>
   <string name="activity_friend_backed_art_project" formatted="false">%{friend_name} はアートプロジェクトにバック。</string>
   <string name="activity_friend_backed_comics_project" formatted="false">%{friend_name} がコミックプロジェクトにバック</string>
   <string name="activity_friend_backed_crafts_project" formatted="false">%{friend_name} がクラフトプロジェクトにバック</string>
@@ -1331,7 +1335,7 @@
   <string name="discovery_onboarding_learn_login_conjunction_or" formatted="false">か</string>
   <string name="discovery_onboarding_title_bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトに生命を。</string>
   <string name="discovery_popular" formatted="false">人気</string>
-  <string name="discovery_recommended" formatted="false">おすすめ</string>
+  <string name="discovery_recommended" formatted="false">スタッフ一押し</string>
   <string name="discovery_recommended_for_you" formatted="false">おすすめ</string>
   <string name="discovery_saved" formatted="false">スター</string>
   <string name="discovery_search_cancel" formatted="false">キャンセル</string>

@@ -28,9 +28,13 @@ fun Intent.getProjectIntent(context: Context): Intent {
     return this.setClass(context, ProjectPageActivity::class.java)
 }
 
-fun Intent.getPreLaunchProjectActivity(context: Context, slug: String?): Intent {
-    return this.setClass(context, PreLaunchProjectPageActivity::class.java)
-        .putExtra(IntentKey.PROJECT_PARAM, slug)
+fun Intent.getPreLaunchProjectActivity(context: Context, slug: String?, project: Project? = null): Intent {
+    val intent = this.setClass(context, PreLaunchProjectPageActivity::class.java)
+    intent.putExtra(IntentKey.PROJECT_PARAM, slug)
+    project?.let {
+        intent.putExtra(IntentKey.PROJECT, project)
+    }
+    return intent
 }
 
 /**

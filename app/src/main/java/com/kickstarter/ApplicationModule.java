@@ -309,7 +309,7 @@ public class ApplicationModule {
   @NonNull
   static HttpLoggingInterceptor provideHttpLoggingInterceptor() {
     final HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-    interceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+    interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
     return interceptor;
   }
 

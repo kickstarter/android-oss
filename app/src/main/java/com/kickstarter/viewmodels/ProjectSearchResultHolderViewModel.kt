@@ -2,8 +2,11 @@ package com.kickstarter.viewmodels
 
 import android.util.Pair
 import androidx.annotation.NonNull
+import com.apollographql.apollo.api.CustomTypeValue
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.graphql.DateTimeAdapter
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils
@@ -12,6 +15,7 @@ import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
 import com.kickstarter.models.Project
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder
 import rx.Observable
+import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
 interface ProjectSearchResultHolderViewModel {
@@ -41,6 +45,9 @@ interface ProjectSearchResultHolderViewModel {
 
         /** Emits the project photo url to be displayed.  */
         fun projectPhotoUrl(): Observable<String>
+
+        /** Emits a flag to show coming Soon label */
+        fun displayPrelaunchProjectBadge(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull environment: Environment) :
@@ -54,9 +61,12 @@ interface ProjectSearchResultHolderViewModel {
         private val projectForDeadlineCountdownDetail: Observable<Project>
         private val projectNameTextViewText: Observable<String>
         private val projectPhotoUrl: Observable<String>
+        private val displayPrelaunchProjectBadge = BehaviorSubject.create<Boolean>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
+
+        private val optimizely = requireNotNull(environment.optimizely())
 
         init {
             deadlineCountdownValueTextViewText = projectAndIsFeatured
@@ -79,15 +89,17 @@ interface ProjectSearchResultHolderViewModel {
             projectPhotoUrl = projectAndIsFeatured
                 .map {
                     Pair.create(
-                        it.first.photo(), it.second
+                        it.first.photo(),
+                        it.second
                     )
                 }
                 .filter { ObjectUtils.isNotNull(it.first) }
                 .map {
-                    if (it.second)
+                    if (it.second) {
                         it.first?.full()
-                    else
+                    } else {
                         it.first?.med()
+                    }
                 }
 
             projectNameTextViewText = projectAndIsFeatured
@@ -96,6 +108,17 @@ interface ProjectSearchResultHolderViewModel {
             notifyDelegateOfResultClick = projectAndIsFeatured
                 .map { PairUtils.first(it) }
                 .compose(Transformers.takeWhen(projectClicked))
+
+            projectAndIsFeatured
+                .filter { optimizely.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_PRE_LAUNCH_SCREEN) }
+                .map {
+                    it?.first?.displayPrelaunch() == true ||
+                        it.first.launchedAt() == DateTimeAdapter()
+                        .decode(CustomTypeValue.fromRawValue(0))
+                }.compose(bindToLifecycle())
+                .subscribe {
+                    displayPrelaunchProjectBadge.onNext(it)
+                }
         }
 
         override fun configureWith(projectAndIsFeatured: Pair<Project, Boolean>) {
@@ -117,5 +140,7 @@ interface ProjectSearchResultHolderViewModel {
         override fun projectPhotoUrl(): Observable<String> = projectPhotoUrl
 
         override fun projectNameTextViewText(): Observable<String> = projectNameTextViewText
+
+        override fun displayPrelaunchProjectBadge(): Observable<Boolean> = displayPrelaunchProjectBadge
     }
 }

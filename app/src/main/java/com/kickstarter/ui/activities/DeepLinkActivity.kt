@@ -14,7 +14,9 @@ import com.kickstarter.libs.utils.UrlUtils.saveFlag
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.path
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
 import com.kickstarter.viewmodels.DeepLinkViewModel
+import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(DeepLinkViewModel.ViewModel::class)
 class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
@@ -72,6 +74,13 @@ class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { finish() }
+
+        viewModel.outputs.startPreLaunchProjectActivity()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                startPreLaunchProjectActivity(it)
+            }
     }
 
     private fun projectIntent(uri: Uri): Intent {

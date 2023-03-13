@@ -121,6 +121,7 @@ contributeurs</string>
   <string name="Collaborator" formatted="false">Collaborateur</string>
   <string name="Collapses_subcategories" formatted="false">Masque les sous-catégories.</string>
   <string name="Collections" formatted="false">Collections</string>
+  <string name="Coming_soon" formatted="false">Bientôt disponible</string>
   <string name="Comment_reply_digest" formatted="false">Résumé des réponses aux commentaires</string>
   <string name="Complete_payment" formatted="false">Payer</string>
   <string name="Confirm" formatted="false">Confirmer</string>
@@ -424,6 +425,7 @@ n\'ont rien soutenu.</string>
   <string name="Notification_push_notification_off" formatted="false">%{notification}, notifications push désactivées</string>
   <string name="Notification_push_notification_on" formatted="false">%{notification}, notifications push activées</string>
   <string name="Notifications" formatted="false">Notifications</string>
+  <string name="Notify_me_on_launch" formatted="false">Me prévenir du lancement</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Une fois que vous aurez soutenu un projet, des recommandations personnalisées s\'afficheront ici.</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Plus que %{amount_of_time} pour regarder cette diffusion.</string>
   <string name="Only_backers_can_post_comments" formatted="false">Seuls les contributeurs peuvent commenter.</string>
@@ -756,6 +758,7 @@ n\'ont rien soutenu.</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">Nous n\'avons pas été en mesure de charger les destinations d\'expédition.\n
 Veuillez réessayer ultérieurement.</string>
   <string name="We_will_be_discontinuing_the_ability_to_log_in_via_FB" formatted="false">La fonctionnalité de connexion avec Facebook va être éliminée. Pour vous connecter à votre compte avec l\'adresse %{email}, veuillez créer un mot de passe qui contient au moins 6 caractères.</string>
+  <string name="We_will_email_you" formatted="false">Vous recevrez un e-mail dès que le projet sera lancé, pour que vous puissiez faire partie des premiers contributeurs.</string>
   <string name="We_wont_share_this_with_the_creator" formatted="false">Le créateur ne verra pas votre réponse.</string>
   <string name="Websites" formatted="false">Sites Web</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Bienvenue dans notre bibliothèque. Flânons ensemble parmi ses rayons.</string>
@@ -873,6 +876,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="activity_empty_state_logged_out_message" formatted="false">L\'activité des projets que vous soutenez ou des amis que vous suivez sera affichée ici.</string>
   <string name="activity_empty_state_logged_out_title" formatted="false">Activité vide</string>
   <string name="activity_follow_back" formatted="false">Suivre cette personne ?</string>
+  <string name="activity_followers" formatted="false">%{number_of_followers} abonnés</string>
   <string name="activity_friend_backed_art_project" formatted="false">%{friend_name} a soutenu un projet artistique.</string>
   <string name="activity_friend_backed_comics_project" formatted="false">%{friend_name} a soutenu un projet de BD.</string>
   <string name="activity_friend_backed_crafts_project" formatted="false">%{friend_name} a soutenu un projet d\'artisanat.</string>

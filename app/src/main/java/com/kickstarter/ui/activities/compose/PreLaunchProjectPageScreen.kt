@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -93,6 +94,7 @@ fun PreLaunchProjectPageScreen(
             ProjectImageFromURl(
                 imageUrl = (project?.photo()?.full()),
                 modifier = Modifier
+                    .testTag("Project Image")
                     .constrainAs(projectImage) {
                         top.linkTo(parent.top)
                     }
@@ -105,7 +107,7 @@ fun PreLaunchProjectPageScreen(
                     top.linkTo(projectImage.bottom)
                     bottom.linkTo(projectImage.bottom)
                     start.linkTo(parent.start, screenPadding)
-                }
+                }.testTag("Coming soon badge")
             )
 
             val projectNameAlpha = if (project?.name().isNullOrBlank()) 0f else 1f
@@ -118,6 +120,7 @@ fun PreLaunchProjectPageScreen(
                         start.linkTo(parent.start, screenPadding)
                     }
                     .padding(end = screenPadding)
+                    .testTag("Project name")
             )
 
             KsCreatorLayout(

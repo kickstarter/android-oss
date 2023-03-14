@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.KSApplication
 import com.kickstarter.R
@@ -421,7 +422,9 @@ class PledgeFragment :
         this.viewModel.outputs.showSCAFlow()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { this.viewModel.environment.stripe()?.handleNextActionForSetupIntent(this, it) }
+            .subscribe {
+                stripeNextAction(it)
+            }
 
         this.viewModel.outputs.showPledgeError()
             .compose(bindToLifecycle())
@@ -669,6 +672,20 @@ class PledgeFragment :
             .subscribe {
                 (binding?.pledgeSectionPayment?.cardsRecycler?.adapter as? RewardCardAdapter)?.updateState(it)
             }
+    }
+
+    private fun stripeNextAction(it: String) {
+        try {
+            // - PaymentIntent format
+            if (it.contains("pi_")) {
+                this.viewModel.environment.stripe()?.handleNextActionForPayment(this, it)
+            } else {
+                // - SetupIntent format
+                this.viewModel.environment.stripe()?.handleNextActionForSetupIntent(this, it)
+            }
+        } catch (exception: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(exception)
+        }
     }
 
     // Update the UI with the returned PaymentOption

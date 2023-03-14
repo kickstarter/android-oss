@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -127,6 +128,7 @@ fun PreLaunchProjectPageScreen(
                 creatorName = project?.creator()?.name() ?: "",
                 imageUrl = project?.creator()?.avatar()?.medium() ?: "",
                 modifier = Modifier
+                    .testTag("Creator Layout")
                     .fillMaxWidth()
                     .constrainAs(creatorLayout) {
                         top.linkTo(projectName.bottom)
@@ -147,6 +149,7 @@ fun PreLaunchProjectPageScreen(
                     text = it.toHtml().toString(),
                     modifier = Modifier
                         .fillMaxWidth()
+                        .testTag("Project description")
                         .constrainAs(projectDescription) {
                             top.linkTo(creatorLayout.bottom)
                             start.linkTo(parent.start, screenPadding)
@@ -162,8 +165,9 @@ fun PreLaunchProjectPageScreen(
             project?.category()?.name()?.let {
                 TextCaptionStyleWithStartIcon(
                     it,
-                    ImageVector.vectorResource(id = R.drawable.icon__compass),
+                    painterResource(R.drawable.icon__compass),
                     modifier = Modifier
+                        .testTag("Project category name")
                         .constrainAs(category) {
                             top.linkTo(projectDescription.bottom)
                             start.linkTo(parent.start, screenPadding)
@@ -179,6 +183,7 @@ fun PreLaunchProjectPageScreen(
                     it,
                     Icons.Filled.LocationOn,
                     modifier = Modifier
+                        .testTag("Project location name")
                         .constrainAs(location) {
                             start.linkTo(category.end, locationPadding)
                             top.linkTo(category.top)
@@ -218,6 +223,7 @@ fun PreLaunchProjectPageScreen(
                         onClickAction = { onButtonClicked.invoke() },
                         isChecked = project?.isStarred() ?: false,
                         modifier = Modifier
+                            .testTag("Project save Button")
                             .constrainAs(button) {
                                 top.linkTo(parent.top)
                                 start.linkTo(parent.start, screenPadding)
@@ -234,6 +240,7 @@ fun PreLaunchProjectPageScreen(
                         TextCaptionStyle(
                             text = it,
                             modifier = Modifier
+                                .testTag("Project followers")
                                 .constrainAs(text) {
                                     top.linkTo(button.bottom, margin = 8.dp)
                                     start.linkTo(parent.start, screenPadding)

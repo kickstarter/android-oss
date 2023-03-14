@@ -10,6 +10,7 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 
 import com.apollographql.apollo.ApolloClient;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -193,8 +194,8 @@ public class ApplicationModule {
   @Provides
   @Nonnull
   @Singleton
-  static FirebaseAnalyticsClient provideFirebaseAnalyticsClient(final @NonNull ExperimentsClientType experimentsClientType, final @NonNull SharedPreferences sharedPreferences) {
-    return new FirebaseAnalyticsClient(experimentsClientType, sharedPreferences);
+  static FirebaseAnalyticsClient provideFirebaseAnalyticsClient(final @NonNull ExperimentsClientType experimentsClientType, final @NonNull SharedPreferences sharedPreferences, final @ApplicationContext @NonNull Context context) {
+    return new FirebaseAnalyticsClient(experimentsClientType, sharedPreferences, FirebaseAnalytics.getInstance(context));
   }
 
   @Provides

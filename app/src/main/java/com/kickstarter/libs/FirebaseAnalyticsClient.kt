@@ -14,7 +14,7 @@ open class FirebaseAnalyticsClient(
 
     open fun trackEvent(eventName: String, parameters: Bundle) {
         firebaseAnalytics?.let {
-            if(isEnabled()) {
+            if (isEnabled()) {
                 firebaseAnalytics.logEvent(eventName, parameters)
             }
         }

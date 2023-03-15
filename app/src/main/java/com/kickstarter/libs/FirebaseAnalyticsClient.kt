@@ -20,5 +20,5 @@ open class FirebaseAnalyticsClient(
         }
     }
 
-    fun isEnabled() = preference.getBoolean(CONSENT_MANAGEMENT_PREFERENCE, false) && optimizely.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_CONSENT_MANAGEMENT)
+    fun isEnabled() = preference.getBoolean(CONSENT_MANAGEMENT_PREFERENCE, false) && optimizely.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_GOOGLE_ANALYTICS)
 }

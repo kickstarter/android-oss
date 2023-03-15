@@ -9,6 +9,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
 
 class FirebaseAnalyticsClientTest : KSRobolectricTestCase() {
@@ -129,5 +130,10 @@ class FirebaseAnalyticsClientTest : KSRobolectricTestCase() {
         val mockFirebaseClient = MockFirebaseClient(mockOptimizely, mockSharedPreferences)
 
         assertFalse(mockFirebaseClient.isEnabled())
+    }
+
+    @After
+    fun breakDown() {
+        disposables.clear()
     }
 }

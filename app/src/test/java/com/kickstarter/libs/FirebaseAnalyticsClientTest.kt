@@ -54,11 +54,9 @@ class FirebaseAnalyticsClientTest : KSRobolectricTestCase() {
         disposables.add(mockFirebaseClient.eventName.subscribe { this.eventNameSubscriber.onNext(it) })
         disposables.add(mockFirebaseClient.eventProperties.subscribe { this.eventPropertySubscriber.onNext(it) })
 
-        val analyticEvents = FirebaseAnalyticsEvents(mockFirebaseClient)
-
         val eventProps = Bundle()
         eventProps.putBoolean("event_property", true)
-        analyticEvents.track("event_name", eventProps)
+        mockFirebaseClient.trackEvent("event_name", eventProps)
 
         assertEquals(eventNameSubscriber.values().size, 1)
         assertEquals(eventNameSubscriber.values()[0], "event_name")

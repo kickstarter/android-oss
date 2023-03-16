@@ -1,10 +1,12 @@
 package com.kickstarter.viewmodels.projectpage
 
 import android.content.Intent
+import android.os.Bundle
 import android.util.Pair
 import androidx.annotation.NonNull
 import androidx.annotation.VisibleForTesting
 import com.facebook.appevents.cloudbridge.ConversionsAPIEventName
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.ActivityViewModel
@@ -271,6 +273,7 @@ interface ProjectPageViewModel {
         private val apolloClient = requireNotNull(environment.apolloClient())
         private val currentConfig = requireNotNull(environment.currentConfig())
         private val closeFullScreenVideo = BehaviorSubject.create<Long>()
+        private val firebaseAnalyticsClientType = requireNotNull(environment.firebaseAnalyticsClient())
 
         private val cancelPledgeClicked = PublishSubject.create<Void>()
         private val commentsTextViewClicked = PublishSubject.create<Void>()
@@ -347,6 +350,8 @@ interface ProjectPageViewModel {
         init {
 
             val progressBarIsGone = PublishSubject.create<Boolean>()
+
+            firebaseAnalyticsClientType.trackEvent(FirebaseAnalytics.Event.VIEW_ITEM, Bundle().apply { putString("leigh", "leigh")})
 
             val mappedProjectNotification = Observable.merge(
                 intent(),

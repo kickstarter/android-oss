@@ -42,7 +42,7 @@ class Environment private constructor(
     private val stripe: Stripe?,
     private val webClient: WebClientType?,
     private val webEndpoint: String,
-    private val firebaseAnalyticsEvents: FirebaseAnalyticsEvents?
+    private val firebaseAnalyticsClient: FirebaseAnalyticsClientType?
 ) {
     fun activitySamplePreference() = this.activitySamplePreference
     fun apiClient() = this.apiClient
@@ -72,7 +72,7 @@ class Environment private constructor(
     fun stripe() = this.stripe
     fun webClient() = this.webClient
     fun webEndpoint() = this.webEndpoint
-    fun firebaseAnalyticsEvents() = this.firebaseAnalyticsEvents
+    fun firebaseAnalyticsClient() = this.firebaseAnalyticsClient
 
     data class Builder(
         private var activitySamplePreference: IntPreferenceType? = null,
@@ -103,7 +103,7 @@ class Environment private constructor(
         private var stripe: Stripe? = null,
         private var webClient: WebClientType? = null,
         private var webEndpoint: String = "",
-        private var firebaseAnalyticsEvents: FirebaseAnalyticsEvents? = null
+        private var firebaseAnalyticsClient: FirebaseAnalyticsClientType? = null
     ) {
         fun activitySamplePreference(activitySamplePreference: IntPreferenceType) = apply { this.activitySamplePreference = activitySamplePreference }
         fun apiClient(apiClient: ApiClientType) = apply { this.apiClient = apiClient }
@@ -133,7 +133,7 @@ class Environment private constructor(
         fun stripe(stripe: Stripe) = apply { this.stripe = stripe }
         fun webClient(webClient: WebClientType) = apply { this.webClient = webClient }
         fun webEndpoint(webEndpoint: String) = apply { this.webEndpoint = webEndpoint }
-        fun firebaseAnalyticsEvents(firebaseAnalyticsEvents: FirebaseAnalyticsEvents) = apply { this.firebaseAnalyticsEvents = firebaseAnalyticsEvents }
+        fun firebaseAnalyticsClient(firebaseAnalyticsClient: FirebaseAnalyticsClientType) = apply { this.firebaseAnalyticsClient = firebaseAnalyticsClient }
 
         fun build() = Environment(
             activitySamplePreference = activitySamplePreference,
@@ -164,7 +164,7 @@ class Environment private constructor(
             stripe = stripe,
             webClient = webClient,
             webEndpoint = webEndpoint,
-            firebaseAnalyticsEvents = firebaseAnalyticsEvents
+            firebaseAnalyticsClient = firebaseAnalyticsClient
         )
     }
 
@@ -197,7 +197,7 @@ class Environment private constructor(
         stripe = stripe,
         webClient = webClient,
         webEndpoint = webEndpoint,
-        firebaseAnalyticsEvents = firebaseAnalyticsEvents
+        firebaseAnalyticsClient = firebaseAnalyticsClient
     )
 
     companion object {

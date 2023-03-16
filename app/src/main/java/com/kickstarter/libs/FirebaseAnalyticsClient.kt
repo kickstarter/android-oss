@@ -6,19 +6,25 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.ui.SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE
 
+interface FirebaseAnalyticsClientType {
+    fun isEnabled() : Boolean
+    
+    fun trackEvent(eventName: String, parameters: Bundle)
+}
+
 open class FirebaseAnalyticsClient(
     private var optimizely: ExperimentsClientType,
     private var preference: SharedPreferences,
     private val firebaseAnalytics: FirebaseAnalytics?,
-) {
+): FirebaseAnalyticsClientType {
 
-    open fun trackEvent(eventName: String, parameters: Bundle) {
+    override fun isEnabled() = preference.getBoolean(CONSENT_MANAGEMENT_PREFERENCE, false) && optimizely.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_GOOGLE_ANALYTICS)
+
+    override fun trackEvent(eventName: String, parameters: Bundle) {
         firebaseAnalytics?.let {
             if (isEnabled()) {
                 firebaseAnalytics.logEvent(eventName, parameters)
             }
         }
     }
-
-    fun isEnabled() = preference.getBoolean(CONSENT_MANAGEMENT_PREFERENCE, false) && optimizely.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_GOOGLE_ANALYTICS)
 }

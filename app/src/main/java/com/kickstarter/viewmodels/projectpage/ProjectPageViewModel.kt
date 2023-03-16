@@ -1,12 +1,10 @@
 package com.kickstarter.viewmodels.projectpage
 
 import android.content.Intent
-import android.os.Bundle
 import android.util.Pair
 import androidx.annotation.NonNull
 import androidx.annotation.VisibleForTesting
 import com.facebook.appevents.cloudbridge.ConversionsAPIEventName
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.ActivityViewModel

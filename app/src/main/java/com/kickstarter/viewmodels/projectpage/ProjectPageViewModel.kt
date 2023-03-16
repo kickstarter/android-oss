@@ -351,8 +351,6 @@ interface ProjectPageViewModel {
 
             val progressBarIsGone = PublishSubject.create<Boolean>()
 
-            firebaseAnalyticsClientType.trackEvent(FirebaseAnalytics.Event.VIEW_ITEM, Bundle().apply { putString("leigh", "leigh")})
-
             val mappedProjectNotification = Observable.merge(
                 intent(),
                 intent()

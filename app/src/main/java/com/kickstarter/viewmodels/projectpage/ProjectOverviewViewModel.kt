@@ -5,7 +5,6 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.models.OptimizelyExperiment
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ExperimentData

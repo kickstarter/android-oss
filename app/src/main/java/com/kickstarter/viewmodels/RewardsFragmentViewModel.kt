@@ -18,7 +18,6 @@ import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.RewardsFragment
-import com.kickstarter.viewmodels.usecases.ShowPledgeFragmentUseCase
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -47,7 +46,7 @@ class RewardsFragmentViewModel {
         fun rewardsCount(): Observable<Int>
 
         /** Emits when we should show the [com.kickstarter.ui.fragments.PledgeFragment].  */
-        fun showPledgeFragment(): Observable<Triple<PledgeData, PledgeReason, Boolean>>
+        fun showPledgeFragment(): Observable<Pair<PledgeData, PledgeReason>>
 
         /** Emits when we should show the [com.kickstarter.ui.fragments.BackingAddOnsFragment].  */
         fun showAddOnsFragment(): Observable<Pair<PledgeData, PledgeReason>>
@@ -66,7 +65,7 @@ class RewardsFragmentViewModel {
         private val projectData = BehaviorSubject.create<ProjectData>()
         private val rewardsCount = BehaviorSubject.create<Int>()
         private val pledgeData = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
-        private val showPledgeFragment = PublishSubject.create<Triple<PledgeData, PledgeReason, Boolean>>()
+        private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showAddOnsFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showAlert = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
 
@@ -189,8 +188,8 @@ class RewardsFragmentViewModel {
                     else this.pledgeData.onNext(it)
                 }
 
-            ShowPledgeFragmentUseCase(this.pledgeData)
-                .data(this.currentUser, this.optimizely)
+            this.pledgeData
+                .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.showPledgeFragment.onNext(it)
@@ -257,7 +256,7 @@ class RewardsFragmentViewModel {
         override fun rewardsCount(): Observable<Int> = this.rewardsCount
 
         @NonNull
-        override fun showPledgeFragment(): Observable<Triple<PledgeData, PledgeReason, Boolean>> = this.showPledgeFragment
+        override fun showPledgeFragment(): Observable<Pair<PledgeData, PledgeReason>> = this.showPledgeFragment
 
         @NonNull
         override fun showAddOnsFragment(): Observable<Pair<PledgeData, PledgeReason>> = this.showAddOnsFragment

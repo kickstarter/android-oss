@@ -56,7 +56,6 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.data.VideoModelElement
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import com.kickstarter.viewmodels.usecases.SendCAPIEventUseCase
-import com.kickstarter.viewmodels.usecases.ShowPledgeFragmentUseCase
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -212,7 +211,7 @@ interface ProjectPageViewModel {
         fun showShareSheet(): Observable<Pair<String, String>>
 
         /** Emits when we should show the [com.kickstarter.ui.fragments.PledgeFragment]. */
-        fun showUpdatePledge(): Observable<Triple<PledgeData, PledgeReason, Boolean>>
+        fun showUpdatePledge(): Observable<Pair<PledgeData, PledgeReason>>
 
         /** Emits when the backing has successfully been updated. */
         fun showUpdatePledgeSuccess(): Observable<Void>
@@ -320,7 +319,7 @@ interface ProjectPageViewModel {
         private val showShareSheet = PublishSubject.create<Pair<String, String>>()
         private val showSavedPrompt = PublishSubject.create<Void>()
         private val updatePledgeData = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
-        private val showUpdatePledge = PublishSubject.create<Triple<PledgeData, PledgeReason, Boolean>>()
+        private val showUpdatePledge = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showUpdatePledgeSuccess = PublishSubject.create<Void>()
         private val startRootCommentsActivity = PublishSubject.create<ProjectData>()
         private val startRootCommentsForCommentsThreadActivity = PublishSubject.create<Pair<String, ProjectData>>()
@@ -952,8 +951,8 @@ interface ProjectPageViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(backingViewGroupIsVisible)
 
-            ShowPledgeFragmentUseCase(this.updatePledgeData)
-                .data(currentUser.observable(), this.optimizely)
+            this.updatePledgeData
+                .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.showUpdatePledge.onNext(it)
@@ -1186,7 +1185,7 @@ interface ProjectPageViewModel {
         override fun showShareSheet(): Observable<Pair<String, String>> = this.showShareSheet
 
         @NonNull
-        override fun showUpdatePledge(): Observable<Triple<PledgeData, PledgeReason, Boolean>> = this.showUpdatePledge
+        override fun showUpdatePledge(): Observable<Pair<PledgeData, PledgeReason>> = this.showUpdatePledge
 
         @NonNull
         override fun showUpdatePledgeSuccess(): Observable<Void> = this.showUpdatePledgeSuccess

@@ -21,7 +21,6 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.BackingAddOnsFragment
-import com.kickstarter.viewmodels.usecases.ShowPledgeFragmentUseCase
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -50,7 +49,7 @@ class BackingAddOnsFragmentViewModel {
 
     interface Outputs {
         /** Emits a Pair containing the projectData and the pledgeReason. */
-        fun showPledgeFragment(): Observable<Triple<PledgeData, PledgeReason, Boolean>>
+        fun showPledgeFragment(): Observable<Pair<PledgeData, PledgeReason>>
 
         /** Emits a Pair containing the projectData and the list for Add-ons associated to that project. */
         fun addOnsList(): Observable<Triple<ProjectData, List<Reward>, ShippingRule>>
@@ -91,7 +90,7 @@ class BackingAddOnsFragmentViewModel {
         private val retryButtonPressed = BehaviorSubject.create<Boolean>()
 
         private val pledgeFragmentData = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
-        private val showPledgeFragment = PublishSubject.create<Triple<PledgeData, PledgeReason, Boolean>>()
+        private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val shippingSelectorIsGone = BehaviorSubject.create<Boolean>()
         private val addOnsListFiltered = PublishSubject.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
         private val isEmptyState = PublishSubject.create<Boolean>()
@@ -335,8 +334,8 @@ class BackingAddOnsFragmentViewModel {
                     this.pledgeFragmentData.onNext(it)
                 }
 
-            ShowPledgeFragmentUseCase(this.pledgeFragmentData)
-                .data(this.currentUser, this.optimizely)
+            this.pledgeFragmentData
+                .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.showPledgeFragment.onNext(it)
@@ -610,7 +609,7 @@ class BackingAddOnsFragmentViewModel {
 
         // - Outputs
         @NonNull
-        override fun showPledgeFragment(): Observable<Triple<PledgeData, PledgeReason, Boolean>> = this.showPledgeFragment
+        override fun showPledgeFragment(): Observable<Pair<PledgeData, PledgeReason>> = this.showPledgeFragment
         override fun addOnsList(): Observable<Triple<ProjectData, List<Reward>, ShippingRule>> = this.addOnsListFiltered
         override fun selectedShippingRule(): Observable<ShippingRule> = this.shippingRuleSelected
         override fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>> = this.shippingRulesAndProject

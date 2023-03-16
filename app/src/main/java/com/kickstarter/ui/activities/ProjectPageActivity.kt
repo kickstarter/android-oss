@@ -40,7 +40,6 @@ import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.models.Project
-import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProjectPagerAdapter
 import com.kickstarter.ui.data.CheckoutData
@@ -56,9 +55,7 @@ import com.kickstarter.ui.extensions.startUpdatesActivity
 import com.kickstarter.ui.extensions.startVideoActivity
 import com.kickstarter.ui.fragments.BackingFragment
 import com.kickstarter.ui.fragments.CancelPledgeFragment
-import com.kickstarter.ui.fragments.NewCardFragment
 import com.kickstarter.ui.fragments.PledgeFragment
-import com.kickstarter.ui.fragments.PledgeFragmentLegacy
 import com.kickstarter.ui.fragments.RewardsFragment
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import com.stripe.android.view.CardInputWidget
@@ -69,9 +66,7 @@ import rx.schedulers.Schedulers
 class ProjectPageActivity :
     BaseActivity<ProjectPageViewModel.ViewModel>(),
     CancelPledgeFragment.CancelPledgeDelegate,
-    NewCardFragment.OnCardSavedListener,
     PledgeFragment.PledgeDelegate,
-    PledgeFragmentLegacy.PledgeDelegate,
     BackingFragment.BackingDelegate {
     private lateinit var ksString: KSString
 
@@ -484,11 +479,6 @@ class ProjectPageActivity :
         this.viewModel.inputs.pledgeSuccessfullyUpdated()
     }
 
-    override fun cardSaved(storedCard: StoredCard) {
-        pledgeFragmentLegacy()?.cardAdded(storedCard)
-        supportFragmentManager.popBackStack()
-    }
-
     override fun refreshProject() {
         this.viewModel.inputs.refreshProject()
     }
@@ -629,9 +619,6 @@ class ProjectPageActivity :
         finish()
     }
 
-    private fun pledgeFragmentLegacy() = supportFragmentManager
-        .findFragmentByTag(PledgeFragmentLegacy::class.java.simpleName) as PledgeFragmentLegacy?
-
     private fun renderProject(backingFragment: BackingFragment, rewardsFragment: RewardsFragment, projectData: ProjectData) {
         rewardsFragment.configureWith(projectData)
         backingFragment.configureWith(projectData)
@@ -750,8 +737,8 @@ class ProjectPageActivity :
             .show()
     }
 
-    private fun showPledgeFragment(pledgeDataAndPledgeReason: Triple<PledgeData, PledgeReason, Boolean>) {
-        val pledgeFragment = this.selectPledgeFragment(pledgeDataAndPledgeReason.first, pledgeDataAndPledgeReason.second, pledgeDataAndPledgeReason.third)
+    private fun showPledgeFragment(pledgeDataAndPledgeReason: Pair<PledgeData, PledgeReason>) {
+        val pledgeFragment = this.selectPledgeFragment(pledgeDataAndPledgeReason.first, pledgeDataAndPledgeReason.second)
         val tag = pledgeFragment::class.java.simpleName
         supportFragmentManager
             .beginTransaction()

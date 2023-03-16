@@ -52,7 +52,7 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
         this.viewModel.outputs.showPledgeFragment()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { showPledgeFragment(it.first, it.second, it.third) }
+            .subscribe { showPledgeFragment(it.first, it.second) }
 
         this.viewModel.outputs.addOnsList()
             .compose(bindToLifecycle())
@@ -158,13 +158,12 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
         }
     }
 
-    private fun showPledgeFragment(pledgeData: PledgeData, pledgeReason: PledgeReason, shouldShowPaymentSheet: Boolean) {
-        val fragment = this.selectPledgeFragment(pledgeData, pledgeReason, shouldShowPaymentSheet)
+    private fun showPledgeFragment(pledgeData: PledgeData, pledgeReason: PledgeReason) {
+        val fragment = this.selectPledgeFragment(pledgeData, pledgeReason)
         parentFragmentManager
             .beginTransaction()
             .setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
             .add(R.id.fragment_container, fragment, fragment::class.java.simpleName)
-            .addToBackStack(NewCardFragment::class.java.simpleName)
             .commit()
     }
 

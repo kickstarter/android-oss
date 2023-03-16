@@ -58,7 +58,7 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
             .compose(observeForUI())
             .subscribe {
                 dialog.dismiss()
-                showPledgeFragment(it.first, it.second, it.third)
+                showPledgeFragment(it.first, it.second)
             }
 
         this.viewModel.outputs.showAddOnsFragment()
@@ -150,10 +150,9 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
 
     private fun showPledgeFragment(
         pledgeData: PledgeData,
-        pledgeReason: PledgeReason,
-        shouldShowPaymentSheet: Boolean
+        pledgeReason: PledgeReason
     ) {
-        val fragment = this.selectPledgeFragment(pledgeData, pledgeReason, shouldShowPaymentSheet)
+        val fragment = this.selectPledgeFragment(pledgeData, pledgeReason)
 
         if (this.isVisible && this.parentFragmentManager.findFragmentByTag(fragment::class.java.simpleName) == null) {
             this.parentFragmentManager

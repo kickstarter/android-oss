@@ -10,7 +10,6 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.fragments.PledgeFragment
-import com.kickstarter.ui.fragments.PledgeFragmentLegacy
 import org.junit.Test
 
 class FragmentExtTest : KSRobolectricTestCase() {

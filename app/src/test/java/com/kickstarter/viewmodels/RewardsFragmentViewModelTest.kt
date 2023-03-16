@@ -25,7 +25,7 @@ class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
     private val backedRewardPosition = TestSubscriber.create<Int>()
     private val projectData = TestSubscriber.create<ProjectData>()
     private val rewardsCount = TestSubscriber.create<Int>()
-    private val showPledgeFragment = TestSubscriber<Triple<PledgeData, PledgeReason, Boolean>>()
+    private val showPledgeFragment = TestSubscriber<Pair<PledgeData, PledgeReason>>()
     private val showAddOnsFragment = TestSubscriber<Pair<PledgeData, PledgeReason>>()
     private val showAlert = TestSubscriber<Pair<PledgeData, PledgeReason>>()
 
@@ -111,14 +111,13 @@ class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
         val reward = RewardFactory.reward().toBuilder().hasAddons(false).build()
         this.vm.inputs.rewardClicked(reward)
         this.showPledgeFragment.assertValue(
-            Triple(
+            Pair(
                 PledgeData.builder()
                     .pledgeFlowContext(PledgeFlowContext.NEW_PLEDGE)
                     .reward(reward)
                     .projectData(ProjectDataFactory.project(project))
                     .build(),
-                PledgeReason.PLEDGE,
-                false
+                PledgeReason.PLEDGE
             )
         )
         this.showAddOnsFragment.assertNoValues()
@@ -214,14 +213,13 @@ class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
         val reward = RewardFactory.reward()
         this.vm.inputs.rewardClicked(reward)
         this.showPledgeFragment.assertValue(
-            Triple(
+            Pair(
                 PledgeData.builder()
                     .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
                     .reward(reward)
                     .projectData(ProjectDataFactory.project(project))
                     .build(),
-                PledgeReason.UPDATE_REWARD,
-                false
+                PledgeReason.UPDATE_REWARD
             )
         )
     }

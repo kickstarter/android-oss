@@ -73,7 +73,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val showPledgeNotCancelableDialog = TestSubscriber<Void>()
     private val showSavedPromptTest = TestSubscriber<Void>()
     private val showShareSheet = TestSubscriber<Pair<String, String>>()
-    private val showUpdatePledge = TestSubscriber<Triple<PledgeData, PledgeReason, Boolean>>()
+    private val showUpdatePledge = TestSubscriber<Pair<PledgeData, PledgeReason>>()
     private val showUpdatePledgeSuccess = TestSubscriber<Void>()
     private val startRootCommentsActivity = TestSubscriber<ProjectData>()
     private val startRootCommentsForCommentsThreadActivity = TestSubscriber<Pair<String, ProjectData>>()

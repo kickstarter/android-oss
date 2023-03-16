@@ -58,7 +58,7 @@ class FragmentExtTest : KSRobolectricTestCase() {
             .addOns(addOns)
             .build()
 
-        val fragment = Fragment().selectPledgeFragment(pledgeData, PledgeReason.PLEDGE, true)
+        val fragment = Fragment().selectPledgeFragment(pledgeData, PledgeReason.PLEDGE)
 
         assertTrue(fragment is PledgeFragment)
 

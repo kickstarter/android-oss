@@ -271,7 +271,6 @@ interface ProjectPageViewModel {
         private val apolloClient = requireNotNull(environment.apolloClient())
         private val currentConfig = requireNotNull(environment.currentConfig())
         private val closeFullScreenVideo = BehaviorSubject.create<Long>()
-        private val firebaseAnalyticsClientType = requireNotNull(environment.firebaseAnalyticsClient())
 
         private val cancelPledgeClicked = PublishSubject.create<Void>()
         private val commentsTextViewClicked = PublishSubject.create<Void>()

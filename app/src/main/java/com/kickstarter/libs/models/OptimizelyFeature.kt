@@ -11,6 +11,5 @@ class OptimizelyFeature {
         ANDROID_CAPI_INTEGRATION("android_capi_integration"),
         ANDROID_GOOGLE_ANALYTICS("android_google_analytics"),
         ANDROID_PRE_LAUNCH_SCREEN("android_pre_launch_screen"),
-        ANDROID_UGC("android_ugc")
     }
 }

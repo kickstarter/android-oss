@@ -794,20 +794,18 @@ interface ProjectOverviewViewModel {
             shouldShowProjectFlagged = project
                 .map { it.isFlagged() ?: false }
                 .compose(Transformers.combineLatestPair(refreshFlagged.startWith("")))
-                .withLatestFrom(Observable.just(this.optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_UGC) ?: false)) { pair, isEnabled ->
+                .map { pair ->
                     val isFlagged = pair.first
                     val shouldRefresh = pair.second
 
                     if (shouldRefresh.isNotEmpty()) {
-                        return@withLatestFrom isEnabled && true
+                        true
                     } else
-                        return@withLatestFrom isEnabled && isFlagged
+                        isFlagged
                 }
 
             shouldShowReportProject = shouldShowProjectFlagged
-                .withLatestFrom(Observable.just(this.optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_UGC) ?: false)) { isFlagged, isEnabled ->
-                    return@withLatestFrom isEnabled && !isFlagged
-                }
+                .map { !it }
 
             linkTagClicked
                 .map {

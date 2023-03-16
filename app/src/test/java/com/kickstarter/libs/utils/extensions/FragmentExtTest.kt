@@ -45,7 +45,7 @@ class FragmentExtTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeFragmentInstance_whenFeatureFlag_Active() {
+    fun testPledgeFragmentInstance() {
         val project = ProjectFactory.project()
         val projectData = ProjectDataFactory.project(project)
         val reward = Reward.builder().build()
@@ -61,33 +61,6 @@ class FragmentExtTest : KSRobolectricTestCase() {
         val fragment = Fragment().selectPledgeFragment(pledgeData, PledgeReason.PLEDGE, true)
 
         assertTrue(fragment is PledgeFragment)
-        assertFalse(fragment is PledgeFragmentLegacy)
-
-        val arg1 = fragment.arguments?.get(ArgumentsKey.PLEDGE_PLEDGE_DATA) as? PledgeData
-        val arg2 = fragment.arguments?.get(ArgumentsKey.PLEDGE_PLEDGE_REASON)
-
-        assertEquals(arg1, pledgeData)
-        assertEquals(arg2, PledgeReason.PLEDGE)
-    }
-
-    @Test
-    fun testPledgeFragmentInstance_whenFeatureFlag_Deactivated() {
-        val project = ProjectFactory.project()
-        val projectData = ProjectDataFactory.project(project)
-        val reward = Reward.builder().build()
-        val addOns = listOf(reward)
-
-        val pledgeData = PledgeData.builder()
-            .pledgeFlowContext(PledgeFlowContext.MANAGE_REWARD)
-            .projectData(projectData)
-            .reward(reward)
-            .addOns(addOns)
-            .build()
-
-        val fragment = Fragment().selectPledgeFragment(pledgeData, PledgeReason.PLEDGE, false)
-
-        assertFalse(fragment is PledgeFragment)
-        assertTrue(fragment is PledgeFragmentLegacy)
 
         val arg1 = fragment.arguments?.get(ArgumentsKey.PLEDGE_PLEDGE_DATA) as? PledgeData
         val arg2 = fragment.arguments?.get(ArgumentsKey.PLEDGE_PLEDGE_REASON)

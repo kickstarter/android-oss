@@ -19,6 +19,7 @@ import com.kickstarter.ui.data.LoginReason
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
+import rx.subjects.BehaviorSubject
 
 class LoginToutViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: LoginToutViewModel.ViewModel
@@ -74,6 +75,9 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .currentUser(currentUser)
             .build()
+        val user = BehaviorSubject.create<User>()
+        environment().currentUser()?.loggedInUser()?.subscribe(user)
+
         setUpEnvironment(environment, LoginReason.DEFAULT)
 
         this.currentUser.assertValuesAndClear(null)
@@ -85,8 +89,9 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
 
         vm.facebookAccessToken.onNext("token")
 
-        this.currentUser.assertValueCount(1)
+        this.currentUser.assertValueCount(2)
         finishWithSuccessfulResult.assertValueCount(1)
+        assertEquals("some@email.com", user.value?.email())
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 

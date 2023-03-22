@@ -5,6 +5,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope.Companion.builder
@@ -12,6 +13,7 @@ import com.kickstarter.ui.IntentKey
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
+import rx.subjects.BehaviorSubject
 
 class TwoFactorViewModelTest : KSRobolectricTestCase() {
 
@@ -57,6 +59,9 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
         intent.putExtra(IntentKey.FACEBOOK_LOGIN, false)
         intent.putExtra(IntentKey.FACEBOOK_TOKEN, "")
 
+        val user = BehaviorSubject.create<User>()
+        environment().currentUser()?.loggedInUser()?.subscribe(user)
+
         vm = TwoFactorViewModel.ViewModel(environment())
         vm.intent(intent)
 
@@ -68,6 +73,8 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
 
         formSubmitting.assertValues(true, false)
         tfaSuccess.assertValueCount(1)
+
+        assertEquals("some@email.com", user.value?.email())
 
         segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }

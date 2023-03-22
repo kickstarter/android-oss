@@ -22,6 +22,10 @@ class User private constructor(
     private val inventNewsletter: Boolean,
     private val isAdmin: Boolean,
     private val isEmailVerified: Boolean,
+    private val email: String?,
+    private val hasPassword: Boolean?,
+    private val isCreator: Boolean?,
+    private val isDeliverable: Boolean?,
     private val chosenCurrency: String?,
     private val location: Location?,
     private val memberProjectsCount: Int,
@@ -70,7 +74,12 @@ class User private constructor(
     fun happeningNewsletter() = this.happeningNewsletter
     override fun id() = this.id
     fun isAdmin() = this.isAdmin
+    fun hasPassword() = this.hasPassword
+
     fun isEmailVerified() = this.isEmailVerified
+    fun isCreator() = this.isCreator
+    fun isDeliverable() = this.isDeliverable
+    fun email() = this.email
     fun chosenCurrency() = this.chosenCurrency
     fun inventNewsletter() = this.inventNewsletter
     fun location() = this.location
@@ -123,12 +132,16 @@ class User private constructor(
         private var inventNewsletter: Boolean = false,
         private var isAdmin: Boolean = false,
         private var isEmailVerified: Boolean = false,
+        private var isCreator: Boolean? = false,
+        private var isDeliverable: Boolean? = false,
+        private var email: String? = null,
         private var chosenCurrency: String? = null,
         private var location: Location? = null,
         private var memberProjectsCount: Int = 0,
         private var musicNewsletter: Boolean = false,
         private var name: String = "",
         private var notifyMobileOfBackings: Boolean = false,
+        private var hasPassword: Boolean? = false,
         private var notifyMobileOfComments: Boolean = false,
         private var notifyMobileOfCreatorEdu: Boolean = false,
         private var notifyMobileOfFollower: Boolean = false,
@@ -172,8 +185,12 @@ class User private constructor(
         fun id(id: Long?) = apply { this.id = id ?: 0 }
         fun isAdmin(isAdmin: Boolean?) = apply { this.isAdmin = isAdmin ?: false }
         fun isEmailVerified(isEmailVerified: Boolean?) = apply { this.isEmailVerified = isEmailVerified ?: false }
+        fun isCreator(isCreator: Boolean?) = apply { this.isCreator = isCreator ?: false }
+        fun isDeliverable(isDeliverable: Boolean?) = apply { this.isDeliverable = isDeliverable ?: false }
+        fun email(email: String?) = apply { this.email = email }
         fun chosenCurrency(chosenCurrency: String?) = apply { this.chosenCurrency = chosenCurrency }
         fun inventNewsletter(inventNewsletter: Boolean?) = apply { this.inventNewsletter = inventNewsletter ?: false }
+        fun hasPassword(hasPassword: Boolean?) = apply { this.hasPassword = hasPassword ?: false }
         fun location(location: Location?) = apply { this.location = location }
         fun memberProjectsCount(memberProjectsCount: Int?) = apply { this.memberProjectsCount = memberProjectsCount ?: 0 }
         fun musicNewsletter(musicNewsletter: Boolean?) = apply { this.musicNewsletter = musicNewsletter ?: false }
@@ -220,9 +237,13 @@ class User private constructor(
             gamesNewsletter = gamesNewsletter,
             happeningNewsletter = happeningNewsletter,
             id = id,
+            hasPassword = hasPassword,
             inventNewsletter = inventNewsletter,
             isAdmin = isAdmin,
             isEmailVerified = isEmailVerified,
+            isCreator = isCreator,
+            isDeliverable = isDeliverable,
+            email = email,
             chosenCurrency = chosenCurrency,
             location = location,
             memberProjectsCount = memberProjectsCount,
@@ -284,6 +305,10 @@ class User private constructor(
         inventNewsletter = inventNewsletter,
         isAdmin = isAdmin,
         isEmailVerified = isEmailVerified,
+        email = email,
+        hasPassword = hasPassword,
+        isCreator = isCreator,
+        isDeliverable = isDeliverable,
         chosenCurrency = chosenCurrency,
         location = location,
         memberProjectsCount = memberProjectsCount,
@@ -386,7 +411,12 @@ class User private constructor(
                 unreadMessagesCount() == obj.unreadMessagesCount() &&
                 unseenActivityCount() == obj.unseenActivityCount() &&
                 weeklyNewsletter() == obj.weeklyNewsletter() &&
-                needsPassword() == obj.needsPassword()
+                needsPassword() == obj.needsPassword() &&
+                email() == obj.email() &&
+                hasPassword() == obj.hasPassword() &&
+                isCreator() == obj.isCreator() &&
+                isDeliverable() == obj.isDeliverable() &&
+                isDeliverable() == obj.isDeliverable()
         }
         return equals
     }

@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -165,6 +166,37 @@ fun TextCaptionStyleWithStartIcon(
         ) = createRefs()
         Icon(
             imageVector = imageVector,
+            contentDescription = "null",
+            tint = tintColor,
+            modifier = Modifier.constrainAs(icon) {
+                top.linkTo(textElement.top)
+                bottom.linkTo(textElement.bottom)
+            }.padding(end = dimensionResource(id = R.dimen.grid_1))
+        )
+
+        TextCaptionStyle(
+            text,
+            Modifier.constrainAs(textElement) {
+                start.linkTo(icon.end)
+            },
+            tintColor
+        )
+    }
+}
+
+@Composable
+fun TextCaptionStyleWithStartIcon(
+    text: String,
+    painter: Painter,
+    modifier: Modifier,
+    tintColor: Color = kds_support_400
+) {
+    ConstraintLayout(modifier = modifier) {
+        val (
+            icon, textElement
+        ) = createRefs()
+        Icon(
+            painter = painter,
             contentDescription = "null",
             tint = tintColor,
             modifier = Modifier.constrainAs(icon) {

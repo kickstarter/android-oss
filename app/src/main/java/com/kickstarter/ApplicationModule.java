@@ -10,6 +10,7 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 
 import com.apollographql.apollo.ApolloClient;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -30,6 +31,8 @@ import com.kickstarter.libs.DeviceRegistrarType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.ExperimentsClientTypeKt;
+import com.kickstarter.libs.FirebaseAnalyticsClient;
+import com.kickstarter.libs.FirebaseAnalyticsClientType;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.KSCurrency;
@@ -152,7 +155,8 @@ public class ApplicationModule {
     final @NonNull SharedPreferences sharedPreferences,
     final @NonNull Stripe stripe,
     final @NonNull WebClientType webClient,
-    final @NonNull @WebEndpoint String webEndpoint) {
+    final @NonNull @WebEndpoint String webEndpoint,
+    final @NonNull FirebaseAnalyticsClientType firebaseAnalyticsClientType) {
 
     return Environment.builder()
       .activitySamplePreference(activitySamplePreference)
@@ -183,7 +187,15 @@ public class ApplicationModule {
       .stripe(stripe)
       .webClient(webClient)
       .webEndpoint(webEndpoint)
+      .firebaseAnalyticsClient(firebaseAnalyticsClientType)
       .build();
+  }
+
+  @Provides
+  @Nonnull
+  @Singleton
+  static FirebaseAnalyticsClientType provideFirebaseAnalyticsClientType(final @NonNull ExperimentsClientType experimentsClientType, final @NonNull SharedPreferences sharedPreferences, final @ApplicationContext @NonNull Context context) {
+    return new FirebaseAnalyticsClient(experimentsClientType, sharedPreferences, FirebaseAnalytics.getInstance(context));
   }
 
   @Provides

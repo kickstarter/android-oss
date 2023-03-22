@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels.usecases
 
 import android.content.SharedPreferences
 import android.util.Pair
-import com.braze.support.emptyToNull
 import com.facebook.appevents.cloudbridge.ConversionsAPIEventName
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.ExperimentsClientType
@@ -48,10 +47,10 @@ class SendCAPIEventUseCase(
             .compose(Transformers.combineLatestPair(pledgeAmountAndCurrency))
             .map {
                 val userEmail = it.first.first.second?.email()
-                val hashedEmail = if (userEmail?.isNotEmpty() == true) {
-                    userEmail?.toHashedSHAEmail()
+                val hashedEmail = if (it.first.first.second == null || userEmail?.isNullOrEmpty() == true) {
+                    userEmail.orEmpty()
                 } else {
-                    userEmail?.emptyToNull()
+                    userEmail.toHashedSHAEmail()
                 }
 
                 TriggerCapiEventInput.builder()

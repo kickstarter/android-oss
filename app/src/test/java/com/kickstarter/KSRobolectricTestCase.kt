@@ -2,6 +2,7 @@ package com.kickstarter
 
 import android.app.Application
 import android.content.Context
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.core.app.ApplicationProvider
 import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.Environment
@@ -25,13 +26,19 @@ import junit.framework.TestCase
 import org.joda.time.DateTimeUtils
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import rx.observers.TestSubscriber
 import kotlin.jvm.Throws
-
 @RunWith(KSRobolectricGradleTestRunner::class)
-@Config(shadows = [ShadowAndroidXMultiDex::class], sdk = [KSRobolectricGradleTestRunner.DEFAULT_SDK])
+@Config(
+    shadows = [ShadowAndroidXMultiDex::class],
+    sdk = [KSRobolectricGradleTestRunner.DEFAULT_SDK],
+    instrumentedPackages = [
+        "androidx.loader.content"
+    ]
+)
 abstract class KSRobolectricTestCase : TestCase() {
     private val application: Application = ApplicationProvider.getApplicationContext()
     private lateinit var environment: Environment
@@ -39,6 +46,9 @@ abstract class KSRobolectricTestCase : TestCase() {
     lateinit var experimentsTest: TestSubscriber<String>
     lateinit var segmentTrack: TestSubscriber<String>
     lateinit var segmentIdentify: TestSubscriber<User>
+
+    @get:Rule
+    val composeTestRule = createComposeRule()
 
     @Before
     @Throws(Exception::class)
@@ -101,7 +111,9 @@ abstract class KSRobolectricTestCase : TestCase() {
         segmentIdentify = TestSubscriber()
         val segmentTrackingClient = MockTrackingClient(
             MockCurrentUser(),
-            mockCurrentConfig, TrackingClientType.Type.SEGMENT, experimentsClientType
+            mockCurrentConfig,
+            TrackingClientType.Type.SEGMENT,
+            experimentsClientType
         )
         segmentTrackingClient.eventNames.subscribe(segmentTrack)
         segmentTrackingClient.identifiedUser.subscribe(segmentIdentify)

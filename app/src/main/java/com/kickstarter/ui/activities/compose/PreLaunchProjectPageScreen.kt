@@ -19,7 +19,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,6 +31,15 @@ import com.kickstarter.R
 import com.kickstarter.libs.utils.extensions.toHtml
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Project
+import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.COMING_SOON_BADGE
+import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.CREATOR_LAYOUT
+import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_CATEGORY_NAME
+import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_DESCRIPTION
+import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_FOLLOWERS
+import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_IMAGE
+import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_LOCATION_NAME
+import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_NAME
+import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_SAVE_BUTTON
 import com.kickstarter.ui.compose.KsButton
 import com.kickstarter.ui.compose.KsCreatorLayout
 import com.kickstarter.ui.compose.ProjectImageFromURl
@@ -51,6 +62,18 @@ fun PreLaunchProjectPageScreenPreview() {
         val projectState = remember { mutableStateOf(null) }
         PreLaunchProjectPageScreen(projectState)
     }
+}
+
+enum class PreLaunchProjectPageScreenTestTag() {
+    PROJECT_IMAGE,
+    COMING_SOON_BADGE,
+    PROJECT_NAME,
+    CREATOR_LAYOUT,
+    PROJECT_DESCRIPTION,
+    PROJECT_CATEGORY_NAME,
+    PROJECT_LOCATION_NAME,
+    PROJECT_SAVE_BUTTON,
+    PROJECT_FOLLOWERS
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -93,6 +116,7 @@ fun PreLaunchProjectPageScreen(
             ProjectImageFromURl(
                 imageUrl = (project?.photo()?.full()),
                 modifier = Modifier
+                    .testTag(PROJECT_IMAGE.name)
                     .constrainAs(projectImage) {
                         top.linkTo(parent.top)
                     }
@@ -105,7 +129,7 @@ fun PreLaunchProjectPageScreen(
                     top.linkTo(projectImage.bottom)
                     bottom.linkTo(projectImage.bottom)
                     start.linkTo(parent.start, screenPadding)
-                }
+                }.testTag(COMING_SOON_BADGE.name)
             )
 
             val projectNameAlpha = if (project?.name().isNullOrBlank()) 0f else 1f
@@ -118,12 +142,14 @@ fun PreLaunchProjectPageScreen(
                         start.linkTo(parent.start, screenPadding)
                     }
                     .padding(end = screenPadding)
+                    .testTag(PROJECT_NAME.name)
             )
 
             KsCreatorLayout(
                 creatorName = project?.creator()?.name() ?: "",
                 imageUrl = project?.creator()?.avatar()?.medium() ?: "",
                 modifier = Modifier
+                    .testTag(CREATOR_LAYOUT.name)
                     .fillMaxWidth()
                     .constrainAs(creatorLayout) {
                         top.linkTo(projectName.bottom)
@@ -144,6 +170,7 @@ fun PreLaunchProjectPageScreen(
                     text = it.toHtml().toString(),
                     modifier = Modifier
                         .fillMaxWidth()
+                        .testTag(PROJECT_DESCRIPTION.name)
                         .constrainAs(projectDescription) {
                             top.linkTo(creatorLayout.bottom)
                             start.linkTo(parent.start, screenPadding)
@@ -159,8 +186,9 @@ fun PreLaunchProjectPageScreen(
             project?.category()?.name()?.let {
                 TextCaptionStyleWithStartIcon(
                     it,
-                    ImageVector.vectorResource(id = R.drawable.icon__compass),
+                    painterResource(R.drawable.icon__compass),
                     modifier = Modifier
+                        .testTag(PROJECT_CATEGORY_NAME.name)
                         .constrainAs(category) {
                             top.linkTo(projectDescription.bottom)
                             start.linkTo(parent.start, screenPadding)
@@ -176,6 +204,7 @@ fun PreLaunchProjectPageScreen(
                     it,
                     Icons.Filled.LocationOn,
                     modifier = Modifier
+                        .testTag(PROJECT_LOCATION_NAME.name)
                         .constrainAs(location) {
                             start.linkTo(category.end, locationPadding)
                             top.linkTo(category.top)
@@ -215,6 +244,7 @@ fun PreLaunchProjectPageScreen(
                         onClickAction = { onButtonClicked.invoke() },
                         isChecked = project?.isStarred() ?: false,
                         modifier = Modifier
+                            .testTag(PROJECT_SAVE_BUTTON.name)
                             .constrainAs(button) {
                                 top.linkTo(parent.top)
                                 start.linkTo(parent.start, screenPadding)
@@ -231,6 +261,7 @@ fun PreLaunchProjectPageScreen(
                         TextCaptionStyle(
                             text = it,
                             modifier = Modifier
+                                .testTag(PROJECT_FOLLOWERS.name)
                                 .constrainAs(text) {
                                     top.linkTo(button.bottom, margin = 8.dp)
                                     start.linkTo(parent.start, screenPadding)

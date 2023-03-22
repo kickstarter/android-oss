@@ -76,9 +76,9 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
             .currentUser(currentUser)
             .build()
         val user = BehaviorSubject.create<User>()
-        environment().currentUser()?.loggedInUser()?.subscribe(user)
 
         setUpEnvironment(environment, LoginReason.DEFAULT)
+        environment.currentUser()?.loggedInUser()?.subscribe(user)
 
         this.currentUser.assertValuesAndClear(null)
 
@@ -91,6 +91,7 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
 
         this.currentUser.assertValueCount(2)
         finishWithSuccessfulResult.assertValueCount(1)
+
         assertEquals("some@email.com", user.value?.email())
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }

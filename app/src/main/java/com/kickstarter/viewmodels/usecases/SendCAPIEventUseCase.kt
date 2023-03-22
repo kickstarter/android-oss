@@ -47,7 +47,7 @@ class SendCAPIEventUseCase(
             .compose(Transformers.combineLatestPair(pledgeAmountAndCurrency))
             .map {
                 val userEmail = it.first.first.second?.email()
-                val hashedEmail = if (it.first.first.second == null || userEmail?.isNullOrEmpty() == true) {
+                val hashedEmail = if (it.first.first.second == null || userEmail.isNullOrEmpty()) {
                     userEmail.orEmpty()
                 } else {
                     userEmail.toHashedSHAEmail()

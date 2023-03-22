@@ -4,11 +4,11 @@ import android.content.SharedPreferences
 import android.util.Pair
 import com.braze.support.emptyToNull
 import com.facebook.appevents.cloudbridge.ConversionsAPIEventName
+import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.FirebaseHelper
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.toHashedSHAEmail
 import com.kickstarter.models.Project
 import com.kickstarter.services.ApolloClientType
@@ -31,6 +31,7 @@ class SendCAPIEventUseCase(
 
     fun sendCAPIEvent(
         project: Observable<Project>,
+        currentUser: CurrentUserType,
         apolloClient: ApolloClientType,
         eventName: ConversionsAPIEventName,
         pledgeAmountAndCurrency: Observable<Pair<String?, String?>> = Observable.just(Pair(null, null))
@@ -42,29 +43,23 @@ class SendCAPIEventUseCase(
                 it.sendMetaCapiEvents()
             }
             .filter { canSendCAPIEventFlag }
-            .switchMap {
-                GetUserPrivacyUseCase(apolloClient)
-                    .getUserPrivacy()
-                    .compose(Transformers.neverError())
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .map { it.me()?.email() }
-                    .map {
-                        if (it?.isNotEmpty() == true) {
-                            it.toHashedSHAEmail()
-                        } else {
-                            it?.emptyToNull()
-                        }
-                    }
-            }
+            .compose(Transformers.combineLatestPair(currentUser.observable()))
             .compose(Transformers.combineLatestPair(project))
             .compose(Transformers.combineLatestPair(pledgeAmountAndCurrency))
             .map {
+                val userEmail = it.first.first.second?.email()
+                val hashedEmail = if (userEmail?.isNotEmpty() == true) {
+                    userEmail?.toHashedSHAEmail()
+                } else {
+                    userEmail?.emptyToNull()
+                }
+
                 TriggerCapiEventInput.builder()
                     .appData(AppDataInput.builder().extinfo(listOf(androidApp)).build())
                     .eventName(eventName.rawValue)
                     .projectId(encodeRelayId(it.first.second))
                     .externalId(FirebaseHelper.identifier)
-                    .userEmail(it.first.first)
+                    .userEmail(hashedEmail)
                     .customData(
                         CustomDataInput.builder().currency(it.second.second)
                             .value(it.second.first).build()

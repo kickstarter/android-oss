@@ -346,7 +346,7 @@ interface RewardViewHolderViewModel {
                 }
 
             SendCAPIEventUseCase(optimizely, sharedPreferences)
-                .sendCAPIEvent(currentProject, apolloClient, ConversionsAPIEventName.INITIATED_CHECKOUT)
+                .sendCAPIEvent(currentProject, currentUser, apolloClient, ConversionsAPIEventName.INITIATED_CHECKOUT)
                 .compose(Transformers.neverError())
                 .compose(bindToLifecycle())
                 .subscribe {

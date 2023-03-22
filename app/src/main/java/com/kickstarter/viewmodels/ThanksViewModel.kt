@@ -287,6 +287,7 @@ interface ThanksViewModel {
             SendCAPIEventUseCase(optimizely, sharedPreferences)
                 .sendCAPIEvent(
                     project,
+                    currentUser,
                     apolloClient,
                     ConversionsAPIEventName.PURCHASED,
                     cAPIPurchaseValueAndCurrency

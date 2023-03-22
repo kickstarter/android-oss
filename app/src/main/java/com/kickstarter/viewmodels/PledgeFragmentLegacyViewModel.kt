@@ -1191,6 +1191,7 @@ interface PledgeFragmentLegacyViewModel {
                 .sendCAPIEvent(
                     project
                         .compose(takeWhen(changeCard)),
+                    currentUser,
                     apolloClient,
                     ConversionsAPIEventName.ADDED_PAYMENT_INFO
                 ).compose(Transformers.neverError())

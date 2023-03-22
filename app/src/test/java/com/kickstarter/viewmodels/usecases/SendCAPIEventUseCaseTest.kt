@@ -11,6 +11,7 @@ import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.extensions.toHashedSHAEmail
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.ui.SharedPreferenceKey
@@ -24,7 +25,7 @@ class SendCAPIEventUseCaseTest : KSRobolectricTestCase() {
 
     var mockSharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
 
-    val sendCAPIEventObservable = BehaviorSubject.create<Pair<TriggerCapiEventMutation.Data, TriggerCapiEventInput>>()
+    private val sendCAPIEventObservable = BehaviorSubject.create<Pair<TriggerCapiEventMutation.Data, TriggerCapiEventInput>>()
 
     val mockExperimentsClientType: MockExperimentsClientType =
         object : MockExperimentsClientType() {
@@ -33,7 +34,7 @@ class SendCAPIEventUseCaseTest : KSRobolectricTestCase() {
             }
         }
 
-    val currentUser: CurrentUserType = MockCurrentUser()
+    val currentUser: CurrentUserType = MockCurrentUser(UserFactory.user().toBuilder().email("some@email.com").build())
     private fun setUpEnvironment(): Environment {
         return environment()
             .toBuilder()
@@ -142,6 +143,7 @@ class SendCAPIEventUseCaseTest : KSRobolectricTestCase() {
             requireNotNull(environment.sharedPreferences())
         ).sendCAPIEvent(
             project = Observable.just(project),
+            currentUser = requireNotNull(environment.currentUser()),
             apolloClient = requireNotNull(environment.apolloClient()),
             eventName = event,
             pledgeAmountAndCurrency = pledgeAmountAndCurrency

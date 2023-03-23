@@ -165,17 +165,10 @@
             android:name=".ui.activities.MessageThreadsActivity"
             android:parentActivityName=".ui.activities.ProfileActivity" />
         <activity
-            android:name=".ui.activities.NewCardActivity"
-            android:theme="@style/SettingsActivity"
-            android:windowSoftInputMode="adjustResize|stateVisible" />
-        <activity
             android:name=".ui.activities.NewsletterActivity"
             android:theme="@style/SettingsActivity" />
         <activity
             android:name=".ui.activities.NotificationsActivity"
-            android:theme="@style/SettingsActivity" />
-        <activity
-            android:name=".ui.activities.PaymentMethodsSettingsActivityLegacy"
             android:theme="@style/SettingsActivity" />
         <activity
             android:name=".ui.activities.PaymentMethodsSettingsActivity"

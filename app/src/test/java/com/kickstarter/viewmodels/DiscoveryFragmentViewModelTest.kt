@@ -219,29 +219,6 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShouldShowEditorial_featureEnabled() {
-        val user = MockCurrentUser()
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(
-                    feature: OptimizelyFeature.Key,
-                    experimentData: ExperimentData
-                ): Boolean {
-                    return true
-                }
-            }
-        val environment = environment().toBuilder()
-            .currentUser(user)
-            .optimizely(mockExperimentsClientType)
-            .build()
-        setUpEnvironment(environment)
-
-        setUpInitialHomeAllProjectsParams()
-
-        shouldShowEditorial.assertValue(Editorial.LIGHTS_ON)
-    }
-
-    @Test
     fun testShouldShowEditorial_featureDisabled() {
         val user = MockCurrentUser()
         val mockExperimentsClientType: MockExperimentsClientType =
@@ -262,34 +239,6 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         setUpInitialHomeAllProjectsParams()
 
         shouldShowEditorial.assertValue(null)
-    }
-
-    @Test
-    fun testShouldShowEditorial_whenOptimizelyInitializationDelay() {
-        val environment = environment().toBuilder()
-            .currentUser(MockCurrentUser())
-            .optimizely(object : MockExperimentsClientType() {
-                var enabledCount = 0
-                override fun isFeatureEnabled(
-                    feature: OptimizelyFeature.Key,
-                    experimentData: ExperimentData
-                ): Boolean {
-                    return if (enabledCount == 0) {
-                        enabledCount += 1
-                        false
-                    } else {
-                        true
-                    }
-                }
-            })
-            .build()
-
-        setUpEnvironment(environment)
-
-        setUpInitialHomeAllProjectsParams()
-        shouldShowEditorial.assertValue(null)
-        vm.optimizelyReady()
-        shouldShowEditorial.assertValues(null, Editorial.LIGHTS_ON)
     }
 
     @Test

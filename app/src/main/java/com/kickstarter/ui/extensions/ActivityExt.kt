@@ -29,7 +29,6 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.PledgeFragment
-import com.kickstarter.ui.fragments.PledgeFragmentLegacy
 import timber.log.Timber
 
 fun Activity.hideKeyboard() {
@@ -43,10 +42,8 @@ fun Activity.hideKeyboard() {
 fun Activity.selectPledgeFragment(
     pledgeData: PledgeData,
     pledgeReason: PledgeReason,
-    shouldShowPaymentSheet: Boolean
 ): Fragment {
-    return if (shouldShowPaymentSheet) PledgeFragment().withData(pledgeData, pledgeReason)
-    else PledgeFragmentLegacy().withData(pledgeData, pledgeReason)
+    return PledgeFragment().withData(pledgeData, pledgeReason)
 }
 
 fun Activity.showSnackbar(anchor: View, stringResId: Int) {

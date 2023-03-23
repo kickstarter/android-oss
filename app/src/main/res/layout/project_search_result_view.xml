@@ -34,7 +34,7 @@
         android:text="@string/Coming_soon"
         android:textColor="@color/kds_create_700"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/include"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/project_name_text_view"
         app:layout_constraintTop_toBottomOf="@+id/project_name_text_view"
         tools:visibility="visible" />
@@ -54,7 +54,6 @@
       app:layout_constraintVertical_chainStyle="packed"
       app:layout_constraintVertical_bias="0.5"
       tools:text="Somebody Once Told Me" />
-
 
   <TextView
       android:id="@+id/search_result_percent_funded_text_view"
@@ -119,6 +118,6 @@
       app:constraint_referenced_ids="search_result_percent_funded_text_view,search_result_funded_text_view,search_result_deadline_countdown_text_view,search_result_deadline_unit_text_view"
       tools:layout_editor_absoluteX="12dp"
       tools:layout_editor_absoluteY="12dp"
-      tools:visibility="invisible" />
+      tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

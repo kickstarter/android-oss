@@ -2,7 +2,7 @@ package com.kickstarter.ui.viewholders
 
 import android.util.Pair
 import android.view.View
-import androidx.core.view.isGone
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.kickstarter.R
 import com.kickstarter.databinding.ProjectSearchResultViewBinding
@@ -54,7 +54,7 @@ class ProjectSearchResultViewHolder(private val binding: ProjectSearchResultView
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                binding.searchResultGroup.isGone = it
+                binding.searchResultGroup.isInvisible = it
                 binding.searchResultComingSoon.isVisible = it
             }
     }

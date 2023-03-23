@@ -659,15 +659,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShouldShowReportProject_FFOff() {
-        val env = environmentForFeatureFlag(false)
-
-        setUpEnvironment(env, project(ProjectFactory.project()))
-
-        this.shouldShowReportProject.assertValue(false)
-    }
-
-    @Test
     fun testStartLoginFlow_when_NoUser() {
         setUpEnvironment(environment(), project(ProjectFactory.project()))
 

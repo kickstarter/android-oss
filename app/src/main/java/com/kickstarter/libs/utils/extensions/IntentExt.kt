@@ -2,8 +2,6 @@ package com.kickstarter.libs.utils.extensions
 
 import android.content.Context
 import android.content.Intent
-import com.kickstarter.libs.ExperimentsClientType
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CampaignDetailsActivity
@@ -12,7 +10,6 @@ import com.kickstarter.ui.activities.CreatorBioActivity
 import com.kickstarter.ui.activities.CreatorDashboardActivity
 import com.kickstarter.ui.activities.LoginActivity
 import com.kickstarter.ui.activities.PaymentMethodsSettingsActivity
-import com.kickstarter.ui.activities.PaymentMethodsSettingsActivityLegacy
 import com.kickstarter.ui.activities.PreLaunchProjectPageActivity
 import com.kickstarter.ui.activities.ProjectPageActivity
 import com.kickstarter.ui.activities.ProjectUpdatesActivity
@@ -42,13 +39,10 @@ fun Intent.getPreLaunchProjectActivity(context: Context, slug: String?, project:
  * @param context
  * @param optimizely
  *
- * - If feature flag is on PaymentMethodsSettingsActivity is presented (uses new PaymentSheet)
- * - If feature flag is off PaymentMethodsSettingsActivityLegacy is presented (uses legacy CardInputWidget)
+ * - PaymentMethodsSettingsActivity is presented (uses PaymentSheet)
  */
-fun Intent.getPaymentMethodsIntent(context: Context, optimizely: ExperimentsClientType?): Intent {
-    val isFFEnabled = optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_PAYMENTSHEET_SETTINGS) ?: false
-    return if (isFFEnabled) this.setClass(context, PaymentMethodsSettingsActivity::class.java)
-    else this.setClass(context, PaymentMethodsSettingsActivityLegacy::class.java)
+fun Intent.getPaymentMethodsIntent(context: Context): Intent {
+    return this.setClass(context, PaymentMethodsSettingsActivity::class.java)
 }
 
 fun Intent.getRootCommentsActivityIntent(

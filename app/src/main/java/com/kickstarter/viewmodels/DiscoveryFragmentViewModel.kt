@@ -8,7 +8,6 @@ import com.kickstarter.libs.loadmore.ApolloPaginate.Companion.builder
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.DISCOVER
-import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RefTagUtils
@@ -313,26 +312,16 @@ interface DiscoveryFragmentViewModel {
                 changedUser.compose(Transformers.takeWhen(optimizelyReady))
             )
 
-            val lightsOnEnabled = userWhenOptimizelyReady
-                .map { user: User? ->
-                    optimizely?.isFeatureEnabled(
-                        OptimizelyFeature.Key.LIGHTS_ON,
-                        ExperimentData(user, null, null)
-                    )
-                }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
-                .distinctUntilChanged()
-
             currentUser.observable()
                 .compose(Transformers.combineLatestPair(paramsFromActivity))
-                .compose(Transformers.combineLatestPair(lightsOnEnabled))
-                .map { defaultParamsAndEnabled: Pair<Pair<User, DiscoveryParams>, Boolean> ->
+                .map { defaultParamsAndEnabled: Pair<User, DiscoveryParams> ->
                     isDefaultParams(
-                        defaultParamsAndEnabled.first
-                    ) && defaultParamsAndEnabled.second.isTrue()
+                        defaultParamsAndEnabled
+                    ) && defaultParamsAndEnabled.second.tagId() == Editorial.LIGHTS_ON.tagId
                 }
-                .map { shouldShow: Boolean -> if (shouldShow) Editorial.LIGHTS_ON else null }
+                .map { shouldShow: Boolean ->
+                    if (shouldShow) Editorial.LIGHTS_ON else null
+                }
                 .compose(bindToLifecycle())
                 .subscribe(shouldShowEditorial)
 

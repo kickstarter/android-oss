@@ -6,15 +6,12 @@ import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.fragments.PledgeFragment
-import com.kickstarter.ui.fragments.PledgeFragmentLegacy
 
 fun Fragment.selectPledgeFragment(
     pledgeData: PledgeData,
-    pledgeReason: PledgeReason,
-    shouldShowPaymentSheet: Boolean
+    pledgeReason: PledgeReason
 ): Fragment {
-    return if (shouldShowPaymentSheet) PledgeFragment().withData(pledgeData, pledgeReason)
-    else PledgeFragmentLegacy().withData(pledgeData, pledgeReason)
+    return PledgeFragment().withData(pledgeData, pledgeReason)
 }
 
 fun Fragment.withData(pledgeData: PledgeData?, pledgeReason: PledgeReason?): Fragment {

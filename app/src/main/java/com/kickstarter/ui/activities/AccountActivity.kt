@@ -103,7 +103,7 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
         binding.createPasswordRow.setOnClickListener { startActivity(Intent(this, CreatePasswordActivity::class.java)) }
         binding.changeEmailRow.setOnClickListener { startActivity(Intent(this, ChangeEmailActivity::class.java)) }
         binding.changePasswordRow.setOnClickListener { startActivity(Intent(this, ChangePasswordActivity::class.java)) }
-        binding.paymentMethodsRow.setOnClickListener { startActivity(Intent().getPaymentMethodsIntent(this, this.environment().optimizely())) }
+        binding.paymentMethodsRow.setOnClickListener { startActivity(Intent().getPaymentMethodsIntent(this)) }
         binding.privacyRow.setOnClickListener { startActivity(Intent(this, PrivacyActivity::class.java)) }
     }
 

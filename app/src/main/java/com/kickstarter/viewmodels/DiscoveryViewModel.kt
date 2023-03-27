@@ -4,6 +4,9 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Pair
 import com.google.common.collect.Iterables.filter
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.RemoteConfigConstants
+import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
@@ -260,7 +263,10 @@ interface DiscoveryViewModel {
 
             Observable.just(sharedPreferences.contains(CONSENT_MANAGEMENT_PREFERENCE))
                 .filter { !it }
-                .filter { this.optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_CONSENT_MANAGEMENT) }
+                .filter {
+                    //this.optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_CONSENT_MANAGEMENT)
+                    Firebase.remoteConfig.getBoolean("android_test_spike")
+                }
                 .compose(bindToLifecycle())
                 .subscribe { showConsentManagementDialog.onNext(null) }
 

@@ -12,6 +12,8 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout
 import com.kickstarter.R
 import com.kickstarter.databinding.DiscoveryLayoutBinding
@@ -209,6 +211,14 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { this@DiscoveryActivity.showErrorSnackBar(binding.discoveryAnchorView, it ?: "") }
+
+        Firebase.remoteConfig.fetchAndActivate()
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val updated = task.result
+                } else {
+                }
+            }
     }
 
     fun discoveryLayout(): DrawerLayout {

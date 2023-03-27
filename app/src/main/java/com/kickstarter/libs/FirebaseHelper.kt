@@ -5,8 +5,11 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.installations.FirebaseInstallations
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.kickstarter.libs.utils.extensions.isKSApplication
-import java.nio.file.Files.delete
 
 class FirebaseHelper(context: Context, callback: () -> Boolean) {
 
@@ -26,6 +29,12 @@ class FirebaseHelper(context: Context, callback: () -> Boolean) {
                 FirebaseApp.initializeApp(context)
                 FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
                 FirebaseAnalytics.getInstance(context).setAnalyticsCollectionEnabled(true)
+
+                val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
+                val configSettings = remoteConfigSettings {
+                    minimumFetchIntervalInSeconds = 0
+                }
+                remoteConfig.setConfigSettingsAsync(configSettings)
             }
             FirebaseInstallations.getInstance().id.addOnSuccessListener { s: String ->
                 identifier = s

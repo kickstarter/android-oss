@@ -218,9 +218,9 @@ interface ProjectCardHolderViewModel {
         private val heartDrawableId = BehaviorSubject.create<Int>()
         private val notifyDelegateOfHeartButtonClicked = BehaviorSubject.create<Project>()
 
-        
         @JvmField
         val inputs: Inputs = this
+
         @JvmField
         val outputs: Outputs = this
         override fun configureWith(projectAndDiscoveryParams: Pair<Project, DiscoveryParams>) {
@@ -286,7 +286,7 @@ interface ProjectCardHolderViewModel {
                 .map { value ->
                     value?.let { it ->
                         NumberUtils.format(
-                            it
+                            it,
                         )
                     }
                 }
@@ -296,7 +296,7 @@ interface ProjectCardHolderViewModel {
 
             comingSoonViewGroupIsGone = project
                 .map { it?.metadataForProject() !== ProjectMetadata.COMING_SOON }
-            
+
             deadlineCountdownText = project
                 .map { it.deadlineCountdownValue() }
                 .map {
@@ -404,7 +404,7 @@ interface ProjectCardHolderViewModel {
                 .compose(Transformers.combineLatestPair(project))
                 .map { distanceSortAndProject: Pair<Boolean, Project>? ->
                     distanceSortAndProject?.first == true && ObjectUtils.isNotNull(
-                        distanceSortAndProject.second.location()
+                        distanceSortAndProject.second.location(),
                     )
                 }
                 .map { it.negate() }
@@ -420,12 +420,13 @@ interface ProjectCardHolderViewModel {
             metadataViewGroupBackground = backingViewGroupIsGone
                 .compose(Transformers.combineLatestPair(comingSoonViewGroupIsGone))
                 .map {
-                    val backingViewGroupIsGone =it.first
-                    val comingSoonViewGroupIsGone =it.second
-                    if (backingViewGroupIsGone && comingSoonViewGroupIsGone)
+                    val backingViewGroupIsGone = it.first
+                    val comingSoonViewGroupIsGone = it.second
+                    if (backingViewGroupIsGone && comingSoonViewGroupIsGone) {
                         R.drawable.rect_white_grey_stroke
-                    else
+                    } else {
                         R.drawable.rect_green_grey_stroke
+                    }
                 }
 
             nameAndBlurbText = project
@@ -433,7 +434,8 @@ interface ProjectCardHolderViewModel {
                 .map { requireNotNull(it) }
                 .map {
                     Pair.create(
-                        it.name(), it.blurb()
+                        it.name(),
+                        it.blurb(),
                     )
                 }
 
@@ -444,10 +446,11 @@ interface ProjectCardHolderViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
                 .map {
-                    if (it.state() == Project.STATE_LIVE || it.state() == Project.STATE_SUCCESSFUL)
+                    if (it.state() == Project.STATE_LIVE || it.state() == Project.STATE_SUCCESSFUL) {
                         it.percentageFunded()
-                    else
+                    } else {
                         0.0f
+                    }
                 }.map {
                     ProgressBarUtils.progress(it)
                 }
@@ -468,10 +471,11 @@ interface ProjectCardHolderViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
                 .map {
-                    if (it.photo() == null)
+                    if (it.photo() == null) {
                         null
-                    else
+                    } else {
                         it.photo()?.full()
+                    }
                 }
 
             projectCanceledAt = project
@@ -538,8 +542,8 @@ interface ProjectCardHolderViewModel {
                 .compose(
                     Transformers.combineLatestPair(
                         discoveryParams.map { it.staffPicks() }
-                            .compose(Transformers.coalesce(false))
-                    )
+                            .compose(Transformers.coalesce(false)),
+                    ),
                 )
                 .map { it.first == true && it.second == false }
                 .map { it.negate() }
@@ -548,7 +552,7 @@ interface ProjectCardHolderViewModel {
             projectTagContainerIsGone =
                 Observable.combineLatest<Boolean, Boolean, Pair<Boolean, Boolean>>(
                     projectSubcategoryIsGone,
-                    projectWeLoveIsGone
+                    projectWeLoveIsGone,
                 ) { a: Boolean?, b: Boolean? -> Pair.create(a, b) }
                     .map { it.first && it.second }
                     .distinctUntilChanged()

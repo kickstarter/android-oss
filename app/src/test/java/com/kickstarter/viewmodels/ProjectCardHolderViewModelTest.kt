@@ -723,9 +723,9 @@ class ProjectCardHolderViewModelTest : KSRobolectricTestCase() {
 
         vm.inputs.configureWith(Pair.create(project, builder().build()))
 
-        savedViewGroupIsGone.assertValues(false)
-        backingViewGroupIsGone.assertValues(false)
-        comingSoonViewGroupIsGone.assertValues(true)
+        savedViewGroupIsGone.assertValues(true)
+        backingViewGroupIsGone.assertValues(true)
+        comingSoonViewGroupIsGone.assertValues(false)
     }
 
     @Test
@@ -735,9 +735,9 @@ class ProjectCardHolderViewModelTest : KSRobolectricTestCase() {
 
         vm.inputs.configureWith(Pair.create(project, builder().build()))
 
-        savedViewGroupIsGone.assertValues(true)
-        backingViewGroupIsGone.assertValues(false)
-        comingSoonViewGroupIsGone.assertValues(false)
+        savedViewGroupIsGone.assertValues(false)
+        backingViewGroupIsGone.assertValues(true)
+        comingSoonViewGroupIsGone.assertValues(true)
     }
 
     @Test
@@ -750,6 +750,6 @@ class ProjectCardHolderViewModelTest : KSRobolectricTestCase() {
 
         savedViewGroupIsGone.assertValues(true)
         backingViewGroupIsGone.assertValues(false)
-        comingSoonViewGroupIsGone.assertValues(false)
+        comingSoonViewGroupIsGone.assertValues(true)
     }
 }

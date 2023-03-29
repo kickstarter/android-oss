@@ -215,6 +215,11 @@ class ProjectCardViewHolder(
             .compose(Transformers.observeForUI())
             .subscribe(ViewUtils.setGone(binding.projectMetadataView.savedViewGroup))
 
+        viewModel.outputs.comingSoonViewGroupIsGone()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe(ViewUtils.setGone(binding.projectMetadataView.comingSoonGroup))
+
         viewModel.outputs.fundingSuccessfulViewGroupIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())

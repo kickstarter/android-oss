@@ -164,6 +164,7 @@ fun Project.metadataForProject(): ProjectMetadata? =
         this.isBacking() -> ProjectMetadata.BACKING
         this.isStarred() -> ProjectMetadata.SAVING
         this.isFeaturedToday -> ProjectMetadata.CATEGORY_FEATURED
+        this.displayPrelaunch()?: false -> ProjectMetadata.COMING_SOON
         else -> null
     }
 
@@ -203,7 +204,7 @@ fun isUSUserViewingNonUSProject(userCountry: String, projectCountry: String): Bo
 fun Project.canUpdateFulfillment() = isBacking() && isSuccessful
 
 enum class ProjectMetadata {
-    BACKING, SAVING, CATEGORY_FEATURED
+    BACKING, SAVING, CATEGORY_FEATURED,COMING_SOON
 }
 
 /**

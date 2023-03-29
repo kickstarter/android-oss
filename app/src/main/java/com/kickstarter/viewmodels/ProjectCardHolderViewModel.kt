@@ -150,6 +150,8 @@ interface ProjectCardHolderViewModel {
         /** Emits to determine if saved container should shown.  */
         fun savedViewGroupIsGone(): Observable<Boolean>
 
+        fun comingSoonViewGroupIsGone(): Observable<Boolean>
+
         /** Emits to determine if padding should be added to top of view.  */
         fun setDefaultTopPadding(): Observable<Boolean>
 
@@ -211,10 +213,12 @@ interface ProjectCardHolderViewModel {
         private val projectWeLoveIsGone: Observable<Boolean>
         private val rootCategoryNameForFeatured: Observable<String>
         private val savedViewGroupIsGone: Observable<Boolean>
+        private val comingSoonViewGroupIsGone: Observable<Boolean>
         private val setDefaultTopPadding: Observable<Boolean>
         private val heartDrawableId = BehaviorSubject.create<Int>()
         private val notifyDelegateOfHeartButtonClicked = BehaviorSubject.create<Project>()
 
+        
         @JvmField
         val inputs: Inputs = this
         @JvmField
@@ -272,6 +276,7 @@ interface ProjectCardHolderViewModel {
         override fun rootCategoryNameForFeatured(): Observable<String> = rootCategoryNameForFeatured
         override fun setDefaultTopPadding(): Observable<Boolean> = setDefaultTopPadding
         override fun savedViewGroupIsGone(): Observable<Boolean> = savedViewGroupIsGone
+        override fun comingSoonViewGroupIsGone(): Observable<Boolean> = comingSoonViewGroupIsGone
         override fun notifyDelegateOfHeartButtonClicked(): Observable<Project> = this.notifyDelegateOfHeartButtonClicked
 
         init {
@@ -289,6 +294,9 @@ interface ProjectCardHolderViewModel {
             backingViewGroupIsGone = project
                 .map { it?.metadataForProject() !== ProjectMetadata.BACKING }
 
+            comingSoonViewGroupIsGone = project
+                .map { it?.metadataForProject() !== ProjectMetadata.COMING_SOON }
+            
             deadlineCountdownText = project
                 .map { it.deadlineCountdownValue() }
                 .map {
@@ -410,8 +418,11 @@ interface ProjectCardHolderViewModel {
                 .map { it.metadataForProject() == null }
 
             metadataViewGroupBackground = backingViewGroupIsGone
-                .map { gone: Boolean ->
-                    if (gone)
+                .compose(Transformers.combineLatestPair(comingSoonViewGroupIsGone))
+                .map {
+                    val backingViewGroupIsGone =it.first
+                    val comingSoonViewGroupIsGone =it.second
+                    if (backingViewGroupIsGone && comingSoonViewGroupIsGone)
                         R.drawable.rect_white_grey_stroke
                     else
                         R.drawable.rect_green_grey_stroke

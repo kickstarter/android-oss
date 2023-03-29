@@ -1,187 +1,197 @@
-package com.kickstarter.viewmodels;
+package com.kickstarter.viewmodels
 
-import android.util.Pair;
+import android.util.Pair
+import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.R
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.ProgressBarUtils
+import com.kickstarter.mock.factories.CategoryFactory.artCategory
+import com.kickstarter.mock.factories.CategoryFactory.bluesCategory
+import com.kickstarter.mock.factories.CategoryFactory.ceramicsCategory
+import com.kickstarter.mock.factories.ProjectFactory.project
+import com.kickstarter.mock.factories.ProjectFactory.staffPick
+import com.kickstarter.mock.factories.UserFactory.user
+import com.kickstarter.models.Project
+import com.kickstarter.models.User
+import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.services.DiscoveryParams.Companion.builder
+import org.joda.time.DateTime
+import org.junit.Test
+import rx.observers.TestSubscriber
+import java.util.Arrays
 
-import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.R;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.NumberUtils;
-import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.ProgressBarUtils;
-import com.kickstarter.mock.factories.CategoryFactory;
-import com.kickstarter.mock.factories.ProjectFactory;
-import com.kickstarter.mock.factories.UserFactory;
-import com.kickstarter.models.Category;
-import com.kickstarter.models.Project;
-import com.kickstarter.models.User;
-import com.kickstarter.services.DiscoveryParams;
+class ProjectCardHolderViewModelTest : KSRobolectricTestCase() {
+    private lateinit var vm: ProjectCardHolderViewModel.ViewModel 
+    private val backersCountTextViewText = TestSubscriber<String>()
+    private val backingViewGroupIsGone = TestSubscriber<Boolean>()
+    private val deadlineCountdownText = TestSubscriber<String>()
+    private val featuredViewGroupIsGone = TestSubscriber<Boolean>()
+    private val friendAvatar2IsHidden = TestSubscriber<Boolean>()
+    private val friendAvatar3IsHidden = TestSubscriber<Boolean>()
+    private val friendAvatarUrl1 = TestSubscriber<String>()
+    private val friendAvatarUrl2 = TestSubscriber<String>()
+    private val friendAvatarUrl3 = TestSubscriber<String>()
+    private val friendBackingViewIsHidden = TestSubscriber<Boolean>()
+    private val friendsForNamepile = TestSubscriber<List<User>>()
+    private val fundingUnsuccessfulViewGroupIsGone = TestSubscriber<Boolean>()
+    private val fundingSuccessfulViewGroupIsGone = TestSubscriber<Boolean>()
+    private val imageIsInvisible = TestSubscriber<Boolean>()
+    private val locationContainerIsGone = TestSubscriber<Boolean>()
+    private val locationName = TestSubscriber<String>()
+    private val metadataViewGroupBackgroundDrawable = TestSubscriber<Int>()
+    private val metadataViewGroupIsGone = TestSubscriber<Boolean>()
+    private val nameAndBlurbText = TestSubscriber<Pair<String, String>>()
+    private val notifyDelegateOfProjectClick = TestSubscriber<Project>()
+    private val percentageFundedForProgressBar = TestSubscriber<Int>()
+    private val percentageFundedTextViewText = TestSubscriber<String>()
+    private val photoUrl = TestSubscriber<String>()
+    private val projectCanceledAt = TestSubscriber<DateTime?>()
+    private val projectCardStatsViewGroupIsGone = TestSubscriber<Boolean>()
+    private val projectFailedAt = TestSubscriber<DateTime?>()
+    private val projectStateViewGroupIsGone = TestSubscriber<Boolean>()
+    private val projectSubcategoryIsGone = TestSubscriber<Boolean>()
+    private val projectSubcategoryName = TestSubscriber<String>()
+    private val projectSuccessfulAt = TestSubscriber<DateTime?>()
+    private val projectSuspendedAt = TestSubscriber<DateTime?>()
+    private val projectTagContainerIsGone = TestSubscriber<Boolean>()
+    private val projectWeLoveIsGone = TestSubscriber<Boolean>()
+    private val rootCategoryNameForFeatured = TestSubscriber<String>()
+    private val setDefaultTopPadding = TestSubscriber<Boolean>()
+    private val savedViewGroupIsGone = TestSubscriber<Boolean>()
+    private val comingSoonViewGroupIsGone = TestSubscriber<Boolean>()
+    private val heartDrawableId = TestSubscriber<Int>()
+    private val notifyDelegateOfHeartButtonClicked = TestSubscriber<Project>()
 
-import org.joda.time.DateTime;
-import org.junit.Test;
+    private fun setUpEnvironment(environment: Environment) {
+        vm = ProjectCardHolderViewModel.ViewModel(environment)
+        vm.outputs.backersCountTextViewText().subscribe(backersCountTextViewText)
+        vm.outputs.backingViewGroupIsGone().subscribe(backingViewGroupIsGone)
+        vm.outputs.deadlineCountdownText().subscribe(deadlineCountdownText)
+        vm.outputs.featuredViewGroupIsGone().subscribe(featuredViewGroupIsGone)
+        vm.outputs.friendBackingViewIsHidden().subscribe(friendBackingViewIsHidden)
+        vm.outputs.friendAvatar2IsGone().subscribe(friendAvatar2IsHidden)
+        vm.outputs.friendAvatar3IsGone().subscribe(friendAvatar3IsHidden)
+        vm.outputs.friendAvatarUrl1().subscribe(friendAvatarUrl1)
+        vm.outputs.friendAvatarUrl2().subscribe(friendAvatarUrl2)
+        vm.outputs.friendAvatarUrl3().subscribe(friendAvatarUrl3)
+        vm.outputs.friendsForNamepile().subscribe(friendsForNamepile)
+        vm.outputs.fundingUnsuccessfulViewGroupIsGone().subscribe(
+            fundingUnsuccessfulViewGroupIsGone
+        )
+        vm.outputs.fundingSuccessfulViewGroupIsGone().subscribe(fundingSuccessfulViewGroupIsGone)
+        vm.outputs.imageIsInvisible().subscribe(imageIsInvisible)
+        vm.outputs.locationContainerIsGone().subscribe(locationContainerIsGone)
+        vm.outputs.locationName().subscribe(locationName)
+        vm.outputs.metadataViewGroupBackgroundDrawable().subscribe(
+            metadataViewGroupBackgroundDrawable
+        )
+        vm.outputs.metadataViewGroupIsGone().subscribe(metadataViewGroupIsGone)
+        vm.outputs.nameAndBlurbText().subscribe(nameAndBlurbText)
+        vm.outputs.notifyDelegateOfProjectClick().subscribe(notifyDelegateOfProjectClick)
+        vm.outputs.percentageFundedForProgressBar().subscribe(percentageFundedForProgressBar)
+        vm.outputs.percentageFundedTextViewText().subscribe(percentageFundedTextViewText)
+        vm.outputs.photoUrl().subscribe(photoUrl)
+        vm.outputs.projectCanceledAt().subscribe(projectCanceledAt)
+        vm.outputs.projectCardStatsViewGroupIsGone().subscribe(projectCardStatsViewGroupIsGone)
+        vm.outputs.projectFailedAt().subscribe(projectFailedAt)
+        vm.outputs.projectStateViewGroupIsGone().subscribe(projectStateViewGroupIsGone)
+        vm.outputs.projectSubcategoryIsGone().subscribe(projectSubcategoryIsGone)
+        vm.outputs.projectSubcategoryName().subscribe(projectSubcategoryName)
+        vm.outputs.projectSuccessfulAt().subscribe(projectSuccessfulAt)
+        vm.outputs.projectSuspendedAt().subscribe(projectSuspendedAt)
+        vm.outputs.projectTagContainerIsGone().subscribe(projectTagContainerIsGone)
+        vm.outputs.projectWeLoveIsGone().subscribe(projectWeLoveIsGone)
+        vm.outputs.rootCategoryNameForFeatured().subscribe(rootCategoryNameForFeatured)
+        vm.outputs.setDefaultTopPadding().subscribe(setDefaultTopPadding)
+        vm.outputs.savedViewGroupIsGone().subscribe(savedViewGroupIsGone)
+        vm.outputs.comingSoonViewGroupIsGone().subscribe(comingSoonViewGroupIsGone)
+        vm.outputs.heartDrawableId().subscribe(heartDrawableId)
+        vm.outputs.notifyDelegateOfHeartButtonClicked().subscribe(
+            notifyDelegateOfHeartButtonClicked
+        )
+    }
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+    @Test
+    fun testProjectIsStarred() {
+        val project = project().toBuilder().isStarred(true).build()
+        setUpEnvironment(environment())
 
-import androidx.annotation.NonNull;
-import rx.observers.TestSubscriber;
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
 
+        heartDrawableId.assertValue(R.drawable.icon__heart)
+    }
 
-public class ProjectCardHolderViewModelTest extends KSRobolectricTestCase {
-  private ProjectCardHolderViewModel.ViewModel vm;
-  private final TestSubscriber<String> backersCountTextViewText = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> backingViewGroupIsGone = new TestSubscriber<>();
-  private final TestSubscriber<String> deadlineCountdownText = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> featuredViewGroupIsGone = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> friendAvatar2IsHidden = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> friendAvatar3IsHidden = new TestSubscriber<>();
-  private final TestSubscriber<String> friendAvatarUrl1 = new TestSubscriber<>();
-  private final TestSubscriber<String> friendAvatarUrl2= new TestSubscriber<>();
-  private final TestSubscriber<String> friendAvatarUrl3 = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> friendBackingViewIsHidden = new TestSubscriber<>();
-  private final TestSubscriber<List<User>> friendsForNamepile = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> fundingUnsuccessfulViewGroupIsGone = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> fundingSuccessfulViewGroupIsGone = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> imageIsInvisible = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> locationContainerIsGone = new TestSubscriber<>();
-  private final TestSubscriber<String> locationName = new TestSubscriber<>();
-  private final TestSubscriber<Integer> metadataViewGroupBackgroundDrawable = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> metadataViewGroupIsGone = new TestSubscriber<>();
-  private final TestSubscriber<Pair<String, String>> nameAndBlurbText = new TestSubscriber<>();
-  private final TestSubscriber<Project> notifyDelegateOfProjectClick = new TestSubscriber<>();
-  private final TestSubscriber<Integer> percentageFundedForProgressBar = new TestSubscriber<>();
-  private final TestSubscriber<String> percentageFundedTextViewText = new TestSubscriber<>();
-  private final TestSubscriber<String> photoUrl = new TestSubscriber<>();
-  private final TestSubscriber<DateTime> projectCanceledAt = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> projectCardStatsViewGroupIsGone = new TestSubscriber<>();
-  private final TestSubscriber<DateTime> projectFailedAt = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> projectStateViewGroupIsGone = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> projectSubcategoryIsGone = new TestSubscriber<>();
-  private final TestSubscriber<String> projectSubcategoryName = new TestSubscriber<>();
-  private final TestSubscriber<DateTime> projectSuccessfulAt = new TestSubscriber<>();
-  private final TestSubscriber<DateTime> projectSuspendedAt = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> projectTagContainerIsGone = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> projectWeLoveIsGone = new TestSubscriber<>();
-  private final TestSubscriber<String> rootCategoryNameForFeatured = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> setDefaultTopPadding = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> savedViewGroupIsGone = new TestSubscriber<>();
-  private final TestSubscriber<Integer> heartDrawableId = new TestSubscriber<>();
-  private final TestSubscriber<Project> notifyDelegateOfHeartButtonClicked = new TestSubscriber<>();
+    @Test
+    fun testProjectIsNotStarred() {
+        val project = project().toBuilder().isStarred(false).build()
+        setUpEnvironment(environment())
 
-  private void setUpEnvironment(final @NonNull Environment environment) {
-    this.vm = new ProjectCardHolderViewModel.ViewModel(environment);
-    this.vm.outputs.backersCountTextViewText().subscribe(this.backersCountTextViewText);
-    this.vm.outputs.backingViewGroupIsGone().subscribe(this.backingViewGroupIsGone);
-    this.vm.outputs.deadlineCountdownText().subscribe(this.deadlineCountdownText);
-    this.vm.outputs.featuredViewGroupIsGone().subscribe(this.featuredViewGroupIsGone);
-    this.vm.outputs.friendBackingViewIsHidden().subscribe(this.friendBackingViewIsHidden);
-    this.vm.outputs.friendAvatar2IsGone().subscribe(this.friendAvatar2IsHidden);
-    this.vm.outputs.friendAvatar3IsGone().subscribe(this.friendAvatar3IsHidden);
-    this.vm.outputs.friendAvatarUrl1().subscribe(this.friendAvatarUrl1);
-    this.vm.outputs.friendAvatarUrl2().subscribe(this.friendAvatarUrl2);
-    this.vm.outputs.friendAvatarUrl3().subscribe(this.friendAvatarUrl3);
-    this.vm.outputs.friendsForNamepile().subscribe(this.friendsForNamepile);
-    this.vm.outputs.fundingUnsuccessfulViewGroupIsGone().subscribe(this.fundingUnsuccessfulViewGroupIsGone);
-    this.vm.outputs.fundingSuccessfulViewGroupIsGone().subscribe(this.fundingSuccessfulViewGroupIsGone);
-    this.vm.outputs.imageIsInvisible().subscribe(this.imageIsInvisible);
-    this.vm.outputs.locationContainerIsGone().subscribe(this.locationContainerIsGone);
-    this.vm.outputs.locationName().subscribe(this.locationName);
-    this.vm.outputs.metadataViewGroupBackgroundDrawable().subscribe(this.metadataViewGroupBackgroundDrawable);
-    this.vm.outputs.metadataViewGroupIsGone().subscribe(this.metadataViewGroupIsGone);
-    this.vm.outputs.nameAndBlurbText().subscribe(this.nameAndBlurbText);
-    this.vm.outputs.notifyDelegateOfProjectClick().subscribe(this.notifyDelegateOfProjectClick);
-    this.vm.outputs.percentageFundedForProgressBar().subscribe(this.percentageFundedForProgressBar);
-    this.vm.outputs.percentageFundedTextViewText().subscribe(this.percentageFundedTextViewText);
-    this.vm.outputs.photoUrl().subscribe(this.photoUrl);
-    this.vm.outputs.projectCanceledAt().subscribe(this.projectCanceledAt);
-    this.vm.outputs.projectCardStatsViewGroupIsGone().subscribe(this.projectCardStatsViewGroupIsGone);
-    this.vm.outputs.projectFailedAt().subscribe(this.projectFailedAt);
-    this.vm.outputs.projectStateViewGroupIsGone().subscribe(this.projectStateViewGroupIsGone);
-    this.vm.outputs.projectSubcategoryIsGone().subscribe(this.projectSubcategoryIsGone);
-    this.vm.outputs.projectSubcategoryName().subscribe(this.projectSubcategoryName);
-    this.vm.outputs.projectSuccessfulAt().subscribe(this.projectSuccessfulAt);
-    this.vm.outputs.projectSuspendedAt().subscribe(this.projectSuspendedAt);
-    this.vm.outputs.projectTagContainerIsGone().subscribe(this.projectTagContainerIsGone);
-    this.vm.outputs.projectWeLoveIsGone().subscribe(this.projectWeLoveIsGone);
-    this.vm.outputs.rootCategoryNameForFeatured().subscribe(this.rootCategoryNameForFeatured);
-    this.vm.outputs.setDefaultTopPadding().subscribe(this.setDefaultTopPadding);
-    this.vm.outputs.savedViewGroupIsGone().subscribe(this.savedViewGroupIsGone);
-    this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId);
-    this.vm.outputs.notifyDelegateOfHeartButtonClicked().subscribe(this.notifyDelegateOfHeartButtonClicked);
-  }
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
 
-  @Test
-  public void testProjectIsStarred() {
-    final Project project = ProjectFactory.project().toBuilder().isStarred(true).build();
-    setUpEnvironment(environment());
+        heartDrawableId.assertValue(R.drawable.icon__heart_outline)
+    }
 
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.heartDrawableId.assertValue(R.drawable.icon__heart);
-  }
+    @Test
+    fun testNotifyDelegateOfHeartButtonClickedClick() {
+        val project = project()
+        setUpEnvironment(environment())
 
-  @Test
-  public void testProjectIsNotStarred() {
-    final Project project = ProjectFactory.project().toBuilder().isStarred(false).build();
-    setUpEnvironment(environment());
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+        vm.inputs.heartButtonClicked()
 
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.heartDrawableId.assertValue(R.drawable.icon__heart_outline);
-  }
+        notifyDelegateOfHeartButtonClicked.assertValues(project)
+    }
 
-  @Test
-  public void testNotifyDelegateOfHeartButtonClickedClick() {
-    final Project project = ProjectFactory.project();
-    setUpEnvironment(environment());
+    @Test
+    fun testEmitsBackersCountTextViewText() {
+        val project = project().toBuilder().backersCount(50).build()
+        setUpEnvironment(environment())
 
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.vm.inputs.heartButtonClicked();
-    this.notifyDelegateOfHeartButtonClicked.assertValues(project);
-  }
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
 
-  @Test
-  public void testEmitsBackersCountTextViewText() {
-    final Project project = ProjectFactory.project().toBuilder().backersCount(50).build();
-    setUpEnvironment(environment());
+        backersCountTextViewText.assertValues(NumberUtils.format(50))
+    }
 
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.backersCountTextViewText.assertValues(NumberUtils.format(50));
-  }
+    @Test
+    fun testBackingViewGroupIsGone_isBacking() {
+        val project = project().toBuilder().isBacking(true).build()
+        setUpEnvironment(environment())
 
-  @Test
-  public void testBackingViewGroupIsGone_isBacking() {
-    final Project project = ProjectFactory.project().toBuilder().isBacking(true).build();
-    setUpEnvironment(environment());
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
 
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.backingViewGroupIsGone.assertValues(false);
-  }
+        backingViewGroupIsGone.assertValues(false)
+    }
 
-  @Test
-  public void testBackingViewGroupIsGone_isStarred() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .isBacking(false)
-      .isStarred(false)
-      .featuredAt(null)
-      .build();
-    setUpEnvironment(environment());
+    @Test
+    fun testBackingViewGroupIsGone_isStarred() {
+        val project = project()
+            .toBuilder()
+            .isBacking(false)
+            .isStarred(false)
+            .featuredAt(null)
+            .build()
+        setUpEnvironment(environment())
 
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.backingViewGroupIsGone.assertValues(true);
-  }
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
 
-  @Test
-  public void testEmitsDeadlineCountdownText() {
-    final Project project = ProjectFactory.project().toBuilder()
-      .deadline(new DateTime().plusSeconds(60 * 60 * 24 + 1))
-      .build();
-    setUpEnvironment(environment());
+        backingViewGroupIsGone.assertValues(true)
+    }
 
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.deadlineCountdownText.assertValues("24");
-  }
+    @Test
+    fun testEmitsDeadlineCountdownText() {
+        val project = project().toBuilder()
+            .deadline(DateTime().plusSeconds(60 * 60 * 24 + 1))
+            .build()
+        setUpEnvironment(environment())
 
-  /*@Test
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+        
+        deadlineCountdownText.assertValues("24")
+    }
+
+    /*@Test
   public void testFeaturedViewGroupIsGone_isBacking() {
     final Project project = ProjectFactory.project().toBuilder().isBacking(true).build();
     setUpEnvironment(environment());
@@ -189,525 +199,557 @@ public class ProjectCardHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
     this.featuredViewGroupIsGone.assertValues(true);
   }*/
-
-  @Test
-  public void testFeaturedViewGroupIsGone_isFeatured() {
-    final Project project = ProjectFactory.project().toBuilder().featuredAt(DateTime.now()).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.featuredViewGroupIsGone.assertValues(false);
-  }
-
-  @Test
-  public void testFriendAvatarUrl_withOneFriend() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .friends(Collections.singletonList(UserFactory.user()))
-      .build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.friendAvatarUrl1.assertValues(project.friends().get(0).avatar().small());
-    this.friendAvatarUrl2.assertNoValues();
-    this.friendAvatarUrl3.assertNoValues();
-    this.friendAvatar2IsHidden.assertValue(true);
-    this.friendAvatar3IsHidden.assertValue(true);
-  }
-
-  @Test
-  public void testFriendAvatarUrl_withTwoFriends() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .friends(Arrays.asList(UserFactory.user(), UserFactory.user()))
-      .build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.friendAvatarUrl1.assertValues(project.friends().get(0).avatar().small());
-    this.friendAvatarUrl2.assertValues(project.friends().get(1).avatar().small());
-    this.friendAvatarUrl3.assertNoValues();
-    this.friendAvatar2IsHidden.assertValue(false);
-    this.friendAvatar3IsHidden.assertValue(true);
-  }
-
-  @Test
-  public void testFriendAvatarUrl_withThreeFriends() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .friends(Arrays.asList(UserFactory.user(), UserFactory.user(), UserFactory.user()))
-      .build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.friendAvatarUrl1.assertValues(project.friends().get(0).avatar().small());
-    this.friendAvatarUrl2.assertValues(project.friends().get(1).avatar().small());
-    this.friendAvatarUrl3.assertValues(project.friends().get(2).avatar().small());
-    this.friendAvatar2IsHidden.assertValue(false);
-    this.friendAvatar3IsHidden.assertValue(false);
-  }
-
-  @Test
-  public void testFriendBackingViewIsNotHidden() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .friends(Collections.singletonList(UserFactory.user()))
-      .build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-
-    // friends view is not hidden for project with friend backings
-    this.friendBackingViewIsHidden.assertValues(false);
-  }
-
-  @Test
-  public void testEmitsFriendBackingViewIsHidden() {
-    final Project project = ProjectFactory.project().toBuilder().friends(null).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.friendBackingViewIsHidden.assertValues(true);
-  }
-
-  @Test
-  public void testFriendsForNamepile() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .friends(Collections.singletonList(UserFactory.user()))
-      .build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.friendsForNamepile.assertValues(project.friends());
-  }
-
-  @Test
-  public void testFundingUnsuccessfulTextViewIsGone_projectLive() {
-    final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_LIVE).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.fundingUnsuccessfulViewGroupIsGone.assertValues(true);
-  }
-
-  @Test
-  public void testFundingUnsuccessfulViewGroupIsGone_projectFailed() {
-    final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_FAILED).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.fundingUnsuccessfulViewGroupIsGone.assertValues(false);
-  }
-
-  @Test
-  public void testFundingSuccessfulViewGroupIsGone_projectFailed() {
-    final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_FAILED).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.fundingSuccessfulViewGroupIsGone.assertValues(true);
-  }
-
-  @Test
-  public void testFundingSuccessfulViewGroupIsGone_projectSuccessful() {
-    final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_SUCCESSFUL).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.fundingSuccessfulViewGroupIsGone.assertValues(false);
-  }
-
-  @Test
-  public void testEmitsImageIsInvisible() {
-    final Project project = ProjectFactory.project();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.imageIsInvisible.assertValues(ObjectUtils.isNull(project.photo()));
-  }
-
-  @Test
-  public void testLocationContainerIsGone_whenSortIsDistance() {
-    final Project project = ProjectFactory.project();
-    setUpEnvironment(environment());
-
-    final DiscoveryParams discoveryParams = DiscoveryParams.builder()
-      .tagId(557)
-      .build();
-    this.vm.inputs.configureWith(Pair.create(project, discoveryParams));
-    this.locationContainerIsGone.assertValues(false);
-  }
-
-  @Test
-  public void testLocationContainerIsGone_whenSortIsNotDistance() {
-    final Project project = ProjectFactory.project();
-    setUpEnvironment(environment());
-
-    final DiscoveryParams discoveryParams = DiscoveryParams.builder()
-      .sort(DiscoveryParams.Sort.MAGIC)
-      .build();
-    this.vm.inputs.configureWith(Pair.create(project, discoveryParams));
-    this.locationContainerIsGone.assertValues(true);
-  }
-
-  @Test
-  public void testLocationName_whenLocationIsNull() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .location(null)
-      .build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.locationName.assertNoValues();
-  }
-
-  @Test
-  public void testLocationName_whenLocationIsNotNull() {
-    final Project project = ProjectFactory.project();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.locationName.assertValue("Brooklyn, NY");
-  }
-
-  @Test
-  public void testMetadataViewGroupBackgroundColor() {
-    final Project project = ProjectFactory.project().toBuilder().isBacking(true).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.metadataViewGroupBackgroundDrawable.assertValues(R.drawable.rect_green_grey_stroke);
-  }
-
-  @Test
-  public void testEmitsMetadataViewGroupIsGone() {
-    final Project project = ProjectFactory.project().toBuilder().isStarred(true).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.metadataViewGroupIsGone.assertValues(false);
-  }
-
-  @Test
-  public void testEmitsNameAndBlurbText() {
-    final Pair<String, String> nameAndBlurbPair = Pair.create("Farquaad", "Somebody once told me");
-    final Project project = ProjectFactory.project().toBuilder().name(nameAndBlurbPair.first).blurb(nameAndBlurbPair.second).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.nameAndBlurbText.assertValues(nameAndBlurbPair);
-  }
-
-  @Test
-  public void testNotifyDelegateOfProjectNameClick() {
-    final Project project = ProjectFactory.project();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.vm.inputs.projectCardClicked();
-    this.notifyDelegateOfProjectClick.assertValues(project);
-  }
-
-  @Test
-  public void testPercentageFunded_projectSuccessful() {
-    final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_SUCCESSFUL).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.percentageFundedForProgressBar.assertValues(ProgressBarUtils.progress(project.percentageFunded()));
-  }
-
-  @Test
-  public void testPercentageFunded_projectFailed() {
-    final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_FAILED).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.percentageFundedForProgressBar.assertValues(ProgressBarUtils.progress(0.0f));
-  }
-
-  @Test
-  public void testPercentageFundedTextViewText() {
-    final Project project = ProjectFactory.project();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.percentageFundedTextViewText.assertValues(NumberUtils.flooredPercentage(project.percentageFunded()));
-  }
-
-  @Test
-  public void testEmitsPhotoUrl() {
-    final Project project = ProjectFactory.project();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.photoUrl.assertValues(project.photo().full());
-  }
-
-  @Test
-  public void testProjectCanceledAt() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .state(Project.STATE_CANCELED)
-      .stateChangedAt(new DateTime().now())
-      .build();
-
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.projectCanceledAt.assertValues(project.stateChangedAt());
-  }
-
-  @Test
-  public void testProjectCardStatsViewGroupIsGone_isLive() {
-    final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_LIVE).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.projectCardStatsViewGroupIsGone.assertValues(false);
-  }
-
-  @Test
-  public void testProjectCardStatsViewGroupIsGone_isCanceled() {
-    final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_CANCELED).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.projectCardStatsViewGroupIsGone.assertValues(true);
-  }
-
-  @Test
-  public void testProjectFailedAt() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .state(Project.STATE_FAILED)
-      .stateChangedAt(new DateTime().now())
-      .build();
-
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.projectFailedAt.assertValues(project.stateChangedAt());
-  }
-
-  @Test
-  public void testProjectStateViewGroupIsGone_projectLive() {
-    final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_LIVE).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.projectStateViewGroupIsGone.assertValues(true);
-  }
-
-  @Test
-  public void testProjectStateViewGroupIsGone_projectSuccessful() {
-    final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_SUCCESSFUL).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.projectStateViewGroupIsGone.assertValues(false);
-  }
-
-  @Test
-  public void testProjectSubcategoryIsGone() {
-    setUpEnvironment(environment());
-    final Project artProject = ProjectFactory.project().toBuilder().category(CategoryFactory.artCategory()).build();
-    final Project ceramicsProject = ProjectFactory.project().toBuilder().category(CategoryFactory.ceramicsCategory()).build();
-
-    final DiscoveryParams allProjects = DiscoveryParams.builder().build();
-    final DiscoveryParams artProjects = DiscoveryParams.builder().category(CategoryFactory.artCategory()).build();
-    final DiscoveryParams ceramicsProjects = DiscoveryParams.builder().category(CategoryFactory.ceramicsCategory()).build();
-
-    //Root category is shown for project without subcategory when viewing all projects.
-    this.vm.inputs.configureWith(Pair.create(artProject, allProjects));
-    this.projectSubcategoryIsGone.assertValue(false);
-
-    //Subcategory is shown when viewing all projects.
-    this.vm.inputs.configureWith(Pair.create(ceramicsProject, allProjects));
-    this.projectSubcategoryIsGone.assertValue(false);
-
-    this.vm.inputs.configureWith(Pair.create(ceramicsProject, artProjects));
-    this.projectSubcategoryIsGone.assertValue(false);
-
-    this.vm.inputs.configureWith(Pair.create(ceramicsProject, ceramicsProjects));
-    this.projectSubcategoryIsGone.assertValues(false, true);
-
-    this.vm.inputs.configureWith(Pair.create(ceramicsProject, artProjects));
-    this.projectSubcategoryIsGone.assertValues(false, true, false);
-
-    this.vm.inputs.configureWith(Pair.create(artProject, artProjects));
-    this.projectSubcategoryIsGone.assertValues(false, true, false, true);
-  }
-
-  @Test
-  public void testProjectSubcategoryName() {
-    final Category category = CategoryFactory.ceramicsCategory();
-    final Project project = ProjectFactory.project().toBuilder().category(category).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.projectSubcategoryName.assertValues(category.name());
-  }
-
-  @Test
-  public void testProjectSuccessfulAt() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .state(Project.STATE_SUCCESSFUL)
-      .stateChangedAt(new DateTime().now())
-      .build();
-
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.projectSuccessfulAt.assertValues(project.stateChangedAt());
-  }
-
-  @Test
-  public void testProjectSuspendedAt() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .state(Project.STATE_SUSPENDED)
-      .stateChangedAt(new DateTime().now())
-      .build();
-
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.projectSuspendedAt.assertValues(project.stateChangedAt());
-  }
-
-  @Test
-  public void testProjectTagContainerIsGone() {
-    setUpEnvironment(environment());
-
-    final Project artProject = ProjectFactory.project().toBuilder().category(CategoryFactory.artCategory()).build();
-    final Project ceramicsProject = ProjectFactory.project().toBuilder().category(CategoryFactory.ceramicsCategory()).build();
-    final Project ceramicsStaffPickProject = ProjectFactory.staffPick().toBuilder().category(CategoryFactory.ceramicsCategory()).build();
-    final Project artStaffPickProject = ProjectFactory.staffPick().toBuilder().category(CategoryFactory.artCategory()).build();
-    final DiscoveryParams allProjects = DiscoveryParams.builder().build();
-    final DiscoveryParams artProjects = DiscoveryParams.builder().category(CategoryFactory.artCategory()).build();
-    final DiscoveryParams staffPicks = DiscoveryParams.builder().staffPicks(true).build();
-    final DiscoveryParams ceramicsProjects = DiscoveryParams.builder().category(CategoryFactory.ceramicsCategory()).build();
-
-    this.vm.inputs.configureWith(Pair.create(artProject, allProjects));
-    this.projectTagContainerIsGone.assertValue(false);
-
-    this.vm.inputs.configureWith(Pair.create(artStaffPickProject, allProjects));
-    this.projectTagContainerIsGone.assertValue(false);
-
-    this.vm.inputs.configureWith(Pair.create(artProject, artProjects));
-    this.projectTagContainerIsGone.assertValues(false, true);
-
-    this.vm.inputs.configureWith(Pair.create(artStaffPickProject, artProjects));
-    this.projectTagContainerIsGone.assertValues(false, true, false);
-
-    this.vm.inputs.configureWith(Pair.create(ceramicsProject, artProjects));
-    this.projectTagContainerIsGone.assertValues(false, true, false);
-
-    this.vm.inputs.configureWith(Pair.create(ceramicsStaffPickProject, artProjects));
-    this.projectTagContainerIsGone.assertValues(false, true, false);
-
-    this.vm.inputs.configureWith(Pair.create(ceramicsStaffPickProject, ceramicsProjects));
-    this.projectTagContainerIsGone.assertValues(false, true, false);
-
-    this.vm.inputs.configureWith(Pair.create(ceramicsProject, ceramicsProjects));
-    this.projectTagContainerIsGone.assertValues(false, true, false, true);
-
-    this.vm.inputs.configureWith(Pair.create(ceramicsProject, staffPicks));
-    this.projectTagContainerIsGone.assertValues(false, true, false, true, false);
-
-    this.vm.inputs.configureWith(Pair.create(ceramicsStaffPickProject, staffPicks));
-    this.projectTagContainerIsGone.assertValues(false, true, false, true, false);
-
-    this.vm.inputs.configureWith(Pair.create(artProject, staffPicks));
-    this.projectTagContainerIsGone.assertValues(false, true, false, true, false);
-
-    this.vm.inputs.configureWith(Pair.create(artStaffPickProject, staffPicks));
-    this.projectTagContainerIsGone.assertValues(false, true, false, true, false);
-  }
-
-  @Test
-  public void testProjectWeLoveIsGone() {
-    setUpEnvironment(environment());
-
-    final Project musicProject = ProjectFactory.project();
-    final Project staffPickProject = ProjectFactory.staffPick();
-    final DiscoveryParams allProjects = DiscoveryParams.builder().build();
-    final DiscoveryParams staffPicks = DiscoveryParams.builder().staffPicks(true).build();
-
-    this.vm.inputs.configureWith(Pair.create(musicProject, allProjects));
-    this.projectWeLoveIsGone.assertValue(true);
-
-    this.vm.inputs.configureWith(Pair.create(staffPickProject, allProjects));
-    this.projectWeLoveIsGone.assertValues(true, false);
-
-    this.vm.inputs.configureWith(Pair.create(staffPickProject, staffPicks));
-    this.projectWeLoveIsGone.assertValues(true, false, true);
-  }
-
-  @Test
-  public void testRootCategoryNameForFeatured() {
-    final Category category = CategoryFactory.bluesCategory();
-
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .category(category)
-      .build();
-
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.rootCategoryNameForFeatured.assertValues(category.root().name());
-  }
-
-  @Test
-  public void testSetDefaultTopPadding_noMetaData() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .isBacking(false)
-      .isStarred(false)
-      .featuredAt(null)
-      .build();
-
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.setDefaultTopPadding.assertValue(true);
-  }
-
-  @Test
-  public void testSetDefaultTopPadding_withMetaData() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .isBacking(true)
-      .isStarred(false)
-      .featuredAt(null)
-      .build();
-
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.setDefaultTopPadding.assertValue(false);
-  }
-
-  @Test
-  public void testStarredViewGroupIsGone_isStarred() {
-    final Project project = ProjectFactory.project().toBuilder().isStarred(true).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.savedViewGroupIsGone.assertValues(false);
-  }
-
-  @Test
-  public void testStarredViewGroupIsGone_isStarred_isBacking() {
-    final Project project = ProjectFactory.project().toBuilder().isBacking(true).isStarred(true).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
-    this.savedViewGroupIsGone.assertValues(true);
-  }
+    @Test
+    fun testFeaturedViewGroupIsGone_isFeatured() {
+        val project = project().toBuilder().featuredAt(DateTime.now()).build()
+        setUpEnvironment(environment())
+        
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+        
+        featuredViewGroupIsGone.assertValues(false)
+    }
+
+    @Test
+    fun testFriendAvatarUrl_withOneFriend() {
+        val project = project()
+            .toBuilder()
+            .friends(listOf(user()))
+            .build()
+        setUpEnvironment(environment())
+        
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+        
+        friendAvatarUrl1.assertValues(project.friends()[0].avatar().small())
+        friendAvatarUrl2.assertNoValues()
+        friendAvatarUrl3.assertNoValues()
+        friendAvatar2IsHidden.assertValue(true)
+        friendAvatar3IsHidden.assertValue(true)
+    }
+
+    @Test
+    fun testFriendAvatarUrl_withTwoFriends() {
+        val project = project()
+            .toBuilder()
+            .friends(Arrays.asList(user(), user()))
+            .build()
+        setUpEnvironment(environment())
+        
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+        
+        friendAvatarUrl1.assertValues(project.friends()[0].avatar().small())
+        friendAvatarUrl2.assertValues(project.friends()[1].avatar().small())
+        friendAvatarUrl3.assertNoValues()
+        friendAvatar2IsHidden.assertValue(false)
+        friendAvatar3IsHidden.assertValue(true)
+    }
+
+    @Test
+    fun testFriendAvatarUrl_withThreeFriends() {
+        val project = project()
+            .toBuilder()
+            .friends(Arrays.asList(user(), user(), user()))
+            .build()
+        setUpEnvironment(environment())
+        
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+        
+        friendAvatarUrl1.assertValues(project.friends()[0].avatar().small())
+        friendAvatarUrl2.assertValues(project.friends()[1].avatar().small())
+        friendAvatarUrl3.assertValues(project.friends()[2].avatar().small())
+        friendAvatar2IsHidden.assertValue(false)
+        friendAvatar3IsHidden.assertValue(false)
+    }
+
+    @Test
+    fun testFriendBackingViewIsNotHidden() {
+        val project = project()
+            .toBuilder()
+            .friends(listOf(user()))
+            .build()
+        setUpEnvironment(environment())
+        
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+
+        // friends view is not hidden for project with friend backings
+        friendBackingViewIsHidden.assertValues(false)
+    }
+
+    @Test
+    fun testEmitsFriendBackingViewIsHidden() {
+        val project = project().toBuilder().friends(null).build()
+        setUpEnvironment(environment())
+        
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+        
+        friendBackingViewIsHidden.assertValues(true)
+    }
+
+    @Test
+    fun testFriendsForNamepile() {
+        val project = project()
+            .toBuilder()
+            .friends(listOf(user()))
+            .build()
+        setUpEnvironment(environment())
+        
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+        
+        friendsForNamepile.assertValues(project.friends())
+    }
+
+    @Test
+    fun testFundingUnsuccessfulTextViewIsGone_projectLive() {
+        val project = project().toBuilder().state(Project.STATE_LIVE).build()
+        setUpEnvironment(environment())
+        
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+        
+        fundingUnsuccessfulViewGroupIsGone.assertValues(true)
+    }
+
+    @Test
+    fun testFundingUnsuccessfulViewGroupIsGone_projectFailed() {
+        val project = project().toBuilder().state(Project.STATE_FAILED).build()
+        setUpEnvironment(environment())
+        
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+        fundingUnsuccessfulViewGroupIsGone.assertValues(false)
+    }
+
+    @Test
+    fun testFundingSuccessfulViewGroupIsGone_projectFailed() {
+        val project = project().toBuilder().state(Project.STATE_FAILED).build()
+        setUpEnvironment(environment())
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+        fundingSuccessfulViewGroupIsGone.assertValues(true)
+    }
+
+    @Test
+    fun testFundingSuccessfulViewGroupIsGone_projectSuccessful() {
+        val project = project().toBuilder().state(Project.STATE_SUCCESSFUL).build()
+        setUpEnvironment(environment())
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+        fundingSuccessfulViewGroupIsGone.assertValues(false)
+    }
+
+    @Test
+    fun testEmitsImageIsInvisible() {
+        val project = project()
+        setUpEnvironment(environment())
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+        imageIsInvisible.assertValues(ObjectUtils.isNull(project.photo()))
+    }
+
+    @Test
+    fun testLocationContainerIsGone_whenSortIsDistance() {
+        val project = project()
+        setUpEnvironment(environment())
+        val discoveryParams = builder()
+            .tagId(557)
+            .build()
+        vm.inputs.configureWith(Pair.create(project, discoveryParams))
+        locationContainerIsGone.assertValues(false)
+    }
+
+    @Test
+    fun testLocationContainerIsGone_whenSortIsNotDistance() {
+        val project = project()
+        setUpEnvironment(environment())
+        val discoveryParams = builder()
+            .sort(DiscoveryParams.Sort.MAGIC)
+            .build()
+        vm.inputs.configureWith(Pair.create(project, discoveryParams))
+        locationContainerIsGone.assertValues(true)
+    }
+
+    @Test
+    fun testLocationName_whenLocationIsNull() {
+        val project = project()
+            .toBuilder()
+            .location(null)
+            .build()
+        setUpEnvironment(environment())
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+        locationName.assertNoValues()
+    }
+
+    @Test
+    fun testLocationName_whenLocationIsNotNull() {
+        val project = project()
+        setUpEnvironment(environment())
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+        locationName.assertValue("Brooklyn, NY")
+    }
+
+    @Test
+    fun testMetadataViewGroupBackgroundColor() {
+        val project = project().toBuilder().isBacking(true).build()
+        setUpEnvironment(environment())
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+        metadataViewGroupBackgroundDrawable.assertValues(R.drawable.rect_green_grey_stroke)
+    }
+
+    @Test
+    fun testEmitsMetadataViewGroupIsGone() {
+        val project = project().toBuilder().isStarred(true).build()
+        setUpEnvironment(environment())
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+        metadataViewGroupIsGone.assertValues(false)
+    }
+
+    @Test
+    fun testEmitsNameAndBlurbText() {
+        val nameAndBlurbPair = Pair.create("Farquaad", "Somebody once told me")
+        val project =
+            project().toBuilder().name(nameAndBlurbPair.first).blurb(nameAndBlurbPair.second)
+                .build()
+        setUpEnvironment(environment())
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+        nameAndBlurbText.assertValues(nameAndBlurbPair)
+    }
+
+    @Test
+    fun testNotifyDelegateOfProjectNameClick() {
+        val project = project()
+        setUpEnvironment(environment())
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+        vm.inputs.projectCardClicked()
+        notifyDelegateOfProjectClick.assertValues(project)
+    }
+
+    @Test
+    fun testPercentageFunded_projectSuccessful() {
+        val project = project().toBuilder().state(Project.STATE_SUCCESSFUL).build()
+        setUpEnvironment(environment())
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+        percentageFundedForProgressBar.assertValues(ProgressBarUtils.progress(project.percentageFunded()))
+    }
+
+    @Test
+    fun testPercentageFunded_projectFailed() {
+        val project = project().toBuilder().state(Project.STATE_FAILED).build()
+        setUpEnvironment(environment())
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+        
+        percentageFundedForProgressBar.assertValues(ProgressBarUtils.progress(0.0f))
+    }
+
+    @Test
+    fun testPercentageFundedTextViewText() {
+        val project = project()
+        setUpEnvironment(environment())
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+        percentageFundedTextViewText.assertValues(NumberUtils.flooredPercentage(project.percentageFunded()))
+    }
+
+    @Test
+    fun testEmitsPhotoUrl() {
+        val project = project()
+        setUpEnvironment(environment())
+
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+
+        photoUrl.assertValues(project.photo()?.full())
+    }
+
+    @Test
+    fun testProjectCanceledAt() {
+        val project = project()
+            .toBuilder()
+            .state(Project.STATE_CANCELED)
+            .stateChangedAt(DateTime.now())
+            .build()
+        setUpEnvironment(environment())
+
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+
+        projectCanceledAt.assertValues(project.stateChangedAt())
+    }
+
+    @Test
+    fun testProjectCardStatsViewGroupIsGone_isLive() {
+        val project = project().toBuilder().state(Project.STATE_LIVE).build()
+        setUpEnvironment(environment())
+
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+
+        projectCardStatsViewGroupIsGone.assertValues(false)
+    }
+
+    @Test
+    fun testProjectCardStatsViewGroupIsGone_isCanceled() {
+        val project = project().toBuilder().state(Project.STATE_CANCELED).build()
+        setUpEnvironment(environment())
+
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+
+        projectCardStatsViewGroupIsGone.assertValues(true)
+    }
+
+    @Test
+    fun testProjectFailedAt() {
+        val project = project()
+            .toBuilder()
+            .state(Project.STATE_FAILED)
+            .stateChangedAt(DateTime.now())
+            .build()
+        setUpEnvironment(environment())
+
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+
+        projectFailedAt.assertValues(project.stateChangedAt())
+    }
+
+    @Test
+    fun testProjectStateViewGroupIsGone_projectLive() {
+        val project = project().toBuilder().state(Project.STATE_LIVE).build()
+        setUpEnvironment(environment())
+
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+
+        projectStateViewGroupIsGone.assertValues(true)
+    }
+
+    @Test
+    fun testProjectStateViewGroupIsGone_projectSuccessful() {
+        val project = project().toBuilder().state(Project.STATE_SUCCESSFUL).build()
+        setUpEnvironment(environment())
+
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+
+        projectStateViewGroupIsGone.assertValues(false)
+    }
+
+    @Test
+    fun testProjectSubcategoryIsGone() {
+        setUpEnvironment(environment())
+        val artProject = project().toBuilder().category(artCategory()).build()
+        val ceramicsProject = project().toBuilder().category(ceramicsCategory()).build()
+        val allProjects = builder().build()
+        val artProjects = builder().category(artCategory()).build()
+        val ceramicsProjects = builder().category(ceramicsCategory()).build()
+
+        //Root category is shown for project without subcategory when viewing all projects.
+        vm.inputs.configureWith(Pair.create(artProject, allProjects))
+        projectSubcategoryIsGone.assertValue(false)
+
+        //Subcategory is shown when viewing all projects.
+        vm.inputs.configureWith(Pair.create(ceramicsProject, allProjects))
+        projectSubcategoryIsGone.assertValue(false)
+        vm.inputs.configureWith(Pair.create(ceramicsProject, artProjects))
+        projectSubcategoryIsGone.assertValue(false)
+        vm.inputs.configureWith(Pair.create(ceramicsProject, ceramicsProjects))
+        projectSubcategoryIsGone.assertValues(false, true)
+        vm.inputs.configureWith(Pair.create(ceramicsProject, artProjects))
+        projectSubcategoryIsGone.assertValues(false, true, false)
+        vm.inputs.configureWith(Pair.create(artProject, artProjects))
+        projectSubcategoryIsGone.assertValues(false, true, false, true)
+    }
+
+    @Test
+    fun testProjectSubcategoryName() {
+        val category = ceramicsCategory()
+        val project = project().toBuilder().category(category).build()
+        setUpEnvironment(environment())
+
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+
+        projectSubcategoryName.assertValues(category.name())
+    }
+
+    @Test
+    fun testProjectSuccessfulAt() {
+        val project = project()
+            .toBuilder()
+            .state(Project.STATE_SUCCESSFUL)
+            .stateChangedAt(DateTime.now())
+            .build()
+        setUpEnvironment(environment())
+
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+
+        projectSuccessfulAt.assertValues(project.stateChangedAt())
+    }
+
+    @Test
+    fun testProjectSuspendedAt() {
+        val project = project()
+            .toBuilder()
+            .state(Project.STATE_SUSPENDED)
+            .stateChangedAt(DateTime.now())
+            .build()
+        setUpEnvironment(environment())
+
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+
+        projectSuspendedAt.assertValues(project.stateChangedAt())
+    }
+
+    @Test
+    fun testProjectTagContainerIsGone() {
+        setUpEnvironment(environment())
+        val artProject = project().toBuilder().category(artCategory()).build()
+        val ceramicsProject = project().toBuilder().category(ceramicsCategory()).build()
+        val ceramicsStaffPickProject = staffPick().toBuilder().category(ceramicsCategory()).build()
+        val artStaffPickProject = staffPick().toBuilder().category(artCategory()).build()
+        val allProjects = builder().build()
+        val artProjects = builder().category(artCategory()).build()
+        val staffPicks = builder().staffPicks(true).build()
+        val ceramicsProjects = builder().category(ceramicsCategory()).build()
+
+        vm.inputs.configureWith(Pair.create(artProject, allProjects))
+        projectTagContainerIsGone.assertValue(false)
+
+        vm.inputs.configureWith(Pair.create(artStaffPickProject, allProjects))
+        projectTagContainerIsGone.assertValue(false)
+
+        vm.inputs.configureWith(Pair.create(artProject, artProjects))
+        projectTagContainerIsGone.assertValues(false, true)
+
+        vm.inputs.configureWith(Pair.create(artStaffPickProject, artProjects))
+        projectTagContainerIsGone.assertValues(false, true, false)
+
+        vm.inputs.configureWith(Pair.create(ceramicsProject, artProjects))
+        projectTagContainerIsGone.assertValues(false, true, false)
+
+        vm.inputs.configureWith(Pair.create(ceramicsStaffPickProject, artProjects))
+        projectTagContainerIsGone.assertValues(false, true, false)
+
+        vm.inputs.configureWith(Pair.create(ceramicsStaffPickProject, ceramicsProjects))
+        projectTagContainerIsGone.assertValues(false, true, false)
+
+        vm.inputs.configureWith(Pair.create(ceramicsProject, ceramicsProjects))
+        projectTagContainerIsGone.assertValues(false, true, false, true)
+
+        vm.inputs.configureWith(Pair.create(ceramicsProject, staffPicks))
+        projectTagContainerIsGone.assertValues(false, true, false, true, false)
+
+        vm.inputs.configureWith(Pair.create(ceramicsStaffPickProject, staffPicks))
+        projectTagContainerIsGone.assertValues(false, true, false, true, false)
+
+        vm.inputs.configureWith(Pair.create(artProject, staffPicks))
+        projectTagContainerIsGone.assertValues(false, true, false, true, false)
+
+        vm.inputs.configureWith(Pair.create(artStaffPickProject, staffPicks))
+        projectTagContainerIsGone.assertValues(false, true, false, true, false)
+    }
+
+    @Test
+    fun testProjectWeLoveIsGone() {
+        setUpEnvironment(environment())
+        val musicProject = project()
+        val staffPickProject = staffPick()
+        val allProjects = builder().build()
+        val staffPicks = builder().staffPicks(true).build()
+        
+        vm.inputs.configureWith(Pair.create(musicProject, allProjects))
+        projectWeLoveIsGone.assertValue(true)
+
+        vm.inputs.configureWith(Pair.create(staffPickProject, allProjects))
+        projectWeLoveIsGone.assertValues(true, false)
+
+        vm.inputs.configureWith(Pair.create(staffPickProject, staffPicks))
+        projectWeLoveIsGone.assertValues(true, false, true)
+    }
+
+    @Test
+    fun testRootCategoryNameForFeatured() {
+        val category = bluesCategory()
+        val project = project()
+            .toBuilder()
+            .category(category)
+            .build()
+        setUpEnvironment(environment())
+
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+
+        rootCategoryNameForFeatured.assertValues(category.root()?.name())
+    }
+
+    @Test
+    fun testSetDefaultTopPadding_noMetaData() {
+        val project = project()
+            .toBuilder()
+            .isBacking(false)
+            .isStarred(false)
+            .featuredAt(null)
+            .build()
+        setUpEnvironment(environment())
+
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+
+        setDefaultTopPadding.assertValue(true)
+    }
+
+    @Test
+    fun testSetDefaultTopPadding_withMetaData() {
+        val project = project()
+            .toBuilder()
+            .isBacking(true)
+            .isStarred(false)
+            .featuredAt(null)
+            .build()
+        setUpEnvironment(environment())
+
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+
+        setDefaultTopPadding.assertValue(false)
+    }
+
+    @Test
+    fun testStarredViewGroupIsGone_isStarred() {
+        val project = project().toBuilder().isStarred(true).build()
+        setUpEnvironment(environment())
+
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+
+        savedViewGroupIsGone.assertValues(false)
+    }
+
+    @Test
+    fun testStarredViewGroupIsGone_isStarred_isBacking() {
+        val project = project().toBuilder().isBacking(true).isStarred(true).build()
+        setUpEnvironment(environment())
+
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+
+        savedViewGroupIsGone.assertValues(true)
+    }
+
+    @Test
+    fun testComingSoonViewGroupIsGone_isPreLaunch() {
+        val project = project().toBuilder().displayPrelaunch(true).isStarred(false).build()
+        setUpEnvironment(environment())
+
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+
+        savedViewGroupIsGone.assertValues(false)
+        backingViewGroupIsGone.assertValues(false)
+        comingSoonViewGroupIsGone.assertValues(true)
+    }
+
+    @Test
+    fun testComingSoonViewGroupIsGone_isPreLaunch_isStarred() {
+        val project = project().toBuilder().displayPrelaunch(true).isStarred(true).build()
+        setUpEnvironment(environment())
+
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+
+        savedViewGroupIsGone.assertValues(true)
+        backingViewGroupIsGone.assertValues(false)
+        comingSoonViewGroupIsGone.assertValues(false)
+    }
+
+    @Test
+    fun testComingSoonViewGroupIsGone_isPreLaunch_isStarred_isBacking() {
+        val project =
+            project().toBuilder().isBacking(true).displayPrelaunch(true).isStarred(true).build()
+        setUpEnvironment(environment())
+
+        vm.inputs.configureWith(Pair.create(project, builder().build()))
+
+        savedViewGroupIsGone.assertValues(true)
+        backingViewGroupIsGone.assertValues(false)
+        comingSoonViewGroupIsGone.assertValues(false)
+    }
 }

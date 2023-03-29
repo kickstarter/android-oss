@@ -23,7 +23,7 @@ import rx.observers.TestSubscriber
 import java.util.Arrays
 
 class ProjectCardHolderViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm: ProjectCardHolderViewModel.ViewModel 
+    private lateinit var vm: ProjectCardHolderViewModel.ViewModel
     private val backersCountTextViewText = TestSubscriber<String>()
     private val backingViewGroupIsGone = TestSubscriber<Boolean>()
     private val deadlineCountdownText = TestSubscriber<String>()
@@ -78,14 +78,14 @@ class ProjectCardHolderViewModelTest : KSRobolectricTestCase() {
         vm.outputs.friendAvatarUrl3().subscribe(friendAvatarUrl3)
         vm.outputs.friendsForNamepile().subscribe(friendsForNamepile)
         vm.outputs.fundingUnsuccessfulViewGroupIsGone().subscribe(
-            fundingUnsuccessfulViewGroupIsGone
+            fundingUnsuccessfulViewGroupIsGone,
         )
         vm.outputs.fundingSuccessfulViewGroupIsGone().subscribe(fundingSuccessfulViewGroupIsGone)
         vm.outputs.imageIsInvisible().subscribe(imageIsInvisible)
         vm.outputs.locationContainerIsGone().subscribe(locationContainerIsGone)
         vm.outputs.locationName().subscribe(locationName)
         vm.outputs.metadataViewGroupBackgroundDrawable().subscribe(
-            metadataViewGroupBackgroundDrawable
+            metadataViewGroupBackgroundDrawable,
         )
         vm.outputs.metadataViewGroupIsGone().subscribe(metadataViewGroupIsGone)
         vm.outputs.nameAndBlurbText().subscribe(nameAndBlurbText)
@@ -109,7 +109,7 @@ class ProjectCardHolderViewModelTest : KSRobolectricTestCase() {
         vm.outputs.comingSoonViewGroupIsGone().subscribe(comingSoonViewGroupIsGone)
         vm.outputs.heartDrawableId().subscribe(heartDrawableId)
         vm.outputs.notifyDelegateOfHeartButtonClicked().subscribe(
-            notifyDelegateOfHeartButtonClicked
+            notifyDelegateOfHeartButtonClicked,
         )
     }
 
@@ -187,7 +187,7 @@ class ProjectCardHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         vm.inputs.configureWith(Pair.create(project, builder().build()))
-        
+
         deadlineCountdownText.assertValues("24")
     }
 
@@ -203,9 +203,9 @@ class ProjectCardHolderViewModelTest : KSRobolectricTestCase() {
     fun testFeaturedViewGroupIsGone_isFeatured() {
         val project = project().toBuilder().featuredAt(DateTime.now()).build()
         setUpEnvironment(environment())
-        
+
         vm.inputs.configureWith(Pair.create(project, builder().build()))
-        
+
         featuredViewGroupIsGone.assertValues(false)
     }
 
@@ -216,9 +216,9 @@ class ProjectCardHolderViewModelTest : KSRobolectricTestCase() {
             .friends(listOf(user()))
             .build()
         setUpEnvironment(environment())
-        
+
         vm.inputs.configureWith(Pair.create(project, builder().build()))
-        
+
         friendAvatarUrl1.assertValues(project.friends()[0].avatar().small())
         friendAvatarUrl2.assertNoValues()
         friendAvatarUrl3.assertNoValues()
@@ -233,9 +233,9 @@ class ProjectCardHolderViewModelTest : KSRobolectricTestCase() {
             .friends(Arrays.asList(user(), user()))
             .build()
         setUpEnvironment(environment())
-        
+
         vm.inputs.configureWith(Pair.create(project, builder().build()))
-        
+
         friendAvatarUrl1.assertValues(project.friends()[0].avatar().small())
         friendAvatarUrl2.assertValues(project.friends()[1].avatar().small())
         friendAvatarUrl3.assertNoValues()
@@ -250,9 +250,9 @@ class ProjectCardHolderViewModelTest : KSRobolectricTestCase() {
             .friends(Arrays.asList(user(), user(), user()))
             .build()
         setUpEnvironment(environment())
-        
+
         vm.inputs.configureWith(Pair.create(project, builder().build()))
-        
+
         friendAvatarUrl1.assertValues(project.friends()[0].avatar().small())
         friendAvatarUrl2.assertValues(project.friends()[1].avatar().small())
         friendAvatarUrl3.assertValues(project.friends()[2].avatar().small())
@@ -267,7 +267,7 @@ class ProjectCardHolderViewModelTest : KSRobolectricTestCase() {
             .friends(listOf(user()))
             .build()
         setUpEnvironment(environment())
-        
+
         vm.inputs.configureWith(Pair.create(project, builder().build()))
 
         // friends view is not hidden for project with friend backings
@@ -278,9 +278,9 @@ class ProjectCardHolderViewModelTest : KSRobolectricTestCase() {
     fun testEmitsFriendBackingViewIsHidden() {
         val project = project().toBuilder().friends(null).build()
         setUpEnvironment(environment())
-        
+
         vm.inputs.configureWith(Pair.create(project, builder().build()))
-        
+
         friendBackingViewIsHidden.assertValues(true)
     }
 
@@ -291,9 +291,9 @@ class ProjectCardHolderViewModelTest : KSRobolectricTestCase() {
             .friends(listOf(user()))
             .build()
         setUpEnvironment(environment())
-        
+
         vm.inputs.configureWith(Pair.create(project, builder().build()))
-        
+
         friendsForNamepile.assertValues(project.friends())
     }
 
@@ -301,9 +301,9 @@ class ProjectCardHolderViewModelTest : KSRobolectricTestCase() {
     fun testFundingUnsuccessfulTextViewIsGone_projectLive() {
         val project = project().toBuilder().state(Project.STATE_LIVE).build()
         setUpEnvironment(environment())
-        
+
         vm.inputs.configureWith(Pair.create(project, builder().build()))
-        
+
         fundingUnsuccessfulViewGroupIsGone.assertValues(true)
     }
 
@@ -311,7 +311,7 @@ class ProjectCardHolderViewModelTest : KSRobolectricTestCase() {
     fun testFundingUnsuccessfulViewGroupIsGone_projectFailed() {
         val project = project().toBuilder().state(Project.STATE_FAILED).build()
         setUpEnvironment(environment())
-        
+
         vm.inputs.configureWith(Pair.create(project, builder().build()))
         fundingUnsuccessfulViewGroupIsGone.assertValues(false)
     }
@@ -430,7 +430,7 @@ class ProjectCardHolderViewModelTest : KSRobolectricTestCase() {
         val project = project().toBuilder().state(Project.STATE_FAILED).build()
         setUpEnvironment(environment())
         vm.inputs.configureWith(Pair.create(project, builder().build()))
-        
+
         percentageFundedForProgressBar.assertValues(ProgressBarUtils.progress(0.0f))
     }
 
@@ -529,11 +529,11 @@ class ProjectCardHolderViewModelTest : KSRobolectricTestCase() {
         val artProjects = builder().category(artCategory()).build()
         val ceramicsProjects = builder().category(ceramicsCategory()).build()
 
-        //Root category is shown for project without subcategory when viewing all projects.
+        // Root category is shown for project without subcategory when viewing all projects.
         vm.inputs.configureWith(Pair.create(artProject, allProjects))
         projectSubcategoryIsGone.assertValue(false)
 
-        //Subcategory is shown when viewing all projects.
+        // Subcategory is shown when viewing all projects.
         vm.inputs.configureWith(Pair.create(ceramicsProject, allProjects))
         projectSubcategoryIsGone.assertValue(false)
         vm.inputs.configureWith(Pair.create(ceramicsProject, artProjects))
@@ -641,7 +641,7 @@ class ProjectCardHolderViewModelTest : KSRobolectricTestCase() {
         val staffPickProject = staffPick()
         val allProjects = builder().build()
         val staffPicks = builder().staffPicks(true).build()
-        
+
         vm.inputs.configureWith(Pair.create(musicProject, allProjects))
         projectWeLoveIsGone.assertValue(true)
 

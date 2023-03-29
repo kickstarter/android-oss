@@ -735,9 +735,9 @@ class ProjectCardHolderViewModelTest : KSRobolectricTestCase() {
 
         vm.inputs.configureWith(Pair.create(project, builder().build()))
 
-        savedViewGroupIsGone.assertValues(false)
+        savedViewGroupIsGone.assertValues(true)
         backingViewGroupIsGone.assertValues(true)
-        comingSoonViewGroupIsGone.assertValues(true)
+        comingSoonViewGroupIsGone.assertValues(false)
     }
 
     @Test

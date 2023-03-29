@@ -163,9 +163,9 @@ fun isProjectNamePunctuated(name: String): Boolean = name.substring(name.length 
 fun Project.metadataForProject(): ProjectMetadata? =
     when {
         this.isBacking() -> ProjectMetadata.BACKING
+        this.displayPrelaunch() ?: false -> ProjectMetadata.COMING_SOON
         this.isStarred() -> ProjectMetadata.SAVING
         this.isFeaturedToday -> ProjectMetadata.CATEGORY_FEATURED
-        this.displayPrelaunch() ?: false -> ProjectMetadata.COMING_SOON
         else -> null
     }
 

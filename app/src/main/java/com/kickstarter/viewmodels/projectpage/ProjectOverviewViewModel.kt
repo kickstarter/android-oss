@@ -4,10 +4,8 @@ import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
-import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProgressBarUtils
@@ -70,9 +68,6 @@ interface ProjectOverviewViewModel {
         /** Emits the project blurb for display.  */
         fun blurbTextViewText(): Observable<String>
 
-        /** Emits a boolean determining if the variant blurb should be visible.  */
-        fun blurbVariantIsVisible(): Observable<Boolean>
-
         /** Emits the project category for display.  */
         fun categoryTextViewText(): Observable<String>
 
@@ -85,14 +80,11 @@ interface ProjectOverviewViewModel {
         /** Emits when the usd conversion view should be gone.  */
         fun conversionTextViewIsGone(): Observable<Boolean>
 
-        /** Emits the count of the project creator's backed and launched projects.  */
-        fun creatorBackedAndLaunchedProjectsCount(): Observable<Pair<Int, Int>>
-
         /** Emits a boolean determining if the creator details loading container should be visible.  */
         fun creatorDetailsLoadingContainerIsVisible(): Observable<Boolean>
 
-        /** Emits a boolean determining if the variant creator details should be visible.  */
-        fun creatorDetailsVariantIsVisible(): Observable<Boolean>
+        /** Emits a boolean determining if the creator details should be visible.  */
+        fun creatorDetailsIsVisible(): Observable<Boolean>
 
         /** Emits the project creator's name for display.  */
         fun creatorNameTextViewText(): Observable<String>
@@ -220,14 +212,12 @@ interface ProjectOverviewViewModel {
         private val avatarPhotoUrl: Observable<String>
         private val backersCountTextViewText: Observable<String>
         private val blurbTextViewText: Observable<String>
-        private val blurbVariantIsVisible = BehaviorSubject.create<Boolean>()
         private val categoryTextViewText: Observable<String>
         private val commentsCountTextViewText: Observable<String>
         private val conversionPledgedAndGoalText: Observable<Pair<String, String>>
         private val conversionTextViewIsGone: Observable<Boolean>
-        private val creatorBackedAndLaunchedProjectsCount = BehaviorSubject.create<Pair<Int, Int>>()
         private val creatorDetailsLoadingContainerIsVisible = BehaviorSubject.create<Boolean>()
-        private val creatorDetailsVariantIsVisible = BehaviorSubject.create<Boolean>()
+        private val creatorDetailsIsVisible = BehaviorSubject.create<Boolean>()
         private val creatorNameTextViewText: Observable<String>
         private val deadlineCountdownTextViewText: Observable<String>
         private val goalStringForTextView: Observable<String>
@@ -306,10 +296,6 @@ interface ProjectOverviewViewModel {
             return blurbTextViewText
         }
 
-        override fun blurbVariantIsVisible(): Observable<Boolean> {
-            return blurbVariantIsVisible
-        }
-
         override fun categoryTextViewText(): Observable<String> {
             return categoryTextViewText
         }
@@ -326,16 +312,12 @@ interface ProjectOverviewViewModel {
             return conversionPledgedAndGoalText
         }
 
-        override fun creatorBackedAndLaunchedProjectsCount(): Observable<Pair<Int, Int>> {
-            return creatorBackedAndLaunchedProjectsCount
-        }
-
         override fun creatorDetailsLoadingContainerIsVisible(): Observable<Boolean> {
             return creatorDetailsLoadingContainerIsVisible
         }
 
-        override fun creatorDetailsVariantIsVisible(): Observable<Boolean> {
-            return creatorDetailsVariantIsVisible
+        override fun creatorDetailsIsVisible(): Observable<Boolean> {
+            return creatorDetailsIsVisible
         }
 
         override fun creatorNameTextViewText(): Observable<String> {
@@ -516,27 +498,6 @@ interface ProjectOverviewViewModel {
             blurbTextViewText = project
                 .map { it.blurb() }
 
-            val projectDataAndCurrentUser = projectData
-                .compose(Transformers.combineLatestPair(currentUser.observable()))
-
-            projectDataAndCurrentUser
-                .map { projectDataAndUser ->
-                    ExperimentData(
-                        projectDataAndUser.second,
-                        projectDataAndUser.first.refTagFromIntent(),
-                        projectDataAndUser.first.refTagFromCookie()
-                    )
-                }
-                .map { experimentData ->
-                    optimizely?.variant(
-                        OptimizelyExperiment.Key.CAMPAIGN_DETAILS,
-                        experimentData
-                    )
-                }
-                .map { variant -> variant !== OptimizelyExperiment.Variant.CONTROL }
-                .compose(bindToLifecycle())
-                .subscribe { blurbVariantIsVisible.onNext(it) }
-
             categoryTextViewText = project
                 .map { it.category() }
                 .filter { ObjectUtils.isNotNull(it) }
@@ -578,42 +539,7 @@ interface ProjectOverviewViewModel {
                 .compose(Transformers.errors())
                 .map { _: Throwable? -> false }
                 .compose(bindToLifecycle())
-                .subscribe { creatorDetailsVariantIsVisible.onNext(it) }
-
-            val creatorDetails = creatorDetailsNotification
-                .compose(Transformers.values())
-
-            creatorDetails
-                .map { details ->
-                    Pair.create(
-                        details.backingsCount(),
-                        details.launchedProjectsCount()
-                    )
-                }
-                .compose(bindToLifecycle())
-                .subscribe { creatorBackedAndLaunchedProjectsCount.onNext(it) }
-
-            creatorDetails
-                .compose(Transformers.combineLatestPair(projectDataAndCurrentUser))
-                .take(1)
-                .map { it.second }
-                .map { projectDataAndUser: Pair<ProjectData, User> ->
-                    ExperimentData(
-                        projectDataAndUser.second,
-                        projectDataAndUser.first
-                            .refTagFromIntent(),
-                        projectDataAndUser.first.refTagFromCookie()
-                    )
-                }
-                .map { experimentData: ExperimentData? ->
-                    optimizely?.variant(
-                        OptimizelyExperiment.Key.CREATOR_DETAILS,
-                        experimentData!!
-                    )
-                }
-                .map { variant -> variant !== OptimizelyExperiment.Variant.CONTROL }
-                .compose(bindToLifecycle())
-                .subscribe { creatorDetailsVariantIsVisible.onNext(it) }
+                .subscribe { creatorDetailsIsVisible.onNext(it) }
 
             deadlineCountdownTextViewText = project
                 .map { proj -> proj.deadlineCountdownValue() }

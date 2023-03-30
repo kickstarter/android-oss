@@ -110,7 +110,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         vm.outputs.creatorDetailsLoadingContainerIsVisible().subscribe(
             creatorDetailsLoadingContainerIsVisible
         )
-        vm.outputs.creatorDetailsVariantIsVisible().subscribe(creatorDetailsVariantIsVisible)
+        vm.outputs.creatorDetailsIsVisible().subscribe(creatorDetailsVariantIsVisible)
         vm.outputs.creatorNameTextViewText().subscribe(creatorNameTextViewText)
         vm.outputs.deadlineCountdownTextViewText().subscribe(deadlineCountdownTextViewText)
         vm.outputs.goalStringForTextView().subscribe(goalStringForTextView)

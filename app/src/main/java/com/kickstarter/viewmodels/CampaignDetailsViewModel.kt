@@ -1,14 +1,9 @@
 package com.kickstarter.viewmodels
 
-import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.models.OptimizelyExperiment
-import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName
-import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.extensions.storeCurrentCookieRefTag
-import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CampaignDetailsActivity
 import com.kickstarter.ui.data.ProjectData
@@ -60,15 +55,6 @@ interface CampaignDetailsViewModel {
                 .subscribe {
                     this.analyticEvents.trackProjectScreenViewed(it, ContextSectionName.CAMPAIGN.contextName)
                 }
-
-            projectData
-                .filter { it.project().isLive && !it.project().isBacking() }
-                .compose<Pair<ProjectData, User?>>(combineLatestPair(this.currentUser.observable()))
-                .map { ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()) }
-                .map { this.optimizely?.variant(OptimizelyExperiment.Key.CAMPAIGN_DETAILS, it) }
-                .map { it == OptimizelyExperiment.Variant.VARIANT_2 }
-                .compose(bindToLifecycle())
-                .subscribe(this.pledgeContainerIsVisible)
 
             projectData
                 .filter { !it.project().isLive || it.project().isBacking() }

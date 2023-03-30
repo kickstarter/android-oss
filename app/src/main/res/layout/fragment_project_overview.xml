@@ -50,7 +50,7 @@
                 android:orientation="horizontal"
                 android:paddingTop="@dimen/grid_2"
                 android:paddingBottom="@dimen/grid_3"
-                android:visibility="gone"
+                android:visibility="visible"
                 tools:ignore="InconsistentLayout">
 
                 <ImageView
@@ -84,53 +84,6 @@
                         android:ellipsize="end"
                         android:maxLines="1"
                         tools:text="Creator Name" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/creator_info_variant"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/click_indicator_light_masked"
-                android:baselineAligned="false"
-                android:focusable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingTop="@dimen/grid_2"
-                android:paddingBottom="@dimen/grid_3"
-                android:visibility="gone"
-                tools:ignore="InconsistentLayout"
-                tools:visibility="visible">
-
-                <include
-                    android:id="@+id/creator_avatar_verified"
-                    layout="@layout/creator_avatar_verified" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/creator_name_variant"
-                        style="@style/FootnotePrimaryMedium"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textIsSelectable="true"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        tools:text="Creator Name" />
-
-                    <TextView
-                        android:id="@+id/creator_details"
-                        style="@style/FootnotePrimaryMedium"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/kds_trust_500"
-                        android:textIsSelectable="true"
-                        tools:text="3 created • 2 launched" />
                 </LinearLayout>
 
             </LinearLayout>

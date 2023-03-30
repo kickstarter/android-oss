@@ -50,7 +50,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private val conversionPledgedAndGoalText = TestSubscriber<Pair<String, String>>()
     private val conversionTextViewIsGone = TestSubscriber<Boolean>()
     private val creatorDetailsLoadingContainerIsVisible = TestSubscriber<Boolean>()
-    private val creatorDetailsIsVisible = TestSubscriber<Boolean>()
+    private val creatorDetailsIsGone = TestSubscriber<Boolean>()
     private val creatorNameTextViewText = TestSubscriber<String>()
     private val deadlineCountdownTextViewText = TestSubscriber<String>()
     private val goalStringForTextView = TestSubscriber<String>()
@@ -84,7 +84,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private val startCreatorView = TestSubscriber<ProjectData>()
     private val startCommentsView = TestSubscriber<ProjectData>()
     private val startUpdatesView = TestSubscriber<ProjectData>()
-    private val startCampaignView = TestSubscriber<ProjectData>()
     private val startCreatorDashboard = TestSubscriber<ProjectData>()
     private val startReportProjectView = TestSubscriber<ProjectData>()
     private val startLoginView = TestSubscriber<Void>()
@@ -104,7 +103,7 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         vm.outputs.creatorDetailsLoadingContainerIsVisible().subscribe(
             creatorDetailsLoadingContainerIsVisible
         )
-        vm.outputs.creatorDetailsIsVisible().subscribe(creatorDetailsIsVisible)
+        vm.outputs.creatorDetailsIsGone().subscribe(creatorDetailsIsGone)
         vm.outputs.creatorNameTextViewText().subscribe(creatorNameTextViewText)
         vm.outputs.deadlineCountdownTextViewText().subscribe(deadlineCountdownTextViewText)
         vm.outputs.goalStringForTextView().subscribe(goalStringForTextView)
@@ -141,7 +140,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         vm.outputs.startProjectSocialActivity().subscribe(startProjectSocialActivity)
         vm.outputs.updatesCountTextViewText().subscribe(updatesCountTextViewText)
         vm.outputs.startUpdatesView().subscribe(startUpdatesView)
-        vm.outputs.startCampaignView().subscribe(startCampaignView)
         vm.outputs.startCommentsView().subscribe(startCommentsView)
         vm.outputs.startCreatorView().subscribe(startCreatorView)
         vm.outputs.startCreatorDashboardView().subscribe(startCreatorDashboard)
@@ -181,16 +179,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCampaignClicked() {
-        val projectData = project(ProjectFactory.project())
-        setUpEnvironment(environment(), projectData)
-
-        this.vm.inputs.campaignButtonClicked()
-        startCampaignView.assertValue(projectData)
-        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
-    }
-
-    @Test
     fun testCreatorDashboardClicked() {
         val projectData = project(ProjectFactory.project())
         setUpEnvironment(environment(), projectData)
@@ -209,21 +197,21 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCreatorDetailsVariantIsVisible_whenCreatorDetailsQueryUnsuccessful() {
+    fun testCreatorDetailsIsVisible_whenCreatorDetailsQueryUnsuccessful() {
         setUpEnvironment(
             environmentWithUnsuccessfulCreatorDetailsQuery(),
             project(ProjectFactory.project())
         )
-        creatorDetailsIsVisible.assertValue(false)
+        creatorDetailsIsGone.assertValue(true)
     }
 
     @Test
-    fun testCreatorDetailsVariantIsVisible_whenCreatorDetailsQuerySuccessful() {
+    fun testCreatorDetailsVisible_whenCreatorDetailsQuerySuccessful() {
         setUpEnvironment(
             environmentWithSuccessfulCreatorDetailsQuery(),
             project(ProjectFactory.project())
         )
-        creatorDetailsIsVisible.assertValue(true)
+        creatorDetailsIsGone.assertNoValues()
     }
 
     @Test

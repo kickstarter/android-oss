@@ -84,7 +84,7 @@ interface ProjectOverviewViewModel {
         fun creatorDetailsLoadingContainerIsVisible(): Observable<Boolean>
 
         /** Emits a boolean determining if the creator details should be visible.  */
-        fun creatorDetailsIsVisible(): Observable<Boolean>
+        fun creatorDetailsIsGone(): Observable<Boolean>
 
         /** Emits the project creator's name for display.  */
         fun creatorNameTextViewText(): Observable<String>
@@ -179,7 +179,6 @@ interface ProjectOverviewViewModel {
         fun startCreatorView(): Observable<ProjectData>
         fun startCommentsView(): Observable<ProjectData>
         fun startUpdatesView(): Observable<ProjectData>
-        fun startCampaignView(): Observable<ProjectData>
         fun startCreatorDashboardView(): Observable<ProjectData>
         fun startReportProjectView(): Observable<ProjectData>
         fun startLoginView(): Observable<Void>
@@ -217,7 +216,7 @@ interface ProjectOverviewViewModel {
         private val conversionPledgedAndGoalText: Observable<Pair<String, String>>
         private val conversionTextViewIsGone: Observable<Boolean>
         private val creatorDetailsLoadingContainerIsVisible = BehaviorSubject.create<Boolean>()
-        private val creatorDetailsIsVisible = BehaviorSubject.create<Boolean>()
+        private val creatorDetailsIsGone = BehaviorSubject.create<Boolean>()
         private val creatorNameTextViewText: Observable<String>
         private val deadlineCountdownTextViewText: Observable<String>
         private val goalStringForTextView: Observable<String>
@@ -251,7 +250,6 @@ interface ProjectOverviewViewModel {
         private val startCreatorView: Observable<ProjectData>
         private val startCommentsView: Observable<ProjectData>
         private val startUpdatesView: Observable<ProjectData>
-        private val startCampaignView: Observable<ProjectData>
         private val creatorDashBoardView: Observable<ProjectData>
         private val startReportProjectView: Observable<ProjectData>
         private val startLogin = PublishSubject.create<Void>()
@@ -316,8 +314,8 @@ interface ProjectOverviewViewModel {
             return creatorDetailsLoadingContainerIsVisible
         }
 
-        override fun creatorDetailsIsVisible(): Observable<Boolean> {
-            return creatorDetailsIsVisible
+        override fun creatorDetailsIsGone(): Observable<Boolean> {
+            return creatorDetailsIsGone
         }
 
         override fun creatorNameTextViewText(): Observable<String> {
@@ -448,10 +446,6 @@ interface ProjectOverviewViewModel {
             return this.startCommentsView
         }
 
-        override fun startCampaignView(): Observable<ProjectData> {
-            return this.startCampaignView
-        }
-
         override fun startUpdatesView(): Observable<ProjectData> {
             return this.startUpdatesView
         }
@@ -537,15 +531,9 @@ interface ProjectOverviewViewModel {
 
             creatorDetailsNotification
                 .compose(Transformers.errors())
-                .map { _: Throwable? -> false }
+                .map { _: Throwable? -> true }
                 .compose(bindToLifecycle())
-                .subscribe { creatorDetailsIsVisible.onNext(it) }
-
-            creatorDetailsNotification
-                .compose(Transformers.values())
-                .map { it != null }
-                .compose(bindToLifecycle())
-                .subscribe { creatorDetailsIsVisible.onNext(it) }
+                .subscribe { creatorDetailsIsGone.onNext(it) }
 
             deadlineCountdownTextViewText = project
                 .map { proj -> proj.deadlineCountdownValue() }

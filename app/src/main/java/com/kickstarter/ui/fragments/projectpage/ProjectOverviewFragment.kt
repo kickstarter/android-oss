@@ -110,7 +110,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
                 binding.loadingPlaceholderCreatorInfoLayout.creatorInfoLoadingContainer.setGone(!it)
             }
 
-        viewModel.outputs.creatorDetailsIsVisible()
+        viewModel.outputs.creatorDetailsIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { setCreatorDetailsVisibility(it) }

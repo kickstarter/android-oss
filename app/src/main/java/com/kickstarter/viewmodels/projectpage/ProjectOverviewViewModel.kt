@@ -695,10 +695,6 @@ interface ProjectOverviewViewModel {
                 .compose(Transformers.takePairWhen(updatesClicked))
                 .map { it.first }
 
-            startCampaignView = projectData
-                .compose(Transformers.takePairWhen(campaignClicked))
-                .map { it.first }
-
             creatorDashBoardView = projectData
                 .compose(Transformers.takePairWhen(creatorDashboardClicked))
                 .map { it.first }

@@ -2,7 +2,6 @@ package com.kickstarter.libs.models
 
 class OptimizelyExperiment {
     enum class Key(val key: String) {
-        NATIVE_RISK_MESSAGING("native_risk_messaging")
     }
 
     enum class Variant(val rawValue: String?) {

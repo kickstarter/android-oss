@@ -6,7 +6,6 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.MockCurrentUser
-import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.NumberUtils

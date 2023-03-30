@@ -1,8 +1,7 @@
 package com.kickstarter.libs.models
 
 class OptimizelyExperiment {
-    enum class Key(val key: String) {
-    }
+    enum class Key(val key: String)
 
     enum class Variant(val rawValue: String?) {
         CONTROL(null),

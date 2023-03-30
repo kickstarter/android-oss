@@ -11,7 +11,6 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.NumberOptions
 import com.kickstarter.libs.models.Country
-import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
@@ -20,7 +19,6 @@ import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.rx.transformers.Transformers.zipPair
 import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
@@ -1469,7 +1467,7 @@ interface PledgeFragmentViewModel {
                     .compose<Pair<CheckoutData, PledgeData>>(combineLatestPair(pledgeData))
 
             checkoutAndPledgeData
-                .compose<Pair<Pair<CheckoutData,PledgeData>, PledgeReason>>(combineLatestPair(pledgeReason))
+                .compose<Pair<Pair<CheckoutData, PledgeData>, PledgeReason>>(combineLatestPair(pledgeReason))
                 .filter {
                     it.second == PledgeReason.PLEDGE
                 }

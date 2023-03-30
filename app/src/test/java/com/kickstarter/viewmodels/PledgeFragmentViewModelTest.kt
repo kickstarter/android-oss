@@ -10,7 +10,6 @@ import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockSharedPreferences
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.Country
-import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.EventName

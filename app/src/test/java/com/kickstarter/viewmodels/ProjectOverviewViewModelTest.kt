@@ -45,14 +45,12 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private val avatarPhotoUrl = TestSubscriber<String>()
     private val backersCountTextViewText = TestSubscriber<String>()
     private val blurbTextViewText = TestSubscriber<String>()
-    private val blurbVariantIsVisible = TestSubscriber<Boolean>()
     private val categoryTextViewText = TestSubscriber<String>()
     private val commentsCountTextViewText = TestSubscriber<String>()
     private val conversionPledgedAndGoalText = TestSubscriber<Pair<String, String>>()
     private val conversionTextViewIsGone = TestSubscriber<Boolean>()
-    private val creatorBackedAndLaunchedProjectsCount = TestSubscriber<Pair<Int, Int>>()
     private val creatorDetailsLoadingContainerIsVisible = TestSubscriber<Boolean>()
-    private val creatorDetailsVariantIsVisible = TestSubscriber<Boolean>()
+    private val creatorDetailsIsVisible = TestSubscriber<Boolean>()
     private val creatorNameTextViewText = TestSubscriber<String>()
     private val deadlineCountdownTextViewText = TestSubscriber<String>()
     private val goalStringForTextView = TestSubscriber<String>()
@@ -99,18 +97,14 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         vm.outputs.avatarPhotoUrl().subscribe(avatarPhotoUrl)
         vm.outputs.backersCountTextViewText().subscribe(backersCountTextViewText)
         vm.outputs.blurbTextViewText().subscribe(blurbTextViewText)
-        vm.outputs.blurbVariantIsVisible().subscribe(blurbVariantIsVisible)
         vm.outputs.categoryTextViewText().subscribe(categoryTextViewText)
         vm.outputs.commentsCountTextViewText().subscribe(commentsCountTextViewText)
         vm.outputs.conversionPledgedAndGoalText().subscribe(conversionPledgedAndGoalText)
         vm.outputs.conversionTextViewIsGone().subscribe(conversionTextViewIsGone)
-        vm.outputs.creatorBackedAndLaunchedProjectsCount().subscribe(
-            creatorBackedAndLaunchedProjectsCount
-        )
         vm.outputs.creatorDetailsLoadingContainerIsVisible().subscribe(
             creatorDetailsLoadingContainerIsVisible
         )
-        vm.outputs.creatorDetailsIsVisible().subscribe(creatorDetailsVariantIsVisible)
+        vm.outputs.creatorDetailsIsVisible().subscribe(creatorDetailsIsVisible)
         vm.outputs.creatorNameTextViewText().subscribe(creatorNameTextViewText)
         vm.outputs.deadlineCountdownTextViewText().subscribe(deadlineCountdownTextViewText)
         vm.outputs.goalStringForTextView().subscribe(goalStringForTextView)
@@ -207,30 +201,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testBlurbVariantIsVisible_whenControl() {
-        setUpEnvironment(environment(), project(ProjectFactory.project()))
-        blurbVariantIsVisible.assertValue(false)
-    }
-
-    @Test
-    fun testBlurbVariantIsVisible_whenVariant1() {
-        setUpEnvironment(
-            environmentForVariant(OptimizelyExperiment.Variant.VARIANT_1)!!,
-            project(ProjectFactory.project())
-        )
-        blurbVariantIsVisible.assertValue(true)
-    }
-
-    @Test
-    fun testBlurbVariantIsVisible_whenVariant2() {
-        setUpEnvironment(
-            environmentForVariant(OptimizelyExperiment.Variant.VARIANT_2)!!,
-            project(ProjectFactory.project())
-        )
-        blurbVariantIsVisible.assertValue(true)
-    }
-
-    @Test
     fun testCreatorDataEmits() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment(), project(project))
@@ -239,42 +209,21 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCreatorBackedAndLaunchedProjectsCount_whenFetchCreatorDetailsQuerySuccessful() {
-        setUpEnvironment(environment(), project(ProjectFactory.project()))
-        creatorBackedAndLaunchedProjectsCount.assertValue(Pair.create(3, 2))
-    }
-
-    @Test
-    fun testCreatorBackedAndLaunchedProjectsCount_whenCreatorDetailsQueryUnsuccessful() {
-        setUpEnvironment(
-            environmentWithUnsuccessfulCreatorDetailsQuery()!!,
-            project(ProjectFactory.project())
-        )
-        creatorBackedAndLaunchedProjectsCount.assertNoValues()
-    }
-
-    @Test
     fun testCreatorDetailsVariantIsVisible_whenCreatorDetailsQueryUnsuccessful() {
         setUpEnvironment(
-            environmentWithUnsuccessfulCreatorDetailsQuery()!!,
+            environmentWithUnsuccessfulCreatorDetailsQuery(),
             project(ProjectFactory.project())
         )
-        creatorDetailsVariantIsVisible.assertValue(false)
+        creatorDetailsIsVisible.assertValue(false)
     }
 
     @Test
-    fun testCreatorDetailsVariantIsVisible_whenControl() {
-        setUpEnvironment(environment(), project(ProjectFactory.project()))
-        creatorDetailsVariantIsVisible.assertValue(false)
-    }
-
-    @Test
-    fun testCreatorDetailsVariantIsVisible_whenVariant1() {
+    fun testCreatorDetailsVariantIsVisible_whenCreatorDetailsQuerySuccessful() {
         setUpEnvironment(
-            environmentForVariant(OptimizelyExperiment.Variant.VARIANT_1)!!,
+            environmentWithSuccessfulCreatorDetailsQuery(),
             project(ProjectFactory.project())
         )
-        creatorDetailsVariantIsVisible.assertValue(true)
+        creatorDetailsIsVisible.assertValue(true)
     }
 
     @Test
@@ -746,6 +695,17 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
             .apolloClient(object : MockApolloClient() {
                 override fun creatorDetails(slug: String): Observable<CreatorDetails> {
                     return Observable.error(Throwable("failure"))
+                }
+            })
+            .build()
+    }
+
+    private fun environmentWithSuccessfulCreatorDetailsQuery(): Environment {
+        return environment()
+            .toBuilder()
+            .apolloClient(object : MockApolloClient() {
+                override fun creatorDetails(slug: String): Observable<CreatorDetails> {
+                    return Observable.just(CreatorDetails(1, 1))
                 }
             })
             .build()

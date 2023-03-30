@@ -541,6 +541,12 @@ interface ProjectOverviewViewModel {
                 .compose(bindToLifecycle())
                 .subscribe { creatorDetailsIsVisible.onNext(it) }
 
+            creatorDetailsNotification
+                .compose(Transformers.values())
+                .map { it != null }
+                .compose(bindToLifecycle())
+                .subscribe { creatorDetailsIsVisible.onNext(it) }
+
             deadlineCountdownTextViewText = project
                 .map { proj -> proj.deadlineCountdownValue() }
                 .map { NumberUtils.format(it) }

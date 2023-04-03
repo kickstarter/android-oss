@@ -1467,19 +1467,6 @@ interface PledgeFragmentViewModel {
                     .compose<Pair<CheckoutData, PledgeData>>(combineLatestPair(pledgeData))
 
             checkoutAndPledgeData
-                .compose<Pair<Pair<CheckoutData, PledgeData>, PledgeReason>>(combineLatestPair(pledgeReason))
-                .filter {
-                    it.second == PledgeReason.PLEDGE
-                }
-                .map {
-                    it.first
-                }
-                .compose(bindToLifecycle())
-                .subscribe {
-                    this.analyticEvents.trackPledgeConfirmCTA(it.first, it.second)
-                }
-
-            checkoutAndPledgeData
                 .take(1)
                 .filter { it.second.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }
                 .compose(bindToLifecycle())

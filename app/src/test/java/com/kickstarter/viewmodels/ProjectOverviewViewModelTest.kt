@@ -669,13 +669,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
             .build()
     }
 
-    private fun environmentForVariant(variant: OptimizelyExperiment.Variant): Environment {
-        return environment()
-            .toBuilder()
-            .optimizely(MockExperimentsClientType(variant))
-            .build()
-    }
-
     private fun environmentWithUnsuccessfulCreatorDetailsQuery(): Environment {
         return environment()
             .toBuilder()

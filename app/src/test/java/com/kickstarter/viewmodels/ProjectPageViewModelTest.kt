@@ -11,7 +11,6 @@ import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
-import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockExperimentsClientType
@@ -985,34 +984,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.pledgeActionButtonColor.assertValue(R.color.button_pledge_live)
         this.pledgeActionButtonText.assertValue(R.string.Back_this_project)
-    }
-
-    @Test
-    fun testPledgeActionButtonUIOutputs_projectIsLiveAndNotBacked_variant1() {
-        setUpEnvironment(
-            environment().toBuilder()
-                .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1))
-                .build()
-        )
-
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
-
-        this.pledgeActionButtonColor.assertValue(R.color.button_pledge_live)
-        this.pledgeActionButtonText.assertValue(R.string.See_the_rewards)
-    }
-
-    @Test
-    fun testPledgeActionButtonUIOutputs_projectIsLiveAndNotBacked_variant2() {
-        setUpEnvironment(
-            environment().toBuilder()
-                .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_2))
-                .build()
-        )
-
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
-
-        this.pledgeActionButtonColor.assertValue(R.color.button_pledge_live)
-        this.pledgeActionButtonText.assertValue(R.string.View_the_rewards)
     }
 
     @Test

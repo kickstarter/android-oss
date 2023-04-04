@@ -27,7 +27,6 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.SocialUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
@@ -39,7 +38,6 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ProjectSocialActivity
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.setClickableHtml
-import com.kickstarter.ui.extensions.startCampaignWebViewActivity
 import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
 import com.kickstarter.ui.extensions.startCreatorDashboardActivity
 import com.kickstarter.ui.extensions.startLoginActivity
@@ -93,11 +91,6 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(Transformers.observeForUI())
             .subscribe { setBlurbTextViews(it) }
 
-        viewModel.outputs.blurbVariantIsVisible()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { setBlurbVariantVisibility(it) }
-
         this.viewModel.outputs.categoryTextViewText()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
@@ -110,11 +103,6 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(Transformers.observeForUI())
             .subscribe { binding.projectCreatorInfoLayout.commentsCount.text = it }
 
-        viewModel.outputs.creatorBackedAndLaunchedProjectsCount()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { setCreatorDetailsTextView(it) }
-
         viewModel.outputs.creatorDetailsLoadingContainerIsVisible()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
@@ -122,23 +110,16 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
                 binding.loadingPlaceholderCreatorInfoLayout.creatorInfoLoadingContainer.setGone(!it)
             }
 
-        viewModel.outputs.creatorDetailsVariantIsVisible()
+        viewModel.outputs.creatorDetailsIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { setCreatorDetailsVariantVisibility(it) }
+            .subscribe { setCreatorDetailsVisibility(it) }
 
         viewModel.outputs.creatorNameTextViewText()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
                 binding.creatorName.text = it
-            }
-
-        viewModel.outputs.creatorNameTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe {
-                binding.creatorNameVariant.text = it
             }
 
         viewModel.outputs.deadlineCountdownTextViewText()
@@ -353,13 +334,6 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
                 activity?.startCreatorDashboardActivity(it.project())
             }
 
-        viewModel.outputs.startCampaignView()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe {
-                activity?.startCampaignWebViewActivity(it)
-            }
-
         viewModel.outputs.startReportProjectView()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
@@ -403,10 +377,6 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             this.viewModel.inputs.creatorInfoButtonClicked()
         }
 
-        binding.creatorInfoVariant.setOnClickListener {
-            this.viewModel.inputs.creatorInfoButtonClicked()
-        }
-
         binding.blurbView.setOnClickListener {
             this.viewModel.inputs.campaignButtonClicked()
         }
@@ -433,11 +403,6 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .load(url)
             .transform(CircleTransformation())
             .into(binding.avatar)
-
-        Picasso.get()
-            .load(url)
-            .transform(CircleTransformation())
-            .into(binding.creatorAvatarVerified.avatarVariant)
     }
 
     private fun setConvertedCurrencyView(pledgedAndGoal: Pair<String, String>) {
@@ -452,18 +417,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         }
     }
 
-    private fun setCreatorDetailsTextView(backedAndLaunchedProjectsCount: Pair<Int, Int>) {
-        context?.let { currentContext ->
-            binding.creatorDetails.text = ksString.format(
-                currentContext.getString(R.string.projects_launched_count_created_projects_backed_count_backed),
-                "projects_backed_count", NumberUtils.format(backedAndLaunchedProjectsCount.first),
-                "projects_launched_count", NumberUtils.format(backedAndLaunchedProjectsCount.second)
-            )
-        }
-    }
-
-    private fun setCreatorDetailsVariantVisibility(visible: Boolean) {
-        binding.creatorInfoVariant.setGone(!visible)
+    private fun setCreatorDetailsVisibility(visible: Boolean) {
         binding.creatorInfo.setGone(visible)
     }
 
@@ -498,10 +452,6 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             Html.fromHtml(TextUtils.htmlEncode(blurb))
         }
         binding.blurb.text = blurbHtml
-    }
-
-    private fun setBlurbVariantVisibility(blurbVariantVisible: Boolean) {
-        binding.blurbView.setGone(blurbVariantVisible)
     }
 
     private fun setProjectDisclaimerGoalReachedString(deadline: DateTime) {

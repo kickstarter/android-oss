@@ -12,7 +12,6 @@ import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.RefTag
-import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
@@ -828,7 +827,6 @@ interface ProjectPageViewModel {
                 ProjectViewUtils.pledgeActionButtonText(
                     data.project(),
                     user,
-                    this.optimizely?.variant(OptimizelyExperiment.Key.PLEDGE_CTA_COPY, experimentData)
                 )
             }
                 .distinctUntilChanged()

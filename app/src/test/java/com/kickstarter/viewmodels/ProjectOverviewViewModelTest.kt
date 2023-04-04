@@ -6,7 +6,6 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.MockCurrentUser
-import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.NumberUtils
@@ -45,14 +44,12 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private val avatarPhotoUrl = TestSubscriber<String>()
     private val backersCountTextViewText = TestSubscriber<String>()
     private val blurbTextViewText = TestSubscriber<String>()
-    private val blurbVariantIsVisible = TestSubscriber<Boolean>()
     private val categoryTextViewText = TestSubscriber<String>()
     private val commentsCountTextViewText = TestSubscriber<String>()
     private val conversionPledgedAndGoalText = TestSubscriber<Pair<String, String>>()
     private val conversionTextViewIsGone = TestSubscriber<Boolean>()
-    private val creatorBackedAndLaunchedProjectsCount = TestSubscriber<Pair<Int, Int>>()
     private val creatorDetailsLoadingContainerIsVisible = TestSubscriber<Boolean>()
-    private val creatorDetailsVariantIsVisible = TestSubscriber<Boolean>()
+    private val creatorDetailsIsGone = TestSubscriber<Boolean>()
     private val creatorNameTextViewText = TestSubscriber<String>()
     private val deadlineCountdownTextViewText = TestSubscriber<String>()
     private val goalStringForTextView = TestSubscriber<String>()
@@ -86,7 +83,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     private val startCreatorView = TestSubscriber<ProjectData>()
     private val startCommentsView = TestSubscriber<ProjectData>()
     private val startUpdatesView = TestSubscriber<ProjectData>()
-    private val startCampaignView = TestSubscriber<ProjectData>()
     private val startCreatorDashboard = TestSubscriber<ProjectData>()
     private val startReportProjectView = TestSubscriber<ProjectData>()
     private val startLoginView = TestSubscriber<Void>()
@@ -99,18 +95,14 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         vm.outputs.avatarPhotoUrl().subscribe(avatarPhotoUrl)
         vm.outputs.backersCountTextViewText().subscribe(backersCountTextViewText)
         vm.outputs.blurbTextViewText().subscribe(blurbTextViewText)
-        vm.outputs.blurbVariantIsVisible().subscribe(blurbVariantIsVisible)
         vm.outputs.categoryTextViewText().subscribe(categoryTextViewText)
         vm.outputs.commentsCountTextViewText().subscribe(commentsCountTextViewText)
         vm.outputs.conversionPledgedAndGoalText().subscribe(conversionPledgedAndGoalText)
         vm.outputs.conversionTextViewIsGone().subscribe(conversionTextViewIsGone)
-        vm.outputs.creatorBackedAndLaunchedProjectsCount().subscribe(
-            creatorBackedAndLaunchedProjectsCount
-        )
         vm.outputs.creatorDetailsLoadingContainerIsVisible().subscribe(
             creatorDetailsLoadingContainerIsVisible
         )
-        vm.outputs.creatorDetailsVariantIsVisible().subscribe(creatorDetailsVariantIsVisible)
+        vm.outputs.creatorDetailsIsGone().subscribe(creatorDetailsIsGone)
         vm.outputs.creatorNameTextViewText().subscribe(creatorNameTextViewText)
         vm.outputs.deadlineCountdownTextViewText().subscribe(deadlineCountdownTextViewText)
         vm.outputs.goalStringForTextView().subscribe(goalStringForTextView)
@@ -147,7 +139,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         vm.outputs.startProjectSocialActivity().subscribe(startProjectSocialActivity)
         vm.outputs.updatesCountTextViewText().subscribe(updatesCountTextViewText)
         vm.outputs.startUpdatesView().subscribe(startUpdatesView)
-        vm.outputs.startCampaignView().subscribe(startCampaignView)
         vm.outputs.startCommentsView().subscribe(startCommentsView)
         vm.outputs.startCreatorView().subscribe(startCreatorView)
         vm.outputs.startCreatorDashboardView().subscribe(startCreatorDashboard)
@@ -187,16 +178,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCampaignClicked() {
-        val projectData = project(ProjectFactory.project())
-        setUpEnvironment(environment(), projectData)
-
-        this.vm.inputs.campaignButtonClicked()
-        startCampaignView.assertValue(projectData)
-        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
-    }
-
-    @Test
     fun testCreatorDashboardClicked() {
         val projectData = project(ProjectFactory.project())
         setUpEnvironment(environment(), projectData)
@@ -204,30 +185,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.creatorDashboardClicked()
         startCreatorDashboard.assertValue(projectData)
         this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
-    }
-
-    @Test
-    fun testBlurbVariantIsVisible_whenControl() {
-        setUpEnvironment(environment(), project(ProjectFactory.project()))
-        blurbVariantIsVisible.assertValue(false)
-    }
-
-    @Test
-    fun testBlurbVariantIsVisible_whenVariant1() {
-        setUpEnvironment(
-            environmentForVariant(OptimizelyExperiment.Variant.VARIANT_1)!!,
-            project(ProjectFactory.project())
-        )
-        blurbVariantIsVisible.assertValue(true)
-    }
-
-    @Test
-    fun testBlurbVariantIsVisible_whenVariant2() {
-        setUpEnvironment(
-            environmentForVariant(OptimizelyExperiment.Variant.VARIANT_2)!!,
-            project(ProjectFactory.project())
-        )
-        blurbVariantIsVisible.assertValue(true)
     }
 
     @Test
@@ -239,42 +196,21 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCreatorBackedAndLaunchedProjectsCount_whenFetchCreatorDetailsQuerySuccessful() {
-        setUpEnvironment(environment(), project(ProjectFactory.project()))
-        creatorBackedAndLaunchedProjectsCount.assertValue(Pair.create(3, 2))
-    }
-
-    @Test
-    fun testCreatorBackedAndLaunchedProjectsCount_whenCreatorDetailsQueryUnsuccessful() {
+    fun testCreatorDetailsIsVisible_whenCreatorDetailsQueryUnsuccessful() {
         setUpEnvironment(
-            environmentWithUnsuccessfulCreatorDetailsQuery()!!,
+            environmentWithUnsuccessfulCreatorDetailsQuery(),
             project(ProjectFactory.project())
         )
-        creatorBackedAndLaunchedProjectsCount.assertNoValues()
+        creatorDetailsIsGone.assertValue(true)
     }
 
     @Test
-    fun testCreatorDetailsVariantIsVisible_whenCreatorDetailsQueryUnsuccessful() {
+    fun testCreatorDetailsVisible_whenCreatorDetailsQuerySuccessful() {
         setUpEnvironment(
-            environmentWithUnsuccessfulCreatorDetailsQuery()!!,
+            environmentWithSuccessfulCreatorDetailsQuery(),
             project(ProjectFactory.project())
         )
-        creatorDetailsVariantIsVisible.assertValue(false)
-    }
-
-    @Test
-    fun testCreatorDetailsVariantIsVisible_whenControl() {
-        setUpEnvironment(environment(), project(ProjectFactory.project()))
-        creatorDetailsVariantIsVisible.assertValue(false)
-    }
-
-    @Test
-    fun testCreatorDetailsVariantIsVisible_whenVariant1() {
-        setUpEnvironment(
-            environmentForVariant(OptimizelyExperiment.Variant.VARIANT_1)!!,
-            project(ProjectFactory.project())
-        )
-        creatorDetailsVariantIsVisible.assertValue(true)
+        creatorDetailsIsGone.assertNoValues()
     }
 
     @Test
@@ -733,19 +669,23 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
             .build()
     }
 
-    private fun environmentForVariant(variant: OptimizelyExperiment.Variant): Environment {
-        return environment()
-            .toBuilder()
-            .optimizely(MockExperimentsClientType(variant))
-            .build()
-    }
-
     private fun environmentWithUnsuccessfulCreatorDetailsQuery(): Environment {
         return environment()
             .toBuilder()
             .apolloClient(object : MockApolloClient() {
                 override fun creatorDetails(slug: String): Observable<CreatorDetails> {
                     return Observable.error(Throwable("failure"))
+                }
+            })
+            .build()
+    }
+
+    private fun environmentWithSuccessfulCreatorDetailsQuery(): Environment {
+        return environment()
+            .toBuilder()
+            .apolloClient(object : MockApolloClient() {
+                override fun creatorDetails(slug: String): Observable<CreatorDetails> {
+                    return Observable.just(CreatorDetails(1, 1))
                 }
             })
             .build()

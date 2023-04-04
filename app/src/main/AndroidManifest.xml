@@ -35,9 +35,6 @@
             android:name=".ui.activities.ActivityFeedActivity"
             android:parentActivityName=".ui.activities.DiscoveryActivity"
             android:theme="@style/ActivityFeedActivity" />
-        <activity
-            android:name=".ui.activities.CampaignDetailsActivity"
-            android:parentActivityName=".ui.activities.ProjectPageActivity" />
 
         <activity android:name=".ui.activities.PreLaunchProjectPageActivity"
             android:parentActivityName=".ui.activities.DiscoveryActivity"

@@ -17,6 +17,27 @@
   tools:showIn="@layout/project_card_view">
 
   <LinearLayout
+      android:id="@+id/coming_soon_group"
+      android:visibility="gone"
+      android:paddingStart="@dimen/grid_1"
+      android:gravity="center"
+      android:paddingHorizontal="@dimen/grid_5_half"
+      android:orientation="horizontal"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content">
+
+    <TextView
+        style="@style/Caption1PrimaryMedium"
+        android:includeFontPadding="false"
+        android:layout_gravity="center"
+        android:textColor="@color/kds_white"
+        android:text="@string/Coming_soon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+  </LinearLayout>
+
+  <LinearLayout
     android:id="@+id/backing_group"
     android:visibility="gone"
     android:paddingStart="@dimen/grid_1"

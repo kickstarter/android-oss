@@ -72,8 +72,7 @@ class PledgeFragment :
     BaseFragment<PledgeFragmentViewModel.ViewModel>(),
     RewardCardAdapter
     .Delegate,
-    ShippingRulesAdapter.Delegate,
-    CheckoutRiskMessageFragment.Delegate {
+    ShippingRulesAdapter.Delegate {
 
     interface PledgeDelegate {
         fun pledgePaymentSuccessfullyUpdated()
@@ -649,23 +648,6 @@ class PledgeFragment :
                 .subscribe { this.viewModel.inputs.continueButtonClicked() }
         }
 
-        this.viewModel.outputs.changeCheckoutRiskMessageBottomSheetStatus()
-            .filter {
-                it
-            }
-            .compose(observeForUI())
-            .compose(bindToLifecycle())
-            .subscribe {
-                showRiskMessageDialog()
-            }
-
-        this.viewModel.outputs.changePledgeSectionAccountabilityFragmentVisiablity()
-            .compose(observeForUI())
-            .compose(bindToLifecycle())
-            .subscribe {
-                binding?.pledgeSectionAccountability?.root?.isGone = it
-            }
-
         this.viewModel.outputs.setState()
             .compose(observeForUI())
             .compose(bindToLifecycle())
@@ -745,12 +727,6 @@ class PledgeFragment :
             }
             is PaymentSheetResult.Completed -> {
             }
-        }
-    }
-
-    private fun showRiskMessageDialog() {
-        activity?.supportFragmentManager?.let {
-            CheckoutRiskMessageFragment.newInstance(this).show(it.beginTransaction(), "CheckoutRiskMessageFragment")
         }
     }
 
@@ -1037,9 +1013,5 @@ class PledgeFragment :
         } else {
             rewardCardAdapter?.resetSelectedPosition()
         }
-    }
-
-    override fun onDialogConfirmButtonClicked() {
-        viewModel.inputs.onRiskManagementConfirmed()
     }
 }

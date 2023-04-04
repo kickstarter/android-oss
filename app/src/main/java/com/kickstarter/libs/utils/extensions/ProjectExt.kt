@@ -98,7 +98,7 @@ fun Project.deadlineCountdownDetail(context: Context, ksString: KSString): Strin
     ksString.format(
         context.getString(R.string.discovery_baseball_card_time_left_to_go),
         "time_left",
-        this.deadlineCountdownUnit(context)
+        this.deadlineCountdownUnit(context),
     )
 
 /**
@@ -147,7 +147,8 @@ fun Project.isCompleted(): Boolean =
         Project.STATE_FAILED,
         Project.STATE_SUCCESSFUL,
         Project.STATE_PURGED,
-        Project.STATE_SUSPENDED -> true
+        Project.STATE_SUSPENDED,
+        -> true
         else -> false
     }
 
@@ -162,6 +163,7 @@ fun isProjectNamePunctuated(name: String): Boolean = name.substring(name.length 
 fun Project.metadataForProject(): ProjectMetadata? =
     when {
         this.isBacking() -> ProjectMetadata.BACKING
+        this.displayPrelaunch() ?: false -> ProjectMetadata.COMING_SOON
         this.isStarred() -> ProjectMetadata.SAVING
         this.isFeaturedToday -> ProjectMetadata.CATEGORY_FEATURED
         else -> null
@@ -203,7 +205,7 @@ fun isUSUserViewingNonUSProject(userCountry: String, projectCountry: String): Bo
 fun Project.canUpdateFulfillment() = isBacking() && isSuccessful
 
 enum class ProjectMetadata {
-    BACKING, SAVING, CATEGORY_FEATURED
+    BACKING, SAVING, CATEGORY_FEATURED, COMING_SOON
 }
 
 /**
@@ -247,7 +249,7 @@ fun Project.projectNeedsRootCategory(category: Category): Boolean {
 }
 
 fun Project.updateStartedProjectAndDiscoveryParamsList(
-    listOfProjects: List<Pair<Project, DiscoveryParams>>
+    listOfProjects: List<Pair<Project, DiscoveryParams>>,
 ): List<Pair<Project, DiscoveryParams>> {
     val position = listOfProjects.indexOfFirst { item ->
         item.first.id() == this.id()

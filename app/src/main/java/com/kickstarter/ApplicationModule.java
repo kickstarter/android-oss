@@ -46,6 +46,8 @@ import com.kickstarter.libs.SegmentTrackingClient;
 import com.kickstarter.libs.TrackingClientType;
 import com.kickstarter.libs.braze.BrazeClient;
 import com.kickstarter.libs.braze.RemotePushClientType;
+import com.kickstarter.libs.featureflag.FeatureFlagClient;
+import com.kickstarter.libs.featureflag.FeatureFlagClientType;
 import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.DateTimeAdapter;
 import com.kickstarter.libs.graphql.Iso8601DateTimeAdapter;
@@ -156,7 +158,8 @@ public class ApplicationModule {
     final @NonNull Stripe stripe,
     final @NonNull WebClientType webClient,
     final @NonNull @WebEndpoint String webEndpoint,
-    final @NonNull FirebaseAnalyticsClientType firebaseAnalyticsClientType) {
+    final @NonNull FirebaseAnalyticsClientType firebaseAnalyticsClientType,
+    final @NonNull FeatureFlagClientType featureFlagClient) {
 
     return Environment.builder()
       .activitySamplePreference(activitySamplePreference)
@@ -188,6 +191,7 @@ public class ApplicationModule {
       .webClient(webClient)
       .webEndpoint(webEndpoint)
       .firebaseAnalyticsClient(firebaseAnalyticsClientType)
+      .featureFlagClient(featureFlagClient)
       .build();
   }
 
@@ -203,6 +207,13 @@ public class ApplicationModule {
   @Singleton
   static RemotePushClientType provideBrazeClient(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
     return new BrazeClient(context, build);
+  }
+
+  @Provides
+  @Nonnull
+  @Singleton
+  static FeatureFlagClientType provideFeatureFlagClientType(final @NonNull Build build) {
+    return new FeatureFlagClient(build);
   }
 
   @Provides

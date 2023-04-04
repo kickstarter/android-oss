@@ -17,6 +17,7 @@ import com.kickstarter.R
 import com.kickstarter.databinding.DiscoveryLayoutBinding
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.InternalToolsType
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -53,6 +54,8 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
         binding = DiscoveryLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
         environment()
+        initializeFeatureFlagsClient(environment())
+
         val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
 
         internalTools = environment().internalTools()
@@ -209,6 +212,11 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { this@DiscoveryActivity.showErrorSnackBar(binding.discoveryAnchorView, it ?: "") }
+    }
+
+    private fun initializeFeatureFlagsClient(environment: Environment) {
+        environment.featureFlagClient()?.initialize()
+        environment.featureFlagClient()?.fetchAndActivate(this)
     }
 
     fun discoveryLayout(): DrawerLayout {

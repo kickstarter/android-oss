@@ -8,10 +8,12 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.RefTag.Companion.thanks
+import com.kickstarter.libs.featureflag.FFKey
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.preferences.MockBooleanPreference
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockExperimentsClientType
+import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.CategoryFactory.artCategory
 import com.kickstarter.mock.factories.CategoryFactory.category
 import com.kickstarter.mock.factories.CategoryFactory.ceramicsCategory
@@ -108,16 +110,16 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
     fun testThanksViewModel_showRatingDialog() {
         val hasSeenAppRatingPreference = MockBooleanPreference(false)
         val hasSeenGamesNewsletterPreference = MockBooleanPreference(true)
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FFKey: FFKey): Boolean {
                     return true
                 }
             }
 
         val environment = environment()
             .toBuilder()
-            .optimizely(mockExperimentsClientType)
+            .featureFlagClient(mockFeatureFlagClient)
             .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
             .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
             .build()
@@ -132,16 +134,16 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
     fun testThanksViewModel_hideRatingDialog_if_feature_flag_disabled() {
         val hasSeenAppRatingPreference = MockBooleanPreference(false)
         val hasSeenGamesNewsletterPreference = MockBooleanPreference(true)
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FFKey: FFKey): Boolean {
                     return false
                 }
             }
 
         val environment = environment()
             .toBuilder()
-            .optimizely(mockExperimentsClientType)
+            .featureFlagClient(mockFeatureFlagClient)
             .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
             .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
             .build()
@@ -156,16 +158,16 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
     fun testThanksViewModel_dontShowRatingDialogIfAlreadySeen() {
         val hasSeenAppRatingPreference = MockBooleanPreference(true)
         val hasSeenGamesNewsletterPreference = MockBooleanPreference(true)
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FFKey: FFKey): Boolean {
                     return false
                 }
             }
 
         val environment = environment()
             .toBuilder()
-            .optimizely(mockExperimentsClientType)
+            .featureFlagClient(mockFeatureFlagClient)
             .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
             .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
             .build()
@@ -187,9 +189,9 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .category(tabletopGamesCategory())
             .build()
 
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FFKey: FFKey): Boolean {
                     return false
                 }
             }
@@ -197,7 +199,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
             .toBuilder()
             .currentUser(currentUser)
-            .optimizely(mockExperimentsClientType)
+            .featureFlagClient(mockFeatureFlagClient)
             .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
             .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
             .build()

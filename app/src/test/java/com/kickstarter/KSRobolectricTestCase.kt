@@ -15,6 +15,7 @@ import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.MockExperimentsClientType
+import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApolloClient
@@ -59,6 +60,7 @@ abstract class KSRobolectricTestCase : TestCase() {
         val mockCurrentConfigV2 = MockCurrentConfigV2()
         val experimentsClientType = experimentsClient()
         val segmentTestClient = segmentTrackingClient(mockCurrentConfig, experimentsClientType)
+        val mockFeatureFlagClient: MockFeatureFlagClient = MockFeatureFlagClient()
 
         val component = DaggerApplicationComponent.builder()
             .applicationModule(TestApplicationModule(application()))
@@ -81,6 +83,7 @@ abstract class KSRobolectricTestCase : TestCase() {
             .stripe(Stripe(context(), Secrets.StripePublishableKey.STAGING))
             .analytics(AnalyticEvents(listOf(segmentTestClient)))
             .optimizely(experimentsClientType)
+            .featureFlagClient(mockFeatureFlagClient)
             .build()
     }
 

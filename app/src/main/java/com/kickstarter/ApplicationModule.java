@@ -77,6 +77,7 @@ import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.libs.qualifiers.WebRetrofit;
 import com.kickstarter.libs.utils.PlayServicesCapability;
 import com.kickstarter.libs.utils.Secrets;
+import com.kickstarter.libs.utils.extensions.ContextExt;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiService;
 import com.kickstarter.services.ApolloClientType;
@@ -212,9 +213,11 @@ public class ApplicationModule {
   @Provides
   @Nonnull
   @Singleton
-  static FeatureFlagClientType provideFeatureFlagClientType(final @NonNull Build build) {
+  static FeatureFlagClientType provideFeatureFlagClientType(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
     final @NonNull FeatureFlagClient ffClient = new FeatureFlagClient(build);
-    ffClient.initialize();
+    if (ContextExt.isKSApplication(context)) {
+      ffClient.initialize();
+    }
     return ffClient;
   }
 

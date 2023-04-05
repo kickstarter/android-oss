@@ -213,7 +213,9 @@ public class ApplicationModule {
   @Nonnull
   @Singleton
   static FeatureFlagClientType provideFeatureFlagClientType(final @NonNull Build build) {
-    return new FeatureFlagClient(build);
+    final @NonNull FeatureFlagClient ffClient = new FeatureFlagClient(build);
+    ffClient.initialize();
+    return ffClient;
   }
 
   @Provides

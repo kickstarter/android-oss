@@ -1,12 +1,10 @@
 package com.kickstarter.mock
 
 import android.app.Activity
-import com.kickstarter.libs.featureflag.FFKey
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
+import com.kickstarter.libs.featureflag.FlagKey
 
 open class MockFeatureFlagClient : FeatureFlagClientType {
-    override var isEnabled: Boolean = true
-    override var isActive: Boolean = true
 
     override fun initialize() {}
 
@@ -16,11 +14,11 @@ open class MockFeatureFlagClient : FeatureFlagClientType {
 
     override fun fetchAndActivate(context: Activity) {}
 
-    override fun getBoolean(FFKey: FFKey) = false
+    override fun getBoolean(FlagKey: FlagKey) = false
 
-    override fun getDouble(FFKey: FFKey) = 0.0
+    override fun getDouble(FlagKey: FlagKey) = 0.0
 
-    override fun getLong(FFKey: FFKey) = 0L
+    override fun getLong(FlagKey: FlagKey) = 0L
 
-    override fun getString(FFKey: FFKey) = ""
+    override fun getString(FlagKey: FlagKey) = ""
 }

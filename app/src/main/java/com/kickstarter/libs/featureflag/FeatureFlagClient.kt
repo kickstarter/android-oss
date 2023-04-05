@@ -9,16 +9,6 @@ import com.kickstarter.libs.Build.isInternal
 import timber.log.Timber
 
 interface FeatureFlagClientType {
-    /**
-     * Indicates if the FeatureFlag client is currently enabled,
-     * meaning it has been initialized properly, and fetched already some data from the backend.
-     */
-    var isEnabled: Boolean
-
-    /**
-     * Indicates if the FeatureFlag client has currently activated the latest values fetched from the backend
-     */
-    var isActive: Boolean
 
     /**
      * Will received a callback, that callback will usually
@@ -44,25 +34,25 @@ interface FeatureFlagClientType {
     /**
      * Will return the active status for a boolean feature flag
      */
-    fun getBoolean(FFKey: FFKey): Boolean
+    fun getBoolean(FlagKey: FlagKey): Boolean
 
     /**
      * Will return the active value for a Double feature flag
      */
-    fun getDouble(FFKey: FFKey): Double
+    fun getDouble(FlagKey: FlagKey): Double
 
     /**
      * Will return the active value for a Long feature flag
      */
-    fun getLong(FFKey: FFKey): Long
+    fun getLong(FlagKey: FlagKey): Long
 
     /**
      * Will return the active value for a String feature flag
      */
-    fun getString(FFKey: FFKey): String
+    fun getString(FlagKey: FlagKey): String
 }
 
-enum class FFKey(val key: String) {
+enum class FlagKey(val key: String) {
     ANDROID_FACEBOOK_LOGIN_REMOVE("android_facebook_login_remove"),
     ANDROID_HIDE_APP_RATING_DIALOG("android_hide_app_rating_dialog"),
     ANDROID_CONSENT_MANAGEMENT("android_consent_management"),
@@ -76,8 +66,6 @@ fun FeatureFlagClient.getFetchInterval(): Long =
     else 3600
 
 class FeatureFlagClient(internal val build: Build) : FeatureFlagClientType {
-    override var isEnabled: Boolean = false
-    override var isActive: Boolean = false
 
     override fun initialize() {
         val configSettings = remoteConfigSettings {
@@ -87,27 +75,24 @@ class FeatureFlagClient(internal val build: Build) : FeatureFlagClientType {
         // - For the MVP no in-app defaults, will add them later on
         Firebase.remoteConfig.setConfigSettingsAsync(configSettings)
 
-        if (build.isDebug) {
-            Timber.d("${this.javaClass} initialized with interval: ${this.getFetchInterval()}")
-        }
+        log("${this.javaClass} initialized with interval: ${this.getFetchInterval()}")
     }
 
     override fun fetch(context: Activity) {
         Firebase.remoteConfig.fetch()
             .addOnCompleteListener(context) { task ->
-                isEnabled = task.isSuccessful
-                if (build.isDebug) {
-                    Timber.d("${this.javaClass} fetch: $isEnabled")
-                }
+                log("${this.javaClass} fetch completed: ${task.isSuccessful}")
             }
     }
 
     override fun activate(context: Activity) {
         Firebase.remoteConfig.activate()
             .addOnCompleteListener(context) { task ->
-                isActive = task.isSuccessful
-                if (build.isDebug) {
-                    Timber.d("${this.javaClass} activated: $isActive")
+                log("${this.javaClass} activate completed: ${task.isSuccessful}")
+
+                // Strategy loading 3 -> https://firebase.google.com/docs/remote-config/loading#strategy_3_load_new_values_for_next_startup
+                if (task.isSuccessful && task.isComplete) {
+                    fetch(context)
                 }
             }
     }
@@ -115,44 +100,35 @@ class FeatureFlagClient(internal val build: Build) : FeatureFlagClientType {
     override fun fetchAndActivate(context: Activity) {
         Firebase.remoteConfig.fetchAndActivate()
             .addOnCompleteListener(context) { task ->
-                isEnabled = task.isSuccessful
-                isActive = task.isSuccessful
-
-                if (build.isDebug) {
-                    Timber.d("${this.javaClass} fetchAndActivated: $isEnabled $isActive")
-                }
+                log("${this.javaClass} fetchAndActivated completed: ${task.isSuccessful} ")
             }
     }
 
-    private fun log(key: FFKey, value: Any) =
-        if (build.isDebug) Timber.d("${this.javaClass} feature flag ${key.key}: $value")
-        else {}
+    override fun getBoolean(key: FlagKey): Boolean {
+        val value = Firebase.remoteConfig.getBoolean(key.key)
+        log("${this.javaClass} feature flag ${key.key}: $value")
+        return value
+    }
 
-    override fun getBoolean(key: FFKey): Boolean =
-        if (isActive && isEnabled) {
-            val value = Firebase.remoteConfig.getBoolean(key.key)
-            log(key, value)
-            value
-        } else false
+    override fun getDouble(key: FlagKey): Double {
+        val value = Firebase.remoteConfig.getDouble(key.key)
+        log("${this.javaClass} feature flag ${key.key}: $value")
+        return value
+    }
 
-    override fun getDouble(key: FFKey): Double =
-        if (isActive && isEnabled) {
-            val value = Firebase.remoteConfig.getDouble(key.key)
-            log(key, value)
-            value
-        } else 0.0
+    override fun getLong(key: FlagKey): Long {
+        val value = Firebase.remoteConfig.getLong(key.key)
+        log("${this.javaClass} feature flag ${key.key}: $value")
+        return value
+    }
 
-    override fun getLong(key: FFKey): Long =
-        if (isActive && isEnabled) {
-            val value = Firebase.remoteConfig.getLong(key.key)
-            log(key, value)
-            value
-        } else 0L
+    override fun getString(key: FlagKey): String {
+        val value = Firebase.remoteConfig.getString(key.key)
+        log("${this.javaClass} feature flag ${key.key}: $value")
+        return value
+    }
 
-    override fun getString(key: FFKey): String =
-        if (isActive && isEnabled) {
-            val value = Firebase.remoteConfig.getString(key.key)
-            log(key, value)
-            value
-        } else ""
+    private fun log(message: String) {
+        if (build.isDebug) Timber.d(message)
+    }
 }

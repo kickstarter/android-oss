@@ -54,7 +54,10 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
         binding = DiscoveryLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
         environment()
-        initializeFeatureFlagsClient(environment())
+
+        if (savedInstanceState == null) {
+            activateFeatureFlags(environment())
+        }
 
         val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
 
@@ -214,9 +217,8 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
             .subscribe { this@DiscoveryActivity.showErrorSnackBar(binding.discoveryAnchorView, it ?: "") }
     }
 
-    private fun initializeFeatureFlagsClient(environment: Environment) {
-        environment.featureFlagClient()?.initialize()
-        environment.featureFlagClient()?.fetchAndActivate(this)
+    private fun activateFeatureFlags(environment: Environment) {
+        environment.featureFlagClient()?.activate(this)
     }
 
     fun discoveryLayout(): DrawerLayout {

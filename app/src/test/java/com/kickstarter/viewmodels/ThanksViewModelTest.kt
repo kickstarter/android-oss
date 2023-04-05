@@ -8,7 +8,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.RefTag.Companion.thanks
-import com.kickstarter.libs.featureflag.FFKey
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.preferences.MockBooleanPreference
 import com.kickstarter.libs.utils.EventName
@@ -112,7 +112,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         val hasSeenGamesNewsletterPreference = MockBooleanPreference(true)
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
-                override fun getBoolean(FFKey: FFKey): Boolean {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return true
                 }
             }
@@ -136,7 +136,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         val hasSeenGamesNewsletterPreference = MockBooleanPreference(true)
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
-                override fun getBoolean(FFKey: FFKey): Boolean {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return false
                 }
             }
@@ -160,7 +160,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         val hasSeenGamesNewsletterPreference = MockBooleanPreference(true)
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
-                override fun getBoolean(FFKey: FFKey): Boolean {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return false
                 }
             }
@@ -191,7 +191,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
 
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
-                override fun getBoolean(FFKey: FFKey): Boolean {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return false
                 }
             }

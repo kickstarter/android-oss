@@ -50,10 +50,10 @@ fun Comment.updateCommentFailedToPost(
 }
 
 fun Comment.assignAuthorBadge(user: User? = null): CommentCardBadge {
+    if (this.authorBadges()?.contains(CommentBadge.SUPERBACKER.rawValue()) == true) return CommentCardBadge.SUPERBACKER
     if (this.author()?.id() == user?.id()) return CommentCardBadge.YOU
     if (this.authorBadges()?.contains(CommentBadge.CREATOR.rawValue()) == true) return CommentCardBadge.CREATOR
     if (this.authorBadges()?.contains(CommentBadge.COLLABORATOR.rawValue()) == true) return CommentCardBadge.COLLABORATOR
-    if (this.authorBadges()?.contains(CommentBadge.SUPERBACKER.rawValue()) == true) return CommentCardBadge.SUPERBACKER
     return CommentCardBadge.NO_BADGE
 }
 

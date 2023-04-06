@@ -12,6 +12,7 @@ import android.content.res.Resources;
 import com.apollographql.apollo.ApolloClient;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -214,10 +215,14 @@ public class ApplicationModule {
   @Nonnull
   @Singleton
   static FeatureFlagClientType provideFeatureFlagClientType(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
-    final @NonNull FeatureFlagClient ffClient = new FeatureFlagClient(build);
+    final @NonNull FeatureFlagClient ffClient;
     if (ContextExt.isKSApplication(context)) {
+      ffClient = new FeatureFlagClient(build, FirebaseRemoteConfig.getInstance());
       ffClient.initialize();
+    } else {
+      ffClient = new FeatureFlagClient(build, null);
     }
+
     return ffClient;
   }
 
@@ -689,7 +694,7 @@ public class ApplicationModule {
     }
 
     final OptimizelyManager optimizelyManager = OptimizelyManager.builder()
-      .withSDKKey(optimizelyEnvironment.getSdkKey())
+      .withSDKKey("777777")
       .withDatafileDownloadInterval(15, TimeUnit.MINUTES)
       .withEventDispatchInterval(2L, TimeUnit.MILLISECONDS)
       .build(context);

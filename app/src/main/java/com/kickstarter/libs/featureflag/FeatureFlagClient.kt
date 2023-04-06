@@ -1,11 +1,12 @@
 package com.kickstarter.libs.featureflag
 
 import android.app.Activity
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.Build.isInternal
+import com.kickstarter.libs.featureflag.FeatureFlagClient.Companion.INTERNAL_INTERVAL
+import com.kickstarter.libs.featureflag.FeatureFlagClient.Companion.RELEASE_INTERVAL
 import timber.log.Timber
 
 interface FeatureFlagClientType {
@@ -62,10 +63,10 @@ enum class FlagKey(val key: String) {
 }
 
 fun FeatureFlagClient.getFetchInterval(): Long =
-    if (this.build.isDebug || isInternal()) 0
-    else 3600
+    if (this.build.isDebug || isInternal()) INTERNAL_INTERVAL
+    else RELEASE_INTERVAL
 
-class FeatureFlagClient(internal val build: Build) : FeatureFlagClientType {
+class FeatureFlagClient(internal val build: Build, private val remoteConfig: FirebaseRemoteConfig?) : FeatureFlagClientType {
 
     override fun initialize() {
         val configSettings = remoteConfigSettings {
@@ -73,21 +74,21 @@ class FeatureFlagClient(internal val build: Build) : FeatureFlagClientType {
         }
 
         // - For the MVP no in-app defaults, will add them later on
-        Firebase.remoteConfig.setConfigSettingsAsync(configSettings)
+        remoteConfig?.setConfigSettingsAsync(configSettings)
 
         log("${this.javaClass} initialized with interval: ${this.getFetchInterval()}")
     }
 
     override fun fetch(context: Activity) {
-        Firebase.remoteConfig.fetch()
-            .addOnCompleteListener(context) { task ->
+        remoteConfig?.fetch()
+            ?.addOnCompleteListener(context) { task ->
                 log("${this.javaClass} fetch completed: ${task.isSuccessful}")
             }
     }
 
     override fun activate(context: Activity) {
-        Firebase.remoteConfig.activate()
-            .addOnCompleteListener(context) { task ->
+        remoteConfig?.activate()
+            ?.addOnCompleteListener(context) { task ->
                 log("${this.javaClass} activate completed: ${task.isSuccessful}")
 
                 // Strategy loading 3 -> https://firebase.google.com/docs/remote-config/loading#strategy_3_load_new_values_for_next_startup
@@ -98,37 +99,42 @@ class FeatureFlagClient(internal val build: Build) : FeatureFlagClientType {
     }
 
     override fun fetchAndActivate(context: Activity) {
-        Firebase.remoteConfig.fetchAndActivate()
-            .addOnCompleteListener(context) { task ->
+        remoteConfig?.fetchAndActivate()
+            ?.addOnCompleteListener(context) { task ->
                 log("${this.javaClass} fetchAndActivated completed: ${task.isSuccessful} ")
             }
     }
 
     override fun getBoolean(key: FlagKey): Boolean {
-        val value = Firebase.remoteConfig.getBoolean(key.key)
+        val value = remoteConfig?.getBoolean(key.key) ?: false
         log("${this.javaClass} feature flag ${key.key}: $value")
         return value
     }
 
     override fun getDouble(key: FlagKey): Double {
-        val value = Firebase.remoteConfig.getDouble(key.key)
+        val value = remoteConfig?.getDouble(key.key) ?: 0.0
         log("${this.javaClass} feature flag ${key.key}: $value")
         return value
     }
 
     override fun getLong(key: FlagKey): Long {
-        val value = Firebase.remoteConfig.getLong(key.key)
+        val value = remoteConfig?.getLong(key.key) ?: 0L
         log("${this.javaClass} feature flag ${key.key}: $value")
         return value
     }
 
     override fun getString(key: FlagKey): String {
-        val value = Firebase.remoteConfig.getString(key.key)
+        val value = remoteConfig?.getString(key.key) ?: ""
         log("${this.javaClass} feature flag ${key.key}: $value")
         return value
     }
 
     private fun log(message: String) {
         if (build.isDebug) Timber.d(message)
+    }
+
+    companion object {
+        const val RELEASE_INTERVAL = 3600L
+        const val INTERNAL_INTERVAL = 0L
     }
 }

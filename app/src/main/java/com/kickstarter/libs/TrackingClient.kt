@@ -11,6 +11,8 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.BuildConfig
 import com.kickstarter.R
+import com.kickstarter.libs.featureflag.FeatureFlagClientType
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.qualifiers.ApplicationContext
 import com.kickstarter.libs.utils.WebUtils
@@ -28,8 +30,8 @@ abstract class TrackingClient(
     @set:Inject var currentUser: CurrentUserType,
     @set:Inject var build: Build,
     @set:Inject var currentConfig: CurrentConfigType,
-    @set:Inject var optimizely: ExperimentsClientType,
-    @set:Inject var sharedPreferences: SharedPreferences
+    @set:Inject var sharedPreferences: SharedPreferences,
+    @set:Inject var ffClient: FeatureFlagClientType
 ) : TrackingClientType() {
 
     override val isGooglePlayServicesAvailable: Boolean
@@ -60,7 +62,7 @@ abstract class TrackingClient(
     }
 
     override fun isEnabled(): Boolean {
-        return if (optimizely.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_CONSENT_MANAGEMENT)) {
+        return if (ffClient.getBoolean(FlagKey.ANDROID_CONSENT_MANAGEMENT)) {
             sharedPreferences.getBoolean(CONSENT_MANAGEMENT_PREFERENCE, false)
         } else true
     }
@@ -72,8 +74,6 @@ abstract class TrackingClient(
     override fun identify(user: User) {
         if (isEnabled()) this.loggedInUser = user
     }
-
-    override fun optimizely(): ExperimentsClientType = this.optimizely
 
     /**
      * Send data to the Tracking clients.
@@ -105,15 +105,7 @@ abstract class TrackingClient(
 
     // TODO: will be deleted on https://kickstarter.atlassian.net/browse/EP-187
     override fun enabledFeatureFlags(): JSONArray {
-        return JSONArray(this.optimizely.enabledFeatures(this.loggedInUser))
-            .apply {
-                val configFlags = this@TrackingClient.config?.enabledFeatureFlags()
-                configFlags?.let {
-                    for (index in 0 until it.length()) {
-                        put(it.get(index))
-                    }
-                }
-            }
+        return JSONArray(emptyList<String>())
     }
 
     override fun manufacturer(): String = android.os.Build.MANUFACTURER

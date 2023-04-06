@@ -3,6 +3,7 @@ package com.kickstarter.libs
 import android.content.Context
 import android.content.SharedPreferences
 import com.kickstarter.libs.braze.BrazeClient
+import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isKSApplication
@@ -27,9 +28,9 @@ open class SegmentTrackingClient(
     private val context: Context,
     currentConfig: CurrentConfigType,
     currentUser: CurrentUserType,
-    optimizely: ExperimentsClientType,
-    preference: SharedPreferences
-) : TrackingClient(context, currentUser, build, currentConfig, optimizely, preference) {
+    preference: SharedPreferences,
+    ffClient: FeatureFlagClientType
+) : TrackingClient(context, currentUser, build, currentConfig, preference, ffClient) {
 
     override var isInitialized = false
     override var loggedInUser: User? = null

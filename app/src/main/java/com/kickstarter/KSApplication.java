@@ -61,7 +61,7 @@ public class KSApplication extends MultiDexApplication implements IKSApplication
       Timber.plant(new Timber.DebugTree());
     }
 
-    FirebaseHelper.initialize(getApplicationContext(), (Function0<Boolean>) () -> initializeDependencies());
+    FirebaseHelper.initialize(getApplicationContext(), component.environment().featureFlagClient(),() -> initializeDependencies());
   }
 
   //- Returns Boolean because incompatible Java "void" type with kotlin "Void" type for the lambda declaration

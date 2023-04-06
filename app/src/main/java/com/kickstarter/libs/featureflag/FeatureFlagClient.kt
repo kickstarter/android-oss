@@ -1,7 +1,10 @@
 package com.kickstarter.libs.featureflag
 
 import android.app.Activity
+import android.content.Context
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.Build.isInternal
@@ -15,7 +18,7 @@ interface FeatureFlagClientType {
      * Will received a callback, that callback will usually
      * initialize the external library
      */
-    fun initialize()
+    fun initialize(config: FirebaseRemoteConfig?)
 
     /**
      * Will connect to the backend and fetch available values
@@ -66,9 +69,15 @@ fun FeatureFlagClient.getFetchInterval(): Long =
     if (this.build.isDebug || isInternal()) INTERNAL_INTERVAL
     else RELEASE_INTERVAL
 
-class FeatureFlagClient(internal val build: Build, private val remoteConfig: FirebaseRemoteConfig?) : FeatureFlagClientType {
+class FeatureFlagClient(
+    internal val build: Build
+) : FeatureFlagClientType {
 
-    override fun initialize() {
+    var remoteConfig: FirebaseRemoteConfig? = null
+
+    override fun initialize(config: FirebaseRemoteConfig?) {
+        remoteConfig = config
+
         val configSettings = remoteConfigSettings {
             minimumFetchIntervalInSeconds = getFetchInterval()
         }
@@ -76,7 +85,7 @@ class FeatureFlagClient(internal val build: Build, private val remoteConfig: Fir
         // - For the MVP no in-app defaults, will add them later on
         remoteConfig?.setConfigSettingsAsync(configSettings)
 
-        log("${this.javaClass} initialized with interval: ${this.getFetchInterval()}")
+        log("${this.javaClass} initialized with interval: ${this.getFetchInterval()}, remoteConfig ${this.remoteConfig}")
     }
 
     override fun fetch(context: Activity) {

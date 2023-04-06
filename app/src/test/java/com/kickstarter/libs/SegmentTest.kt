@@ -3,6 +3,7 @@ package com.kickstarter.libs
 import android.content.Context
 import android.content.SharedPreferences
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.ContextPropertyKeyName
@@ -91,9 +92,9 @@ class SegmentTest : KSRobolectricTestCase() {
         context: Context,
         currentConfig: CurrentConfigType,
         currentUser: CurrentUserType,
-        opt: ExperimentsClientType,
+        ffClient: FeatureFlagClientType,
         mockSharedPref: SharedPreferences
-    ) : SegmentTrackingClient(build, context, currentConfig, currentUser, opt, mockSharedPref) {
+    ) : SegmentTrackingClient(build, context, currentConfig, currentUser, mockSharedPref, ffClient) {
 
         override fun initialize() {
             this.isInitialized = true

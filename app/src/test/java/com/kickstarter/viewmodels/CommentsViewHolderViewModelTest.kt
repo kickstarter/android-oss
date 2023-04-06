@@ -619,7 +619,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun commentBadge_whenYou_shouldEmitYou() {
+    fun commentBadge_whenYouAndSuperbacker_shouldEmitSuperbacker() {
         val authorBadges = listOf<String>(CommentBadge.SUPERBACKER.rawValue())
         val author = UserFactory.user().toBuilder().id(1).build()
         val currentUser = UserFactory.user().toBuilder().id(1).build()
@@ -637,7 +637,7 @@ class CommentsViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.configureWith(commentCardData)
 
-        this.authorBadge.assertValue(CommentCardBadge.YOU)
+        this.authorBadge.assertValue(CommentCardBadge.SUPERBACKER)
     }
 
     @Test

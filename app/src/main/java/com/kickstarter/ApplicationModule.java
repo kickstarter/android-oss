@@ -694,7 +694,7 @@ public class ApplicationModule {
     }
 
     final OptimizelyManager optimizelyManager = OptimizelyManager.builder()
-      .withSDKKey("777777")
+      .withSDKKey(optimizelyEnvironment.getSdkKey())
       .withDatafileDownloadInterval(15, TimeUnit.MINUTES)
       .withEventDispatchInterval(2L, TimeUnit.MILLISECONDS)
       .build(context);

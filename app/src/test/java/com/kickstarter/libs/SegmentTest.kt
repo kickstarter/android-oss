@@ -1207,32 +1207,6 @@ class SegmentTest : KSRobolectricTestCase() {
         this.segmentTrack.assertValues(PAGE_VIEWED.eventName)
     }
 
-//    @Test
-//    fun testOptimizelyProperties() {
-//        val project = project()
-//        val user = user()
-//        val client = client(user)
-//        client.eventNames.subscribe(this.segmentTrack)
-//        client.eventProperties.subscribe(this.propertiesTest)
-//        val segment = AnalyticEvents(listOf(client))
-//
-//        segment.trackPledgeInitiateCTA(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()))
-//
-//        assertSessionProperties(user)
-//        assertProjectProperties(project)
-//        assertContextProperties()
-//        assertOptimizelyProperties()
-//        assertUserProperties(false)
-//
-//        val expectedProperties = propertiesTest.value
-//        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
-//        assertEquals(false, expectedProperties["project_user_has_watched"])
-//        assertEquals(false, expectedProperties["project_user_is_backer"])
-//        assertEquals(false, expectedProperties["project_user_is_project_creator"])
-//
-//        this.segmentTrack.assertValues("Project Page Pledge Button Clicked")
-//    }
-
     @Test
     fun testVideoProperties() {
         val project = project()
@@ -1705,18 +1679,6 @@ class SegmentTest : KSRobolectricTestCase() {
     private fun assertContextProperties() {
         val expectedProperties = this.propertiesTest.value
         assertEquals(DateTime.parse("2018-11-02T18:42:05Z").millis / 1000, expectedProperties["context_timestamp"])
-    }
-
-    // TODO: will be deleted on https://kickstarter.atlassian.net/browse/EP-187
-    private fun assertOptimizelyProperties() {
-        val expectedProperties = this.propertiesTest.value
-        assertEquals(OptimizelyEnvironment.DEVELOPMENT.sdkKey, expectedProperties["optimizely_api_key"])
-        assertEquals(OptimizelyEnvironment.DEVELOPMENT.environmentKey, expectedProperties["optimizely_environment_key"])
-        assertNotNull(expectedProperties["optimizely_experiments"])
-        val experiments = expectedProperties["optimizely_experiments"] as JSONArray
-        val experiment = experiments[0] as JSONObject
-        assertEquals("test_experiment", experiment["optimizely_experiment_slug"])
-        assertEquals("unknown", experiment["optimizely_variant_id"])
     }
 
     private fun assertDiscoverProperties() {

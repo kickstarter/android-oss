@@ -105,10 +105,6 @@ abstract class TrackingClient(
 
     override fun model(): String = android.os.Build.MODEL
 
-    // TODO: will be deleted on https://kickstarter.atlassian.net/browse/EP-187
-    override fun enabledFeatureFlags(): JSONArray {
-        return JSONArray(emptyList<String>())
-    }
     override fun OSVersion(): String = android.os.Build.VERSION.RELEASE
 
     override fun time() = System.currentTimeMillis() / 1000

@@ -85,10 +85,6 @@ class MockTrackingClient(
         return "portrait"
     }
 
-    override fun enabledFeatureFlags(): JSONArray {
-        return JSONArray(emptyList<String>())
-    }
-
     override val isGooglePlayServicesAvailable: Boolean
         protected get() = false
     override val isTalkBackOn: Boolean

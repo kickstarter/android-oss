@@ -16,7 +16,7 @@ class FeatureFlagClientTest : KSRobolectricTestCase() {
 
     @Test
     fun testGetIntervalRelease() {
-        val mockFirebase = mockk<FirebaseRemoteConfig>()
+        val mockFirebase = mockk<FirebaseRemoteConfig>(relaxed = true)
         mockkStatic(Build::class)
         val mockBuildObject = mockk<Build>()
         every { Build.isInternal() } returns false
@@ -31,7 +31,7 @@ class FeatureFlagClientTest : KSRobolectricTestCase() {
 
     @Test
     fun testGetIntervalDebug() {
-        val mockFirebase = mockk<FirebaseRemoteConfig>()
+        val mockFirebase = mockk<FirebaseRemoteConfig>(relaxed = true)
         mockkStatic(Build::class)
         val mockBuildObject = mockk<Build>()
         every { Build.isInternal() } returns true
@@ -45,7 +45,7 @@ class FeatureFlagClientTest : KSRobolectricTestCase() {
 
     @Test
     fun testGetBoolean() {
-        val mockFirebase = mockk<FirebaseRemoteConfig>()
+        val mockFirebase = mockk<FirebaseRemoteConfig>(relaxed = true)
         val mockBuild = mockk<Build>()
         every { mockFirebase.getBoolean(FlagKey.ANDROID_HIDE_APP_RATING_DIALOG.key) } returns true
         every { mockBuild.isDebug } returns true
@@ -55,13 +55,13 @@ class FeatureFlagClientTest : KSRobolectricTestCase() {
         assertEquals(ffClient.getBoolean(FlagKey.ANDROID_HIDE_APP_RATING_DIALOG), true)
 
         val ffClient2 = FeatureFlagClient(mockBuild)
-        ffClient2.initialize(mockFirebase)
+        ffClient2.initialize(null)
         assertEquals(ffClient2.getBoolean(FlagKey.ANDROID_HIDE_APP_RATING_DIALOG), false)
     }
 
     @Test
     fun testGetLong() {
-        val mockFirebase = mockk<FirebaseRemoteConfig>()
+        val mockFirebase = mockk<FirebaseRemoteConfig>(relaxed = true)
         val mockBuild = mockk<Build>()
         every { mockFirebase.getLong(FlagKey.ANDROID_HIDE_APP_RATING_DIALOG.key) } returns 9L
         every { mockBuild.isDebug } returns true
@@ -77,7 +77,7 @@ class FeatureFlagClientTest : KSRobolectricTestCase() {
 
     @Test
     fun testGetDouble() {
-        val mockFirebase = mockk<FirebaseRemoteConfig>()
+        val mockFirebase = mockk<FirebaseRemoteConfig>(relaxed = true)
         val mockBuild = mockk<Build>()
         every { mockFirebase.getDouble(FlagKey.ANDROID_HIDE_APP_RATING_DIALOG.key) } returns 100.0
         every { mockBuild.isDebug } returns true
@@ -93,7 +93,7 @@ class FeatureFlagClientTest : KSRobolectricTestCase() {
 
     @Test
     fun testGetString() {
-        val mockFirebase = mockk<FirebaseRemoteConfig>()
+        val mockFirebase = mockk<FirebaseRemoteConfig>(relaxed = true)
         val mockBuild = mockk<Build>()
         every { mockFirebase.getString(FlagKey.ANDROID_HIDE_APP_RATING_DIALOG.key) } returns "String"
         every { mockBuild.isDebug } returns true

@@ -46,7 +46,6 @@ import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.mock.MockCurrentConfig
-import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.AvatarFactory
 import com.kickstarter.mock.factories.BackingFactory
@@ -1687,21 +1686,8 @@ class SegmentTest : KSRobolectricTestCase() {
             ?: MockCurrentUser(),
         mockCurrentConfig(),
         TrackingClientType.Type.SEGMENT,
-        object : MockExperimentsClientType() {
-            override fun enabledFeatures(user: User?): List<String> {
-                return listOf("optimizely_feature")
-            }
-
-            override fun getTrackingProperties(): Map<String, Array<String>> {
-                return getOptimizelySession()
-            }
-        }
+        MockFeatureFlagClient()
     )
-
-    private fun getOptimizelySession(): Map<String, Array<String>> {
-        val array = arrayOf("suggested_no_reward_amount[variation_3]")
-        return mapOf("variants_optimizely" to array)
-    }
 
     private fun assertCheckoutProperties() {
         val expectedProperties = this.propertiesTest.value
@@ -1816,7 +1802,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("Pixel 3", expectedProperties["session_device_model"])
         assertEquals("portrait", expectedProperties["session_device_orientation"])
         assertEquals("en", expectedProperties["session_display_language"])
-        assertEquals(JSONArray().put("optimizely_feature").put("android_example_feature"), expectedProperties["session_enabled_features"])
+        assertEquals(null, expectedProperties["session_enabled_features"])
         assertEquals(false, expectedProperties["session_is_voiceover_running"])
         assertEquals("kickstarter_android", expectedProperties["session_mp_lib"])
         assertEquals("android", expectedProperties["session_os"])
@@ -1824,7 +1810,6 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("agent", expectedProperties["session_user_agent"])
         assertEquals(user != null, expectedProperties["session_user_is_logged_in"])
         assertEquals(false, expectedProperties["session_wifi_connection"])
-        assertEquals(getOptimizelySession()["variants_optimizely"]?.first(), (expectedProperties["session_variants_optimizely"] as Array<*>).first())
         assertEquals("android_example_experiment[control]", (expectedProperties["session_variants_internal"] as Array<*>).first())
     }
 

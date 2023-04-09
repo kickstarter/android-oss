@@ -3,6 +3,7 @@ package com.kickstarter.libs
 import com.kickstarter.libs.utils.AnalyticEventsUtils.userProperties
 import com.kickstarter.libs.utils.MapUtils
 import com.kickstarter.models.User
+import org.json.JSONArray
 import java.util.Locale
 
 abstract class TrackingClientType {
@@ -23,6 +24,7 @@ abstract class TrackingClientType {
     protected abstract fun deviceDistinctId(): String
     protected abstract fun deviceFormat(): String
     protected abstract fun deviceOrientation(): String
+    protected abstract fun enabledFeatureFlags(): JSONArray
     protected abstract fun manufacturer(): String
     protected abstract fun model(): String
     protected abstract fun OSVersion(): String

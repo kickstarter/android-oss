@@ -13,11 +13,9 @@ import com.kickstarter.BuildConfig
 import com.kickstarter.R
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.qualifiers.ApplicationContext
 import com.kickstarter.libs.utils.WebUtils
 import com.kickstarter.libs.utils.extensions.currentVariants
-import com.kickstarter.libs.utils.extensions.enabledFeatureFlags
 import com.kickstarter.models.User
 import com.kickstarter.ui.SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE
 import org.json.JSONArray

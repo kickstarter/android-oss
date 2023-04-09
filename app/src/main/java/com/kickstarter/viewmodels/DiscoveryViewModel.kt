@@ -7,7 +7,6 @@ import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DiscoveryUtils
 import com.kickstarter.libs.utils.ObjectUtils

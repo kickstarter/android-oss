@@ -520,7 +520,7 @@ interface ProjectPageViewModel {
                 projectOnDeepLinkChangeSave
             )
 
-            SendCAPIEventUseCase(optimizely, sharedPreferences,ffClient)
+            SendCAPIEventUseCase(optimizely, sharedPreferences, ffClient)
                 .sendCAPIEvent(currentProject, apolloClient, ConversionsAPIEventName.VIEWED_CONTENT)
                 .compose(neverError())
                 .compose(bindToLifecycle())

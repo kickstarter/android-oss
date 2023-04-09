@@ -198,8 +198,8 @@ public class ApplicationModule {
   @Provides
   @Nonnull
   @Singleton
-  static FirebaseAnalyticsClientType provideFirebaseAnalyticsClientType(final @NonNull ExperimentsClientType experimentsClientType, final @NonNull SharedPreferences sharedPreferences, final @ApplicationContext @NonNull Context context) {
-    return new FirebaseAnalyticsClient(experimentsClientType, sharedPreferences, FirebaseAnalytics.getInstance(context));
+  static FirebaseAnalyticsClientType provideFirebaseAnalyticsClientType(final @NonNull FeatureFlagClientType ffClient, final @NonNull SharedPreferences sharedPreferences, final @ApplicationContext @NonNull Context context) {
+    return new FirebaseAnalyticsClient(ffClient, sharedPreferences, FirebaseAnalytics.getInstance(context));
   }
 
   @Provides

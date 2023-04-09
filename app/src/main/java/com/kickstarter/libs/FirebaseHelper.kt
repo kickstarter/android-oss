@@ -10,7 +10,7 @@ import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.utils.extensions.isKSApplication
 
-class FirebaseHelper(context: Context,  ffClient: FeatureFlagClientType, callback: () -> Boolean) {
+class FirebaseHelper(context: Context, ffClient: FeatureFlagClientType, callback: () -> Boolean) {
 
     companion object {
         @JvmStatic var identifier: String = ""
@@ -20,7 +20,7 @@ class FirebaseHelper(context: Context,  ffClient: FeatureFlagClientType, callbac
             ffClient: FeatureFlagClientType,
             callback: () -> Boolean
         ): FirebaseHelper {
-            return FirebaseHelper(context,ffClient, callback)
+            return FirebaseHelper(context, ffClient, callback)
         }
 
         @JvmStatic fun delete() = FirebaseInstallations.getInstance().delete()
@@ -32,6 +32,7 @@ class FirebaseHelper(context: Context,  ffClient: FeatureFlagClientType, callbac
                 FirebaseApp.initializeApp(context)
                 FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
                 FirebaseAnalytics.getInstance(context).setAnalyticsCollectionEnabled(true)
+                // - Remote config requires FirebaseApp.initializeApp(context) to be called before initializing
                 ffClient.initialize(Firebase.remoteConfig)
             }
             FirebaseInstallations.getInstance().id.addOnSuccessListener { s: String ->

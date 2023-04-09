@@ -139,7 +139,8 @@ class SendCAPIEventUseCaseTest : KSRobolectricTestCase() {
     ) {
         SendCAPIEventUseCase(
             requireNotNull(environment.optimizely()),
-            requireNotNull(environment.sharedPreferences())
+            requireNotNull(environment.sharedPreferences()),
+            requireNotNull(environment.featureFlagClient())
         ).sendCAPIEvent(
             project = Observable.just(project),
             apolloClient = requireNotNull(environment.apolloClient()),

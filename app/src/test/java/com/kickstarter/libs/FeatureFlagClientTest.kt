@@ -54,7 +54,7 @@ class FeatureFlagClientTest : KSRobolectricTestCase() {
         ffClient.initialize(mockFirebase)
         assertEquals(ffClient.getBoolean(FlagKey.ANDROID_HIDE_APP_RATING_DIALOG), true)
 
-        val ffClient2 = FeatureFlagClient(mockBuild, )
+        val ffClient2 = FeatureFlagClient(mockBuild)
         ffClient2.initialize(mockFirebase)
         assertEquals(ffClient2.getBoolean(FlagKey.ANDROID_HIDE_APP_RATING_DIALOG), false)
     }

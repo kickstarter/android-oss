@@ -1194,7 +1194,7 @@ interface PledgeFragmentViewModel {
                 it.second
             }.distinctUntilChanged()
 
-            SendCAPIEventUseCase(optimizely, sharedPreferences,ffClient)
+            SendCAPIEventUseCase(optimizely, sharedPreferences, ffClient)
                 .sendCAPIEvent(
                     project
                         .compose(takeWhen(changeCard)),

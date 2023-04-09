@@ -3,8 +3,10 @@ package com.kickstarter.libs
 import android.content.SharedPreferences
 import android.os.Bundle
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.featureflag.FeatureFlagClientType
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.models.OptimizelyFeature
-import com.kickstarter.mock.MockExperimentsClientType
+import com.kickstarter.mock.MockFeatureFlagClient
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
@@ -25,9 +27,9 @@ class FirebaseAnalyticsClientTest : KSRobolectricTestCase() {
     )
 
     private class MockFirebaseClient(
-        optimizely: ExperimentsClientType,
+        ffClient: FeatureFlagClientType,
         sharedPreferences: SharedPreferences
-    ) : FirebaseAnalyticsClient(optimizely, sharedPreferences, null) {
+    ) : FirebaseAnalyticsClient(ffClient, sharedPreferences, null) {
 
         private val events = PublishSubject.create<Event>()
 
@@ -49,7 +51,7 @@ class FirebaseAnalyticsClientTest : KSRobolectricTestCase() {
         eventPropertySubscriber = TestSubscriber()
 
         val mockFirebaseClient =
-            MockFirebaseClient(MockExperimentsClientType(), MockSharedPreferences())
+            MockFirebaseClient(MockFeatureFlagClient(), MockSharedPreferences())
 
         disposables.add(mockFirebaseClient.eventName.subscribe { this.eventNameSubscriber.onNext(it) })
         disposables.add(mockFirebaseClient.eventProperties.subscribe { this.eventPropertySubscriber.onNext(it) })
@@ -66,23 +68,23 @@ class FirebaseAnalyticsClientTest : KSRobolectricTestCase() {
 
     @Test
     fun testIsEnabled_whenFeatureFlagOnButNoConsent_returnFalse() {
-        val mockOptimizely = object : MockExperimentsClientType() {
-            override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
                 return true
             }
         }
 
         val mockSharedPreferences: SharedPreferences = MockSharedPreferences()
 
-        val mockFirebaseClient = MockFirebaseClient(mockOptimizely, mockSharedPreferences)
+        val mockFirebaseClient = MockFirebaseClient(mockFeatureFlagClient, mockSharedPreferences)
 
         assertFalse(mockFirebaseClient.isEnabled())
     }
 
     @Test
     fun testIsEnabled_whenConsentTrueButFeatureFlagOff_returnFalse() {
-        val mockOptimizely = object : MockExperimentsClientType() {
-            override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
                 return false
             }
         }
@@ -91,15 +93,15 @@ class FirebaseAnalyticsClientTest : KSRobolectricTestCase() {
         mockSharedPreferences.edit()
             .putBoolean(OptimizelyFeature.Key.ANDROID_CONSENT_MANAGEMENT.toString(), true).commit()
 
-        val mockFirebaseClient = MockFirebaseClient(mockOptimizely, mockSharedPreferences)
+        val mockFirebaseClient = MockFirebaseClient(mockFeatureFlagClient, mockSharedPreferences)
 
         assertFalse(mockFirebaseClient.isEnabled())
     }
 
     @Test
     fun testIsEnabled_whenConsentFalseButFeatureFlagOn_returnFalse() {
-        val mockOptimizely = object : MockExperimentsClientType() {
-            override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
                 return true
             }
         }
@@ -108,15 +110,15 @@ class FirebaseAnalyticsClientTest : KSRobolectricTestCase() {
         mockSharedPreferences.edit()
             .putBoolean(OptimizelyFeature.Key.ANDROID_CONSENT_MANAGEMENT.toString(), false).commit()
 
-        val mockFirebaseClient = MockFirebaseClient(mockOptimizely, mockSharedPreferences)
+        val mockFirebaseClient = MockFirebaseClient(mockFeatureFlagClient, mockSharedPreferences)
 
         assertFalse(mockFirebaseClient.isEnabled())
     }
 
     @Test
     fun testIsEnabled_whenConsentTrueButFeatureFlagOn_returnTrue() {
-        val mockOptimizely = object : MockExperimentsClientType() {
-            override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
                 return true
             }
         }
@@ -125,7 +127,7 @@ class FirebaseAnalyticsClientTest : KSRobolectricTestCase() {
         mockSharedPreferences.edit()
             .putBoolean(OptimizelyFeature.Key.ANDROID_CONSENT_MANAGEMENT.toString(), true).commit()
 
-        val mockFirebaseClient = MockFirebaseClient(mockOptimizely, mockSharedPreferences)
+        val mockFirebaseClient = MockFirebaseClient(mockFeatureFlagClient, mockSharedPreferences)
 
         assertFalse(mockFirebaseClient.isEnabled())
     }

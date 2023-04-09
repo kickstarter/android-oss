@@ -285,7 +285,7 @@ interface ThanksViewModel {
                 )
             }
 
-            SendCAPIEventUseCase(optimizely, sharedPreferences,ffClient)
+            SendCAPIEventUseCase(optimizely, sharedPreferences, ffClient)
                 .sendCAPIEvent(
                     project,
                     apolloClient,

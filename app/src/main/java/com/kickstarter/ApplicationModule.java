@@ -453,7 +453,7 @@ public class ApplicationModule {
           final @NonNull Build build,
           final @NonNull CurrentConfigType currentConfig,
           final @NonNull FeatureFlagClientType featureFlagClient) {
-    return new SegmentTrackingClient(build, context, currentConfig, currentUser, PreferenceManager.getDefaultSharedPreferences(context), featureFlagClient);
+    return new SegmentTrackingClient(build, context, currentConfig, currentUser, featureFlagClient, PreferenceManager.getDefaultSharedPreferences(context));
   }
 
   @Provides

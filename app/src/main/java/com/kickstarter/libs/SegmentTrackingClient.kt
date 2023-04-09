@@ -28,9 +28,9 @@ open class SegmentTrackingClient(
     private val context: Context,
     currentConfig: CurrentConfigType,
     currentUser: CurrentUserType,
-    preference: SharedPreferences,
-    ffClient: FeatureFlagClientType
-) : TrackingClient(context, currentUser, build, currentConfig, preference, ffClient) {
+    ffClient: FeatureFlagClientType,
+    preference: SharedPreferences
+) : TrackingClient(context, currentUser, build, currentConfig, ffClient, preference) {
 
     override var isInitialized = false
     override var loggedInUser: User? = null

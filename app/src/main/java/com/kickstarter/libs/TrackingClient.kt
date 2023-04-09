@@ -28,8 +28,8 @@ abstract class TrackingClient(
     @set:Inject var currentUser: CurrentUserType,
     @set:Inject var build: Build,
     @set:Inject var currentConfig: CurrentConfigType,
-    @set:Inject var sharedPreferences: SharedPreferences,
-    @set:Inject var ffClient: FeatureFlagClientType
+    @set:Inject var ffClient: FeatureFlagClientType,
+    @set:Inject var sharedPreferences: SharedPreferences
 ) : TrackingClientType() {
 
     override val isGooglePlayServicesAvailable: Boolean

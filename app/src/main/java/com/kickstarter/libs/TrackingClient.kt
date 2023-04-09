@@ -18,7 +18,6 @@ import com.kickstarter.libs.utils.WebUtils
 import com.kickstarter.libs.utils.extensions.currentVariants
 import com.kickstarter.models.User
 import com.kickstarter.ui.SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE
-import org.json.JSONArray
 import org.json.JSONException
 import timber.log.Timber
 import javax.inject.Inject
@@ -100,11 +99,6 @@ abstract class TrackingClient(
     override fun deviceOrientation(): String =
         if (this.context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) "landscape"
         else "portrait"
-
-    // TODO: will be deleted on https://kickstarter.atlassian.net/browse/EP-187
-    override fun enabledFeatureFlags(): JSONArray {
-        return JSONArray(emptyList<String>())
-    }
 
     override fun manufacturer(): String = android.os.Build.MANUFACTURER
 

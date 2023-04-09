@@ -3,7 +3,6 @@ package com.kickstarter.libs
 import com.kickstarter.libs.utils.AnalyticEventsUtils.userProperties
 import com.kickstarter.libs.utils.MapUtils
 import com.kickstarter.models.User
-import org.json.JSONArray
 import java.util.Locale
 
 abstract class TrackingClientType {

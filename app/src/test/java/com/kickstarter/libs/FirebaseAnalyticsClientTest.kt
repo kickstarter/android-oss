@@ -5,7 +5,6 @@ import android.os.Bundle
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.mock.MockFeatureFlagClient
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -91,7 +90,7 @@ class FirebaseAnalyticsClientTest : KSRobolectricTestCase() {
 
         val mockSharedPreferences: SharedPreferences = MockSharedPreferences()
         mockSharedPreferences.edit()
-            .putBoolean(OptimizelyFeature.Key.ANDROID_CONSENT_MANAGEMENT.toString(), true).commit()
+            .putBoolean(FlagKey.ANDROID_CONSENT_MANAGEMENT.toString(), true).commit()
 
         val mockFirebaseClient = MockFirebaseClient(mockFeatureFlagClient, mockSharedPreferences)
 
@@ -108,7 +107,7 @@ class FirebaseAnalyticsClientTest : KSRobolectricTestCase() {
 
         val mockSharedPreferences: SharedPreferences = MockSharedPreferences()
         mockSharedPreferences.edit()
-            .putBoolean(OptimizelyFeature.Key.ANDROID_CONSENT_MANAGEMENT.toString(), false).commit()
+            .putBoolean(FlagKey.ANDROID_CONSENT_MANAGEMENT.toString(), false).commit()
 
         val mockFirebaseClient = MockFirebaseClient(mockFeatureFlagClient, mockSharedPreferences)
 
@@ -125,7 +124,7 @@ class FirebaseAnalyticsClientTest : KSRobolectricTestCase() {
 
         val mockSharedPreferences: SharedPreferences = MockSharedPreferences()
         mockSharedPreferences.edit()
-            .putBoolean(OptimizelyFeature.Key.ANDROID_CONSENT_MANAGEMENT.toString(), true).commit()
+            .putBoolean(FlagKey.ANDROID_CONSENT_MANAGEMENT.toString(), true).commit()
 
         val mockFirebaseClient = MockFirebaseClient(mockFeatureFlagClient, mockSharedPreferences)
 

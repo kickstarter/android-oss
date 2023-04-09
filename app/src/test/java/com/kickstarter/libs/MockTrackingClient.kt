@@ -5,7 +5,6 @@ import com.kickstarter.libs.utils.extensions.currentVariants
 import com.kickstarter.mock.factories.ConfigFactory.config
 import com.kickstarter.models.User
 import org.joda.time.DateTime
-import org.json.JSONArray
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 

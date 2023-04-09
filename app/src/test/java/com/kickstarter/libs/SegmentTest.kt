@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.libs.utils.ContextPropertyKeyName
 import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_BODY
 import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_CHARACTER_COUNT
@@ -68,8 +67,6 @@ import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import org.joda.time.DateTime
-import org.json.JSONArray
-import org.json.JSONObject
 import org.junit.Test
 import rx.subjects.BehaviorSubject
 

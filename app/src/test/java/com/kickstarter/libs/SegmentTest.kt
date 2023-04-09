@@ -95,7 +95,7 @@ class SegmentTest : KSRobolectricTestCase() {
         currentUser: CurrentUserType,
         ffClient: FeatureFlagClientType,
         mockSharedPref: SharedPreferences
-    ) : SegmentTrackingClient(build, context, currentConfig, currentUser, mockSharedPref, ffClient) {
+    ) : SegmentTrackingClient(build, context, currentConfig, currentUser, ffClient, mockSharedPref) {
 
         override fun initialize() {
             this.isInitialized = true
@@ -112,7 +112,7 @@ class SegmentTest : KSRobolectricTestCase() {
             }
         }
 
-        val client = SegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockShared, mockFeatureFlagClient)
+        val client = SegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockFeatureFlagClient, mockShared)
         client.initialize()
         assertFalse(mockShared.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE))
         assertTrue(client.isEnabled())
@@ -127,7 +127,7 @@ class SegmentTest : KSRobolectricTestCase() {
             }
         }
 
-        val client = SegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockShared, mockFeatureFlagClient)
+        val client = SegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockFeatureFlagClient, mockShared)
         client.initialize()
         assertFalse(mockShared.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE))
         assertFalse(client.isEnabled())
@@ -143,7 +143,7 @@ class SegmentTest : KSRobolectricTestCase() {
         }
 
         mockShared.edit().putBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, true)
-        val client = SegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockShared, mockFeatureFlagClient)
+        val client = SegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockFeatureFlagClient, mockShared)
         client.initialize()
         assertTrue(mockShared.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE))
         assertTrue(client.isEnabled())
@@ -160,30 +160,22 @@ class SegmentTest : KSRobolectricTestCase() {
 
         mockShared.edit().putBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)
 
-        val client = SegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockShared, mockFeatureFlagClient)
+        val client = SegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockFeatureFlagClient, mockShared)
         client.initialize()
         assertTrue(mockShared.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE))
         assertFalse(client.isEnabled())
     }
 
-//    @Test
-//    fun testSegmentClientTest() {
-//        val user = UserFactory.user()
-//        val mockOptimizely = object : MockExperimentsClientType() {
-//            override fun enabledFeatures(user: User?): List<String> {
-//                return listOf("optimizely_feature")
-//            }
-//
-//            override fun getTrackingProperties(): Map<String, Array<String>> {
-//                return getOptimizelySession()
-//            }
-//        }
-//
-//        val mockClient = MockSegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockOptimizely, mockShared)
-//        mockClient.initialize()
-//        assertNotNull(mockClient)
-//        assertTrue(mockClient.isEnabled())
-//    }
+    @Test
+    fun testSegmentClientTest() {
+        val user = UserFactory.user()
+        val mockFeatureFlagClient = MockFeatureFlagClient()
+
+        val mockClient = MockSegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockFeatureFlagClient, mockShared)
+        mockClient.initialize()
+        assertNotNull(mockClient)
+        assertTrue(mockClient.isEnabled())
+    }
 
     @Test
     fun testDefaultProperties() {

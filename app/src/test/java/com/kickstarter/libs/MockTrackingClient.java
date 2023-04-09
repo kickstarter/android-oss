@@ -111,11 +111,6 @@ public final class MockTrackingClient extends TrackingClientType {
   }
 
   @Override
-  public ExperimentsClientType optimizely() {
-    return this.optimizely;
-  }
-
-  @Override
   @NonNull
   public Type type() {
     return this.type;

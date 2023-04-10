@@ -2,6 +2,7 @@ package com.kickstarter.libs
 
 import android.content.SharedPreferences
 import com.google.gson.Gson
+import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.preferences.IntPreferenceType
 import com.kickstarter.libs.utils.PlayServicesCapability
@@ -42,7 +43,8 @@ class Environment private constructor(
     private val stripe: Stripe?,
     private val webClient: WebClientType?,
     private val webEndpoint: String,
-    private val firebaseAnalyticsClient: FirebaseAnalyticsClientType?
+    private val firebaseAnalyticsClient: FirebaseAnalyticsClientType?,
+    private val featureFlagClient: FeatureFlagClientType?
 ) {
     fun activitySamplePreference() = this.activitySamplePreference
     fun apiClient() = this.apiClient
@@ -73,6 +75,7 @@ class Environment private constructor(
     fun webClient() = this.webClient
     fun webEndpoint() = this.webEndpoint
     fun firebaseAnalyticsClient() = this.firebaseAnalyticsClient
+    fun featureFlagClient() = this.featureFlagClient
 
     data class Builder(
         private var activitySamplePreference: IntPreferenceType? = null,
@@ -103,7 +106,8 @@ class Environment private constructor(
         private var stripe: Stripe? = null,
         private var webClient: WebClientType? = null,
         private var webEndpoint: String = "",
-        private var firebaseAnalyticsClient: FirebaseAnalyticsClientType? = null
+        private var firebaseAnalyticsClient: FirebaseAnalyticsClientType? = null,
+        private var featureFlagClient: FeatureFlagClientType? = null
     ) {
         fun activitySamplePreference(activitySamplePreference: IntPreferenceType) = apply { this.activitySamplePreference = activitySamplePreference }
         fun apiClient(apiClient: ApiClientType) = apply { this.apiClient = apiClient }
@@ -135,6 +139,8 @@ class Environment private constructor(
         fun webEndpoint(webEndpoint: String) = apply { this.webEndpoint = webEndpoint }
         fun firebaseAnalyticsClient(firebaseAnalyticsClient: FirebaseAnalyticsClientType) = apply { this.firebaseAnalyticsClient = firebaseAnalyticsClient }
 
+        fun featureFlagClient(featureFlag: FeatureFlagClientType) = apply { this.featureFlagClient = featureFlag }
+
         fun build() = Environment(
             activitySamplePreference = activitySamplePreference,
             apiClient = apiClient,
@@ -164,7 +170,8 @@ class Environment private constructor(
             stripe = stripe,
             webClient = webClient,
             webEndpoint = webEndpoint,
-            firebaseAnalyticsClient = firebaseAnalyticsClient
+            firebaseAnalyticsClient = firebaseAnalyticsClient,
+            featureFlagClient = featureFlagClient
         )
     }
 
@@ -197,7 +204,8 @@ class Environment private constructor(
         stripe = stripe,
         webClient = webClient,
         webEndpoint = webEndpoint,
-        firebaseAnalyticsClient = firebaseAnalyticsClient
+        firebaseAnalyticsClient = firebaseAnalyticsClient,
+        featureFlagClient = featureFlagClient
     )
 
     companion object {

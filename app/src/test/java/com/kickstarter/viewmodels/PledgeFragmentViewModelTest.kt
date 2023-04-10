@@ -9,6 +9,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockSharedPreferences
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.DateTimeUtils
@@ -17,6 +18,7 @@ import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.extensions.trimAllWhitespace
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
+import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.CheckoutFactory
 import com.kickstarter.mock.factories.ConfigFactory
@@ -381,11 +383,18 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                     return true
                 }
             }
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    return true
+                }
+            }
 
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
             .toBuilder()
             .sharedPreferences(sharedPreferences)
             .optimizely(mockExperimentsClientType)
+            .featureFlagClient(mockFeatureFlagClient)
             .currentUser(mockCurrentUser)
             .apolloClient(object : MockApolloClient() {
                 override fun getStoredCards(): Observable<List<StoredCard>> {
@@ -1365,12 +1374,20 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 }
             }
 
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    return true
+                }
+            }
+
         val storedCards = testData.storedCards
 
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
             .toBuilder()
             .sharedPreferences(sharedPreferences)
             .optimizely(mockExperimentsClientType)
+            .featureFlagClient(mockFeatureFlagClient)
             .currentUser(mockCurrentUser)
             .apolloClient(object : MockApolloClient() {
                 override fun getStoredCards(): Observable<List<StoredCard>> {

@@ -9,7 +9,7 @@ import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockTrackingClient
 import com.kickstarter.libs.TrackingClientType
 import com.kickstarter.mock.MockCurrentConfig
-import com.kickstarter.mock.MockExperimentsClientType
+import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.User
@@ -185,7 +185,7 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
         MockCurrentUser(user),
         MockCurrentConfig(),
         TrackingClientType.Type.SEGMENT,
-        MockExperimentsClientType()
+        MockFeatureFlagClient()
     ).apply {
         this.identifiedUser.subscribe(currentUser)
     }

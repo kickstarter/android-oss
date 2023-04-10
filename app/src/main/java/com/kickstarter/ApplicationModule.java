@@ -12,7 +12,6 @@ import android.content.res.Resources;
 import com.apollographql.apollo.ApolloClient;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -78,7 +77,6 @@ import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.libs.qualifiers.WebRetrofit;
 import com.kickstarter.libs.utils.PlayServicesCapability;
 import com.kickstarter.libs.utils.Secrets;
-import com.kickstarter.libs.utils.extensions.ContextExt;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiService;
 import com.kickstarter.services.ApolloClientType;
@@ -200,8 +198,8 @@ public class ApplicationModule {
   @Provides
   @Nonnull
   @Singleton
-  static FirebaseAnalyticsClientType provideFirebaseAnalyticsClientType(final @NonNull ExperimentsClientType experimentsClientType, final @NonNull SharedPreferences sharedPreferences, final @ApplicationContext @NonNull Context context) {
-    return new FirebaseAnalyticsClient(experimentsClientType, sharedPreferences, FirebaseAnalytics.getInstance(context));
+  static FirebaseAnalyticsClientType provideFirebaseAnalyticsClientType(final @NonNull FeatureFlagClientType ffClient, final @NonNull SharedPreferences sharedPreferences, final @ApplicationContext @NonNull Context context) {
+    return new FirebaseAnalyticsClient(ffClient, sharedPreferences, FirebaseAnalytics.getInstance(context));
   }
 
   @Provides
@@ -214,16 +212,8 @@ public class ApplicationModule {
   @Provides
   @Nonnull
   @Singleton
-  static FeatureFlagClientType provideFeatureFlagClientType(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
-    final @NonNull FeatureFlagClient ffClient;
-    if (ContextExt.isKSApplication(context)) {
-      ffClient = new FeatureFlagClient(build, FirebaseRemoteConfig.getInstance());
-      ffClient.initialize();
-    } else {
-      ffClient = new FeatureFlagClient(build, null);
-    }
-
-    return ffClient;
+  static FeatureFlagClientType provideFeatureFlagClientType(final @NonNull Build build) {
+    return new FeatureFlagClient(build);
   }
 
   @Provides
@@ -462,8 +452,8 @@ public class ApplicationModule {
           final @NonNull CurrentUserType currentUser,
           final @NonNull Build build,
           final @NonNull CurrentConfigType currentConfig,
-          final @NonNull ExperimentsClientType experimentsClientType) {
-    return new SegmentTrackingClient(build, context, currentConfig, currentUser,  experimentsClientType, PreferenceManager.getDefaultSharedPreferences(context));
+          final @NonNull FeatureFlagClientType featureFlagClient) {
+    return new SegmentTrackingClient(build, context, currentConfig, currentUser, featureFlagClient, PreferenceManager.getDefaultSharedPreferences(context));
   }
 
   @Provides
@@ -474,6 +464,7 @@ public class ApplicationModule {
           final @NonNull Build build,
           final @NonNull CurrentConfigType currentConfig,
           final @NonNull ExperimentsClientType experimentsClientType,
+          final @NonNull FeatureFlagClientType ffClient,
           final @NonNull SegmentTrackingClient segmentClient) {
     final List<TrackingClientType> clients = Arrays.asList(segmentClient);
     return new AnalyticEvents(clients);

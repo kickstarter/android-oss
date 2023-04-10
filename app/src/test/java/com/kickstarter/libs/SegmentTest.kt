@@ -3,8 +3,8 @@ package com.kickstarter.libs
 import android.content.Context
 import android.content.SharedPreferences
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.models.OptimizelyEnvironment
-import com.kickstarter.libs.models.OptimizelyFeature
+import com.kickstarter.libs.featureflag.FeatureFlagClientType
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ContextPropertyKeyName
 import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_BODY
 import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_CHARACTER_COUNT
@@ -45,7 +45,7 @@ import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.mock.MockCurrentConfig
-import com.kickstarter.mock.MockExperimentsClientType
+import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.AvatarFactory
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.CategoryFactory
@@ -67,8 +67,6 @@ import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import org.joda.time.DateTime
-import org.json.JSONArray
-import org.json.JSONObject
 import org.junit.Test
 import rx.subjects.BehaviorSubject
 
@@ -91,9 +89,9 @@ class SegmentTest : KSRobolectricTestCase() {
         context: Context,
         currentConfig: CurrentConfigType,
         currentUser: CurrentUserType,
-        opt: ExperimentsClientType,
+        ffClient: FeatureFlagClientType,
         mockSharedPref: SharedPreferences
-    ) : SegmentTrackingClient(build, context, currentConfig, currentUser, opt, mockSharedPref) {
+    ) : SegmentTrackingClient(build, context, currentConfig, currentUser, ffClient, mockSharedPref) {
 
         override fun initialize() {
             this.isInitialized = true
@@ -104,13 +102,13 @@ class SegmentTest : KSRobolectricTestCase() {
     @Test
     fun testSegmentClientIsEnabled_whenFeatureNotEnabled_returnIsEnabledTrue() {
         val user = UserFactory.user()
-        val mockOptimizely = object : MockExperimentsClientType() {
-            override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
                 return false
             }
         }
 
-        val client = SegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockOptimizely, mockShared)
+        val client = SegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockFeatureFlagClient, mockShared)
         client.initialize()
         assertFalse(mockShared.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE))
         assertTrue(client.isEnabled())
@@ -119,13 +117,13 @@ class SegmentTest : KSRobolectricTestCase() {
     @Test
     fun testSegmentClientIsEnabled_whenFeatureEnabledAndConsentNotPresent_returnIsEnabledFalse() {
         val user = UserFactory.user()
-        val mockOptimizely = object : MockExperimentsClientType() {
-            override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
                 return true
             }
         }
 
-        val client = SegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockOptimizely, mockShared)
+        val client = SegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockFeatureFlagClient, mockShared)
         client.initialize()
         assertFalse(mockShared.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE))
         assertFalse(client.isEnabled())
@@ -134,14 +132,14 @@ class SegmentTest : KSRobolectricTestCase() {
     @Test
     fun testSegmentClientIsEnabled_whenFeatureEnabledAndConsentPrefTrue_returnIsEnabledTrue() {
         val user = UserFactory.user()
-        val mockOptimizely = object : MockExperimentsClientType() {
-            override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
                 return true
             }
         }
 
         mockShared.edit().putBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, true)
-        val client = SegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockOptimizely, mockShared)
+        val client = SegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockFeatureFlagClient, mockShared)
         client.initialize()
         assertTrue(mockShared.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE))
         assertTrue(client.isEnabled())
@@ -150,15 +148,15 @@ class SegmentTest : KSRobolectricTestCase() {
     @Test
     fun testSegmentClientIsEnabled_whenFeatureEnabledAndConsentPrefFalse_returnIsEnabledFalse() {
         val user = UserFactory.user()
-        val mockOptimizely = object : MockExperimentsClientType() {
-            override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
                 return true
             }
         }
 
         mockShared.edit().putBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)
 
-        val client = SegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockOptimizely, mockShared)
+        val client = SegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockFeatureFlagClient, mockShared)
         client.initialize()
         assertTrue(mockShared.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE))
         assertFalse(client.isEnabled())
@@ -167,17 +165,9 @@ class SegmentTest : KSRobolectricTestCase() {
     @Test
     fun testSegmentClientTest() {
         val user = UserFactory.user()
-        val mockOptimizely = object : MockExperimentsClientType() {
-            override fun enabledFeatures(user: User?): List<String> {
-                return listOf("optimizely_feature")
-            }
+        val mockFeatureFlagClient = MockFeatureFlagClient()
 
-            override fun getTrackingProperties(): Map<String, Array<String>> {
-                return getOptimizelySession()
-            }
-        }
-
-        val mockClient = MockSegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockOptimizely, mockShared)
+        val mockClient = MockSegmentTrackingClient(build, context, mockCurrentConfig(), MockCurrentUser(user), mockFeatureFlagClient, mockShared)
         mockClient.initialize()
         assertNotNull(mockClient)
         assertTrue(mockClient.isEnabled())
@@ -1214,32 +1204,6 @@ class SegmentTest : KSRobolectricTestCase() {
         this.segmentTrack.assertValues(PAGE_VIEWED.eventName)
     }
 
-//    @Test
-//    fun testOptimizelyProperties() {
-//        val project = project()
-//        val user = user()
-//        val client = client(user)
-//        client.eventNames.subscribe(this.segmentTrack)
-//        client.eventProperties.subscribe(this.propertiesTest)
-//        val segment = AnalyticEvents(listOf(client))
-//
-//        segment.trackPledgeInitiateCTA(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()))
-//
-//        assertSessionProperties(user)
-//        assertProjectProperties(project)
-//        assertContextProperties()
-//        assertOptimizelyProperties()
-//        assertUserProperties(false)
-//
-//        val expectedProperties = propertiesTest.value
-//        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
-//        assertEquals(false, expectedProperties["project_user_has_watched"])
-//        assertEquals(false, expectedProperties["project_user_is_backer"])
-//        assertEquals(false, expectedProperties["project_user_is_project_creator"])
-//
-//        this.segmentTrack.assertValues("Project Page Pledge Button Clicked")
-//    }
-
     @Test
     fun testVideoProperties() {
         val project = project()
@@ -1693,21 +1657,8 @@ class SegmentTest : KSRobolectricTestCase() {
             ?: MockCurrentUser(),
         mockCurrentConfig(),
         TrackingClientType.Type.SEGMENT,
-        object : MockExperimentsClientType() {
-            override fun enabledFeatures(user: User?): List<String> {
-                return listOf("optimizely_feature")
-            }
-
-            override fun getTrackingProperties(): Map<String, Array<String>> {
-                return getOptimizelySession()
-            }
-        }
+        MockFeatureFlagClient()
     )
-
-    private fun getOptimizelySession(): Map<String, Array<String>> {
-        val array = arrayOf("suggested_no_reward_amount[variation_3]")
-        return mapOf("variants_optimizely" to array)
-    }
 
     private fun assertCheckoutProperties() {
         val expectedProperties = this.propertiesTest.value
@@ -1725,18 +1676,6 @@ class SegmentTest : KSRobolectricTestCase() {
     private fun assertContextProperties() {
         val expectedProperties = this.propertiesTest.value
         assertEquals(DateTime.parse("2018-11-02T18:42:05Z").millis / 1000, expectedProperties["context_timestamp"])
-    }
-
-    // TODO: will be deleted on https://kickstarter.atlassian.net/browse/EP-187
-    private fun assertOptimizelyProperties() {
-        val expectedProperties = this.propertiesTest.value
-        assertEquals(OptimizelyEnvironment.DEVELOPMENT.sdkKey, expectedProperties["optimizely_api_key"])
-        assertEquals(OptimizelyEnvironment.DEVELOPMENT.environmentKey, expectedProperties["optimizely_environment_key"])
-        assertNotNull(expectedProperties["optimizely_experiments"])
-        val experiments = expectedProperties["optimizely_experiments"] as JSONArray
-        val experiment = experiments[0] as JSONObject
-        assertEquals("test_experiment", experiment["optimizely_experiment_slug"])
-        assertEquals("unknown", experiment["optimizely_variant_id"])
     }
 
     private fun assertDiscoverProperties() {
@@ -1822,7 +1761,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("Pixel 3", expectedProperties["session_device_model"])
         assertEquals("portrait", expectedProperties["session_device_orientation"])
         assertEquals("en", expectedProperties["session_display_language"])
-        assertEquals(JSONArray().put("optimizely_feature").put("android_example_feature"), expectedProperties["session_enabled_features"])
+        assertEquals(null, expectedProperties["session_enabled_features"])
         assertEquals(false, expectedProperties["session_is_voiceover_running"])
         assertEquals("kickstarter_android", expectedProperties["session_mp_lib"])
         assertEquals("android", expectedProperties["session_os"])
@@ -1830,7 +1769,6 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("agent", expectedProperties["session_user_agent"])
         assertEquals(user != null, expectedProperties["session_user_is_logged_in"])
         assertEquals(false, expectedProperties["session_wifi_connection"])
-        assertEquals(getOptimizelySession()["variants_optimizely"]?.first(), (expectedProperties["session_variants_optimizely"] as Array<*>).first())
         assertEquals("android_example_experiment[control]", (expectedProperties["session_variants_internal"] as Array<*>).first())
     }
 

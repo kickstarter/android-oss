@@ -3,7 +3,6 @@ package com.kickstarter.libs
 import com.kickstarter.libs.utils.AnalyticEventsUtils.userProperties
 import com.kickstarter.libs.utils.MapUtils
 import com.kickstarter.models.User
-import org.json.JSONArray
 import java.util.Locale
 
 abstract class TrackingClientType {
@@ -16,8 +15,6 @@ abstract class TrackingClientType {
     protected abstract val isTalkBackOn: Boolean
     protected abstract var isInitialized: Boolean
     protected abstract var loggedInUser: User?
-
-    abstract fun optimizely(): ExperimentsClientType?
     abstract fun loggedInUser(): User?
 
     protected abstract fun brand(): String
@@ -26,7 +23,6 @@ abstract class TrackingClientType {
     protected abstract fun deviceDistinctId(): String
     protected abstract fun deviceFormat(): String
     protected abstract fun deviceOrientation(): String
-    protected abstract fun enabledFeatureFlags(): JSONArray
     protected abstract fun manufacturer(): String
     protected abstract fun model(): String
     protected abstract fun OSVersion(): String
@@ -88,17 +84,12 @@ abstract class TrackingClientType {
             this["device_model"] = model()
             this["device_orientation"] = deviceOrientation()
             this["display_language"] = Locale.getDefault().language
-            this["enabled_features"] = enabledFeatureFlags()
             this["is_voiceover_running"] = isTalkBackOn
             this["mp_lib"] = "kickstarter_android"
             this["os"] = "android"
             this["os_version"] = OSVersion()
             this["user_agent"] = userAgent() ?: ""
             this["user_is_logged_in"] = userIsLoggedIn
-            // - Add the optimizely experiments as part of the session properties
-            optimizely()?.let {
-                this.putAll(it.getTrackingProperties())
-            }
             this["wifi_connection"] = wifiConnection()
         }
 

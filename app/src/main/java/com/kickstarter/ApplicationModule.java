@@ -12,6 +12,7 @@ import android.content.res.Resources;
 import com.apollographql.apollo.ApolloClient;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -46,6 +47,8 @@ import com.kickstarter.libs.SegmentTrackingClient;
 import com.kickstarter.libs.TrackingClientType;
 import com.kickstarter.libs.braze.BrazeClient;
 import com.kickstarter.libs.braze.RemotePushClientType;
+import com.kickstarter.libs.featureflag.FeatureFlagClient;
+import com.kickstarter.libs.featureflag.FeatureFlagClientType;
 import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.DateTimeAdapter;
 import com.kickstarter.libs.graphql.Iso8601DateTimeAdapter;
@@ -75,6 +78,7 @@ import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.libs.qualifiers.WebRetrofit;
 import com.kickstarter.libs.utils.PlayServicesCapability;
 import com.kickstarter.libs.utils.Secrets;
+import com.kickstarter.libs.utils.extensions.ContextExt;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiService;
 import com.kickstarter.services.ApolloClientType;
@@ -156,7 +160,8 @@ public class ApplicationModule {
     final @NonNull Stripe stripe,
     final @NonNull WebClientType webClient,
     final @NonNull @WebEndpoint String webEndpoint,
-    final @NonNull FirebaseAnalyticsClientType firebaseAnalyticsClientType) {
+    final @NonNull FirebaseAnalyticsClientType firebaseAnalyticsClientType,
+    final @NonNull FeatureFlagClientType featureFlagClient) {
 
     return Environment.builder()
       .activitySamplePreference(activitySamplePreference)
@@ -188,6 +193,7 @@ public class ApplicationModule {
       .webClient(webClient)
       .webEndpoint(webEndpoint)
       .firebaseAnalyticsClient(firebaseAnalyticsClientType)
+      .featureFlagClient(featureFlagClient)
       .build();
   }
 
@@ -203,6 +209,21 @@ public class ApplicationModule {
   @Singleton
   static RemotePushClientType provideBrazeClient(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
     return new BrazeClient(context, build);
+  }
+
+  @Provides
+  @Nonnull
+  @Singleton
+  static FeatureFlagClientType provideFeatureFlagClientType(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
+    final @NonNull FeatureFlagClient ffClient;
+    if (ContextExt.isKSApplication(context)) {
+      ffClient = new FeatureFlagClient(build, FirebaseRemoteConfig.getInstance());
+      ffClient.initialize();
+    } else {
+      ffClient = new FeatureFlagClient(build, null);
+    }
+
+    return ffClient;
   }
 
   @Provides

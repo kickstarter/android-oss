@@ -112,8 +112,8 @@ interface ProjectSearchResultHolderViewModel {
                 .filter { ffClient.getBoolean(FlagKey.ANDROID_PRE_LAUNCH_SCREEN) }
                 .map {
                     it?.first?.displayPrelaunch() == true ||
-                        it.first.launchedAt() == DateTimeAdapter()
-                            .decode(CustomTypeValue.fromRawValue(0))
+                        it.first.launchedAt() ==
+                        DateTimeAdapter().decode(CustomTypeValue.fromRawValue(0))
                 }.compose(bindToLifecycle())
                 .subscribe {
                     displayPrelaunchProjectBadge.onNext(it)

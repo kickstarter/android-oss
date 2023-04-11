@@ -13,7 +13,16 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.UrlUtils.appendRefTag
 import com.kickstarter.libs.utils.UrlUtils.refTag
-import com.kickstarter.libs.utils.extensions.*
+import com.kickstarter.libs.utils.extensions.canUpdateFulfillment
+import com.kickstarter.libs.utils.extensions.isCheckoutUri
+import com.kickstarter.libs.utils.extensions.isProjectCommentUri
+import com.kickstarter.libs.utils.extensions.isProjectPreviewUri
+import com.kickstarter.libs.utils.extensions.isProjectSaveUri
+import com.kickstarter.libs.utils.extensions.isProjectUpdateCommentsUri
+import com.kickstarter.libs.utils.extensions.isProjectUpdateUri
+import com.kickstarter.libs.utils.extensions.isProjectUri
+import com.kickstarter.libs.utils.extensions.isRewardFulfilledDl
+import com.kickstarter.libs.utils.extensions.isSettingsUrl
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType

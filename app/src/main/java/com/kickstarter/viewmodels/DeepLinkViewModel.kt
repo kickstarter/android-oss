@@ -8,6 +8,7 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
@@ -86,7 +87,7 @@ interface DeepLinkViewModel {
         private val projectObservable: Observable<Project>
         private val startPreLaunchProjectActivity = PublishSubject.create<Project>()
 
-        private val optimizely = requireNotNull(environment.optimizely())
+        private val ffClient = requireNotNull(environment.featureFlagClient())
 
         val outputs: Outputs = this
 
@@ -277,9 +278,8 @@ interface DeepLinkViewModel {
 
         private fun onDeepLinkToProjectPage(it: Pair<Uri, Project>, startProjectPage: BehaviorSubject<Uri>) {
             if (
-                it.second.displayPrelaunch() == true && optimizely.isFeatureEnabled(
-                    OptimizelyFeature.Key.ANDROID_PRE_LAUNCH_SCREEN
-                )
+                it.second.displayPrelaunch() == true &&
+                ffClient.getBoolean(FlagKey.ANDROID_PRE_LAUNCH_SCREEN)
             ) {
                 startPreLaunchProjectActivity.onNext(it.second)
             } else {

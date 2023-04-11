@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import UserPrivacyQuery
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.CurrentUserType
@@ -9,12 +10,9 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.RefTag.Companion.collection
 import com.kickstarter.libs.RefTag.Companion.discovery
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.preferences.MockIntPreference
 import com.kickstarter.libs.utils.EventName
-import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.ListUtils
-import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ActivityEnvelopeFactory.activityEnvelope
 import com.kickstarter.mock.factories.ActivityFactory.activity
@@ -223,18 +221,15 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testShouldShowEditorial_featureDisabled() {
         val user = MockCurrentUser()
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(
-                    feature: OptimizelyFeature.Key,
-                    experimentData: ExperimentData
-                ): Boolean {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return false
                 }
             }
         val environment = environment().toBuilder()
             .currentUser(user)
-            .optimizely(mockExperimentsClientType)
+            .featureFlagClient(mockFeatureFlagClient)
             .build()
         setUpEnvironment(environment)
 
@@ -547,14 +542,15 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testStartProjectActivity_whenViewingFeatureFlagOn_shouldEmitProjectPageActivity() {
         val currentUser: CurrentUserType = MockCurrentUser()
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return true
                 }
             }
         setUpEnvironment(
-            environment().toBuilder().currentUser(currentUser).optimizely(mockExperimentsClientType)
+            environment().toBuilder().currentUser(currentUser)
+                .featureFlagClient(mockFeatureFlagClient)
                 .scheduler(testScheduler)
                 .build()
         )
@@ -608,14 +604,15 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testStartProjectActivity_whenFeatureFlagEnabled_shouldEmitProjectPageActivity() {
         val currentUser: CurrentUserType = MockCurrentUser()
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return true
                 }
             }
         setUpEnvironment(
-            environment().toBuilder().currentUser(currentUser).optimizely(mockExperimentsClientType)
+            environment().toBuilder().currentUser(currentUser)
+                .featureFlagClient(mockFeatureFlagClient)
                 .scheduler(testScheduler)
                 .build()
         )
@@ -641,14 +638,15 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testStartPelaunchProjectActivity_whenDisplayPelaunchEnabled_shouldEmitPelaunchProjectPageActivity() {
         val currentUser: CurrentUserType = MockCurrentUser()
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return true
                 }
             }
         setUpEnvironment(
-            environment().toBuilder().currentUser(currentUser).optimizely(mockExperimentsClientType)
+            environment().toBuilder().currentUser(currentUser)
+                .featureFlagClient(mockFeatureFlagClient)
                 .scheduler(testScheduler)
                 .build()
         )
@@ -670,14 +668,16 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testStartPelaunchProjectActivity_whenDisplayPelaunchEnabledAndFeatureFlagDisabled_shouldEmitPelaunchProjectPageActivity() {
         val currentUser: CurrentUserType = MockCurrentUser()
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return false
                 }
             }
         setUpEnvironment(
-            environment().toBuilder().currentUser(currentUser).optimizely(mockExperimentsClientType)
+            environment().toBuilder()
+                .currentUser(currentUser)
+                .featureFlagClient(mockFeatureFlagClient)
                 .scheduler(testScheduler)
                 .build()
         )

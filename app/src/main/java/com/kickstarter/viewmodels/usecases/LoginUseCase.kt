@@ -24,7 +24,6 @@ class LoginUseCase(environment: Environment) {
                     .email(it.me()?.email())
                     .isCreator(it.me()?.isCreator)
                     .isDeliverable(it.me()?.isDeliverable)
-                    .hasPassword(it.me()?.hasPassword())
                     .isEmailVerified(it.me()?.isEmailVerified)
                     .hasPassword(it.me()?.hasPassword()).build()
             }

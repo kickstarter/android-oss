@@ -6,7 +6,6 @@ import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.loadmore.ApolloPaginate.Companion.builder
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.DISCOVER
 import com.kickstarter.libs.utils.ListUtils

@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.errors
@@ -91,8 +92,8 @@ interface ResetPasswordViewModel {
 
             val resetFacebookPasswordFlag = intent()
                 .filter {
-                    it.hasExtra(IntentKey.RESET_PASSWORD_FACEBOOK_LOGIN) && environment.optimizely()?.isFeatureEnabled(
-                        OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE
+                    it.hasExtra(IntentKey.RESET_PASSWORD_FACEBOOK_LOGIN) && environment.featureFlagClient()?.getBoolean(
+                        FlagKey.ANDROID_FACEBOOK_LOGIN_REMOVE
                     ) == true
                 }
                 .map {

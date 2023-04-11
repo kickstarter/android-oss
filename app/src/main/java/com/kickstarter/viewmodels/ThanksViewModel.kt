@@ -85,7 +85,6 @@ interface ThanksViewModel {
         private val currentUser = requireNotNull(environment.currentUser())
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val cookieManager = requireNotNull(environment.cookieManager())
-        private val optimizely = requireNotNull(environment.optimizely())
         private val ffClient = requireNotNull(environment.featureFlagClient())
 
         private val categoryCardViewHolderClicked = PublishSubject.create<Category>()
@@ -285,7 +284,7 @@ interface ThanksViewModel {
                 )
             }
 
-            SendCAPIEventUseCase(optimizely, sharedPreferences, ffClient)
+            SendCAPIEventUseCase(sharedPreferences, ffClient)
                 .sendCAPIEvent(
                     project,
                     apolloClient,

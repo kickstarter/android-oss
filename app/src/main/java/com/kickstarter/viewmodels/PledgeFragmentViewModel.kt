@@ -425,7 +425,6 @@ interface PledgeFragmentViewModel {
         private val projectTitle = BehaviorSubject.create<String>()
 
         private val apolloClient = requireNotNull(environment.apolloClient())
-        private val optimizely = requireNotNull(environment.optimizely())
         private val ffClient = requireNotNull(environment.featureFlagClient())
         private val cookieManager = requireNotNull(environment.cookieManager())
         private val currentConfig = requireNotNull(environment.currentConfig())
@@ -1194,7 +1193,7 @@ interface PledgeFragmentViewModel {
                 it.second
             }.distinctUntilChanged()
 
-            SendCAPIEventUseCase(optimizely, sharedPreferences, ffClient)
+            SendCAPIEventUseCase(sharedPreferences, ffClient)
                 .sendCAPIEvent(
                     project
                         .compose(takeWhen(changeCard)),

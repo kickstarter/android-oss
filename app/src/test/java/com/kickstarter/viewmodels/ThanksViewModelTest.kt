@@ -9,10 +9,8 @@ import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.RefTag.Companion.thanks
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.preferences.MockBooleanPreference
 import com.kickstarter.libs.utils.EventName
-import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.CategoryFactory.artCategory
 import com.kickstarter.mock.factories.CategoryFactory.category
@@ -397,17 +395,9 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false))
             .thenReturn(false)
 
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
-                    return true
-                }
-            }
-
         setUpEnvironment(
             environment().toBuilder()
                 .sharedPreferences(sharedPreferences)
-                .optimizely(mockExperimentsClientType)
                 .build()
         )
 
@@ -445,13 +435,6 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false))
             .thenReturn(true)
 
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
-                    return true
-                }
-            }
-
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
                 override fun getBoolean(FlagKey: FlagKey): Boolean {
@@ -462,7 +445,6 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(
             environment().toBuilder()
                 .sharedPreferences(sharedPreferences)
-                .optimizely(mockExperimentsClientType)
                 .featureFlagClient(mockFeatureFlagClient)
                 .build()
         )
@@ -499,15 +481,15 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testThanksViewModel_whenFeatureFlagOn_shouldEmitProjectPage() {
         val user = MockCurrentUser()
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return true
                 }
             }
         val environment = environment().toBuilder()
             .currentUser(user)
-            .optimizely(mockExperimentsClientType)
+            .featureFlagClient(mockFeatureFlagClient)
             .build()
 
         setUpEnvironment(environment)

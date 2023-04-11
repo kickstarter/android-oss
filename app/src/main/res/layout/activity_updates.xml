@@ -32,8 +32,9 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/updates_swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/updates_progress_bar">
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/updates_progress_bar"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/updates_recycler_view"

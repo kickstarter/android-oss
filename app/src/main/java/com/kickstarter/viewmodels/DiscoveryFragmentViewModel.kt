@@ -4,6 +4,7 @@ import android.util.Pair
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.loadmore.ApolloPaginate.Companion.builder
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -131,6 +132,7 @@ interface DiscoveryFragmentViewModel {
         private val cookieManager = requireNotNull(environment.cookieManager())
         private val currentUser = requireNotNull(environment.currentUser())
         private val lifecycleObservable = BehaviorSubject.create<FragmentEvent>()
+        private val featureFlagClient = environment.featureFlagClient()
 
         @JvmField
         val inputs: Inputs = this
@@ -343,8 +345,8 @@ interface DiscoveryFragmentViewModel {
             paramsFromActivity
                 .compose(Transformers.combineLatestPair(userIsLoggedIn))
                 .filter {
-                    it.second && optimizely?.isFeatureEnabled(
-                        OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE
+                    it.second && featureFlagClient?.getBoolean(
+                        FlagKey.ANDROID_FACEBOOK_LOGIN_REMOVE
                     ) == true
                 }
                 .compose(Transformers.combineLatestPair(currentUser.loggedInUser()))

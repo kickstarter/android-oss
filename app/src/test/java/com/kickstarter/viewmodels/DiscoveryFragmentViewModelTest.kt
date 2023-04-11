@@ -8,12 +8,14 @@ import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.RefTag.Companion.collection
 import com.kickstarter.libs.RefTag.Companion.discovery
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.preferences.MockIntPreference
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.mock.MockExperimentsClientType
+import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ActivityEnvelopeFactory.activityEnvelope
 import com.kickstarter.mock.factories.ActivityFactory.activity
 import com.kickstarter.mock.factories.ActivityFactory.updateActivity
@@ -405,9 +407,9 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         currentUser.refresh(user)
         startSetPasswordActivity.assertValueCount(0)
 
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClientType: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return true
                 }
             }
@@ -433,7 +435,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(
             environment().toBuilder().currentUser(currentUser)
-                .optimizely(mockExperimentsClientType)
+                .featureFlagClient(mockFeatureFlagClientType)
                 .apolloClient(mockApolloClient)
                 .build()
         )

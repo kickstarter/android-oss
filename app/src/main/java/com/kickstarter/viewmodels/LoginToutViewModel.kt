@@ -12,7 +12,7 @@ import com.facebook.login.LoginResult
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.models.OptimizelyFeature
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName
@@ -193,7 +193,7 @@ interface LoginToutViewModel {
 
         override fun showFacebookAuthorizationErrorDialog(): Observable<String> {
             return facebookAuthorizationError
-                .filter { environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE) == false }
+                .filter { environment.featureFlagClient()?.getBoolean(FlagKey.ANDROID_FACEBOOK_LOGIN_REMOVE) == false }
                 .map { it.localizedMessage }
         }
 
@@ -313,7 +313,7 @@ interface LoginToutViewModel {
 
             facebookAuthorizationError
                 .filter {
-                    environment.optimizely()?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_FACEBOOK_LOGIN_REMOVE) == true
+                    environment.featureFlagClient()?.getBoolean(FlagKey.ANDROID_FACEBOOK_LOGIN_REMOVE) == true
                 }
                 .compose(bindToLifecycle())
                 .subscribe {

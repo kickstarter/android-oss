@@ -407,12 +407,12 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         currentUser.refresh(user)
         startSetPasswordActivity.assertValueCount(0)
 
-      val mockFeatureFlagClientType: MockFeatureFlagClient =
-              object : MockFeatureFlagClient() {
-                  override fun getBoolean(FlagKey: FlagKey): Boolean {
-                      return true
-                  }
-              }
+        val mockFeatureFlagClientType: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    return true
+                }
+            }
 
         val mockApolloClient = object : MockApolloClient() {
             override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {

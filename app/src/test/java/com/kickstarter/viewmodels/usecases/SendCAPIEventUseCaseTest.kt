@@ -13,6 +13,7 @@ import com.kickstarter.libs.utils.extensions.toHashedSHAEmail
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.ui.SharedPreferenceKey
@@ -42,7 +43,7 @@ class SendCAPIEventUseCaseTest : KSRobolectricTestCase() {
             }
         }
 
-    val currentUser: CurrentUserType = MockCurrentUser()
+    val currentUser: CurrentUserType = MockCurrentUser(UserFactory.user().toBuilder().email("some@email.com").build())
     private fun setUpEnvironment(): Environment {
         return environment()
             .toBuilder()

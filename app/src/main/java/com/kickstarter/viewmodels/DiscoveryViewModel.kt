@@ -3,11 +3,10 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import android.net.Uri
 import android.util.Pair
-import com.google.common.collect.Iterables.filter
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.models.OptimizelyFeature
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DiscoveryUtils
 import com.kickstarter.libs.utils.ObjectUtils
@@ -131,7 +130,7 @@ interface DiscoveryViewModel {
         private val currentConfigType = requireNotNull(environment.currentConfig())
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val webClient = requireNotNull(environment.webClient())
-        private val optimizely = environment.optimizely()
+        private val ffClient = environment.featureFlagClient()
 
         private fun currentDrawerMenuIcon(user: User?): Int {
             if (ObjectUtils.isNull(user)) {
@@ -260,7 +259,7 @@ interface DiscoveryViewModel {
 
             Observable.just(sharedPreferences.contains(CONSENT_MANAGEMENT_PREFERENCE))
                 .filter { !it }
-                .filter { this.optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_CONSENT_MANAGEMENT) }
+                .filter { ffClient?.getBoolean(FlagKey.ANDROID_CONSENT_MANAGEMENT) }
                 .compose(bindToLifecycle())
                 .subscribe { showConsentManagementDialog.onNext(null) }
 

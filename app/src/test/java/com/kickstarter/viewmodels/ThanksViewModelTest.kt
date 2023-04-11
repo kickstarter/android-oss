@@ -452,10 +452,18 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
                 }
             }
 
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    return true
+                }
+            }
+
         setUpEnvironment(
             environment().toBuilder()
                 .sharedPreferences(sharedPreferences)
                 .optimizely(mockExperimentsClientType)
+                .featureFlagClient(mockFeatureFlagClient)
                 .build()
         )
 

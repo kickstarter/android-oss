@@ -7,11 +7,12 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.extensions.toHashedSHAEmail
 import com.kickstarter.mock.MockExperimentsClientType
+import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.ui.SharedPreferenceKey
@@ -23,7 +24,7 @@ import type.TriggerCapiEventInput
 
 class SendCAPIEventUseCaseTest : KSRobolectricTestCase() {
 
-    var mockSharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+    private var mockSharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
 
     private val sendCAPIEventObservable = BehaviorSubject.create<Pair<TriggerCapiEventMutation.Data, TriggerCapiEventInput>>()
 
@@ -34,13 +35,21 @@ class SendCAPIEventUseCaseTest : KSRobolectricTestCase() {
             }
         }
 
-    val currentUser: CurrentUserType = MockCurrentUser(UserFactory.user().toBuilder().email("some@email.com").build())
+    private val mockFeatureFlagClientType: MockFeatureFlagClient =
+        object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return true
+            }
+        }
+
+    val currentUser: CurrentUserType = MockCurrentUser()
     private fun setUpEnvironment(): Environment {
         return environment()
             .toBuilder()
             .currentUser(currentUser)
             .sharedPreferences(mockSharedPreferences)
             .optimizely(mockExperimentsClientType)
+            .featureFlagClient(mockFeatureFlagClientType)
             .build()
     }
 
@@ -140,7 +149,8 @@ class SendCAPIEventUseCaseTest : KSRobolectricTestCase() {
     ) {
         SendCAPIEventUseCase(
             requireNotNull(environment.optimizely()),
-            requireNotNull(environment.sharedPreferences())
+            requireNotNull(environment.sharedPreferences()),
+            requireNotNull(environment.featureFlagClient())
         ).sendCAPIEvent(
             project = Observable.just(project),
             currentUser = requireNotNull(environment.currentUser()),

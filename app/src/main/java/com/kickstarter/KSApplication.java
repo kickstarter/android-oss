@@ -6,6 +6,7 @@ import com.kickstarter.libs.FirebaseHelper;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.SegmentTrackingClient;
 import com.kickstarter.libs.braze.RemotePushClientType;
+import com.kickstarter.libs.featureflag.FeatureFlagClientType;
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
 import com.kickstarter.libs.utils.Secrets;
 
@@ -23,7 +24,6 @@ import androidx.annotation.CallSuper;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 
-import kotlin.jvm.functions.Function0;
 import timber.log.Timber;
 
 public class KSApplication extends MultiDexApplication implements IKSApplicationComponent {
@@ -32,6 +32,8 @@ public class KSApplication extends MultiDexApplication implements IKSApplication
   @Inject protected PushNotifications pushNotifications;
   @Inject protected RemotePushClientType remotePushClientType;
   @Inject protected SegmentTrackingClient segmentTrackingClient;
+
+  @Inject protected FeatureFlagClientType ffClient;
 
   @Override
   @CallSuper
@@ -61,7 +63,7 @@ public class KSApplication extends MultiDexApplication implements IKSApplication
       Timber.plant(new Timber.DebugTree());
     }
 
-    FirebaseHelper.initialize(getApplicationContext(), (Function0<Boolean>) () -> initializeDependencies());
+    FirebaseHelper.initialize(getApplicationContext(), this.ffClient, this::initializeDependencies);
   }
 
   //- Returns Boolean because incompatible Java "void" type with kotlin "Void" type for the lambda declaration

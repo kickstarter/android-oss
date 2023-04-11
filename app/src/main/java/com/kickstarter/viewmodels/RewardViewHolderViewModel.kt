@@ -142,6 +142,7 @@ interface RewardViewHolderViewModel {
         private val currentUser = requireNotNull(environment.currentUser())
         private val ksCurrency = requireNotNull(environment.ksCurrency())
         private val optimizely = requireNotNull(environment.optimizely())
+        private val ffClient = requireNotNull(environment.featureFlagClient())
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val apolloClient = requireNotNull(environment.apolloClient())
 
@@ -345,8 +346,8 @@ interface RewardViewHolderViewModel {
                     it.first.project()
                 }
 
-            SendCAPIEventUseCase(optimizely, sharedPreferences)
-                .sendCAPIEvent(currentProject, currentUser, apolloClient, ConversionsAPIEventName.INITIATED_CHECKOUT)
+            SendCAPIEventUseCase(optimizely, sharedPreferences, ffClient)
+                .sendCAPIEvent(currentProject, apolloClient, ConversionsAPIEventName.INITIATED_CHECKOUT)
                 .compose(Transformers.neverError())
                 .compose(bindToLifecycle())
                 .subscribe {

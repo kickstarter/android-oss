@@ -11,6 +11,7 @@ import com.kickstarter.libs.KSString
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockTrackingClient
 import com.kickstarter.libs.TrackingClientType
+import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockCurrentConfigV2
@@ -59,8 +60,8 @@ abstract class KSRobolectricTestCase : TestCase() {
         val mockCurrentConfig = MockCurrentConfig()
         val mockCurrentConfigV2 = MockCurrentConfigV2()
         val experimentsClientType = experimentsClient()
-        val segmentTestClient = segmentTrackingClient(mockCurrentConfig, experimentsClientType)
         val mockFeatureFlagClient: MockFeatureFlagClient = MockFeatureFlagClient()
+        val segmentTestClient = segmentTrackingClient(mockCurrentConfig, mockFeatureFlagClient)
 
         val component = DaggerApplicationComponent.builder()
             .applicationModule(TestApplicationModule(application()))
@@ -109,14 +110,14 @@ abstract class KSRobolectricTestCase : TestCase() {
         return experimentsClientType
     }
 
-    private fun segmentTrackingClient(mockCurrentConfig: MockCurrentConfig, experimentsClientType: MockExperimentsClientType): MockTrackingClient {
+    private fun segmentTrackingClient(mockCurrentConfig: MockCurrentConfig, ffClient: FeatureFlagClientType): MockTrackingClient {
         segmentTrack = TestSubscriber()
         segmentIdentify = TestSubscriber()
         val segmentTrackingClient = MockTrackingClient(
             MockCurrentUser(),
             mockCurrentConfig,
             TrackingClientType.Type.SEGMENT,
-            experimentsClientType
+            ffClient
         )
         segmentTrackingClient.eventNames.subscribe(segmentTrack)
         segmentTrackingClient.identifiedUser.subscribe(segmentIdentify)

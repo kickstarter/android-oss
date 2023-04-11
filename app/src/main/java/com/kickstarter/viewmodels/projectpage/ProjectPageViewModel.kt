@@ -264,7 +264,6 @@ interface ProjectPageViewModel {
         private val cookieManager = requireNotNull(environment.cookieManager())
         private val currentUser = requireNotNull(environment.currentUser())
         private val ksCurrency = requireNotNull(environment.ksCurrency())
-        private val optimizely = requireNotNull(environment.optimizely())
         private val ffClient = requireNotNull(environment.featureFlagClient())
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val apolloClient = requireNotNull(environment.apolloClient())
@@ -520,7 +519,7 @@ interface ProjectPageViewModel {
                 projectOnDeepLinkChangeSave
             )
 
-            SendCAPIEventUseCase(optimizely, sharedPreferences, ffClient)
+            SendCAPIEventUseCase(sharedPreferences, ffClient)
                 .sendCAPIEvent(currentProject, apolloClient, ConversionsAPIEventName.VIEWED_CONTENT)
                 .compose(neverError())
                 .compose(bindToLifecycle())

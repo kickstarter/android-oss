@@ -11,13 +11,11 @@ import com.kickstarter.libs.MockSharedPreferences
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.models.Country
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.extensions.trimAllWhitespace
 import com.kickstarter.mock.MockCurrentConfig
-import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.CheckoutFactory

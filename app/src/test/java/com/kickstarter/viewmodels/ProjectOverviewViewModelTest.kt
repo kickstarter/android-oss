@@ -6,13 +6,11 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.MockCurrentUser
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ProgressBarUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
 import com.kickstarter.mock.MockCurrentConfig
-import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.LocationFactory

@@ -29,8 +29,6 @@ import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.libs.DeviceRegistrar;
 import com.kickstarter.libs.DeviceRegistrarType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ExperimentsClientType;
-import com.kickstarter.libs.ExperimentsClientTypeKt;
 import com.kickstarter.libs.FirebaseAnalyticsClient;
 import com.kickstarter.libs.FirebaseAnalyticsClientType;
 import com.kickstarter.libs.Font;
@@ -40,7 +38,6 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.AnalyticEvents;
 import com.kickstarter.libs.CurrentUserV2;
 import com.kickstarter.libs.Logout;
-import com.kickstarter.libs.OptimizelyExperimentsClient;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.SegmentTrackingClient;
 import com.kickstarter.libs.TrackingClientType;
@@ -52,7 +49,6 @@ import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.DateTimeAdapter;
 import com.kickstarter.libs.graphql.Iso8601DateTimeAdapter;
 import com.kickstarter.libs.graphql.EmailAdapter;
-import com.kickstarter.libs.models.OptimizelyEnvironment;
 import com.kickstarter.libs.perimeterx.PerimeterXClient;
 import com.kickstarter.libs.perimeterx.PerimeterXClientType;
 import com.kickstarter.libs.preferences.BooleanDataStore;
@@ -150,7 +146,6 @@ public class ApplicationModule {
     final @NonNull KSString ksString,
     final @NonNull AnalyticEvents analytics,
     final @NonNull Logout logout,
-    final @NonNull ExperimentsClientType optimizely,
     final @NonNull PlayServicesCapability playServicesCapability,
     final @NonNull Scheduler scheduler,
     final @NonNull io.reactivex.Scheduler schedulerV2,
@@ -182,7 +177,6 @@ public class ApplicationModule {
       .ksString(ksString)
       .analytics(analytics)
       .logout(logout)
-      .optimizely(optimizely)
       .playServicesCapability(playServicesCapability)
       .scheduler(scheduler)
       .schedulerV2(schedulerV2)
@@ -463,7 +457,6 @@ public class ApplicationModule {
           final @NonNull CurrentUserType currentUser,
           final @NonNull Build build,
           final @NonNull CurrentConfigType currentConfig,
-          final @NonNull ExperimentsClientType experimentsClientType,
           final @NonNull FeatureFlagClientType ffClient,
           final @NonNull SegmentTrackingClient segmentClient) {
     final List<TrackingClientType> clients = Arrays.asList(segmentClient);
@@ -617,8 +610,8 @@ public class ApplicationModule {
   @Singleton
   @NonNull
   static PushNotifications providePushNotifications(final @ApplicationContext @NonNull Context context,
-    final @NonNull ApiClientType client, final @NonNull ExperimentsClientType experimentsClientType) {
-    return new PushNotifications(context, client, experimentsClientType);
+    final @NonNull ApiClientType client) {
+    return new PushNotifications(context, client);
   }
 
   @Provides
@@ -669,37 +662,5 @@ public class ApplicationModule {
             context,
             stripePublishableKey);
     return new Stripe(context, stripePublishableKey);
-  }
-
-  @Provides
-  @Singleton
-  @NonNull
-  ExperimentsClientType provideOptimizely(final @ApplicationContext @NonNull Context context, final @NonNull ApiEndpoint apiEndpoint, final @NonNull Build build) {
-    final OptimizelyEnvironment optimizelyEnvironment;
-    if (apiEndpoint == ApiEndpoint.PRODUCTION) {
-      optimizelyEnvironment = OptimizelyEnvironment.PRODUCTION;
-    } else if (apiEndpoint == ApiEndpoint.STAGING) {
-      optimizelyEnvironment = OptimizelyEnvironment.STAGING;
-    } else {
-      optimizelyEnvironment = OptimizelyEnvironment.DEVELOPMENT;
-    }
-
-    final OptimizelyManager optimizelyManager = OptimizelyManager.builder()
-      .withSDKKey(optimizelyEnvironment.getSdkKey())
-      .withDatafileDownloadInterval(15, TimeUnit.MINUTES)
-      .withEventDispatchInterval(2L, TimeUnit.MILLISECONDS)
-      .build(context);
-
-    optimizelyManager.initialize(context, null, optimizely -> {
-      if (!optimizely.isValid()) {
-        FirebaseCrashlytics.getInstance().recordException(new Throwable("Optimizely failed to initialize."));
-      } else {
-        if (build.isDebug()) {
-          Timber.d(ApplicationModule.class.getSimpleName(), "🔮 Optimizely successfully initialized.");
-        }
-        context.sendBroadcast(new Intent(ExperimentsClientTypeKt.EXPERIMENTS_CLIENT_READY));
-      }
-    });
-    return new OptimizelyExperimentsClient(optimizelyManager, optimizelyEnvironment);
   }
 }

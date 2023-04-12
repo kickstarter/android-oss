@@ -124,7 +124,7 @@ public class BaseFragment<ViewModelType extends FragmentViewModel> extends Fragm
 
       final FragmentActivity activity = getActivity();
       if (activity != null) {
-        activity.registerReceiver(this.optimizelyReadyReceiver, new IntentFilter(ExperimentsClientTypeKt.EXPERIMENTS_CLIENT_READY));
+        activity.registerReceiver(this.optimizelyReadyReceiver, new IntentFilter(""));
       }
     }
   }

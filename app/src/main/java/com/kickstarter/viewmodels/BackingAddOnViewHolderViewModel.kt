@@ -129,7 +129,6 @@ class BackingAddOnViewHolderViewModel {
         private val maxQuantity = PublishSubject.create<Int>()
         private val localPickUpIsGone = BehaviorSubject.create<Boolean>()
         private val localPickUpName = BehaviorSubject.create<String>()
-        private val optimizely = environment.optimizely()
 
         val inputs: Inputs = this
         val outputs: Outputs = this

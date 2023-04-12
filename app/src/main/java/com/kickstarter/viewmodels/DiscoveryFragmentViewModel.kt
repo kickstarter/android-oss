@@ -308,11 +308,6 @@ interface DiscoveryFragmentViewModel {
                     projectList.onNext(emptyList())
                 }
 
-            val userWhenOptimizelyReady = Observable.merge(
-                changedUser,
-                changedUser.compose(Transformers.takeWhen(optimizelyReady))
-            )
-
             currentUser.observable()
                 .compose(Transformers.combineLatestPair(paramsFromActivity))
                 .map { defaultParamsAndEnabled: Pair<User, DiscoveryParams> ->

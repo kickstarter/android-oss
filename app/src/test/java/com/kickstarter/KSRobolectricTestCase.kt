@@ -15,7 +15,6 @@ import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockCurrentConfigV2
-import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.services.MockApiClient

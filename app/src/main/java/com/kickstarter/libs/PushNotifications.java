@@ -72,7 +72,6 @@ public final class PushNotifications {
 
   private final @ApplicationContext Context context;
   private final ApiClientType client;
-  private final ExperimentsClientType experimentsClientType;
 
   private final PublishSubject<PushNotificationEnvelope> notifications = PublishSubject.create();
   private final CompositeSubscription subscriptions = new CompositeSubscription();
@@ -80,10 +79,9 @@ public final class PushNotifications {
   @VisibleForTesting
   public  Intent messageThreadIntent;
 
-  public PushNotifications(final @ApplicationContext @NonNull Context context, final @NonNull ApiClientType client, final @NonNull ExperimentsClientType experimentsClientType) {
+  public PushNotifications(final @ApplicationContext @NonNull Context context, final @NonNull ApiClientType client) {
     this.context = context;
     this.client = client;
-    this.experimentsClientType = experimentsClientType;
   }
 
   public void initialize() {

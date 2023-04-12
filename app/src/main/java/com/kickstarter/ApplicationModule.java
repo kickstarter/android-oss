@@ -2,7 +2,6 @@ package com.kickstarter;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -11,7 +10,6 @@ import android.content.res.Resources;
 
 import com.apollographql.apollo.ApolloClient;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -86,7 +84,6 @@ import com.kickstarter.services.interceptors.GraphQLInterceptor;
 import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.ui.SharedPreferenceKey;
-import com.optimizely.ab.android.sdk.OptimizelyManager;
 import com.stripe.android.PaymentConfiguration;
 import com.stripe.android.Stripe;
 
@@ -95,7 +92,6 @@ import org.joda.time.DateTime;
 import java.net.CookieManager;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 import javax.inject.Singleton;
@@ -113,7 +109,6 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Scheduler;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 import type.CustomType;
 
 @Module

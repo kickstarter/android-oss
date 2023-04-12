@@ -230,7 +230,6 @@ dependencies {
     implementation "com.jakewharton.rxbinding:rxbinding-recyclerview-v7:$rx_binding_version"
     implementation "com.jakewharton.rxbinding:rxbinding-support-v4:$rx_binding_version"
     implementation "com.jakewharton.timber:timber:5.0.1"
-    implementation 'com.optimizely.ab:android-sdk:3.13.2'
     implementation 'com.stripe:stripe-android:20.16.1'
     final okhttp_version = '4.10.+'
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"

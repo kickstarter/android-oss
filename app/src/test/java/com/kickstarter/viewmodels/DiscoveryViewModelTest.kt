@@ -729,17 +729,18 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
         Mockito.`when`(sharedPreferences.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)).thenReturn(true)
 
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return true
                 }
             }
+
         setUpEnvironment(
             environment()
                 .toBuilder()
                 .sharedPreferences(sharedPreferences)
-                .optimizely(mockExperimentsClientType)
+                .featureFlagClient(mockFeatureFlagClient)
                 .build()
         )
 
@@ -753,9 +754,9 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
         Mockito.`when`(sharedPreferences.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)).thenReturn(false)
 
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return false
                 }
             }
@@ -764,7 +765,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
             environment()
                 .toBuilder()
                 .sharedPreferences(sharedPreferences)
-                .optimizely(mockExperimentsClientType)
+                .featureFlagClient(mockFeatureFlagClient)
                 .build()
         )
 
@@ -778,12 +779,6 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
 
         Mockito.`when`(sharedPreferences.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)).thenReturn(false)
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
-                    return true
-                }
-            }
 
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
@@ -796,7 +791,6 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
             environment()
                 .toBuilder()
                 .sharedPreferences(sharedPreferences)
-                .optimizely(mockExperimentsClientType)
                 .featureFlagClient(mockFeatureFlagClient)
                 .build()
         )

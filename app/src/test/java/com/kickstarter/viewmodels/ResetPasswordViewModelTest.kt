@@ -169,15 +169,16 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
         val preFillEmail = TestSubscriber<String>()
         val resetPasswordScreenStatus = TestSubscriber<ResetPasswordScreenState>()
 
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return true
                 }
             }
+
         val environment = environment()
             .toBuilder()
-            .optimizely(mockExperimentsClientType)
+            .featureFlagClient(mockFeatureFlagClient)
             .build()
 
         val vm = ResetPasswordViewModel.ViewModel(environment)

@@ -584,8 +584,10 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShouldShowReportProject_FFOn() {
-        val env = environmentForFeatureFlag(true)
+    fun testShouldShowReportProject() {
+        val env = environment()
+            .toBuilder()
+            .build()
 
         setUpEnvironment(env, project(ProjectFactory.project()))
 
@@ -625,7 +627,10 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testProjectReported() {
-        val env = environmentForFeatureFlag(true)
+        val env = environment()
+            .toBuilder()
+            .build()
+
         val project = ProjectFactory.project().toBuilder()
             .isFlagged(true)
             .build()
@@ -638,7 +643,9 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testProjectReportedClickedLink() {
-        val env = environmentForFeatureFlag(true)
+        val env = environment()
+            .toBuilder()
+            .build()
         val project = ProjectFactory.project().toBuilder()
             .isFlagged(true)
             .build()
@@ -651,20 +658,6 @@ class ProjectOverviewViewModelTest : KSRobolectricTestCase() {
             "${environment().webEndpoint()}$OUR_RULES",
             "${environment().webEndpoint()}$COMMUNITY_GUIDELINES"
         )
-    }
-
-    private fun environmentForFeatureFlag(enabled: Boolean): Environment {
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
-                    return enabled
-                }
-            }
-
-        return environment()
-            .toBuilder()
-            .optimizely(mockExperimentsClientType)
-            .build()
     }
 
     private fun environmentWithUnsuccessfulCreatorDetailsQuery(): Environment {

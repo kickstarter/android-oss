@@ -375,12 +375,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
         Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)).thenReturn(true)
 
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
-                    return true
-                }
-            }
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
                 override fun getBoolean(FlagKey: FlagKey): Boolean {
@@ -391,7 +385,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
             .toBuilder()
             .sharedPreferences(sharedPreferences)
-            .optimizely(mockExperimentsClientType)
             .featureFlagClient(mockFeatureFlagClient)
             .currentUser(mockCurrentUser)
             .apolloClient(object : MockApolloClient() {
@@ -1365,12 +1358,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)).thenReturn(true)
 
         val testData = setUpBackedShippableRewardTestData()
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
-                    return true
-                }
-            }
 
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
@@ -1384,7 +1371,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
             .toBuilder()
             .sharedPreferences(sharedPreferences)
-            .optimizely(mockExperimentsClientType)
             .featureFlagClient(mockFeatureFlagClient)
             .currentUser(mockCurrentUser)
             .apolloClient(object : MockApolloClient() {

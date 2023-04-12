@@ -213,14 +213,8 @@ class CreatorDashboardHeaderHolderViewModelTest : KSRobolectricTestCase() {
         val project = project()
         val projectStatsEnvelope = projectStatsEnvelope()
         val currentUser: CurrentUserType = MockCurrentUser()
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
-                    return true
-                }
-            }
         setUpEnvironment(
-            environment().toBuilder().currentUser(currentUser).optimizely(mockExperimentsClientType)
+            environment().toBuilder().currentUser(currentUser)
                 .build()
         )
         vm.inputs.configureWith(ProjectDashboardData(project, projectStatsEnvelope, false))

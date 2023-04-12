@@ -26,13 +26,6 @@ class SendCAPIEventUseCaseTest : KSRobolectricTestCase() {
 
     private val sendCAPIEventObservable = BehaviorSubject.create<Pair<TriggerCapiEventMutation.Data, TriggerCapiEventInput>>()
 
-    val mockExperimentsClientType: MockExperimentsClientType =
-        object : MockExperimentsClientType() {
-            override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
-                return true
-            }
-        }
-
     private val mockFeatureFlagClientType: MockFeatureFlagClient =
         object : MockFeatureFlagClient() {
             override fun getBoolean(FlagKey: FlagKey): Boolean {
@@ -46,7 +39,6 @@ class SendCAPIEventUseCaseTest : KSRobolectricTestCase() {
             .toBuilder()
             .currentUser(currentUser)
             .sharedPreferences(mockSharedPreferences)
-            .optimizely(mockExperimentsClientType)
             .featureFlagClient(mockFeatureFlagClientType)
             .build()
     }

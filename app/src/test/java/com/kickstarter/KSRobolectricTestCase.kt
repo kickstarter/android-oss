@@ -58,7 +58,6 @@ abstract class KSRobolectricTestCase : TestCase() {
 
         val mockCurrentConfig = MockCurrentConfig()
         val mockCurrentConfigV2 = MockCurrentConfigV2()
-        val experimentsClientType = experimentsClient()
         val mockFeatureFlagClient: MockFeatureFlagClient = MockFeatureFlagClient()
         val segmentTestClient = segmentTrackingClient(mockCurrentConfig, mockFeatureFlagClient)
 
@@ -82,7 +81,6 @@ abstract class KSRobolectricTestCase : TestCase() {
             .webClient(MockWebClient())
             .stripe(Stripe(context(), Secrets.StripePublishableKey.STAGING))
             .analytics(AnalyticEvents(listOf(segmentTestClient)))
-            .optimizely(experimentsClientType)
             .featureFlagClient(mockFeatureFlagClient)
             .build()
     }
@@ -101,13 +99,6 @@ abstract class KSRobolectricTestCase : TestCase() {
     protected fun environment() = environment
 
     protected fun ksString() = KSString(application().packageName, application().resources)
-
-    private fun experimentsClient(): MockExperimentsClientType {
-        experimentsTest = TestSubscriber()
-        val experimentsClientType = MockExperimentsClientType()
-        experimentsClientType.eventKeys.subscribe(experimentsTest)
-        return experimentsClientType
-    }
 
     private fun segmentTrackingClient(mockCurrentConfig: MockCurrentConfig, ffClient: FeatureFlagClientType): MockTrackingClient {
         segmentTrack = TestSubscriber()

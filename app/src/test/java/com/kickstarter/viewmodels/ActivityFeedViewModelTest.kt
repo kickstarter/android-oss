@@ -114,18 +114,11 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testClickingInterfaceElements_shouldEmitProjectPage() {
         val currentUser: CurrentUserType = MockCurrentUser()
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
-                    return true
-                }
-            }
 
         setUpEnvironment(
             environment()
                 .toBuilder()
                 .currentUser(currentUser)
-                .optimizely(mockExperimentsClientType)
                 .build()
         )
 
@@ -267,18 +260,12 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testStartFixPledge_shouldEmitToFixPledgeProjectPage() {
         val currentUser: CurrentUserType = MockCurrentUser()
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
-                    return true
-                }
-            }
 
         setUpEnvironment(
             environment()
                 .toBuilder()
                 .currentUser(currentUser)
-                .optimizely(mockExperimentsClientType).build()
+                .build()
         )
 
         val projectSlug = "slug"

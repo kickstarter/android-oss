@@ -130,9 +130,9 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
     @Test
     fun facebookLogin_error_login_WithFeatureFlag_Enabled() {
         val currentUser = MockCurrentUser()
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return true
                 }
             }
@@ -140,7 +140,7 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
             .toBuilder()
             .currentUser(currentUser)
-            .optimizely(mockExperimentsClientType)
+            .featureFlagClient(mockFeatureFlagClient)
             .apiClient(object : MockApiClient() {
                 override fun loginWithFacebook(accessToken: String): Observable<AccessTokenEnvelope> {
                     return Observable.error(

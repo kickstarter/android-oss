@@ -119,15 +119,8 @@ class UpdateViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testUpdateViewModel_whenFeatureFlagOn_shouldEmitProjectPage() {
         val user = MockCurrentUser()
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
-                    return true
-                }
-            }
         val environment = environment().toBuilder()
             .currentUser(user)
-            .optimizely(mockExperimentsClientType)
             .build()
         val vm = UpdateViewModel.ViewModel(environment)
         val startProjectActivity = TestSubscriber<Pair<Uri, RefTag>>()

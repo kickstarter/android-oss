@@ -20,7 +20,7 @@ import type.TriggerCapiEventInput
 
 class SendCAPIEventUseCase(
     sharedPreferences: SharedPreferences,
-    ffClient: FeatureFlagClientType
+    ffClient: FeatureFlagClientType,
 ) {
     private val canSendCAPIEventFlag = (
         ffClient.getBoolean(FlagKey.ANDROID_CONSENT_MANAGEMENT) &&
@@ -33,7 +33,7 @@ class SendCAPIEventUseCase(
         currentUser: CurrentUserType,
         apolloClient: ApolloClientType,
         eventName: ConversionsAPIEventName,
-        pledgeAmountAndCurrency: Observable<Pair<String?, String?>> = Observable.just(Pair(null, null))
+        pledgeAmountAndCurrency: Observable<Pair<String?, String?>> = Observable.just(Pair(null, null)),
     ): Observable<Pair<TriggerCapiEventMutation.Data, TriggerCapiEventInput>> {
         val androidApp = "a2"
 
@@ -61,13 +61,13 @@ class SendCAPIEventUseCase(
                     .userEmail(hashedEmail)
                     .customData(
                         CustomDataInput.builder().currency(it.second.second)
-                            .value(it.second.first).build()
+                            .value(it.second.first).build(),
                     )
                     .build()
             }
             .switchMap { input ->
                 apolloClient.triggerCapiEvent(
-                    input
+                    input,
                 ).map { Pair(it, input) }
                     .compose(Transformers.neverError()).share()
             }

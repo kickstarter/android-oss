@@ -44,7 +44,6 @@ abstract class KSRobolectricTestCase : TestCase() {
     private val application: Application = ApplicationProvider.getApplicationContext()
     private lateinit var environment: Environment
 
-    lateinit var experimentsTest: TestSubscriber<String>
     lateinit var segmentTrack: TestSubscriber<String>
     lateinit var segmentIdentify: TestSubscriber<User>
 

@@ -695,7 +695,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.localPickUpIsGone.assertNoValues()
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -726,7 +725,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.localPickUpIsGone.assertValue(true)
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -760,7 +758,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.localPickupName.assertValue(pickupName)
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -793,7 +790,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.localPickUpIsGone.assertNoValues()
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -824,7 +820,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.localPickUpIsGone.assertValue(true)
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -859,7 +854,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.localPickUpIsGone.assertValue(false)
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -909,7 +903,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.localPickUpIsGone.assertNoValues()
 
         this.segmentTrack.assertNoValues()
-        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -945,7 +938,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.localPickUpIsGone.assertValue(true)
 
         this.segmentTrack.assertNoValues()
-        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -976,7 +968,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.localPickUpIsGone.assertNoValues()
 
         this.segmentTrack.assertNoValues()
-        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -1004,7 +995,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.localPickUpIsGone.assertValue(true)
 
         this.segmentTrack.assertNoValues()
-        this.experimentsTest.assertNoValues()
     }
 
     @Test

@@ -7,8 +7,8 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.ApiPaginator
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.graphql.DateTimeAdapter
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
@@ -99,7 +99,7 @@ interface SearchViewModel {
         private val searchProjects = BehaviorSubject.create<List<Project>>()
         private val startProjectActivity = PublishSubject.create<Pair<Project, RefTag>>()
         private val startPreLaunchProjectActivity = PublishSubject.create<Pair<Project, RefTag>>()
-        private val optimizely = requireNotNull(environment.optimizely())
+        private val ffClient = requireNotNull(environment.featureFlagClient())
 
         @JvmField
         val inputs: Inputs = this
@@ -256,7 +256,7 @@ interface SearchViewModel {
 
             selectedProject.subscribe {
                 if (it.first.launchedAt() == DateTimeAdapter().decode(CustomTypeValue.fromRawValue(0)) &&
-                    optimizely.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_PRE_LAUNCH_SCREEN)
+                    ffClient.getBoolean(FlagKey.ANDROID_PRE_LAUNCH_SCREEN)
                 ) {
                     startPreLaunchProjectActivity.onNext(it)
                 } else {

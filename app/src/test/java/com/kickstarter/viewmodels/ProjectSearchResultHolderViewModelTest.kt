@@ -3,9 +3,9 @@ package com.kickstarter.viewmodels
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.models.OptimizelyFeature
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.NumberUtils
-import com.kickstarter.mock.MockExperimentsClientType
+import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.PhotoFactory.photo
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.ProjectFactory.project
@@ -28,7 +28,7 @@ class ProjectSearchResultHolderViewModelTest : KSRobolectricTestCase() {
         vm.outputs.notifyDelegateOfResultClick().subscribe(notifyDelegateOfResultClick)
         vm.outputs.percentFundedTextViewText().subscribe(percentFundedTextViewText)
         vm.outputs.projectForDeadlineCountdownUnitTextView().subscribe(
-            projectForDeadlineCountdownUnitTextView
+            projectForDeadlineCountdownUnitTextView,
         )
         vm.outputs.projectNameTextViewText().subscribe(projectNameTextViewText)
         vm.outputs.projectPhotoUrl().subscribe(projectPhotoUrl)
@@ -43,7 +43,7 @@ class ProjectSearchResultHolderViewModelTest : KSRobolectricTestCase() {
                 photo()
                     .toBuilder()
                     .med("http://www.kickstarter.com/med.jpg")
-                    .build()
+                    .build(),
             )
             .build()
         setUpEnvironment(environment())
@@ -60,7 +60,7 @@ class ProjectSearchResultHolderViewModelTest : KSRobolectricTestCase() {
                 photo()
                     .toBuilder()
                     .full("http://www.kickstarter.com/full.jpg")
-                    .build()
+                    .build(),
             )
             .build()
         setUpEnvironment(environment())
@@ -82,15 +82,15 @@ class ProjectSearchResultHolderViewModelTest : KSRobolectricTestCase() {
     fun testShowComingSoonLabelPrelauncProjects() {
         val project = ProjectFactory.prelaunchProject("")
 
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return true
                 }
             }
 
         val env = environment().toBuilder()
-            .optimizely(mockExperimentsClientType)
+            .featureFlagClient(mockFeatureFlagClient)
             .build()
 
         setUpEnvironment(env)
@@ -103,15 +103,15 @@ class ProjectSearchResultHolderViewModelTest : KSRobolectricTestCase() {
     fun testShowComingSoonLabelPrelauncProjects_feature_flag_disabled() {
         val project = ProjectFactory.prelaunchProject("")
 
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return false
                 }
             }
 
         val env = environment().toBuilder()
-            .optimizely(mockExperimentsClientType)
+            .featureFlagClient(mockFeatureFlagClient)
             .build()
 
         setUpEnvironment(env)

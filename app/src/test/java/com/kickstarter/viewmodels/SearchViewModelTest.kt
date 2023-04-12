@@ -9,9 +9,9 @@ import com.kickstarter.libs.RefTag.Companion.search
 import com.kickstarter.libs.RefTag.Companion.searchFeatured
 import com.kickstarter.libs.RefTag.Companion.searchPopular
 import com.kickstarter.libs.RefTag.Companion.searchPopularFeatured
-import com.kickstarter.libs.models.OptimizelyFeature
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.EventName
-import com.kickstarter.mock.MockExperimentsClientType
+import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.DiscoverEnvelopeFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.ProjectFactory.allTheWayProject
@@ -45,12 +45,12 @@ class SearchViewModelTest : KSRobolectricTestCase() {
         vm.outputs.startProjectActivity()
             .map { it.first }
             .subscribe(
-                goToProject
+                goToProject,
             )
         vm.outputs.startProjectActivity()
             .map { it.second }
             .subscribe(
-                goToRefTag
+                goToRefTag,
             )
         vm.outputs.popularProjects().subscribe(popularProjects)
         vm.outputs.startPreLaunchProjectActivity().subscribe(startPreLaunchProjectActivity)
@@ -143,7 +143,7 @@ class SearchViewModelTest : KSRobolectricTestCase() {
         val projects = Arrays.asList(
             allTheWayProject(),
             almostCompletedProject(),
-            backedProject()
+            backedProject(),
         )
         val apiClient: MockApiClient = object : MockApiClient() {
             override fun fetchProjects(params: DiscoveryParams): Observable<DiscoverEnvelope> {
@@ -173,7 +173,7 @@ class SearchViewModelTest : KSRobolectricTestCase() {
         val projects = Arrays.asList(
             allTheWayProject(),
             almostCompletedProject(),
-            backedProject()
+            backedProject(),
         )
         val apiClient: MockApiClient = object : MockApiClient() {
             override fun fetchProjects(params: DiscoveryParams): Observable<DiscoverEnvelope> {
@@ -202,7 +202,7 @@ class SearchViewModelTest : KSRobolectricTestCase() {
         val projects = Arrays.asList(
             allTheWayProject(),
             almostCompletedProject(),
-            backedProject()
+            backedProject(),
         )
         val apiClient: MockApiClient = object : MockApiClient() {
             override fun fetchProjects(params: DiscoveryParams): Observable<DiscoverEnvelope> {
@@ -231,7 +231,7 @@ class SearchViewModelTest : KSRobolectricTestCase() {
         val projects = Arrays.asList(
             allTheWayProject(),
             almostCompletedProject(),
-            backedProject()
+            backedProject(),
         )
         val apiClient: MockApiClient = object : MockApiClient() {
             override fun fetchProjects(params: DiscoveryParams): Observable<DiscoverEnvelope> {
@@ -260,16 +260,16 @@ class SearchViewModelTest : KSRobolectricTestCase() {
         val projects = Arrays.asList(
             allTheWayProject(),
             almostCompletedProject(),
-            ProjectFactory.prelaunchProject("")
+            ProjectFactory.prelaunchProject(""),
         )
         val apiClient: MockApiClient = object : MockApiClient() {
             override fun fetchProjects(params: DiscoveryParams): Observable<DiscoverEnvelope> {
                 return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects))
             }
         }
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return true
                 }
             }
@@ -277,7 +277,7 @@ class SearchViewModelTest : KSRobolectricTestCase() {
         val env = environment().toBuilder()
             .scheduler(scheduler)
             .apiClient(apiClient)
-            .optimizely(mockExperimentsClientType)
+            .featureFlagClient(mockFeatureFlagClient)
             .build()
         setUpEnvironment(env)
 
@@ -299,11 +299,11 @@ class SearchViewModelTest : KSRobolectricTestCase() {
         val projects = Arrays.asList(
             allTheWayProject(),
             almostCompletedProject(),
-            ProjectFactory.prelaunchProject("")
+            ProjectFactory.prelaunchProject(""),
         )
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return false
                 }
             }
@@ -314,7 +314,7 @@ class SearchViewModelTest : KSRobolectricTestCase() {
         }
         val env = environment().toBuilder()
             .scheduler(scheduler)
-            .optimizely(mockExperimentsClientType)
+            .featureFlagClient(mockFeatureFlagClient)
             .apiClient(apiClient)
             .build()
         setUpEnvironment(env)
@@ -332,9 +332,9 @@ class SearchViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testProjectPage_whenFeatureFlagOn_shouldEmitProjectPage() {
         val user = MockCurrentUser()
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return true
                 }
             }
@@ -342,7 +342,7 @@ class SearchViewModelTest : KSRobolectricTestCase() {
         val projects = listOf(
             allTheWayProject(),
             almostCompletedProject(),
-            backedProject()
+            backedProject(),
         )
         val apiClient: MockApiClient = object : MockApiClient() {
             override fun fetchProjects(params: DiscoveryParams): Observable<DiscoverEnvelope> {
@@ -351,7 +351,7 @@ class SearchViewModelTest : KSRobolectricTestCase() {
         }
         val env = environment().toBuilder()
             .currentUser(user)
-            .optimizely(mockExperimentsClientType)
+            .featureFlagClient(mockFeatureFlagClient)
             .scheduler(scheduler)
             .apiClient(apiClient)
             .build()

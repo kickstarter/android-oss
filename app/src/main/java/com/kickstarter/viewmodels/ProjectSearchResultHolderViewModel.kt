@@ -5,8 +5,8 @@ import androidx.annotation.NonNull
 import com.apollographql.apollo.api.CustomTypeValue
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.graphql.DateTimeAdapter
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils
@@ -65,21 +65,20 @@ interface ProjectSearchResultHolderViewModel {
 
         val inputs: Inputs = this
         val outputs: Outputs = this
-
-        private val optimizely = requireNotNull(environment.optimizely())
+        private val ffClient = requireNotNull(environment.featureFlagClient())
 
         init {
             deadlineCountdownValueTextViewText = projectAndIsFeatured
                 .map {
                     NumberUtils.format(
-                        it.first.deadlineCountdownValue()
+                        it.first.deadlineCountdownValue(),
                     )
                 }
 
             percentFundedTextViewText = projectAndIsFeatured
                 .map {
                     NumberUtils.flooredPercentage(
-                        it.first.percentageFunded()
+                        it.first.percentageFunded(),
                     )
                 }
 
@@ -90,7 +89,7 @@ interface ProjectSearchResultHolderViewModel {
                 .map {
                     Pair.create(
                         it.first.photo(),
-                        it.second
+                        it.second,
                     )
                 }
                 .filter { ObjectUtils.isNotNull(it.first) }
@@ -110,11 +109,11 @@ interface ProjectSearchResultHolderViewModel {
                 .compose(Transformers.takeWhen(projectClicked))
 
             projectAndIsFeatured
-                .filter { optimizely.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_PRE_LAUNCH_SCREEN) }
+                .filter { ffClient.getBoolean(FlagKey.ANDROID_PRE_LAUNCH_SCREEN) }
                 .map {
                     it?.first?.displayPrelaunch() == true ||
-                        it.first.launchedAt() == DateTimeAdapter()
-                        .decode(CustomTypeValue.fromRawValue(0))
+                        it.first.launchedAt() ==
+                        DateTimeAdapter().decode(CustomTypeValue.fromRawValue(0))
                 }.compose(bindToLifecycle())
                 .subscribe {
                     displayPrelaunchProjectBadge.onNext(it)

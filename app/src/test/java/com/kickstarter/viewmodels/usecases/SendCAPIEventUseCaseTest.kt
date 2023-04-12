@@ -149,7 +149,6 @@ class SendCAPIEventUseCaseTest : KSRobolectricTestCase() {
         pledgeAmountAndCurrency: Observable<Pair<String?, String?>> = Observable.just(Pair(null, null))
     ) {
         SendCAPIEventUseCase(
-            requireNotNull(environment.optimizely()),
             requireNotNull(environment.sharedPreferences()),
             requireNotNull(environment.featureFlagClient())
         ).sendCAPIEvent(

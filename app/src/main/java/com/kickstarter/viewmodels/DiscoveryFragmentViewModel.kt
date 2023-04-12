@@ -6,7 +6,6 @@ import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.loadmore.ApolloPaginate.Companion.builder
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.DISCOVER
 import com.kickstarter.libs.utils.ListUtils
@@ -127,7 +126,7 @@ interface DiscoveryFragmentViewModel {
         private val apiClient = requireNotNull(environment.apiClient())
         private val apolloClient = requireNotNull(environment.apolloClient())
         private val activitySamplePreference = environment.activitySamplePreference()
-        private val optimizely = environment.optimizely()
+        private val ffClient = requireNotNull(environment.featureFlagClient())
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val cookieManager = requireNotNull(environment.cookieManager())
         private val currentUser = requireNotNull(environment.currentUser())
@@ -293,7 +292,7 @@ interface DiscoveryFragmentViewModel {
 
             startProject.subscribe {
                 if (it.first.displayPrelaunch() == true &&
-                    optimizely?.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_PRE_LAUNCH_SCREEN) == true
+                    ffClient.getBoolean(FlagKey.ANDROID_PRE_LAUNCH_SCREEN)
                 ) {
                     startPreLaunchProjectActivity.onNext(it)
                 } else {

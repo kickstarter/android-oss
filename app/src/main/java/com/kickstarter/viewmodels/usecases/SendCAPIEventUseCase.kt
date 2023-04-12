@@ -4,11 +4,9 @@ import android.content.SharedPreferences
 import android.util.Pair
 import com.facebook.appevents.cloudbridge.ConversionsAPIEventName
 import com.kickstarter.libs.CurrentUserType
-import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.FirebaseHelper
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.extensions.toHashedSHAEmail
 import com.kickstarter.models.Project
@@ -21,14 +19,13 @@ import type.CustomDataInput
 import type.TriggerCapiEventInput
 
 class SendCAPIEventUseCase(
-    optimizely: ExperimentsClientType,
     sharedPreferences: SharedPreferences,
     ffClient: FeatureFlagClientType
 ) {
     private val canSendCAPIEventFlag = (
         ffClient.getBoolean(FlagKey.ANDROID_CONSENT_MANAGEMENT) &&
             sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false) &&
-            optimizely.isFeatureEnabled(OptimizelyFeature.Key.ANDROID_CAPI_INTEGRATION)
+            ffClient.getBoolean(FlagKey.ANDROID_CAPI_INTEGRATION)
         )
 
     fun sendCAPIEvent(

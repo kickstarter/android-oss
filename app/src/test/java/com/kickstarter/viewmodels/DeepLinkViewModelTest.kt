@@ -5,8 +5,8 @@ import android.net.Uri
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
-import com.kickstarter.libs.models.OptimizelyFeature
-import com.kickstarter.mock.MockExperimentsClientType
+import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApiClient
@@ -444,16 +444,16 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.backedProject().toBuilder().displayPrelaunch(true)
             .deadline(DateTime.now().plusDays(2)).build()
 
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return true
                 }
             }
 
         val environment = environment().toBuilder()
             .apolloClient(mockApolloClientForBacking(project))
-            .optimizely(mockExperimentsClientType)
+            .featureFlagClient(mockFeatureFlagClient)
             .build()
 
         setUpEnvironment(environment)
@@ -480,9 +480,9 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.backedProject().toBuilder().displayPrelaunch(true)
             .deadline(DateTime.now().plusDays(2)).build()
 
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return true
                 }
             }
@@ -490,7 +490,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         val environment = environment().toBuilder()
             .apolloClient(mockApolloClientForBacking(project))
             .currentUser(mockUser)
-            .optimizely(mockExperimentsClientType)
+            .featureFlagClient(mockFeatureFlagClient)
             .build()
         setUpEnvironment(environment)
 
@@ -515,7 +515,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
             override fun postBacking(
                 project: Project,
                 backing: Backing,
-                checked: Boolean
+                checked: Boolean,
             ): Observable<Backing> {
                 return Observable.just(backing.toBuilder().completedByBacker(completed).build())
             }

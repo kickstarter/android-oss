@@ -264,7 +264,6 @@ interface ProjectPageViewModel {
         private val cookieManager = requireNotNull(environment.cookieManager())
         private val currentUser = requireNotNull(environment.currentUser())
         private val ksCurrency = requireNotNull(environment.ksCurrency())
-        private val optimizely = requireNotNull(environment.optimizely())
         private val ffClient = requireNotNull(environment.featureFlagClient())
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val apolloClient = requireNotNull(environment.apolloClient())
@@ -350,7 +349,7 @@ interface ProjectPageViewModel {
             val mappedProjectNotification = Observable.merge(
                 intent(),
                 intent()
-                    .compose(takeWhen<Intent, Void>(this.reloadProjectContainerClicked)),
+                    .compose(takeWhen<Intent, Void>(this.reloadProjectContainerClicked))
             )
                 .switchMap {
                     ProjectIntentMapper.project(it, this.apolloClient)
@@ -459,7 +458,7 @@ interface ProjectPageViewModel {
                 this.pledgeSuccessfullyCreated.compose(ignoreValues()),
                 this.pledgeSuccessfullyUpdated,
                 this.pledgePaymentSuccessfullyUpdated,
-                this.refreshProject,
+                this.refreshProject
             )
 
             val refreshedProjectNotification = initialProject
@@ -517,11 +516,11 @@ interface ProjectPageViewModel {
                 refreshedProjectNotification.compose(values()),
                 projectOnUserChangeSave,
                 savedProjectOnLoginSuccess,
-                projectOnDeepLinkChangeSave,
+                projectOnDeepLinkChangeSave
             )
 
-            SendCAPIEventUseCase(optimizely, sharedPreferences, ffClient)
-                .sendCAPIEvent(currentProject, currentUser, apolloClient, ConversionsAPIEventName.VIEWED_CONTENT)
+            SendCAPIEventUseCase(sharedPreferences, ffClient)
+                .sendCAPIEvent(currentProject,currentUser, apolloClient, ConversionsAPIEventName.VIEWED_CONTENT)
                 .compose(neverError())
                 .compose(bindToLifecycle())
                 .subscribe {
@@ -602,7 +601,7 @@ interface ProjectPageViewModel {
                 }.map {
                     Pair(
                         requireNotNull(it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)),
-                        it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE_COMMENT, false),
+                        it.getBooleanExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE_COMMENT, false)
                     )
                 }
                 .withLatestFrom(latestProjectAndProjectData) { updateId, project ->
@@ -622,7 +621,7 @@ interface ProjectPageViewModel {
                 }.map {
                     Pair(
                         requireNotNull(it.getStringExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE)),
-                        it.getStringExtra(IntentKey.COMMENT) ?: "",
+                        it.getStringExtra(IntentKey.COMMENT) ?: ""
                     )
                 }
                 .withLatestFrom(latestProjectAndProjectData) { updateId, project ->
@@ -742,9 +741,7 @@ interface ProjectPageViewModel {
                 .map {
                     val updatedProject = if (it.first.project().isBacking()) {
                         it.first.project().toBuilder().backing(it.second).build()
-                    } else {
-                        it.first.project()
-                    }
+                    } else it.first.project()
 
                     projectData(it.first.refTagFromIntent(), it.first.refTagFromCookie(), updatedProject)
                 }

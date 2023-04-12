@@ -125,7 +125,7 @@ public class BaseBottomSheetDialogFragment<ViewModelType extends FragmentViewMod
 
       final FragmentActivity activity = getActivity();
       if (activity != null) {
-        activity.registerReceiver(this.optimizelyReadyReceiver, new IntentFilter(ExperimentsClientTypeKt.EXPERIMENTS_CLIENT_READY));
+        activity.registerReceiver(this.optimizelyReadyReceiver, new IntentFilter(""));
       }
     }
   }

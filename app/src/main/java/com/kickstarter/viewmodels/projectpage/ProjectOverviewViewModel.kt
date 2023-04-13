@@ -192,7 +192,6 @@ interface ProjectOverviewViewModel {
         private val apolloClient = requireNotNull(environment.apolloClient())
         private val currentUser = requireNotNull(environment.currentUser())
         private val ksCurrency = requireNotNull(environment.ksCurrency())
-        private val optimizely = environment.optimizely()
         val kSString = requireNotNull(environment.ksString())
 
         // Inputs

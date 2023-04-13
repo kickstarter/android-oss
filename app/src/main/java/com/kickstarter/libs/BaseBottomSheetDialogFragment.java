@@ -1,9 +1,7 @@
 package com.kickstarter.libs;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +10,6 @@ import android.view.ViewGroup;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel;
@@ -30,12 +27,6 @@ public class BaseBottomSheetDialogFragment<ViewModelType extends FragmentViewMod
   private static final String VIEW_MODEL_KEY = "FragmentViewModel";
   private final BehaviorSubject<FragmentEvent> lifecycle = BehaviorSubject.create();
   protected ViewModelType viewModel;
-  private final BroadcastReceiver optimizelyReadyReceiver = new BroadcastReceiver() {
-    @Override
-    public void onReceive(final Context context, final Intent intent) {
-      BaseBottomSheetDialogFragment.this.viewModel.optimizelyReady();
-    }
-  };
 
   /**
   * Returns an observable of the fragment's lifecycle events.
@@ -122,11 +113,6 @@ public class BaseBottomSheetDialogFragment<ViewModelType extends FragmentViewMod
     assignViewModel(null);
     if (this.viewModel != null) {
       this.viewModel.onResume(this);
-
-      final FragmentActivity activity = getActivity();
-      if (activity != null) {
-        activity.registerReceiver(this.optimizelyReadyReceiver, new IntentFilter(ExperimentsClientTypeKt.EXPERIMENTS_CLIENT_READY));
-      }
     }
   }
 
@@ -139,11 +125,6 @@ public class BaseBottomSheetDialogFragment<ViewModelType extends FragmentViewMod
 
     if (this.viewModel != null) {
       this.viewModel.onPause();
-
-      final FragmentActivity activity = getActivity();
-      if (activity != null) {
-        activity.unregisterReceiver(this.optimizelyReadyReceiver);
-      }
     }
   }
 

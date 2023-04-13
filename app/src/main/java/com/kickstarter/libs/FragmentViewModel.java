@@ -52,12 +52,6 @@ public class FragmentViewModel<ViewType extends FragmentLifecycleType> {
     this.arguments.onNext(bundle);
   }
 
-  /**
-   * Signals that the Optimizely instance is ready.
-   */
-  public void optimizelyReady() {
-    this.optimizelyReady.onNext(null);
-  }
 
   protected @NonNull Observable<Bundle> arguments() {
     return this.arguments;

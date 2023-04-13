@@ -19,7 +19,7 @@ class PushNotificationsTest : KSRobolectricTestCase() {
     fun messageThreadIntent() {
         val envelope = PushNotificationEnvelopeFactory.envelope()
         val messageThread = MessageThreadEnvelopeFactory.messageThreadEnvelope().messageThread()
-        val pushNotifications = PushNotifications(context, requireNotNull(environment().apiClient()), requireNotNull(environment().optimizely()))
+        val pushNotifications = PushNotifications(context, requireNotNull(environment().apiClient()))
 
         messageThread?.let {
             pushNotifications.messageThreadIntent(envelope, messageThread)

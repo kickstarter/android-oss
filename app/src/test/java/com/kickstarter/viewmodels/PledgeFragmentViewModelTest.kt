@@ -11,13 +11,11 @@ import com.kickstarter.libs.MockSharedPreferences
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.models.Country
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.extensions.trimAllWhitespace
 import com.kickstarter.mock.MockCurrentConfig
-import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.CheckoutFactory
@@ -377,12 +375,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
         Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)).thenReturn(true)
 
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
-                    return true
-                }
-            }
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
                 override fun getBoolean(FlagKey: FlagKey): Boolean {
@@ -393,7 +385,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
             .toBuilder()
             .sharedPreferences(sharedPreferences)
-            .optimizely(mockExperimentsClientType)
             .featureFlagClient(mockFeatureFlagClient)
             .currentUser(mockCurrentUser)
             .apolloClient(object : MockApolloClient() {
@@ -704,7 +695,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.localPickUpIsGone.assertNoValues()
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -735,7 +725,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.localPickUpIsGone.assertValue(true)
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -769,7 +758,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.localPickupName.assertValue(pickupName)
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -802,7 +790,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.localPickUpIsGone.assertNoValues()
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -833,7 +820,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.localPickUpIsGone.assertValue(true)
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -868,7 +854,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.localPickUpIsGone.assertValue(false)
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -918,7 +903,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.localPickUpIsGone.assertNoValues()
 
         this.segmentTrack.assertNoValues()
-        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -954,7 +938,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.localPickUpIsGone.assertValue(true)
 
         this.segmentTrack.assertNoValues()
-        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -985,7 +968,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.localPickUpIsGone.assertNoValues()
 
         this.segmentTrack.assertNoValues()
-        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -1013,7 +995,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.localPickUpIsGone.assertValue(true)
 
         this.segmentTrack.assertNoValues()
-        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -1367,12 +1348,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)).thenReturn(true)
 
         val testData = setUpBackedShippableRewardTestData()
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
-                    return true
-                }
-            }
 
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
@@ -1386,7 +1361,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
             .toBuilder()
             .sharedPreferences(sharedPreferences)
-            .optimizely(mockExperimentsClientType)
             .featureFlagClient(mockFeatureFlagClient)
             .currentUser(mockCurrentUser)
             .apolloClient(object : MockApolloClient() {

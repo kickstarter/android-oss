@@ -6,9 +6,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.EventName
-import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.services.MockApiClient
@@ -132,9 +130,9 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
     @Test
     fun facebookLogin_error_login_WithFeatureFlag_Enabled() {
         val currentUser = MockCurrentUser()
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return true
                 }
             }
@@ -142,7 +140,7 @@ class LoginToutViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
             .toBuilder()
             .currentUser(currentUser)
-            .optimizely(mockExperimentsClientType)
+            .featureFlagClient(mockFeatureFlagClient)
             .apiClient(object : MockApiClient() {
                 override fun loginWithFacebook(accessToken: String): Observable<AccessTokenEnvelope> {
                     return Observable.error(

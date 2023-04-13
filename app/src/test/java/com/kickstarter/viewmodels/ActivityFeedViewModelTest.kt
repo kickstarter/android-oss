@@ -5,9 +5,7 @@ import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockCurrentUserV2
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.EventName
-import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.ActivityFactory.activity
 import com.kickstarter.mock.factories.ActivityFactory.friendBackingActivity
 import com.kickstarter.mock.factories.ActivityFactory.projectStateChangedActivity
@@ -116,18 +114,11 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testClickingInterfaceElements_shouldEmitProjectPage() {
         val currentUser: CurrentUserType = MockCurrentUser()
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
-                    return true
-                }
-            }
 
         setUpEnvironment(
             environment()
                 .toBuilder()
                 .currentUser(currentUser)
-                .optimizely(mockExperimentsClientType)
                 .build()
         )
 
@@ -269,18 +260,12 @@ class ActivityFeedViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testStartFixPledge_shouldEmitToFixPledgeProjectPage() {
         val currentUser: CurrentUserType = MockCurrentUser()
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
-                    return true
-                }
-            }
 
         setUpEnvironment(
             environment()
                 .toBuilder()
                 .currentUser(currentUser)
-                .optimizely(mockExperimentsClientType).build()
+                .build()
         )
 
         val projectSlug = "slug"

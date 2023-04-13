@@ -28,7 +28,6 @@ class EnvironmentTest : KSRobolectricTestCase() {
         assertNotNull(environment.ksString())
         assertNotNull(environment.analytics())
         assertNotNull(environment.logout())
-        assertNotNull(environment.optimizely())
         assertNotNull(environment.playServicesCapability())
         assertNotNull(environment.scheduler())
         assertNotNull(environment.sharedPreferences())

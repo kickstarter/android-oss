@@ -8,11 +8,9 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.RefTag.Companion.dashboard
-import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ProgressBarUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
-import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.ProjectStatsEnvelopeFactory.projectStatsEnvelope
 import com.kickstarter.mock.factories.UserFactory.collaborator
@@ -215,14 +213,8 @@ class CreatorDashboardHeaderHolderViewModelTest : KSRobolectricTestCase() {
         val project = project()
         val projectStatsEnvelope = projectStatsEnvelope()
         val currentUser: CurrentUserType = MockCurrentUser()
-        val mockExperimentsClientType: MockExperimentsClientType =
-            object : MockExperimentsClientType() {
-                override fun isFeatureEnabled(feature: OptimizelyFeature.Key): Boolean {
-                    return true
-                }
-            }
         setUpEnvironment(
-            environment().toBuilder().currentUser(currentUser).optimizely(mockExperimentsClientType)
+            environment().toBuilder().currentUser(currentUser)
                 .build()
         )
         vm.inputs.configureWith(ProjectDashboardData(project, projectStatsEnvelope, false))

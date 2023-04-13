@@ -5,7 +5,6 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.ApiPaginator
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.extensions.intValueOrZero
@@ -85,7 +84,6 @@ interface ActivityFeedViewModel {
         private val apiClient: ApiClientType
         private val apolloClient: ApolloClientType
         private val currentUser: CurrentUserType
-        private val optimizely: ExperimentsClientType
 
         private val discoverProjectsClick = PublishSubject.create<Void>()
         private val friendBackingClick = PublishSubject.create<Activity>()
@@ -119,7 +117,6 @@ interface ActivityFeedViewModel {
             apiClient = requireNotNull(environment.apiClient())
             apolloClient = requireNotNull(environment.apolloClient())
             currentUser = requireNotNull(environment.currentUser())
-            optimizely = requireNotNull(environment.optimizely())
 
             goToDiscovery = discoverProjectsClick
             goToLogin = loginClick

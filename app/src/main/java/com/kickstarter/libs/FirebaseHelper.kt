@@ -32,9 +32,10 @@ class FirebaseHelper(context: Context, ffClient: FeatureFlagClientType, callback
                 FirebaseApp.initializeApp(context)
                 FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
                 FirebaseAnalytics.getInstance(context).setAnalyticsCollectionEnabled(true)
-                // - Remote config requires FirebaseApp.initializeApp(context) to be called before initializing
-                ffClient.initialize(Firebase.remoteConfig)
             }
+
+            // - Remote config requires FirebaseApp.initializeApp(context) to be called before initializing
+            ffClient.initialize(Firebase.remoteConfig)
             FirebaseInstallations.getInstance().id.addOnSuccessListener { s: String ->
                 identifier = s
                 callback()

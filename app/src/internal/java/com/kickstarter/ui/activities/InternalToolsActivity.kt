@@ -100,10 +100,6 @@ class InternalToolsActivity : BaseActivity<InternalToolsViewModel>() {
             crashButtonClicked()
         }
 
-        binding.featureFlagsButton.setOnClickListener {
-            featureFlagsClick()
-        }
-
         binding.resetDeviceId.setOnClickListener {
             resetDeviceIdClick()
         }
@@ -150,11 +146,6 @@ class InternalToolsActivity : BaseActivity<InternalToolsViewModel>() {
 
     private fun crashButtonClicked() {
         throw RuntimeException("Forced a crash!")
-    }
-
-    private fun featureFlagsClick() {
-        val featureFlagIntent = Intent(this, FeatureFlagsActivity::class.java)
-        startActivity(featureFlagIntent)
     }
 
     private fun resetDeviceIdClick() {

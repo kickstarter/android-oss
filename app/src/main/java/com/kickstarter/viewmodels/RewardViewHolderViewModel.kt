@@ -141,7 +141,6 @@ interface RewardViewHolderViewModel {
         ActivityViewModel<RewardViewHolder>(environment), Inputs, Outputs {
         private val currentUser = requireNotNull(environment.currentUser())
         private val ksCurrency = requireNotNull(environment.ksCurrency())
-        private val optimizely = requireNotNull(environment.optimizely())
         private val ffClient = requireNotNull(environment.featureFlagClient())
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val apolloClient = requireNotNull(environment.apolloClient())

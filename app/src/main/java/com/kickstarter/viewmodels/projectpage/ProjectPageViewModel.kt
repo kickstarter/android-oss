@@ -25,7 +25,6 @@ import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.ENVIRONM
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.FAQS
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.OVERVIEW
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.RISKS
-import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
@@ -823,7 +822,6 @@ interface ProjectPageViewModel {
                 .compose<Pair<Project, User>>(combineLatestPair(this.currentUser.observable()))
 
             Observable.combineLatest(currentProjectData, this.currentUser.observable()) { data, user ->
-                val experimentData = ExperimentData(user, data.refTagFromIntent(), data.refTagFromCookie())
                 ProjectViewUtils.pledgeActionButtonText(
                     data.project(),
                     user,

@@ -104,8 +104,6 @@ class BackingAddOnsFragmentViewModel {
         private val currentSelection = BehaviorSubject.create(mutableMapOf<Long, Int>())
 
         // - Environment Objects
-        private val currentUser = requireNotNull(this.environment.currentUser()?.observable())
-        private val optimizely = requireNotNull(this.environment.optimizely())
         private val apolloClient = requireNotNull(this.environment.apolloClient())
         private val currentConfig = requireNotNull(environment.currentConfig())
 

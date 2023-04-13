@@ -69,10 +69,6 @@ class RewardsFragmentViewModel {
         private val showAddOnsFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showAlert = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
 
-        // - Environment Objects
-        private val currentUser = requireNotNull(this.environment.currentUser()?.observable())
-        private val optimizely = requireNotNull(this.environment.optimizely())
-
         val inputs: Inputs = this
         val outputs: Outputs = this
 

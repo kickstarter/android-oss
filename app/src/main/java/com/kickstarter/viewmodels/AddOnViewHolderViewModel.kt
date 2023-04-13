@@ -94,7 +94,6 @@ interface AddOnViewHolderViewModel {
         private val titleIsGone = BehaviorSubject.create<Boolean>()
         private val localPickUpIsGone = BehaviorSubject.create<Boolean>()
         private val localPickUpName = BehaviorSubject.create<String>()
-        private val optimizely = environment.optimizely()
 
         val inputs: Inputs = this
         val outputs: Outputs = this

@@ -35,7 +35,6 @@ class Environment private constructor(
     private val ksString: KSString?,
     private val analytics: AnalyticEvents?,
     private val logout: Logout?,
-    private val optimizely: ExperimentsClientType?,
     private val playServicesCapability: PlayServicesCapability?,
     private val scheduler: Scheduler?,
     private val schedulerV2: io.reactivex.Scheduler?,
@@ -66,7 +65,6 @@ class Environment private constructor(
     fun ksString() = this.ksString
     fun analytics() = this.analytics
     fun logout() = this.logout
-    fun optimizely() = this.optimizely
     fun playServicesCapability() = this.playServicesCapability
     fun scheduler() = this.scheduler
     fun schedulerV2() = this.schedulerV2
@@ -98,7 +96,6 @@ class Environment private constructor(
         private var ksString: KSString? = null,
         private var analytics: AnalyticEvents? = null,
         private var logout: Logout? = null,
-        private var optimizely: ExperimentsClientType? = null,
         private var playServicesCapability: PlayServicesCapability? = null,
         private var scheduler: Scheduler? = null,
         private var schedulerV2: io.reactivex.Scheduler? = null,
@@ -129,7 +126,6 @@ class Environment private constructor(
         fun ksString(ksString: KSString) = apply { this.ksString = ksString }
         fun analytics(analytics: AnalyticEvents) = apply { this.analytics = analytics }
         fun logout(logout: Logout) = apply { this.logout = logout }
-        fun optimizely(optimizely: ExperimentsClientType) = apply { this.optimizely = optimizely }
         fun playServicesCapability(playServicesCapability: PlayServicesCapability) = apply { this.playServicesCapability = playServicesCapability }
         fun scheduler(scheduler: Scheduler) = apply { this.scheduler = scheduler }
         fun schedulerV2(schedulerV2: io.reactivex.Scheduler) = apply { this.schedulerV2 = schedulerV2 }
@@ -162,7 +158,6 @@ class Environment private constructor(
             ksString = ksString,
             analytics = analytics,
             logout = logout,
-            optimizely = optimizely,
             playServicesCapability = playServicesCapability,
             scheduler = scheduler,
             schedulerV2 = schedulerV2,
@@ -196,7 +191,6 @@ class Environment private constructor(
         ksString = ksString,
         analytics = analytics,
         logout = logout,
-        optimizely = optimizely,
         playServicesCapability = playServicesCapability,
         scheduler = scheduler,
         schedulerV2 = schedulerV2,

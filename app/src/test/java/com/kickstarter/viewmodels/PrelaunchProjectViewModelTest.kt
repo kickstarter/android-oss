@@ -20,11 +20,12 @@ import com.kickstarter.viewmodels.projectpage.PrelaunchProjectViewModel
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
+import okhttp3.ResponseBody
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.junit.After
 import org.junit.Test
-import rx.schedulers.TestScheduler
+import retrofit2.HttpException
 import rx.subjects.BehaviorSubject
 import java.util.concurrent.TimeUnit
 
@@ -88,11 +89,13 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
 
     private val testScheduler = io.reactivex.schedulers.TestScheduler()
 
-    private fun getEnvironment() = environment()
-        .toBuilder()
-        .apolloClientV2(mockApolloClientV2)
-        .schedulerV2(testScheduler)
-        .build()
+    private val testEnvironment by lazy {
+        environment()
+            .toBuilder()
+            .apolloClientV2(mockApolloClientV2)
+            .schedulerV2(testScheduler)
+            .build()
+    }
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = PrelaunchProjectViewModel.PrelaunchProjectViewModel(environment)
@@ -134,7 +137,7 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
             .build()
             .reduceToPreLaunchProject().toBuilder().deadline(deadline).build()
 
-        setUpEnvironment(getEnvironment())
+        setUpEnvironment(testEnvironment)
 
         vm.inputs.configureWith(intent = intent.putExtra(IntentKey.PROJECT, reducedProject))
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
@@ -144,7 +147,53 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testProject_loadProject() {
-        setUpEnvironment(getEnvironment())
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .apolloClientV2(object : MockApolloClientV2() {
+
+                    override fun getProject(slug: String): Observable<Project> {
+                        return Observable
+                            .error(
+                                HttpException(
+                                    retrofit2.Response.error<String>(
+                                        426,
+                                        ResponseBody.create(
+                                            null,
+                                            content = "Too Many Calls",
+                                        ),
+                                    ),
+                                ),
+                            )
+                    }
+
+                    override fun getProject(project: Project): Observable<Project> {
+                        return Observable
+                            .error(
+                                HttpException(
+                                    retrofit2.Response.error<String>(
+                                        426,
+                                        ResponseBody.create(
+                                            null,
+                                            content = "Too Many Calls",
+                                        ),
+                                    ),
+                                ),
+                            )
+                    }
+                })
+                .schedulerV2(testScheduler)
+                .build(),
+        )
+
+        vm.inputs.configureWith(intent = intent)
+
+        assertEquals(project.value, null)
+    }
+
+    @Test
+    fun testProject_loadProject_withError() {
+        setUpEnvironment(testEnvironment)
 
         vm.inputs.configureWith(intent = intent)
 
@@ -156,7 +205,7 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
         val currentUser = MockCurrentUser()
         val currentUserV2 = MockCurrentUserV2()
 
-        val mockedEnv = getEnvironment().toBuilder().currentUser(currentUser)
+        val mockedEnv = testEnvironment.toBuilder().currentUser(currentUser)
             .currentUserV2(currentUserV2).build()
         setUpEnvironment(mockedEnv)
 
@@ -178,7 +227,7 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowShareSheet() {
-        setUpEnvironment(getEnvironment())
+        setUpEnvironment(testEnvironment)
 
         val intent = Intent().putExtra(IntentKey.PROJECT_PARAM, "skull-graphic-tee")
 
@@ -197,7 +246,7 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
         val currentUser = MockCurrentUser()
         val currentUserV2 = MockCurrentUserV2()
 
-        val mockedEnv = getEnvironment().toBuilder().currentUser(currentUser)
+        val mockedEnv = testEnvironment.toBuilder().currentUser(currentUser)
             .currentUserV2(currentUserV2).build()
 
         setUpEnvironment(mockedEnv)
@@ -230,7 +279,7 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testCreatorDetailsClicked() {
-        setUpEnvironment(getEnvironment())
+        setUpEnvironment(testEnvironment)
 
         val intent = Intent().putExtra(IntentKey.PROJECT_PARAM, "skull-graphic-tee")
 

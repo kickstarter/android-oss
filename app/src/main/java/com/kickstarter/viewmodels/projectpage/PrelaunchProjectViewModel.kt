@@ -88,7 +88,7 @@ interface PrelaunchProjectViewModel {
                 .map { it }
                 .withLatestFrom(
                     currentConfig.observable(),
-                    currentUser.observable()
+                    currentUser.observable(),
                 ) { project, config, user ->
                     if (user.isPresent()) {
                         return@withLatestFrom project.updateProjectWith(config, user.getValue())
@@ -150,7 +150,7 @@ interface PrelaunchProjectViewModel {
             var currentProject = Observable.merge(
                 initialProject,
                 savedProjectOnLoginSuccess,
-                projectOnUserChangeSave
+                projectOnUserChangeSave,
             )
 
             val currentProjectData = currentProject.map {
@@ -169,8 +169,8 @@ interface PrelaunchProjectViewModel {
                         it.name(),
                         UrlUtils.appendRefTag(
                             it.webProjectUrl(),
-                            RefTag.projectShare().tag()
-                        )
+                            RefTag.projectShare().tag(),
+                        ),
                     )
                 }
                 .subscribe {
@@ -221,7 +221,7 @@ interface PrelaunchProjectViewModel {
 
         private fun mapProject(
             latestProjectData: ProjectData,
-            initProject: Pair<Project, KsOptional<User>>
+            initProject: Pair<Project, KsOptional<User>>,
         ): Project {
             return if (latestProjectData.project().isStarred() != initProject.first.isStarred()) {
                 latestProjectData.project()
@@ -250,7 +250,7 @@ interface PrelaunchProjectViewModel {
         private fun projectData(
             refTagFromIntent: RefTag?,
             refTagFromCookie: RefTag?,
-            project: Project
+            project: Project,
         ): ProjectData {
             return ProjectData
                 .builder()
@@ -261,10 +261,13 @@ interface PrelaunchProjectViewModel {
         }
 
         private fun loadProject(intent: Intent) = ProjectIntentMapper
-            .project(intent, this.apolloClient)
+            .project(intent, this.apolloClient).doOnError {
+                // TODO Show Retry layout
+            }
+            .onErrorResumeNext(Observable.empty())
             .withLatestFrom(
                 currentConfig.observable(),
-                currentUser.observable()
+                currentUser.observable(),
             ) { project, config, user ->
                 if (user.isPresent()) {
                     return@withLatestFrom project.updateProjectWith(config, user.getValue())

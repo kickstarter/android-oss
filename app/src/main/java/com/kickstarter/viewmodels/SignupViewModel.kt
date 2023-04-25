@@ -6,11 +6,13 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isEmail
+import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.activities.SignupActivity
 import com.kickstarter.viewmodels.usecases.LoginUseCase
+import com.kickstarter.viewmodels.usecases.RefreshUserUseCase
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -57,6 +59,8 @@ interface SignupViewModel {
         private val client: ApiClientType
         private val currentConfig: CurrentConfigType
         private val loginUserCase = LoginUseCase(environment)
+        private val refreshUserUseCase = RefreshUserUseCase(environment)
+
         private fun submit(data: SignupData): Observable<AccessTokenEnvelope> {
             return client.signup(
                 data.name,
@@ -71,8 +75,8 @@ interface SignupViewModel {
                 .doAfterTerminate { formSubmitting.onNext(false) }
         }
 
-        private fun success(envelope: AccessTokenEnvelope) {
-            loginUserCase.login(envelope.user(), envelope.accessToken())
+        private fun success(user: User) {
+            refreshUserUseCase.refresh(user)
             signupSuccess.onNext(null)
         }
 
@@ -123,6 +127,10 @@ interface SignupViewModel {
                 .compose(Transformers.takeWhen(signupClick))
                 .switchMap { submit(it) }
                 .distinctUntilChanged()
+                .switchMap {
+                    this.loginUserCase
+                        .loginAndUpdateUserPrivacy(it.user(), it.accessToken())
+                }
                 .compose(bindToLifecycle())
                 .subscribe { success(it) }
 

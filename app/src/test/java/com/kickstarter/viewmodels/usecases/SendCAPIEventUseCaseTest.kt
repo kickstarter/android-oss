@@ -11,6 +11,7 @@ import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.toHashedSHAEmail
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.ui.SharedPreferenceKey
@@ -33,7 +34,7 @@ class SendCAPIEventUseCaseTest : KSRobolectricTestCase() {
             }
         }
 
-    val currentUser: CurrentUserType = MockCurrentUser()
+    val currentUser: CurrentUserType = MockCurrentUser(UserFactory.user().toBuilder().email("some@email.com").build())
     private fun setUpEnvironment(): Environment {
         return environment()
             .toBuilder()
@@ -142,6 +143,7 @@ class SendCAPIEventUseCaseTest : KSRobolectricTestCase() {
             requireNotNull(environment.featureFlagClient())
         ).sendCAPIEvent(
             project = Observable.just(project),
+            currentUser = requireNotNull(environment.currentUser()),
             apolloClient = requireNotNull(environment.apolloClient()),
             eventName = event,
             pledgeAmountAndCurrency = pledgeAmountAndCurrency

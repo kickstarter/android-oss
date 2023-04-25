@@ -4,12 +4,14 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.TwoFactorActivity
 import com.kickstarter.viewmodels.usecases.LoginUseCase
+import com.kickstarter.viewmodels.usecases.RefreshUserUseCase
 import rx.Observable
 import rx.subjects.PublishSubject
 
@@ -51,9 +53,10 @@ interface TwoFactorViewModel {
         Outputs {
         private val client: ApiClientType
         private val loginUserCase = LoginUseCase(environment)
+        private val refreshUserUseCase = RefreshUserUseCase(environment)
 
-        private fun success(envelope: AccessTokenEnvelope) {
-            this.loginUserCase.login(envelope.user(), envelope.accessToken())
+        private fun success(user: User) {
+            refreshUserUseCase.refresh(user)
             tfaSuccess.onNext(null)
         }
 
@@ -211,6 +214,10 @@ interface TwoFactorViewModel {
                         it.second.password
                     )
                 }
+                .switchMap {
+                    this.loginUserCase
+                        .loginAndUpdateUserPrivacy(it.user(), it.accessToken())
+                }
                 .compose(bindToLifecycle())
                 .subscribe { success(it) }
 
@@ -223,6 +230,10 @@ interface TwoFactorViewModel {
                         it.first,
                         it.second.fbAccessToken
                     )
+                }
+                .switchMap {
+                    this.loginUserCase
+                        .loginAndUpdateUserPrivacy(it.user(), it.accessToken())
                 }
                 .compose(bindToLifecycle())
                 .subscribe { success(it) }

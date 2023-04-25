@@ -11,6 +11,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isEmail
 import com.kickstarter.libs.utils.extensions.negate
+import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.IntentKey
@@ -18,6 +19,7 @@ import com.kickstarter.ui.activities.LoginActivity
 import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.viewmodels.usecases.LoginUseCase
+import com.kickstarter.viewmodels.usecases.RefreshUserUseCase
 import rx.Notification
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -92,6 +94,7 @@ interface LoginViewModel {
 
         private val client = requireNotNull(environment.apiClient())
         private val loginUserCase = LoginUseCase(environment)
+        private val refreshUserUseCase = RefreshUserUseCase(environment)
 
         init {
 
@@ -186,9 +189,13 @@ interface LoginViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
                 .distinctUntilChanged()
+                .switchMap {
+                    this.loginUserCase
+                        .loginAndUpdateUserPrivacy(it.user(), it.accessToken())
+                }
                 .compose(bindToLifecycle())
-                .subscribe { envelope ->
-                    this.success(envelope)
+                .subscribe { user ->
+                    this.success(user)
                 }
 
             errors
@@ -232,8 +239,8 @@ interface LoginViewModel {
 
         private fun isValid(email: String, password: String) = email.isEmail() && password.isNotEmpty()
 
-        private fun success(envelope: AccessTokenEnvelope) {
-            this.loginUserCase.login(envelope.user(), envelope.accessToken())
+        private fun success(newUser: User) {
+            this.refreshUserUseCase.refresh(newUser)
             this.loginSuccess.onNext(null)
         }
 

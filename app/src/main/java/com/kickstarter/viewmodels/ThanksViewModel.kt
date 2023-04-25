@@ -287,6 +287,7 @@ interface ThanksViewModel {
             SendCAPIEventUseCase(sharedPreferences, ffClient)
                 .sendCAPIEvent(
                     project,
+                    currentUser,
                     apolloClient,
                     ConversionsAPIEventName.PURCHASED,
                     cAPIPurchaseValueAndCurrency

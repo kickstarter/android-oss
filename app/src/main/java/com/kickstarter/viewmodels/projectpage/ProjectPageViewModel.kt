@@ -519,7 +519,7 @@ interface ProjectPageViewModel {
             )
 
             SendCAPIEventUseCase(sharedPreferences, ffClient)
-                .sendCAPIEvent(currentProject, apolloClient, ConversionsAPIEventName.VIEWED_CONTENT)
+                .sendCAPIEvent(currentProject, currentUser, apolloClient, ConversionsAPIEventName.VIEWED_CONTENT)
                 .compose(neverError())
                 .compose(bindToLifecycle())
                 .subscribe {

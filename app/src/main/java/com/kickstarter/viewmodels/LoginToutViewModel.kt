@@ -26,6 +26,7 @@ import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.viewmodels.usecases.LoginUseCase
+import com.kickstarter.viewmodels.usecases.RefreshUserUseCase
 import rx.Notification
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -154,7 +155,7 @@ interface LoginToutViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
         private val loginUserCase = LoginUseCase(environment)
-
+        private val refreshUserUseCase = RefreshUserUseCase(environment)
         override fun facebookLoginClick(
             activity: LoginToutActivity?,
             facebookPermissions: List<String>
@@ -288,9 +289,13 @@ interface LoginToutViewModel {
                 .compose(Transformers.values())
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
+                .switchMap {
+                    this.loginUserCase
+                        .loginAndUpdateUserPrivacy(it.user(), it.accessToken())
+                }
                 .compose(bindToLifecycle())
                 .subscribe {
-                    loginUserCase.login(it.user(), it.accessToken())
+                    refreshUserUseCase.refresh(it)
                     finishWithSuccessfulResult.onNext(null)
                 }
 

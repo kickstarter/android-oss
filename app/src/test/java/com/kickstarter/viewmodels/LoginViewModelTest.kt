@@ -10,6 +10,7 @@ import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.ConfigFactory.config
 import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.ActivityResult
@@ -17,6 +18,7 @@ import com.kickstarter.ui.data.LoginReason
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
+import rx.subjects.BehaviorSubject
 
 class LoginViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: LoginViewModel.ViewModel
@@ -310,6 +312,9 @@ class LoginViewModelTest : KSRobolectricTestCase() {
             .currentConfig(mockConfig)
             .build()
 
+        val user = BehaviorSubject.create<User>()
+        environment().currentUser()?.loggedInUser()?.subscribe(user)
+
         setUpEnvironment(environment)
 
         this.vm.outputs.loginSuccess().subscribe(this.loginSuccess)
@@ -320,6 +325,8 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.loginClick()
 
         this.loginSuccess.assertValues(null, null)
+        assertEquals("some@email.com", user.value?.email())
+
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 }

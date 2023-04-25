@@ -5,12 +5,14 @@ import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.ConfigFactory.config
 import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope.Companion.builder
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
+import rx.subjects.BehaviorSubject
 
 class SignupViewModelTest : KSRobolectricTestCase() {
 
@@ -48,6 +50,10 @@ class SignupViewModelTest : KSRobolectricTestCase() {
         environment.currentConfig()?.config(config())
 
         val vm = SignupViewModel.ViewModel(environment)
+
+        val user = BehaviorSubject.create<User>()
+        environment().currentUser()?.loggedInUser()?.subscribe(user)
+
         val signupSuccessTest = TestSubscriber<Void>()
 
         vm.outputs.signupSuccess().subscribe(signupSuccessTest)
@@ -65,6 +71,7 @@ class SignupViewModelTest : KSRobolectricTestCase() {
 
         formSubmittingTest.assertValues(true, false)
         signupSuccessTest.assertValueCount(1)
+        assertEquals("some@email.com", user.value?.email())
 
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }

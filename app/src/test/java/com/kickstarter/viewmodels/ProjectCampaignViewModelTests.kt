@@ -7,25 +7,29 @@ import com.kickstarter.libs.htmlparser.ViewElement
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.viewmodels.projectpage.ProjectCampaignViewModel
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.observers.TestSubscriber
+
 
 class ProjectCampaignViewModelTests : KSRobolectricTestCase() {
 
-    private lateinit var vm: ProjectCampaignViewModel.ViewModel
+    private lateinit var vm: ProjectCampaignViewModel.ProjectCampaignViewModel
 
     private val storyViewElementsList = TestSubscriber.create<List<ViewElement>>()
     private val onScrollToVideoPosition = TestSubscriber.create<Int>()
     private val onOpenVideoInFullScreen = TestSubscriber.create<Pair<String, Long>>()
     private val updateVideoCloseSeekPosition = TestSubscriber.create<Pair<Int, Long>>()
+    private val disposables = CompositeDisposable()
 
     private fun setUpEnvironment(environment: Environment) {
-        this.vm = ProjectCampaignViewModel.ViewModel(environment)
+        this.vm = ProjectCampaignViewModel.ProjectCampaignViewModel(environment)
 
-        this.vm.outputs.storyViewElements().subscribe(this.storyViewElementsList)
-        this.vm.outputs.onScrollToVideoPosition().subscribe(this.onScrollToVideoPosition)
-        this.vm.outputs.onOpenVideoInFullScreen().subscribe(this.onOpenVideoInFullScreen)
-        this.vm.outputs.updateVideoCloseSeekPosition().subscribe(this.updateVideoCloseSeekPosition)
+        disposables.add(this.vm.outputs.storyViewElements().subscribe { this.storyViewElementsList.onNext(it) })
+        disposables.add(this.vm.outputs.onScrollToVideoPosition().subscribe { this.onScrollToVideoPosition.onNext(it) })
+        disposables.add(this.vm.outputs.onOpenVideoInFullScreen().subscribe { this.onOpenVideoInFullScreen.onNext(it) })
+        disposables.add(this.vm.outputs.updateVideoCloseSeekPosition().subscribe { this.updateVideoCloseSeekPosition.onNext(it) })
     }
 
     @Test
@@ -65,10 +69,10 @@ class ProjectCampaignViewModelTests : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(projectData)
 
         this.storyViewElementsList.assertValueCount(1)
-        this.vm.storyViewElements().subscribe {
+        disposables.add(this.vm.storyViewElements().subscribe {
             assertEquals(it.size, 25)
             assertTrue(it.filterIsInstance<AudioViewElement>().size == 2)
-        }
+        })
     }
 
     @Test
@@ -84,5 +88,10 @@ class ProjectCampaignViewModelTests : KSRobolectricTestCase() {
         this.updateVideoCloseSeekPosition.assertNoValues()
         this.onOpenVideoInFullScreen.assertValue(Pair(source, seekPosition))
         this.updateVideoCloseSeekPosition.assertNoValues()
+    }
+
+    @After
+    fun cleanUp() {
+        disposables.clear()
     }
 }

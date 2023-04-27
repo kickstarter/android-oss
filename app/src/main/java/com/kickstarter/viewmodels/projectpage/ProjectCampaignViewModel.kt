@@ -1,16 +1,16 @@
 package com.kickstarter.viewmodels.projectpage
 
-import androidx.annotation.NonNull
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.htmlparser.HTMLParser
 import com.kickstarter.libs.htmlparser.VideoViewElement
 import com.kickstarter.libs.htmlparser.ViewElement
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.fragments.projectpage.ProjectCampaignFragment
-import rx.Observable
-import rx.subjects.BehaviorSubject
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
 
 class ProjectCampaignViewModel {
     interface Inputs {
@@ -28,8 +28,7 @@ class ProjectCampaignViewModel {
         fun updateVideoCloseSeekPosition(): Observable<Pair<Int, Long>>
     }
 
-    class ViewModel(@NonNull val environment: Environment) :
-        FragmentViewModel<ProjectCampaignFragment >(environment), Inputs, Outputs {
+    class ProjectCampaignViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -43,29 +42,29 @@ class ProjectCampaignViewModel {
         private val onOpenVideoInFullScreen = BehaviorSubject.create<Pair<String, Long>>()
         private val updateVideoCloseSeekPosition = BehaviorSubject.create<Pair<Int, Long>>()
 
+        private val disposables = CompositeDisposable()
+
         init {
             val project = projectDataInput
                 .map { it.project() }
                 .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
 
-            project
-                .distinctUntilChanged()
+            disposables.add(project.distinctUntilChanged()
                 .filter { ObjectUtils.isNotNull(it.story()) }
                 .map { requireNotNull(it.story()) }
                 .map { htmlParser.parse(it) }
-                .compose(bindToLifecycle())
                 .subscribe {
                     storyViewElementsList.onNext(it)
                 }
+            )
 
-            closeFullScreenVideo
+            disposables.add(closeFullScreenVideo
                 .withLatestFrom(openVideoInFullScreen) { closePosition, videoOpenPosition ->
                     Pair(videoOpenPosition.first, closePosition)
-                }.withLatestFrom(storyViewElementsList) { pair, list ->
+                }
+                .withLatestFrom(storyViewElementsList) { pair, list ->
                     Pair(pair, list)
                 }
-                .compose(bindToLifecycle())
                 .subscribe {
                     val itemIndex = it.first.first
                     if (it.second[itemIndex] is VideoViewElement) {
@@ -83,24 +82,24 @@ class ProjectCampaignViewModel {
                             }
                     }
                 }
-
-            closeFullScreenVideo
+            )
+            disposables.add(closeFullScreenVideo
                 .withLatestFrom(openVideoInFullScreen) { closePosition, videoOpenPosition ->
                     Pair(videoOpenPosition.first, closePosition)
                 }
-                .compose(bindToLifecycle())
                 .subscribe {
 
                     // updateVideoCloseSeekPosition.onNext(it)
                     onScrollToVideoPosition.onNext(it.first)
                 }
+            )
 
-            openVideoInFullScreen
+            disposables.add(openVideoInFullScreen
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe {
                     onOpenVideoInFullScreen.onNext(it.second)
                 }
+            )
         }
 
         // - Inputs
@@ -118,5 +117,16 @@ class ProjectCampaignViewModel {
 
         override fun updateVideoCloseSeekPosition(): Observable<Pair<Int, Long>> =
             updateVideoCloseSeekPosition
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
+    }
+
+    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return ProjectCampaignViewModel(environment) as T
+        }
     }
 }

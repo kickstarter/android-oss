@@ -51,12 +51,12 @@ class ProjectCampaignViewModel {
 
             disposables.add(
                 project.distinctUntilChanged()
-                .filter { ObjectUtils.isNotNull(it.story()) }
-                .map { requireNotNull(it.story()) }
-                .map { htmlParser.parse(it) }
-                .subscribe {
-                    storyViewElementsList.onNext(it)
-                }
+                    .filter { ObjectUtils.isNotNull(it.story()) }
+                    .map { requireNotNull(it.story()) }
+                    .map { htmlParser.parse(it) }
+                    .subscribe {
+                        storyViewElementsList.onNext(it)
+                    }
             )
 
             disposables.add(

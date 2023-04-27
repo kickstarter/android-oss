@@ -286,7 +286,6 @@ class ViewElementAdapter(
         return lifecycleObservable.onNext(KSLifecycleEvent.PAUSE)
     }
 
-
     override fun onDestroy(owner: LifecycleOwner) {
         return lifecycleObservable.onNext(KSLifecycleEvent.DESTROY)
     }

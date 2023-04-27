@@ -78,42 +78,46 @@ class ProjectCampaignFragment :
         )
 
         headerElementAdapter.updateTitle(resources.getString(R.string.Story))
-        disposables.add(this.viewModel.outputs.storyViewElements()
-            .subscribeOn(Schedulers.io())
-            .distinctUntilChanged()
-            .delay(170, TimeUnit.MILLISECONDS)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                viewElementAdapter?.submitList(it)
-            }
+        disposables.add(
+            this.viewModel.outputs.storyViewElements()
+                .subscribeOn(Schedulers.io())
+                .distinctUntilChanged()
+                .delay(170, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    viewElementAdapter?.submitList(it)
+                }
         )
 
-        disposables.add(this.viewModel.outputs.onScrollToVideoPosition()
-            .subscribeOn(Schedulers.io())
-            .distinctUntilChanged()
-            .delay(300, TimeUnit.MILLISECONDS)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                binding?.projectCampaignViewListItems?.smoothScrollToPosition(it + 1)
-            }
+        disposables.add(
+            this.viewModel.outputs.onScrollToVideoPosition()
+                .subscribeOn(Schedulers.io())
+                .distinctUntilChanged()
+                .delay(300, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    binding?.projectCampaignViewListItems?.smoothScrollToPosition(it + 1)
+                }
         )
 
-        disposables.add(this.viewModel.outputs.onOpenVideoInFullScreen()
-            .subscribeOn(Schedulers.io())
-            .distinctUntilChanged()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                requireActivity().startVideoActivity(startForResult, it.first, it.second)
-            }
+        disposables.add(
+            this.viewModel.outputs.onOpenVideoInFullScreen()
+                .subscribeOn(Schedulers.io())
+                .distinctUntilChanged()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    requireActivity().startVideoActivity(startForResult, it.first, it.second)
+                }
         )
 
-        disposables.add(this.viewModel.outputs.updateVideoCloseSeekPosition()
-            .subscribeOn(Schedulers.io())
-            .distinctUntilChanged()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                viewElementAdapter?.setPlayerSeekPosition(it.first, it.second)
-            }
+        disposables.add(
+            this.viewModel.outputs.updateVideoCloseSeekPosition()
+                .subscribeOn(Schedulers.io())
+                .distinctUntilChanged()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    viewElementAdapter?.setPlayerSeekPosition(it.first, it.second)
+                }
         )
 
         val scrollListener = object : RecyclerViewScrollListener() {

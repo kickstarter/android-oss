@@ -8,11 +8,25 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.kickstarter.databinding.*
+import com.kickstarter.databinding.EmptyViewBinding
+import com.kickstarter.databinding.ViewElementAudioFromHtmlBinding
+import com.kickstarter.databinding.ViewElementExternalSourceFromHtmlBinding
+import com.kickstarter.databinding.ViewElementImageFromHtmlBinding
+import com.kickstarter.databinding.ViewElementTextFromHtmlBinding
+import com.kickstarter.databinding.ViewElementVideoFromHtmlBinding
 import com.kickstarter.libs.KSLifecycleEvent
-import com.kickstarter.libs.htmlparser.*
+import com.kickstarter.libs.htmlparser.AudioViewElement
+import com.kickstarter.libs.htmlparser.ExternalSourceViewElement
+import com.kickstarter.libs.htmlparser.ImageViewElement
+import com.kickstarter.libs.htmlparser.TextViewElement
+import com.kickstarter.libs.htmlparser.VideoViewElement
+import com.kickstarter.libs.htmlparser.ViewElement
 import com.kickstarter.ui.viewholders.EmptyViewHolder
-import com.kickstarter.ui.viewholders.projectcampaign.*
+import com.kickstarter.ui.viewholders.projectcampaign.AudioElementViewHolder
+import com.kickstarter.ui.viewholders.projectcampaign.ExternalViewViewHolder
+import com.kickstarter.ui.viewholders.projectcampaign.ImageElementViewHolder
+import com.kickstarter.ui.viewholders.projectcampaign.TextElementViewHolder
+import com.kickstarter.ui.viewholders.projectcampaign.VideoElementViewHolder
 import io.reactivex.subjects.BehaviorSubject
 
 /**

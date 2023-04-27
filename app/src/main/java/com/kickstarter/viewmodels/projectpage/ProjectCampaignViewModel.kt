@@ -49,7 +49,8 @@ class ProjectCampaignViewModel {
                 .map { it.project() }
                 .filter { ObjectUtils.isNotNull(it) }
 
-            disposables.add(project.distinctUntilChanged()
+            disposables.add(
+                project.distinctUntilChanged()
                 .filter { ObjectUtils.isNotNull(it.story()) }
                 .map { requireNotNull(it.story()) }
                 .map { htmlParser.parse(it) }
@@ -58,47 +59,48 @@ class ProjectCampaignViewModel {
                 }
             )
 
-            disposables.add(closeFullScreenVideo
-                .withLatestFrom(openVideoInFullScreen) { closePosition, videoOpenPosition ->
-                    Pair(videoOpenPosition.first, closePosition)
-                }
-                .withLatestFrom(storyViewElementsList) { pair, list ->
-                    Pair(pair, list)
-                }
-                .subscribe {
-                    val itemIndex = it.first.first
-                    if (it.second[itemIndex] is VideoViewElement) {
-                        (it.second[itemIndex] as? VideoViewElement?)
-                            ?.let { videoViewElement ->
-                                val updatedList = it.second.toMutableList()
-                                updatedList[itemIndex] = VideoViewElement(
-                                    videoViewElement
-                                        .sourceUrl,
-                                    videoViewElement.thumbnailUrl, it.first.second
-                                )
-
-                                updateVideoCloseSeekPosition.onNext(it.first)
-                                storyViewElementsList.onNext(updatedList)
-                            }
+            disposables.add(
+                closeFullScreenVideo
+                    .withLatestFrom(openVideoInFullScreen) { closePosition, videoOpenPosition ->
+                        Pair(videoOpenPosition.first, closePosition)
                     }
-                }
-            )
-            disposables.add(closeFullScreenVideo
-                .withLatestFrom(openVideoInFullScreen) { closePosition, videoOpenPosition ->
-                    Pair(videoOpenPosition.first, closePosition)
-                }
-                .subscribe {
+                    .withLatestFrom(storyViewElementsList) { pair, list -> Pair(pair, list) }
+                    .subscribe {
+                        val itemIndex = it.first.first
+                        if (it.second[itemIndex] is VideoViewElement) {
+                            (it.second[itemIndex] as? VideoViewElement?)
+                                ?.let { videoViewElement ->
+                                    val updatedList = it.second.toMutableList()
+                                    updatedList[itemIndex] = VideoViewElement(
+                                        videoViewElement
+                                            .sourceUrl,
+                                        videoViewElement.thumbnailUrl, it.first.second
+                                    )
 
-                    // updateVideoCloseSeekPosition.onNext(it)
-                    onScrollToVideoPosition.onNext(it.first)
-                }
+                                    updateVideoCloseSeekPosition.onNext(it.first)
+                                    storyViewElementsList.onNext(updatedList)
+                                }
+                        }
+                    }
+            )
+            disposables.add(
+                closeFullScreenVideo
+                    .withLatestFrom(openVideoInFullScreen) { closePosition, videoOpenPosition ->
+                        Pair(videoOpenPosition.first, closePosition)
+                    }
+                    .subscribe {
+
+                        // updateVideoCloseSeekPosition.onNext(it)
+                        onScrollToVideoPosition.onNext(it.first)
+                    }
             )
 
-            disposables.add(openVideoInFullScreen
-                .distinctUntilChanged()
-                .subscribe {
-                    onOpenVideoInFullScreen.onNext(it.second)
-                }
+            disposables.add(
+                openVideoInFullScreen
+                    .distinctUntilChanged()
+                    .subscribe {
+                        onOpenVideoInFullScreen.onNext(it.second)
+                    }
             )
         }
 

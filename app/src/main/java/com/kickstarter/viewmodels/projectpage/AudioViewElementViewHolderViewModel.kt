@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels.projectpage
 
 import androidx.lifecycle.ViewModel
-import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSLifecycleEvent
 import com.kickstarter.libs.htmlparser.AudioViewElement
 import com.kickstarter.libs.utils.extensions.isMP3Url

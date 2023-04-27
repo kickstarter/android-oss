@@ -12,7 +12,6 @@ import io.reactivex.subscribers.TestSubscriber
 import org.junit.After
 import org.junit.Test
 
-
 class AudioViewElementViewHolderViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: AudioViewElementViewHolderViewModel.AudioViewElementViewHolderViewModel
 

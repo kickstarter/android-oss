@@ -12,7 +12,6 @@ import io.reactivex.subscribers.TestSubscriber
 import org.junit.After
 import org.junit.Test
 
-
 class ProjectCampaignViewModelTests : KSRobolectricTestCase() {
 
     private lateinit var vm: ProjectCampaignViewModel.ProjectCampaignViewModel
@@ -69,10 +68,12 @@ class ProjectCampaignViewModelTests : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(projectData)
 
         this.storyViewElementsList.assertValueCount(1)
-        disposables.add(this.vm.storyViewElements().subscribe {
-            assertEquals(it.size, 25)
-            assertTrue(it.filterIsInstance<AudioViewElement>().size == 2)
-        })
+        disposables.add(
+            this.vm.storyViewElements().subscribe {
+                assertEquals(it.size, 25)
+                assertTrue(it.filterIsInstance<AudioViewElement>().size == 2)
+            }
+        )
     }
 
     @Test

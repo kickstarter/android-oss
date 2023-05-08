@@ -7,6 +7,7 @@ import com.kickstarter.R
 import com.kickstarter.databinding.ViewElementAudioFromHtmlBinding
 import com.kickstarter.libs.KSLifecycleEvent
 import com.kickstarter.libs.htmlparser.AudioViewElement
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.viewmodels.projectpage.AudioViewElementViewHolderViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -29,28 +30,22 @@ class AudioElementViewHolder(
     private val disposables = CompositeDisposable()
 
     init {
-        disposables.add(
-            this.viewModel.outputs.preparePlayerWithUrl()
-                .subscribe {
-                    initializePlayer(it)
-                }
-        )
+        this.viewModel.outputs.preparePlayerWithUrl()
+            .subscribe {
+                initializePlayer(it)
+            }.addToDisposable(disposables)
 
-        disposables.add(
-            this.viewModel.outputs.stopPlayer()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    stopPlayer()
-                }
-        )
+        this.viewModel.outputs.stopPlayer()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                stopPlayer()
+            }.addToDisposable(disposables)
 
-        disposables.add(
-            this.viewModel.pausePlayer()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    pausePlayer()
-                }
-        )
+        this.viewModel.pausePlayer()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                pausePlayer()
+            }.addToDisposable(disposables)
 
         this.binding.playPause.setOnClickListener {
             togglePlayerState()

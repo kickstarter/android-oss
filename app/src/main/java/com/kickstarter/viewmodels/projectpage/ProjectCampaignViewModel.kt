@@ -7,6 +7,7 @@ import com.kickstarter.libs.htmlparser.HTMLParser
 import com.kickstarter.libs.htmlparser.VideoViewElement
 import com.kickstarter.libs.htmlparser.ViewElement
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.ui.data.ProjectData
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -49,59 +50,54 @@ class ProjectCampaignViewModel {
                 .map { it.project() }
                 .filter { ObjectUtils.isNotNull(it) }
 
-            disposables.add(
-                project.distinctUntilChanged()
-                    .filter { ObjectUtils.isNotNull(it.story()) }
-                    .map { requireNotNull(it.story()) }
-                    .map { htmlParser.parse(it) }
-                    .subscribe {
-                        storyViewElementsList.onNext(it)
-                    }
-            )
 
-            disposables.add(
-                closeFullScreenVideo
-                    .withLatestFrom(openVideoInFullScreen) { closePosition, videoOpenPosition ->
-                        Pair(videoOpenPosition.first, closePosition)
-                    }
-                    .withLatestFrom(storyViewElementsList) { pair, list -> Pair(pair, list) }
-                    .subscribe {
-                        val itemIndex = it.first.first
-                        if (it.second[itemIndex] is VideoViewElement) {
-                            (it.second[itemIndex] as? VideoViewElement?)
-                                ?.let { videoViewElement ->
-                                    val updatedList = it.second.toMutableList()
-                                    updatedList[itemIndex] = VideoViewElement(
-                                        videoViewElement
-                                            .sourceUrl,
-                                        videoViewElement.thumbnailUrl, it.first.second
-                                    )
+            project.distinctUntilChanged()
+                .filter { ObjectUtils.isNotNull(it.story()) }
+                .map { requireNotNull(it.story()) }
+                .map { htmlParser.parse(it) }
+                .subscribe {
+                    storyViewElementsList.onNext(it)
+                }.addToDisposable(disposables)
 
-                                    updateVideoCloseSeekPosition.onNext(it.first)
-                                    storyViewElementsList.onNext(updatedList)
-                                }
-                        }
-                    }
-            )
-            disposables.add(
-                closeFullScreenVideo
-                    .withLatestFrom(openVideoInFullScreen) { closePosition, videoOpenPosition ->
-                        Pair(videoOpenPosition.first, closePosition)
-                    }
-                    .subscribe {
 
-                        // updateVideoCloseSeekPosition.onNext(it)
-                        onScrollToVideoPosition.onNext(it.first)
-                    }
-            )
+            closeFullScreenVideo
+                .withLatestFrom(openVideoInFullScreen) { closePosition, videoOpenPosition ->
+                    Pair(videoOpenPosition.first, closePosition)
+                }
+                .withLatestFrom(storyViewElementsList) { pair, list -> Pair(pair, list) }
+                .subscribe {
+                    val itemIndex = it.first.first
+                    if (it.second[itemIndex] is VideoViewElement) {
+                        (it.second[itemIndex] as? VideoViewElement?)
+                            ?.let { videoViewElement ->
+                                val updatedList = it.second.toMutableList()
+                                updatedList[itemIndex] = VideoViewElement(
+                                    videoViewElement
+                                        .sourceUrl,
+                                    videoViewElement.thumbnailUrl, it.first.second
+                                )
 
-            disposables.add(
-                openVideoInFullScreen
-                    .distinctUntilChanged()
-                    .subscribe {
-                        onOpenVideoInFullScreen.onNext(it.second)
+                                updateVideoCloseSeekPosition.onNext(it.first)
+                                storyViewElementsList.onNext(updatedList)
+                            }
                     }
-            )
+                }.addToDisposable(disposables)
+
+            closeFullScreenVideo
+                .withLatestFrom(openVideoInFullScreen) { closePosition, videoOpenPosition ->
+                    Pair(videoOpenPosition.first, closePosition)
+                }
+                .subscribe {
+
+                    // updateVideoCloseSeekPosition.onNext(it)
+                    onScrollToVideoPosition.onNext(it.first)
+                }.addToDisposable(disposables)
+
+            openVideoInFullScreen
+                .distinctUntilChanged()
+                .subscribe {
+                    onOpenVideoInFullScreen.onNext(it.second)
+                }.addToDisposable(disposables)
         }
 
         // - Inputs

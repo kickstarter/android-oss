@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels.projectpage
 import androidx.lifecycle.ViewModel
 import com.kickstarter.libs.KSLifecycleEvent
 import com.kickstarter.libs.htmlparser.AudioViewElement
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isMP3Url
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -37,34 +38,30 @@ interface AudioViewElementViewHolderViewModel {
         private val stopPlayer = PublishSubject.create<Unit>()
 
         init {
-            disposables.add(
-                this.lifecycleObservable
-                    .subscribe {
-                        when (it) {
-                            KSLifecycleEvent.PAUSE -> this.pausePlayer.onNext(Unit)
-                            KSLifecycleEvent.STOP -> this.stopPlayer.onNext(Unit)
-                            else -> {
-                            }
+
+            this.lifecycleObservable
+                .subscribe {
+                    when (it) {
+                        KSLifecycleEvent.PAUSE -> this.pausePlayer.onNext(Unit)
+                        KSLifecycleEvent.STOP -> this.stopPlayer.onNext(Unit)
+                        else -> {
                         }
                     }
-            )
+                }.addToDisposable(disposables)
 
-            disposables.add(
-                this.audioElement
-                    .filter {
-                        !it.sourceUrl.isNullOrBlank() && it.sourceUrl.isMP3Url()
-                    }
-                    .distinctUntilChanged()
-                    .subscribe {
-                        this.sourceUrl.onNext(it.sourceUrl)
-                    }
-            )
-            disposables.add(
-                this.playButtonPressed
-                    .subscribe {
-                        this.stopPlayer.onNext(Unit)
-                    }
-            )
+            this.audioElement
+                .filter {
+                    !it.sourceUrl.isNullOrBlank() && it.sourceUrl.isMP3Url()
+                }
+                .distinctUntilChanged()
+                .subscribe {
+                    this.sourceUrl.onNext(it.sourceUrl)
+                }.addToDisposable(disposables)
+
+            this.playButtonPressed
+                .subscribe {
+                    this.stopPlayer.onNext(Unit)
+                }.addToDisposable(disposables)
         }
 
         // - Inputs

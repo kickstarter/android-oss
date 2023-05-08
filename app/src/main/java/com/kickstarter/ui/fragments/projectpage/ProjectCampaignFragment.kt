@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentProjectCampaignBinding
 import com.kickstarter.libs.Configure
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
@@ -78,47 +79,41 @@ class ProjectCampaignFragment :
         )
 
         headerElementAdapter.updateTitle(resources.getString(R.string.Story))
-        disposables.add(
-            this.viewModel.outputs.storyViewElements()
-                .subscribeOn(Schedulers.io())
-                .distinctUntilChanged()
-                .delay(170, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    viewElementAdapter?.submitList(it)
-                }
-        )
 
-        disposables.add(
-            this.viewModel.outputs.onScrollToVideoPosition()
-                .subscribeOn(Schedulers.io())
-                .distinctUntilChanged()
-                .delay(300, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    binding?.projectCampaignViewListItems?.smoothScrollToPosition(it + 1)
-                }
-        )
+        this.viewModel.outputs.storyViewElements()
+            .subscribeOn(Schedulers.io())
+            .distinctUntilChanged()
+            .delay(170, TimeUnit.MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                viewElementAdapter?.submitList(it)
+            }.addToDisposable(disposables)
 
-        disposables.add(
-            this.viewModel.outputs.onOpenVideoInFullScreen()
+        this.viewModel.outputs.onScrollToVideoPosition()
+            .subscribeOn(Schedulers.io())
+            .distinctUntilChanged()
+            .delay(300, TimeUnit.MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                binding?.projectCampaignViewListItems?.smoothScrollToPosition(it + 1)
+            }.addToDisposable(disposables)
+
+         this.viewModel.outputs.onOpenVideoInFullScreen()
                 .subscribeOn(Schedulers.io())
                 .distinctUntilChanged()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     requireActivity().startVideoActivity(startForResult, it.first, it.second)
-                }
-        )
+                }.addToDisposable(disposables)
 
-        disposables.add(
-            this.viewModel.outputs.updateVideoCloseSeekPosition()
-                .subscribeOn(Schedulers.io())
-                .distinctUntilChanged()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    viewElementAdapter?.setPlayerSeekPosition(it.first, it.second)
-                }
-        )
+        this.viewModel.outputs.updateVideoCloseSeekPosition()
+            .subscribeOn(Schedulers.io())
+            .distinctUntilChanged()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                viewElementAdapter?.setPlayerSeekPosition(it.first, it.second)
+            }.addToDisposable(disposables)
+
 
         val scrollListener = object : RecyclerViewScrollListener() {
             override fun onItemIsFirstVisibleItem(index: Int) {

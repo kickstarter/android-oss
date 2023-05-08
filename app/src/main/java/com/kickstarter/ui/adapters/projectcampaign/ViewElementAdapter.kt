@@ -22,6 +22,7 @@ import com.kickstarter.libs.htmlparser.TextViewElement
 import com.kickstarter.libs.htmlparser.VideoViewElement
 import com.kickstarter.libs.htmlparser.ViewElement
 import com.kickstarter.ui.viewholders.EmptyViewHolder
+import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.AudioElementViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.ExternalViewViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.ImageElementViewHolder
@@ -241,8 +242,10 @@ class ViewElementAdapter(
         (holder as? AudioElementViewHolder)?.let {
             it.setIsRecyclable(false)
             it.pausePlayer()
-            it.clearDisposables()
         }
+
+        (holder as? KSViewHolder)?.let { it.destroy() }
+
         super.onViewDetachedFromWindow(holder)
     }
 

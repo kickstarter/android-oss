@@ -92,7 +92,7 @@ public abstract class KSViewHolder extends RecyclerView.ViewHolder implements Vi
    * Called when the ViewHolder is being detached. Subclasses should override if they need to do any work
    * when the ViewHolder is being de-allocated.
    */
-  protected void destroy() {}
+  public void destroy() {}
 
   protected @NonNull View view() {
     return this.view;

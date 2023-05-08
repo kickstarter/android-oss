@@ -241,6 +241,7 @@ class ViewElementAdapter(
         (holder as? AudioElementViewHolder)?.let {
             it.setIsRecyclable(false)
             it.pausePlayer()
+            it.clearDisposables()
         }
         super.onViewDetachedFromWindow(holder)
     }

@@ -86,8 +86,12 @@ class AudioElementViewHolder(
 
     override fun destroy() {
         mediaPlayer.release()
-        disposables.dispose()
+        clearDisposables()
         super.destroy()
+    }
+
+    fun clearDisposables() {
+        disposables.dispose()
     }
 
     fun togglePlayerState() {

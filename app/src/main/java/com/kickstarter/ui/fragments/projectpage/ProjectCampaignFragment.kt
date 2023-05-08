@@ -99,12 +99,12 @@ class ProjectCampaignFragment :
             }.addToDisposable(disposables)
 
          this.viewModel.outputs.onOpenVideoInFullScreen()
-                .subscribeOn(Schedulers.io())
-                .distinctUntilChanged()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    requireActivity().startVideoActivity(startForResult, it.first, it.second)
-                }.addToDisposable(disposables)
+             .subscribeOn(Schedulers.io())
+            .distinctUntilChanged()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                requireActivity().startVideoActivity(startForResult, it.first, it.second)
+            }.addToDisposable(disposables)
 
         this.viewModel.outputs.updateVideoCloseSeekPosition()
             .subscribeOn(Schedulers.io())

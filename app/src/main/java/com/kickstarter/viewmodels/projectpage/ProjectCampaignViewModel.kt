@@ -50,7 +50,6 @@ class ProjectCampaignViewModel {
                 .map { it.project() }
                 .filter { ObjectUtils.isNotNull(it) }
 
-
             project.distinctUntilChanged()
                 .filter { ObjectUtils.isNotNull(it.story()) }
                 .map { requireNotNull(it.story()) }
@@ -58,7 +57,6 @@ class ProjectCampaignViewModel {
                 .subscribe {
                     storyViewElementsList.onNext(it)
                 }.addToDisposable(disposables)
-
 
             closeFullScreenVideo
                 .withLatestFrom(openVideoInFullScreen) { closePosition, videoOpenPosition ->

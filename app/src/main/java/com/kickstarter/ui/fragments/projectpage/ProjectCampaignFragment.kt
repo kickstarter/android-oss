@@ -98,8 +98,8 @@ class ProjectCampaignFragment :
                 binding?.projectCampaignViewListItems?.smoothScrollToPosition(it + 1)
             }.addToDisposable(disposables)
 
-         this.viewModel.outputs.onOpenVideoInFullScreen()
-             .subscribeOn(Schedulers.io())
+        this.viewModel.outputs.onOpenVideoInFullScreen()
+            .subscribeOn(Schedulers.io())
             .distinctUntilChanged()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
@@ -113,8 +113,7 @@ class ProjectCampaignFragment :
             .subscribe {
                 viewElementAdapter?.setPlayerSeekPosition(it.first, it.second)
             }.addToDisposable(disposables)
-
-
+        
         val scrollListener = object : RecyclerViewScrollListener() {
             override fun onItemIsFirstVisibleItem(index: Int) {
                 // play just visible item

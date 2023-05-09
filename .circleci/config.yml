@@ -5,7 +5,7 @@ base_job: &base_job
   executor:
     name: android/android-machine
     resource-class: xlarge
-    tag: 2022.08.1
+    tag: 2023.04.1
   working_directory: "~/project"
   environment:
     TERM: dumb

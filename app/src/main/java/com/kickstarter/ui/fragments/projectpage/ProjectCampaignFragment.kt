@@ -113,7 +113,7 @@ class ProjectCampaignFragment :
             .subscribe {
                 viewElementAdapter?.setPlayerSeekPosition(it.first, it.second)
             }.addToDisposable(disposables)
-        
+
         val scrollListener = object : RecyclerViewScrollListener() {
             override fun onItemIsFirstVisibleItem(index: Int) {
                 // play just visible item

@@ -5,59 +5,47 @@ import android.media.MediaPlayer
 import android.widget.SeekBar
 import com.kickstarter.R
 import com.kickstarter.databinding.ViewElementAudioFromHtmlBinding
+import com.kickstarter.libs.KSLifecycleEvent
 import com.kickstarter.libs.htmlparser.AudioViewElement
-import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.viewmodels.projectpage.AudioViewElementViewHolderViewModel
-import com.trello.rxlifecycle.FragmentEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import rx.Observable
+import io.reactivex.subjects.BehaviorSubject
 import java.util.concurrent.TimeUnit
 
 class AudioElementViewHolder(
     private val binding: ViewElementAudioFromHtmlBinding,
-    private val lifecycle: Observable<FragmentEvent>
+    lifecycleBehaviorSubject: BehaviorSubject<KSLifecycleEvent>
 ) : KSViewHolder(binding.root) {
 
-    private val viewModel = AudioViewElementViewHolderViewModel.ViewModel(environment())
+    private val viewModel = AudioViewElementViewHolderViewModel.AudioViewElementViewHolderViewModel(lifecycleBehaviorSubject)
     private val mediaPlayer: MediaPlayer = MediaPlayer()
     private var isPrepared = false
     private val updateObservable = io.reactivex.Observable.interval(500, TimeUnit.MILLISECONDS)
-    private lateinit var disposable: Disposable
+    private lateinit var updateDisposable: Disposable
+    private val disposables = CompositeDisposable()
 
     init {
-
-        this.lifecycle
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .filter { ObjectUtils.isNotNull(it) }
-            .subscribe {
-                this.viewModel.inputs.fragmentLifeCycle(it)
-            }
-
         this.viewModel.outputs.preparePlayerWithUrl()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
             .subscribe {
                 initializePlayer(it)
-            }
+            }.addToDisposable(disposables)
 
         this.viewModel.outputs.stopPlayer()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 stopPlayer()
-            }
+            }.addToDisposable(disposables)
 
         this.viewModel.pausePlayer()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 pausePlayer()
-            }
+            }.addToDisposable(disposables)
 
         this.binding.playPause.setOnClickListener {
             togglePlayerState()
@@ -93,6 +81,7 @@ class AudioElementViewHolder(
 
     override fun destroy() {
         mediaPlayer.release()
+        disposables.dispose()
         super.destroy()
     }
 
@@ -121,7 +110,7 @@ class AudioElementViewHolder(
             this.binding.playPause.setImageResource(R.drawable.exo_controls_pause)
             mediaPlayer.start()
 
-            disposable = updateObservable
+            updateDisposable = updateObservable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
@@ -142,14 +131,14 @@ class AudioElementViewHolder(
     fun pausePlayer() {
         if (isPrepared && mediaPlayer.isPlaying) {
             this.binding.playPause.setImageResource(R.drawable.exo_controls_play)
-            disposable.dispose()
+            updateDisposable.dispose()
             mediaPlayer.pause()
         }
     }
 
     fun stopPlayer() {
         if (isPrepared && mediaPlayer.isPlaying) {
-            disposable.dispose()
+            updateDisposable.dispose()
             mediaPlayer.stop()
         }
     }

@@ -3,25 +3,31 @@ package com.kickstarter.viewmodels
 import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.KSLifecycleEvent
 import com.kickstarter.libs.htmlparser.AudioViewElement
 import com.kickstarter.viewmodels.projectpage.AudioViewElementViewHolderViewModel
-import com.trello.rxlifecycle.FragmentEvent
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.observers.TestSubscriber
 
 class AudioViewElementViewHolderViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm: AudioViewElementViewHolderViewModel.ViewModel
+    private lateinit var vm: AudioViewElementViewHolderViewModel.AudioViewElementViewHolderViewModel
 
     private val preparePlayerWithUrl = TestSubscriber.create<String>()
-    private val stopPlayer = TestSubscriber.create<Void>()
-    private val pausePlayer = TestSubscriber.create<Void>()
+    private val stopPlayer = TestSubscriber.create<Unit>()
+    private val pausePlayer = TestSubscriber.create<Unit>()
+
+    private val lifecycleObservable = BehaviorSubject.create<KSLifecycleEvent>()
+    private val disposables = CompositeDisposable()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
-        this.vm = AudioViewElementViewHolderViewModel.ViewModel(environment)
+        this.vm = AudioViewElementViewHolderViewModel.AudioViewElementViewHolderViewModel(lifecycleObservable)
 
-        this.vm.outputs.preparePlayerWithUrl().subscribe(preparePlayerWithUrl)
-        this.vm.outputs.stopPlayer().subscribe(stopPlayer)
-        this.vm.outputs.pausePlayer().subscribe(pausePlayer)
+        disposables.add(this.vm.outputs.preparePlayerWithUrl().subscribe { preparePlayerWithUrl.onNext(it) })
+        disposables.add(this.vm.outputs.stopPlayer().subscribe { stopPlayer.onNext(it) })
+        disposables.add(this.vm.outputs.pausePlayer().subscribe { pausePlayer.onNext(it) })
     }
 
     @Test
@@ -53,17 +59,22 @@ class AudioViewElementViewHolderViewModelTest : KSRobolectricTestCase() {
     fun stopPlayerWhenLifecycleEventStop() {
         setUpEnvironment(environment())
 
-        vm.inputs.fragmentLifeCycle(FragmentEvent.STOP)
+        vm.inputs.fragmentLifeCycle(KSLifecycleEvent.STOP)
         stopPlayer.assertValueCount(1)
-        stopPlayer.assertValue(null)
+        stopPlayer.assertValue(Unit)
     }
 
     @Test
     fun stopPlayerWhenLifecycleEventPause() {
         setUpEnvironment(environment())
 
-        vm.inputs.fragmentLifeCycle(FragmentEvent.PAUSE)
+        vm.inputs.fragmentLifeCycle(KSLifecycleEvent.PAUSE)
         pausePlayer.assertValueCount(1)
-        pausePlayer.assertValue(null)
+        pausePlayer.assertValue(Unit)
+    }
+
+    @After
+    fun cleanUp() {
+        disposables.clear()
     }
 }

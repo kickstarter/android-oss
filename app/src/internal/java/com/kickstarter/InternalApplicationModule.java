@@ -13,11 +13,15 @@ import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.mock.services.MockApiClient;
+import com.kickstarter.mock.services.MockApiClientV2;
 import com.kickstarter.mock.services.MockApolloClient;
 import com.kickstarter.mock.services.MockApolloClientV2;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiClientType;
+import com.kickstarter.services.ApiClientTypeV2;
+import com.kickstarter.services.ApiClientV2;
 import com.kickstarter.services.ApiService;
+import com.kickstarter.services.ApiServiceV2;
 import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.services.ApolloClientTypeV2;
 import com.kickstarter.services.KSApolloClient;
@@ -75,5 +79,12 @@ public final class InternalApplicationModule {
   @NonNull
   static ApiClientType provideApiClientType(final @NonNull ApiService apiService, final @NonNull Gson gson) {
     return Secrets.IS_OSS ? new MockApiClient() : new ApiClient(apiService, gson);
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
+  static ApiClientTypeV2 provideApiClientTypeV2(final @NonNull ApiServiceV2 apiService, final @NonNull Gson gson) {
+    return Secrets.IS_OSS ? new MockApiClientV2() : new ApiClientV2(apiService, gson);
   }
 }

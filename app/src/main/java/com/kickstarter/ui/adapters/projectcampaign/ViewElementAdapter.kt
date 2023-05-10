@@ -3,6 +3,8 @@ package com.kickstarter.ui.adapters.projectcampaign
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +14,7 @@ import com.kickstarter.databinding.ViewElementExternalSourceFromHtmlBinding
 import com.kickstarter.databinding.ViewElementImageFromHtmlBinding
 import com.kickstarter.databinding.ViewElementTextFromHtmlBinding
 import com.kickstarter.databinding.ViewElementVideoFromHtmlBinding
+import com.kickstarter.libs.KSLifecycleEvent
 import com.kickstarter.libs.htmlparser.AudioViewElement
 import com.kickstarter.libs.htmlparser.ExternalSourceViewElement
 import com.kickstarter.libs.htmlparser.ImageViewElement
@@ -19,13 +22,13 @@ import com.kickstarter.libs.htmlparser.TextViewElement
 import com.kickstarter.libs.htmlparser.VideoViewElement
 import com.kickstarter.libs.htmlparser.ViewElement
 import com.kickstarter.ui.viewholders.EmptyViewHolder
+import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.AudioElementViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.ExternalViewViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.ImageElementViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.TextElementViewHolder
 import com.kickstarter.ui.viewholders.projectcampaign.VideoElementViewHolder
-import com.trello.rxlifecycle.FragmentEvent
-import rx.Observable
+import io.reactivex.subjects.BehaviorSubject
 
 /**
  * Adapter Specific to hold a list of ViewElements from the HTML Parser
@@ -33,9 +36,8 @@ import rx.Observable
 class ViewElementAdapter(
     val requireActivity: FragmentActivity,
     private val fullScreenDelegate: FullScreenDelegate,
-    private val lifecycle: Observable<FragmentEvent>
-) : RecyclerView
-.Adapter<RecyclerView.ViewHolder>() {
+    private val lifecycleObservable: BehaviorSubject<KSLifecycleEvent> = BehaviorSubject.create()
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), DefaultLifecycleObserver {
 
     private val diffCallback = object : DiffUtil.ItemCallback<ViewElement>() {
         override fun areItemsTheSame(oldItem: ViewElement, newItem: ViewElement): Boolean {
@@ -169,7 +171,7 @@ class ViewElementAdapter(
                         viewGroup,
                         false
                     ),
-                    this.lifecycle
+                    lifecycleObservable
                 )
             }
             ElementViewHolderType.EXTERNAL_SOURCES.ordinal -> {
@@ -241,6 +243,9 @@ class ViewElementAdapter(
             it.setIsRecyclable(false)
             it.pausePlayer()
         }
+
+        (holder as? KSViewHolder)?.let { it.destroy() }
+
         super.onViewDetachedFromWindow(holder)
     }
 
@@ -279,6 +284,14 @@ class ViewElementAdapter(
 
     fun setPlayerSeekPosition(index: Int, seekPosition: Long) {
         VideoElementViewHolder.setPlayerSeekPosition(index, seekPosition)
+    }
+
+    override fun onPause(owner: LifecycleOwner) {
+        return lifecycleObservable.onNext(KSLifecycleEvent.PAUSE)
+    }
+
+    override fun onDestroy(owner: LifecycleOwner) {
+        return lifecycleObservable.onNext(KSLifecycleEvent.DESTROY)
     }
 
     interface FullScreenDelegate {

@@ -35,7 +35,6 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.SurveyResponse
 import com.kickstarter.models.Update
 import com.kickstarter.models.User
-import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope

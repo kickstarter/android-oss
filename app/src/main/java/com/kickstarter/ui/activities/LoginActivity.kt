@@ -3,29 +3,34 @@ package com.kickstarter.ui.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Pair
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.BackHandler
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.kickstarter.R
 import com.kickstarter.databinding.LoginLayoutBinding
 import com.kickstarter.libs.ActivityRequestCodes
-import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getResetPasswordIntent
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.LoginReason
+import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.ui.extensions.text
 import com.kickstarter.ui.views.ConfirmDialog
 import com.kickstarter.viewmodels.LoginViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
-@RequiresActivityViewModel(LoginViewModel.ViewModel::class)
-class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
+
+class LoginActivity : AppCompatActivity() {
 
     private var confirmResetPasswordSuccessDialog: ConfirmDialog? = null
     private lateinit var ksString: KSString
@@ -39,13 +44,25 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
     private val errorTitleString = R.string.login_errors_title
     private lateinit var binding: LoginLayoutBinding
 
+    private lateinit var viewModelFactory: LoginViewModel.Factory
+    private val viewModel: LoginViewModel.LoginViewModel by viewModels { viewModelFactory }
+
+    private lateinit var disposables: CompositeDisposable
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        disposables = CompositeDisposable()
+
+        val env = this.getEnvironment()?.let { env ->
+            viewModelFactory = LoginViewModel.Factory(env, intent = intent)
+            env
+        }
+
         binding = LoginLayoutBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
 
-        this.ksString = requireNotNull(environment().ksString())
+        this.ksString = requireNotNull(env?.ksString())
         binding.loginToolbar.loginToolbar.setTitle(getString(this.loginString))
         binding.loginFormView.forgotYourPasswordTextView.text = ViewUtils.html(getString(this.forgotPasswordString))
 
@@ -53,41 +70,40 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
         binding.loginFormView.password.onChange { this.viewModel.inputs.password(it) }
 
         errorMessages()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { e -> ViewUtils.showDialog(this, getString(this.errorTitleString), e) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.tfaChallenge()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startTwoFactorActivity() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.loginSuccess()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { onSuccess() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.prefillEmail()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.loginFormView.email.setText(it)
                 binding.loginFormView.email.setSelection(it.length)
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.showChangedPasswordSnackbar()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showSnackbar(binding.loginToolbar.loginToolbar, R.string.Got_it_your_changes_have_been_saved) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.showCreatedPasswordSnackbar()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showSnackbar(binding.loginToolbar.loginToolbar, R.string.Got_it_your_changes_have_been_saved) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.showResetPasswordSuccessDialog()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showAndEmail ->
                 val show = showAndEmail.first
                 val email = showAndEmail.second
@@ -97,11 +113,12 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
                     resetPasswordSuccessDialog(email.first, showAndEmail.second.second).dismiss()
                 }
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.loginButtonIsEnabled()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ this.setLoginButtonEnabled(it) })
+            .addToDisposable(disposables)
 
         binding.loginFormView.forgotYourPasswordTextView.setOnClickListener {
             startResetPasswordActivity()
@@ -111,6 +128,12 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
             this.viewModel.inputs.loginClick()
             this@LoginActivity.hideKeyboard()
         }
+
+        onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                this@LoginActivity.finishWithAnimation()
+            }
+        })
     }
 
     /**
@@ -136,10 +159,10 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
 
     private fun errorMessages() =
         this.viewModel.outputs.invalidLoginError()
-            .map(ObjectUtils.coalesceWith(getString(this.loginDoesNotMatchString)))
+            .map(ObjectUtils.coalesceWithV2(getString(this.loginDoesNotMatchString)))
             .mergeWith(
                 this.viewModel.outputs.genericLoginError()
-                    .map(ObjectUtils.coalesceWith(getString(this.unableToLoginString)))
+                    .map(ObjectUtils.coalesceWithV2(getString(this.unableToLoginString)))
             )
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
@@ -176,15 +199,5 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
         val intent = Intent().getResetPasswordIntent(this, email = binding.loginFormView.email.text.toString())
         startActivityForResult(intent, ActivityRequestCodes.RESET_FLOW)
         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
-    }
-
-    override fun exitTransition(): Pair<Int, Int>? {
-        return slideInFromLeft()
-    }
-
-    override fun back() {
-        if (this.supportFragmentManager.backStackEntryCount == 0) {
-            super.back()
-        }
     }
 }

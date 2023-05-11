@@ -4,7 +4,6 @@ import android.content.Intent
 import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValuesV2
@@ -77,7 +76,7 @@ interface LoginViewModel {
     class LoginViewModel(
         private val environment: Environment,
         private val intent: Intent
-    ): ViewModel(), Inputs, Outputs {
+    ) : ViewModel(), Inputs, Outputs {
 
         private val emailEditTextChanged = BehaviorSubject.create<String>()
         private val logInButtonClicked = BehaviorSubject.create<Unit>()

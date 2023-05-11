@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.compose.BackHandler
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.kickstarter.R
@@ -17,7 +16,6 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getResetPasswordIntent
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.extensions.hideKeyboard
@@ -28,7 +26,6 @@ import com.kickstarter.ui.views.ConfirmDialog
 import com.kickstarter.viewmodels.LoginViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-
 
 class LoginActivity : AppCompatActivity() {
 

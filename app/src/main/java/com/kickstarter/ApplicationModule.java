@@ -60,6 +60,7 @@ import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.AccessTokenPreference;
 import com.kickstarter.libs.qualifiers.ActivitySamplePreference;
 import com.kickstarter.libs.qualifiers.ApiRetrofit;
+import com.kickstarter.libs.qualifiers.ApiRetrofitV2;
 import com.kickstarter.libs.qualifiers.AppRatingPreference;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.qualifiers.ConfigPreference;
@@ -108,6 +109,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Scheduler;
 import rx.schedulers.Schedulers;
@@ -282,6 +284,16 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
+  @ApiRetrofitV2
+  @NonNull
+  static Retrofit provideApiRetrofitV2(final @NonNull ApiEndpoint apiEndpoint,
+                                     final @NonNull Gson gson,
+                                     final @NonNull OkHttpClient okHttpClient) {
+    return createRetrofitV2(apiEndpoint.url(), gson, okHttpClient);
+  }
+
+  @Provides
+  @Singleton
   @NonNull
   static ApiRequestInterceptor provideApiRequestInterceptor(
           final @NonNull String clientId, final @NonNull CurrentUserType currentUser,
@@ -308,7 +320,7 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  static ApiServiceV2 provideApiServiceV2(final @ApiRetrofit @NonNull Retrofit retrofit) {
+  static ApiServiceV2 provideApiServiceV2(final @ApiRetrofitV2 @NonNull Retrofit retrofit) {
     return retrofit.create(ApiServiceV2.class);
   }
 
@@ -375,6 +387,15 @@ public class ApplicationModule {
       .addConverterFactory(GsonConverterFactory.create(gson))
       .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
       .build();
+  }
+
+  private static @NonNull Retrofit createRetrofitV2(final @NonNull String baseUrl, final @NonNull Gson gson, final @NonNull OkHttpClient okHttpClient) {
+    return new Retrofit.Builder()
+            .client(okHttpClient)
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .build();
   }
 
   @Provides

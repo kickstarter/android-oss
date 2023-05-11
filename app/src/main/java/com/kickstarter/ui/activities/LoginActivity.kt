@@ -175,6 +175,11 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        disposables.clear()
+        super.onDestroy()
+    }
+
     private fun onSuccess() {
         setResult(Activity.RESULT_OK)
         finish()

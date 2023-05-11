@@ -241,6 +241,11 @@ interface LoginViewModel {
             this.loginSuccess.onNext(Unit)
         }
 
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
+
         // - Inputs
         override fun email(email: String) = this.emailEditTextChanged.onNext(email)
 

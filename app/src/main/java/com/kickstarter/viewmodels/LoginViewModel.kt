@@ -75,7 +75,7 @@ interface LoginViewModel {
 
     class LoginViewModel(
         private val environment: Environment,
-        private val intent: Intent
+        private val intent: Intent? = null
     ) : ViewModel(), Inputs, Outputs {
 
         private val emailEditTextChanged = BehaviorSubject.create<String>()
@@ -279,7 +279,7 @@ interface LoginViewModel {
         override fun tfaChallenge() = this.tfaChallenge
     }
 
-    class Factory(private val environment: Environment, private val intent: Intent) : ViewModelProvider.Factory {
+    class Factory(private val environment: Environment, private val intent: Intent? = null) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return LoginViewModel(environment, intent) as T
         }

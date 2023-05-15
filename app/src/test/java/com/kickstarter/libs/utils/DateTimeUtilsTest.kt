@@ -4,12 +4,16 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.RelativeDateTimeOptions.Companion.builder
 import com.kickstarter.libs.utils.DateTimeUtils.relative
 import net.danlew.android.joda.JodaTimeAndroid
+import org.hamcrest.CoreMatchers.anyOf
+import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.MatcherAssert.assertThat
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.junit.Before
 import org.junit.Test
 import org.robolectric.annotation.Config
 import java.util.Locale
+import java.util.TimeZone
 
 class DateTimeUtilsTest : KSRobolectricTestCase() {
 
@@ -127,7 +131,7 @@ class DateTimeUtilsTest : KSRobolectricTestCase() {
             )
         )
         assertEquals(
-            "17 déc. 2015 à 18:35:05",
+            "17 déc. 2015, 18:35:05",
             DateTimeUtils.mediumDateTime(
                 DateTime.parse("2015-12-17T18:35:05Z"),
                 DateTimeZone.UTC,
@@ -385,33 +389,56 @@ class DateTimeUtilsTest : KSRobolectricTestCase() {
 
     @Test
     fun testMediumDateShortTime() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Universal"))
         assertEquals(
             "Dec 17, 2015, 6:35 PM",
             DateTimeUtils.mediumDateShortTime(
                 DateTime.parse("2015-12-17T18:35:05Z")
             )
         )
-
-        assertEquals(
-            "Dec 17, 2015, 6:35 PM",
-            DateTimeUtils.mediumDateShortTime(
-                DateTime.parse("2015-12-17T18:35:05Z"),
-                DateTimeZone.UTC
-            )
-        )
+        TimeZone.setDefault(TimeZone.getTimeZone("America/New_York"))
         assertEquals(
             "Dec 17, 2015, 1:35 PM",
+            DateTimeUtils.mediumDateShortTime(DateTime.parse("2015-12-17T18:35:05Z")),
+        )
+        Locale.setDefault(Locale.FRENCH)
+        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Paris"))
+        assertEquals(
+            "17 déc. 2015 19:35",
             DateTimeUtils.mediumDateShortTime(
-                DateTime.parse("2015-12-17T18:35:05Z"),
-                DateTimeZone.forID("EST")
+                DateTime.parse("2015-12-17T18:35:05Z")
             )
         )
+    }
+
+    @Test
+    fun testMediumDateShortTimeWithTimeZone() {
+        // Need to set timezone for the device for timezone and time to display correctly in tests
+        // https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+        TimeZone.setDefault(TimeZone.getTimeZone("Universal"))
         assertEquals(
-            "17 déc. 2015 18:35",
-            DateTimeUtils.mediumDateShortTime(
-                DateTime.parse("2015-12-17T18:35:05Z"),
-                DateTimeZone.UTC,
-                Locale.FRENCH
+            "Dec 17, 2015, 6:35 PM UTC",
+            DateTimeUtils.mediumDateShortTimeWithTimeZone(
+                DateTime.parse("2015-12-17T18:35:05Z")
+            )
+        )
+        // The time will not change due to the test time being hard coded, but
+        // EST will change to EDT on the device, check for either
+        TimeZone.setDefault(TimeZone.getTimeZone("America/New_York"))
+        assertThat(
+            DateTimeUtils.mediumDateShortTimeWithTimeZone(DateTime.parse("2015-12-17T18:35:05Z")),
+            anyOf(
+                containsString("Dec 17, 2015, 1:35 PM EST"),
+                containsString("Dec 17, 2015, 1:35 PM EDT")
+            )
+        )
+        // Need to set device locale/language for formatting to match in tests correctly
+        Locale.setDefault(Locale.FRENCH)
+        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Paris"))
+        assertEquals(
+            "17 déc. 2015 19:35 CEST",
+            DateTimeUtils.mediumDateShortTimeWithTimeZone(
+                DateTime.parse("2015-12-17T18:35:05Z")
             )
         )
     }

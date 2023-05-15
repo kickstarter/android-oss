@@ -4,6 +4,7 @@ import android.content.Intent
 import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValuesV2
@@ -84,6 +85,7 @@ interface LoginViewModel {
         private val resetPasswordConfirmationDialogDismissed = PublishSubject.create<Boolean>()
         private val activityResult = PublishSubject.create<ActivityResult>()
 
+        private val emailAndReason = BehaviorSubject.create<Pair<String, LoginReason>>()
         private val genericLoginError: Observable<String>
         private val invalidloginError: Observable<String>
         private val logInButtonIsEnabled = BehaviorSubject.create<Boolean>()
@@ -116,18 +118,15 @@ interface LoginViewModel {
             val isValid = emailAndPassword
                 .map<Boolean> { isValid(it.first, it.second) }
 
-            val emailAndReason = internalIntent
+            internalIntent
                 .filter { it.hasExtra(IntentKey.EMAIL) }
                 .map {
-                    Pair.create(
-                        it.getStringExtra(IntentKey.EMAIL) ?: "",
-                        if (it.hasExtra(IntentKey.LOGIN_REASON)) {
-                            it.getSerializableExtra(IntentKey.LOGIN_REASON) as LoginReason
-                        } else {
-                            LoginReason.DEFAULT
-                        }
-                    )
+                    extractFromIntent(it)
                 }
+                .subscribe {
+                    emailAndReason.onNext(it)
+                }
+                .addToDisposable(disposables)
 
             // - Contain the errors if any from the login endpoint response
             val errors = PublishSubject.create<Throwable?>()
@@ -226,7 +225,27 @@ interface LoginViewModel {
                 .map { null }
 
             this.analyticEvents.trackLoginPagedViewed()
+
+            this.activityResult
+                .filter { it.isRequestCode(ActivityRequestCodes.RESET_FLOW) }
+                .filter(ActivityResult::isOk)
+                .subscribe {
+                    it.intent?.let { intent ->
+                        this.emailAndReason.onNext(extractFromIntent(intent))
+                    }
+                }
+                .addToDisposable(disposables)
         }
+
+        private fun extractFromIntent(it: Intent): Pair<String, LoginReason> =
+            Pair.create(
+                it.getStringExtra(IntentKey.EMAIL) ?: "",
+                if (it.hasExtra(IntentKey.LOGIN_REASON)) {
+                    it.getSerializableExtra(IntentKey.LOGIN_REASON) as LoginReason
+                } else {
+                    LoginReason.DEFAULT
+                }
+            )
 
         private fun unwrapNotificationEnvelopeError(notification: Notification<AccessTokenEnvelope>) =
             if (notification.isOnError) notification.error else null

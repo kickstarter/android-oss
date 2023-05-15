@@ -16,6 +16,7 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getResetPasswordIntent
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.extensions.hideKeyboard
@@ -114,7 +115,7 @@ class LoginActivity : AppCompatActivity() {
 
         this.viewModel.outputs.loginButtonIsEnabled()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ this.setLoginButtonEnabled(it) })
+            .subscribe { this.setLoginButtonEnabled(it) }
             .addToDisposable(disposables)
 
         binding.loginFormView.forgotYourPasswordTextView.setOnClickListener {
@@ -164,6 +165,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
+        viewModel.activityResult(create(requestCode, resultCode, intent))
 
         if (requestCode != ActivityRequestCodes.LOGIN_FLOW && requestCode != ActivityRequestCodes.RESET_FLOW) {
             return

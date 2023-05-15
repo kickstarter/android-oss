@@ -1,7 +1,9 @@
 package com.kickstarter.viewmodels
 
+import android.app.Activity
 import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -10,11 +12,15 @@ import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.ConfigFactory.config
 import com.kickstarter.mock.services.MockApiClientV2
+import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.data.ActivityResult
+import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.viewmodels.LoginViewModel.LoginViewModel
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.Test
 
@@ -186,148 +192,171 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         this.showChangedPasswordSnackbar.assertNoValues()
     }
 
-//    @Test
-//    fun testPrefillEmailAndDialog() {
-//        setUpEnvironment(environment(), Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com"))
-//
-//        // Start the view model with an email to prefill.
-//        this.vm.intent(Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com").putExtra(IntentKey.LOGIN_REASON, LoginReason.RESET_PASSWORD))
-//
-//        this.preFillEmail.assertValue("hello@kickstarter.com")
-//        this.showChangedPasswordSnackbar.assertNoValues()
-//        this.showResetPasswordSuccessDialog.assertValue(true)
-//
-//        // Dismiss the confirmation dialog.
-//        this.vm.inputs.resetPasswordConfirmationDialogDismissed()
-//        this.showChangedPasswordSnackbar.assertNoValues()
-//        this.showResetPasswordSuccessDialog.assertValues(true, false)
-//
-//        // Simulate rotating the device, first by sending a new intent (similar to what happens after rotation).
-//        this.vm.intent(Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com"))
-//
-//        // Create new test subscribers – this emulates a new activity subscribing to the vm's outputs.
-//        val rotatedPrefillEmail = TestSubscriber<String>()
-//        this.vm.outputs.prefillEmail().subscribe(rotatedPrefillEmail)
-//        val rotatedShowChangedPasswordSnackbar = TestSubscriber<Void>()
-//        this.vm.outputs.showChangedPasswordSnackbar().subscribe(rotatedShowChangedPasswordSnackbar)
-//        val rotatedShowResetPasswordSuccessDialog = TestSubscriber<Boolean>()
-//        this.vm.outputs.showResetPasswordSuccessDialog()
-//            .map { showAndEmail -> showAndEmail.first }
-//            .subscribe(rotatedShowResetPasswordSuccessDialog)
-//
-//        // Email should still be pre-filled.
-//        rotatedPrefillEmail.assertValue("hello@kickstarter.com")
-//
-//        // Dialog should not be shown again – the user has already dismissed it.
-//        rotatedShowResetPasswordSuccessDialog.assertValue(false)
-//
-//        // Snackbar should not be shown.
-//        rotatedShowChangedPasswordSnackbar.assertNoValues()
-//    }
+    @Test
+    fun testPrefillEmailAndDialog() {
+        // Start the view model with an email to prefill.
+        setUpEnvironment(environment(), Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com").putExtra(IntentKey.LOGIN_REASON, LoginReason.RESET_PASSWORD))
 
-//    @Test
-//    fun testPrefillEmailAndSnackbar() {
-//        setUpEnvironment(environment(), Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com"))
-//
-//        // Start the view model with an email to prefill.
-//        this.vm.intent(Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com").putExtra(IntentKey.LOGIN_REASON, LoginReason.CHANGE_PASSWORD))
-//
-//        this.preFillEmail.assertValue("hello@kickstarter.com")
-//        this.showResetPasswordSuccessDialog.assertNoValues()
-//
-//        // Simulate rotating the device, first by sending a new intent (similar to what happens after rotation).
-//        this.vm.intent(Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com").putExtra(IntentKey.LOGIN_REASON, LoginReason.CHANGE_PASSWORD))
-//
-//        // Create new test subscribers – this emulates a new activity subscribing to the vm's outputs.
-//        val rotatedPrefillEmail = TestSubscriber<String>()
-//        this.vm.outputs.prefillEmail().subscribe(rotatedPrefillEmail)
-//        val rotatedShowChangedPasswordSnackbar = TestSubscriber<Void>()
-//        this.vm.outputs.showChangedPasswordSnackbar().subscribe(rotatedShowChangedPasswordSnackbar)
-//        val rotatedShowResetPasswordSuccessDialog = TestSubscriber<Boolean>()
-//        this.vm.outputs.showResetPasswordSuccessDialog()
-//            .map { showAndEmail -> showAndEmail.first }
-//            .subscribe(rotatedShowResetPasswordSuccessDialog)
-//
-//        // Email should still be pre-filled.
-//        rotatedPrefillEmail.assertValue("hello@kickstarter.com")
-//        rotatedShowChangedPasswordSnackbar.assertValueCount(1)
-//
-//        // Dialog should not be shown.
-//        rotatedShowResetPasswordSuccessDialog.assertNoValues()
-//    }
+        this.preFillEmail.assertValue("hello@kickstarter.com")
+        this.showChangedPasswordSnackbar.assertNoValues()
+        this.showResetPasswordSuccessDialog.assertValue(true)
 
-//    @Test
-//    fun testPrefillEmailAndResetPassword() {
-//        setUpEnvironment(environment(), Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com"))
-//        // Start the view model with an email to prefill.
-//        this.vm.email("test@kickstarter.com")
-//        this.vm.loginClick()
-//
-//        // Start the view model with an email to prefill.
-//        this.vm.activityResult(
-//            ActivityResult(
-//                ActivityRequestCodes.RESET_FLOW,
-//                Activity.RESULT_OK,
-//                Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com").putExtra(IntentKey.LOGIN_REASON, LoginReason.RESET_PASSWORD)
-//            )
-//        )
-//
-//        this.preFillEmail.assertValue("hello@kickstarter.com")
-//        this.showChangedPasswordSnackbar.assertNoValues()
-//        this.showResetPasswordSuccessDialog.assertValue(true)
-//
-//        // Dismiss the confirmation dialog.
-//        this.vm.inputs.resetPasswordConfirmationDialogDismissed()
-//        this.showChangedPasswordSnackbar.assertNoValues()
-//        this.showResetPasswordSuccessDialog.assertValues(true, false)
-//
-//        // Simulate rotating the device, first by sending a new intent (similar to what happens after rotation).
-//        this.vm.intent(Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com"))
-//
-//        // Create new test subscribers – this emulates a new activity subscribing to the vm's outputs.
-//        val rotatedPrefillEmail = TestSubscriber<String>()
-//        this.vm.outputs.prefillEmail().subscribe(rotatedPrefillEmail)
-//        val rotatedShowChangedPasswordSnackbar = TestSubscriber<Void>()
-//        this.vm.outputs.showChangedPasswordSnackbar().subscribe(rotatedShowChangedPasswordSnackbar)
-//        val rotatedShowResetPasswordSuccessDialog = TestSubscriber<Boolean>()
-//        this.vm.outputs.showResetPasswordSuccessDialog()
-//            .map { showAndEmail -> showAndEmail.first }
-//            .subscribe(rotatedShowResetPasswordSuccessDialog)
-//
-//        // Email should still be pre-filled.
-//        rotatedPrefillEmail.assertValue("hello@kickstarter.com")
-//
-//        // Dialog should not be shown again – the user has already dismissed it.
-//        rotatedShowResetPasswordSuccessDialog.assertValue(false)
-//
-//        // Snackbar should not be shown.
-//        rotatedShowChangedPasswordSnackbar.assertNoValues()
-//    }
+        // Dismiss the confirmation dialog.
+        this.vm.inputs.resetPasswordConfirmationDialogDismissed()
+        this.showChangedPasswordSnackbar.assertNoValues()
+        this.showResetPasswordSuccessDialog.assertValues(true, false)
 
-//    @Test
-//    fun testSuccessfulLogin() {
-//        val mockConfig = MockCurrentConfig()
-//        mockConfig.config(config())
-//
-//        val environment = environment().toBuilder()
-//            .currentConfig(mockConfig)
-//            .build()
-//
-//        val user = BehaviorSubject.create<User>()
-//        environment().currentUser()?.loggedInUser()?.subscribe(user)
-//
-//        setUpEnvironment(environment, Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com"))
-//
-//        this.vm.outputs.loginSuccess().subscribe(this.loginSuccess)
-//
-//        this.vm.inputs.email("hello@kickstarter.com")
-//        this.vm.inputs.password("codeisawesome")
-//
-//        this.vm.inputs.loginClick()
-//
-//        this.loginSuccess.assertValues(null, null)
-//        assertEquals("some@email.com", user.value?.email())
-//
-//        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
-//    }
+        // Simulate success result after presenting ResetPassword Activity flow
+        this.vm.inputs.activityResult(
+            ActivityResult.create(
+                requestCode = ActivityRequestCodes.RESET_FLOW,
+                resultCode = Activity.RESULT_OK,
+                intent = Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com")
+            )
+        )
+
+        val rotatedPrefillEmail = TestSubscriber<String>()
+        this.vm.outputs.prefillEmail().subscribe { rotatedPrefillEmail.onNext(it) }.addToDisposable(disposables)
+        val rotatedShowChangedPasswordSnackbar = TestSubscriber<Unit>()
+        this.vm.outputs.showChangedPasswordSnackbar().subscribe {
+            rotatedShowChangedPasswordSnackbar.onNext(it)
+        }.addToDisposable(disposables)
+
+        val rotatedShowResetPasswordSuccessDialog = TestSubscriber<Boolean>()
+        this.vm.outputs.showResetPasswordSuccessDialog()
+            .map { showAndEmail -> showAndEmail.first }
+            .subscribe {
+                rotatedShowResetPasswordSuccessDialog.onNext(it)
+            }
+            .addToDisposable(disposables)
+
+        // Email should still be pre-filled.
+        rotatedPrefillEmail.assertValue("hello@kickstarter.com")
+
+        // Dialog should not be shown again – the user has already dismissed it.
+        rotatedShowResetPasswordSuccessDialog.assertValue(false)
+
+        // Snackbar should not be shown.
+        rotatedShowChangedPasswordSnackbar.assertNoValues()
+    }
+
+    @Test
+    fun testPrefillEmailAndSnackbar() {
+        setUpEnvironment(environment(), Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com").putExtra(IntentKey.LOGIN_REASON, LoginReason.CHANGE_PASSWORD))
+
+        this.preFillEmail.assertValue("hello@kickstarter.com")
+        this.showResetPasswordSuccessDialog.assertNoValues()
+
+        this.vm.activityResult(
+            ActivityResult.create(
+                requestCode = ActivityRequestCodes.RESET_FLOW,
+                resultCode = Activity.RESULT_OK,
+                intent = Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com").putExtra(IntentKey.LOGIN_REASON, LoginReason.CHANGE_PASSWORD)
+            )
+        )
+
+        // Create new test subscribers – this emulates a new activity subscribing to the vm's outputs.
+        val rotatedPrefillEmail = TestSubscriber<String>()
+        this.vm.outputs.prefillEmail().subscribe { rotatedPrefillEmail.onNext(it) }.addToDisposable(disposables)
+        val rotatedShowChangedPasswordSnackbar = TestSubscriber<Unit>()
+        this.vm.outputs.showChangedPasswordSnackbar().subscribe {
+            rotatedShowChangedPasswordSnackbar.onNext(Unit)
+        }.addToDisposable(disposables)
+        val rotatedShowResetPasswordSuccessDialog = TestSubscriber<Boolean>()
+        this.vm.outputs.showResetPasswordSuccessDialog()
+            .map { showAndEmail -> showAndEmail.first }
+            .subscribe { rotatedShowResetPasswordSuccessDialog.onNext(it) }
+            .addToDisposable(disposables)
+
+        // Email should still be pre-filled.
+        rotatedPrefillEmail.assertValue("hello@kickstarter.com")
+        rotatedShowChangedPasswordSnackbar.assertValueCount(1)
+
+        // Dialog should not be shown.
+        rotatedShowResetPasswordSuccessDialog.assertNoValues()
+    }
+
+    @Test
+    fun testPrefillEmailAndResetPassword() {
+        setUpEnvironment(environment(), Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com"))
+        // Start the view model with an email to prefill.
+        this.vm.email("test@kickstarter.com")
+        this.vm.loginClick()
+
+        // Start the view model with an email to prefill.
+        this.vm.inputs.activityResult(
+            ActivityResult(
+                ActivityRequestCodes.RESET_FLOW,
+                Activity.RESULT_OK,
+                Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com").putExtra(IntentKey.LOGIN_REASON, LoginReason.RESET_PASSWORD)
+            )
+        )
+
+        this.preFillEmail.assertValue("hello@kickstarter.com")
+        this.showChangedPasswordSnackbar.assertNoValues()
+        this.showResetPasswordSuccessDialog.assertValue(true)
+
+        // Dismiss the confirmation dialog.
+        this.vm.inputs.resetPasswordConfirmationDialogDismissed()
+        this.showChangedPasswordSnackbar.assertNoValues()
+        this.showResetPasswordSuccessDialog.assertValues(true, false)
+
+        // Simulate rotating the device, first by sending a new intent (similar to what happens after rotation).
+        this.vm.inputs.activityResult(
+            ActivityResult(
+                ActivityRequestCodes.RESET_FLOW,
+                Activity.RESULT_OK,
+                Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com")
+            )
+        )
+
+        // Create new test subscribers – this emulates a new activity subscribing to the vm's outputs.
+        val rotatedPrefillEmail = TestSubscriber<String>()
+        this.vm.outputs.prefillEmail().subscribe { rotatedPrefillEmail.onNext(it) }.addToDisposable(disposables)
+        val rotatedShowChangedPasswordSnackbar = TestSubscriber<Unit>()
+        this.vm.outputs.showChangedPasswordSnackbar().subscribe {
+            rotatedShowChangedPasswordSnackbar.onNext(Unit)
+        }.addToDisposable(disposables)
+        val rotatedShowResetPasswordSuccessDialog = TestSubscriber<Boolean>()
+        this.vm.outputs.showResetPasswordSuccessDialog()
+            .map { showAndEmail -> showAndEmail.first }
+            .subscribe { rotatedShowResetPasswordSuccessDialog.onNext(it) }
+            .addToDisposable(disposables)
+
+        // Email should still be pre-filled.
+        rotatedPrefillEmail.assertValue("hello@kickstarter.com")
+
+        // Dialog should not be shown again – the user has already dismissed it.
+        rotatedShowResetPasswordSuccessDialog.assertValue(false)
+
+        // Snackbar should not be shown.
+        rotatedShowChangedPasswordSnackbar.assertNoValues()
+    }
+
+    @Test
+    fun testSuccessfulLogin() {
+        val mockConfig = MockCurrentConfigV2()
+        mockConfig.config(config())
+
+        val environment = environment().toBuilder()
+            .currentConfig2(mockConfig)
+            .build()
+
+        val user = BehaviorSubject.create<User>()
+        environment().currentUserV2()?.loggedInUser()?.subscribe(user)
+
+        setUpEnvironment(environment, Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com"))
+
+        this.vm.outputs.loginSuccess().subscribe { this.loginSuccess.onNext(Unit) }.addToDisposable(disposables)
+
+        this.vm.inputs.email("hello@kickstarter.com")
+        this.vm.inputs.password("codeisawesome")
+
+        this.vm.inputs.loginClick()
+
+        this.loginSuccess.assertValues(null, null)
+        assertEquals("some@email.com", user.value?.email())
+
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+    }
 }

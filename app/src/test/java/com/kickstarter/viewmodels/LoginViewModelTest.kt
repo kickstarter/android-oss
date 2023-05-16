@@ -22,6 +22,7 @@ import com.kickstarter.viewmodels.LoginViewModel.LoginViewModel
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
 
 class LoginViewModelTest : KSRobolectricTestCase() {
@@ -37,6 +38,11 @@ class LoginViewModelTest : KSRobolectricTestCase() {
     private val tfaChallenge = TestSubscriber<Unit>()
 
     private val disposables = CompositeDisposable()
+
+    @After
+    fun cleanUp() {
+        disposables.clear()
+    }
 
     fun setUpEnvironment(environment: Environment, intent: Intent) {
         this.vm = LoginViewModel(environment, intent)

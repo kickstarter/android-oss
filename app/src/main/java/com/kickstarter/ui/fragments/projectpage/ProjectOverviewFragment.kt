@@ -459,7 +459,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             binding.projectCreatorInfoLayout.projectDisclaimerTextView.text = ksString.format(
                 currentContext.getString(R.string.project_disclaimer_goal_reached),
                 "deadline",
-                DateTimeUtils.mediumDateShortTime(deadline)
+                DateTimeUtils.mediumDateShortTimeWithTimeZone(deadline)
             )
         }
     }
@@ -471,7 +471,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
                 "goal_currency",
                 goalAndDeadline.first,
                 "deadline",
-                DateTimeUtils.mediumDateShortTime(goalAndDeadline.second)
+                DateTimeUtils.mediumDateShortTimeWithTimeZone(goalAndDeadline.second)
             )
         }
     }

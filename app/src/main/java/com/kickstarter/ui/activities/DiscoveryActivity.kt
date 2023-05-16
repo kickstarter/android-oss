@@ -5,6 +5,8 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.drawable.Animatable
 import android.os.Bundle
+import android.view.View
+import android.view.ViewTreeObserver
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -40,6 +42,8 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
+import kotlinx.coroutines.delay
+import rx.Observable
 
 @RequiresActivityViewModel(DiscoveryViewModel.ViewModel::class)
 class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {

@@ -156,6 +156,7 @@ interface LoginViewModel {
 
             emailAndReason
                 .map { it.first }
+                .distinctUntilChanged()
                 .ofType(String::class.java)
                 .subscribe(this.prefillEmail)
 

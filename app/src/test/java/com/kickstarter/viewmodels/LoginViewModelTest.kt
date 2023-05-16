@@ -11,8 +11,9 @@ import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.ConfigFactory.config
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApiClientV2
-import com.kickstarter.models.User
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.ActivityResult
@@ -20,7 +21,6 @@ import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.viewmodels.LoginViewModel.LoginViewModel
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.Test
 
@@ -335,27 +335,45 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSuccessfulLogin() {
-        val mockConfig = MockCurrentConfigV2()
-        mockConfig.config(config())
-
-        val environment = environment().toBuilder()
-            .currentConfig2(mockConfig)
+        val user = UserFactory.user()
+        val token = AccessTokenEnvelope.builder()
+            .user(user)
+            .accessToken("token")
             .build()
 
-        val user = BehaviorSubject.create<User>()
-        environment().currentUserV2()?.loggedInUser()?.subscribe(user)
+        val apiClient = object : MockApiClientV2() {
+            override fun login(email: String, password: String): Observable<AccessTokenEnvelope> {
+                return Observable.just(token)
+            }
+        }
+
+        val apolloClient = object : MockApolloClientV2() {
+            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                return Observable.just(
+                    UserPrivacyQuery.Data(
+                        UserPrivacyQuery.Me(
+                            "", user.name(),
+                            "hello@kickstarter.com", true, true, true, true, "USD"
+                        )
+                    )
+                )
+            }
+        }
+
+        val environment = environment().toBuilder()
+            .apolloClientV2(apolloClient)
+            .apiClientV2(apiClient)
+            .build()
 
         setUpEnvironment(environment, Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com"))
-
-        this.vm.outputs.loginSuccess().subscribe { this.loginSuccess.onNext(Unit) }.addToDisposable(disposables)
 
         this.vm.inputs.email("hello@kickstarter.com")
         this.vm.inputs.password("codeisawesome")
 
         this.vm.inputs.loginClick()
 
-        this.loginSuccess.assertValues(null, null)
-        assertEquals("some@email.com", user.value?.email())
+        this.loginSuccess.assertValueCount(1)
+        this.loginSuccess.assertValue(Unit)
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }

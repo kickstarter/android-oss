@@ -12,7 +12,12 @@ import org.joda.time.DateTimeZone
 import org.joda.time.Seconds
 import org.joda.time.format.DateTimeFormat
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.Locale
+import java.util.TimeZone
 import kotlin.math.abs
 import kotlin.math.floor
 
@@ -89,17 +94,30 @@ object DateTimeUtils {
     /**
      * e.g.: Jan 14, 2016 2:20 PM.
      */
-    @JvmOverloads
     fun mediumDateShortTime(
-        dateTime: DateTime,
-        dateTimeZone: DateTimeZone = DateTimeZone.getDefault(),
-        locale: Locale = Locale.getDefault()
+        dateTime: DateTime
     ): String {
-        val mediumShortStyle = DateTimeFormat.patternForStyle("MS", locale)
-        val formatter =
-            DateTimeFormat.forPattern(mediumShortStyle).withZone(dateTimeZone).withLocale(locale)
+        val localTime =
+            Instant.ofEpochMilli(dateTime.millis).atZone(ZoneId.systemDefault()).toLocalDateTime()
+        val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)
 
-        return dateTime.toString(formatter)
+        return localTime.format(formatter)
+    }
+
+    /**
+     * e.g.: Jan 14, 2016 2:20 PM EST.
+     * Always uses phones timezone for the timezone string
+     */
+    fun mediumDateShortTimeWithTimeZone(
+        dateTime: DateTime
+    ): String {
+        val localTime =
+            Instant.ofEpochMilli(dateTime.millis).atZone(ZoneId.systemDefault()).toLocalDateTime()
+        val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)
+        val dateTimeString = localTime.format(formatter)
+        val timezoneString = TimeZone.getDefault().getDisplayName(true, TimeZone.SHORT)
+
+        return "$dateTimeString $timezoneString"
     }
 
     /**

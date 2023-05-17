@@ -39,6 +39,13 @@
   <!-- Activities -->
   <style name="ActivityFeedActivity" parent="KSTheme" />
 
+  <style name="SplashTheme" parent="Theme.SplashScreen">
+    <item name="windowSplashScreenBackground">@color/kds_create_500</item>
+    <item name="windowSplashScreenIconBackgroundColor">@color/kds_create_500</item>
+    <item name="windowSplashScreenAnimatedIcon">@drawable/ksr_logo_rgb_white</item>
+    <item name="postSplashScreenTheme">@style/DiscoveryActivity</item>
+  </style>
+
   <style name="WhiteActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/kds_white</item>
     <item name="android:windowContentTransitions">true</item>

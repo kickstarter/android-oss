@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.5'
         classpath 'com.apollographql.apollo:apollo-gradle-plugin:2.5.12'
         classpath 'com.karumi:shot:5.13.0'
     }
@@ -240,6 +240,7 @@ dependencies {
     final retrofit_version = "2.9.+"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava:$retrofit_version"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     final rx_lifecycle_version = "0.3.0"
     implementation "com.trello:rxlifecycle:$rx_lifecycle_version"

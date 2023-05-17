@@ -142,6 +142,7 @@ class ProjectCampaignFragment :
 
     override fun onDestroyView() {
         binding?.projectCampaignViewListItems?.adapter = null
+        disposables.clear()
         super.onDestroyView()
     }
 

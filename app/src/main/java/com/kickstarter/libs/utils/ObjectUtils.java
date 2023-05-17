@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import rx.functions.Func1;
+import io.reactivex.functions.Function;
 
 public final class ObjectUtils {
   private ObjectUtils(){}
@@ -30,6 +31,10 @@ public final class ObjectUtils {
    * Returns a function `T -> T` that coalesces values with `theDefault`.
    */
   @NonNull public static <T> Func1<T, T> coalesceWith(final @NonNull T theDefault) {
+    return (value) -> ObjectUtils.coalesce(value, theDefault);
+  }
+
+  @NonNull public static <T> Function<T, T> coalesceWithV2(final @NonNull T theDefault) {
     return (value) -> ObjectUtils.coalesce(value, theDefault);
   }
 

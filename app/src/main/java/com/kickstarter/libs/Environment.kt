@@ -7,6 +7,7 @@ import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.preferences.IntPreferenceType
 import com.kickstarter.libs.utils.PlayServicesCapability
 import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.WebClientType
@@ -17,6 +18,7 @@ import java.net.CookieManager
 class Environment private constructor(
     private val activitySamplePreference: IntPreferenceType?,
     private val apiClient: ApiClientType?,
+    private val apiClientV2: ApiClientTypeV2?,
     private val apolloClient: ApolloClientType?,
     private val apolloClientV2: ApolloClientTypeV2?,
     private val build: Build?,
@@ -47,6 +49,7 @@ class Environment private constructor(
 ) {
     fun activitySamplePreference() = this.activitySamplePreference
     fun apiClient() = this.apiClient
+    fun apiClientV2() = this.apiClientV2
     fun apolloClient() = this.apolloClient
     fun apolloClientV2() = this.apolloClientV2
     fun build() = this.build
@@ -78,6 +81,7 @@ class Environment private constructor(
     data class Builder(
         private var activitySamplePreference: IntPreferenceType? = null,
         private var apiClient: ApiClientType? = null,
+        private var apiClientV2: ApiClientTypeV2? = null,
         private var apolloClient: ApolloClientType? = null,
         private var apolloClientV2: ApolloClientTypeV2? = null,
         private var build: Build? = null,
@@ -108,6 +112,7 @@ class Environment private constructor(
     ) {
         fun activitySamplePreference(activitySamplePreference: IntPreferenceType) = apply { this.activitySamplePreference = activitySamplePreference }
         fun apiClient(apiClient: ApiClientType) = apply { this.apiClient = apiClient }
+        fun apiClientV2(apiClientV2: ApiClientTypeV2) = apply { this.apiClientV2 = apiClientV2 }
         fun apolloClient(apolloClient: ApolloClientType) = apply { this.apolloClient = apolloClient }
         fun apolloClientV2(apolloClientV2: ApolloClientTypeV2) = apply { this.apolloClientV2 = apolloClientV2 }
         fun build(build: Build) = apply { this.build = build }
@@ -140,6 +145,7 @@ class Environment private constructor(
         fun build() = Environment(
             activitySamplePreference = activitySamplePreference,
             apiClient = apiClient,
+            apiClientV2 = apiClientV2,
             apolloClient = apolloClient,
             apolloClientV2 = apolloClientV2,
             build = build,
@@ -173,6 +179,7 @@ class Environment private constructor(
     fun toBuilder() = Builder(
         activitySamplePreference = activitySamplePreference,
         apiClient = apiClient,
+        apiClientV2 = apiClientV2,
         apolloClient = apolloClient,
         apolloClientV2 = apolloClientV2,
         build = build,

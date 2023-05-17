@@ -215,6 +215,7 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:$activity_fragment_version"
 
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
+    implementation("androidx.core:core-splashscreen:1.0.1")
     implementation 'com.apollographql.apollo:apollo-runtime:2.5.12'
     implementation 'com.facebook.android:facebook-android-sdk:14.1.1'
     implementation 'com.google.android.play:core-ktx:1.8.1'

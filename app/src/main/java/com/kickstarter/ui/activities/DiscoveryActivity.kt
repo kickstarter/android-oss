@@ -7,6 +7,7 @@ import android.graphics.drawable.Animatable
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -50,6 +51,8 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
     private lateinit var binding: DiscoveryLayoutBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
+
         super.onCreate(savedInstanceState)
         binding = DiscoveryLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)

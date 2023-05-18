@@ -4,6 +4,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import org.junit.Test
 import org.robolectric.RuntimeEnvironment
+import java.util.Locale
 
 class StringExtKtTest : KSRobolectricTestCase() {
 
@@ -151,10 +152,13 @@ class StringExtKtTest : KSRobolectricTestCase() {
         assertEquals(0.0, "".parseToDouble())
         assertEquals(1.0, "1".parseToDouble())
         assertEquals(10.0, "10.0".parseToDouble())
-        assertEquals(1.5, "1,5".parseToDouble())
         assertEquals(100.0, "100".parseToDouble())
-        assertEquals(100.5, "100,50".parseToDouble())
         assertEquals(1000.0, "1000.0".parseToDouble())
+
+        // Change locale to use different formatting, make sure it still recognizes numbers
+        Locale.setDefault(Locale.GERMAN)
+        assertEquals(1.5, "1,5".parseToDouble())
+        assertEquals(100.5, "100,50".parseToDouble())
         assertEquals(1000.0, "1.000".parseToDouble())
         assertEquals(1000.5, "1.000,50".parseToDouble())
         assertEquals(10000.0, "10.000".parseToDouble())

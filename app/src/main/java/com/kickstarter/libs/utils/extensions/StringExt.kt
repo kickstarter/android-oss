@@ -7,9 +7,11 @@ import android.text.Html
 import android.text.Spanned
 import android.text.TextUtils
 import android.util.Patterns
+import com.braze.support.emptyToNull
 import com.kickstarter.R
 import org.jsoup.Jsoup
 import java.security.MessageDigest
+import java.text.NumberFormat
 import java.util.Locale
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -80,29 +82,19 @@ fun String.parseHtmlTag(): String {
 }
 
 /**
- * Takes an optional String and returns a Double
- * NOTE: NumberUtils.parse(String, Locale)
- * - Depending on the Locale the decimal separator 0.99 or 0,99
- * - Depending on the Locale the Character used for thousand separator can change 9.999 or 9,999
- *
- * We've compiled several Regex to account for use cases as not all the languages are listed as Default Locale
- * as example Spanish or Polish, take a look at
- * @see <a href="https://github.com/frohoff/jdk8u-jdk/blob/da0da73ab82ed714dc5be94acd2f0d00fbdfe2e9/src/share/classes/java/util/Locale.java#L484">Locale.java</a>
- *
- * The Strings will be modified to use "." as a decimal separator, and "" as the thousand separator
- *
- * - In case something wrong, it will return 0.0
+ * Returns a double for the given string taking into account the locale of the device or 0.0
+ * if the string is null or is invalid
  */
 fun String?.parseToDouble(): Double {
-    val numToParse = this?.let { numToParse ->
-        return@let when {
-            "[0-9]+,[0-9]+".toRegex().matches(numToParse) -> numToParse.replace(",", ".")
-            "[0-9]+.[0-9]{3}".toRegex().matches(numToParse) -> numToParse.replace(".", "")
-            "[0-9]+.[0-9]{3},[0-9]+".toRegex().matches(numToParse) -> numToParse.replace(".", "").replace(",", ".")
-            else -> numToParse
-        }
+    val format = NumberFormat.getInstance()
+    try {
+        this?.emptyToNull()?.let {
+            val number = format.parse(it)
+            return number?.toDouble() ?: 0.0
+        } ?: return 0.0
+    } catch (t: Throwable) {
+        return 0.0
     }
-    return numToParse?.toDoubleOrNull() ?: 0.0
 }
 
 /**

@@ -109,6 +109,7 @@ public final class NumberUtils {
     return value == Math.round(value);
   }
 
+  @Deprecated
   public static double parse(final @NonNull String input) {
     return parse(input, Locale.getDefault());
   }

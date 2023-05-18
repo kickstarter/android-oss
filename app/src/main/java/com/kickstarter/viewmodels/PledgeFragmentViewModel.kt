@@ -776,7 +776,11 @@ interface PledgeFragmentViewModel {
                 .subscribe(this.decreasePledgeButtonIsEnabled)
 
             pledgeInput
-                .map { NumberFormat.getNumberInstance().format(it) }
+                .map {
+                    val formatter = NumberFormat.getNumberInstance()
+                    formatter.maximumFractionDigits = 2
+                    formatter.format(it)
+                }
                 .compose(bindToLifecycle())
                 .subscribe(this.pledgeAmount)
 
@@ -816,7 +820,11 @@ interface PledgeFragmentViewModel {
                 .subscribe(this.decreaseBonusButtonIsEnabled)
 
             bonusInput
-                .map { NumberFormat.getNumberInstance().format(it) }
+                .map {
+                    val formatter = NumberFormat.getNumberInstance()
+                    formatter.maximumFractionDigits = 2
+                    formatter.format(it)
+                }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(this.bonusAmount)

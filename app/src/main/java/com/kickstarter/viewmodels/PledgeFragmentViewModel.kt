@@ -9,7 +9,6 @@ import com.kickstarter.R
 import com.kickstarter.libs.Config
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
-import com.kickstarter.libs.NumberOptions
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errors
@@ -56,6 +55,7 @@ import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import type.CreditCardPaymentType
 import java.math.RoundingMode
+import java.text.NumberFormat
 import kotlin.math.max
 
 interface PledgeFragmentViewModel {
@@ -776,7 +776,11 @@ interface PledgeFragmentViewModel {
                 .subscribe(this.decreasePledgeButtonIsEnabled)
 
             pledgeInput
-                .map { NumberUtils.format(it.toFloat(), NumberOptions.builder().precision(NumberUtils.precision(it, RoundingMode.HALF_UP)).build()) }
+                .map {
+                    val formatter = NumberFormat.getNumberInstance()
+                    formatter.maximumFractionDigits = 2
+                    formatter.format(it)
+                }
                 .compose(bindToLifecycle())
                 .subscribe(this.pledgeAmount)
 
@@ -816,7 +820,11 @@ interface PledgeFragmentViewModel {
                 .subscribe(this.decreaseBonusButtonIsEnabled)
 
             bonusInput
-                .map { NumberUtils.format(it.toFloat(), NumberOptions.builder().precision(NumberUtils.precision(it, RoundingMode.HALF_UP)).build()) }
+                .map {
+                    val formatter = NumberFormat.getNumberInstance()
+                    formatter.maximumFractionDigits = 2
+                    formatter.format(it)
+                }
                 .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .subscribe(this.bonusAmount)
@@ -906,11 +914,11 @@ interface PledgeFragmentViewModel {
             val totalNR = this.selectedReward
                 .filter { RewardUtils.isNoReward(it) }
                 .compose<Pair<Reward, String>>(combineLatestPair(this.pledgeInput.startWith("")))
-                .map { if (it.second.isNotEmpty()) NumberUtils.parse(it.second) else it.first.minimum() }
+                .map { if (it.second.isNotEmpty()) it.second.parseToDouble() else it.first.minimum() }
 
             // - Calculate total for DigitalRewards || DigitalReward + DigitalAddOns || LocalPickup
             val totalNoShipping = Observable.combineLatest(isDigitalRw, pledgeAmountHeader, this.bonusAmount, pledgeReason) { _, pledgeAmount, bonusAmount, pReason ->
-                return@combineLatest getAmountDigital(pledgeAmount, NumberUtils.parse(bonusAmount), pReason)
+                return@combineLatest getAmountDigital(pledgeAmount, bonusAmount.parseToDouble(), pReason)
             }
                 .distinctUntilChanged()
 
@@ -1373,7 +1381,7 @@ interface PledgeFragmentViewModel {
             )
                 .compose<Pair<Any, PledgeReason>>(combineLatestPair(pledgeReason))
 
-            Observable.combineLatest<Double, Double, String, Checkout, CheckoutData>(shippingAmountSelectedRw, total, this.bonusAmount, Observable.merge(successfulCheckout, successfulSCACheckout)) { s, t, b, c -> checkoutData(s, t, NumberUtils.parse(b), c) }
+            Observable.combineLatest<Double, Double, String, Checkout, CheckoutData>(shippingAmountSelectedRw, total, this.bonusAmount, Observable.merge(successfulCheckout, successfulSCACheckout)) { s, t, b, c -> checkoutData(s, t, b.parseToDouble(), c) }
                 .compose<Pair<CheckoutData, PledgeData>>(combineLatestPair(pledgeData))
                 .filter { it.second.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }
                 .compose(bindToLifecycle())
@@ -1718,7 +1726,7 @@ interface PledgeFragmentViewModel {
             return joinedList.toList()
         }
 
-        private fun getAmount(pAmount: Double, shippingAmount: Double, bAmount: String, pReason: PledgeReason) = pAmount + shippingAmount + NumberUtils.parse(bAmount)
+        private fun getAmount(pAmount: Double, shippingAmount: Double, bAmount: String, pReason: PledgeReason) = pAmount + shippingAmount + bAmount.parseToDouble()
 
         private fun checkoutData(shippingAmount: Double, total: Double, bonusAmount: Double?, checkout: Checkout?): CheckoutData {
             return CheckoutData.builder()

@@ -109,6 +109,10 @@ public final class NumberUtils {
     return value == Math.round(value);
   }
 
+  /**
+   * @deprecated Use com.kickstarter.libs.utils.extensions.StringExt#parseToDouble(java.lang.String)
+   */
+  @Deprecated
   public static double parse(final @NonNull String input) {
     return parse(input, Locale.getDefault());
   }

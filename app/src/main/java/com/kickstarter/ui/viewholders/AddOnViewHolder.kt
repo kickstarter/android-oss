@@ -2,13 +2,13 @@ package com.kickstarter.ui.viewholders
 
 import android.util.Pair
 import android.view.View
+import androidx.core.view.isGone
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.ItemAddOnBinding
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.ViewUtils
-import com.kickstarter.libs.utils.extensions.setGone
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.adapters.RewardItemsAdapter
 import com.kickstarter.ui.data.ProjectData
@@ -96,7 +96,7 @@ class AddOnViewHolder(private val binding: ItemAddOnBinding) : KSViewHolder(bind
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                binding.rewardItemLocalPickupContainer.localPickupGroup.setGone(it)
+                binding.rewardItemLocalPickupContainer.localPickupGroup.isGone = it
             }
 
         this.viewModel.outputs.localPickUpName()

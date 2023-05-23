@@ -6,10 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.cardview.widget.CardView
 import androidx.core.content.withStyledAttributes
+import androidx.core.view.isGone
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
 import com.kickstarter.databinding.AddOnCardBinding
-import com.kickstarter.libs.utils.extensions.setGone
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.ui.adapters.RewardItemsAdapter
 import rx.Observable
@@ -200,7 +200,7 @@ class AddOnCard @JvmOverloads constructor(
     }
 
     fun setLocalPickUpIsGone(isGone: Boolean) {
-        binding.localPickupContainer.localPickupGroup.setGone(isGone)
+        binding.localPickupContainer.localPickupGroup.isGone = isGone
     }
 
     private fun hideStepper() {

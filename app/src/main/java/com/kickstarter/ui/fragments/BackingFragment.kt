@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.view.isGone
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding.view.RxView
@@ -23,7 +24,6 @@ import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ViewUtils
-import com.kickstarter.libs.utils.extensions.setGone
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.activities.BackingActivity
 import com.kickstarter.ui.adapters.RewardAndAddOnsAdapter
@@ -98,14 +98,14 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                binding?.fixPaymentMethodButton?.setGone(it)
+                binding?.fixPaymentMethodButton?.isGone = it
             }
 
         this.viewModel.outputs.fixPaymentMethodButtonIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                binding?.fixPaymentMethodMessage?.setGone(it)
+                binding?.fixPaymentMethodMessage?.isGone = it
             }
 
         this.viewModel.outputs.notifyDelegateToRefreshProject()
@@ -122,7 +122,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                binding?.paymentMethod?.setGone(it)
+                binding?.paymentMethod?.isGone = it
             }
 
         this.viewModel.outputs.pledgeAmount()
@@ -143,7 +143,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.pledgeSummaryIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { binding?.fragmentPledgeSectionSummaryPledge?.pledgeSummary?.setGone(it) }
+            .subscribe { binding?.fragmentPledgeSectionSummaryPledge?.pledgeSummary?.isGone = it }
 
         this.viewModel.outputs.projectDataAndReward()
             .compose(bindToLifecycle())
@@ -161,14 +161,14 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                binding?.receivedSectionLayout?.receivedSectionLayoutContainer?.setGone(it)
+                binding?.receivedSectionLayout?.receivedSectionLayoutContainer?.isGone = it
             }
 
         this.viewModel.outputs.receivedSectionCreatorIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                binding?.estimatedDeliveryLabel2?.setGone(it)
+                binding?.estimatedDeliveryLabel2?.isGone = it
             }
 
         this.viewModel.outputs.shippingAmount()
@@ -184,7 +184,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.shippingSummaryIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { binding?.fragmentPledgeSectionSummaryShipping?.shippingSummary?.setGone(it) }
+            .subscribe { binding?.fragmentPledgeSectionSummaryShipping?.shippingSummary?.isGone = it }
 
         this.viewModel.outputs.showUpdatePledgeSuccess()
             .compose(bindToLifecycle())
@@ -221,8 +221,8 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
             .compose(Transformers.observeForUI())
             .subscribe {
                 binding?.pledgeDetailsLabel?.text = getString(R.string.Pledge_details)
-                binding?.deliveryDisclaimerSection?.root?.setGone(it)
-                binding?.estimatedDeliveryLabel2?.setGone(true)
+                binding?.deliveryDisclaimerSection?.root?.isGone = it
+                binding?.estimatedDeliveryLabel2?.isGone = true
             }
 
         binding?.deliveryDisclaimerSection?.deliveryReminderLabel?.apply {

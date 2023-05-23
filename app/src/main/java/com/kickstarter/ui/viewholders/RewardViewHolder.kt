@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.util.Pair
 import android.view.View
-import androidx.annotation.NonNull
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding.view.RxView

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.util.Pair
 import android.view.View
 import androidx.annotation.NonNull
+import androidx.core.view.isGone
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
@@ -20,7 +21,6 @@ import com.kickstarter.libs.utils.TransitionUtils.slideInFromRight
 import com.kickstarter.libs.utils.TransitionUtils.transition
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.isTrue
-import com.kickstarter.libs.utils.extensions.setGone
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.IntentKey
@@ -107,7 +107,7 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                this.binding.rewardShippingSummary.setGone(it)
+                this.binding.rewardShippingSummary.isGone = it
             }
 
         this.viewModel.outputs.minimumAmountTitle()
@@ -212,7 +212,7 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                this.binding.localPickupContainer.localPickupGroup.setGone(it)
+                this.binding.localPickupContainer.localPickupGroup.isGone = it
             }
 
         this.viewModel.outputs.localPickUpName()
@@ -232,7 +232,7 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
         this.viewModel.inputs.configureWith(projectTracking, reward)
     }
 
-    private fun formattedExpirationString(@NonNull reward: Reward): String {
+    private fun formattedExpirationString(reward: Reward): String {
         val detail = RewardUtils.deadlineCountdownDetail(reward, context(), this.ksString)
         val value = RewardUtils.deadlineCountdownValue(reward)
         return "$value $detail"
@@ -246,7 +246,7 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
         this.binding.rewardBackersCount.text = backersCountText
     }
 
-    private fun setConversionTextView(@NonNull amount: String) {
+    private fun setConversionTextView(amount: String) {
         this.binding.rewardConversionTextView.text = this.ksString.format(
             this.currencyConversionString,
             "reward_amount", amount
@@ -266,7 +266,7 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
         }
     }
 
-    private fun setRemainingRewardsTextView(@NonNull remaining: String) {
+    private fun setRemainingRewardsTextView(remaining: String) {
         this.binding.rewardRemainingTextView.text = this.ksString.format(
             this.remainingRewardsString,
             "left_count", remaining
@@ -289,7 +289,7 @@ class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Del
         return rewardItemAdapter
     }
 
-    private fun startBackingActivity(@NonNull project: Project) {
+    private fun startBackingActivity(project: Project) {
         val context = context()
         val intent = Intent(context, BackingActivity::class.java)
             .putExtra(IntentKey.PROJECT, project)

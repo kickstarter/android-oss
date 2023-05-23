@@ -39,7 +39,6 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
-import com.kickstarter.libs.utils.extensions.setGone
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -166,7 +165,7 @@ class PledgeFragment :
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe {
-                binding?.pledgeSectionHeaderRewardSummary?.pledgeHeaderEstimatedDeliveryLabel ?.setGone()
+                binding?.pledgeSectionHeaderRewardSummary?.pledgeHeaderEstimatedDeliveryLabel ?.isGone = it
             }
 
         this.viewModel.outputs.continueButtonIsGone()
@@ -556,7 +555,7 @@ class PledgeFragment :
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                this.binding?.pledgeSectionPickupLocation?.localPickupContainer?.setGone(it)
+                this.binding?.pledgeSectionPickupLocation?.localPickupContainer?.isGone = it
             }
 
         this.viewModel.outputs.localPickUpName()
@@ -954,7 +953,7 @@ class PledgeFragment :
         textView.movementMethod = LinkMovementMethod.getInstance()
     }
 
-    private fun setConversionTextView(@NonNull amount: String) {
+    private fun setConversionTextView(amount: String) {
         val currencyConversionString = context?.getString(R.string.About_reward_amount)
         val ksString = requireNotNull(this.viewModel.environment.ksString())
         binding?.pledgeSectionTotal?.totalAmountConversion ?.text = (

@@ -48,6 +48,7 @@ import type.CurrencyCode
 import type.TriggerCapiEventInput
 import type.TriggerThirdPartyEventInput
 import java.util.Collections
+import type.TriggerThirdPartyEventInput
 
 open class MockApolloClientV2 : ApolloClientTypeV2 {
 

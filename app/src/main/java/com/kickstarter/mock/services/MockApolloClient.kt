@@ -46,8 +46,8 @@ import com.kickstarter.services.mutations.UpdateBackingData
 import rx.Observable
 import type.CurrencyCode
 import type.TriggerCapiEventInput
-import java.util.Collections
 import type.TriggerThirdPartyEventInput
+import java.util.Collections
 
 open class MockApolloClientV2 : ApolloClientTypeV2 {
 

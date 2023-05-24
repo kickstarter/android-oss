@@ -6,14 +6,16 @@ import UserPrivacyQuery
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.services.MockApolloClient
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
 
 class ChangeEmailViewModelTest : KSRobolectricTestCase() {
 
-    private lateinit var vm: ChangeEmailViewModel.ViewModel
+    private lateinit var vm: ChangeEmailViewModel.ChangeEmailViewModel
 
     private val currentEmail = TestSubscriber<String>()
     private val emailErrorIsVisible = TestSubscriber<Boolean>()
@@ -21,32 +23,34 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     private val sendVerificationIsHidden = TestSubscriber<Boolean>()
     private val progressBarIsVisible = TestSubscriber<Boolean>()
     private val saveButtonIsEnabled = TestSubscriber<Boolean>()
-    private val success = TestSubscriber<Void>()
+    private val success = TestSubscriber<Unit>()
     private val warningText = TestSubscriber<Int>()
     private val warningTextColor = TestSubscriber<Int>()
     private val verificationButtonText = TestSubscriber<Int>()
 
-    private fun setUpEnvironment(environment: Environment) {
-        this.vm = ChangeEmailViewModel.ViewModel(environment)
+    private val disposables = CompositeDisposable()
 
-        this.vm.outputs.currentEmail().subscribe(this.currentEmail)
-        this.vm.outputs.emailErrorIsVisible().subscribe(this.emailErrorIsVisible)
-        this.vm.outputs.error().subscribe(this.error)
-        this.vm.outputs.sendVerificationIsHidden().subscribe(this.sendVerificationIsHidden)
-        this.vm.outputs.progressBarIsVisible().subscribe(this.progressBarIsVisible)
-        this.vm.outputs.saveButtonIsEnabled().subscribe(this.saveButtonIsEnabled)
-        this.vm.outputs.success().subscribe(this.success)
-        this.vm.outputs.warningText().subscribe(this.warningText)
-        this.vm.outputs.warningTextColor().subscribe(this.warningTextColor)
-        this.vm.outputs.verificationEmailButtonText().subscribe(this.verificationButtonText)
+    private fun setUpEnvironment(environment: Environment) {
+        this.vm = ChangeEmailViewModel.ChangeEmailViewModel(environment)
+
+        this.vm.outputs.currentEmail().subscribe { this.currentEmail.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.emailErrorIsVisible().subscribe { this.emailErrorIsVisible.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.error().subscribe { this.error.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.sendVerificationIsHidden().subscribe{ this.sendVerificationIsHidden.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.progressBarIsVisible().subscribe{ this.progressBarIsVisible.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.saveButtonIsEnabled().subscribe{ this.saveButtonIsEnabled.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.success().subscribe { this.success.onNext(Unit) }.addToDisposable(disposables)
+        this.vm.outputs.warningText().subscribe { this.warningText.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.warningTextColor().subscribe { this.warningTextColor.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.verificationEmailButtonText().subscribe { this.verificationButtonText.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
     fun testCurrentEmail() {
         setUpEnvironment(
             environment().toBuilder().apolloClient(object : MockApolloClient() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                    return Observable.just(
+                override fun userPrivacy(): rx.Observable<UserPrivacyQuery.Data> {
+                    return rx.Observable.just(
                         UserPrivacyQuery.Data(
                             UserPrivacyQuery.Me(
                                 "", "",
@@ -66,8 +70,8 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     fun testCurrentEmailError() {
         setUpEnvironment(
             environment().toBuilder().apolloClient(object : MockApolloClient() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                    return Observable.error(Throwable("error"))
+                override fun userPrivacy(): rx.Observable<UserPrivacyQuery.Data> {
+                    return rx.Observable.error(Throwable("error"))
                 }
             }).build()
         )
@@ -106,8 +110,8 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     fun testIsEmailUnverified() {
         setUpEnvironment(
             environment().toBuilder().apolloClient(object : MockApolloClient() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                    return Observable.just(
+                override fun userPrivacy(): rx.Observable<UserPrivacyQuery.Data> {
+                    return rx.Observable.just(
                         UserPrivacyQuery.Data(
                             UserPrivacyQuery.Me(
                                 "", "",
@@ -130,8 +134,8 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     fun testIsEmailUndeliverable() {
         setUpEnvironment(
             environment().toBuilder().apolloClient(object : MockApolloClient() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                    return Observable.just(
+                override fun userPrivacy(): rx.Observable<UserPrivacyQuery.Data> {
+                    return rx.Observable.just(
                         UserPrivacyQuery.Data(
                             UserPrivacyQuery.Me(
                                 "", "",
@@ -154,8 +158,8 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     fun testIsUserABacker() {
         setUpEnvironment(
             environment().toBuilder().apolloClient(object : MockApolloClient() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                    return Observable.just(
+                override fun userPrivacy(): rx.Observable<UserPrivacyQuery.Data> {
+                    return rx.Observable.just(
                         UserPrivacyQuery.Data(
                             UserPrivacyQuery.Me(
                                 "", "",
@@ -170,7 +174,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
         this.currentEmail.assertValue("rashad@test.com")
         this.sendVerificationIsHidden.assertValue(true)
 
-        this.warningText.assertValue(null)
+        this.warningText.assertNoValues()
         this.warningTextColor.assertValue(R.color.kds_support_400)
         this.verificationButtonText.assertValue(R.string.Send_verfication_email)
     }
@@ -179,8 +183,8 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     fun testIsUserACreator() {
         setUpEnvironment(
             environment().toBuilder().apolloClient(object : MockApolloClient() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                    return Observable.just(
+                override fun userPrivacy(): rx.Observable<UserPrivacyQuery.Data> {
+                    return rx.Observable.just(
                         UserPrivacyQuery.Data(
                             UserPrivacyQuery.Me(
                                 "", "",
@@ -195,7 +199,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
         this.currentEmail.assertValue("rashad@test.com")
         this.sendVerificationIsHidden.assertValue(true)
 
-        this.warningText.assertValue(null)
+        this.warningText.assertNoValues()
         this.warningTextColor.assertValue(R.color.kds_support_400)
         this.verificationButtonText.assertValue(R.string.Resend_verification_email)
     }

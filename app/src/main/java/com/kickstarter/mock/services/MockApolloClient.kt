@@ -283,8 +283,8 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(1L)
     }
 
-    override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
-        return Observable.just(
+    override fun sendVerificationEmail(): io.reactivex.Observable<SendEmailVerificationMutation.Data> {
+        return io.reactivex.Observable.just(
             SendEmailVerificationMutation.Data(
                 SendEmailVerificationMutation.UserSendEmailVerification(
                     "",
@@ -320,8 +320,8 @@ open class MockApolloClient : ApolloClientType {
         )
     }
 
-    override fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data> {
-        return Observable.just(
+    override fun updateUserEmail(email: String, currentPassword: String): io.reactivex.Observable<UpdateUserEmailMutation.Data> {
+        return io.reactivex.Observable.just(
             UpdateUserEmailMutation.Data(
                 UpdateUserEmailMutation.UpdateUserAccount(
                     "",

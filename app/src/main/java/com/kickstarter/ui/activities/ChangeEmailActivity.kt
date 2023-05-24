@@ -6,26 +6,39 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityChangeEmailBinding
-import com.kickstarter.libs.BaseActivity
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.ChangeEmailViewModel
-import rx.android.schedulers.AndroidSchedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
-@RequiresActivityViewModel(ChangeEmailViewModel.ViewModel::class)
-class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
+class ChangeEmailActivity : AppCompatActivity() {
+
+    private lateinit var viewModelFactory: ChangeEmailViewModel.Factory
+    private val viewModel: ChangeEmailViewModel.ChangeEmailViewModel by viewModels { viewModelFactory }
 
     private var saveEnabled = false
 
     private lateinit var binding: ActivityChangeEmailBinding
 
+    private lateinit var disposables: CompositeDisposable
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        disposables = CompositeDisposable()
+
+        this.getEnvironment()?.let { env ->
+            viewModelFactory = ChangeEmailViewModel.Factory(env, intent = intent)
+        }
+
         binding = ActivityChangeEmailBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
@@ -40,63 +53,61 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
         }
 
         this.viewModel.outputs.currentEmail()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.currentEmail.setText(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.emailErrorIsVisible()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .filter { it }
             .subscribe { binding.newEmailContainer.error = getString(R.string.Email_must_be_a_valid_email_address) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.emailErrorIsVisible()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .filter { !it }
             .subscribe { binding.newEmailContainer.error = null }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.error()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showSnackbar(binding.changeEmailLayout, it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.sendVerificationIsHidden()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.sendVerificationEmail.isGone = it
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.saveButtonIsEnabled()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { updateMenu(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.progressBarIsVisible()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { updateMenu(!it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.progressBarIsVisible()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.progressBar.isGone = !it
             }
+            .addToDisposable(disposables)
 
-        this.viewModel.outputs.success()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
+        this.viewModel.outputs.success().observeOn(AndroidSchedulers.mainThread())
             .subscribe { showSnackbar(binding.changeEmailLayout, R.string.Verification_email_sent) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.success()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { clearForm() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.warningText()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 if (it != null) {
@@ -106,16 +117,17 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
                     binding.emailWarningTextView.isGone = true
                 }
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.warningTextColor()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.emailWarningTextView.setTextColor(ContextCompat.getColor(this@ChangeEmailActivity, it)) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.verificationEmailButtonText()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.sendVerificationEmail.text = getString(it) }
+            .addToDisposable(disposables)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -151,5 +163,10 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
     private fun updateMenu(saveEnabled: Boolean) {
         this.saveEnabled = saveEnabled
         invalidateOptionsMenu()
+    }
+
+    override fun onDestroy() {
+        disposables.clear()
+        super.onDestroy()
     }
 }

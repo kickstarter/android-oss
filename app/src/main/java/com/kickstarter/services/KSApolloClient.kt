@@ -1091,9 +1091,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
-        return Observable.defer {
-            val ps = PublishSubject.create<SendEmailVerificationMutation.Data>()
+    override fun sendVerificationEmail(): io.reactivex.Observable<SendEmailVerificationMutation.Data> {
+        return io.reactivex.Observable.defer {
+            val ps = io.reactivex.subjects.PublishSubject.create<SendEmailVerificationMutation.Data>()
             service.mutate(
                 SendEmailVerificationMutation.builder()
                     .build()
@@ -1107,8 +1107,10 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         if (response.hasErrors()) {
                             ps.onError(Exception(response.errors?.first()?.message))
                         }
-                        ps.onNext(response.data)
-                        ps.onCompleted()
+                        response.data?.let { data ->
+                            ps.onNext(data)
+                        }
+                        ps.onComplete()
                     }
                 })
             return@defer ps
@@ -1193,9 +1195,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
     override fun updateUserEmail(
         email: String,
         currentPassword: String
-    ): Observable<UpdateUserEmailMutation.Data> {
-        return Observable.defer {
-            val ps = PublishSubject.create<UpdateUserEmailMutation.Data>()
+    ): io.reactivex.Observable<UpdateUserEmailMutation.Data> {
+        return io.reactivex.Observable.defer {
+            val ps = io.reactivex.subjects.PublishSubject.create<UpdateUserEmailMutation.Data>()
             service.mutate(
                 UpdateUserEmailMutation.builder()
                     .email(email)
@@ -1211,8 +1213,10 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         if (response.hasErrors()) {
                             ps.onError(Exception(response.errors?.first()?.message))
                         }
-                        ps.onNext(response.data)
-                        ps.onCompleted()
+                        response.data?.let { data ->
+                            ps.onNext(data)
+                        }
+                        ps.onComplete()
                     }
                 })
             return@defer ps

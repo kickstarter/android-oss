@@ -3,21 +3,23 @@ package com.kickstarter.viewmodels
 import SendEmailVerificationMutation
 import UpdateUserEmailMutation
 import UserPrivacyQuery
-import androidx.annotation.NonNull
+import android.content.Intent
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.R
-import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
-import com.kickstarter.libs.rx.transformers.Transformers.errors
+import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
 import com.kickstarter.libs.rx.transformers.Transformers.neverError
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
-import com.kickstarter.libs.rx.transformers.Transformers.values
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
+import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isEmail
 import com.kickstarter.libs.utils.extensions.isValidPassword
-import com.kickstarter.ui.activities.ChangeEmailActivity
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 interface ChangeEmailViewModel {
 
@@ -58,7 +60,7 @@ interface ChangeEmailViewModel {
         fun saveButtonIsEnabled(): Observable<Boolean>
 
         /** Emits when the user's email is changed successfully. */
-        fun success(): Observable<Void>
+        fun success(): Observable<Unit>
 
         /** Emits the text for the verification button depending on whether the user is a backer or creator. */
         fun verificationEmailButtonText(): Observable<Int>
@@ -70,7 +72,7 @@ interface ChangeEmailViewModel {
         fun warningTextColor(): Observable<Int>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ChangeEmailActivity>(environment), Inputs, Outputs {
+    class ChangeEmailViewModel(val environment: Environment, val intent: Intent? = null) : ViewModel(), Inputs, Outputs {
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -78,15 +80,15 @@ interface ChangeEmailViewModel {
         private val email = PublishSubject.create<String>()
         private val emailFocus = PublishSubject.create<Boolean>()
         private val password = PublishSubject.create<String>()
-        private val sendVerificationEmailClick = PublishSubject.create<Void>()
-        private val updateEmailClicked = PublishSubject.create<Void>()
+        private val sendVerificationEmailClick = PublishSubject.create<Unit>()
+        private val updateEmailClicked = PublishSubject.create<Unit>()
 
         private val currentEmail = BehaviorSubject.create<String>()
         private val emailErrorIsVisible = BehaviorSubject.create<Boolean>()
         private val sendVerificationIsHidden = BehaviorSubject.create<Boolean>()
         private val saveButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val showProgressBar = BehaviorSubject.create<Boolean>()
-        private val success = BehaviorSubject.create<Void>()
+        private val success = BehaviorSubject.create<Unit>()
         private val warningText = BehaviorSubject.create<Int>()
         private val warningTextColor = BehaviorSubject.create<Int>()
         private val verificationEmailButtonText = BehaviorSubject.create<Int>()
@@ -95,76 +97,105 @@ interface ChangeEmailViewModel {
 
         private val apolloClient = requireNotNull(environment.apolloClient())
 
+        private val disposables = CompositeDisposable()
+
         init {
 
             val userPrivacy = this.apolloClient.userPrivacy()
                 .compose(neverError())
 
             userPrivacy
-                .compose(bindToLifecycle())
                 .subscribe {
-                    this.currentEmail.onNext(it.me()?.email())
-                    this.sendVerificationIsHidden.onNext(it.me()?.isEmailVerified)
+                    it.me()?.email()?.let { email ->
+                        this.currentEmail.onNext(email)
+                    }
+                    it.me()?.isEmailVerified?.let { verified ->
+                        this.sendVerificationIsHidden.onNext(verified)
+                    }
                 }
 
             userPrivacy
                 .map { getWarningText(it) }
-                .subscribe { this.warningText.onNext(it) }
+                .subscribe {
+                    it?.let { stringRes ->
+                        this.warningText.onNext(stringRes)
+                    }
+                }
 
             userPrivacy
                 .map { getWarningTextColor(it) }
-                .subscribe { this.warningTextColor.onNext(it) }
+                .subscribe {
+                    it?.let { colorRes ->
+                        this.warningTextColor.onNext(colorRes)
+                    }
+                }
 
             userPrivacy
                 .map { getVerificationText(it) }
-                .subscribe { this.verificationEmailButtonText.onNext(it) }
+                .subscribe {
+                    it?.let { stringRes ->
+                        this.verificationEmailButtonText.onNext(stringRes)
+                    }
+                }
 
             this.emailFocus
-                .compose(combineLatestPair<Boolean, String>(this.email))
+                .compose(combineLatestPair(this.email))
                 .map { !it.first && it.second.isNotEmpty() && !it.second.isEmail() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe { this.emailErrorIsVisible.onNext(it) }
+                .addToDisposable(disposables)
 
             val changeEmail = Observable.combineLatest(this.email, this.password) { email, password -> ChangeEmail(email, password) }
 
             changeEmail
                 .map { ce -> ce.isValid() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe { this.saveButtonIsEnabled.onNext(it) }
+                .addToDisposable(disposables)
 
             val updateEmailNotification = changeEmail
-                .compose(takeWhen<ChangeEmail, Void>(this.updateEmailClicked))
+                .compose(takeWhenV2(this.updateEmailClicked))
                 .switchMap { updateEmail(it).materialize() }
-                .compose(bindToLifecycle())
                 .share()
 
             updateEmailNotification
-                .compose(errors())
-                .subscribe { this.error.onNext(it.localizedMessage) }
+                .compose(errorsV2())
+                .subscribe {
+                    it?.localizedMessage?.let { message ->
+                        this.error.onNext(message)
+                    }
+                }
+                .addToDisposable(disposables)
 
             updateEmailNotification
-                .compose(values())
+                .compose(valuesV2())
                 .subscribe {
-                    this.currentEmail.onNext(it.updateUserAccount()?.user()?.email())
-                    this.success.onNext(null)
+                    it.updateUserAccount()?.user()?.email()?.let { email ->
+                        this.currentEmail.onNext(email)
+                    }
+                    this.success.onNext(Unit)
                 }
+                .addToDisposable(disposables)
 
             val sendEmailNotification = this.sendVerificationEmailClick
-                .compose(bindToLifecycle())
                 .switchMap { sendEmailVerification().materialize() }
                 .share()
 
             sendEmailNotification
-                .compose(errors())
-                .subscribe { this.error.onNext(it.localizedMessage) }
+                .compose(errorsV2())
+                .subscribe {
+                    it?.localizedMessage?.let { message ->
+                        this.error.onNext(message)
+                    }
+                }
+                .addToDisposable(disposables)
 
             sendEmailNotification
-                .compose(values())
+                .compose(valuesV2())
                 .subscribe {
-                    this.success.onNext(null)
+                    this.success.onNext(Unit)
                 }
+                .addToDisposable(disposables)
         }
 
         override fun email(email: String) {
@@ -180,11 +211,11 @@ interface ChangeEmailViewModel {
         }
 
         override fun updateEmailClicked() {
-            this.updateEmailClicked.onNext(null)
+            this.updateEmailClicked.onNext(Unit)
         }
 
         override fun sendVerificationEmail() {
-            this.sendVerificationEmailClick.onNext(null)
+            this.sendVerificationEmailClick.onNext(Unit)
         }
 
         override fun currentEmail(): Observable<String> = this.currentEmail
@@ -199,7 +230,7 @@ interface ChangeEmailViewModel {
 
         override fun saveButtonIsEnabled(): Observable<Boolean> = this.saveButtonIsEnabled
 
-        override fun success(): Observable<Void> = this.success
+        override fun success(): Observable<Unit> = this.success
 
         override fun warningText(): Observable<Int> = this.warningText
 
@@ -256,6 +287,17 @@ interface ChangeEmailViewModel {
             fun isValid(): Boolean {
                 return this.email.isEmail() && this.password.isValidPassword()
             }
+        }
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
+    }
+
+    class Factory(private val environment: Environment, private val intent: Intent? = null) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return ChangeEmailViewModel(environment, intent) as T
         }
     }
 }

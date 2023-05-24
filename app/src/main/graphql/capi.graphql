@@ -3,3 +3,9 @@ mutation triggerCapiEvent  ($triggerCapiEventInput: TriggerCapiEventInput!) {
         success
     }
 }
+
+mutation triggerThirdPartyEvent  ($triggerThirdPartyEventInput: TriggerThirdPartyEventInput!) {
+    triggerThirdPartyEvent(input: $triggerThirdPartyEventInput) {
+        success
+    }
+}

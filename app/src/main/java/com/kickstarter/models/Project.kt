@@ -30,6 +30,7 @@ class Project private constructor(
     private val fxRate: Float,
     private val deadline: DateTime?,
     private val sendMetaCapiEvents: Boolean?,
+    private val sendThirdPartyEvents: Boolean?,
     private val goal: Double,
     private val id: Long, // in the Kickstarter app, this is project.pid not project.id
     private val isBacking: Boolean,
@@ -96,6 +97,7 @@ class Project private constructor(
     fun photo() = this.photo
     fun prelaunchActivated() = this.prelaunchActivated
     fun sendMetaCapiEvents() = this.sendMetaCapiEvents
+    fun sendThirdPartyEvents() = this.sendThirdPartyEvents
     fun tags() = this.tags
     fun rewards() = this.rewards
     fun slug() = this.slug
@@ -151,6 +153,7 @@ class Project private constructor(
         private var photo: Photo? = null,
         private var prelaunchActivated: Boolean? = null,
         private var sendMetaCapiEvents: Boolean? = null,
+        private var sendThirdPartyEvents: Boolean? = null,
         private var tags: List<String>? = emptyList(),
         private var rewards: List<Reward>? = emptyList(),
         private var slug: String? = null,
@@ -207,6 +210,7 @@ class Project private constructor(
         fun photo(photo: Photo?) = apply { this.photo = photo }
         fun prelaunchActivated(prelaunchActivated: Boolean?) = apply { this.prelaunchActivated = prelaunchActivated }
         fun sendMetaCapiEvents(sendMetaCapiEvents: Boolean?) = apply { this.sendMetaCapiEvents = sendMetaCapiEvents }
+        fun sendThirdPartyEvents(sendThirdPartyEvents: Boolean?) = apply { this.sendThirdPartyEvents = sendThirdPartyEvents }
         fun tags(tags: List<String>?) = apply { this.tags = tags ?: emptyList() }
         fun rewards(rewards: List<Reward>?) = apply { this.rewards = rewards ?: emptyList() }
         fun slug(slug: String?) = apply { this.slug = slug }
@@ -258,6 +262,7 @@ class Project private constructor(
             photo = photo,
             prelaunchActivated = prelaunchActivated,
             sendMetaCapiEvents = sendMetaCapiEvents,
+            sendThirdPartyEvents = sendThirdPartyEvents,
             tags = tags,
             rewards = rewards,
             slug = slug,
@@ -314,6 +319,7 @@ class Project private constructor(
         photo = photo,
         prelaunchActivated = prelaunchActivated,
         sendMetaCapiEvents = sendMetaCapiEvents,
+        sendThirdPartyEvents = sendThirdPartyEvents,
         tags = tags,
         rewards = rewards,
         slug = slug,
@@ -483,6 +489,7 @@ class Project private constructor(
                 photo() == other.photo() &&
                 prelaunchActivated() == other.prelaunchActivated() &&
                 sendMetaCapiEvents() == other.sendMetaCapiEvents() &&
+                sendThirdPartyEvents() == other.sendThirdPartyEvents() &&
                 rewards() == other.rewards() &&
                 slug() == other.slug() &&
                 staffPick() == other.staffPick() &&

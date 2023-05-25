@@ -2,12 +2,12 @@ package com.kickstarter.viewmodels
 
 import SendEmailVerificationMutation
 import UpdateUserEmailMutation
-import UserPrivacyQuery
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -34,42 +34,39 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     private fun setUpEnvironment(environment: Environment) {
         this.vm = ChangeEmailViewModel.ChangeEmailViewModel(environment)
 
-        this.vm.outputs.currentEmail().subscribe { this.currentEmail.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.emailErrorIsVisible().subscribe { this.emailErrorIsVisible.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.currentEmail().subscribe { this.currentEmail.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.emailErrorIsVisible().subscribe { this.emailErrorIsVisible.onNext(it) }
+            .addToDisposable(disposables)
         this.vm.outputs.error().subscribe { this.error.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.sendVerificationIsHidden().subscribe { this.sendVerificationIsHidden.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.progressBarIsVisible().subscribe { this.progressBarIsVisible.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.saveButtonIsEnabled().subscribe { this.saveButtonIsEnabled.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.success().subscribe { this.success.onNext(Unit) }.addToDisposable(disposables)
-        this.vm.outputs.warningText().subscribe { this.warningText.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.warningTextColor().subscribe { this.warningTextColor.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.verificationEmailButtonText().subscribe { this.verificationButtonText.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.sendVerificationIsHidden()
+            .subscribe { this.sendVerificationIsHidden.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.progressBarIsVisible().subscribe { this.progressBarIsVisible.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.saveButtonIsEnabled().subscribe { this.saveButtonIsEnabled.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.success().subscribe { this.success.onNext(Unit) }
+            .addToDisposable(disposables)
+        this.vm.outputs.warningText().subscribe { this.warningText.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.warningTextColor().subscribe { this.warningTextColor.onNext(it) }
+            .addToDisposable(disposables)
+        this.vm.outputs.verificationEmailButtonText()
+            .subscribe { this.verificationButtonText.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
     fun testCurrentEmail() {
-        val currentUser = MockCurrentUser()
+        val currentUser =
+            MockCurrentUserV2(UserFactory.user().toBuilder().email("rashad@test.com").build())
         val environment = environment()
             .toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .build()
         setUpEnvironment(environment)
 
         this.currentEmail.assertValue("rashad@test.com")
         this.sendVerificationIsHidden.assertValue(true)
-    }
-
-    @Test
-    fun testCurrentEmailError() {
-        setUpEnvironment(
-            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                    return Observable.error(Throwable("error"))
-                }
-            }).build()
-        )
-
-        this.currentEmail.assertNoValues()
     }
 
     @Test
@@ -87,7 +84,10 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     fun testError() {
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data> {
+                override fun updateUserEmail(
+                    email: String,
+                    currentPassword: String
+                ): Observable<UpdateUserEmailMutation.Data> {
                     return Observable.error(Throwable("boop"))
                 }
             }).build()
@@ -101,20 +101,20 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testIsEmailUnverified() {
-        setUpEnvironment(
-            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                    return Observable.just(
-                        UserPrivacyQuery.Data(
-                            UserPrivacyQuery.Me(
-                                "", "",
-                                "rashad@test.com", true, true, true, false, ""
-                            )
-                        )
-                    )
-                }
-            }).build()
+        val currentUser = MockCurrentUserV2(
+            UserFactory.user().toBuilder()
+                .email("rashad@test.com")
+                .hasPassword(true)
+                .isCreator(true)
+                .isDeliverable(true)
+                .isEmailVerified(false)
+                .build()
         )
+        val environment = environment()
+            .toBuilder()
+            .currentUserV2(currentUser)
+            .build()
+        setUpEnvironment(environment)
 
         this.currentEmail.assertValue("rashad@test.com")
         this.sendVerificationIsHidden.assertValue(false)
@@ -125,20 +125,20 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testIsEmailUndeliverable() {
-        setUpEnvironment(
-            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                    return Observable.just(
-                        UserPrivacyQuery.Data(
-                            UserPrivacyQuery.Me(
-                                "", "",
-                                "rashad@test.com", true, true, false, false, ""
-                            )
-                        )
-                    )
-                }
-            }).build()
+        val currentUser = MockCurrentUserV2(
+            UserFactory.user().toBuilder()
+                .email("rashad@test.com")
+                .hasPassword(true)
+                .isCreator(true)
+                .isDeliverable(false)
+                .isEmailVerified(false)
+                .build()
         )
+        val environment = environment()
+            .toBuilder()
+            .currentUserV2(currentUser)
+            .build()
+        setUpEnvironment(environment)
 
         this.currentEmail.assertValue("rashad@test.com")
         this.sendVerificationIsHidden.assertValue(false)
@@ -149,50 +149,51 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testIsUserABacker() {
-        setUpEnvironment(
-            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                    return Observable.just(
-                        UserPrivacyQuery.Data(
-                            UserPrivacyQuery.Me(
-                                "", "",
-                                "rashad@test.com", true, false, true, true, ""
-                            )
-                        )
-                    )
-                }
-            }).build()
-        )
+        val currentUser =
+            MockCurrentUserV2(
+                UserFactory.user().toBuilder()
+                    .email("rashad@test.com")
+                    .hasPassword(true)
+                    .isCreator(false)
+                    .isDeliverable(true)
+                    .isEmailVerified(true)
+                    .build()
+            )
+        val environment = environment()
+            .toBuilder()
+            .currentUserV2(currentUser)
+            .build()
+        setUpEnvironment(environment)
 
         this.currentEmail.assertValue("rashad@test.com")
         this.sendVerificationIsHidden.assertValue(true)
 
-        this.warningText.assertNoValues()
+        this.warningText.assertValue(0)
         this.warningTextColor.assertValue(R.color.kds_support_400)
         this.verificationButtonText.assertValue(R.string.Send_verfication_email)
     }
 
     @Test
     fun testIsUserACreator() {
-        setUpEnvironment(
-            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                    return Observable.just(
-                        UserPrivacyQuery.Data(
-                            UserPrivacyQuery.Me(
-                                "", "",
-                                "rashad@test.com", true, true, true, true, ""
-                            )
-                        )
-                    )
-                }
-            }).build()
+        val currentUser = MockCurrentUserV2(
+            UserFactory.user().toBuilder()
+                .email("rashad@test.com")
+                .hasPassword(true)
+                .isCreator(true)
+                .isDeliverable(true)
+                .isEmailVerified(true)
+                .build()
         )
+        val environment = environment()
+            .toBuilder()
+            .currentUserV2(currentUser)
+            .build()
+        setUpEnvironment(environment)
 
         this.currentEmail.assertValue("rashad@test.com")
         this.sendVerificationIsHidden.assertValue(true)
 
-        this.warningText.assertNoValues()
+        this.warningText.assertValue(0)
         this.warningTextColor.assertValue(R.color.kds_support_400)
         this.verificationButtonText.assertValue(R.string.Resend_verification_email)
     }
@@ -257,17 +258,33 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSuccess() {
+        val currentUser = MockCurrentUserV2(
+            UserFactory.user().toBuilder()
+                .email("some@email.com")
+                .hasPassword(true)
+                .isCreator(true)
+                .isDeliverable(true)
+                .isEmailVerified(false)
+                .build()
+        )
         setUpEnvironment(
-            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data> {
-                    return Observable.just(
-                        UpdateUserEmailMutation.Data(
-                            UpdateUserEmailMutation
-                                .UpdateUserAccount("", UpdateUserEmailMutation.User("", "", email))
+            environment().toBuilder().currentUserV2(currentUser)
+                .apolloClientV2(object : MockApolloClientV2() {
+                    override fun updateUserEmail(
+                        email: String,
+                        currentPassword: String
+                    ): Observable<UpdateUserEmailMutation.Data> {
+                        return Observable.just(
+                            UpdateUserEmailMutation.Data(
+                                UpdateUserEmailMutation
+                                    .UpdateUserAccount(
+                                        "",
+                                        UpdateUserEmailMutation.User("", "", email)
+                                    )
+                            )
                         )
-                    )
-                }
-            }).build()
+                    }
+                }).build()
         )
 
         this.currentEmail.assertValue("some@email.com")

@@ -12,12 +12,10 @@ import GetRootCategoriesQuery
 import GetShippingRulesForRewardIdQuery
 import ProjectCreatorDetailsQuery
 import SavePaymentMethodMutation
-import SendEmailVerificationMutation
 import SendMessageMutation
 import UnwatchProjectMutation
 import UpdateBackingMutation
 import UpdateUserCurrencyMutation
-import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPaymentsQuery
 import UserPrivacyQuery

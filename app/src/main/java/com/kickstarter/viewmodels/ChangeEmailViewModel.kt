@@ -2,24 +2,18 @@ package com.kickstarter.viewmodels
 
 import SendEmailVerificationMutation
 import UpdateUserEmailMutation
-import UserPrivacyQuery
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
-import com.kickstarter.libs.rx.transformers.Transformers.ignoreValuesV2
-import com.kickstarter.libs.rx.transformers.Transformers.neverError
-import com.kickstarter.libs.rx.transformers.Transformers.neverErrorV2
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
 import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isEmail
 import com.kickstarter.libs.utils.extensions.isValidPassword
-import com.kickstarter.models.User
 import io.reactivex.Observable
-import io.reactivex.ObservableTransformer
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject

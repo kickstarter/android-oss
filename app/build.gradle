@@ -231,6 +231,10 @@ dependencies {
     implementation "com.jakewharton.rxbinding:rxbinding:$rx_binding_version"
     implementation "com.jakewharton.rxbinding:rxbinding-recyclerview-v7:$rx_binding_version"
     implementation "com.jakewharton.rxbinding:rxbinding-support-v4:$rx_binding_version"
+    final rx_binding2_version = '2.0.0'
+    implementation "com.jakewharton.rxbinding2:rxbinding:$rx_binding2_version"
+    implementation "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7:$rx_binding2_version"
+    implementation "com.jakewharton.rxbinding2:rxbinding-support-v4:$rx_binding2_version"
     implementation "com.jakewharton.timber:timber:5.0.1"
     implementation 'com.stripe:stripe-android:20.16.1'
     final okhttp_version = '4.10.+'

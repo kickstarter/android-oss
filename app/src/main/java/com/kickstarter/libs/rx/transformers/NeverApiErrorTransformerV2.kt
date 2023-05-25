@@ -7,7 +7,6 @@ import io.reactivex.ObservableSource
 import io.reactivex.ObservableTransformer
 import io.reactivex.functions.Consumer
 
-
 open class NeverApiErrorTransformerV2<T> : ObservableTransformer<T, T> {
     private val errorAction: Consumer<ErrorEnvelope>?
 

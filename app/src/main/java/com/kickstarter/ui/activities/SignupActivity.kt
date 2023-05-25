@@ -4,12 +4,13 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
-import com.jakewharton.rxbinding.view.RxView
+import com.jakewharton.rxbinding2.view.RxView
 import com.kickstarter.R
 import com.kickstarter.databinding.SignupLayoutBinding
 import com.kickstarter.libs.utils.SwitchCompatUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.views.LoginPopupMenu
 import com.kickstarter.viewmodels.SignupViewModel
@@ -25,6 +26,11 @@ class SignupActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        this.getEnvironment()?.let { env ->
+            viewModelFactory = SignupViewModel.Factory(env)
+            env
+        }
         binding = SignupLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.loginToolbar.loginToolbar.title = getString(R.string.signup_button)
@@ -61,7 +67,7 @@ class SignupActivity : AppCompatActivity() {
                 viewModel
                     .inputs
                     .sendNewslettersClick(binding.signupFormView.newsletterSwitch.isChecked)
-            }
+            }.addToDisposable(disposables)
 
         binding.signupFormView.disclaimer.setOnClickListener {
             disclaimerClick()

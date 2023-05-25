@@ -197,7 +197,6 @@ interface SignupViewModel {
         }
     }
 
-
     class Factory(private val environment: Environment) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return SignupViewModel(environment) as T

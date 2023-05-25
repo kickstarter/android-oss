@@ -9,13 +9,17 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
+import com.kickstarter.libs.rx.transformers.Transformers.ignoreValuesV2
+import com.kickstarter.libs.rx.transformers.Transformers.neverError
 import com.kickstarter.libs.rx.transformers.Transformers.neverErrorV2
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
 import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isEmail
 import com.kickstarter.libs.utils.extensions.isValidPassword
+import com.kickstarter.models.User
 import io.reactivex.Observable
+import io.reactivex.ObservableTransformer
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
@@ -71,7 +75,7 @@ interface ChangeEmailViewModel {
         fun warningTextColor(): Observable<Int>
     }
 
-    class ChangeEmailViewModel(environment: Environment) : ViewModel(), Inputs, Outputs {
+    class ChangeEmailViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs {
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -99,23 +103,26 @@ interface ChangeEmailViewModel {
         private val disposables = CompositeDisposable()
 
         init {
+            val userInfo = requireNotNull(environment.currentUserV2()?.observable())
 
-            val userPrivacy = apolloClient.userPrivacy()
-                .compose(neverErrorV2())
-
-            userPrivacy
+            userInfo
                 .subscribe {
-                    it?.me()?.email()?.let { email ->
-                        this.currentEmail.onNext(email)
-                    }
-                    it?.me()?.isEmailVerified?.let { verified ->
-                        this.sendVerificationIsHidden.onNext(verified)
+                    it.getValue()?.let { user ->
+                        user.email()?.let { email ->
+                            this.currentEmail.onNext(email)
+                        }
+                        this.sendVerificationIsHidden.onNext(user.isEmailVerified())
                     }
                 }
                 .addToDisposable(disposables)
 
-            userPrivacy
-                .map { getWarningText(it) }
+            userInfo
+                .map {
+                    getWarningText(
+                        it.getValue()?.isDeliverable(),
+                        it.getValue()?.isEmailVerified()
+                    )
+                }
                 .subscribe {
                     it?.let { stringRes ->
                         this.warningText.onNext(stringRes)
@@ -123,8 +130,8 @@ interface ChangeEmailViewModel {
                 }
                 .addToDisposable(disposables)
 
-            userPrivacy
-                .map { getWarningTextColor(it) }
+            userInfo
+                .map { getWarningTextColor(it.getValue()?.isDeliverable()) }
                 .subscribe {
                     it?.let { colorRes ->
                         this.warningTextColor.onNext(colorRes)
@@ -132,8 +139,8 @@ interface ChangeEmailViewModel {
                 }
                 .addToDisposable(disposables)
 
-            userPrivacy
-                .map { getVerificationText(it) }
+            userInfo
+                .map { getVerificationText(it.getValue()?.isCreator()) }
                 .subscribe {
                     it?.let { stringRes ->
                         this.verificationEmailButtonText.onNext(stringRes)
@@ -148,7 +155,10 @@ interface ChangeEmailViewModel {
                 .subscribe { this.emailErrorIsVisible.onNext(it) }
                 .addToDisposable(disposables)
 
-            val changeEmail = Observable.combineLatest(this.email, this.password) { email, password -> ChangeEmail(email, password) }
+            val changeEmail = Observable.combineLatest(
+                this.email,
+                this.password
+            ) { email, password -> ChangeEmail(email, password) }
 
             changeEmail
                 .map { ce -> ce.isValid() }
@@ -239,35 +249,29 @@ interface ChangeEmailViewModel {
 
         override fun warningTextColor(): Observable<Int> = this.warningTextColor
 
-        override fun verificationEmailButtonText(): Observable<Int> = this.verificationEmailButtonText
+        override fun verificationEmailButtonText(): Observable<Int> =
+            this.verificationEmailButtonText
 
-        private fun getWarningTextColor(userPrivacyData: UserPrivacyQuery.Data?): Int? {
-            val deliverable = userPrivacyData?.me()?.isDeliverable ?: false
-
-            return if (!deliverable) {
+        private fun getWarningTextColor(isDeliverable: Boolean?): Int {
+            return if (isDeliverable?.not() == true) {
                 R.color.kds_alert
             } else {
                 R.color.kds_support_400
             }
         }
 
-        private fun getWarningText(userPrivacyData: UserPrivacyQuery.Data?): Int? {
-            val deliverable = userPrivacyData?.me()?.isDeliverable ?: false
-            val isEmailVerified = userPrivacyData?.me()?.isEmailVerified ?: false
-
-            return if (!deliverable) {
+        private fun getWarningText(isDeliverable: Boolean?, isVerified: Boolean?): Int {
+            return if (isDeliverable?.not() == true) {
                 R.string.We_ve_been_unable_to_send_email
-            } else if (!isEmailVerified) {
+            } else if (isVerified?.not() == true) {
                 R.string.Email_unverified
             } else {
-                null
+                0
             }
         }
 
-        private fun getVerificationText(userPrivacy: UserPrivacyQuery.Data?): Int {
-            val creator = userPrivacy?.me()?.isCreator ?: false
-
-            return if (!creator) {
+        private fun getVerificationText(isCreator: Boolean?): Int {
+            return if (isCreator?.not() == true) {
                 R.string.Send_verfication_email
             } else {
                 R.string.Resend_verification_email

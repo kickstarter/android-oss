@@ -6,8 +6,8 @@ import UserPrivacyQuery
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.utils.extensions.addToDisposable
-import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.mock.services.MockApolloClientV2
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -48,20 +48,12 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testCurrentEmail() {
-        setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
-                override fun userPrivacy(): rx.Observable<UserPrivacyQuery.Data> {
-                    return rx.Observable.just(
-                        UserPrivacyQuery.Data(
-                            UserPrivacyQuery.Me(
-                                "", "",
-                                "rashad@test.com", true, true, true, true, ""
-                            )
-                        )
-                    )
-                }
-            }).build()
-        )
+        val currentUser = MockCurrentUser()
+        val environment = environment()
+            .toBuilder()
+            .currentUser(currentUser)
+            .build()
+        setUpEnvironment(environment)
 
         this.currentEmail.assertValue("rashad@test.com")
         this.sendVerificationIsHidden.assertValue(true)
@@ -70,9 +62,9 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCurrentEmailError() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
-                override fun userPrivacy(): rx.Observable<UserPrivacyQuery.Data> {
-                    return rx.Observable.error(Throwable("error"))
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.error(Throwable("error"))
                 }
             }).build()
         )
@@ -110,9 +102,9 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testIsEmailUnverified() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
-                override fun userPrivacy(): rx.Observable<UserPrivacyQuery.Data> {
-                    return rx.Observable.just(
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.just(
                         UserPrivacyQuery.Data(
                             UserPrivacyQuery.Me(
                                 "", "",
@@ -134,9 +126,9 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testIsEmailUndeliverable() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
-                override fun userPrivacy(): rx.Observable<UserPrivacyQuery.Data> {
-                    return rx.Observable.just(
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.just(
                         UserPrivacyQuery.Data(
                             UserPrivacyQuery.Me(
                                 "", "",
@@ -158,9 +150,9 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testIsUserABacker() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
-                override fun userPrivacy(): rx.Observable<UserPrivacyQuery.Data> {
-                    return rx.Observable.just(
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.just(
                         UserPrivacyQuery.Data(
                             UserPrivacyQuery.Me(
                                 "", "",
@@ -183,9 +175,9 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testIsUserACreator() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
-                override fun userPrivacy(): rx.Observable<UserPrivacyQuery.Data> {
-                    return rx.Observable.just(
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.just(
                         UserPrivacyQuery.Data(
                             UserPrivacyQuery.Me(
                                 "", "",

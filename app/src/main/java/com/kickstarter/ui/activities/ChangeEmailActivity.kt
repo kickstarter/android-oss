@@ -98,7 +98,8 @@ class ChangeEmailActivity : AppCompatActivity() {
             }
             .addToDisposable(disposables)
 
-        this.viewModel.outputs.success().observeOn(AndroidSchedulers.mainThread())
+        this.viewModel.outputs.success()
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showSnackbar(binding.changeEmailLayout, R.string.Verification_email_sent) }
             .addToDisposable(disposables)
 
@@ -110,7 +111,7 @@ class ChangeEmailActivity : AppCompatActivity() {
         this.viewModel.outputs.warningText()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                if (it != null) {
+                if (it != 0) {
                     binding.emailWarningTextView.text = getString(it)
                     binding.emailWarningTextView.visibility = View.VISIBLE
                 } else {

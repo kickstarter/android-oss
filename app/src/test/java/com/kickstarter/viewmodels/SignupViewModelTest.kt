@@ -17,6 +17,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.After
 import org.junit.Test
+import java.util.*
 
 class SignupViewModelTest : KSRobolectricTestCase() {
 
@@ -124,7 +125,7 @@ class SignupViewModelTest : KSRobolectricTestCase() {
             ): Observable<AccessTokenEnvelope> {
                 return Observable.error(
                     ApiExceptionFactory.apiError(
-                        builder().httpCode(422).build()
+                        builder().httpCode(422).errorMessages(Collections.singletonList("Unprocessable Content")).build()
                     )
                 )
             }
@@ -156,45 +157,45 @@ class SignupViewModelTest : KSRobolectricTestCase() {
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
-//    @Test
-//    fun testSignupViewModel_ApiError() {
-//        val apiClient: ApiClientType = object : MockApiClient() {
-//            override fun signup(
-//                name: String,
-//                email: String,
-//                password: String,
-//                passwordConfirmation: String,
-//                sendNewsletters: Boolean
-//            ): Observable<AccessTokenEnvelope> {
-//                return Observable.error(ApiExceptionFactory.badRequestException())
-//            }
-//        }
-//
-//        val environment = environment().toBuilder().apiClient(apiClient).build()
-//        val vm = SignupViewModel.SignupViewModel(environment)
-//        val signupSuccessTest = TestSubscriber<Unit>()
-//
-//        vm.outputs.signupSuccess().subscribe { signupSuccessTest.onNext(it) }.addToDisposable(disposables)
-//
-//        val signupErrorTest = TestSubscriber<String>()
-//        vm.outputs.errorString().subscribe { signupErrorTest.onNext(it) }.addToDisposable(disposables)
-//
-//        val formSubmittingTest = TestSubscriber<Boolean>()
-//        vm.outputs.formSubmitting().subscribe { formSubmittingTest.onNext(it) }.addToDisposable(disposables)
-//
-//        vm.inputs.name("brandon")
-//        vm.inputs.email("hello@kickstarter.com")
-//        vm.inputs.email("incorrect@kickstarter")
-//        vm.inputs.password("danisawesome")
-//        vm.inputs.sendNewslettersClick(true)
-//        vm.inputs.signupClick()
-//
-//        formSubmittingTest.assertValues(true, false)
-//        signupSuccessTest.assertValueCount(0)
-//        signupErrorTest.assertValueCount(1)
-//
-//        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
-//    }
+    @Test
+    fun testSignupViewModel_ApiError() {
+        val apiClient: ApiClientTypeV2 = object : MockApiClientV2() {
+            override fun signup(
+                name: String,
+                email: String,
+                password: String,
+                passwordConfirmation: String,
+                sendNewsletters: Boolean
+            ): Observable<AccessTokenEnvelope> {
+                return Observable.error(ApiExceptionFactory.badRequestException())
+            }
+        }
+
+        val environment = environment().toBuilder().apiClientV2(apiClient).build()
+        val vm = SignupViewModel.SignupViewModel(environment)
+        val signupSuccessTest = TestSubscriber<Unit>()
+
+        vm.outputs.signupSuccess().subscribe { signupSuccessTest.onNext(it) }.addToDisposable(disposables)
+
+        val signupErrorTest = TestSubscriber<String>()
+        vm.outputs.errorString().subscribe { signupErrorTest.onNext(it) }.addToDisposable(disposables)
+
+        val formSubmittingTest = TestSubscriber<Boolean>()
+        vm.outputs.formSubmitting().subscribe { formSubmittingTest.onNext(it) }.addToDisposable(disposables)
+
+        vm.inputs.name("brandon")
+        vm.inputs.email("hello@kickstarter.com")
+        vm.inputs.email("incorrect@kickstarter")
+        vm.inputs.password("danisawesome")
+        vm.inputs.sendNewslettersClick(true)
+        vm.inputs.signupClick()
+
+        formSubmittingTest.assertValues(true, false)
+        signupSuccessTest.assertValueCount(0)
+        signupErrorTest.assertValueCount(1)
+
+        segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+    }
 
     @After
     fun cleanUp() {

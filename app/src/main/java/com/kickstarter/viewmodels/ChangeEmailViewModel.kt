@@ -3,14 +3,13 @@ package com.kickstarter.viewmodels
 import SendEmailVerificationMutation
 import UpdateUserEmailMutation
 import UserPrivacyQuery
-import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
-import com.kickstarter.libs.rx.transformers.Transformers.neverError
+import com.kickstarter.libs.rx.transformers.Transformers.neverErrorV2
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
 import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -72,7 +71,7 @@ interface ChangeEmailViewModel {
         fun warningTextColor(): Observable<Int>
     }
 
-    class ChangeEmailViewModel(val environment: Environment, val intent: Intent? = null) : ViewModel(), Inputs, Outputs {
+    class ChangeEmailViewModel(environment: Environment) : ViewModel(), Inputs, Outputs {
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -95,24 +94,25 @@ interface ChangeEmailViewModel {
 
         private val error = BehaviorSubject.create<String>()
 
-        private val apolloClient = requireNotNull(environment.apolloClient())
+        private val apolloClient = requireNotNull(environment.apolloClientV2())
 
         private val disposables = CompositeDisposable()
 
         init {
 
-            val userPrivacy = this.apolloClient.userPrivacy()
-                .compose(neverError())
+            val userPrivacy = apolloClient.userPrivacy()
+                .compose(neverErrorV2())
 
             userPrivacy
                 .subscribe {
-                    it.me()?.email()?.let { email ->
+                    it?.me()?.email()?.let { email ->
                         this.currentEmail.onNext(email)
                     }
-                    it.me()?.isEmailVerified?.let { verified ->
+                    it?.me()?.isEmailVerified?.let { verified ->
                         this.sendVerificationIsHidden.onNext(verified)
                     }
                 }
+                .addToDisposable(disposables)
 
             userPrivacy
                 .map { getWarningText(it) }
@@ -121,6 +121,7 @@ interface ChangeEmailViewModel {
                         this.warningText.onNext(stringRes)
                     }
                 }
+                .addToDisposable(disposables)
 
             userPrivacy
                 .map { getWarningTextColor(it) }
@@ -129,6 +130,7 @@ interface ChangeEmailViewModel {
                         this.warningTextColor.onNext(colorRes)
                     }
                 }
+                .addToDisposable(disposables)
 
             userPrivacy
                 .map { getVerificationText(it) }
@@ -137,6 +139,7 @@ interface ChangeEmailViewModel {
                         this.verificationEmailButtonText.onNext(stringRes)
                     }
                 }
+                .addToDisposable(disposables)
 
             this.emailFocus
                 .compose(combineLatestPair(this.email))
@@ -261,7 +264,7 @@ interface ChangeEmailViewModel {
             }
         }
 
-        private fun getVerificationText(userPrivacy: UserPrivacyQuery.Data?): Int? {
+        private fun getVerificationText(userPrivacy: UserPrivacyQuery.Data?): Int {
             val creator = userPrivacy?.me()?.isCreator ?: false
 
             return if (!creator) {
@@ -295,9 +298,9 @@ interface ChangeEmailViewModel {
         }
     }
 
-    class Factory(private val environment: Environment, private val intent: Intent? = null) : ViewModelProvider.Factory {
+    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return ChangeEmailViewModel(environment, intent) as T
+            return ChangeEmailViewModel(environment) as T
         }
     }
 }

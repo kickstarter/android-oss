@@ -2,9 +2,7 @@ package com.kickstarter.services
 
 import CreatePasswordMutation
 import DeletePaymentSourceMutation
-import SendEmailVerificationMutation
 import UpdateUserCurrencyMutation
-import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPrivacyQuery
 import com.kickstarter.models.Backing
@@ -90,13 +88,9 @@ interface ApolloClientType {
 
     fun sendMessage(project: Project, recipient: User, body: String): Observable<Long>
 
-    fun sendVerificationEmail(): io.reactivex.Observable<SendEmailVerificationMutation.Data>
-
     fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout>
 
     fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>
-
-    fun updateUserEmail(email: String, currentPassword: String): io.reactivex.Observable<UpdateUserEmailMutation.Data>
 
     fun updateUserPassword(currentPassword: String = "", newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data>
 

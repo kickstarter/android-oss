@@ -1091,32 +1091,6 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun sendVerificationEmail(): io.reactivex.Observable<SendEmailVerificationMutation.Data> {
-        return io.reactivex.Observable.defer {
-            val ps = io.reactivex.subjects.PublishSubject.create<SendEmailVerificationMutation.Data>()
-            service.mutate(
-                SendEmailVerificationMutation.builder()
-                    .build()
-            )
-                .enqueue(object : ApolloCall.Callback<SendEmailVerificationMutation.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
-                    }
-
-                    override fun onResponse(response: Response<SendEmailVerificationMutation.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(Exception(response.errors?.first()?.message))
-                        }
-                        response.data?.let { data ->
-                            ps.onNext(data)
-                        }
-                        ps.onComplete()
-                    }
-                })
-            return@defer ps
-        }
-    }
-
     override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
         return Observable.defer {
             val updateBackingMutation = UpdateBackingMutation.builder()
@@ -1186,37 +1160,6 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         }
                         ps.onNext(response.data)
                         ps.onCompleted()
-                    }
-                })
-            return@defer ps
-        }
-    }
-
-    override fun updateUserEmail(
-        email: String,
-        currentPassword: String
-    ): io.reactivex.Observable<UpdateUserEmailMutation.Data> {
-        return io.reactivex.Observable.defer {
-            val ps = io.reactivex.subjects.PublishSubject.create<UpdateUserEmailMutation.Data>()
-            service.mutate(
-                UpdateUserEmailMutation.builder()
-                    .email(email)
-                    .currentPassword(currentPassword)
-                    .build()
-            )
-                .enqueue(object : ApolloCall.Callback<UpdateUserEmailMutation.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
-                    }
-
-                    override fun onResponse(response: Response<UpdateUserEmailMutation.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(Exception(response.errors?.first()?.message))
-                        }
-                        response.data?.let { data ->
-                            ps.onNext(data)
-                        }
-                        ps.onComplete()
                     }
                 })
             return@defer ps

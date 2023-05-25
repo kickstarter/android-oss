@@ -36,7 +36,7 @@ class ChangeEmailActivity : AppCompatActivity() {
         disposables = CompositeDisposable()
 
         this.getEnvironment()?.let { env ->
-            viewModelFactory = ChangeEmailViewModel.Factory(env, intent = intent)
+            viewModelFactory = ChangeEmailViewModel.Factory(env)
         }
 
         binding = ActivityChangeEmailBinding.inflate(layoutInflater)

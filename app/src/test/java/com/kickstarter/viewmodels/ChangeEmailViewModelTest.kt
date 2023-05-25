@@ -8,6 +8,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.mock.services.MockApolloClientV2
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
@@ -36,9 +37,9 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.currentEmail().subscribe { this.currentEmail.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.emailErrorIsVisible().subscribe { this.emailErrorIsVisible.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.error().subscribe { this.error.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.sendVerificationIsHidden().subscribe{ this.sendVerificationIsHidden.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.progressBarIsVisible().subscribe{ this.progressBarIsVisible.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.saveButtonIsEnabled().subscribe{ this.saveButtonIsEnabled.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.sendVerificationIsHidden().subscribe { this.sendVerificationIsHidden.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.progressBarIsVisible().subscribe { this.progressBarIsVisible.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.saveButtonIsEnabled().subscribe { this.saveButtonIsEnabled.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.success().subscribe { this.success.onNext(Unit) }.addToDisposable(disposables)
         this.vm.outputs.warningText().subscribe { this.warningText.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.warningTextColor().subscribe { this.warningTextColor.onNext(it) }.addToDisposable(disposables)
@@ -93,7 +94,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testError() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data> {
                     return Observable.error(Throwable("boop"))
                 }
@@ -232,7 +233,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testSendVerificationEmail() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
                     return Observable.just(
                         SendEmailVerificationMutation.Data(
@@ -251,7 +252,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testSendVerificationEmailError() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
                     return Observable.error(Throwable("error"))
                 }
@@ -265,7 +266,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testSuccess() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data> {
                     return Observable.just(
                         UpdateUserEmailMutation.Data(

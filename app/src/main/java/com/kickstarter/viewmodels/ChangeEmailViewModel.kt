@@ -109,7 +109,6 @@ interface ChangeEmailViewModel {
                     it.me()?.isEmailVerified?.let { verified ->
                         this.sendVerificationIsHidden.onNext(verified)
                     }
-
                 }
                 .addToDisposable(disposables)
 

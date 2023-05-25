@@ -5,9 +5,7 @@ import UpdateUserEmailMutation
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.extensions.addToDisposable
-import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable

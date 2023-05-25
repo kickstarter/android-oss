@@ -8,6 +8,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
+import com.kickstarter.libs.rx.transformers.Transformers.neverErrorV2
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
 import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -97,24 +98,26 @@ interface ChangeEmailViewModel {
         private val disposables = CompositeDisposable()
 
         init {
-            val userInfo = requireNotNull(environment.currentUserV2()?.observable())
+            // TODO: Replace userPrivacy with user from Environment when all fields are populated
+            val userPrivacy = this.apolloClient.userPrivacy().compose(neverErrorV2())
 
-            userInfo
+            userPrivacy
                 .subscribe {
-                    it.getValue()?.let { user ->
-                        user.email()?.let { email ->
-                            this.currentEmail.onNext(email)
-                        }
-                        this.sendVerificationIsHidden.onNext(user.isEmailVerified())
+                    it.me()?.email()?.let { email ->
+                        this.currentEmail.onNext(email)
                     }
+                    it.me()?.isEmailVerified?.let { verified ->
+                        this.sendVerificationIsHidden.onNext(verified)
+                    }
+
                 }
                 .addToDisposable(disposables)
 
-            userInfo
+            userPrivacy
                 .map {
                     getWarningText(
-                        it.getValue()?.isDeliverable(),
-                        it.getValue()?.isEmailVerified()
+                        it.me()?.isDeliverable,
+                        it.me()?.isEmailVerified
                     )
                 }
                 .subscribe {
@@ -124,8 +127,8 @@ interface ChangeEmailViewModel {
                 }
                 .addToDisposable(disposables)
 
-            userInfo
-                .map { getWarningTextColor(it.getValue()?.isDeliverable()) }
+            userPrivacy
+                .map { getWarningTextColor(it.me()?.isDeliverable) }
                 .subscribe {
                     it?.let { colorRes ->
                         this.warningTextColor.onNext(colorRes)
@@ -133,8 +136,8 @@ interface ChangeEmailViewModel {
                 }
                 .addToDisposable(disposables)
 
-            userInfo
-                .map { getVerificationText(it.getValue()?.isCreator()) }
+            userPrivacy
+                .map { getVerificationText(it.me()?.isCreator) }
                 .subscribe {
                     it?.let { stringRes ->
                         this.verificationEmailButtonText.onNext(stringRes)

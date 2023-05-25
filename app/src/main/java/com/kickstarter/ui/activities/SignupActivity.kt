@@ -1,60 +1,62 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
-import android.util.Pair
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.databinding.SignupLayoutBinding
-import com.kickstarter.libs.BaseActivity
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.SwitchCompatUtils
-import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.views.LoginPopupMenu
 import com.kickstarter.viewmodels.SignupViewModel
-import rx.android.schedulers.AndroidSchedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
-@RequiresActivityViewModel(SignupViewModel.ViewModel::class)
-class SignupActivity : BaseActivity<SignupViewModel.ViewModel>() {
+class SignupActivity : AppCompatActivity() {
 
     private lateinit var binding: SignupLayoutBinding
+    private lateinit var viewModelFactory: SignupViewModel.Factory
+    private val viewModel: SignupViewModel.SignupViewModel by viewModels { viewModelFactory }
+    private val disposables = CompositeDisposable()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = SignupLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.loginToolbar.loginToolbar.title = getString(R.string.signup_button)
         viewModel.outputs.signupSuccess()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { onSuccess() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.formSubmitting()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setFormDisabled(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.formIsValid()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setFormEnabled(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.sendNewslettersIsChecked()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 SwitchCompatUtils.setCheckedWithoutAnimation(binding.signupFormView.newsletterSwitch, it)
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.errorString()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { ViewUtils.showDialog(this, null, it) }
+            .addToDisposable(disposables)
 
         RxView.clicks(binding.signupFormView.newsletterSwitch)
             .skip(1)
-            .compose(bindToLifecycle())
             .subscribe {
                 viewModel
                     .inputs
@@ -82,6 +84,10 @@ class SignupActivity : BaseActivity<SignupViewModel.ViewModel>() {
         }
     }
 
+    override fun onDestroy() {
+        disposables.clear()
+        super.onDestroy()
+    }
     private fun disclaimerClick() {
         LoginPopupMenu(this, binding.loginToolbar.helpButton).show()
     }
@@ -114,9 +120,5 @@ class SignupActivity : BaseActivity<SignupViewModel.ViewModel>() {
 
     private fun setFormDisabled(disabled: Boolean) {
         setFormEnabled(!disabled)
-    }
-
-    override fun exitTransition(): Pair<Int, Int>? {
-        return TransitionUtils.slideInFromLeft()
     }
 }

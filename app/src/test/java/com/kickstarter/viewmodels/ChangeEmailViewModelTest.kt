@@ -57,16 +57,36 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testCurrentEmail() {
-        val currentUser =
-            MockCurrentUserV2(UserFactory.user().toBuilder().email("rashad@test.com").build())
-        val environment = environment()
-            .toBuilder()
-            .currentUserV2(currentUser)
-            .build()
-        setUpEnvironment(environment)
+        setUpEnvironment(
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.just(
+                        UserPrivacyQuery.Data(
+                            UserPrivacyQuery.Me(
+                                "", "",
+                                "rashad@test.com", true, true, true, true, ""
+                            )
+                        )
+                    )
+                }
+            }).build()
+        )
 
         this.currentEmail.assertValue("rashad@test.com")
         this.sendVerificationIsHidden.assertValue(true)
+    }
+
+    @Test
+    fun testCurrentEmailError() {
+        setUpEnvironment(
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.error(Throwable("error"))
+                }
+            }).build()
+        )
+
+        this.currentEmail.assertNoValues()
     }
 
     @Test
@@ -101,20 +121,20 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testIsEmailUnverified() {
-        val currentUser = MockCurrentUserV2(
-            UserFactory.user().toBuilder()
-                .email("rashad@test.com")
-                .hasPassword(true)
-                .isCreator(true)
-                .isDeliverable(true)
-                .isEmailVerified(false)
-                .build()
+        setUpEnvironment(
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.just(
+                        UserPrivacyQuery.Data(
+                            UserPrivacyQuery.Me(
+                                "", "",
+                                "rashad@test.com", true, true, true, false, ""
+                            )
+                        )
+                    )
+                }
+            }).build()
         )
-        val environment = environment()
-            .toBuilder()
-            .currentUserV2(currentUser)
-            .build()
-        setUpEnvironment(environment)
 
         this.currentEmail.assertValue("rashad@test.com")
         this.sendVerificationIsHidden.assertValue(false)
@@ -125,20 +145,20 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testIsEmailUndeliverable() {
-        val currentUser = MockCurrentUserV2(
-            UserFactory.user().toBuilder()
-                .email("rashad@test.com")
-                .hasPassword(true)
-                .isCreator(true)
-                .isDeliverable(false)
-                .isEmailVerified(false)
-                .build()
+        setUpEnvironment(
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.just(
+                        UserPrivacyQuery.Data(
+                            UserPrivacyQuery.Me(
+                                "", "",
+                                "rashad@test.com", true, true, false, false, ""
+                            )
+                        )
+                    )
+                }
+            }).build()
         )
-        val environment = environment()
-            .toBuilder()
-            .currentUserV2(currentUser)
-            .build()
-        setUpEnvironment(environment)
 
         this.currentEmail.assertValue("rashad@test.com")
         this.sendVerificationIsHidden.assertValue(false)
@@ -149,21 +169,20 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testIsUserABacker() {
-        val currentUser =
-            MockCurrentUserV2(
-                UserFactory.user().toBuilder()
-                    .email("rashad@test.com")
-                    .hasPassword(true)
-                    .isCreator(false)
-                    .isDeliverable(true)
-                    .isEmailVerified(true)
-                    .build()
-            )
-        val environment = environment()
-            .toBuilder()
-            .currentUserV2(currentUser)
-            .build()
-        setUpEnvironment(environment)
+        setUpEnvironment(
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.just(
+                        UserPrivacyQuery.Data(
+                            UserPrivacyQuery.Me(
+                                "", "",
+                                "rashad@test.com", true, false, true, true, ""
+                            )
+                        )
+                    )
+                }
+            }).build()
+        )
 
         this.currentEmail.assertValue("rashad@test.com")
         this.sendVerificationIsHidden.assertValue(true)
@@ -175,20 +194,20 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testIsUserACreator() {
-        val currentUser = MockCurrentUserV2(
-            UserFactory.user().toBuilder()
-                .email("rashad@test.com")
-                .hasPassword(true)
-                .isCreator(true)
-                .isDeliverable(true)
-                .isEmailVerified(true)
-                .build()
+        setUpEnvironment(
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.just(
+                        UserPrivacyQuery.Data(
+                            UserPrivacyQuery.Me(
+                                "", "",
+                                "rashad@test.com", true, true, true, true, ""
+                            )
+                        )
+                    )
+                }
+            }).build()
         )
-        val environment = environment()
-            .toBuilder()
-            .currentUserV2(currentUser)
-            .build()
-        setUpEnvironment(environment)
 
         this.currentEmail.assertValue("rashad@test.com")
         this.sendVerificationIsHidden.assertValue(true)
@@ -258,33 +277,35 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSuccess() {
-        val currentUser = MockCurrentUserV2(
-            UserFactory.user().toBuilder()
-                .email("some@email.com")
-                .hasPassword(true)
-                .isCreator(true)
-                .isDeliverable(true)
-                .isEmailVerified(false)
-                .build()
-        )
+
         setUpEnvironment(
-            environment().toBuilder().currentUserV2(currentUser)
-                .apolloClientV2(object : MockApolloClientV2() {
-                    override fun updateUserEmail(
-                        email: String,
-                        currentPassword: String
-                    ): Observable<UpdateUserEmailMutation.Data> {
-                        return Observable.just(
-                            UpdateUserEmailMutation.Data(
-                                UpdateUserEmailMutation
-                                    .UpdateUserAccount(
-                                        "",
-                                        UpdateUserEmailMutation.User("", "", email)
-                                    )
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.just(
+                        UserPrivacyQuery.Data(
+                            UserPrivacyQuery.Me(
+                                "", "",
+                                "some@email.com", true, true, true, true, ""
                             )
                         )
-                    }
-                }).build()
+                    )
+                }
+
+                override fun updateUserEmail(
+                    email: String,
+                    currentPassword: String
+                ): Observable<UpdateUserEmailMutation.Data> {
+                    return Observable.just(
+                        UpdateUserEmailMutation.Data(
+                            UpdateUserEmailMutation
+                                .UpdateUserAccount(
+                                    "",
+                                    UpdateUserEmailMutation.User("", "", email)
+                                )
+                        )
+                    )
+                }
+            }).build()
         )
 
         this.currentEmail.assertValue("some@email.com")

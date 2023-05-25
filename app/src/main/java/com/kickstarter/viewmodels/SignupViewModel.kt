@@ -129,7 +129,9 @@ interface SignupViewModel {
 
             signupData
                 .compose(Transformers.takeWhenV2(signupClick))
-                .switchMap { submit(it) }
+                .switchMap {
+                    submit(it)
+                }
                 .distinctUntilChanged()
                 .switchMap {
                     this.loginUserCase

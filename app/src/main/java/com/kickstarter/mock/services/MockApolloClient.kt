@@ -46,6 +46,7 @@ import com.kickstarter.services.mutations.UpdateBackingData
 import rx.Observable
 import type.CurrencyCode
 import type.TriggerCapiEventInput
+import type.TriggerThirdPartyEventInput
 import java.util.Collections
 
 open class MockApolloClientV2 : ApolloClientTypeV2 {
@@ -353,6 +354,18 @@ open class MockApolloClient : ApolloClientType {
             TriggerCapiEventMutation.Data(
                 TriggerCapiEventMutation
                     .TriggerCAPIEvent(
+                        "",
+                        true
+                    )
+            )
+        )
+    }
+
+    override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<TriggerThirdPartyEventMutation.Data> {
+        return Observable.just(
+            TriggerThirdPartyEventMutation.Data(
+                TriggerThirdPartyEventMutation
+                    .TriggerThirdPartyEvent(
                         "",
                         true
                     )

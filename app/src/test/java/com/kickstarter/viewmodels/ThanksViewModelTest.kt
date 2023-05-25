@@ -21,6 +21,7 @@ import com.kickstarter.mock.factories.LocationFactory.germany
 import com.kickstarter.mock.factories.ProjectDataFactory.project
 import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.RewardFactory.reward
+import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.mock.factories.UserFactory.user
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.models.Project
@@ -386,7 +387,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         assertEquals(projectPageParams.first, project)
         assertEquals(projectPageParams.second, thanks())
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
-        assertEquals(null, this.vm.onCAPIEventSent.value)
+        assertEquals(null, this.vm.onThirdPartyEventSent.value)
     }
 
     @Test
@@ -401,7 +402,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
                 .build()
         )
 
-        val project = project().toBuilder().sendMetaCapiEvents(true).build()
+        val project = project().toBuilder().sendThirdPartyEvents(true).build()
         val checkoutData = checkoutData(
             3L,
             20.0,
@@ -427,7 +428,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         assertEquals(projectPageParams.first, project)
         assertEquals(projectPageParams.second, thanks())
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
-        assertEquals(null, this.vm.onCAPIEventSent.value)
+        assertEquals(null, this.vm.onThirdPartyEventSent.value)
     }
     @Test
     fun testSendCAPIEvent_whenBackedPRoject_sendCAPIEvent_withFeatureFlag_on_isSuccessful() {
@@ -449,7 +450,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
                 .build()
         )
 
-        val project = project().toBuilder().sendMetaCapiEvents(true).build()
+        val project = project().toBuilder().sendThirdPartyEvents(true).build()
         val checkoutData = checkoutData(
             3L,
             20.0,
@@ -460,7 +461,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             project(project),
             reward(),
             emptyList(),
-            null
+            ShippingRuleFactory.germanyShippingRule()
         )
         val intent = Intent()
             .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
@@ -475,7 +476,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         assertEquals(projectPageParams.first, project)
         assertEquals(projectPageParams.second, thanks())
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
-        assertEquals(true, this.vm.onCAPIEventSent.value)
+        assertEquals(true, this.vm.onThirdPartyEventSent.value)
     }
 
     @Test

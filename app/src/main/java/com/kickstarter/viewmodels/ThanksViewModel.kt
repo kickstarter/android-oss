@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels
 
 import android.util.Pair
 import androidx.annotation.VisibleForTesting
-import com.facebook.appevents.cloudbridge.ConversionsAPIEventName
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
@@ -12,6 +11,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RefTagUtils
+import com.kickstarter.libs.utils.ThirdPartyEventName
 import com.kickstarter.libs.utils.extensions.combineProjectsAndParams
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.updateStartedProjectAndDiscoveryParamsList
@@ -31,7 +31,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ProjectData.Companion.builder
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder
 import com.kickstarter.ui.viewholders.ThanksCategoryViewHolder
-import com.kickstarter.viewmodels.usecases.SendCAPIEventUseCase
+import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCase
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -103,7 +103,7 @@ interface ThanksViewModel {
         private val showSavedPrompt = PublishSubject.create<Void>()
 
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-        val onCAPIEventSent = BehaviorSubject.create<Boolean?>()
+        val onThirdPartyEventSent = BehaviorSubject.create<Boolean?>()
         @JvmField
         val inputs: Inputs = this
 
@@ -284,17 +284,18 @@ interface ThanksViewModel {
                 )
             }
 
-            SendCAPIEventUseCase(sharedPreferences, ffClient)
-                .sendCAPIEvent(
+            SendThirdPartyEventUseCase(sharedPreferences, ffClient)
+                .sendThirdPartyEvent(
                     project,
-                    currentUser,
                     apolloClient,
-                    ConversionsAPIEventName.PURCHASED,
-                    cAPIPurchaseValueAndCurrency
-                ).compose(Transformers.neverError())
+                    checkoutAndPledgeData,
+                    currentUser,
+                    ThirdPartyEventName.PURCHASE,
+                )
+                .compose(Transformers.neverError())
                 .compose(bindToLifecycle())
                 .subscribe {
-                    onCAPIEventSent.onNext(it.first.triggerCAPIEvent()?.success() ?: false)
+                    onThirdPartyEventSent.onNext(it.first.triggerThirdPartyEvent()?.success() ?: false)
                 }
 
             checkoutAndPledgeData

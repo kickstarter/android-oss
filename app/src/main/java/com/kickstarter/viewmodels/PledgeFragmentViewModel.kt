@@ -47,7 +47,7 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.PledgeFragment
 import com.kickstarter.ui.viewholders.State
-import com.kickstarter.viewmodels.usecases.SendCAPIEventUseCase
+import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCase
 import com.stripe.android.StripeIntentResult
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import rx.Observable
@@ -1201,7 +1201,7 @@ interface PledgeFragmentViewModel {
                 it.second
             }.distinctUntilChanged()
 
-            SendCAPIEventUseCase(sharedPreferences, ffClient)
+            SendThirdPartyEventUseCase(sharedPreferences, ffClient)
                 .sendCAPIEvent(
                     project
                         .compose(takeWhen(changeCard)),

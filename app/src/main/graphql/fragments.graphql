@@ -55,6 +55,7 @@ fragment fullProject on Project {
     minPledge
     isLaunched
     sendMetaCapiEvents
+    sendThirdPartyEvents
     backing {
         ... backing
     }

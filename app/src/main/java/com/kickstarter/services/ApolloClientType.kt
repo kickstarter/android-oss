@@ -27,6 +27,7 @@ import com.kickstarter.services.mutations.UpdateBackingData
 import rx.Observable
 import type.CurrencyCode
 import type.TriggerCapiEventInput
+import type.TriggerThirdPartyEventInput
 
 interface ApolloClientType {
     fun cancelBacking(backing: Backing, note: String): Observable<Any>
@@ -97,6 +98,8 @@ interface ApolloClientType {
     fun userPrivacy(): Observable<UserPrivacyQuery.Data>
 
     fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): Observable<TriggerCapiEventMutation.Data>
+
+    fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<TriggerThirdPartyEventMutation.Data>
 }
 
 private const val PAGE_SIZE = 25

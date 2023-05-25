@@ -66,6 +66,7 @@ import type.BackingState
 import type.CurrencyCode
 import type.PaymentTypes
 import type.TriggerCapiEventInput
+import type.TriggerThirdPartyEventInput
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
@@ -1225,6 +1226,24 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     }
 
                     override fun onResponse(response: Response<TriggerCapiEventMutation.Data>) {
+                        ps.onNext(response.data)
+                        ps.onCompleted()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<TriggerThirdPartyEventMutation.Data> {
+        return Observable.defer {
+            val ps = PublishSubject.create<TriggerThirdPartyEventMutation.Data>()
+            service.mutate(TriggerThirdPartyEventMutation.builder().triggerThirdPartyEventInput(triggerThirdPartyEventInput).build())
+                .enqueue(object : ApolloCall.Callback<TriggerThirdPartyEventMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<TriggerThirdPartyEventMutation.Data>) {
                         ps.onNext(response.data)
                         ps.onCompleted()
                     }

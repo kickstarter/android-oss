@@ -16,11 +16,6 @@ internal class RecyclerViewScrollEventOnSubscribe(val recyclerView: RecyclerView
                 }
             }
         }
-//        subscriber.add(object : MainThreadSubscription() {
-//            override fun onUnsubscribe() {
-//                recyclerView.removeOnScrollListener(listener)
-//            }
-//        })
         recyclerView.addOnScrollListener(listener)
     }
 }

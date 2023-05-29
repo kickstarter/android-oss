@@ -32,13 +32,15 @@ class RecyclerViewScrollEvent private constructor(
     }
 
     override fun toString(): String {
-        return ("RecyclerViewScrollEvent{view="
-                + view()
-                + ", dx="
-                + dx
-                + ", dy="
-                + dy
-                + '}')
+        return (
+            "RecyclerViewScrollEvent{view=" +
+                view() +
+                ", dx=" +
+                dx +
+                ", dy=" +
+                dy +
+                '}'
+            )
     }
 
     companion object {

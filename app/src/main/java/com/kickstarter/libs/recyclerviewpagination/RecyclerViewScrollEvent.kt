@@ -1,4 +1,4 @@
-package com.kickstarter.libs.recyclerhelpers
+package com.kickstarter.libs.recyclerviewpagination
 
 import androidx.recyclerview.widget.RecyclerView
 

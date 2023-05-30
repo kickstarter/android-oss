@@ -1,9 +1,9 @@
-package com.kickstarter.libs.recyclerhelpers
+package com.kickstarter.libs.recyclerviewpagination
 
 import android.util.Pair
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.kickstarter.libs.recyclerhelpers.RxRecyclerView.Companion.scrollEvents
+import com.kickstarter.libs.recyclerviewpagination.RxRecyclerView.Companion.scrollEvents
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isFalse
@@ -17,8 +17,8 @@ class RecyclerViewPaginatorV2 {
     private val isScrollEnabled: Boolean
     private val nextPage: Action
     private val isLoading: Observable<Boolean>
-    private lateinit var subscription: Disposable
-    private lateinit var retrySubscription: Disposable
+    private var subscription: Disposable? = null
+    private var retrySubscription: Disposable? = null
     private val retryLoadingNextPageSubject = PublishSubject.create<Unit>()
 
     constructor(recyclerView: RecyclerView, nextPage: Action, isLoading: Observable<Boolean>) {
@@ -102,8 +102,8 @@ class RecyclerViewPaginatorV2 {
      */
     fun stop() {
         this.recyclerView.clearOnScrollListeners()
-        subscription.dispose()
-        retrySubscription.dispose()
+        subscription?.dispose()
+        retrySubscription?.dispose()
     }
 
     /**

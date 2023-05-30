@@ -223,4 +223,8 @@ public final class Transformers {
   public static @NonNull <T> ObserveForUITransformer<T> observeForUI() {
     return new ObserveForUITransformer<>();
   }
+
+  public static @NonNull <T> ObserveForUITransformerV2<T> observeForUIV2() {
+    return new ObserveForUITransformerV2<>();
+  }
 }

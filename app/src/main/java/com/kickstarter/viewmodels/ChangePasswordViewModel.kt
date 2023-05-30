@@ -1,18 +1,19 @@
 package com.kickstarter.viewmodels
 
 import UpdateUserPasswordMutation
-import androidx.annotation.NonNull
-import com.kickstarter.libs.ActivityViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.rx.transformers.Transformers.errors
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
-import com.kickstarter.libs.rx.transformers.Transformers.values
+import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhenV2
+import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotEmptyAndAtLeast6Chars
 import com.kickstarter.libs.utils.extensions.newPasswordValidationWarnings
-import com.kickstarter.ui.activities.ChangePasswordActivity
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 interface ChangePasswordViewModel {
 
@@ -47,9 +48,9 @@ interface ChangePasswordViewModel {
         fun success(): Observable<String>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ChangePasswordActivity>(environment), Inputs, Outputs {
+    class ChangePasswordViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs {
 
-        private val changePasswordClicked = PublishSubject.create<Void>()
+        private val changePasswordClicked = PublishSubject.create<Unit>()
         private val confirmPassword = PublishSubject.create<String>()
         private val currentPassword = PublishSubject.create<String>()
         private val newPassword = PublishSubject.create<String>()
@@ -60,60 +61,66 @@ interface ChangePasswordViewModel {
         private val saveButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val success = BehaviorSubject.create<String>()
 
-        val inputs: ChangePasswordViewModel.Inputs = this
-        val outputs: ChangePasswordViewModel.Outputs = this
+        val inputs: Inputs = this
+        val outputs: Outputs = this
 
-        private val apolloClient = requireNotNull(this.environment.apolloClient())
+        private val apolloClient = requireNotNull(this.environment.apolloClientV2())
         private val analytics = this.environment.analytics()
+
+        private val disposables = CompositeDisposable()
 
         init {
 
             val changePassword = Observable.combineLatest(
                 this.currentPassword.startWith(""),
                 this.newPassword.startWith(""),
-                this.confirmPassword.startWith(""),
-                { current, new, confirm -> ChangePassword(current, new, confirm) }
-            )
+                this.confirmPassword.startWith("")
+            ) { current, new, confirm -> ChangePassword(current, new, confirm) }
 
             changePassword
                 .map { it.warning() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe(this.passwordWarning)
 
             changePassword
                 .map { it.isValid() }
                 .distinctUntilChanged()
-                .compose(bindToLifecycle())
                 .subscribe(this.saveButtonIsEnabled)
 
             val changePasswordNotification = changePassword
-                .compose(takeWhen<ChangePassword, Void>(this.changePasswordClicked))
+                .compose(takeWhenV2(this.changePasswordClicked))
                 .switchMap { cp -> submit(cp).materialize() }
-                .compose(bindToLifecycle())
                 .share()
 
             changePasswordNotification
-                .compose(errors())
-                .subscribe({ this.error.onNext(it.localizedMessage) })
+                .compose(errorsV2())
+                .subscribe { error ->
+                    error?.localizedMessage?.let { message ->
+                        this.error.onNext(message)
+                    }
+                }
+                .addToDisposable(disposables)
 
             changePasswordNotification
-                .compose(values())
+                .compose(valuesV2())
                 .map { it.updateUserAccount()?.user()?.email() }
-                .subscribe {
+                .subscribe { email ->
                     this.analytics?.reset()
-                    this.success.onNext(it)
+                    email?.let {
+                        this.success.onNext(it)
+                    }
                 }
+                .addToDisposable(disposables)
         }
 
-        private fun submit(changePassword: ChangePasswordViewModel.ViewModel.ChangePassword): Observable<UpdateUserPasswordMutation.Data> {
+        private fun submit(changePassword: ChangePassword): Observable<UpdateUserPasswordMutation.Data> {
             return this.apolloClient.updateUserPassword(changePassword.currentPassword, changePassword.newPassword, changePassword.confirmPassword)
                 .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
                 .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
         }
 
         override fun changePasswordClicked() {
-            this.changePasswordClicked.onNext(null)
+            this.changePasswordClicked.onNext(Unit)
         }
 
         override fun confirmPassword(confirmPassword: String) {
@@ -156,8 +163,19 @@ interface ChangePasswordViewModel {
                     this.confirmPassword == this.newPassword
             }
 
-            fun warning(): Int? =
-                newPassword.newPasswordValidationWarnings(confirmPassword)
+            fun warning(): Int =
+                newPassword.newPasswordValidationWarnings(confirmPassword) ?: 0
+        }
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
+    }
+
+    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return ChangePasswordViewModel(environment) as T
         }
     }
 }

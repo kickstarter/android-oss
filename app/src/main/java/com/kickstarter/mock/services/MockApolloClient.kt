@@ -64,12 +64,14 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         newPassword: String,
         confirmPassword: String
     ): io.reactivex.Observable<UpdateUserPasswordMutation.Data> {
-        return io.reactivex.Observable.just(UpdateUserPasswordMutation.Data(
-            UpdateUserPasswordMutation.UpdateUserAccount(
-                "",
-                UpdateUserPasswordMutation.User("", "some@email.com", true, true)
+        return io.reactivex.Observable.just(
+            UpdateUserPasswordMutation.Data(
+                UpdateUserPasswordMutation.UpdateUserAccount(
+                    "",
+                    UpdateUserPasswordMutation.User("", "some@email.com", true, true)
+                )
             )
-        ))
+        )
     }
 
     override fun getProject(project: Project): io.reactivex.Observable<Project> {

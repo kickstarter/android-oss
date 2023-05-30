@@ -173,7 +173,7 @@ interface ChangePasswordViewModel {
         }
     }
 
-    class Factory(private val environment: Environment): ViewModelProvider.Factory {
+    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return ChangePasswordViewModel(environment) as T
         }

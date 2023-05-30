@@ -25,6 +25,8 @@ interface ApolloClientTypeV2 {
     fun userPrivacy(): Observable<UserPrivacyQuery.Data>
     fun watchProject(project: Project): Observable<Project>
     fun unWatchProject(project: Project): Observable<Project>
+    fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data>
+    fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data>
 }
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
@@ -297,6 +299,63 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                                 response.data?.watchProject()?.project()?.fragments()?.fullProject()
                             )
                         )
+                        ps.onComplete()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun updateUserEmail(
+        email: String,
+        currentPassword: String
+    ): Observable<UpdateUserEmailMutation.Data> {
+        return Observable.defer {
+            val ps = PublishSubject.create<UpdateUserEmailMutation.Data>()
+            service.mutate(
+                UpdateUserEmailMutation.builder()
+                    .email(email)
+                    .currentPassword(currentPassword)
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<UpdateUserEmailMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<UpdateUserEmailMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message))
+                        }
+                        response.data?.let { data ->
+                            ps.onNext(data)
+                        }
+                        ps.onComplete()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
+        return Observable.defer {
+            val ps = PublishSubject.create<SendEmailVerificationMutation.Data>()
+            service.mutate(
+                SendEmailVerificationMutation.builder()
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<SendEmailVerificationMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<SendEmailVerificationMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message))
+                        }
+                        response.data?.let { data ->
+                            ps.onNext(data)
+                        }
                         ps.onComplete()
                     }
                 })

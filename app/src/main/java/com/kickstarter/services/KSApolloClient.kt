@@ -12,12 +12,10 @@ import GetRootCategoriesQuery
 import GetShippingRulesForRewardIdQuery
 import ProjectCreatorDetailsQuery
 import SavePaymentMethodMutation
-import SendEmailVerificationMutation
 import SendMessageMutation
 import UnwatchProjectMutation
 import UpdateBackingMutation
 import UpdateUserCurrencyMutation
-import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPaymentsQuery
 import UserPrivacyQuery
@@ -1092,30 +1090,6 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
-        return Observable.defer {
-            val ps = PublishSubject.create<SendEmailVerificationMutation.Data>()
-            service.mutate(
-                SendEmailVerificationMutation.builder()
-                    .build()
-            )
-                .enqueue(object : ApolloCall.Callback<SendEmailVerificationMutation.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
-                    }
-
-                    override fun onResponse(response: Response<SendEmailVerificationMutation.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(Exception(response.errors?.first()?.message))
-                        }
-                        ps.onNext(response.data)
-                        ps.onCompleted()
-                    }
-                })
-            return@defer ps
-        }
-    }
-
     override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
         return Observable.defer {
             val updateBackingMutation = UpdateBackingMutation.builder()
@@ -1180,35 +1154,6 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     }
 
                     override fun onResponse(response: Response<UpdateUserCurrencyMutation.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(Exception(response.errors?.first()?.message))
-                        }
-                        ps.onNext(response.data)
-                        ps.onCompleted()
-                    }
-                })
-            return@defer ps
-        }
-    }
-
-    override fun updateUserEmail(
-        email: String,
-        currentPassword: String
-    ): Observable<UpdateUserEmailMutation.Data> {
-        return Observable.defer {
-            val ps = PublishSubject.create<UpdateUserEmailMutation.Data>()
-            service.mutate(
-                UpdateUserEmailMutation.builder()
-                    .email(email)
-                    .currentPassword(currentPassword)
-                    .build()
-            )
-                .enqueue(object : ApolloCall.Callback<UpdateUserEmailMutation.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
-                    }
-
-                    override fun onResponse(response: Response<UpdateUserEmailMutation.Data>) {
                         if (response.hasErrors()) {
                             ps.onError(Exception(response.errors?.first()?.message))
                         }

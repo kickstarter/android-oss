@@ -59,6 +59,45 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.just(project.toBuilder().isStarred(false).build())
     }
 
+    override fun updateUserPassword(
+        currentPassword: String,
+        newPassword: String,
+        confirmPassword: String
+    ): io.reactivex.Observable<UpdateUserPasswordMutation.Data> {
+        return io.reactivex.Observable.just(
+            UpdateUserPasswordMutation.Data(
+                UpdateUserPasswordMutation.UpdateUserAccount(
+                    "",
+                    UpdateUserPasswordMutation.User("", "some@email.com", true, true)
+                )
+            )
+        )
+    }
+    override fun updateUserEmail(
+        email: String,
+        currentPassword: String
+    ): io.reactivex.Observable<UpdateUserEmailMutation.Data> {
+        return io.reactivex.Observable.just(
+            UpdateUserEmailMutation.Data(
+                UpdateUserEmailMutation.UpdateUserAccount(
+                    "",
+                    UpdateUserEmailMutation.User("", "Some Name", "some@email.com")
+                )
+            )
+        )
+    }
+
+    override fun sendVerificationEmail(): io.reactivex.Observable<SendEmailVerificationMutation.Data> {
+        return io.reactivex.Observable.just(
+            SendEmailVerificationMutation.Data(
+                SendEmailVerificationMutation.UserSendEmailVerification(
+                    "",
+                    "12345"
+                )
+            )
+        )
+    }
+
     override fun getProject(project: Project): io.reactivex.Observable<Project> {
         return io.reactivex.Observable.just(ProjectFactory.backedProject())
     }
@@ -284,17 +323,6 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(1L)
     }
 
-    override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
-        return Observable.just(
-            SendEmailVerificationMutation.Data(
-                SendEmailVerificationMutation.UserSendEmailVerification(
-                    "",
-                    "12345"
-                )
-            )
-        )
-    }
-
     override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
         return Observable.just(CheckoutFactory.requiresAction(false))
     }
@@ -316,17 +344,6 @@ open class MockApolloClient : ApolloClientType {
                 UpdateUserPasswordMutation.UpdateUserAccount(
                     "",
                     UpdateUserPasswordMutation.User("", "some@email.com", true, true)
-                )
-            )
-        )
-    }
-
-    override fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data> {
-        return Observable.just(
-            UpdateUserEmailMutation.Data(
-                UpdateUserEmailMutation.UpdateUserAccount(
-                    "",
-                    UpdateUserEmailMutation.User("", "Some Name", "some@email.com")
                 )
             )
         )

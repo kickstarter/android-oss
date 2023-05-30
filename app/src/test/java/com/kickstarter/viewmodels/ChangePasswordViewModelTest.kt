@@ -8,17 +8,19 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockTrackingClient
 import com.kickstarter.libs.TrackingClientType
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.UserFactory
-import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.User
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
 
 class ChangePasswordViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm: ChangePasswordViewModel.ViewModel
+    private lateinit var vm: ChangePasswordViewModel.ChangePasswordViewModel
 
     private val error = TestSubscriber<String>()
     private val passwordWarning = TestSubscriber<Int>()
@@ -27,20 +29,22 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
     private val success = TestSubscriber<String>()
     private val currentUser = TestSubscriber<User?>()
 
-    private fun setUpEnvironment(environment: Environment) {
-        this.vm = ChangePasswordViewModel.ViewModel(environment)
+    private val disposables = CompositeDisposable()
 
-        this.vm.outputs.error().subscribe(this.error)
-        this.vm.outputs.passwordWarning().subscribe(this.passwordWarning)
-        this.vm.outputs.progressBarIsVisible().subscribe(this.progressBarIsVisible)
-        this.vm.outputs.saveButtonIsEnabled().subscribe(this.saveButtonIsEnabled)
-        this.vm.outputs.success().subscribe(this.success)
+    private fun setUpEnvironment(environment: Environment) {
+        this.vm = ChangePasswordViewModel.ChangePasswordViewModel(environment)
+
+        this.vm.outputs.error().subscribe { this.error.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.passwordWarning().subscribe { this.passwordWarning.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.progressBarIsVisible().subscribe { this.progressBarIsVisible.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.saveButtonIsEnabled().subscribe { this.saveButtonIsEnabled.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.success().subscribe { this.success.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
     fun testError() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun updateUserPassword(currentPassword: String, newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data> {
                     return Observable.error(Exception("Oops"))
                 }
@@ -59,17 +63,17 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.vm.inputs.newPassword("password")
-        this.passwordWarning.assertValue(null)
+        this.passwordWarning.assertValue(0)
         this.vm.inputs.newPassword("p")
-        this.passwordWarning.assertValues(null, R.string.Password_min_length_message)
+        this.passwordWarning.assertValues(0, R.string.Password_min_length_message)
         this.vm.inputs.newPassword("password")
-        this.passwordWarning.assertValues(null, R.string.Password_min_length_message, null)
+        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0)
         this.vm.inputs.confirmPassword("p")
-        this.passwordWarning.assertValues(null, R.string.Password_min_length_message, null, R.string.Passwords_matching_message)
+        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0, R.string.Passwords_matching_message)
         this.vm.inputs.confirmPassword("passw")
-        this.passwordWarning.assertValues(null, R.string.Password_min_length_message, null, R.string.Passwords_matching_message)
+        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0, R.string.Passwords_matching_message)
         this.vm.inputs.confirmPassword("password")
-        this.passwordWarning.assertValues(null, R.string.Password_min_length_message, null, R.string.Passwords_matching_message, null)
+        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0, R.string.Passwords_matching_message, 0)
     }
 
     @Test
@@ -100,7 +104,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testSuccess() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun updateUserPassword(currentPassword: String, newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data> {
                     return Observable.just(
                         UpdateUserPasswordMutation.Data(
@@ -128,7 +132,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
         val trackingClient = getMockClientWithUser(user)
 
         // - Mock failed response from apollo
-        val apolloClient = object : MockApolloClient() {
+        val apolloClient = object : MockApolloClientV2() {
             override fun updateUserPassword(currentPassword: String, newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data> {
                 return Observable.error(Exception("Oops"))
             }
@@ -136,7 +140,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
 
         // - Create environment with mocked objects
         val environment = environment().toBuilder()
-            .apolloClient(apolloClient)
+            .apolloClientV2(apolloClient)
             .analytics(AnalyticEvents(listOf(trackingClient)))
             .build()
 
@@ -158,7 +162,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
         val trackingClient = getMockClientWithUser(user)
 
         // - Mock success response from apollo
-        val apolloClient = object : MockApolloClient() {
+        val apolloClient = object : MockApolloClientV2() {
             override fun updateUserPassword(currentPassword: String, newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data> {
                 return Observable.just(
                     UpdateUserPasswordMutation.Data(
@@ -173,7 +177,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
 
         // - Create environment with mocked objects
         val environment = environment().toBuilder()
-            .apolloClient(apolloClient)
+            .apolloClientV2(apolloClient)
             .analytics(AnalyticEvents(listOf(trackingClient)))
             .build()
 
@@ -194,6 +198,6 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
         TrackingClientType.Type.SEGMENT,
         MockFeatureFlagClient()
     ).apply {
-        this.identifiedUser.subscribe(currentUser)
+        this.identifiedUser.subscribe { currentUser.onNext(it) }
     }
 }

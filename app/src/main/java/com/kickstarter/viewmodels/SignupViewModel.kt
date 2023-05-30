@@ -118,7 +118,11 @@ interface SignupViewModel {
                 )
             }
 
+            // TODO: Note this existing skip logic was moved into the VM as part of MBL-827 migration
+            //  without attempting to address this potential newsletters bug:
+            //  https://kickstarter.atlassian.net/browse/MBL-847
             sendNewslettersClick
+                .skip(1)
                 .subscribe { sendNewslettersIsChecked.onNext(it) }
                 .addToDisposable(disposables)
 

@@ -142,7 +142,6 @@ class SignupViewModelTest : KSRobolectricTestCase() {
         val formSubmittingTest = TestSubscriber<Boolean>()
         vm.outputs.formSubmitting().subscribe { formSubmittingTest.onNext(it) }.addToDisposable(disposables)
 
-
         vm.inputs.name("brandon")
         vm.inputs.email("hello@kickstarter.com")
         vm.inputs.email("incorrect@kickstarter")

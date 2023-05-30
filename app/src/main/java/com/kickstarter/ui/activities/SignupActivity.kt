@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
-import com.jakewharton.rxbinding2.view.RxView
 import com.kickstarter.R
 import com.kickstarter.databinding.SignupLayoutBinding
 import com.kickstarter.libs.utils.SwitchCompatUtils
@@ -61,13 +60,9 @@ class SignupActivity : AppCompatActivity() {
             .subscribe { ViewUtils.showDialog(this, null, it) }
             .addToDisposable(disposables)
 
-        RxView.clicks(binding.signupFormView.newsletterSwitch)
-            .skip(1)
-            .subscribe {
-                viewModel
-                    .inputs
-                    .sendNewslettersClick(binding.signupFormView.newsletterSwitch.isChecked)
-            }.addToDisposable(disposables)
+        binding.signupFormView.newsletterSwitch.setOnClickListener {
+            newsLetterSwitchOnToggle()
+        }
 
         binding.signupFormView.disclaimer.setOnClickListener {
             disclaimerClick()
@@ -108,6 +103,12 @@ class SignupActivity : AppCompatActivity() {
 
     private fun onPasswordTextChange(password: CharSequence) {
         viewModel.inputs.password(password.toString())
+    }
+
+    private fun newsLetterSwitchOnToggle() {
+        viewModel
+            .inputs
+            .sendNewslettersClick(binding.signupFormView.newsletterSwitch.isChecked)
     }
 
     private fun signupButtonOnClick() {

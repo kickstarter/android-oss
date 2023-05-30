@@ -22,6 +22,7 @@ import com.kickstarter.mock.factories.ProjectDataFactory.project
 import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.RewardFactory.reward
 import com.kickstarter.mock.factories.ShippingRuleFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.factories.UserFactory.user
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.models.Project
@@ -432,6 +433,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
     }
     @Test
     fun testSendCAPIEvent_whenBackedPRoject_sendCAPIEvent_withFeatureFlag_on_isSuccessful() {
+        var user = UserFactory.user()
         var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
         Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false))
             .thenReturn(true)
@@ -445,6 +447,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(
             environment().toBuilder()
+                .currentUser(MockCurrentUser(user))
                 .sharedPreferences(sharedPreferences)
                 .featureFlagClient(mockFeatureFlagClient)
                 .build()
@@ -481,7 +484,6 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testThanksViewModel_whenFeatureFlagOn_shouldEmitProjectPage() {
-        val user = MockCurrentUser()
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
                 override fun getBoolean(FlagKey: FlagKey): Boolean {
@@ -489,7 +491,6 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
                 }
             }
         val environment = environment().toBuilder()
-            .currentUser(user)
             .featureFlagClient(mockFeatureFlagClient)
             .build()
 

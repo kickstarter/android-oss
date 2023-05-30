@@ -59,6 +59,20 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.just(project.toBuilder().isStarred(false).build())
     }
 
+    override fun updateUserPassword(
+        currentPassword: String,
+        newPassword: String,
+        confirmPassword: String
+    ): io.reactivex.Observable<UpdateUserPasswordMutation.Data> {
+        return io.reactivex.Observable.just(
+            UpdateUserPasswordMutation.Data(
+                UpdateUserPasswordMutation.UpdateUserAccount(
+                    "",
+                    UpdateUserPasswordMutation.User("", "some@email.com", true, true)
+                )
+            )
+        )
+    }
     override fun updateUserEmail(
         email: String,
         currentPassword: String

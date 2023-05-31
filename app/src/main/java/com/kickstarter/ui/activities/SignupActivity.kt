@@ -28,7 +28,6 @@ class SignupActivity : AppCompatActivity() {
 
         this.getEnvironment()?.let { env ->
             viewModelFactory = SignupViewModel.Factory(env)
-            env
         }
         binding = SignupLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)

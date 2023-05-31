@@ -277,7 +277,7 @@ interface ThanksViewModel {
                     )
                 }
 
-            val cAPIPurchaseValueAndCurrency = checkoutAndPledgeData.map {
+            val cAPIPurchaseValueAndCurraency = checkoutAndPledgeData.map {
                 Pair(
                     it.first.amount().toString(),
                     it.second.projectData().project().currency()
@@ -288,9 +288,11 @@ interface ThanksViewModel {
                 .sendThirdPartyEvent(
                     project,
                     apolloClient,
-                    checkoutAndPledgeData,
                     currentUser,
                     ThirdPartyEventName.PURCHASE,
+                    null,
+                    null,
+                    checkoutAndPledgeData,
                 )
                 .compose(Transformers.neverError())
                 .compose(bindToLifecycle())

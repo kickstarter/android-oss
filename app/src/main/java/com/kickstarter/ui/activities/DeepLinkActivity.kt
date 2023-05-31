@@ -79,13 +79,15 @@ class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                startPreLaunchProjectActivity(it)
+                startPreLaunchProjectActivity(it, "DEEPLINK")
             }
     }
 
     private fun projectIntent(uri: Uri): Intent {
         val projectIntent = Intent().getProjectIntent(this)
             .setData(uri)
+            .putExtra("LAUNCHING_SCREEN", "DEEPLINK")
+
         val ref = refTag(uri.toString())
         if (ref != null) {
             projectIntent.putExtra(IntentKey.REF_TAG, RefTag.from(ref))
@@ -107,6 +109,7 @@ class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
         val projectIntent = Intent().getProjectIntent(this)
             .setData(uri)
             .putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_SAVE, true)
+            .putExtra("LAUNCHING_SCREEN", "DEEPLINK")
 
         saveFlag(uri.toString())?.let {
             projectIntent.putExtra(IntentKey.SAVE_FLAG_VALUE, it)
@@ -146,6 +149,7 @@ class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
     private fun startProjectActivityForUpdate(uri: Uri) {
         val projectIntent = projectIntent(uri)
             .putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_UPDATE, uri.lastPathSegment)
+
         startActivity(projectIntent)
         finish()
     }

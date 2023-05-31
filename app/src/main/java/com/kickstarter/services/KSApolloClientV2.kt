@@ -13,6 +13,7 @@ import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import type.FlaggingKind
+import type.TriggerThirdPartyEventInput
 
 interface ApolloClientTypeV2 {
     fun getProject(project: Project): Observable<Project>
@@ -25,6 +26,7 @@ interface ApolloClientTypeV2 {
     fun userPrivacy(): Observable<UserPrivacyQuery.Data>
     fun watchProject(project: Project): Observable<Project>
     fun unWatchProject(project: Project): Observable<Project>
+    fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<TriggerThirdPartyEventMutation.Data>
     fun updateUserPassword(currentPassword: String = "", newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data>
     fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data>
     fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data>
@@ -300,6 +302,25 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                                 response.data?.watchProject()?.project()?.fragments()?.fullProject()
                             )
                         )
+                        ps.onComplete()
+                    }
+                })
+            return@defer ps
+        }
+    }
+    override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<TriggerThirdPartyEventMutation.Data> {
+        return Observable.defer {
+            val ps = PublishSubject.create<TriggerThirdPartyEventMutation.Data>()
+            service.mutate(TriggerThirdPartyEventMutation.builder().triggerThirdPartyEventInput(triggerThirdPartyEventInput).build())
+                .enqueue(object : ApolloCall.Callback<TriggerThirdPartyEventMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<TriggerThirdPartyEventMutation.Data>) {
+                        response.data?.let {
+                            ps.onNext(it)
+                        }
                         ps.onComplete()
                     }
                 })

@@ -85,6 +85,7 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.Delegate {
     private fun startPreLaunchProjectActivity(project: Project, refTag: RefTag) {
         val intent = Intent().getPreLaunchProjectActivity(this, project.slug())
             .putExtra(IntentKey.REF_TAG, refTag)
+            .putExtra("LAUNCHING_SCREEN", "SEARCH")
         startActivity(intent)
         TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
     }
@@ -92,6 +93,7 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.Delegate {
         val intent = Intent().getProjectIntent(this)
             .putExtra(IntentKey.PROJECT, projectAndRefTagAndIsFfEnabled.first)
             .putExtra(IntentKey.REF_TAG, projectAndRefTagAndIsFfEnabled.second)
+            .putExtra("LAUNCHING_SCREEN", "SEARCH")
         startActivity(intent)
         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }

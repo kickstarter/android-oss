@@ -44,7 +44,7 @@ class SearchToolbar @JvmOverloads constructor(
         addSubscription(
             text
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { (context as SearchActivity).viewModel().inputs.search(it.toString()) }
+                .subscribe { (context as SearchActivity).viewModel.inputs.search(it.toString()) }
         )
     }
 

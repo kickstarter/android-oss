@@ -34,6 +34,7 @@ android.applicationVariants.all { variant ->
                          '**/KSApplication.*',
                          '**/libs/utils/ApplicationLifecycleUtil.*',
                          '**/libs/utils/ApplicationUtils.*',
+                         '**/libs/recyclerviewpagination/*.*',
                          '**/ApplicationModule.*',
                          '**/*Activity*.*',
                          '**/*Fragment*.*',

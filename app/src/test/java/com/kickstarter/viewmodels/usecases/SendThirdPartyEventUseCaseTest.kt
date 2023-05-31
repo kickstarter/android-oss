@@ -8,7 +8,7 @@ import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.utils.ThirdPartyEventName
+import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.toHashedSHAEmail
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.CheckoutDataFactory
@@ -85,8 +85,8 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
             null
         )
 
-        subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(mockFeatureFlagClientType), Observable.just(Pair(checkoutData, pledgeData)), ThirdPartyEventName.PURCHASE)
-        assertNull(ThirdPartyEventName.PURCHASE.value, sendThirdPartyEventObservable.value)
+        subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(mockFeatureFlagClientType), ThirdPartyEventValues.EventName.PURCHASE, null, Observable.just(null),  Observable.just(Pair(checkoutData, pledgeData)))
+        assertNull(ThirdPartyEventValues.EventName.PURCHASE.value, sendThirdPartyEventObservable.value)
     }
 
     @Test
@@ -113,8 +113,8 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
             null
         )
 
-        subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(), Observable.just(Pair(checkoutData, pledgeData)), ThirdPartyEventName.PURCHASE)
-        assertNull(ThirdPartyEventName.PURCHASE.value, sendThirdPartyEventObservable.value)
+        subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(), ThirdPartyEventValues.EventName.PURCHASE, null, Observable.just(null), Observable.just(Pair(checkoutData, pledgeData)))
+        assertNull(ThirdPartyEventValues.EventName.PURCHASE.value, sendThirdPartyEventObservable.value)
     }
 
     @Test
@@ -141,8 +141,8 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
             null
         )
 
-        subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(), Observable.just(Pair(checkoutData, pledgeData)), ThirdPartyEventName.PURCHASE)
-        assertNull(ThirdPartyEventName.PURCHASE.value, sendThirdPartyEventObservable.value)
+        subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(), ThirdPartyEventValues.EventName.PURCHASE, null, Observable.just(null), Observable.just(Pair(checkoutData, pledgeData)))
+        assertNull(ThirdPartyEventValues.EventName.PURCHASE.value, sendThirdPartyEventObservable.value)
     }
 
     @Test
@@ -255,9 +255,9 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
             addons,
             null
         )
-        subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(), Observable.just(Pair(checkoutData, pledgeData)), ThirdPartyEventName.PURCHASE)
+        subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(), ThirdPartyEventValues.EventName.PURCHASE, null, Observable.just(null), Observable.just(Pair(checkoutData, pledgeData)))
 
-        assertEquals(ThirdPartyEventName.PURCHASE.value, sendThirdPartyEventObservable.value?.second?.eventName())
+        assertEquals(ThirdPartyEventValues.EventName.PURCHASE.value, sendThirdPartyEventObservable.value?.second?.eventName())
         assertEquals(encodeRelayId(project), sendThirdPartyEventObservable.value?.second?.projectId())
         assertNull(sendThirdPartyEventObservable.value?.second?.firebasePreviousScreen())
         assertNull(sendThirdPartyEventObservable.value?.second?.firebaseScreen())
@@ -267,6 +267,25 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
         assertEquals(20.0, sendThirdPartyEventObservable.value?.second?.shipping())
         assertEquals("3", sendThirdPartyEventObservable.value?.second?.transactionId())
         assertEquals("7272", sendThirdPartyEventObservable.value?.second?.userId())
+    }
+
+    @Test
+    fun testSendThirdPartyScreenViewEvent() {
+        Mockito.`when`(
+            mockSharedPreferences
+                .getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)
+        )
+            .thenReturn(true)
+
+        val project = ProjectFactory.project().toBuilder().sendThirdPartyEvents(true).build()
+
+        subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(), ThirdPartyEventValues.EventName.SCREEN_VIEW, ThirdPartyEventValues.ScreenNamesValue.PROJECT, Observable.just(ThirdPartyEventValues.ScreenNamesValue.DISCOVERY.value))
+
+        assertEquals(ThirdPartyEventValues.EventName.SCREEN_VIEW.value, sendThirdPartyEventObservable.value?.second?.eventName())
+        assertEquals(encodeRelayId(project), sendThirdPartyEventObservable.value?.second?.projectId())
+        assertEquals("7272", sendThirdPartyEventObservable.value?.second?.userId())
+        assertEquals(ThirdPartyEventValues.ScreenNamesValue.PROJECT.value, sendThirdPartyEventObservable.value?.second?.firebaseScreen())
+        assertEquals(ThirdPartyEventValues.ScreenNamesValue.DISCOVERY.value, sendThirdPartyEventObservable.value?.second?.firebasePreviousScreen())
     }
 
     private fun subscribeToEvent(
@@ -292,10 +311,10 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
     private fun subscribeToThirdPartyEvent(
         project: Observable<Project>,
         environment: Environment,
+        eventName: ThirdPartyEventValues.EventName,
+        firebaseScreen: ThirdPartyEventValues.ScreenNamesValue? = null,
+        firebasePreviousScreen: Observable<String?> = Observable.just(null),
         checkoutAndPledgeData: Observable<Pair<CheckoutData, PledgeData>?> = Observable.just(Pair(null, null)),
-        eventName: ThirdPartyEventName,
-        firebaseScreen: String? = null,
-        firebasePreviousScreen: Observable<String?>? = null,
     ) {
         SendThirdPartyEventUseCase(
             requireNotNull(environment.sharedPreferences()),

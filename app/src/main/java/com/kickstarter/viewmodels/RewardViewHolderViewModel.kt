@@ -15,7 +15,9 @@ import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardViewUtils
-import com.kickstarter.libs.utils.ThirdPartyEventName
+import com.kickstarter.libs.utils.ThirdPartyEventValues
+import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCase
+
 import com.kickstarter.libs.utils.extensions.isBacked
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.Project
@@ -26,7 +28,6 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.RewardViewHolder
-import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCase
 import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -348,7 +349,7 @@ interface RewardViewHolderViewModel {
                 }
 
             SendThirdPartyEventUseCase(sharedPreferences, ffClient)
-                .sendThirdPartyEvent(currentProject, apolloClient, currentUser, ThirdPartyEventName.SCREEN_VIEW, "Rewards", Observable.just("Project"))
+                .sendThirdPartyEvent(currentProject, apolloClient, currentUser, ThirdPartyEventValues.EventName.SCREEN_VIEW, ThirdPartyEventValues.ScreenNamesValue.REWARDS, Observable.just(ThirdPartyEventValues.ScreenNamesValue.PROJECT.value))
                 .compose(Transformers.neverError())
                 .compose(bindToLifecycle())
                 .subscribe {

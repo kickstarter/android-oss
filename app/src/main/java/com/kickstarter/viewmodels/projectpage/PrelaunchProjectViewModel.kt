@@ -11,7 +11,7 @@ import com.kickstarter.libs.rx.transformers.TakeWhenTransformerV2
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.ThirdPartyEventName
+import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.updateProjectWith
@@ -228,13 +228,19 @@ interface PrelaunchProjectViewModel {
                     this.showSavedPrompt.onNext(Unit)
                 }.addToDisposable(disposables)
 
+            val previousScreen =
+                this.intent
+                    .filter { it.hasExtra("LAUNCHING_SCREEN") }
+                    .map { it.getStringExtra("LAUNCHING_SCREEN") }
+
             SendThirdPartyEventUseCase(sharedPreferences, ffClient)
                 .sendThirdPartyEventV2(
                     currentProject,
                     apolloClient,
                     currentUser,
-                    ThirdPartyEventName.SCREEN_VIEW,
-                    "Prelaunch",
+                    ThirdPartyEventValues.EventName.SCREEN_VIEW,
+                    ThirdPartyEventValues.ScreenNamesValue.PRELAUNCH,
+                    previousScreen,
                 )
                 .subscribe {
                     onThirdPartyEventSent.onNext(it.first.triggerThirdPartyEvent()?.success() ?: false)

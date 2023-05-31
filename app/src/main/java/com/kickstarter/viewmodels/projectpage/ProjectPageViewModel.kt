@@ -27,7 +27,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.RISKS
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
-import com.kickstarter.libs.utils.ThirdPartyEventName
+import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.ProjectMetadata
 import com.kickstarter.libs.utils.extensions.backedReward
@@ -529,7 +529,7 @@ interface ProjectPageViewModel {
 
 
             SendThirdPartyEventUseCase(sharedPreferences, ffClient)
-                .sendThirdPartyEvent(currentProject, apolloClient, currentUser, ThirdPartyEventName.SCREEN_VIEW, "Project", previousScreen)
+                .sendThirdPartyEvent(currentProject, apolloClient, currentUser, ThirdPartyEventValues.EventName.SCREEN_VIEW, ThirdPartyEventValues.ScreenNamesValue.PROJECT, previousScreen)
                 .compose(neverError())
                 .compose(bindToLifecycle())
                 .subscribe {

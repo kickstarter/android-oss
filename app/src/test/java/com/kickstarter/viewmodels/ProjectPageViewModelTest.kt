@@ -343,7 +343,8 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testUIOutputs_whenFetchProjectFromIntent_sendCAPIEvent_withFeatureFlag_on_isSuccessful() {
         val initialProject = ProjectFactory.initialProject()
-        val refreshedProject = ProjectFactory.project().toBuilder().sendMetaCapiEvents(true).build()
+        val refreshedProject =
+            ProjectFactory.project().toBuilder().sendThirdPartyEvents(true).build()
 
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
@@ -358,6 +359,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
             .toBuilder()
             .sharedPreferences(sharedPreferences)
+
             .featureFlagClient(mockFeatureFlagClient)
             .apolloClient(apiClientWithSuccessFetchingProject(refreshedProject))
             .build()
@@ -367,7 +369,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
-        assertEquals(true, this.vm.onCAPIEventSent.value)
+        assertEquals(true, this.vm.onThirdPartyEventSent.value)
     }
 
     @Test

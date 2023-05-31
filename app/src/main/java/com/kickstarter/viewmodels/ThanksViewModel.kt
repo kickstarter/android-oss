@@ -11,7 +11,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RefTagUtils
-import com.kickstarter.libs.utils.ThirdPartyEventName
+import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.combineProjectsAndParams
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.updateStartedProjectAndDiscoveryParamsList
@@ -286,13 +286,11 @@ interface ThanksViewModel {
 
             SendThirdPartyEventUseCase(sharedPreferences, ffClient)
                 .sendThirdPartyEvent(
-                    project,
-                    apolloClient,
-                    currentUser,
-                    ThirdPartyEventName.PURCHASE,
-                    null,
-                    null,
-                    checkoutAndPledgeData,
+                    project = project,
+                    apolloClient = apolloClient,
+                    currentUser = currentUser,
+                    eventName = ThirdPartyEventValues.EventName.PURCHASE,
+                    checkoutAndPledgeData = checkoutAndPledgeData,
                 )
                 .compose(Transformers.neverError())
                 .compose(bindToLifecycle())

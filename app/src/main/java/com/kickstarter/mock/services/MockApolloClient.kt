@@ -129,6 +129,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     override fun userPrivacy(): io.reactivex.Observable<UserPrivacyQuery.Data> {
         return io.reactivex.Observable.empty<UserPrivacyQuery.Data>()
     }
+
+    override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): io.reactivex.Observable<TriggerThirdPartyEventMutation.Data> {
+        return io.reactivex.Observable.empty<TriggerThirdPartyEventMutation.Data>()
+    }
 }
 
 open class MockApolloClient : ApolloClientType {

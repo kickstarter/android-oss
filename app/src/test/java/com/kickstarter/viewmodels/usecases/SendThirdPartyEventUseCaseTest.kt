@@ -295,7 +295,7 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
         checkoutAndPledgeData: Observable<Pair<CheckoutData, PledgeData>?> = Observable.just(Pair(null, null)),
         eventName: ThirdPartyEventName,
         firebaseScreen: String? = null,
-        firebasePreviousScreen: String? = null,
+        firebasePreviousScreen: Observable<String?>? = null,
     ) {
         SendThirdPartyEventUseCase(
             requireNotNull(environment.sharedPreferences()),

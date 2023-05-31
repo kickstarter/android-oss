@@ -65,15 +65,31 @@ class SearchViewModelTest : KSRobolectricTestCase() {
         vm.outputs.popularProjects().subscribe { popularProjects.onNext(it) }.addToDisposable(disposables)
         vm.outputs.startPreLaunchProjectActivity().subscribe { startPreLaunchProjectActivity.onNext(it) }.addToDisposable(disposables)
         vm.outputs.searchProjects().subscribe { searchProjects.onNext(it) }.addToDisposable(disposables)
-        vm.outputs.popularProjects().map { ps: List<Project?> -> ps.size > 0 }
+        vm.outputs.popularProjects().map { ps: List<Project> -> ps.isNotEmpty() }
             .subscribe { popularProjectsPresent.onNext(it) }.addToDisposable(disposables)
-        vm.outputs.searchProjects().map { ps: List<Project?> -> ps.size > 0 }
+        vm.outputs.searchProjects().map { ps: List<Project> -> ps.isNotEmpty() }
             .subscribe { searchProjectsPresent.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
     fun testPopularProjectsLoadImmediately() {
-        setUpEnvironment(environment())
+
+        val projects = listOf<Project>(
+            allTheWayProject(),
+            almostCompletedProject(),
+            backedProject(),
+        )
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
+            override fun fetchProjects(params: DiscoveryParams): Observable<DiscoverEnvelope> {
+                return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects))
+            }
+        }
+
+        val env = environment().toBuilder()
+            .apiClientV2(apiClient)
+            .build()
+
+        setUpEnvironment(env)
 
         popularProjectsPresent.assertValues(true)
         searchProjectsPresent.assertNoValues()
@@ -82,9 +98,23 @@ class SearchViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testSearchProjectsWhenEnterSearchTerm() {
         val scheduler = TestScheduler()
+
+        val projects = listOf<Project>(
+            allTheWayProject(),
+            almostCompletedProject(),
+            backedProject(),
+        )
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
+            override fun fetchProjects(params: DiscoveryParams): Observable<DiscoverEnvelope> {
+                return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects))
+            }
+        }
+
         val env = environment().toBuilder()
             .schedulerV2(scheduler)
+            .apiClientV2(apiClient)
             .build()
+
         setUpEnvironment(env)
 
         // Popular projects emit immediately.
@@ -128,8 +158,21 @@ class SearchViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testSearchPagination() {
         val scheduler = TestScheduler()
+
+        val projects = listOf<Project>(
+            allTheWayProject(),
+            almostCompletedProject(),
+            backedProject(),
+        )
+        val apiClient: MockApiClientV2 = object : MockApiClientV2() {
+            override fun fetchProjects(params: DiscoveryParams): Observable<DiscoverEnvelope> {
+                return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects))
+            }
+        }
+
         val env = environment().toBuilder()
             .schedulerV2(scheduler)
+            .apiClientV2(apiClient)
             .build()
 
         setUpEnvironment(env)

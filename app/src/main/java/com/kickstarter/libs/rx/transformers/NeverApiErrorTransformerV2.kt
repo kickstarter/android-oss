@@ -21,11 +21,16 @@ open class NeverApiErrorTransformerV2<T> : ObservableTransformer<T, T> {
     override fun apply(upstream: Observable<T>): ObservableSource<T> {
         return upstream
             .doOnError { e: Throwable? ->
-                val env = fromThrowable(e!!)
-                env?.let { errorAction?.accept(env) }
+                e?.let {
+                    val env = fromThrowable(it)
+                    env?.let { errorAction?.accept(env) }
+                }
             }
             .onErrorResumeNext { e: Throwable? ->
-                fromThrowable(e!!)?.let { Observable.error(e) } ?: Observable.empty()
+                e?.let {
+                    val env = fromThrowable(it)
+                    env?.let { Observable.empty() } ?: Observable.error(e)
+                }
             }
     }
 }

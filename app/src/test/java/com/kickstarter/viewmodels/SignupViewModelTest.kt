@@ -17,7 +17,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.After
 import org.junit.Test
-import java.util.*
 
 class SignupViewModelTest : KSRobolectricTestCase() {
 
@@ -125,7 +124,7 @@ class SignupViewModelTest : KSRobolectricTestCase() {
             ): Observable<AccessTokenEnvelope> {
                 return Observable.error(
                     ApiExceptionFactory.apiError(
-                        builder().httpCode(422).errorMessages(Collections.singletonList("Unprocessable Content")).build()
+                        builder().httpCode(422).errorMessages(listOf("Unprocessable Content")).build()
                     )
                 )
             }

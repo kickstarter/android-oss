@@ -53,7 +53,7 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.data.VideoModelElement
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
-import com.kickstarter.viewmodels.usecases.SendCAPIEventUseCase
+import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCase
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -518,7 +518,7 @@ interface ProjectPageViewModel {
                 projectOnDeepLinkChangeSave
             )
 
-            SendCAPIEventUseCase(sharedPreferences, ffClient)
+            SendThirdPartyEventUseCase(sharedPreferences, ffClient)
                 .sendCAPIEvent(currentProject, currentUser, apolloClient, ConversionsAPIEventName.VIEWED_CONTENT)
                 .compose(neverError())
                 .compose(bindToLifecycle())

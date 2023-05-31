@@ -78,7 +78,6 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.Delegate {
 
         this.viewModel.outputs.startPreLaunchProjectActivity()
             .observeOn(AndroidSchedulers.mainThread())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startPreLaunchProjectActivity(it.first, it.second) }
             .addToDisposable(disposables)
     }

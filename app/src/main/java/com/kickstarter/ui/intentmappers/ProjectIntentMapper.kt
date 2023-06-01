@@ -7,10 +7,12 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.query
 import com.kickstarter.models.Project
 import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope
 import com.kickstarter.ui.IntentKey
+import io.reactivex.Observer
 import rx.Observable
 import java.util.regex.Pattern
 
@@ -81,6 +83,30 @@ object ProjectIntentMapper {
                 .retry(3)
 
         val projectFromParceledParam = Observable.just(paramFromIntent(intent))
+            .filter { `object`: String? -> ObjectUtils.isNotNull(`object`) }
+            .flatMap { param: String? ->
+                param?.let { client.fetchProject(it) }
+            }
+            .retry(3)
+        return projectFromParceledProject
+            .mergeWith(projectFromParceledParam)
+    }
+
+    /**
+     * Returns an observable of projects retrieved from intent data. May hit the API if the intent only contains a project
+     * param rather than a parceled project.
+     */
+    fun project(intent: Intent, client: ApiClientTypeV2): io.reactivex.Observable<Project> {
+        val intentProject = projectFromIntent(intent)
+        val projectFromParceledProject =
+            if (intentProject == null) io.reactivex.Observable.empty() else io.reactivex.Observable.just(intentProject)
+                .flatMap { project: Project? ->
+                    project?.let { client.fetchProject(it) }
+                }
+                .startWith(intentProject)
+                .retry(3)
+
+        val projectFromParceledParam = io.reactivex.Observable.just(paramFromIntent(intent))
             .filter { `object`: String? -> ObjectUtils.isNotNull(`object`) }
             .flatMap { param: String? ->
                 param?.let { client.fetchProject(it) }

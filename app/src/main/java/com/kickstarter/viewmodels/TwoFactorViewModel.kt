@@ -171,7 +171,7 @@ interface TwoFactorViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
 
             val fbAccessToken = internalIntent
-                .map { it.getStringExtra(IntentKey.FACEBOOK_TOKEN) }
+                .map { it.getStringExtra(IntentKey.FACEBOOK_TOKEN) ?: "" }
 
             val isFacebookLogin = internalIntent
                 .map { it.getBooleanExtra(IntentKey.FACEBOOK_LOGIN, false) }

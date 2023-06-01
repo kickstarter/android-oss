@@ -207,7 +207,6 @@ interface TwoFactorViewModel {
                 .subscribe { formIsValid.onNext(it) }
                 .addToDisposable(disposables)
 
-
             this.code
                 .compose(Transformers.combineLatestPair(tfaData))
                 .compose(Transformers.takeWhenV2(loginClick))

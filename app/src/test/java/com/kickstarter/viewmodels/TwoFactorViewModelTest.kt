@@ -206,7 +206,7 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
         vm = TwoFactorViewModel.TwoFactorViewModel(environment(), intent)
 
         vm.outputs.showResendCodeConfirmation()
-            .subscribe { showResendCodeConfirmation .onNext(it) }
+            .subscribe { showResendCodeConfirmation.onNext(it) }
             .addToDisposable(disposables)
 
         vm.inputs.resendClick()

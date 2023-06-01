@@ -262,6 +262,11 @@ interface TwoFactorViewModel {
 
             analytics.trackTwoFactorAuthPageViewed()
         }
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
     }
 
     class Factory(private val environment: Environment) : ViewModelProvider.Factory {

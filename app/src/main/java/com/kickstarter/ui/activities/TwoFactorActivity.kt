@@ -63,6 +63,11 @@ class TwoFactorActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        disposables.clear()
+        super.onDestroy()
+    }g
+
     private fun errorMessages(): Observable<String> {
         return viewModel.outputs.tfaCodeMismatchError().map { getString(R.string.two_factor_error_message) }
             .mergeWith(viewModel.outputs.genericTfaError().map { getString(R.string.login_errors_unable_to_log_in) })

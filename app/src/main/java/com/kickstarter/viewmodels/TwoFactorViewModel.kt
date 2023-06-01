@@ -269,9 +269,9 @@ interface TwoFactorViewModel {
         }
     }
 
-    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
+    class Factory(private val environment: Environment, private val intent: Intent? = null) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return TwoFactorViewModel(environment) as T
+            return TwoFactorViewModel(environment, intent) as T
         }
     }
 }

@@ -23,7 +23,7 @@ class TwoFactorActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         this.getEnvironment()?.let { env ->
-            viewModelFactory = TwoFactorViewModel.Factory(env)
+            viewModelFactory = TwoFactorViewModel.Factory(env, intent)
         }
         binding = TwoFactorLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -66,7 +66,7 @@ class TwoFactorActivity : AppCompatActivity() {
     override fun onDestroy() {
         disposables.clear()
         super.onDestroy()
-    }g
+    }
 
     private fun errorMessages(): Observable<String> {
         return viewModel.outputs.tfaCodeMismatchError().map { getString(R.string.two_factor_error_message) }

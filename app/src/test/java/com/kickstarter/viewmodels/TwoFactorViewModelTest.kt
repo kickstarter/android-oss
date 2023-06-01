@@ -99,18 +99,14 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
         vm.outputs.formSubmitting()
             .subscribe { formSubmitting.onNext(it) }
             .addToDisposable(disposables)
-        environment.currentUserV2()?.observable()?.subscribe {
-            userTest.onNext(it.getValue())
-        }?.addToDisposable(disposables)
-
         vm.inputs.code("88888")
         vm.inputs.loginClick()
 
         formSubmitting.assertValues(true, false)
         tfaSuccess.assertValueCount(1)
-        userTest.assertValue {
-            it.email() == "gina@kickstarter.com"
-        }
+        environment.currentUserV2()?.observable()?.subscribe {
+            assertEquals("hello@kickstarter.com", it.getValue()?.email())
+        }?.addToDisposable(disposables)
 
         segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
@@ -158,18 +154,16 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
         vm.outputs.formSubmitting()
             .subscribe { formSubmitting.onNext(it) }
             .addToDisposable(disposables)
-        environment.currentUserV2()?.observable()?.subscribe {
-            userTest.onNext(it.getValue())
-        }?.addToDisposable(disposables)
 
         vm.inputs.code("88888")
         vm.inputs.loginClick()
 
         formSubmitting.assertValues(true, false)
         tfaSuccess.assertValueCount(1)
-        userTest.assertValue {
-            it.email() == "gina@kickstarter.com"
-        }
+        environment.currentUserV2()?.observable()?.subscribe {
+            assertEquals("hello@kickstarter.com", it.getValue()?.email())
+        }?.addToDisposable(disposables)
+
         segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 

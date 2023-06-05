@@ -277,13 +277,6 @@ interface ThanksViewModel {
                     )
                 }
 
-            val cAPIPurchaseValueAndCurraency = checkoutAndPledgeData.map {
-                Pair(
-                    it.first.amount().toString(),
-                    it.second.projectData().project().currency()
-                )
-            }
-
             SendThirdPartyEventUseCase(sharedPreferences, ffClient)
                 .sendThirdPartyEvent(
                     project = project,

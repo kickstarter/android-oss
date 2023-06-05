@@ -25,7 +25,6 @@ import type.CustomDataInput
 import type.ThirdPartyEventItemInput
 import type.TriggerCapiEventInput
 import type.TriggerThirdPartyEventInput
-import java.util.*
 
 class SendThirdPartyEventUseCase(
     sharedPreferences: SharedPreferences,
@@ -155,8 +154,8 @@ class SendThirdPartyEventUseCase(
     ): io.reactivex.Observable<Pair<TriggerThirdPartyEventMutation.Data, TriggerThirdPartyEventInput>> {
 
         return project
-//            .filter { it.sendThirdPartyEvents() }
-//            .filter { canSendEventFlag }
+            .filter { it.sendThirdPartyEvents() ?: false }
+            .filter { canSendEventFlag }
             .compose(Transformers.combineLatestPair(currentUser.observable()))
             .compose(Transformers.combineLatestPair(checkoutAndPledgeData))
             .compose(Transformers.combineLatestPair(firebasePreviousScreen))

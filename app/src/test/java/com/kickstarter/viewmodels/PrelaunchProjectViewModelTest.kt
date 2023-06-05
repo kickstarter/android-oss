@@ -334,7 +334,7 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
 
         val intent = Intent()
             .putExtra(IntentKey.PROJECT_PARAM, "skull-graphic-tee")
-            .putExtra(IntentKey.PREVIOUS_SCREEN, ThirdPartyEventValues.ScreenName.DEEPLINK)
+            .putExtra(IntentKey.PREVIOUS_SCREEN, ThirdPartyEventValues.ScreenName.DEEPLINK.value)
 
         vm.inputs.configureWith(intent = intent)
 

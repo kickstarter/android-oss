@@ -87,7 +87,7 @@ class SendThirdPartyEventUseCase(
         currentUser: CurrentUserType,
         eventName: ThirdPartyEventValues.EventName,
         firebaseScreen: ThirdPartyEventValues.ScreenName? = null,
-        firebasePreviousScreen: Observable<String?> = Observable.just(null),
+        firebasePreviousScreen: Observable<String?> = Observable.just(""),
         checkoutAndPledgeData: Observable<Pair<CheckoutData, PledgeData>?> = Observable.just(Pair(null, null)),
     ): Observable<Pair<TriggerThirdPartyEventMutation.Data, TriggerThirdPartyEventInput>> {
 

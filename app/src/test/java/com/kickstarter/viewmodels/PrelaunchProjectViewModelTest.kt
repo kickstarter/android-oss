@@ -31,11 +31,11 @@ import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.junit.After
 import org.junit.Test
+import org.mockito.Mockito
 import retrofit2.HttpException
 import rx.subjects.BehaviorSubject
-import java.util.concurrent.TimeUnit
-import org.mockito.Mockito
 import type.TriggerThirdPartyEventInput
+import java.util.concurrent.TimeUnit
 
 class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: PrelaunchProjectViewModel.PrelaunchProjectViewModel
@@ -96,13 +96,14 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
         }
 
         override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<TriggerThirdPartyEventMutation.Data> {
-                return Observable.just(
-                    TriggerThirdPartyEventMutation.Data(
-                        TriggerThirdPartyEventMutation.TriggerThirdPartyEvent(
-                            "", true)
+            return Observable.just(
+                TriggerThirdPartyEventMutation.Data(
+                    TriggerThirdPartyEventMutation.TriggerThirdPartyEvent(
+                        "", true
                     )
                 )
-            }
+            )
+        }
     }
 
     private val testScheduler = io.reactivex.schedulers.TestScheduler()

@@ -340,9 +340,6 @@ interface ProjectPageViewModel {
         val outputs: Outputs = this
 
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-        val onCAPIEventSent = BehaviorSubject.create<Boolean?>()
-
-        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
         val onThirdPartyEventSent = BehaviorSubject.create<Boolean?>()
 
         init {
@@ -525,7 +522,6 @@ interface ProjectPageViewModel {
             val previousScreen =
                 intent()
                     .map { it.getStringExtra(IntentKey.PREVIOUS_SCREEN) }
-
 
             SendThirdPartyEventUseCase(sharedPreferences, ffClient)
                 .sendThirdPartyEvent(

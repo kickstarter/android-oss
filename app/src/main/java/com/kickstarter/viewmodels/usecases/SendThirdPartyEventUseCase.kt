@@ -19,13 +19,13 @@ import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
-import java.util.*
 import rx.Observable
 import type.AppDataInput
 import type.CustomDataInput
 import type.ThirdPartyEventItemInput
 import type.TriggerCapiEventInput
 import type.TriggerThirdPartyEventInput
+import java.util.*
 
 class SendThirdPartyEventUseCase(
     sharedPreferences: SharedPreferences,
@@ -131,7 +131,7 @@ class SendThirdPartyEventUseCase(
                 }
 
                 firebaseScreen?.let { screen -> eventInput.firebaseScreen(screen.value) }
-                it.second?.let {previousScreenName ->
+                it.second?.let { previousScreenName ->
                     eventInput.firebasePreviousScreen(previousScreenName)
                 }
                 eventInput.build()
@@ -193,7 +193,7 @@ class SendThirdPartyEventUseCase(
                 }
 
                 firebaseScreen?.let { screen -> eventInput.firebaseScreen(screen.value) }
-                it.second.getValue()?.let {previousScreenName ->
+                it.second.getValue()?.let { previousScreenName ->
                     eventInput.firebasePreviousScreen(previousScreenName)
                 }
                 eventInput.build()

@@ -102,7 +102,7 @@ class RewardsFragmentViewModel {
                 .map { it.project() }
 
             this.isExpanded
-                .filter{it}
+                .filter { it }
                 .switchMap {
                     SendThirdPartyEventUseCase(sharedPreferences, ffClient)
                         .sendThirdPartyEvent(
@@ -112,7 +112,7 @@ class RewardsFragmentViewModel {
                             ThirdPartyEventValues.EventName.SCREEN_VIEW,
                             ThirdPartyEventValues.ScreenName.REWARDS,
                             Observable.just(ThirdPartyEventValues.ScreenName.PROJECT.value),
-                    )
+                        )
                 }
                 .compose(Transformers.neverError())
                 .compose(bindToLifecycle())

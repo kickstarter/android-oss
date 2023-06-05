@@ -14,7 +14,6 @@ import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardViewUtils
-
 import com.kickstarter.libs.utils.extensions.isBacked
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.models.Project
@@ -180,8 +179,6 @@ interface RewardViewHolderViewModel {
 
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
         val onCAPIEventSent = BehaviorSubject.create<Boolean?>()
-        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-        val onThirdPartyEventSent = BehaviorSubject.create<Boolean?>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this

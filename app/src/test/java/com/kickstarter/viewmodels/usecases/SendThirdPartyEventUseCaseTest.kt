@@ -85,7 +85,7 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
             null
         )
 
-        subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(mockFeatureFlagClientType), ThirdPartyEventValues.EventName.PURCHASE, null, Observable.just(null),  Observable.just(Pair(checkoutData, pledgeData)))
+        subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(mockFeatureFlagClientType), ThirdPartyEventValues.EventName.PURCHASE, null, Observable.just(null), Observable.just(Pair(checkoutData, pledgeData)))
         assertNull(ThirdPartyEventValues.EventName.PURCHASE.value, sendThirdPartyEventObservable.value)
     }
 

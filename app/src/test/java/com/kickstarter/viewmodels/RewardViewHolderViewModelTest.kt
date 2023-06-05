@@ -7,9 +7,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
-import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.EventName
-import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.ProjectDataFactory
@@ -723,38 +721,6 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         assertEquals(null, this.vm.onCAPIEventSent.value)
     }
 
-    @Test
-    fun testSendCAPIEvent_whenRewardClicked_sendCAPIEvent_withFeatureFlag_on_isSuccessful() {
-        val reward = RewardFactory.reward()
-
-        val liveProject = ProjectFactory.project().toBuilder().sendMetaCapiEvents(true).build()
-
-        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
-        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)).thenReturn(true)
-
-        val mockFeatureFlagClient: MockFeatureFlagClient =
-            object : MockFeatureFlagClient() {
-                override fun getBoolean(FlagKey: FlagKey): Boolean {
-                    return true
-                }
-            }
-
-        setUpEnvironment(
-            environment().toBuilder()
-                .sharedPreferences(sharedPreferences)
-                .featureFlagClient(mockFeatureFlagClient)
-                .build()
-        )
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(liveProject), reward)
-
-        // When a reward from a live project is clicked, start checkout.
-        this.vm.inputs.rewardClicked(2)
-        this.showPledgeFragment.assertValue(Pair.create(liveProject, reward))
-
-        this.segmentTrack.assertValues(EventName.CTA_CLICKED.eventName)
-        assertEquals(true, this.vm.onCAPIEventSent.value)
-    }
     @Test
     fun testSendCAPIEvent_whenRewardClicked_sendCAPIEvent_withConsentManagement_off_isNotCalled() {
         val reward = RewardFactory.reward()

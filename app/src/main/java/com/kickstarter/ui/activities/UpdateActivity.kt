@@ -135,6 +135,8 @@ class UpdateActivity : AppCompatActivity(), KSWebView.Delegate {
         binding.updateActivityToolbar.shareIconButton.setOnClickListener {
             viewModel.inputs.shareIconButtonClicked()
         }
+
+        viewModel.provideIntent(intent)
     }
 
     override fun onNewIntent(intent: Intent?) {

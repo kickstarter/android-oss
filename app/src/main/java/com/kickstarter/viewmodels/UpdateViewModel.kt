@@ -81,7 +81,7 @@ interface UpdateViewModel {
     class UpdateViewModel(environment: Environment) : ViewModel(), Inputs, Outputs {
 
         private val client = requireNotNull(environment.apiClientV2())
-        private val externalLinkActivated = PublishSubject.create<Request?>()
+        private val externalLinkActivated = PublishSubject.create<Unit>()
         private val goToCommentsRequest = PublishSubject.create<Request>()
         private val goToProjectRequest = PublishSubject.create<Request>()
         private val goToUpdateRequest = PublishSubject.create<Request>()
@@ -128,7 +128,7 @@ interface UpdateViewModel {
                 .addToDisposable(disposables)
 
             intent
-                .filter { it.hasExtra(IntentKey.COMMENT) && it.getStringExtra(IntentKey.COMMENT)?.isNotEmpty() ?: false }
+                .filter { it.hasExtra(IntentKey.COMMENT) && !it.getStringExtra(IntentKey.COMMENT).isNullOrEmpty() }
                 .map {
                     Pair(
                         requireNotNull(it.getStringExtra(IntentKey.COMMENT)),
@@ -154,8 +154,8 @@ interface UpdateViewModel {
                 }
 
             val deepLinkUpdate = intent
+                .filter { it.hasExtra(IntentKey.UPDATE_POST_ID) && !it.getStringExtra(IntentKey.UPDATE_POST_ID).isNullOrEmpty() }
                 .map { it.getStringExtra(IntentKey.UPDATE_POST_ID) }
-                .filter { ObjectUtils.isNotNull(it) }
                 .compose(Transformers.combineLatestPair(project))
                 .map {
                     Pair(requireNotNull(it.second.slug()), requireNotNull(it.first))
@@ -294,7 +294,7 @@ interface UpdateViewModel {
             return Pair.create(projectParam, updateParam)
         }
 
-        override fun externalLinkActivated() = externalLinkActivated.onNext(null)
+        override fun externalLinkActivated() = externalLinkActivated.onNext(Unit)
 
         override fun goToCommentsRequest(request: Request) = goToCommentsRequest.onNext(request)
 

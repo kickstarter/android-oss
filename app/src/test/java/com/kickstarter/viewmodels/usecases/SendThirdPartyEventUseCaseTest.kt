@@ -279,13 +279,13 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
 
         val project = ProjectFactory.project().toBuilder().sendThirdPartyEvents(true).build()
 
-        subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(), ThirdPartyEventValues.EventName.SCREEN_VIEW, ThirdPartyEventValues.ScreenNamesValue.PROJECT, Observable.just(ThirdPartyEventValues.ScreenNamesValue.DISCOVERY.value))
+        subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(), ThirdPartyEventValues.EventName.SCREEN_VIEW, ThirdPartyEventValues.ScreenName.PROJECT, Observable.just(ThirdPartyEventValues.ScreenName.DISCOVERY.value))
 
         assertEquals(ThirdPartyEventValues.EventName.SCREEN_VIEW.value, sendThirdPartyEventObservable.value?.second?.eventName())
         assertEquals(encodeRelayId(project), sendThirdPartyEventObservable.value?.second?.projectId())
         assertEquals("7272", sendThirdPartyEventObservable.value?.second?.userId())
-        assertEquals(ThirdPartyEventValues.ScreenNamesValue.PROJECT.value, sendThirdPartyEventObservable.value?.second?.firebaseScreen())
-        assertEquals(ThirdPartyEventValues.ScreenNamesValue.DISCOVERY.value, sendThirdPartyEventObservable.value?.second?.firebasePreviousScreen())
+        assertEquals(ThirdPartyEventValues.ScreenName.PROJECT.value, sendThirdPartyEventObservable.value?.second?.firebaseScreen())
+        assertEquals(ThirdPartyEventValues.ScreenName.DISCOVERY.value, sendThirdPartyEventObservable.value?.second?.firebasePreviousScreen())
     }
 
     private fun subscribeToEvent(
@@ -312,7 +312,7 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
         project: Observable<Project>,
         environment: Environment,
         eventName: ThirdPartyEventValues.EventName,
-        firebaseScreen: ThirdPartyEventValues.ScreenNamesValue? = null,
+        firebaseScreen: ThirdPartyEventValues.ScreenName? = null,
         firebasePreviousScreen: Observable<String?> = Observable.just(null),
         checkoutAndPledgeData: Observable<Pair<CheckoutData, PledgeData>?> = Observable.just(Pair(null, null)),
     ) {

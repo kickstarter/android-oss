@@ -337,11 +337,11 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.reloadProgressBarIsGone.assertValues(false, true)
         this.updateFragments.assertValue(ProjectDataFactory.project(refreshedProject))
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
-        assertEquals(null, this.vm.onCAPIEventSent.value)
+        assertEquals(null, this.vm.onThirdPartyEventSent.value)
     }
 
     @Test
-    fun testUIOutputs_whenFetchProjectFromIntent_sendCAPIEvent_withFeatureFlag_on_isSuccessful() {
+    fun testUIOutputs_whenFetchProjectFromIntent_sendThirdPartyEvent_withFeatureFlag_on_isSuccessful() {
         val initialProject = ProjectFactory.initialProject()
         val refreshedProject =
             ProjectFactory.project().toBuilder().sendThirdPartyEvents(true).build()
@@ -359,7 +359,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
             .toBuilder()
             .sharedPreferences(sharedPreferences)
-
+            .currentUser(MockCurrentUser(UserFactory.user()))
             .featureFlagClient(mockFeatureFlagClient)
             .apolloClient(apiClientWithSuccessFetchingProject(refreshedProject))
             .build()
@@ -373,9 +373,9 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testUIOutputs_whenFetchProjectFromIntent_sendCAPIEvent_withConsentManagement_off_isFailed() {
+    fun testUIOutputs_whenFetchProjectFromIntent_sendThirdPartyEvent_withConsentManagement_off_isFailed() {
         val initialProject = ProjectFactory.initialProject()
-        val refreshedProject = ProjectFactory.project().toBuilder().sendMetaCapiEvents(true).build()
+        val refreshedProject = ProjectFactory.project().toBuilder().sendThirdPartyEvents(true).build()
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
                 override fun getBoolean(FlagKey: FlagKey): Boolean {
@@ -390,6 +390,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .sharedPreferences(sharedPreferences)
             .featureFlagClient(mockFeatureFlagClient)
+            .currentUser(MockCurrentUser(UserFactory.user()))
             .apolloClient(apiClientWithSuccessFetchingProject(refreshedProject))
             .build()
 
@@ -398,13 +399,13 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
-        assertEquals(null, this.vm.onCAPIEventSent.value)
+        assertEquals(null, this.vm.onThirdPartyEventSent.value)
     }
 
     @Test
-    fun testUIOutputs_whenFetchProjectFromIntent_sendCAPIEvent_withProjectmNotHaveCapiData_isFailed() {
+    fun testUIOutputs_whenFetchProjectFromIntent_sendThirdPartyEvent_withProjectmNotHaveThirdPartyEnabled_isFailed() {
         val initialProject = ProjectFactory.initialProject()
-        val refreshedProject = ProjectFactory.project().toBuilder().sendMetaCapiEvents(false).build()
+        val refreshedProject = ProjectFactory.project().toBuilder().sendThirdPartyEvents(false).build()
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
                 override fun getBoolean(FlagKey: FlagKey): Boolean {
@@ -427,7 +428,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
-        assertEquals(null, this.vm.onCAPIEventSent.value)
+        assertEquals(null, this.vm.onThirdPartyEventSent.value)
     }
 
     @Test

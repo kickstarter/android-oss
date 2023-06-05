@@ -9,6 +9,7 @@ import com.kickstarter.libs.FirebaseHelper
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.toHashedSHAEmail
 import com.kickstarter.models.Project
@@ -18,7 +19,7 @@ import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
-import io.reactivex.disposables.CompositeDisposable
+import java.util.*
 import rx.Observable
 import type.AppDataInput
 import type.CustomDataInput
@@ -86,7 +87,7 @@ class SendThirdPartyEventUseCase(
         apolloClient: ApolloClientType,
         currentUser: CurrentUserType,
         eventName: ThirdPartyEventValues.EventName,
-        firebaseScreen: ThirdPartyEventValues.ScreenNamesValue? = null,
+        firebaseScreen: ThirdPartyEventValues.ScreenName? = null,
         firebasePreviousScreen: Observable<String?> = Observable.just(null),
         checkoutAndPledgeData: Observable<Pair<CheckoutData, PledgeData>?> = Observable.just(Pair(null, null)),
     ): Observable<Pair<TriggerThirdPartyEventMutation.Data, TriggerThirdPartyEventInput>> {
@@ -148,14 +149,14 @@ class SendThirdPartyEventUseCase(
         apolloClient: ApolloClientTypeV2,
         currentUser: CurrentUserTypeV2,
         eventName: ThirdPartyEventValues.EventName,
-        firebaseScreen: ThirdPartyEventValues.ScreenNamesValue? = null,
-        firebasePreviousScreen: io.reactivex.Observable<String?> = io.reactivex.Observable.just(null),
-        checkoutAndPledgeData: io.reactivex.Observable<Pair<CheckoutData, PledgeData>?> = io.reactivex.Observable.just(Pair(null, null)),
+        firebaseScreen: ThirdPartyEventValues.ScreenName? = null,
+        firebasePreviousScreen: io.reactivex.Observable<KsOptional<String>> = io.reactivex.Observable.just(KsOptional.empty()),
+        checkoutAndPledgeData: io.reactivex.Observable<KsOptional<Pair<CheckoutData, PledgeData>>> = io.reactivex.Observable.just(KsOptional.empty()),
     ): io.reactivex.Observable<Pair<TriggerThirdPartyEventMutation.Data, TriggerThirdPartyEventInput>> {
 
         return project
-            .filter { it.sendThirdPartyEvents() ?: false }
-            .filter { canSendEventFlag }
+//            .filter { it.sendThirdPartyEvents() }
+//            .filter { canSendEventFlag }
             .compose(Transformers.combineLatestPair(currentUser.observable()))
             .compose(Transformers.combineLatestPair(checkoutAndPledgeData))
             .compose(Transformers.combineLatestPair(firebasePreviousScreen))
@@ -166,7 +167,9 @@ class SendThirdPartyEventUseCase(
                     .deviceId(FirebaseHelper.identifier)
                     .projectId(encodeRelayId(it.first.first.first))
 
-                it.first.second?.second?.let { pledgeData ->
+                it.first.second.getValue()?.let { checkoutAndPledgeData ->
+                    val checkoutData = checkoutAndPledgeData.first
+                    val pledgeData = checkoutAndPledgeData.second
                     val rewardsAndAddons = mutableListOf(pledgeData.reward())
                     pledgeData.addOns()?.forEach { addon ->
                         rewardsAndAddons.add(addon)
@@ -181,9 +184,7 @@ class SendThirdPartyEventUseCase(
                                 .build()
                         }
                     )
-                }
 
-                it.first.second?.first?.let { checkoutData ->
                     eventInput.apply {
                         pledgeAmount(checkoutData.amount())
                         shipping(checkoutData.shippingAmount())
@@ -192,7 +193,7 @@ class SendThirdPartyEventUseCase(
                 }
 
                 firebaseScreen?.let { screen -> eventInput.firebaseScreen(screen.value) }
-                it.second?.let {previousScreenName ->
+                it.second.getValue()?.let {previousScreenName ->
                     eventInput.firebasePreviousScreen(previousScreenName)
                 }
                 eventInput.build()

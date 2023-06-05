@@ -524,12 +524,18 @@ interface ProjectPageViewModel {
 
             val previousScreen =
                 intent()
-                    .filter { it.hasExtra("LAUNCHING_SCREEN") }
-                    .map { it.getStringExtra("LAUNCHING_SCREEN") }
+                    .map { it.getStringExtra(IntentKey.PREVIOUS_SCREEN) }
 
 
             SendThirdPartyEventUseCase(sharedPreferences, ffClient)
-                .sendThirdPartyEvent(currentProject, apolloClient, currentUser, ThirdPartyEventValues.EventName.SCREEN_VIEW, ThirdPartyEventValues.ScreenNamesValue.PROJECT, previousScreen)
+                .sendThirdPartyEvent(
+                    currentProject,
+                    apolloClient,
+                    currentUser,
+                    ThirdPartyEventValues.EventName.SCREEN_VIEW,
+                    ThirdPartyEventValues.ScreenName.PROJECT,
+                    previousScreen
+                )
                 .compose(neverError())
                 .compose(bindToLifecycle())
                 .subscribe {

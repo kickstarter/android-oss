@@ -230,16 +230,15 @@ interface PrelaunchProjectViewModel {
 
             val previousScreen =
                 this.intent
-                    .filter { it.hasExtra("LAUNCHING_SCREEN") }
-                    .map { it.getStringExtra("LAUNCHING_SCREEN") }
+                    .map { KsOptional.of(it.getStringExtra(IntentKey.PREVIOUS_SCREEN) ?: "") }
 
             SendThirdPartyEventUseCase(sharedPreferences, ffClient)
                 .sendThirdPartyEventV2(
-                    currentProject,
+                    loadedProject,
                     apolloClient,
                     currentUser,
                     ThirdPartyEventValues.EventName.SCREEN_VIEW,
-                    ThirdPartyEventValues.ScreenNamesValue.PRELAUNCH,
+                    ThirdPartyEventValues.ScreenName.PRELAUNCH,
                     previousScreen,
                 )
                 .subscribe {

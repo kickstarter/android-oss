@@ -1,13 +1,18 @@
 package com.kickstarter.viewmodels
 
+import TriggerThirdPartyEventMutation
 import android.content.Intent
+import android.content.SharedPreferences
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockCurrentUserV2
+import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.reduceToPreLaunchProject
+import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
@@ -15,6 +20,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Urls
 import com.kickstarter.models.Web
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import com.kickstarter.viewmodels.projectpage.PrelaunchProjectViewModel
 import io.reactivex.Observable
@@ -28,6 +34,8 @@ import org.junit.Test
 import retrofit2.HttpException
 import rx.subjects.BehaviorSubject
 import java.util.concurrent.TimeUnit
+import org.mockito.Mockito
+import type.TriggerThirdPartyEventInput
 
 class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: PrelaunchProjectViewModel.PrelaunchProjectViewModel
@@ -59,6 +67,7 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
             .prelaunchProject("https://www.kickstarter.com/projects/1186238668/skull-graphic-tee")
             .toBuilder()
             .name("Best Project 2K19")
+            .sendThirdPartyEvents(true)
             .isStarred(false)
             .urls(Urls.builder().web(webUrls).build())
             .build()
@@ -85,6 +94,15 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
             return Observable
                 .just(project.toBuilder().isStarred(false).build())
         }
+
+        override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<TriggerThirdPartyEventMutation.Data> {
+                return Observable.just(
+                    TriggerThirdPartyEventMutation.Data(
+                        TriggerThirdPartyEventMutation.TriggerThirdPartyEvent(
+                            "", true)
+                    )
+                )
+            }
     }
 
     private val testScheduler = io.reactivex.schedulers.TestScheduler()
@@ -287,6 +305,39 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.creatorInfoButtonClicked()
 
         assertEquals(project.value, prelaunchProject)
+    }
+
+    @Test
+    fun testThirdPartyEventSent() {
+        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false))
+            .thenReturn(true)
+
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    return true
+                }
+            }
+
+        val currentUser = MockCurrentUser()
+        val currentUserV2 = MockCurrentUserV2()
+
+        val mockedEnv = testEnvironment.toBuilder().currentUser(currentUser)
+            .currentUserV2(currentUserV2)
+            .featureFlagClient(mockFeatureFlagClient)
+            .sharedPreferences(sharedPreferences)
+            .build()
+
+        setUpEnvironment(mockedEnv)
+
+        val intent = Intent()
+            .putExtra(IntentKey.PROJECT_PARAM, "skull-graphic-tee")
+            .putExtra(IntentKey.PREVIOUS_SCREEN, ThirdPartyEventValues.ScreenName.DEEPLINK)
+
+        vm.inputs.configureWith(intent = intent)
+
+        assertEquals(true, this.vm.onThirdPartyEventSent.value)
     }
 
     @After

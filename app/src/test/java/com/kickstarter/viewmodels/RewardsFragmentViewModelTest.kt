@@ -1,22 +1,29 @@
 package com.kickstarter.viewmodels
 
+import android.content.SharedPreferences
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.EventName
+import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import org.joda.time.DateTime
 import org.junit.Test
+import org.mockito.Mockito
 import rx.observers.TestSubscriber
 
 class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
@@ -48,6 +55,34 @@ class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.isExpanded(true)
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
+
+    @Test
+    fun init_whenViewModelInstantiated_shouldThirdPartyEvent() {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    return true
+                }
+            }
+
+        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)).thenReturn(true)
+
+        val environment = environment()
+            .toBuilder()
+            .featureFlagClient(mockFeatureFlagClient)
+            .sharedPreferences(sharedPreferences)
+            .currentUser(MockCurrentUser(UserFactory.user()))
+            .build()
+
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment)
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project))
+
+        this.vm.isExpanded(true)
+        assertTrue(this.vm.onThirdPartyEventSent.value)
     }
 
     @Test

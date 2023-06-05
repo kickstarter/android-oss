@@ -8,6 +8,7 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
+import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.UrlUtils.commentId
 import com.kickstarter.libs.utils.UrlUtils.refTag
 import com.kickstarter.libs.utils.UrlUtils.saveFlag
@@ -86,8 +87,7 @@ class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
     private fun projectIntent(uri: Uri): Intent {
         val projectIntent = Intent().getProjectIntent(this)
             .setData(uri)
-            .putExtra("LAUNCHING_SCREEN", "DEEPLINK")
-
+            .putExtra(IntentKey.PREVIOUS_SCREEN, ThirdPartyEventValues.ScreenName.DEEPLINK.value)
         val ref = refTag(uri.toString())
         if (ref != null) {
             projectIntent.putExtra(IntentKey.REF_TAG, RefTag.from(ref))
@@ -109,7 +109,7 @@ class DeepLinkActivity : BaseActivity<DeepLinkViewModel.ViewModel?>() {
         val projectIntent = Intent().getProjectIntent(this)
             .setData(uri)
             .putExtra(IntentKey.DEEP_LINK_SCREEN_PROJECT_SAVE, true)
-            .putExtra("LAUNCHING_SCREEN", "DEEPLINK")
+            .putExtra(IntentKey.PREVIOUS_SCREEN, ThirdPartyEventValues.ScreenName.DEEPLINK.value)
 
         saveFlag(uri.toString())?.let {
             projectIntent.putExtra(IntentKey.SAVE_FLAG_VALUE, it)

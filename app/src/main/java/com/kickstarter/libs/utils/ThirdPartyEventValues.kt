@@ -8,7 +8,7 @@ class ThirdPartyEventValues {
         VIEW_ITEM("view_item"),
     }
 
-    enum class ScreenNamesValue(val value: String) {
+    enum class ScreenName(val value: String) {
         PROJECT("project"),
         SEARCH("search"),
         PRELAUNCH("prelaunch"),

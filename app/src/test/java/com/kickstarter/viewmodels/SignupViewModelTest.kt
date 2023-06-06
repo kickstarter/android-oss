@@ -105,7 +105,7 @@ class SignupViewModelTest : KSRobolectricTestCase() {
 
         formSubmittingTest.assertValues(true, false)
         signupSuccessTest.assertValueCount(1)
-        environment().currentUserV2()?.observable()?.subscribe {
+        environment.currentUserV2()?.observable()?.subscribe {
             assertEquals("hello@kickstarter.com", it.getValue()?.email())
         }?.addToDisposable(disposables)
 

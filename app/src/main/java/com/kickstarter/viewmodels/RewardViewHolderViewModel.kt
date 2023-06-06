@@ -26,7 +26,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.RewardViewHolder
-import com.kickstarter.viewmodels.usecases.SendCAPIEventUseCase
+import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCase
 import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -345,7 +345,7 @@ interface RewardViewHolderViewModel {
                     it.first.project()
                 }
 
-            SendCAPIEventUseCase(sharedPreferences, ffClient)
+            SendThirdPartyEventUseCase(sharedPreferences, ffClient)
                 .sendCAPIEvent(currentProject, currentUser, apolloClient, ConversionsAPIEventName.INITIATED_CHECKOUT)
                 .compose(Transformers.neverError())
                 .compose(bindToLifecycle())

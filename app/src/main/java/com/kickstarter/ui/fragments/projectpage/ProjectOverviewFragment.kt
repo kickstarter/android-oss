@@ -16,6 +16,7 @@ import android.widget.LinearLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.isGone
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentProjectOverviewBinding
 import com.kickstarter.libs.BaseActivity
@@ -30,7 +31,6 @@ import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.SocialUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
-import com.kickstarter.libs.utils.extensions.setGone
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.ui.ArgumentsKey
@@ -107,13 +107,13 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                binding.loadingPlaceholderCreatorInfoLayout.creatorInfoLoadingContainer.setGone(!it)
+                binding.loadingPlaceholderCreatorInfoLayout.creatorInfoLoadingContainer.isGone = !it
             }
 
         viewModel.outputs.creatorDetailsIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { setCreatorDetailsVisibility(it) }
+            .subscribe { binding.creatorInfo.isGone = it }
 
         viewModel.outputs.creatorNameTextViewText()
             .compose(bindToLifecycle())
@@ -156,7 +156,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         viewModel.outputs.percentageFundedProgressBarIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe(binding.percentageFunded::setGone)
+            .subscribe { binding.percentageFunded.isGone = it }
 
         viewModel.outputs.pledgedTextViewText()
             .compose(bindToLifecycle())
@@ -171,7 +171,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         viewModel.outputs.projectDashboardContainerIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe(binding.projectCreatorDashboardHeader.projectDashboardContainer::setGone)
+            .subscribe { binding.projectCreatorDashboardHeader.projectDashboardContainer.isGone = it }
 
         viewModel.outputs.projectDisclaimerGoalNotReachedString()
             .compose(bindToLifecycle())
@@ -186,7 +186,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         viewModel.outputs.projectDisclaimerTextViewIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe(binding.projectCreatorInfoLayout.projectDisclaimerTextView::setGone)
+            .subscribe { binding.projectCreatorInfoLayout.projectDisclaimerTextView.isGone = it }
 
         viewModel.outputs.projectLaunchDate()
             .compose(bindToLifecycle())
@@ -196,7 +196,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         viewModel.outputs.projectLaunchDateIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe(binding.projectCreatorDashboardHeader.projectLaunchDate.setGone())
+            .subscribe { binding.projectCreatorDashboardHeader.projectLaunchDate.isGone = it }
 
         viewModel.outputs.projectNameTextViewText()
             .compose(bindToLifecycle())
@@ -218,7 +218,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         viewModel.outputs.projectSocialImageViewIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe(binding.projectSocialImage.setGone())
+            .subscribe { binding.projectSocialImage.isGone = it }
 
         viewModel.outputs.projectSocialImageViewUrl()
             .compose(bindToLifecycle())
@@ -235,7 +235,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         viewModel.outputs.projectSocialViewGroupIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe(binding.projectSocialView::setGone)
+            .subscribe { binding.projectSocialView.isGone = it }
 
         viewModel.outputs.projectStateViewGroupBackgroundColorInt()
             .compose(bindToLifecycle())
@@ -254,7 +254,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         viewModel.outputs.projectStateViewGroupIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe(binding.projectStateViewGroup::setGone)
+            .subscribe { binding.projectStateViewGroup.isGone = it }
 
         viewModel.outputs.setCanceledProjectStateView()
             .compose(bindToLifecycle())
@@ -304,7 +304,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         viewModel.outputs.conversionTextViewIsGone()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe(binding.usdConversionTextView.setGone())
+            .subscribe { binding.usdConversionTextView.isGone = it }
 
         viewModel.outputs.startCommentsView()
             .compose(bindToLifecycle())
@@ -352,14 +352,14 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                binding.projectCreatorInfoLayout.reportProject.setGone(!it)
+                binding.projectCreatorInfoLayout.reportProject.isGone = !it
             }
 
         viewModel.outputs.shouldShowProjectFlagged()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe {
-                binding.projectCreatorInfoLayout.projectFlagged.setGone(!it)
+                binding.projectCreatorInfoLayout.projectFlagged.isGone = !it
             }
 
         viewModel.outputs.openExternallyWithUrl()
@@ -417,10 +417,6 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
         }
     }
 
-    private fun setCreatorDetailsVisibility(visible: Boolean) {
-        binding.creatorInfo.setGone(visible)
-    }
-
     private fun setGoalTextView(goalString: String) {
         context?.let { currentContext ->
             val goalText = if (ViewUtils.isFontScaleLarge(currentContext))
@@ -459,7 +455,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
             binding.projectCreatorInfoLayout.projectDisclaimerTextView.text = ksString.format(
                 currentContext.getString(R.string.project_disclaimer_goal_reached),
                 "deadline",
-                DateTimeUtils.mediumDateShortTime(deadline)
+                DateTimeUtils.mediumDateShortTimeWithTimeZone(deadline)
             )
         }
     }
@@ -471,7 +467,7 @@ class ProjectOverviewFragment : BaseFragment<ProjectOverviewViewModel.ViewModel>
                 "goal_currency",
                 goalAndDeadline.first,
                 "deadline",
-                DateTimeUtils.mediumDateShortTime(goalAndDeadline.second)
+                DateTimeUtils.mediumDateShortTimeWithTimeZone(goalAndDeadline.second)
             )
         }
     }

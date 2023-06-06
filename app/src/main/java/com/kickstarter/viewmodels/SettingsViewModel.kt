@@ -1,14 +1,15 @@
 package com.kickstarter.viewmodels
 
-import androidx.annotation.NonNull
-import com.kickstarter.libs.ActivityViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.User
-import com.kickstarter.ui.activities.SettingsActivity
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 interface SettingsViewModel {
 
@@ -28,7 +29,7 @@ interface SettingsViewModel {
         fun avatarImageViewUrl(): Observable<String>
 
         /** Emits when its time to log the user out.  */
-        fun logout(): Observable<Void>
+        fun logout(): Observable<Unit>
 
         /** Emits a boolean that determines if the logout confirmation should be displayed.  */
         fun showConfirmLogoutPrompt(): Observable<Boolean>
@@ -37,12 +38,12 @@ interface SettingsViewModel {
         fun userNameTextViewText(): Observable<String>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<SettingsActivity>(environment), Inputs, Outputs {
+    class SettingsViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs {
 
-        private val client = requireNotNull(environment.apiClient())
-        private val confirmLogoutClicked = PublishSubject.create<Void>()
-        private val currentUser = requireNotNull(environment.currentUser())
-        private val logout = BehaviorSubject.create<Void>()
+        private val client = requireNotNull(environment.apiClientV2())
+        private val confirmLogoutClicked = PublishSubject.create<Unit>()
+        private val currentUser = requireNotNull(environment.currentUserV2())
+        private val logout = BehaviorSubject.create<Unit>()
         private val showConfirmLogoutPrompt = BehaviorSubject.create<Boolean>()
         private val userOutput = BehaviorSubject.create<User>()
 
@@ -53,43 +54,58 @@ interface SettingsViewModel {
         val outputs: Outputs = this
 
         private val analytics = this.environment.analytics()
+
+        private val disposables = CompositeDisposable()
+
         init {
 
             this.client.fetchCurrentUser()
                 .retry(2)
-                .compose(Transformers.neverError())
-                .compose(bindToLifecycle())
+                .compose(Transformers.neverErrorV2())
                 .subscribe { this.currentUser.refresh(it) }
+                .addToDisposable(disposables)
 
             this.currentUser.observable()
                 .take(1)
-                .compose(bindToLifecycle())
-                .subscribe({ this.userOutput.onNext(it) })
+                .subscribe { it.getValue()?.let { user -> this.userOutput.onNext(user) } }
+                .addToDisposable(disposables)
 
             this.confirmLogoutClicked
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.analytics?.reset()
-                    this.logout.onNext(null)
+                    this.logout.onNext(Unit)
                 }
+                .addToDisposable(disposables)
 
-            this.avatarImageViewUrl = this.currentUser.loggedInUser().map { u -> u.avatar().medium() }
+            this.avatarImageViewUrl =
+                this.currentUser.loggedInUser().map { u -> u.avatar().medium() }
 
-            this.userNameTextViewText = this.currentUser.loggedInUser().map({ it.name() })
+            this.userNameTextViewText = this.currentUser.loggedInUser().map { it.name() }
         }
 
         override fun avatarImageViewUrl() = this.avatarImageViewUrl
 
         override fun closeLogoutConfirmationClicked() = this.showConfirmLogoutPrompt.onNext(false)
 
-        override fun confirmLogoutClicked() = this.confirmLogoutClicked.onNext(null)
+        override fun confirmLogoutClicked() = this.confirmLogoutClicked.onNext(Unit)
 
         override fun logoutClicked() = this.showConfirmLogoutPrompt.onNext(true)
 
-        override fun logout(): Observable<Void> = this.logout
+        override fun logout(): Observable<Unit> = this.logout
 
         override fun showConfirmLogoutPrompt(): Observable<Boolean> = this.showConfirmLogoutPrompt
 
         override fun userNameTextViewText() = this.userNameTextViewText
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
+    }
+
+    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return SettingsViewModel(environment) as T
+        }
     }
 }

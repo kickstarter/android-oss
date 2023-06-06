@@ -78,6 +78,18 @@ public final class Transformers {
   /**
    * Prevents an observable from erroring on any {@link ApiException} exceptions,
    * and any errors that do occur will be piped into the supplied
+   * errors publish subject. `null` values will never be sent to
+   * the publish subject.
+   *
+   * Adapted to RxJava 2
+   */
+  public static <T> NeverApiErrorTransformerV2<T> pipeApiErrorsToV2(final @NonNull io.reactivex.subjects.PublishSubject<ErrorEnvelope> errorSubject) {
+    return new NeverApiErrorTransformerV2<>(errorSubject::onNext);
+  }
+
+  /**
+   * Prevents an observable from erroring on any {@link ApiException} exceptions,
+   * and any errors that do occur will be piped into the supplied
    * errors actions. `null` values will never be sent to the action.
    *
    * @deprecated Use {@link Observable#materialize()} instead.
@@ -210,5 +222,9 @@ public final class Transformers {
    */
   public static @NonNull <T> ObserveForUITransformer<T> observeForUI() {
     return new ObserveForUITransformer<>();
+  }
+
+  public static @NonNull <T> ObserveForUITransformerV2<T> observeForUIV2() {
+    return new ObserveForUITransformerV2<>();
   }
 }

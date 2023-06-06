@@ -1,46 +1,54 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import com.kickstarter.R
 import com.kickstarter.databinding.TwoFactorLayoutBinding
-import com.kickstarter.libs.BaseActivity
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.viewmodels.TwoFactorViewModel
-import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
-@RequiresActivityViewModel(TwoFactorViewModel.ViewModel::class)
-class TwoFactorActivity : BaseActivity<TwoFactorViewModel.ViewModel>() {
+class TwoFactorActivity : AppCompatActivity() {
     private lateinit var binding: TwoFactorLayoutBinding
+    private lateinit var viewModelFactory: TwoFactorViewModel.Factory
+    private val viewModel: TwoFactorViewModel.TwoFactorViewModel by viewModels { viewModelFactory }
+    private val disposables = CompositeDisposable()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        this.getEnvironment()?.let { env ->
+            viewModelFactory = TwoFactorViewModel.Factory(env, intent)
+        }
         binding = TwoFactorLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.loginToolbar.loginToolbar.setTitle(getString(R.string.two_factor_title))
 
         viewModel.outputs.tfaSuccess()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { onSuccess() }
+            .addToDisposable(disposables)
 
         viewModel.outputs.formSubmitting()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setFormDisabled(it) }
+            .addToDisposable(disposables)
 
         viewModel.outputs.formIsValid()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setFormEnabled(it) }
+            .addToDisposable(disposables)
 
         errorMessages()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { ViewUtils.showDialog(this, getString(R.string.login_errors_title), it) }
+            .addToDisposable(disposables)
 
         binding.twoFactorFormView.code.doOnTextChanged { text, _, _, _ ->
             text?.let { codeEditTextOnTextChanged(it) }
@@ -53,6 +61,11 @@ class TwoFactorActivity : BaseActivity<TwoFactorViewModel.ViewModel>() {
         binding.twoFactorFormView.resendButton.setOnClickListener {
             resendButtonOnClick()
         }
+    }
+
+    override fun onDestroy() {
+        disposables.clear()
+        super.onDestroy()
     }
 
     private fun errorMessages(): Observable<String> {
@@ -82,6 +95,4 @@ class TwoFactorActivity : BaseActivity<TwoFactorViewModel.ViewModel>() {
     }
 
     private fun setFormDisabled(disabled: Boolean) = setFormEnabled(!disabled)
-
-    override fun exitTransition() = TransitionUtils.slideInFromLeft()
 }

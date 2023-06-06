@@ -6,14 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentProjectCampaignBinding
-import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Configure
-import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
-import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.projectcampaign.HeaderElementAdapter
@@ -22,14 +24,20 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.startVideoActivity
 import com.kickstarter.ui.views.RecyclerViewScrollListener
 import com.kickstarter.viewmodels.projectpage.ProjectCampaignViewModel
-import rx.schedulers.Schedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
-@RequiresFragmentViewModel(ProjectCampaignViewModel.ViewModel::class)
 class ProjectCampaignFragment :
-    BaseFragment<ProjectCampaignViewModel.ViewModel>(),
+    Fragment(),
     Configure,
     ViewElementAdapter.FullScreenDelegate {
+
+    private lateinit var viewModelFactory: ProjectCampaignViewModel.Factory
+    private val viewModel: ProjectCampaignViewModel.ProjectCampaignViewModel by viewModels { viewModelFactory }
+
+    private var disposables = CompositeDisposable()
 
     private var binding: FragmentProjectCampaignBinding? = null
     private var viewElementAdapter: ViewElementAdapter? = null
@@ -44,13 +52,23 @@ class ProjectCampaignFragment :
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
+
+        this.context?.getEnvironment()?.let { env ->
+            viewModelFactory = ProjectCampaignViewModel.Factory(env)
+        }
+
         binding = FragmentProjectCampaignBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewElementAdapter = ViewElementAdapter(requireActivity(), this, this.lifecycle())
+
+        viewElementAdapter = ViewElementAdapter(requireActivity(), this)
+        viewElementAdapter.let {
+            lifecycle.addObserver(it as LifecycleObserver)
+        }
+
         val headerElementAdapter = HeaderElementAdapter()
 
         binding?.projectCampaignViewListItems?.itemAnimator = null
@@ -66,39 +84,35 @@ class ProjectCampaignFragment :
             .subscribeOn(Schedulers.io())
             .distinctUntilChanged()
             .delay(170, TimeUnit.MILLISECONDS)
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 viewElementAdapter?.submitList(it)
-            }
+            }.addToDisposable(disposables)
 
         this.viewModel.outputs.onScrollToVideoPosition()
             .subscribeOn(Schedulers.io())
             .distinctUntilChanged()
             .delay(300, TimeUnit.MILLISECONDS)
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding?.projectCampaignViewListItems?.smoothScrollToPosition(it + 1)
-            }
+            }.addToDisposable(disposables)
 
         this.viewModel.outputs.onOpenVideoInFullScreen()
             .subscribeOn(Schedulers.io())
             .distinctUntilChanged()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 requireActivity().startVideoActivity(startForResult, it.first, it.second)
-            }
+            }.addToDisposable(disposables)
 
         this.viewModel.outputs.updateVideoCloseSeekPosition()
             .subscribeOn(Schedulers.io())
             .distinctUntilChanged()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 viewElementAdapter?.setPlayerSeekPosition(it.first, it.second)
-            }
+            }.addToDisposable(disposables)
 
         val scrollListener = object : RecyclerViewScrollListener() {
             override fun onItemIsFirstVisibleItem(index: Int) {
@@ -128,6 +142,7 @@ class ProjectCampaignFragment :
 
     override fun onDestroyView() {
         binding?.projectCampaignViewListItems?.adapter = null
+        disposables.clear()
         super.onDestroyView()
     }
 

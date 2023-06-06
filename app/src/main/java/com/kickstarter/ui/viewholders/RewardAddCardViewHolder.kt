@@ -1,7 +1,7 @@
 package com.kickstarter.ui.viewholders
 
+import androidx.core.view.isGone
 import com.kickstarter.databinding.ItemAddCardBinding
-import com.kickstarter.libs.utils.extensions.setGone
 import rx.android.schedulers.AndroidSchedulers
 
 enum class State {
@@ -22,8 +22,8 @@ class RewardAddCardViewHolder(val binding: ItemAddCardBinding, val delegate: Del
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                this.binding.newPaymentPlusIcon.setGone(false)
-                this.binding.newPaymentProgress.setGone(true)
+                this.binding.newPaymentPlusIcon.isGone = false
+                this.binding.newPaymentProgress.isGone = true
             }
 
         this.viewModel.outputs
@@ -31,8 +31,8 @@ class RewardAddCardViewHolder(val binding: ItemAddCardBinding, val delegate: Del
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                this.binding.newPaymentProgress.setGone(false)
-                this.binding.newPaymentPlusIcon.setGone(true)
+                this.binding.newPaymentProgress.isGone = false
+                this.binding.newPaymentPlusIcon.isGone = true
             }
     }
 

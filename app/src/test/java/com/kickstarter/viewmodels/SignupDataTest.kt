@@ -1,7 +1,7 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.viewmodels.SignupViewModel.ViewModel.SignupData
+import com.kickstarter.viewmodels.SignupViewModel.SignupViewModel.SignupData
 import org.junit.Test
 
 class SignupDataTest : KSRobolectricTestCase() {

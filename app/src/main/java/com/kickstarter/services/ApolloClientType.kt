@@ -2,9 +2,7 @@ package com.kickstarter.services
 
 import CreatePasswordMutation
 import DeletePaymentSourceMutation
-import SendEmailVerificationMutation
 import UpdateUserCurrencyMutation
-import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPrivacyQuery
 import com.kickstarter.models.Backing
@@ -29,6 +27,7 @@ import com.kickstarter.services.mutations.UpdateBackingData
 import rx.Observable
 import type.CurrencyCode
 import type.TriggerCapiEventInput
+import type.TriggerThirdPartyEventInput
 
 interface ApolloClientType {
     fun cancelBacking(backing: Backing, note: String): Observable<Any>
@@ -90,19 +89,17 @@ interface ApolloClientType {
 
     fun sendMessage(project: Project, recipient: User, body: String): Observable<Long>
 
-    fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data>
-
     fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout>
 
     fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>
-
-    fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data>
 
     fun updateUserPassword(currentPassword: String = "", newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data>
 
     fun userPrivacy(): Observable<UserPrivacyQuery.Data>
 
     fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): Observable<TriggerCapiEventMutation.Data>
+
+    fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<TriggerThirdPartyEventMutation.Data>
 }
 
 private const val PAGE_SIZE = 25

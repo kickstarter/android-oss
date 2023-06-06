@@ -1,30 +1,37 @@
 package com.kickstarter.viewmodels
 
+import UserPrivacyQuery
 import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.utils.EventName
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ApiExceptionFactory
-import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.mock.services.MockApiClientV2
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.User
-import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope.Companion.builder
 import com.kickstarter.ui.IntentKey
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
-import rx.subjects.BehaviorSubject
 
 class TwoFactorViewModelTest : KSRobolectricTestCase() {
 
-    private lateinit var vm: TwoFactorViewModel.ViewModel
+    private lateinit var vm: TwoFactorViewModel.TwoFactorViewModel
 
     private val formIsValid = TestSubscriber<Boolean>()
     private val formSubmitting = TestSubscriber<Boolean>()
-    private val genericTfaError = TestSubscriber<Void>()
-    private val showResendCodeConfirmation = TestSubscriber<Void>()
-    private val tfaCodeMismatchError = TestSubscriber<Void>()
-    private val tfaSuccess = TestSubscriber<Void>()
+    private val genericTfaError = TestSubscriber<Unit>()
+    private val showResendCodeConfirmation = TestSubscriber<Unit>()
+    private val tfaCodeMismatchError = TestSubscriber<Unit>()
+    private val tfaSuccess = TestSubscriber<Unit>()
+    private val userTest = TestSubscriber<User>()
+    private val disposables = CompositeDisposable()
 
     @Test
     fun testTwoFactorViewModel_FormValidation() {
@@ -35,10 +42,9 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
         intent.putExtra(IntentKey.FACEBOOK_LOGIN, false)
         intent.putExtra(IntentKey.FACEBOOK_TOKEN, "")
 
-        vm = TwoFactorViewModel.ViewModel(environment())
-        vm.intent(intent)
+        vm = TwoFactorViewModel.TwoFactorViewModel(environment(), intent)
 
-        vm.outputs.formIsValid().subscribe(formIsValid)
+        vm.outputs.formIsValid().subscribe { formIsValid.onNext(it) }.addToDisposable(disposables)
         formIsValid.assertNoValues()
 
         vm.inputs.code("444444")
@@ -59,22 +65,48 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
         intent.putExtra(IntentKey.FACEBOOK_LOGIN, false)
         intent.putExtra(IntentKey.FACEBOOK_TOKEN, "")
 
-        val user = BehaviorSubject.create<User>()
-        environment().currentUser()?.loggedInUser()?.subscribe(user)
+        val user = UserFactory.user()
+        val token = AccessTokenEnvelope.builder()
+            .user(user)
+            .accessToken("token")
+            .build()
+        val apiClient = object : MockApiClientV2() {
+            override fun login(email: String, password: String, code: String): Observable<AccessTokenEnvelope> {
+                return Observable.just(token)
+            }
+        }
+        val apolloClient = object : MockApolloClientV2() {
+            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                return Observable.just(
+                    UserPrivacyQuery.Data(
+                        UserPrivacyQuery.Me(
+                            "", user.name(),
+                            "gina@kickstarter.com", true, true, true, true, "USD"
+                        )
+                    )
+                )
+            }
+        }
 
-        vm = TwoFactorViewModel.ViewModel(environment())
-        vm.intent(intent)
+        val environment = environment().toBuilder()
+            .apiClientV2(apiClient)
+            .apolloClientV2(apolloClient)
+            .build()
 
-        vm.outputs.tfaSuccess().subscribe(tfaSuccess)
-        vm.outputs.formSubmitting().subscribe(formSubmitting)
+        vm = TwoFactorViewModel.TwoFactorViewModel(environment, intent)
 
+        vm.outputs.tfaSuccess().subscribe { tfaSuccess.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.formSubmitting()
+            .subscribe { formSubmitting.onNext(it) }
+            .addToDisposable(disposables)
         vm.inputs.code("88888")
         vm.inputs.loginClick()
 
         formSubmitting.assertValues(true, false)
         tfaSuccess.assertValueCount(1)
-
-        assertEquals("some@email.com", user.value?.email())
+        environment.currentUserV2()?.observable()?.subscribe {
+            assertEquals("hello@kickstarter.com", it.getValue()?.email())
+        }?.addToDisposable(disposables)
 
         segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
@@ -88,17 +120,49 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
         intent.putExtra(IntentKey.FACEBOOK_LOGIN, true)
         intent.putExtra(IntentKey.FACEBOOK_TOKEN, "pajamas1234")
 
-        vm = TwoFactorViewModel.ViewModel(environment())
-        vm.intent(intent)
+        val user = UserFactory.user()
+        val token = AccessTokenEnvelope.builder()
+            .user(user)
+            .accessToken("token")
+            .build()
+        val apiClient = object : MockApiClientV2() {
+            override fun loginWithFacebook(fbAccessToken: String, code: String): Observable<AccessTokenEnvelope> {
+                return Observable.just(token)
+            }
+        }
+        val apolloClient = object : MockApolloClientV2() {
+            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                return Observable.just(
+                    UserPrivacyQuery.Data(
+                        UserPrivacyQuery.Me(
+                            "", user.name(),
+                            "gina@kickstarter.com", true, true, true, true, "USD"
+                        )
+                    )
+                )
+            }
+        }
 
-        vm.outputs.tfaSuccess().subscribe(tfaSuccess)
-        vm.outputs.formSubmitting().subscribe(formSubmitting)
+        val environment = environment().toBuilder()
+            .apiClientV2(apiClient)
+            .apolloClientV2(apolloClient)
+            .build()
+
+        vm = TwoFactorViewModel.TwoFactorViewModel(environment, intent)
+
+        vm.outputs.tfaSuccess().subscribe { tfaSuccess.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.formSubmitting()
+            .subscribe { formSubmitting.onNext(it) }
+            .addToDisposable(disposables)
 
         vm.inputs.code("88888")
         vm.inputs.loginClick()
 
         formSubmitting.assertValues(true, false)
         tfaSuccess.assertValueCount(1)
+        environment.currentUserV2()?.observable()?.subscribe {
+            assertEquals("hello@kickstarter.com", it.getValue()?.email())
+        }?.addToDisposable(disposables)
 
         segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
@@ -112,10 +176,11 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
         intent.putExtra(IntentKey.FACEBOOK_LOGIN, false)
         intent.putExtra(IntentKey.FACEBOOK_TOKEN, "")
 
-        vm = TwoFactorViewModel.ViewModel(environment())
-        vm.intent(intent)
+        vm = TwoFactorViewModel.TwoFactorViewModel(environment(), intent)
 
-        vm.outputs.showResendCodeConfirmation().subscribe(showResendCodeConfirmation)
+        vm.outputs.showResendCodeConfirmation()
+            .subscribe { showResendCodeConfirmation.onNext(it) }
+            .addToDisposable(disposables)
 
         vm.inputs.resendClick()
 
@@ -132,10 +197,11 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
         intent.putExtra(IntentKey.FACEBOOK_LOGIN, true)
         intent.putExtra(IntentKey.FACEBOOK_TOKEN, "pajamas1234")
 
-        vm = TwoFactorViewModel.ViewModel(environment())
-        vm.intent(intent)
+        vm = TwoFactorViewModel.TwoFactorViewModel(environment(), intent)
 
-        vm.outputs.showResendCodeConfirmation().subscribe(showResendCodeConfirmation)
+        vm.outputs.showResendCodeConfirmation()
+            .subscribe { showResendCodeConfirmation.onNext(it) }
+            .addToDisposable(disposables)
 
         vm.inputs.resendClick()
 
@@ -145,7 +211,7 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testTwoFactorViewModel_GenericError() {
-        val apiClient: ApiClientType = object : MockApiClient() {
+        val apiClient: ApiClientTypeV2 = object : MockApiClientV2() {
             override fun login(
                 email: String,
                 password: String,
@@ -153,13 +219,13 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
             ): Observable<AccessTokenEnvelope> {
                 return Observable.error(
                     ApiExceptionFactory.apiError(
-                        builder().httpCode(400).build()
+                        builder().httpCode(400).errorMessages(listOf("Generic Error")).build()
                     )
                 )
             }
         }
 
-        val environment = environment().toBuilder().apiClient(apiClient).build()
+        val environment = environment().toBuilder().apiClientV2(apiClient).build()
 
         val intent = Intent()
 
@@ -168,13 +234,15 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
         intent.putExtra(IntentKey.FACEBOOK_LOGIN, false)
         intent.putExtra(IntentKey.FACEBOOK_TOKEN, "")
 
-        vm = TwoFactorViewModel.ViewModel(environment)
+        vm = TwoFactorViewModel.TwoFactorViewModel(environment, intent)
 
-        vm.intent(intent)
-
-        vm.outputs.tfaSuccess().subscribe(tfaSuccess)
-        vm.outputs.formSubmitting().subscribe(formSubmitting)
-        vm.outputs.genericTfaError().subscribe(genericTfaError)
+        vm.outputs.tfaSuccess().subscribe { tfaSuccess.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.formSubmitting()
+            .subscribe { formSubmitting.onNext(it) }
+            .addToDisposable(disposables)
+        vm.outputs.genericTfaError()
+            .subscribe { genericTfaError.onNext(it) }
+            .addToDisposable(disposables)
 
         vm.inputs.code("88888")
         vm.inputs.loginClick()
@@ -187,7 +255,7 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testTwoFactorViewModel_CodeMismatchError() {
-        val apiClient: ApiClientType = object : MockApiClient() {
+        val apiClient: ApiClientTypeV2 = object : MockApiClientV2() {
             override fun login(
                 email: String,
                 password: String,
@@ -197,7 +265,7 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
             }
         }
 
-        val environment = environment().toBuilder().apiClient(apiClient).build()
+        val environment = environment().toBuilder().apiClientV2(apiClient).build()
         val intent = Intent()
 
         intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com")
@@ -205,13 +273,15 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
         intent.putExtra(IntentKey.FACEBOOK_LOGIN, false)
         intent.putExtra(IntentKey.FACEBOOK_TOKEN, "")
 
-        vm = TwoFactorViewModel.ViewModel(environment)
+        vm = TwoFactorViewModel.TwoFactorViewModel(environment, intent)
 
-        vm.intent(intent)
-
-        vm.outputs.tfaSuccess().subscribe(tfaSuccess)
-        vm.outputs.formSubmitting().subscribe(formSubmitting)
-        vm.outputs.tfaCodeMismatchError().subscribe(tfaCodeMismatchError)
+        vm.outputs.tfaSuccess().subscribe { tfaSuccess.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.formSubmitting()
+            .subscribe { formSubmitting.onNext(it) }
+            .addToDisposable(disposables)
+        vm.outputs.tfaCodeMismatchError()
+            .subscribe { tfaCodeMismatchError.onNext(it) }
+            .addToDisposable(disposables)
 
         vm.inputs.code("88888")
         vm.inputs.loginClick()
@@ -220,5 +290,10 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
         tfaSuccess.assertNoValues()
         tfaCodeMismatchError.assertValueCount(1)
         segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
+
+    @After
+    fun cleanUp() {
+        disposables.clear()
     }
 }

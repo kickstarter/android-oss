@@ -3,34 +3,46 @@ package com.kickstarter.ui.activities
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.kickstarter.BuildConfig
 import com.kickstarter.R
 import com.kickstarter.databinding.SettingsLayoutBinding
-import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.Logout
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.viewmodels.SettingsViewModel
 import com.squareup.picasso.Picasso
-import rx.android.schedulers.AndroidSchedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
-@RequiresActivityViewModel(SettingsViewModel.ViewModel::class)
-class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
+class SettingsActivity : AppCompatActivity() {
     private lateinit var build: Build
     private lateinit var ksString: KSString
     private lateinit var logout: Logout
     private var logoutConfirmationDialog: AlertDialog? = null
     private lateinit var binding: SettingsLayoutBinding
+    private lateinit var disposables: CompositeDisposable
+
+    private lateinit var viewModelFactory: SettingsViewModel.Factory
+    private val viewModel: SettingsViewModel.SettingsViewModel by viewModels {
+        viewModelFactory
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = SettingsLayoutBinding.inflate(layoutInflater)
+        this.getEnvironment()?.let { env ->
+            viewModelFactory = SettingsViewModel.Factory(env)
+        }
+        disposables = CompositeDisposable()
 
         setContentView(binding.root)
 
@@ -38,9 +50,9 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
             binding.editProfileRow.visibility = View.VISIBLE
         }
 
-        this.build = requireNotNull(environment().build())
-        this.ksString = requireNotNull(environment().ksString())
-        this.logout = requireNotNull(environment().logout())
+        this.build = requireNotNull(getEnvironment()?.build())
+        this.ksString = requireNotNull(getEnvironment()?.ksString())
+        this.logout = requireNotNull(getEnvironment()?.logout())
 
         binding.versionNameTextView.text = ksString.format(
             getString(R.string.profile_settings_version_number),
@@ -48,17 +60,19 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
         )
 
         this.viewModel.outputs.avatarImageViewUrl()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
-            .subscribe { url -> Picasso.get().load(url).transform(CircleTransformation()).into(binding.profilePictureImageView) }
+            .compose(Transformers.observeForUIV2())
+            .subscribe { url ->
+                Picasso.get().load(url).transform(CircleTransformation())
+                    .into(binding.profilePictureImageView)
+            }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.logout()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { logout() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.showConfirmLogoutPrompt()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { show ->
                 if (show) {
@@ -67,11 +81,12 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
                     lazyLogoutConfirmationDialog().dismiss()
                 }
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.userNameTextViewText()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .compose(Transformers.observeForUIV2())
             .subscribe { binding.nameTextView.text = it }
+            .addToDisposable(disposables)
 
         binding.accountRow.setOnClickListener {
             startActivity(Intent(this, AccountActivity::class.java))
@@ -119,5 +134,10 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
                 .create()
         }
         return this.logoutConfirmationDialog!!
+    }
+
+    override fun onDestroy() {
+        disposables.clear()
+        super.onDestroy()
     }
 }

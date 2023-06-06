@@ -1,31 +1,36 @@
 package com.kickstarter.viewmodels
 
+import UserPrivacyQuery
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.utils.EventName
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.ConfigFactory.config
-import com.kickstarter.mock.services.MockApiClient
-import com.kickstarter.models.User
-import com.kickstarter.services.ApiClientType
+import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.mock.services.MockApiClientV2
+import com.kickstarter.mock.services.MockApolloClientV2
+import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope.Companion.builder
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
-import rx.subjects.BehaviorSubject
 
 class SignupViewModelTest : KSRobolectricTestCase() {
 
+    private val disposables = CompositeDisposable()
     @Test
     fun testSignupViewModel_FormValidation() {
         val environment = environment()
 
-        environment.currentConfig()?.config(config())
+        environment.currentConfigV2()?.config(config())
 
-        val vm = SignupViewModel.ViewModel(environment)
+        val vm = SignupViewModel.SignupViewModel(environment)
         val formIsValidTest = TestSubscriber<Boolean>()
 
-        vm.outputs.formIsValid().subscribe(formIsValidTest)
+        vm.outputs.formIsValid().subscribe { formIsValidTest.onNext(it) }.addToDisposable(disposables)
 
         vm.inputs.name("brandon")
 
@@ -46,21 +51,50 @@ class SignupViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSignupViewModel_SuccessfulSignup() {
-        val environment = environment()
-        environment.currentConfig()?.config(config())
+        val apiClient: ApiClientTypeV2 = object : MockApiClientV2() {
+            override fun signup(
+                name: String,
+                email: String,
+                password: String,
+                passwordConfirmation: String,
+                sendNewsletters: Boolean
+            ): Observable<AccessTokenEnvelope> {
+                return Observable.just(
+                    AccessTokenEnvelope.builder()
+                        .accessToken("")
+                        .user(UserFactory.user())
+                        .build()
+                )
+            }
+        }
 
-        val vm = SignupViewModel.ViewModel(environment)
+        val apolloClient = object : MockApolloClientV2() {
+            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                return Observable.just(
+                    UserPrivacyQuery.Data(
+                        UserPrivacyQuery.Me(
+                            "", UserFactory.user().name(),
+                            "hello@kickstarter.com", true, true, true, true, "USD"
+                        )
+                    )
+                )
+            }
+        }
 
-        val user = BehaviorSubject.create<User>()
-        environment().currentUser()?.loggedInUser()?.subscribe(user)
+        val environment = environment().toBuilder()
+            .apiClientV2(apiClient)
+            .apolloClientV2(apolloClient)
+            .build()
 
-        val signupSuccessTest = TestSubscriber<Void>()
+        environment.currentConfigV2()?.config(config())
 
-        vm.outputs.signupSuccess().subscribe(signupSuccessTest)
+        val vm = SignupViewModel.SignupViewModel(environment)
+
+        val signupSuccessTest = TestSubscriber<Unit>()
+        vm.outputs.signupSuccess().subscribe { signupSuccessTest.onNext(it) }.addToDisposable(disposables)
 
         val formSubmittingTest = TestSubscriber<Boolean>()
-
-        vm.outputs.formSubmitting().subscribe(formSubmittingTest)
+        vm.outputs.formSubmitting().subscribe { formSubmittingTest.onNext(it) }.addToDisposable(disposables)
 
         vm.inputs.name("brandon")
         vm.inputs.email("hello@kickstarter.com")
@@ -71,14 +105,16 @@ class SignupViewModelTest : KSRobolectricTestCase() {
 
         formSubmittingTest.assertValues(true, false)
         signupSuccessTest.assertValueCount(1)
-        assertEquals("some@email.com", user.value?.email())
+        environment.currentUserV2()?.observable()?.subscribe {
+            assertEquals("hello@kickstarter.com", it.getValue()?.email())
+        }?.addToDisposable(disposables)
 
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test
     fun testSignupViewModel_ApiValidationError() {
-        val apiClient: ApiClientType = object : MockApiClient() {
+        val apiClient: ApiClientTypeV2 = object : MockApiClientV2() {
             override fun signup(
                 name: String,
                 email: String,
@@ -88,25 +124,22 @@ class SignupViewModelTest : KSRobolectricTestCase() {
             ): Observable<AccessTokenEnvelope> {
                 return Observable.error(
                     ApiExceptionFactory.apiError(
-                        builder().httpCode(422).build()
+                        builder().httpCode(422).errorMessages(listOf("Unprocessable Content")).build()
                     )
                 )
             }
         }
 
-        val environment = environment().toBuilder().apiClient(apiClient).build()
-        val vm = SignupViewModel.ViewModel(environment)
-        val signupSuccessTest = TestSubscriber<Void>()
-
-        vm.outputs.signupSuccess().subscribe(signupSuccessTest)
+        val environment = environment().toBuilder().apiClientV2(apiClient).build()
+        val vm = SignupViewModel.SignupViewModel(environment)
+        val signupSuccessTest = TestSubscriber<Unit>()
+        vm.outputs.signupSuccess().subscribe { signupSuccessTest.onNext(it) }.addToDisposable(disposables)
 
         val signupErrorTest = TestSubscriber<String>()
-
-        vm.outputs.errorString().subscribe(signupErrorTest)
+        vm.outputs.errorString().subscribe { signupErrorTest.onNext(it) }.addToDisposable(disposables)
 
         val formSubmittingTest = TestSubscriber<Boolean>()
-
-        vm.outputs.formSubmitting().subscribe(formSubmittingTest)
+        vm.outputs.formSubmitting().subscribe { formSubmittingTest.onNext(it) }.addToDisposable(disposables)
 
         vm.inputs.name("brandon")
         vm.inputs.email("hello@kickstarter.com")
@@ -124,7 +157,7 @@ class SignupViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSignupViewModel_ApiError() {
-        val apiClient: ApiClientType = object : MockApiClient() {
+        val apiClient: ApiClientTypeV2 = object : MockApiClientV2() {
             override fun signup(
                 name: String,
                 email: String,
@@ -136,18 +169,17 @@ class SignupViewModelTest : KSRobolectricTestCase() {
             }
         }
 
-        val environment = environment().toBuilder().apiClient(apiClient).build()
-        val vm = SignupViewModel.ViewModel(environment)
-        val signupSuccessTest = TestSubscriber<Void>()
+        val environment = environment().toBuilder().apiClientV2(apiClient).build()
+        val vm = SignupViewModel.SignupViewModel(environment)
+        val signupSuccessTest = TestSubscriber<Unit>()
 
-        vm.outputs.signupSuccess().subscribe(signupSuccessTest)
+        vm.outputs.signupSuccess().subscribe { signupSuccessTest.onNext(it) }.addToDisposable(disposables)
 
         val signupErrorTest = TestSubscriber<String>()
-        vm.outputs.errorString().subscribe(signupErrorTest)
+        vm.outputs.errorString().subscribe { signupErrorTest.onNext(it) }.addToDisposable(disposables)
 
         val formSubmittingTest = TestSubscriber<Boolean>()
-
-        vm.outputs.formSubmitting().subscribe(formSubmittingTest)
+        vm.outputs.formSubmitting().subscribe { formSubmittingTest.onNext(it) }.addToDisposable(disposables)
 
         vm.inputs.name("brandon")
         vm.inputs.email("hello@kickstarter.com")
@@ -161,5 +193,10 @@ class SignupViewModelTest : KSRobolectricTestCase() {
         signupErrorTest.assertValueCount(1)
 
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+    }
+
+    @After
+    fun cleanUp() {
+        disposables.clear()
     }
 }

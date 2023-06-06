@@ -1,21 +1,23 @@
 package com.kickstarter.viewmodels
 
-import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentConfigType
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.kickstarter.libs.CurrentConfigTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isEmail
 import com.kickstarter.models.User
-import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope
-import com.kickstarter.ui.activities.SignupActivity
 import com.kickstarter.viewmodels.usecases.LoginUseCase
 import com.kickstarter.viewmodels.usecases.RefreshUserUseCase
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 interface SignupViewModel {
     interface Inputs {
@@ -49,17 +51,19 @@ interface SignupViewModel {
         fun sendNewslettersIsChecked(): Observable<Boolean>
 
         /** Finish the activity with a successful result.  */
-        fun signupSuccess(): Observable<Void>
+        fun signupSuccess(): Observable<Unit>
     }
 
-    class ViewModel(environment: Environment) :
-        ActivityViewModel<SignupActivity>(environment),
+    class SignupViewModel(environment: Environment) :
+        ViewModel(),
         Inputs,
         Outputs {
-        private val client: ApiClientType
-        private val currentConfig: CurrentConfigType
+        private val client: ApiClientTypeV2
+        private val analyticEvents = requireNotNull(environment.analytics())
+        private val currentConfig: CurrentConfigTypeV2
         private val loginUserCase = LoginUseCase(environment)
         private val refreshUserUseCase = RefreshUserUseCase(environment)
+        private val disposables = CompositeDisposable()
 
         private fun submit(data: SignupData): Observable<AccessTokenEnvelope> {
             return client.signup(
@@ -69,36 +73,36 @@ interface SignupViewModel {
                 data.password,
                 data.sendNewsletters
             )
-                .compose(Transformers.pipeApiErrorsTo(signupError))
-                .compose(Transformers.neverError())
+                .compose(Transformers.pipeApiErrorsToV2(signupError))
+                .compose(Transformers.neverErrorV2())
                 .doOnSubscribe { formSubmitting.onNext(true) }
                 .doAfterTerminate { formSubmitting.onNext(false) }
         }
 
         private fun success(user: User) {
             refreshUserUseCase.refresh(user)
-            signupSuccess.onNext(null)
+            signupSuccess.onNext(Unit)
         }
 
         private val email = PublishSubject.create<String>()
         private val name = PublishSubject.create<String>()
         private val password = PublishSubject.create<String>()
         private val sendNewslettersClick = PublishSubject.create<Boolean>()
-        private val signupClick = PublishSubject.create<Void>()
+        private val signupClick = PublishSubject.create<Unit>()
         private val errorString: Observable<String>
-        private val signupSuccess = PublishSubject.create<Void>()
+        private val signupSuccess = PublishSubject.create<Unit>()
         private val formSubmitting = BehaviorSubject.create<Boolean>()
         private val formIsValid = BehaviorSubject.create<Boolean>()
         private val sendNewslettersIsChecked = BehaviorSubject.create<Boolean>()
-        private val showInterstitial = BehaviorSubject.create<Void>()
+        private val showInterstitial = BehaviorSubject.create<Unit>()
         private val signupError = PublishSubject.create<ErrorEnvelope?>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
 
         init {
-            client = requireNotNull(environment.apiClient())
-            currentConfig = requireNotNull(environment.currentConfig())
+            client = requireNotNull(environment.apiClientV2())
+            currentConfig = requireNotNull(environment.currentConfigV2())
 
             val signupData = Observable.combineLatest(
                 name,
@@ -114,41 +118,46 @@ interface SignupViewModel {
                 )
             }
 
+            // TODO: Note this existing skip logic was moved into the VM as part of MBL-827 migration
+            //  without attempting to address this potential newsletters bug:
+            //  https://kickstarter.atlassian.net/browse/MBL-847
             sendNewslettersClick
-                .compose(bindToLifecycle())
+                .skip(1)
                 .subscribe { sendNewslettersIsChecked.onNext(it) }
+                .addToDisposable(disposables)
 
             signupData
                 .map { it.isValid }
-                .compose(bindToLifecycle())
-                .subscribe(formIsValid)
+                .subscribe { formIsValid.onNext(it) }
+                .addToDisposable(disposables)
 
             signupData
-                .compose(Transformers.takeWhen(signupClick))
-                .switchMap { submit(it) }
+                .compose(Transformers.takeWhenV2(signupClick))
+                .switchMap {
+                    submit(it)
+                }
                 .distinctUntilChanged()
                 .switchMap {
                     this.loginUserCase
-                        .loginAndUpdateUserPrivacy(it.user(), it.accessToken())
+                        .loginAndUpdateUserPrivacyV2(it.user(), it.accessToken())
                 }
-                .compose(bindToLifecycle())
                 .subscribe { success(it) }
+                .addToDisposable(disposables)
 
             currentConfig.observable()
                 .take(1)
                 .map { false }
-                .compose(bindToLifecycle())
                 .subscribe { sendNewslettersIsChecked.onNext(it) }
+                .addToDisposable(disposables)
 
             errorString = signupError
                 .takeUntil(signupSuccess)
                 .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
                 .map { it.errorMessage() }
 
             signupClick
-                .compose(bindToLifecycle())
                 .subscribe { analyticEvents.trackSignUpSubmitCtaClicked() }
+                .addToDisposable(disposables)
 
             analyticEvents.trackSignUpPageViewed()
         }
@@ -170,15 +179,19 @@ interface SignupViewModel {
         }
 
         override fun signupClick() {
-            signupClick.onNext(null)
+            signupClick.onNext(Unit)
         }
 
         override fun errorString(): Observable<String> = errorString
         override fun formIsValid(): BehaviorSubject<Boolean> = formIsValid
         override fun formSubmitting(): BehaviorSubject<Boolean> = formSubmitting
         override fun sendNewslettersIsChecked(): BehaviorSubject<Boolean> = sendNewslettersIsChecked
-        override fun signupSuccess(): PublishSubject<Void> = signupSuccess
+        override fun signupSuccess(): PublishSubject<Unit> = signupSuccess
 
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
         internal class SignupData(
             val name: String,
             val email: String,
@@ -187,6 +200,12 @@ interface SignupViewModel {
         ) {
             val isValid: Boolean
                 get() = name.isNotEmpty() && email.isEmail() && password.length >= 6
+        }
+    }
+
+    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return SignupViewModel(environment) as T
         }
     }
 }

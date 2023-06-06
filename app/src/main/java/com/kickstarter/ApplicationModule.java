@@ -60,6 +60,7 @@ import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.AccessTokenPreference;
 import com.kickstarter.libs.qualifiers.ActivitySamplePreference;
 import com.kickstarter.libs.qualifiers.ApiRetrofit;
+import com.kickstarter.libs.qualifiers.ApiRetrofitV2;
 import com.kickstarter.libs.qualifiers.AppRatingPreference;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.qualifiers.ConfigPreference;
@@ -72,7 +73,9 @@ import com.kickstarter.libs.qualifiers.WebRetrofit;
 import com.kickstarter.libs.utils.PlayServicesCapability;
 import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.services.ApiClientType;
+import com.kickstarter.services.ApiClientTypeV2;
 import com.kickstarter.services.ApiService;
+import com.kickstarter.services.ApiServiceV2;
 import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.services.ApolloClientTypeV2;
 import com.kickstarter.services.KSWebViewClient;
@@ -106,6 +109,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Scheduler;
 import rx.schedulers.Schedulers;
@@ -123,6 +127,7 @@ public class ApplicationModule {
   @Singleton
   static Environment provideEnvironment(final @NonNull @ActivitySamplePreference IntPreferenceType activitySamplePreference,
     final @NonNull ApiClientType apiClient,
+    final @NonNull ApiClientTypeV2 apiClientV2,
     final @NonNull ApolloClientType apolloClient,
     final @NonNull ApolloClientTypeV2 apolloClientV2,
     final @NonNull Build build,
@@ -154,6 +159,7 @@ public class ApplicationModule {
     return Environment.builder()
       .activitySamplePreference(activitySamplePreference)
       .apiClient(apiClient)
+      .apiClientV2(apiClientV2)
       .apolloClient(apolloClient)
       .apolloClientV2(apolloClientV2)
       .build(build)
@@ -278,6 +284,16 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
+  @ApiRetrofitV2
+  @NonNull
+  static Retrofit provideApiRetrofitV2(final @NonNull ApiEndpoint apiEndpoint,
+                                     final @NonNull Gson gson,
+                                     final @NonNull OkHttpClient okHttpClient) {
+    return createRetrofitV2(apiEndpoint.url(), gson, okHttpClient);
+  }
+
+  @Provides
+  @Singleton
   @NonNull
   static ApiRequestInterceptor provideApiRequestInterceptor(
           final @NonNull String clientId, final @NonNull CurrentUserType currentUser,
@@ -299,6 +315,13 @@ public class ApplicationModule {
   @NonNull
   static ApiService provideApiService(final @ApiRetrofit @NonNull Retrofit retrofit) {
     return retrofit.create(ApiService.class);
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
+  static ApiServiceV2 provideApiServiceV2(final @ApiRetrofitV2 @NonNull Retrofit retrofit) {
+    return retrofit.create(ApiServiceV2.class);
   }
 
   @Provides
@@ -364,6 +387,15 @@ public class ApplicationModule {
       .addConverterFactory(GsonConverterFactory.create(gson))
       .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
       .build();
+  }
+
+  private static @NonNull Retrofit createRetrofitV2(final @NonNull String baseUrl, final @NonNull Gson gson, final @NonNull OkHttpClient okHttpClient) {
+    return new Retrofit.Builder()
+            .client(okHttpClient)
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .build();
   }
 
   @Provides

@@ -2,10 +2,12 @@ package com.kickstarter.ui.intentmappers
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.query
 import com.kickstarter.models.Project
+import com.kickstarter.models.Update
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.ApolloClientType
@@ -106,10 +108,10 @@ object ProjectIntentMapper {
                 .startWith(intentProject)
                 .retry(3)
 
-        val projectFromParceledParam = io.reactivex.Observable.just(paramFromIntent(intent))
-            .filter { `object`: String? -> ObjectUtils.isNotNull(`object`) }
-            .flatMap { param: String? ->
-                param?.let { client.fetchProject(it) }
+        val projectFromParceledParam = io.reactivex.Observable.just(paramFromIntent(intent) ?: "")
+            .filter { param: String -> param.isNotEmpty() }
+            .flatMap { param: String ->
+                client.fetchProject(param)
             }
             .retry(3)
         return projectFromParceledProject
@@ -142,8 +144,12 @@ object ProjectIntentMapper {
     /**
      * Gets a parceled project from the intent data, may return `null`.
      */
-    fun projectFromIntent(intent: Intent): Project? {
-        return intent.getParcelableExtra(IntentKey.PROJECT)
+    private fun projectFromIntent(intent: Intent): Project? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra(IntentKey.PROJECT, Project::class.java)
+        } else {
+            intent.getParcelableExtra(IntentKey.PROJECT) as? Project?
+        }
     }
 
     /**

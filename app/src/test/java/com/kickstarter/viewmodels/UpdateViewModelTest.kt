@@ -7,18 +7,20 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.UpdateFactory
 import com.kickstarter.mock.factories.UserFactory.creator
-import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.mock.services.MockApiClientV2
 import com.kickstarter.models.Update
-import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.ui.IntentKey
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.TestScheduler
+import io.reactivex.subscribers.TestSubscriber
 import okhttp3.Request
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
-import rx.schedulers.TestScheduler
 import java.util.concurrent.TimeUnit
 
 class UpdateViewModelTest : KSRobolectricTestCase() {
@@ -26,15 +28,18 @@ class UpdateViewModelTest : KSRobolectricTestCase() {
         .putExtra(IntentKey.PROJECT, project())
         .putExtra(IntentKey.UPDATE, UpdateFactory.update())
 
+    private val disposables = CompositeDisposable()
+
     @Test
     fun testOpenProjectExternally_whenProjectUrlIsPreview() {
         val environment = environment()
-        val vm = UpdateViewModel.ViewModel(environment)
+        val vm = UpdateViewModel.UpdateViewModel(environment)
         val openProjectExternally = TestSubscriber<String>()
-        vm.outputs.openProjectExternally().subscribe(openProjectExternally)
+        vm.outputs.openProjectExternally().subscribe { openProjectExternally.onNext(it) }
+            .addToDisposable(disposables)
 
         // Start the intent with a project and update.
-        vm.intent(defaultIntent)
+        vm.provideIntent(defaultIntent)
         val url =
             "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap?token=beepboop"
         val projectRequest: Request = Request.Builder()
@@ -48,17 +53,17 @@ class UpdateViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testUpdateViewModel_LoadsWebViewUrl() {
-        val vm = UpdateViewModel.ViewModel(environment())
+        val vm = UpdateViewModel.UpdateViewModel(environment())
         val update = UpdateFactory.update()
         val anotherUpdateUrl = "https://kck.str/projects/param/param/posts/next-id"
         val anotherUpdateRequest: Request = Request.Builder()
             .url(anotherUpdateUrl)
             .build()
         val webViewUrl = TestSubscriber<String>()
-        vm.outputs.webViewUrl().subscribe(webViewUrl)
+        vm.outputs.webViewUrl().subscribe { webViewUrl.onNext(it) }.addToDisposable(disposables)
 
         // Start the intent with a project and update.
-        vm.intent(defaultIntent)
+        vm.provideIntent(defaultIntent)
 
         // Initial update's url emits.
         webViewUrl.assertValues(update.urls()?.web()?.update())
@@ -73,16 +78,17 @@ class UpdateViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testUpdateViewModel_StartCommentsActivity() {
         val environment = environment()
-        val vm = UpdateViewModel.ViewModel(environment)
+        val vm = UpdateViewModel.UpdateViewModel(environment)
         val update = UpdateFactory.update()
         val commentsRequest: Request = Request.Builder()
             .url("https://kck.str/projects/param/param/posts/id/comments")
             .build()
         val startRootCommentsActivity = TestSubscriber<Update>()
-        vm.outputs.startRootCommentsActivity().subscribe(startRootCommentsActivity)
+        vm.outputs.startRootCommentsActivity().subscribe { startRootCommentsActivity.onNext(it) }
+            .addToDisposable(disposables)
 
         // Start the intent with a project and update.
-        vm.intent(
+        vm.provideIntent(
             Intent()
                 .putExtra(IntentKey.PROJECT, project())
                 .putExtra(IntentKey.UPDATE, update)
@@ -95,15 +101,16 @@ class UpdateViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testUpdateViewModel_StartProjectActivity() {
         val environment = environment()
-        val vm = UpdateViewModel.ViewModel(environment)
+        val vm = UpdateViewModel.UpdateViewModel(environment)
         val startProjectActivity = TestSubscriber<Uri>()
 
         vm.outputs.startProjectActivity()
             .map<Uri> { it.first }
-            .subscribe(startProjectActivity)
+            .subscribe { startProjectActivity.onNext(it) }
+            .addToDisposable(disposables)
 
         // Start the intent with a project and update.
-        vm.intent(defaultIntent)
+        vm.provideIntent(defaultIntent)
 
         val url =
             "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap"
@@ -122,13 +129,14 @@ class UpdateViewModelTest : KSRobolectricTestCase() {
         val environment = environment().toBuilder()
             .currentUser(user)
             .build()
-        val vm = UpdateViewModel.ViewModel(environment)
+        val vm = UpdateViewModel.UpdateViewModel(environment)
         val startProjectActivity = TestSubscriber<Pair<Uri, RefTag>>()
 
-        vm.outputs.startProjectActivity().subscribe(startProjectActivity)
+        vm.outputs.startProjectActivity().subscribe { startProjectActivity.onNext(it) }
+            .addToDisposable(disposables)
 
         // Start the intent with a project and update.
-        vm.intent(defaultIntent)
+        vm.provideIntent(defaultIntent)
 
         val url =
             "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap"
@@ -139,13 +147,13 @@ class UpdateViewModelTest : KSRobolectricTestCase() {
         vm.inputs.goToProjectRequest(projectRequest)
 
         startProjectActivity.assertValueCount(1)
-        assertEquals(startProjectActivity.onNextEvents[0].first, Uri.parse(url))
-        assertEquals(startProjectActivity.onNextEvents[0].second, RefTag.update())
+        assertEquals(startProjectActivity.values().first().first, Uri.parse(url))
+        assertEquals(startProjectActivity.values().first().second, RefTag.update())
     }
 
     @Test
     fun testUpdateViewModel_StartShareIntent() {
-        val vm = UpdateViewModel.ViewModel(environment())
+        val vm = UpdateViewModel.UpdateViewModel(environment())
         val creator = creator().toBuilder().id(278438049L).build()
         val project = project().toBuilder().creator(creator).build()
         val updatesUrl = "https://www.kck.str/projects/" + project.creator()
@@ -163,10 +171,11 @@ class UpdateViewModelTest : KSRobolectricTestCase() {
             .build()
         val startShareIntent = TestSubscriber<Pair<Update, String>>()
 
-        vm.outputs.startShareIntent().subscribe(startShareIntent)
+        vm.outputs.startShareIntent().subscribe { startShareIntent.onNext(it) }
+            .addToDisposable(disposables)
 
         // Start the intent with a project and update.
-        vm.intent(
+        vm.provideIntent(
             Intent()
                 .putExtra(IntentKey.PROJECT, project())
                 .putExtra(IntentKey.UPDATE, update)
@@ -174,7 +183,7 @@ class UpdateViewModelTest : KSRobolectricTestCase() {
         vm.inputs.shareIconButtonClicked()
 
         val expectedShareUrl = "https://www.kck.str/projects/" + project.creator().param() +
-            "/" + project.param() + "/posts/" + id + "?ref=android_update_share"
+                "/" + project.param() + "/posts/" + id + "?ref=android_update_share"
 
         startShareIntent.assertValue(Pair.create(update, expectedShareUrl))
     }
@@ -186,7 +195,7 @@ class UpdateViewModelTest : KSRobolectricTestCase() {
         val anotherUpdateRequest: Request = Request.Builder()
             .url("https://kck.str/projects/param/param/posts/id")
             .build()
-        val apiClient: ApiClientType = object : MockApiClient() {
+        val apiClient: ApiClientTypeV2 = object : MockApiClientV2() {
             override fun fetchUpdate(
                 projectParam: String,
                 updateParam: String
@@ -194,14 +203,15 @@ class UpdateViewModelTest : KSRobolectricTestCase() {
                 return Observable.just(anotherUpdate)
             }
         }
-        val environment = environment().toBuilder().apiClient(apiClient).build()
-        val vm = UpdateViewModel.ViewModel(environment)
+        val environment = environment().toBuilder().apiClientV2(apiClient).build()
+        val vm = UpdateViewModel.UpdateViewModel(environment)
         val updateSequence = TestSubscriber<String>()
 
-        vm.outputs.updateSequence().subscribe(updateSequence)
+        vm.outputs.updateSequence().subscribe { updateSequence.onNext(it) }
+            .addToDisposable(disposables)
 
         // Start the intent with a project and update.
-        vm.intent(
+        vm.provideIntent(
             Intent()
                 .putExtra(IntentKey.PROJECT, project())
                 .putExtra(IntentKey.UPDATE, initialUpdate)
@@ -220,13 +230,13 @@ class UpdateViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testUpdateViewModel_WebViewUrl() {
-        val vm = UpdateViewModel.ViewModel(environment())
+        val vm = UpdateViewModel.UpdateViewModel(environment())
         val update = UpdateFactory.update()
         val webViewUrl = TestSubscriber<String>()
-        vm.outputs.webViewUrl().subscribe(webViewUrl)
+        vm.outputs.webViewUrl().subscribe { webViewUrl.onNext(it) }.addToDisposable(disposables)
 
         // Start the intent with a project and update.
-        vm.intent(
+        vm.provideIntent(
             Intent()
                 .putExtra(IntentKey.PROJECT, project())
                 .putExtra(IntentKey.UPDATE, update)
@@ -240,7 +250,7 @@ class UpdateViewModelTest : KSRobolectricTestCase() {
     fun testUpdateViewModel_DeepLinkPost() {
         val postId = "3254626"
         val update = UpdateFactory.update().toBuilder().sequence(2).build()
-        val apiClient: ApiClientType = object : MockApiClient() {
+        val apiClient: ApiClientTypeV2 = object : MockApiClientV2() {
             override fun fetchUpdate(
                 projectParam: String,
                 updateParam: String
@@ -248,13 +258,13 @@ class UpdateViewModelTest : KSRobolectricTestCase() {
                 return Observable.just(update)
             }
         }
-        val environment = environment().toBuilder().apiClient(apiClient).build()
-        val vm = UpdateViewModel.ViewModel(environment)
+        val environment = environment().toBuilder().apiClientV2(apiClient).build()
+        val vm = UpdateViewModel.UpdateViewModel(environment)
         val webViewUrl = TestSubscriber<String>()
-        vm.outputs.webViewUrl().subscribe(webViewUrl)
+        vm.outputs.webViewUrl().subscribe { webViewUrl.onNext(it) }.addToDisposable(disposables)
 
         // Start the intent with a project and update.
-        vm.intent(
+        vm.provideIntent(
             Intent()
                 .putExtra(IntentKey.PROJECT, project())
                 .putExtra(IntentKey.UPDATE_POST_ID, postId)
@@ -268,7 +278,7 @@ class UpdateViewModelTest : KSRobolectricTestCase() {
     fun testUpdateViewModel_DeepLinkComment() {
         val postId = "3254626"
         val update = UpdateFactory.update()
-        val apiClient: ApiClientType = object : MockApiClient() {
+        val apiClient: ApiClientTypeV2 = object : MockApiClientV2() {
             override fun fetchUpdate(
                 projectParam: String,
                 updateParam: String
@@ -278,17 +288,19 @@ class UpdateViewModelTest : KSRobolectricTestCase() {
         }
         val testScheduler = TestScheduler()
         val environment =
-            environment().toBuilder().apiClient(apiClient).scheduler(testScheduler).build()
-        val vm = UpdateViewModel.ViewModel(environment)
+            environment().toBuilder().apiClientV2(apiClient).schedulerV2(testScheduler).build()
+        val vm = UpdateViewModel.UpdateViewModel(environment)
         val startRootCommentsActivity = TestSubscriber<Update>()
-        vm.outputs.startRootCommentsActivity().subscribe(startRootCommentsActivity)
+        vm.outputs.startRootCommentsActivity().subscribe { startRootCommentsActivity.onNext(it) }
+            .addToDisposable(disposables)
         val webViewUrl = TestSubscriber<String>()
-        vm.outputs.webViewUrl().subscribe(webViewUrl)
+        vm.outputs.webViewUrl().subscribe { webViewUrl.onNext(it) }.addToDisposable(disposables)
         val deepLinkToRootComment = TestSubscriber<Boolean>()
-        vm.hasCommentsDeepLinks().subscribe(deepLinkToRootComment)
+        vm.hasCommentsDeepLinks().subscribe { deepLinkToRootComment.onNext(it) }
+            .addToDisposable(disposables)
 
         // Start the intent with a project and update.
-        vm.intent(
+        vm.provideIntent(
             Intent()
                 .putExtra(IntentKey.PROJECT, project())
                 .putExtra(IntentKey.UPDATE_POST_ID, postId)
@@ -311,7 +323,7 @@ class UpdateViewModelTest : KSRobolectricTestCase() {
         val postId = "3254626"
         val commentableId = "Q29tbWVudC0zMzU2MTY4Ng"
         val update = UpdateFactory.update()
-        val apiClient: ApiClientType = object : MockApiClient() {
+        val apiClient: ApiClientTypeV2 = object : MockApiClientV2() {
             override fun fetchUpdate(
                 projectParam: String,
                 updateParam: String
@@ -321,19 +333,21 @@ class UpdateViewModelTest : KSRobolectricTestCase() {
         }
         val testScheduler = TestScheduler()
         val environment =
-            environment().toBuilder().apiClient(apiClient).scheduler(testScheduler).build()
-        val vm = UpdateViewModel.ViewModel(environment)
+            environment().toBuilder().apiClientV2(apiClient).schedulerV2(testScheduler).build()
+        val vm = UpdateViewModel.UpdateViewModel(environment)
         val startRootCommentsActivityToDeepLinkThreadActivity =
             TestSubscriber<Pair<String, Update>>()
         vm.outputs.startRootCommentsActivityToDeepLinkThreadActivity()
-            .subscribe(startRootCommentsActivityToDeepLinkThreadActivity)
+            .subscribe { startRootCommentsActivityToDeepLinkThreadActivity.onNext(it) }
+            .addToDisposable(disposables)
         val webViewUrl = TestSubscriber<String>()
-        vm.outputs.webViewUrl().subscribe(webViewUrl)
+        vm.outputs.webViewUrl().subscribe { webViewUrl.onNext(it) }.addToDisposable(disposables)
         val deepLinkToThreadActivity = TestSubscriber<Pair<String, Boolean>>()
-        vm.deepLinkToThreadActivity().subscribe(deepLinkToThreadActivity)
+        vm.deepLinkToThreadActivity().subscribe { deepLinkToThreadActivity.onNext(it) }
+            .addToDisposable(disposables)
 
         // Start the intent with a project and update.
-        vm.intent(
+        vm.provideIntent(
             Intent()
                 .putExtra(IntentKey.PROJECT, project())
                 .putExtra(IntentKey.UPDATE_POST_ID, postId)

@@ -141,6 +141,7 @@ interface UpdateViewModel {
                 .addToDisposable(disposables)
 
             val project = intent
+                .filter { it != null }
                 .flatMap { intent ->
                     ProjectIntentMapper
                         .project(intent, client)

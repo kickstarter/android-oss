@@ -12,6 +12,7 @@ import com.kickstarter.services.transformers.projectTransformer
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import type.CurrencyCode
 import type.FlaggingKind
 
 interface ApolloClientTypeV2 {
@@ -28,6 +29,7 @@ interface ApolloClientTypeV2 {
     fun updateUserPassword(currentPassword: String = "", newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data>
     fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data>
     fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data>
+    fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>
 }
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
@@ -390,6 +392,33 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                         }
                         response.data?.let { data ->
                             ps.onNext(data)
+                        }
+                        ps.onComplete()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {
+        return Observable.defer {
+            val ps = PublishSubject.create<UpdateUserCurrencyMutation.Data>()
+            service.mutate(
+                UpdateUserCurrencyMutation.builder()
+                    .chosenCurrency(currency)
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<UpdateUserCurrencyMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<UpdateUserCurrencyMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message))
+                        }
+                        response.data?.let {
+                            ps.onNext(it)
                         }
                         ps.onComplete()
                     }

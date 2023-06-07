@@ -92,7 +92,8 @@ interface UpdateViewModel {
         private val openProjectExternally = PublishSubject.create<String>()
         private val startShareIntent = PublishSubject.create<Pair<Update, String>>()
         private val startRootCommentsActivity = PublishSubject.create<Update>()
-        private val startRootCommentsActivityToDeepLinkThreadActivity = PublishSubject.create<Pair<String, Update>>()
+        private val startRootCommentsActivityToDeepLinkThreadActivity =
+            PublishSubject.create<Pair<String, Update>>()
         private val startProjectActivity = PublishSubject.create<Pair<Uri, RefTag>>()
         private val updateSequence = BehaviorSubject.create<String>()
         private val webViewUrl = BehaviorSubject.create<String>()
@@ -121,10 +122,8 @@ interface UpdateViewModel {
                 .map {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         it.getParcelableExtra(IntentKey.UPDATE, Update::class.java)
-                            ?: Update.builder().build()
                     } else {
-                        it.getParcelableExtra(IntentKey.UPDATE) as? Update? ?: Update.builder()
-                            .build()
+                        it.getParcelableExtra(IntentKey.UPDATE) as? Update?
                     }
                 }
 
@@ -137,7 +136,10 @@ interface UpdateViewModel {
                 .addToDisposable(disposables)
 
             intent
-                .filter { it.hasExtra(IntentKey.COMMENT) && !it.getStringExtra(IntentKey.COMMENT).isNullOrEmpty() }
+                .filter {
+                    it.hasExtra(IntentKey.COMMENT) && !it.getStringExtra(IntentKey.COMMENT)
+                        .isNullOrEmpty()
+                }
                 .map {
                     Pair(
                         requireNotNull(it.getStringExtra(IntentKey.COMMENT)),
@@ -164,7 +166,10 @@ interface UpdateViewModel {
                 }
 
             val deepLinkUpdate = intent
-                .filter { it.hasExtra(IntentKey.UPDATE_POST_ID) && !it.getStringExtra(IntentKey.UPDATE_POST_ID).isNullOrEmpty() }
+                .filter {
+                    it.hasExtra(IntentKey.UPDATE_POST_ID) && !it.getStringExtra(IntentKey.UPDATE_POST_ID)
+                        .isNullOrEmpty()
+                }
                 .map { requireNotNull(it.getStringExtra(IntentKey.UPDATE_POST_ID)) }
                 .compose(Transformers.combineLatestPair(project))
                 .map {
@@ -223,7 +228,11 @@ interface UpdateViewModel {
                 .addToDisposable(disposables)
 
             goToCommentsActivity
-                .delay(2, TimeUnit.SECONDS, environment.schedulerV2()) // add delay to wait until activity subscribed to viewmodel
+                .delay(
+                    2,
+                    TimeUnit.SECONDS,
+                    environment.schedulerV2()
+                ) // add delay to wait until activity subscribed to viewmodel
                 .withLatestFrom(currentUpdate) { _, update -> update }
                 .distinctUntilChanged()
                 .subscribe {
@@ -233,7 +242,11 @@ interface UpdateViewModel {
                 .addToDisposable(disposables)
 
             goToCommentsActivityToDeepLinkThreadActivity
-                .delay(2, TimeUnit.SECONDS, environment.schedulerV2()) // add delay to wait until activity subscribed to viewmodel
+                .delay(
+                    2,
+                    TimeUnit.SECONDS,
+                    environment.schedulerV2()
+                ) // add delay to wait until activity subscribed to viewmodel
                 .withLatestFrom(currentUpdate) { commentableId, update ->
                     Pair(commentableId, requireNotNull(update))
                 }
@@ -246,9 +259,11 @@ interface UpdateViewModel {
 
             currentUpdate
                 .compose(Transformers.takeWhenV2(goToCommentsRequest))
-                .subscribe { it?.let { update ->
-                    startRootCommentsActivity.onNext(update)
-                } }
+                .subscribe {
+                    it?.let { update ->
+                        startRootCommentsActivity.onNext(update)
+                    }
+                }
                 .addToDisposable(disposables)
 
             currentUpdate
@@ -316,7 +331,8 @@ interface UpdateViewModel {
 
         override fun goToCommentsActivity() = goToCommentsActivity.onNext(Unit)
 
-        override fun goToCommentsActivityToDeepLinkThreadActivity(commentableID: String) = goToCommentsActivityToDeepLinkThreadActivity.onNext(commentableID)
+        override fun goToCommentsActivityToDeepLinkThreadActivity(commentableID: String) =
+            goToCommentsActivityToDeepLinkThreadActivity.onNext(commentableID)
 
         override fun openProjectExternally(): Observable<String> = openProjectExternally
 
@@ -324,11 +340,13 @@ interface UpdateViewModel {
 
         override fun startRootCommentsActivity(): Observable<Update> = startRootCommentsActivity
 
-        override fun deepLinkToThreadActivity(): Observable<Pair<String, Boolean>> = deepLinkToThreadActivity
+        override fun deepLinkToThreadActivity(): Observable<Pair<String, Boolean>> =
+            deepLinkToThreadActivity
 
         override fun startProjectActivity(): Observable<Pair<Uri, RefTag>> = startProjectActivity
 
-        override fun startRootCommentsActivityToDeepLinkThreadActivity(): Observable<Pair<String, Update>> = startRootCommentsActivityToDeepLinkThreadActivity
+        override fun startRootCommentsActivityToDeepLinkThreadActivity(): Observable<Pair<String, Update>> =
+            startRootCommentsActivityToDeepLinkThreadActivity
 
         override fun updateSequence(): Observable<String> = updateSequence
 

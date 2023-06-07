@@ -4,15 +4,19 @@ import UpdateUserCurrencyMutation
 import UserPrivacyQuery
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.mock.services.MockApolloClientV2
+import com.kickstarter.viewmodels.AccountViewModel.AccountViewModel
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
 import type.CurrencyCode
 
 class AccountViewModelTest : KSRobolectricTestCase() {
 
-    private lateinit var vm: AccountViewModel.ViewModel
+    private lateinit var vm: AccountViewModel
 
     private val chosenCurrency = TestSubscriber<String>()
     private val email = TestSubscriber<String>()
@@ -21,21 +25,27 @@ class AccountViewModelTest : KSRobolectricTestCase() {
     private val showEmailErrorIcon = TestSubscriber<Boolean>()
     private val success = TestSubscriber<String>()
 
-    private fun setUpEnvironment(environment: Environment) {
-        this.vm = AccountViewModel.ViewModel(environment)
+    private val disposables = CompositeDisposable()
 
-        this.vm.outputs.chosenCurrency().subscribe(this.chosenCurrency)
-        this.vm.outputs.email().subscribe(this.email)
-        this.vm.outputs.error().subscribe(this.error)
-        this.vm.outputs.passwordRequiredContainerIsVisible().subscribe(this.passwordRequiredContainerIsVisible)
-        this.vm.outputs.showEmailErrorIcon().subscribe(this.showEmailErrorIcon)
-        this.vm.outputs.success().subscribe(this.success)
+    @After
+    fun cleanUp() {
+        disposables.clear()
+    }
+    private fun setUpEnvironment(environment: Environment) {
+        this.vm = AccountViewModel(environment)
+
+        this.vm.outputs.chosenCurrency().subscribe { this.chosenCurrency.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.email().subscribe { this.email.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.error().subscribe { this.error.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.passwordRequiredContainerIsVisible().subscribe { this.passwordRequiredContainerIsVisible.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.showEmailErrorIcon().subscribe { this.showEmailErrorIcon.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.success().subscribe { this.success.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
     fun testUserCurrency() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
                     return Observable.just(
                         UserPrivacyQuery.Data(
@@ -56,7 +66,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testUserEmail() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
                     return Observable.just(
                         UserPrivacyQuery.Data(
@@ -77,7 +87,18 @@ class AccountViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testChosenCurrencyMutation() {
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.just(
+                        UserPrivacyQuery.Data(
+                            UserPrivacyQuery.Me(
+                                "", "",
+                                "r@ksr.com", true, true, true, true, "USD"
+                            )
+                        )
+                    )
+                }
+
                 override fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {
                     return Observable.just(
                         UpdateUserCurrencyMutation.Data(
@@ -104,7 +125,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         val isDeliverable = false
         val isEmailVerified = true
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
                     return Observable.just(
                         UserPrivacyQuery.Data(
@@ -128,7 +149,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         val isDeliverable = false
         val isEmailVerified = false
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
                     return Observable.just(
                         UserPrivacyQuery.Data(
@@ -152,7 +173,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         val isDeliverable = true
         val isEmailVerified = true
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
                     return Observable.just(
                         UserPrivacyQuery.Data(
@@ -176,7 +197,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         val isDeliverable = true
         val isEmailVerified = false
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
                     return Observable.just(
                         UserPrivacyQuery.Data(
@@ -200,7 +221,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         val isDeliverable = true
         val isEmailVerified = false
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
                     return Observable.just(
                         UserPrivacyQuery.Data(
@@ -224,7 +245,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         val isDeliverable = true
         val isEmailVerified = false
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
                     return Observable.just(
                         UserPrivacyQuery.Data(
@@ -248,7 +269,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         val isDeliverable = false
         val isEmailVerified = false
         setUpEnvironment(
-            environment().toBuilder().apolloClient(object : MockApolloClient() {
+            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
                     return Observable.just(
                         UserPrivacyQuery.Data(

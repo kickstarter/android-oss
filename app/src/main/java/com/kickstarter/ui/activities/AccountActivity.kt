@@ -17,7 +17,6 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getPaymentMethodsIntent
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.AccountViewModel
-import com.kickstarter.viewmodels.LoginViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import type.CurrencyCode
@@ -52,7 +51,7 @@ class AccountActivity : AppCompatActivity() {
         )
     }
 
-    private lateinit var viewModelFactory: LoginViewModel.Factory
+    private lateinit var viewModelFactory: AccountViewModel.Factory
     private val viewModel: AccountViewModel.AccountViewModel by viewModels { viewModelFactory }
 
     private lateinit var disposables: CompositeDisposable
@@ -63,7 +62,7 @@ class AccountActivity : AppCompatActivity() {
         disposables = CompositeDisposable()
 
         val env = this.getEnvironment()?.let { env ->
-            viewModelFactory = LoginViewModel.Factory(env, intent = intent)
+            viewModelFactory = AccountViewModel.Factory(env, intent = intent)
             env
         }
 
@@ -120,6 +119,11 @@ class AccountActivity : AppCompatActivity() {
         binding.changePasswordRow.setOnClickListener { startActivity(Intent(this, ChangePasswordActivity::class.java)) }
         binding.paymentMethodsRow.setOnClickListener { startActivity(Intent().getPaymentMethodsIntent(this)) }
         binding.privacyRow.setOnClickListener { startActivity(Intent(this, PrivacyActivity::class.java)) }
+    }
+
+    override fun onDestroy() {
+        disposables.clear()
+        super.onDestroy()
     }
 
     private fun getListOfCurrencies(): List<String> {

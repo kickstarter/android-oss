@@ -10,6 +10,7 @@ import com.kickstarter.viewmodels.AccountViewModel.AccountViewModel
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
 import type.CurrencyCode
 
@@ -26,6 +27,10 @@ class AccountViewModelTest : KSRobolectricTestCase() {
 
     private val disposables = CompositeDisposable()
 
+    @After
+    fun cleanUp() {
+        disposables.clear()
+    }
     private fun setUpEnvironment(environment: Environment) {
         this.vm = AccountViewModel(environment)
 

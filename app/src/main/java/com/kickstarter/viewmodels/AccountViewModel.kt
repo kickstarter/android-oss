@@ -152,6 +152,11 @@ interface AccountViewModel {
                 .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
                 .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
         }
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
     }
 
     class Factory(private val environment: Environment, private val intent: Intent? = null) : ViewModelProvider.Factory {

@@ -111,11 +111,20 @@ interface UpdateViewModel {
 
         init {
             val initialUpdate = intent
+                .filter {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        it.getParcelableExtra(IntentKey.UPDATE, Update::class.java) != null
+                    } else {
+                        it.getParcelableExtra(IntentKey.UPDATE) as? Update? != null
+                    }
+                }
                 .map {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         it.getParcelableExtra(IntentKey.UPDATE, Update::class.java)
+                            ?: Update.builder().build()
                     } else {
-                        it.getParcelableExtra(IntentKey.UPDATE) as? Update?
+                        it.getParcelableExtra(IntentKey.UPDATE) as? Update? ?: Update.builder()
+                            .build()
                     }
                 }
 
@@ -156,7 +165,7 @@ interface UpdateViewModel {
 
             val deepLinkUpdate = intent
                 .filter { it.hasExtra(IntentKey.UPDATE_POST_ID) && !it.getStringExtra(IntentKey.UPDATE_POST_ID).isNullOrEmpty() }
-                .map { it.getStringExtra(IntentKey.UPDATE_POST_ID) }
+                .map { requireNotNull(it.getStringExtra(IntentKey.UPDATE_POST_ID)) }
                 .compose(Transformers.combineLatestPair(project))
                 .map {
                     Pair(requireNotNull(it.second.slug()), requireNotNull(it.first))

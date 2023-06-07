@@ -88,6 +88,17 @@ class AccountViewModelTest : KSRobolectricTestCase() {
     fun testChosenCurrencyMutation() {
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.just(
+                        UserPrivacyQuery.Data(
+                            UserPrivacyQuery.Me(
+                                "", "",
+                                "r@ksr.com", true, true, true, true, "USD"
+                            )
+                        )
+                    )
+                }
+
                 override fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {
                     return Observable.just(
                         UpdateUserCurrencyMutation.Data(

@@ -20,6 +20,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.TestScheduler
 import io.reactivex.subscribers.TestSubscriber
 import okhttp3.Request
+import org.junit.After
 import org.junit.Test
 import java.util.concurrent.TimeUnit
 
@@ -29,6 +30,11 @@ class UpdateViewModelTest : KSRobolectricTestCase() {
         .putExtra(IntentKey.UPDATE, UpdateFactory.update())
 
     private val disposables = CompositeDisposable()
+
+    @After
+    fun cleanUp() {
+        disposables.clear()
+    }
 
     @Test
     fun testOpenProjectExternally_whenProjectUrlIsPreview() {

@@ -129,6 +129,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     override fun userPrivacy(): io.reactivex.Observable<UserPrivacyQuery.Data> {
         return io.reactivex.Observable.empty<UserPrivacyQuery.Data>()
     }
+
+    override fun updateUserCurrencyPreference(currency: CurrencyCode): io.reactivex.Observable<UpdateUserCurrencyMutation.Data> {
+        return io.reactivex.Observable.empty()
+    }
 }
 
 open class MockApolloClient : ApolloClientType {

@@ -5,22 +5,24 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityAccountBinding
-import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getPaymentMethodsIntent
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.AccountViewModel
-import rx.android.schedulers.AndroidSchedulers
+import com.kickstarter.viewmodels.LoginViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import type.CurrencyCode
 
-@RequiresActivityViewModel(AccountViewModel.ViewModel::class)
-class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
+class AccountActivity : AppCompatActivity() {
 
     private var currentCurrencySelection: CurrencyCode? = null
     private var newCurrencySelection: CurrencyCode? = null
@@ -50,55 +52,68 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
         )
     }
 
+    private lateinit var viewModelFactory: LoginViewModel.Factory
+    private val viewModel: AccountViewModel.AccountViewModel by viewModels { viewModelFactory }
+
+    private lateinit var disposables: CompositeDisposable
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        disposables = CompositeDisposable()
+
+        val env = this.getEnvironment()?.let { env ->
+            viewModelFactory = LoginViewModel.Factory(env, intent = intent)
+            env
+        }
+
         binding = ActivityAccountBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
 
-        this.ksString = requireNotNull(environment().ksString())
+        this.ksString = requireNotNull(env?.ksString())
 
         setUpSpinner()
 
         this.viewModel.outputs.chosenCurrency()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setSpinnerSelection(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.email()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.createPasswordTextView.text = this.ksString.format(getString(R.string.Youre_connected_via_Facebook_email_Create_a_password_for_this_account), "email", it)
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.error()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showSnackbar(binding.accountToolbar.accountToolbar, it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.progressBarIsVisible()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { ViewUtils.setGone(binding.progressBar, !it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.passwordRequiredContainerIsVisible()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 ViewUtils.setGone(binding.createPasswordContainer, it)
                 ViewUtils.setGone(binding.passwordRequiredContainer, !it)
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.showEmailErrorIcon()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { ViewUtils.setGone(binding.emailErrorIcon, !it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.success()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showSnackbar(binding.accountContainer, R.string.Got_it_your_changes_have_been_saved) }
+            .addToDisposable(disposables)
 
         binding.createPasswordRow.setOnClickListener { startActivity(Intent(this, CreatePasswordActivity::class.java)) }
         binding.changeEmailRow.setOnClickListener { startActivity(Intent(this, ChangeEmailActivity::class.java)) }

@@ -183,7 +183,7 @@ class UpdateViewModelTest : KSRobolectricTestCase() {
         vm.inputs.shareIconButtonClicked()
 
         val expectedShareUrl = "https://www.kck.str/projects/" + project.creator().param() +
-                "/" + project.param() + "/posts/" + id + "?ref=android_update_share"
+            "/" + project.param() + "/posts/" + id + "?ref=android_update_share"
 
         startShareIntent.assertValue(Pair.create(update, expectedShareUrl))
     }

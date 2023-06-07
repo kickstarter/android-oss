@@ -7,14 +7,12 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.query
 import com.kickstarter.models.Project
-import com.kickstarter.models.Update
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope
 import com.kickstarter.ui.IntentKey
-import io.reactivex.Observer
 import rx.Observable
 import java.util.regex.Pattern
 

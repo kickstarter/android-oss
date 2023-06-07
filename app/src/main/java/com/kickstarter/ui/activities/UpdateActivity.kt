@@ -159,7 +159,10 @@ class UpdateActivity : AppCompatActivity(), KSWebView.Delegate {
                 .take(1)
                 .subscribe { url ->
                     url?.let {
-                        binding.updateWebView.loadUrl(it)
+                        // for thread safety with RX 2
+                        binding.updateWebView.post {
+                            binding.updateWebView.loadUrl(it)
+                        }
                     }
                 }
         }

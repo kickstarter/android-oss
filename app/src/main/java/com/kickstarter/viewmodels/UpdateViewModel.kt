@@ -162,7 +162,7 @@ interface UpdateViewModel {
 
             val initialUpdateUrl = initialUpdate
                 ?.map {
-                    it.urls()?.web()?.update()
+                    it.urls()?.web()?.update() ?: ""
                 }
 
             val deepLinkUpdate = intent
@@ -184,11 +184,11 @@ interface UpdateViewModel {
                 .map { it.url.toString() }
 
             val deepLinkUrl = deepLinkUpdate
-                .map { it.urls()?.web()?.update() }
+                .map { it.urls()?.web()?.update() ?: "" }
 
             Observable.merge(initialUpdateUrl, anotherUpdateUrl, deepLinkUrl)
                 .distinctUntilChanged()
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.isNotEmpty() }
                 .subscribe {
                     it?.let { url ->
                         webViewUrl.onNext(url)

@@ -4,23 +4,28 @@ import android.text.Html
 import android.view.View
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivitySampleFriendBackingViewBinding
-import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project
+import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.viewmodels.ActivitySampleFriendBackingViewHolderViewModel
-import com.squareup.picasso.Picasso
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
 class ActivitySampleFriendBackingViewHolder(
     private val binding: ActivitySampleFriendBackingViewBinding,
     private val delegate: Delegate
 ) : KSViewHolder(binding.root) {
 
-    private val ksString = requireNotNull(environment().ksString())
-    private val vm: ActivitySampleFriendBackingViewHolderViewModel.ViewModel =
-        ActivitySampleFriendBackingViewHolderViewModel.ViewModel(environment())
-
+    private lateinit var vm: ActivitySampleFriendBackingViewHolderViewModel.ActivitySampleFriendBackingViewHolderViewModel
+    private val env = this.context().getEnvironment()?.let { env ->
+        vm = ActivitySampleFriendBackingViewHolderViewModel.ActivitySampleFriendBackingViewHolderViewModel(env)
+        env
+    }
+    private val disposables = CompositeDisposable()
+    private val ksString = requireNotNull(env?.ksString())
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
         vm.inputs.configureWith(ObjectUtils.requireNonNull(data as Activity?, Activity::class.java))
@@ -28,18 +33,16 @@ class ActivitySampleFriendBackingViewHolder(
 
     init {
         this.vm.outputs.bindActivity()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { activity ->
                 val user = activity?.user()
                 val project = activity?.project()
                 if (user != null && project != null) {
                     binding.activityTitle.visibility = View.GONE
                     user.avatar().small()?.let { url ->
-                        Picasso.get().load(url)
-                            .transform(CircleTransformation())
-                            .into(binding.activityImage)
+                        binding.activityImage.loadCircleImage(url)
                     }
+
                     binding.activitySubtitle.text = Html.fromHtml(
                         ksString.format(
                             context().getString(R.string.activity_friend_backed_project_name_by_creator_name),
@@ -56,6 +59,7 @@ class ActivitySampleFriendBackingViewHolder(
                     activityProjectOnClick(activity)
                 }
             }
+            .addToDisposable(disposables)
     }
 
     fun seeActivityOnClick() {
@@ -64,6 +68,11 @@ class ActivitySampleFriendBackingViewHolder(
 
     fun activityProjectOnClick(activity: Activity) {
         delegate.activitySampleFriendBackingViewHolderProjectClicked(this, activity.project())
+    }
+
+    override fun destroy() {
+        this.vm.clearDisposables()
+        super.destroy()
     }
 
     interface Delegate {

@@ -29,8 +29,6 @@ import java.util.concurrent.TimeUnit
 
 interface UpdateViewModel {
     interface Inputs {
-        /** Call when an external link has been activated.  */
-        fun externalLinkActivated()
 
         /** Call when a project update comments uri request has been made.  */
         fun goToCommentsRequest(request: Request)
@@ -81,7 +79,6 @@ interface UpdateViewModel {
     class UpdateViewModel(environment: Environment) : ViewModel(), Inputs, Outputs {
 
         private val client = requireNotNull(environment.apiClientV2())
-        private val externalLinkActivated = PublishSubject.create<Unit>()
         private val goToCommentsRequest = PublishSubject.create<Request>()
         private val goToProjectRequest = PublishSubject.create<Request>()
         private val goToUpdateRequest = PublishSubject.create<Request>()
@@ -228,11 +225,6 @@ interface UpdateViewModel {
                 .addToDisposable(disposables)
 
             goToCommentsActivity
-                .delay(
-                    2,
-                    TimeUnit.SECONDS,
-                    environment.schedulerV2()
-                ) // add delay to wait until activity subscribed to viewmodel
                 .withLatestFrom(currentUpdate) { _, update -> update }
                 .distinctUntilChanged()
                 .subscribe {
@@ -242,11 +234,6 @@ interface UpdateViewModel {
                 .addToDisposable(disposables)
 
             goToCommentsActivityToDeepLinkThreadActivity
-                .delay(
-                    2,
-                    TimeUnit.SECONDS,
-                    environment.schedulerV2()
-                ) // add delay to wait until activity subscribed to viewmodel
                 .withLatestFrom(currentUpdate) { commentableId, update ->
                     Pair(commentableId, requireNotNull(update))
                 }
@@ -318,8 +305,6 @@ interface UpdateViewModel {
             val updateParam = request.url.encodedPathSegments[4]
             return Pair.create(projectParam, updateParam)
         }
-
-        override fun externalLinkActivated() = externalLinkActivated.onNext(Unit)
 
         override fun goToCommentsRequest(request: Request) = goToCommentsRequest.onNext(request)
 

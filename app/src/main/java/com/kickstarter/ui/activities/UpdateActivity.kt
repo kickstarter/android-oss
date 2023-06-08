@@ -28,7 +28,7 @@ import com.kickstarter.viewmodels.UpdateViewModel
 import io.reactivex.disposables.CompositeDisposable
 import okhttp3.Request
 
-class UpdateActivity : AppCompatActivity(), KSWebView.Delegate {
+class UpdateActivity : AppCompatActivity() {
     private lateinit var ksString: KSString
     private lateinit var binding: UpdateLayoutBinding
 
@@ -51,7 +51,6 @@ class UpdateActivity : AppCompatActivity(), KSWebView.Delegate {
         setContentView(binding.root)
         ksString = requireNotNull(getEnvironment()?.ksString())
 
-        binding.updateWebView.setDelegate(this)
         binding.updateWebView.registerRequestHandlers(
             listOf(
                 RequestHandler({ uri: Uri?, webEndpoint: String ->
@@ -223,11 +222,4 @@ class UpdateActivity : AppCompatActivity(), KSWebView.Delegate {
             .putExtra(Intent.EXTRA_TEXT, "$shareMessage $shareUrl")
         startActivity(Intent.createChooser(intent, getString(R.string.Share_update)))
     }
-
-    override fun externalLinkActivated(url: String) {
-        this.viewModel.inputs.externalLinkActivated()
-    }
-
-    override fun pageIntercepted(url: String) {}
-    override fun onReceivedError(url: String) {}
 }

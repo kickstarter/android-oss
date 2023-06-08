@@ -137,11 +137,6 @@ class UpdateActivity : AppCompatActivity() {
         viewModel.provideIntent(intent)
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        viewModel.provideIntent(intent)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         binding.updateWebView.setDelegate(null)

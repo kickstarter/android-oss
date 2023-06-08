@@ -25,7 +25,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import okhttp3.Request
-import java.util.concurrent.TimeUnit
 
 interface UpdateViewModel {
     interface Inputs {

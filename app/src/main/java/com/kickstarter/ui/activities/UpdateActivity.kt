@@ -23,7 +23,6 @@ import com.kickstarter.libs.utils.extensions.isProjectUri
 import com.kickstarter.models.Update
 import com.kickstarter.services.RequestHandler
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.views.KSWebView
 import com.kickstarter.viewmodels.UpdateViewModel
 import io.reactivex.disposables.CompositeDisposable
 import okhttp3.Request

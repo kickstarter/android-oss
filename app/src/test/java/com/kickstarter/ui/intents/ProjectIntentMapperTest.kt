@@ -10,6 +10,7 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.PushNotificationEnvelopeFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.mock.services.MockApiClientV2
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
@@ -74,6 +75,16 @@ class ProjectIntentMapperTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testProject_emitsTwiceFromProjectExtra_V2() {
+        val project = ProjectFactory.project()
+        val intent = Intent().putExtra(IntentKey.PROJECT, project)
+        val resultTest = io.reactivex.subscribers.TestSubscriber.create<Project>()
+        ProjectIntentMapper.project(intent, MockApiClientV2())
+            .subscribe { resultTest.onNext(it) }.addToDisposable(disposables)
+        resultTest.assertValueCount(2)
+    }
+
+    @Test
     fun testProject_emitsTwiceFromProjectExtraApollo() {
         val project = ProjectFactory.project()
         val intent = Intent().putExtra(IntentKey.PROJECT, project)
@@ -113,6 +124,16 @@ class ProjectIntentMapperTest : KSRobolectricTestCase() {
         val resultTest = TestSubscriber.create<Project>()
         ProjectIntentMapper.project(intent, MockApiClient())
             .subscribe(resultTest)
+        resultTest.assertValueCount(1)
+    }
+
+    @Test
+    fun testProject_emitsFromHttpsProjectUri_V2() {
+        val uri = Uri.parse("https://www.kickstarter.com/projects/1186238668/skull-graphic-tee")
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        val resultTest = io.reactivex.subscribers.TestSubscriber.create<Project>()
+        ProjectIntentMapper.project(intent, MockApiClientV2())
+            .subscribe { resultTest.onNext(it) }.addToDisposable(disposables)
         resultTest.assertValueCount(1)
     }
 

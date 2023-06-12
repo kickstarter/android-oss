@@ -3,21 +3,31 @@ package com.kickstarter.viewmodels
 import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Activity
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import org.joda.time.DateTime
+import org.junit.After
 import org.junit.Test
-import rx.observers.TestSubscriber
 
 class ActivitySampleFriendBackingViewHolderViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm: ActivitySampleFriendBackingViewHolderViewModel.ViewModel
+    private lateinit var vm: ActivitySampleFriendBackingViewHolderViewModel.ActivitySampleFriendBackingViewHolderViewModel
 
     private val bindActivity = TestSubscriber.create<Activity>()
+    private val disposables = CompositeDisposable()
 
     private fun setupEnvironment(@NonNull environment: Environment) {
-        this.vm = ActivitySampleFriendBackingViewHolderViewModel.ViewModel(environment)
-        this.vm.outputs.bindActivity().subscribe(this.bindActivity)
+        this.vm = ActivitySampleFriendBackingViewHolderViewModel.ActivitySampleFriendBackingViewHolderViewModel(environment)
+        this.vm.outputs.bindActivity().subscribe { this.bindActivity.onNext(it) }.addToDisposable(disposables)
+    }
+
+    @After
+    fun cleanUp() {
+        vm.clearDisposables()
+        disposables.clear()
     }
 
     @Test

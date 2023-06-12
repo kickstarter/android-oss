@@ -1,44 +1,50 @@
 package com.kickstarter.viewmodels
 
-import androidx.annotation.NonNull
-import com.kickstarter.libs.ActivityViewModel
+import android.content.Intent
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.Activity
-import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder
-import rx.Observable
-import rx.subjects.BehaviorSubject
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
 
 class ActivitySampleFriendBackingViewHolderViewModel {
     interface Inputs {
         /** Configure with current [Activity]. */
         fun configureWith(activity: Activity)
+        fun clearDisposables()
     }
 
     interface Outputs {
         fun bindActivity(): Observable<Activity>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ActivitySampleFriendBackingViewHolder>(environment), Inputs, Outputs {
+    class ActivitySampleFriendBackingViewHolderViewModel(val environment: Environment, private val intent: Intent? = null) : Inputs, Outputs {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
         private val activityInput = BehaviorSubject.create<Activity>()
         private val bindActivity = BehaviorSubject.create<Activity>()
+        private val disposables = CompositeDisposable()
         init {
             activityInput
                 .filter { ObjectUtils.isNotNull(it) }
                 .filter { ObjectUtils.isNotNull(it.user()) }
                 .filter { ObjectUtils.isNotNull(it.project()) }
                 .map { requireNotNull(it) }
-                .compose(bindToLifecycle())
                 .subscribe {
                     bindActivity.onNext(it)
                 }
+                .addToDisposable(disposables)
         }
 
         override fun configureWith(activity: Activity) =
             this.activityInput.onNext(activity)
         override fun bindActivity(): Observable<Activity> = this.bindActivity
+
+        override fun clearDisposables() {
+            disposables.clear()
+        }
     }
 }

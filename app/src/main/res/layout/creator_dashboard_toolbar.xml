@@ -21,15 +21,26 @@
     app:layout_scrollFlags="scroll|exitUntilCollapsed"
     app:paddingEnd="@dimen/grid_2">
 
-    <TextView
-      android:id="@+id/creator_dashboard_project_name"
-      style="@style/Title1"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="bottom"
-      android:layout_marginTop="?attr/actionBarSize"
-      android:padding="@dimen/grid_2"
-      tools:text="Project Name" />
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical" >
+      <TextView
+          android:id="@+id/creator_dashboard_project_name"
+          style="@style/Title1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="?attr/actionBarSize"
+          android:padding="@dimen/grid_2"
+          tools:text="Project Name" />
+
+      <androidx.compose.ui.platform.ComposeView
+          android:id="@+id/compose_view_deprecation_header"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          app:layout_anchor="@id/creator_dashboard_toolbar_layout" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <com.kickstarter.ui.toolbars.KSToolbar
       android:id="@+id/creator_dashboard_toolbar"

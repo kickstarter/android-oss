@@ -5,16 +5,17 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Pair
 import android.webkit.WebView
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.kickstarter.R
 import com.kickstarter.databinding.UpdateLayoutBinding
-import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.RefTag
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.libs.rx.transformers.Transformers.observeForUIV2
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.NumberUtils
-import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.isProjectUpdateCommentsUri
 import com.kickstarter.libs.utils.extensions.isProjectUpdateUri
@@ -22,23 +23,33 @@ import com.kickstarter.libs.utils.extensions.isProjectUri
 import com.kickstarter.models.Update
 import com.kickstarter.services.RequestHandler
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.views.KSWebView
 import com.kickstarter.viewmodels.UpdateViewModel
+import io.reactivex.disposables.CompositeDisposable
 import okhttp3.Request
 
-@RequiresActivityViewModel(UpdateViewModel.ViewModel::class)
-class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Delegate {
+class UpdateActivity : AppCompatActivity() {
     private lateinit var ksString: KSString
     private lateinit var binding: UpdateLayoutBinding
 
+    private lateinit var viewModelFactory: UpdateViewModel.Factory
+    private val viewModel: UpdateViewModel.UpdateViewModel by viewModels {
+        viewModelFactory
+    }
+
+    private lateinit var disposables: CompositeDisposable
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        this.getEnvironment()?.let { env ->
+            viewModelFactory = UpdateViewModel.Factory(env)
+        }
+        disposables = CompositeDisposable()
+
         binding = UpdateLayoutBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
-        ksString = requireNotNull(environment().ksString())
+        ksString = requireNotNull(getEnvironment()?.ksString())
 
-        binding.updateWebView.setDelegate(this)
         binding.updateWebView.registerRequestHandlers(
             listOf(
                 RequestHandler({ uri: Uri?, webEndpoint: String ->
@@ -61,73 +72,74 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
         val viewModel = requireNotNull(this.viewModel)
 
         viewModel.outputs.openProjectExternally()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe { projectUrl ->
                 openProjectExternally(projectUrl)
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.hasCommentsDeepLinks()
-            .filter { it == true }
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .filter { it }
+            .compose(observeForUIV2())
             .subscribe {
                 viewModel.inputs.goToCommentsActivity()
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.deepLinkToThreadActivity()
             .filter { it.second == true }
             .map { it.first }
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe {
                 viewModel.inputs.goToCommentsActivityToDeepLinkThreadActivity(it)
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startRootCommentsActivity()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe { update ->
                 startRootCommentsActivity(update)
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startRootCommentsActivityToDeepLinkThreadActivity()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe {
                 startRootCommentsActivityToDeepLinkThreadActivity(it)
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startProjectActivity()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe { uriAndRefTag ->
                 startProjectActivity(uriAndRefTag.first, uriAndRefTag.second)
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.startShareIntent()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe { updateAndShareUrl ->
                 startShareIntent(updateAndShareUrl)
             }
+            .addToDisposable(disposables)
 
         viewModel.outputs.updateSequence()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
+            .compose(observeForUIV2())
             .subscribe { updateSequence ->
                 binding.updateActivityToolbar.updateToolbar.setTitle(ksString.format(resources.getString(R.string.social_update_number), "update_number", updateSequence))
             }
+            .addToDisposable(disposables)
 
         binding.updateActivityToolbar.shareIconButton.setOnClickListener {
             viewModel.inputs.shareIconButtonClicked()
         }
+
+        viewModel.provideIntent(intent)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         binding.updateWebView.setDelegate(null)
-        this.viewModel = null
     }
 
     override fun onResume() {
@@ -135,31 +147,32 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
 
         // - When pressing the url within this webview for seeing updates for a concrete project, this same activity is presented again.
         // we need to reload the webview with the updates url to refresh the UI
-        this.viewModel?.let { vm ->
+        this.viewModel.let { vm ->
             vm.webViewUrl()
                 .take(1)
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
                 .subscribe { url ->
                     url?.let {
-                        binding.updateWebView.loadUrl(it)
+                        // for thread safety with RX 2
+                        binding.updateWebView.post {
+                            binding.updateWebView.loadUrl(it)
+                        }
                     }
                 }
         }
     }
 
     private fun handleProjectUpdateCommentsUriRequest(request: Request): Boolean {
-        this.viewModel?.inputs?.goToCommentsRequest(request)
+        this.viewModel.inputs.goToCommentsRequest(request)
         return true
     }
 
     private fun handleProjectUpdateUriRequest(request: Request): Boolean {
-        this.viewModel?.inputs?.goToUpdateRequest(request)
+        this.viewModel.inputs.goToUpdateRequest(request)
         return false
     }
 
     private fun handleProjectUriRequest(request: Request, webView: WebView): Boolean {
-        this.viewModel?.inputs?.goToProjectRequest(request)
+        this.viewModel.inputs.goToProjectRequest(request)
         return true
     }
 
@@ -170,7 +183,8 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
     private fun startRootCommentsActivity(update: Update) {
         val intent = Intent(this, CommentsActivity::class.java)
             .putExtra(IntentKey.UPDATE, update)
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun startRootCommentsActivityToDeepLinkThreadActivity(data: Pair<String, Update>) {
@@ -178,14 +192,16 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
             .putExtra(IntentKey.COMMENT, data.first)
             .putExtra(IntentKey.UPDATE, data.second)
 
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun startProjectActivity(uri: Uri, refTag: RefTag) {
         val intent = Intent().getProjectIntent(this)
             .setData(uri)
             .putExtra(IntentKey.REF_TAG, refTag)
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun startShareIntent(updateAndShareUrl: Pair<Update, String>) {
@@ -200,15 +216,4 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
             .putExtra(Intent.EXTRA_TEXT, "$shareMessage $shareUrl")
         startActivity(Intent.createChooser(intent, getString(R.string.Share_update)))
     }
-
-    override fun exitTransition(): Pair<Int, Int>? {
-        return TransitionUtils.slideInFromLeft()
-    }
-
-    override fun externalLinkActivated(url: String) {
-        this.viewModel?.inputs?.externalLinkActivated()
-    }
-
-    override fun pageIntercepted(url: String) {}
-    override fun onReceivedError(url: String) {}
 }

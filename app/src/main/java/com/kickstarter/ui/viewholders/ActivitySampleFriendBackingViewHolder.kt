@@ -72,6 +72,7 @@ class ActivitySampleFriendBackingViewHolder(
 
     override fun destroy() {
         this.vm.clearDisposables()
+        disposables.clear()
         super.destroy()
     }
 

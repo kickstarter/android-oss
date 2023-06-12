@@ -1,5 +1,6 @@
 package com.kickstarter.ui.viewholders.discoverydrawer
 
+import android.view.View
 import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import com.kickstarter.databinding.DiscoveryDrawerLoggedInViewBinding
@@ -13,7 +14,10 @@ import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.viewmodels.LoggedInViewHolderViewModel
 import com.squareup.picasso.Picasso
 
-class LoggedInViewHolder(private val binding: DiscoveryDrawerLoggedInViewBinding, @NonNull private val delegate: Delegate) : KSViewHolder(binding.root) {
+class LoggedInViewHolder(
+    private val binding: DiscoveryDrawerLoggedInViewBinding,
+    private val delegate: Delegate,
+    private val dashboardDeprecated: Boolean = false) : KSViewHolder(binding.root) {
     private val viewModel: LoggedInViewHolderViewModel.ViewModel = LoggedInViewHolderViewModel.ViewModel(environment())
 
     interface Delegate {
@@ -67,10 +71,14 @@ class LoggedInViewHolder(private val binding: DiscoveryDrawerLoggedInViewBinding
             .compose(observeForUI())
             .subscribe { binding.unseenActivityCount.setTextColor(ContextCompat.getColor(context(), it)) }
 
-        this.viewModel.outputs.dashboardRowIsGone()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
-            .subscribe { ViewUtils.setGone(binding.drawerDashboard, it) }
+        if (dashboardDeprecated) {
+            binding.drawerDashboard.visibility = View.GONE
+        } else {
+            this.viewModel.outputs.dashboardRowIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(binding.drawerDashboard, it) }
+        }
 
         this.viewModel.outputs.user()
             .subscribe { user ->

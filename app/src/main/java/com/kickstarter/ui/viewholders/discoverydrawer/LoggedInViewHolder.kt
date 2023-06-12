@@ -17,7 +17,8 @@ import com.squareup.picasso.Picasso
 class LoggedInViewHolder(
     private val binding: DiscoveryDrawerLoggedInViewBinding,
     private val delegate: Delegate,
-    private val dashboardDeprecated: Boolean = false) : KSViewHolder(binding.root) {
+    private val dashboardDeprecated: Boolean = false
+) : KSViewHolder(binding.root) {
     private val viewModel: LoggedInViewHolderViewModel.ViewModel = LoggedInViewHolderViewModel.ViewModel(environment())
 
     interface Delegate {

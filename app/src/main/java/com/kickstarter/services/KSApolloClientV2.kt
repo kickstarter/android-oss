@@ -4,11 +4,18 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.models.Location
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
+import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.SavePaymentMethodData
+import com.kickstarter.services.transformers.complexRewardItemsTransformer
 import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.services.transformers.projectTransformer
+import com.kickstarter.services.transformers.rewardTransformer
+import com.kickstarter.services.transformers.shippingRulesListTransformer
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -30,6 +37,8 @@ interface ApolloClientTypeV2 {
     fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data>
     fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data>
     fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>
+    fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope>
+    fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>>
 }
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
@@ -421,6 +430,91 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                             ps.onNext(it)
                         }
                         ps.onComplete()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
+        return Observable.defer {
+            val ps = PublishSubject.create<ShippingRulesEnvelope>()
+
+            this.service.query(
+                GetShippingRulesForRewardIdQuery.builder()
+                    .rewardId(encodeRelayId(reward))
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<GetShippingRulesForRewardIdQuery.Data>() {
+                    override fun onFailure(e: ApolloException) {
+                        ps.onError(e)
+                    }
+
+                    override fun onResponse(response: Response<GetShippingRulesForRewardIdQuery.Data>) {
+                        response.data?.let { data ->
+                            Observable.just(data?.node() as? GetShippingRulesForRewardIdQuery.AsReward)
+                                .filter { !it?.shippingRulesExpanded()?.nodes().isNullOrEmpty() }
+                                .map {
+                                    it?.shippingRulesExpanded()?.nodes()?.mapNotNull { node ->
+                                        node.fragments().shippingRule()
+                                    }
+                                }
+                                .filter { ObjectUtils.isNotNull(it) }
+                                .subscribe { shippingList ->
+                                    val shippingEnvelope = shippingRulesListTransformer(shippingList ?: emptyList())
+                                    ps.onNext(shippingEnvelope)
+                                    ps.onComplete()
+                                }
+                        }
+                    }
+                })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
+    }
+
+    private fun getAddOnsFromProject(addOnsGr: GetProjectAddOnsQuery.AddOns): List<Reward> {
+        return addOnsGr.nodes()?.map { node ->
+            val shippingRulesGr =
+                node.shippingRulesExpanded()?.nodes()?.map { it.fragments().shippingRule() }
+                    ?: emptyList()
+            rewardTransformer(
+                node.fragments().reward(),
+                shippingRulesGr,
+                addOnItems = complexRewardItemsTransformer(node.items()?.fragments()?.rewardItems())
+            )
+        }?.toList() ?: emptyList()
+    }
+    override fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>> {
+        return Observable.defer {
+            val ps = PublishSubject.create<List<Reward>>()
+
+            this.service.query(
+                GetProjectAddOnsQuery.builder()
+                    .slug(slug)
+                    .locationId(encodeRelayId(locationId))
+                    .build()
+            )
+                .enqueue(object : ApolloCall.Callback<GetProjectAddOnsQuery.Data>() {
+                    override fun onFailure(e: ApolloException) {
+                        ps.onError(e)
+                    }
+
+                    override fun onResponse(response: Response<GetProjectAddOnsQuery.Data>) {
+                        response.data?.let { data ->
+                            rx.Observable.just(data.project()?.addOns())
+                                .filter { it?.nodes() != null }
+                                .map<List<Reward>> { addOnsList ->
+                                    addOnsList?.let {
+                                        getAddOnsFromProject(
+                                            it
+                                        )
+                                    } ?: emptyList()
+                                }
+                                .subscribe {
+                                    ps.onNext(it)
+                                    ps.onComplete()
+                                }
+                        }
                     }
                 })
             return@defer ps

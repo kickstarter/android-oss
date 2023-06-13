@@ -7,12 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isGone
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentBackingAddonsBinding
-import com.kickstarter.libs.BaseFragment
-import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
+import com.kickstarter.libs.KSString
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.selectPledgeFragment
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -26,12 +29,17 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.viewholders.BackingAddOnViewHolder
 import com.kickstarter.viewmodels.BackingAddOnsFragmentViewModel
-import rx.android.schedulers.AndroidSchedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import java.util.concurrent.TimeUnit
 
-@RequiresFragmentViewModel(BackingAddOnsFragmentViewModel.ViewModel::class)
-class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewModel>(), ShippingRulesAdapter.Delegate, BackingAddOnViewHolder.ViewListener {
+class BackingAddOnsFragment : Fragment(), ShippingRulesAdapter.Delegate, BackingAddOnViewHolder.ViewListener {
     private var binding: FragmentBackingAddonsBinding? = null
+
+    private lateinit var viewModelFactory: BackingAddOnsFragmentViewModel.Factory
+    private val viewModel: BackingAddOnsFragmentViewModel.BackingAddOnsFragmentViewModel by viewModels { viewModelFactory }
+
+    private var disposables = CompositeDisposable()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -49,69 +57,72 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
         setupRecyclerView()
         setupErrorDialog()
 
+        val env = this.context?.getEnvironment()?.let { env ->
+            viewModelFactory = BackingAddOnsFragmentViewModel.Factory(env, bundle = savedInstanceState)
+            env
+        }
+
         this.viewModel.outputs.showPledgeFragment()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showPledgeFragment(it.first, it.second) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.addOnsList()
-            .compose(bindToLifecycle())
             .throttleWithTimeout(50, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 populateAddOns(it)
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.isEmptyState()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showEmptyState(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.selectedShippingRule()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding?.fragmentBackingAddonsShippingRules?.setText(it.toString()) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.showErrorDialog()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showErrorDialog() }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.shippingRulesAndProject()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { displayShippingRules(it.first, it.second) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.totalSelectedAddOns()
-            .compose(bindToLifecycle())
-            .onBackpressureBuffer()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { total ->
-                binding?.fragmentBackingAddonsSectionFooterLayout?.backingAddonsFooterButton ?.text = selectProperString(total)
+                binding?.fragmentBackingAddonsSectionFooterLayout?.backingAddonsFooterButton ?.text = selectProperString(total, requireNotNull(env?.ksString()))
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.shippingSelectorIsGone()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding?.fragmentBackingAddonsShippingRules?.isGone = it
                 binding?.fragmentBackingAddonsCallOut?.isGone = it
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.isEnabledCTAButton()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding?.fragmentBackingAddonsSectionFooterLayout?.backingAddonsFooterButton ?.isEnabled = it
             }
+            .addToDisposable(disposables)
 
         binding?.fragmentBackingAddonsSectionFooterLayout?.backingAddonsFooterButton ?.setOnClickListener {
             this.viewModel.inputs.continueButtonPressed()
         }
     }
 
-    private fun selectProperString(totalSelected: Int): String {
-        val ksString = requireNotNull(this.viewModel.environment.ksString())
+    private fun selectProperString(totalSelected: Int, ksString: KSString): String {
         return when {
             totalSelected == 0 -> ksString.format(getString(R.string.Skip_add_ons), "", "")
             totalSelected == 1 -> ksString.format(getString(R.string.Continue_with_quantity_count_add_ons_one), "quantity_count", totalSelected.toString())
@@ -206,9 +217,9 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
         this.viewModel.inputs.quantityPerId(quantityPerId)
     }
 
-    override fun onDetach() {
-        super.onDetach()
+    override fun onDestroyView() {
+        super.onDestroyView()
         binding?.fragmentSelectAddonsRecycler?.adapter = null
-        this.viewModel = null
+        disposables.clear()
     }
 }

@@ -4,6 +4,7 @@ import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.NumberUtils
@@ -255,6 +256,10 @@ interface ProjectOverviewViewModel {
         private val shouldShowReportProject: Observable<Boolean>
         private val shouldShowProjectFlagged: Observable<Boolean>
         private val openExternally = PublishSubject.create<String>()
+
+        private val creatorDashboardDeprecated: Boolean =
+            environment.featureFlagClient()
+                ?.getBoolean(FlagKey.ANDROID_CREATOR_DASHBOARD_DEPRECATION) ?: false
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -573,7 +578,13 @@ interface ProjectOverviewViewModel {
                 .map { buttonTextAndIsCreator: Pair<Int, Boolean?> -> buttonTextAndIsCreator.first }
 
             projectDashboardContainerIsGone = userIsCreatorOfProject
-                .map { it.negate() }
+                .map {
+                    if (creatorDashboardDeprecated) {
+                        true
+                    } else {
+                        it.negate()
+                    }
+                }
 
             projectDisclaimerGoalReachedDateTime = project
                 .filter { obj: Project -> obj.isFunded }

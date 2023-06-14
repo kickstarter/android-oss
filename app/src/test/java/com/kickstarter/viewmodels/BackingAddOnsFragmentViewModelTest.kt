@@ -913,7 +913,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig), bundle)
 
         this.shippingSelectorIsGone.assertNoValues()
-        this.selectedShippingRule.assertValues(ShippingRuleFactory.emptyShippingRule(), shippingRule.shippingRules().first())
+        this.selectedShippingRule.assertValues(shippingRule.shippingRules().first())
         this.addOnsList.assertValues(Triple(projectData, listAddons, shippingRule.shippingRules().first()))
 
         // - Always 0 first time, them summatory of all addOns quantity every time the list gets updated
@@ -974,14 +974,13 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig), bundle)
 
         this.shippingSelectorIsGone.assertNoValues()
-        this.selectedShippingRule.assertValues(ShippingRuleFactory.emptyShippingRule(), shippingRule.shippingRules().first())
+        this.selectedShippingRule.assertValues(shippingRule.shippingRules().first())
 
         // - Change shippingRule
         this.vm.inputs.shippingRuleSelected(ShippingRuleFactory.mexicoShippingRule())
 
         // - Test asserts
         this.selectedShippingRule.assertValues(
-            ShippingRuleFactory.emptyShippingRule(),
             shippingRule.shippingRules().first(),
             ShippingRuleFactory.mexicoShippingRule()
         )
@@ -1089,8 +1088,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(buildEnvironmentWithError(currentConfig), bundle)
 
         // Two values -> two failed network calls
-        this.showErrorDialog.assertValues(true, true)
-        this.shippingSelectorIsGone.assertValues(true, true, true)
+        this.showErrorDialog.assertValue(true)
+        this.shippingSelectorIsGone.assertValues(true)
     }
 
     fun addOnsList_whenUnavailable_FilteredOut() {

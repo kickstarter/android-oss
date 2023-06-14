@@ -25,6 +25,7 @@ import com.kickstarter.ui.data.ProjectData
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import java.util.Locale
 
 class BackingAddOnsFragmentViewModel {
@@ -89,13 +90,13 @@ class BackingAddOnsFragmentViewModel {
         private val addOnsFromGraph = BehaviorSubject.create<List<Reward>>()
         private var pledgeDataAndReason = BehaviorSubject.create<Pair<PledgeData, PledgeReason>>()
         private val shippingRuleSelected = BehaviorSubject.create<ShippingRule>()
-        private val shippingRulesAndProject = BehaviorSubject.create<Pair<List<ShippingRule>, Project>>()
+        private val shippingRulesAndProject = PublishSubject.create<Pair<List<ShippingRule>, Project>>()
 
         private val projectAndReward: Observable<Pair<Project, Reward>>
         private val retryButtonPressed = BehaviorSubject.create<Boolean>()
 
-        private val pledgeFragmentData = BehaviorSubject.create<Pair<PledgeData, PledgeReason>>()
-        private val showPledgeFragment = BehaviorSubject.create<Pair<PledgeData, PledgeReason>>()
+        private val pledgeFragmentData = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
+        private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val shippingSelectorIsGone = BehaviorSubject.create<Boolean>()
         private val addOnsListFiltered = BehaviorSubject.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
         private val isEmptyState = BehaviorSubject.create<Boolean>()

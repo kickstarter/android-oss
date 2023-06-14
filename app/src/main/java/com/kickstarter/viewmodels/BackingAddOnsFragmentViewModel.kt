@@ -145,14 +145,12 @@ class BackingAddOnsFragmentViewModel {
                 .map { it.reward() }
 
             val backing = projectData
-                .map { getBackingFromProjectData(it) }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
+                .filter { getBackingFromProjectData(it) != null }
+                .map { requireNotNull(getBackingFromProjectData(it)) }
 
             val backingReward = backing
-                .map { it.reward() }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
+                .filter { it.reward() != null }
+                .map { requireNotNull(it.reward()) }
 
             val isSameReward = rewardPledge
                 .compose<Pair<Reward, Reward>>(combineLatestPair(backingReward))
@@ -204,9 +202,8 @@ class BackingAddOnsFragmentViewModel {
                 .compose<Pair<Backing, Boolean>>(combineLatestPair(isSameReward))
                 .filter { it.second }
                 .map { it.first }
+                .filter { ObjectUtils.isNotNull(it.addOns()?.toList()) }
                 .map { it.addOns()?.toList() }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
                 .distinctUntilChanged()
 
             val combinedList = addOnsFromBacking

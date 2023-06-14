@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels
 
-import android.os.Build
 import android.os.Bundle
 import android.util.Pair
 import androidx.lifecycle.ViewModel
@@ -32,6 +31,7 @@ import java.util.Locale
 class BackingAddOnsFragmentViewModel {
 
     interface Inputs {
+
         /** Configure with the current [ProjectData] and [Reward].
          * @param projectData we get the Project for currency
          */
@@ -109,24 +109,20 @@ class BackingAddOnsFragmentViewModel {
         private val quantityPerId = PublishSubject.create<Pair<Int, Long>>()
         private val currentSelection = BehaviorSubject.createDefault(mutableMapOf<Long, Int>())
 
+        private fun arguments() = bundle?.let { Observable.just(it) } ?: Observable.empty()
+
         // - Environment Objects
         private val apolloClient = requireNotNull(this.environment.apolloClientV2())
         private val currentConfig = requireNotNull(environment.currentConfigV2())
         private val analyticEvents = requireNotNull(environment.analytics())
         private val disposables = CompositeDisposable()
 
-        private fun arguments() = Observable.just(bundle)
-
         init {
-
             val pledgeData = arguments()
                 .map {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData::class.java)
-                    } else {
-                        it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA)
-                    }
+                    it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData?
                 }
+                .filter { ObjectUtils.isNotNull(it) }
                 .ofType(PledgeData::class.java)
 
             pledgeData
@@ -136,13 +132,8 @@ class BackingAddOnsFragmentViewModel {
 
             val pledgeReason = arguments()
                 .map {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason::class.java)
-                    } else {
-                        it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON)
-                    }
+                    it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason
                 }
-                .ofType(PledgeReason::class.java)
 
             val projectData = pledgeData
                 .map { it.projectData() }
@@ -648,7 +639,7 @@ class BackingAddOnsFragmentViewModel {
     @Suppress("UNCHECKED_CAST")
     class Factory(private val environment: Environment, private val bundle: Bundle? = null) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return BackingAddOnsFragmentViewModel(environment, bundle) as T
+            return BackingAddOnsFragmentViewModel(environment, bundle = bundle) as T
         }
     }
 }

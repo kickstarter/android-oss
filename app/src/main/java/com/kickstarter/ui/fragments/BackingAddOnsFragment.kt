@@ -58,7 +58,7 @@ class BackingAddOnsFragment : Fragment(), ShippingRulesAdapter.Delegate, Backing
         setupErrorDialog()
 
         val env = this.context?.getEnvironment()?.let { env ->
-            viewModelFactory = BackingAddOnsFragmentViewModel.Factory(env, bundle = savedInstanceState)
+            viewModelFactory = BackingAddOnsFragmentViewModel.Factory(env, bundle = arguments)
             env
         }
 

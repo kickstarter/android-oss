@@ -27,7 +27,11 @@ class ThanksCategoryViewHolder(
         viewModel.outputs.notifyDelegateOfCategoryClick()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { category: Category? -> this.delegate.categoryViewHolderClicked(category) }
+            .subscribe { category: Category? ->
+                category?.let {
+                    this.delegate.categoryViewHolderClicked(it)
+                }
+            }
     }
     @Throws(Exception::class)
     override fun bindData(data: Any?) {

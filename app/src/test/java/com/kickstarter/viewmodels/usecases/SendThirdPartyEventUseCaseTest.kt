@@ -9,6 +9,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ThirdPartyEventName
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.toHashedSHAEmail
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.CheckoutDataFactory
@@ -23,6 +24,8 @@ import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
+import io.reactivex.disposables.CompositeDisposable
+import org.junit.After
 import org.junit.Test
 import org.mockito.Mockito
 import rx.Observable
@@ -32,10 +35,20 @@ import type.TriggerThirdPartyEventInput
 
 class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
 
-    private var mockSharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+    private var mockSharedPreferences: SharedPreferences =
+        Mockito.mock(SharedPreferences::class.java)
 
-    private val sendCAPIEventObservable = BehaviorSubject.create<Pair<TriggerCapiEventMutation.Data, TriggerCapiEventInput>>()
-    private val sendThirdPartyEventObservable = BehaviorSubject.create<Pair<TriggerThirdPartyEventMutation.Data, TriggerThirdPartyEventInput>>()
+    private val sendCAPIEventObservable =
+        BehaviorSubject.create<Pair<TriggerCapiEventMutation.Data, TriggerCapiEventInput>>()
+    private val sendThirdPartyEventObservable =
+        BehaviorSubject.create<Pair<TriggerThirdPartyEventMutation.Data, TriggerThirdPartyEventInput>>()
+
+    private val disposables = CompositeDisposable()
+
+    @After
+    fun cleanUp() {
+        disposables.clear()
+    }
 
     private val mockFeatureFlagClientType: MockFeatureFlagClient =
         object : MockFeatureFlagClient() {
@@ -44,7 +57,9 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
             }
         }
 
-    val currentUser: CurrentUserType = MockCurrentUser(UserFactory.user().toBuilder().id(7272).email("some@email.com").build())
+    val currentUser: CurrentUserType =
+        MockCurrentUser(UserFactory.user().toBuilder().id(7272).email("some@email.com").build())
+
     private fun setUpEnvironment(mockFeatureFlagClient: MockFeatureFlagClient = mockFeatureFlagClientType): Environment {
         return environment()
             .toBuilder()
@@ -85,7 +100,12 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
             null
         )
 
-        subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(mockFeatureFlagClientType), Observable.just(Pair(checkoutData, pledgeData)), ThirdPartyEventName.PURCHASE)
+        subscribeToThirdPartyEvent(
+            io.reactivex.Observable.just(project),
+            setUpEnvironment(mockFeatureFlagClientType),
+            io.reactivex.Observable.just(Pair(checkoutData, pledgeData)),
+            ThirdPartyEventName.PURCHASE
+        )
         assertNull(ThirdPartyEventName.PURCHASE.value, sendThirdPartyEventObservable.value)
     }
 
@@ -113,7 +133,12 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
             null
         )
 
-        subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(), Observable.just(Pair(checkoutData, pledgeData)), ThirdPartyEventName.PURCHASE)
+        subscribeToThirdPartyEvent(
+            io.reactivex.Observable.just(project),
+            setUpEnvironment(),
+            io.reactivex.Observable.just(Pair(checkoutData, pledgeData)),
+            ThirdPartyEventName.PURCHASE
+        )
         assertNull(ThirdPartyEventName.PURCHASE.value, sendThirdPartyEventObservable.value)
     }
 
@@ -141,7 +166,12 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
             null
         )
 
-        subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(), Observable.just(Pair(checkoutData, pledgeData)), ThirdPartyEventName.PURCHASE)
+        subscribeToThirdPartyEvent(
+            io.reactivex.Observable.just(project),
+            setUpEnvironment(),
+            io.reactivex.Observable.just(Pair(checkoutData, pledgeData)),
+            ThirdPartyEventName.PURCHASE
+        )
         assertNull(ThirdPartyEventName.PURCHASE.value, sendThirdPartyEventObservable.value)
     }
 
@@ -160,7 +190,10 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
 
         assertEquals(event.rawValue, sendCAPIEventObservable.value?.second?.eventName())
         assertEquals(encodeRelayId(project), sendCAPIEventObservable.value?.second?.projectId())
-        assertEquals("some@email.com".toHashedSHAEmail(), sendCAPIEventObservable.value?.second?.userEmail())
+        assertEquals(
+            "some@email.com".toHashedSHAEmail(),
+            sendCAPIEventObservable.value?.second?.userEmail()
+        )
         assertEquals(null, sendCAPIEventObservable.value?.second?.customData()?.currency())
         assertEquals(null, sendCAPIEventObservable.value?.second?.customData()?.value())
         assertEquals("a2", sendCAPIEventObservable.value?.second?.appData()?.extinfo()?.first())
@@ -182,7 +215,10 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
 
         assertEquals(event.rawValue, sendCAPIEventObservable.value?.second?.eventName())
         assertEquals(encodeRelayId(project), sendCAPIEventObservable.value?.second?.projectId())
-        assertEquals("some@email.com".toHashedSHAEmail(), sendCAPIEventObservable.value?.second?.userEmail())
+        assertEquals(
+            "some@email.com".toHashedSHAEmail(),
+            sendCAPIEventObservable.value?.second?.userEmail()
+        )
         assertEquals(null, sendCAPIEventObservable.value?.second?.customData()?.currency())
         assertEquals(null, sendCAPIEventObservable.value?.second?.customData()?.value())
         assertEquals("a2", sendCAPIEventObservable.value?.second?.appData()?.extinfo()?.first())
@@ -204,7 +240,10 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
 
         assertEquals(event.rawValue, sendCAPIEventObservable.value?.second?.eventName())
         assertEquals(encodeRelayId(project), sendCAPIEventObservable.value?.second?.projectId())
-        assertEquals("some@email.com".toHashedSHAEmail(), sendCAPIEventObservable.value?.second?.userEmail())
+        assertEquals(
+            "some@email.com".toHashedSHAEmail(),
+            sendCAPIEventObservable.value?.second?.userEmail()
+        )
         assertEquals(null, sendCAPIEventObservable.value?.second?.customData()?.currency())
         assertEquals(null, sendCAPIEventObservable.value?.second?.customData()?.value())
         assertEquals("a2", sendCAPIEventObservable.value?.second?.appData()?.extinfo()?.first())
@@ -226,12 +265,16 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
 
         assertEquals(event.rawValue, sendCAPIEventObservable.value?.second?.eventName())
         assertEquals(encodeRelayId(project), sendCAPIEventObservable.value?.second?.projectId())
-        assertEquals("some@email.com".toHashedSHAEmail(), sendCAPIEventObservable.value?.second?.userEmail())
+        assertEquals(
+            "some@email.com".toHashedSHAEmail(),
+            sendCAPIEventObservable.value?.second?.userEmail()
+        )
         assertEquals("USD", sendCAPIEventObservable.value?.second?.customData()?.currency())
         assertEquals("10", sendCAPIEventObservable.value?.second?.customData()?.value())
         assertEquals("a2", sendCAPIEventObservable.value?.second?.appData()?.extinfo()?.first())
         assertEquals("", sendCAPIEventObservable.value?.second?.externalId())
     }
+
     @Test
     fun testSendThirdPartyPurchaseEvent() {
         Mockito.`when`(
@@ -247,7 +290,10 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
             20.0,
             30.0
         )
-        val addons = listOf(RewardFactory.addOn().toBuilder().build(), RewardFactory.addOnMultiple().toBuilder().id(242).build())
+        val addons = listOf(
+            RewardFactory.addOn().toBuilder().build(),
+            RewardFactory.addOnMultiple().toBuilder().id(242).build()
+        )
         val pledgeData = PledgeData.with(
             PledgeFlowContext.NEW_PLEDGE,
             ProjectDataFactory.project(project),
@@ -255,10 +301,21 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
             addons,
             null
         )
-        subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(), Observable.just(Pair(checkoutData, pledgeData)), ThirdPartyEventName.PURCHASE)
+        subscribeToThirdPartyEvent(
+            io.reactivex.Observable.just(project),
+            setUpEnvironment(),
+            io.reactivex.Observable.just(Pair(checkoutData, pledgeData)),
+            ThirdPartyEventName.PURCHASE
+        )
 
-        assertEquals(ThirdPartyEventName.PURCHASE.value, sendThirdPartyEventObservable.value?.second?.eventName())
-        assertEquals(encodeRelayId(project), sendThirdPartyEventObservable.value?.second?.projectId())
+        assertEquals(
+            ThirdPartyEventName.PURCHASE.value,
+            sendThirdPartyEventObservable.value?.second?.eventName()
+        )
+        assertEquals(
+            encodeRelayId(project),
+            sendThirdPartyEventObservable.value?.second?.projectId()
+        )
         assertNull(sendThirdPartyEventObservable.value?.second?.firebasePreviousScreen())
         assertNull(sendThirdPartyEventObservable.value?.second?.firebaseScreen())
         assertEquals(3, sendThirdPartyEventObservable.value?.second?.items()?.size)
@@ -273,7 +330,12 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
         environment: Environment,
         project: Project,
         event: ConversionsAPIEventName,
-        pledgeAmountAndCurrency: Observable<Pair<String?, String?>> = Observable.just(Pair(null, null))
+        pledgeAmountAndCurrency: Observable<Pair<String?, String?>> = Observable.just(
+            Pair(
+                null,
+                null
+            )
+        )
     ) {
         SendThirdPartyEventUseCase(
             requireNotNull(environment.sharedPreferences()),
@@ -290,9 +352,11 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
     }
 
     private fun subscribeToThirdPartyEvent(
-        project: Observable<Project>,
+        project: io.reactivex.Observable<Project>,
         environment: Environment,
-        checkoutAndPledgeData: Observable<Pair<CheckoutData, PledgeData>?> = Observable.just(Pair(null, null)),
+        checkoutAndPledgeData: io.reactivex.Observable<Pair<CheckoutData, PledgeData>?> = io.reactivex.Observable.just(
+            Pair(null, null)
+        ),
         eventName: ThirdPartyEventName,
         firebaseScreen: String? = null,
         firebasePreviousScreen: String? = null,
@@ -302,14 +366,14 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
             requireNotNull(environment.featureFlagClient())
         ).sendThirdPartyEvent(
             project = project,
-            apolloClient = requireNotNull(environment.apolloClient()),
+            apolloClient = requireNotNull(environment.apolloClientV2()),
             checkoutAndPledgeData = checkoutAndPledgeData,
-            currentUser = requireNotNull(environment.currentUser()),
+            currentUser = requireNotNull(environment.currentUserV2()),
             eventName = eventName,
             firebaseScreen = firebaseScreen,
             firebasePreviousScreen = firebasePreviousScreen
         ).subscribe {
             sendThirdPartyEventObservable.onNext(it)
-        }
+        }.addToDisposable(disposables)
     }
 }

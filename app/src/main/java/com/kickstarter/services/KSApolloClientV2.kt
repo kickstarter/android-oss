@@ -4,9 +4,11 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
+import com.kickstarter.models.Category
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.services.mutations.SavePaymentMethodData
+import com.kickstarter.services.transformers.categoryTransformer
 import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.services.transformers.projectTransformer
 import io.reactivex.Observable
@@ -14,6 +16,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import type.CurrencyCode
 import type.FlaggingKind
+import type.TriggerThirdPartyEventInput
 
 interface ApolloClientTypeV2 {
     fun getProject(project: Project): Observable<Project>
@@ -30,6 +33,8 @@ interface ApolloClientTypeV2 {
     fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data>
     fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data>
     fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>
+    fun fetchCategory(param: String): Observable<Category>
+    fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<TriggerThirdPartyEventMutation.Data>
 }
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
@@ -421,6 +426,56 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                             ps.onNext(it)
                         }
                         ps.onComplete()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun fetchCategory(categoryParam: String): Observable<Category> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Category>()
+            this.service.query(
+                FetchCategoryQuery.builder()
+                    .categoryParam(categoryParam)
+                    .build()
+            ).enqueue(object : ApolloCall.Callback<FetchCategoryQuery.Data>() {
+                override fun onFailure(e: ApolloException) {
+                    ps.onError(e)
+                }
+
+                override fun onResponse(response: Response<FetchCategoryQuery.Data>) {
+                    response.data?.let { responseData ->
+                        val category =
+                            categoryTransformer(responseData.category()?.fragments()?.category())
+
+                        rx.Observable.just(category)
+                            .subscribeOn(rx.schedulers.Schedulers.io())
+                            .subscribe {
+                                ps.onNext(it)
+                                ps.onComplete()
+                            }
+                    }
+                }
+            })
+            return@defer ps
+        }.subscribeOn(Schedulers.io())
+    }
+
+    override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<TriggerThirdPartyEventMutation.Data> {
+        return Observable.defer {
+            val ps = PublishSubject.create<TriggerThirdPartyEventMutation.Data>()
+            service.mutate(TriggerThirdPartyEventMutation.builder().triggerThirdPartyEventInput(triggerThirdPartyEventInput).build())
+                .enqueue(object : ApolloCall.Callback<TriggerThirdPartyEventMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<TriggerThirdPartyEventMutation.Data>) {
+                        response.data?.let {
+                            ps.onNext(it)
+                            ps.onComplete()
+                        }
                     }
                 })
             return@defer ps

@@ -11,6 +11,7 @@ import com.kickstarter.libs.RefTag.Companion.thanks
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.preferences.MockBooleanPreference
 import com.kickstarter.libs.utils.EventName
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.CategoryFactory.artCategory
 import com.kickstarter.mock.factories.CategoryFactory.category
@@ -34,34 +35,40 @@ import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.adapters.data.ThanksData
 import com.kickstarter.ui.data.PledgeData.Companion.with
 import com.kickstarter.ui.data.PledgeFlowContext
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import org.junit.Test
 import org.mockito.Mockito
-import rx.observers.TestSubscriber
-import java.util.Arrays
 
 class ThanksViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm: ThanksViewModel.ViewModel
+    private lateinit var vm: ThanksViewModel.ThanksViewModel
     private val adapterData = TestSubscriber<ThanksData>()
-    private val finish = TestSubscriber<Void>()
-    private val showGamesNewsletterDialogTest = TestSubscriber<Void>()
-    private val showRatingDialogTest = TestSubscriber<Void>()
-    private val showConfirmGamesNewsletterDialogTest = TestSubscriber.create<Void>()
+    private val finish = TestSubscriber<Unit>()
+    private val showGamesNewsletterDialogTest = TestSubscriber<Unit>()
+    private val showRatingDialogTest = TestSubscriber<Unit>()
+    private val showConfirmGamesNewsletterDialogTest = TestSubscriber.create<Unit>()
     private val startDiscoveryTest = TestSubscriber<DiscoveryParams>()
     private val startProjectTest = TestSubscriber<android.util.Pair<Project, RefTag>>()
-    private val showSavedPromptTest = TestSubscriber<Void>()
+    private val showSavedPromptTest = TestSubscriber<Unit>()
+    private val disposables = CompositeDisposable()
 
     private fun setUpEnvironment(environment: Environment) {
-        vm = ThanksViewModel.ViewModel(environment)
-        vm.outputs.adapterData().subscribe(adapterData)
-        vm.outputs.finish().subscribe(finish)
-        vm.outputs.showGamesNewsletterDialog().subscribe(showGamesNewsletterDialogTest)
-        vm.outputs.showRatingDialog().subscribe(showRatingDialogTest)
-        vm.outputs.showConfirmGamesNewsletterDialog().subscribe(
-            showConfirmGamesNewsletterDialogTest
-        )
-        vm.outputs.startDiscoveryActivity().subscribe(startDiscoveryTest)
-        vm.outputs.startProjectActivity().subscribe(startProjectTest)
-        vm.outputs.showSavedPrompt().subscribe(showSavedPromptTest)
+        vm = ThanksViewModel.ThanksViewModel(environment)
+        vm.outputs.adapterData().subscribe { adapterData.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.finish().subscribe { finish.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.showGamesNewsletterDialog()
+            .subscribe { showGamesNewsletterDialogTest.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.showRatingDialog().subscribe { showRatingDialogTest.onNext(it) }
+            .addToDisposable(disposables)
+        vm.outputs.showConfirmGamesNewsletterDialog().subscribe {
+            showConfirmGamesNewsletterDialogTest.onNext(it)
+        }.addToDisposable(disposables)
+        vm.outputs.startDiscoveryActivity().subscribe { startDiscoveryTest.onNext(it) }
+            .addToDisposable(disposables)
+        vm.outputs.startProjectActivity().subscribe { startProjectTest.onNext(it) }
+            .addToDisposable(disposables)
+        vm.outputs.showSavedPrompt().subscribe { showSavedPromptTest.onNext(it) }
+            .addToDisposable(disposables)
     }
 
     @Test
@@ -72,7 +79,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .build()
         setUpEnvironment(environment())
 
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        vm.provideIntent(Intent().putExtra(IntentKey.PROJECT, project))
 
         adapterData.assertValueCount(1)
         vm.inputs.onHeartButtonClicked(project)
@@ -90,7 +97,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        vm.provideIntent(Intent().putExtra(IntentKey.PROJECT, project))
         adapterData.assertValueCount(1)
     }
 
@@ -101,7 +108,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         val intent = Intent()
             .putExtra(IntentKey.PROJECT, project())
 
-        vm.intent(intent)
+        vm.provideIntent(intent)
         vm.inputs.closeButtonClicked()
         finish.assertValueCount(1)
     }
@@ -126,7 +133,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment)
 
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, project()))
+        vm.provideIntent(Intent().putExtra(IntentKey.PROJECT, project()))
         showRatingDialogTest.assertValueCount(0)
     }
 
@@ -150,7 +157,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment)
 
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, project()))
+        vm.provideIntent(Intent().putExtra(IntentKey.PROJECT, project()))
         showRatingDialogTest.assertValueCount(1)
     }
 
@@ -174,7 +181,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment)
 
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, project()))
+        vm.provideIntent(Intent().putExtra(IntentKey.PROJECT, project()))
         showRatingDialogTest.assertValueCount(0)
     }
 
@@ -206,7 +213,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment)
 
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        vm.provideIntent(Intent().putExtra(IntentKey.PROJECT, project))
         showRatingDialogTest.assertValueCount(0)
     }
 
@@ -228,10 +235,10 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .category(tabletopGamesCategory())
             .build()
 
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        vm.provideIntent(Intent().putExtra(IntentKey.PROJECT, project))
 
         showGamesNewsletterDialogTest.assertValueCount(1)
-        assertEquals(Arrays.asList(false, true), hasSeenGamesNewsletterPreference.values())
+        assertEquals(listOf(false, true), hasSeenGamesNewsletterPreference.values())
     }
 
     @Test
@@ -252,7 +259,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .category(ceramicsCategory())
             .build()
 
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        vm.provideIntent(Intent().putExtra(IntentKey.PROJECT, project))
 
         showGamesNewsletterDialogTest.assertValueCount(0)
     }
@@ -275,7 +282,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .category(tabletopGamesCategory())
             .build()
 
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        vm.provideIntent(Intent().putExtra(IntentKey.PROJECT, project))
         showGamesNewsletterDialogTest.assertValueCount(0)
     }
 
@@ -297,7 +304,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .category(tabletopGamesCategory())
             .build()
 
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        vm.provideIntent(Intent().putExtra(IntentKey.PROJECT, project))
         showGamesNewsletterDialogTest.assertValueCount(0)
     }
 
@@ -315,14 +322,14 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         (environment.apiClient() as? MockApiClient)?.observable()
             ?.filter { "update_user_settings" == it.first }
             ?.map { it.second["user"] as? User }
-            ?.subscribe(updateUserSettingsTest)
+            ?.subscribe { updateUserSettingsTest.onNext(it) }
 
         val project = project()
             .toBuilder()
             .category(tabletopGamesCategory())
             .build()
 
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        vm.provideIntent(Intent().putExtra(IntentKey.PROJECT, project))
         vm.signupToGamesNewsletterClick()
 
         updateUserSettingsTest.assertValues(user.toBuilder().gamesNewsletter(true).build())
@@ -344,7 +351,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
 
         val project = project().toBuilder().category(tabletopGamesCategory()).build()
 
-        vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        vm.provideIntent(Intent().putExtra(IntentKey.PROJECT, project))
         vm.signupToGamesNewsletterClick()
         showConfirmGamesNewsletterDialogTest.assertValueCount(1)
     }
@@ -380,10 +387,10 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
             .putExtra(IntentKey.PROJECT, project)
 
-        vm.intent(intent)
+        vm.provideIntent(intent)
         vm.inputs.projectCardViewHolderClicked(project)
 
-        val projectPageParams = startProjectTest.onNextEvents[0]
+        val projectPageParams = startProjectTest.values().first()
 
         assertEquals(projectPageParams.first, project)
         assertEquals(projectPageParams.second, thanks())
@@ -394,7 +401,12 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testSendCAPIEvent_whenBackedPRoject_sendCAPIEvent_withFeatureFlag__withConsentManagement_off_isFailed() {
         var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
-        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false))
+        Mockito.`when`(
+            sharedPreferences.getBoolean(
+                SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE,
+                false
+            )
+        )
             .thenReturn(false)
 
         setUpEnvironment(
@@ -421,21 +433,27 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
             .putExtra(IntentKey.PROJECT, project)
 
-        vm.intent(intent)
+        vm.provideIntent(intent)
         vm.inputs.projectCardViewHolderClicked(project)
 
-        val projectPageParams = startProjectTest.onNextEvents[0]
+        val projectPageParams = startProjectTest.values().first()
 
         assertEquals(projectPageParams.first, project)
         assertEquals(projectPageParams.second, thanks())
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
         assertEquals(null, this.vm.onThirdPartyEventSent.value)
     }
+
     @Test
     fun testSendCAPIEvent_whenBackedPRoject_sendCAPIEvent_withFeatureFlag_on_isSuccessful() {
         var user = UserFactory.user()
         var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
-        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false))
+        Mockito.`when`(
+            sharedPreferences.getBoolean(
+                SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE,
+                false
+            )
+        )
             .thenReturn(true)
 
         val mockFeatureFlagClient: MockFeatureFlagClient =
@@ -471,10 +489,10 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
             .putExtra(IntentKey.PROJECT, project)
 
-        vm.intent(intent)
+        vm.provideIntent(intent)
         vm.inputs.projectCardViewHolderClicked(project)
 
-        val projectPageParams = startProjectTest.onNextEvents[0]
+        val projectPageParams = startProjectTest.values().first()
 
         assertEquals(projectPageParams.first, project)
         assertEquals(projectPageParams.second, thanks())
@@ -514,10 +532,10 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
             .putExtra(IntentKey.PROJECT, project)
 
-        vm.intent(intent)
+        vm.provideIntent(intent)
         vm.inputs.projectCardViewHolderClicked(project)
 
-        val projectPageParams = startProjectTest.onNextEvents[0]
+        val projectPageParams = startProjectTest.values().first()
         assertEquals(projectPageParams.first, project)
         assertEquals(projectPageParams.second, thanks())
         segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
@@ -545,7 +563,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
             .putExtra(IntentKey.PROJECT, project)
 
-        vm.intent(intent)
+        vm.provideIntent(intent)
         segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
@@ -556,7 +574,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         val intent = Intent()
             .putExtra(IntentKey.PROJECT, project())
 
-        vm.intent(intent)
+        vm.provideIntent(intent)
         segmentTrack.assertNoValues()
     }
 }

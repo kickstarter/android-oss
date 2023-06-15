@@ -123,7 +123,11 @@ class ProjectCardViewHolder(
         viewModel.outputs.notifyDelegateOfProjectClick()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { delegate.projectCardViewHolderClicked(it) }
+            .subscribe { project ->
+                project?.let {
+                    delegate.projectCardViewHolderClicked(it)
+                }
+            }
 
         viewModel.outputs.percentageFundedTextViewText()
             .compose(bindToLifecycle())

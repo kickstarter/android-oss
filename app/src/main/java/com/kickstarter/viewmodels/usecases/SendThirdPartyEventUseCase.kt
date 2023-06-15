@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.util.Pair
 import com.facebook.appevents.cloudbridge.ConversionsAPIEventName
 import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.FirebaseHelper
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.featureflag.FlagKey
@@ -12,6 +13,7 @@ import com.kickstarter.libs.utils.ThirdPartyEventName
 import com.kickstarter.libs.utils.extensions.toHashedSHAEmail
 import com.kickstarter.models.Project
 import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.data.CheckoutData
@@ -79,24 +81,24 @@ class SendThirdPartyEventUseCase(
     }
 
     fun sendThirdPartyEvent(
-        project: Observable<Project>,
-        apolloClient: ApolloClientType,
-        checkoutAndPledgeData: Observable<Pair<CheckoutData, PledgeData>?> = Observable.just(Pair(null, null)),
-        currentUser: CurrentUserType,
+        project: io.reactivex.Observable<Project>,
+        apolloClient: ApolloClientTypeV2,
+        checkoutAndPledgeData: io.reactivex.Observable<Pair<CheckoutData, PledgeData>?> = io.reactivex.Observable.just(Pair(null, null)),
+        currentUser: CurrentUserTypeV2,
         eventName: ThirdPartyEventName,
         firebaseScreen: String? = null,
         firebasePreviousScreen: String? = null,
-    ): Observable<Pair<TriggerThirdPartyEventMutation.Data, TriggerThirdPartyEventInput>> {
+    ): io.reactivex.Observable<Pair<TriggerThirdPartyEventMutation.Data, TriggerThirdPartyEventInput>> {
 
         return project
-            .filter { it.sendThirdPartyEvents() }
+            .filter { it.sendThirdPartyEvents() ?: false }
             .filter { canSendEventFlag }
             .compose(Transformers.combineLatestPair(currentUser.observable()))
             .compose(Transformers.combineLatestPair(checkoutAndPledgeData))
             .map {
                 val eventInput = TriggerThirdPartyEventInput.builder()
                     .eventName(eventName.value)
-                    .userId(it.first.second.id().toString())
+                    .userId(it.first.second.getValue()?.id().toString())
                     .deviceId(FirebaseHelper.identifier)
                     .projectId(encodeRelayId(it.first.first))
 
@@ -133,7 +135,7 @@ class SendThirdPartyEventUseCase(
                 apolloClient.triggerThirdPartyEvent(
                     input,
                 ).map { Pair(it, input) }
-                    .compose(Transformers.neverError()).share()
+                    .compose(Transformers.neverErrorV2()).share()
             }
     }
 }

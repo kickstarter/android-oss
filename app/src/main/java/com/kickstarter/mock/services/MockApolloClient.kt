@@ -133,6 +133,14 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     override fun updateUserCurrencyPreference(currency: CurrencyCode): io.reactivex.Observable<UpdateUserCurrencyMutation.Data> {
         return io.reactivex.Observable.empty()
     }
+
+    override fun fetchCategory(param: String): io.reactivex.Observable<Category> {
+        return io.reactivex.Observable.empty()
+    }
+
+    override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): io.reactivex.Observable<TriggerThirdPartyEventMutation.Data> {
+        return io.reactivex.Observable.empty()
+    }
 }
 
 open class MockApolloClient : ApolloClientType {

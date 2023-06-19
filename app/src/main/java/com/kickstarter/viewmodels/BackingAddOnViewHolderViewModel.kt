@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels
 
 import android.content.Intent
 import android.util.Pair
-import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.ObjectUtils
@@ -110,7 +109,7 @@ class BackingAddOnViewHolderViewModel {
     class BackingAddOnViewHolderViewModel(
         private val environment: Environment,
         private val intent: Intent? = null
-    ) : ActivityViewModel<BackingAddOnViewHolder>(environment), Inputs, Outputs {
+    ) : Inputs, Outputs {
 
         private val ksCurrency = requireNotNull(environment.ksCurrency())
         private val projectDataAndAddOn = PublishSubject.create<Triple<ProjectData, Reward, ShippingRule>>()

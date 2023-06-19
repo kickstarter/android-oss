@@ -44,6 +44,7 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
     description = "Fix Kotlin code style deviations."
     classpath = configurations.ktlint
     mainClass.set("com.pinterest.ktlint.Main")
+    jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED"
     args "-F", "src/**/*.kt"
     ignoreExitValue true
 }

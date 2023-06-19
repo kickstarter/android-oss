@@ -1,18 +1,19 @@
 package com.kickstarter.ui.viewholders
 
 import android.util.Pair
-import androidx.annotation.NonNull
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.ItemAddOnPledgeBinding
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.adapters.RewardItemsAdapter
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.BackingAddOnViewHolderViewModel
-import rx.android.schedulers.AndroidSchedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
 class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, private val viewListener: ViewListener) : KSViewHolder(binding.root) {
 
@@ -20,7 +21,12 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
         fun quantityPerId(quantityPerId: Pair<Int, Long>)
     }
 
-    private var viewModel = BackingAddOnViewHolderViewModel.ViewModel(environment())
+    private lateinit var viewModel: BackingAddOnViewHolderViewModel.BackingAddOnViewHolderViewModel
+    private val env = this.context().getEnvironment()?.let { env ->
+        viewModel = BackingAddOnViewHolderViewModel.BackingAddOnViewHolderViewModel(env)
+        env
+    }
+    private val disposables = CompositeDisposable()
     private val ksString = requireNotNull(environment().ksString())
 
     init {
@@ -29,46 +35,45 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
         binding.addOnCard.setUpItemsAdapter(rewardItemAdapter, LinearLayoutManager(context()))
 
         this.viewModel.outputs.rewardItemsAreGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.addOnCard.setAddOnItemLayoutVisibility(!it)
                 binding.addOnCard.setDividerVisibility(!it)
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.rewardItems()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { rewardItemAdapter.rewardsItems(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.titleForAddOn()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.addOnCard.setAddOnTitleText(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.description()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.addOnCard.setAddOnDescription(it)
                 binding.addOnCard.setAddonDescriptionVisibility(!it.isNullOrEmpty())
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.minimum()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.addOnCard.setAddOnMinimumText(it.toString())
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.conversionIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.addOnCard.setAddonConversionVisibility(!it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.conversion()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.addOnCard.setAddonConversionText(
                     this.ksString.format(
@@ -78,20 +83,20 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
                     )
                 )
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.backerLimitPillIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.addOnCard.setBackerLimitPillVisibility(!it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.remainingQuantityPillIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.addOnCard.setAddonQuantityRemainingPillVisibility(!it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.backerLimit()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.addOnCard.setBackerLimitText(
                     this.ksString.format(
@@ -101,10 +106,10 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
                     )
                 )
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.remainingQuantity()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.addOnCard.setAddonQuantityRemainingText(
                     this.ksString.format(
@@ -114,29 +119,29 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
                     )
                 )
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.deadlineCountdownIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.addOnCard.setTimeLeftVisibility(!it)
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.deadlineCountdown()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { binding.addOnCard.setTimeLeftText(formattedExpirationString(it)) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.shippingAmountIsGone()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.addOnCard.setShippingAmountVisibility(!it)
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.shippingAmount()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 if (it.isNotEmpty()) {
                     val rewardAndShippingString =
@@ -152,49 +157,51 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
                     )
                 }
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.maxQuantity()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.addOnCard.setStepperMax(it)
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.quantityPerId()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { quantityPerId ->
                 quantityPerId?.let { viewListener.quantityPerId(it) }
                 val quantity = quantityPerId.first
                 binding.addOnCard.setStepperInitialValue(quantity)
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.localPickUpIsGone()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 this.binding.addOnCard.setLocalPickUpIsGone(it)
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.localPickUpName()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 this.binding.addOnCard.setLocalPickUpName(it)
             }
+            .addToDisposable(disposables)
 
         binding.addOnCard.outputs.stepperQuantity()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { viewModel.inputs.currentQuantity(it) }
+            .addToDisposable(disposables)
     }
 
-    private fun formattedExpirationString(@NonNull reward: Reward): String {
+    private fun formattedExpirationString(reward: Reward): String {
         val detail = RewardUtils.deadlineCountdownDetail(reward, context(), this.ksString)
         val value = RewardUtils.deadlineCountdownValue(reward)
         return "$value $detail"
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun bindData(data: Any?) {
         if (data is (Triple<*, *, *>)) {
             if (data.second is Reward) {
@@ -205,5 +212,11 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
 
     private fun bindAddonsList(projectDataAndAddOn: Triple<ProjectData, Reward, ShippingRule>) {
         this.viewModel.inputs.configureWith(projectDataAndAddOn)
+    }
+
+    override fun destroy() {
+        this.viewModel.clearDisposables()
+        disposables.clear()
+        super.destroy()
     }
 }

@@ -75,11 +75,10 @@ class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
         binding.stepper.inputs.setVariance(1)
 
         binding.stepper.outputs.display()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
             .subscribe {
                 showSnackbar(binding.stepper, "The updated value on the display is: $it")
-            }
+            }.dispose()
     }
 
     private fun setProjectActivityButtonClicks() {

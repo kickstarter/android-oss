@@ -1,21 +1,22 @@
 package com.kickstarter.viewmodels
 
+import android.content.Intent
 import android.util.Pair
-import androidx.annotation.NonNull
-import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.BackingAddOnViewHolder
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import java.math.RoundingMode
 import kotlin.math.min
 
@@ -33,6 +34,8 @@ class BackingAddOnViewHolderViewModel {
 
         /** Emits the current quantity displayed on the addons stepper */
         fun currentQuantity(quantity: Int)
+
+        fun clearDisposables()
     }
 
     interface Outputs {
@@ -103,7 +106,10 @@ class BackingAddOnViewHolderViewModel {
      *  - No interaction with the user just displaying information
      *  - Loading in [BackingAddOnViewHolder] -> [BackingAddOnsAdapter] -> [BackingAddOnsFragment]
      */
-    class ViewModel(@NonNull environment: Environment) : ActivityViewModel<BackingAddOnViewHolder>(environment), Inputs, Outputs {
+    class BackingAddOnViewHolderViewModel(
+        private val environment: Environment,
+        private val intent: Intent? = null
+    ) : Inputs, Outputs {
 
         private val ksCurrency = requireNotNull(environment.ksCurrency())
         private val projectDataAndAddOn = PublishSubject.create<Triple<ProjectData, Reward, ShippingRule>>()
@@ -129,6 +135,7 @@ class BackingAddOnViewHolderViewModel {
         private val maxQuantity = PublishSubject.create<Int>()
         private val localPickUpIsGone = BehaviorSubject.create<Boolean>()
         private val localPickUpName = BehaviorSubject.create<String>()
+        private val disposables = CompositeDisposable()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -145,99 +152,113 @@ class BackingAddOnViewHolderViewModel {
             addOn
                 .map { it.description() }
                 .filter { ObjectUtils.isNotNull(it) }
-                .subscribe(this.description)
+                .map { requireNotNull(it) }
+                .subscribe { this.description.onNext(it) }
+                .addToDisposable(disposables)
 
             addOn.map { !RewardUtils.isItemized(it) }
-                .compose(bindToLifecycle())
-                .subscribe(this.rewardItemsAreGone)
+                .subscribe { this.rewardItemsAreGone.onNext(it) }
+                .addToDisposable(disposables)
 
             addOn.filter { RewardUtils.isItemized(it) }
                 .map { if (it.isAddOn()) it.addOnsItems() else it.rewardsItems() }
-                .compose(bindToLifecycle())
-                .subscribe(this.rewardItems)
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .subscribe { this.rewardItems.onNext(it) }
+                .addToDisposable(disposables)
 
             projectDataAndAddOn.map { this.ksCurrency.format(it.second.minimum(), it.first.project()) }
-                .subscribe(this.minimum)
+                .subscribe { this.minimum.onNext(it) }
+                .addToDisposable(disposables)
 
             projectDataAndAddOn.map { this.ksCurrency.format(it.second.convertedMinimum(), it.first.project()) }
-                .subscribe(this.convertedMinimum)
+                .subscribe { this.convertedMinimum.onNext(it) }
+                .addToDisposable(disposables)
 
             projectDataAndAddOn.map { it.first.project() }
                 .map { it.currency() == it.currentCurrency() }
-                .compose(bindToLifecycle())
-                .subscribe(this.conversionIsGone)
+                .subscribe { this.conversionIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             projectDataAndAddOn
                 .map { this.ksCurrency.format(it.second.convertedMinimum(), it.first.project(), true, RoundingMode.HALF_UP, true) }
-                .compose(bindToLifecycle())
-                .subscribe(this.conversion)
+                .subscribe { this.conversion.onNext(it) }
+                .addToDisposable(disposables)
 
             projectDataAndAddOn
                 .map { !ObjectUtils.isNotNull(it.second.limit()) }
-                .compose(bindToLifecycle())
-                .subscribe(this.backerLimitPillIsGone)
+                .subscribe { this.backerLimitPillIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             addOn
                 .map { !ObjectUtils.isNotNull(it.remaining()) }
-                .compose(bindToLifecycle())
-                .subscribe(this.remainingQuantityPillIsGone)
+                .subscribe { this.remainingQuantityPillIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             addOn.map { it.limit().toString() }
-                .compose(bindToLifecycle())
-                .subscribe(this.backerLimit)
+                .subscribe { this.backerLimit.onNext(it) }
+                .addToDisposable(disposables)
 
             addOn
                 .filter { ObjectUtils.isNotNull(it.remaining()) }
                 .map { it.remaining().toString() }
-                .subscribe(this.remainingQuantity)
+                .subscribe { this.remainingQuantity.onNext(it) }
+                .addToDisposable(disposables)
 
             projectDataAndAddOn.map { ObjectUtils.isNotNull(it.second.endsAt()) }
-                .compose(bindToLifecycle())
                 .map { !it }
-                .subscribe(this.deadlineCountdownIsGone)
+                .subscribe { this.deadlineCountdownIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             projectDataAndAddOn.map { it.second }
-                .compose(bindToLifecycle())
-                .subscribe(this.deadlineCountdown)
+                .subscribe { this.deadlineCountdown.onNext(it) }
+                .addToDisposable(disposables)
 
             addOn.map { it.shippingRules()?.isEmpty() }
-                .compose(bindToLifecycle())
-                .subscribe(this.shippingAmountIsGone)
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .subscribe { this.shippingAmountIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             projectDataAndAddOn.map {
                 getShippingCost(it.second.shippingRules(), it.first.project(), it.third)
             }
-                .compose(bindToLifecycle())
-                .subscribe(this.shippingAmount)
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .subscribe { this.shippingAmount.onNext(it) }
+                .addToDisposable(disposables)
 
             addOn
                 .map { it?.quantity() ?: 0 }
                 .distinctUntilChanged()
-                .subscribe(this.quantity)
+                .subscribe { this.quantity.onNext(it) }
+                .addToDisposable(disposables)
 
             addOn
                 .map { maximumLimit(it) }
                 .filter { ObjectUtils.isNotNull(it) }
-                .compose(bindToLifecycle())
-                .subscribe(this.maxQuantity)
+                .map { requireNotNull(it) }
+                .subscribe { this.maxQuantity.onNext(it) }
+                .addToDisposable(disposables)
 
             addOn
                 .filter { !RewardUtils.isShippable(it) }
                 .map {
                     RewardUtils.isLocalPickup(it)
                 }
-                .compose(bindToLifecycle())
                 .subscribe {
                     this.localPickUpIsGone.onNext(!it)
                 }
+                .addToDisposable(disposables)
 
             addOn
                 .filter { !RewardUtils.isShippable(it) }
                 .filter { RewardUtils.isLocalPickup(it) }
                 .map { it.localReceiptLocation()?.displayableName() }
                 .filter { ObjectUtils.isNotNull(it) }
-                .compose(bindToLifecycle())
-                .subscribe(this.localPickUpName)
+                .map { requireNotNull(it) }
+                .subscribe { this.localPickUpName.onNext(it) }
+                .addToDisposable(disposables)
 
             this.quantity
                 .compose<Pair<Int, Reward>>(combineLatestPair(addOn))
@@ -245,9 +266,21 @@ class BackingAddOnViewHolderViewModel {
                 .distinctUntilChanged { quantityPerId1, quantityPerId2 ->
                     quantityPerId1.first == quantityPerId2.first && quantityPerId1.second == quantityPerId2.second
                 }
-                .compose(bindToLifecycle())
-                .subscribe(this.quantityPerId)
+                .subscribe { this.quantityPerId.onNext(it) }
+                .addToDisposable(disposables)
         }
+
+        private fun getShippingCost(shippingRules: List<ShippingRule>?, project: Project, selectedShippingRule: ShippingRule) =
+            if (shippingRules.isNullOrEmpty()) ""
+            else shippingRules?.let {
+                var cost = 0.0
+                it.filter {
+                    it.location()?.id() == selectedShippingRule.location()?.id()
+                }.map {
+                    cost += it.cost()
+                }
+                this.ksCurrency.format(cost, project)
+            }
 
         /**
          * If the addOn is available and within a valid time range for the campaign, the
@@ -273,18 +306,6 @@ class BackingAddOnViewHolderViewModel {
                 addOn.quantity()
             }
         }
-
-        private fun getShippingCost(shippingRules: List<ShippingRule>?, project: Project, selectedShippingRule: ShippingRule) =
-            if (shippingRules.isNullOrEmpty()) ""
-            else shippingRules?.let {
-                var cost = 0.0
-                it.filter {
-                    it.location()?.id() == selectedShippingRule.location()?.id()
-                }.map {
-                    cost += it.cost()
-                }
-                this.ksCurrency.format(cost, project)
-            }
 
         // - Inputs
         override fun configureWith(projectDataAndAddOn: Triple<ProjectData, Reward, ShippingRule>) = this.projectDataAndAddOn.onNext(projectDataAndAddOn)
@@ -331,5 +352,9 @@ class BackingAddOnViewHolderViewModel {
         override fun localPickUpIsGone(): Observable<Boolean> = this.localPickUpIsGone
 
         override fun localPickUpName(): Observable<String> = this.localPickUpName
+
+        override fun clearDisposables() {
+            disposables.clear()
+        }
     }
 }

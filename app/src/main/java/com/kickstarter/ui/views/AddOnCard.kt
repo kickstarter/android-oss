@@ -12,8 +12,8 @@ import com.kickstarter.R
 import com.kickstarter.databinding.AddOnCardBinding
 import com.kickstarter.libs.utils.extensions.toVisibility
 import com.kickstarter.ui.adapters.RewardItemsAdapter
-import rx.Observable
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 
 class AddOnCard @JvmOverloads constructor(
     context: Context,

@@ -4,6 +4,7 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
@@ -12,12 +13,14 @@ import com.kickstarter.mock.factories.ShippingRulesEnvelopeFactory
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.data.ProjectData
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import org.joda.time.DateTime
+import org.junit.After
 import org.junit.Test
-import rx.observers.TestSubscriber
 
 class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm: BackingAddOnViewHolderViewModel.ViewModel
+    private lateinit var vm: BackingAddOnViewHolderViewModel.BackingAddOnViewHolderViewModel
 
     private val backerLimitIsGone = TestSubscriber.create<Boolean>()
     private val remainingQuantityIsGone = TestSubscriber.create<Boolean>()
@@ -28,16 +31,23 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     private val quantityPerId = TestSubscriber.create<Pair<Int, Long>>()
     private val maxQuantity = TestSubscriber.create<Int>()
 
+    private val disposables = CompositeDisposable()
+
+    @After
+    fun cleanUp() {
+        vm.clearDisposables()
+        disposables.clear()
+    }
     private fun setupEnvironment(@NonNull environment: Environment) {
-        this.vm = BackingAddOnViewHolderViewModel.ViewModel(environment)
-        this.vm.outputs.backerLimitPillIsGone().subscribe(this.backerLimitIsGone)
-        this.vm.outputs.remainingQuantityPillIsGone().subscribe(this.remainingQuantityIsGone)
-        this.vm.outputs.deadlineCountdownIsGone().subscribe(this.countdownIsGone)
-        this.vm.outputs.shippingAmountIsGone().subscribe(this.shippingAmountIsGone)
-        this.vm.outputs.shippingAmount().subscribe(this.shippingAmount)
-        this.vm.outputs.rewardItemsAreGone().subscribe(this.rewardItemsAreGone)
-        this.vm.outputs.quantityPerId().subscribe(this.quantityPerId)
-        this.vm.outputs.maxQuantity().subscribe(this.maxQuantity)
+        this.vm = BackingAddOnViewHolderViewModel.BackingAddOnViewHolderViewModel(environment)
+        this.vm.outputs.backerLimitPillIsGone().subscribe { this.backerLimitIsGone.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.remainingQuantityPillIsGone().subscribe { this.remainingQuantityIsGone.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.deadlineCountdownIsGone().subscribe { this.countdownIsGone.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.shippingAmountIsGone().subscribe { this.shippingAmountIsGone.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.shippingAmount().subscribe { this.shippingAmount.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.rewardItemsAreGone().subscribe { this.rewardItemsAreGone.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.quantityPerId().subscribe { this.quantityPerId.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.maxQuantity().subscribe { this.maxQuantity.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test

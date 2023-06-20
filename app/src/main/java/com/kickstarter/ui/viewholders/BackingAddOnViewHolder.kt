@@ -22,14 +22,13 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
     }
 
     private lateinit var viewModel: BackingAddOnViewHolderViewModel.BackingAddOnViewHolderViewModel
-    private val env = this.context().getEnvironment()?.let { env ->
-        viewModel = BackingAddOnViewHolderViewModel.BackingAddOnViewHolderViewModel(env)
-        env
-    }
     private val disposables = CompositeDisposable()
     private val ksString = requireNotNull(environment().ksString())
 
     init {
+        this.context().getEnvironment()?.let { env ->
+            viewModel = BackingAddOnViewHolderViewModel.BackingAddOnViewHolderViewModel(env)
+        }
 
         val rewardItemAdapter = RewardItemsAdapter()
         binding.addOnCard.setUpItemsAdapter(rewardItemAdapter, LinearLayoutManager(context()))

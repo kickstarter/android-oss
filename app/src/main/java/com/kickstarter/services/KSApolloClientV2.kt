@@ -5,13 +5,17 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.models.Checkout
 import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
+import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.SavePaymentMethodData
+import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.services.transformers.complexRewardItemsTransformer
+import com.kickstarter.services.transformers.decodeRelayId
 import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.services.transformers.projectTransformer
 import com.kickstarter.services.transformers.rewardTransformer
@@ -21,6 +25,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import type.CurrencyCode
 import type.FlaggingKind
+import type.PaymentTypes
 
 interface ApolloClientTypeV2 {
     fun getProject(project: Project): Observable<Project>
@@ -39,6 +44,8 @@ interface ApolloClientTypeV2 {
     fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>
     fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope>
     fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>>
+    fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout>
+    fun createBacking(createBackingData: CreateBackingData): Observable<Checkout>
 }
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
@@ -515,6 +522,109 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                                     ps.onComplete()
                                 }
                         }
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
+        return Observable.defer {
+            val updateBackingMutation = UpdateBackingMutation.builder()
+                .backingId(encodeRelayId(updateBackingData.backing))
+                .amount(updateBackingData.amount.toString())
+                .locationId(updateBackingData.locationId)
+                .rewardIds(updateBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
+                .apply {
+                    updateBackingData.paymentSourceId?.let { this.paymentSourceId(it) }
+                    updateBackingData.intentClientSecret?.let { this.intentClientSecret(it) }
+                }
+                .build()
+
+            val ps = PublishSubject.create<Checkout>()
+            service.mutate(updateBackingMutation)
+                .enqueue(object : ApolloCall.Callback<UpdateBackingMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<UpdateBackingMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                        }
+
+                        val checkoutPayload = response.data?.updateBacking()?.checkout()
+                        val backing = Checkout.Backing.builder()
+                            .clientSecret(
+                                checkoutPayload?.backing()?.fragments()?.checkoutBacking()
+                                    ?.clientSecret()
+                            )
+                            .requiresAction(
+                                checkoutPayload?.backing()?.fragments()?.checkoutBacking()
+                                    ?.requiresAction() ?: false
+                            )
+                            .build()
+
+                        ps.onNext(
+                            Checkout.builder()
+                                .id(decodeRelayId(checkoutPayload?.id()))
+                                .backing(backing)
+                                .build()
+                        )
+                        ps.onComplete()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
+        return Observable.defer {
+            val createBackingMutation = CreateBackingMutation.builder()
+                .projectId(encodeRelayId(createBackingData.project))
+                .amount(createBackingData.amount)
+                .paymentType(PaymentTypes.CREDIT_CARD.rawValue())
+                .paymentSourceId(createBackingData.paymentSourceId)
+                .setupIntentClientSecret(createBackingData.setupIntentClientSecret)
+                .locationId(createBackingData.locationId?.let { it })
+                .rewardIds(createBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
+                .refParam(createBackingData.refTag?.tag())
+                .build()
+
+            val ps = PublishSubject.create<Checkout>()
+
+            this.service.mutate(createBackingMutation)
+                .enqueue(object : ApolloCall.Callback<CreateBackingMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<CreateBackingMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                        }
+
+                        val checkoutPayload = response.data?.createBacking()?.checkout()
+
+                        // TODO: Add new status field to backing model
+                        val backing = Checkout.Backing.builder()
+                            .clientSecret(
+                                checkoutPayload?.backing()?.fragments()?.checkoutBacking()
+                                    ?.clientSecret()
+                            )
+                            .requiresAction(
+                                checkoutPayload?.backing()?.fragments()?.checkoutBacking()
+                                    ?.requiresAction() ?: false
+                            )
+                            .build()
+
+                        ps.onNext(
+                            Checkout.builder()
+                                .id(decodeRelayId(checkoutPayload?.id()))
+                                .backing(backing)
+                                .build()
+                        )
+                        ps.onComplete()
                     }
                 })
             return@defer ps

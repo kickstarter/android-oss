@@ -21,7 +21,6 @@ import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.updateStartedProjectAndDiscoveryParamsList
 import com.kickstarter.models.Category
 import com.kickstarter.models.Project
-import com.kickstarter.models.Update
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.isLocationGermany
 import com.kickstarter.services.ApiClientTypeV2

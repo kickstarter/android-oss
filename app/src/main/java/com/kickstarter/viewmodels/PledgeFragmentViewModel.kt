@@ -342,24 +342,24 @@ interface PledgeFragmentViewModel {
         private val bundle: Bundle? = null
     ) : ViewModel(), Inputs, Outputs {
 
-        private val addedCardPosition = PublishSubject.create<Int>()
-        private val cardSaved = PublishSubject.create<StoredCard>()
-        private val cardSelected = PublishSubject.create<Pair<StoredCard, Int>>()
-        private val continueButtonClicked = PublishSubject.create<Unit>()
-        private val decreasePledgeButtonClicked = PublishSubject.create<Unit>()
-        private val increasePledgeButtonClicked = PublishSubject.create<Unit>()
-        private val linkClicked = PublishSubject.create<String>()
-        private val miniRewardClicked = PublishSubject.create<Unit>()
-        private val newCardButtonClicked = PublishSubject.create<Unit>()
-        private val pledgeButtonClicked = PublishSubject.create<Unit>()
-        private val pledgeInput = PublishSubject.create<String>()
+        private val addedCardPosition = BehaviorSubject.create<Int>()
+        private val cardSaved = BehaviorSubject.create<StoredCard>()
+        private val cardSelected = BehaviorSubject.create<Pair<StoredCard, Int>>()
+        private val continueButtonClicked = BehaviorSubject.create<Unit>()
+        private val decreasePledgeButtonClicked = BehaviorSubject.create<Unit>()
+        private val increasePledgeButtonClicked = BehaviorSubject.create<Unit>()
+        private val linkClicked = BehaviorSubject.create<String>()
+        private val miniRewardClicked = BehaviorSubject.create<Unit>()
+        private val newCardButtonClicked = BehaviorSubject.create<Unit>()
+        private val pledgeButtonClicked = BehaviorSubject.create<Unit>()
+        private val pledgeInput = BehaviorSubject.create<String>()
         private val shippingRule = BehaviorSubject.create<ShippingRule>()
-        private val stripeSetupResultSuccessful = PublishSubject.create<Int>()
-        private val stripeSetupResultUnsuccessful = PublishSubject.create<Exception>()
-        private val decreaseBonusButtonClicked = PublishSubject.create<Unit>()
-        private val increaseBonusButtonClicked = PublishSubject.create<Unit>()
-        private val bonusInput = PublishSubject.create<String>()
-        private val onRiskMessageDismissed = PublishSubject.create<Unit>()
+        private val stripeSetupResultSuccessful = BehaviorSubject.create<Int>()
+        private val stripeSetupResultUnsuccessful = BehaviorSubject.create<Exception>()
+        private val decreaseBonusButtonClicked = BehaviorSubject.create<Unit>()
+        private val increaseBonusButtonClicked = BehaviorSubject.create<Unit>()
+        private val bonusInput = BehaviorSubject.create<String>()
+        private val onRiskMessageDismissed = BehaviorSubject.create<Unit>()
 
         private val addedCard = BehaviorSubject.create<Pair<StoredCard, Project>>()
         private val additionalPledgeAmount = BehaviorSubject.create<String>()
@@ -1784,6 +1784,11 @@ interface PledgeFragmentViewModel {
         private fun storedCards(): Observable<List<StoredCard>> {
             return this.apolloClient.getStoredCards()
                 .compose(neverErrorV2())
+        }
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
         }
 
         // - Inputs

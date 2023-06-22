@@ -98,14 +98,6 @@ class PledgeFragment :
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        val env = this.context?.getEnvironment()?.let { env ->
-            viewModelFactory = PledgeFragmentViewModel.Factory(env, bundle = arguments)
-            env
-        }
-
-        stripe = requireNotNull(env?.stripe())
-        ksString = requireNotNull(env?.ksString())
-
         binding = FragmentPledgeBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -113,6 +105,14 @@ class PledgeFragment :
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val env = this.context?.getEnvironment()?.let { env ->
+            viewModelFactory = PledgeFragmentViewModel.Factory(env, bundle = arguments)
+            env
+        }
+
+        stripe = requireNotNull(env?.stripe())
+        ksString = requireNotNull(env?.ksString())
 
         setUpCardsAdapter()
         setUpShippingAdapter()

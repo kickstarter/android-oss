@@ -141,6 +141,17 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): io.reactivex.Observable<TriggerThirdPartyEventMutation.Data> {
         return io.reactivex.Observable.empty()
     }
+
+    override fun getShippingRules(reward: Reward): io.reactivex.Observable<ShippingRulesEnvelope> {
+        return io.reactivex.Observable.empty()
+    }
+
+    override fun getProjectAddOns(
+        slug: String,
+        locationId: Location
+    ): io.reactivex.Observable<List<Reward>> {
+        return io.reactivex.Observable.empty()
+    }
 }
 
 open class MockApolloClient : ApolloClientType {

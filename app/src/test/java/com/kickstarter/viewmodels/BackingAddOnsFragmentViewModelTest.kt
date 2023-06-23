@@ -6,7 +6,8 @@ import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.EventName
-import com.kickstarter.mock.MockCurrentConfig
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.ConfigFactory
@@ -16,7 +17,7 @@ import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.mock.factories.ShippingRulesEnvelopeFactory
 import com.kickstarter.mock.factories.UserFactory
-import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Location
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -26,13 +27,16 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.viewmodels.BackingAddOnsFragmentViewModel.BackingAddOnsFragmentViewModel
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import junit.framework.TestCase
+import org.junit.After
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
 
 class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm: BackingAddOnsFragmentViewModel.ViewModel
+    private lateinit var vm: BackingAddOnsFragmentViewModel
     private val shippingSelectorIsGone = TestSubscriber.create<Boolean>()
     private val addOnsList = TestSubscriber.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
     private val showPledgeFragment = TestSubscriber.create<Pair<PledgeData, PledgeReason>>()
@@ -41,26 +45,29 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
     private val isEmptyState = TestSubscriber.create<Boolean>()
     private val showErrorDialog = TestSubscriber.create<Boolean>()
     private val selectedShippingRule = TestSubscriber.create<ShippingRule>()
+    private val disposables = CompositeDisposable()
 
-    private fun setUpEnvironment(@NonNull environment: Environment) {
-        this.vm = BackingAddOnsFragmentViewModel.ViewModel(environment)
-        this.vm.outputs.addOnsList().subscribe(this.addOnsList)
-        this.vm.outputs.shippingSelectorIsGone().subscribe(this.shippingSelectorIsGone)
-        this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
-        this.vm.outputs.isEnabledCTAButton().subscribe(this.isEnabledButton)
-        this.vm.outputs.totalSelectedAddOns().subscribe(this.totalSelectedAddOns)
-        this.vm.outputs.isEmptyState().subscribe(this.isEmptyState)
-        this.vm.outputs.showErrorDialog().subscribe(this.showErrorDialog)
-        this.vm.outputs.selectedShippingRule().subscribe(this.selectedShippingRule)
+    @After
+    fun cleanUp() {
+        disposables.clear()
+    }
+    private fun setUpEnvironment(@NonNull environment: Environment, bundle: Bundle? = null) {
+        this.vm = BackingAddOnsFragmentViewModel(environment, bundle)
+        this.vm.outputs.addOnsList().subscribe { this.addOnsList.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.shippingSelectorIsGone().subscribe { this.shippingSelectorIsGone.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.showPledgeFragment().subscribe { this.showPledgeFragment.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.isEnabledCTAButton().subscribe { this.isEnabledButton.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.totalSelectedAddOns().subscribe { this.totalSelectedAddOns.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.isEmptyState().subscribe { this.isEmptyState.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.showErrorDialog().subscribe { this.showErrorDialog.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.selectedShippingRule().subscribe { this.selectedShippingRule.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
     fun emptyAddOnsListForReward() {
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
-
-        setUpEnvironment(buildEnvironmentWith(emptyList(), ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig))
 
         val rw = RewardFactory
             .rewardHasAddOns()
@@ -76,7 +83,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        this.vm.arguments(bundle)
+
+        setUpEnvironment(buildEnvironmentWith(emptyList(), ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig), bundle)
 
         this.addOnsList.assertValue(Triple(projectData, emptyList(), ShippingRuleFactory.emptyShippingRule()))
         this.isEmptyState.assertValue(true)
@@ -94,10 +102,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val listAddons = listOf(addOn, addOn, addOn)
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
-
-        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig))
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
             .shippingType(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase())
@@ -113,7 +119,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        this.vm.arguments(bundle)
+
+        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig), bundle)
         this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRule.shippingRules().first()))
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
@@ -129,10 +136,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val listAddons = listOf(addOn, addOn, addOn)
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
-
-        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig))
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
             .shippingType(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
@@ -148,7 +153,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        this.vm.arguments(bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig), bundle)
+
         this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRule.shippingRules().first()))
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
@@ -167,10 +173,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val listAddons = listOf(addOn, addOn, addOn)
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
-
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig))
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
             .shippingRules(listOf(shippingRuleRw))
@@ -186,7 +190,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        this.vm.arguments(bundle)
+
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig), bundle)
 
         this.addOnsList.assertValue(Triple(projectData, emptyList(), shippingRuleRw))
 
@@ -204,10 +209,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val listAddons = listOf(addOn, addOn, addOn)
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
-
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig))
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
             .shippingType(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
@@ -223,7 +226,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        this.vm.arguments(bundle)
+
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig), bundle)
 
         this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRuleRw))
 
@@ -246,7 +250,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val listAddons = listOf(addOn, addOn2, addOn, addOn)
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
 
         setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig))
@@ -265,13 +269,14 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        this.vm.arguments(bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig), bundle)
 
         this.vm.outputs.addOnsList().subscribe {
-            TestCase.assertEquals(it.second.size, 1)
+            assertEquals(it.second.size, 1)
             val filteredAddOn = it.second.first()
-            TestCase.assertEquals(filteredAddOn, addOn2)
+            assertEquals(filteredAddOn, addOn2)
         }
+            .addToDisposable(disposables)
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
@@ -287,10 +292,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val listAddons = listOf(addOn, addOn, addOn)
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
-
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig))
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
             .shippingType(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
@@ -306,7 +309,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        this.vm.arguments(bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig), bundle)
 
         this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRuleRw))
 
@@ -329,10 +332,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val listAddons = listOf(addOn, addOn, addOn)
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
-
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig))
 
         // - Digital Reward
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
@@ -348,7 +349,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        this.vm.arguments(bundle)
+
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig), bundle)
 
         this.addOnsList.assertValue(Triple(projectData, listAddons, ShippingRuleFactory.emptyShippingRule()))
 
@@ -366,10 +368,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val listAddons = listOf(addOn, addOn, addOn)
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
-
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig))
 
         // - LocalReceipt Reward
         val rw = RewardFactory.localReceiptLocation().toBuilder()
@@ -386,7 +386,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        this.vm.arguments(bundle)
+
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig), bundle)
 
         this.shippingSelectorIsGone.assertValues(true)
         this.addOnsList.assertValue(Triple(projectData, listAddons, ShippingRuleFactory.emptyShippingRule()))
@@ -416,7 +417,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val listAddons = listOf(addOn, addOn, addOn, localReceipAddOn, localReceipAddOn)
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
 
         setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig))
@@ -428,7 +429,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        this.vm.arguments(bundle)
+
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig), bundle)
 
         this.shippingSelectorIsGone.assertValues(true)
         this.addOnsList.assertValue(Triple(projectData, listAddons, ShippingRuleFactory.emptyShippingRule()))
@@ -466,7 +468,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val outputTestList = listOf(digitalAddOn, localReceipAddOn)
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
 
         setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig))
@@ -478,7 +480,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        this.vm.arguments(bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig), bundle)
 
         this.shippingSelectorIsGone.assertValues(true)
         this.addOnsList.assertValue(Triple(projectData, outputTestList, ShippingRuleFactory.emptyShippingRule()))
@@ -496,7 +498,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val listAddons = listOf(addOn, addOn, addOn)
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
 
         setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig))
@@ -515,7 +517,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        this.vm.arguments(bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig), bundle)
 
         this.shippingSelectorIsGone.assertValues(true)
 
@@ -530,7 +532,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val listAddons = listOf(addOn, addOn, addOn)
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
 
         setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig))
@@ -549,7 +551,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        this.vm.arguments(bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig), bundle)
 
         this.shippingSelectorIsGone.assertValues(true)
 
@@ -559,10 +561,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun continueButtonPressedNoAddOnsSelected() {
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
-
-        setUpEnvironment(buildEnvironmentWith(emptyList(), ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig))
 
         val rw = RewardFactory
             .rewardHasAddOns()
@@ -579,7 +579,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, pledgeData)
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        this.vm.arguments(bundle)
+        setUpEnvironment(buildEnvironmentWith(emptyList(), ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig), bundle)
 
         val quantityPerId = Pair(0, rw.id())
         this.vm.inputs.quantityPerId(quantityPerId)
@@ -588,9 +588,10 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         this.addOnsList.assertValue(Triple(projectData, emptyList(), ShippingRuleFactory.emptyShippingRule()))
         this.vm.outputs.showPledgeFragment()
             .subscribe {
-                TestCase.assertEquals(it.first, pledgeData)
-                TestCase.assertEquals(it.second, pledgeReason)
+                assertEquals(it.first, pledgeData)
+                assertEquals(it.second, pledgeReason)
             }
+            .addToDisposable(disposables)
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
@@ -607,10 +608,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val listAddons = listOf(addOn, addOn2, addOn3)
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
-
-        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig))
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
             .shippingType(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase())
@@ -627,7 +626,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        this.vm.arguments(bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig), bundle)
+
         this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRule.shippingRules().first()))
 
         val quantityPerIdAddOn1 = Pair(7, addOn.id())
@@ -654,12 +654,13 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.outputs.showPledgeFragment()
             .subscribe {
-                TestCase.assertEquals(it.first, pledgeData)
-                TestCase.assertEquals(it.second, pledgeReason)
+                assertEquals(it.first, pledgeData)
+                assertEquals(it.second, pledgeReason)
 
                 val selectedAddOnsList = pledgeData.addOns()
-                TestCase.assertEquals(selectedAddOnsList, listAddonsToCheck)
+                assertEquals(selectedAddOnsList, listAddonsToCheck)
             }
+            .addToDisposable(disposables)
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
@@ -678,10 +679,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val combinedList = listOf(addOn, addOn2.toBuilder().quantity(2).build(), addOn3.toBuilder().quantity(1).build())
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
-
-        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig))
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
             .shippingType(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase())
@@ -710,7 +709,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_REWARD)
 
-        this.vm.arguments(bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig), bundle)
         // - input from ViewHolder when building the item with the backed info
         this.vm.inputs.quantityPerId(Pair(2, addOn2.id()))
         this.vm.inputs.quantityPerId(Pair(1, addOn3.id()))
@@ -737,10 +736,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val combinedList = listOf(addOn, addOn2.toBuilder().quantity(2).build(), addOn3.toBuilder().quantity(1).build())
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
-
-        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig))
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
             .shippingType(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase())
@@ -770,7 +767,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_REWARD)
 
-        this.vm.arguments(bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig), bundle)
         this.vm.inputs.quantityPerId(Pair(7, addOn3.id()))
         this.vm.inputs.quantityPerId(Pair(2, addOn2.id()))
 
@@ -786,6 +783,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
                 val updateList = listOf(addOn, addOn2.toBuilder().quantity(2).build(), addOn3.toBuilder().quantity(7).build())
                 TestCase.assertEquals(it.first.addOns(), updateList)
             }
+            .addToDisposable(disposables)
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
@@ -805,10 +803,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val listAddonsBacked = listOf(addOn2.toBuilder().quantity(2).build(), addOn3.toBuilder().quantity(1).build())
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
-
-        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig))
 
         val backedRw = RewardFactory.rewardHasAddOns().toBuilder()
             .shippingType(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase())
@@ -848,7 +844,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, newRw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_REWARD)
 
-        this.vm.arguments(bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig), bundle)
 
         this.shippingSelectorIsGone.assertValue(true)
         this.selectedShippingRule.assertValue(ShippingRuleFactory.emptyShippingRule())
@@ -875,10 +871,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val listAddonsBacked = listOf(addOn2.toBuilder().quantity(2).build(), addOn3.toBuilder().quantity(1).build())
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
-
-        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig))
 
         val newRw = RewardFactory.rewardHasAddOns().toBuilder()
             .shippingType(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
@@ -916,10 +910,10 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, newRw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_REWARD)
 
-        this.vm.arguments(bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig), bundle)
 
         this.shippingSelectorIsGone.assertNoValues()
-        this.selectedShippingRule.assertValues(ShippingRuleFactory.emptyShippingRule(), shippingRule.shippingRules().first())
+        this.selectedShippingRule.assertValues(shippingRule.shippingRules().first())
         this.addOnsList.assertValues(Triple(projectData, listAddons, shippingRule.shippingRules().first()))
 
         // - Always 0 first time, them summatory of all addOns quantity every time the list gets updated
@@ -943,10 +937,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val listAddonsBacked = listOf(addOn2.toBuilder().quantity(2).build(), addOn3.toBuilder().quantity(1).build())
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
-
-        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig))
 
         // - Backed Reward
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
@@ -979,17 +971,16 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_REWARD)
 
-        this.vm.arguments(bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig), bundle)
 
         this.shippingSelectorIsGone.assertNoValues()
-        this.selectedShippingRule.assertValues(ShippingRuleFactory.emptyShippingRule(), shippingRule.shippingRules().first())
+        this.selectedShippingRule.assertValues(shippingRule.shippingRules().first())
 
         // - Change shippingRule
         this.vm.inputs.shippingRuleSelected(ShippingRuleFactory.mexicoShippingRule())
 
         // - Test asserts
         this.selectedShippingRule.assertValues(
-            ShippingRuleFactory.emptyShippingRule(),
             shippingRule.shippingRules().first(),
             ShippingRuleFactory.mexicoShippingRule()
         )
@@ -1000,6 +991,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
             val shippingRuleSendToPledge = it.first.shippingRule()
             TestCase.assertEquals(shippingRuleSendToPledge, ShippingRuleFactory.mexicoShippingRule())
         }
+            .addToDisposable(disposables)
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
@@ -1016,10 +1008,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val listAddons = listOf(addOn, addOn, addOn)
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
-
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig))
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
             .shippingType(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
@@ -1035,7 +1025,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        this.vm.arguments(bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig), bundle)
 
         this.addOnsList.assertValue(Triple(projectData, emptyList(), shippingRuleRw))
         this.isEmptyState.assertValue(true)
@@ -1054,10 +1044,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val listAddons = listOf(addOn, addOn, addOn)
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
-
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig))
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
             .shippingType(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
@@ -1073,7 +1061,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        this.vm.arguments(bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig), bundle)
 
         this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRuleRw))
         this.isEmptyState.assertValue(false)
@@ -1084,10 +1072,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun errorState_whenErrorReturned_shouldShowErrorAlertDialogAndHideShippingSelector() {
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
-
-        setUpEnvironment(buildEnvironmentWithError(currentConfig))
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
             .build()
@@ -1099,11 +1085,11 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        this.vm.arguments(bundle)
+        setUpEnvironment(buildEnvironmentWithError(currentConfig), bundle)
 
         // Two values -> two failed network calls
-        this.showErrorDialog.assertValues(true, true)
-        this.shippingSelectorIsGone.assertValues(true, true, true)
+        this.showErrorDialog.assertValue(true)
+        this.shippingSelectorIsGone.assertValues(true)
     }
 
     fun addOnsList_whenUnavailable_FilteredOut() {
@@ -1117,10 +1103,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val listAddons = listOf(addOn, addOns2, addOn)
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
-
-        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig))
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
             .shippingType(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase())
@@ -1136,17 +1120,17 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        this.vm.arguments(bundle)
+        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig))
 
         val filteredList = listOf(addOn, addOn)
         this.addOnsList.assertValue(Triple(projectData, filteredList, shippingRule.shippingRules().first()))
     }
 
-    private fun buildEnvironmentWithError(currentConfig: MockCurrentConfig): Environment {
+    private fun buildEnvironmentWithError(currentConfig: MockCurrentConfigV2): Environment {
 
         return environment()
             .toBuilder()
-            .apolloClient(object : MockApolloClient() {
+            .apolloClientV2(object : MockApolloClientV2() {
                 override fun getProjectAddOns(slug: String, location: Location): Observable<List<Reward>> {
                     return Observable.error(ApiExceptionFactory.badRequestException())
                 }
@@ -1154,14 +1138,14 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
                     return Observable.error(ApiExceptionFactory.badRequestException())
                 }
             })
-            .currentConfig(currentConfig)
+            .currentConfig2(currentConfig)
             .build()
     }
 
-    private fun buildEnvironmentWith(addOns: List<Reward>, shippingRule: ShippingRulesEnvelope, currentConfig: MockCurrentConfig): Environment {
+    private fun buildEnvironmentWith(addOns: List<Reward>, shippingRule: ShippingRulesEnvelope, currentConfig: MockCurrentConfigV2): Environment {
         return environment()
             .toBuilder()
-            .apolloClient(object : MockApolloClient() {
+            .apolloClientV2(object : MockApolloClientV2() {
                 override fun getProjectAddOns(slug: String, location: Location): Observable<List<Reward>> {
                     return Observable.just(addOns)
                 }
@@ -1170,7 +1154,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
                     return Observable.just(shippingRule)
                 }
             })
-            .currentConfig(currentConfig)
+            .currentConfig2(currentConfig)
             .build()
     }
 }

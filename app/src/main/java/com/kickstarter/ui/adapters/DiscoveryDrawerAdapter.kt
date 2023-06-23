@@ -24,7 +24,10 @@ import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder
 import rx.Observable
 import java.util.ArrayList
 
-class DiscoveryDrawerAdapter(private val delegate: Delegate) : KSAdapter() {
+class DiscoveryDrawerAdapter(
+    private val delegate: Delegate,
+    private val dashboardDrawerDeprecated: Boolean = false
+) : KSAdapter() {
     private var drawerData: NavigationDrawerData? = null
 
     override fun getItemId(position: Int): Long {
@@ -86,7 +89,8 @@ class DiscoveryDrawerAdapter(private val delegate: Delegate) : KSAdapter() {
                     viewGroup,
                     false
                 ),
-                delegate
+                delegate,
+                dashboardDeprecated = dashboardDrawerDeprecated
             )
             R.layout.discovery_drawer_logged_out_view -> LoggedOutViewHolder(
                 DiscoveryDrawerLoggedOutViewBinding.inflate(

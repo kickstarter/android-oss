@@ -5,7 +5,7 @@ base_job: &base_job
   executor:
     name: android/android-machine
     resource-class: xlarge
-    tag: 2022.08.1
+    tag: 2023.04.1
   working_directory: "~/project"
   environment:
     TERM: dumb
@@ -93,7 +93,8 @@ jobs:
       - run:
           name: Config Emulator for Screenshot test
           command: ./script/emulator/screenshot_config_emulator.sh
-      - run: ./gradlew internalDebugExecuteScreenshotTests
+      # Temporary JDK 17 workaround https://github.com/pedrovgs/Shot/issues/268 until https://github.com/pedrovgs/Shot/pull/292 is merged
+      - run: ./gradlew internalDebugExecuteScreenshotTests -Dorg.gradle.jvmargs="--add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/java.nio.channels=ALL-UNNAMED --add-exports java.base/sun.nio.ch=ALL-UNNAMED"
       - android/save-gradle-cache:
           cache-prefix: v1a
       - store_artifacts:

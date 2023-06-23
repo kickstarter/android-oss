@@ -4,8 +4,10 @@ import android.content.Intent
 import android.content.SharedPreferences
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.RefTag.Companion.thanks
 import com.kickstarter.libs.featureflag.FlagKey
@@ -268,10 +270,10 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
     fun testThanksViewModel_dontShowGamesNewsletterDialogIfUserHasAlreadySeen() {
         val hasSeenGamesNewsletterPreference = MockBooleanPreference(true)
         val user = user().toBuilder().gamesNewsletter(false).build()
-        val currentUser: CurrentUserType = MockCurrentUser(user)
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2(user)
         val environment = environment()
             .toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
             .build()
 
@@ -290,10 +292,10 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
     fun testThanksViewModel_dontShowGamesNewsletterDialogIfUserHasAlreadySignedUp() {
         val hasSeenGamesNewsletterPreference = MockBooleanPreference(false)
         val user = user().toBuilder().gamesNewsletter(true).build()
-        val currentUser: CurrentUserType = MockCurrentUser(user)
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2(user)
         val environment = environment()
             .toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
             .build()
 
@@ -311,9 +313,9 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testThanksViewModel_signupToGamesNewsletterOnClick() {
         val user = user().toBuilder().gamesNewsletter(false).build()
-        val currentUser: CurrentUserType = MockCurrentUser(user)
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2(user)
         val environment = environment().toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .build()
 
         setUpEnvironment(environment)
@@ -342,9 +344,9 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
             .gamesNewsletter(false)
             .location(germany())
             .build()
-        val currentUser: CurrentUserType = MockCurrentUser(user)
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2(user)
         val environment = environment().toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .build()
 
         setUpEnvironment(environment)

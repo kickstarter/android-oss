@@ -138,19 +138,17 @@ interface ThanksViewModel {
                     rootCategory(it, apolloClient)
                 }
                 .compose(Transformers.neverErrorV2())
-                .filter {
-                    ObjectUtils.isNotNull(it)
-                }
 
             val isGamesCategory = rootCategory
                 .map { "games" == it.slug() }
 
             val hasSeenGamesNewsletterDialog = Observable.just(
                 hasSeenGamesNewsletterPreference.get()
-            ).filter { ObjectUtils.isNotNull(it) }
+            )
 
             val isSignedUpToGamesNewsletter = currentUser.observable()
-                .map { it.getValue() != null && it.getValue()?.gamesNewsletter().isTrue() }
+                .filter { it.getValue() != null }
+                .map { it.getValue()?.gamesNewsletter().isTrue() }
 
             val showGamesNewsletter = Observable.combineLatest(
                 isGamesCategory,
@@ -249,7 +247,7 @@ interface ThanksViewModel {
                 .addToDisposable(disposables)
 
             currentUser.observable()
-                .filter { ObjectUtils.isNotNull(it) && ObjectUtils.isNotNull(it.getValue()) }
+                .filter { ObjectUtils.isNotNull(it.getValue()) }
                 .compose(Transformers.takeWhenV2(signupToGamesNewsletterClick))
                 .flatMap {
                     it.getValue()?.let { user ->
@@ -260,7 +258,7 @@ interface ThanksViewModel {
                 .addToDisposable(disposables)
 
             currentUser.observable()
-                .filter { ObjectUtils.isNotNull(it) }
+                .filter { ObjectUtils.isNotNull(it.getValue()) }
                 .compose(Transformers.takeWhenV2(signedUpToGamesNewsletter))
                 .filter {
                     it.getValue()?.isLocationGermany().isTrue()
@@ -269,12 +267,38 @@ interface ThanksViewModel {
                 .addToDisposable(disposables)
 
             val checkoutData = intentObservable
-                .map<CheckoutData?> { it.getParcelableExtra(IntentKey.CHECKOUT_DATA) }
+                .filter {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        it.getParcelableExtra(IntentKey.CHECKOUT_DATA, CheckoutData::class.java) != null
+                    } else {
+                        it.getParcelableExtra(IntentKey.CHECKOUT_DATA) as? CheckoutData? != null
+                    }
+                }
+                .map {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        it.getParcelableExtra(IntentKey.CHECKOUT_DATA, CheckoutData::class.java)
+                    } else {
+                        it.getParcelableExtra(IntentKey.CHECKOUT_DATA) as? CheckoutData?
+                    }
+                }
                 .ofType(CheckoutData::class.java)
                 .take(1)
 
             val pledgeData = intentObservable
-                .map<PledgeData?> { it.getParcelableExtra(IntentKey.PLEDGE_DATA) }
+                .filter {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        it.getParcelableExtra(IntentKey.PLEDGE_DATA, PledgeData::class.java) != null
+                    } else {
+                        it.getParcelableExtra(IntentKey.PLEDGE_DATA) as? PledgeData? != null
+                    }
+                }
+                .map {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        it.getParcelableExtra(IntentKey.PLEDGE_DATA, PledgeData::class.java)
+                    } else {
+                        it.getParcelableExtra(IntentKey.PLEDGE_DATA) as? PledgeData?
+                    }
+                }
                 .ofType(PledgeData::class.java)
                 .take(1)
 

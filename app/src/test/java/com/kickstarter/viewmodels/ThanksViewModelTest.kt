@@ -223,10 +223,10 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
     fun testThanksViewModel_showGamesNewsletterDialog() {
         val hasSeenGamesNewsletterPreference = MockBooleanPreference(false)
         val user = user().toBuilder().gamesNewsletter(false).build()
-        val currentUser: CurrentUserType = MockCurrentUser(user)
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2(user)
         val environment = environment()
             .toBuilder()
-            .currentUser(currentUser)
+            .currentUserV2(currentUser)
             .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
             .build()
 
@@ -448,7 +448,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSendCAPIEvent_whenBackedPRoject_sendCAPIEvent_withFeatureFlag_on_isSuccessful() {
-        var user = UserFactory.user()
+        var user = user()
         var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
         Mockito.`when`(
             sharedPreferences.getBoolean(
@@ -467,7 +467,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(
             environment().toBuilder()
-                .currentUser(MockCurrentUser(user))
+                .currentUserV2(MockCurrentUserV2(user))
                 .sharedPreferences(sharedPreferences)
                 .featureFlagClient(mockFeatureFlagClient)
                 .build()

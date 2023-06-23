@@ -228,14 +228,17 @@ interface ThanksViewModel {
                 .compose(Transformers.ignoreValuesV2())
                 .subscribe(this.showSavedPrompt)
 
-                Observable.just(hasSeenAppRatingPreference.get())
-                    .take(1)
-                    .compose(Transformers.combineLatestPair(showGamesNewsletter))
-                    .filter { !it.first && !it.second }
-                    .filter { environment.featureFlagClient()?.getBoolean(FlagKey.ANDROID_HIDE_APP_RATING_DIALOG) == false }
-                    .compose(Transformers.ignoreValuesV2())
-                    .subscribe { showRatingDialog.onNext(Unit) }
-                    .addToDisposable(disposables)
+            Observable.just(hasSeenAppRatingPreference.get())
+                .take(1)
+                .compose(Transformers.combineLatestPair(showGamesNewsletter))
+                .filter { !it.first && !it.second }
+                .filter {
+                    environment.featureFlagClient()
+                        ?.getBoolean(FlagKey.ANDROID_HIDE_APP_RATING_DIALOG) == false
+                }
+                .compose(Transformers.ignoreValuesV2())
+                .subscribe { showRatingDialog.onNext(Unit) }
+                .addToDisposable(disposables)
 
             showGamesNewsletter
                 .filter { it }

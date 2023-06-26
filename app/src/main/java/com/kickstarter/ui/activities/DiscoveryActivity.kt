@@ -222,8 +222,6 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { this@DiscoveryActivity.showErrorSnackBar(binding.discoveryAnchorView, it ?: "") }
-
-        startCreatorDashboardActivity()
     }
 
     private fun activateFeatureFlags(environment: Environment) {

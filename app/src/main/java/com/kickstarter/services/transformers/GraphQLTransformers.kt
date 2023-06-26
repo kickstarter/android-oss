@@ -417,7 +417,7 @@ fun userTransformer(user: fragment.User?): User {
     val avatar = Avatar.builder()
         .medium(user?.imageUrl())
         .build()
-    val chosenCurrency = user?.chosenCurrency()
+    val chosenCurrency = user?.chosenCurrency() ?: "USD"
 
     return User.builder()
         .id(id)

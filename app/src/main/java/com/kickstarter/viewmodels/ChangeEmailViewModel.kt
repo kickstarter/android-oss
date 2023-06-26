@@ -103,10 +103,10 @@ interface ChangeEmailViewModel {
 
             userPrivacy
                 .subscribe {
-                    it.me()?.email()?.let { email ->
+                    it.email?.let { email ->
                         this.currentEmail.onNext(email)
                     }
-                    it.me()?.isEmailVerified?.let { verified ->
+                    it.isEmailVerified?.let { verified ->
                         this.sendVerificationIsHidden.onNext(verified)
                     }
                 }
@@ -115,8 +115,8 @@ interface ChangeEmailViewModel {
             userPrivacy
                 .map {
                     getWarningText(
-                        it.me()?.isDeliverable,
-                        it.me()?.isEmailVerified
+                        it.isDeliverable,
+                        it.isEmailVerified
                     )
                 }
                 .subscribe {
@@ -127,7 +127,7 @@ interface ChangeEmailViewModel {
                 .addToDisposable(disposables)
 
             userPrivacy
-                .map { getWarningTextColor(it.me()?.isDeliverable) }
+                .map { getWarningTextColor(it.isDeliverable) }
                 .subscribe {
                     it?.let { colorRes ->
                         this.warningTextColor.onNext(colorRes)
@@ -136,7 +136,7 @@ interface ChangeEmailViewModel {
                 .addToDisposable(disposables)
 
             userPrivacy
-                .map { getVerificationText(it.me()?.isCreator) }
+                .map { getVerificationText(it.isCreator) }
                 .subscribe {
                     it?.let { stringRes ->
                         this.verificationEmailButtonText.onNext(stringRes)

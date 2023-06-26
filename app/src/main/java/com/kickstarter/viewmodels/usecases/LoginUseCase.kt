@@ -36,11 +36,11 @@ class LoginUseCase(environment: Environment) {
             .compose(Transformers.neverErrorV2())
             .map {
                 newUser.toBuilder()
-                    .email(it.me()?.email())
-                    .isCreator(it.me()?.isCreator)
-                    .isDeliverable(it.me()?.isDeliverable)
-                    .isEmailVerified(it.me()?.isEmailVerified)
-                    .hasPassword(it.me()?.hasPassword()).build()
+                    .email(it.email)
+                    .isCreator(it.isCreator)
+                    .isDeliverable(it.isDeliverable)
+                    .isEmailVerified(it.isEmailVerified)
+                    .hasPassword(it.hasPassword).build()
             }
     }
 }

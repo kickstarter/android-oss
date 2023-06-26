@@ -11,6 +11,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.models.UserPrivacy
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
@@ -72,18 +73,18 @@ interface AccountViewModel {
                 .compose(Transformers.neverErrorV2())
 
             userPrivacy
-                .map { it.me()?.chosenCurrency() }
+                .map { chosenCurrency() }
                 .map { ObjectUtils.coalesce(it, CurrencyCode.USD.rawValue()) }
-                .subscribe { this.chosenCurrency.onNext(it) }
+                .subscribe { this.chosenCurrency.onNext(it.toString()) }
                 .addToDisposable(disposables)
 
             userPrivacy
-                .map { it.me()?.email() ?: "" }
+                .map { it.email }
                 .subscribe { this.email.onNext(it) }
                 .addToDisposable(disposables)
 
             userPrivacy
-                .map { it.me()?.hasPassword() ?: false }
+                .map { it.hasPassword }
                 .subscribe { this.passwordRequiredContainerIsVisible.onNext(it) }
                 .addToDisposable(disposables)
 
@@ -133,10 +134,10 @@ interface AccountViewModel {
 
         override fun success(): BehaviorSubject<String> = this.success
 
-        private fun showEmailErrorImage(userPrivacy: UserPrivacyQuery.Data?): Boolean? {
-            val creator = userPrivacy?.me()?.isCreator ?: false
-            val deliverable = userPrivacy?.me()?.isDeliverable ?: false
-            val isEmailVerified = userPrivacy?.me()?.isEmailVerified ?: false
+        private fun showEmailErrorImage(userPrivacy: UserPrivacy): Boolean {
+            val creator = userPrivacy.isCreator
+            val deliverable = userPrivacy.isDeliverable
+            val isEmailVerified = userPrivacy.isEmailVerified
 
             return if (!deliverable) {
                 return true

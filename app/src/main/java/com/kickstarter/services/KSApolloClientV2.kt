@@ -9,6 +9,7 @@ import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
+import com.kickstarter.models.UserPrivacy
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.transformers.complexRewardItemsTransformer
@@ -16,6 +17,7 @@ import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.services.transformers.projectTransformer
 import com.kickstarter.services.transformers.rewardTransformer
 import com.kickstarter.services.transformers.shippingRulesListTransformer
+import com.kickstarter.services.transformers.userTransformer
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -30,7 +32,7 @@ interface ApolloClientTypeV2 {
     fun getStoredCards(): Observable<List<StoredCard>>
     fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data>
     fun createFlagging(project: Project? = null, details: String, flaggingKind: String): Observable<String>
-    fun userPrivacy(): Observable<UserPrivacyQuery.Data>
+    fun userPrivacy(): Observable<UserPrivacy>
     fun watchProject(project: Project): Observable<Project>
     fun unWatchProject(project: Project): Observable<Project>
     fun updateUserPassword(currentPassword: String = "", newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data>
@@ -236,9 +238,9 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
         }
     }
 
-    override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+    override fun userPrivacy(): Observable<UserPrivacy> {
         return Observable.defer {
-            val ps = PublishSubject.create<UserPrivacyQuery.Data>()
+            val ps = PublishSubject.create<UserPrivacy>()
             service.query(UserPrivacyQuery.builder().build())
                 .enqueue(object : ApolloCall.Callback<UserPrivacyQuery.Data>() {
                     override fun onFailure(exception: ApolloException) {
@@ -246,8 +248,19 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                     }
 
                     override fun onResponse(response: Response<UserPrivacyQuery.Data>) {
-                        response.data?.let {
-                            ps.onNext(it)
+                        response.data?.me()?.let {
+                            val defaultCurrency = "USD"
+                            val userPrivacy = UserPrivacy(
+                                name = it.name(),
+                                email = it.email() ?: "",
+                                hasPassword = it.hasPassword() ?: false,
+                                isCreator = it.isCreator ?: false,
+                                isDeliverable = it.isDeliverable ?: false,
+                                isEmailVerified = it.isEmailVerified ?: false,
+                                chosenCurrency = it.chosenCurrency() ?: defaultCurrency
+                            )
+                             ps.onNext(userPrivacy)
+
                         }
                         ps.onComplete()
                     }

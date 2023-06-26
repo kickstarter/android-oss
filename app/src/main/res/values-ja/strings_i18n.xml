@@ -16,6 +16,7 @@
   <string name="Add_new_card" formatted="false">新しいカードを追加</string>
   <string name="Add_ons" formatted="false">アドオン (追加リワード)</string>
   <string name="Add_ons_unavailable" formatted="false">アドオン (追加リワード) は利用できません</string>
+  <string name="After_August_14_2023_this_Dashboard_feature_will_only_be_available_on_our_website" formatted="false">2023年8月14日以降、このダッシュボード機能は Kickstarter ウェブサイトでのみご利用いただけます。</string>
   <string name="Alert" formatted="false">個の警告</string>
   <string name="All_Art_Projects" formatted="false">全てのアートプロジェクト</string>
   <string name="All_Comics_Projects" formatted="false">全てのコミックプロジェクト</string>
@@ -119,7 +120,7 @@
   <string name="Collaborator" formatted="false">コラボレーター（協力者）</string>
   <string name="Collapses_subcategories" formatted="false">サブカテゴリーを閉じる</string>
   <string name="Collections" formatted="false">コレクション</string>
-  <string name="Coming_soon" formatted="false">Coming soon</string>
+  <string name="Coming_soon" formatted="false">近日公開</string>
   <string name="Comment_reply_digest" formatted="false">コメント返信のダイジェスト</string>
   <string name="Complete_payment" formatted="false">支払いを完了</string>
   <string name="Confirm" formatted="false">確定する</string>
@@ -422,7 +423,7 @@
   <string name="Notification_push_notification_off" formatted="false">%{notification}、プッシュ通知、オフ</string>
   <string name="Notification_push_notification_on" formatted="false">%{notification}、プッシュ通知、オン</string>
   <string name="Notifications" formatted="false">通知</string>
-  <string name="Notify_me_on_launch" formatted="false">Notify me on launch</string>
+  <string name="Notify_me_on_launch" formatted="false">ローンチ通知を受け取る</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">プロジェクトをバックするとこのスペースにあなたへのオススメを表示します</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">あと%{amount_of_time} のみ視聴可能</string>
   <string name="Only_backers_can_post_comments" formatted="false">バッカーのみコメントできます。</string>
@@ -756,7 +757,7 @@
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">配送先の読込に失敗。\n
 再度お試しください。</string>
   <string name="We_will_be_discontinuing_the_ability_to_log_in_via_FB" formatted="false">Facebook 経由でのログイン機能の提供がまもなく終了します。メールアドレス %{email} を使ってアカウントにログインするには、6 文字以上のパスワードを設定してください。</string>
-  <string name="We_will_email_you" formatted="false">We’ll email you when this project launches so you can be one of the first backers.</string>
+  <string name="We_will_email_you" formatted="false">あなたが一番乗りでバッカーになれるよう、このプロジェクトがローンチした際にはメールでお知らせします。</string>
   <string name="We_wont_share_this_with_the_creator" formatted="false">これはクリエイターには共有されません。</string>
   <string name="Websites" formatted="false">ウェブサイト</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Kickstarter ライブラリーへようこそ。色んなストーリーを一緒に読み漁ろう！</string>
@@ -874,7 +875,7 @@
   <string name="activity_empty_state_logged_out_message" formatted="false">バックしたり友人をフォローした際、こちらに表示されます。</string>
   <string name="activity_empty_state_logged_out_title" formatted="false">アクティビティ無</string>
   <string name="activity_follow_back" formatted="false">フォローバックしますか？</string>
-  <string name="activity_followers" formatted="false">%{number_of_followers} followers</string>
+  <string name="activity_followers" formatted="false">%{number_of_followers} 人のフォロワー</string>
   <string name="activity_friend_backed_art_project" formatted="false">%{friend_name} はアートプロジェクトにバック。</string>
   <string name="activity_friend_backed_comics_project" formatted="false">%{friend_name} がコミックプロジェクトにバック</string>
   <string name="activity_friend_backed_crafts_project" formatted="false">%{friend_name} がクラフトプロジェクトにバック</string>

@@ -154,6 +154,7 @@ Tap to retry</string>
   <string name="Create_password" formatted="false">Create password</string>
   <string name="Created_projects_projects_count" formatted="false">Created projects %{projects_count}</string>
   <string name="Creator" formatted="false">Creator</string>
+  <string name="Creator_dashboard_removal_warning" formatted="false">After %{expiration_date}, the Dashboard and Post Update features will only be available on our website.</string>
   <string name="Creator_name_is_live_now" formatted="false">&lt;b>%{creator_name}&lt;/b> is live now</string>
   <string name="Creator_name_is_streaming_live_on_Kickstarter" formatted="false">%{creator_name} is streaming live on Kickstarter</string>
   <string name="Creator_name_live_streamed_time_ago" formatted="false">&lt;b>%{creator_name}&lt;/b> live streamed %{time_ago}</string>

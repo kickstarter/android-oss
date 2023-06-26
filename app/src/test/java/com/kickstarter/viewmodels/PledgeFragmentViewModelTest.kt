@@ -3041,7 +3041,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private fun environmentForLoggedInUser(user: User): Environment {
         return environment()
             .toBuilder()
-            .currentUser(MockCurrentUser(user))
+            .currentUserV2(MockCurrentUserV2(user))
             .build()
     }
 

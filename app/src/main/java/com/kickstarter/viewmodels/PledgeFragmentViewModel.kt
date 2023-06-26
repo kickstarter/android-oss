@@ -535,6 +535,7 @@ interface PledgeFragmentViewModel {
                 .filter {
                     shouldLoadShippingRuleFromBacking(it)
                 }
+                .filter { ObjectUtils.isNotNull(it.first.locationId()) }
                 .map { requireNotNull(it.first.locationId()) }
                 .compose<Pair<Long, List<ShippingRule>>>(combineLatestPair(shippingRules))
                 .map { shippingInfo ->
@@ -558,9 +559,10 @@ interface PledgeFragmentViewModel {
 
             val initShippingRule = pledgeData
                 .distinctUntilChanged()
-                .map {
-                    it.shippingRule()
+                .filter {
+                    ObjectUtils.isNotNull(it.shippingRule())
                 }
+                .map { requireNotNull(it.shippingRule()) }
 
             pledgeData
                 .map { it.shippingRule() == null && RewardUtils.isShippable(it.reward()) }
@@ -667,9 +669,9 @@ interface PledgeFragmentViewModel {
                 .addToDisposable(disposables)
 
             this.selectedReward
-                .map { it.estimatedDeliveryOn() }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { dateTime -> dateTime?.let { DateTimeUtils.estimatedDeliveryOn(it) } }
+                .filter { ObjectUtils.isNotNull(it.estimatedDeliveryOn()) }
+                .map { requireNotNull(it.estimatedDeliveryOn()) }
+                .map { dateTime -> dateTime.let { DateTimeUtils.estimatedDeliveryOn(it) } }
                 .distinctUntilChanged()
                 .subscribe { this.estimatedDelivery.onNext(it) }
                 .addToDisposable(disposables)
@@ -1301,10 +1303,12 @@ interface PledgeFragmentViewModel {
                 .take(1)
                 .map { p -> RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences) }
 
-            val locationId: Observable<String?> = shippingRule.map { it.location() }
-                .map { it?.id() }
+            val locationId: Observable<String> = shippingRule
+                .filter { it.location() != null }
+                .map { it.location() }
+                .map { it.id() ?: -1L }
                 .map { it.toString() }
-                .startWith(null as String?)
+                .startWith("")
 
             val backingToUpdate = project
                 .filter { it.isBacking() }
@@ -1343,9 +1347,9 @@ interface PledgeFragmentViewModel {
                 }
                 .share()
 
-            val totalString: Observable<String?> = total
+            val totalString: Observable<String> = total
                 .map { it.toString() }
-                .startWith(null as String?)
+                .startWith("")
 
             val updatePaymentClick = pledgeReason
                 .compose<PledgeReason>(takeWhenV2(this.pledgeButtonClicked))
@@ -1367,7 +1371,7 @@ interface PledgeFragmentViewModel {
                 totalString,
                 locationId,
                 extendedListForCheckOut,
-                paymentMethod.startWith(null as StoredCard?)
+                paymentMethod
             ) { b, a, l, r, pMethod ->
                 this.getUpdateBackingData(b, a, l, r, pMethod)
             }
@@ -1400,7 +1404,9 @@ interface PledgeFragmentViewModel {
             )
                 .compose<Pair<Any, PledgeReason>>(combineLatestPair(pledgeReason))
 
-            Observable.combineLatest<Double, Double, String, Checkout, CheckoutData>(shippingAmountSelectedRw, total, this.bonusAmount, Observable.merge(successfulCheckout, successfulSCACheckout)) { s, t, b, c -> checkoutData(s, t, b.parseToDouble(), c) }
+            Observable.combineLatest<Double, Double, String, Checkout, CheckoutData>(shippingAmountSelectedRw, total, this.bonusAmount, Observable.merge(successfulCheckout, successfulSCACheckout)) { s, t, b, c ->
+                checkoutData(s, t, b.parseToDouble(), c)
+            }
                 .compose<Pair<CheckoutData, PledgeData>>(combineLatestPair(pledgeData))
                 .filter { it.second.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }
                 .subscribe { this.showPledgeSuccess.onNext(it) }

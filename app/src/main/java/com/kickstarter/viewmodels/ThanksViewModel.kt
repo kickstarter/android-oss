@@ -81,8 +81,10 @@ interface ThanksViewModel {
     class ThanksViewModel(environment: Environment) : ViewModel(), Inputs, Outputs {
         private val apiClient = requireNotNull(environment.apiClientV2())
         private val apolloClient = requireNotNull(environment.apolloClientV2())
-        private val hasSeenAppRatingPreference = requireNotNull(environment.hasSeenAppRatingPreference())
-        private val hasSeenGamesNewsletterPreference = requireNotNull(environment.hasSeenGamesNewsletterPreference())
+        private val hasSeenAppRatingPreference =
+            requireNotNull(environment.hasSeenAppRatingPreference())
+        private val hasSeenGamesNewsletterPreference =
+            requireNotNull(environment.hasSeenGamesNewsletterPreference())
         private val currentUser = requireNotNull(environment.currentUserV2())
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val cookieManager = requireNotNull(environment.cookieManager())
@@ -108,6 +110,7 @@ interface ThanksViewModel {
 
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
         val onThirdPartyEventSent = BehaviorSubject.create<Boolean?>()
+
         @JvmField
         val inputs: Inputs = this
 
@@ -209,7 +212,10 @@ interface ThanksViewModel {
             adapterData
                 .compose(Transformers.takePairWhenV2(projectOnUserChangeSave))
                 .map {
-                    Pair(it.first, it.second.updateStartedProjectAndDiscoveryParamsList(it.first.recommendedProjects))
+                    Pair(
+                        it.first,
+                        it.second.updateStartedProjectAndDiscoveryParamsList(it.first.recommendedProjects)
+                    )
                 }
                 .map {
                     ThanksData(it.first.backedProject, it.first.category, it.second)
@@ -272,7 +278,10 @@ interface ThanksViewModel {
             val checkoutData = intentObservable
                 .filter {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        it.getParcelableExtra(IntentKey.CHECKOUT_DATA, CheckoutData::class.java) != null
+                        it.getParcelableExtra(
+                            IntentKey.CHECKOUT_DATA,
+                            CheckoutData::class.java
+                        ) != null
                     } else {
                         it.getParcelableExtra(IntentKey.CHECKOUT_DATA) as? CheckoutData? != null
                     }
@@ -330,7 +339,9 @@ interface ThanksViewModel {
                 )
                 .compose(Transformers.neverErrorV2())
                 .subscribe {
-                    onThirdPartyEventSent.onNext(it.first.triggerThirdPartyEvent()?.success() ?: false)
+                    onThirdPartyEventSent.onNext(
+                        it.first.triggerThirdPartyEvent()?.success() ?: false
+                    )
                 }
                 .addToDisposable(disposables)
 
@@ -419,11 +430,13 @@ interface ThanksViewModel {
                 .updateUserSettings(user.toBuilder().gamesNewsletter(true).build())
                 .compose(Transformers.neverErrorV2())
         }
+
         override fun categoryViewHolderClicked(category: Category?) {
             category?.let {
                 categoryCardViewHolderClicked.onNext(it)
             }
         }
+
         override fun closeButtonClicked() = closeButtonClicked.onNext(Unit)
         override fun signupToGamesNewsletterClick() = signupToGamesNewsletterClick.onNext(Unit)
         override fun onHeartButtonClicked(project: Project) = onHeartButtonClicked.onNext(project)
@@ -435,11 +448,17 @@ interface ThanksViewModel {
 
         override fun adapterData(): Observable<ThanksData> = this.adapterData
         override fun finish(): Observable<Unit> = this.finish
-        override fun showConfirmGamesNewsletterDialog(): Observable<Unit> = this.showConfirmGamesNewsletterDialog
+        override fun showConfirmGamesNewsletterDialog(): Observable<Unit> =
+            this.showConfirmGamesNewsletterDialog
+
         override fun showGamesNewsletterDialog(): Observable<Unit> = this.showGamesNewsletterDialog
         override fun showRatingDialog(): Observable<Unit> = this.showRatingDialog
-        override fun startDiscoveryActivity(): Observable<DiscoveryParams> = this.startDiscoveryActivity
-        override fun startProjectActivity(): Observable<Pair<Project, RefTag>> = this.startProjectActivity
+        override fun startDiscoveryActivity(): Observable<DiscoveryParams> =
+            this.startDiscoveryActivity
+
+        override fun startProjectActivity(): Observable<Pair<Project, RefTag>> =
+            this.startProjectActivity
+
         override fun showSavedPrompt(): Observable<Unit> = this.showSavedPrompt
 
         private fun saveProject(project: Project): Observable<Project> {
@@ -484,9 +503,11 @@ interface ThanksViewModel {
                     category.parent() != null -> {
                         Observable.just(category.parent())
                     }
+
                     category.isRoot -> {
                         Observable.just(category)
                     }
+
                     else -> {
                         client.fetchCategory(category.rootId().toString())
                     }

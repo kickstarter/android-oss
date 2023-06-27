@@ -83,7 +83,7 @@ interface ReportProjectViewModel {
             disposables.add(
                 apolloClient.userPrivacy()
                     .filter { ObjectUtils.isNotNull(it) }
-                    .map { it.me()?.email() ?: "email@email.com" }
+                    .map { it.email ?: "email@email.com" }
                     .subscribe {
                         userEmail.onNext(it)
                     }

@@ -446,18 +446,21 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
     override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<ShippingRulesEnvelope>()
+            val query = GetShippingRulesForRewardIdQuery.builder()
+                .rewardId(encodeRelayId(reward))
+                .build()
 
-            this.service.query(
-                GetShippingRulesForRewardIdQuery.builder()
-                    .rewardId(encodeRelayId(reward))
-                    .build()
-            )
+            this.service.query(query)
                 .enqueue(object : ApolloCall.Callback<GetShippingRulesForRewardIdQuery.Data>() {
                     override fun onFailure(e: ApolloException) {
                         ps.onError(e)
                     }
 
                     override fun onResponse(response: Response<GetShippingRulesForRewardIdQuery.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message))
+                        }
+
                         response.data?.let { data ->
                             Observable.just(data?.node() as? GetShippingRulesForRewardIdQuery.AsReward)
                                 .filter { !it?.shippingRulesExpanded()?.nodes().isNullOrEmpty() }
@@ -470,9 +473,9 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                                 .subscribe { shippingList ->
                                     val shippingEnvelope = shippingRulesListTransformer(shippingList ?: emptyList())
                                     ps.onNext(shippingEnvelope)
-                                    ps.onComplete()
-                                }
+                                }.dispose()
                         }
+                        ps.onComplete()
                     }
                 })
             return@defer ps
@@ -494,21 +497,23 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
     override fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>> {
         return Observable.defer {
             val ps = PublishSubject.create<List<Reward>>()
+            val query = GetProjectAddOnsQuery.builder()
+                .slug(slug)
+                .locationId(encodeRelayId(locationId))
+                .build()
 
-            this.service.query(
-                GetProjectAddOnsQuery.builder()
-                    .slug(slug)
-                    .locationId(encodeRelayId(locationId))
-                    .build()
-            )
+            this.service.query(query)
                 .enqueue(object : ApolloCall.Callback<GetProjectAddOnsQuery.Data>() {
                     override fun onFailure(e: ApolloException) {
                         ps.onError(e)
                     }
 
                     override fun onResponse(response: Response<GetProjectAddOnsQuery.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message))
+                        }
                         response.data?.let { data ->
-                            rx.Observable.just(data.project()?.addOns())
+                            Observable.just(data.project()?.addOns())
                                 .filter { it?.nodes() != null }
                                 .map<List<Reward>> { addOnsList ->
                                     addOnsList?.let {
@@ -519,9 +524,9 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                                 }
                                 .subscribe {
                                     ps.onNext(it)
-                                    ps.onComplete()
-                                }
+                                }.dispose()
                         }
+                        ps.onComplete()
                     }
                 })
             return@defer ps

@@ -154,7 +154,7 @@ Cliquez pour réessayer.</string>
   <string name="Create_password" formatted="false">Créer votre mot de passe</string>
   <string name="Created_projects_projects_count" formatted="false">Projets créés : %{projects_count}</string>
   <string name="Creator" formatted="false">Créateur</string>
-  <string name="Creator_dashboard_removal_warning" formatted="false">After %{expiration_date}, the Dashboard and Post Update features will only be available on our website.</string>
+  <string name="Creator_dashboard_removal_warning" formatted="false">Après le %{expiration_date}, le tableau de bord et la fonctionnalité de publication d\'actus ne seront accessibles que depuis le site Web.</string>
   <string name="Creator_name_is_live_now" formatted="false">&lt;b>%{creator_name}&lt;/b> est en direct en ce moment</string>
   <string name="Creator_name_is_streaming_live_on_Kickstarter" formatted="false">%{creator_name} est en direct sur Kickstarter</string>
   <string name="Creator_name_live_streamed_time_ago" formatted="false">&lt;b>%{creator_name}&lt;/b> a fait une diffusion en direct %{time_ago}</string>

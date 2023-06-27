@@ -73,8 +73,7 @@ interface AccountViewModel {
                 .compose(Transformers.neverErrorV2())
 
             userPrivacy
-                .map { chosenCurrency() }
-                .map { ObjectUtils.coalesce(it, CurrencyCode.USD.rawValue()) }
+                .map { it.chosenCurrency }
                 .subscribe { this.chosenCurrency.onNext(it.toString()) }
                 .addToDisposable(disposables)
 

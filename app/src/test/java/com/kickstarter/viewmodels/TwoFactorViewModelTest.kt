@@ -10,6 +10,7 @@ import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApiClientV2
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.User
+import com.kickstarter.models.UserPrivacy
 import com.kickstarter.services.ApiClientTypeV2
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope.Companion.builder
@@ -76,14 +77,9 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
             }
         }
         val apolloClient = object : MockApolloClientV2() {
-            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+            override fun userPrivacy(): Observable<UserPrivacy> {
                 return Observable.just(
-                    UserPrivacyQuery.Data(
-                        UserPrivacyQuery.Me(
-                            "", user.name(),
-                            "gina@kickstarter.com", true, true, true, true, "USD"
-                        )
-                    )
+                    UserPrivacy(user.name(), "gina@kickstarter.com", true, true, true, true, "USD")
                 )
             }
         }
@@ -131,14 +127,9 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
             }
         }
         val apolloClient = object : MockApolloClientV2() {
-            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+            override fun userPrivacy(): Observable<UserPrivacy> {
                 return Observable.just(
-                    UserPrivacyQuery.Data(
-                        UserPrivacyQuery.Me(
-                            "", user.name(),
-                            "gina@kickstarter.com", true, true, true, true, "USD"
-                        )
-                    )
+                    UserPrivacy(user.name(),"gina@kickstarter.com", true, true, true, true, "USD")
                 )
             }
         }

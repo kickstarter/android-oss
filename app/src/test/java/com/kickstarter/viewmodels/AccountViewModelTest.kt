@@ -10,6 +10,7 @@ import com.kickstarter.models.UserPrivacy
 import com.kickstarter.viewmodels.AccountViewModel.AccountViewModel
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.After
 import org.junit.Test
@@ -49,12 +50,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.just(
-                        UserPrivacyQuery.Data(
-                            UserPrivacyQuery.Me(
-                                "", "",
-                                "", true, true, true, true, "MXN"
-                            )
-                        )
+                        UserPrivacy("", "", true, true, true, true, "MXN")
                     )
                 }
             }).build()
@@ -68,14 +64,9 @@ class AccountViewModelTest : KSRobolectricTestCase() {
     fun testUserEmail() {
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.just(
-                        UserPrivacyQuery.Data(
-                            UserPrivacyQuery.Me(
-                                "", "",
-                                "r@ksr.com", true, true, true, true, "USD"
-                            )
-                        )
+                            UserPrivacy("","r@ksr.com", true, true, true, true, "USD")
                     )
                 }
             }).build()
@@ -91,12 +82,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.just(
-                        UserPrivacyQuery.Data(
-                            UserPrivacyQuery.Me(
-                                "", "",
-                                "r@ksr.com", true, true, true, true, "USD"
-                            )
-                        )
+                        UserPrivacy("", "r@ksr.com", true, true, true, true, "USD")
                     )
                 }
 
@@ -127,14 +113,9 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         val isEmailVerified = true
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.just(
-                        UserPrivacyQuery.Data(
-                            UserPrivacyQuery.Me(
-                                "", "",
-                                "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN"
-                            )
-                        )
+                        UserPrivacy("", "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN")
                     )
                 }
             }).build()
@@ -151,15 +132,11 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         val isEmailVerified = false
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.just(
-                        UserPrivacyQuery.Data(
-                            UserPrivacyQuery.Me(
-                                "", "",
-                                "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN"
-                            )
-                        )
+                        UserPrivacy("", "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN")
                     )
+
                 }
             }).build()
         )
@@ -175,14 +152,9 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         val isEmailVerified = true
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.just(
-                        UserPrivacyQuery.Data(
-                            UserPrivacyQuery.Me(
-                                "", "",
-                                "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN"
-                            )
-                        )
+                        UserPrivacy("", "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN")
                     )
                 }
             }).build()
@@ -199,14 +171,9 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         val isEmailVerified = false
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.just(
-                        UserPrivacyQuery.Data(
-                            UserPrivacyQuery.Me(
-                                "", "",
-                                "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN"
-                            )
-                        )
+                        UserPrivacy("", "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN")
                     )
                 }
             }).build()
@@ -223,14 +190,9 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         val isEmailVerified = false
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.just(
-                        UserPrivacyQuery.Data(
-                            UserPrivacyQuery.Me(
-                                "", "",
-                                "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN"
-                            )
-                        )
+                        UserPrivacy("", "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN")
                     )
                 }
             }).build()
@@ -247,14 +209,9 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         val isEmailVerified = false
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.just(
-                        UserPrivacyQuery.Data(
-                            UserPrivacyQuery.Me(
-                                "", "",
-                                "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN"
-                            )
-                        )
+                        UserPrivacy("", "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN")
                     )
                 }
             }).build()
@@ -271,14 +228,9 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         val isEmailVerified = false
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.just(
-                        UserPrivacyQuery.Data(
-                            UserPrivacyQuery.Me(
-                                "", "",
-                                "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN"
-                            )
-                        )
+                        UserPrivacy("", "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN")
                     )
                 }
             }).build()

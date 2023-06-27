@@ -1,10 +1,12 @@
 package com.kickstarter.services
 
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.models.UserPrivacy
 import com.kickstarter.services.transformers.decodeRelayId
 import com.kickstarter.services.transformers.environmentalCommitmentTransformer
 import com.kickstarter.services.transformers.projectFaqTransformer
 import com.kickstarter.services.transformers.updateTransformer
+import com.kickstarter.services.transformers.userPrivacyTransformer
 import com.kickstarter.services.transformers.userTransformer
 import fragment.EnvironmentalCommitment
 import fragment.Faq
@@ -88,6 +90,26 @@ class GraphQLTransformersTest : KSRobolectricTestCase() {
         assertTrue(user.id() == 237961243L)
         assertTrue(user.name() == "Brotherwise Games")
         assertTrue(user.avatar().medium() == "https://ksr-qa-ugc.imgix.net/assets/005/791/327/f120c4cfe49495849b526b2cc6da44f9_original.png")
+    }
+
+    @Test
+    fun testUserPrivacyTransformer() {
+        val userPrivacyQuery = mock(UserPrivacyQuery.Me::class.java)
+        `when`(userPrivacyQuery.name()).thenReturn("Brotherwise Games")
+        `when`(userPrivacyQuery.email()).thenReturn("hello@kickstarter.com")
+        `when`(userPrivacyQuery.hasPassword()).thenReturn(true)
+        `when`(userPrivacyQuery.isCreator).thenReturn(true)
+        `when`(userPrivacyQuery.isDeliverable).thenReturn(true)
+        `when`(userPrivacyQuery.isEmailVerified).thenReturn(true)
+        `when`(userPrivacyQuery.chosenCurrency()).thenReturn(null)
+
+        val userPrivacy = userPrivacyTransformer(userPrivacyQuery)
+        assertTrue(userPrivacy.name == "Brotherwise Games")
+        assertTrue(userPrivacy.email == "hello@kickstarter.com")
+        assertTrue(userPrivacy.hasPassword)
+        assertTrue(userPrivacy.isCreator)
+        assertTrue(userPrivacy.isDeliverable)
+        assertTrue(userPrivacy.chosenCurrency == "USD")
     }
 
     @Test

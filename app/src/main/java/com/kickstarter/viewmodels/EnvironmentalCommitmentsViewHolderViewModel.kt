@@ -1,20 +1,21 @@
 package com.kickstarter.viewmodels
 
-import androidx.annotation.NonNull
-import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.Environment
+import androidx.lifecycle.ViewModel
 import com.kickstarter.libs.EnvironmentalCommitmentCategories
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.EnvironmentalCommitment
-import com.kickstarter.ui.viewholders.EnvironmentalCommitmentsViewHolder
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
-class EnvironmentalCommitmentsViewHolderViewModel {
+interface EnvironmentalCommitmentsViewHolderViewModel {
     interface Inputs {
         /** Configure the view model with the [EnvironmentalCommitment]. */
         fun configureWith(environmentalCommitmentInput: EnvironmentalCommitment)
+
+       fun clearDisposables()
     }
 
     interface Outputs {
@@ -24,8 +25,8 @@ class EnvironmentalCommitmentsViewHolderViewModel {
         fun category(): Observable<Int>
     }
 
-    class ViewModel(@NonNull val environment: Environment) :
-        ActivityViewModel<EnvironmentalCommitmentsViewHolder>(environment), Inputs, Outputs {
+    class EnvironmentalCommitmentsViewHolderViewModel() :
+        ViewModel(), Inputs, Outputs {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -33,12 +34,15 @@ class EnvironmentalCommitmentsViewHolderViewModel {
             .create<EnvironmentalCommitment>()
         private val description = BehaviorSubject.create<String>()
         private val category = BehaviorSubject.create<Int>()
+        private val disposables = CompositeDisposable()
 
         init {
 
             this.projectEnvironmentalCommitmentInput
                 .map { it.description }
-                .subscribe(this.description)
+                .subscribe { this.description.onNext(it) }
+                .addToDisposable(disposables)
+
 
             this.projectEnvironmentalCommitmentInput
                 .map {
@@ -48,7 +52,12 @@ class EnvironmentalCommitmentsViewHolderViewModel {
                 }
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
-                .subscribe(this.category)
+                .subscribe { this.category.onNext(it) }
+                .addToDisposable(disposables)
+        }
+
+        override fun clearDisposables() {
+            disposables.clear()
         }
 
         override fun configureWith(environmentalCommitmentInput: EnvironmentalCommitment) = this.projectEnvironmentalCommitmentInput.onNext(environmentalCommitmentInput)

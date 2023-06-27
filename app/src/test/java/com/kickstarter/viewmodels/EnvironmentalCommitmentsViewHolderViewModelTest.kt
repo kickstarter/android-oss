@@ -20,7 +20,7 @@ class EnvironmentalCommitmentsViewHolderViewModelTest : KSRobolectricTestCase() 
     private fun setUpEnvironment() {
         this.vm = EnvironmentalCommitmentsViewHolderViewModel.EnvironmentalCommitmentsViewHolderViewModel()
 
-        this.vm.outputs.description().subscribe {this.description.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.description().subscribe { this.description.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.category().subscribe { this.category.onNext(it) }.addToDisposable(disposables)
     }
 

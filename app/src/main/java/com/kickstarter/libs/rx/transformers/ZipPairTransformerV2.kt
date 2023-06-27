@@ -8,7 +8,9 @@ import io.reactivex.functions.BiFunction
 
 class ZipPairTransformerV2<T, R>(private val second: Observable<R>) : ObservableTransformer<T, Pair<T, R>> {
     override fun apply(upstream: Observable<T>): ObservableSource<Pair<T, R>> {
-        return Observable.zip(upstream, second,
-            (BiFunction  { first: T, second: R -> Pair(first, second) }))
+        return Observable.zip(
+            upstream, second,
+            (BiFunction { first: T, second: R -> Pair(first, second) })
+        )
     }
 }

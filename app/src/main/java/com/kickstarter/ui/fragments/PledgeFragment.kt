@@ -203,7 +203,6 @@ class PledgeFragment :
             .subscribe { setConversionTextView(it) }
             .addToDisposable(disposables)
 
-
         this.viewModel.outputs.paymentContainerIsGone()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {

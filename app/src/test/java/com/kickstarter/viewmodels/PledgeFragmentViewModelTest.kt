@@ -18,6 +18,7 @@ import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.trimAllWhitespace
 import com.kickstarter.mock.MockCurrentConfig
+import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.CheckoutFactory
@@ -31,7 +32,6 @@ import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.mock.factories.ShippingRulesEnvelopeFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.mock.factories.UserFactory
-import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Checkout
@@ -52,11 +52,11 @@ import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.State
-import com.stripe.android.StripeIntentResult
-import io.reactivex.subscribers.TestSubscriber
 import com.kickstarter.viewmodels.PledgeFragmentViewModel.PledgeFragmentViewModel
+import com.stripe.android.StripeIntentResult
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import junit.framework.TestCase
 import org.joda.time.DateTime
 import org.junit.After
@@ -682,7 +682,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         val environment = environmentForShippingRules(shippingRulesEnvelope)
             .toBuilder()
-            .currentUser(MockCurrentUser(UserFactory.user()))
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .build()
 
         setUpEnvironment(environment, shippableReward, backedProject, PledgeReason.UPDATE_PLEDGE)
@@ -3053,12 +3053,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         }
 
         val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
+        val currentConfig = MockCurrentConfigV2()
         currentConfig.config(config)
 
         return environment().toBuilder()
             .apolloClientV2(apolloClient)
-            .currentConfig(currentConfig)
+            .currentConfig2(currentConfig)
             .build()
     }
 

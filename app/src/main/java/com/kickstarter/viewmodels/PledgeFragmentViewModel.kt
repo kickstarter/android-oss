@@ -1,8 +1,8 @@
 package com.kickstarter.viewmodels
 
 import android.os.Bundle
-import android.util.Pair
 import android.text.SpannableString
+import android.util.Pair
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -48,7 +48,6 @@ import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.State
-import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCase
 import com.stripe.android.StripeIntentResult
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import io.reactivex.Observable
@@ -591,10 +590,6 @@ interface PledgeFragmentViewModel {
                 .addToDisposable(disposables)
 
             backing
-                .compose<Pair<Backing, Reward>>(combineLatestPair(this.selectedReward))
-                .filter { it.first != null && it.second != null }
-
-            backing
                 .map { it.bonusAmount() }
                 .filter { it > 0 }
                 .subscribe {
@@ -855,14 +850,15 @@ interface PledgeFragmentViewModel {
                 .subscribe { this.shippingRulesAndProject.onNext(it) }
                 .addToDisposable(disposables)
 
-            Observable.combineLatest(shippingRules, this.currentConfig.observable(), shouldLoadDefaultLocation
+            Observable.combineLatest(
+                shippingRules, this.currentConfig.observable(), shouldLoadDefaultLocation
             ) { rules, config, isDefault ->
                 if (isDefault) defaultConfigShippingRule(
                     rules.toMutableList(),
                     config
                 ) else ShippingRuleFactory.emptyShippingRule()
             }
-                .filter { it.id()?.let { it > 0 }?: false }
+                .filter { it.id()?.let { it > 0 } ?: false }
                 .compose<Pair<ShippingRule, PledgeReason>>(combineLatestPair(pledgeReason))
                 .filter { it.second == PledgeReason.PLEDGE || it.second == PledgeReason.UPDATE_REWARD || it.second == PledgeReason.FIX_PLEDGE }
                 .map { it.first }
@@ -938,6 +934,7 @@ interface PledgeFragmentViewModel {
                 .distinctUntilChanged()
 
             val total = Observable.merge(totalWShipping, totalNR, totalNoShipping)
+                .distinctUntilChanged()
 
             total
                 .compose<Pair<Double, Project>>(combineLatestPair(project))
@@ -1160,7 +1157,6 @@ interface PledgeFragmentViewModel {
                 .map { it.negate() }
                 .subscribe { this.pledgeButtonIsGone.onNext(it) }
                 .addToDisposable(disposables)
-
 
             val storedCards = BehaviorSubject.create<List<StoredCard>>()
 

@@ -44,8 +44,7 @@ fun KSImageTextBanner(
             .padding(all = dimensionResource(id = R.dimen.grid_2))
             .clickable(enabled = onClickAction != null) { onClickAction?.invoke() },
         verticalAlignment = Alignment.CenterVertically,
-
-        ) {
+    ) {
         Image(
             painter = painterResource(id = imageResToDisplay),
             contentDescription = stringResource(id = textResToDisplay),

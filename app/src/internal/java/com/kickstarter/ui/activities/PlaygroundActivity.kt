@@ -20,7 +20,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.PlaygroundViewModel
-import rx.android.schedulers.AndroidSchedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(PlaygroundViewModel.ViewModel::class)
 class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
@@ -75,11 +75,10 @@ class PlaygroundActivity : BaseActivity<PlaygroundViewModel.ViewModel?>() {
         binding.stepper.inputs.setVariance(1)
 
         binding.stepper.outputs.display()
-            .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 showSnackbar(binding.stepper, "The updated value on the display is: $it")
-            }
+            }.dispose()
     }
 
     private fun setProjectActivityButtonClicks() {

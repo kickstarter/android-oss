@@ -942,7 +942,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingRulesSectionIsGone.assertValue(true)
         this.selectedShippingRule.assertNoValues()
         this.shippingSummaryIsGone.assertValues(true)
-        this.bonusSummaryIsGone.assertValues(true, true)
+        this.bonusSummaryIsGone.assertValues(true)
         this.totalDividerIsGone.assertValue(true)
 
         this.localPickupName.assertNoValues()

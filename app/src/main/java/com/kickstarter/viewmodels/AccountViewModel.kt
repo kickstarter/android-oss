@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels
 
 import UpdateUserCurrencyMutation
-import UserPrivacyQuery
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

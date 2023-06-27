@@ -33,7 +33,7 @@ class ReportProjectViewModelTest : KSRobolectricTestCase() {
     private fun getEnvironment() = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
         override fun userPrivacy(): Observable<UserPrivacy> {
             return Observable.just(
-                UserPrivacy("Some Name","some@email.com", true, true, true, true, "USD")
+                UserPrivacy("Some Name", "some@email.com", true, true, true, true, "USD")
             )
         }
 

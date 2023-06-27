@@ -1,7 +1,7 @@
 package com.kickstarter.services
 
+import UserPrivacyQuery
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.models.UserPrivacy
 import com.kickstarter.services.transformers.decodeRelayId
 import com.kickstarter.services.transformers.environmentalCommitmentTransformer
 import com.kickstarter.services.transformers.projectFaqTransformer

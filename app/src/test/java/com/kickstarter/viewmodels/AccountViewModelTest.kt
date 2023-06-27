@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels
 
 import UpdateUserCurrencyMutation
-import UserPrivacyQuery
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -10,7 +9,6 @@ import com.kickstarter.models.UserPrivacy
 import com.kickstarter.viewmodels.AccountViewModel.AccountViewModel
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.After
 import org.junit.Test
@@ -66,7 +64,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.just(
-                            UserPrivacy("","r@ksr.com", true, true, true, true, "USD")
+                        UserPrivacy("", "r@ksr.com", true, true, true, true, "USD")
                     )
                 }
             }).build()
@@ -136,7 +134,6 @@ class AccountViewModelTest : KSRobolectricTestCase() {
                     return Observable.just(
                         UserPrivacy("", "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN")
                     )
-
                 }
             }).build()
         )

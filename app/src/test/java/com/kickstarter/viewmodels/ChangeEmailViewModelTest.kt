@@ -60,7 +60,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.just(
-                        UserPrivacy("","rashad@test.com", true, true, true, true, "")
+                        UserPrivacy("", "rashad@test.com", true, true, true, true, "")
                     )
                 }
             }).build()
@@ -138,7 +138,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.just(
-                        UserPrivacy( "", "rashad@test.com", true, true, false, false, "")
+                        UserPrivacy("", "rashad@test.com", true, true, false, false, "")
                     )
                 }
             }).build()
@@ -256,7 +256,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
                 override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.just(
-                        UserPrivacy("","some@email.com", true, true, true, true, "")
+                        UserPrivacy("", "some@email.com", true, true, true, true, "")
                     )
                 }
 

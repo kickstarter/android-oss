@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels
 
-import UserPrivacyQuery
 import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.utils.EventName
@@ -129,7 +128,7 @@ class TwoFactorViewModelTest : KSRobolectricTestCase() {
         val apolloClient = object : MockApolloClientV2() {
             override fun userPrivacy(): Observable<UserPrivacy> {
                 return Observable.just(
-                    UserPrivacy(user.name(),"gina@kickstarter.com", true, true, true, true, "USD")
+                    UserPrivacy(user.name(), "gina@kickstarter.com", true, true, true, true, "USD")
                 )
             }
         }

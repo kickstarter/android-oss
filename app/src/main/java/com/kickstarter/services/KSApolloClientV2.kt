@@ -249,7 +249,7 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
 
                     override fun onResponse(response: Response<UserPrivacyQuery.Data>) {
                         response.data?.me()?.let {
-                             ps.onNext(userPrivacyTransformer(it))
+                            ps.onNext(userPrivacyTransformer(it))
                         }
                         ps.onComplete()
                     }

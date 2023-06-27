@@ -357,7 +357,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         val apolloClient = object : MockApolloClientV2() {
             override fun userPrivacy(): Observable<UserPrivacy> {
                 return Observable.just(
-                    UserPrivacy(user.name(),"hello@kickstarter.com", true, true, true, true, "USD")
+                    UserPrivacy(user.name(), "hello@kickstarter.com", true, true, true, true, "USD")
                 )
             }
         }

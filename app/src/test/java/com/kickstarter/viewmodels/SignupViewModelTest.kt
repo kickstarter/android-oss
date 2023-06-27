@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels
 
-import UserPrivacyQuery
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.extensions.addToDisposable

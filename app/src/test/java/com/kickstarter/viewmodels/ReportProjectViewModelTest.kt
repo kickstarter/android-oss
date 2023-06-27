@@ -6,6 +6,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
+import com.kickstarter.models.UserPrivacy
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.COMMUNITY_GUIDELINES
 import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.COMMUNITY_GUIDELINES_TAG
@@ -30,14 +31,9 @@ class ReportProjectViewModelTest : KSRobolectricTestCase() {
     private val disposables = CompositeDisposable()
 
     private fun getEnvironment() = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-        override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+        override fun userPrivacy(): Observable<UserPrivacy> {
             return Observable.just(
-                UserPrivacyQuery.Data(
-                    UserPrivacyQuery.Me(
-                        "", "Some Name",
-                        "some@email.com", true, true, true, true, "USD"
-                    )
-                )
+                UserPrivacy("Some Name", "some@email.com", true, true, true, true, "USD")
             )
         }
 

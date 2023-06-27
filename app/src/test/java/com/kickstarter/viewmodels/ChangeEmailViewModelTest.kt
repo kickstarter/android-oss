@@ -7,6 +7,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.services.MockApolloClientV2
+import com.kickstarter.models.UserPrivacy
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
@@ -57,14 +58,9 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     fun testCurrentEmail() {
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.just(
-                        UserPrivacyQuery.Data(
-                            UserPrivacyQuery.Me(
-                                "", "",
-                                "rashad@test.com", true, true, true, true, ""
-                            )
-                        )
+                        UserPrivacy("", "rashad@test.com", true, true, true, true, "")
                     )
                 }
             }).build()
@@ -78,7 +74,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     fun testCurrentEmailError() {
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.error(Throwable("error"))
                 }
             }).build()
@@ -121,14 +117,9 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     fun testIsEmailUnverified() {
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.just(
-                        UserPrivacyQuery.Data(
-                            UserPrivacyQuery.Me(
-                                "", "",
-                                "rashad@test.com", true, true, true, false, ""
-                            )
-                        )
+                        UserPrivacy("", "rashad@test.com", true, true, true, false, "")
                     )
                 }
             }).build()
@@ -145,14 +136,9 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     fun testIsEmailUndeliverable() {
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.just(
-                        UserPrivacyQuery.Data(
-                            UserPrivacyQuery.Me(
-                                "", "",
-                                "rashad@test.com", true, true, false, false, ""
-                            )
-                        )
+                        UserPrivacy("", "rashad@test.com", true, true, false, false, "")
                     )
                 }
             }).build()
@@ -169,14 +155,9 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     fun testIsUserABacker() {
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.just(
-                        UserPrivacyQuery.Data(
-                            UserPrivacyQuery.Me(
-                                "", "",
-                                "rashad@test.com", true, false, true, true, ""
-                            )
-                        )
+                        UserPrivacy("", "rashad@test.com", true, false, true, true, "")
                     )
                 }
             }).build()
@@ -194,14 +175,9 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     fun testIsUserACreator() {
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.just(
-                        UserPrivacyQuery.Data(
-                            UserPrivacyQuery.Me(
-                                "", "",
-                                "rashad@test.com", true, true, true, true, ""
-                            )
-                        )
+                        UserPrivacy("", "rashad@test.com", true, true, true, true, "")
                     )
                 }
             }).build()
@@ -278,14 +254,9 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(
             environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.just(
-                        UserPrivacyQuery.Data(
-                            UserPrivacyQuery.Me(
-                                "", "",
-                                "some@email.com", true, true, true, true, ""
-                            )
-                        )
+                        UserPrivacy("", "some@email.com", true, true, true, true, "")
                     )
                 }
 

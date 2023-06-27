@@ -32,6 +32,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
+import com.kickstarter.models.UserPrivacy
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.DiscoveryParams
@@ -126,8 +127,8 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.empty<String>()
     }
 
-    override fun userPrivacy(): io.reactivex.Observable<UserPrivacyQuery.Data> {
-        return io.reactivex.Observable.empty<UserPrivacyQuery.Data>()
+    override fun userPrivacy(): io.reactivex.Observable<UserPrivacy> {
+        return io.reactivex.Observable.empty<UserPrivacy>()
     }
 
     override fun updateUserCurrencyPreference(currency: CurrencyCode): io.reactivex.Observable<UpdateUserCurrencyMutation.Data> {

@@ -17,7 +17,7 @@ import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.services.transformers.projectTransformer
 import com.kickstarter.services.transformers.rewardTransformer
 import com.kickstarter.services.transformers.shippingRulesListTransformer
-import com.kickstarter.services.transformers.userTransformer
+import com.kickstarter.services.transformers.userPrivacyTransformer
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -249,18 +249,7 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
 
                     override fun onResponse(response: Response<UserPrivacyQuery.Data>) {
                         response.data?.me()?.let {
-                            val defaultCurrency = "USD"
-                            val userPrivacy = UserPrivacy(
-                                name = it.name(),
-                                email = it.email() ?: "",
-                                hasPassword = it.hasPassword() ?: false,
-                                isCreator = it.isCreator ?: false,
-                                isDeliverable = it.isDeliverable ?: false,
-                                isEmailVerified = it.isEmailVerified ?: false,
-                                chosenCurrency = it.chosenCurrency() ?: defaultCurrency
-                            )
-                             ps.onNext(userPrivacy)
-
+                             ps.onNext(userPrivacyTransformer(it))
                         }
                         ps.onComplete()
                     }

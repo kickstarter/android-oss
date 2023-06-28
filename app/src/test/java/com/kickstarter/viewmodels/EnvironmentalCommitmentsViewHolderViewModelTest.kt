@@ -5,9 +5,9 @@ import com.kickstarter.libs.EnvironmentalCommitmentCategories
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ProjectEnvironmentalCommitmentFactory
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
 import org.junit.After
 import org.junit.Test
-import io.reactivex.subscribers.TestSubscriber
 
 class EnvironmentalCommitmentsViewHolderViewModelTest : KSRobolectricTestCase() {
 

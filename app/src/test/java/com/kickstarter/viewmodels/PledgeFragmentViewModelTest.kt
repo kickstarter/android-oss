@@ -2366,7 +2366,22 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testShowPledgeSuccess_whenNoReward() {
         val project = ProjectFactory.project()
-        setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), RewardFactory.noReward(), project)
+        val user = UserFactory.user()
+        val environment = environmentForLoggedInUser(user)
+            .toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
+                    return Observable.just(
+                        Checkout.builder()
+                            .backing(Checkout.Backing.builder().clientSecret("secret").requiresAction(false).build())
+                            .id(3)
+                            .build()
+                    )
+                }
+            })
+            .build()
+
+        setUpEnvironment(environment, RewardFactory.noReward(), project)
 
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 

@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.R
 import com.kickstarter.libs.Config
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
@@ -1294,10 +1295,13 @@ interface PledgeFragmentViewModel {
                 }
                 .addToDisposable(disposables)
 
-            // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
+            // An observable of the ref tag stored in the cookie for the project
             val cookieRefTag = project
                 .take(1)
-                .map { p -> RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences) }
+                .map { p ->
+                    RefTagUtils.storedCookieRefTagForProject(p, cookieManager, sharedPreferences)
+                        ?: RefTag.Builder().build()
+                }
 
             val locationId: Observable<String> = shippingRule
                 .filter { it.location() != null }

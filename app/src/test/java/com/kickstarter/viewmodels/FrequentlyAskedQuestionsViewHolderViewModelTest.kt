@@ -6,7 +6,7 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ProjectFaqFactory
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
-import org.joda.time.DateTime
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
@@ -21,14 +21,14 @@ class FrequentlyAskedQuestionsViewHolderViewModelTest : KSRobolectricTestCase() 
 
     @Before
     fun setupEnvironment() {
-        this.vm =  FrequentlyAskedQuestionsViewHolderViewModel.FrequentlyAskedQuestionsViewHolderViewModel()
-        this.vm.outputs.question().subscribe { this.question.onNext(it)}.addToDisposable(disposables)
-        this.vm.outputs.answer().subscribe { this.answer.onNext(it)}.addToDisposable(disposables)
-        this.vm.outputs.updatedDate().subscribe { this.updatedDate.onNext(it)}.addToDisposable(disposables)
+        this.vm = FrequentlyAskedQuestionsViewHolderViewModel.FrequentlyAskedQuestionsViewHolderViewModel()
+        this.vm.outputs.question().subscribe { this.question.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.answer().subscribe { this.answer.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.updatedDate().subscribe { this.updatedDate.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
-    fun testBindProjectFAQ(){
+    fun testBindProjectFAQ() {
         val faq = ProjectFaqFactory.getFaqs()[0]
 
         this.vm.configureWith(faq)
@@ -38,4 +38,8 @@ class FrequentlyAskedQuestionsViewHolderViewModelTest : KSRobolectricTestCase() 
         this.updatedDate.assertValue(DateTimeUtils.longDate(faq.createdAt))
     }
 
+    @After
+    fun cleanUp() {
+        disposables.clear()
+    }
 }

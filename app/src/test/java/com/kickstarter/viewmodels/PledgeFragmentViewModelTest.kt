@@ -6,7 +6,6 @@ import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.MockSharedPreferences
 import com.kickstarter.libs.RefTag
@@ -430,7 +429,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForShippingRules(shippingRulesEnvelope)
             .toBuilder()
             .apolloClientV2(apolloClientWithStoredCards(storedCards))
-            .currentUser(MockCurrentUser(UserFactory.user()))
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .build()
 
         setUpEnvironment(environment, shippableReward, backedProject, PledgeReason.UPDATE_PAYMENT)
@@ -457,10 +456,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testPaymentLoggingInUser_whenPhysicalReward() {
-        val mockCurrentUser = MockCurrentUser()
+        val mockCurrentUser = MockCurrentUserV2()
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
             .toBuilder()
-            .currentUser(mockCurrentUser)
+            .currentUserV2(mockCurrentUser)
             .build()
         setUpEnvironment(environment)
 
@@ -479,8 +478,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testPaymentLoggingInUser_whenDigitalReward() {
-        val mockCurrentUser = MockCurrentUser()
-        setUpEnvironment(environment().toBuilder().currentUser(mockCurrentUser).build(), RewardFactory.reward())
+        val mockCurrentUser = MockCurrentUserV2()
+        setUpEnvironment(environment().toBuilder().currentUserV2(mockCurrentUser).build(), RewardFactory.reward())
 
         this.cardsAndProject.assertNoValues()
         this.continueButtonIsGone.assertValue(false)
@@ -497,9 +496,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testPaymentLoggingInUser_whenLocalPickupReward() {
-        val mockCurrentUser = MockCurrentUser()
+        val mockCurrentUser = MockCurrentUserV2()
         val environment = environment().toBuilder()
-            .currentUser(mockCurrentUser)
+            .currentUserV2(mockCurrentUser)
             .build()
 
         setUpEnvironment(environment, RewardFactory.localReceiptLocation())
@@ -594,7 +593,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     fun testPledgeScreenConfiguration_whenPledgingShippableRewardAndLoggedIn() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
             .toBuilder()
-            .currentUser(MockCurrentUser(UserFactory.user()))
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .build()
         setUpEnvironment(environment)
 
@@ -780,7 +779,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         val environment = environmentForShippingRules(shippingRulesEnvelope)
             .toBuilder()
-            .currentUser(MockCurrentUser(UserFactory.user()))
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .build()
 
         setUpEnvironment(environment, shippableReward, backedProject, PledgeReason.UPDATE_PAYMENT)
@@ -893,7 +892,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         val environment = environmentForShippingRules(shippingRulesEnvelope)
             .toBuilder()
-            .currentUser(MockCurrentUser(UserFactory.user()))
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .build()
 
         setUpEnvironment(environment, shippableReward, backedProject, PledgeReason.FIX_PLEDGE)
@@ -957,7 +956,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
             .toBuilder()
-            .currentUser(MockCurrentUser(UserFactory.user()))
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .build()
         setUpEnvironment(environment, shippableReward, ProjectFactory.backedProject(), PledgeReason.UPDATE_REWARD)
 
@@ -1170,7 +1169,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     fun testUpdatingPledgeAmount_WithShippingChange_USProject_USDPref() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
             .toBuilder()
-            .currentUser(MockCurrentUser(UserFactory.user()))
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .build()
         val project = ProjectFactory.project()
         setUpEnvironment(environment, project = project)
@@ -1252,7 +1251,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.mxProject().toBuilder().currentCurrency("USD").build()
         val environment = environmentForShippingRulesAndCards(ShippingRulesEnvelopeFactory.shippingRules(), listOf(StoredCardFactory.visa()))
             .toBuilder()
-            .currentUser(MockCurrentUser(UserFactory.user()))
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .build()
         setUpEnvironment(environment, project = project)
 
@@ -2407,7 +2406,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val reward = RewardFactory.rewardWithShipping()
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
             .toBuilder()
-            .currentUser(MockCurrentUser(UserFactory.user()))
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .build()
         setUpEnvironment(environment, reward, project)
 
@@ -2608,7 +2607,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         val environment = environmentForShippingRules(shippingRulesEnvelope)
             .toBuilder()
-            .currentUser(MockCurrentUser(UserFactory.user()))
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .apolloClientV2(object : MockApolloClientV2() {
                 override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
                     return Observable.just(shippingRulesEnvelope)

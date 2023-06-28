@@ -4,7 +4,6 @@ import android.content.Intent
 import android.util.Pair
 import androidx.annotation.NonNull
 import androidx.annotation.VisibleForTesting
-import com.facebook.appevents.cloudbridge.ConversionsAPIEventName
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.ActivityViewModel
@@ -53,7 +52,6 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.data.VideoModelElement
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
-import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCase
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -518,13 +516,13 @@ interface ProjectPageViewModel {
                 projectOnDeepLinkChangeSave
             )
 
-            SendThirdPartyEventUseCase(sharedPreferences, ffClient)
-                .sendCAPIEvent(currentProject, currentUser, apolloClient, ConversionsAPIEventName.VIEWED_CONTENT)
-                .compose(neverError())
-                .compose(bindToLifecycle())
-                .subscribe {
-                    onCAPIEventSent.onNext(it.first.triggerCAPIEvent()?.success() ?: false)
-                }
+//            SendThirdPartyEventUseCase(sharedPreferences, ffClient)
+//                .sendCAPIEvent(currentProject, currentUser, apolloClient, ConversionsAPIEventName.VIEWED_CONTENT)
+//                .compose(neverError())
+//                .compose(bindToLifecycle())
+//                .subscribe {
+//                    onCAPIEventSent.onNext(it.first.triggerCAPIEvent()?.success() ?: false)
+//                }
 
             val projectSavedStatus = Observable.merge(projectOnUserChangeSave, savedProjectOnLoginSuccess, projectOnDeepLinkChangeSave)
 

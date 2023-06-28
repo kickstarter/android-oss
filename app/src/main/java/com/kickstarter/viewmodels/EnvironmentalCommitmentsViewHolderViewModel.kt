@@ -14,8 +14,6 @@ interface EnvironmentalCommitmentsViewHolderViewModel {
     interface Inputs {
         /** Configure the view model with the [EnvironmentalCommitment]. */
         fun configureWith(environmentalCommitmentInput: EnvironmentalCommitment)
-
-        fun clearDisposables()
     }
 
     interface Outputs {
@@ -55,8 +53,9 @@ interface EnvironmentalCommitmentsViewHolderViewModel {
                 .addToDisposable(disposables)
         }
 
-        override fun clearDisposables() {
+        override fun onCleared() {
             disposables.clear()
+            super.onCleared()
         }
 
         override fun configureWith(environmentalCommitmentInput: EnvironmentalCommitment) = this.projectEnvironmentalCommitmentInput.onNext(environmentalCommitmentInput)

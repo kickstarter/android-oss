@@ -35,7 +35,7 @@ class FrequentlyAskedQuestionsViewHolderViewModelTest : KSRobolectricTestCase() 
 
         this.question.assertValue(faq.question)
         this.answer.assertValue(faq.answer)
-        this.updatedDate.assertValue(DateTimeUtils.longDate(faq.createdAt))
+        this.updatedDate.assertValue(faq.createdAt?.let { DateTimeUtils.longDate(it) })
     }
 
     @After

@@ -38,6 +38,6 @@ class EnvironmentalCommitmentsViewHolderViewModelTest : KSRobolectricTestCase() 
 
     @After
     fun cleanUp() {
-g        disposables.clear()
+        disposables.clear()
     }
 }

@@ -50,7 +50,7 @@ interface FrequentlyAskedQuestionsViewHolderViewModel {
             projectFaqInput
                 .map { requireNotNull(it.createdAt) }
                 .map { DateTimeUtils.longDate(it) }
-                .subscribe { this.updatedDate }
+                .subscribe { this.updatedDate.onNext(it) }
                 .addToDisposable(disposables)
         }
 

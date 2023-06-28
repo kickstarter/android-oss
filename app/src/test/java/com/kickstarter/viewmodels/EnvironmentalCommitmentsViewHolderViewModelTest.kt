@@ -7,7 +7,7 @@ import com.kickstarter.mock.factories.ProjectEnvironmentalCommitmentFactory
 import io.reactivex.disposables.CompositeDisposable
 import org.junit.After
 import org.junit.Test
-import rx.observers.TestSubscriber
+import io.reactivex.subscribers.TestSubscriber
 
 class EnvironmentalCommitmentsViewHolderViewModelTest : KSRobolectricTestCase() {
 
@@ -38,7 +38,6 @@ class EnvironmentalCommitmentsViewHolderViewModelTest : KSRobolectricTestCase() 
 
     @After
     fun cleanUp() {
-        vm.clearDisposables()
-        disposables.clear()
+g        disposables.clear()
     }
 }

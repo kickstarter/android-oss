@@ -451,7 +451,7 @@ interface PledgeFragmentViewModel {
         // - Flag to know if the shipping location should be the default one,
         // - meaning we don't have shipping location selected yet
         // - Use case: (Reward shippable without addOns in new pledge or updating pledge with restricted location)
-        private val shouldLoadDefaultLocation = PublishSubject.create<Boolean>()
+        private val shouldLoadDefaultLocation = BehaviorSubject.create<Boolean>()
         private val pledgeAmountHeader = BehaviorSubject.create<CharSequence>()
         private val stepperAmount = 1
 
@@ -463,7 +463,7 @@ interface PledgeFragmentViewModel {
         private val paySheetPresented = PublishSubject.create<Boolean>()
         private val showError = PublishSubject.create<String>()
 
-        private val loadingState = PublishSubject.create<State>()
+        private val loadingState = BehaviorSubject.create<State>()
 
         private val disposables = CompositeDisposable()
 
@@ -491,14 +491,14 @@ interface PledgeFragmentViewModel {
                 .map { it.project() }
 
             // Shipping rules section
+
             val shippingRules = this.selectedReward
+                .distinctUntilChanged()
                 .filter { RewardUtils.isShippable(it) }
                 .switchMap {
                     this.apolloClient.getShippingRules(it).compose(neverErrorV2())
                 }
                 .map { it.shippingRules() }
-                .distinctUntilChanged()
-                .share()
 
             val pledgeReason = arguments()
                 .map { it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason }
@@ -853,7 +853,7 @@ interface PledgeFragmentViewModel {
             Observable.combineLatest(
                 shippingRules, this.currentConfig.observable(), shouldLoadDefaultLocation
             ) { rules, config, isDefault ->
-                if (isDefault) defaultConfigShippingRule(
+                if (isDefault && rules.isNotEmpty()) defaultConfigShippingRule(
                     rules.toMutableList(),
                     config
                 ) else ShippingRuleFactory.emptyShippingRule()

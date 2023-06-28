@@ -311,7 +311,7 @@ class PledgeFragment :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding?.pledgeSectionEditableShipping?.shippingRules?.setText(it.toString())
-                binding?.pledgeSectionShipping?. shippingRulesStatic ?.text = it.toString()
+                binding?.pledgeSectionShipping?.shippingRulesStatic ?.text = it.toString()
             }
             .addToDisposable(disposables)
 

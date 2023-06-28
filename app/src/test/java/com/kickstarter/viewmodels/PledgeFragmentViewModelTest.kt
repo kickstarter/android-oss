@@ -1210,9 +1210,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testUpdatingPledgeAmount_WithStepper_MXProject_USDPref() {
         val project = ProjectFactory.mxProject().toBuilder().currentCurrency("USD").build()
-        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        val environment = environmentForShippingRulesAndCards(ShippingRulesEnvelopeFactory.shippingRules(), listOf(StoredCardFactory.visa()))
             .toBuilder()
-            .apolloClientV2(apolloClientWithStoredCards(listOf(StoredCardFactory.visa())))
             .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .build()
         setUpEnvironment(environment, project = project)
@@ -3031,6 +3030,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     private fun apolloClientWithStoredCards(storedCards: List<StoredCard>): MockApolloClientV2 {
+
         return object : MockApolloClientV2() {
             override fun getStoredCards(): Observable<List<StoredCard>> {
                 return Observable.just(storedCards)
@@ -3042,6 +3042,29 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         return environment()
             .toBuilder()
             .currentUserV2(MockCurrentUserV2(user))
+            .build()
+    }
+
+    private fun environmentForShippingRulesAndCards(
+        envelope: ShippingRulesEnvelope,
+        storedCards: List<StoredCard>
+    ): Environment {
+        val apolloClient = object : MockApolloClientV2() {
+            override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
+                return Observable.just(envelope)
+            }
+            override fun getStoredCards(): Observable<List<StoredCard>> {
+                return Observable.just(storedCards)
+            }
+        }
+
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(config)
+
+        return environment().toBuilder()
+            .apolloClientV2(apolloClient)
+            .currentConfig2(currentConfig)
             .build()
     }
 

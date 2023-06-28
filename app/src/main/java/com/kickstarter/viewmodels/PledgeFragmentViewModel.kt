@@ -590,7 +590,7 @@ interface PledgeFragmentViewModel {
                 .addToDisposable(disposables)
 
             backing
-                .filter { ObjectUtils.isNotNull(it.bonusAmount())}
+                .filter { ObjectUtils.isNotNull(it.bonusAmount()) }
                 .map { it.bonusAmount() }
                 .filter { it > 0 }
                 .subscribe {

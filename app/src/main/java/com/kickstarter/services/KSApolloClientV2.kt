@@ -174,8 +174,8 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                                 }
                             }
                             ps.onNext(cardsList)
-                            ps.onComplete()
                         }
+                        ps.onComplete()
                     }
                 })
             return@defer ps
@@ -556,26 +556,25 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                     override fun onResponse(response: Response<UpdateBackingMutation.Data>) {
                         if (response.hasErrors()) {
                             ps.onError(java.lang.Exception(response.errors?.first()?.message))
-                        }
+                        } else {
+                            val checkoutPayload = response.data?.updateBacking()?.checkout()
+                            val backing = Checkout.Backing.builder()
+                                .clientSecret(
+                                    checkoutPayload?.backing()?.fragments()?.checkoutBacking()
+                                        ?.clientSecret()
+                                )
+                                .requiresAction(
+                                    checkoutPayload?.backing()?.fragments()?.checkoutBacking()
+                                        ?.requiresAction() ?: false
+                                )
+                                .build()
 
-                        val checkoutPayload = response.data?.updateBacking()?.checkout()
-                        val backing = Checkout.Backing.builder()
-                            .clientSecret(
-                                checkoutPayload?.backing()?.fragments()?.checkoutBacking()
-                                    ?.clientSecret()
-                            )
-                            .requiresAction(
-                                checkoutPayload?.backing()?.fragments()?.checkoutBacking()
-                                    ?.requiresAction() ?: false
-                            )
-                            .build()
-
-                        ps.onNext(
-                            Checkout.builder()
+                            val checkout = Checkout.builder()
                                 .id(decodeRelayId(checkoutPayload?.id()))
                                 .backing(backing)
                                 .build()
-                        )
+                            ps.onNext(checkout)
+                        }
                         ps.onComplete()
                     }
                 })
@@ -607,28 +606,28 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                     override fun onResponse(response: Response<CreateBackingMutation.Data>) {
                         if (response.hasErrors()) {
                             ps.onError(java.lang.Exception(response.errors?.first()?.message))
-                        }
+                        } else {
 
-                        val checkoutPayload = response.data?.createBacking()?.checkout()
+                            val checkoutPayload = response.data?.createBacking()?.checkout()
 
-                        // TODO: Add new status field to backing model
-                        val backing = Checkout.Backing.builder()
-                            .clientSecret(
-                                checkoutPayload?.backing()?.fragments()?.checkoutBacking()
-                                    ?.clientSecret()
-                            )
-                            .requiresAction(
-                                checkoutPayload?.backing()?.fragments()?.checkoutBacking()
-                                    ?.requiresAction() ?: false
-                            )
-                            .build()
+                            // TODO: Add new status field to backing model
+                            val backing = Checkout.Backing.builder()
+                                .clientSecret(
+                                    checkoutPayload?.backing()?.fragments()?.checkoutBacking()
+                                        ?.clientSecret()
+                                )
+                                .requiresAction(
+                                    checkoutPayload?.backing()?.fragments()?.checkoutBacking()
+                                        ?.requiresAction() ?: false
+                                )
+                                .build()
 
-                        ps.onNext(
-                            Checkout.builder()
+                            val checkout = Checkout.builder()
                                 .id(decodeRelayId(checkoutPayload?.id()))
                                 .backing(backing)
                                 .build()
-                        )
+                            ps.onNext(checkout)
+                        }
                         ps.onComplete()
                     }
                 })

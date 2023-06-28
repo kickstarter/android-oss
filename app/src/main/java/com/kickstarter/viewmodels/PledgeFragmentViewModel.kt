@@ -590,6 +590,7 @@ interface PledgeFragmentViewModel {
                 .addToDisposable(disposables)
 
             backing
+                .filter { ObjectUtils.isNotNull(it.bonusAmount())}
                 .map { it.bonusAmount() }
                 .filter { it > 0 }
                 .subscribe {
@@ -858,7 +859,7 @@ interface PledgeFragmentViewModel {
                     config
                 ) else ShippingRuleFactory.emptyShippingRule()
             }
-                .filter { it.id()?.let { it > 0 } ?: false }
+                .filter { it.location()?.id()?.let { it > 0 } ?: false }
                 .compose<Pair<ShippingRule, PledgeReason>>(combineLatestPair(pledgeReason))
                 .filter { it.second == PledgeReason.PLEDGE || it.second == PledgeReason.UPDATE_REWARD || it.second == PledgeReason.FIX_PLEDGE }
                 .map { it.first }
@@ -1181,8 +1182,6 @@ interface PledgeFragmentViewModel {
             val initialCardSelection = cardsAndProject
                 .take(1)
                 .map { initialCardSelection(it.first, it.second) }
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { it as Pair<StoredCard, Int> }
 
             // - When setupIntent finishes with error reload the payment methods
             this.paymentSheetResult
@@ -1208,6 +1207,7 @@ interface PledgeFragmentViewModel {
 
             selectedCardAndPosition
                 .map { it.second }
+                .filter { it >= 0 }
                 .subscribe { this.showSelectedCard.onNext(Pair(it, CardState.SELECTED)) }
                 .addToDisposable(disposables)
 
@@ -1392,6 +1392,7 @@ interface PledgeFragmentViewModel {
                 .filter { it.backing().requiresAction().isFalse() }
 
             val successfulBacking = successfulCheckout
+                .filter { ObjectUtils.isNotNull(it.backing()) }
                 .map { it.backing() }
 
             val successAndPledgeReason = Observable.merge(
@@ -1761,13 +1762,13 @@ interface PledgeFragmentViewModel {
                 .build()
         }
 
-        private fun initialCardSelection(storedCards: List<StoredCard>, project: Project): Pair<StoredCard, Int>? {
+        private fun initialCardSelection(storedCards: List<StoredCard>, project: Project): Pair<StoredCard, Int> {
             val defaultIndex = storedCards.indexOfFirst { project.acceptedCardType(it.type()) }
             val backingPaymentSourceIndex = storedCards.indexOfFirst { it.id() == project.backing()?.paymentSource()?.id() }
             return when {
                 backingPaymentSourceIndex != -1 -> Pair(storedCards[backingPaymentSourceIndex], backingPaymentSourceIndex)
                 storedCards.isNotEmpty() && defaultIndex != -1 -> Pair(storedCards[defaultIndex], defaultIndex)
-                else -> null
+                else -> Pair(StoredCard.builder().build(), -1)
             }
         }
 

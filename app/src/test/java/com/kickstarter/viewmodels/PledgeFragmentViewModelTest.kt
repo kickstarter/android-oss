@@ -1250,9 +1250,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testUpdatingPledgeAmount_WithShippingChange_MXProject_USDPref() {
         val project = ProjectFactory.mxProject().toBuilder().currentCurrency("USD").build()
-        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        val environment = environmentForShippingRulesAndCards(ShippingRulesEnvelopeFactory.shippingRules(), listOf(StoredCardFactory.visa()))
             .toBuilder()
-            .apolloClientV2(apolloClientWithStoredCards(listOf(StoredCardFactory.visa())))
             .currentUser(MockCurrentUser(UserFactory.user()))
             .build()
         setUpEnvironment(environment, project = project)

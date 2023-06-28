@@ -70,7 +70,7 @@ fun <T : Relay> encodeRelayId(relay: T): String {
 fun projectFaqTransformer(faq: fragment.Faq): ProjectFaq {
     val id = decodeRelayId(faq.id()) ?: -1
     val answer = faq.answer()
-    val createdAt = faq.createdAt()
+    val createdAt = faq.createdAt() ?: DateTime()
     val question = faq.question()
 
     return ProjectFaq.builder()

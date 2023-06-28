@@ -15,7 +15,7 @@ import org.joda.time.DateTime
 class ProjectFaq private constructor(
     val id: Long,
     val answer: String,
-    val createdAt: DateTime? = null,
+    val createdAt: DateTime,
     val question: String
 ) : Parcelable {
 
@@ -23,12 +23,12 @@ class ProjectFaq private constructor(
     data class Builder(
         var id: Long = -1,
         var answer: String = "",
-        var createdAt: DateTime? = null,
+        var createdAt: DateTime = DateTime(),
         var question: String = ""
     ) : Parcelable {
         fun id(id: Long) = apply { this.id = id }
         fun answer(answer: String) = apply { this.answer = answer }
-        fun createdAt(createdAt: DateTime?) = apply { this.createdAt = createdAt }
+        fun createdAt(createdAt: DateTime) = apply { this.createdAt = createdAt }
         fun question(question: String) = apply { this.question = question }
         fun build() = ProjectFaq(id = id, answer = answer, createdAt = createdAt, question = question)
     }

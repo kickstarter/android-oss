@@ -2548,13 +2548,30 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testShowPledgeSuccess_error() {
         val project = ProjectFactory.project()
-        val environment = environmentForLoggedInUser(UserFactory.user())
+
+        val storedCards = listOf(StoredCardFactory.visa())
+
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(config)
+
+        val user = MockCurrentUserV2(UserFactory.user())
+
+        val environment = environment()
             .toBuilder()
             .apolloClientV2(object : MockApolloClientV2() {
                 override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
                     return Observable.error(Throwable("error"))
                 }
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(storedCards)
+                }
+                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
+                    return Observable.just(ShippingRulesEnvelopeFactory.shippingRules())
+                }
             })
+            .currentConfig2(currentConfig)
+            .currentUserV2(user)
             .build()
         setUpEnvironment(environment, RewardFactory.noReward(), project)
 

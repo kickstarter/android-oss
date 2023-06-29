@@ -2464,7 +2464,30 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     fun testShowPledgeSuccess_whenDigitalReward() {
         val project = ProjectFactory.project()
         val reward = RewardFactory.reward()
-        setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), reward, project)
+
+        val storedCards = listOf(StoredCardFactory.visa())
+
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(config)
+
+        val user = MockCurrentUserV2(UserFactory.user())
+
+        val environment = environment()
+            .toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
+                    return Observable.just(Checkout.builder().backing(Checkout.Backing.builder().requiresAction(false).clientSecret("secret").build()).build())
+                }
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(storedCards)
+                }
+            })
+            .currentConfig2(currentConfig)
+            .currentUserV2(user)
+            .build()
+
+        setUpEnvironment(environment, reward, project)
 
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 

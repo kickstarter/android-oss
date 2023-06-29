@@ -2506,21 +2506,41 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     fun testShowPledgeSuccess_whenPhysicalReward() {
         val project = ProjectFactory.project()
         val reward = RewardFactory.rewardWithShipping()
-        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        val storedCards = listOf(StoredCardFactory.visa())
+
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(config)
+
+        val user = MockCurrentUserV2(UserFactory.user())
+
+        val environment = environment()
             .toBuilder()
-            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
+                    return Observable.just(Checkout.builder().backing(Checkout.Backing.builder().requiresAction(false).clientSecret("secret").build()).build())
+                }
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(storedCards)
+                }
+                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
+                    return Observable.just(ShippingRulesEnvelopeFactory.shippingRules())
+                }
+            })
+            .currentConfig2(currentConfig)
+            .currentUserV2(user)
             .build()
         setUpEnvironment(environment, reward, project)
 
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
         // Successfully pledging with a valid amount should show the thanks page
-        this.pledgeButtonIsEnabled.assertValue(true)
-
         this.vm.inputs.pledgeButtonClicked()
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertValueCount(1)
         this.showPledgeError.assertNoValues()
+
+        this.pledgeButtonIsEnabled.assertValues(true, false)
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }

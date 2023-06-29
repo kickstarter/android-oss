@@ -15,7 +15,7 @@ import org.joda.time.DateTime
 class ProjectFaq private constructor(
     val id: Long,
     val answer: String,
-    val createdAt: DateTime? = null,
+    val createdAt: DateTime?,
     val question: String
 ) : Parcelable {
 

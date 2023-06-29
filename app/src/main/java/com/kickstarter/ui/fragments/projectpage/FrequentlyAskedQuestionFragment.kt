@@ -133,9 +133,9 @@ class FrequentlyAskedQuestionFragment : Fragment(), Configure {
         }
     }
 
-    override fun onDestroy() {
+    override fun onDestroyView() {
         disposables.clear()
-        super.onDestroy()
+        super.onDestroyView()
     }
 
     companion object {

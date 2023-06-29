@@ -61,6 +61,7 @@ import org.joda.time.DateTime
 import org.junit.After
 import org.junit.Test
 import org.mockito.Mockito
+import type.CreditCardTypes
 import java.math.RoundingMode
 import java.net.CookieManager
 import java.util.Collections
@@ -1807,10 +1808,20 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val noReward = testData.reward
         val storedCards = testData.storedCards
 
+        val checkout = Checkout.builder().backing(Checkout.Backing.builder().requiresAction(false).clientSecret("client").build()).build()
+
         val environment = environment()
             .toBuilder()
             .currentUserV2(MockCurrentUserV2(UserFactory.user()))
-            .apolloClientV2(apolloClientWithStoredCards(storedCards))
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(storedCards)
+                }
+
+                override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
+                    return Observable.just(checkout)
+                }
+            })
             .build()
 
         setUpEnvironment(environment, noReward, backedProject, PledgeReason.UPDATE_PAYMENT)
@@ -2186,16 +2197,41 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
             .build()
         val backedProject = ProjectFactory.backedProject()
             .toBuilder()
+            .availableCardTypes(listOf(CreditCardTypes.VISA.rawValue()))
             .backing(backing)
             .build()
 
-        setUpEnvironment(environment(), reward, backedProject, PledgeReason.UPDATE_PLEDGE)
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(config)
+
+        val environment = environment()
+            .toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
+                    return Observable.just(
+                        Checkout.builder()
+                            .backing(Checkout.Backing.builder().clientSecret("secret").requiresAction(false).build())
+                            .id(3)
+                            .build()
+                    )
+                }
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(listOf(StoredCardFactory.visa()))
+                }
+            })
+            .currentConfig2(currentConfig)
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
+            .build()
+        setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
         this.vm.inputs.pledgeInput("32.0")
         this.vm.inputs.increasePledgeButtonClicked()
+        this.vm.inputs.increasePledgeButtonClicked()
         this.vm.inputs.pledgeButtonClicked()
 
-        this.pledgeButtonIsEnabled.assertValues(false, true, false)
+        this.totalAmount.assertValues("$1", "$32", "$33", "$34")
+        this.pledgeButtonIsEnabled.assertValues(true, true, false)
         this.pledgeProgressIsGone.assertValue(false)
     }
 

@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels
 
-import androidx.lifecycle.ViewModel
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable

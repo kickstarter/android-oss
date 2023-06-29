@@ -37,6 +37,7 @@ class FrequentlyAskedQuestionsViewHolder(
     }
 
     override fun destroy() {
+        this.viewModel.inputs.onDestroy()
         disposables.clear()
         super.destroy()
     }

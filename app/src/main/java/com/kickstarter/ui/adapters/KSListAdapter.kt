@@ -82,6 +82,7 @@ abstract class KSListAdapter(
         // to events, so ostensibly the view holder is being deallocated.
         if (!hasObservers()) {
             holder.lifecycleEvent(ActivityEvent.DESTROY)
+            holder.destroy()
         }
     }
 

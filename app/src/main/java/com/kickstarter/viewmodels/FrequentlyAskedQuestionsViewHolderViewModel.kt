@@ -14,6 +14,8 @@ interface FrequentlyAskedQuestionsViewHolderViewModel {
     interface Inputs {
         /** Configure the view model with the [ProjectFaq]. */
         fun configureWith(projectFaq: ProjectFaq)
+
+        fun onDestroy()
     }
 
     interface Outputs {
@@ -25,7 +27,7 @@ interface FrequentlyAskedQuestionsViewHolderViewModel {
         fun updatedDate(): Observable<String>
     }
 
-    class FrequentlyAskedQuestionsViewHolderViewModel() : ViewModel(), Inputs, Outputs {
+    class FrequentlyAskedQuestionsViewHolderViewModel() : Inputs, Outputs {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -55,9 +57,8 @@ interface FrequentlyAskedQuestionsViewHolderViewModel {
                 .addToDisposable(disposables)
         }
 
-        override fun onCleared() {
+        override fun onDestroy() {
             disposables.clear()
-            super.onCleared()
         }
 
         override fun configureWith(projectFaq: ProjectFaq) = this.projectFaqInput.onNext(projectFaq)

@@ -2122,14 +2122,24 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowUpdatePledgeError_whenUpdatingRewardWithNoShipping() {
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(config)
+
         val environment = environment()
             .toBuilder()
             .apolloClientV2(object : MockApolloClientV2() {
                 override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
                     return Observable.error(Exception("womp"))
                 }
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(listOf(StoredCardFactory.visa()))
+                }
             })
+            .currentConfig2(currentConfig)
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .build()
+
         setUpEnvironment(environment, RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_REWARD)
 
         this.vm.inputs.pledgeButtonClicked()

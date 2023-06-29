@@ -9,14 +9,15 @@ import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentFrequentlyAskedQuestionBinding
-import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Configure
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.SimpleDividerItemDecoration
-import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
-import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.models.Project
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
@@ -25,15 +26,17 @@ import com.kickstarter.ui.activities.MessagesActivity
 import com.kickstarter.ui.adapters.FrequentlyAskedQuestionsAdapter
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.projectpage.FrequentlyAskedQuestionViewModel
-import rx.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.android.schedulers.AndroidSchedulers
 
-@RequiresFragmentViewModel(FrequentlyAskedQuestionViewModel.ViewModel::class)
-class FrequentlyAskedQuestionFragment :
-    BaseFragment<FrequentlyAskedQuestionViewModel.ViewModel>(),
-    Configure {
+class FrequentlyAskedQuestionFragment : Fragment(), Configure {
+
     private var binding: FragmentFrequentlyAskedQuestionBinding? = null
     private var fqaAdapter = FrequentlyAskedQuestionsAdapter()
+    private var disposables = CompositeDisposable()
 
+    private lateinit var viewModelFactory: FrequentlyAskedQuestionViewModel.Factory
+    private val viewModel: FrequentlyAskedQuestionViewModel.FrequentlyAskedQuestionViewModel by viewModels { viewModelFactory }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,22 +52,26 @@ class FrequentlyAskedQuestionFragment :
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
 
+        this.context?.getEnvironment()?.let { env ->
+            viewModelFactory = FrequentlyAskedQuestionViewModel.Factory(env)
+        }
+
         this.viewModel.outputs.projectFaqList()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding?.answerEmptyStateTv?.isVisible = it.isEmpty()
                 binding?.fqaRecyclerView?.isGone = it.isEmpty()
                 fqaAdapter.takeData(it)
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.bindEmptyState()
-            .compose(bindToLifecycle())
-            .compose(Transformers.observeForUI())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding?.answerEmptyStateTv?.isVisible = true
                 binding?.fqaRecyclerView?.isGone = true
             }
+            .addToDisposable(disposables)
 
         binding?.askQuestionButton?.setOnClickListener {
             this.viewModel.inputs.askQuestionButtonClicked()
@@ -72,7 +79,6 @@ class FrequentlyAskedQuestionFragment :
 
         this.viewModel.outputs.askQuestionButtonIsGone()
             .observeOn(AndroidSchedulers.mainThread())
-            .compose(bindToLifecycle())
             .subscribe {
                 if (it) {
                     getString(R.string.Log_in_to_ask_the_project_creator_directly)
@@ -90,16 +96,17 @@ class FrequentlyAskedQuestionFragment :
                 binding?.answerEmptyStateSepartor?.isGone = it
                 binding?.askQuestionButton?.isGone = it
             }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.startComposeMessageActivity()
             .observeOn(AndroidSchedulers.mainThread())
-            .compose(bindToLifecycle())
             .subscribe { startComposeMessageActivity(it) }
+            .addToDisposable(disposables)
 
         this.viewModel.outputs.startMessagesActivity()
             .observeOn(AndroidSchedulers.mainThread())
-            .compose(bindToLifecycle())
             .subscribe { startMessagesActivity(it) }
+            .addToDisposable(disposables)
     }
 
     private fun startComposeMessageActivity(it: Project?) {

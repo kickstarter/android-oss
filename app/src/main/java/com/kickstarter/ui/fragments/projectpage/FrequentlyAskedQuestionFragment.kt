@@ -133,6 +133,11 @@ class FrequentlyAskedQuestionFragment : Fragment(), Configure {
         }
     }
 
+    override fun onDestroy() {
+        disposables.clear()
+        super.onDestroy()
+    }
+
     companion object {
         @JvmStatic
         fun newInstance(position: Int): FrequentlyAskedQuestionFragment {

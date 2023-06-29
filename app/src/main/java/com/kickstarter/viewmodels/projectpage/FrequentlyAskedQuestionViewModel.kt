@@ -47,7 +47,7 @@ interface FrequentlyAskedQuestionViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        private val projectDataInput = BehaviorSubject.create<ProjectData>()
+        private val projectDataInput = PublishSubject.create<ProjectData>()
         private val askQuestionButtonClicked = PublishSubject.create<Unit>()
 
         private val askQuestionButtonIsGone = BehaviorSubject.create<Boolean>()
@@ -64,7 +64,7 @@ interface FrequentlyAskedQuestionViewModel {
         init {
             val projectFaqList = projectDataInput
                 .map { it.project().projectFaqs() }
-//                .filter { ObjectUtils.isNotNull(it) }
+                .filter { ObjectUtils.isNotNull(it) }
 
             projectFaqList
                 .filter { it.isNotEmpty() }
@@ -84,7 +84,7 @@ interface FrequentlyAskedQuestionViewModel {
             this.currentUser.observable()
                 .compose(Transformers.combineLatestPair(project))
                 .map { userIsLoggedOutOrProjectCreator(Pair(it.first.getValue(), it.second)) }
-                .subscribe { this.askQuestionButtonIsGone }
+                .subscribe { this.askQuestionButtonIsGone.onNext(it) }
                 .addToDisposable(disposables)
 
             project
@@ -123,6 +123,11 @@ interface FrequentlyAskedQuestionViewModel {
         override fun projectFaqList(): Observable<List<ProjectFaq>> = this.projectFaqList
         @NonNull
         override fun bindEmptyState(): Observable<Unit> = this.bindEmptyState
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
     }
 
     class Factory(private val environment: Environment) : ViewModelProvider.Factory {

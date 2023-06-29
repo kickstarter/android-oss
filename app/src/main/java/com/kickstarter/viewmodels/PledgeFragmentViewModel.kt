@@ -1165,7 +1165,7 @@ interface PledgeFragmentViewModel {
             userIsLoggedIn
                 .filter { it.isTrue() }
                 .compose<Pair<Boolean, PledgeReason>>(combineLatestPair(pledgeReason))
-                .filter { it.second == PledgeReason.PLEDGE || it.second == PledgeReason.UPDATE_PAYMENT || it.second == PledgeReason.FIX_PLEDGE }
+                .filter { it.second == PledgeReason.PLEDGE || it.second == PledgeReason.UPDATE_PAYMENT || it.second == PledgeReason.FIX_PLEDGE || it.second == PledgeReason.UPDATE_REWARD }
                 .take(1)
                 .switchMap { storedCards() }
                 .subscribe {

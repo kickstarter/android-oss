@@ -2074,14 +2074,32 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowUpdatePledgeError_whenUpdatingRewardWithShipping() {
-        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        val envelope = ShippingRulesEnvelopeFactory.shippingRules()
+        val storedCards = listOf(StoredCardFactory.visa())
+
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(config)
+
+        val user = MockCurrentUserV2(UserFactory.user())
+
+        val environment = environment()
             .toBuilder()
             .apolloClientV2(object : MockApolloClientV2() {
                 override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
                     return Observable.error(Exception("womp"))
                 }
+                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
+                    return Observable.just(envelope)
+                }
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(storedCards)
+                }
             })
+            .currentConfig2(currentConfig)
+            .currentUserV2(user)
             .build()
+
         setUpEnvironment(environment, project = ProjectFactory.backedProject(), pledgeReason = PledgeReason.UPDATE_REWARD)
 
         this.vm.inputs.pledgeButtonClicked()

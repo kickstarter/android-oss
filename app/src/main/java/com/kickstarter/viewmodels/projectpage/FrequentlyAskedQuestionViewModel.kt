@@ -96,7 +96,7 @@ interface FrequentlyAskedQuestionViewModel {
             project
                 .compose(Transformers.takeWhenV2(this.askQuestionButtonClicked))
                 .filter { it.isBacking() }
-                .subscribe{ this.startMessageActivity.onNext(it) }
+                .subscribe { this.startMessageActivity.onNext(it) }
                 .addToDisposable(disposables)
         }
 

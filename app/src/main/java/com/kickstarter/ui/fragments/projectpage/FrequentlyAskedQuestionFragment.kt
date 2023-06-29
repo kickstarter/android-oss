@@ -26,8 +26,8 @@ import com.kickstarter.ui.activities.MessagesActivity
 import com.kickstarter.ui.adapters.FrequentlyAskedQuestionsAdapter
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.projectpage.FrequentlyAskedQuestionViewModel
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
 class FrequentlyAskedQuestionFragment : Fragment(), Configure {
 

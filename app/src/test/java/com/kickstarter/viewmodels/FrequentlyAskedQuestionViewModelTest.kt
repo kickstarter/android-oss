@@ -11,9 +11,9 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.ProjectFaq
 import com.kickstarter.viewmodels.projectpage.FrequentlyAskedQuestionViewModel
 import io.reactivex.disposables.CompositeDisposable
-import org.junit.Test
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.After
+import org.junit.Test
 
 class FrequentlyAskedQuestionViewModelTest : KSRobolectricTestCase() {
 
@@ -34,7 +34,7 @@ class FrequentlyAskedQuestionViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.bindEmptyState().subscribe { this.bindEmptyState.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.askQuestionButtonIsGone().subscribe { this.askQuestionButtonIsGone.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.startComposeMessageActivity().subscribe { this.startComposeMessageActivity.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.startMessagesActivity().subscribe{ this.startMessagesActivity.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.startMessagesActivity().subscribe { this.startMessagesActivity.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test

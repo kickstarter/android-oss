@@ -35,4 +35,9 @@ class FrequentlyAskedQuestionsViewHolder(
     override fun bindData(data: Any?) {
         this.viewModel.inputs.configureWith(data as ProjectFaq)
     }
+
+    override fun destroy() {
+        disposables.clear()
+        super.destroy()
+    }
 }

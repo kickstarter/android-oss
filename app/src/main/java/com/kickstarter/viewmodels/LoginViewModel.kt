@@ -76,7 +76,7 @@ interface LoginViewModel {
 
     class LoginViewModel(
         private val environment: Environment,
-        private val intent: Intent? = null
+        private val intent: Intent
     ) : ViewModel(), Inputs, Outputs {
 
         private val emailEditTextChanged = BehaviorSubject.create<String>()
@@ -129,7 +129,7 @@ interface LoginViewModel {
                 .addToDisposable(disposables)
 
             // - Contain the errors if any from the login endpoint response
-            val errors = PublishSubject.create<Throwable?>()
+            val errors = PublishSubject.create<Throwable>()
             // - Contains success data if any from the login endpoint response
             val successResponseData = PublishSubject.create<AccessTokenEnvelope>()
 
@@ -139,11 +139,10 @@ interface LoginViewModel {
                 .share()
                 .subscribe {
                     this.logInButtonIsEnabled.onNext(true)
-                    unwrapNotificationEnvelopeError(it)?.let { noti ->
-                        errors.onNext(noti)
-                    }
-                    unwrapNotificationEnvelopeSuccess(it)?.let { noti ->
-                        successResponseData.onNext(noti)
+                    if (it.isOnError) {
+                        it.error?.let { e -> errors.onNext(e) }
+                    } else {
+                        it.value?.let { v -> successResponseData.onNext(v) }
                     }
                 }.addToDisposable(disposables)
 
@@ -194,8 +193,6 @@ interface LoginViewModel {
                 .subscribe(this.logInButtonIsEnabled)
 
             successResponseData
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
                 .distinctUntilChanged()
                 .switchMap {
                     this.loginUserCase
@@ -207,8 +204,6 @@ interface LoginViewModel {
                 .addToDisposable(disposables)
 
             errors
-                .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
                 .map { ErrorEnvelope.fromThrowable(it) }
                 .filter { ObjectUtils.isNotNull(it) }
                 .subscribe(this.loginError)
@@ -223,7 +218,7 @@ interface LoginViewModel {
 
             this.tfaChallenge = this.loginError
                 .filter { it.isTfaRequiredError }
-                .map { null }
+                .map { }
 
             this.analyticEvents.trackLoginPagedViewed()
 
@@ -242,17 +237,11 @@ interface LoginViewModel {
             Pair.create(
                 it.getStringExtra(IntentKey.EMAIL) ?: "",
                 if (it.hasExtra(IntentKey.LOGIN_REASON)) {
-                    it.getSerializableExtra(IntentKey.LOGIN_REASON) as LoginReason
+                    (it.getSerializableExtra(IntentKey.LOGIN_REASON) as LoginReason?) ?: LoginReason.DEFAULT
                 } else {
                     LoginReason.DEFAULT
                 }
             )
-
-        private fun unwrapNotificationEnvelopeError(notification: Notification<AccessTokenEnvelope>) =
-            if (notification.isOnError) notification.error else null
-
-        private fun unwrapNotificationEnvelopeSuccess(notification: Notification<AccessTokenEnvelope>) =
-            if (!notification.isOnError) notification.value else null
 
         private fun isValid(email: String, password: String) = email.isEmail() && password.isNotEmpty()
 
@@ -299,7 +288,7 @@ interface LoginViewModel {
         override fun tfaChallenge() = this.tfaChallenge
     }
 
-    class Factory(private val environment: Environment, private val intent: Intent? = null) : ViewModelProvider.Factory {
+    class Factory(private val environment: Environment, private val intent: Intent) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return LoginViewModel(environment, intent) as T
         }

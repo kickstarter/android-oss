@@ -595,7 +595,7 @@ interface PledgeFragmentViewModel {
                 .map { it.bonusAmount() }
                 .filter { it > 0 }
                 .subscribe {
-                    this.bonusAmount.onNext(it.toString())
+                    this.bonusInput.onNext(it.toString())
                 }
                 .addToDisposable(disposables)
 

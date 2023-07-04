@@ -12,8 +12,7 @@ fun KSTheme (
     val colors = if(!useDarkTheme) {
         KSLightCustomColors
     } else {
-        //Replace with dark when its available
-        KSLightCustomColors
+        KSDarkCustomColors
     }
 
     val typography = KSCustomTypography

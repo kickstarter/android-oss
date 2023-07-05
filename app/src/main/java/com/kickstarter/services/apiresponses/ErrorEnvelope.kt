@@ -36,8 +36,8 @@ class ErrorEnvelope private constructor(
             private var email: String = ""
         ) : Parcelable {
             fun id(id: Long?) = apply { this.id = id ?: 0L }
-            fun name(name: String?) = apply { this.name = name?.let { it } ?: "" }
-            fun email(email: String?) = apply { this.email = email?.let { it } ?: "" }
+            fun name(name: String?) = apply { this.name = name ?: "" }
+            fun email(email: String?) = apply { this.email = email ?: "" }
             fun build() = FacebookUser(
                 id = id,
                 name = name,

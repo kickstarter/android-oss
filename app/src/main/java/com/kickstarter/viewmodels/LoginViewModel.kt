@@ -21,7 +21,6 @@ import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.viewmodels.usecases.LoginUseCase
 import com.kickstarter.viewmodels.usecases.RefreshUserUseCase
-import io.reactivex.Notification
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject

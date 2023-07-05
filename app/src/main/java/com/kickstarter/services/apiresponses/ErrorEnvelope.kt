@@ -12,7 +12,7 @@ class ErrorEnvelope private constructor(
     private val errorMessages: List<String> = emptyList(),
     private val httpCode: Int = 0,
     private val ksrCode: String = "",
-    private val facebookUser: FacebookUser?
+    private val facebookUser: FacebookUser? = null //- Re-evaluate on https://kickstarter.atlassian.net/browse/MBL-815 the default value for this specific field
 ) : Parcelable {
     fun errorMessages() = this.errorMessages
     fun httpCode() = this.httpCode

@@ -1076,10 +1076,6 @@ interface PledgeFragmentViewModel {
             val updatingPledge = pledgeReason
                 .map { it == PledgeReason.UPDATE_PLEDGE }
 
-            val updatingReward = pledgeReason
-                .filter { it == PledgeReason.UPDATE_REWARD }
-                .map { true }
-
             val rewardAmountUpdated = total
                 .compose<Pair<Double, Reward>>(combineLatestPair(this.selectedReward))
                 .filter { !RewardUtils.isNoReward(it.second) }
@@ -1133,14 +1129,6 @@ interface PledgeFragmentViewModel {
                 .compose<Pair<Boolean, Boolean>>(combineLatestPair(updatingPledge))
                 .filter { it.second.isTrue() }
                 .map { it.first }
-
-            // - Enable/Disable button with shipping
-            Observable.merge(updatingReward, changeDuringUpdatingPledge)
-                .distinctUntilChanged()
-                .subscribe {
-                    this.pledgeButtonIsEnabled.onNext(it)
-                }
-                .addToDisposable(disposables)
 
             // Payment section
             pledgeReason
@@ -1209,6 +1197,19 @@ interface PledgeFragmentViewModel {
                 .map { it.second }
                 .filter { it >= 0 }
                 .subscribe { this.showSelectedCard.onNext(Pair(it, CardState.SELECTED)) }
+                .addToDisposable(disposables)
+
+            val userHasCards = selectedCardAndPosition
+                .map { it.second >= 0 }
+
+            Observable.combineLatest(changeDuringUpdatingPledge.startWith(false), userHasCards, pledgeReason) {
+                    changedValues, hasCards, pReason ->
+                return@combineLatest shouldBeEnabled(changedValues, hasCards, pReason)
+            }
+                .distinctUntilChanged()
+                .subscribe {
+                    this.pledgeButtonIsEnabled.onNext(it)
+                }
                 .addToDisposable(disposables)
 
             val changeCard = Observable.merge(
@@ -1282,16 +1283,6 @@ interface PledgeFragmentViewModel {
                 .compose<Pair<Pair<Boolean, PledgeReason>, Boolean>>(combineLatestPair(totalIsValid))
                 .map { it.second }
                 .subscribe { this.continueButtonIsEnabled.onNext(it) }
-                .addToDisposable(disposables)
-
-            selectedCardAndPosition
-                .compose(ignoreValuesV2())
-                .compose<Pair<Unit, Boolean>>(combineLatestPair(totalIsValid))
-                .map { it.second }
-                .distinctUntilChanged()
-                .subscribe {
-                    this.pledgeButtonIsEnabled.onNext(it)
-                }
                 .addToDisposable(disposables)
 
             // An observable of the ref tag stored in the cookie for the project
@@ -1599,6 +1590,18 @@ interface PledgeFragmentViewModel {
                     }
                 }
                 .addToDisposable(disposables)
+        }
+
+        private fun shouldBeEnabled(changedValues: Boolean, hasCards: Boolean, pReason: PledgeReason): Boolean {
+            val isEnabled = when (pReason) {
+                PledgeReason.UPDATE_REWARD,
+                PledgeReason.PLEDGE,
+                PledgeReason.UPDATE_PAYMENT,
+                PledgeReason.FIX_PLEDGE -> hasCards
+                PledgeReason.UPDATE_PLEDGE -> changedValues && hasCards
+            }
+
+            return isEnabled
         }
 
         /**

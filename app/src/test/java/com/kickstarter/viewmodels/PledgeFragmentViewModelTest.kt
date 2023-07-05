@@ -460,7 +460,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .apolloClientV2(object : MockApolloClientV2() {
                 override fun getStoredCards(): Observable<List<StoredCard>> {
-                    return Observable.just(Collections.emptyList())
+                    return Observable.just(storedCards)
                 }
 
                 override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
@@ -2060,12 +2060,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.newCardButtonClicked()
         this.presentPaymentSheet.assertValue("")
         this.segmentTrack.assertNoValues()
-        this.pledgeButtonIsEnabled.assertValues(true, false, false)
+        this.pledgeButtonIsEnabled.assertValues(false, false, false)
         this.loadingState.assertValues(State.LOADING, State.LOADING)
 
         // - PaymentSheet presented
         this.vm.inputs.paymentSheetPresented(true)
-        this.pledgeButtonIsEnabled.assertValues(true, false, false, true)
+        this.pledgeButtonIsEnabled.assertValues(false, false, false, true)
         this.loadingState.assertValues(State.LOADING, State.LOADING, State.DEFAULT)
     }
 
@@ -2447,12 +2447,17 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
             .backing(backing)
             .build()
 
-        val environment = environment().toBuilder()
+        val environment = environment()
+            .toBuilder()
             .apolloClientV2(object : MockApolloClientV2() {
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(listOf(StoredCardFactory.visa()))
+                }
                 override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
                     return Observable.error(Exception("womp"))
                 }
             })
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .build()
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
@@ -2460,9 +2465,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.increasePledgeButtonClicked()
         this.vm.inputs.pledgeButtonClicked()
 
+        this.showUpdatePledgeError.assertValueCount(1)
         this.pledgeButtonIsEnabled.assertValues(false, true, false, true)
         this.pledgeProgressIsGone.assertValues(false, true)
-        this.showUpdatePledgeError.assertValueCount(1)
     }
 
     @Test
@@ -2600,7 +2605,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
             .toBuilder()
             .apolloClientV2(object : MockApolloClientV2() {
-                override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
+                override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
                     return Observable.just(
                         Checkout.builder()
                             .backing(Checkout.Backing.builder().clientSecret("secret").requiresAction(false).build())
@@ -2623,7 +2628,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.pledgeButtonClicked()
 
         this.totalAmount.assertValues("$1", "$32", "$33", "$34")
-        this.pledgeButtonIsEnabled.assertValues(true, true, false)
+        this.pledgeButtonIsEnabled.assertValues(false, true, false)
         this.pledgeProgressIsGone.assertValue(false)
     }
 
@@ -2640,7 +2645,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
             .toBuilder()
             .apolloClientV2(object : MockApolloClientV2() {
-                override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
+                override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
                     return Observable.just(Checkout.builder().backing(Checkout.Backing.builder().requiresAction(false).clientSecret("secret").build()).build())
                 }
                 override fun getStoredCards(): Observable<List<StoredCard>> {
@@ -2664,7 +2669,32 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowUpdatePledgeSuccess_whenUpdatingRewardWithNoShipping() {
-        setUpEnvironment(environment(), RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_REWARD)
+        val storedCards = listOf(StoredCardFactory.visa())
+
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(config)
+
+        val user = MockCurrentUserV2(UserFactory.user())
+
+        val environment = environment()
+            .toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
+                    return Observable.just(Checkout.builder().backing(Checkout.Backing.builder().requiresAction(false).clientSecret("secret").build()).build())
+                }
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(storedCards)
+                }
+                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
+                    return Observable.just(ShippingRulesEnvelopeFactory.shippingRules())
+                }
+            })
+            .currentConfig2(currentConfig)
+            .currentUserV2(user)
+            .build()
+
+        setUpEnvironment(environment, RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_REWARD)
 
         this.vm.inputs.pledgeButtonClicked()
 
@@ -3165,6 +3195,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .currentUserV2(MockCurrentUserV2(UserFactory.user()))
             .apolloClientV2(object : MockApolloClientV2() {
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(listOf(StoredCardFactory.visa()))
+                }
                 override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
                     return Observable.just(shippingRulesEnvelope)
                 }

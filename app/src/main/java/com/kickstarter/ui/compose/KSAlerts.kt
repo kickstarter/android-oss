@@ -222,7 +222,7 @@ fun KSDialogVisual(
         }
 
         //Body
-        Text(text = bodyText, style = bodyStyle)
+        Text(modifier = Modifier.padding(end = 8.dp), text = bodyText, style = bodyStyle)
 
         Row (
             Modifier

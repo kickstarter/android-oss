@@ -6,11 +6,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Surface
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,13 +18,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.ui.compose.KSAlertDialog
 import com.kickstarter.ui.compose.KSAlertDialogNoHeadline
+import com.kickstarter.ui.compose.KSFacebookButton
+import com.kickstarter.ui.compose.KSGooglePayButton
 import com.kickstarter.ui.compose.KSIntercept
+import com.kickstarter.ui.compose.KSPrimaryBlackButton
+import com.kickstarter.ui.compose.KSPrimaryBlueButton
 import com.kickstarter.ui.compose.KSPrimaryGreenButton
+import com.kickstarter.ui.compose.KSSecondaryGreyButton
+import com.kickstarter.ui.compose.KSSecondaryRedButton
+import com.kickstarter.ui.compose.KSSecondaryWhiteButton
 import com.kickstarter.ui.compose.KSSnackbarError
 import com.kickstarter.ui.compose.KSSnackbarHeadsUp
 import com.kickstarter.ui.compose.KSSnackbarSuccess
@@ -45,8 +51,8 @@ class DesignSystemActivity: ComponentActivity() {
     }
 }
 
-@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO, showSystemUi = true)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true)
 @Composable
 fun DesignSystemViewPreview() {
     KSTheme {
@@ -56,24 +62,19 @@ fun DesignSystemViewPreview() {
 
 @Composable
 fun DesignSystemView() {
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(colors.kds_support_100)
-            .padding(8.dp)
+    LazyColumn(
+        Modifier
+            .background(color = colors.kds_support_100)
+            .fillMaxSize(),
+        contentPadding = PaddingValues(8.dp)
     ) {
-        Column(Modifier.background(color = Color.Transparent)) {
+        item {
             AlertsVisuals()
-        }
-    }
-}
 
-@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun AlertsPreview() {
-    KSTheme {
-        AlertsVisuals()
+            Spacer(modifier = Modifier.height(16.dp))
+
+            ButtonsVisuals()
+        }
     }
 }
 
@@ -106,7 +107,7 @@ fun AlertsVisuals() {
 
         if (showNoHeaderDialog) {
             KSAlertDialogNoHeadline(
-                setShowDialog =  { showNoHeaderDialog = it },
+                setShowDialog = { showNoHeaderDialog = it },
                 bodyText = "This is an example dialog with no header",
                 leftButtonText = "Left Button",
                 rightButtonText = "Right Button"
@@ -119,7 +120,8 @@ fun AlertsVisuals() {
         KSPrimaryGreenButton(
             onClickAction = { showHeaderDialog = true },
             text = "Show header dialog",
-            isEnabled = true)
+            isEnabled = true
+        )
 
         if (showHeaderDialog) {
             KSAlertDialog(
@@ -135,7 +137,7 @@ fun AlertsVisuals() {
 
         var showTooltip by remember { mutableStateOf(false) }
 
-        KSPrimaryGreenButton(
+        KSSecondaryWhiteButton(
             onClickAction = { showTooltip = true },
             text = "Show tooltip",
             isEnabled = true
@@ -145,14 +147,15 @@ fun AlertsVisuals() {
             KsTooltip(
                 setShowDialog = { showTooltip = it },
                 headlineText = "Tooltip header",
-                bodyText = "This is the tooltip!  Cool huh?")
+                bodyText = "This is the tooltip!  Cool huh?"
+            )
         }
 
         Spacer(Modifier.height(12.dp))
 
         var showIntercept by remember { mutableStateOf(false) }
 
-        KSPrimaryGreenButton(
+        KSSecondaryGreyButton(
             onClickAction = { showIntercept = true },
             text = "Show Intercept",
             isEnabled = true
@@ -166,5 +169,44 @@ fun AlertsVisuals() {
                 rightButtonText = "Right Button"
             )
         }
+    }
+}
+
+@Composable
+fun ButtonsVisuals() {
+    Column {
+        Text(text = "Buttons", style = typography.title1Bold)
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        KSPrimaryGreenButton(onClickAction = { }, text = "Primary Green Button", isEnabled = true)
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        KSPrimaryBlueButton(onClickAction = { }, text = "Primary Blue Button", isEnabled = true)
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        KSPrimaryBlackButton(onClickAction = { }, text = "Primary Black Button", isEnabled = true)
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        KSSecondaryWhiteButton(onClickAction = { }, text = "Secondary White Button", isEnabled = true)
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        KSSecondaryGreyButton(onClickAction = { }, text = "Secondary Grey Button", isEnabled = true)
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        KSSecondaryRedButton(onClickAction = { }, text = "Secondary Red Button", isEnabled = true)
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        KSFacebookButton(onClickAction = { }, text = "Facebook Button", isEnabled = true)
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        KSGooglePayButton(onClickAction = { }, isEnabled = true)
     }
 }

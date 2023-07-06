@@ -2,35 +2,39 @@ package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockCurrentUserV2
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.ProjectFaq
 import com.kickstarter.viewmodels.projectpage.FrequentlyAskedQuestionViewModel
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.observers.TestSubscriber
 
 class FrequentlyAskedQuestionViewModelTest : KSRobolectricTestCase() {
 
-    private lateinit var vm: FrequentlyAskedQuestionViewModel.ViewModel
+    private lateinit var vm: FrequentlyAskedQuestionViewModel.FrequentlyAskedQuestionViewModel
 
     private val projectFaqList = TestSubscriber.create<List<ProjectFaq>>()
-    private val bindEmptyState = TestSubscriber.create<Void>()
+    private val bindEmptyState = TestSubscriber.create<Unit>()
 
     private val askQuestionButtonIsGone = TestSubscriber<Boolean>()
     private val startComposeMessageActivity = TestSubscriber<Project>()
     private val startMessagesActivity = TestSubscriber<Project>()
+    private val disposables = CompositeDisposable()
 
     private fun setUpEnvironment(environment: Environment) {
-        this.vm = FrequentlyAskedQuestionViewModel.ViewModel(environment)
+        this.vm = FrequentlyAskedQuestionViewModel.FrequentlyAskedQuestionViewModel(environment)
 
-        this.vm.outputs.projectFaqList().subscribe(this.projectFaqList)
-        this.vm.outputs.bindEmptyState().subscribe(this.bindEmptyState)
-        this.vm.outputs.askQuestionButtonIsGone().subscribe(this.askQuestionButtonIsGone)
-        this.vm.outputs.startComposeMessageActivity().subscribe(this.startComposeMessageActivity)
-        this.vm.outputs.startMessagesActivity().subscribe(this.startMessagesActivity)
+        this.vm.outputs.projectFaqList().subscribe { this.projectFaqList.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.bindEmptyState().subscribe { this.bindEmptyState.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.askQuestionButtonIsGone().subscribe { this.askQuestionButtonIsGone.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.startComposeMessageActivity().subscribe { this.startComposeMessageActivity.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.startMessagesActivity().subscribe { this.startMessagesActivity.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
@@ -75,7 +79,7 @@ class FrequentlyAskedQuestionViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testGoToComposeMessageActivity_WhenLoggedInUserIsNotBacker() {
-        setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build())
+        setUpEnvironment(environment().toBuilder().currentUserV2(MockCurrentUserV2(UserFactory.user())).build())
 
         this.vm.configureWith(ProjectDataFactory.project(ProjectFactory.project()))
 
@@ -88,7 +92,7 @@ class FrequentlyAskedQuestionViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testGoToMessagesActivity_WhenLoggedInUserIsABacker() {
         val project = ProjectFactory.project().toBuilder().isBacking(true).build()
-        setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build())
+        setUpEnvironment(environment().toBuilder().currentUserV2(MockCurrentUserV2(UserFactory.user())).build())
 
         this.vm.configureWith(ProjectDataFactory.project(project))
 
@@ -107,5 +111,10 @@ class FrequentlyAskedQuestionViewModelTest : KSRobolectricTestCase() {
         this.vm.configureWith(ProjectDataFactory.project(project))
 
         this.askQuestionButtonIsGone.assertValue(true)
+    }
+
+    @After
+    fun clear() {
+        disposables.clear()
     }
 }

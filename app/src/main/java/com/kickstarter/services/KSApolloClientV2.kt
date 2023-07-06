@@ -28,6 +28,8 @@ import io.reactivex.subjects.PublishSubject
 import type.CurrencyCode
 import type.FlaggingKind
 import type.PaymentTypes
+import type.TriggerCapiEventInput
+import type.TriggerThirdPartyEventInput
 
 interface ApolloClientTypeV2 {
     fun getProject(project: Project): Observable<Project>
@@ -48,6 +50,8 @@ interface ApolloClientTypeV2 {
     fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>>
     fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout>
     fun createBacking(createBackingData: CreateBackingData): Observable<Checkout>
+    fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): Observable<TriggerCapiEventMutation.Data>
+    fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<TriggerThirdPartyEventMutation.Data>
 }
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
@@ -629,6 +633,50 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
                                 .backing(backing)
                                 .build()
                             ps.onNext(checkout)
+                        }
+                        ps.onComplete()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): Observable<TriggerCapiEventMutation.Data> {
+        return Observable.defer {
+            val ps = PublishSubject.create<TriggerCapiEventMutation.Data>()
+            service.mutate(TriggerCapiEventMutation.builder().triggerCapiEventInput(triggerCapiEventInput).build())
+                .enqueue(object : ApolloCall.Callback<TriggerCapiEventMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<TriggerCapiEventMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                        } else {
+                            response.data?.let { ps.onNext(it) }
+                        }
+                        ps.onComplete()
+                    }
+                })
+            return@defer ps
+        }
+    }
+
+    override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<TriggerThirdPartyEventMutation.Data> {
+        return Observable.defer {
+            val ps = PublishSubject.create<TriggerThirdPartyEventMutation.Data>()
+            service.mutate(TriggerThirdPartyEventMutation.builder().triggerThirdPartyEventInput(triggerThirdPartyEventInput).build())
+                .enqueue(object : ApolloCall.Callback<TriggerThirdPartyEventMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<TriggerThirdPartyEventMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                        } else {
+                            response.data?.let { ps.onNext(it) }
                         }
                         ps.onComplete()
                     }

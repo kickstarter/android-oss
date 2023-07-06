@@ -61,6 +61,7 @@ import org.junit.After
 import org.junit.Test
 import org.mockito.Mockito
 import type.CreditCardTypes
+import type.TriggerCapiEventInput
 import java.math.RoundingMode
 import java.net.CookieManager
 import java.util.Collections
@@ -430,6 +431,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
                 override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
                     return Observable.just(ShippingRulesEnvelopeFactory.shippingRules())
+                }
+
+                override fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): Observable<TriggerCapiEventMutation.Data> {
+                    val data = TriggerCapiEventMutation.Data(TriggerCapiEventMutation.TriggerCAPIEvent("", true))
+                    return Observable.just(data)
                 }
             }).build()
 
@@ -1679,12 +1685,18 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
             .toBuilder()
             .sharedPreferences(sharedPreferences)
             .featureFlagClient(mockFeatureFlagClient)
+            .currentUserV2(mockCurrentUser)
             .apolloClientV2(object : MockApolloClientV2() {
                 override fun getStoredCards(): Observable<List<StoredCard>> {
                     return Observable.just(storedCards)
                 }
                 override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
                     return Observable.just(ShippingRulesEnvelopeFactory.shippingRules())
+                }
+
+                override fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): Observable<TriggerCapiEventMutation.Data> {
+                    val data = TriggerCapiEventMutation.Data(TriggerCapiEventMutation.TriggerCAPIEvent("", true))
+                    return Observable.just(data)
                 }
             })
             .currentUserV2(MockCurrentUserV2(UserFactory.user()))

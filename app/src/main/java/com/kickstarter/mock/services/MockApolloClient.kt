@@ -151,6 +151,14 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     override fun createBacking(createBackingData: CreateBackingData): io.reactivex.Observable<Checkout> {
         return io.reactivex.Observable.empty()
     }
+
+    override fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): io.reactivex.Observable<TriggerCapiEventMutation.Data> {
+        return io.reactivex.Observable.empty()
+    }
+
+    override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): io.reactivex.Observable<TriggerThirdPartyEventMutation.Data> {
+        return io.reactivex.Observable.empty()
+    }
 }
 
 open class MockApolloClient : ApolloClientType {

@@ -120,8 +120,8 @@ class InternalToolsActivity : BaseActivity<InternalToolsViewModel>() {
     }
 
     private fun designSystemButtonClicked() {
-//        val intent = Intent()
-//        startActivity(intent)
+        val intent = Intent(this, DesignSystemActivity::class.java)
+        startActivity(intent)
     }
 
     private fun playgroundButtonClicked() {

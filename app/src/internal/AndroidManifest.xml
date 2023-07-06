@@ -5,6 +5,7 @@
   <application  android:icon="@mipmap/ic_launcher">
     <activity android:name=".ui.activities.InternalToolsActivity" />
     <activity android:name=".ui.activities.PlaygroundActivity" />
+    <activity android:name=".ui.activities.DesignSystemActivity" />
     <meta-data
         android:name="firebase_crashlytics_collection_enabled"
         android:value="no" />

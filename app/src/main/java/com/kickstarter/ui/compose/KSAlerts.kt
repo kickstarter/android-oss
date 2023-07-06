@@ -15,6 +15,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -22,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.Popup
 import com.kickstarter.ui.extensions.safeLet
 
 //Snackbars
@@ -324,18 +326,24 @@ fun KsTooltip(
     setShowDialog: (Boolean) -> Unit,
     headlineText: String,
     bodyText: String,
+    alignment: Alignment? = null
 ) {
-    KSDialogVisual(modifier = Modifier
-        .fillMaxWidth()
-        .background(color = KSTheme.colors.kds_white)
-        .padding(24.dp),
-        setShowDialog = setShowDialog,
-        bodyText = bodyText,
-        bodyStyle = KSTheme.typography.body2,
-        headline = headlineText,
-        headlineStyle = KSTheme.typography.headline,
-        headlineSpacing = 8.dp
-    )
+    Popup(
+        alignment = alignment ?: Alignment.BottomCenter,
+        onDismissRequest = { setShowDialog(false) }
+    ) {
+        KSDialogVisual(modifier = Modifier
+            .fillMaxWidth()
+            .background(color = KSTheme.colors.kds_white)
+            .padding(24.dp),
+            setShowDialog = { },
+            bodyText = bodyText,
+            bodyStyle = KSTheme.typography.body2,
+            headline = headlineText,
+            headlineStyle = KSTheme.typography.headline,
+            headlineSpacing = 8.dp
+        )
+    }
 }
 
 @Composable
@@ -345,31 +353,37 @@ fun KSIntercept(
     leftButtonText: String,
     leftButtonAction: (() -> Unit)? = null,
     rightButtonText: String,
-    rightButtonAction: (() -> Unit)? = null
+    rightButtonAction: (() -> Unit)? = null,
+    alignment: Alignment? = null
 ) {
-    KSDialogVisual(modifier = Modifier
-        .fillMaxWidth()
-        .background(color = KSTheme.colors.kds_support_100, shape = shapes.small)
-        .padding(start = 16.dp, top = 24.dp, end = 16.dp, bottom = 16.dp),
-        setShowDialog = setShowDialog,
-        bodyText = bodyText,
-        bodyStyle = KSTheme.typography.calloutMedium,
-        leftButtonText = leftButtonText,
-        leftButtonAction = leftButtonAction,
-        leftButtonTextStyle = KSTheme.typography.buttonText,
-        leftButtonOverrideColor = facebook_blue,
-        rightButtonText = rightButtonText,
-        rightButtonAction = rightButtonAction,
-        rightButtonTextStyle = KSTheme.typography.buttonText,
-        rightButtonOverrideColor = KSTheme.colors.kds_white,
-        rightButtonModifier = Modifier
-            .background(color = KSTheme.colors.kds_trust_500, shape = shapes.small)
-            .padding(start = 16.dp, top = 8.dp, bottom = 8.dp, end = 16.dp)
-            .clickable {
-                rightButtonAction?.invoke()
-                setShowDialog(false)
-            },
-        additionalButtonSpacing = 8.dp
-    )
+    Popup(
+        alignment = alignment ?: Alignment.BottomCenter,
+        onDismissRequest = { setShowDialog(false) }
+    ) {
+        KSDialogVisual(modifier = Modifier
+            .fillMaxWidth()
+            .background(color = KSTheme.colors.kds_support_100, shape = shapes.small)
+            .padding(start = 16.dp, top = 24.dp, end = 16.dp, bottom = 16.dp),
+            setShowDialog = {},
+            bodyText = bodyText,
+            bodyStyle = KSTheme.typography.calloutMedium,
+            leftButtonText = leftButtonText,
+            leftButtonAction = leftButtonAction,
+            leftButtonTextStyle = KSTheme.typography.buttonText,
+            leftButtonOverrideColor = facebook_blue,
+            rightButtonText = rightButtonText,
+            rightButtonAction = rightButtonAction,
+            rightButtonTextStyle = KSTheme.typography.buttonText,
+            rightButtonOverrideColor = KSTheme.colors.kds_white,
+            rightButtonModifier = Modifier
+                .background(color = KSTheme.colors.kds_trust_500, shape = shapes.small)
+                .padding(start = 16.dp, top = 8.dp, bottom = 8.dp, end = 16.dp)
+                .clickable {
+                    rightButtonAction?.invoke()
+                    setShowDialog(false)
+                },
+            additionalButtonSpacing = 8.dp
+        )
+    }
 }
 

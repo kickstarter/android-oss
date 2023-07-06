@@ -49,6 +49,7 @@ android.applicationVariants.all { variant ->
                          '**/ui/adapters/projectcampaign/*.*',
                          '**/databinding/*.*',
                          '**/mock/*.*',
+                         '**/mock/factories/*.*',
                          '**/services/*.*',
                          '**/firebase/*.*',
                          '**/fragment/*.*']

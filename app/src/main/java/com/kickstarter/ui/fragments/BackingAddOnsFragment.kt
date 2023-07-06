@@ -175,6 +175,7 @@ class BackingAddOnsFragment : Fragment(), ShippingRulesAdapter.Delegate, Backing
             .beginTransaction()
             .setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
             .add(R.id.fragment_container, fragment, fragment::class.java.simpleName)
+            .addToBackStack(fragment::class.java.simpleName)
             .commit()
     }
 

@@ -1243,7 +1243,7 @@ interface PledgeFragmentViewModel {
                 .addToDisposable(disposables)
 
             // - Present PaymentSheet if user logged in, and add card button pressed
-            val shouldPresentPaymentSheet = BehaviorSubject.create<Notification<String>>()
+            val shouldPresentPaymentSheet = PublishSubject.create<Notification<String>>()
             this.newCardButtonClicked
                 .withLatestFrom(project) { _, latestProject -> latestProject }
                 .switchMap {
@@ -1257,7 +1257,6 @@ interface PledgeFragmentViewModel {
                             this.pledgeButtonIsEnabled.onNext(true)
                         }
                         .materialize()
-                        .share()
                 }
                 .subscribe {
                     shouldPresentPaymentSheet.onNext(it)

@@ -39,7 +39,7 @@ fun StoredCard.getBackingData(
             setupIntentClientSecret = this.clientSetupId(),
             locationId = locationId,
             rewardsIds = rewards,
-            refTag = cookieRefTag
+            refTag = if (cookieRefTag?.tag()?.isNotEmpty() == true) cookieRefTag else null
         )
     } else {
         CreateBackingData(
@@ -48,7 +48,7 @@ fun StoredCard.getBackingData(
             paymentSourceId = this.id(),
             locationId = locationId,
             rewardsIds = rewards,
-            refTag = cookieRefTag
+            refTag = if (cookieRefTag?.tag()?.isNotEmpty() == true) cookieRefTag else null
         )
     }
 }

@@ -5,11 +5,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,17 +23,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.ui.compose.KSAlertDialog
 import com.kickstarter.ui.compose.KSAlertDialogNoHeadline
 import com.kickstarter.ui.compose.KSCheckbox
+import com.kickstarter.ui.compose.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.KSCoralBadge
 import com.kickstarter.ui.compose.KSFacebookButton
 import com.kickstarter.ui.compose.KSGooglePayButton
 import com.kickstarter.ui.compose.KSGreenBadge
 import com.kickstarter.ui.compose.KSIntercept
+import com.kickstarter.ui.compose.KSLinearProgressIndicator
 import com.kickstarter.ui.compose.KSPrimaryBlackButton
 import com.kickstarter.ui.compose.KSPrimaryBlueButton
 import com.kickstarter.ui.compose.KSPrimaryGreenButton
@@ -38,6 +45,9 @@ import com.kickstarter.ui.compose.KSRadioButton
 import com.kickstarter.ui.compose.KSSecondaryGreyButton
 import com.kickstarter.ui.compose.KSSecondaryRedButton
 import com.kickstarter.ui.compose.KSSecondaryWhiteButton
+import com.kickstarter.ui.compose.KSSmallBlueButton
+import com.kickstarter.ui.compose.KSSmallRedButton
+import com.kickstarter.ui.compose.KSSmallWhiteButton
 import com.kickstarter.ui.compose.KSSnackbarError
 import com.kickstarter.ui.compose.KSSnackbarHeadsUp
 import com.kickstarter.ui.compose.KSSnackbarSuccess
@@ -49,7 +59,7 @@ import com.kickstarter.ui.compose.KSTheme.colors
 import com.kickstarter.ui.compose.KSTheme.typography
 import com.kickstarter.ui.compose.KsTooltip
 
-class DesignSystemActivity: ComponentActivity() {
+class DesignSystemActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,12 +80,18 @@ fun DesignSystemViewPreview() {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun DesignSystemView() {
+    val keyboardController = LocalSoftwareKeyboardController.current
     LazyColumn(
         Modifier
             .background(color = colors.kds_support_100)
-            .fillMaxSize(),
+            .fillMaxSize()
+            .clickable(
+                interactionSource = MutableInteractionSource(),
+                indication = null
+            ) { keyboardController?.hide() },
         contentPadding = PaddingValues(8.dp)
     ) {
         item {
@@ -96,6 +112,10 @@ fun DesignSystemView() {
             Spacer(modifier = Modifier.height(12.dp))
 
             InputsVisuals()
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            ProgressIndicatorsVisuals()
 
             Spacer(modifier = Modifier.height(12.dp))
         }
@@ -215,7 +235,11 @@ fun ButtonsVisuals() {
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        KSSecondaryWhiteButton(onClickAction = { }, text = "Secondary White Button", isEnabled = true)
+        KSSecondaryWhiteButton(
+            onClickAction = { },
+            text = "Secondary White Button",
+            isEnabled = true
+        )
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -232,6 +256,20 @@ fun ButtonsVisuals() {
         Spacer(modifier = Modifier.height(12.dp))
 
         KSGooglePayButton(onClickAction = { }, isEnabled = true)
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Row {
+            KSSmallBlueButton(onClickAction = {}, text = "SMALL", isEnabled = true)
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            KSSmallRedButton(onClickAction = {}, text = "SMALL", isEnabled = true)
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            KSSmallWhiteButton(onClickAction = {}, text = "SMALL", isEnabled = true)
+        }
     }
 }
 
@@ -342,7 +380,7 @@ fun ControlsVisuals() {
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Row (verticalAlignment = Alignment.CenterVertically){
+        Row(verticalAlignment = Alignment.CenterVertically) {
             var count by remember { mutableStateOf(0) }
             KSStepper(
                 onPlusClicked = { count++ },
@@ -360,7 +398,7 @@ fun ControlsVisuals() {
 
 @Composable
 fun InputsVisuals() {
-    Column {
+    Column(modifier = Modifier.fillMaxWidth()) {
         Text(text = "Inputs", style = typography.title1Bold)
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -369,6 +407,7 @@ fun InputsVisuals() {
         var errorState by remember { mutableStateOf(false) }
         var currentInput by remember { mutableStateOf("") }
         KSTextInput(
+            modifier = Modifier.fillMaxWidth(),
             label = "Input Here",
             onValueChanged = { input ->
                 errorState = input == errorText
@@ -378,5 +417,39 @@ fun InputsVisuals() {
             assistiveText = if (errorState) "This is an error!" else "Input ERROR to see an error",
             showAssistiveText = errorState || currentInput.isEmpty()
         )
+    }
+}
+
+@Composable
+fun ProgressIndicatorsVisuals() {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(text = "Progress Indicators", style = typography.title1Bold)
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        KSLinearProgressIndicator(Modifier.fillMaxWidth())
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        KSCircularProgressIndicator()
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        var progress by remember { mutableStateOf(0.0f) }
+
+        KSStepper(
+            onPlusClicked = { progress += 0.1f },
+            isPlusEnabled = progress < 1f,
+            onMinusClicked = { progress -= 0.1f },
+            isMinusEnabled = progress > 0f
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        KSLinearProgressIndicator(modifier = Modifier.fillMaxWidth(), progress = progress)
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        KSCircularProgressIndicator(progress = progress)
     }
 }

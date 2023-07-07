@@ -49,6 +49,7 @@ fun KSTextInputPreview() {
 
 @Composable
 fun KSTextInput(
+    modifier: Modifier = Modifier,
     label: String,
     onValueChanged: ((String) -> Unit)? = null,
     isError: Boolean = false,
@@ -59,6 +60,7 @@ fun KSTextInput(
 
     Column {
         TextField(
+            modifier = modifier,
             value = value,
             onValueChange = {
                 onValueChanged?.invoke(it)

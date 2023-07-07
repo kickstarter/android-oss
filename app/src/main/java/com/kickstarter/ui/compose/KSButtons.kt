@@ -1,6 +1,7 @@
 package com.kickstarter.ui.compose
 
 import android.content.res.Configuration
+import android.view.SurfaceControlViewHost.SurfacePackage
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -134,6 +135,25 @@ fun KSOtherButtonsPreview() {
             Spacer(modifier = Modifier.height(8.dp))
 
             KSGooglePayButton(onClickAction = { }, isEnabled = true)
+        }
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun KSSmallButtonsPreview() {
+    KSTheme {
+        Column {
+            KSSmallBlueButton(onClickAction = {}, text = "BLUE", isEnabled = true)
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            KSSmallRedButton(onClickAction = {}, text = "RED", isEnabled = true)
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            KSSmallWhiteButton(onClickAction = {}, text = "WHITE", isEnabled = true)
         }
     }
 }
@@ -309,6 +329,84 @@ fun KSIconButton(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun KSSmallBlueButton(
+    onClickAction: () -> Unit,
+    text: String,
+    isEnabled: Boolean
+) {
+    CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
+        KSSmallButton(
+            onClickAction = onClickAction,
+            isEnabled = isEnabled,
+            backgroundColor = colors.kds_trust_500,
+            text = text,
+            textColor = colors.kds_white
+        )
+    }
+}
+
+@Composable
+fun KSSmallRedButton(
+    onClickAction: () -> Unit,
+    text: String,
+    isEnabled: Boolean
+) {
+    CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
+        KSSmallButton(
+            onClickAction = onClickAction,
+            isEnabled = isEnabled,
+            backgroundColor = colors.kds_alert,
+            text = text,
+            textColor = colors.kds_white
+        )
+    }
+}
+
+@Composable
+fun KSSmallWhiteButton(
+    onClickAction: () -> Unit,
+    text: String,
+    isEnabled: Boolean
+) {
+    CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeGrey) {
+        KSSmallButton(
+            onClickAction = onClickAction,
+            isEnabled = isEnabled,
+            backgroundColor = colors.kds_white,
+            text = text,
+            textColor = colors.kds_create_700
+        )
+    }
+}
+
+@Composable
+fun KSSmallButton(
+    modifier: Modifier = Modifier,
+    onClickAction: () -> Unit,
+    isEnabled: Boolean,
+    backgroundColor: Color,
+    text: String,
+    textColor: Color
+) {
+    Button(
+        modifier = modifier,
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = backgroundColor,
+            disabledBackgroundColor = kds_support_300
+        ),
+        onClick = { onClickAction.invoke() },
+        elevation = ButtonDefaults.elevation(),
+        enabled = isEnabled
+    ) {
+        Text(
+            text = text,
+            color = if (isEnabled) textColor else colors.kds_support_400,
+            style = KSTheme.typography.buttonText
+        )
     }
 }
 

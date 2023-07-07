@@ -15,6 +15,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kickstarter.ui.compose.KSTheme.colors
+import com.kickstarter.ui.compose.KSTheme.typography
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -68,18 +70,18 @@ fun KSTextInput(
             },
             label = { Text(text = label) },
             maxLines = 1,
-            textStyle = KSTheme.typography.callout,
+            textStyle = typography.callout,
             shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
             colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = KSTheme.colors.kds_support_200,
-                errorLabelColor = KSTheme.colors.kds_alert,
-                errorIndicatorColor = KSTheme.colors.kds_alert,
-                unfocusedLabelColor = KSTheme.colors.kds_support_700,
-                unfocusedIndicatorColor = KSTheme.colors.kds_support_700,
-                focusedLabelColor = KSTheme.colors.kds_create_700,
-                focusedIndicatorColor = KSTheme.colors.kds_create_700,
-                cursorColor = KSTheme.colors.kds_create_700,
-                errorCursorColor = KSTheme.colors.kds_alert
+                backgroundColor = colors.kds_support_200,
+                errorLabelColor = colors.kds_alert,
+                errorIndicatorColor = colors.kds_alert,
+                unfocusedLabelColor = colors.kds_support_700,
+                unfocusedIndicatorColor = colors.kds_support_700,
+                focusedLabelColor = colors.kds_create_700,
+                focusedIndicatorColor = colors.kds_create_700,
+                cursorColor = colors.kds_create_700,
+                errorCursorColor = colors.kds_alert
             ),
             isError = isError,
         )
@@ -90,9 +92,9 @@ fun KSTextInput(
                     modifier = Modifier.padding(start = 16.dp, top = 6.dp),
                     text = it,
                     color =
-                        if (isError) KSTheme.colors.kds_alert
-                        else KSTheme.colors.kds_black.copy(alpha = 0.6f),
-                    style = KSTheme.typography.caption1
+                        if (isError) colors.kds_alert
+                        else colors.kds_black.copy(alpha = 0.6f),
+                    style = typography.caption1
                 )
             }
         }

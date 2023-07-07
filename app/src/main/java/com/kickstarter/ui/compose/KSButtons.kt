@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
@@ -19,12 +20,15 @@ import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.KSTheme.colors
+import com.kickstarter.ui.compose.KSTheme.typography
 import com.kickstarter.ui.extensions.safeLet
 
 @Composable
@@ -310,7 +314,8 @@ fun KSIconButton(
         ),
         onClick = { onClickAction.invoke() },
         elevation = ButtonDefaults.elevation(),
-        enabled = isEnabled
+        enabled = isEnabled,
+        shape = shapes.medium
     ) {
         Row {
             Image(
@@ -325,7 +330,7 @@ fun KSIconButton(
                 Text(
                     text = copy,
                     color = if (isEnabled) color else colors.kds_support_400,
-                    style = KSTheme.typography.body
+                    style = typography.body
                 )
             }
         }
@@ -334,51 +339,63 @@ fun KSIconButton(
 
 @Composable
 fun KSSmallBlueButton(
+    modifier: Modifier = Modifier,
     onClickAction: () -> Unit,
     text: String,
-    isEnabled: Boolean
+    isEnabled: Boolean,
+    radius: Dp? = null
 ) {
     CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
         KSSmallButton(
+            modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
             backgroundColor = colors.kds_trust_500,
             text = text,
-            textColor = colors.kds_white
+            textColor = colors.kds_white,
+            radius = radius
         )
     }
 }
 
 @Composable
 fun KSSmallRedButton(
+    modifier: Modifier = Modifier,
     onClickAction: () -> Unit,
     text: String,
-    isEnabled: Boolean
+    isEnabled: Boolean,
+    radius: Dp? = null
 ) {
     CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
         KSSmallButton(
+            modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
             backgroundColor = colors.kds_alert,
             text = text,
-            textColor = colors.kds_white
+            textColor = colors.kds_white,
+            radius = radius
         )
     }
 }
 
 @Composable
 fun KSSmallWhiteButton(
+    modifier: Modifier = Modifier,
     onClickAction: () -> Unit,
     text: String,
-    isEnabled: Boolean
+    isEnabled: Boolean,
+    radius: Dp? = null
 ) {
     CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeGrey) {
         KSSmallButton(
+            modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
             backgroundColor = colors.kds_white,
             text = text,
-            textColor = colors.kds_create_700
+            textColor = colors.kds_create_700,
+            radius = radius
         )
     }
 }
@@ -390,7 +407,8 @@ fun KSSmallButton(
     isEnabled: Boolean,
     backgroundColor: Color,
     text: String,
-    textColor: Color
+    textColor: Color,
+    radius: Dp? = null
 ) {
     Button(
         modifier = modifier,
@@ -400,12 +418,13 @@ fun KSSmallButton(
         ),
         onClick = { onClickAction.invoke() },
         elevation = ButtonDefaults.elevation(),
-        enabled = isEnabled
+        enabled = isEnabled,
+        shape = radius?.let { RoundedCornerShape(radius) } ?: shapes.medium
     ) {
         Text(
             text = text,
             color = if (isEnabled) textColor else colors.kds_support_400,
-            style = KSTheme.typography.buttonText
+            style = typography.buttonText
         )
     }
 }
@@ -428,12 +447,13 @@ fun KSButton(
         ),
         onClick = { onClickAction.invoke() },
         elevation = ButtonDefaults.elevation(),
-        enabled = isEnabled
+        enabled = isEnabled,
+        shape = shapes.medium
     ) {
         Text(
             text = text,
             color = if (isEnabled) textColor else colors.kds_support_400,
-            style = KSTheme.typography.body
+            style = typography.body
         )
     }
 }

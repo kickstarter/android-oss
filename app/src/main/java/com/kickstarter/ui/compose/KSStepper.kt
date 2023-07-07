@@ -17,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
+import com.kickstarter.ui.compose.KSTheme.colors
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -81,8 +82,8 @@ fun KSStepper (
                 bottomEnd = 0.dp
             ),
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = KSTheme.colors.kds_white,
-                disabledBackgroundColor = KSTheme.colors.kds_support_300),
+                backgroundColor = colors.kds_white,
+                disabledBackgroundColor = colors.kds_support_300),
             onClick = onMinusClicked,
             enabled = isMinusEnabled,
             elevation = ButtonDefaults.elevation(0.dp)
@@ -92,8 +93,8 @@ fun KSStepper (
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(
                     color =
-                        if (isMinusEnabled) KSTheme.colors.kds_create_700
-                        else KSTheme.colors.kds_support_400
+                        if (isMinusEnabled) colors.kds_create_700
+                        else colors.kds_support_400
                 )
             )
         }
@@ -107,8 +108,8 @@ fun KSStepper (
                 bottomEnd = 9.dp
             ),
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = KSTheme.colors.kds_white,
-                disabledBackgroundColor = KSTheme.colors.kds_support_300),
+                backgroundColor = colors.kds_white,
+                disabledBackgroundColor = colors.kds_support_300),
             onClick = onPlusClicked,
             enabled = isPlusEnabled,
             elevation = ButtonDefaults.elevation(0.dp)
@@ -118,8 +119,8 @@ fun KSStepper (
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(
                     color =
-                    if (isPlusEnabled) KSTheme.colors.kds_create_700
-                    else KSTheme.colors.kds_support_400
+                    if (isPlusEnabled) colors.kds_create_700
+                    else colors.kds_support_400
                 )
             )
         }

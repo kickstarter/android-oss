@@ -34,6 +34,7 @@ import com.kickstarter.ui.compose.KSCheckbox
 import com.kickstarter.ui.compose.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.KSCoralBadge
 import com.kickstarter.ui.compose.KSFacebookButton
+import com.kickstarter.ui.compose.KSFullButtonFooter
 import com.kickstarter.ui.compose.KSGooglePayButton
 import com.kickstarter.ui.compose.KSGreenBadge
 import com.kickstarter.ui.compose.KSIntercept
@@ -46,12 +47,14 @@ import com.kickstarter.ui.compose.KSSecondaryGreyButton
 import com.kickstarter.ui.compose.KSSecondaryRedButton
 import com.kickstarter.ui.compose.KSSecondaryWhiteButton
 import com.kickstarter.ui.compose.KSSmallBlueButton
+import com.kickstarter.ui.compose.KSSmallButtonFooter
 import com.kickstarter.ui.compose.KSSmallRedButton
 import com.kickstarter.ui.compose.KSSmallWhiteButton
 import com.kickstarter.ui.compose.KSSnackbarError
 import com.kickstarter.ui.compose.KSSnackbarHeadsUp
 import com.kickstarter.ui.compose.KSSnackbarSuccess
 import com.kickstarter.ui.compose.KSStepper
+import com.kickstarter.ui.compose.KSStringDropdown
 import com.kickstarter.ui.compose.KSSwitch
 import com.kickstarter.ui.compose.KSTextInput
 import com.kickstarter.ui.compose.KSTheme
@@ -118,6 +121,10 @@ fun DesignSystemView() {
             ProgressIndicatorsVisuals()
 
             Spacer(modifier = Modifier.height(12.dp))
+
+            FootersVisuals()
+
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
@@ -393,6 +400,12 @@ fun ControlsVisuals() {
 
             Text(text = "$$count", style = typography.body)
         }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        KSStringDropdown(
+            items = arrayOf("Coffee", "Soda", "Water", "Other"),
+            onItemSelected = { _, _ -> })
     }
 }
 
@@ -451,5 +464,25 @@ fun ProgressIndicatorsVisuals() {
         Spacer(modifier = Modifier.height(12.dp))
 
         KSCircularProgressIndicator(progress = progress)
+    }
+}
+
+@Composable
+fun FootersVisuals() {
+    Column {
+        Text(text = "Footers", style = typography.title1Bold)
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        KSFullButtonFooter(buttonText = "Back this project", onClickAction = {})
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        KSSmallButtonFooter(
+            buttonText = "Manage",
+            onClickAction = {},
+            titleText = "You're a backer",
+            subtitleText = "$24 Committed"
+        )
     }
 }

@@ -5,6 +5,7 @@ import androidx.compose.material.ripple.RippleTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
+import com.kickstarter.ui.compose.KSTheme.colors
 
 @Immutable
 object KSRippleThemeWhite: RippleTheme {
@@ -17,7 +18,7 @@ object KSRippleThemeWhite: RippleTheme {
     )
 
     @Composable
-    override fun defaultColor(): Color = KSTheme.colors.kds_white
+    override fun defaultColor(): Color = colors.kds_white
 
     @Composable
     override fun rippleAlpha(): RippleAlpha = alpha
@@ -34,7 +35,7 @@ object KSRippleThemeGrey: RippleTheme {
     )
 
     @Composable
-    override fun defaultColor(): Color = KSTheme.colors.kds_support_700
+    override fun defaultColor(): Color = colors.kds_support_700
 
     @Composable
     override fun rippleAlpha(): RippleAlpha = alpha

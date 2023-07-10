@@ -102,7 +102,8 @@ fun PreLaunchProjectPageScreen(
                 middle = {
                     ToolbarIconButton(
                         icon = Icons.Filled.Share,
-                        clickAction = { middleRightClickAction.invoke() })
+                        clickAction = { middleRightClickAction.invoke() }
+                    )
                 },
                 leftOnClickAction = { leftOnClickAction() }
             )

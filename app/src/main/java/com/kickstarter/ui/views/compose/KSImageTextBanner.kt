@@ -1,4 +1,4 @@
-package com.kickstarter.ui.compose
+package com.kickstarter.ui.views.compose
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

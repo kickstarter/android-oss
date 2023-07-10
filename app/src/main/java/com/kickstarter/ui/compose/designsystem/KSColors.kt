@@ -1,4 +1,4 @@
-package com.kickstarter.ui.compose
+package com.kickstarter.ui.compose.designsystem
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf

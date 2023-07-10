@@ -1,7 +1,6 @@
-package com.kickstarter.ui.compose
+package com.kickstarter.ui.compose.designsystem
 
 import android.content.res.Configuration
-import android.view.SurfaceControlViewHost.SurfacePackage
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -20,15 +19,14 @@ import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
-import com.kickstarter.ui.compose.KSTheme.colors
-import com.kickstarter.ui.compose.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.extensions.safeLet
 
 @Composable

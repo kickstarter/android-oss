@@ -1,4 +1,4 @@
-package com.kickstarter.ui.compose
+package com.kickstarter.ui.compose.designsystem
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.kickstarter.ui.compose.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)

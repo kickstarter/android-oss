@@ -1,4 +1,4 @@
-package com.kickstarter.ui.compose
+package com.kickstarter.ui.compose.designsystem
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes

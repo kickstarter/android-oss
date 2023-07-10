@@ -1,4 +1,4 @@
-package com.kickstarter.ui.compose
+package com.kickstarter.ui.compose.designsystem
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

@@ -1,4 +1,4 @@
-package com.kickstarter.ui.compose
+package com.kickstarter.ui.views.compose
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -13,6 +13,9 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
+import com.kickstarter.ui.compose.CircleImageFromURl
+import com.kickstarter.ui.compose.TextBody2Style
+import com.kickstarter.ui.compose.TextCaptionStyle
 
 @Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
 @Composable

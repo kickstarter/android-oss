@@ -18,7 +18,7 @@ import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.activities.compose.FormularyScreen
 import com.kickstarter.ui.activities.compose.ReportProjectCategoryScreen
-import com.kickstarter.ui.compose.TopToolBar
+import com.kickstarter.ui.toolbars.compose.TopToolBar
 import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.viewmodels.ReportProjectViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers

@@ -1,11 +1,11 @@
-package com.kickstarter.ui.compose
+package com.kickstarter.ui.compose.designsystem
 
 import androidx.compose.material.ripple.RippleAlpha
 import androidx.compose.material.ripple.RippleTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
-import com.kickstarter.ui.compose.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 
 @Immutable
 object KSRippleThemeWhite: RippleTheme {

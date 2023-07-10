@@ -28,39 +28,39 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.kickstarter.ui.compose.KSAlertDialog
-import com.kickstarter.ui.compose.KSAlertDialogNoHeadline
-import com.kickstarter.ui.compose.KSCheckbox
-import com.kickstarter.ui.compose.KSCircularProgressIndicator
-import com.kickstarter.ui.compose.KSCoralBadge
-import com.kickstarter.ui.compose.KSFacebookButton
-import com.kickstarter.ui.compose.KSFullButtonFooter
-import com.kickstarter.ui.compose.KSGooglePayButton
-import com.kickstarter.ui.compose.KSGreenBadge
-import com.kickstarter.ui.compose.KSIntercept
-import com.kickstarter.ui.compose.KSLinearProgressIndicator
-import com.kickstarter.ui.compose.KSPrimaryBlackButton
-import com.kickstarter.ui.compose.KSPrimaryBlueButton
-import com.kickstarter.ui.compose.KSPrimaryGreenButton
-import com.kickstarter.ui.compose.KSRadioButton
-import com.kickstarter.ui.compose.KSSecondaryGreyButton
-import com.kickstarter.ui.compose.KSSecondaryRedButton
-import com.kickstarter.ui.compose.KSSecondaryWhiteButton
-import com.kickstarter.ui.compose.KSSmallBlueButton
-import com.kickstarter.ui.compose.KSSmallButtonFooter
-import com.kickstarter.ui.compose.KSSmallRedButton
-import com.kickstarter.ui.compose.KSSmallWhiteButton
-import com.kickstarter.ui.compose.KSSnackbarError
-import com.kickstarter.ui.compose.KSSnackbarHeadsUp
-import com.kickstarter.ui.compose.KSSnackbarSuccess
-import com.kickstarter.ui.compose.KSStepper
-import com.kickstarter.ui.compose.KSStringDropdown
-import com.kickstarter.ui.compose.KSSwitch
-import com.kickstarter.ui.compose.KSTextInput
-import com.kickstarter.ui.compose.KSTheme
-import com.kickstarter.ui.compose.KSTheme.colors
-import com.kickstarter.ui.compose.KSTheme.typography
-import com.kickstarter.ui.compose.KsTooltip
+import com.kickstarter.ui.compose.designsystem.KSAlertDialog
+import com.kickstarter.ui.compose.designsystem.KSAlertDialogNoHeadline
+import com.kickstarter.ui.compose.designsystem.KSCheckbox
+import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
+import com.kickstarter.ui.compose.designsystem.KSCoralBadge
+import com.kickstarter.ui.compose.designsystem.KSFacebookButton
+import com.kickstarter.ui.compose.designsystem.KSFullButtonFooter
+import com.kickstarter.ui.compose.designsystem.KSGooglePayButton
+import com.kickstarter.ui.compose.designsystem.KSGreenBadge
+import com.kickstarter.ui.compose.designsystem.KSIntercept
+import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
+import com.kickstarter.ui.compose.designsystem.KSPrimaryBlackButton
+import com.kickstarter.ui.compose.designsystem.KSPrimaryBlueButton
+import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
+import com.kickstarter.ui.compose.designsystem.KSRadioButton
+import com.kickstarter.ui.compose.designsystem.KSSecondaryGreyButton
+import com.kickstarter.ui.compose.designsystem.KSSecondaryRedButton
+import com.kickstarter.ui.compose.designsystem.KSSecondaryWhiteButton
+import com.kickstarter.ui.compose.designsystem.KSSmallBlueButton
+import com.kickstarter.ui.compose.designsystem.KSSmallButtonFooter
+import com.kickstarter.ui.compose.designsystem.KSSmallRedButton
+import com.kickstarter.ui.compose.designsystem.KSSmallWhiteButton
+import com.kickstarter.ui.compose.designsystem.KSSnackbarError
+import com.kickstarter.ui.compose.designsystem.KSSnackbarHeadsUp
+import com.kickstarter.ui.compose.designsystem.KSSnackbarSuccess
+import com.kickstarter.ui.compose.designsystem.KSStepper
+import com.kickstarter.ui.compose.designsystem.KSStringDropdown
+import com.kickstarter.ui.compose.designsystem.KSSwitch
+import com.kickstarter.ui.compose.designsystem.KSTextInput
+import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KsTooltip
 
 class DesignSystemActivity : ComponentActivity() {
 
@@ -123,6 +123,10 @@ fun DesignSystemView() {
             Spacer(modifier = Modifier.height(12.dp))
 
             FootersVisuals()
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            TypographyVisuals()
 
             Spacer(modifier = Modifier.height(24.dp))
         }
@@ -484,5 +488,46 @@ fun FootersVisuals() {
             titleText = "You're a backer",
             subtitleText = "$24 Committed"
         )
+    }
+}
+
+@Composable
+fun TypographyVisuals() {
+    Column {
+        Text(text = "Typography", style = typography.title1Bold)
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text(text = "Title 1", style = typography.title1)
+        Text(text = "Title 1 Bold", style = typography.title1Bold)
+
+        Text(text = "Title 2", style = typography.title2)
+        Text(text = "Title 2 Bold", style = typography.title2Bold)
+
+        Text(text = "Title 3", style = typography.title3)
+        Text(text = "Title  Bold", style = typography.title3Bold)
+
+        Text(text = "Headline", style = typography.headline)
+        Text(text = "Body", style = typography.body)
+
+        Text(text = "Callout", style = typography.callout)
+        Text(text = "Callout Medium", style = typography.calloutMedium)
+
+        Text(text = "Subheadline", style = typography.subheadline)
+        Text(text = "Subheadline Medium", style = typography.subheadlineMedium)
+
+        Text(text = "BUTTON TEXT", style = typography.buttonText)
+
+        Text(text = "Body 2", style = typography.body2)
+        Text(text = "Body 2 Medium", style = typography.body2Medium)
+
+        Text(text = "Footnote", style = typography.footnote)
+        Text(text = "Footnote Medium", style = typography.footnoteMedium)
+
+        Text(text = "Caption 1", style = typography.caption1)
+        Text(text = "Caption 1 Medium", style = typography.caption1Medium)
+
+        Text(text = "Caption 2", style = typography.caption2)
+        Text(text = "Caption 2 Medium", style = typography.caption2Medium)
     }
 }

@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 
 @Immutable
-object KSRippleThemeWhite: RippleTheme {
+object KSRippleThemeWhite : RippleTheme {
 
     val alpha = RippleAlpha(
         focusedAlpha = .32f,
@@ -25,7 +25,7 @@ object KSRippleThemeWhite: RippleTheme {
 }
 
 @Immutable
-object KSRippleThemeGrey: RippleTheme {
+object KSRippleThemeGrey : RippleTheme {
 
     val alpha = RippleAlpha(
         focusedAlpha = .13f,

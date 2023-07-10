@@ -63,16 +63,18 @@ fun KSStepperPreview() {
 }
 
 @Composable
-fun KSStepper (
+fun KSStepper(
     onPlusClicked: () -> Unit,
     isPlusEnabled: Boolean,
     onMinusClicked: () -> Unit,
     isMinusEnabled: Boolean
 ) {
 
-    Row (modifier = Modifier
-        .height(36.dp)
-        .width(108.dp)){
+    Row(
+        modifier = Modifier
+            .height(36.dp)
+            .width(108.dp)
+    ) {
         Button(
             modifier = Modifier.width(54.dp),
             shape = RoundedCornerShape(
@@ -83,18 +85,21 @@ fun KSStepper (
             ),
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = colors.kds_white,
-                disabledBackgroundColor = colors.kds_support_300),
+                disabledBackgroundColor = colors.kds_support_300
+            ),
             onClick = onMinusClicked,
             enabled = isMinusEnabled,
             elevation = ButtonDefaults.elevation(0.dp)
         ) {
-            Image(painter = painterResource(
-                id = R.drawable.ic_minus),
+            Image(
+                painter = painterResource(
+                    id = R.drawable.ic_minus
+                ),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(
                     color =
-                        if (isMinusEnabled) colors.kds_create_700
-                        else colors.kds_support_400
+                    if (isMinusEnabled) colors.kds_create_700
+                    else colors.kds_support_400
                 )
             )
         }
@@ -109,13 +114,16 @@ fun KSStepper (
             ),
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = colors.kds_white,
-                disabledBackgroundColor = colors.kds_support_300),
+                disabledBackgroundColor = colors.kds_support_300
+            ),
             onClick = onPlusClicked,
             enabled = isPlusEnabled,
             elevation = ButtonDefaults.elevation(0.dp)
         ) {
-            Image(painter = painterResource(
-                id = R.drawable.ic_plus),
+            Image(
+                painter = painterResource(
+                    id = R.drawable.ic_plus
+                ),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(
                     color =

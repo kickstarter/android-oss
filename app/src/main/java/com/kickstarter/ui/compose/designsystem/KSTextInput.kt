@@ -35,6 +35,7 @@ fun KSTextInputPreview() {
                         showAssistiveText = true
                         assistiveText = "$currentString is not allowed!"
                     }
+
                     else -> {
                         isError = false
                         showAssistiveText = false
@@ -58,7 +59,7 @@ fun KSTextInput(
     assistiveText: String? = null,
     showAssistiveText: Boolean = false
 ) {
-    var value by remember { mutableStateOf("")}
+    var value by remember { mutableStateOf("") }
 
     Column {
         TextField(
@@ -92,8 +93,8 @@ fun KSTextInput(
                     modifier = Modifier.padding(start = 16.dp, top = 6.dp),
                     text = it,
                     color =
-                        if (isError) colors.kds_alert
-                        else colors.kds_black.copy(alpha = 0.6f),
+                    if (isError) colors.kds_alert
+                    else colors.kds_black.copy(alpha = 0.6f),
                     style = typography.caption1
                 )
             }

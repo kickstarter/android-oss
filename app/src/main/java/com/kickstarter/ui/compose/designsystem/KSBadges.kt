@@ -20,7 +20,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun KSBadgesPreview() {
     KSTheme {
-        Column (
+        Column(
             Modifier
                 .background(color = colors.kds_white)
                 .fillMaxWidth()

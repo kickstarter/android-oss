@@ -58,7 +58,6 @@ fun KSFullButtonFooter(
     }
 }
 
-
 @Composable
 fun KSSmallButtonFooter(
     buttonText: String,

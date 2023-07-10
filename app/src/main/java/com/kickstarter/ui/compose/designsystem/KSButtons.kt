@@ -40,7 +40,7 @@ fun KSPrimaryButtonsPreview() {
                 .padding(all = 8.dp)
         ) {
             KSPrimaryGreenButton(
-                onClickAction = {  },
+                onClickAction = { },
                 isEnabled = true,
                 text = "Back this project"
             )
@@ -48,7 +48,7 @@ fun KSPrimaryButtonsPreview() {
             Spacer(modifier = Modifier.height(8.dp))
 
             KSPrimaryBlueButton(
-                onClickAction = {  },
+                onClickAction = { },
                 isEnabled = true,
                 text = "Manage your pledge"
             )
@@ -56,7 +56,7 @@ fun KSPrimaryButtonsPreview() {
             Spacer(modifier = Modifier.height(8.dp))
 
             KSPrimaryBlackButton(
-                onClickAction = {  },
+                onClickAction = { },
                 isEnabled = true,
                 text = "Share this project"
             )
@@ -75,7 +75,7 @@ fun KSSecondaryButtonsPreview() {
                 .padding(all = 8.dp)
         ) {
             KSSecondaryGreyButton(
-                onClickAction = {  },
+                onClickAction = { },
                 isEnabled = true,
                 text = "Fix your pledge"
             )
@@ -83,7 +83,7 @@ fun KSSecondaryButtonsPreview() {
             Spacer(modifier = Modifier.height(8.dp))
 
             KSSecondaryWhiteButton(
-                onClickAction = {  },
+                onClickAction = { },
                 isEnabled = true,
                 text = "Back this project"
             )
@@ -91,7 +91,7 @@ fun KSSecondaryButtonsPreview() {
             Spacer(modifier = Modifier.height(8.dp))
 
             KSSecondaryRedButton(
-                onClickAction = {  },
+                onClickAction = { },
                 isEnabled = true,
                 text = "Cancel my pledge"
             )
@@ -110,7 +110,7 @@ fun KSDisabledButtonsPreview() {
                 .padding(all = 8.dp)
         ) {
             KSPrimaryGreenButton(
-                onClickAction = {  },
+                onClickAction = { },
                 isEnabled = false,
                 text = "Back this project"
             )
@@ -223,7 +223,8 @@ fun KSSecondaryGreyButton(
             isEnabled = isEnabled,
             backgroundColor = colors.kds_support_300,
             text = text,
-            textColor = colors.kds_black)
+            textColor = colors.kds_black
+        )
     }
 }
 
@@ -239,7 +240,8 @@ fun KSSecondaryRedButton(
             isEnabled = isEnabled,
             backgroundColor = colors.kds_alert,
             text = text,
-            textColor = colors.kds_white)
+            textColor = colors.kds_white
+        )
     }
 }
 
@@ -255,7 +257,8 @@ fun KSSecondaryWhiteButton(
             isEnabled = isEnabled,
             backgroundColor = colors.kds_white,
             text = text,
-            textColor = colors.kds_create_700)
+            textColor = colors.kds_create_700
+        )
     }
 }
 

@@ -69,7 +69,8 @@ fun PreviewControls() {
 
             KSRadioButton(
                 selected = !radioButtonSelected,
-                onClick = { radioButtonSelected = !radioButtonSelected })
+                onClick = { radioButtonSelected = !radioButtonSelected }
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -199,7 +200,6 @@ fun KSStringDropdown(
                 colorFilter = ColorFilter.tint(color = colors.kds_support_400.copy(alpha = 0.8f))
             )
         }
-
 
         ExposedDropdownMenu(
             modifier = Modifier.background(color = colors.kds_white),

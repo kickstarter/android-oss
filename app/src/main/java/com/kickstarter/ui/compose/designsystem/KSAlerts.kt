@@ -209,13 +209,13 @@ fun KSDialogVisual(
     Column(
         modifier = modifier
     ) {
-        //Headline
+        // Headline
         safeLet(headline, headlineStyle, headlineSpacing) { text, style, space ->
             Text(text = text, style = style)
             Spacer(modifier = Modifier.height(space))
         }
 
-        //Body
+        // Body
         Text(modifier = Modifier.padding(end = 8.dp), text = bodyText, style = bodyStyle)
 
         Row(
@@ -224,7 +224,7 @@ fun KSDialogVisual(
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.End
         ) {
-            //Left Button
+            // Left Button
             safeLet(leftButtonText, leftButtonTextStyle) { text, style ->
                 Button(
                     modifier = leftButtonModifier,
@@ -248,7 +248,7 @@ fun KSDialogVisual(
 
             Spacer(modifier = Modifier.width(additionalButtonSpacing ?: 2.dp))
 
-            //Right Button
+            // Right Button
             safeLet(rightButtonText, rightButtonTextStyle) { text, style ->
                 Button(
                     modifier = rightButtonModifier,
@@ -401,4 +401,3 @@ fun KSIntercept(
         )
     }
 }
-

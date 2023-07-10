@@ -5,11 +5,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 
 @Composable
-fun KSTheme (
+fun KSTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = if(!useDarkTheme) {
+    val colors = if (!useDarkTheme) {
         KSLightCustomColors
     } else {
         KSDarkCustomColors

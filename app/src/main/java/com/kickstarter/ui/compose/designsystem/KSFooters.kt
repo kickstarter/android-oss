@@ -73,8 +73,16 @@ fun KSSmallButtonFooter(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
-                Text(text = titleText, style = typography.calloutMedium)
-                Text(text = subtitleText, style = typography.caption1Medium)
+                Text(
+                    text = titleText,
+                    style = typography.calloutMedium,
+                    color = colors.kds_support_700
+                )
+                Text(
+                    text = subtitleText,
+                    style = typography.caption1Medium,
+                    color = colors.kds_support_700
+                )
             }
 
             KSSmallBlueButton(

@@ -211,7 +211,7 @@ fun KSDialogVisual(
     ) {
         // Headline
         safeLet(headline, headlineStyle, headlineSpacing) { text, style, space ->
-            Text(text = text, style = style)
+            Text(text = text, style = style, color = colors.kds_support_700)
             Spacer(modifier = Modifier.height(space))
         }
 

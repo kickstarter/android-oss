@@ -215,7 +215,7 @@ fun KSStringDropdown(
                         expanded = false
                     }
                 ) {
-                    Text(text = item, style = typography.body2)
+                    Text(text = item, style = typography.body2, color = colors.kds_support_700)
                 }
             }
         }

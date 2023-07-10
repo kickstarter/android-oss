@@ -272,10 +272,10 @@ fun KSFacebookButton(
         KSIconButton(
             onClickAction = onClickAction,
             isEnabled = isEnabled,
-            backgroundColor = facebook_blue,
+            backgroundColor = colors.facebook_blue,
             imageId = R.drawable.com_facebook_button_icon,
             text = text,
-            textColor = kds_white
+            textColor = colors.kds_white
         )
     }
 }
@@ -289,7 +289,7 @@ fun KSGooglePayButton(
         KSIconButton(
             onClickAction = onClickAction,
             isEnabled = isEnabled,
-            backgroundColor = kds_black,
+            backgroundColor = colors.kds_black,
             imageId = R.drawable.googlepay_button_content
         )
     }
@@ -311,7 +311,7 @@ fun KSIconButton(
             .defaultMinSize(minHeight = 48.dp),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = backgroundColor,
-            disabledBackgroundColor = kds_support_300
+            disabledBackgroundColor = colors.kds_support_300
         ),
         onClick = { onClickAction.invoke() },
         elevation = ButtonDefaults.elevation(),
@@ -415,7 +415,7 @@ fun KSSmallButton(
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             backgroundColor = backgroundColor,
-            disabledBackgroundColor = kds_support_300
+            disabledBackgroundColor = colors.kds_support_300
         ),
         onClick = { onClickAction.invoke() },
         elevation = ButtonDefaults.elevation(),
@@ -444,7 +444,7 @@ fun KSButton(
             .defaultMinSize(minHeight = 48.dp),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = backgroundColor,
-            disabledBackgroundColor = kds_support_300
+            disabledBackgroundColor = colors.kds_support_300
         ),
         onClick = { onClickAction.invoke() },
         elevation = ButtonDefaults.elevation(),

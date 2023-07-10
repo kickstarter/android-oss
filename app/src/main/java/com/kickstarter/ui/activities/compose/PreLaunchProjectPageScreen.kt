@@ -40,19 +40,19 @@ import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.P
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_LOCATION_NAME
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_NAME
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_SAVE_BUTTON
-import com.kickstarter.ui.compose.designsystem.KsButton
-import com.kickstarter.ui.views.compose.KsCreatorLayout
 import com.kickstarter.ui.compose.ProjectImageFromURl
 import com.kickstarter.ui.compose.TextBody2Style
 import com.kickstarter.ui.compose.TextCaptionStyle
 import com.kickstarter.ui.compose.TextCaptionStyleWithStartIcon
 import com.kickstarter.ui.compose.TextH6ExtraBoldTitle
 import com.kickstarter.ui.compose.TextWithKdsSupport700Bg
+import com.kickstarter.ui.compose.designsystem.KsButton
 import com.kickstarter.ui.compose.designsystem.kds_support_500
 import com.kickstarter.ui.compose.designsystem.kds_white
 import com.kickstarter.ui.toolbars.compose.ToolbarIconButton
 import com.kickstarter.ui.toolbars.compose.ToolbarIconToggleButton
 import com.kickstarter.ui.toolbars.compose.TopToolBar
+import com.kickstarter.ui.views.compose.KsCreatorLayout
 
 @Preview(widthDp = 300, heightDp = 800)
 @Composable
@@ -164,8 +164,7 @@ fun PreLaunchProjectPageScreen(
                     }
                     .padding(end = screenPadding)
                     .padding(
-                        vertical =
-                        dimensionResource(id = R.dimen.grid_1)
+                        vertical = dimensionResource(id = R.dimen.grid_1)
                     ),
                 onClickAction = {
                     onCreatorLayoutClicked.invoke()
@@ -184,8 +183,7 @@ fun PreLaunchProjectPageScreen(
                         }
                         .padding(end = screenPadding)
                         .padding(
-                            vertical =
-                            dimensionResource(id = R.dimen.grid_1)
+                            vertical = dimensionResource(id = R.dimen.grid_1)
                         )
                 )
             }

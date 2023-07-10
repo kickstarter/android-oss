@@ -409,7 +409,8 @@ fun ControlsVisuals() {
 
         KSStringDropdown(
             items = arrayOf("Coffee", "Soda", "Water", "Other"),
-            onItemSelected = { _, _ -> })
+            onItemSelected = { _, _ -> }
+        )
     }
 }
 

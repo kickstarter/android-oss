@@ -48,11 +48,11 @@ import com.kickstarter.ui.compose.TextCaptionStyle
 import com.kickstarter.ui.compose.TextCaptionStyleWithStartIcon
 import com.kickstarter.ui.compose.TextH6ExtraBoldTitle
 import com.kickstarter.ui.compose.TextWithKdsSupport700Bg
+import com.kickstarter.ui.compose.designsystem.kds_support_500
+import com.kickstarter.ui.compose.designsystem.kds_white
 import com.kickstarter.ui.toolbars.compose.ToolbarIconButton
 import com.kickstarter.ui.toolbars.compose.ToolbarIconToggleButton
 import com.kickstarter.ui.toolbars.compose.TopToolBar
-import com.kickstarter.ui.compose.designsystem.kds_support_500
-import com.kickstarter.ui.compose.designsystem.kds_white
 
 @Preview(widthDp = 300, heightDp = 800)
 @Composable
@@ -99,7 +99,11 @@ fun PreLaunchProjectPageScreen(
                         initialState = project?.isStarred() ?: false
                     )
                 },
-                middle = { ToolbarIconButton(icon = Icons.Filled.Share, clickAction = { middleRightClickAction.invoke() }) },
+                middle = {
+                    ToolbarIconButton(
+                        icon = Icons.Filled.Share,
+                        clickAction = { middleRightClickAction.invoke() })
+                },
                 leftOnClickAction = { leftOnClickAction() }
             )
         }
@@ -125,11 +129,13 @@ fun PreLaunchProjectPageScreen(
 
             TextWithKdsSupport700Bg(
                 stringResource(id = R.string.Coming_soon),
-                Modifier.constrainAs(comingSoonBadge) {
-                    top.linkTo(projectImage.bottom)
-                    bottom.linkTo(projectImage.bottom)
-                    start.linkTo(parent.start, screenPadding)
-                }.testTag(COMING_SOON_BADGE.name)
+                Modifier
+                    .constrainAs(comingSoonBadge) {
+                        top.linkTo(projectImage.bottom)
+                        bottom.linkTo(projectImage.bottom)
+                        start.linkTo(parent.start, screenPadding)
+                    }
+                    .testTag(COMING_SOON_BADGE.name)
             )
 
             val projectNameAlpha = if (project?.name().isNullOrBlank()) 0f else 1f

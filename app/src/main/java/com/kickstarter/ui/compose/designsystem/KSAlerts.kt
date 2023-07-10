@@ -29,7 +29,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.extensions.safeLet
 
-//Snackbars
+// Snackbars
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -88,7 +88,7 @@ fun KSSnackbarSuccess(text: String) {
     )
 }
 
-//Dialogs
+// Dialogs
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)

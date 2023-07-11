@@ -2017,13 +2017,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.newCardButtonClicked()
         this.presentPaymentSheet.assertValue(clientSecretID)
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-        this.pledgeButtonIsEnabled.assertValues(true, false, false)
-        this.loadingState.assertValues(State.LOADING, State.LOADING)
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.loadingState.assertValues(State.LOADING)
 
         // - PaymentSheet presented
         this.vm.inputs.paymentSheetPresented(true)
-        this.pledgeButtonIsEnabled.assertValues(true, false, false, true)
-        this.loadingState.assertValues(State.LOADING, State.LOADING, State.DEFAULT)
+        this.pledgeButtonIsEnabled.assertValues(true, false, true)
+        this.loadingState.assertValues(State.LOADING, State.DEFAULT)
     }
 
     @Test
@@ -2047,16 +2047,16 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.newCardButtonClicked()
         this.presentPaymentSheet.assertNoValues()
         this.showError.assertValue("Error Message")
-        this.pledgeButtonIsEnabled.assertValues(true, false, true, false, true)
-        this.loadingState.assertValues(State.LOADING, State.DEFAULT, State.LOADING, State.DEFAULT)
+        this.pledgeButtonIsEnabled.assertValues(true, false, true)
+        this.loadingState.assertValues(State.LOADING, State.DEFAULT)
 
         // - User hit button for second time
         this.vm.inputs.newCardButtonClicked()
         this.presentPaymentSheet.assertNoValues()
         this.showError.assertValues("Error Message", "Error Message")
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-        this.pledgeButtonIsEnabled.assertValues(true, false, true, false, true, false, true, false, true)
-        this.loadingState.assertValues(State.LOADING, State.DEFAULT, State.LOADING, State.DEFAULT, State.LOADING, State.DEFAULT, State.LOADING, State.DEFAULT)
+        this.pledgeButtonIsEnabled.assertValues(true, false, true, false, true)
+        this.loadingState.assertValues(State.LOADING, State.DEFAULT, State.LOADING, State.DEFAULT)
     }
 
     @Test
@@ -2072,13 +2072,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.newCardButtonClicked()
         this.presentPaymentSheet.assertValue("")
         this.segmentTrack.assertNoValues()
-        this.pledgeButtonIsEnabled.assertValues(false, false, false)
-        this.loadingState.assertValues(State.LOADING, State.LOADING)
+        this.pledgeButtonIsEnabled.assertValues(false, false)
+        this.loadingState.assertValues(State.LOADING)
 
         // - PaymentSheet presented
         this.vm.inputs.paymentSheetPresented(true)
-        this.pledgeButtonIsEnabled.assertValues(false, false, false, true)
-        this.loadingState.assertValues(State.LOADING, State.LOADING, State.DEFAULT)
+        this.pledgeButtonIsEnabled.assertValues(false, false, true)
+        this.loadingState.assertValues(State.LOADING, State.DEFAULT)
     }
 
     @Test
@@ -2093,13 +2093,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.newCardButtonClicked()
         this.presentPaymentSheet.assertValue("")
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-        this.pledgeButtonIsEnabled.assertValues(true, false, false)
-        this.loadingState.assertValues(State.LOADING, State.LOADING)
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.loadingState.assertValues(State.LOADING)
 
         // - PaymentSheet presented
         this.vm.inputs.paymentSheetPresented(true)
-        this.pledgeButtonIsEnabled.assertValues(true, false, false, true)
-        this.loadingState.assertValues(State.LOADING, State.LOADING, State.DEFAULT)
+        this.pledgeButtonIsEnabled.assertValues(true, false, true)
+        this.loadingState.assertValues(State.LOADING, State.DEFAULT)
     }
 
     @Test

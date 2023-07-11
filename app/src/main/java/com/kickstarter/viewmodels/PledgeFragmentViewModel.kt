@@ -53,6 +53,7 @@ import com.kickstarter.ui.viewholders.State
 import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCaseV2
 import com.stripe.android.StripeIntentResult
 import com.stripe.android.paymentsheet.PaymentSheetResult
+import io.reactivex.Notification
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
@@ -494,14 +495,18 @@ interface PledgeFragmentViewModel {
                 .map { it.project() }
 
             // Shipping rules section
-
-            val shippingRules = this.selectedReward
+            val shippingRules = BehaviorSubject.create<List<ShippingRule>>()
+            this.selectedReward
                 .distinctUntilChanged()
                 .filter { RewardUtils.isShippable(it) }
                 .switchMap {
                     this.apolloClient.getShippingRules(it).compose(neverErrorV2())
                 }
                 .map { it.shippingRules() }
+                .subscribe {
+                    shippingRules.onNext(it)
+                }
+                .addToDisposable(disposables)
 
             val pledgeReason = arguments()
                 .map { it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason }
@@ -1067,11 +1072,13 @@ interface PledgeFragmentViewModel {
                 }
                 .addToDisposable(disposables)
 
-            this.shippingRule
+            val summary: Observable<String> = this.shippingRule
                 .map { it.location()?.displayableName() }
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { requireNotNull(it) }
                 .distinctUntilChanged()
+
+            summary
                 .subscribe { this.shippingSummaryLocation.onNext(it) }
                 .addToDisposable(disposables)
 
@@ -1236,7 +1243,8 @@ interface PledgeFragmentViewModel {
                 .addToDisposable(disposables)
 
             // - Present PaymentSheet if user logged in, and add card button pressed
-            val shouldPresentPaymentSheet = this.newCardButtonClicked
+            val shouldPresentPaymentSheet = PublishSubject.create<Notification<String>>()
+            this.newCardButtonClicked
                 .withLatestFrom(project) { _, latestProject -> latestProject }
                 .switchMap {
                     this.apolloClient.createSetupIntent(it)
@@ -1249,8 +1257,11 @@ interface PledgeFragmentViewModel {
                             this.pledgeButtonIsEnabled.onNext(true)
                         }
                         .materialize()
-                        .share()
                 }
+                .subscribe {
+                    shouldPresentPaymentSheet.onNext(it)
+                }
+                .addToDisposable(disposables)
 
             shouldPresentPaymentSheet
                 .compose(valuesV2())

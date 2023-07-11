@@ -284,8 +284,9 @@ class SendThirdPartyEventUseCaseV2Test : KSRobolectricTestCase() {
 
         val project = ProjectFactory.project().toBuilder().sendThirdPartyEvents(true).build()
 
-        subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(),
-            eventName =  ThirdPartyEventValues.EventName.SCREEN_VIEW,
+        subscribeToThirdPartyEvent(
+            Observable.just(project), setUpEnvironment(),
+            eventName = ThirdPartyEventValues.EventName.SCREEN_VIEW,
             firebaseScreen = ThirdPartyEventValues.ScreenName.PROJECT.value,
             firebasePreviousScreen = ThirdPartyEventValues.ScreenName.DISCOVERY.value
         )

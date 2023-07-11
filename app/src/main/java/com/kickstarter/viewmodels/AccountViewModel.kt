@@ -1,18 +1,20 @@
 package com.kickstarter.viewmodels
 
 import UpdateUserCurrencyMutation
-import UserPrivacyQuery
-import androidx.annotation.NonNull
-import com.kickstarter.libs.ActivityViewModel
+import android.content.Intent
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
-import com.kickstarter.libs.rx.transformers.Transformers.values
+import com.kickstarter.libs.rx.transformers.Transformers.valuesV2
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.ui.activities.AccountActivity
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.models.UserPrivacy
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import type.CurrencyCode
 
 interface AccountViewModel {
@@ -45,7 +47,7 @@ interface AccountViewModel {
         fun success(): Observable<String>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<AccountActivity>(environment), Inputs, Outputs {
+    class AccountViewModel(val environment: Environment, private val intent: Intent? = null) : ViewModel(), Inputs, Outputs {
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -61,51 +63,55 @@ interface AccountViewModel {
 
         private val error = BehaviorSubject.create<String>()
 
-        private val apolloClient = requireNotNull(environment.apolloClient())
+        private val apolloClient = requireNotNull(environment.apolloClientV2())
+        private val disposables = CompositeDisposable()
 
         init {
 
             val userPrivacy = this.apolloClient.userPrivacy()
-                .compose(Transformers.neverError())
+                .compose(Transformers.neverErrorV2())
 
             userPrivacy
-                .map { it.me()?.chosenCurrency() }
-                .map { ObjectUtils.coalesce(it, CurrencyCode.USD.rawValue()) }
-                .compose(bindToLifecycle())
-                .subscribe { this.chosenCurrency.onNext(it) }
+                .map { it.chosenCurrency }
+                .subscribe { this.chosenCurrency.onNext(it.toString()) }
+                .addToDisposable(disposables)
 
             userPrivacy
-                .map { it?.me()?.email() }
+                .map { it.email }
                 .subscribe { this.email.onNext(it) }
+                .addToDisposable(disposables)
 
             userPrivacy
-                .map { it?.me()?.hasPassword() ?: false }
+                .map { it.hasPassword }
                 .subscribe { this.passwordRequiredContainerIsVisible.onNext(it) }
+                .addToDisposable(disposables)
 
             userPrivacy
-                .map { showEmailErrorImage(it) }
+                .map { showEmailErrorImage(it) ?: false }
                 .subscribe { this.showEmailErrorIcon.onNext(it) }
+                .addToDisposable(disposables)
 
             val updateCurrencyNotification = this.onSelectedCurrency
                 .compose(combineLatestPair<CurrencyCode, String>(this.chosenCurrency))
                 .filter { it.first.rawValue() != it.second }
                 .map<CurrencyCode> { it.first }
                 .switchMap { updateUserCurrency(it).materialize() }
-                .compose(bindToLifecycle())
                 .share()
 
             updateCurrencyNotification
-                .compose(values())
-                .map { it.updateUserProfile()?.user()?.chosenCurrency() }
+                .compose(valuesV2())
+                .map { it.updateUserProfile()?.user()?.chosenCurrency() ?: "" }
                 .filter { ObjectUtils.isNotNull(it) }
                 .subscribe {
                     this.chosenCurrency.onNext(it)
                     this.success.onNext(it)
                 }
+                .addToDisposable(disposables)
 
             updateCurrencyNotification
-                .compose(Transformers.errors())
-                .subscribe { this.error.onNext(it.localizedMessage) }
+                .compose(Transformers.errorsV2())
+                .subscribe { this.error.onNext(it?.localizedMessage ?: "") }
+                .addToDisposable(disposables)
         }
 
         override fun onSelectedCurrency(currencyCode: CurrencyCode) {
@@ -126,10 +132,10 @@ interface AccountViewModel {
 
         override fun success(): BehaviorSubject<String> = this.success
 
-        private fun showEmailErrorImage(userPrivacy: UserPrivacyQuery.Data?): Boolean? {
-            val creator = userPrivacy?.me()?.isCreator ?: false
-            val deliverable = userPrivacy?.me()?.isDeliverable ?: false
-            val isEmailVerified = userPrivacy?.me()?.isEmailVerified ?: false
+        private fun showEmailErrorImage(userPrivacy: UserPrivacy): Boolean {
+            val creator = userPrivacy.isCreator
+            val deliverable = userPrivacy.isDeliverable
+            val isEmailVerified = userPrivacy.isEmailVerified
 
             return if (!deliverable) {
                 return true
@@ -144,6 +150,17 @@ interface AccountViewModel {
             return this.apolloClient.updateUserCurrencyPreference(currencyCode)
                 .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
                 .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
+        }
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
+    }
+
+    class Factory(private val environment: Environment, private val intent: Intent? = null) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return AccountViewModel(environment, intent) as T
         }
     }
 }

@@ -32,6 +32,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
+import com.kickstarter.models.UserPrivacy
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.DiscoveryParams
@@ -126,12 +127,37 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.empty<String>()
     }
 
-    override fun userPrivacy(): io.reactivex.Observable<UserPrivacyQuery.Data> {
-        return io.reactivex.Observable.empty<UserPrivacyQuery.Data>()
+    override fun userPrivacy(): io.reactivex.Observable<UserPrivacy> {
+        return io.reactivex.Observable.empty<UserPrivacy>()
+    }
+
+    override fun updateUserCurrencyPreference(currency: CurrencyCode): io.reactivex.Observable<UpdateUserCurrencyMutation.Data> {
+        return io.reactivex.Observable.empty()
+    }
+
+    override fun getShippingRules(reward: Reward): io.reactivex.Observable<ShippingRulesEnvelope> {
+        return io.reactivex.Observable.empty()
+    }
+
+    override fun getProjectAddOns(
+        slug: String,
+        locationId: Location
+    ): io.reactivex.Observable<List<Reward>> {
+        return io.reactivex.Observable.empty()
+    }
+    override fun updateBacking(updateBackingData: UpdateBackingData): io.reactivex.Observable<Checkout> {
+        return io.reactivex.Observable.empty()
+    }
+    override fun createBacking(createBackingData: CreateBackingData): io.reactivex.Observable<Checkout> {
+        return io.reactivex.Observable.empty()
+    }
+
+    override fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): io.reactivex.Observable<TriggerCapiEventMutation.Data> {
+        return io.reactivex.Observable.empty()
     }
 
     override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): io.reactivex.Observable<TriggerThirdPartyEventMutation.Data> {
-        return io.reactivex.Observable.empty<TriggerThirdPartyEventMutation.Data>()
+        return io.reactivex.Observable.empty()
     }
 }
 

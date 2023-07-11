@@ -65,7 +65,7 @@ android {
 
         // Enable Multidex to support over 65K methods
         multiDexEnabled true
-        resConfigs 'de', 'es', 'en', 'fr', 'ja'
+        resourceConfigurations += ['de', 'es', 'en', 'fr', 'ja']
 
 
         def fabricProps = new Properties()
@@ -128,13 +128,13 @@ android {
 
     compileOptions {
         coreLibraryDesugaringEnabled true
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
         freeCompilerArgs = ['-Xjvm-default=all']
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     buildFeatures {

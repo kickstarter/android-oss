@@ -67,6 +67,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
     // to events, so ostensibly the view holder is being deallocated.
     if (!hasObservers()) {
       holder.lifecycleEvent(ActivityEvent.DESTROY);
+      holder.destroy();
     }
   }
 

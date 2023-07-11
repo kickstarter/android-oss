@@ -9,10 +9,10 @@ import java.lang.annotation.RetentionPolicy
 
 @Parcelize
 class ErrorEnvelope private constructor(
-    private val errorMessages: List<String>? = null,
+    private val errorMessages: List<String> = emptyList(),
     private val httpCode: Int = 0,
-    private val ksrCode: String? = null,
-    private val facebookUser: FacebookUser? = null
+    private val ksrCode: String = "",
+    private val facebookUser: FacebookUser? = null // - Re-evaluate on https://kickstarter.atlassian.net/browse/MBL-815 the default value for this specific field
 ) : Parcelable {
     fun errorMessages() = this.errorMessages
     fun httpCode() = this.httpCode
@@ -22,8 +22,8 @@ class ErrorEnvelope private constructor(
     @Parcelize
     class FacebookUser private constructor(
         private val id: Long = 0L,
-        private val name: String? = null,
-        private val email: String? = null
+        private val name: String = "",
+        private val email: String = ""
     ) : Parcelable {
         fun id() = this.id
         fun name() = this.name
@@ -32,12 +32,12 @@ class ErrorEnvelope private constructor(
         @Parcelize
         data class Builder(
             private var id: Long = 0L,
-            private var name: String? = null,
-            private var email: String? = null
+            private var name: String = "",
+            private var email: String = ""
         ) : Parcelable {
             fun id(id: Long?) = apply { this.id = id ?: 0L }
-            fun name(name: String?) = apply { this.name = name }
-            fun email(email: String?) = apply { this.email = email }
+            fun name(name: String?) = apply { this.name = name ?: "" }
+            fun email(email: String?) = apply { this.email = email ?: "" }
             fun build() = FacebookUser(
                 id = id,
                 name = name,
@@ -70,14 +70,14 @@ class ErrorEnvelope private constructor(
     }
 
     data class Builder(
-        private var errorMessages: List<String>? = null,
+        private var errorMessages: List<String> = emptyList(),
         private var httpCode: Int = 0,
-        private var ksrCode: String? = null,
+        private var ksrCode: String = "",
         private var facebookUser: FacebookUser? = null
     ) {
-        fun errorMessages(errorMessages: List<String?>?) = apply { this.errorMessages = errorMessages?.filterNotNull() }
+        fun errorMessages(errorMessages: List<String?>?) = apply { errorMessages?.let { this.errorMessages = it.filterNotNull() } ?: emptyList<String>() }
         fun httpCode(httpCode: Int?) = apply { this.httpCode = httpCode ?: 0 }
-        fun ksrCode(ksrCode: String?) = apply { this.ksrCode = ksrCode }
+        fun ksrCode(ksrCode: String?) = apply { this.ksrCode = ksrCode ?: "" }
         fun facebookUser(facebookUser: FacebookUser?) = apply { this.facebookUser = facebookUser }
         fun build() = ErrorEnvelope(
             errorMessages = errorMessages,

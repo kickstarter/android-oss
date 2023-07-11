@@ -1,6 +1,7 @@
 package com.kickstarter.models
 
 import com.kickstarter.R
+import com.kickstarter.libs.RefTag
 import com.kickstarter.mock.factories.IdFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
@@ -120,5 +121,21 @@ class StoredCardTest : TestCase() {
         val backingDataFromPaymentSheet = storedCard.getBackingData(ProjectFactory.project(), "", locationId = null, rewards = listOf(RewardFactory.reward()), cookieRefTag = null)
         assertEquals(backingDataFromPaymentSheet.setupIntentClientSecret, storedCardFromPaymentSheet.clientSetupId())
         assertEquals(backingDataFromPaymentSheet.paymentSourceId, null)
+    }
+
+    @Test
+    fun getBackingDataRefTagEmpty() {
+        val storedCard = StoredCardFactory.visa()
+        val backingData = storedCard.getBackingData(ProjectFactory.project(), "", locationId = null, rewards = listOf(RewardFactory.reward()), cookieRefTag = RefTag.Builder().build())
+
+        assertEquals(backingData.refTag, null)
+    }
+
+    @Test
+    fun getBackingDataRefTagWithValue() {
+        val storedCard = StoredCardFactory.visa()
+        val backingData = storedCard.getBackingData(ProjectFactory.project(), "", locationId = null, rewards = listOf(RewardFactory.reward()), cookieRefTag = RefTag.Builder().tag("Tag").build())
+
+        assertEquals(backingData.refTag, "Tag")
     }
 }

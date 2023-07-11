@@ -2,9 +2,11 @@ package com.kickstarter.ui.activities
 
 import android.os.Bundle
 import android.view.View
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
+import com.kickstarter.R
 import com.kickstarter.databinding.CreatorDashboardLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
@@ -14,6 +16,7 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.ui.adapters.CreatorDashboardAdapter
 import com.kickstarter.ui.adapters.CreatorDashboardBottomSheetAdapter
+import com.kickstarter.ui.compose.KSImageTextBanner
 import com.kickstarter.viewmodels.CreatorDashboardViewModel
 import rx.android.schedulers.AndroidSchedulers
 
@@ -27,6 +30,17 @@ class CreatorDashboardActivity : BaseActivity<CreatorDashboardViewModel.ViewMode
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = CreatorDashboardLayoutBinding.inflate(layoutInflater)
+        binding.creatorDashboardToolbarLayout.composeViewDeprecationHeader.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                KSImageTextBanner(
+                    imageResToDisplay = R.drawable.ic_alert,
+                    textResToDisplay = R.string.After_August_14_2023_this_Dashboard_feature_will_only_be_available_on_our_website,
+                    textColorRes = R.color.kds_white,
+                    backgroundColorRes = R.color.kds_alert
+                )
+            }
+        }
         setContentView(binding.root)
 
         adapter = CreatorDashboardAdapter(viewModel.inputs)

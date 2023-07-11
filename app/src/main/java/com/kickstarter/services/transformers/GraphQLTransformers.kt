@@ -22,6 +22,7 @@ import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.Update
 import com.kickstarter.models.Urls
 import com.kickstarter.models.User
+import com.kickstarter.models.UserPrivacy
 import com.kickstarter.models.Video
 import com.kickstarter.models.Web
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
@@ -31,6 +32,7 @@ import org.jetbrains.annotations.Nullable
 import org.joda.time.DateTime
 import type.CollaboratorPermission
 import type.CreditCardPaymentType
+import type.CurrencyCode
 import type.RewardType
 import type.ShippingPreference
 import java.nio.charset.Charset
@@ -409,7 +411,7 @@ fun categoryTransformer(categoryFragment: fragment.Category?): Category {
 /**
  * Transform the User GraphQL data structure into our own User data model
  * @param fragment.User user
- * @return Project
+ * @return User
  */
 fun userTransformer(user: fragment.User?): User {
     val id = decodeRelayId(user?.id()) ?: -1
@@ -417,7 +419,7 @@ fun userTransformer(user: fragment.User?): User {
     val avatar = Avatar.builder()
         .medium(user?.imageUrl())
         .build()
-    val chosenCurrency = user?.chosenCurrency()
+    val chosenCurrency = user?.chosenCurrency() ?: CurrencyCode.USD.rawValue()
 
     return User.builder()
         .id(id)
@@ -425,6 +427,24 @@ fun userTransformer(user: fragment.User?): User {
         .avatar(avatar)
         .chosenCurrency(chosenCurrency)
         .build()
+}
+
+/**
+ * Transform the UserPrivacy GraphQL data structure into our own UserPrivacy data model
+ * @param UserPrivacyQuery.Me userPrivacy
+ * @return UserPrivacy
+ */
+fun userPrivacyTransformer(userPrivacy: UserPrivacyQuery.Me): UserPrivacy {
+    val defaultCurrency = CurrencyCode.USD.rawValue()
+    return UserPrivacy(
+        name = userPrivacy.name(),
+        email = userPrivacy.email() ?: "",
+        hasPassword = userPrivacy.hasPassword() ?: false,
+        isCreator = userPrivacy.isCreator ?: false,
+        isDeliverable = userPrivacy.isDeliverable ?: false,
+        isEmailVerified = userPrivacy.isEmailVerified ?: false,
+        chosenCurrency = userPrivacy.chosenCurrency() ?: defaultCurrency
+    )
 }
 
 /**

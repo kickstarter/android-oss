@@ -2,18 +2,20 @@ package com.kickstarter.viewmodels.projectpage
 
 import android.util.Pair
 import androidx.annotation.NonNull
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.Project
 import com.kickstarter.models.ProjectFaq
 import com.kickstarter.models.User
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.fragments.projectpage.FrequentlyAskedQuestionFragment
-import rx.Observable
-import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 interface FrequentlyAskedQuestionViewModel {
 
@@ -28,7 +30,7 @@ interface FrequentlyAskedQuestionViewModel {
     interface Outputs {
         /** Emits the current list [ProjectFaq]. */
         fun projectFaqList(): Observable<List<ProjectFaq>>
-        fun bindEmptyState(): Observable<Void>
+        fun bindEmptyState(): Observable<Unit>
         /** Emits a boolean that determines if the message icon should be shown. */
         fun askQuestionButtonIsGone(): Observable<Boolean>
 
@@ -39,60 +41,63 @@ interface FrequentlyAskedQuestionViewModel {
         fun startMessagesActivity(): Observable<Project>
     }
 
-    class ViewModel(@NonNull val environment: Environment) :
-        FragmentViewModel<FrequentlyAskedQuestionFragment>(environment), Inputs, Outputs {
+    class FrequentlyAskedQuestionViewModel(val environment: Environment) :
+        ViewModel(), Inputs, Outputs {
 
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        private val projectDataInput = BehaviorSubject.create<ProjectData>()
-        private val askQuestionButtonClicked = PublishSubject.create<Void>()
+        private val projectDataInput = PublishSubject.create<ProjectData>()
+        private val askQuestionButtonClicked = PublishSubject.create<Unit>()
 
         private val askQuestionButtonIsGone = BehaviorSubject.create<Boolean>()
         private val startComposeMessageActivity = PublishSubject.create<Project>()
         private val startMessageActivity = PublishSubject.create<Project>()
 
         private val projectFaqList = BehaviorSubject.create<List<ProjectFaq>>()
-        private val bindEmptyState = BehaviorSubject.create<Void>()
+        private val bindEmptyState = BehaviorSubject.create<Unit>()
 
-        private val currentUser = requireNotNull(environment.currentUser())
+        private val currentUser = requireNotNull(environment.currentUserV2())
+
+        private val disposables = CompositeDisposable()
 
         init {
             val projectFaqList = projectDataInput
                 .map { it.project().projectFaqs() }
                 .filter { ObjectUtils.isNotNull(it) }
-                .map { requireNotNull(it) }
 
             projectFaqList
                 .filter { it.isNotEmpty() }
-                .compose(bindToLifecycle())
-                .subscribe { this.projectFaqList.onNext(it) }
+                .subscribe { it?.let { this.projectFaqList.onNext(it) } }
+                .addToDisposable(disposables)
 
             projectFaqList
                 .filter { it.isNullOrEmpty() }
-                .compose(bindToLifecycle())
-                .subscribe { this.bindEmptyState.onNext(null) }
+                .subscribe {
+                    this.bindEmptyState.onNext(Unit)
+                }
+                .addToDisposable(disposables)
 
             val project = projectDataInput
                 .map { it.project() }
 
             this.currentUser.observable()
                 .compose(Transformers.combineLatestPair(project))
-                .map { userIsLoggedOutOrProjectCreator(it) }
-                .compose(bindToLifecycle())
-                .subscribe(this.askQuestionButtonIsGone)
+                .map { userIsLoggedOutOrProjectCreator(Pair(it.first.getValue(), it.second)) }
+                .subscribe { this.askQuestionButtonIsGone.onNext(it) }
+                .addToDisposable(disposables)
 
             project
-                .compose(Transformers.takeWhen(this.askQuestionButtonClicked))
+                .compose(Transformers.takeWhenV2(this.askQuestionButtonClicked))
                 .filter { !it.isBacking() }
-                .compose(bindToLifecycle())
-                .subscribe(this.startComposeMessageActivity)
+                .subscribe { this.startComposeMessageActivity.onNext(it) }
+                .addToDisposable(disposables)
 
             project
-                .compose(Transformers.takeWhen(this.askQuestionButtonClicked))
+                .compose(Transformers.takeWhenV2(this.askQuestionButtonClicked))
                 .filter { it.isBacking() }
-                .compose(bindToLifecycle())
-                .subscribe(this.startMessageActivity)
+                .subscribe { this.startMessageActivity.onNext(it) }
+                .addToDisposable(disposables)
         }
 
         private fun userIsLoggedOutOrProjectCreator(userAndProject: Pair<User, Project>) =
@@ -102,7 +107,7 @@ interface FrequentlyAskedQuestionViewModel {
             .onNext(projectData)
 
         override fun askQuestionButtonClicked() {
-            this.askQuestionButtonClicked.onNext(null)
+            this.askQuestionButtonClicked.onNext(Unit)
         }
 
         @NonNull
@@ -117,6 +122,17 @@ interface FrequentlyAskedQuestionViewModel {
         @NonNull
         override fun projectFaqList(): Observable<List<ProjectFaq>> = this.projectFaqList
         @NonNull
-        override fun bindEmptyState(): Observable<Void> = this.bindEmptyState
+        override fun bindEmptyState(): Observable<Unit> = this.bindEmptyState
+
+        override fun onCleared() {
+            disposables.clear()
+            super.onCleared()
+        }
+    }
+
+    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return FrequentlyAskedQuestionViewModel(environment) as T
+        }
     }
 }

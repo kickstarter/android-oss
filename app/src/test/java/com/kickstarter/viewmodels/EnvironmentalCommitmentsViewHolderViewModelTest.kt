@@ -1,29 +1,32 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.Environment
 import com.kickstarter.libs.EnvironmentalCommitmentCategories
+import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.factories.ProjectEnvironmentalCommitmentFactory
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.After
 import org.junit.Test
-import rx.observers.TestSubscriber
 
 class EnvironmentalCommitmentsViewHolderViewModelTest : KSRobolectricTestCase() {
 
-    private lateinit var vm: EnvironmentalCommitmentsViewHolderViewModel.ViewModel
+    private lateinit var vm: EnvironmentalCommitmentsViewHolderViewModel.EnvironmentalCommitmentsViewHolderViewModel
 
     private val description = TestSubscriber.create<String>()
     private val category = TestSubscriber.create<Int>()
+    private val disposables = CompositeDisposable()
 
-    private fun setUpEnvironment(environment: Environment) {
-        this.vm = EnvironmentalCommitmentsViewHolderViewModel.ViewModel(environment)
+    private fun setUpEnvironment() {
+        this.vm = EnvironmentalCommitmentsViewHolderViewModel.EnvironmentalCommitmentsViewHolderViewModel()
 
-        this.vm.outputs.description().subscribe(this.description)
-        this.vm.outputs.category().subscribe(this.category)
+        this.vm.outputs.description().subscribe { this.description.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.category().subscribe { this.category.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
     fun testBindProjectEnvironmentalCommitment() {
-        setUpEnvironment(environment())
+        setUpEnvironment()
         val environmentalCommitments = ProjectEnvironmentalCommitmentFactory
             .getEnvironmentalCommitments()[0]
 
@@ -31,5 +34,10 @@ class EnvironmentalCommitmentsViewHolderViewModelTest : KSRobolectricTestCase() 
 
         this.description.assertValue(environmentalCommitments.description)
         this.category.assertValue(EnvironmentalCommitmentCategories.LONG_LASTING_DESIGN.title)
+    }
+
+    @After
+    fun cleanUp() {
+        disposables.clear()
     }
 }

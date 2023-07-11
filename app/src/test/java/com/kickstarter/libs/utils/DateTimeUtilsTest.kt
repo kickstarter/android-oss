@@ -131,7 +131,7 @@ class DateTimeUtilsTest : KSRobolectricTestCase() {
             )
         )
         assertEquals(
-            "17 déc. 2015 à 18:35:05",
+            "17 déc. 2015, 18:35:05",
             DateTimeUtils.mediumDateTime(
                 DateTime.parse("2015-12-17T18:35:05Z"),
                 DateTimeZone.UTC,

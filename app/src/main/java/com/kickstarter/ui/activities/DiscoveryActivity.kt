@@ -20,6 +20,7 @@ import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.InternalToolsType
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.TransitionUtils
@@ -69,7 +70,10 @@ class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
         drawerLayoutManager = LinearLayoutManager(this)
 
         binding.discoveryDrawerRecyclerView.layoutManager = drawerLayoutManager
-        drawerAdapter = DiscoveryDrawerAdapter(viewModel.inputs)
+        drawerAdapter = DiscoveryDrawerAdapter(
+            viewModel.inputs,
+            dashboardDrawerDeprecated = environment().featureFlagClient()?.getBoolean(FlagKey.ANDROID_CREATOR_DASHBOARD_DEPRECATION) ?: false
+        )
         binding.discoveryDrawerRecyclerView.adapter = drawerAdapter
 
         val viewPagerTitles = listOf(

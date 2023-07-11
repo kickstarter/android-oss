@@ -14,7 +14,11 @@ import com.kickstarter.mock.factories.ConfigFactory.config
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApiClientV2
 import com.kickstarter.mock.services.MockApolloClientV2
+import com.kickstarter.models.User
+import com.kickstarter.models.UserPrivacy
+import com.kickstarter.services.ApiException
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
+import com.kickstarter.services.apiresponses.ErrorEnvelope.Companion.builder
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.LoginReason
@@ -22,8 +26,10 @@ import com.kickstarter.viewmodels.LoginViewModel.LoginViewModel
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.After
 import org.junit.Test
+import retrofit2.Response
 
 class LoginViewModelTest : KSRobolectricTestCase() {
 
@@ -186,6 +192,42 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         this.loginSuccess.assertNoValues()
         this.tfaChallenge.assertValueCount(1)
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+    }
+
+    fun testLoginErrorNotExpected() {
+        val envelope = builder()
+            .errorMessages(null)
+            .httpCode(403)
+            .build()
+        val body = "".toResponseBody(null)
+        val response = Response.error<Observable<User>>(403, body)
+
+        val exception = ApiException(envelope, response)
+
+        val apiClient = object : MockApiClientV2() {
+            override fun login(email: String, password: String): Observable<AccessTokenEnvelope> {
+                return Observable.error(exception)
+            }
+        }
+
+        val mockConfig = MockCurrentConfigV2()
+        mockConfig.config(config())
+
+        val environment = environment().toBuilder()
+            .currentConfig2(mockConfig)
+            .apiClientV2(apiClient)
+            .build()
+
+        setUpEnvironment(environment, Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com"))
+
+        this.vm.inputs.email("hello@kickstarter.com")
+        this.vm.inputs.password("androidiscool")
+
+        this.vm.inputs.loginClick()
+
+        this.loginSuccess.assertNoValues()
+        this.genericLoginError.assertValue("")
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
@@ -354,14 +396,9 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         }
 
         val apolloClient = object : MockApolloClientV2() {
-            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+            override fun userPrivacy(): Observable<UserPrivacy> {
                 return Observable.just(
-                    UserPrivacyQuery.Data(
-                        UserPrivacyQuery.Me(
-                            "", user.name(),
-                            "hello@kickstarter.com", true, true, true, true, "USD"
-                        )
-                    )
+                    UserPrivacy(user.name(), "hello@kickstarter.com", true, true, true, true, "USD")
                 )
             }
         }

@@ -9,6 +9,7 @@ import com.kickstarter.models.Urls
 import com.kickstarter.models.Web
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
+import type.CreditCardPaymentType
 import type.CreditCardTypes
 
 object ProjectFactory {
@@ -127,6 +128,7 @@ object ProjectFactory {
             .build()
         return project
             .toBuilder()
+            .availableCardTypes(listOf(PaymentSourceFactory.visa().type() ?: CreditCardPaymentType.CREDIT_CARD.rawValue()))
             .canComment(true)
             .backing(backing)
             .isBacking(true)

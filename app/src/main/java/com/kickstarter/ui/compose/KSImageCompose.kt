@@ -20,6 +20,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.rememberAsyncImagePainter
 import com.kickstarter.R
+import com.kickstarter.ui.compose.designsystem.kds_support_300
 
 @Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
 @Composable

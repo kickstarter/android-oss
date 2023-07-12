@@ -72,6 +72,10 @@ class InternalToolsActivity : BaseActivity<InternalToolsViewModel>() {
 
         setupBuildInformationSection()
 
+        binding.designSystemButton.setOnClickListener {
+            designSystemButtonClicked()
+        }
+
         binding.playgroundButton.setOnClickListener {
             playgroundButtonClicked()
         }
@@ -113,6 +117,11 @@ class InternalToolsActivity : BaseActivity<InternalToolsViewModel>() {
     override fun onPause() {
         super.onPause()
         this.unregisterReceiver(resetDeviceIdReceiver)
+    }
+
+    private fun designSystemButtonClicked() {
+        val intent = Intent(this, DesignSystemActivity::class.java)
+        startActivity(intent)
     }
 
     private fun playgroundButtonClicked() {

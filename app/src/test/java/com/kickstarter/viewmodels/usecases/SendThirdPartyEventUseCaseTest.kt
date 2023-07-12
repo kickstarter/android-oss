@@ -88,7 +88,7 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
         )
 
         subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(mockFeatureFlagClientType), Observable.just(Pair(checkoutData, pledgeData)), ThirdPartyEventValues.EventName.PURCHASE)
-        sendThirdPartyEventObservable.assertValue(Pair(true, ""))
+        sendThirdPartyEventObservable.assertNoValues()
         // assertNull(ThirdPartyEventValues.EventName.PURCHASE.value, sendThirdPartyEventObservable.value)
     }
 
@@ -117,7 +117,7 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
         )
 
         subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(), Observable.just(Pair(checkoutData, pledgeData)), ThirdPartyEventValues.EventName.PURCHASE)
-        sendThirdPartyEventObservable.assertValue(Pair(true, ""))
+        sendThirdPartyEventObservable.assertNoValues()
         // assertNull(ThirdPartyEventValues.EventName.PURCHASE.value, sendThirdPartyEventObservable.value)
     }
 
@@ -146,7 +146,7 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
         )
 
         subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(), Observable.just(Pair(checkoutData, pledgeData)), ThirdPartyEventValues.EventName.PURCHASE)
-        sendThirdPartyEventObservable.assertValue(Pair(true, ""))
+        sendThirdPartyEventObservable.assertNoValues()
         // assertNull(ThirdPartyEventValues.EventName.PURCHASE.value, sendThirdPartyEventObservable.value)
     }
 

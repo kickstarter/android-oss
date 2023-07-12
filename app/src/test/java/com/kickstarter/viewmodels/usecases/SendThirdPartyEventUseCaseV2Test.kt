@@ -221,6 +221,10 @@ class SendThirdPartyEventUseCaseV2Test : KSRobolectricTestCase() {
         assertEquals(20.0, input.shipping)
         assertEquals("3", input.transactionId)
         assertEquals("7272", input.userId)
+
+        assertEquals(true, input.appData.androidConsent)
+        assertEquals(false, input.appData.iOSConsent)
+        assertEquals("a2", input.appData.extInfo.first())
     }
 
     @Test
@@ -269,6 +273,10 @@ class SendThirdPartyEventUseCaseV2Test : KSRobolectricTestCase() {
         assertEquals("7272", input.userId)
         assertEquals(ThirdPartyEventValues.ScreenName.PROJECT.value, input.firebaseScreen)
         assertEquals(ThirdPartyEventValues.ScreenName.DISCOVERY.value, input.firebasePreviousScreen)
+
+        assertEquals(true, input.appData.androidConsent)
+        assertEquals(false, input.appData.iOSConsent)
+        assertEquals("a2", input.appData.extInfo.first())
     }
 
     private fun subscribeToThirdPartyEvent(

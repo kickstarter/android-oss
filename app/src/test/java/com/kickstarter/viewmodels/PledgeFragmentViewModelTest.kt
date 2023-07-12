@@ -9,7 +9,6 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.MockSharedPreferences
 import com.kickstarter.libs.RefTag
-import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.EventName
@@ -18,7 +17,6 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.trimAllWhitespace
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockCurrentConfigV2
-import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.CheckoutFactory
 import com.kickstarter.mock.factories.ConfigFactory
@@ -42,7 +40,6 @@ import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.ui.ArgumentsKey
-import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
@@ -59,9 +56,7 @@ import junit.framework.TestCase
 import org.joda.time.DateTime
 import org.junit.After
 import org.junit.Test
-import org.mockito.Mockito
 import type.CreditCardTypes
-import type.TriggerCapiEventInput
 import java.math.RoundingMode
 import java.net.CookieManager
 import java.util.Collections
@@ -399,59 +394,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.cardsAndProject.assertValue(Pair(Collections.emptyList(), project))
         this.addedCard.assertValue(Pair(visa, project))
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
-    }
-
-    @Test
-    fun testSendCAPIEvent_whenLoggedIn_userHasNoCards() {
-        val mockCurrentUser = MockCurrentUserV2(UserFactory.user())
-        val project = ProjectFactory.project().toBuilder()
-            .deadline(this.deadline)
-            .sendMetaCapiEvents(true)
-            .build()
-
-        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
-        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)).thenReturn(true)
-
-        val mockFeatureFlagClient: MockFeatureFlagClient =
-            object : MockFeatureFlagClient() {
-                override fun getBoolean(FlagKey: FlagKey): Boolean {
-                    return true
-                }
-            }
-
-        val environment = environment()
-            .toBuilder()
-            .sharedPreferences(sharedPreferences)
-            .featureFlagClient(mockFeatureFlagClient)
-            .currentUserV2(mockCurrentUser)
-            .apolloClientV2(object : MockApolloClientV2() {
-                override fun getStoredCards(): Observable<List<StoredCard>> {
-                    return Observable.just(Collections.emptyList())
-                }
-
-                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
-                    return Observable.just(ShippingRulesEnvelopeFactory.shippingRules())
-                }
-
-                override fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): Observable<TriggerCapiEventMutation.Data> {
-                    val data = TriggerCapiEventMutation.Data(TriggerCapiEventMutation.TriggerCAPIEvent("", true))
-                    return Observable.just(data)
-                }
-            }).build()
-
-        setUpEnvironment(environment, project = project)
-
-        this.cardsAndProject.assertValue(Pair(Collections.emptyList(), project))
-        this.showSelectedCard.assertNoValues()
-
-        val visa = StoredCardFactory.visa()
-        this.vm.inputs.cardSaved(visa)
-        this.vm.inputs.addedCardPosition(0)
-
-        this.cardsAndProject.assertValue(Pair(Collections.emptyList(), project))
-        this.addedCard.assertValue(Pair(visa, project))
-        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
-        assertEquals(true, this.vm.onCAPIEventSent.value)
     }
 
     @Test
@@ -1662,56 +1604,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.pledgeButtonClicked()
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
-    }
-
-    @Test
-    fun testSendCAPEEvent_whenLoggedIn_selectCard() {
-        val mockCurrentUser = MockCurrentUserV2(UserFactory.user())
-        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
-        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)).thenReturn(true)
-
-        val testData = setUpBackedShippableRewardTestData()
-
-        val mockFeatureFlagClient: MockFeatureFlagClient =
-            object : MockFeatureFlagClient() {
-                override fun getBoolean(FlagKey: FlagKey): Boolean {
-                    return true
-                }
-            }
-
-        val storedCards = testData.storedCards
-
-        val environment = environment()
-            .toBuilder()
-            .sharedPreferences(sharedPreferences)
-            .featureFlagClient(mockFeatureFlagClient)
-            .currentUserV2(mockCurrentUser)
-            .apolloClientV2(object : MockApolloClientV2() {
-                override fun getStoredCards(): Observable<List<StoredCard>> {
-                    return Observable.just(storedCards)
-                }
-                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
-                    return Observable.just(ShippingRulesEnvelopeFactory.shippingRules())
-                }
-
-                override fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): Observable<TriggerCapiEventMutation.Data> {
-                    val data = TriggerCapiEventMutation.Data(TriggerCapiEventMutation.TriggerCAPIEvent("", true))
-                    return Observable.just(data)
-                }
-            })
-            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
-            .build()
-
-        val project = ProjectFactory.project().toBuilder()
-            .sendMetaCapiEvents(true)
-            .build()
-
-        setUpEnvironment(environment, RewardFactory.noReward(), project)
-
-        this.vm.inputs.cardSelected(StoredCardFactory.visa(), 0)
-
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
-        assertEquals(true, this.vm.onCAPIEventSent.value)
     }
 
     @Test

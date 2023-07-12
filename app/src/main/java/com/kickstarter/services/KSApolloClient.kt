@@ -58,13 +58,14 @@ import com.kickstarter.services.transformers.projectTransformer
 import com.kickstarter.services.transformers.rewardTransformer
 import com.kickstarter.services.transformers.shippingRulesListTransformer
 import com.kickstarter.services.transformers.updateTransformer
+import com.kickstarter.viewmodels.usecases.TPEventInputData
 import rx.Observable
 import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
+import type.AppDataInput
 import type.BackingState
 import type.CurrencyCode
 import type.PaymentTypes
-import type.TriggerCapiEventInput
 import type.TriggerThirdPartyEventInput
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
@@ -1214,28 +1215,26 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             return@defer ps
         }
     }
-
-    override fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): Observable<TriggerCapiEventMutation.Data> {
-        return Observable.defer {
-            val ps = PublishSubject.create<TriggerCapiEventMutation.Data>()
-            service.mutate(TriggerCapiEventMutation.builder().triggerCapiEventInput(triggerCapiEventInput).build())
-                .enqueue(object : ApolloCall.Callback<TriggerCapiEventMutation.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
-                    }
-
-                    override fun onResponse(response: Response<TriggerCapiEventMutation.Data>) {
-                        ps.onNext(response.data)
-                        ps.onCompleted()
-                    }
-                })
-            return@defer ps
-        }
-    }
-    override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<Pair<Boolean, String>> {
+    override fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>> {
         return Observable.defer {
             val ps = PublishSubject.create<Pair<Boolean, String>>()
-            service.mutate(TriggerThirdPartyEventMutation.builder().triggerThirdPartyEventInput(triggerThirdPartyEventInput).build())
+            // TODO: still missing here two fields on graphQL, might need to update schema again
+            val graphAppData = AppDataInput.builder()
+                .extinfo(eventInput.appData.extInfo)
+                .build()
+
+            val graphInput =
+                TriggerThirdPartyEventInput.builder()
+                    .eventName(eventInput.eventName)
+                    .deviceId(eventInput.deviceId)
+                    .firebaseScreen(eventInput.firebaseScreen)
+                    .firebasePreviousScreen(eventInput.firebasePreviousScreen)
+                    .projectId(eventInput.projectId)
+                    .pledgeAmount(eventInput.pledgeAmount)
+                    .shipping(eventInput.shipping)
+                    .build()
+
+            service.mutate(TriggerThirdPartyEventMutation.builder().triggerThirdPartyEventInput(graphInput).build())
                 .enqueue(object : ApolloCall.Callback<TriggerThirdPartyEventMutation.Data>() {
                     override fun onFailure(exception: ApolloException) {
                         ps.onError(exception)

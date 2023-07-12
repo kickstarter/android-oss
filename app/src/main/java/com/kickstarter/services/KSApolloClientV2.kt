@@ -23,13 +23,14 @@ import com.kickstarter.services.transformers.projectTransformer
 import com.kickstarter.services.transformers.rewardTransformer
 import com.kickstarter.services.transformers.shippingRulesListTransformer
 import com.kickstarter.services.transformers.userPrivacyTransformer
+import com.kickstarter.viewmodels.usecases.TPEventInputData
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import type.AppDataInput
 import type.CurrencyCode
 import type.FlaggingKind
 import type.PaymentTypes
-import type.TriggerCapiEventInput
 import type.TriggerThirdPartyEventInput
 
 interface ApolloClientTypeV2 {
@@ -51,8 +52,7 @@ interface ApolloClientTypeV2 {
     fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>>
     fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout>
     fun createBacking(createBackingData: CreateBackingData): Observable<Checkout>
-    fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): Observable<TriggerCapiEventMutation.Data>
-    fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<Pair<Boolean, String>>
+    fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>>
 }
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
@@ -642,32 +642,28 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
         }
     }
 
-    override fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): Observable<TriggerCapiEventMutation.Data> {
-        return Observable.defer {
-            val ps = PublishSubject.create<TriggerCapiEventMutation.Data>()
-            service.mutate(TriggerCapiEventMutation.builder().triggerCapiEventInput(triggerCapiEventInput).build())
-                .enqueue(object : ApolloCall.Callback<TriggerCapiEventMutation.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
-                    }
-
-                    override fun onResponse(response: Response<TriggerCapiEventMutation.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
-                        } else {
-                            response.data?.let { ps.onNext(it) }
-                        }
-                        ps.onComplete()
-                    }
-                })
-            return@defer ps
-        }
-    }
-
-    override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<Pair<Boolean, String>> {
+    override fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>> {
         return Observable.defer {
             val ps = PublishSubject.create<Pair<Boolean, String>>()
-            service.mutate(TriggerThirdPartyEventMutation.builder().triggerThirdPartyEventInput(triggerThirdPartyEventInput).build())
+
+            // TODO: still missing here two boolean fields on graphQL, might need to update schema again
+            val graphAppData = AppDataInput.builder()
+                .extinfo(eventInput.appData.extInfo)
+                .build()
+
+            val graphInput =
+                TriggerThirdPartyEventInput.builder()
+                    .eventName(eventInput.eventName)
+                    .deviceId(eventInput.deviceId)
+                    .firebaseScreen(eventInput.firebaseScreen)
+                    .firebasePreviousScreen(eventInput.firebasePreviousScreen)
+                    .projectId(eventInput.projectId)
+                    .pledgeAmount(eventInput.pledgeAmount)
+                    .shipping(eventInput.shipping)
+                    .appData(graphAppData)
+                    .build()
+
+            service.mutate(TriggerThirdPartyEventMutation.builder().triggerThirdPartyEventInput(graphInput).build())
                 .enqueue(object : ApolloCall.Callback<TriggerThirdPartyEventMutation.Data>() {
                     override fun onFailure(exception: ApolloException) {
                         ps.onError(exception)

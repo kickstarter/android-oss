@@ -22,6 +22,7 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import com.kickstarter.viewmodels.projectpage.PrelaunchProjectViewModel
+import com.kickstarter.viewmodels.usecases.TPEventInputData
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
@@ -33,7 +34,6 @@ import org.junit.Test
 import org.mockito.Mockito
 import retrofit2.HttpException
 import rx.subjects.BehaviorSubject
-import type.TriggerThirdPartyEventInput
 import java.util.concurrent.TimeUnit
 
 class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
@@ -94,7 +94,7 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
                 .just(project.toBuilder().isStarred(false).build())
         }
 
-        override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<Pair<Boolean, String>> {
+        override fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>> {
             return Observable.just(Pair(true, ""))
         }
     }

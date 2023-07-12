@@ -45,10 +45,9 @@ import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
+import com.kickstarter.viewmodels.usecases.TPEventInputData
 import rx.Observable
 import type.CurrencyCode
-import type.TriggerCapiEventInput
-import type.TriggerThirdPartyEventInput
 import java.util.Collections
 
 open class MockApolloClientV2 : ApolloClientTypeV2 {
@@ -152,12 +151,7 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     override fun createBacking(createBackingData: CreateBackingData): io.reactivex.Observable<Checkout> {
         return io.reactivex.Observable.empty()
     }
-
-    override fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): io.reactivex.Observable<TriggerCapiEventMutation.Data> {
-        return io.reactivex.Observable.empty()
-    }
-
-    override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): io.reactivex.Observable<Pair<Boolean, String>> {
+    override fun triggerThirdPartyEvent(eventInput: TPEventInputData): io.reactivex.Observable<Pair<Boolean, String>> {
         return io.reactivex.Observable.empty()
     }
 }
@@ -397,19 +391,7 @@ open class MockApolloClient : ApolloClientType {
         )
     }
 
-    override fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): Observable<TriggerCapiEventMutation.Data> {
-        return Observable.just(
-            TriggerCapiEventMutation.Data(
-                TriggerCapiEventMutation
-                    .TriggerCAPIEvent(
-                        "",
-                        true
-                    )
-            )
-        )
-    }
-
-    override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<Pair<Boolean, String>> {
+    override fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>> {
         return Observable.just(
 //            TriggerThirdPartyEventMutation.Data(
 //                TriggerThirdPartyEventMutation

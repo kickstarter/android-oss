@@ -20,7 +20,7 @@ import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
-import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCase
+import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCaseV2
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
@@ -228,18 +228,19 @@ interface PrelaunchProjectViewModel {
                     this.showSavedPrompt.onNext(Unit)
                 }.addToDisposable(disposables)
 
-            val previousScreen =
-                this.intent
-                    .map { KsOptional.of(it.getStringExtra(IntentKey.PREVIOUS_SCREEN) ?: "") }
+            var previousScreen = ""
+            this.intent
+                .subscribe { previousScreen = it.getStringExtra(IntentKey.PREVIOUS_SCREEN) ?: "" }
+                .addToDisposable(disposables)
 
-            SendThirdPartyEventUseCase(sharedPreferences, ffClient)
-                .sendThirdPartyEventV2(
+            SendThirdPartyEventUseCaseV2(sharedPreferences, ffClient)
+                .sendThirdPartyEvent(
                     loadedProject,
                     apolloClient,
-                    currentUser,
-                    ThirdPartyEventValues.EventName.SCREEN_VIEW,
-                    ThirdPartyEventValues.ScreenName.PRELAUNCH,
-                    previousScreen,
+                    currentUser = currentUser,
+                    eventName = ThirdPartyEventValues.EventName.SCREEN_VIEW,
+                    firebaseScreen = ThirdPartyEventValues.ScreenName.PRELAUNCH.value,
+                    firebasePreviousScreen = previousScreen,
                 )
                 .subscribe {
                     onThirdPartyEventSent.onNext(it.first)

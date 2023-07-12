@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -66,8 +65,6 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.KsTooltip
-import com.kickstarter.ui.compose.designsystem.kds_black
-import com.kickstarter.ui.toolbars.compose.ToolbarIconButton
 import com.kickstarter.ui.toolbars.compose.ToolbarIconToggleButton
 import com.kickstarter.ui.toolbars.compose.TopToolBar
 

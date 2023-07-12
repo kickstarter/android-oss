@@ -43,6 +43,7 @@ android.applicationVariants.all { variant ->
                          '**/*Dialog*.*',
                          '**/ui/*.*',
                          '**/ui/compose/*.*',
+                         '**/ui/compose/designsystem/*.*',
                          '**/ui/views/*.*',
                          '**/ui/adapters/*.*',
                          '**/ui/adapters/data/*.*',

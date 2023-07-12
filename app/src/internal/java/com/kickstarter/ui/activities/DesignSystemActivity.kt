@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,9 +27,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
 import com.kickstarter.ui.compose.designsystem.KSAlertDialogNoHeadline
 import com.kickstarter.ui.compose.designsystem.KSCheckbox
@@ -61,14 +66,20 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.KsTooltip
+import com.kickstarter.ui.compose.designsystem.kds_black
+import com.kickstarter.ui.toolbars.compose.ToolbarIconButton
+import com.kickstarter.ui.toolbars.compose.ToolbarIconToggleButton
+import com.kickstarter.ui.toolbars.compose.TopToolBar
 
 class DesignSystemActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            KSTheme {
-                DesignSystemView()
+            var darkMode = remember { mutableStateOf(false) }
+            KSTheme(useDarkTheme = darkMode.value) {
+
+                DesignSystemView(darkMode = darkMode)
             }
         }
     }
@@ -78,57 +89,70 @@ class DesignSystemActivity : ComponentActivity() {
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true)
 @Composable
 fun DesignSystemViewPreview() {
-    KSTheme {
-        DesignSystemView()
+    var darkMode = remember { mutableStateOf(false) }
+    KSTheme(useDarkTheme = darkMode.value) {
+
+        DesignSystemView(darkMode = darkMode)
     }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun DesignSystemView() {
+fun DesignSystemView(darkMode: MutableState<Boolean>) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    LazyColumn(
-        Modifier
-            .background(color = colors.kds_support_100)
-            .fillMaxSize()
-            .clickable(
-                interactionSource = MutableInteractionSource(),
-                indication = null
-            ) { keyboardController?.hide() },
-        contentPadding = PaddingValues(8.dp)
-    ) {
-        item {
-            AlertsVisuals()
+    Column {
+        TopToolBar(
+            title = "Design System",
+            right = {
+                ToolbarIconToggleButton(
+                    icon = ImageVector.vectorResource(id = R.drawable.ic_sun),
+                    clickAction = { darkMode.value = !darkMode.value }
+                )
+            }
+        )
+        LazyColumn(
+            Modifier
+                .background(color = colors.kds_support_100)
+                .fillMaxSize()
+                .clickable(
+                    interactionSource = MutableInteractionSource(),
+                    indication = null
+                ) { keyboardController?.hide() },
+            contentPadding = PaddingValues(8.dp)
+        ) {
+            item {
+                AlertsVisuals()
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            ButtonsVisuals()
+                ButtonsVisuals()
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            BadgesVisuals()
+                BadgesVisuals()
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-            ControlsVisuals()
+                ControlsVisuals()
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-            InputsVisuals()
+                InputsVisuals()
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-            ProgressIndicatorsVisuals()
+                ProgressIndicatorsVisuals()
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-            FootersVisuals()
+                FootersVisuals()
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-            TypographyVisuals()
+                TypographyVisuals()
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
+            }
         }
     }
 }
@@ -136,7 +160,7 @@ fun DesignSystemView() {
 @Composable
 fun AlertsVisuals() {
     Column {
-        Text(text = "Alerts", style = typography.title1Bold)
+        Text(text = "Alerts", style = typography.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -230,7 +254,7 @@ fun AlertsVisuals() {
 @Composable
 fun ButtonsVisuals() {
     Column {
-        Text(text = "Buttons", style = typography.title1Bold)
+        Text(text = "Buttons", style = typography.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -287,7 +311,7 @@ fun ButtonsVisuals() {
 @Composable
 fun BadgesVisuals() {
     Column {
-        Text(text = "Badges", style = typography.title1Bold)
+        Text(text = "Badges", style = typography.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -302,7 +326,7 @@ fun BadgesVisuals() {
 @Composable
 fun ControlsVisuals() {
     Column {
-        Text(text = "Controls", style = typography.title1Bold)
+        Text(text = "Controls", style = typography.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -417,7 +441,7 @@ fun ControlsVisuals() {
 @Composable
 fun InputsVisuals() {
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text(text = "Inputs", style = typography.title1Bold)
+        Text(text = "Inputs", style = typography.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -441,7 +465,11 @@ fun InputsVisuals() {
 @Composable
 fun ProgressIndicatorsVisuals() {
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text(text = "Progress Indicators", style = typography.title1Bold)
+        Text(
+            text = "Progress Indicators",
+            style = typography.title1Bold,
+            color = colors.kds_support_700
+        )
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -475,7 +503,7 @@ fun ProgressIndicatorsVisuals() {
 @Composable
 fun FootersVisuals() {
     Column {
-        Text(text = "Footers", style = typography.title1Bold)
+        Text(text = "Footers", style = typography.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -495,40 +523,60 @@ fun FootersVisuals() {
 @Composable
 fun TypographyVisuals() {
     Column {
-        Text(text = "Typography", style = typography.title1Bold)
+        Text(text = "Typography", style = typography.title1Bold, color = colors.kds_support_700)
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Text(text = "Title 1", style = typography.title1)
-        Text(text = "Title 1 Bold", style = typography.title1Bold)
+        Text(text = "Title 1", style = typography.title1, color = colors.kds_support_700)
+        Text(text = "Title 1 Bold", style = typography.title1Bold, color = colors.kds_support_700)
 
-        Text(text = "Title 2", style = typography.title2)
-        Text(text = "Title 2 Bold", style = typography.title2Bold)
+        Text(text = "Title 2", style = typography.title2, color = colors.kds_support_700)
+        Text(text = "Title 2 Bold", style = typography.title2Bold, color = colors.kds_support_700)
 
-        Text(text = "Title 3", style = typography.title3)
-        Text(text = "Title  Bold", style = typography.title3Bold)
+        Text(text = "Title 3", style = typography.title3, color = colors.kds_support_700)
+        Text(text = "Title  Bold", style = typography.title3Bold, color = colors.kds_support_700)
 
-        Text(text = "Headline", style = typography.headline)
-        Text(text = "Body", style = typography.body)
+        Text(text = "Headline", style = typography.headline, color = colors.kds_support_700)
+        Text(text = "Body", style = typography.body, color = colors.kds_support_700)
 
-        Text(text = "Callout", style = typography.callout)
-        Text(text = "Callout Medium", style = typography.calloutMedium)
+        Text(text = "Callout", style = typography.callout, color = colors.kds_support_700)
+        Text(
+            text = "Callout Medium",
+            style = typography.calloutMedium,
+            color = colors.kds_support_700
+        )
 
-        Text(text = "Subheadline", style = typography.subheadline)
-        Text(text = "Subheadline Medium", style = typography.subheadlineMedium)
+        Text(text = "Subheadline", style = typography.subheadline, color = colors.kds_support_700)
+        Text(
+            text = "Subheadline Medium",
+            style = typography.subheadlineMedium,
+            color = colors.kds_support_700
+        )
 
         Text(text = "BUTTON TEXT", style = typography.buttonText)
 
-        Text(text = "Body 2", style = typography.body2)
-        Text(text = "Body 2 Medium", style = typography.body2Medium)
+        Text(text = "Body 2", style = typography.body2, color = colors.kds_support_700)
+        Text(text = "Body 2 Medium", style = typography.body2Medium, color = colors.kds_support_700)
 
-        Text(text = "Footnote", style = typography.footnote)
-        Text(text = "Footnote Medium", style = typography.footnoteMedium)
+        Text(text = "Footnote", style = typography.footnote, color = colors.kds_support_700)
+        Text(
+            text = "Footnote Medium",
+            style = typography.footnoteMedium,
+            color = colors.kds_support_700
+        )
 
-        Text(text = "Caption 1", style = typography.caption1)
-        Text(text = "Caption 1 Medium", style = typography.caption1Medium)
+        Text(text = "Caption 1", style = typography.caption1, color = colors.kds_support_700)
+        Text(
+            text = "Caption 1 Medium",
+            style = typography.caption1Medium,
+            color = colors.kds_support_700
+        )
 
-        Text(text = "Caption 2", style = typography.caption2)
-        Text(text = "Caption 2 Medium", style = typography.caption2Medium)
+        Text(text = "Caption 2", style = typography.caption2, color = colors.kds_support_700)
+        Text(
+            text = "Caption 2 Medium",
+            style = typography.caption2Medium,
+            color = colors.kds_support_700
+        )
     }
 }

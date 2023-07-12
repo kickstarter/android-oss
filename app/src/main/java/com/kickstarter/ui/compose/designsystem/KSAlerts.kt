@@ -216,7 +216,12 @@ fun KSDialogVisual(
         }
 
         // Body
-        Text(modifier = Modifier.padding(end = 8.dp), text = bodyText, style = bodyStyle)
+        Text(
+            modifier = Modifier.padding(end = 8.dp),
+            text = bodyText,
+            style = bodyStyle,
+            color = colors.kds_support_700
+        )
 
         Row(
             Modifier

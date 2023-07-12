@@ -27,6 +27,10 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.kickstarter.R
+import com.kickstarter.ui.compose.designsystem.kds_create_700
+import com.kickstarter.ui.compose.designsystem.kds_support_400
+import com.kickstarter.ui.compose.designsystem.kds_support_700
+import com.kickstarter.ui.compose.designsystem.kds_white
 
 @Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
 @Composable

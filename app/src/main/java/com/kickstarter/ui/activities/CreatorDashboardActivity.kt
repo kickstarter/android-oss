@@ -16,7 +16,7 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.ui.adapters.CreatorDashboardAdapter
 import com.kickstarter.ui.adapters.CreatorDashboardBottomSheetAdapter
-import com.kickstarter.ui.compose.KSImageTextBanner
+import com.kickstarter.ui.views.compose.KSImageTextBanner
 import com.kickstarter.viewmodels.CreatorDashboardViewModel
 import rx.android.schedulers.AndroidSchedulers
 

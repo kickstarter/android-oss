@@ -42,6 +42,7 @@
   <string name="Instructions">Instructions</string>
   <string name="internal_tools_internal_tools">Internal tools</string>
   <string name="internal_tools_playground">Playground</string>
+  <string name="internal_tools_design_system">Design System</string>
   <string name="internal_tools_push_notifications">Push notifications</string>
   <string name="Logged_Out">Logged Out</string>
   <string name="mailto">mailto:</string>

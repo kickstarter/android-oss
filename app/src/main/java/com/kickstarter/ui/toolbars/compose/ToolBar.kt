@@ -1,4 +1,4 @@
-package com.kickstarter.ui.compose
+package com.kickstarter.ui.toolbars.compose
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.material.Icon
@@ -20,6 +20,8 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
+import com.kickstarter.ui.compose.designsystem.kds_black
+import com.kickstarter.ui.compose.designsystem.kds_celebrate_700
 
 @Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
 @Composable

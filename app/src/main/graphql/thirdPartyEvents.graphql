@@ -1,9 +1,3 @@
-mutation triggerCapiEvent  ($triggerCapiEventInput: TriggerCapiEventInput!) {
-    triggerCAPIEvent(input: $triggerCapiEventInput) {
-        success
-    }
-}
-
 mutation triggerThirdPartyEvent  ($triggerThirdPartyEventInput: TriggerThirdPartyEventInput!) {
     triggerThirdPartyEvent(input: $triggerThirdPartyEventInput) {
         message

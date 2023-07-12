@@ -66,6 +66,7 @@ import type.AppDataInput
 import type.BackingState
 import type.CurrencyCode
 import type.PaymentTypes
+import type.ThirdPartyEventItemInput
 import type.TriggerThirdPartyEventInput
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
@@ -1225,8 +1226,18 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                 .extinfo(eventInput.appData.extInfo)
                 .build()
 
+            val items: List<ThirdPartyEventItemInput> = eventInput.items
+                .map {
+                    ThirdPartyEventItemInput.builder()
+                        .itemId(it.itemId)
+                        .itemName(it.itemName)
+                        .price(it.price)
+                        .build()
+                }
+
             val graphInput =
                 TriggerThirdPartyEventInput.builder()
+                    .userId(eventInput.userId)
                     .eventName(eventInput.eventName)
                     .deviceId(eventInput.deviceId)
                     .firebaseScreen(eventInput.firebaseScreen)
@@ -1235,6 +1246,8 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     .pledgeAmount(eventInput.pledgeAmount)
                     .shipping(eventInput.shipping)
                     .appData(graphAppData)
+                    .items(items)
+                    .transactionId(eventInput.transactionId)
                     .build()
 
             service.mutate(TriggerThirdPartyEventMutation.builder().triggerThirdPartyEventInput(graphInput).build())

@@ -275,7 +275,7 @@ fun KSFacebookButton(
             backgroundColor = colors.facebook_blue,
             imageId = R.drawable.com_facebook_button_icon,
             text = text,
-            textColor = colors.kds_white
+            textColor = kds_white
         )
     }
 }
@@ -289,7 +289,7 @@ fun KSGooglePayButton(
         KSIconButton(
             onClickAction = onClickAction,
             isEnabled = isEnabled,
-            backgroundColor = colors.kds_black,
+            backgroundColor = kds_black,
             imageId = R.drawable.googlepay_button_content
         )
     }

@@ -1234,6 +1234,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     .projectId(eventInput.projectId)
                     .pledgeAmount(eventInput.pledgeAmount)
                     .shipping(eventInput.shipping)
+                    .appData(graphAppData)
                     .build()
 
             service.mutate(TriggerThirdPartyEventMutation.builder().triggerThirdPartyEventInput(graphInput).build())

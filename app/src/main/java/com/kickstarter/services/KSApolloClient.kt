@@ -1218,8 +1218,10 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
     override fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>> {
         return Observable.defer {
             val ps = PublishSubject.create<Pair<Boolean, String>>()
-            // TODO: still missing here two fields on graphQL, might need to update schema again
+
             val graphAppData = AppDataInput.builder()
+                .advertiserTrackingEnabled(eventInput.appData.iOSConsent)
+                .applicationTrackingEnabled(eventInput.appData.androidConsent)
                 .extinfo(eventInput.appData.extInfo)
                 .build()
 

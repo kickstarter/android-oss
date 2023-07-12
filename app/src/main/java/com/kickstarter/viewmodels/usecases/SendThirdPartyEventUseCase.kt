@@ -86,25 +86,24 @@ class SendThirdPartyEventUseCase(
         apolloClient: ApolloClientType,
         currentUser: CurrentUserType,
         eventName: ThirdPartyEventValues.EventName,
-        firebaseScreen: ThirdPartyEventValues.ScreenName? = null,
-        firebasePreviousScreen: Observable<String?> = Observable.just(""),
+        firebaseScreen: String = "",
+        firebasePreviousScreen: String = "",
         checkoutAndPledgeData: Observable<Pair<CheckoutData, PledgeData>?> = Observable.just(Pair(null, null)),
-    ): Observable<Pair<TriggerThirdPartyEventMutation.Data, TriggerThirdPartyEventInput>> {
+    ): Observable<Pair<Boolean, String>> {
 
         return project
             .filter { it.sendThirdPartyEvents() }
             .filter { canSendEventFlag }
             .compose(Transformers.combineLatestPair(currentUser.observable()))
             .compose(Transformers.combineLatestPair(checkoutAndPledgeData))
-            .compose(Transformers.combineLatestPair(firebasePreviousScreen))
             .map {
                 val eventInput = TriggerThirdPartyEventInput.builder()
                     .eventName(eventName.value)
-                    .userId(it.first.first.second.id().toString())
+                    .userId(it.first.second?.id().toString())
                     .deviceId(FirebaseHelper.identifier)
-                    .projectId(encodeRelayId(it.first.first.first))
+                    .projectId(encodeRelayId(it.first.first))
 
-                it.first.second?.second?.let { pledgeData ->
+                it.second?.second?.let { pledgeData ->
                     val rewardsAndAddons = mutableListOf(pledgeData.reward())
                     pledgeData.addOns()?.forEach { addon ->
                         rewardsAndAddons.add(addon)
@@ -121,24 +120,22 @@ class SendThirdPartyEventUseCase(
                     )
                 }
 
-                it.first.second?.first?.let { checkoutData ->
+                it.second?.first?.let { checkoutData ->
                     eventInput.apply {
-                        pledgeAmount(checkoutData.amount() - checkoutData.shippingAmount())
+                        pledgeAmount(checkoutData.amount())
                         shipping(checkoutData.shippingAmount())
                         transactionId(checkoutData.id().toString())
                     }
                 }
 
-                firebaseScreen?.let { screen -> eventInput.firebaseScreen(screen.value) }
-                it.second?.let { previousScreenName ->
-                    eventInput.firebasePreviousScreen(previousScreenName)
-                }
+                firebaseScreen?.let { screen -> eventInput.firebaseScreen(screen) }
+                firebasePreviousScreen.let { previousScreen -> eventInput.firebasePreviousScreen(previousScreen) }
                 eventInput.build()
             }
             .switchMap { input ->
                 apolloClient.triggerThirdPartyEvent(
-                    input,
-                ).map { Pair(it, input) }
+                    input
+                )
                     .compose(Transformers.neverError()).share()
             }
     }
@@ -151,7 +148,7 @@ class SendThirdPartyEventUseCase(
         firebaseScreen: ThirdPartyEventValues.ScreenName? = null,
         firebasePreviousScreen: io.reactivex.Observable<KsOptional<String>> = io.reactivex.Observable.just(KsOptional.empty()),
         checkoutAndPledgeData: io.reactivex.Observable<KsOptional<Pair<CheckoutData, PledgeData>>> = io.reactivex.Observable.just(KsOptional.empty()),
-    ): io.reactivex.Observable<Pair<TriggerThirdPartyEventMutation.Data, TriggerThirdPartyEventInput>> {
+    ): io.reactivex.Observable<Pair<Boolean, String>> {
 
         return project
             .filter { it.sendThirdPartyEvents() ?: false }
@@ -199,8 +196,8 @@ class SendThirdPartyEventUseCase(
             }
             .switchMap { input ->
                 apolloClient.triggerThirdPartyEvent(
-                    input,
-                ).map { Pair(it, input) }
+                    input
+                )
                     .compose(Transformers.neverErrorV2())
             }
     }

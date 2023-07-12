@@ -266,7 +266,7 @@ interface ThanksViewModel {
                 Observable.combineLatest<CheckoutData, PledgeData, Pair<CheckoutData, PledgeData>>(
                     checkoutData,
                     pledgeData
-                ) { a, b -> Pair.create(a, b) }
+                ) { a, b -> Pair(a, b) }
 
             checkoutAndPledgeData
                 .compose(bindToLifecycle())
@@ -288,7 +288,7 @@ interface ThanksViewModel {
                 .compose(Transformers.neverError())
                 .compose(bindToLifecycle())
                 .subscribe {
-                    onThirdPartyEventSent.onNext(it.first.triggerThirdPartyEvent()?.success() ?: false)
+                    onThirdPartyEventSent.onNext(it.first)
                 }
 
             checkoutAndPledgeData

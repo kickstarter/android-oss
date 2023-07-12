@@ -519,9 +519,9 @@ interface ProjectPageViewModel {
                 projectOnDeepLinkChangeSave
             )
 
-            val previousScreen =
-                intent()
-                    .map { it.getStringExtra(IntentKey.PREVIOUS_SCREEN) }
+            var previousScreen = ""
+            intent()
+                .map { previousScreen = it.getStringExtra(IntentKey.PREVIOUS_SCREEN) ?: "" }
 
             SendThirdPartyEventUseCase(sharedPreferences, ffClient)
                 .sendThirdPartyEvent(
@@ -529,13 +529,13 @@ interface ProjectPageViewModel {
                     apolloClient,
                     currentUser,
                     ThirdPartyEventValues.EventName.SCREEN_VIEW,
-                    ThirdPartyEventValues.ScreenName.PROJECT,
+                    ThirdPartyEventValues.ScreenName.PROJECT.value,
                     previousScreen
                 )
                 .compose(neverError())
                 .compose(bindToLifecycle())
                 .subscribe {
-                    onThirdPartyEventSent.onNext(it.first.triggerThirdPartyEvent()?.success() ?: false)
+                    onThirdPartyEventSent.onNext(it.first)
                 }
 
             val projectSavedStatus = Observable.merge(projectOnUserChangeSave, savedProjectOnLoginSuccess, projectOnDeepLinkChangeSave)

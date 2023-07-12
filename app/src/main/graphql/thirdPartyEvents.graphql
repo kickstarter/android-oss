@@ -6,6 +6,7 @@ mutation triggerCapiEvent  ($triggerCapiEventInput: TriggerCapiEventInput!) {
 
 mutation triggerThirdPartyEvent  ($triggerThirdPartyEventInput: TriggerThirdPartyEventInput!) {
     triggerThirdPartyEvent(input: $triggerThirdPartyEventInput) {
+        message
         success
     }
 }

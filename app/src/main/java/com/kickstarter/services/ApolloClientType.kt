@@ -5,6 +5,7 @@ import DeletePaymentSourceMutation
 import UpdateUserCurrencyMutation
 import UpdateUserPasswordMutation
 import UserPrivacyQuery
+import android.util.Pair
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Category
 import com.kickstarter.models.Checkout
@@ -99,7 +100,7 @@ interface ApolloClientType {
 
     fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): Observable<TriggerCapiEventMutation.Data>
 
-    fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<TriggerThirdPartyEventMutation.Data>
+    fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<Pair<Boolean, String>>
 }
 
 private const val PAGE_SIZE = 25

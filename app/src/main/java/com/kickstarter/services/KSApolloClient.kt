@@ -20,6 +20,7 @@ import UpdateUserPasswordMutation
 import UserPaymentsQuery
 import UserPrivacyQuery
 import WatchProjectMutation
+import android.util.Pair
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
@@ -1231,10 +1232,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             return@defer ps
         }
     }
-
-    override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<TriggerThirdPartyEventMutation.Data> {
+    override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<Pair<Boolean, String>> {
         return Observable.defer {
-            val ps = PublishSubject.create<TriggerThirdPartyEventMutation.Data>()
+            val ps = PublishSubject.create<Pair<Boolean, String>>()
             service.mutate(TriggerThirdPartyEventMutation.builder().triggerThirdPartyEventInput(triggerThirdPartyEventInput).build())
                 .enqueue(object : ApolloCall.Callback<TriggerThirdPartyEventMutation.Data>() {
                     override fun onFailure(exception: ApolloException) {
@@ -1242,7 +1242,15 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     }
 
                     override fun onResponse(response: Response<TriggerThirdPartyEventMutation.Data>) {
-                        ps.onNext(response.data)
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message ?: ""))
+                        }
+
+                        response.data?.let {
+                            val message = it.triggerThirdPartyEvent()?.message() ?: ""
+                            val isSuccess = it.triggerThirdPartyEvent()?.success() ?: false
+                            ps.onNext(Pair(isSuccess, message))
+                        }
                         ps.onCompleted()
                     }
                 })

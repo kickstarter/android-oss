@@ -7,6 +7,7 @@ import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPrivacyQuery
+import android.util.Pair
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.CheckoutFactory
@@ -156,7 +157,7 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.empty()
     }
 
-    override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): io.reactivex.Observable<TriggerThirdPartyEventMutation.Data> {
+    override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): io.reactivex.Observable<Pair<Boolean, String>> {
         return io.reactivex.Observable.empty()
     }
 }
@@ -408,15 +409,16 @@ open class MockApolloClient : ApolloClientType {
         )
     }
 
-    override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<TriggerThirdPartyEventMutation.Data> {
+    override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<Pair<Boolean, String>> {
         return Observable.just(
-            TriggerThirdPartyEventMutation.Data(
-                TriggerThirdPartyEventMutation
-                    .TriggerThirdPartyEvent(
-                        "",
-                        true
-                    )
-            )
+//            TriggerThirdPartyEventMutation.Data(
+//                TriggerThirdPartyEventMutation
+//                    .TriggerThirdPartyEvent(
+//                        "",
+//                        true
+//                    )
+//            )
+            Pair(true, "")
         )
     }
 }

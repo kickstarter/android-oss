@@ -1,5 +1,6 @@
 package com.kickstarter.services
 
+import android.util.Pair
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
@@ -51,7 +52,7 @@ interface ApolloClientTypeV2 {
     fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout>
     fun createBacking(createBackingData: CreateBackingData): Observable<Checkout>
     fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): Observable<TriggerCapiEventMutation.Data>
-    fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<TriggerThirdPartyEventMutation.Data>
+    fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<Pair<Boolean, String>>
 }
 
 class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
@@ -663,9 +664,9 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
         }
     }
 
-    override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<TriggerThirdPartyEventMutation.Data> {
+    override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<Pair<Boolean, String>> {
         return Observable.defer {
-            val ps = PublishSubject.create<TriggerThirdPartyEventMutation.Data>()
+            val ps = PublishSubject.create<Pair<Boolean, String>>()
             service.mutate(TriggerThirdPartyEventMutation.builder().triggerThirdPartyEventInput(triggerThirdPartyEventInput).build())
                 .enqueue(object : ApolloCall.Callback<TriggerThirdPartyEventMutation.Data>() {
                     override fun onFailure(exception: ApolloException) {
@@ -674,9 +675,13 @@ class KSApolloClientV2(val service: ApolloClient) : ApolloClientTypeV2 {
 
                     override fun onResponse(response: Response<TriggerThirdPartyEventMutation.Data>) {
                         if (response.hasErrors()) {
-                            ps.onError(java.lang.Exception(response.errors?.first()?.message))
-                        } else {
-                            response.data?.let { ps.onNext(it) }
+                            ps.onError(Exception(response.errors?.first()?.message ?: ""))
+                        }
+
+                        response.data?.let {
+                            val message = it.triggerThirdPartyEvent()?.message() ?: ""
+                            val isSuccess = it.triggerThirdPartyEvent()?.success() ?: false
+                            ps.onNext(Pair(isSuccess, message))
                         }
                         ps.onComplete()
                     }

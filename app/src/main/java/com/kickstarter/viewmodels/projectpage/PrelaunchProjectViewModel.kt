@@ -242,7 +242,7 @@ interface PrelaunchProjectViewModel {
                     previousScreen,
                 )
                 .subscribe {
-                    onThirdPartyEventSent.onNext(it.first.triggerThirdPartyEvent()?.success() ?: false)
+                    onThirdPartyEventSent.onNext(it.first)
                 }.addToDisposable(disposables)
         }
 

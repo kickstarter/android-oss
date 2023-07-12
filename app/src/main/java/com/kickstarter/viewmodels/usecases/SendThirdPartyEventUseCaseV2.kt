@@ -88,7 +88,7 @@ class SendThirdPartyEventUseCaseV2(
         eventName: ThirdPartyEventValues.EventName,
         firebaseScreen: String = "",
         firebasePreviousScreen: String = "",
-    ): Observable<Pair<TriggerThirdPartyEventMutation.Data, TriggerThirdPartyEventInput>> {
+    ): Observable<Pair<Boolean, String>> {
 
         return project
             .filter { it.sendThirdPartyEvents() ?: false }
@@ -134,7 +134,7 @@ class SendThirdPartyEventUseCaseV2(
             .switchMap { input ->
                 apolloClient.triggerThirdPartyEvent(
                     input,
-                ).map { Pair(it, input) }
+                )
                     .compose(Transformers.neverErrorV2()).share()
             }
     }

@@ -79,7 +79,7 @@ class RewardsFragmentViewModel {
         private val currentUser = requireNotNull(environment.currentUser())
 
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-        val onThirdPartyEventSent = BehaviorSubject.create<Boolean?>()
+        val onThirdPartyEventSent = BehaviorSubject.create<Boolean>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -110,15 +110,15 @@ class RewardsFragmentViewModel {
                             apolloClient,
                             currentUser,
                             ThirdPartyEventValues.EventName.SCREEN_VIEW,
-                            ThirdPartyEventValues.ScreenName.REWARDS,
-                            Observable.just(ThirdPartyEventValues.ScreenName.PROJECT.value),
+                            ThirdPartyEventValues.ScreenName.REWARDS.value,
+                            ThirdPartyEventValues.ScreenName.PROJECT.value,
                         )
                 }
                 .compose(Transformers.neverError())
                 .compose(bindToLifecycle())
                 .subscribe {
                     onThirdPartyEventSent.onNext(
-                        it.first.triggerThirdPartyEvent()?.success() ?: false
+                        it.first
                     )
                 }
 

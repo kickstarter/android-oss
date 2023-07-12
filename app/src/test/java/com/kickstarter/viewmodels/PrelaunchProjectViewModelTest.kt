@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels
 
-import TriggerThirdPartyEventMutation
 import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Pair
@@ -95,14 +94,8 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
                 .just(project.toBuilder().isStarred(false).build())
         }
 
-        override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<TriggerThirdPartyEventMutation.Data> {
-            return Observable.just(
-                TriggerThirdPartyEventMutation.Data(
-                    TriggerThirdPartyEventMutation.TriggerThirdPartyEvent(
-                        "", true
-                    )
-                )
-            )
+        override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<Pair<Boolean, String>> {
+            return Observable.just(Pair(true, ""))
         }
     }
 

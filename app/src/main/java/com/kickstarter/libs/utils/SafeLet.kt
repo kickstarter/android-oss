@@ -22,3 +22,9 @@ inline fun <T1 : Any, T2 : Any, T3 : Any, T4 : Any, R : Any> safeLet(
 ): R? {
     return if (p1 != null && p2 != null && p3 != null && p4 != null) block(p1, p2, p3, p4) else null
 }
+
+inline fun <T: Any> safeLet(vararg elements: T?, block: (List<T>) -> Unit) {
+    if (elements.all { it != null }) {
+        block(elements.filterNotNull())
+    }
+}

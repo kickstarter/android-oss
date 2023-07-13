@@ -25,19 +25,24 @@ class SendThirdPartyEventUseCaseV2(
         )
 
     /**
+     * Send third party analytics events, with it's properties.
      *
-     * @param draftPledge pledge holds the values for pledgeAmount and Shipping amount required for the analytics events.
+     * @param draftPledge pledge holds the values for pledgeAmount and Shipping amount required for the analytics events, when the Checkout has not taken place yet.
+     * and example for this type of events will be ThirdPartyEventValues.EventName.ADD_PAYMENT_INFO, ad the payment methods can change or be added before the
+     * pledge is done.
+     *
      * @param checkoutAndPledgeData.first holds the information around Checkout, this information is only available once the user hits pledge and becomes a backer.
+     * @param checkoutAndPledgeData.second holds the user selection of reward/addOns, selected location.
      */
     fun sendThirdPartyEvent(
         project: Observable<Project>,
         apolloClient: ApolloClientTypeV2,
-        draftPledge: Observable<Pair<Double, Double>> = Observable.empty<Pair<Double, Double>>(),
         checkoutAndPledgeData: Observable<Pair<CheckoutData, PledgeData>?> = Observable.just(Pair(null, null)),
         currentUser: CurrentUserTypeV2,
         eventName: ThirdPartyEventValues.EventName,
         firebaseScreen: String = "",
         firebasePreviousScreen: String = "",
+        draftPledge: Pair<Double, Double>? = null
     ): Observable<Pair<Boolean, String>> {
 
         return project
@@ -53,6 +58,7 @@ class SendThirdPartyEventUseCaseV2(
                     canSendEventFlag = canSendEventFlag,
                     firebaseScreen = firebaseScreen,
                     firebasePreviousScreen = firebasePreviousScreen,
+                    draftPledge = draftPledge,
                     rawData = it
                 )
             }

@@ -28,11 +28,9 @@ import com.kickstarter.viewmodels.usecases.TPEventInputData
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import type.AppDataInput
 import type.CurrencyCode
 import type.FlaggingKind
 import type.PaymentTypes
-import type.TriggerThirdPartyEventInput
 
 interface ApolloClientTypeV2 {
     fun getProject(project: Project): Observable<Project>

@@ -64,12 +64,9 @@ import com.kickstarter.viewmodels.usecases.TPEventInputData
 import rx.Observable
 import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
-import type.AppDataInput
 import type.BackingState
 import type.CurrencyCode
 import type.PaymentTypes
-import type.ThirdPartyEventItemInput
-import type.TriggerThirdPartyEventInput
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 

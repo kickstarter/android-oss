@@ -1226,11 +1226,9 @@ interface PledgeFragmentViewModel {
                 this.cardSaved.compose<Pair<StoredCard, Int>>(zipPairV2(this.addedCardPosition))
             ).map {
                 it.second >= 0
-            }.distinctUntilChanged()
-
+            }
 
             tPAddPaymentMethodEvent(project, changeCard, pledgeData, shippingAmount, total)
-
 
             // - Present PaymentSheet if user logged in, and add card button pressed
             val shouldPresentPaymentSheet = PublishSubject.create<Notification<String>>()
@@ -1598,20 +1596,27 @@ interface PledgeFragmentViewModel {
         /**
          * ThirdParty Analytic event sent when there is a change with the selected payment method
          * it does require pledgeAmount and shipping amount information plus the selected rewards/addOns
+         *
+         * @param project observable with the current project, should always emit
+         * @param changeCard observable that will emit if the selected payment changes
+         * @param pledgeData current user selection to make a pledge, should always emit
+         * @param shippingAmount observable with shipping amount, will emit when reward or addon are shippable
+         * @param total observable with the total amount of the plede, will always emit
          */
         private fun tPAddPaymentMethodEvent(
             project: Observable<Project>,
             changeCard: Observable<Boolean>,
-            pledgeData: Observable<PledgeData>?,
-            shippingAmount: Observable<Double>?,
-            total: Observable<Double>?
+            pledgeData: Observable<PledgeData>,
+            shippingAmount: Observable<Double>,
+            total: Observable<Double>
         ) {
             project
                 .compose(takeWhenV2(changeCard))
                 .withLatestFrom(pledgeData) { _, pData ->
                     pData
                 }
-                .withLatestFrom(shippingAmount) { pData, shipAmount ->
+                // - Start with 0 in case of digital reward/addon without shipping
+                .withLatestFrom(shippingAmount.startWith(0.0)) { pData, shipAmount ->
                     Pair(pData, shipAmount)
                 }
                 .withLatestFrom(total) { data, totAmount ->
@@ -1627,7 +1632,7 @@ interface PledgeFragmentViewModel {
                             project = Observable.just(it.second),
                             currentUser = currentUser,
                             apolloClient = apolloClient,
-                            draftPledge = Observable.just(it.third),
+                            draftPledge = it.third,
                             checkoutAndPledgeData = Observable.just(Pair(null, it.first)),
                             eventName = ThirdPartyEventValues.EventName.ADD_PAYMENT_INFO
                         )

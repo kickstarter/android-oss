@@ -106,12 +106,12 @@ class RewardsFragmentViewModel {
                 .switchMap {
                     SendThirdPartyEventUseCase(sharedPreferences, ffClient)
                         .sendThirdPartyEvent(
-                            project,
-                            apolloClient,
-                            currentUser,
-                            ThirdPartyEventValues.EventName.SCREEN_VIEW,
-                            ThirdPartyEventValues.ScreenName.REWARDS.value,
-                            ThirdPartyEventValues.ScreenName.PROJECT.value,
+                            project = project,
+                            apolloClient = apolloClient,
+                            currentUser = currentUser,
+                            eventName = ThirdPartyEventValues.EventName.SCREEN_VIEW,
+                            firebaseScreen = ThirdPartyEventValues.ScreenName.REWARDS.value,
+                            firebasePreviousScreen = ThirdPartyEventValues.ScreenName.PROJECT.value,
                         )
                 }
                 .compose(Transformers.neverError())

@@ -521,16 +521,16 @@ interface ProjectPageViewModel {
 
             var previousScreen = ""
             intent()
-                .map { previousScreen = it.getStringExtra(IntentKey.PREVIOUS_SCREEN) ?: "" }
+                .subscribe { previousScreen = it.getStringExtra(IntentKey.PREVIOUS_SCREEN) ?: "" }
 
             SendThirdPartyEventUseCase(sharedPreferences, ffClient)
                 .sendThirdPartyEvent(
-                    currentProject,
-                    apolloClient,
-                    currentUser,
-                    ThirdPartyEventValues.EventName.SCREEN_VIEW,
-                    ThirdPartyEventValues.ScreenName.PROJECT.value,
-                    previousScreen
+                    project = currentProject,
+                    apolloClient = apolloClient,
+                    currentUser = currentUser,
+                    eventName = ThirdPartyEventValues.EventName.SCREEN_VIEW,
+                    firebaseScreen = ThirdPartyEventValues.ScreenName.PROJECT.value,
+                    firebasePreviousScreen = previousScreen
                 )
                 .compose(neverError())
                 .compose(bindToLifecycle())

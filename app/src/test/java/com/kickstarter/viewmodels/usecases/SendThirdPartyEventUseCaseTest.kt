@@ -276,6 +276,131 @@ class SendThirdPartyEventUseCaseTest : KSRobolectricTestCase() {
         assertEquals("a2", input.appData.extInfo.first())
     }
 
+    @Test
+    fun testSendThirdPartyAddPaymentInfoEventSuccess() {
+        Mockito.`when`(
+            mockSharedPreferences
+                .getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)
+        )
+            .thenReturn(true)
+
+        val project = ProjectFactory.project().toBuilder().sendThirdPartyEvents(true).build()
+
+        val addons = listOf(RewardFactory.addOn().toBuilder().build(), RewardFactory.addOnMultiple().toBuilder().id(242).build())
+        val pledgeData = PledgeData.with(
+            PledgeFlowContext.NEW_PLEDGE,
+            ProjectDataFactory.project(project),
+            RewardFactory.reward(),
+            addons,
+            null
+        )
+        subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(), Observable.just(Pair(null, pledgeData)), ThirdPartyEventValues.EventName.PURCHASE)
+        sendThirdPartyEventObservable.assertValue(Pair(true, ""))
+    }
+
+    @Test
+    fun testSendThirdPartyAddPaymentInfoEventFail() {
+        Mockito.`when`(
+            mockSharedPreferences
+                .getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)
+        )
+            .thenReturn(true)
+
+        val project = ProjectFactory.project().toBuilder().sendThirdPartyEvents(true).build()
+
+        val addons = listOf(RewardFactory.addOn().toBuilder().build(), RewardFactory.addOnMultiple().toBuilder().id(242).build())
+        val pledgeData = PledgeData.with(
+            PledgeFlowContext.NEW_PLEDGE,
+            ProjectDataFactory.project(project),
+            RewardFactory.reward(),
+            addons,
+            null
+        )
+
+        val testResul = Pair(false, "Error message here")
+        val environment = setUpEnvironment()
+            .toBuilder()
+            .apolloClient(object : MockApolloClient() {
+                override fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>> {
+                    return Observable.just(testResul)
+                }
+            })
+            .build()
+
+        val useCase = SendThirdPartyEventUseCase(
+            requireNotNull(environment.sharedPreferences()),
+            requireNotNull(environment.featureFlagClient())
+        )
+
+        useCase.sendThirdPartyEvent(
+            project = Observable.just(project),
+            apolloClient = requireNotNull(environment.apolloClient()),
+            checkoutAndPledgeData = Observable.just(Pair(null, pledgeData)),
+            currentUser = requireNotNull(environment.currentUser()),
+            eventName = ThirdPartyEventValues.EventName.PURCHASE
+        )
+            .subscribe(sendThirdPartyEventObservable)
+
+        sendThirdPartyEventObservable.assertValue(testResul)
+    }
+
+    @Test
+    fun testInputForAddPaymentMethodEvent() {
+        Mockito.`when`(
+            mockSharedPreferences
+                .getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)
+        )
+            .thenReturn(true)
+
+        val project = ProjectFactory.project().toBuilder().sendThirdPartyEvents(true).build()
+
+        val draftPledge = Pair(
+            50.0,
+            10.0
+        )
+
+        val addons = listOf(RewardFactory.addOn().toBuilder().build(), RewardFactory.addOnMultiple().toBuilder().id(242).build())
+        val pledgeData = PledgeData.with(
+            PledgeFlowContext.NEW_PLEDGE,
+            ProjectDataFactory.project(project),
+            RewardFactory.reward(),
+            addons,
+            null
+        )
+
+        val user = UserFactory
+            .user()
+            .toBuilder()
+            .id(7272)
+            .build()
+
+        val useCase = SendThirdPartyEventUseCase(mockSharedPreferences, mockFeatureFlagClientType)
+
+        // - The input is built and sent to the Mutation before any network call happens, test here the proper values for the input
+        val input: TPEventInputData = useCase.buildInput(
+            eventName = ThirdPartyEventValues.EventName.PURCHASE,
+            canSendEventFlag = true,
+            draftPledge = draftPledge,
+            rawData = Pair(Pair(project, user), Pair(null, pledgeData))
+        )
+
+        assertEquals(ThirdPartyEventValues.EventName.PURCHASE.value, input.eventName)
+        assertEquals(encodeRelayId(project), input.projectId)
+        assertEquals(null, input.firebaseScreen)
+        assertEquals(null, input.firebaseScreen)
+        assertEquals("242", input.items?.get(2)?.itemId)
+        assertEquals(100.0, input.items?.get(2)?.price)
+        assertEquals(50.0, input.pledgeAmount)
+        assertEquals(10.0, input.shipping)
+        assertEquals("", input.transactionId)
+        assertEquals("7272", input.userId)
+        assertEquals(3, input.items.size)
+
+        assertEquals(true, input.appData.androidConsent)
+        assertEquals(false, input.appData.iOSConsent)
+        assertEquals("a2", input.appData.extInfo.first())
+    }
+
     private fun subscribeToThirdPartyEvent(
         project: Observable<Project>,
         environment: Environment,

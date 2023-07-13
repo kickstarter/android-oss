@@ -25,6 +25,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import org.junit.After
 import org.junit.Test
 import org.mockito.Mockito
 import rx.observers.TestSubscriber
@@ -52,6 +53,11 @@ class SendThirdPartyEventUseCaseV2Test : KSRobolectricTestCase() {
             .sharedPreferences(mockSharedPreferences)
             .featureFlagClient(mockFeatureFlagClient)
             .build()
+    }
+
+    @After
+    fun cleanUp() {
+        disposables.clear()
     }
 
     @Test
@@ -273,6 +279,134 @@ class SendThirdPartyEventUseCaseV2Test : KSRobolectricTestCase() {
         assertEquals("7272", input.userId)
         assertEquals(ThirdPartyEventValues.ScreenName.PROJECT.value, input.firebaseScreen)
         assertEquals(ThirdPartyEventValues.ScreenName.DISCOVERY.value, input.firebasePreviousScreen)
+
+        assertEquals(true, input.appData.androidConsent)
+        assertEquals(false, input.appData.iOSConsent)
+        assertEquals("a2", input.appData.extInfo.first())
+    }
+
+    @Test
+    fun testSendThirdPartyAddPaymentInfoEventSuccess() {
+        Mockito.`when`(
+            mockSharedPreferences
+                .getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)
+        )
+            .thenReturn(true)
+
+        val project = ProjectFactory.project().toBuilder().sendThirdPartyEvents(true).build()
+
+        val addons = listOf(RewardFactory.addOn().toBuilder().build(), RewardFactory.addOnMultiple().toBuilder().id(242).build())
+        val pledgeData = PledgeData.with(
+            PledgeFlowContext.NEW_PLEDGE,
+            ProjectDataFactory.project(project),
+            RewardFactory.reward(),
+            addons,
+            null
+        )
+        subscribeToThirdPartyEvent(Observable.just(project), setUpEnvironment(), Observable.just(Pair(null, pledgeData)), ThirdPartyEventValues.EventName.PURCHASE)
+        sendThirdPartyEventObservable.assertValue(Pair(true, ""))
+    }
+
+    @Test
+    fun testSendThirdPartyAddPaymentInfoEventFail() {
+        Mockito.`when`(
+            mockSharedPreferences
+                .getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)
+        )
+            .thenReturn(true)
+
+        val project = ProjectFactory.project().toBuilder().sendThirdPartyEvents(true).build()
+
+        val addons = listOf(RewardFactory.addOn().toBuilder().build(), RewardFactory.addOnMultiple().toBuilder().id(242).build())
+        val pledgeData = PledgeData.with(
+            PledgeFlowContext.NEW_PLEDGE,
+            ProjectDataFactory.project(project),
+            RewardFactory.reward(),
+            addons,
+            null
+        )
+
+        val testResul = Pair(false, "Error message here")
+        val environment = setUpEnvironment()
+            .toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>> {
+                    return Observable.just(testResul)
+                }
+            })
+            .build()
+
+        val useCase = SendThirdPartyEventUseCaseV2(
+            requireNotNull(environment.sharedPreferences()),
+            requireNotNull(environment.featureFlagClient())
+        )
+
+        useCase.sendThirdPartyEvent(
+            project = Observable.just(project),
+            apolloClient = requireNotNull(environment.apolloClientV2()),
+            checkoutAndPledgeData = Observable.just(Pair(null, pledgeData)),
+            currentUser = requireNotNull(environment.currentUserV2()),
+            eventName = ThirdPartyEventValues.EventName.PURCHASE
+        )
+            .subscribe {
+                sendThirdPartyEventObservable.onNext(it)
+            }
+            .addToDisposable(disposables)
+
+        sendThirdPartyEventObservable.assertValue(testResul)
+    }
+
+    @Test
+    fun testInputForAddPaymentMethodEvent() {
+        Mockito.`when`(
+            mockSharedPreferences
+                .getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)
+        )
+            .thenReturn(true)
+
+        val project = ProjectFactory.project().toBuilder().sendThirdPartyEvents(true).build()
+
+        val draftPledge = Pair(
+            50.0,
+            10.0
+        )
+
+        val addons = listOf(RewardFactory.addOn().toBuilder().build(), RewardFactory.addOnMultiple().toBuilder().id(242).build())
+        val pledgeData = PledgeData.with(
+            PledgeFlowContext.NEW_PLEDGE,
+            ProjectDataFactory.project(project),
+            RewardFactory.reward(),
+            addons,
+            null
+        )
+
+        val user = UserFactory
+            .user()
+            .toBuilder()
+            .id(7272)
+            .build()
+
+        val useCase = SendThirdPartyEventUseCaseV2(mockSharedPreferences, mockFeatureFlagClientType)
+
+        // - The input is built and sent to the Mutation before any network call happens, test here the proper values for the input
+        val input: TPEventInputData = useCase.buildInput(
+            eventName = ThirdPartyEventValues.EventName.PURCHASE,
+            canSendEventFlag = true,
+            draftPledge = draftPledge,
+            rawData = Pair(Pair(project, user), Pair(null, pledgeData))
+        )
+
+        assertEquals(ThirdPartyEventValues.EventName.PURCHASE.value, input.eventName)
+        assertEquals(encodeRelayId(project), input.projectId)
+        assertEquals(null, input.firebaseScreen)
+        assertEquals(null, input.firebaseScreen)
+        assertEquals("242", input.items?.get(2)?.itemId)
+        assertEquals(100.0, input.items?.get(2)?.price)
+        assertEquals(50.0, input.pledgeAmount)
+        assertEquals(10.0, input.shipping)
+        assertEquals("", input.transactionId)
+        assertEquals("7272", input.userId)
+        assertEquals(3, input.items.size)
 
         assertEquals(true, input.appData.androidConsent)
         assertEquals(false, input.appData.iOSConsent)

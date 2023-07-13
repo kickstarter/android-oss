@@ -46,8 +46,7 @@ class SendThirdPartyEventUseCase(
     ): Observable<Pair<Boolean, String>> {
 
         return project
-            .filter { it.sendThirdPartyEvents() ?: false }
-            .filter { canSendEventFlag }
+            .filter { it.sendThirdPartyEvents() ?: false && canSendEventFlag }
             .compose(Transformers.combineLatestPair(currentUser.observable()))
             .compose(Transformers.combineLatestPair(checkoutAndPledgeData))
             .map {

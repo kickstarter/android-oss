@@ -24,6 +24,7 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.acceptedCardType
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isFalse
@@ -49,6 +50,7 @@ import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.State
+import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCaseV2
 import com.stripe.android.StripeIntentResult
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import io.reactivex.Notification
@@ -1223,22 +1225,12 @@ interface PledgeFragmentViewModel {
                 this.cardSelected,
                 this.cardSaved.compose<Pair<StoredCard, Int>>(zipPairV2(this.addedCardPosition))
             ).map {
-                it.second
+                it.second >= 0
             }.distinctUntilChanged()
 
-//            SendThirdPartyEventUseCaseV2(sharedPreferences, ffClient)
-//                .sendCAPIEvent(
-//                    project
-//                        .compose(takeWhenV2(changeCard)),
-//                    currentUser,
-//                    apolloClient,
-//                    ConversionsAPIEventName.ADDED_PAYMENT_INFO
-//                )
-//                .compose(neverErrorV2())
-//                .subscribe {
-//                    onCAPIEventSent.onNext(it.first.triggerCAPIEvent()?.success() ?: false)
-//                }
-//                .addToDisposable(disposables)
+
+            tPAddPaymentMethodEvent(project, changeCard, pledgeData, shippingAmount, total)
+
 
             // - Present PaymentSheet if user logged in, and add card button pressed
             val shouldPresentPaymentSheet = PublishSubject.create<Notification<String>>()
@@ -1599,6 +1591,50 @@ interface PledgeFragmentViewModel {
                         }
                         else -> {}
                     }
+                }
+                .addToDisposable(disposables)
+        }
+
+        /**
+         * ThirdParty Analytic event sent when there is a change with the selected payment method
+         * it does require pledgeAmount and shipping amount information plus the selected rewards/addOns
+         */
+        private fun tPAddPaymentMethodEvent(
+            project: Observable<Project>,
+            changeCard: Observable<Boolean>,
+            pledgeData: Observable<PledgeData>?,
+            shippingAmount: Observable<Double>?,
+            total: Observable<Double>?
+        ) {
+            project
+                .compose(takeWhenV2(changeCard))
+                .withLatestFrom(pledgeData) { _, pData ->
+                    pData
+                }
+                .withLatestFrom(shippingAmount) { pData, shipAmount ->
+                    Pair(pData, shipAmount)
+                }
+                .withLatestFrom(total) { data, totAmount ->
+                    val pledData = data.first
+                    val shipAmt = data.second
+                    val pledgAmount = totAmount - shipAmt
+                    val prject = pledData.projectData().project()
+                    Triple(pledData, prject, Pair(pledgAmount, shipAmt))
+                }
+                .switchMap {
+                    SendThirdPartyEventUseCaseV2(sharedPreferences, ffClient)
+                        .sendThirdPartyEvent(
+                            project = Observable.just(it.second),
+                            currentUser = currentUser,
+                            apolloClient = apolloClient,
+                            draftPledge = Observable.just(it.third),
+                            checkoutAndPledgeData = Observable.just(Pair(null, it.first)),
+                            eventName = ThirdPartyEventValues.EventName.ADD_PAYMENT_INFO
+                        )
+                }
+                .compose(neverErrorV2())
+                .subscribe {
+                    onCAPIEventSent.onNext(it.first)
                 }
                 .addToDisposable(disposables)
         }

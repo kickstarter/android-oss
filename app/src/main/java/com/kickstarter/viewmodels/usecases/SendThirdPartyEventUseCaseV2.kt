@@ -24,9 +24,15 @@ class SendThirdPartyEventUseCaseV2(
             (ffClient.getBoolean(FlagKey.ANDROID_CAPI_INTEGRATION) || ffClient.getBoolean(FlagKey.ANDROID_GOOGLE_ANALYTICS))
         )
 
+    /**
+     *
+     * @param draftPledge pledge holds the values for pledgeAmount and Shipping amount required for the analytics events.
+     * @param checkoutAndPledgeData.first holds the information around Checkout, this information is only available once the user hits pledge and becomes a backer.
+     */
     fun sendThirdPartyEvent(
         project: Observable<Project>,
         apolloClient: ApolloClientTypeV2,
+        draftPledge: Observable<Pair<Double, Double>> = Observable.empty<Pair<Double, Double>>(),
         checkoutAndPledgeData: Observable<Pair<CheckoutData, PledgeData>?> = Observable.just(Pair(null, null)),
         currentUser: CurrentUserTypeV2,
         eventName: ThirdPartyEventValues.EventName,

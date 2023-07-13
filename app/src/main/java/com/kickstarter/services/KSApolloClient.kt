@@ -13,6 +13,7 @@ import GetShippingRulesForRewardIdQuery
 import ProjectCreatorDetailsQuery
 import SavePaymentMethodMutation
 import SendMessageMutation
+import TriggerThirdPartyEventMutation
 import UnwatchProjectMutation
 import UpdateBackingMutation
 import UpdateUserCurrencyMutation
@@ -54,6 +55,7 @@ import com.kickstarter.services.transformers.commentTransformer
 import com.kickstarter.services.transformers.complexRewardItemsTransformer
 import com.kickstarter.services.transformers.decodeRelayId
 import com.kickstarter.services.transformers.encodeRelayId
+import com.kickstarter.services.transformers.getTriggerThirdPartyEventMutation
 import com.kickstarter.services.transformers.projectTransformer
 import com.kickstarter.services.transformers.rewardTransformer
 import com.kickstarter.services.transformers.shippingRulesListTransformer
@@ -1220,37 +1222,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         return Observable.defer {
             val ps = PublishSubject.create<Pair<Boolean, String>>()
 
-            val graphAppData = AppDataInput.builder()
-                .advertiserTrackingEnabled(eventInput.appData.iOSConsent)
-                .applicationTrackingEnabled(eventInput.appData.androidConsent)
-                .extinfo(eventInput.appData.extInfo)
-                .build()
+            val mutation = getTriggerThirdPartyEventMutation(eventInput)
 
-            val items: List<ThirdPartyEventItemInput> = eventInput.items
-                .map {
-                    ThirdPartyEventItemInput.builder()
-                        .itemId(it.itemId)
-                        .itemName(it.itemName)
-                        .price(it.price)
-                        .build()
-                }
-
-            val graphInput =
-                TriggerThirdPartyEventInput.builder()
-                    .userId(eventInput.userId)
-                    .eventName(eventInput.eventName)
-                    .deviceId(eventInput.deviceId)
-                    .firebaseScreen(eventInput.firebaseScreen)
-                    .firebasePreviousScreen(eventInput.firebasePreviousScreen)
-                    .projectId(eventInput.projectId)
-                    .pledgeAmount(eventInput.pledgeAmount)
-                    .shipping(eventInput.shipping)
-                    .appData(graphAppData)
-                    .items(items)
-                    .transactionId(eventInput.transactionId)
-                    .build()
-
-            service.mutate(TriggerThirdPartyEventMutation.builder().triggerThirdPartyEventInput(graphInput).build())
+            service.mutate(mutation)
                 .enqueue(object : ApolloCall.Callback<TriggerThirdPartyEventMutation.Data>() {
                     override fun onFailure(exception: ApolloException) {
                         ps.onError(exception)

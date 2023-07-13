@@ -2,12 +2,15 @@ package com.kickstarter.viewmodels
 
 import android.util.Pair
 import androidx.annotation.NonNull
+import androidx.annotation.VisibleForTesting
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
+import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.isBacked
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Backing
@@ -18,6 +21,7 @@ import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.RewardsFragment
+import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCase
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -69,6 +73,14 @@ class RewardsFragmentViewModel {
         private val showAddOnsFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showAlert = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
 
+        private val sharedPreferences = requireNotNull(environment.sharedPreferences())
+        private val ffClient = requireNotNull(environment.featureFlagClient())
+        private val apolloClient = requireNotNull(environment.apolloClient())
+        private val currentUser = requireNotNull(environment.currentUser())
+
+        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        val onThirdPartyEventSent = BehaviorSubject.create<Boolean>()
+
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -88,6 +100,27 @@ class RewardsFragmentViewModel {
 
             val project = this.projectData
                 .map { it.project() }
+
+            this.isExpanded
+                .filter { it }
+                .switchMap {
+                    SendThirdPartyEventUseCase(sharedPreferences, ffClient)
+                        .sendThirdPartyEvent(
+                            project,
+                            apolloClient,
+                            currentUser,
+                            ThirdPartyEventValues.EventName.SCREEN_VIEW,
+                            ThirdPartyEventValues.ScreenName.REWARDS.value,
+                            ThirdPartyEventValues.ScreenName.PROJECT.value,
+                        )
+                }
+                .compose(Transformers.neverError())
+                .compose(bindToLifecycle())
+                .subscribe {
+                    onThirdPartyEventSent.onNext(
+                        it.first
+                    )
+                }
 
             project
                 .filter { it.isBacking() }

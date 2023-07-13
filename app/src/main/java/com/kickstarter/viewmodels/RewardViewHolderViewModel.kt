@@ -4,11 +4,9 @@ import android.text.SpannableString
 import android.util.Pair
 import androidx.annotation.NonNull
 import androidx.annotation.VisibleForTesting
-import com.facebook.appevents.cloudbridge.ConversionsAPIEventName
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.DateTimeUtils
@@ -26,7 +24,6 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.RewardViewHolder
-import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCase
 import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -337,20 +334,6 @@ interface RewardViewHolderViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.analyticEvents.trackSelectRewardCTA(it)
-                }
-
-            val currentProject = this.projectDataAndReward
-                .compose(takeWhen(this.rewardClicked))
-                .map {
-                    it.first.project()
-                }
-
-            SendThirdPartyEventUseCase(sharedPreferences, ffClient)
-                .sendCAPIEvent(currentProject, currentUser, apolloClient, ConversionsAPIEventName.INITIATED_CHECKOUT)
-                .compose(Transformers.neverError())
-                .compose(bindToLifecycle())
-                .subscribe {
-                    onCAPIEventSent.onNext(it.first.triggerCAPIEvent()?.success() ?: false)
                 }
 
             projectAndReward

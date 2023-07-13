@@ -20,6 +20,7 @@ import UpdateUserPasswordMutation
 import UserPaymentsQuery
 import UserPrivacyQuery
 import WatchProjectMutation
+import android.util.Pair
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
@@ -57,13 +58,15 @@ import com.kickstarter.services.transformers.projectTransformer
 import com.kickstarter.services.transformers.rewardTransformer
 import com.kickstarter.services.transformers.shippingRulesListTransformer
 import com.kickstarter.services.transformers.updateTransformer
+import com.kickstarter.viewmodels.usecases.TPEventInputData
 import rx.Observable
 import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
+import type.AppDataInput
 import type.BackingState
 import type.CurrencyCode
 import type.PaymentTypes
-import type.TriggerCapiEventInput
+import type.ThirdPartyEventItemInput
 import type.TriggerThirdPartyEventInput
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
@@ -1213,36 +1216,56 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             return@defer ps
         }
     }
-
-    override fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): Observable<TriggerCapiEventMutation.Data> {
+    override fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>> {
         return Observable.defer {
-            val ps = PublishSubject.create<TriggerCapiEventMutation.Data>()
-            service.mutate(TriggerCapiEventMutation.builder().triggerCapiEventInput(triggerCapiEventInput).build())
-                .enqueue(object : ApolloCall.Callback<TriggerCapiEventMutation.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
-                    }
+            val ps = PublishSubject.create<Pair<Boolean, String>>()
 
-                    override fun onResponse(response: Response<TriggerCapiEventMutation.Data>) {
-                        ps.onNext(response.data)
-                        ps.onCompleted()
-                    }
-                })
-            return@defer ps
-        }
-    }
+            val graphAppData = AppDataInput.builder()
+                .advertiserTrackingEnabled(eventInput.appData.iOSConsent)
+                .applicationTrackingEnabled(eventInput.appData.androidConsent)
+                .extinfo(eventInput.appData.extInfo)
+                .build()
 
-    override fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<TriggerThirdPartyEventMutation.Data> {
-        return Observable.defer {
-            val ps = PublishSubject.create<TriggerThirdPartyEventMutation.Data>()
-            service.mutate(TriggerThirdPartyEventMutation.builder().triggerThirdPartyEventInput(triggerThirdPartyEventInput).build())
+            val items: List<ThirdPartyEventItemInput> = eventInput.items
+                .map {
+                    ThirdPartyEventItemInput.builder()
+                        .itemId(it.itemId)
+                        .itemName(it.itemName)
+                        .price(it.price)
+                        .build()
+                }
+
+            val graphInput =
+                TriggerThirdPartyEventInput.builder()
+                    .userId(eventInput.userId)
+                    .eventName(eventInput.eventName)
+                    .deviceId(eventInput.deviceId)
+                    .firebaseScreen(eventInput.firebaseScreen)
+                    .firebasePreviousScreen(eventInput.firebasePreviousScreen)
+                    .projectId(eventInput.projectId)
+                    .pledgeAmount(eventInput.pledgeAmount)
+                    .shipping(eventInput.shipping)
+                    .appData(graphAppData)
+                    .items(items)
+                    .transactionId(eventInput.transactionId)
+                    .build()
+
+            service.mutate(TriggerThirdPartyEventMutation.builder().triggerThirdPartyEventInput(graphInput).build())
                 .enqueue(object : ApolloCall.Callback<TriggerThirdPartyEventMutation.Data>() {
                     override fun onFailure(exception: ApolloException) {
                         ps.onError(exception)
                     }
 
                     override fun onResponse(response: Response<TriggerThirdPartyEventMutation.Data>) {
-                        ps.onNext(response.data)
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message ?: ""))
+                        }
+
+                        response.data?.let {
+                            val message = it.triggerThirdPartyEvent()?.message() ?: ""
+                            val isSuccess = it.triggerThirdPartyEvent()?.success() ?: false
+                            ps.onNext(Pair(isSuccess, message))
+                        }
                         ps.onCompleted()
                     }
                 })

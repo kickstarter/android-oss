@@ -66,6 +66,7 @@ object ProjectFactory {
             .updatedAt(DateTime.now())
             .urls(Urls.builder().web(web).build())
             .video(VideoFactory.video())
+            .sendThirdPartyEvents(true)
             .launchedAt(DateTime(DateTimeZone.UTC).minusDays(10))
             .deadline(DateTime(DateTimeZone.UTC).plusDays(10))
             .risks("Risks and challenges")

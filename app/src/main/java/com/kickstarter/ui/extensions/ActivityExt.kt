@@ -178,12 +178,13 @@ fun Activity.finishWithAnimation(withResult: String? = null) {
     TransitionUtils.transition(this, TransitionUtils.slideInFromLeft())
 }
 
-fun Activity.startPreLaunchProjectActivity(project: Project) {
+fun Activity.startPreLaunchProjectActivity(project: Project, previousScreen: String? = null) {
     val intent = Intent().getPreLaunchProjectActivity(
         this,
         project.slug(),
         project.reduceToPreLaunchProject()
     )
+    previousScreen?.let { intent.putExtra(IntentKey.PREVIOUS_SCREEN, it) }
     startActivity(intent)
     TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
 }

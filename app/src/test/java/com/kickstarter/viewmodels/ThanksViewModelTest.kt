@@ -392,7 +392,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testSendCAPIEvent_whenBackedPRoject_sendCAPIEvent_withFeatureFlag__withConsentManagement_off_isFailed() {
+    fun testSendThirdPartyEvent_whenBackedPRoject_sendThirdPartyEvent_withFeatureFlag__withConsentManagement_off_isFailed() {
         var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
         Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false))
             .thenReturn(false)
@@ -432,7 +432,7 @@ class ThanksViewModelTest : KSRobolectricTestCase() {
         assertEquals(null, this.vm.onThirdPartyEventSent.value)
     }
     @Test
-    fun testSendCAPIEvent_whenBackedPRoject_sendCAPIEvent_withFeatureFlag_on_isSuccessful() {
+    fun testSendThirdPartyEvent_whenBackedPRoject_sendThirdPartyEvent_withFeatureFlag_on_isSuccessful() {
         var user = UserFactory.user()
         var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
         Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false))

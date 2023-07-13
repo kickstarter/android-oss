@@ -4,7 +4,6 @@ import android.content.Intent
 import android.util.Pair
 import androidx.annotation.NonNull
 import androidx.annotation.VisibleForTesting
-import com.facebook.appevents.cloudbridge.ConversionsAPIEventName
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.ActivityViewModel
@@ -28,6 +27,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.RISKS
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
+import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.ProjectMetadata
 import com.kickstarter.libs.utils.extensions.backedReward
@@ -340,7 +340,8 @@ interface ProjectPageViewModel {
         val outputs: Outputs = this
 
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-        val onCAPIEventSent = BehaviorSubject.create<Boolean?>()
+        val onThirdPartyEventSent = BehaviorSubject.create<Boolean?>()
+
         init {
 
             val progressBarIsGone = PublishSubject.create<Boolean>()
@@ -518,12 +519,23 @@ interface ProjectPageViewModel {
                 projectOnDeepLinkChangeSave
             )
 
+            var previousScreen = ""
+            intent()
+                .map { previousScreen = it.getStringExtra(IntentKey.PREVIOUS_SCREEN) ?: "" }
+
             SendThirdPartyEventUseCase(sharedPreferences, ffClient)
-                .sendCAPIEvent(currentProject, currentUser, apolloClient, ConversionsAPIEventName.VIEWED_CONTENT)
+                .sendThirdPartyEvent(
+                    currentProject,
+                    apolloClient,
+                    currentUser,
+                    ThirdPartyEventValues.EventName.SCREEN_VIEW,
+                    ThirdPartyEventValues.ScreenName.PROJECT.value,
+                    previousScreen
+                )
                 .compose(neverError())
                 .compose(bindToLifecycle())
                 .subscribe {
-                    onCAPIEventSent.onNext(it.first.triggerCAPIEvent()?.success() ?: false)
+                    onThirdPartyEventSent.onNext(it.first)
                 }
 
             val projectSavedStatus = Observable.merge(projectOnUserChangeSave, savedProjectOnLoginSuccess, projectOnDeepLinkChangeSave)

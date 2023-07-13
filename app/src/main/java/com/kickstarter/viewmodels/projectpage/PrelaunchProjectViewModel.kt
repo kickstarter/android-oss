@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels.projectpage
 
 import android.content.Intent
 import android.util.Pair
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
@@ -10,6 +11,7 @@ import com.kickstarter.libs.rx.transformers.TakeWhenTransformerV2
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.updateProjectWith
@@ -18,6 +20,7 @@ import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
+import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCaseV2
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
@@ -65,7 +68,10 @@ interface PrelaunchProjectViewModel {
 
         private val currentUser = requireNotNull(environment.currentUserV2())
         private val apolloClient = requireNotNull(environment.apolloClientV2())
+        private val apolloClientLegacy = requireNotNull(environment.apolloClientV2())
         private val currentConfig = requireNotNull(environment.currentConfigV2())
+        private val sharedPreferences = requireNotNull(environment.sharedPreferences())
+        private val ffClient = requireNotNull(environment.featureFlagClient())
 
         private val intent = BehaviorSubject.create<Intent>()
         private val creatorInfoClicked = PublishSubject.create<Unit>()
@@ -78,6 +84,10 @@ interface PrelaunchProjectViewModel {
         private val showShareSheet = PublishSubject.create<Pair<String, String>>()
         private val startLoginToutActivity = PublishSubject.create<Unit>()
         private val showSavedPrompt = PublishSubject.create<Unit>()
+        private val currentProject2 = rx.subjects.PublishSubject.create<Project>()
+
+        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        val onThirdPartyEventSent = BehaviorSubject.create<Boolean>()
 
         init {
 
@@ -147,7 +157,7 @@ interface PrelaunchProjectViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .map { it }
 
-            var currentProject = Observable.merge(
+            var currentProject = io.reactivex.Observable.merge(
                 initialProject,
                 savedProjectOnLoginSuccess,
                 projectOnUserChangeSave,
@@ -216,6 +226,24 @@ interface PrelaunchProjectViewModel {
                 .filter { p -> p.isStarred() }
                 .subscribe {
                     this.showSavedPrompt.onNext(Unit)
+                }.addToDisposable(disposables)
+
+            var previousScreen = ""
+            this.intent
+                .subscribe { previousScreen = it.getStringExtra(IntentKey.PREVIOUS_SCREEN) ?: "" }
+                .addToDisposable(disposables)
+
+            SendThirdPartyEventUseCaseV2(sharedPreferences, ffClient)
+                .sendThirdPartyEvent(
+                    loadedProject,
+                    apolloClient,
+                    currentUser = currentUser,
+                    eventName = ThirdPartyEventValues.EventName.SCREEN_VIEW,
+                    firebaseScreen = ThirdPartyEventValues.ScreenName.PRELAUNCH.value,
+                    firebasePreviousScreen = previousScreen,
+                )
+                .subscribe {
+                    onThirdPartyEventSent.onNext(it.first)
                 }.addToDisposable(disposables)
         }
 

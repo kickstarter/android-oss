@@ -5,6 +5,7 @@ import DeletePaymentSourceMutation
 import UpdateUserCurrencyMutation
 import UpdateUserPasswordMutation
 import UserPrivacyQuery
+import android.util.Pair
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Category
 import com.kickstarter.models.Checkout
@@ -24,10 +25,9 @@ import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.PostCommentData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
+import com.kickstarter.viewmodels.usecases.TPEventInputData
 import rx.Observable
 import type.CurrencyCode
-import type.TriggerCapiEventInput
-import type.TriggerThirdPartyEventInput
 
 interface ApolloClientType {
     fun cancelBacking(backing: Backing, note: String): Observable<Any>
@@ -97,9 +97,7 @@ interface ApolloClientType {
 
     fun userPrivacy(): Observable<UserPrivacyQuery.Data>
 
-    fun triggerCapiEvent(triggerCapiEventInput: TriggerCapiEventInput): Observable<TriggerCapiEventMutation.Data>
-
-    fun triggerThirdPartyEvent(triggerThirdPartyEventInput: TriggerThirdPartyEventInput): Observable<TriggerThirdPartyEventMutation.Data>
+    fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>>
 }
 
 private const val PAGE_SIZE = 25

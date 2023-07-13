@@ -13,6 +13,7 @@ import com.kickstarter.libs.recyclerviewpagination.RecyclerViewPaginatorV2
 import com.kickstarter.libs.recyclerviewpagination.RecyclerViewScrollEvent
 import com.kickstarter.libs.recyclerviewpagination.RxRecyclerView
 import com.kickstarter.libs.utils.InputUtils
+import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
@@ -85,6 +86,7 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.Delegate {
     private fun startPreLaunchProjectActivity(project: Project, refTag: RefTag) {
         val intent = Intent().getPreLaunchProjectActivity(this, project.slug())
             .putExtra(IntentKey.REF_TAG, refTag)
+            .putExtra(IntentKey.PREVIOUS_SCREEN, ThirdPartyEventValues.ScreenName.SEARCH.value)
         startActivity(intent)
         TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
     }
@@ -92,6 +94,7 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.Delegate {
         val intent = Intent().getProjectIntent(this)
             .putExtra(IntentKey.PROJECT, projectAndRefTagAndIsFfEnabled.first)
             .putExtra(IntentKey.REF_TAG, projectAndRefTagAndIsFfEnabled.second)
+            .putExtra(IntentKey.PREVIOUS_SCREEN, ThirdPartyEventValues.ScreenName.SEARCH.value)
         startActivity(intent)
         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }

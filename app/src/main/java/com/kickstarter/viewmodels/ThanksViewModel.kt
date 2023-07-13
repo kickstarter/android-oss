@@ -11,7 +11,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RefTagUtils
-import com.kickstarter.libs.utils.ThirdPartyEventName
+import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.combineProjectsAndParams
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.updateStartedProjectAndDiscoveryParamsList
@@ -266,7 +266,7 @@ interface ThanksViewModel {
                 Observable.combineLatest<CheckoutData, PledgeData, Pair<CheckoutData, PledgeData>>(
                     checkoutData,
                     pledgeData
-                ) { a, b -> Pair.create(a, b) }
+                ) { a, b -> Pair(a, b) }
 
             checkoutAndPledgeData
                 .compose(bindToLifecycle())
@@ -277,25 +277,18 @@ interface ThanksViewModel {
                     )
                 }
 
-            val cAPIPurchaseValueAndCurrency = checkoutAndPledgeData.map {
-                Pair(
-                    it.first.amount().toString(),
-                    it.second.projectData().project().currency()
-                )
-            }
-
             SendThirdPartyEventUseCase(sharedPreferences, ffClient)
                 .sendThirdPartyEvent(
-                    project,
-                    apolloClient,
-                    checkoutAndPledgeData,
-                    currentUser,
-                    ThirdPartyEventName.PURCHASE,
+                    project = project,
+                    apolloClient = apolloClient,
+                    currentUser = currentUser,
+                    eventName = ThirdPartyEventValues.EventName.PURCHASE,
+                    checkoutAndPledgeData = checkoutAndPledgeData,
                 )
                 .compose(Transformers.neverError())
                 .compose(bindToLifecycle())
                 .subscribe {
-                    onThirdPartyEventSent.onNext(it.first.triggerThirdPartyEvent()?.success() ?: false)
+                    onThirdPartyEventSent.onNext(it.first)
                 }
 
             checkoutAndPledgeData

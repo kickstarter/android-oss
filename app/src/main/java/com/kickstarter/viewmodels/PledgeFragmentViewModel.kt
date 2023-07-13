@@ -6,7 +6,6 @@ import android.util.Pair
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.facebook.appevents.cloudbridge.ConversionsAPIEventName
 import com.kickstarter.R
 import com.kickstarter.libs.Config
 import com.kickstarter.libs.Environment
@@ -50,7 +49,6 @@ import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.State
-import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCaseV2
 import com.stripe.android.StripeIntentResult
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import io.reactivex.Notification
@@ -1228,19 +1226,19 @@ interface PledgeFragmentViewModel {
                 it.second
             }.distinctUntilChanged()
 
-            SendThirdPartyEventUseCaseV2(sharedPreferences, ffClient)
-                .sendCAPIEvent(
-                    project
-                        .compose(takeWhenV2(changeCard)),
-                    currentUser,
-                    apolloClient,
-                    ConversionsAPIEventName.ADDED_PAYMENT_INFO
-                )
-                .compose(neverErrorV2())
-                .subscribe {
-                    onCAPIEventSent.onNext(it.first.triggerCAPIEvent()?.success() ?: false)
-                }
-                .addToDisposable(disposables)
+//            SendThirdPartyEventUseCaseV2(sharedPreferences, ffClient)
+//                .sendCAPIEvent(
+//                    project
+//                        .compose(takeWhenV2(changeCard)),
+//                    currentUser,
+//                    apolloClient,
+//                    ConversionsAPIEventName.ADDED_PAYMENT_INFO
+//                )
+//                .compose(neverErrorV2())
+//                .subscribe {
+//                    onCAPIEventSent.onNext(it.first.triggerCAPIEvent()?.success() ?: false)
+//                }
+//                .addToDisposable(disposables)
 
             // - Present PaymentSheet if user logged in, and add card button pressed
             val shouldPresentPaymentSheet = PublishSubject.create<Notification<String>>()

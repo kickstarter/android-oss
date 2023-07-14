@@ -13,6 +13,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
@@ -57,7 +59,9 @@ fun KSTextInput(
     onValueChanged: ((String) -> Unit)? = null,
     isError: Boolean = false,
     assistiveText: String? = null,
-    showAssistiveText: Boolean = false
+    showAssistiveText: Boolean = false,
+    hideInput: Boolean = false,
+    trailingIcon: @Composable (() -> Unit)? = null
 ) {
     var value by remember { mutableStateOf("") }
 
@@ -85,6 +89,10 @@ fun KSTextInput(
                 errorCursorColor = colors.kds_alert
             ),
             isError = isError,
+            trailingIcon = trailingIcon,
+            visualTransformation =
+                if (hideInput) PasswordVisualTransformation()
+                else VisualTransformation.None
         )
 
         if (showAssistiveText) {

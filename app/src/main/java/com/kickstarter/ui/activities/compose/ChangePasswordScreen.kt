@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities.compose
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -110,11 +111,11 @@ fun ChangePasswordScreen(
             }
         )
 
-        if (showProgressBar) {
+        AnimatedVisibility(visible = showProgressBar) {
             KSLinearProgressIndicator()
         }
 
-        if (errorMessage.isNotEmpty()) {
+        AnimatedVisibility(visible = errorMessage.isNotEmpty()) {
             KSSnackbarError(text = errorMessage)
         }
 

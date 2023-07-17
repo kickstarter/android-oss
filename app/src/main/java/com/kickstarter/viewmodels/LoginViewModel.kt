@@ -139,7 +139,9 @@ interface LoginViewModel {
                 .subscribe {
                     this.logInButtonIsEnabled.onNext(true)
                     if (it.isOnError) {
-                        it.error?.let { e -> errors.onNext(e) }
+                        it.error?.let { e ->
+                            errors.onNext(e)
+                        }
                     } else {
                         it.value?.let { v -> successResponseData.onNext(v) }
                     }

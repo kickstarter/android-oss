@@ -30,7 +30,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -473,9 +472,9 @@ fun InputsVisuals() {
             assistiveText = if (errorState) "This is an error!" else "Input ERROR to see an error",
             showAssistiveText = errorState || currentInput.isEmpty()
         )
-        
+
         Spacer(modifier = Modifier.height(12.dp))
-        
+
         KSHiddenTextInput(modifier = Modifier.fillMaxWidth(), label = "Password")
     }
 }

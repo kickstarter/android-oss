@@ -108,8 +108,8 @@ fun KSTextInput(
             isError = isError,
             trailingIcon = trailingIcon,
             visualTransformation =
-                if (hideInput) PasswordVisualTransformation()
-                else VisualTransformation.None
+            if (hideInput) PasswordVisualTransformation()
+            else VisualTransformation.None
         )
 
         if (showAssistiveText) {

@@ -231,6 +231,8 @@ class SendThirdPartyEventUseCaseV2Test : KSRobolectricTestCase() {
         assertEquals(true, input.appData.androidConsent)
         assertEquals(false, input.appData.iOSConsent)
         assertEquals("a2", input.appData.extInfo.first())
+        assertEquals(16, input.appData.extInfo.size)
+        assertEquals("6.0.1", input.appData.extInfo[4])
     }
 
     @Test
@@ -283,6 +285,8 @@ class SendThirdPartyEventUseCaseV2Test : KSRobolectricTestCase() {
         assertEquals(true, input.appData.androidConsent)
         assertEquals(false, input.appData.iOSConsent)
         assertEquals("a2", input.appData.extInfo.first())
+        assertEquals(16, input.appData.extInfo.size)
+        assertEquals("6.0.1", input.appData.extInfo[4])
     }
 
     @Test
@@ -411,6 +415,8 @@ class SendThirdPartyEventUseCaseV2Test : KSRobolectricTestCase() {
         assertEquals(true, input.appData.androidConsent)
         assertEquals(false, input.appData.iOSConsent)
         assertEquals("a2", input.appData.extInfo.first())
+        assertEquals(16, input.appData.extInfo.size)
+        assertEquals("6.0.1", input.appData.extInfo[4])
     }
 
     private fun subscribeToThirdPartyEvent(

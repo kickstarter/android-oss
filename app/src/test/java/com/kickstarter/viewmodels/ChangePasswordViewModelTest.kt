@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels
 
 import UpdateUserPasswordMutation
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.R
 import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser

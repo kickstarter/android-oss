@@ -51,7 +51,7 @@ class ChangePasswordActivity : ComponentActivity() {
             KSTheme(useDarkTheme = darkMode) {
                 ChangePasswordScreen(
                     onBackClicked = { onBackPressedDispatcher.onBackPressed() },
-                    onAcceptButtonClicked =  { current,new ->
+                    onAcceptButtonClicked = { current, new ->
                         viewModel.updatePasswordData(current, new)
                         viewModel.inputs.changePasswordClicked()
                     },

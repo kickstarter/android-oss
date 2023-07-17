@@ -65,10 +65,10 @@ fun ChangePasswordScreen(
         var newPasswordLine2 by remember { mutableStateOf("") }
 
         val acceptButtonEnabled = when {
-            currentPassword.isNotEmptyAndAtLeast6Chars()
-                && newPasswordLine1.isNotEmptyAndAtLeast6Chars()
-                && newPasswordLine2.isNotEmptyAndAtLeast6Chars()
-                && newPasswordLine1 == newPasswordLine2 -> true
+            currentPassword.isNotEmptyAndAtLeast6Chars() &&
+                newPasswordLine1.isNotEmptyAndAtLeast6Chars() &&
+                newPasswordLine2.isNotEmptyAndAtLeast6Chars() &&
+                newPasswordLine1 == newPasswordLine2 -> true
 
             else -> false
         }

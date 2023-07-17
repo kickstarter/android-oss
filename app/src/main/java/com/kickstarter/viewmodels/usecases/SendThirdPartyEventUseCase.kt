@@ -24,19 +24,29 @@ class SendThirdPartyEventUseCase(
             (ffClient.getBoolean(FlagKey.ANDROID_CAPI_INTEGRATION) || ffClient.getBoolean(FlagKey.ANDROID_GOOGLE_ANALYTICS))
         )
 
+    /**
+     * Send third party analytics events, with it's properties.
+     *
+     * @param draftPledge pledge holds the values for pledgeAmount and Shipping amount required for the analytics events, when the Checkout has not taken place yet.
+     * and example for this type of events will be ThirdPartyEventValues.EventName.ADD_PAYMENT_INFO, ad the payment methods can change or be added before the
+     * pledge is done.
+     *
+     * @param checkoutAndPledgeData.first holds the information around Checkout, this information is only available once the user hits pledge and becomes a backer.
+     * @param checkoutAndPledgeData.second holds the user selection of reward/addOns, selected location.
+     */
     fun sendThirdPartyEvent(
         project: Observable<Project>,
         apolloClient: ApolloClientType,
+        checkoutAndPledgeData: Observable<Pair<CheckoutData, PledgeData>?> = Observable.just(Pair(null, null)),
         currentUser: CurrentUserType,
         eventName: ThirdPartyEventValues.EventName,
-        firebaseScreen: String? = null,
-        firebasePreviousScreen: String? = null,
-        checkoutAndPledgeData: Observable<Pair<CheckoutData, PledgeData>?> = Observable.just(Pair(null, null)),
+        firebaseScreen: String = "",
+        firebasePreviousScreen: String = "",
+        draftPledge: Pair<Double, Double>? = null,
     ): Observable<Pair<Boolean, String>> {
 
         return project
-            .filter { it.sendThirdPartyEvents() }
-            .filter { canSendEventFlag }
+            .filter { it.sendThirdPartyEvents() ?: false && canSendEventFlag }
             .compose(Transformers.combineLatestPair(currentUser.observable()))
             .compose(Transformers.combineLatestPair(checkoutAndPledgeData))
             .map {
@@ -45,6 +55,7 @@ class SendThirdPartyEventUseCase(
                     canSendEventFlag = canSendEventFlag,
                     firebaseScreen = firebaseScreen,
                     firebasePreviousScreen = firebasePreviousScreen,
+                    draftPledge = draftPledge,
                     rawData = it
                 )
             }

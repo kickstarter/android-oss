@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels
 import android.os.Bundle
 import android.text.SpannableString
 import android.util.Pair
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.R
@@ -24,6 +23,7 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.acceptedCardType
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isFalse
@@ -49,6 +49,7 @@ import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.State
+import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCaseV2
 import com.stripe.android.StripeIntentResult
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import io.reactivex.Notification
@@ -336,6 +337,9 @@ interface PledgeFragmentViewModel {
 
         /** Emits the state LOADONG | DEFAULT when createSetupIntent mutation is called **/
         fun setState(): Observable<State>
+
+        /** Emits with the third party analytic event mutation response **/
+        fun eventSent(): Observable<Boolean>
     }
 
     class PledgeFragmentViewModel(
@@ -447,8 +451,7 @@ interface PledgeFragmentViewModel {
         private val bonusSummaryIsGone = BehaviorSubject.create<Boolean>()
         private val bonusSummaryAmount = BehaviorSubject.create<CharSequence>()
 
-        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-        val onCAPIEventSent = BehaviorSubject.create<Boolean?>()
+        private val thirdpartyEventIsSuccessful = BehaviorSubject.create<Boolean>()
 
         // - Flag to know if the shipping location should be the default one,
         // - meaning we don't have shipping location selected yet
@@ -1223,22 +1226,10 @@ interface PledgeFragmentViewModel {
                 this.cardSelected,
                 this.cardSaved.compose<Pair<StoredCard, Int>>(zipPairV2(this.addedCardPosition))
             ).map {
-                it.second
-            }.distinctUntilChanged()
+                it.second >= 0
+            }
 
-//            SendThirdPartyEventUseCaseV2(sharedPreferences, ffClient)
-//                .sendCAPIEvent(
-//                    project
-//                        .compose(takeWhenV2(changeCard)),
-//                    currentUser,
-//                    apolloClient,
-//                    ConversionsAPIEventName.ADDED_PAYMENT_INFO
-//                )
-//                .compose(neverErrorV2())
-//                .subscribe {
-//                    onCAPIEventSent.onNext(it.first.triggerCAPIEvent()?.success() ?: false)
-//                }
-//                .addToDisposable(disposables)
+            tPAddPaymentMethodEvent(project, changeCard, pledgeData, shippingAmount, total)
 
             // - Present PaymentSheet if user logged in, and add card button pressed
             val shouldPresentPaymentSheet = PublishSubject.create<Notification<String>>()
@@ -1599,6 +1590,57 @@ interface PledgeFragmentViewModel {
                         }
                         else -> {}
                     }
+                }
+                .addToDisposable(disposables)
+        }
+
+        /**
+         * ThirdParty Analytic event sent when there is a change with the selected payment method
+         * it does require pledgeAmount and shipping amount information plus the selected rewards/addOns
+         *
+         * @param project observable with the current project, should always emit
+         * @param changeCard observable that will emit if the selected payment changes
+         * @param pledgeData current user selection to make a pledge, should always emit
+         * @param shippingAmount observable with shipping amount, will emit when reward or addon are shippable
+         * @param total observable with the total amount of the plede, will always emit
+         */
+        private fun tPAddPaymentMethodEvent(
+            project: Observable<Project>,
+            changeCard: Observable<Boolean>,
+            pledgeData: Observable<PledgeData>,
+            shippingAmount: Observable<Double>,
+            total: Observable<Double>
+        ) {
+            project
+                .compose(takeWhenV2(changeCard))
+                .withLatestFrom(pledgeData) { _, pData ->
+                    pData
+                }
+                // - Start with 0 in case of digital reward/addon without shipping
+                .withLatestFrom(shippingAmount.startWith(0.0)) { pData, shipAmount ->
+                    Pair(pData, shipAmount)
+                }
+                .withLatestFrom(total) { data, totAmount ->
+                    val pledData = data.first
+                    val shipAmt = data.second
+                    val pledgAmount = totAmount - shipAmt
+                    val prject = pledData.projectData().project()
+                    Triple(pledData, prject, Pair(pledgAmount, shipAmt))
+                }
+                .switchMap {
+                    SendThirdPartyEventUseCaseV2(sharedPreferences, ffClient)
+                        .sendThirdPartyEvent(
+                            project = Observable.just(it.second),
+                            currentUser = currentUser,
+                            apolloClient = apolloClient,
+                            draftPledge = it.third,
+                            checkoutAndPledgeData = Observable.just(Pair(null, it.first)),
+                            eventName = ThirdPartyEventValues.EventName.ADD_PAYMENT_INFO
+                        )
+                }
+                .compose(neverErrorV2())
+                .subscribe {
+                    thirdpartyEventIsSuccessful.onNext(it.first)
                 }
                 .addToDisposable(disposables)
         }
@@ -2001,6 +2043,8 @@ interface PledgeFragmentViewModel {
             this.showError
 
         override fun setState(): Observable<State> = this.loadingState
+
+        override fun eventSent(): Observable<Boolean> = this.thirdpartyEventIsSuccessful
     }
 
     @Suppress("UNCHECKED_CAST")

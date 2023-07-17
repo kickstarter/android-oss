@@ -20,7 +20,24 @@ data class TPEventItemInputData(val itemId: String, val itemName: String, val pr
  * @param androidConsent reflects the user opt-in value for consent management
  * @param iOSConsent flase in Android by default, reflects the user opt-in value for iOS users
  */
-data class TPAppDataInput(val iOSConsent: Boolean = false, val androidConsent: Boolean = true, val extInfo: List<String> = listOf("a2"))
+data class TPAppDataInput(val iOSConsent: Boolean = false, val androidConsent: Boolean = true, val extInfo: List<String> = listOf(
+    "a2",
+    "",
+    "",
+    "",
+    android.os.Build.VERSION.RELEASE,
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+))
 /***
  * ThirdPartyEventInputData data structure that represents a third party Event, should match 1:1
  * with the GraphQL model [TriggerThirdPartyEventInput]

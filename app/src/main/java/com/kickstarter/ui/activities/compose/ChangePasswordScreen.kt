@@ -74,9 +74,9 @@ fun ChangePasswordScreen(
         }
 
         val warningText = when {
-            newPasswordLine1.isNotEmptyAndAtLeast6Chars()
-                    && newPasswordLine2.isNotEmpty()
-                    && newPasswordLine2 != newPasswordLine1 -> {
+            newPasswordLine1.isNotEmptyAndAtLeast6Chars() &&
+                newPasswordLine2.isNotEmpty() &&
+                newPasswordLine2 != newPasswordLine1 -> {
                 stringResource(id = R.string.Passwords_matching_message)
             }
 

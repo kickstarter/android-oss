@@ -10,12 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Divider
-import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,8 +25,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.libs.utils.extensions.isNotEmptyAndAtLeast6Chars
+import com.kickstarter.ui.compose.designsystem.KSHiddenTextInput
 import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
-import com.kickstarter.ui.compose.designsystem.KSTextInput
+import com.kickstarter.ui.compose.designsystem.KSSnackbarError
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
@@ -44,7 +41,8 @@ fun ChangePasswordPreview() {
         ChangePasswordScreen(
             onBackClicked = { },
             onAcceptButtonClicked = { _, _ -> },
-            showProgressBar = false
+            showProgressBar = false,
+            errorMessage = "This is an error"
         )
     }
 }
@@ -53,7 +51,8 @@ fun ChangePasswordPreview() {
 fun ChangePasswordScreen(
     onBackClicked: () -> Unit,
     onAcceptButtonClicked: (currentPass: String, newPass: String) -> Unit,
-    showProgressBar: Boolean
+    showProgressBar: Boolean,
+    errorMessage: String = ""
 ) {
     Column(
         Modifier
@@ -115,6 +114,10 @@ fun ChangePasswordScreen(
             KSLinearProgressIndicator()
         }
 
+        if (errorMessage.isNotEmpty()) {
+            KSSnackbarError(text = errorMessage)
+        }
+
         Text(
             modifier = Modifier.padding(16.dp),
             text = stringResource(
@@ -130,97 +133,27 @@ fun ChangePasswordScreen(
                 .padding(16.dp)
                 .fillMaxWidth()
         ) {
-            var showCurrentPassword by remember { mutableStateOf(false) }
-            KSTextInput(
+
+            KSHiddenTextInput(
                 modifier = Modifier.fillMaxWidth(),
-                label = stringResource(id = R.string.Current_password),
-                onValueChanged = {
-                    currentPassword = it
-                },
-                hideInput = !showCurrentPassword,
-                trailingIcon = {
-                    IconButton(onClick = {
-                        showCurrentPassword = !showCurrentPassword
-                    }) {
-                        Icon(
-                            imageVector =
-                                if (showCurrentPassword) Icons.Filled.VisibilityOff
-                                else Icons.Filled.Visibility,
-                            contentDescription =
-                                if (showCurrentPassword)
-                                    stringResource(id = R.string.Hide_password)
-                                else
-                                    stringResource(id = R.string.Show_password),
-                            tint =
-                                if (showCurrentPassword) colors.kds_create_700
-                                else colors.kds_support_400
-                        )
-                    }
-                }
+                onValueChanged = { currentPassword = it },
+                label = stringResource(id = R.string.Current_password)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            var showPasswordLine1 by remember { mutableStateOf(false) }
-
-            KSTextInput(
+            KSHiddenTextInput(
                 modifier = Modifier.fillMaxWidth(),
-                label = stringResource(id = R.string.New_password),
-                onValueChanged = {
-                    newPasswordLine1 = it
-                },
-                hideInput = !showPasswordLine1,
-                trailingIcon = {
-                    IconButton(onClick = {
-                        showPasswordLine1 = !showPasswordLine1
-                    }) {
-                        Icon(
-                            imageVector =
-                                if (showPasswordLine1) Icons.Filled.VisibilityOff
-                                else Icons.Filled.Visibility,
-                            contentDescription =
-                                if (showPasswordLine1)
-                                    stringResource(id = R.string.Hide_password)
-                                else
-                                    stringResource(id = R.string.Show_password),
-                            tint =
-                                if (showPasswordLine1) colors.kds_create_700
-                                else colors.kds_support_400
-                        )
-                    }
-                }
+                onValueChanged = { newPasswordLine1 = it },
+                label = stringResource(id = R.string.New_password)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            var showPasswordLine2 by remember { mutableStateOf(false) }
-
-            KSTextInput(
+            KSHiddenTextInput(
                 modifier = Modifier.fillMaxWidth(),
-                label = stringResource(id = R.string.Confirm_password),
-                onValueChanged = {
-                    newPasswordLine2 = it
-                },
-                hideInput = !showPasswordLine2,
-                trailingIcon = {
-                    IconButton(onClick = {
-                        showPasswordLine2 = !showPasswordLine2
-                    }) {
-                        Icon(
-                            imageVector =
-                                if (showPasswordLine2) Icons.Filled.VisibilityOff
-                                else Icons.Filled.Visibility,
-                            contentDescription =
-                                if (showPasswordLine2)
-                                    stringResource(id = R.string.Hide_password)
-                                else
-                                    stringResource(id = R.string.Show_password),
-                            tint =
-                                if (showPasswordLine2) colors.kds_create_700
-                                else colors.kds_support_400
-                        )
-                    }
-                }
+                onValueChanged = { newPasswordLine2 = it },
+                label = stringResource(id = R.string.Confirm_password)
             )
         }
 

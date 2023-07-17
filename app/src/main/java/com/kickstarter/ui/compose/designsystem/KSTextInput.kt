@@ -2,8 +2,13 @@ package com.kickstarter.ui.compose.designsystem
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
@@ -13,10 +18,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 
@@ -28,27 +38,34 @@ fun KSTextInputPreview() {
         var isError by remember { mutableStateOf(false) }
         var showAssistiveText by remember { mutableStateOf(false) }
         var assistiveText by remember { mutableStateOf("") }
-        KSTextInput(
-            label = "Label",
-            onValueChanged = { currentString ->
-                when (currentString) {
-                    "cccccc" -> {
-                        isError = true
-                        showAssistiveText = true
-                        assistiveText = "$currentString is not allowed!"
-                    }
 
-                    else -> {
-                        isError = false
-                        showAssistiveText = false
-                        assistiveText = ""
+        Column {
+            KSTextInput(
+                label = "Label",
+                onValueChanged = { currentString ->
+                    when (currentString) {
+                        "cccccc" -> {
+                            isError = true
+                            showAssistiveText = true
+                            assistiveText = "$currentString is not allowed!"
+                        }
+
+                        else -> {
+                            isError = false
+                            showAssistiveText = false
+                            assistiveText = ""
+                        }
                     }
-                }
-            },
-            isError = isError,
-            assistiveText = assistiveText,
-            showAssistiveText = showAssistiveText
-        )
+                },
+                isError = isError,
+                assistiveText = assistiveText,
+                showAssistiveText = showAssistiveText
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            KSHiddenTextInput(label = "Password")
+        }
     }
 }
 
@@ -108,4 +125,44 @@ fun KSTextInput(
             }
         }
     }
+}
+
+@Composable
+fun KSHiddenTextInput(
+    modifier: Modifier = Modifier,
+    onValueChanged: ((String) -> Unit)? = null,
+    label: String,
+    hideTextByDefault: Boolean = true,
+    visibilityOffIcon: ImageVector = ImageVector.vectorResource(id = R.drawable.ic_visibility_off),
+    visibilityOnIcon: ImageVector = ImageVector.vectorResource(id = R.drawable.ic_visibility_on),
+    offIconContentDescription: String = stringResource(id = R.string.Hide_password),
+    onIconContentDescription: String = stringResource(id = R.string.Show_password),
+    offIconTint: Color = colors.kds_create_700,
+    onIconTint: Color = colors.kds_support_400
+) {
+    var showHiddenText by remember { mutableStateOf(!hideTextByDefault) }
+
+    KSTextInput(
+        modifier = modifier,
+        label = label,
+        onValueChanged = onValueChanged,
+        hideInput = !showHiddenText,
+        trailingIcon = {
+            IconButton(onClick = {
+                showHiddenText = !showHiddenText
+            }) {
+                Icon(
+                    imageVector =
+                    if (showHiddenText) visibilityOffIcon
+                    else visibilityOnIcon,
+                    contentDescription =
+                    if (showHiddenText) offIconContentDescription
+                    else onIconContentDescription,
+                    tint =
+                    if (showHiddenText) offIconTint
+                    else onIconTint
+                )
+            }
+        }
+    )
 }

@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rxjava2.subscribeAsState
@@ -21,14 +22,11 @@ import com.kickstarter.ui.activities.compose.ReportProjectCategoryScreen
 import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.toolbars.compose.TopToolBar
 import com.kickstarter.viewmodels.ReportProjectViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 
 class ReportProjectActivity : ComponentActivity() {
 
     private lateinit var viewModelFactory: ReportProjectViewModel.Factory
     private val viewModel: ReportProjectViewModel.ReportProjectViewModel by viewModels { viewModelFactory }
-    private var disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,16 +35,10 @@ class ReportProjectActivity : ComponentActivity() {
             viewModelFactory = ReportProjectViewModel.Factory(env, arguments = intent.extras)
         }
 
-        disposables.add(
-            this.viewModel.outputs.openExternalBrowserWithUrl()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    ApplicationUtils.openUrlExternally(this, it)
-                }
-        )
-
         setContent {
             MaterialTheme {
+                OpenExternalLink()
+
                 var shouldNavigate by rememberSaveable { mutableStateOf(false) }
                 val onBack = {
                     if (shouldNavigate)
@@ -98,8 +90,12 @@ class ReportProjectActivity : ComponentActivity() {
         }
     }
 
-    override fun onDestroy() {
-        disposables.clear()
-        super.onDestroy()
+    @Composable
+    private fun OpenExternalLink() {
+        val openUrl =
+            this.viewModel.openExternalBrowserWithUrl().subscribeAsState(initial = "").value
+        if (openUrl.isNotEmpty()) {
+            ApplicationUtils.openUrlExternally(this, openUrl)
+        }
     }
 }

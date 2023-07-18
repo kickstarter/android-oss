@@ -112,7 +112,7 @@ fun ChangePasswordScreen(
         )
 
         AnimatedVisibility(visible = showProgressBar) {
-            KSLinearProgressIndicator()
+            KSLinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
 
         AnimatedVisibility(visible = errorMessage.isNotEmpty()) {

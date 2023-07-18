@@ -107,6 +107,10 @@ interface ChangePasswordViewModel {
             this.confirmPassword.onNext(newPassword)
         }
 
+        fun resetError() {
+            this.error.onNext("")
+        }
+
         override fun changePasswordClicked() {
             this.changePasswordClicked.onNext(Unit)
         }

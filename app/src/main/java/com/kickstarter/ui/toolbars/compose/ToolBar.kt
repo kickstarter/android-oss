@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.kds_black
 import com.kickstarter.ui.compose.designsystem.kds_celebrate_700
+import com.kickstarter.ui.compose.designsystem.kds_support_700
 
 @Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
 @Composable
@@ -37,18 +38,22 @@ fun ToolBarPreview() {
 @Composable
 fun TopToolBar(
     title: String? = null,
+    titleColor: Color ? = null,
     leftIcon: ImageVector = Icons.Filled.ArrowBack,
     leftOnClickAction: () -> Unit = {},
+    leftIconColor: Color? = null,
     right: @Composable () -> Unit = {},
-    middle: @Composable () -> Unit = {}
+    middle: @Composable () -> Unit = {},
+    backgroundColor: Color? = null
 ) {
     TopAppBar(
         title = {
             title?.let {
                 Text(
-                    title,
+                    text = title,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    color = titleColor ?: kds_support_700
                 )
             }
         },
@@ -56,7 +61,8 @@ fun TopToolBar(
             IconButton(onClick = { leftOnClickAction() }) {
                 Icon(
                     imageVector = leftIcon,
-                    contentDescription = stringResource(id = R.string.back)
+                    contentDescription = stringResource(id = R.string.back),
+                    tint = leftIconColor ?: kds_black
                 )
             }
         },
@@ -64,7 +70,7 @@ fun TopToolBar(
             middle()
             right()
         },
-        backgroundColor = colorResource(id = R.color.kds_white)
+        backgroundColor = backgroundColor ?: colorResource(id = R.color.kds_white)
     )
 }
 

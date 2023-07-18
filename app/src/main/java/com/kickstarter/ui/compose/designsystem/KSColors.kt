@@ -84,35 +84,35 @@ val KSLightCustomColors = KSCustomColors(
 // TODO: Change colors to reflect actual dark theme when available
 val KSDarkCustomColors = KSCustomColors(
     // Greens
-    kds_create_100 = Color(0xFFE6FAF1),
-    kds_create_300 = Color(0xFF9BEBC9),
-    kds_create_500 = Color(0xFF05CE78),
-    kds_create_700 = Color(0xFF028858),
+    kds_create_100 = Color(0xFF028858),
+    kds_create_300 = Color(0xFF05CE78),
+    kds_create_500 = Color(0xFF9BEBC9),
+    kds_create_700 = Color(0xFFE6FAF1),
 
     // BLUES
-    kds_trust_100 = Color(0xFFDBE7FF),
-    kds_trust_300 = Color(0xFF71A0FF),
-    kds_trust_500 = Color(0xFF5555FF),
-    kds_trust_700 = Color(0xFF0A007D),
+    kds_trust_100 = Color(0xFF0A007D),
+    kds_trust_300 = Color(0xFF5555FF),
+    kds_trust_500 = Color(0xFF71A0FF),
+    kds_trust_700 = Color(0xFFDBE7FF),
 
     // CORALS
-    kds_celebrate_100 = Color(0xFFFFF2EC),
-    kds_celebrate_300 = Color(0xFFFECCB3),
-    kds_celebrate_500 = Color(0xFFF97B62),
-    kds_celebrate_700 = Color(0xFFD8503D),
+    kds_celebrate_100 = Color(0xFFD8503D),
+    kds_celebrate_300 = Color(0xFFF97B62),
+    kds_celebrate_500 = Color(0xFFFECCB3),
+    kds_celebrate_700 = Color(0xFFFFF2EC),
 
     // GREYS
-    kds_white = Color(0xFFFFFFFF),
-    kds_support_100 = Color(0xFFF3F3F3),
-    kds_support_200 = Color(0xFFE6E6E6),
-    kds_support_300 = Color(0xFFD1D1D1),
-    kds_support_400 = Color(0xFF696969),
-    kds_support_500 = Color(0xFF464646),
-    kds_support_700 = Color(0xFF222222),
-    kds_black = Color(0xFF000000),
+    kds_white = Color(0xff000000),
+    kds_support_100 = Color(0xFF222222),
+    kds_support_200 = Color(0xFF464646),
+    kds_support_300 = Color(0xFF696969),
+    kds_support_400 = Color(0xFFD1D1D1),
+    kds_support_500 = Color(0xFFE6E6E6),
+    kds_support_700 = Color(0xFFF3F3F3),
+    kds_black = Color(0xFFFFFFFF),
 
     // FUNCTIONAL COLORS
-    kds_alert = Color(0xFFA12027),
+    kds_alert = Color(0xFFF97B62),
     kds_warn = Color(0xFFF9D66D),
     kds_inform = Color(0xFFB6D9E1),
     facebook_blue = Color(0xFF1877F2),

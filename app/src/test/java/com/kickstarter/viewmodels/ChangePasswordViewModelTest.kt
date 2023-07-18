@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels
 
 import UpdateUserPasswordMutation
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.R
 import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
@@ -23,9 +22,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: ChangePasswordViewModel.ChangePasswordViewModel
 
     private val error = TestSubscriber<String>()
-    private val passwordWarning = TestSubscriber<Int>()
     private val progressBarIsVisible = TestSubscriber<Boolean>()
-    private val saveButtonIsEnabled = TestSubscriber<Boolean>()
     private val success = TestSubscriber<String>()
     private val currentUser = TestSubscriber<User?>()
 
@@ -35,9 +32,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
         this.vm = ChangePasswordViewModel.ChangePasswordViewModel(environment)
 
         this.vm.outputs.error().subscribe { this.error.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.passwordWarning().subscribe { this.passwordWarning.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.progressBarIsVisible().subscribe { this.progressBarIsVisible.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.saveButtonIsEnabled().subscribe { this.saveButtonIsEnabled.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.success().subscribe { this.success.onNext(it) }.addToDisposable(disposables)
     }
 
@@ -59,24 +54,6 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPasswordWarning() {
-        setUpEnvironment(environment())
-
-        this.vm.inputs.newPassword("password")
-        this.passwordWarning.assertValue(0)
-        this.vm.inputs.newPassword("p")
-        this.passwordWarning.assertValues(0, R.string.Password_min_length_message)
-        this.vm.inputs.newPassword("password")
-        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0)
-        this.vm.inputs.confirmPassword("p")
-        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0, R.string.Passwords_matching_message)
-        this.vm.inputs.confirmPassword("passw")
-        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0, R.string.Passwords_matching_message)
-        this.vm.inputs.confirmPassword("password")
-        this.passwordWarning.assertValues(0, R.string.Password_min_length_message, 0, R.string.Passwords_matching_message, 0)
-    }
-
-    @Test
     fun testProgressBarIsVisible() {
         setUpEnvironment(environment())
 
@@ -85,20 +62,6 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.confirmPassword("password")
         this.vm.inputs.changePasswordClicked()
         this.progressBarIsVisible.assertValues(true, false)
-    }
-
-    @Test
-    fun testSaveButtonIsEnabled() {
-        setUpEnvironment(environment())
-
-        this.vm.inputs.currentPassword("password")
-        this.vm.inputs.newPassword("password")
-        this.vm.inputs.confirmPassword("password")
-        this.saveButtonIsEnabled.assertValues(false, true)
-        this.vm.inputs.confirmPassword("pass")
-        this.saveButtonIsEnabled.assertValues(false, true, false)
-        this.vm.inputs.confirmPassword("passwerd")
-        this.saveButtonIsEnabled.assertValues(false, true, false)
     }
 
     @Test

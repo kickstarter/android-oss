@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.runtime.setValue
 import com.kickstarter.libs.Logout
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -44,7 +45,7 @@ class ChangePasswordActivity : ComponentActivity() {
             // Replace with feature flag
             var darkMode by remember { mutableStateOf(false) }
 
-            var showProgressBar by remember { mutableStateOf(false) }
+            var showProgressBar = viewModel.outputs.progressBarIsVisible().subscribeAsState(initial = false).value
 
             var errorMessage by remember { mutableStateOf("") }
 
@@ -60,19 +61,12 @@ class ChangePasswordActivity : ComponentActivity() {
                 )
             }
 
-            this.viewModel.outputs.progressBarIsVisible()
-                .compose(Transformers.observeForUIV2())
-                .subscribe {
-                    showProgressBar = it
-                }
-                .addToDisposable(disposables)
-
             this.viewModel.outputs.error()
                 .compose(Transformers.observeForUIV2())
                 .subscribe {
                     errorMessage = it
                     Handler(Looper.getMainLooper()).postDelayed({
-                        errorMessage = ""
+                        viewModel.resetError()
                     }, 2750)
                 }
                 .addToDisposable(disposables)

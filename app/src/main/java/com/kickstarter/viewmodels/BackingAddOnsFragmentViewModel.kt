@@ -266,7 +266,6 @@ class BackingAddOnsFragmentViewModel {
             Observable
                 .combineLatest(this.retryButtonPressed.startWith(false), project, location, reward) {
                         _, pj, shipRuleLocation, reward ->
-
                     return@combineLatest projectSlugAndLocation(pj, reward, shipRuleLocation)
                 }
                 .filter {

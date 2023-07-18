@@ -1,5 +1,6 @@
 package com.kickstarter.services.transformers
 
+import TriggerThirdPartyEventMutation
 import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.libs.Permission
 import com.kickstarter.libs.utils.extensions.negate
@@ -26,15 +27,19 @@ import com.kickstarter.models.UserPrivacy
 import com.kickstarter.models.Video
 import com.kickstarter.models.Web
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
+import com.kickstarter.viewmodels.usecases.TPEventInputData
 import fragment.FullProject
 import fragment.ProjectCard
 import org.jetbrains.annotations.Nullable
 import org.joda.time.DateTime
+import type.AppDataInput
 import type.CollaboratorPermission
 import type.CreditCardPaymentType
 import type.CurrencyCode
 import type.RewardType
 import type.ShippingPreference
+import type.ThirdPartyEventItemInput
+import type.TriggerThirdPartyEventInput
 import java.nio.charset.Charset
 import kotlin.math.absoluteValue
 
@@ -782,5 +787,44 @@ fun shippingRulesListTransformer(shippingRulesExpanded: List<fragment.ShippingRu
     return ShippingRulesEnvelope
         .builder()
         .shippingRules(shippingRulesList)
+        .build()
+}
+
+/**
+ * From KS dataModel TPEventInputData, transform it into
+ * GraphQL defined mutation TriggerThirdPartyEventMutation
+ */
+fun getTriggerThirdPartyEventMutation(eventInput: TPEventInputData): TriggerThirdPartyEventMutation {
+    val graphAppData = AppDataInput.builder()
+        .advertiserTrackingEnabled(eventInput.appData.iOSConsent)
+        .applicationTrackingEnabled(eventInput.appData.androidConsent)
+        .extinfo(eventInput.appData.extInfo)
+        .build()
+
+    val items: List<ThirdPartyEventItemInput> = eventInput.items
+        .map {
+            ThirdPartyEventItemInput.builder()
+                .itemId(it.itemId)
+                .itemName(it.itemName)
+                .price(it.price)
+                .build()
+        }
+
+    val graphInput =
+        TriggerThirdPartyEventInput.builder()
+            .userId(eventInput.userId)
+            .eventName(eventInput.eventName)
+            .deviceId(eventInput.deviceId)
+            .firebaseScreen(eventInput.firebaseScreen)
+            .firebasePreviousScreen(eventInput.firebasePreviousScreen)
+            .projectId(eventInput.projectId)
+            .pledgeAmount(eventInput.pledgeAmount)
+            .shipping(eventInput.shipping)
+            .appData(graphAppData)
+            .items(items)
+            .transactionId(eventInput.transactionId)
+            .build()
+
+    return TriggerThirdPartyEventMutation.builder().triggerThirdPartyEventInput(graphInput)
         .build()
 }

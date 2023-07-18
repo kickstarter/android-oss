@@ -35,14 +35,8 @@ interface ChangePasswordViewModel {
         /** Emits when the password update was unsuccessful. */
         fun error(): Observable<String>
 
-        /** Emits a string resource to display when the user's new password entries are invalid. */
-        fun passwordWarning(): Observable<Int>
-
         /** Emits when the progress bar should be visible. */
         fun progressBarIsVisible(): Observable<Boolean>
-
-        /** Emits when the save button should be enabled. */
-        fun saveButtonIsEnabled(): Observable<Boolean>
 
         /** Emits when the password update was successful. */
         fun success(): Observable<String>
@@ -56,9 +50,7 @@ interface ChangePasswordViewModel {
         private val newPassword = PublishSubject.create<String>()
 
         private val error = BehaviorSubject.create<String>()
-        private val passwordWarning = BehaviorSubject.create<Int>()
         private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
-        private val saveButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val success = BehaviorSubject.create<String>()
 
         val inputs: Inputs = this
@@ -76,16 +68,6 @@ interface ChangePasswordViewModel {
                 this.newPassword.startWith(""),
                 this.confirmPassword.startWith("")
             ) { current, new, confirm -> ChangePassword(current, new, confirm) }
-
-            changePassword
-                .map { it.warning() }
-                .distinctUntilChanged()
-                .subscribe(this.passwordWarning)
-
-            changePassword
-                .map { it.isValid() }
-                .distinctUntilChanged()
-                .subscribe(this.saveButtonIsEnabled)
 
             val changePasswordNotification = changePassword
                 .compose(takeWhenV2(this.changePasswordClicked))
@@ -119,6 +101,12 @@ interface ChangePasswordViewModel {
                 .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
         }
 
+        fun updatePasswordData(oldPassword: String, newPassword: String) {
+            this.currentPassword.onNext(oldPassword)
+            this.newPassword.onNext(newPassword)
+            this.confirmPassword.onNext(newPassword)
+        }
+
         override fun changePasswordClicked() {
             this.changePasswordClicked.onNext(Unit)
         }
@@ -139,16 +127,8 @@ interface ChangePasswordViewModel {
             return this.error
         }
 
-        override fun passwordWarning(): Observable<Int> {
-            return this.passwordWarning
-        }
-
         override fun progressBarIsVisible(): Observable<Boolean> {
             return this.progressBarIsVisible
-        }
-
-        override fun saveButtonIsEnabled(): Observable<Boolean> {
-            return this.saveButtonIsEnabled
         }
 
         override fun success(): Observable<String> {

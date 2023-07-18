@@ -20,7 +20,28 @@ data class TPEventItemInputData(val itemId: String, val itemName: String, val pr
  * @param androidConsent reflects the user opt-in value for consent management
  * @param iOSConsent flase in Android by default, reflects the user opt-in value for iOS users
  */
-data class TPAppDataInput(val iOSConsent: Boolean = false, val androidConsent: Boolean = true, val extInfo: List<String> = listOf("a2"))
+data class TPAppDataInput(
+    val iOSConsent: Boolean = false,
+    val androidConsent: Boolean = true,
+    val extInfo: List<String> = listOf(
+        "a2",
+        "",
+        "",
+        "",
+        android.os.Build.VERSION.RELEASE,
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+    )
+)
 /***
  * ThirdPartyEventInputData data structure that represents a third party Event, should match 1:1
  * with the GraphQL model [TriggerThirdPartyEventInput]
@@ -45,6 +66,7 @@ interface BuildInput {
         canSendEventFlag: Boolean,
         firebaseScreen: String? = null,
         firebasePreviousScreen: String? = null,
+        draftPledge: Pair<Double, Double>? = null,
         rawData: Pair<Pair<Project, User?>, Pair<CheckoutData, PledgeData>?>
     ): TPEventInputData {
 
@@ -72,10 +94,18 @@ interface BuildInput {
             }
         }
 
+        // - Checkout information will be available after user becomes a backer, util for `Purchase` type of events, empty otherwise
         rawData.second?.first?.let { checkoutData ->
             pAmount = checkoutData.amount()
             shipping = checkoutData.shippingAmount()
             transactionId = checkoutData.id().toString()
+        }
+
+        // - Draft pledge information available when pledge economic values are required before the user becomes a backer, util for
+        // `Add_payment_method` type of events
+        draftPledge?.let {
+            pAmount = it.first
+            shipping = it.second
         }
 
         return TPEventInputData(

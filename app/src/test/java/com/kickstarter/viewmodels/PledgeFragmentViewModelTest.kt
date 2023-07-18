@@ -9,6 +9,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.MockSharedPreferences
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.EventName
@@ -17,6 +18,7 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.trimAllWhitespace
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockCurrentConfigV2
+import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.CheckoutFactory
 import com.kickstarter.mock.factories.ConfigFactory
@@ -40,6 +42,7 @@ import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.ui.ArgumentsKey
+import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
@@ -48,6 +51,7 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.State
 import com.kickstarter.viewmodels.PledgeFragmentViewModel.PledgeFragmentViewModel
+import com.kickstarter.viewmodels.usecases.TPEventInputData
 import com.stripe.android.StripeIntentResult
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -56,6 +60,7 @@ import junit.framework.TestCase
 import org.joda.time.DateTime
 import org.junit.After
 import org.junit.Test
+import org.mockito.Mockito
 import type.CreditCardTypes
 import java.math.RoundingMode
 import java.net.CookieManager
@@ -132,6 +137,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val localPickupName = TestSubscriber<String>()
     private val showError = TestSubscriber<String>()
     private val loadingState = TestSubscriber<State>()
+    private val thirdPartyEvent = TestSubscriber<Boolean>()
     private val disposables = CompositeDisposable()
 
     @After
@@ -239,6 +245,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.localPickUpName().subscribe { this.localPickupName.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.showError().subscribe { this.showError.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.setState().subscribe { this.loadingState.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.eventSent().subscribe { this.thirdPartyEvent.onNext(it) }.addToDisposable(disposables)
     }
 
     @Test
@@ -252,6 +259,58 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.baseUrlForTerms.assertValue("www.test.dev")
     }
 
+    @Test
+    fun testThirdPartyEventAddPaymentMethodSent_withFeatureFlagsOn_ConsentManagement_On() {
+        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false)).thenReturn(true)
+
+        val card = StoredCardFactory.discoverCard()
+        val mockCurrentUser = MockCurrentUserV2(UserFactory.user())
+        val project = ProjectFactory.project().toBuilder()
+            .deadline(this.deadline)
+            .build()
+
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    return true
+                }
+            }
+
+        val environment = environment()
+            .toBuilder()
+            .sharedPreferences(sharedPreferences)
+            .currentUserV2(mockCurrentUser)
+            .featureFlagClient(mockFeatureFlagClient)
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(listOf(card))
+                }
+
+                override fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope> {
+                    return Observable.just(ShippingRulesEnvelopeFactory.shippingRules())
+                }
+
+                override fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>> {
+                    return Observable.just(Pair(true, ""))
+                }
+            }).build()
+
+        setUpEnvironment(environment, project = project)
+
+        this.cardsAndProject.assertValue(Pair(listOf(card), project))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
+
+        val visa = StoredCardFactory.visa()
+        this.vm.inputs.cardSaved(visa)
+        this.vm.inputs.addedCardPosition(0)
+
+        this.cardsAndProject.assertValue(Pair(Collections.singletonList(card), project))
+        this.addedCard.assertValue(Pair(visa, project))
+        this.showSelectedCard.assertValues(Pair(0, CardState.SELECTED), Pair(0, CardState.SELECTED))
+
+        thirdPartyEvent.assertValue(true)
+    }
     @Test
     fun testCards_whenLoggedIn_userHasCards() {
         val card = StoredCardFactory.discoverCard()

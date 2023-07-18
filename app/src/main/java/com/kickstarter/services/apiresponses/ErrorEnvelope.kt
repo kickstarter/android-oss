@@ -122,9 +122,9 @@ class ErrorEnvelope private constructor(
             TFA_REQUIRED != ksrCode()
 
     /**
-     * Returns the first error message available, or `null` if there are none.
+     * Returns the first error message available, or "" if there are none.
      */
-    fun errorMessage(): String? = errorMessages()?.firstOrNull()
+    fun errorMessage(): String = errorMessages()?.firstOrNull() ?: ""
 
     override fun equals(other: Any?): Boolean {
         var equals = super.equals(other)
@@ -153,14 +153,15 @@ class ErrorEnvelope private constructor(
 
         /**
          * Tries to extract an [ErrorEnvelope] from an exception, and if it
-         * can't returns null.
+         * can't returns Empty [ErrorEnvelope].
          */
         @JvmStatic
-        fun fromThrowable(t: Throwable): ErrorEnvelope? {
+        fun fromThrowable(t: Throwable): ErrorEnvelope {
             if (t is ApiException) {
                 return t.errorEnvelope()
             }
-            return null
+
+            return ErrorEnvelope.builder().errorMessages(listOf(t.message ?: "")).build()
         }
     }
 }

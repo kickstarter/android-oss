@@ -13,8 +13,10 @@ import com.kickstarter.libs.utils.RewardUtils.isDigital
 import com.kickstarter.libs.utils.RewardUtils.isLocalPickup
 import com.kickstarter.libs.utils.RewardUtils.isShippable
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.models.Backing
+import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -262,20 +264,22 @@ class BackingAddOnsFragmentViewModel {
                 .map { requireNotNull(it) }
 
             Observable
-                .combineLatest(this.retryButtonPressed.startWith(false), project, location) {
-                        _, pj, shipRuleLocation ->
-
-                    val projectSlug = pj.slug() ?: ""
-
-                    return@combineLatest this.apolloClient
-                        .getProjectAddOns(projectSlug, shipRuleLocation)
+                .combineLatest(this.retryButtonPressed.startWith(false), project, location, reward) {
+                        _, pj, shipRuleLocation, reward ->
+                    return@combineLatest projectSlugAndLocation(pj, reward, shipRuleLocation)
+                }
+                .filter {
+                    it.first.isNotEmpty()
+                }
+                .switchMap {
+                    this.apolloClient
+                        .getProjectAddOns(it.first, it.second)
                         .doOnError {
                             this.showErrorDialog.onNext(true)
                             this.shippingSelectorIsGone.onNext(true)
                         }
                         .onErrorResumeNext(Observable.empty())
                 }
-                .switchMap { it }
                 .filter { ObjectUtils.isNotNull(it) }
                 .subscribe { addOnsFromGraph.onNext(it) }
                 .addToDisposable(disposables)
@@ -351,6 +355,21 @@ class BackingAddOnsFragmentViewModel {
                     this.showPledgeFragment.onNext(it)
                 }
                 .addToDisposable(disposables)
+        }
+
+        private fun projectSlugAndLocation(
+            pj: Project,
+            reward: Reward,
+            shipRuleLocation: Location
+        ): Pair<String, Location> {
+            val projectSlug = pj.slug()
+
+            // - Location for Shippable rewards must not be empty
+            return if (isShippable(reward) && shipRuleLocation.id() > 0 && !projectSlug.isNullOrEmpty()) {
+                Pair(projectSlug, shipRuleLocation)
+            } else if (!isShippable(reward) && !projectSlug.isNullOrEmpty()) {
+                Pair(projectSlug, shipRuleLocation)
+            } else Pair("", LocationFactory.empty()) // - In case some combination fails return empty slug and location
         }
 
         /**

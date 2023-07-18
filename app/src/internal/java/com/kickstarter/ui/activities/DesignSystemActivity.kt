@@ -4,9 +4,11 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -14,8 +16,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -26,9 +30,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
@@ -41,6 +45,7 @@ import com.kickstarter.ui.compose.designsystem.KSFacebookButton
 import com.kickstarter.ui.compose.designsystem.KSFullButtonFooter
 import com.kickstarter.ui.compose.designsystem.KSGooglePayButton
 import com.kickstarter.ui.compose.designsystem.KSGreenBadge
+import com.kickstarter.ui.compose.designsystem.KSHiddenTextInput
 import com.kickstarter.ui.compose.designsystem.KSIntercept
 import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSPrimaryBlackButton
@@ -65,7 +70,6 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.KsTooltip
-import com.kickstarter.ui.toolbars.compose.ToolbarIconToggleButton
 import com.kickstarter.ui.toolbars.compose.TopToolBar
 
 class DesignSystemActivity : ComponentActivity() {
@@ -86,7 +90,8 @@ class DesignSystemActivity : ComponentActivity() {
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true)
 @Composable
 fun DesignSystemViewPreview() {
-    var darkMode = remember { mutableStateOf(false) }
+    val currentTheme = isSystemInDarkTheme()
+    var darkMode = remember { mutableStateOf(currentTheme) }
     KSTheme(useDarkTheme = darkMode.value) {
 
         DesignSystemView(darkMode = darkMode)
@@ -100,12 +105,23 @@ fun DesignSystemView(darkMode: MutableState<Boolean>) {
     Column {
         TopToolBar(
             title = "Design System",
+            titleColor = colors.kds_black,
+            leftIconColor = colors.kds_black,
             right = {
-                ToolbarIconToggleButton(
-                    icon = ImageVector.vectorResource(id = R.drawable.ic_sun),
-                    clickAction = { darkMode.value = !darkMode.value }
-                )
-            }
+                IconButton(
+                    onClick = { darkMode.value = !darkMode.value },
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_sun),
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+                        colorFilter = ColorFilter.tint(
+                            color = colors.kds_black
+                        )
+                    )
+                }
+            },
+            backgroundColor = colors.kds_white
         )
         LazyColumn(
             Modifier
@@ -456,6 +472,10 @@ fun InputsVisuals() {
             assistiveText = if (errorState) "This is an error!" else "Input ERROR to see an error",
             showAssistiveText = errorState || currentInput.isEmpty()
         )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        KSHiddenTextInput(modifier = Modifier.fillMaxWidth(), label = "Password")
     }
 }
 

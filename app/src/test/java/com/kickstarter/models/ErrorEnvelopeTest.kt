@@ -1,9 +1,14 @@
 package com.kickstarter.models
 
+import com.kickstarter.services.ApiException
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope.Companion.builder
 import junit.framework.TestCase
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Test
+import retrofit2.Response
+import java.lang.Exception
 
 class ErrorEnvelopeTest : TestCase() {
 
@@ -65,5 +70,56 @@ class ErrorEnvelopeTest : TestCase() {
         assertNotSame(envelope.facebookUser(), envelope1.facebookUser())
         assertNotSame(envelope.httpCode(), envelope1.httpCode())
         assertEquals(envelope.ksrCode(), envelope1.ksrCode())
+    }
+
+    @Test
+    fun testEmptyErrorEnvelope() {
+        val envelope = builder().build()
+
+        assertEquals(envelope.errorMessage(), "")
+        assertEquals(envelope.facebookUser(), null)
+        assertEquals(envelope.httpCode(), 0)
+        assertEquals(envelope.ksrCode(), "")
+    }
+
+    @Test
+    fun testEmptyErrorEnvelopeFromThrowable() {
+        val envelope = builder().build()
+
+        assertEquals(envelope.errorMessage(), "")
+        assertEquals(envelope.facebookUser(), null)
+        assertEquals(envelope.httpCode(), 0)
+        assertEquals(envelope.ksrCode(), "")
+
+        val throwable = Exception("errorMessage")
+        val errorEnvelope = ErrorEnvelope.fromThrowable(throwable)
+
+        assertEquals(errorEnvelope.errorMessage(), "errorMessage")
+        assertEquals(errorEnvelope.httpCode(), 0)
+        assertEquals(errorEnvelope.ksrCode(), "")
+        assertEquals(errorEnvelope.facebookUser(), null)
+    }
+
+    @Test
+    fun testAPIErrorEnvelopeFromThrowable() {
+        val envelope = builder().build()
+
+        assertEquals(envelope.errorMessage(), "")
+        assertEquals(envelope.facebookUser(), null)
+        assertEquals(envelope.httpCode(), 0)
+        assertEquals(envelope.ksrCode(), "")
+
+        val errorResponse = Response.error<Int>(
+            400,
+            "".toResponseBody("application/json; charset=utf-8".toMediaTypeOrNull())
+        )
+
+        val throwable = ApiException(envelope, errorResponse)
+        val errorEnvelope = ErrorEnvelope.fromThrowable(throwable)
+
+        assertEquals(errorEnvelope.errorMessage(), "")
+        assertEquals(errorEnvelope.httpCode(), 0)
+        assertEquals(errorEnvelope.ksrCode(), "")
+        assertEquals(errorEnvelope.facebookUser(), null)
     }
 }

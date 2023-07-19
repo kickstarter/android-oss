@@ -18,8 +18,8 @@ We've also open sourced our iOS app, written in Swift:
 _Follow these instructions to build and run the project with mock data.._
 
 1. Clone this repository.
-2. Download the appropriate [JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-for your system. We are currently on JDK 8.
+2. Download the appropriate [JDK](https://www.oracle.com/java/technologies/downloads/#java17)
+for your system. We are currently on JDK 17.
 3. [Install Android Studio](https://developer.android.com/sdk/index.html).
 4. `cd` into the project repo and run `make bootstrap` to bootstrap your Android
    development environment. Keep an eye on the output to see if any manual steps

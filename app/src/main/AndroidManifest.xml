@@ -51,7 +51,8 @@
         <activity android:name=".ui.activities.CreatorBioActivity" />
         <activity
             android:name=".ui.activities.ChangePasswordActivity"
-            android:theme="@style/SettingsActivity" />
+            android:theme="@style/SettingsActivity"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".ui.activities.CommentsActivity"
             android:theme="@style/WhiteActivity" />

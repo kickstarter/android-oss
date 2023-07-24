@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -36,55 +38,95 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 fun SnackbarsPreview() {
     KSTheme {
         Column() {
-            KSSnackbarError(text = "This is some sort of error, better do something about it.  Or don't, im just a text box!")
+            KSErrorRoundedText(text = "This is some sort of error, better do something about it.  Or don't, im just a text box!")
             Spacer(Modifier.height(12.dp))
-            KSSnackbarHeadsUp(text = "Heads up, something is going on that needs your attention.  Maybe its important, maybe its informational.")
+            KSHeadsUpRoundedText(text = "Heads up, something is going on that needs your attention.  Maybe its important, maybe its informational.")
             Spacer(Modifier.height(12.dp))
-            KSSnackbarSuccess(text = "Hey, something went right and all is good!")
+            KSSuccessRoundedText(text = "Hey, something went right and all is good!")
         }
     }
 }
 
 @Composable
-fun KSSnackbar(
+fun KSErrorSnackbar(
+    text: String,
+    padding: PaddingValues = PaddingValues(0.dp)
+) {
+    Snackbar(
+        backgroundColor = colors.kds_alert,
+        content = {
+            KSErrorRoundedText(text = text, padding = padding)
+        })
+}
+
+@Composable
+fun KSHeadsupSnackbar(
+    text: String,
+    padding: PaddingValues = PaddingValues(0.dp)
+) {
+    Snackbar(
+        backgroundColor = colors.kds_alert,
+        content = {
+            KSHeadsUpRoundedText(text = text, padding = padding)
+        })
+}
+
+@Composable
+fun KSSuccessSnackbar(
+    text: String,
+    padding: PaddingValues = PaddingValues(0.dp)
+) {
+    Snackbar(
+        backgroundColor = colors.kds_alert,
+        content = {
+            KSSuccessRoundedText(text = text, padding = padding)
+        })
+}
+
+@Composable
+fun KSRoundedPaddedText(
     background: Color,
     textColor: Color,
-    text: String
+    text: String,
+    padding: PaddingValues = PaddingValues(16.dp)
 ) {
     Text(
         modifier = Modifier
             .background(background, shape = shapes.small)
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(padding),
         text = text,
         color = textColor,
     )
 }
 
 @Composable
-fun KSSnackbarError(text: String) {
-    KSSnackbar(
+fun KSErrorRoundedText(text: String, padding: PaddingValues = PaddingValues(16.dp)) {
+    KSRoundedPaddedText(
         background = colors.kds_alert,
         textColor = colors.kds_white,
-        text = text
+        text = text,
+        padding = padding
     )
 }
 
 @Composable
-fun KSSnackbarHeadsUp(text: String) {
-    KSSnackbar(
+fun KSHeadsUpRoundedText(text: String, padding: PaddingValues = PaddingValues(16.dp)) {
+    KSRoundedPaddedText(
         background = colors.kds_support_700,
         textColor = colors.kds_white,
-        text = text
+        text = text,
+        padding = padding
     )
 }
 
 @Composable
-fun KSSnackbarSuccess(text: String) {
-    KSSnackbar(
+fun KSSuccessRoundedText(text: String, padding: PaddingValues = PaddingValues(16.dp)) {
+    KSRoundedPaddedText(
         background = colors.kds_create_300,
         textColor = colors.kds_support_700,
-        text = text
+        text = text,
+        padding = padding
     )
 }
 

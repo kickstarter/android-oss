@@ -23,7 +23,7 @@ import com.kickstarter.R
 fun KSImageTextBannerPreview() {
     KSImageTextBanner(
         imageResToDisplay = R.drawable.ic_alert,
-        textResToDisplay = R.string.After_August_14_2023_this_Dashboard_feature_will_only_be_available_on_our_website,
+        textResToDisplay = R.string.After_September_5_2023_this_Dashboard_feature_will_only_be_available_on_our_website,
         textColorRes = R.color.kds_white,
         backgroundColorRes = R.color.kds_alert
     )

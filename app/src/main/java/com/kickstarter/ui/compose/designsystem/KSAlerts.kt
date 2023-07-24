@@ -56,7 +56,8 @@ fun KSErrorSnackbar(
         backgroundColor = colors.kds_alert,
         content = {
             KSErrorRoundedText(text = text, padding = padding)
-        })
+        }
+    )
 }
 
 @Composable
@@ -68,7 +69,8 @@ fun KSHeadsupSnackbar(
         backgroundColor = colors.kds_alert,
         content = {
             KSHeadsUpRoundedText(text = text, padding = padding)
-        })
+        }
+    )
 }
 
 @Composable
@@ -80,7 +82,8 @@ fun KSSuccessSnackbar(
         backgroundColor = colors.kds_alert,
         content = {
             KSSuccessRoundedText(text = text, padding = padding)
-        })
+        }
+    )
 }
 
 @Composable

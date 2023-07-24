@@ -65,9 +65,11 @@ class ChangePasswordActivity : ComponentActivity() {
                 .compose(Transformers.observeForUIV2())
                 .subscribe {
                     errorMessage = it
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        viewModel.resetError()
-                    }, 2750)
+                    if (it.isNotEmpty()) {
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            viewModel.resetError()
+                        }, 2750)
+                    }
                 }
                 .addToDisposable(disposables)
         }

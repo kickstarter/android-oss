@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -77,7 +79,9 @@ fun KSTextInput(
     assistiveText: String? = null,
     showAssistiveText: Boolean = false,
     hideInput: Boolean = false,
-    trailingIcon: @Composable (() -> Unit)? = null
+    trailingIcon: @Composable (() -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(),
+    keyboardActions: KeyboardActions = KeyboardActions()
 ) {
     var value by remember { mutableStateOf("") }
 
@@ -108,7 +112,9 @@ fun KSTextInput(
             trailingIcon = trailingIcon,
             visualTransformation =
             if (hideInput) PasswordVisualTransformation()
-            else VisualTransformation.None
+            else VisualTransformation.None,
+            keyboardOptions = keyboardOptions,
+            keyboardActions = keyboardActions
         )
 
         if (showAssistiveText) {
@@ -137,7 +143,9 @@ fun KSHiddenTextInput(
     offIconContentDescription: String = stringResource(id = R.string.Hide_password),
     onIconContentDescription: String = stringResource(id = R.string.Show_password),
     offIconTint: Color = colors.kds_create_700,
-    onIconTint: Color = colors.kds_support_400
+    onIconTint: Color = colors.kds_support_400,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(),
+    keyboardActions: KeyboardActions = KeyboardActions()
 ) {
     var showHiddenText by remember { mutableStateOf(!hideTextByDefault) }
 
@@ -162,6 +170,8 @@ fun KSHiddenTextInput(
                     else onIconTint
                 )
             }
-        }
+        },
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions
     )
 }

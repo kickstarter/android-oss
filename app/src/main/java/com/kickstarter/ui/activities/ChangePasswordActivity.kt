@@ -2,11 +2,11 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,9 +45,12 @@ class ChangePasswordActivity : ComponentActivity() {
             // Replace with feature flag
             var darkMode by remember { mutableStateOf(false) }
 
-            var showProgressBar = viewModel.outputs.progressBarIsVisible().subscribeAsState(initial = false).value
+            var showProgressBar =
+                viewModel.outputs.progressBarIsVisible().subscribeAsState(initial = false).value
 
-            var errorMessage by remember { mutableStateOf("") }
+            var error = viewModel.outputs.error().subscribeAsState(initial = "").value
+
+            var scaffoldState = rememberScaffoldState()
 
             KSTheme(useDarkTheme = darkMode) {
                 ChangePasswordScreen(
@@ -57,21 +60,18 @@ class ChangePasswordActivity : ComponentActivity() {
                         viewModel.inputs.changePasswordClicked()
                     },
                     showProgressBar = showProgressBar,
-                    errorMessage = errorMessage
+                    scaffoldState = scaffoldState
                 )
             }
 
-            this.viewModel.outputs.error()
-                .compose(Transformers.observeForUIV2())
-                .subscribe {
-                    errorMessage = it
-                    if (it.isNotEmpty()) {
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            viewModel.resetError()
-                        }, 2750)
+            when {
+                error.isNotEmpty() -> {
+                    LaunchedEffect(scaffoldState) {
+                        scaffoldState.snackbarHostState.showSnackbar(error)
+                        viewModel.resetError()
                     }
                 }
-                .addToDisposable(disposables)
+            }
         }
 
         this.logout = getEnvironment()?.logout()

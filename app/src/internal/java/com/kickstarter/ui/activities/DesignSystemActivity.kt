@@ -41,10 +41,12 @@ import com.kickstarter.ui.compose.designsystem.KSAlertDialogNoHeadline
 import com.kickstarter.ui.compose.designsystem.KSCheckbox
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSCoralBadge
+import com.kickstarter.ui.compose.designsystem.KSErrorRoundedText
 import com.kickstarter.ui.compose.designsystem.KSFacebookButton
 import com.kickstarter.ui.compose.designsystem.KSFullButtonFooter
 import com.kickstarter.ui.compose.designsystem.KSGooglePayButton
 import com.kickstarter.ui.compose.designsystem.KSGreenBadge
+import com.kickstarter.ui.compose.designsystem.KSHeadsUpRoundedText
 import com.kickstarter.ui.compose.designsystem.KSHiddenTextInput
 import com.kickstarter.ui.compose.designsystem.KSIntercept
 import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
@@ -59,11 +61,9 @@ import com.kickstarter.ui.compose.designsystem.KSSmallBlueButton
 import com.kickstarter.ui.compose.designsystem.KSSmallButtonFooter
 import com.kickstarter.ui.compose.designsystem.KSSmallRedButton
 import com.kickstarter.ui.compose.designsystem.KSSmallWhiteButton
-import com.kickstarter.ui.compose.designsystem.KSSnackbarError
-import com.kickstarter.ui.compose.designsystem.KSSnackbarHeadsUp
-import com.kickstarter.ui.compose.designsystem.KSSnackbarSuccess
 import com.kickstarter.ui.compose.designsystem.KSStepper
 import com.kickstarter.ui.compose.designsystem.KSStringDropdown
+import com.kickstarter.ui.compose.designsystem.KSSuccessRoundedText
 import com.kickstarter.ui.compose.designsystem.KSSwitch
 import com.kickstarter.ui.compose.designsystem.KSTextInput
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -177,15 +177,15 @@ fun AlertsVisuals() {
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        KSSnackbarError(text = "This is some sort of error, better do something about it.  Or don't, im just a text box!")
+        KSErrorRoundedText(text = "This is some sort of error, better do something about it.  Or don't, im just a text box!")
 
         Spacer(Modifier.height(12.dp))
 
-        KSSnackbarHeadsUp(text = "Heads up, something is going on that needs your attention.  Maybe its important, maybe its informational.")
+        KSHeadsUpRoundedText(text = "Heads up, something is going on that needs your attention.  Maybe its important, maybe its informational.")
 
         Spacer(Modifier.height(12.dp))
 
-        KSSnackbarSuccess(text = "Hey, something went right and all is good!")
+        KSSuccessRoundedText(text = "Hey, something went right and all is good!")
 
         Spacer(Modifier.height(12.dp))
 

@@ -16,7 +16,7 @@
       "Add_ons_unavailable": "Add-ons unavailable",
       "Add_new_card": "Add new card",
       "Add_attachments": "Add attachments…",
-      "After_August_14_2023_this_Dashboard_feature_will_only_be_available_on_our_website": "After August 14, 2023, this Dashboard feature will only be available on our website.",
+      "After_September_5_2023_this_Dashboard_feature_will_only_be_available_on_our_website": "After September 5, 2023, this Dashboard feature will only be available on our website.",
       "Alert": "Alert",
       "All_Projects": "All Projects",
       "All_category_name_Projects": "All %{category_name} Projects",
@@ -2493,7 +2493,7 @@
       "Add_ons_unavailable": "Add-ons nicht verfügbar",
       "Add_new_card": "Kreditkarte hinzufügen",
       "Add_attachments": "Anhänge hinzufügen ...",
-      "After_August_14_2023_this_Dashboard_feature_will_only_be_available_on_our_website": "Nach dem 14. August 2023 ist das Dashboard nur noch auf unserer Website verfügbar.",
+      "After_September_5_2023_this_Dashboard_feature_will_only_be_available_on_our_website": "Nach dem 5. September 2023 ist das Dashboard nur noch auf unserer Website verfügbar.",
       "Alert": "Hinweis",
       "All_Projects": "Alle Projekte",
       "All_category_name_Projects": "Alle Projekte in %{category_name}",
@@ -4952,7 +4952,8 @@
         "message": "Du scheinst eine sehr alte Version der App zu benutzen. Um fortzufahren, installiere bitte die neueste Version aus dem App Store.",
         "cancel": "Abbrechen",
         "upgrade": "Aktualisierung"
-      }
+      },
+      "After_August_14_2023_this_Dashboard_feature_will_only_be_available_on_our_website": "Nach dem 14. August 2023 ist das Dashboard nur noch auf unserer Website verfügbar."
     },
     "es": {
       "Abuse": "Acoso, violencia y abuso",
@@ -4970,7 +4971,7 @@
       "Add_ons_unavailable": "Complementos no disponibles",
       "Add_new_card": "Añadir una nueva tarjeta",
       "Add_attachments": "Agregar anexos …",
-      "After_August_14_2023_this_Dashboard_feature_will_only_be_available_on_our_website": "Después del 14 de agosto de 2023, este panel solo estará disponible en nuestro sitio web.",
+      "After_September_5_2023_this_Dashboard_feature_will_only_be_available_on_our_website": "Después del 5 de septiembre de 2023, este panel solo estará disponible en nuestro sitio web.",
       "Alert": "Alerta",
       "All_Projects": "Todos los proyectos",
       "All_category_name_Projects": "Todos los proyectos de %{category_name}",
@@ -7429,7 +7430,8 @@
         "message": "Parece que estás usando una versión muy antigua de esta aplicación. Por favor descarga la última versión en la App Store para continuar usándola.",
         "cancel": "Cancelar",
         "upgrade": "Actualizar"
-      }
+      },
+      "After_August_14_2023_this_Dashboard_feature_will_only_be_available_on_our_website": "Después del 14 de agosto de 2023, este panel solo estará disponible en nuestro sitio web."
     },
     "fr": {
       "Abuse": "Harcèlement, violence et abus",
@@ -7447,7 +7449,7 @@
       "Add_ons_unavailable": "Compléments non disponibles",
       "Add_new_card": "Ajouter une autre carte",
       "Add_attachments": "Ajouter des pièces jointes...",
-      "After_August_14_2023_this_Dashboard_feature_will_only_be_available_on_our_website": "À compter du 14 août 2023, ce tableau de bord ne sera disponible que sur notre site Web.",
+      "After_September_5_2023_this_Dashboard_feature_will_only_be_available_on_our_website": "À compter du 5 septembre 2023, ce tableau de bord ne sera disponible que sur notre site Web.",
       "Alert": "Alerte",
       "All_Projects": "Tous les projets",
       "All_category_name_Projects": "Tous les projets %{category_name}",
@@ -9906,7 +9908,8 @@
         "message": "On dirait que vous utilisez une ancienne version de l'application. Veuillez la mettre à jour depuis l'App Store pour continuer à l'utiliser.",
         "cancel": "Annuler",
         "upgrade": "Mise à jour"
-      }
+      },
+      "After_August_14_2023_this_Dashboard_feature_will_only_be_available_on_our_website": "À compter du 14 août 2023, ce tableau de bord ne sera disponible que sur notre site Web."
     },
     "it": {
       "Abuse": "Abuse",
@@ -9924,7 +9927,7 @@
       "Add_ons_unavailable": "Add-ons unavailable",
       "Add_new_card": "Add new card",
       "Add_attachments": "Add attachments…",
-      "After_August_14_2023_this_Dashboard_feature_will_only_be_available_on_our_website": "After August 14, 2023, this Dashboard feature will only be available on our website.",
+      "After_September_5_2023_this_Dashboard_feature_will_only_be_available_on_our_website": "After September 5, 2023, this Dashboard feature will only be available on our website.",
       "Alert": "Alert",
       "All_Projects": "All Projects",
       "All_category_name_Projects": "All %{category_name} Projects",
@@ -12401,7 +12404,7 @@
       "Add_ons_unavailable": "アドオン (追加リワード) は利用できません",
       "Add_new_card": "新しいカードを追加",
       "Add_attachments": "添付ファイルを追加...",
-      "After_August_14_2023_this_Dashboard_feature_will_only_be_available_on_our_website": "2023年8月14日以降、このダッシュボード機能は Kickstarter ウェブサイトでのみご利用いただけます。",
+      "After_September_5_2023_this_Dashboard_feature_will_only_be_available_on_our_website": "2023年9月5日以降、このダッシュボード機能は Kickstarter ウェブサイトでのみご利用いただけます。",
       "Alert": "個の警告",
       "All_Projects": "全てのプロジェクト",
       "All_category_name_Projects": "%{category_name} の全プロジェクト",
@@ -12543,7 +12546,7 @@
       "Create_password": "パスワードを作成",
       "Created_projects_projects_count": "%{projects_count} のプロジェクト作成済",
       "Creator": "クリエイター",
-      "Creator_dashboard_removal_warning": "After %{expiration_date}, the Dashboard and Post Update features will only be available on our website.",
+      "Creator_dashboard_removal_warning": "%{expiration_date}以降、ダッシュボード機能とアップデート投稿機能は Kickstarter ウェブサイトでのみご利用いただけます。",
       "Creator_name_was_live_time_ago": "<b>%{creator_name}</b>は%{time_ago} まで進行中でした",
       "Creator_name_is_live_now": "<b>%{creator_name}</b>が進行中",
       "Creator_name_is_streaming_live_on_Kickstarter": "%{creator_name} がKickstarterでライブ配信中",
@@ -14860,7 +14863,8 @@
         "message": "引き続き利用するにはApp Storeからアプリのバージョンを更新してください。",
         "cancel": "キャンセル",
         "upgrade": "アップグレード"
-      }
+      },
+      "After_August_14_2023_this_Dashboard_feature_will_only_be_available_on_our_website": "2023年8月14日以降、このダッシュボード機能は Kickstarter ウェブサイトでのみご利用いただけます。"
     },
     "zh": {
       "Abuse": "Abuse",
@@ -14878,7 +14882,7 @@
       "Add_ons_unavailable": "Add-ons unavailable",
       "Add_new_card": "Add new card",
       "Add_attachments": "Add attachments…",
-      "After_August_14_2023_this_Dashboard_feature_will_only_be_available_on_our_website": "After August 14, 2023, this Dashboard feature will only be available on our website.",
+      "After_September_5_2023_this_Dashboard_feature_will_only_be_available_on_our_website": "After September 5, 2023, this Dashboard feature will only be available on our website.",
       "Alert": "Alert",
       "All_Projects": "All Projects",
       "All_category_name_Projects": "All %{category_name} Projects",
@@ -17346,7 +17350,7 @@
     "ios_new_relic": false,
     "ios_go_rewardless": false,
     "ios_hockey_app": false,
-    "ios_koala": true,
+    "ios_koala": false,
     "ios_i18n": true,
     "ios_tappable_category_location": true,
     "ios_favorite_categories": true,

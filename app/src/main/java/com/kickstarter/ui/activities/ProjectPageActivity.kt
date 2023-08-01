@@ -395,7 +395,7 @@ class ProjectPageActivity :
      * @param updateTabs
      */
     private fun configureTabs(updateTabs: List<PagerTabConfig>) {
-        updateTabs.forEach {tabConfig ->
+        updateTabs.forEach { tabConfig ->
             if (tabConfig.isActive) {
                 // - avoid adding the tab if it already exists
                 if (!pagerAdapterList.contains(tabConfig.tab)) {

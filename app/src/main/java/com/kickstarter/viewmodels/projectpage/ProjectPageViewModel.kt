@@ -563,8 +563,12 @@ interface ProjectPageViewModel {
                 .subscribe {
                     this.projectData.onNext(it)
                     val showEnvironmentalTab = it.project().envCommitments()?.isNotEmpty() ?: false
-                    val tabConfig = PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, showEnvironmentalTab)
-                    this.updateTabs.onNext(listOf(tabConfig))
+                    val tabConfigEnv = PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, showEnvironmentalTab)
+
+                    val showAiTab = it.project().aiDisclosure() != null
+                    val tabConfigAi = PagerTabConfig(ProjectPagerTabs.USE_OF_AI, showAiTab)
+
+                    this.updateTabs.onNext(listOf(tabConfigAi, tabConfigEnv))
                 }
 
             currentProject

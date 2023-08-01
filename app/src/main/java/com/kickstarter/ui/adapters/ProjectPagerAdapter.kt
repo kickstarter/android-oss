@@ -8,6 +8,7 @@ import com.kickstarter.libs.Configure
 import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.projectpage.FrequentlyAskedQuestionFragment
+import com.kickstarter.ui.fragments.projectpage.ProjectAIFragment
 import com.kickstarter.ui.fragments.projectpage.ProjectCampaignFragment
 import com.kickstarter.ui.fragments.projectpage.ProjectEnvironmentalCommitmentsFragment
 import com.kickstarter.ui.fragments.projectpage.ProjectOverviewFragment
@@ -33,7 +34,7 @@ class ProjectPagerAdapter(
             ProjectPagerTabs.RISKS ->
                 ProjectRiskFragment.newInstance(position)
             ProjectPagerTabs.USE_OF_AI ->
-                ProjectRiskFragment.newInstance(position) // TODO - Create
+                ProjectAIFragment.newInstance(position)
             ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT ->
                 ProjectEnvironmentalCommitmentsFragment.newInstance(position)
         }

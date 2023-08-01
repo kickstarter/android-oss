@@ -17,7 +17,7 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.compose.ChangePasswordScreen
-import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.viewmodels.ChangePasswordViewModel
 import io.reactivex.disposables.CompositeDisposable
@@ -50,7 +50,7 @@ class ChangePasswordActivity : ComponentActivity() {
 
             var scaffoldState = rememberScaffoldState()
 
-            KSTheme(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
+            KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
                 ChangePasswordScreen(
                     onBackClicked = { onBackPressedDispatcher.onBackPressed() },
                     onAcceptButtonClicked = { current, new ->

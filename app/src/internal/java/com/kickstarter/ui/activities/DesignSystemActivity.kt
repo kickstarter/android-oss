@@ -71,6 +71,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
+import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.compose.designsystem.KsTooltip
 import com.kickstarter.ui.toolbars.compose.TopToolBar
 
@@ -80,8 +81,10 @@ class DesignSystemActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             var darkMode = remember { mutableStateOf(false) }
-            KSTheme(useDarkTheme = darkMode.value) {
-                DesignSystemView(darkMode = darkMode, onBackClicked = { onBackPressedDispatcher.onBackPressed() })
+            KickstarterApp(useDarkTheme = darkMode.value) {
+                DesignSystemView(
+                    darkMode = darkMode,
+                    onBackClicked = { onBackPressedDispatcher.onBackPressed() })
             }
         }
     }

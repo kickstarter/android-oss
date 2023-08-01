@@ -5,6 +5,7 @@ import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.libs.Permission
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.mock.factories.RewardFactory
+import com.kickstarter.models.AiDisclosure
 import com.kickstarter.models.Avatar
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Category
@@ -315,6 +316,9 @@ fun projectTransformer(projectFragment: FullProject?): Project {
     val eCommitment = projectFragment?.environmentalCommitments()?.map {
         environmentalCommitmentTransformer(it.fragments().environmentalCommitment())
     } ?: emptyList()
+    val aiDisclosure = projectFragment?.aiDisclosure()?.let {
+        aiDisclosureTransformer(it)
+    } ?: null
     val risks = projectFragment?.risks()
     val story = projectFragment?.story()?.toString() ?: ""
     val userCanComment = projectFragment?.canComment() ?: false
@@ -371,10 +375,28 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         .video(video)
         .projectFaqs(faqs)
         .envCommitments(eCommitment)
+        .aiDisclosure(aiDisclosure)
         .risks(risks)
         .story(story)
         .isFlagged(isFlagged)
         .watchesCount(watchesCount)
+        .build()
+}
+
+/**
+ * Transform the AiDisclosure GraphQL data structure into our own AiDisclosure data model
+ * @param FullProject.AiDisclosure aiDisclosureGraph
+ * @return AiDisclosure
+ */
+fun aiDisclosureTransformer(aiDisclosureGraph: FullProject.AiDisclosure): AiDisclosure {
+    return AiDisclosure.builder()
+        .id(decodeRelayId(aiDisclosureGraph.id()) ?: -1)
+        .fundingForAiAttribution(aiDisclosureGraph.fundingForAiAttribution())
+        .fundingForAiConsent(aiDisclosureGraph.fundingForAiConsent())
+        .fundingForAiOption(aiDisclosureGraph.fundingForAiOption())
+        .generatedByAiConsent(aiDisclosureGraph.generatedByAiConsent())
+        .generatedByAiDetails(aiDisclosureGraph.generatedByAiDetails())
+        .otherAiDetails(aiDisclosureGraph.otherAiDetails())
         .build()
 }
 

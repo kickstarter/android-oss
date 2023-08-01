@@ -19,6 +19,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT
+import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.AI
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.CAMPAIGN
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.ENVIRONMENT
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.FAQS
@@ -59,6 +60,8 @@ import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
 import java.util.concurrent.TimeUnit
+
+class PagerTabConfig(val tab: ProjectPagerTabs, val isActive: Boolean)
 
 interface ProjectPageViewModel {
     interface Inputs {
@@ -246,7 +249,7 @@ interface ProjectPageViewModel {
         fun backingViewGroupIsVisible(): Observable<Boolean>
 
         /** Will emmit the need to show/hide the Campaign Tab and the Environmental Tab. */
-        fun updateTabs(): Observable<Boolean>
+        fun updateTabs(): Observable<List<PagerTabConfig>>
 
         fun hideVideoPlayer(): Observable<Boolean>
 
@@ -332,7 +335,7 @@ interface ProjectPageViewModel {
         private val projectMedia = PublishSubject.create<MediaElement>()
         private val playButtonIsVisible = PublishSubject.create<Boolean>()
         private val backingViewGroupIsVisible = PublishSubject.create<Boolean>()
-        private val updateTabs = PublishSubject.create<Boolean>()
+        private val updateTabs = PublishSubject.create<List<PagerTabConfig>>()
         private val onOpenVideoInFullScreen = PublishSubject.create<kotlin.Pair<String, Long>>()
         private val updateVideoCloseSeekPosition = BehaviorSubject.create<Long>()
 
@@ -560,7 +563,8 @@ interface ProjectPageViewModel {
                 .subscribe {
                     this.projectData.onNext(it)
                     val showEnvironmentalTab = it.project().envCommitments()?.isNotEmpty() ?: false
-                    this.updateTabs.onNext(showEnvironmentalTab)
+                    val tabConfig = PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, showEnvironmentalTab)
+                    this.updateTabs.onNext(listOf(tabConfig))
                 }
 
             currentProject
@@ -979,6 +983,7 @@ interface ProjectPageViewModel {
             ProjectPagerTabs.CAMPAIGN.ordinal -> CAMPAIGN.contextName
             ProjectPagerTabs.FAQS.ordinal -> FAQS.contextName
             ProjectPagerTabs.RISKS.ordinal -> RISKS.contextName
+            ProjectPagerTabs.USE_OF_AI.ordinal -> AI.contextName
             ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal -> ENVIRONMENT.contextName
             else -> OVERVIEW.contextName
         }
@@ -1225,7 +1230,7 @@ interface ProjectPageViewModel {
         override fun onOpenVideoInFullScreen(): Observable<kotlin.Pair<String, Long>> = this.onOpenVideoInFullScreen
 
         @NonNull
-        override fun updateTabs(): Observable<Boolean> = this.updateTabs
+        override fun updateTabs(): Observable<List<PagerTabConfig>> = this.updateTabs
 
         @NonNull
         override fun hideVideoPlayer(): Observable<Boolean> = this.hideVideoPlayer

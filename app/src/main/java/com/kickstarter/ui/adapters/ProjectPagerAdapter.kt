@@ -32,6 +32,8 @@ class ProjectPagerAdapter(
                 ProjectCampaignFragment.newInstance(position)
             ProjectPagerTabs.RISKS ->
                 ProjectRiskFragment.newInstance(position)
+            ProjectPagerTabs.USE_OF_AI ->
+                ProjectRiskFragment.newInstance(position) // TODO - Create
             ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT ->
                 ProjectEnvironmentalCommitmentsFragment.newInstance(position)
         }

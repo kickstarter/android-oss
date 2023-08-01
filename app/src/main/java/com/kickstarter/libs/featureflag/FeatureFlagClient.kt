@@ -2,7 +2,6 @@ package com.kickstarter.libs.featureflag
 
 import android.app.Activity
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.Build.isInternal
@@ -62,6 +61,7 @@ enum class FlagKey(val key: String) {
     ANDROID_GOOGLE_ANALYTICS("android_google_analytics"),
     ANDROID_PRE_LAUNCH_SCREEN("android_pre_launch_screen"),
     ANDROID_CREATOR_DASHBOARD_DEPRECATION("android_creator_dashboard_deprecation"),
+    ANDROID_AI_TAB("android_ai_tab"),
     ANDROID_DARK_MODE_ENABLED("android_dark_mode_enabled")
 }
 

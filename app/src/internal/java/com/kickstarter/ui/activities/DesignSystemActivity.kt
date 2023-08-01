@@ -102,7 +102,7 @@ fun DesignSystemViewPreview() {
 @Composable
 fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    Scaffold (
+    Scaffold(
         topBar = {
             TopToolBar(
                 title = "Design System",

@@ -8,11 +8,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rxjava2.subscribeAsState
-import androidx.compose.runtime.setValue
 import com.kickstarter.libs.Logout
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers

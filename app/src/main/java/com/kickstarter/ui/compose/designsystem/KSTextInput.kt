@@ -27,9 +27,9 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 
 @Composable
@@ -64,7 +64,7 @@ fun KSTextInputPreview() {
                 showAssistiveText = showAssistiveText
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
             KSHiddenTextInput(label = "Password")
         }
@@ -97,7 +97,10 @@ fun KSTextInput(
             label = { Text(text = label) },
             maxLines = 1,
             textStyle = typography.callout,
-            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+            shape = RoundedCornerShape(
+                topStart = dimensions.radiusMediumLarge,
+                topEnd = dimensions.radiusMediumLarge
+            ),
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = colors.kds_support_200,
                 errorLabelColor = colors.kds_alert,
@@ -121,7 +124,10 @@ fun KSTextInput(
         if (showAssistiveText) {
             assistiveText?.let {
                 Text(
-                    modifier = Modifier.padding(start = 16.dp, top = 6.dp),
+                    modifier = Modifier.padding(
+                        start = dimensions.paddingMedium,
+                        top = dimensions.assistiveTextTopSpacing
+                    ),
                     text = it,
                     color =
                     if (isError) colors.kds_alert

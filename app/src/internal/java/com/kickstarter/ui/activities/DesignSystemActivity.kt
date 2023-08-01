@@ -36,7 +36,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSAlertDialog
 import com.kickstarter.ui.compose.designsystem.KSAlertDialogNoHeadline
@@ -70,6 +69,7 @@ import com.kickstarter.ui.compose.designsystem.KSSwitch
 import com.kickstarter.ui.compose.designsystem.KSTextInput
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.compose.designsystem.KsTooltip
 import com.kickstarter.ui.toolbars.compose.TopToolBar
@@ -116,7 +116,7 @@ fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit)
                         Image(
                             painter = painterResource(id = R.drawable.ic_sun),
                             contentDescription = null,
-                            modifier = Modifier.size(32.dp),
+                            modifier = Modifier.size(dimensions.imageSizeLarge),
                             colorFilter = ColorFilter.tint(
                                 color = colors.kds_black
                             )
@@ -136,40 +136,40 @@ fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit)
                     interactionSource = MutableInteractionSource(),
                     indication = null
                 ) { keyboardController?.hide() },
-            contentPadding = PaddingValues(8.dp)
+            contentPadding = PaddingValues(dimensions.paddingSmall)
         ) {
             item {
                 AlertsVisuals()
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
                 ButtonsVisuals()
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
                 BadgesVisuals()
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
                 ControlsVisuals()
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
                 InputsVisuals()
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
                 ProgressIndicatorsVisuals()
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
                 FootersVisuals()
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
                 TypographyVisuals()
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(dimensions.listItemSpacingLarge))
             }
         }
     }
@@ -180,19 +180,19 @@ fun AlertsVisuals() {
     Column {
         Text(text = "Alerts", style = typography.title1Bold, color = colors.kds_support_700)
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         KSErrorRoundedText(text = "This is some sort of error, better do something about it.  Or don't, im just a text box!")
 
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         KSHeadsUpRoundedText(text = "Heads up, something is going on that needs your attention.  Maybe its important, maybe its informational.")
 
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         KSSuccessRoundedText(text = "Hey, something went right and all is good!")
 
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         var showNoHeaderDialog by remember { mutableStateOf(false) }
 
@@ -210,7 +210,7 @@ fun AlertsVisuals() {
                 rightButtonText = "Right Button"
             )
         }
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         var showHeaderDialog by remember { mutableStateOf(false) }
 
@@ -230,7 +230,7 @@ fun AlertsVisuals() {
             )
         }
 
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         var showTooltip by remember { mutableStateOf(false) }
 
@@ -248,7 +248,7 @@ fun AlertsVisuals() {
             )
         }
 
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         var showIntercept by remember { mutableStateOf(false) }
 
@@ -274,19 +274,19 @@ fun ButtonsVisuals() {
     Column {
         Text(text = "Buttons", style = typography.title1Bold, color = colors.kds_support_700)
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         KSPrimaryGreenButton(onClickAction = { }, text = "Primary Green Button", isEnabled = true)
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         KSPrimaryBlueButton(onClickAction = { }, text = "Primary Blue Button", isEnabled = true)
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         KSPrimaryBlackButton(onClickAction = { }, text = "Primary Black Button", isEnabled = true)
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         KSSecondaryWhiteButton(
             onClickAction = { },
@@ -294,32 +294,32 @@ fun ButtonsVisuals() {
             isEnabled = true
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         KSSecondaryGreyButton(onClickAction = { }, text = "Secondary Grey Button", isEnabled = true)
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         KSSecondaryRedButton(onClickAction = { }, text = "Secondary Red Button", isEnabled = true)
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         KSFacebookButton(onClickAction = { }, text = "Facebook Button", isEnabled = true)
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         KSGooglePayButton(onClickAction = { }, isEnabled = true)
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         Row {
             KSSmallBlueButton(onClickAction = {}, text = "SMALL", isEnabled = true)
 
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(dimensions.listItemSpacingMediumSmall))
 
             KSSmallRedButton(onClickAction = {}, text = "SMALL", isEnabled = true)
 
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(dimensions.listItemSpacingMediumSmall))
 
             KSSmallWhiteButton(onClickAction = {}, text = "SMALL", isEnabled = true)
         }
@@ -331,11 +331,11 @@ fun BadgesVisuals() {
     Column {
         Text(text = "Badges", style = typography.title1Bold, color = colors.kds_support_700)
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         KSGreenBadge(text = "Green Badge")
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         KSCoralBadge(text = "Coral Badge")
     }
@@ -346,7 +346,7 @@ fun ControlsVisuals() {
     Column {
         Text(text = "Controls", style = typography.title1Bold, color = colors.kds_support_700)
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         Row {
             var switch1Checked by remember { mutableStateOf(true) }
@@ -356,23 +356,23 @@ fun ControlsVisuals() {
                 onCheckChanged = { switch1Checked = it }
             )
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(dimensions.listItemSpacingSmall))
 
             KSSwitch(
                 checked = switch2Checked,
                 onCheckChanged = { switch2Checked = it }
             )
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(dimensions.listItemSpacingSmall))
 
             KSSwitch(checked = switch1Checked, onCheckChanged = {}, enabled = false)
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(dimensions.listItemSpacingSmall))
 
             KSSwitch(checked = switch2Checked, onCheckChanged = {}, enabled = false)
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         Row {
             var radioButtonSelected by remember { mutableStateOf(1) }
@@ -382,30 +382,30 @@ fun ControlsVisuals() {
                 onClick = { radioButtonSelected = 1 }
             )
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(dimensions.listItemSpacingSmall))
 
             KSRadioButton(
                 selected = radioButtonSelected == 2,
                 onClick = { radioButtonSelected = 2 }
             )
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(dimensions.listItemSpacingSmall))
 
             KSRadioButton(
                 selected = radioButtonSelected == 3,
                 onClick = { radioButtonSelected = 3 }
             )
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(dimensions.listItemSpacingSmall))
 
             KSRadioButton(selected = true, onClick = {}, enabled = false)
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(dimensions.listItemSpacingSmall))
 
             KSRadioButton(selected = false, onClick = {}, enabled = false)
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         Row {
             var checkBox1 by remember { mutableStateOf(false) }
@@ -414,24 +414,24 @@ fun ControlsVisuals() {
 
             KSCheckbox(checked = checkBox1, onCheckChanged = { checkBox1 = it })
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(dimensions.listItemSpacingSmall))
 
             KSCheckbox(checked = checkBox2, onCheckChanged = { checkBox2 = it })
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(dimensions.listItemSpacingSmall))
 
             KSCheckbox(checked = checkBox3, onCheckChanged = { checkBox3 = it })
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(dimensions.listItemSpacingSmall))
 
             KSCheckbox(checked = false, onCheckChanged = {}, enabled = false)
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(dimensions.listItemSpacingSmall))
 
             KSCheckbox(checked = true, onCheckChanged = {}, enabled = false)
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             var count by remember { mutableStateOf(0) }
@@ -442,12 +442,12 @@ fun ControlsVisuals() {
                 isMinusEnabled = count > 0
             )
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(dimensions.listItemSpacingSmall))
 
             Text(text = "$$count", style = typography.body)
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         KSStringDropdown(
             items = arrayOf("Coffee", "Soda", "Water", "Other"),
@@ -461,7 +461,7 @@ fun InputsVisuals() {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(text = "Inputs", style = typography.title1Bold, color = colors.kds_support_700)
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         val errorText = "ERROR"
         var errorState by remember { mutableStateOf(false) }
@@ -478,7 +478,7 @@ fun InputsVisuals() {
             showAssistiveText = errorState || currentInput.isEmpty()
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         KSHiddenTextInput(modifier = Modifier.fillMaxWidth(), label = "Password")
     }
@@ -493,15 +493,15 @@ fun ProgressIndicatorsVisuals() {
             color = colors.kds_support_700
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         KSLinearProgressIndicator(Modifier.fillMaxWidth())
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         KSCircularProgressIndicator()
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         var progress by remember { mutableStateOf(0.0f) }
 
@@ -512,11 +512,11 @@ fun ProgressIndicatorsVisuals() {
             isMinusEnabled = progress > 0f
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         KSLinearProgressIndicator(modifier = Modifier.fillMaxWidth(), progress = progress)
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         KSCircularProgressIndicator(progress = progress)
     }
@@ -527,11 +527,11 @@ fun FootersVisuals() {
     Column {
         Text(text = "Footers", style = typography.title1Bold, color = colors.kds_support_700)
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         KSFullButtonFooter(buttonText = "Back this project", onClickAction = {})
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         KSSmallButtonFooter(
             buttonText = "Manage",
@@ -547,7 +547,7 @@ fun TypographyVisuals() {
     Column {
         Text(text = "Typography", style = typography.title1Bold, color = colors.kds_support_700)
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensions.listItemSpacingMediumSmall))
 
         Text(text = "Title 1", style = typography.title1, color = colors.kds_support_700)
         Text(text = "Title 1 Bold", style = typography.title1Bold, color = colors.kds_support_700)

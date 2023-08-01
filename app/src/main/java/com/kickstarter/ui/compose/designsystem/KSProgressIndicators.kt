@@ -10,26 +10,26 @@ import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun IndicatorsPreview() {
     KSTheme {
-        Column(Modifier.padding(8.dp)) {
+        Column(Modifier.padding(dimensions.paddingSmall)) {
             KSLinearProgressIndicator()
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSLinearProgressIndicator(progress = 0.5f)
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSCircularProgressIndicator()
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSCircularProgressIndicator(progress = 0.5f)
         }
@@ -42,7 +42,11 @@ fun KSLinearProgressIndicator(
     progress: Float? = null
 ) {
     if (progress != null) {
-        LinearProgressIndicator(progress = progress, modifier = modifier, color = colors.kds_create_700)
+        LinearProgressIndicator(
+            progress = progress,
+            modifier = modifier,
+            color = colors.kds_create_700
+        )
     } else {
         LinearProgressIndicator(modifier = modifier, color = colors.kds_create_700)
     }
@@ -54,7 +58,11 @@ fun KSCircularProgressIndicator(
     progress: Float? = null
 ) {
     if (progress != null) {
-        CircularProgressIndicator(progress = progress, modifier = modifier, color = colors.kds_create_700)
+        CircularProgressIndicator(
+            progress = progress,
+            modifier = modifier,
+            color = colors.kds_create_700
+        )
     } else {
         CircularProgressIndicator(modifier = modifier, color = colors.kds_create_700)
     }

@@ -15,9 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -32,7 +32,7 @@ fun KSStepperPreview() {
                 isMinusEnabled = true
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSStepper(
                 onPlusClicked = {},
@@ -41,7 +41,7 @@ fun KSStepperPreview() {
                 isMinusEnabled = true
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSStepper(
                 onPlusClicked = {},
@@ -50,7 +50,7 @@ fun KSStepperPreview() {
                 isMinusEnabled = false
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSStepper(
                 onPlusClicked = {},
@@ -72,16 +72,16 @@ fun KSStepper(
 
     Row(
         modifier = Modifier
-            .height(36.dp)
-            .width(108.dp)
+            .height(dimensions.stepperHeight)
+            .width(dimensions.stepperWidth)
     ) {
         Button(
-            modifier = Modifier.width(54.dp),
+            modifier = Modifier.width(dimensions.stepperButtonWidth),
             shape = RoundedCornerShape(
-                topStart = 9.dp,
-                bottomStart = 9.dp,
-                topEnd = 0.dp,
-                bottomEnd = 0.dp
+                topStart = dimensions.radiusMediumSmall,
+                bottomStart = dimensions.radiusMediumSmall,
+                topEnd = dimensions.none,
+                bottomEnd = dimensions.none
             ),
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = colors.kds_white,
@@ -89,7 +89,7 @@ fun KSStepper(
             ),
             onClick = onMinusClicked,
             enabled = isMinusEnabled,
-            elevation = ButtonDefaults.elevation(0.dp)
+            elevation = ButtonDefaults.elevation(dimensions.none)
         ) {
             Image(
                 painter = painterResource(
@@ -105,12 +105,12 @@ fun KSStepper(
         }
 
         Button(
-            modifier = Modifier.width(54.dp),
+            modifier = Modifier.width(dimensions.stepperButtonWidth),
             shape = RoundedCornerShape(
-                topStart = 0.dp,
-                bottomStart = 0.dp,
-                topEnd = 9.dp,
-                bottomEnd = 9.dp
+                topStart = dimensions.none,
+                bottomStart = dimensions.none,
+                topEnd = dimensions.radiusMediumSmall,
+                bottomEnd = dimensions.radiusMediumSmall
             ),
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = colors.kds_white,
@@ -118,7 +118,7 @@ fun KSStepper(
             ),
             onClick = onPlusClicked,
             enabled = isPlusEnabled,
-            elevation = ButtonDefaults.elevation(0.dp)
+            elevation = ButtonDefaults.elevation(dimensions.none)
         ) {
             Image(
                 painter = painterResource(

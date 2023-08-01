@@ -2,7 +2,6 @@ package com.kickstarter.libs.featureflag
 
 import android.app.Activity
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.Build.isInternal

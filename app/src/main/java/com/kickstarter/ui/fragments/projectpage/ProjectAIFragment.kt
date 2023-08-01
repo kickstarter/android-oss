@@ -13,15 +13,15 @@ import com.kickstarter.libs.Configure
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.viewmodels.projectpage.ProjectRiskViewModel
+import com.kickstarter.viewmodels.projectpage.ProjectAIViewModel
 import io.reactivex.disposables.CompositeDisposable
 
 class ProjectAIFragment :
     Fragment(),
     Configure {
 
-    private lateinit var viewModelFactory: ProjectRiskViewModel.Factory
-    private val viewModel: ProjectRiskViewModel.ProjectRiskViewModel by viewModels { viewModelFactory }
+    private lateinit var viewModelFactory: ProjectAIViewModel.Factory
+    private val viewModel: ProjectAIViewModel.ProjectAIViewModel by viewModels { viewModelFactory }
 
     private var disposables = CompositeDisposable()
 
@@ -29,7 +29,7 @@ class ProjectAIFragment :
         super.onCreateView(inflater, container, savedInstanceState)
 
         this.context?.getEnvironment()?.let { env ->
-            viewModelFactory = ProjectRiskViewModel.Factory(env)
+            viewModelFactory = ProjectAIViewModel.Factory(env)
         }
 
         return ComposeView(requireContext()).apply {

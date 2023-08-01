@@ -11,6 +11,7 @@ import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockFeatureFlagClient
@@ -35,6 +36,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.viewmodels.projectpage.PagerTabConfig
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import org.junit.Test
 import org.mockito.Mockito
@@ -85,7 +87,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val projectMedia = BehaviorSubject.create<MediaElement>()
     private val playButtonIsVisible = TestSubscriber<Boolean>()
     private val backingViewGroupIsVisible = TestSubscriber<Boolean>()
-    private val updateTabs = TestSubscriber<Boolean>()
+    private val updateTabs = TestSubscriber<List<PagerTabConfig>>()
     private val hideVideoPlayer = TestSubscriber<Boolean>()
     private val onOpenVideoInFullScreen = TestSubscriber<kotlin.Pair<String, Long>>()
     private val updateVideoCloseSeekPosition = TestSubscriber<Long>()
@@ -442,7 +444,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
-        this.updateTabs.assertValue(false)
+        this.updateTabs.assertValue(listOf(PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, false)))
     }
 
     @Test
@@ -458,7 +460,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
-        this.updateTabs.assertValue(true)
+        this.updateTabs.assertValue(listOf(PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, true)))
     }
 
     @Test
@@ -475,7 +477,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
-        this.updateTabs.assertValue(true)
+        this.updateTabs.assertValue(listOf(PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, true)))
     }
 
     @Test
@@ -492,7 +494,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
-        this.updateTabs.assertValue(true)
+        this.updateTabs.assertValue(listOf(PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, true)))
     }
 
     @Test

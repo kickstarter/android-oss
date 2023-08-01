@@ -316,7 +316,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
     val eCommitment = projectFragment?.environmentalCommitments()?.map {
         environmentalCommitmentTransformer(it.fragments().environmentalCommitment())
     } ?: emptyList()
-    val aiDisclosure = projectFragment?.aiDisclosure()?.let {
+    val aiDisclosure = projectFragment?.aiDisclosure()?.fragments()?.aiDisclosure()?.let {
         aiDisclosureTransformer(it)
     } ?: null
     val risks = projectFragment?.risks()
@@ -388,7 +388,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
  * @param FullProject.AiDisclosure aiDisclosureGraph
  * @return AiDisclosure
  */
-fun aiDisclosureTransformer(aiDisclosureGraph: FullProject.AiDisclosure): AiDisclosure {
+fun aiDisclosureTransformer(aiDisclosureGraph: fragment.AiDisclosure): AiDisclosure {
     return AiDisclosure.builder()
         .id(decodeRelayId(aiDisclosureGraph.id()) ?: -1)
         .fundingForAiAttribution(aiDisclosureGraph.fundingForAiAttribution())

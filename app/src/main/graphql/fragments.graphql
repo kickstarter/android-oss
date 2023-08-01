@@ -116,15 +116,6 @@ fragment fullProject on Project {
         }
     }
     risks
-    aiDisclosure {
-        fundingForAiAttribution
-        fundingForAiConsent
-        fundingForAiOption
-        generatedByAiConsent
-        generatedByAiDetails
-        id
-        otherAiDetails
-    }
     story
     slug
     isProjectWeLove
@@ -144,6 +135,11 @@ fragment fullProject on Project {
         nodes {
             ... faq
         }
+    }
+
+    # - Artificial Intelligence Disclosure
+    aiDisclosure {
+        ... aiDisclosure
     }
 
     environmentalCommitments {
@@ -303,6 +299,16 @@ fragment reward on Reward {
     localReceiptLocation {
         ... location
     }
+}
+
+fragment aiDisclosure on AiDisclosure {
+    fundingForAiAttribution
+    fundingForAiConsent
+    fundingForAiOption
+    generatedByAiConsent
+    generatedByAiDetails
+    id
+    otherAiDetails
 }
 
 fragment environmentalCommitment on EnvironmentalCommitment {

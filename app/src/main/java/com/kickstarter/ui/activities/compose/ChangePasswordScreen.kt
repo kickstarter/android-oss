@@ -4,14 +4,17 @@ import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -22,7 +25,7 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -64,9 +67,9 @@ fun ChangePasswordScreen(
     showProgressBar: Boolean,
     scaffoldState: ScaffoldState
 ) {
-    var currentPassword by remember { mutableStateOf("") }
-    var newPasswordLine1 by remember { mutableStateOf("") }
-    var newPasswordLine2 by remember { mutableStateOf("") }
+    var currentPassword by rememberSaveable { mutableStateOf("") }
+    var newPasswordLine1 by rememberSaveable { mutableStateOf("") }
+    var newPasswordLine2 by rememberSaveable { mutableStateOf("") }
 
     val acceptButtonEnabled = when {
         currentPassword.isNotEmptyAndAtLeast6Chars() &&
@@ -138,6 +141,7 @@ fun ChangePasswordScreen(
             Modifier
                 .background(colors.kds_support_100)
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(padding)
         ) {
             AnimatedVisibility(visible = showProgressBar) {

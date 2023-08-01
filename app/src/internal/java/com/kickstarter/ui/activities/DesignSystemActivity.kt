@@ -16,10 +16,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -79,8 +81,7 @@ class DesignSystemActivity : ComponentActivity() {
         setContent {
             var darkMode = remember { mutableStateOf(false) }
             KSTheme(useDarkTheme = darkMode.value) {
-
-                DesignSystemView(darkMode = darkMode)
+                DesignSystemView(darkMode = darkMode, onBackClicked = { onBackPressedDispatcher.onBackPressed() })
             }
         }
     }
@@ -93,40 +94,44 @@ fun DesignSystemViewPreview() {
     val currentTheme = isSystemInDarkTheme()
     var darkMode = remember { mutableStateOf(currentTheme) }
     KSTheme(useDarkTheme = darkMode.value) {
-
-        DesignSystemView(darkMode = darkMode)
+        DesignSystemView(darkMode = darkMode, onBackClicked = {})
     }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun DesignSystemView(darkMode: MutableState<Boolean>) {
+fun DesignSystemView(darkMode: MutableState<Boolean>, onBackClicked: () -> Unit) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    Column {
-        TopToolBar(
-            title = "Design System",
-            titleColor = colors.kds_black,
-            leftIconColor = colors.kds_black,
-            right = {
-                IconButton(
-                    onClick = { darkMode.value = !darkMode.value },
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_sun),
-                        contentDescription = null,
-                        modifier = Modifier.size(32.dp),
-                        colorFilter = ColorFilter.tint(
-                            color = colors.kds_black
+    Scaffold (
+        topBar = {
+            TopToolBar(
+                title = "Design System",
+                titleColor = colors.kds_black,
+                leftIconColor = colors.kds_black,
+                leftOnClickAction = onBackClicked,
+                right = {
+                    IconButton(
+                        onClick = { darkMode.value = !darkMode.value },
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_sun),
+                            contentDescription = null,
+                            modifier = Modifier.size(32.dp),
+                            colorFilter = ColorFilter.tint(
+                                color = colors.kds_black
+                            )
                         )
-                    )
-                }
-            },
-            backgroundColor = colors.kds_white
-        )
+                    }
+                },
+                backgroundColor = colors.kds_white
+            )
+        }
+    ) { padding ->
         LazyColumn(
             Modifier
                 .background(color = colors.kds_support_100)
                 .fillMaxSize()
+                .padding(padding)
                 .clickable(
                     interactionSource = MutableInteractionSource(),
                     indication = null

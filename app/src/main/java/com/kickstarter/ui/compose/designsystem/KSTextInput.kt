@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -83,7 +84,7 @@ fun KSTextInput(
     keyboardOptions: KeyboardOptions = KeyboardOptions(),
     keyboardActions: KeyboardActions = KeyboardActions()
 ) {
-    var value by remember { mutableStateOf("") }
+    var value by rememberSaveable { mutableStateOf("") }
 
     Column {
         TextField(
@@ -147,7 +148,7 @@ fun KSHiddenTextInput(
     keyboardOptions: KeyboardOptions = KeyboardOptions(),
     keyboardActions: KeyboardActions = KeyboardActions()
 ) {
-    var showHiddenText by remember { mutableStateOf(!hideTextByDefault) }
+    var showHiddenText by rememberSaveable { mutableStateOf(!hideTextByDefault) }
 
     KSTextInput(
         modifier = modifier,

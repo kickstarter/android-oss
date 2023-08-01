@@ -84,7 +84,8 @@ class DesignSystemActivity : ComponentActivity() {
             KickstarterApp(useDarkTheme = darkMode.value) {
                 DesignSystemView(
                     darkMode = darkMode,
-                    onBackClicked = { onBackPressedDispatcher.onBackPressed() })
+                    onBackClicked = { onBackPressedDispatcher.onBackPressed() }
+                )
             }
         }
     }

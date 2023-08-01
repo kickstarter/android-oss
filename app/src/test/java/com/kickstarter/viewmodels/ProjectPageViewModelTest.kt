@@ -23,7 +23,9 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.models.AiDisclosure
 import com.kickstarter.models.Backing
+import com.kickstarter.models.EnvironmentalCommitment
 import com.kickstarter.models.Project
 import com.kickstarter.models.Urls
 import com.kickstarter.models.Web
@@ -444,7 +446,159 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
-        this.updateTabs.assertValue(listOf(PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, false)))
+        val list = listOf(
+            PagerTabConfig(ProjectPagerTabs.USE_OF_AI, false),
+            PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, false)
+        )
+        this.updateTabs.assertValue(list)
+    }
+
+    @Test
+    fun testUIOutputs_whenFetchProjectWithAIDisclosureAndFFOn_WithoutEnVCommitment() {
+        val initialProject = ProjectFactory
+            .initialProject()
+            .toBuilder()
+            .envCommitments(emptyList())
+            .aiDisclosure(
+                AiDisclosure
+                    .builder()
+                    .build()
+            )
+            .build()
+
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    return true
+                }
+            }
+
+        val environment = environment()
+            .toBuilder()
+            .featureFlagClient(mockFeatureFlagClient)
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+
+        val list = listOf(
+            PagerTabConfig(ProjectPagerTabs.USE_OF_AI, true),
+            PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, false)
+        )
+
+        this.updateTabs.assertValue(list)
+    }
+
+    @Test
+    fun testUIOutputs_whenFetchProjectWithAIDisclosureAndFFOFF_WithoutEnVCommitment() {
+        val initialProject = ProjectFactory
+            .initialProject()
+            .toBuilder()
+            .envCommitments(emptyList())
+            .aiDisclosure(
+                AiDisclosure
+                    .builder()
+                    .build()
+            )
+            .build()
+
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    return false
+                }
+            }
+
+        val environment = environment()
+            .toBuilder()
+            .featureFlagClient(mockFeatureFlagClient)
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+
+        val list = listOf(
+            PagerTabConfig(ProjectPagerTabs.USE_OF_AI, false),
+            PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, false)
+        )
+
+        this.updateTabs.assertValue(list)
+    }
+
+    @Test
+    fun testUIOutputs_whenFetchProjectWithAIDisclosureAndFFOn_WithEnVCommitment() {
+        val initialProject = ProjectFactory
+            .initialProject()
+            .toBuilder()
+            .envCommitments(listOf(EnvironmentalCommitment.builder().build()))
+            .aiDisclosure(
+                AiDisclosure
+                    .builder()
+                    .build()
+            )
+            .build()
+
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    return true
+                }
+            }
+
+        val environment = environment()
+            .toBuilder()
+            .featureFlagClient(mockFeatureFlagClient)
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+
+        val list = listOf(
+            PagerTabConfig(ProjectPagerTabs.USE_OF_AI, true),
+            PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, true)
+        )
+
+        this.updateTabs.assertValue(list)
+    }
+
+    @Test
+    fun testUIOutputs_whenFetchProjectWithAIDisclosureAndFFOFF_WithEnVCommitment() {
+        val initialProject = ProjectFactory
+            .initialProject()
+            .toBuilder()
+            .envCommitments(listOf(EnvironmentalCommitment.builder().build()))
+            .aiDisclosure(
+                AiDisclosure
+                    .builder()
+                    .build()
+            )
+            .build()
+
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    return false
+                }
+            }
+
+        val environment = environment()
+            .toBuilder()
+            .featureFlagClient(mockFeatureFlagClient)
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+
+        val list = listOf(
+            PagerTabConfig(ProjectPagerTabs.USE_OF_AI, false),
+            PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, true)
+        )
+
+        this.updateTabs.assertValue(list)
     }
 
     @Test
@@ -460,7 +614,11 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
-        this.updateTabs.assertValue(listOf(PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, true)))
+        val list = listOf(
+            PagerTabConfig(ProjectPagerTabs.USE_OF_AI, false),
+            PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, true)
+        )
+        this.updateTabs.assertValue(list)
     }
 
     @Test
@@ -477,7 +635,11 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
-        this.updateTabs.assertValue(listOf(PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, true)))
+        val list = listOf(
+            PagerTabConfig(ProjectPagerTabs.USE_OF_AI, false),
+            PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, true)
+        )
+        this.updateTabs.assertValue(list)
     }
 
     @Test
@@ -494,7 +656,11 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
-        this.updateTabs.assertValue(listOf(PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, true)))
+        val list = listOf(
+            PagerTabConfig(ProjectPagerTabs.USE_OF_AI, false),
+            PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, true)
+        )
+        this.updateTabs.assertValue(list)
     }
 
     @Test

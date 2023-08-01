@@ -11,6 +11,7 @@ import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
@@ -61,7 +62,7 @@ import rx.subjects.PublishSubject
 import java.math.RoundingMode
 import java.util.concurrent.TimeUnit
 
-class PagerTabConfig(val tab: ProjectPagerTabs, val isActive: Boolean)
+data class PagerTabConfig(val tab: ProjectPagerTabs, val isActive: Boolean)
 
 interface ProjectPageViewModel {
     interface Inputs {
@@ -270,8 +271,9 @@ interface ProjectPageViewModel {
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val apolloClient = requireNotNull(environment.apolloClient())
         private val currentConfig = requireNotNull(environment.currentConfig())
-        private val closeFullScreenVideo = BehaviorSubject.create<Long>()
+        private val featureFlagClient = requireNotNull(environment.featureFlagClient())
 
+        private val closeFullScreenVideo = BehaviorSubject.create<Long>()
         private val cancelPledgeClicked = PublishSubject.create<Void>()
         private val commentsTextViewClicked = PublishSubject.create<Void>()
         private val contactCreatorClicked = PublishSubject.create<Void>()
@@ -565,7 +567,7 @@ interface ProjectPageViewModel {
                     val showEnvironmentalTab = it.project().envCommitments()?.isNotEmpty() ?: false
                     val tabConfigEnv = PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, showEnvironmentalTab)
 
-                    val showAiTab = it.project().aiDisclosure() != null
+                    val showAiTab = it.project().aiDisclosure() != null && featureFlagClient.getBoolean(FlagKey.ANDROID_AI_TAB)
                     val tabConfigAi = PagerTabConfig(ProjectPagerTabs.USE_OF_AI, showAiTab)
 
                     this.updateTabs.onNext(listOf(tabConfigAi, tabConfigEnv))

@@ -57,6 +57,7 @@ import com.kickstarter.ui.fragments.BackingFragment
 import com.kickstarter.ui.fragments.CancelPledgeFragment
 import com.kickstarter.ui.fragments.PledgeFragment
 import com.kickstarter.ui.fragments.RewardsFragment
+import com.kickstarter.viewmodels.projectpage.PagerTabConfig
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import com.stripe.android.view.CardInputWidget
 import rx.android.schedulers.AndroidSchedulers
@@ -386,11 +387,20 @@ class ProjectPageActivity :
         }
     }
 
-    private fun configureTabs(updateTabs: Boolean) {
-        if (updateTabs) {
-            // - avoid adding Env tab if it already exists
-            if (!pagerAdapterList.contains(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT)) {
-                pagerAdapterList.add(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT)
+    /**
+     * Give a List of configurations will iterate over it and apply
+     * the configuration required.
+     * Will check first if the tab already exists in the pager before adding it.
+     *
+     * @param updateTabs
+     */
+    private fun configureTabs(updateTabs: List<PagerTabConfig>) {
+        updateTabs.forEach { tabConfig ->
+            if (tabConfig.isActive) {
+                // - avoid adding the tab if it already exists
+                if (!pagerAdapterList.contains(tabConfig.tab)) {
+                    pagerAdapterList.add(tabConfig.tab)
+                }
             }
         }
     }
@@ -498,6 +508,7 @@ class ProjectPageActivity :
         ProjectPagerTabs.CAMPAIGN -> getString(R.string.Campaign)
         ProjectPagerTabs.FAQS -> getString(R.string.Faq)
         ProjectPagerTabs.RISKS -> getString(R.string.Risks)
+        ProjectPagerTabs.USE_OF_AI -> getString(R.string.Use_of_ai_fpo)
         ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT -> getString(R.string.Environmental_commitments)
     }
 

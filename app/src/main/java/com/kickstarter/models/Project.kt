@@ -61,6 +61,7 @@ class Project private constructor(
     private val video: Video?,
     private val projectFaqs: List<ProjectFaq>?,
     private val envCommitments: List<EnvironmentalCommitment>?,
+    private val aiDisclosure: AiDisclosure?,
     private val risks: String?,
     private val story: String?,
     private val isFlagged: Boolean?,
@@ -115,6 +116,7 @@ class Project private constructor(
     fun video() = this.video
     fun projectFaqs() = this.projectFaqs
     fun envCommitments() = this.envCommitments
+    fun aiDisclosure() = this.aiDisclosure
     fun risks() = this.risks
     fun story() = this.story
     fun isFlagged() = this.isFlagged
@@ -172,6 +174,7 @@ class Project private constructor(
         private var video: Video? = null,
         private var projectFaqs: List<ProjectFaq>? = emptyList(),
         private var envCommitments: List<EnvironmentalCommitment>? = emptyList(),
+        private var aiDisclosure: AiDisclosure? = null,
         private var risks: String? = "",
         private var story: String? = "",
         private var isFlagged: Boolean? = null,
@@ -227,6 +230,7 @@ class Project private constructor(
         fun video(video: Video?) = apply { this.video = video }
         fun projectFaqs(projectFaqs: List<ProjectFaq>?) = apply { this.projectFaqs = projectFaqs ?: emptyList() }
         fun envCommitments(envCommitments: List<EnvironmentalCommitment>?) = apply { this.envCommitments = envCommitments ?: emptyList() }
+        fun aiDisclosure(aiDisclosure: AiDisclosure?) = apply { this.aiDisclosure = aiDisclosure }
         fun risks(risks: String?) = apply { this.risks = risks ?: "" }
         fun story(story: String?) = apply { this.story = story ?: "" }
         fun isFlagged(isFlagged: Boolean?) = apply { this.isFlagged = isFlagged }
@@ -280,6 +284,7 @@ class Project private constructor(
             video = video,
             projectFaqs = projectFaqs,
             envCommitments = envCommitments,
+            aiDisclosure = aiDisclosure,
             risks = risks,
             story = story,
             isFlagged = isFlagged,
@@ -337,6 +342,7 @@ class Project private constructor(
         video = video,
         projectFaqs = projectFaqs,
         envCommitments = envCommitments,
+        aiDisclosure = aiDisclosure,
         risks = risks,
         story = story,
         isFlagged = isFlagged,
@@ -507,6 +513,7 @@ class Project private constructor(
                 video() == other.video() &&
                 projectFaqs() == other.projectFaqs() &&
                 envCommitments() == other.envCommitments() &&
+                aiDisclosure() == other.aiDisclosure() &&
                 risks() == other.risks() &&
                 story() == other.story() &&
                 isFlagged() == other.isFlagged()

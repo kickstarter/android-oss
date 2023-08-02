@@ -2,12 +2,14 @@ package com.kickstarter.services
 
 import UserPrivacyQuery
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.services.transformers.aiDisclosureTransformer
 import com.kickstarter.services.transformers.decodeRelayId
 import com.kickstarter.services.transformers.environmentalCommitmentTransformer
 import com.kickstarter.services.transformers.projectFaqTransformer
 import com.kickstarter.services.transformers.updateTransformer
 import com.kickstarter.services.transformers.userPrivacyTransformer
 import com.kickstarter.services.transformers.userTransformer
+import fragment.AiDisclosure
 import fragment.EnvironmentalCommitment
 import fragment.Faq
 import fragment.User
@@ -75,6 +77,43 @@ class GraphQLTransformersTest : KSRobolectricTestCase() {
         assertTrue(projEnvConv2.id == -1L)
         assertTrue(projEnvConv2.description == "")
         assertTrue(projEnvConv2.category == EnvironmentalCommitmentCategory.LONG_LASTING_DESIGN.name)
+    }
+
+    @Test
+    fun testAiDisclosureTransformer() {
+        val aiDisclosureMockComplete: AiDisclosure = mock(AiDisclosure::class.java)
+        `when`(aiDisclosureMockComplete.id()).thenReturn("QWlEaXNjbG9zdXJlLTE=")
+        `when`(aiDisclosureMockComplete.fundingForAiAttribution()).thenReturn(true)
+        `when`(aiDisclosureMockComplete.fundingForAiConsent()).thenReturn(true)
+        `when`(aiDisclosureMockComplete.fundingForAiOption()).thenReturn(true)
+        `when`(aiDisclosureMockComplete.generatedByAiConsent()).thenReturn("Some text here")
+        `when`(aiDisclosureMockComplete.generatedByAiDetails()).thenReturn("Some other details text here")
+        `when`(aiDisclosureMockComplete.otherAiDetails()).thenReturn("some other details here")
+        val aiDisclosure = aiDisclosureTransformer(aiDisclosureGraph = aiDisclosureMockComplete)
+
+        assertTrue(aiDisclosure.id == 1L)
+        assertTrue(aiDisclosure.fundingForAiAttribution)
+        assertTrue(aiDisclosure.fundingForAiConsent)
+        assertTrue(aiDisclosure.fundingForAiOption)
+
+        assertEquals(aiDisclosure.generatedByAiConsent, "Some text here")
+        assertEquals(aiDisclosure.generatedByAiDetails, "Some other details text here")
+        assertEquals(aiDisclosure.otherAiDetails, "some other details here")
+
+        val aiDisclosureMockPartial: AiDisclosure = mock(AiDisclosure::class.java)
+        `when`(aiDisclosureMockPartial.id()).thenReturn("")
+        `when`(aiDisclosureMockPartial.fundingForAiAttribution()).thenReturn(false)
+        `when`(aiDisclosureMockPartial.generatedByAiConsent()).thenReturn("Some more text here")
+        val aiDisclosure1 = aiDisclosureTransformer(aiDisclosureGraph = aiDisclosureMockPartial)
+
+        assertTrue(aiDisclosure1.id == -1L)
+        assertFalse(aiDisclosure1.fundingForAiAttribution)
+        assertFalse(aiDisclosure1.fundingForAiConsent)
+        assertFalse(aiDisclosure1.fundingForAiOption)
+
+        assertEquals(aiDisclosure1.generatedByAiConsent, "Some more text here")
+        assertEquals(aiDisclosure1.generatedByAiDetails, "")
+        assertEquals(aiDisclosure1.otherAiDetails, "")
     }
 
     @Test

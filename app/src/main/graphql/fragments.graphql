@@ -137,6 +137,11 @@ fragment fullProject on Project {
         }
     }
 
+    # - Artificial Intelligence Disclosure
+    aiDisclosure {
+        ... aiDisclosure
+    }
+
     environmentalCommitments {
         ... environmentalCommitment
     }
@@ -294,6 +299,16 @@ fragment reward on Reward {
     localReceiptLocation {
         ... location
     }
+}
+
+fragment aiDisclosure on AiDisclosure {
+    fundingForAiAttribution
+    fundingForAiConsent
+    fundingForAiOption
+    generatedByAiConsent
+    generatedByAiDetails
+    id
+    otherAiDetails
 }
 
 fragment environmentalCommitment on EnvironmentalCommitment {

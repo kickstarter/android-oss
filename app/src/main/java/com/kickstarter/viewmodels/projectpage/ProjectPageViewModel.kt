@@ -11,6 +11,7 @@ import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
@@ -19,6 +20,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT
+import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.AI
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.CAMPAIGN
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.ENVIRONMENT
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.FAQS
@@ -59,6 +61,8 @@ import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
 import java.util.concurrent.TimeUnit
+
+data class PagerTabConfig(val tab: ProjectPagerTabs, val isActive: Boolean)
 
 interface ProjectPageViewModel {
     interface Inputs {
@@ -246,7 +250,7 @@ interface ProjectPageViewModel {
         fun backingViewGroupIsVisible(): Observable<Boolean>
 
         /** Will emmit the need to show/hide the Campaign Tab and the Environmental Tab. */
-        fun updateTabs(): Observable<Boolean>
+        fun updateTabs(): Observable<List<PagerTabConfig>>
 
         fun hideVideoPlayer(): Observable<Boolean>
 
@@ -267,8 +271,9 @@ interface ProjectPageViewModel {
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val apolloClient = requireNotNull(environment.apolloClient())
         private val currentConfig = requireNotNull(environment.currentConfig())
-        private val closeFullScreenVideo = BehaviorSubject.create<Long>()
+        private val featureFlagClient = requireNotNull(environment.featureFlagClient())
 
+        private val closeFullScreenVideo = BehaviorSubject.create<Long>()
         private val cancelPledgeClicked = PublishSubject.create<Void>()
         private val commentsTextViewClicked = PublishSubject.create<Void>()
         private val contactCreatorClicked = PublishSubject.create<Void>()
@@ -332,7 +337,7 @@ interface ProjectPageViewModel {
         private val projectMedia = PublishSubject.create<MediaElement>()
         private val playButtonIsVisible = PublishSubject.create<Boolean>()
         private val backingViewGroupIsVisible = PublishSubject.create<Boolean>()
-        private val updateTabs = PublishSubject.create<Boolean>()
+        private val updateTabs = PublishSubject.create<List<PagerTabConfig>>()
         private val onOpenVideoInFullScreen = PublishSubject.create<kotlin.Pair<String, Long>>()
         private val updateVideoCloseSeekPosition = BehaviorSubject.create<Long>()
 
@@ -560,7 +565,12 @@ interface ProjectPageViewModel {
                 .subscribe {
                     this.projectData.onNext(it)
                     val showEnvironmentalTab = it.project().envCommitments()?.isNotEmpty() ?: false
-                    this.updateTabs.onNext(showEnvironmentalTab)
+                    val tabConfigEnv = PagerTabConfig(ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT, showEnvironmentalTab)
+
+                    val showAiTab = it.project().aiDisclosure() != null && featureFlagClient.getBoolean(FlagKey.ANDROID_AI_TAB)
+                    val tabConfigAi = PagerTabConfig(ProjectPagerTabs.USE_OF_AI, showAiTab)
+
+                    this.updateTabs.onNext(listOf(tabConfigAi, tabConfigEnv))
                 }
 
             currentProject
@@ -979,6 +989,7 @@ interface ProjectPageViewModel {
             ProjectPagerTabs.CAMPAIGN.ordinal -> CAMPAIGN.contextName
             ProjectPagerTabs.FAQS.ordinal -> FAQS.contextName
             ProjectPagerTabs.RISKS.ordinal -> RISKS.contextName
+            ProjectPagerTabs.USE_OF_AI.ordinal -> AI.contextName
             ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal -> ENVIRONMENT.contextName
             else -> OVERVIEW.contextName
         }
@@ -1225,7 +1236,7 @@ interface ProjectPageViewModel {
         override fun onOpenVideoInFullScreen(): Observable<kotlin.Pair<String, Long>> = this.onOpenVideoInFullScreen
 
         @NonNull
-        override fun updateTabs(): Observable<Boolean> = this.updateTabs
+        override fun updateTabs(): Observable<List<PagerTabConfig>> = this.updateTabs
 
         @NonNull
         override fun hideVideoPlayer(): Observable<Boolean> = this.hideVideoPlayer

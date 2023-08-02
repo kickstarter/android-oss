@@ -106,6 +106,7 @@ class EventContextValues {
         STORY("campaign"),
         FAQS("faq"),
         ENVIRONMENT("environment"),
+        AI("use_of_ai"),
     }
 
     /**

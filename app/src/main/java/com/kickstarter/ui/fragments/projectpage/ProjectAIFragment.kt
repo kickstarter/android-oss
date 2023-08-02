@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.kickstarter.libs.Configure
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.ArgumentsKey
@@ -23,7 +24,7 @@ class ProjectAIFragment :
     Fragment(),
     Configure {
 
-    private lateinit var viewModelFactory: ProjectAIViewModel.Factory
+    private val viewModelFactory = ProjectAIViewModel.Factory()
     private val viewModel: ProjectAIViewModel by viewModels { viewModelFactory }
 
     private var darkModeEnabled = false
@@ -32,9 +33,7 @@ class ProjectAIFragment :
         super.onCreateView(inflater, container, savedInstanceState)
 
         this.context?.getEnvironment()?.let { env ->
-            viewModelFactory = ProjectAIViewModel.Factory(env)
-            // darkModeEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
-            darkModeEnabled = false
+            darkModeEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
         }
 
         return ComposeView(requireContext()).apply {

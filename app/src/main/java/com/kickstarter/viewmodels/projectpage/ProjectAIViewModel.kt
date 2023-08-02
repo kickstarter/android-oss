@@ -9,14 +9,14 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.models.AiDisclosure
 import com.kickstarter.ui.data.ProjectData
 
-class ProjectAIViewModel private constructor(private val environment: Environment) : ViewModel() {
+class ProjectAIViewModel private constructor() : ViewModel() {
     var state by mutableStateOf(UiState())
         private set
 
     /**
      * Equivalent to Outputs interface in the on old ViewModels
      * UIState represents the possible UIState changes
-     * and the data objects required to populate the state.
+     * and the data objects required to populate UI.
      */
     data class UiState(
         val openExternalUrl: String = AIPOLICY,
@@ -25,11 +25,9 @@ class ProjectAIViewModel private constructor(private val environment: Environmen
 
     /**
      * Equivalent to Inputs interface in the on old ViewModels
-     * Event represents the event flowing  UIState changes
-     * and the data objects required to populate the state.
+     * Event represents the events flowing from the UI.
      */
     data class Event(
-        val externalClicked: Boolean = false,
         val projectData: ProjectData? = null
     )
 
@@ -43,9 +41,9 @@ class ProjectAIViewModel private constructor(private val environment: Environmen
         const val AIPOLICY = "https://help.kickstarter.com/hc/en-us/articles/16848396410267"
     }
 
-    class Factory(private val environment: Environment) : ViewModelProvider.Factory {
+    class Factory() : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return ProjectAIViewModel(environment = environment) as T
+            return ProjectAIViewModel() as T
         }
     }
 }

@@ -30,20 +30,24 @@ import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.models.AiDisclosure
 import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
+import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.viewmodels.projectpage.ProjectAIViewModel
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun AiDisclosureScreenPreview() {
+    val aiDisclosure = AiDisclosure.builder()
+        .fundingForAiOption(true)
+        .fundingForAiConsent(true)
+        .generatedByAiConsent("Some generated consent")
+        .generatedByAiDetails("Some generated details")
+        .otherAiDetails("Other details to include")
+        .build()
+
     KSTheme {
-        val aiDisclosure = AiDisclosure.builder()
-            .fundingForAiOption(true)
-            .fundingForAiConsent(true)
-            .generatedByAiConsent("Some generated consent")
-            .generatedByAiDetails("Some generated details")
-            .otherAiDetails("Other details to include")
-            .build()
         AiDisclosureScreen(
             state = ProjectAIViewModel.UiState(aiDisclosure = aiDisclosure),
             clickCallback = {}
@@ -59,15 +63,16 @@ fun AiDisclosureScreen(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .background(colors.kds_white)
             .padding(
                 PaddingValues(
-                    start = KSTheme.dimensions.paddingMediumLarge,
-                    top = KSTheme.dimensions.paddingMedium,
-                    end = KSTheme.dimensions.paddingMedium
+                    start = dimensions.paddingMediumLarge,
+                    top = dimensions.paddingMedium,
+                    end = dimensions.paddingMedium
                 )
             )
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(KSTheme.dimensions.paddingMediumSmall)
+        verticalArrangement = Arrangement.spacedBy(dimensions.paddingMediumSmall)
     ) {
         InvolvesFundingSection(state)
 
@@ -75,12 +80,12 @@ fun AiDisclosureScreen(
 
         InvolvesOtherSection(state)
 
-        // - TODO: extract to reusable composable to DesignSysmtem, only requires the callback
+        // - TODO: extract to reusable composable to DesignSysmtem, only requires the callback and the string resource
         ClickableText(
             text = AnnotatedString(
                 text = stringResource(id = R.string.Learn_about_AI_fpo),
                 spanStyle = SpanStyle(
-                    color = KSTheme.colors.kds_create_700,
+                    color = colors.kds_create_700,
                     textDecoration = TextDecoration.Underline,
                 )
             ),
@@ -97,14 +102,14 @@ private fun InvolvesOtherSection(state: ProjectAIViewModel.UiState) {
     if (otherDetails.isNotEmpty()) {
         Text(
             text = stringResource(id = R.string.I_am_incorporating_AI_fpo),
-            style = KSTheme.typography.headline,
-            color = KSTheme.colors.kds_support_700
+            style = typography.headline,
+            color = colors.kds_support_700
         )
 
         Text(
             text = otherDetails,
-            style = KSTheme.typography.footnote,
-            color = KSTheme.colors.kds_support_700
+            style = typography.footnote,
+            color = colors.kds_support_700
         )
 
         // - TODO: extract as reusable composable to DesignSystem
@@ -112,9 +117,9 @@ private fun InvolvesOtherSection(state: ProjectAIViewModel.UiState) {
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    color = KSTheme.colors.kds_support_300
+                    color = colors.kds_support_300
                 )
-                .height(KSTheme.dimensions.dividerThickness)
+                .height(dimensions.dividerThickness)
         )
     }
 }
@@ -126,29 +131,29 @@ private fun InvolvesGenerationSection(state: ProjectAIViewModel.UiState) {
     if (details.isNotEmpty() || consent.isNotEmpty()) {
         Text(
             text = stringResource(id = R.string.I_plan_to_use_AI_fpo),
-            style = KSTheme.typography.headline,
-            color = KSTheme.colors.kds_support_700
+            style = typography.headline,
+            color = colors.kds_support_700
         )
 
         Text(
             text = details,
-            style = KSTheme.typography.footnote,
-            color = KSTheme.colors.kds_support_700
+            style = typography.footnote,
+            color = colors.kds_support_700
         )
 
         Text(
             text = consent,
-            style = KSTheme.typography.footnote,
-            color = KSTheme.colors.kds_support_700
+            style = typography.footnote,
+            color = colors.kds_support_700
         )
 
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    color = KSTheme.colors.kds_support_300
+                    color = colors.kds_support_300
                 )
-                .height(KSTheme.dimensions.dividerThickness)
+                .height(dimensions.dividerThickness)
         )
     }
 }
@@ -162,13 +167,13 @@ private fun InvolvesFundingSection(state: ProjectAIViewModel.UiState) {
     if (fundingAiAttr || fundingAiConsent || fundingAiOption) {
         Text(
             text = stringResource(id = R.string.Use_of_ai_fpo),
-            style = KSTheme.typography.title2Bold,
-            color = KSTheme.colors.kds_support_700
+            style = typography.title2Bold,
+            color = colors.kds_support_700
         )
         Text(
             text = stringResource(id = R.string.My_project_seeks_founding_fpo),
-            style = KSTheme.typography.headline,
-            color = KSTheme.colors.kds_support_700
+            style = typography.headline,
+            color = colors.kds_support_700
         )
 
         if (fundingAiConsent) AiDisclosureRow(stringResId = R.string.For_the_database_orsource_fpo)
@@ -179,9 +184,9 @@ private fun InvolvesFundingSection(state: ProjectAIViewModel.UiState) {
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    color = KSTheme.colors.kds_support_300
+                    color = colors.kds_support_300
                 )
-                .height(KSTheme.dimensions.dividerThickness)
+                .height(dimensions.dividerThickness)
         )
     }
 }
@@ -205,8 +210,8 @@ fun AiDisclosureRow(
         )
         Text(
             text = stringResource(id = stringResId),
-            style = KSTheme.typography.footnote,
-            color = KSTheme.colors.kds_support_700
+            style = typography.footnote,
+            color = colors.kds_support_700
         )
     }
 }

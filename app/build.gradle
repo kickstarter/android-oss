@@ -290,6 +290,7 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-rxjava2:$compose_version"
     implementation 'androidx.activity:activity-compose:1.7.2'
     implementation 'androidx.constraintlayout:constraintlayout-compose:1.0.1'
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.30.1"
 
     // Zoom on Images
     implementation 'io.github.aghajari:ZoomHelper:1.1.0'

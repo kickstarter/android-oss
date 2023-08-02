@@ -11,8 +11,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 
 @Composable
@@ -24,12 +24,12 @@ fun KSBadgesPreview() {
             Modifier
                 .background(color = colors.kds_white)
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(dimensions.paddingSmall)
         ) {
 
             KSGreenBadge(text = "Add-ons available")
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSCoralBadge(text = "3 days left")
         }
@@ -47,10 +47,10 @@ fun KSGreenBadge(
                 shape = shapes.small
             )
             .padding(
-                start = 12.dp,
-                top = 8.dp,
-                bottom = 8.dp,
-                end = 12.dp
+                start = dimensions.paddingMediumSmall,
+                top = dimensions.paddingSmall,
+                bottom = dimensions.paddingSmall,
+                end = dimensions.paddingMediumSmall
             ),
         text = text,
         color = colors.kds_create_700,
@@ -69,10 +69,10 @@ fun KSCoralBadge(
                 shape = shapes.small
             )
             .padding(
-                start = 12.dp,
-                top = 8.dp,
-                bottom = 8.dp,
-                end = 12.dp
+                start = dimensions.paddingMediumSmall,
+                top = dimensions.paddingSmall,
+                bottom = dimensions.paddingSmall,
+                end = dimensions.paddingMediumSmall
             ),
         text = text,
         color = colors.kds_support_400,

@@ -23,10 +23,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.libs.utils.safeLet
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 
 @Composable
@@ -37,7 +37,7 @@ fun KSPrimaryButtonsPreview() {
         Column(
             Modifier
                 .background(color = colors.kds_white)
-                .padding(all = 8.dp)
+                .padding(all = dimensions.paddingSmall)
         ) {
             KSPrimaryGreenButton(
                 onClickAction = { },
@@ -45,7 +45,7 @@ fun KSPrimaryButtonsPreview() {
                 text = "Back this project"
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSPrimaryBlueButton(
                 onClickAction = { },
@@ -53,7 +53,7 @@ fun KSPrimaryButtonsPreview() {
                 text = "Manage your pledge"
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSPrimaryBlackButton(
                 onClickAction = { },
@@ -72,7 +72,7 @@ fun KSSecondaryButtonsPreview() {
         Column(
             Modifier
                 .background(color = colors.kds_white)
-                .padding(all = 8.dp)
+                .padding(all = dimensions.paddingSmall)
         ) {
             KSSecondaryGreyButton(
                 onClickAction = { },
@@ -80,7 +80,7 @@ fun KSSecondaryButtonsPreview() {
                 text = "Fix your pledge"
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSSecondaryWhiteButton(
                 onClickAction = { },
@@ -88,7 +88,7 @@ fun KSSecondaryButtonsPreview() {
                 text = "Back this project"
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSSecondaryRedButton(
                 onClickAction = { },
@@ -107,7 +107,7 @@ fun KSDisabledButtonsPreview() {
         Column(
             Modifier
                 .background(color = colors.kds_white)
-                .padding(all = 8.dp)
+                .padding(all = dimensions.paddingSmall)
         ) {
             KSPrimaryGreenButton(
                 onClickAction = { },
@@ -126,7 +126,7 @@ fun KSOtherButtonsPreview() {
         Column(
             Modifier
                 .background(color = colors.kds_white)
-                .padding(all = 8.dp)
+                .padding(all = dimensions.paddingSmall)
         ) {
             KSFacebookButton(
                 onClickAction = { },
@@ -134,7 +134,7 @@ fun KSOtherButtonsPreview() {
                 isEnabled = true
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSGooglePayButton(onClickAction = { }, isEnabled = true)
         }
@@ -149,11 +149,11 @@ fun KSSmallButtonsPreview() {
         Column {
             KSSmallBlueButton(onClickAction = {}, text = "BLUE", isEnabled = true)
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSSmallRedButton(onClickAction = {}, text = "RED", isEnabled = true)
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSSmallWhiteButton(onClickAction = {}, text = "WHITE", isEnabled = true)
         }
@@ -308,7 +308,7 @@ fun KSIconButton(
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .defaultMinSize(minHeight = 48.dp),
+            .defaultMinSize(minHeight = dimensions.minButtonHeight),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = backgroundColor,
             disabledBackgroundColor = colors.kds_support_300
@@ -320,13 +320,16 @@ fun KSIconButton(
     ) {
         Row {
             Image(
-                modifier = Modifier.defaultMinSize(minHeight = 24.dp, minWidth = 24.dp),
+                modifier = Modifier.defaultMinSize(
+                    minHeight = dimensions.imageSizeMedium,
+                    minWidth = dimensions.imageSizeMedium
+                ),
                 painter = painterResource(id = imageId),
                 contentDescription = imageContentDescription
             )
 
             safeLet(text, textColor) { copy, color ->
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(dimensions.listItemSpacingMediumSmall))
 
                 Text(
                     text = copy,
@@ -441,7 +444,7 @@ fun KSButton(
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .defaultMinSize(minHeight = 48.dp),
+            .defaultMinSize(minHeight = dimensions.minButtonHeight),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = backgroundColor,
             disabledBackgroundColor = colors.kds_support_300

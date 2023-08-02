@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -22,7 +24,7 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -32,7 +34,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.libs.utils.extensions.isNotEmptyAndAtLeast6Chars
 import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
@@ -40,6 +41,7 @@ import com.kickstarter.ui.compose.designsystem.KSHiddenTextInput
 import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 import com.kickstarter.ui.toolbars.compose.TopToolBar
 
@@ -64,9 +66,9 @@ fun ChangePasswordScreen(
     showProgressBar: Boolean,
     scaffoldState: ScaffoldState
 ) {
-    var currentPassword by remember { mutableStateOf("") }
-    var newPasswordLine1 by remember { mutableStateOf("") }
-    var newPasswordLine2 by remember { mutableStateOf("") }
+    var currentPassword by rememberSaveable { mutableStateOf("") }
+    var newPasswordLine1 by rememberSaveable { mutableStateOf("") }
+    var newPasswordLine2 by rememberSaveable { mutableStateOf("") }
 
     val acceptButtonEnabled = when {
         currentPassword.isNotEmptyAndAtLeast6Chars() &&
@@ -138,6 +140,7 @@ fun ChangePasswordScreen(
             Modifier
                 .background(colors.kds_support_100)
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(padding)
         ) {
             AnimatedVisibility(visible = showProgressBar) {
@@ -145,7 +148,7 @@ fun ChangePasswordScreen(
             }
 
             Text(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(dimensions.paddingMedium),
                 text = stringResource(
                     id = R.string.Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password
                 ),
@@ -156,7 +159,7 @@ fun ChangePasswordScreen(
             Column(
                 Modifier
                     .background(color = colors.kds_white)
-                    .padding(16.dp)
+                    .padding(dimensions.paddingMedium)
                     .fillMaxWidth()
             ) {
 
@@ -174,7 +177,7 @@ fun ChangePasswordScreen(
                     )
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(dimensions.listItemSpacingMedium))
 
                 KSHiddenTextInput(
                     modifier = Modifier.fillMaxWidth(),
@@ -190,7 +193,7 @@ fun ChangePasswordScreen(
                     )
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(dimensions.listItemSpacingMedium))
 
                 KSHiddenTextInput(
                     modifier = Modifier.fillMaxWidth(),
@@ -209,7 +212,7 @@ fun ChangePasswordScreen(
 
             AnimatedVisibility(visible = warningText.isNotEmpty()) {
                 Text(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.padding(dimensions.paddingMedium),
                     text = warningText,
                     style = typography.body2,
                     color = colors.kds_support_700

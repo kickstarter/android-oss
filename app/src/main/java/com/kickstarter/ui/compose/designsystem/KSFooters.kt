@@ -16,8 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 
 @Composable
@@ -86,11 +86,11 @@ fun KSSmallButtonFooter(
             }
 
             KSSmallBlueButton(
-                modifier = Modifier.height(48.dp),
+                modifier = Modifier.height(dimensions.minButtonHeight),
                 onClickAction = onClickAction,
                 text = buttonText,
                 isEnabled = enabled,
-                radius = 12.dp
+                radius = dimensions.radiusMedium
             )
         }
     }
@@ -102,18 +102,24 @@ fun KSStandardFooter(
 ) {
     Surface(
         color = Color.Transparent,
-        elevation = 8.dp,
-        shape = RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp)
+        elevation = dimensions.elevationMedium,
+        shape = RoundedCornerShape(
+            topStart = dimensions.radiusLarge,
+            topEnd = dimensions.radiusLarge
+        )
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(132.dp)
+                .height(dimensions.footerHeight)
                 .background(
                     color = colors.kds_white,
-                    shape = RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp)
+                    shape = RoundedCornerShape(
+                        topStart = dimensions.radiusLarge,
+                        topEnd = dimensions.radiusLarge
+                    )
                 )
-                .padding(16.dp)
+                .padding(dimensions.paddingMedium)
         ) {
             content()
         }

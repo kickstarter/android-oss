@@ -24,11 +24,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.Popup
 import com.kickstarter.libs.utils.safeLet
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 
 // Snackbars
@@ -39,9 +39,9 @@ fun SnackbarsPreview() {
     KSTheme {
         Column() {
             KSErrorRoundedText(text = "This is some sort of error, better do something about it.  Or don't, im just a text box!")
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(dimensions.listItemSpacingMediumSmall))
             KSHeadsUpRoundedText(text = "Heads up, something is going on that needs your attention.  Maybe its important, maybe its informational.")
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(dimensions.listItemSpacingMediumSmall))
             KSSuccessRoundedText(text = "Hey, something went right and all is good!")
         }
     }
@@ -50,7 +50,7 @@ fun SnackbarsPreview() {
 @Composable
 fun KSErrorSnackbar(
     text: String,
-    padding: PaddingValues = PaddingValues(0.dp)
+    padding: PaddingValues = PaddingValues(dimensions.none)
 ) {
     Snackbar(
         backgroundColor = colors.kds_alert,
@@ -63,7 +63,7 @@ fun KSErrorSnackbar(
 @Composable
 fun KSHeadsupSnackbar(
     text: String,
-    padding: PaddingValues = PaddingValues(0.dp)
+    padding: PaddingValues = PaddingValues(dimensions.none)
 ) {
     Snackbar(
         backgroundColor = colors.kds_alert,
@@ -76,7 +76,7 @@ fun KSHeadsupSnackbar(
 @Composable
 fun KSSuccessSnackbar(
     text: String,
-    padding: PaddingValues = PaddingValues(0.dp)
+    padding: PaddingValues = PaddingValues(dimensions.none)
 ) {
     Snackbar(
         backgroundColor = colors.kds_alert,
@@ -91,7 +91,7 @@ fun KSRoundedPaddedText(
     background: Color,
     textColor: Color,
     text: String,
-    padding: PaddingValues = PaddingValues(16.dp)
+    padding: PaddingValues = PaddingValues(dimensions.paddingMedium)
 ) {
     Text(
         modifier = Modifier
@@ -104,7 +104,10 @@ fun KSRoundedPaddedText(
 }
 
 @Composable
-fun KSErrorRoundedText(text: String, padding: PaddingValues = PaddingValues(16.dp)) {
+fun KSErrorRoundedText(
+    text: String,
+    padding: PaddingValues = PaddingValues(dimensions.paddingMedium)
+) {
     KSRoundedPaddedText(
         background = colors.kds_alert,
         textColor = colors.kds_white,
@@ -114,7 +117,10 @@ fun KSErrorRoundedText(text: String, padding: PaddingValues = PaddingValues(16.d
 }
 
 @Composable
-fun KSHeadsUpRoundedText(text: String, padding: PaddingValues = PaddingValues(16.dp)) {
+fun KSHeadsUpRoundedText(
+    text: String,
+    padding: PaddingValues = PaddingValues(dimensions.paddingMedium)
+) {
     KSRoundedPaddedText(
         background = colors.kds_support_700,
         textColor = colors.kds_white,
@@ -124,7 +130,10 @@ fun KSHeadsUpRoundedText(text: String, padding: PaddingValues = PaddingValues(16
 }
 
 @Composable
-fun KSSuccessRoundedText(text: String, padding: PaddingValues = PaddingValues(16.dp)) {
+fun KSSuccessRoundedText(
+    text: String,
+    padding: PaddingValues = PaddingValues(dimensions.paddingMedium)
+) {
     KSRoundedPaddedText(
         background = colors.kds_create_300,
         textColor = colors.kds_support_700,
@@ -262,7 +271,7 @@ fun KSDialogVisual(
 
         // Body
         Text(
-            modifier = Modifier.padding(end = 8.dp),
+            modifier = Modifier.padding(end = dimensions.paddingSmall),
             text = bodyText,
             style = bodyStyle,
             color = colors.kds_support_700
@@ -270,7 +279,7 @@ fun KSDialogVisual(
 
         Row(
             Modifier
-                .padding(top = 16.dp)
+                .padding(top = dimensions.paddingMedium)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.End
         ) {
@@ -286,7 +295,7 @@ fun KSDialogVisual(
                     ButtonDefaults.buttonColors(
                         backgroundColor = leftButtonColor ?: colors.kds_white
                     ),
-                    elevation = ButtonDefaults.elevation(0.dp)
+                    elevation = ButtonDefaults.elevation(dimensions.none)
                 ) {
                     Text(
                         text = text,
@@ -296,7 +305,11 @@ fun KSDialogVisual(
                 }
             }
 
-            Spacer(modifier = Modifier.width(additionalButtonSpacing ?: 2.dp))
+            Spacer(
+                modifier = Modifier.width(
+                    additionalButtonSpacing ?: dimensions.dialogButtonSpacing
+                )
+            )
 
             // Right Button
             safeLet(rightButtonText, rightButtonTextStyle) { text, style ->
@@ -310,7 +323,7 @@ fun KSDialogVisual(
                     ButtonDefaults.buttonColors(
                         backgroundColor = rightButtonColor ?: colors.kds_white
                     ),
-                    elevation = ButtonDefaults.elevation(0.dp)
+                    elevation = ButtonDefaults.elevation(dimensions.none)
                 ) {
                     Text(
                         text = text,
@@ -337,9 +350,14 @@ fun KSAlertDialogNoHeadline(
         content = {
             KSDialogVisual(
                 modifier = Modifier
-                    .width(280.dp)
+                    .width(dimensions.dialogWidth)
                     .background(color = colors.kds_white, shape = shapes.small)
-                    .padding(start = 24.dp, top = 24.dp, bottom = 8.dp, end = 8.dp),
+                    .padding(
+                        start = dimensions.paddingLarge,
+                        top = dimensions.paddingLarge,
+                        bottom = dimensions.paddingSmall,
+                        end = dimensions.paddingSmall
+                    ),
                 setShowDialog = setShowDialog,
                 bodyText = bodyText,
                 bodyStyle = typography.callout,
@@ -369,13 +387,18 @@ fun KSAlertDialog(
         content = {
             KSDialogVisual(
                 modifier = Modifier
-                    .width(280.dp)
+                    .width(dimensions.dialogWidth)
                     .background(color = colors.kds_white, shape = shapes.small)
-                    .padding(start = 24.dp, top = 24.dp, bottom = 8.dp, end = 8.dp),
+                    .padding(
+                        start = dimensions.paddingLarge,
+                        top = dimensions.paddingLarge,
+                        bottom = dimensions.paddingSmall,
+                        end = dimensions.paddingSmall
+                    ),
                 setShowDialog = setShowDialog,
                 headline = headlineText,
                 headlineStyle = typography.title3Bold,
-                headlineSpacing = 16.dp,
+                headlineSpacing = dimensions.paddingMedium,
                 bodyText = bodyText,
                 bodyStyle = typography.callout,
                 leftButtonText = leftButtonText,
@@ -404,13 +427,13 @@ fun KsTooltip(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(color = colors.kds_white)
-                .padding(24.dp),
+                .padding(dimensions.paddingLarge),
             setShowDialog = { },
             bodyText = bodyText,
             bodyStyle = typography.body2,
             headline = headlineText,
             headlineStyle = typography.headline,
-            headlineSpacing = 8.dp
+            headlineSpacing = dimensions.paddingSmall
         )
     }
 }
@@ -433,7 +456,12 @@ fun KSIntercept(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(color = colors.kds_support_100, shape = shapes.small)
-                .padding(start = 16.dp, top = 24.dp, end = 16.dp, bottom = 16.dp),
+                .padding(
+                    start = dimensions.paddingMedium,
+                    top = dimensions.paddingLarge,
+                    end = dimensions.paddingMedium,
+                    bottom = dimensions.paddingMedium
+                ),
             setShowDialog = {},
             bodyText = bodyText,
             bodyStyle = typography.calloutMedium,
@@ -447,7 +475,7 @@ fun KSIntercept(
             rightButtonTextStyle = typography.buttonText,
             rightButtonTextColor = colors.kds_white,
             rightButtonColor = colors.kds_trust_500,
-            additionalButtonSpacing = 8.dp
+            additionalButtonSpacing = dimensions.paddingSmall
         )
     }
 }

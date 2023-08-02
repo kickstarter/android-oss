@@ -5,21 +5,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rxjava2.subscribeAsState
-import androidx.compose.runtime.setValue
 import com.kickstarter.libs.Logout
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.compose.ChangePasswordScreen
-import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.viewmodels.ChangePasswordViewModel
 import io.reactivex.disposables.CompositeDisposable
@@ -37,14 +35,14 @@ class ChangePasswordActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         disposables = CompositeDisposable()
+        var darkModeEnabled = false
 
         this.getEnvironment()?.let { env ->
             viewModelFactory = ChangePasswordViewModel.Factory(env)
+
+            darkModeEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
         }
         setContent {
-            // Replace with feature flag
-            var darkMode by remember { mutableStateOf(false) }
-
             var showProgressBar =
                 viewModel.outputs.progressBarIsVisible().subscribeAsState(initial = false).value
 
@@ -52,7 +50,7 @@ class ChangePasswordActivity : ComponentActivity() {
 
             var scaffoldState = rememberScaffoldState()
 
-            KSTheme(useDarkTheme = darkMode) {
+            KickstarterApp(useDarkTheme = if (darkModeEnabled) isSystemInDarkTheme() else false) {
                 ChangePasswordScreen(
                     onBackClicked = { onBackPressedDispatcher.onBackPressed() },
                     onAcceptButtonClicked = { current, new ->

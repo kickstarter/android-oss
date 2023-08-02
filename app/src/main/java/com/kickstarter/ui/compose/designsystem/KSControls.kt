@@ -33,9 +33,9 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typography
 
 @Composable
@@ -50,41 +50,41 @@ fun PreviewControls() {
         Column(Modifier.background(color = colors.kds_support_100)) {
             KSSwitch(checked = checkedOn, onCheckChanged = { checkedOn = !checkedOn })
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSSwitch(checked = checkedOff, onCheckChanged = { checkedOff = !checkedOff })
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSSwitch(checked = checkedOn, onCheckChanged = {}, enabled = false)
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSRadioButton(
                 selected = radioButtonSelected,
                 onClick = { radioButtonSelected = !radioButtonSelected }
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSRadioButton(
                 selected = !radioButtonSelected,
                 onClick = { radioButtonSelected = !radioButtonSelected }
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSRadioButton(selected = radioButtonSelected, onClick = {}, enabled = false)
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSCheckbox(checked = checked, onCheckChanged = { checked = !checked })
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSCheckbox(checked = checked, onCheckChanged = {}, enabled = false)
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSStringDropdown(
                 onItemSelected = { _, _ -> },
@@ -157,7 +157,8 @@ fun KSCheckbox(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun KSStringDropdown(
-    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier.width(150.dp),
+    @SuppressLint("ModifierParameter")
+    modifier: Modifier = Modifier.width(dimensions.dropDownStandardWidth),
     items: Array<String>,
     onItemSelected: (Int, String) -> Unit,
     startingItemIndex: Int = 0
@@ -177,7 +178,7 @@ fun KSStringDropdown(
         Row(
             modifier = Modifier
                 .background(color = colors.kds_white)
-                .padding(12.dp),
+                .padding(dimensions.listItemSpacingMediumSmall),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -191,7 +192,7 @@ fun KSStringDropdown(
 
             Image(
                 modifier = Modifier
-                    .size(12.dp)
+                    .size(dimensions.listItemSpacingMediumSmall)
                     .rotate(if (expanded) 180f else 0f),
                 painter = painterResource(
                     id = R.drawable.ic_down,

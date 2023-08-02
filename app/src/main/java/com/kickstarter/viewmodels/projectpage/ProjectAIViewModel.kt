@@ -1,71 +1,51 @@
 package com.kickstarter.viewmodels.projectpage
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.models.AiDisclosure
 import com.kickstarter.ui.data.ProjectData
-import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.subjects.BehaviorSubject
 
-interface ProjectAIViewModel {
+class ProjectAIViewModel private constructor(private val environment: Environment) : ViewModel() {
+    var state by mutableStateOf(UiState())
+        private set
 
-    interface Inputs {
-        /** Configure with current [ProjectData]. */
-        fun configureWith(projectData: ProjectData)
-        fun learnAboutAIPolicyOnKickstarterClicked()
-    }
+    /**
+     * Equivalent to Outputs interface in the on old ViewModels
+     * UIState represents the possible UIState changes
+     * and the data objects required to populate the state.
+     */
+    data class UiState(
+        val openExternalUrl: String = AIPOLICY,
+        val aiDisclosure: AiDisclosure? = null
+    )
 
-    interface Outputs {
+    /**
+     * Equivalent to Inputs interface in the on old ViewModels
+     * Event represents the event flowing  UIState changes
+     * and the data objects required to populate the state.
+     */
+    data class Event(
+        val externalClicked: Boolean = false,
+        val projectData: ProjectData? = null
+    )
 
-        /** Emits the current [AiDisclosure]. */
-        fun projectAiDisclosure(): Observable<AiDisclosure>
-
-        fun openLearnAboutAIPolicyOnKickstarter(): Observable<String>
-    }
-
-    class ProjectAIViewModel(environment: Environment) : ViewModel(), Inputs, Outputs {
-        val inputs: Inputs = this
-        val outputs: Outputs = this
-
-        private val projectDataInput = BehaviorSubject.create<ProjectData>()
-        private val openLearnAboutAIPolicyOnKickstarterClicked = BehaviorSubject.create<Unit>()
-
-        private val projectAIDisclosure = BehaviorSubject.create<AiDisclosure>()
-        private val openLearnAboutAIPolicyOnKickstarter = BehaviorSubject.create<String>()
-
-        private val disposables = CompositeDisposable()
-
-        init {
-            // TODO: MBL-901
-        }
-
-        override fun onCleared() {
-            disposables.clear()
-            super.onCleared()
-        }
-
-        // - Inputs
-        override fun configureWith(projectData: ProjectData) =
-            this.projectDataInput.onNext(projectData)
-
-        override fun learnAboutAIPolicyOnKickstarterClicked() =
-            this.openLearnAboutAIPolicyOnKickstarterClicked.onNext(Unit)
-
-        // - Outputs
-        override fun projectAiDisclosure(): Observable<AiDisclosure> = this.projectAIDisclosure
-        override fun openLearnAboutAIPolicyOnKickstarter(): Observable<String> = this.openLearnAboutAIPolicyOnKickstarter
+    fun eventUpdate(event: Event) {
+        val disclosure = event.projectData?.project()?.aiDisclosure()
+        state = UiState(aiDisclosure = disclosure)
     }
 
     companion object {
-        // "https://help.kickstarter.com/hc/en-us/articles/16848396410267" // TODO not accesible yet to users
-        const val AIPOLICY = "hc/en-us/articles/16848396410267"
+        // "https://help.kickstarter.com/hc/en-us/articles/16848396410267" // - not accesible yet to users, ask stakeholder if URL might change before release
+        const val AIPOLICY = "https://help.kickstarter.com/hc/en-us/articles/16848396410267"
     }
 
     class Factory(private val environment: Environment) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return ProjectAIViewModel(environment) as T
+            return ProjectAIViewModel(environment = environment) as T
         }
     }
 }

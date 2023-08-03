@@ -3,7 +3,6 @@ package com.kickstarter.ui.activities.compose.projectpage
 import android.content.res.Configuration
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,11 +16,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.style.TextDecoration
@@ -197,13 +198,13 @@ fun AiDisclosureRow(
     @StringRes stringResId: Int
 ) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(KSTheme.dimensions.paddingSmall)
+        horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall)
     ) {
-        Image(
+        Icon(
             modifier = Modifier
                 .width(18.dp)
                 .height(18.dp),
-            painter = painterResource(
+            imageVector = ImageVector.vectorResource(
                 id = iconId
             ),
             contentDescription = null
